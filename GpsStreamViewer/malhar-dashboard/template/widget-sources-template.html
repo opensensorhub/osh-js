@@ -1,0 +1,85 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button>
+  <h3>{{widget.name}} sensor viewer source code</small></h3>
+</div>
+<div class="modal-body source-code">
+    <pre>
+	  <code>
+&lt;div id="map"&gt;&lt;/div&gt;
+&lt;script&gt;
+function showMap(divName) {
+  var div = document.getElementById(divName);
+  div.className = "smallmap";
+  div.style.width = "100%";
+  div.style.height = "100%";
+	
+  var map, layer; 
+  var xhReq;
+  var marker;
+  var markers;
+  var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+
+  map = new OpenLayers.Map(divName, {
+	controls : [ 
+	  new OpenLayers.Control.LayerSwitcher(),
+	  new OpenLayers.Control.Navigation({
+		  zoomBoxEnabled : true,
+		  zoomWheelEnabled : true
+	  }), 
+	  new OpenLayers.Control.PanZoomBar(),
+	  new OpenLayers.Control.MousePosition(),
+      new OpenLayers.Control.ScaleLine() ]
+  });
+  map.numZoomLevels = 17;
+
+  // OSM background map layer
+  var osm = new OpenLayers.Layer.OSM();
+  map.addLayer(osm);
+
+  // vector layer
+  markers = new OpenLayers.Layer.Markers("Markers");
+  map.addLayer(markers);
+
+  // center map on HSV
+  var center = new OpenLayers.LonLat(-86.5850, 34.7300).transform(epsg4326, map.getProjectionObject());
+  map.setCenter(center, 11);
+
+  // create marker
+  var size = new OpenLayers.Size(30, 30);
+  var offset = new OpenLayers.Pixel(-size.w / 2, -size.h / 2);
+  var icon = new OpenLayers.Icon('js/OpenLayers/draw_point_on.png', size, offset);
+  marker = new OpenLayers.Marker(new OpenLayers.LonLat(0, 0), icon);
+  markers.addMarker(marker);
+
+  // GPS
+  // prepare reader
+  var reader = new FileReader();
+  reader.onload = function() {
+     var rec = reader.result;
+     var tokens = rec.trim().split(",");
+     var lat = parseFloat(tokens[1]);
+     var lon = parseFloat(tokens[2]);
+     var alt = parseFloat(tokens[3]);
+     marker.lonlat = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+     markers.redraw();
+   }
+
+   // query SOS GPS stream
+   ws = new WebSocket(
+      "ws://ec2-52-16-177-252.eu-west-1.compute.amazonaws.com:8181/sensorhub/sos?service=SOS&amp;version=2.0&amp;request=GetResult&amp;offering=urn:mysos:offering02&amp;observedProperty=http://sensorml.com/ont/swe/property/Location&amp;temporalFilter=phenomenonTime,now/2055-01-01");
+   ws.onmessage = function(event) {
+      reader.readAsText(event.data);
+   }
+   ws.onerror = function(event) {
+      ws.close();
+   }
+}
+
+showMap('map');
+&lt;/script&gt;
+	  </code>
+	</pre>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="ok()">Close</button>
+</div>
