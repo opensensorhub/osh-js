@@ -50,11 +50,16 @@
 	}).factory("widgetDefinitions", function() {
 	    return [{
 	        name: "OpenLayer",
+	        title : "OpenLayer",
 	        directive: "open-layer-sensor",
-	        enableVerticalResize: true
+	        enableVerticalResize: true,
+	        open : true
 	    }]
 	}).value("defaultWidgets", [{
-	    name: "OpenLayer"
+	    name: "OpenLayer",
+	    title : "OpenLayer",
+	    enableVerticalResize: true,
+	    open : true
 	}]).controller("DemoCtrl", function($scope, $interval, $window, widgetDefinitions, defaultWidgets) {
 	    $scope.dashboardOptions = {
 	        widgetButtons: !0,

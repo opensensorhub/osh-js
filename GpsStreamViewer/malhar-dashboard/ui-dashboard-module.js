@@ -2,7 +2,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
         return {
             restrict: "A",
             templateUrl: function(element, attr) {
-                return attr.templateUrl ? attr.templateUrl : "template/dashboard.html"
+                return attr.templateUrl ? attr.templateUrl : "malhar-dashboard/template/dashboard.html"
             },
             scope: !0,
             controller: ["$scope", "$attrs", function(scope, attrs) {
@@ -11,9 +11,13 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     hideWidgetSettings: !1,
                     hideWidgetClose: !1,
                     settingsModalOptions: {
-                        templateUrl: "template/widget-settings-template.html",
+                        templateUrl: "malhar-dashboard/template/widget-settings-template.html",
                         controller: "WidgetSettingsCtrl"
                     },
+                    sourcesModalWidget : {
+					 templateUrl: "malhar-dashboard/template/widget-sources-template.html",
+                        controller: "WidgetSourcesCtrl"
+					},
                     onSettingsClose: function(result, widget) {
                         jQuery.extend(!0, widget, result)
                     },
@@ -38,15 +42,29 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 }
                 scope.defaultWidgets = scope.options.defaultWidgets, scope.widgetDefs = new WidgetDefCollection(scope.options.widgetDefinitions);
                 var count = 1;
-                scope.dashboardState = new DashboardState(scope.options.storage, scope.options.storageId, scope.options.storageHash, scope.widgetDefs, scope.options.stringifyStorage), scope.addWidget = function(widgetToInstantiate, doNotSave) {
-                    var defaultWidgetDefinition = scope.widgetDefs.getByName(widgetToInstantiate.name);
-                    if (!defaultWidgetDefinition) throw "Widget " + widgetToInstantiate.name + " is not found.";
-                    var title;
-                    title = widgetToInstantiate.title ? widgetToInstantiate.title : defaultWidgetDefinition.title ? defaultWidgetDefinition.title : "Widget " + count++, widgetToInstantiate = jQuery.extend(!0, {}, defaultWidgetDefinition, widgetToInstantiate);
-                    var widget = new WidgetModel(widgetToInstantiate, {
-                        title: title
-                    });
-                    scope.widgets.push(widget), doNotSave || scope.saveDashboard()
+                scope.dashboardState = new DashboardState(scope.options.storage, scope.options.storageId, scope.options.storageHash, scope.widgetDefs, scope.options.stringifyStorage), 
+                
+                scope.addWidget = function(widgetToInstantiate, doNotSave) {
+                    
+                    var ok = true;
+                    var arrayLength = scope.widgets.length;
+					for (var i = 0; i < arrayLength; i++) {
+						if(scope.widgets[i].name == widgetToInstantiate.name){
+							ok = false;
+							break;
+						}
+					}
+                    if(ok){
+						var defaultWidgetDefinition = scope.widgetDefs.getByName(widgetToInstantiate.name);
+						if (!defaultWidgetDefinition) throw "Widget " + widgetToInstantiate.name + " is not found.";
+						var title;
+						title = widgetToInstantiate.title ? widgetToInstantiate.title : defaultWidgetDefinition.title ? defaultWidgetDefinition.title : "Widget " + count++, widgetToInstantiate = jQuery.extend(!0, {}, defaultWidgetDefinition, widgetToInstantiate);
+						var widget = new WidgetModel(widgetToInstantiate, {
+							title: title,
+							open : widgetToInstantiate.open
+						});
+						scope.widgets.push(widget), doNotSave || scope.saveDashboard();
+					}
                 }, scope.removeWidget = function(widget) {
                     scope.widgets.splice(_.indexOf(scope.widgets, widget), 1), scope.saveDashboard()
                 }, scope.openWidgetSettings = function(widget) {
@@ -66,9 +84,24 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     })
                 }, scope.clear = function(doNotSave) {
                     scope.widgets = [], doNotSave !== !0 && scope.saveDashboard()
+                }, scope.showSourceCode = function(widget) {
+                    var options = _.defaults({}, widget.sourcesModalWidget, scope.options.sourcesModalWidget);
+                    options.resolve = {
+                        widget: function() {
+                            return widget
+                        }
+                    };
+                    var modalInstance = $modal.open(options),
+                        onClose = widget.onSettingsClose || scope.options.onSettingsClose,
+                        onDismiss = widget.onSettingsDismiss || scope.options.onSettingsDismiss;
+                    modalInstance.result.then(function(result) {
+                        onClose(result, widget, scope), scope.$emit("widgetChanged", widget)
+                    }, function(reason) {
+                        onDismiss(reason, scope)
+                    })
                 }, scope.addWidgetInternal = function(event, widgetDef) {
-                    event.preventDefault(), scope.addWidget(widgetDef)
-                }, scope.saveDashboard = function(force) {
+					event.preventDefault(), scope.addWidget(widgetDef);
+				}, scope.saveDashboard = function(force) {
                     scope.options.explicitSave ? ("number" != typeof scope.options.unsavedChangeCount && (scope.options.unsavedChangeCount = 0), force ? (scope.options.unsavedChangeCount = 0, scope.dashboardState.save(scope.widgets)) : ++scope.options.unsavedChangeCount) : scope.dashboardState.save(scope.widgets)
                 }, scope.externalSaveDashboard = function() {
                     scope.saveDashboard(!0)
@@ -76,7 +109,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     scope.savedWidgetDefs = widgets, scope.clear(!0), _.each(widgets, function(widgetDef) {
                         scope.addWidget(widgetDef, !0)
                     })
-                }, scope.resetWidgetsToDefault = function() {
+                },scope.resetWidgetsToDefault = function() {
                     scope.loadWidgets(scope.defaultWidgets), scope.saveDashboard()
                 };
                 var savedWidgetDefs = scope.dashboardState.load();
@@ -89,7 +122,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
         return {
             scope: !0,
             templateUrl: function(element, attr) {
-                return attr.templateUrl ? attr.templateUrl : "template/dashboard-layouts.html"
+                return attr.templateUrl ? attr.templateUrl : "malhar-dashboard/template/dashboard-layouts.html"
             },
             link: function(scope, element, attrs) {
                 scope.options = scope.$eval(attrs.dashboardLayouts);
@@ -106,7 +139,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     var current = layoutStorage.getActiveLayout();
                     if (current && current.dashboard.unsavedChangeCount) {
                         var modalInstance = $modal.open({
-                            templateUrl: "template/save-changes-modal.html",
+                            templateUrl: "malhar-dashboard/template/save-changes-modal.html",
                             resolve: {
                                 layout: function() {
                                     return layout
@@ -354,9 +387,11 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 dataModelType: Class.dataModelType,
                 dataModelOptions: Class.dataModelOptions,
                 settingsModalOptions: Class.settingsModalOptions,
+                sourcesModalWidget: Class.sourcesModalWidget,
                 onSettingsClose: Class.onSettingsClose,
                 onSettingsDismiss: Class.onSettingsDismiss,
-                style: Class.style
+                style: Class.style,
+                open : false
             };
             if (overrides = overrides || {}, angular.extend(this, angular.copy(defaults), overrides), this.style = this.style || {
                     width: "33%"
@@ -436,6 +471,10 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
         }, $scope.cancel = function() {
             $modalInstance.dismiss("cancel")
         }
+    }]),angular.module("ui.dashboard").controller("WidgetSourcesCtrl", ["$scope", "$modalInstance", "widget", function($scope, $modalInstance, widget) {
+        $scope.widget = widget, $scope.result = jQuery.extend(!0, {}, widget), $scope.ok = function() {
+            $modalInstance.close($scope.result)
+        }
     }]), angular.module("ui.dashboard").run(["$templateCache", function($templateCache) {
-        $templateCache.put("template/alt-dashboard.html", '<div>\n    <div class="btn-toolbar" ng-if="!options.hideToolbar">\n        <div class="btn-group" ng-if="!options.widgetButtons">\n            <button type="button" class="dropdown-toggle btn btn-primary" data-toggle="dropdown">Add Widget <span\n                    class="caret"></span></button>\n            <ul class="dropdown-menu" role="menu">\n                <li ng-repeat="widget in widgetDefs">\n                    <a href="#" ng-click="addWidgetInternal($event, widget);"><span class="label label-primary">{{widget.name}}</span></a>\n                </li>\n            </ul>\n        </div>\n\n        <div class="btn-group" ng-if="options.widgetButtons">\n            <button ng-repeat="widget in widgetDefs"\n                    ng-click="addWidgetInternal($event, widget);" type="button" class="btn btn-primary">\n                {{widget.name}}\n            </button>\n        </div>\n\n     </div>\n\n    <div ui-sortable="sortableOptions" ng-model="widgets" class="dashboard-widget-area">\n        <div ng-repeat="widget in widgets" ng-style="widget.style" class="widget-container" widget>\n            <div class="widget panel panel-default">\n                <div class="widget-header panel-heading">\n                    <h3 class="panel-title">\n                        <span class="widget-title" ng-dblclick="editTitle(widget)" ng-hide="widget.editingTitle">{{widget.title}}</span>\n                        <form action="" class="widget-title" ng-show="widget.editingTitle" ng-submit="saveTitleEdit(widget)">\n                            <input type="text" ng-model="widget.title" class="form-control">\n                        </form>\n                        <span class="label label-primary" ng-if="!options.hideWidgetName">{{widget.name}}</span>\n                        <span ng-click="removeWidget(widget);" class="glyphicon glyphicon-remove" ng-if="!options.hideWidgetClose"></span>\n                        <span ng-click="openWidgetSettings(widget);" class="glyphicon glyphicon-cog" ng-if="!options.hideWidgetSettings"></span>\n                    </h3>\n                </div>\n                <div class="panel-body widget-content"></div>\n                <div class="widget-ew-resizer" ng-mousedown="grabResizer($event)"></div>\n            </div>\n        </div>\n    </div>\n</div>\n'), $templateCache.put("template/dashboard-layouts.html", '<ul class="nav nav-tabs layout-tabs">\n    <li ng-repeat="layout in layouts" ng-class="{ active: layout.active }">\n        <a ng-click="makeLayoutActive(layout)">\n            <span ng-dblclick="editTitle(layout)" ng-show="!layout.editingTitle">{{layout.title}}</span>\n            <form action="" class="layout-title" ng-show="layout.editingTitle" ng-submit="saveTitleEdit(layout)">\n                <input type="text" ng-model="layout.title" class="form-control" data-layout="{{layout.id}}">\n            </form>\n            <span ng-click="removeLayout(layout)" class="glyphicon glyphicon-remove remove-layout-icon"></span>\n            <!-- <span class="glyphicon glyphicon-pencil"></span> -->\n            <!-- <span class="glyphicon glyphicon-remove"></span> -->\n        </a>\n    </li>\n    <li>\n        <a ng-click="createNewLayout()">\n            <span class="glyphicon glyphicon-plus"></span>\n        </a>\n    </li>\n</ul>\n<div ng-repeat="layout in layouts | filter:isActive" dashboard="layout.dashboard" templateUrl="template/dashboard.html"></div>'), $templateCache.put("template/dashboard.html", '<div>\n    <div class="btn-toolbar" ng-if="!options.hideToolbar">\n        <div class="btn-group" ng-if="!options.widgetButtons">\n            <button type="button" class="dropdown-toggle btn btn-primary" data-toggle="dropdown">Add Widget <span\n                    class="caret"></span></button>\n            <ul class="dropdown-menu" role="menu">\n                <li ng-repeat="widget in widgetDefs">\n                    <a href="#" ng-click="addWidgetInternal($event, widget);"><span class="label label-primary">{{widget.name}}</span></a>\n                </li>\n            </ul>\n        </div>\n\n        <div class="btn-group" ng-if="options.widgetButtons">\n            <button ng-repeat="widget in widgetDefs"\n                    ng-click="addWidgetInternal($event, widget);" type="button" class="btn btn-primary">\n                {{widget.name}}\n            </button>\n        </div>\n\n \n    </div>\n\n    <div ui-sortable="sortableOptions" ng-model="widgets" class="dashboard-widget-area">\n        <div ng-repeat="widget in widgets" ng-style="widget.style" class="widget-container" widget>\n            <div class="widget panel panel-default">\n                <div class="widget-header panel-heading">\n                    <h3 class="panel-title">\n                        <span class="widget-title" ng-dblclick="editTitle(widget)" ng-hide="widget.editingTitle">{{widget.title}}</span>\n                        <form action="" class="widget-title" ng-show="widget.editingTitle" ng-submit="saveTitleEdit(widget)">\n                            <input type="text" ng-model="widget.title" class="form-control">\n                        </form>\n                        <span class="label label-primary" ng-if="!options.hideWidgetName">{{widget.name}}</span>\n                        <span ng-click="removeWidget(widget);" class="glyphicon glyphicon-remove" ng-if="!options.hideWidgetClose"></span>\n                        <span ng-click="openWidgetSettings(widget);" class="glyphicon glyphicon-cog" ng-if="!options.hideWidgetSettings"></span>\n                    </h3>\n                </div>\n                <div class="panel-body widget-content"></div>\n                <div class="widget-ew-resizer" ng-mousedown="grabResizer($event)"></div>\n            </div>\n        </div>\n    </div>\n</div>'), $templateCache.put("template/save-changes-modal.html", '<div class="modal-header">\n    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button>\n  <h3>Unsaved Changes to "{{layout.title}}"</h3>\n</div>\n\n<div class="modal-body">\n    <p>You have {{layout.dashboard.unsavedChangeCount}} unsaved changes on this dashboard. Would you like to save them?</p>\n</div>\n\n<div class="modal-footer">\n    <button type="button" class="btn btn-default" ng-click="cancel()">Don\'t Save</button>\n    <button type="button" class="btn btn-primary" ng-click="ok()">Save</button>\n</div>'), $templateCache.put("template/widget-default-content.html", ""), $templateCache.put("template/widget-settings-template.html", '<div class="modal-header">\n    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button>\n  <h3>Widget Options <small>{{widget.title}}</small></h3>\n</div>\n\n<div class="modal-body">\n    <form name="form" novalidate class="form-horizontal">\n        <div class="form-group">\n            <label for="widgetTitle" class="col-sm-2 control-label">Title</label>\n            <div class="col-sm-10">\n                <input type="text" class="form-control" name="widgetTitle" ng-model="result.title">\n            </div>\n        </div>\n        <div ng-include="optionsTemplateUrl"></div>\n    </form>\n</div>\n\n<div class="modal-footer">\n    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>\n    <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>\n</div>')
+    	
     }]);
