@@ -1,1 +1,147 @@
-Hello World
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>GPS Stream viewer for OpenSensorHub</title>
+<link href="css/GpsStreamViewer.css" rel="stylesheet">
+
+<!-- OpenLayers -->
+<link rel="stylesheet" type="text/css"
+	href="lib/common/OpenLayers/OpenLayers.css" />
+<script type="text/javascript" src="js/OpenLayers/OpenLayers.js"></script>
+
+<!-- ANGULAR -->
+<link rel="stylesheet" href="malhar-dashboard/stylesheet.min.css">
+<script type="text/javascript" src="malhar-dashboard/script.min.js"></script>
+<script type="text/javascript"
+	src="malhar-dashboard/ui-dashboard-module.js"></script>
+
+</head>
+
+<body ng-app="app">
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="http://www.opensensorhub.org/">
+          	<img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png" style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+          OpenSensorHub</a>
+        </div>
+
+        <!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+	<div ng-view=""></div>
+</body>
+<script>
+	angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown"]).config(function($routeProvider) {
+	    $routeProvider.when("/", {
+	        templateUrl: "view.html",
+	        controller: "DemoCtrl",
+	        title: "simple",
+	        description: "This is the GPS Stream demo viewer"
+	    }).otherwise({
+	        redirectTo: "/"
+	    })
+	}).factory("widgetDefinitions", function() {
+	    return [{
+	        name: "OpenLayer",
+	        directive: "open-layer-sensor",
+	        enableVerticalResize: true
+	    }]
+	}).value("defaultWidgets", [{
+	    name: "OpenLayer"
+	}]).controller("DemoCtrl", function($scope, $interval, $window, widgetDefinitions, defaultWidgets) {
+	    $scope.dashboardOptions = {
+	        widgetButtons: !0,
+	        widgetDefinitions: widgetDefinitions,
+	        defaultWidgets: defaultWidgets,
+	        storage: $window.localStorage,
+	        storageId: "demo"
+	    }
+	}).directive("openLayerSensor", function($interval) {
+	    return {
+	        restrict: "A",
+	        scope: !0,
+	        replace: !0,
+	        templateUrl: "openLayerMapViewer.html",
+	        link: function(scope) {
+	        	showMap('map');
+	        }
+	    }
+	});
+	
+
+	function showMap(divName) {
+		var div = document.getElementById(divName);
+		div.className = "smallmap";
+		div.style.width = "100%";
+		div.style.height = "100%";
+		
+		var map, layer;
+		var xhReq;
+		var marker;
+		var markers;
+		var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+
+		map = new OpenLayers.Map(divName, {
+			controls : [ new OpenLayers.Control.LayerSwitcher(),
+					new OpenLayers.Control.Navigation({
+						zoomBoxEnabled : true,
+						zoomWheelEnabled : true
+					}), new OpenLayers.Control.PanZoomBar(),
+					new OpenLayers.Control.MousePosition(),
+					new OpenLayers.Control.ScaleLine() ]
+		});
+		map.numZoomLevels = 17;
+
+		// OSM background map layer
+		var osm = new OpenLayers.Layer.OSM();
+		map.addLayer(osm);
+
+		// vector layer
+		markers = new OpenLayers.Layer.Markers("Markers");
+		map.addLayer(markers);
+
+		// center map on HSV
+		var center = new OpenLayers.LonLat(-86.5850, 34.7300).transform(
+				epsg4326, map.getProjectionObject());
+		map.setCenter(center, 11);
+
+		// create marker
+		var size = new OpenLayers.Size(30, 30);
+		var offset = new OpenLayers.Pixel(-size.w / 2, -size.h / 2);
+		var icon = new OpenLayers.Icon(
+				'js/OpenLayers/draw_point_on.png', size, offset);
+		marker = new OpenLayers.Marker(new OpenLayers.LonLat(0, 0), icon);
+		markers.addMarker(marker);
+
+		// GPS
+		// prepare reader
+		var reader = new FileReader();
+		reader.onload = function() {
+			var rec = reader.result;
+			var tokens = rec.trim().split(",");
+			var lat = parseFloat(tokens[1]);
+			var lon = parseFloat(tokens[2]);
+			var alt = parseFloat(tokens[3]);
+			marker.lonlat = new OpenLayers.LonLat(lon, lat).transform(
+					epsg4326, map.getProjectionObject());
+			markers.redraw();
+		}
+
+		// query SOS GPS stream
+		ws = new WebSocket(
+				"ws://ec2-52-16-177-252.eu-west-1.compute.amazonaws.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering02&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,now/2055-01-01");
+		ws.onmessage = function(event) {
+			reader.readAsText(event.data);
+		}
+		ws.onerror = function(event) {
+			ws.close();
+		}
+	}
+</script>
+</html>
