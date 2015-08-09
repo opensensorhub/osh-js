@@ -9,10 +9,10 @@
   */
 
 /* Portrait and Landscape */
-@media (min-width: 320px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 2) {
+@media (min-width: 1px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 1) {
 	.widget-container  {
   		width : 100% !important;
-  		height : 80% !important;
+  		height : 75% !important;
   	}
 }
 
@@ -29,7 +29,7 @@
 
 /* Portrait and Landscape */
 @media only screen 
-  and (min-device-width: 601px) 
+  and (min-device-width: 736px) 
   and (max-device-width: 1280px) 
   and (-webkit-min-device-pixel-ratio: 1) {
 	.widget-container  {
