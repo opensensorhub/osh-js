@@ -247,7 +247,10 @@ th {
     content: "\2a"
 }
 .glyphicon-plus:before {
-    content: "\2b"
+    content: "\2b";
+	position:relative;
+	left:2px;
+	bottom: 1px;
 }
 .glyphicon-euro:before {
     content: "\20ac"
@@ -301,7 +304,8 @@ th {
     content: "\e013"
 }
 .glyphicon-remove:before {
-    content: "\e014"
+    content: "\e014";
+	font-size:1.06em;
 }
 .glyphicon-zoom-in:before {
     content: "\e015"
@@ -3314,7 +3318,7 @@ tbody.collapse.in {
 .btn-group .btn+.btn-group,
 .btn-group .btn-group+.btn,
 .btn-group .btn-group+.btn-group {
-    margin-left: -1px
+    margin-left: 10px
 }
 .btn-toolbar {
     margin-left: -5px
@@ -3329,19 +3333,19 @@ tbody.collapse.in {
     margin-left: 5px
 }
 .btn-group>.btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
-    border-radius: 0
+  /*  border-radius: 0*/
 }
 .btn-group>.btn:first-child {
     margin-left: 0
 }
 .btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle) {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0
+    /*border-top-right-radius: 0;
+    border-bottom-right-radius: 0*/
 }
 .btn-group>.btn:last-child:not(:first-child),
 .btn-group>.dropdown-toggle:not(:first-child) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0
+  /*  border-top-left-radius: 0;
+    border-bottom-left-radius: 0*/
 }
 .btn-group>.btn-group {
     float: left
@@ -4469,7 +4473,7 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
 .label {
     display: inline;
     padding: .2em .6em .3em;
-    font-size: 75%;
+    font-size: 90%;
     font-weight: 700;
     line-height: 1;
     color: #fff;
@@ -6220,7 +6224,6 @@ button.close {
 .widget-container {
     float: left;
     display: inline-block;
-    width: 33%
 }
 .widget {
     margin: 0 1em 1em 0;
@@ -6233,7 +6236,7 @@ button.close {
     overflow: hidden
 }
 .widget-header .label {
-    display: inline-block;
+    /*display: inline-block;*/
     vertical-align: middle
 }
 .widget-header .glyphicon {

@@ -18,11 +18,18 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 					 templateUrl: "malhar-dashboard/template/widget-sources-template.html",
                         controller: "WidgetSourcesCtrl"
 					},
+					onSourcesCodeDismiss : function(result,widget){
+						widget.content = "";
+					},
+					onSourcesCodeClose : function(result,widget){
+						jQuery.extend(!0, widget, result);
+						widget.content = "";
+					},
                     onSettingsClose: function(result, widget) {
                         jQuery.extend(!0, widget, result)
                     },
                     onSettingsDismiss: function(reason) {
-                        $log.info("widget settings were dismissed. Reason: ", reason)
+                        
                     }
                 };
                 scope.options = scope.$eval(attrs.dashboard), scope.options.settingsModalOptions = scope.options.settingsModalOptions || {}, _.each(["settingsModalOptions"], function(key) {
@@ -45,7 +52,6 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 scope.dashboardState = new DashboardState(scope.options.storage, scope.options.storageId, scope.options.storageHash, scope.widgetDefs, scope.options.stringifyStorage), 
                 
                 scope.addWidget = function(widgetToInstantiate, doNotSave) {
-                    
                     var ok = true;
                     var arrayLength = scope.widgets.length;
 					for (var i = 0; i < arrayLength; i++) {
@@ -55,15 +61,24 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 						}
 					}
                     if(ok){
+							
 						var defaultWidgetDefinition = scope.widgetDefs.getByName(widgetToInstantiate.name);
 						if (!defaultWidgetDefinition) throw "Widget " + widgetToInstantiate.name + " is not found.";
 						var title;
 						title = widgetToInstantiate.title ? widgetToInstantiate.title : defaultWidgetDefinition.title ? defaultWidgetDefinition.title : "Widget " + count++, widgetToInstantiate = jQuery.extend(!0, {}, defaultWidgetDefinition, widgetToInstantiate);
 						var widget = new WidgetModel(widgetToInstantiate, {
 							title: title,
-							open : widgetToInstantiate.open
+							source : widgetToInstantiate.source
 						});
-						scope.widgets.push(widget), doNotSave || scope.saveDashboard();
+						scope.widgets.push(widget), doNotSave || scope.saveDashboard();	
+
+						//get content and evaluate it
+						//TBD
+						/*$.get( widget.source, function( data ) {
+							var script = $(data).find("script");
+							console.log(script.text());
+							eval(script.text());
+						});*/					
 					}
                 }, scope.removeWidget = function(widget) {
                     scope.widgets.splice(_.indexOf(scope.widgets, widget), 1), scope.saveDashboard()
@@ -78,7 +93,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                         onClose = widget.onSettingsClose || scope.options.onSettingsClose,
                         onDismiss = widget.onSettingsDismiss || scope.options.onSettingsDismiss;
                     modalInstance.result.then(function(result) {
-                        onClose(result, widget, scope), scope.$emit("widgetChanged", widget)
+                        onClose(result, widget, scope), scope.$emit("widgetChanged", widget) 
                     }, function(reason) {
                         onDismiss(reason, scope)
                     })
@@ -91,14 +106,23 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                             return widget
                         }
                     };
-                    var modalInstance = $modal.open(options),
-                        onClose = widget.onSettingsClose || scope.options.onSettingsClose,
-                        onDismiss = widget.onSettingsDismiss || scope.options.onSettingsDismiss;
-                    modalInstance.result.then(function(result) {
-                        onClose(result, widget, scope), scope.$emit("widgetChanged", widget)
-                    }, function(reason) {
-                        onDismiss(reason, scope)
-                    })
+					var widgetSourceCodeId = widget.name+"ViewerId";
+					
+					//get html content and load it into the modal dialog content
+					$.get( widget.source, function( data ) {
+						widget.content = ($.trim(data));
+						var script = $("#"+widgetSourceCodeId+" script")
+						eval(script);
+				
+						var modalInstance = $modal.open(options),
+							onClose = widget.onSourcesCodeClose || scope.options.onSourcesCodeClose,
+							onDismiss = widget.onSourcesCodeDismiss || scope.options.onSourcesCodeDismiss;
+						modalInstance.result.then(function(result) {
+							onClose(result, widget, scope), scope.$emit("widgetChanged", widget)
+						}, function(reason) {
+							onDismiss(reason, scope)
+						})
+					});
                 }, scope.addWidgetInternal = function(event, widgetDef) {
 					event.preventDefault(), scope.addWidget(widgetDef);
 				}, scope.saveDashboard = function(force) {
@@ -125,7 +149,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 return attr.templateUrl ? attr.templateUrl : "malhar-dashboard/template/dashboard-layouts.html"
             },
             link: function(scope, element, attrs) {
-                scope.options = scope.$eval(attrs.dashboardLayouts);
+			    scope.options = scope.$eval(attrs.dashboardLayouts);
                 var layoutStorage = new LayoutStorage(scope.options);
                 scope.layouts = layoutStorage.layouts, scope.createNewLayout = function() {
                     var newLayout = {
@@ -199,7 +223,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 storageHash: "",
                 stringifyStorage: !0
             };
-            angular.extend(defaults, options), angular.extend(options, defaults), this.id = options.storageId, this.storage = options.storage, this.storageHash = options.storageHash, this.stringifyStorage = options.stringifyStorage, this.widgetDefinitions = options.widgetDefinitions, this.defaultLayouts = options.defaultLayouts, this.widgetButtons = options.widgetButtons, this.explicitSave = options.explicitSave, this.defaultWidgets = options.defaultWidgets, this.settingsModalOptions = options.settingsModalOptions, this.onSettingsClose = options.onSettingsClose, this.onSettingsDismiss = options.onSettingsDismiss, this.options = options, this.options.unsavedChangeCount = 0, this.layouts = [], this.states = {}, this.load(), this._ensureActiveLayout()
+            angular.extend(defaults, options), angular.extend(options, defaults), this.id = options.storageId, this.storage = options.storage, this.storageHash = options.storageHash, this.stringifyStorage = options.stringifyStorage, this.widgetDefinitions = options.widgetDefinitions, this.defaultLayouts = options.defaultLayouts, this.widgetButtons = options.widgetButtons, this.explicitSave = options.explicitSave, this.defaultWidgets = options.defaultWidgets, this.settingsModalOptions = options.settingsModalOptions, this.onSettingsClose = options.onSettingsClose, this.onSettingsDismiss = options.onSettingsDismiss, this.onSourceCodeDismiss = onSourceCodeDismiss, this.onSourcesCodeClose = onSourcesCodeClose,this.options = options, this.options.unsavedChangeCount = 0, this.layouts = [], this.states = {}, this.load(), this._ensureActiveLayout()
         }
         var noopStorage = {
             setItem: function() {},
@@ -211,7 +235,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 layouts instanceof Array || (layouts = [layouts]);
                 var self = this;
                 angular.forEach(layouts, function(layout) {
-                    layout.dashboard = layout.dashboard || {}, layout.dashboard.storage = self, layout.dashboard.storageId = layout.id = self._getLayoutId.call(self, layout), layout.dashboard.widgetDefinitions = self.widgetDefinitions, layout.dashboard.stringifyStorage = !1, layout.dashboard.defaultWidgets = layout.defaultWidgets || self.defaultWidgets, layout.dashboard.widgetButtons = self.widgetButtons, layout.dashboard.explicitSave = self.explicitSave, layout.dashboard.settingsModalOptions = self.settingsModalOptions, layout.dashboard.onSettingsClose = self.onSettingsClose, layout.dashboard.onSettingsDismiss = self.onSettingsDismiss, self.layouts.push(layout)
+                    layout.dashboard = layout.dashboard || {}, layout.dashboard.storage = self, layout.dashboard.storageId = layout.id = self._getLayoutId.call(self, layout), layout.dashboard.widgetDefinitions = self.widgetDefinitions, layout.dashboard.stringifyStorage = !1, layout.dashboard.defaultWidgets = layout.defaultWidgets || self.defaultWidgets, layout.dashboard.widgetButtons = self.widgetButtons, layout.dashboard.explicitSave = self.explicitSave, layout.dashboard.settingsModalOptions = self.settingsModalOptions, layout.dashboard.onSettingsDismiss = self.onSettingsDismiss, layout.dashboard.onSourcesCodeClose = self.onSourcesCodeClose,layout.dashboard.onSettingsClose = self.onSettingsClose, layout.dashboard.onSettingsDismiss = self.onSettingsDismiss, self.layouts.push(layout)
                 })
             },
             remove: function(layout) {
@@ -391,11 +415,17 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 onSettingsClose: Class.onSettingsClose,
                 onSettingsDismiss: Class.onSettingsDismiss,
                 style: Class.style,
+				onSourcesCodeClose: Class.onSourcesCodeClose,
+				onSourceCodeDismiss : Class.onSourceCodeDismiss,
+				source : Class.source,
                 open : false
             };
+            
+            //$('.widget-content').css("height",$.mynamespace.height);
             if (overrides = overrides || {}, angular.extend(this, angular.copy(defaults), overrides), this.style = this.style || {
-                    width: "33%"
-                }, this.setWidth(this.style.width), Class.templateUrl) this.templateUrl = Class.templateUrl;
+                    width: $.mynamespace.width/*,
+                    height: $.mynamespace.height*/
+                }, this.setWidth(this.style.width), /*this.setHeight(this.style.height),*/ Class.templateUrl) this.templateUrl = Class.templateUrl;
             else if (Class.template) this.template = Class.template;
             else {
                 var directive = Class.directive || Class.name;
@@ -405,13 +435,16 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
         return WidgetModel.prototype = {
             setWidth: function(width, units) {
                 return width = width.toString(), units = units || width.replace(/^[-\.\d]+/, "") || "%", this.widthUnits = units, width = parseFloat(width), 0 > width ? !1 : ("%" === units && (width = Math.min(100, width), width = Math.max(0, width)), this.style.width = width + "" + units, !0)
+            },
+            setHeight: function(height, units) {
+                return height = height.toString(), units = units || height.replace(/^[-\.\d]+/, "") || "%", this.heightUnits = units, height = parseFloat(height), 0 > height ? !1 : ("%" === units && (height = Math.min(100, height), height = Math.max(0, height)), this.style.height = height + "" + units, !0)
             }
         }, WidgetModel
     }), angular.module("ui.dashboard").controller("SaveChangesModalCtrl", ["$scope", "$modalInstance", "layout", function($scope, $modalInstance, layout) {
         $scope.layout = layout, $scope.ok = function() {
             $modalInstance.close()
         }, $scope.cancel = function() {
-            $modalInstance.dismiss()
+			$modalInstance.dismiss()
         }
     }]), angular.module("ui.dashboard").controller("DashboardWidgetCtrl", ["$scope", "$element", "$compile", "$window", "$timeout", function($scope, $element, $compile, $window, $timeout) {
         $scope.makeTemplateString = function() {
@@ -474,6 +507,8 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
     }]),angular.module("ui.dashboard").controller("WidgetSourcesCtrl", ["$scope", "$modalInstance", "widget", function($scope, $modalInstance, widget) {
         $scope.widget = widget, $scope.result = jQuery.extend(!0, {}, widget), $scope.ok = function() {
             $modalInstance.close($scope.result)
+        }, $scope.cancel = function() {
+            $modalInstance.dismiss("cancel")
         }
     }]), angular.module("ui.dashboard").run(["$templateCache", function($templateCache) {
     	

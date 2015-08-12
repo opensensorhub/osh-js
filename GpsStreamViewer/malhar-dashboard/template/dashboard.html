@@ -26,12 +26,12 @@
                         </form>
                         <span class="label label-primary" ng-if="!options.hideWidgetName">{{widget.name}}</span>
                         <span ng-click="removeWidget(widget);" class="glyphicon glyphicon-remove" ng-if="!options.hideWidgetClose"></span>
-                        <span ng-click="options.isCollapsed = true" class="glyphicon glyphicon-minus" ng-if="!options.isCollapsed"></span>
-                        <span ng-click="options.isCollapsed = false" class="glyphicon glyphicon-plus" ng-if="options.isCollapsed"></span >
+                        <span ng-click="isCollapsed = !isCollapsed" class="glyphicon glyphicon-minus" ng-show="!isCollapsed"></span>
+                        <span ng-click="isCollapsed = !isCollapsed" class="glyphicon glyphicon-plus" ng-show="isCollapsed"></span >
                         <span title="show sources" ng-click="showSourceCode(widget)" class="glyphicon glyphicon-list-alt" ></span >
                     </h3>
                 </div>
-                <div class="panel-body widget-content" ng-show="!options.isCollapsed"></div>
+                <div class="panel-body widget-content" ng-show="!isCollapsed"></div>
                 <div class="widget-ew-resizer" ng-mousedown="grabResizer($event)"></div>
             </div>
         </div>

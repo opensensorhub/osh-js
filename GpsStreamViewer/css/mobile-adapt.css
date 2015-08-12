@@ -7,22 +7,16 @@
   * Galaxy S5
   * HTC One
   */
-
+  
 /* Portrait and Landscape */
-@media (min-width: 1px) {
-	.widget-container  {
-  		width : 500px !important;
-  		height : 400px !important;
-  	}
-}
-
-/* Portrait and Landscape */
-@media (min-width: 1px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 1) {
+/*@media only screen  
+	and (max-device-width: 1024px) 
+	and (max-device-height: 1280px)  {
 	.widget-container  {
   		width : 100% !important;
-  		height : 75% !important;
+  		height : 80% !important;
   	}
-}
+}*/
 
 
 /* Handle :  
@@ -36,7 +30,7 @@
   */
 
 /* Portrait and Landscape */
-@media only screen 
+/*@media only screen 
   and (min-device-width: 736px) 
   and (max-device-width: 1280px) 
   and (-webkit-min-device-pixel-ratio: 1) {
@@ -44,4 +38,4 @@
   		width : 500px !important;
   		height : 400px !important;
   	}
-}
+}*/
