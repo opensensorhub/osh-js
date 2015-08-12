@@ -1,0 +1,152 @@
+const WIDGET_WIDTH_DESKTOP = "100%";
+const WIDGET_HEIGHT_DESKTOP = "50%";
+
+const WIDGET_WIDTH_MOBILE = "100%";
+const WIDGET_HEIGHT_MOBILE = "55%";
+
+var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","matchMedia"]).config(function($routeProvider) {
+			$routeProvider.when("/", {
+				templateUrl: "view.html",
+				controller: "DemoCtrl",
+				title: "simple",
+				description: "This is the GPS Stream demo viewer"
+			}).otherwise({
+				redirectTo: "/"
+			})
+		});
+
+		
+// Extended disable function
+// Disable toggle 
+jQuery.fn.extend({
+	disable: function(state) {
+		return this.each(function() {
+			var $this = $(this);
+			if($this.is('input, button'))
+			  this.disabled = state;
+			else
+			  $this.toggleClass('disabled', state);
+		});
+	}
+});
+
+// Disabled on all:
+$('button').disable(true);
+
+// Enabled on all:
+$('button').disable(false);
+
+
+String.prototype.upperCaseFirstLetter = function() {
+    return this.charAt(0).toLowerCase() + this.slice(1);
+}
+
+$.mynamespace = {};
+
+/**
+ * Add list of widgets by defining name,url,renderId.
+ * The function will create the angular app 
+ * /
+function addWidgets(def){
+
+	var widgetDefinitions = [];
+	var defaultWidgets = [];
+	this.directive = [];
+	
+	var pos = 0;
+	for (var i=0;i < def.length;i++) {
+		var prop = def[i];
+		if (prop.hasOwnProperty("name") && prop.hasOwnProperty("url") && prop.hasOwnProperty("renderDivId")) {
+			
+			var directiveNameSplit = prop.name.split(/(?=[A-Z])/);
+			var directiveName = "";
+			
+			for(var j = 0; j < directiveNameSplit.length; j++){
+				directiveName += directiveNameSplit[j].toLowerCase()+"-";
+			}
+			directiveName += "sensor";
+			
+ 			widgetDefinitions[pos] = {
+				name : prop.name,
+				title : prop.name,
+				directive : directiveName,
+				source : prop.url
+			}
+			
+			if(prop.hasOwnProperty("defaultWidget")){
+				defaultWidgets[pos] = {
+					name : prop.name,
+					title : prop.name
+				}
+			} 
+			
+			this.directive[pos] = {
+				templateUrl : prop.url,
+				renderDivId : "#"+prop.renderDivId
+			}
+			
+			pos++;
+		}
+	}
+
+	//build for each factory + directive
+	app.controller("DemoCtrl", function($scope, $interval, $window, widgetDefinitions, defaultWidgets,screenSize) {
+		$scope.desktop = screenSize.is('md, lg');
+		//$scope.mobile = screenSize.is('xs, sm');
+		
+		if($scope.desktop){
+			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
+			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
+		}else{
+			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
+			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
+		}
+		
+		// Using dynamic method `on`, which will set the variables initially and then update the variable on window resize
+		$scope.desktop = screenSize.on('md, lg', function(match){
+			$scope.desktop = match;
+			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
+			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
+		});
+		$scope.mobile = screenSize.on('xs, sm', function(match){
+			$scope.mobile = match;
+			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
+			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
+		});
+
+		$scope.dashboardOptions = {
+			widgetButtons: !0,
+			widgetDefinitions: widgetDefinitions,
+			defaultWidgets: defaultWidgets,
+			storage: $window.localStorage,
+			storageId: "demo"
+		}
+		
+	}).factory("widgetDefinitions", function() {
+		return widgetDefinitions;
+	}).value("defaultWidgets", defaultWidgets);
+	
+	for (var i=0;i < this.directive.length;i++) {
+		var propDir = this.directive[i];
+		$.mynamespace[widgetDefinitions[i].directive] = {
+			templateUrl : this.directive[i].templateUrl+"",
+			renderId : this.directive[i].renderDivId+""
+		}
+		
+		app.directive(widgetDefinitions[i].name.upperCaseFirstLetter()+"Sensor", function($interval){
+			return {
+				restrict: "A",
+				scope: !0,
+				replace: !0,
+				templateUrl: function(scope, element, attrs){
+					return $.mynamespace[$(scope).get(0).attributes[0].localName].templateUrl;
+				},
+				link: function(scope,widget) {
+					var script = $($.mynamespace[scope.widget.directive].renderId+" script");
+					eval(script.text());
+					$($.mynamespace[scope.widget.directive].renderId).css("height", $.mynamespace.height);
+				}
+			};
+		});
+	}
+}
