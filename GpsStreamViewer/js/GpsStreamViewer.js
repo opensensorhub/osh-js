@@ -43,10 +43,10 @@ String.prototype.upperCaseFirstLetter = function() {
 
 $.mynamespace = {};
 
-/**
- * Add list of widgets by defining name,url,renderId.
- * The function will create the angular app 
- * /
+
+ // Add list of widgets by defining name,url,renderId.
+ // The function will create the angular app 
+ //
 function addWidgets(def){
 
 	var widgetDefinitions = [];
