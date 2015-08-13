@@ -24,9 +24,9 @@ pre code {
     word-wrap: normal !important;
 }
 
-.modal.in .modal-dialog {
-	width : 50%;
-}
+/*.modal.in .modal-dialog {
+	width : 75%;
+}*/
 
 .btn-primary.active,
 .btn-primary:active,

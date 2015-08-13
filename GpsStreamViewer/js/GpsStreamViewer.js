@@ -93,6 +93,7 @@ function addWidgets(def){
 	app.controller("DemoCtrl", function($scope, $interval, $window, widgetDefinitions, defaultWidgets,screenSize) {
 		$scope.desktop = screenSize.is('md, lg');
 		//$scope.mobile = screenSize.is('xs, sm');
+		$.mynamespace.desktop = $scope.desktop;
 		
 		if($scope.desktop){
 			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;

@@ -113,7 +113,12 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 						widget.content = ($.trim(data));
 						var script = $("#"+widgetSourceCodeId+" script")
 						eval(script);
-				
+						
+						if($.mynamespace.desktop){
+								$(".modal.in .modal-dialog").css({"width":"50% "});
+							}else{
+								$(".modal.in .modal-dialog").css({"width":"100%"});
+							}
 						var modalInstance = $modal.open(options),
 							onClose = widget.onSourcesCodeClose || scope.options.onSourcesCodeClose,
 							onDismiss = widget.onSourcesCodeDismiss || scope.options.onSourcesCodeDismiss;
