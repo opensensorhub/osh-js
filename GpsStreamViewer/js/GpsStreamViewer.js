@@ -6,7 +6,7 @@ const WIDGET_HEIGHT_MOBILE = "55%";
 
 var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","matchMedia"]).config(function($routeProvider) {
 			$routeProvider.when("/", {
-				templateUrl: "view.html",
+				templateUrl: "malhar-dashboard/template/view.html",
 				controller: "DemoCtrl",
 				title: "simple",
 				description: "This is the GPS Stream demo viewer"
