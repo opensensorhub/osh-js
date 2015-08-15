@@ -6,7 +6,7 @@ const WIDGET_HEIGHT_MOBILE = "55%";
 
 var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","matchMedia"]).config(function($routeProvider) {
 			$routeProvider.when("/", {
-				templateUrl: "malhar-dashboard/template/view.html",
+				templateUrl: "common/malhar-dashboard/template/view.html",
 				controller: "DemoCtrl",
 				title: "simple",
 				description: "This is the GPS Stream demo viewer"
@@ -54,28 +54,29 @@ function addWidgets(def){
 	this.directive = [];
 	
 	var pos = 0;
+	var defaultWidgetsPos = 0;
+	
 	for (var i=0;i < def.length;i++) {
 		var prop = def[i];
 		if (prop.hasOwnProperty("name") && prop.hasOwnProperty("url") && prop.hasOwnProperty("renderDivId")) {
 			
-			var directiveNameSplit = prop.name.split(/(?=[A-Z])/);
+			var directiveNameSplit = prop.renderDivId.split(/(?=[A-Z])/);
 			var directiveName = "";
 			
 			for(var j = 0; j < directiveNameSplit.length; j++){
 				directiveName += directiveNameSplit[j].toLowerCase()+"-";
 			}
 			directiveName += "sensor";
-			
  			widgetDefinitions[pos] = {
-				name : prop.name,
+				name : prop.renderDivId,
 				title : prop.name,
 				directive : directiveName,
 				source : prop.url
 			}
 			
-			if(prop.hasOwnProperty("defaultWidget")){
-				defaultWidgets[pos] = {
-					name : prop.name,
+			if(prop.hasOwnProperty("defaultWidget") && prop.defaultWidget){
+				defaultWidgets[defaultWidgetsPos++] = {
+					name : prop.renderDivId,
 					title : prop.name
 				}
 			} 
@@ -84,7 +85,6 @@ function addWidgets(def){
 				templateUrl : prop.url,
 				renderDivId : "#"+prop.renderDivId
 			}
-			
 			pos++;
 		}
 	}

@@ -6,19 +6,50 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <title>GPS Stream viewer for OpenSensorHub</title>
-<link href="css/GpsStreamViewer.css" rel="stylesheet">
-
-<!-- OpenLayers -->
-<link rel="stylesheet" type="text/css"
-	href="js/OpenLayers/OpenLayers.css" />
-<script type="text/javascript" src="js/OpenLayers/OpenLayers.js"></script>
+<link href="common/css/GpsStreamViewer.css" rel="stylesheet">
 
 <!-- ANGULAR -->
-<link rel="stylesheet" href="malhar-dashboard/stylesheet.min.css">
-<script type="text/javascript" src="js/angular/all-in-one.min.js"></script>
+<link rel="stylesheet" href="common/malhar-dashboard/stylesheet.min.css">
+<script type="text/javascript" src="common/js/angular/all-in-one.min.js"></script>
+<script type="text/javascript" src="common/malhar-dashboard/ui-dashboard-module.js"></script>
+<script type="text/javascript" src="common/js/angular/jquery-watcher.js"></script>
 
-<script type="text/javascript" src="malhar-dashboard/ui-dashboard-module.js"></script>
-<script type="text/javascript" src="js/GpsStreamViewer.js"></script>
+<script type="text/javascript" src="common/js/GpsStreamViewer.js"></script>
+
+<!-- OpenLayers -->
+<link rel="stylesheet" type="text/css" href="viewers/OpenLayer/css/OpenLayers.css" />
+<script type="text/javascript" src="viewers/OpenLayer/js/OpenLayers.js"></script>
+
+<!-- D3 CHART -->
+<script src="viewers/Weather/js/d3.v3.js"></script>
+<script type="text/javascript" src="viewers/Weather/js/nv.d3.js"></script>
+<link rel="stylesheet" href="viewers/Weather/css/nv.d3.css">
+
+<style>
+
+@import url(viewers/Weather/css/d3ChartViewer.css);
+
+.x.axis line {
+  shape-rendering: auto;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+
+#chart {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	padding-bottom: 100%;
+	vertical-align: middle;
+	overflow: hidden;
+}
+</style>
+
 
 </head>
 
@@ -34,20 +65,27 @@
       </div>
     </nav>
 	<div ng-view=""></div>
+	
 </body>
 <script>
  
 var properties = [
 	{
 		name : "OpenLayer",
-		url  : "viewers/openLayerMapViewer.html",
+		url  : "viewers/OpenLayer/openLayerMapViewer.html",
 		renderDivId :  "OpenLayerViewerId",
-		defaultWidget : true
+		defaultWidget : false
 	},
 	{
 		name : "OpenLayer2",
-		url  : "viewers/openLayerMapViewer2.html",
+		url  : "viewers/OpenLayer/openLayerMapViewer2.html",
 		renderDivId :  "OpenLayerViewerId2",
+		defaultWidget : false
+	},
+	{
+		name : "Weather D3 Chart",
+		url  : "viewers/Weather/weatherChartViewer.html",
+		renderDivId :  "d3ChartViewerId",
 		defaultWidget : true
 	}
 ];

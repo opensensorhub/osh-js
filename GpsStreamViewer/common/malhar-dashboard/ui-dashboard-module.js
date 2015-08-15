@@ -2,7 +2,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
         return {
             restrict: "A",
             templateUrl: function(element, attr) {
-                return attr.templateUrl ? attr.templateUrl : "malhar-dashboard/template/dashboard.html"
+                return attr.templateUrl ? attr.templateUrl : "common/malhar-dashboard/template/dashboard.html"
             },
             scope: !0,
             controller: ["$scope", "$attrs", function(scope, attrs) {
@@ -11,11 +11,11 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     hideWidgetSettings: !1,
                     hideWidgetClose: !1,
                     settingsModalOptions: {
-                        templateUrl: "malhar-dashboard/template/widget-settings-template.html",
+                        templateUrl: "common/malhar-dashboard/template/widget-settings-template.html",
                         controller: "WidgetSettingsCtrl"
                     },
                     sourcesModalWidget : {
-					 templateUrl: "malhar-dashboard/template/widget-sources-template.html",
+					 templateUrl: "common/malhar-dashboard/template/widget-sources-template.html",
                         controller: "WidgetSourcesCtrl"
 					},
 					onSourcesCodeDismiss : function(result,widget){
@@ -151,7 +151,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
         return {
             scope: !0,
             templateUrl: function(element, attr) {
-                return attr.templateUrl ? attr.templateUrl : "malhar-dashboard/template/dashboard-layouts.html"
+                return attr.templateUrl ? attr.templateUrl : "common/malhar-dashboard/template/dashboard-layouts.html"
             },
             link: function(scope, element, attrs) {
 			    scope.options = scope.$eval(attrs.dashboardLayouts);
@@ -168,7 +168,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     var current = layoutStorage.getActiveLayout();
                     if (current && current.dashboard.unsavedChangeCount) {
                         var modalInstance = $modal.open({
-                            templateUrl: "malhar-dashboard/template/save-changes-modal.html",
+                            templateUrl: "common/malhar-dashboard/template/save-changes-modal.html",
                             resolve: {
                                 layout: function() {
                                     return layout
