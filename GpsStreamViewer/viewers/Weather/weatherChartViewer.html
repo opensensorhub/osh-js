@@ -5,7 +5,7 @@ nv.addGraph(function() {
   var x = d3.time.scale().range([0, $("#widget-container").width()]);
   
   var chart = nv.models.lineChart()
-                .margin({left: 80})  //Adjust chart margins to give the x-axis some breathing room.
+                .margin({left: 75,right:25})  //Adjust chart margins to give the x-axis some breathing room.
                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
                 .transitionDuration(10)  //how fast do you want the lines to transition?
                 .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
@@ -66,8 +66,8 @@ nv.addGraph(function() {
    }
    
 	  // hook up the watcher
-	$("#widget-container").watch({
-		// specify CSS styles or attribute names to monitor
+   $("#widget-container").watch({
+	// specify CSS styles or attribute names to monitor
 		properties: "width",
 
 		// callback function when a change is detected
