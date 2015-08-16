@@ -1,49 +1,72 @@
 <div id="OpenLayerViewerId">
 <script>
-function showMap(divName) {
-  var div = document.getElementById(divName);
-  div.className = "smallmap";
-  div.style.width = "100%";
-  div.style.height = "100%";
-	
-  var map, layer; 
-  var xhReq;
-  var marker;
-  var markers;
-  var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+var map;
+var epsg4326 = new OpenLayers.Projection("EPSG:4326");
 
-  map = new OpenLayers.Map(divName, {
-	controls : [ 
-	  new OpenLayers.Control.LayerSwitcher(),
-	  new OpenLayers.Control.Navigation({
-		  zoomBoxEnabled : true,
-		  zoomWheelEnabled : true
-	  }), 
-	  new OpenLayers.Control.PanZoomBar(),
-	  new OpenLayers.Control.MousePosition(),
-	  new OpenLayers.Control.ScaleLine() ]
-  });
-  map.numZoomLevels = 17;
-
-  // OSM background map layer
-  var osm = new OpenLayers.Layer.OSM();
-  map.addLayer(osm);
-
-  // vector layer
+function init() {
+    map = new OpenLayers.Map('OpenLayerViewerId', {
+        projection: 'EPSG:900913',
+        layers: [
+			new OpenLayers.Layer.Google("Google Streets"),
+            new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: google.maps.MapTypeId.TERRAIN}
+            ),
+            new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: google.maps.MapTypeId.HYBRID}
+            ),
+            new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: google.maps.MapTypeId.SATELLITE}
+            ),
+            new OpenLayers.Layer.OSM("OSM")
+        ],
+        controls : [ 
+			  new OpenLayers.Control.LayerSwitcher(),
+			  new OpenLayers.Control.Navigation({
+				  zoomBoxEnabled : true,
+				  zoomWheelEnabled : true
+			  }), 
+			  new OpenLayers.Control.PanZoomBar(),
+			  new OpenLayers.Control.MousePosition(),
+			  new OpenLayers.Control.ScaleLine() ],
+	  
+      center: new OpenLayers.LonLat(-86.5613446553107, 34.6916025276591)
+            // Google.v3 uses web mercator as projection, so we have to
+            // transform our coordinates
+            .transform(epsg4326, 'EPSG:900913'),
+        zoom: 15,
+        numZoomLevels : 17
+    });
+    
+    // vector layer
   markers = new OpenLayers.Layer.Markers("Markers");
   map.addLayer(markers);
-
-  // center map on HSV
-  var center = new OpenLayers.LonLat(-86.5850, 34.7300).transform(epsg4326, map.getProjectionObject());
-  map.setCenter(center, 11);
-
+  
+  var lineLayer = new OpenLayers.Layer.Vector("Path"); 
+  map.addLayer(lineLayer);                    
+  map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));    
+  
   // create marker
   var size = new OpenLayers.Size(30, 30);
   var offset = new OpenLayers.Pixel(-size.w / 2, -size.h / 2);
   var icon = new OpenLayers.Icon('viewers/OpenLayer/js/draw_point_on.png', size, offset);
   marker = new OpenLayers.Marker(new OpenLayers.LonLat(0, 0), icon);
   markers.addMarker(marker);
+  
+  // create path
+  var points = new Array();
+  var line = new OpenLayers.Geometry.LineString(points);
+  var style = { 
+	  strokeColor: '#0000ff', 
+	  strokeOpacity: 0.5,
+	  strokeWidth: 5
+  };
 
+  var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+  lineLayer.addFeatures([lineFeature]);
+  
   // GPS
    // query SOS GPS stream
    ws = new WebSocket("ws://ec2-52-16-177-252.eu-west-1.compute.amazonaws.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering02&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,now/2055-01-01");
@@ -56,17 +79,29 @@ function showMap(divName) {
 	 var alt = parseFloat(tokens[3]);
 	 marker.lonlat = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
 	 markers.redraw();
+	 
+	 var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+	 map.setCenter(center, map.getZoom());
+  
+	 points.push(new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326, map.getProjectionObject()));
+	 lineLayer.removeAllFeatures();
+	 
+	 var line = new OpenLayers.Geometry.LineString(points);
+	 var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+	 lineLayer.addFeatures([lineFeature]);
+  
+	//var line = new OpenLayers.Geometry.LineString(points);
+	//var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+	//lineLayer.removeAllFeatures();
+    //lineLayer.addFeatures([lineFeature]);
    }
    
    ws.onerror = function(event) {
 	  ws.close();
    }
+  
 }
-
-//execute function and render into the div given as parameter
-showMap('OpenLayerViewerId');
-
-
+init();
 </script>
 </div>
 
