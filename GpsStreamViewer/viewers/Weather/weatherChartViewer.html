@@ -64,10 +64,9 @@ nv.addGraph(windSpeedChart);
 
 //query Weather stream
 //var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
-var ws = new WebSocket("ws://localhost:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
+var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
 ws.binaryType = 'arraybuffer';
 ws.onmessage = function(event) {
-	
  var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
  var tokens = rec.trim().split(",");
  
