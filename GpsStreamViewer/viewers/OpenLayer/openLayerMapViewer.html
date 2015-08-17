@@ -67,6 +67,8 @@ function init() {
   var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
   lineLayer.addFeatures([lineFeature]);
    
+   var tickTime = 0;
+   
    // GPS
    // query SOS GPS stream
    ws = new WebSocket("ws://ec2-52-16-177-252.eu-west-1.compute.amazonaws.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering02&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,now/2055-01-01");
@@ -78,9 +80,13 @@ function init() {
 	 var lon = parseFloat(tokens[2]);
 	 var alt = parseFloat(tokens[3]);
 	 
-	 var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
-	 map.setCenter(center, map.getZoom());
-  
+	 // update center
+	 if((tickTime++) % 5 == 0){
+		var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+		map.setCenter(center, map.getZoom());
+		tickTime = 0;
+	 }
+	 
      // update center
 	 points.push(new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326, map.getProjectionObject()));
 	 lineLayer.removeAllFeatures();

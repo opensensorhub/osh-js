@@ -90,11 +90,6 @@ ws.onmessage = function(event) {
 	  x : date.getTime()
   });
   
-  dataWindDirection.values.push({
-	  y : windDirection,
-	  x : date.getTime()
-  });
-  
   weatherChart.update();
   pressureChart.update();
   windSpeedChart.update();
