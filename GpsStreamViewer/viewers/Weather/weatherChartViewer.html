@@ -24,12 +24,6 @@ var dataWindSpeed = {
 	color: '#2ca02c'
 };
 
-var dataWindDirection = {
-	values: [],
-	key : "Wind Direction (deg)",
-	interpolate : "cardinal",
-	 color: '#7777ff'
-};
 //create NVD3 graph
 function getChart(data,yLabel,renderDiv) {
   var chart = nv.models.lineChart()
@@ -63,12 +57,10 @@ function getChart(data,yLabel,renderDiv) {
 var weatherChart = getChart(dataTemperature,'Temperature (Cel)','#chartWeather svg');
 var pressureChart = getChart(dataPressure,'Pressure (hPa)','#chartPressure svg');
 var windSpeedChart = getChart(dataWindSpeed,'Wind Speed (m/s)','#chartWindSpeed svg');
-//var windDirectionChart = getChart(dataWindDirection,'Wind Direction (deg)','#chartWindDirection svg');
 
 nv.addGraph(weatherChart);
 nv.addGraph(pressureChart);
 nv.addGraph(windSpeedChart);
-//nv.addGraph(windDirectionChart);
 
 //query Weather stream
 var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
@@ -106,7 +98,6 @@ ws.onmessage = function(event) {
   weatherChart.update();
   pressureChart.update();
   windSpeedChart.update();
-  //windDirectionChart.update();
   
   if( dataTemperature.values.length > 20) {
 	 dataTemperature.values.shift();
@@ -119,9 +110,6 @@ ws.onmessage = function(event) {
   if( dataWindSpeed.values.length > 20) {
 	 dataWindSpeed.values.shift();
   }
-  //if( dataWindDirection.values.length > 20) {
-  //	 dataWindDirection.values.shift();
-  //}
 }
 
 ws.onerror = function(event) {

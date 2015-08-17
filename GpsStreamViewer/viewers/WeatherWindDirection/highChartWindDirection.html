@@ -4,7 +4,6 @@
 $(function () {
         var langWindDir = new Array("N", "NNE", "NE", "ENE","E", "ESE", "SE", "SSE","S", "SSW", "SW", "WSW","W", "WNW", "NW", "NNW");
         function windDirLang ($winddir)        {
-                /* return langWindDir[Math.floor(((parseInt($winddir) + 11) / 22.5) % 16 )];*/
                 return langWindDir[Math.floor(((parseInt($winddir,10) + 11.25) / 22.5))];
         }
         var chart = new Highcharts.Chart({
@@ -23,9 +22,7 @@ $(function () {
                                 enabled: false
                 },
                 pane: {
-                /* startAngle: -180, */
-                /* endAngle: 180, */
-                background: [{
+                   background: [{
                     backgroundColor: {
                         linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
                         stops: [
@@ -58,12 +55,6 @@ $(function () {
             yAxis: {
                 min: 0,
                 max: 360,
-               
-                /* minorTickInterval: 'auto',
-                minorTickWidth: 1,
-                minorTickLength: 10,
-                minorTickPosition: 'inside',
-                minorTickColor: '#666', */
        
                 tickInterval: 22.5,
                 tickWidth: 2,
@@ -78,29 +69,12 @@ $(function () {
                                         return windDirLang(this.value);
                                 }
                 }
-                /* title: {
-                    text: 'km/h'
-                }, */
-                /* plotBands: [{
-                    from: 0,
-                    to: 60,
-                    color: '#55BF3B' // green
-                }, {
-                    from: 60,
-                    to: 80,
-                    color: '#DDDF0D' // yellow
-                }, {
-                    from: 80,
-                    to: 180,
-                    color: '#DF5353' // red
-                }] */      
             },
             series: [{
                 name: 'Dir',
                 data: [0],
                 tooltip: {
-                    /* valueSuffix: ' km/h' */
-                                enabled: false
+                    enabled: false
                 }
             }]
         },
@@ -112,7 +86,6 @@ $(function () {
 			 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 			 var tokens = rec.trim().split(",");
 			 
-			 var pressure = parseFloat(tokens[2]);
 			 var windDirection = parseFloat(tokens[4]);
 			 var point = chart.series[0].points[0];
              point.update(Math.floor(windDirection * 100) / 100);
