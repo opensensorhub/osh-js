@@ -1,0 +1,127 @@
+<div id="highChartViewerId">
+<script>
+
+$(function () {
+        var langWindDir = new Array("N", "NNE", "NE", "ENE","E", "ESE", "SE", "SSE","S", "SSW", "SW", "WSW","W", "WNW", "NW", "NNW");
+        function windDirLang ($winddir)        {
+                /* return langWindDir[Math.floor(((parseInt($winddir) + 11) / 22.5) % 16 )];*/
+                return langWindDir[Math.floor(((parseInt($winddir,10) + 11.25) / 22.5))];
+        }
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'highChartViewerId',
+                type: 'gauge',
+                plotBackgroundColor: null,
+                plotBackgroundImage: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+            title: {
+                text: 'Wind Direction'
+            },
+            credits: {
+                                enabled: false
+                },
+                pane: {
+                /* startAngle: -180, */
+                /* endAngle: 180, */
+                background: [{
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#FFF'],
+                            [1, '#333']
+                        ]
+                    },
+                    borderWidth: 0,
+                    outerRadius: '109%'
+                }, {
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#333'],
+                            [1, '#FFF']
+                        ]
+                    },
+                    borderWidth: 1,
+                    outerRadius: '107%'
+                }, {
+                    // default background
+                }, {
+                    backgroundColor: '#DDD',
+                    borderWidth: 0,
+                    outerRadius: '105%',
+                    innerRadius: '103%'
+                }]
+            },
+            // the value axis
+            yAxis: {
+                min: 0,
+                max: 360,
+               
+                /* minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666', */
+       
+                tickInterval: 22.5,
+                tickWidth: 2,
+                tickPosition: 'inside',
+                tickLength: 3,
+                tickColor: '#666',
+                labels: {
+                    step: 2,
+                    rotation: 'auto',
+                                formatter:
+                                function() {
+                                        return windDirLang(this.value);
+                                }
+                }
+                /* title: {
+                    text: 'km/h'
+                }, */
+                /* plotBands: [{
+                    from: 0,
+                    to: 60,
+                    color: '#55BF3B' // green
+                }, {
+                    from: 60,
+                    to: 80,
+                    color: '#DDDF0D' // yellow
+                }, {
+                    from: 80,
+                    to: 180,
+                    color: '#DF5353' // red
+                }] */      
+            },
+            series: [{
+                name: 'Dir',
+                data: [0],
+                tooltip: {
+                    /* valueSuffix: ' km/h' */
+                                enabled: false
+                }
+            }]
+        },
+        function (chart) {
+			//query Weather stream
+			var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
+			ws.binaryType = 'arraybuffer';
+			ws.onmessage = function(event) {
+			 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+			 var tokens = rec.trim().split(",");
+			 
+			 var pressure = parseFloat(tokens[2]);
+			 var windDirection = parseFloat(tokens[4]);
+			 var point = chart.series[0].points[0];
+             point.update(Math.floor(windDirection * 100) / 100);
+			}
+
+			ws.onerror = function(event) {
+			  ws.close();
+			}
+    });
+});
+</script>
+</div>

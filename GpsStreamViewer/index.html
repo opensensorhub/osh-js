@@ -26,6 +26,11 @@
 <script type="text/javascript" src="viewers/Weather/js/nv.d3.js"></script>
 <link rel="stylesheet" href="viewers/Weather/css/nv.d3.css">
 
+
+<!-- HIGHCHART -->
+<script src="http://code.highcharts.com/highcharts.src.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.src.js"></script>
+  
 <style>
 
 /*@import url(viewers/Weather/css/d3ChartViewer.css);*/
@@ -77,6 +82,12 @@ var properties = [
 		name : "Weather D3 Chart",
 		url  : "viewers/Weather/weatherChartViewer.html",
 		renderDivId :  "d3ChartViewerId",
+		defaultWidget : true
+	},
+	{
+		name : "Weather HighChart Wind Direction",
+		url  : "viewers/WeatherWindDirection/highChartWindDirection.html",
+		renderDivId :  "highChartViewerId",
 		defaultWidget : true
 	}
 ];

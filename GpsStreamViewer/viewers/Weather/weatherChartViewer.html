@@ -4,32 +4,38 @@
 var dataTemperature = {
 	values: [],
 	key : "Temp (Cel)",
-	interpolate : "cardinal"
+	interpolate : "cardinal",
+	area:true,
+	color: '#ff7f0e'
 };
 
 var dataPressure = {
 	values: [],
 	key : "Pressure (hPa)",
-	interpolate : "cardinal"
+	interpolate : "cardinal",
+	area:true,
+	
 };
 
 var dataWindSpeed = {
 	values: [],
 	key : "Wind Speed (m/s)",
-	interpolate : "cardinal"
+	interpolate : "cardinal",
+	color: '#2ca02c'
 };
 
 var dataWindDirection = {
 	values: [],
 	key : "Wind Direction (deg)",
-	interpolate : "cardinal"
+	interpolate : "cardinal",
+	 color: '#7777ff'
 };
 //create NVD3 graph
 function getChart(data,yLabel,renderDiv) {
   var chart = nv.models.lineChart()
                 .margin({left: 75,right:25})  //Adjust chart margins to give the x-axis some breathing room.
                 .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                .transitionDuration(10)  //how fast do you want the lines to transition?
+                .transitionDuration(1)  //how fast do you want the lines to transition?
                 .showLegend(false)       //Show the legend, allowing users to turn on/off line series.
                 .showYAxis(true)        //Show the y-axis
                 .showXAxis(true)        //Show the x-axis
@@ -40,27 +46,29 @@ function getChart(data,yLabel,renderDiv) {
       .tickFormat(function(d) { 
           return d3.time.format('%H:%M:%S ')(new Date(d)) 
     });
+    
   chart.yAxis     //Chart y-axis settings
       .axisLabel(yLabel)
       .tickFormat(d3.format('.02f'));
   /* Done setting the chart up? Time to render it!*/
 
-  var svg = d3.select(renderDiv);    //Select the <svg> element you want to render the chart in.   
+  var svg =  d3.select(renderDiv);    //Select the <svg> element you want to render the chart in.   
   svg.datum([data])         //Populate the <svg> element with chart data...
       .call(chart);          //Finally, render the chart!
-
-	return chart;
+     
+     
+  	return chart;
 }
 
 var weatherChart = getChart(dataTemperature,'Temperature (Cel)','#chartWeather svg');
 var pressureChart = getChart(dataPressure,'Pressure (hPa)','#chartPressure svg');
 var windSpeedChart = getChart(dataWindSpeed,'Wind Speed (m/s)','#chartWindSpeed svg');
-var windDirectionChart = getChart(dataWindSpeed,'Wind Direction (deg)','#chartWindDirection svg');
+//var windDirectionChart = getChart(dataWindDirection,'Wind Direction (deg)','#chartWindDirection svg');
 
 nv.addGraph(weatherChart);
 nv.addGraph(pressureChart);
 nv.addGraph(windSpeedChart);
-nv.addGraph(windDirectionChart);
+//nv.addGraph(windDirectionChart);
 
 //query Weather stream
 var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
@@ -98,7 +106,7 @@ ws.onmessage = function(event) {
   weatherChart.update();
   pressureChart.update();
   windSpeedChart.update();
-  windDirectionChart.update();
+  //windDirectionChart.update();
   
   if( dataTemperature.values.length > 20) {
 	 dataTemperature.values.shift();
@@ -111,9 +119,9 @@ ws.onmessage = function(event) {
   if( dataWindSpeed.values.length > 20) {
 	 dataWindSpeed.values.shift();
   }
-  if( dataWindDirection.values.length > 20) {
-	 dataWindDirection.values.shift();
-  }
+  //if( dataWindDirection.values.length > 20) {
+  //	 dataWindDirection.values.shift();
+  //}
 }
 
 ws.onerror = function(event) {
@@ -144,15 +152,15 @@ nv.utils.windowResize(function() { weatherChart.update() });
 
 </script>
 <div id="chartWeather">
-	 <svg style="height:25%;width:100%"> </svg>
+	 <svg style="height:34%;width:100%"> </svg>
 </div>
 <div id="chartPressure">
-	 <svg style="height:25%;width:100%"> </svg>
+	 <svg style="height:33%;width:100%"> </svg>
 </div>
 <div id="chartWindSpeed">
-	 <svg style="height:25%;width:100%"> </svg>
+	 <svg style="height:33%;width:100%"> </svg>
 </div>
-<div id="chartWindDirection">
+<!--div id="chartWindDirection">
 	 <svg style="height:25%;width:100%"> </svg>
-</div>
+</div-->
 </div>
