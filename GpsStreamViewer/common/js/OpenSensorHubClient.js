@@ -1,5 +1,5 @@
 const WIDGET_WIDTH_DESKTOP = "33%";
-const WIDGET_HEIGHT_DESKTOP = "70%";
+const WIDGET_HEIGHT_DESKTOP = "100%";
 
 const WIDGET_WIDTH_MOBILE = "100%";
 const WIDGET_HEIGHT_MOBILE = "55%";
@@ -66,13 +66,35 @@ function addWidgets(def){
 			for(var j = 0; j < directiveNameSplit.length; j++){
 				directiveName += directiveNameSplit[j].toLowerCase()+"-";
 			}
+			
+			var style = {
+					width : "33%",
+					height : "50%"
+			};
+			
+			if(typeof(prop.style) != 'undefined'){
+				if(typeof(prop.style.height) != 'undefined'){
+					style.height = prop.style.height;
+				}
+				if(typeof(prop.style.width) != 'undefined'){
+					style.width = prop.style.width;
+				}
+			}
 			directiveName += "sensor";
  			widgetDefinitions[pos] = {
 				name : prop.renderDivId,
 				title : prop.name,
 				directive : directiveName,
-				source : prop.url
+				source : prop.url,
+				size: {
+				  width: style.width,
+				  height: style.height
+				},
+				enableVerticalResize : true
+				
 			}
+			
+			$.mynamespace.width = style.width;
 			
 			if(prop.hasOwnProperty("defaultWidget") && prop.defaultWidget){
 				defaultWidgets[defaultWidgetsPos++] = {
@@ -95,24 +117,19 @@ function addWidgets(def){
 		//$scope.mobile = screenSize.is('xs, sm');
 		$.mynamespace.desktop = $scope.desktop;
 		
-		if($scope.desktop){
-			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
-			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
-		}else{
+		if(!$scope.desktop){
 			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
-			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
 		}
 		
 		// Using dynamic method `on`, which will set the variables initially and then update the variable on window resize
-		$scope.desktop = screenSize.on('md, lg', function(match){
-			$scope.desktop = match;
-			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
-			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
-		});
+		//$scope.desktop = screenSize.on('md, lg', function(match){
+		//	$scope.desktop = match;
+		//	$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
+		//	$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
+		//});
 		$scope.mobile = screenSize.on('xs, sm', function(match){
 			$scope.mobile = match;
 			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
-			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
 		});
 
 		$scope.dashboardOptions = {
@@ -145,7 +162,6 @@ function addWidgets(def){
 				link: function(scope,widget) {
 					var script = $($.mynamespace[scope.widget.directive].renderId+" script");
 					eval(script.text());
-					$($.mynamespace[scope.widget.directive].renderId).css("height", $.mynamespace.height);
 				}
 			};
 		});
