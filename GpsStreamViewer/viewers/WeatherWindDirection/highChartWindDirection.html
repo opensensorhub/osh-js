@@ -1,22 +1,26 @@
 <div id="highChartViewerId">
+
 <script>
+var chart;
 
 $(function () {
         var langWindDir = new Array("N", "NNE", "NE", "ENE","E", "ESE", "SE", "SSE","S", "SSW", "SW", "WSW","W", "WNW", "NW", "NNW");
         function windDirLang ($winddir)        {
                 return langWindDir[Math.floor(((parseInt($winddir,10) + 11.25) / 22.5))];
         }
-        var chart = new Highcharts.Chart({
+        chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'highChartViewerId',
                 type: 'gauge',
                 plotBackgroundColor: null,
                 plotBackgroundImage: null,
                 plotBorderWidth: 0,
-                plotShadow: false
+                plotShadow: false,
+                width : 310,
+                height : 310
             },
             title: {
-                text: 'Wind Direction'
+                text: null
             },
             credits: {
                                 enabled: false
@@ -95,6 +99,10 @@ $(function () {
 			  ws.close();
 			}
     });
+});
+
+$('#highChartViewerId').on('widgetResized',function(event,width,height) {
+    chart.setSize(width-10, height, doAnimation = true);
 });
 </script>
 </div>

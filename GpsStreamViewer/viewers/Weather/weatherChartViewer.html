@@ -1,14 +1,6 @@
 <div id="d3ChartViewerId">
 <script>
 
-var dataTemperature = {
-	values: [],
-	key : "Temp (Cel)",
-	interpolate : "cardinal",
-	area:true,
-	color: '#ff7f0e'
-};
-
 var dataPressure = {
 	values: [],
 	key : "Pressure (hPa)",
@@ -54,11 +46,9 @@ function getChart(data,yLabel,renderDiv) {
   	return chart;
 }
 
-var weatherChart = getChart(dataTemperature,'Temperature (Cel)','#chartWeather svg');
 var pressureChart = getChart(dataPressure,'Pressure (hPa)','#chartPressure svg');
 var windSpeedChart = getChart(dataWindSpeed,'Wind Speed (m/s)','#chartWindSpeed svg');
 
-nv.addGraph(weatherChart);
 nv.addGraph(pressureChart);
 nv.addGraph(windSpeedChart);
 
@@ -71,16 +61,9 @@ ws.onmessage = function(event) {
  var tokens = rec.trim().split(",");
  
  var date = new Date(tokens[0]);
- var tempCel = parseFloat(tokens[1]);
  var pressure = parseFloat(tokens[2]);
  var windSpeed = parseFloat(tokens[3]);
- var windDirection = parseFloat(tokens[4]);
  
-  dataTemperature.values.push({
-		y : tempCel,
-		x : date.getTime()
-  });
-    
   dataPressure.values.push({
 	  y : pressure,
 	  x : date.getTime()
@@ -91,13 +74,8 @@ ws.onmessage = function(event) {
 	  x : date.getTime()
   });
   
-  weatherChart.update();
   pressureChart.update();
   windSpeedChart.update();
-  
-  if( dataTemperature.values.length > 20) {
-	 dataTemperature.values.shift();
-  }
   
   if( dataPressure.values.length > 20) {
 	 dataPressure.values.shift();
@@ -112,39 +90,15 @@ ws.onerror = function(event) {
   ws.close();
 }
 
-// hook up the watcher
-$("#widget-container").watch({
-	// specify CSS styles or attribute names to monitor
-	properties: "width",
-
-	// callback function when a change is detected
-	callback: function(data, i) {
-		var propChanged = data.props[i];
-		var newValue = data.vals[i];
-
-		var el = this;
-		var el$ = $(this);
-
-		// do what you need based on changes
-		// or do your own checks
-		weatherChart.update();
-	}
-});
-   
 //Update the chart when window resizes.
-nv.utils.windowResize(function() { weatherChart.update() });
+nv.utils.windowResize(function() { windSpeedChart.update();pressureChart.update(); });
 
 </script>
-<div id="chartWeather">
-	 <svg style="height:34%;width:100%"> </svg>
-</div>
 <div id="chartPressure">
-	 <svg style="height:33%;width:100%"> </svg>
+	 <svg style="height:50%;width:100%"> </svg>
 </div>
 <div id="chartWindSpeed">
-	 <svg style="height:33%;width:100%"> </svg>
+	 <svg style="height:50%;width:100%"> </svg>
 </div>
-<!--div id="chartWindDirection">
-	 <svg style="height:25%;width:100%"> </svg>
-</div-->
+
 </div>

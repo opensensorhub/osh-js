@@ -1,0 +1,64 @@
+<div id="TemperatureWidgetViewerId">
+<script>
+var gauges = [];
+			
+function createGauge(name, label, min, max){
+	var config = {
+		size: 250,
+		label: label,
+		min: undefined != min ? min : 0,
+		max: undefined != max ? max : 60,
+		minorTicks: 5
+	}
+	
+	var range = config.max - config.min;
+	config.yellowZones = [{ from: config.min + range*0.5, to: config.min + range*0.9 }];
+	config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+	
+	gauges[name] = new Gauge("TemperatureWidgetViewerId", config);
+	gauges[name].render();
+}
+
+function createGauges() {
+	createGauge("temperature", "Temperature");
+}
+
+createGauges();
+
+//query Weather stream
+var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
+ws.binaryType = 'arraybuffer';
+ws.onmessage = function(event) {
+ var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+ var tokens = rec.trim().split(",");
+ 
+ var tempCel = parseFloat(tokens[1]);
+ gauges["temperature"].redraw(tempCel);
+}
+
+ws.onerror = function(event) {
+  ws.close();
+}
+
+//EXTRA STUFF to resize the widget 
+//CAN BE REMOVED
+$('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) {
+    gauges["temperature"].remove();
+    var config = {
+		size: Math.min.apply(Math,[width,height]),
+		label: "Temperature",
+		min: 0,
+		max: 60,
+		minorTicks: 5
+	}
+	
+	var range = config.max - config.min;
+	config.yellowZones = [{ from: config.min + range*0.5, to: config.min + range*0.9 }];
+	config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+	
+	gauges["temperature"] = new Gauge("TemperatureWidgetViewerId", config);
+	gauges["temperature"].render();
+    
+});
+</script>
+</div>

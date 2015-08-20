@@ -452,7 +452,12 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 		  }
 
 		  if (this.size && _.has(this.size, 'width')) {
-			this.setWidth($.mynamespace.width);
+			 if(typeof($.mynamespace.width) != 'undefined'){
+				this.setWidth($.mynamespace.width);
+			 }else{
+				this.setWidth(this.size.width);
+			 }	 
+			
 		  }
 		}
 		
@@ -540,8 +545,10 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                             unitChange = Math.round(pixelChange * transformMultiplier * 100) / 100,
                             newWidth = 1 * unitWidth + unitChange;
                         widget.setWidth(newWidth + widthUnits), $scope.$emit("widgetChanged", widget), $scope.$apply()
+                        $("#"+$scope.widget.name).trigger('widgetResized',[newWidth,widgetElm.height()]);
                     };
-                jQuery($window).on("mousemove", mousemove).one("mouseup", mouseup)
+                jQuery($window).on("mousemove", mousemove).one("mouseup", mouseup);
+                
             }
         }, $scope.grabSouthResizer = function (e) {
 			  var widgetElm = $element.find('.widget');
@@ -601,9 +608,12 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 				$scope.$broadcast('widgetResized', {
 				  height: newHeight
 				});
+				
+				$("#"+$scope.widget.name).trigger('widgetResized',[widgetElm.width(),newHeight]);
 			  };
 
 			  jQuery($window).on('mousemove', mousemove).one('mouseup', mouseup);
+			 
             
         },$scope.grabCornerResizer = function (e) {
 			  var widgetElm = $element.find('.widget');
@@ -674,6 +684,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 				  height: newHeight,
 				  width: newWidth
 				});
+				$("#"+$scope.widget.name).trigger('widgetResized',[newWidth,newHeight]);
 			  };
 
 			  jQuery($window).on('mousemove', mousemove).one('mouseup', mouseup);

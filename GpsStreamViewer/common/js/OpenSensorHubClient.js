@@ -94,8 +94,6 @@ function addWidgets(def){
 				
 			}
 			
-			$.mynamespace.width = style.width;
-			
 			if(prop.hasOwnProperty("defaultWidget") && prop.defaultWidget){
 				defaultWidgets[defaultWidgetsPos++] = {
 					name : prop.renderDivId,

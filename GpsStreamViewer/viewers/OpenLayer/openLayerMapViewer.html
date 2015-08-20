@@ -67,7 +67,7 @@ function init() {
   var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
   lineLayer.addFeatures([lineFeature]);
    
-   var tickTime = 0;
+   var tickTime = 4;
    
    // GPS
    // query SOS GPS stream
@@ -81,7 +81,7 @@ function init() {
 	 var alt = parseFloat(tokens[3]);
 	 
 	 // update center
-	 if((tickTime++) % 5 == 0){
+	 if((++tickTime) % 5 == 0){
 		var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
 		map.setCenter(center, map.getZoom());
 		tickTime = 0;

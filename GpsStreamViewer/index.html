@@ -30,6 +30,9 @@
 <!-- HIGHCHART -->
 <script src="http://code.highcharts.com/highcharts.src.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.src.js"></script>
+<script type="text/javascript" src="viewers/Temperature/js/gauge.js"></script>
+<!-- TEMPERATURE -->
+
   
 <style>
 
@@ -73,35 +76,48 @@
  
 var properties = [
 	{
+		name : "OpenLayer",
+		url  : "viewers/OpenLayer/openLayerMapViewer.html",
+		renderDivId :  "OpenLayerViewerId",
+		defaultWidget : true,
+		style : {
+			width : "45%",
+			height : "720px"
+		}
+	},
+	{
+		name : "Wind Direction HighChart",
+		url  : "viewers/WeatherWindDirection/highChartWindDirection.html",
+		renderDivId :  "highChartViewerId",
+		defaultWidget : true,
+		style : {
+			width : "310px",
+			height : "310px"
+		}
+	},
+	{
+		name : "Temperature D3",
+		url  : "viewers/Temperature/temperatureViewer.html",
+		renderDivId :  "TemperatureWidgetViewerId",
+		defaultWidget : true,
+		style : {
+			width : "250px",
+			height : "250px"
+		}
+	},
+	{
 		name : "Weather D3 Chart",
 		url  : "viewers/Weather/weatherChartViewer.html",
 		renderDivId :  "d3ChartViewerId",
 		defaultWidget : true,
 		style : {
 			width : "50%",
-			height : "70%"
+			height : "353px"
 		}
 	},
-	{
-		name : "OpenLayer",
-		url  : "viewers/OpenLayer/openLayerMapViewer.html",
-		renderDivId :  "OpenLayerViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "40%"
-		}
-	},
-	{
-		name : "Weather HighChart Wind Direction",
-		url  : "viewers/WeatherWindDirection/highChartWindDirection.html",
-		renderDivId :  "highChartViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "50%"
-		}
-	}
+	
+
+	
 ];
 
 addWidgets(properties);	
