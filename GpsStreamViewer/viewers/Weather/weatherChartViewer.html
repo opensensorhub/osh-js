@@ -1,10 +1,35 @@
 <div id="d3ChartViewerId">
 	
+<div id="chartPressure">
+	 <svg style="height:50%;width:100%"> </svg>
+</div>
+<div id="chartWindSpeed">
+	 <svg style="height:50%;width:100%"> </svg>
+</div>	
+
 <!-- D3 CHART -->
 <script src="viewers/Weather/js/d3.v3.js"></script>
 <script type="text/javascript" src="viewers/Weather/js/nv.d3.js"></script>
 <link rel="stylesheet" href="viewers/Weather/css/nv.d3.css">
 
+<style>
+
+#d3ChartViewerId {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.nvd3 text {
+    font: normal 10px Arial;
+}
+
+</style>
 <script>
 
 var dataPressure = {
@@ -100,11 +125,4 @@ ws.onerror = function(event) {
 nv.utils.windowResize(function() { windSpeedChart.update();pressureChart.update(); });
 
 </script>
-<div id="chartPressure">
-	 <svg style="height:50%;width:100%"> </svg>
-</div>
-<div id="chartWindSpeed">
-	 <svg style="height:50%;width:100%"> </svg>
-</div>
-
 </div>

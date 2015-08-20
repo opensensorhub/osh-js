@@ -1,7 +1,7 @@
 <div id="TemperatureWidgetViewerId">
 
-<script src="viewers/Weather/js/d3.v3.js"></script>
-<!-- TEMPERATURE -->
+<!-- Load Depending Libraries -->
+<script src="viewers/Temperature/js/d3.v3.js"></script>
 <script type="text/javascript" src="viewers/Temperature/js/gauge.js"></script>
 
 <script>
@@ -44,7 +44,9 @@ ws.onmessage = function(event) {
 ws.onerror = function(event) {
   ws.close();
 }
+</script>
 
+<script id="extra">
 //EXTRA STUFF to resize the widget 
 //CAN BE REMOVED
 $('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) {
@@ -65,5 +67,6 @@ $('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) 
 	gauges["temperature"].render();
     
 });
+</script>
 </script>
 </div>

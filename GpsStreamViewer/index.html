@@ -16,30 +16,7 @@
 
 <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
-
 <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> 
-
-<style>
-
-/*@import url(viewers/Weather/css/d3ChartViewer.css);*/
-
-#d3ChartViewerId {
-  font: 10px sans-serif;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.nvd3 text {
-    font: normal 10px Arial;
-}
-
-</style>
-
 
 </head>
 
@@ -64,7 +41,7 @@ var properties = [
 		name : "OpenLayer",
 		url  : "viewers/OpenLayer/openLayerMapViewer.html",
 		renderDivId :  "OpenLayerViewerId",
-		defaultWidget : true,
+		defaultWidget : false,
 		style : {
 			width : "45%",
 			height : "720px"
@@ -74,7 +51,7 @@ var properties = [
 		name : "Wind Direction HighChart",
 		url  : "viewers/WeatherWindDirection/highChartWindDirection.html",
 		renderDivId :  "highChartViewerId",
-		defaultWidget : true,
+		defaultWidget : false,
 		style : {
 			width : "310px",
 			height : "310px"
@@ -84,7 +61,7 @@ var properties = [
 		name : "Temperature D3",
 		url  : "viewers/Temperature/temperatureViewer.html",
 		renderDivId :  "TemperatureWidgetViewerId",
-		defaultWidget : true,
+		defaultWidget : false,
 		style : {
 			width : "250px",
 			height : "250px"

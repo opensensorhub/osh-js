@@ -171,36 +171,109 @@ function addWidgets(def){
 					  // Return the jqXHR object so we can chain callbacks
 					  return jQuery.ajax( options );
 					};
-						
-					var scripts = $($.mynamespace[scope.widget.directive].renderId+" script");
 					
-					var notRemoteScripts = "";
-					var remoteScripts = new Array();
+					var divId = $.mynamespace[scope.widget.directive].renderId;
+					var scripts = $(divId+"  script");
+					var cssStyle = $(divId+"  style");
+					var cssLink = $(divId+"  link");
+					
+					var scriptsToLoad = new Array();
+					
+					if(!$.mynamespace.cssLoaded) {
+						$.mynamespace.cssLoaded = new Array();
+					}
+					
+					for(var i = 0 ; i < cssLink.length; i++){
+						var script = cssLink[i];
+						
+						var id = "css_link_"+divId+"_"+i;
+						if($.inArray(id,$.mynamespace.cssLoaded) == -1){
+							//check if it exists
+							 if(script.href){
+								 scriptsToLoad.push({
+									 src :script.href,
+									 type : 'remoteCss'
+								 });
+							 }else{
+								  scriptsToLoad.push({
+									 src : script.innerHTML,
+									 type : 'innerCss'
+								 });
+							 }
+							 $.mynamespace.cssLoaded.push(id);
+						}
+					 }
+					
+					for(var i = 0 ; i < cssStyle.length; i++){
+						var script = cssStyle[i];
+						//check if it exists
+						var id = "css_style_"+divId+"_"+i;
+						if($.inArray(id,$.mynamespace.cssLoaded) == -1){
+							 if(script.href){
+								 scriptsToLoad.push({
+									 src :script.href,
+									 type : 'remoteCss'
+								 });
+							 }else{
+								  scriptsToLoad.push({
+									 src : script.innerHTML,
+									 type : 'innerCss'
+								 });
+							 }
+							 
+							 $.mynamespace.cssLoaded.push(id);
+						 }
+					}
 					
 					for(var i = 0 ; i < scripts.length; i++){
 						var script = scripts[i];
-						 if(script.src){
-							 remoteScripts.push(script.src);
+						if(script.id && script.id == 'al'){
+							  continue;
+						}
+						if(script.src){
+							scriptsToLoad.push({
+								src :script.src,
+								type : 'remoteJs'
+							});
 						 }else{
-							 notRemoteScripts += script.innerHTML;
+							  scriptsToLoad.push({
+								 src : script.innerHTML,
+								 type : 'innerJs'
+							 });
 						 }
 					}
-					resursiveLoad(remoteScripts,notRemoteScripts);					
+					
+					resursiveLoad(scriptsToLoad);					
 				}
 			};
 		});
 	}
 }
 
-function resursiveLoad(arrayFiles,notRemoteScripts){
+function resursiveLoad(arrayFiles){
 	var file = arrayFiles[0];
+	arrayFiles.shift();
 	if(file != null){
-		$.getScript( file, function( data, textStatus, jqxhr ) {
-			console.log( file );
-			arrayFiles.shift();
-			resursiveLoad(arrayFiles,notRemoteScripts);
-		});
-	}else{
-		eval(notRemoteScripts);
+		if(file.type == 'remoteJs'){
+			$.cachedScript( file.src ).done(function( script, textStatus ) {
+				resursiveLoad(arrayFiles);
+			});
+		} else if (file.type == 'innerJs'){
+			eval(file.src);
+			resursiveLoad(arrayFiles);
+		} else if(file.type == 'remoteCss'){
+			$.get(file.src, function(css) {
+			   $('<style type="text/css"></style>')
+				  .html(css)
+				  .appendTo("head");
+				  
+				  resursiveLoad(arrayFiles);
+			});
+		} else if (file.type == ('innerCss')) {
+			$('<style type="text/css"></style>')
+				  .html(file.src)
+				  .appendTo("head");
+				  resursiveLoad(arrayFiles);
+		}
 	}
 }
