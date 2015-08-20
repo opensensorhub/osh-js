@@ -158,10 +158,49 @@ function addWidgets(def){
 					return $.mynamespace[$(scope).get(0).attributes[0].localName].templateUrl;
 				},
 				link: function(scope,widget) {
-					var script = $($.mynamespace[scope.widget.directive].renderId+" script");
-					eval(script.text());
+					jQuery.cachedScript = function( url, options ) {
+ 
+					  // Allow user to set any option except for dataType, cache, and url
+					  options = $.extend( options || {}, {
+						dataType: "script",
+						cache: true,
+						url: url
+					  });
+					 
+					  // Use $.ajax() since it is more flexible than $.getScript
+					  // Return the jqXHR object so we can chain callbacks
+					  return jQuery.ajax( options );
+					};
+						
+					var scripts = $($.mynamespace[scope.widget.directive].renderId+" script");
+					
+					var notRemoteScripts = "";
+					var remoteScripts = new Array();
+					
+					for(var i = 0 ; i < scripts.length; i++){
+						var script = scripts[i];
+						 if(script.src){
+							 remoteScripts.push(script.src);
+						 }else{
+							 notRemoteScripts += script.innerHTML;
+						 }
+					}
+					resursiveLoad(remoteScripts,notRemoteScripts);					
 				}
 			};
 		});
+	}
+}
+
+function resursiveLoad(arrayFiles,notRemoteScripts){
+	var file = arrayFiles[0];
+	if(file != null){
+		$.getScript( file, function( data, textStatus, jqxhr ) {
+			console.log( file );
+			arrayFiles.shift();
+			resursiveLoad(arrayFiles,notRemoteScripts);
+		});
+	}else{
+		eval(notRemoteScripts);
 	}
 }
