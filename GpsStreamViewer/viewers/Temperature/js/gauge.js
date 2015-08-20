@@ -218,7 +218,7 @@ function Gauge(placeholderName, configuration)
 	{
 		var pointerContainer = this.body.select(".pointerContainer");
 		
-		pointerContainer.selectAll("text").text(value.toFixed(3));
+		pointerContainer.selectAll("text").text(value.toFixed(3)+"°");
 		
 		var pointer = pointerContainer.selectAll("path");
 		pointer.transition()
