@@ -1,5 +1,5 @@
 const WIDGET_WIDTH_DESKTOP = "33%";
-const WIDGET_HEIGHT_DESKTOP = "70%";
+const WIDGET_HEIGHT_DESKTOP = "100%";
 
 const WIDGET_WIDTH_MOBILE = "100%";
 const WIDGET_HEIGHT_MOBILE = "55%";
@@ -66,12 +66,32 @@ function addWidgets(def){
 			for(var j = 0; j < directiveNameSplit.length; j++){
 				directiveName += directiveNameSplit[j].toLowerCase()+"-";
 			}
+			
+			var style = {
+					width : "33%",
+					height : "50%"
+			};
+			
+			if(typeof(prop.style) != 'undefined'){
+				if(typeof(prop.style.height) != 'undefined'){
+					style.height = prop.style.height;
+				}
+				if(typeof(prop.style.width) != 'undefined'){
+					style.width = prop.style.width;
+				}
+			}
 			directiveName += "sensor";
  			widgetDefinitions[pos] = {
 				name : prop.renderDivId,
 				title : prop.name,
 				directive : directiveName,
-				source : prop.url
+				source : prop.url,
+				size: {
+				  width: style.width,
+				  height: style.height
+				},
+				enableVerticalResize : true
+				
 			}
 			
 			if(prop.hasOwnProperty("defaultWidget") && prop.defaultWidget){
@@ -95,24 +115,19 @@ function addWidgets(def){
 		//$scope.mobile = screenSize.is('xs, sm');
 		$.mynamespace.desktop = $scope.desktop;
 		
-		if($scope.desktop){
-			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
-			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
-		}else{
+		if(!$scope.desktop){
 			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
-			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
 		}
 		
 		// Using dynamic method `on`, which will set the variables initially and then update the variable on window resize
-		$scope.desktop = screenSize.on('md, lg', function(match){
-			$scope.desktop = match;
-			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
-			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
-		});
+		//$scope.desktop = screenSize.on('md, lg', function(match){
+		//	$scope.desktop = match;
+		//	$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
+		//	$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
+		//});
 		$scope.mobile = screenSize.on('xs, sm', function(match){
 			$scope.mobile = match;
 			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
-			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
 		});
 
 		$scope.dashboardOptions = {
@@ -143,11 +158,122 @@ function addWidgets(def){
 					return $.mynamespace[$(scope).get(0).attributes[0].localName].templateUrl;
 				},
 				link: function(scope,widget) {
-					var script = $($.mynamespace[scope.widget.directive].renderId+" script");
-					eval(script.text());
-					$($.mynamespace[scope.widget.directive].renderId).css("height", $.mynamespace.height);
+					jQuery.cachedScript = function( url, options ) {
+ 
+					  // Allow user to set any option except for dataType, cache, and url
+					  options = $.extend( options || {}, {
+						dataType: "script",
+						cache: true,
+						url: url
+					  });
+					 
+					  // Use $.ajax() since it is more flexible than $.getScript
+					  // Return the jqXHR object so we can chain callbacks
+					  return jQuery.ajax( options );
+					};
+					
+					var divId = $.mynamespace[scope.widget.directive].renderId;
+					var scripts = $(divId+"  script");
+					var cssStyle = $(divId+"  style");
+					var cssLink = $(divId+"  link");
+					
+					var scriptsToLoad = new Array();
+					
+					if(!$.mynamespace.cssLoaded) {
+						$.mynamespace.cssLoaded = new Array();
+					}
+					
+					for(var i = 0 ; i < cssLink.length; i++){
+						var script = cssLink[i];
+						
+						var id = "css_link_"+divId+"_"+i;
+						if($.inArray(id,$.mynamespace.cssLoaded) == -1){
+							//check if it exists
+							 if(script.href){
+								 scriptsToLoad.push({
+									 src :script.href,
+									 type : 'remoteCss'
+								 });
+							 }else{
+								  scriptsToLoad.push({
+									 src : script.innerHTML,
+									 type : 'innerCss'
+								 });
+							 }
+							 $.mynamespace.cssLoaded.push(id);
+						}
+					 }
+					
+					for(var i = 0 ; i < cssStyle.length; i++){
+						var script = cssStyle[i];
+						//check if it exists
+						var id = "css_style_"+divId+"_"+i;
+						if($.inArray(id,$.mynamespace.cssLoaded) == -1){
+							 if(script.href){
+								 scriptsToLoad.push({
+									 src :script.href,
+									 type : 'remoteCss'
+								 });
+							 }else{
+								  scriptsToLoad.push({
+									 src : script.innerHTML,
+									 type : 'innerCss'
+								 });
+							 }
+							 
+							 $.mynamespace.cssLoaded.push(id);
+						 }
+					}
+					
+					for(var i = 0 ; i < scripts.length; i++){
+						var script = scripts[i];
+						if(script.id && script.id == 'al'){
+							  continue;
+						}
+						if(script.src){
+							scriptsToLoad.push({
+								src :script.src,
+								type : 'remoteJs'
+							});
+						 }else{
+							  scriptsToLoad.push({
+								 src : script.innerHTML,
+								 type : 'innerJs'
+							 });
+						 }
+					}
+					
+					resursiveLoad(scriptsToLoad);					
 				}
 			};
 		});
+	}
+}
+
+function resursiveLoad(arrayFiles){
+	var file = arrayFiles[0];
+	arrayFiles.shift();
+	if(file != null){
+		if(file.type == 'remoteJs'){
+			$.cachedScript( file.src ).done(function( script, textStatus ) {
+				resursiveLoad(arrayFiles);
+			});
+		} else if (file.type == 'innerJs'){
+			eval(file.src);
+			resursiveLoad(arrayFiles);
+		} else if(file.type == 'remoteCss'){
+			$.get(file.src, function(css) {
+			   $('<style type="text/css"></style>')
+				  .html(css)
+				  .appendTo("head");
+				  
+				  resursiveLoad(arrayFiles);
+			});
+		} else if (file.type == ('innerCss')) {
+			$('<style type="text/css"></style>')
+				  .html(file.src)
+				  .appendTo("head");
+				  resursiveLoad(arrayFiles);
+		}
 	}
 }

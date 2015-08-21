@@ -339,6 +339,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                             title: widget.title,
                             name: widget.name,
                             style: widget.style,
+                            size: widget.size,
                             dataModelOptions: widget.dataModelOptions,
                             storageHash: widget.storageHash,
                             attrs: widget.attrs
@@ -420,30 +421,89 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 onSettingsClose: Class.onSettingsClose,
                 onSettingsDismiss: Class.onSettingsDismiss,
                 style: Class.style,
+				size: Class.size || {},
+				containerStyle: { width: '100%' }, // default width
+				contentStyle: {},
 				onSourcesCodeClose: Class.onSourcesCodeClose,
 				onSourceCodeDismiss : Class.onSourceCodeDismiss,
 				source : Class.source,
                 open : false
             };
-            
-            //$('.widget-content').css("height",$.mynamespace.height);
-            if (overrides = overrides || {}, angular.extend(this, angular.copy(defaults), overrides), this.style = this.style || {
-                    width: $.mynamespace.width/*,
-                    height: $.mynamespace.height*/
-                }, this.setWidth(this.style.width), /*this.setHeight(this.style.height),*/ Class.templateUrl) this.templateUrl = Class.templateUrl;
-            else if (Class.template) this.template = Class.template;
-            else {
-                var directive = Class.directive || Class.name;
-                this.directive = directive
-            }
-        }
+          
+          overrides = overrides || {};
+		  angular.extend(this, angular.copy(defaults), overrides);
+
+		  this.size = Class.size;
+		  if (Class.templateUrl) {
+			this.templateUrl = Class.templateUrl;
+		  } else if (Class.template) {
+			this.template = Class.template;
+		  } else {
+			var directive = Class.directive || Class.name;
+			this.directive = directive;
+		  }
+
+		  if (this.size && _.has(this.size, 'height')) {
+			this.setHeight(this.size.height);
+		  }
+
+		  if (this.style && _.has(this.style, 'width')) { //TODO deprecate style attribute
+			this.setWidth(this.style.width);
+		  }
+
+		  if (this.size && _.has(this.size, 'width')) {
+			 if(typeof($.mynamespace.width) != 'undefined'){
+				this.setWidth($.mynamespace.width);
+			 }else{
+				this.setWidth(this.size.width);
+			 }	 
+			
+		  }
+		}
+		
         return WidgetModel.prototype = {
             setWidth: function(width, units) {
-                return width = width.toString(), units = units || width.replace(/^[-\.\d]+/, "") || "%", this.widthUnits = units, width = parseFloat(width), 0 > width ? !1 : ("%" === units && (width = Math.min(100, width), width = Math.max(0, width)), this.style.width = width + "" + units, !0)
+                width = width.toString();
+				units = units || width.replace(/^[-\.\d]+/, '') || '%';
+				this.widthUnits = units;
+				width = parseFloat(width);
+
+				if (width < 0) {
+				  return false;
+				}
+
+				if (units === '%') {
+				  width = Math.min(100, width);
+				  width = Math.max(0, width);
+				}
+				this.containerStyle.width = width + '' + units;
+				this.updateSize(this.containerStyle);
+
+				return true;
             },
             setHeight: function(height, units) {
-                return height = height.toString(), units = units || height.replace(/^[-\.\d]+/, "") || "%", this.heightUnits = units, height = parseFloat(height), 0 > height ? !1 : ("%" === units && (height = Math.min(100, height), height = Math.max(0, height)), this.style.height = height + "" + units, !0)
-            }
+				height = height.toString();
+				units = units || height.replace(/^[-\.\d]+/, '') || '%';
+				
+				this.heightUnits = units;
+				height = parseFloat(height);
+				
+				if (height < 0) {
+				  return false;
+				}
+
+				if (units === '%') {
+				  height = Math.min(100, height);
+				  height = Math.max(0, height);
+				}
+				
+                this.contentStyle.height = height + '' + units;
+				this.updateSize(this.contentStyle);
+            },
+
+			updateSize: function (size) {
+				angular.extend(this.size, size);
+			}
         }, WidgetModel
     }), angular.module("ui.dashboard").controller("SaveChangesModalCtrl", ["$scope", "$modalInstance", "layout", function($scope, $modalInstance, layout) {
         $scope.layout = layout, $scope.ok = function() {
@@ -466,7 +526,7 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 var initX = e.clientX,
                     pixelWidth = widgetElm.width(),
                     pixelHeight = widgetElm.height(),
-                    widgetStyleWidth = widget.style.width,
+                    widgetStyleWidth = widget.containerStyle.width,
                     widthUnits = widget.widthUnits,
                     unitWidth = parseFloat(widgetStyleWidth),
                     $marquee = angular.element('<div class="widget-resizer-marquee" style="height: ' + pixelHeight + "px; width: " + pixelWidth + 'px;"></div>');
@@ -485,10 +545,151 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                             unitChange = Math.round(pixelChange * transformMultiplier * 100) / 100,
                             newWidth = 1 * unitWidth + unitChange;
                         widget.setWidth(newWidth + widthUnits), $scope.$emit("widgetChanged", widget), $scope.$apply()
+                        $("#"+$scope.widget.name).trigger('widgetResized',[newWidth,widgetElm.height()]);
                     };
-                jQuery($window).on("mousemove", mousemove).one("mouseup", mouseup)
+                jQuery($window).on("mousemove", mousemove).one("mouseup", mouseup);
+                
             }
-        }, $scope.editTitle = function(widget) {
+        }, $scope.grabSouthResizer = function (e) {
+			  var widgetElm = $element.find('.widget');
+
+			  // ignore middle- and right-click
+			  if (e.which !== 1) {
+				return;
+			  }
+
+			  e.stopPropagation();
+			  e.originalEvent.preventDefault();
+
+			  // get the starting horizontal position
+			  var initY = e.clientY;
+			  // console.log('initX', initX);
+
+			  // Get the current width of the widget and dashboard
+			  var pixelWidth = widgetElm.width();
+			  var pixelHeight = widgetElm.height();
+
+			  // create marquee element for resize action
+			  var $marquee = angular.element('<div class="widget-resizer-marquee" style="height: ' + pixelHeight + 'px; width: ' + pixelWidth + 'px;"></div>');
+			  widgetElm.append($marquee);
+
+			  // updates marquee with preview of new height
+			  var mousemove = function (e) {
+				var curY = e.clientY;
+				var pixelChange = curY - initY;
+				var newHeight = pixelHeight + pixelChange;
+				$marquee.css('height', newHeight + 'px');
+			  };
+
+			  // sets new widget width on mouseup
+			  var mouseup = function (e) {
+				// remove listener and marquee
+				jQuery($window).off('mousemove', mousemove);
+				$marquee.remove();
+
+				// calculate height change
+				var curY = e.clientY;
+				var pixelChange = curY - initY;
+
+				//var widgetContainer = widgetElm.parent(); // widget container responsible for holding widget width and height
+				var widgetContainer = widgetElm.find('.widget-content');
+
+				var diff = pixelChange;
+				var height = parseInt(widgetContainer.css('height'), 10);
+				var newHeight = (height + diff);
+
+				//$scope.widget.style.height = newHeight + 'px';
+
+				$scope.widget.setHeight(newHeight + 'px');
+
+				$scope.$emit('widgetChanged', $scope.widget);
+				$scope.$apply(); // make AngularJS to apply style changes
+
+				$scope.$broadcast('widgetResized', {
+				  height: newHeight
+				});
+				
+				$("#"+$scope.widget.name).trigger('widgetResized',[widgetElm.width(),newHeight]);
+			  };
+
+			  jQuery($window).on('mousemove', mousemove).one('mouseup', mouseup);
+			 
+            
+        },$scope.grabCornerResizer = function (e) {
+			  var widgetElm = $element.find('.widget');
+
+			  // ignore middle- and right-click
+			  if (e.which !== 1) {
+				return;
+			  }
+
+			  e.stopPropagation();
+			  e.originalEvent.preventDefault();
+
+			  // get the starting horizontal position
+			  var initY = e.clientY;
+			  var initX = e.clientX;
+			  // console.log('initX', initX);
+
+			  // Get the current width of the widget and dashboard
+			  var pixelWidth = widgetElm.width();
+			  var pixelHeight = widgetElm.height();
+
+			  // create marquee element for resize action
+			  var $marquee = angular.element('<div class="widget-resizer-marquee" style="height: ' + pixelHeight + 'px; width: ' + pixelWidth + 'px;"></div>');
+			  widgetElm.append($marquee);
+
+			  // updates marquee with preview of new height
+			  var mousemove = function (e) {
+				var curY = e.clientY;
+				var curX = e.clientX;
+				var pixelChangeY = curY - initY;
+				var pixelChangeX = curX - initX;
+				var newHeight = pixelHeight + pixelChangeY;
+				var newWidth = pixelWidth + pixelChangeX;
+				$marquee.css({'height': newHeight + 'px','width': newWidth + 'px'});
+			  };
+
+			  // sets new widget width on mouseup
+			  var mouseup = function (e) {
+				// remove listener and marquee
+				jQuery($window).off('mousemove', mousemove);
+				$marquee.remove();
+
+				// calculate height change
+				var curY = e.clientY;
+				var curX = e.clientX;
+				var pixelChangeY = curY - initY;
+				var pixelChangeX = curX - initX;
+
+				//var widgetContainer = widgetElm.parent(); // widget container responsible for holding widget width and height
+				var widgetContainer = widgetElm.find('.widget-content');
+
+				var diffY = pixelChangeY;
+				var height = parseInt(widgetContainer.css('height'), 10);
+				var newHeight = (height + diffY);
+
+				var diffX = pixelChangeX;
+				var width = parseInt(widgetContainer.css('width'), 10);
+				var newWidth = (width + diffX);
+				//$scope.widget.style.height = newHeight + 'px';
+
+				$scope.widget.setHeight(newHeight + 'px');
+				$scope.widget.setWidth(newWidth + 'px');
+				
+				$scope.$emit('widgetChanged', $scope.widget);
+				$scope.$apply(); // make AngularJS to apply style changes
+
+				$scope.$broadcast('widgetResized', {
+				  height: newHeight,
+				  width: newWidth
+				});
+				$("#"+$scope.widget.name).trigger('widgetResized',[newWidth,newHeight]);
+			  };
+
+			  jQuery($window).on('mousemove', mousemove).one('mouseup', mouseup);
+            
+        },$scope.editTitle = function(widget) {
             var widgetElm = $element.find(".widget");
             widget.editingTitle = !0, $timeout(function() {
                 widgetElm.find("form.widget-title input:eq(0)").focus()[0].setSelectionRange(0, 9999)
