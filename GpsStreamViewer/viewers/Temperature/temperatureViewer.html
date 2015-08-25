@@ -44,9 +44,7 @@ ws.onmessage = function(event) {
 ws.onerror = function(event) {
   ws.close();
 }
-</script>
 
-<script id="extra">
 //EXTRA STUFF to resize the widget 
 //CAN BE REMOVED
 $('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) {
@@ -67,6 +65,7 @@ $('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) 
 	gauges["temperature"].render();
     
 });
+
 </script>
-</script>
+
 </div>
