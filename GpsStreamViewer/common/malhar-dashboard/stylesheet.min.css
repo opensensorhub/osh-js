@@ -6226,7 +6226,8 @@ button.close {
     min-height: 200px
 }
 .widget-container {
-    float: left;
+    /*float: left;*/
+    vertical-align:top;
     display: inline-block;
 }
 .widget {

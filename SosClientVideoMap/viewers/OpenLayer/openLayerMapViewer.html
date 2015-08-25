@@ -73,11 +73,11 @@ function init() {
   var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
   lineLayer.addFeatures([lineFeature]);
    
-   var tickTime = 9;
+   var tickTime = 49;
    
    // GPS
    // query SOS GPS stream
-   ws = new WebSocket("ws://botts-geo.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
+   ws = new WebSocket("ws://botts-geo.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=20");
    ws.binaryType = 'arraybuffer';
    ws.onmessage = function(event) {
 	 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
@@ -86,26 +86,32 @@ function init() {
 	 var lon = parseFloat(tokens[2]);
 	 var alt = parseFloat(tokens[3]);
 	 
-	 // update center
-	 if((++tickTime) % 10 == 0){
-		var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
-		map.setCenter(center, map.getZoom());
-		tickTime = 0;
+	 if(!isNaN(lon) && !isNaN(lat)){
+		 // update center
+		 if((++tickTime) % 50 == 0){
+			var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+			map.setCenter(center, map.getZoom());
+			tickTime = 0;
+		 }
+		 
+		 if(points.length > 1000){
+			points.shift();
+		 }
+	 
+		 // update center
+		 points.push(new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326, map.getProjectionObject()));
+		 lineLayer.removeAllFeatures();
+		 
+		 // update path
+		 lineLayer.removeAllFeatures();
+		 var line = new OpenLayers.Geometry.LineString(points);
+		 var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+		 lineLayer.addFeatures([lineFeature]);
+		 
+		 // update marker
+		 marker.lonlat = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+		 markers.redraw();
 	 }
-	 
-     // update center
-	 points.push(new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326, map.getProjectionObject()));
-	 lineLayer.removeAllFeatures();
-	 
-	 // update path
-	 lineLayer.removeAllFeatures();
-	 var line = new OpenLayers.Geometry.LineString(points);
-	 var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
-	 lineLayer.addFeatures([lineFeature]);
-	 
-	 // update marker
-	 marker.lonlat = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
-	 markers.redraw();
    }
    
    ws.onerror = function(event) {

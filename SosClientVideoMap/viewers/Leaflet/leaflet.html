@@ -8,7 +8,7 @@
 
 var map;
 var marker;
-var tickTime = 9;
+var tickTime = 49;
 var pathCoordinates = [];
 
 function initmap() {
@@ -57,25 +57,31 @@ function initStream(){
 	 var lon = parseFloat(tokens[2]);
 	 var alt = parseFloat(tokens[3]);
 	 
-	 var newLatLng = new L.LatLng(lat, lon);
-	 marker.setLatLng(newLatLng); 
-	 
-	 if((++tickTime) % 10 == 0){
-		map.setView(marker.getLatLng(),map.getZoom()); 
-		tickTime = 0;
-	 }
-	 
-	 //update path
-	 map.removeLayer(path);
-	 pathCoordinates.push(new L.LatLng(lat, lon));
-	 path = new L.Polyline(pathCoordinates, {
-		color: 'blue',
-		weight: 5,
-		opacity: 0.5,
-		smoothFactor: 1
-	});
-	
-	path.addTo(map);
+	 if(!isNaN(lon) && !isNaN(lat)){
+		 var newLatLng = new L.LatLng(lat, lon);
+		 marker.setLatLng(newLatLng); 
+		 
+		 if((++tickTime) % 50 == 0){
+			map.setView(marker.getLatLng(),map.getZoom()); 
+			tickTime = 0;
+		 }
+		 
+		 //update path
+		 if(pathCoordinates.length > 200){
+			pathCoordinates.shift();
+		 }
+		 
+		 map.removeLayer(path);
+		 pathCoordinates.push(new L.LatLng(lat, lon));
+		 path = new L.Polyline(pathCoordinates, {
+			color: 'blue',
+			weight: 5,
+			opacity: 0.5,
+			smoothFactor: 1
+		});
+		
+		path.addTo(map);
+	}
 	 
    }
    
