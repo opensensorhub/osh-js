@@ -77,7 +77,7 @@ function init() {
    
    // GPS
    // query SOS GPS stream
-   ws = new WebSocket("ws://ec2-52-16-177-252.eu-west-1.compute.amazonaws.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering02&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,now/2055-01-01");
+   ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering02&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,now/2055-01-01");
    ws.binaryType = 'arraybuffer';
    ws.onmessage = function(event) {
 	 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));

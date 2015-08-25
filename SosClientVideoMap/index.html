@@ -35,19 +35,18 @@ loaded here -->
       </div>
     </nav>
 	<div ng-view=""></div>
-	
 </body>
 <script>
  
 var properties = [
 	{
-		name : "LeafLet",
-		url  : "viewers/Leaflet/leaflet.html",
-		renderDivId :  "leafletViewerId",
+		name : "Cesium",
+		url  : "viewers/Cesium/cesium.html",
+		renderDivId :  "cesiumViewerId",
 		defaultWidget : true,
 		style : {
 			width : "50%",
-			height : "680px"
+			height : "330px"
 		}
 	},
 	{
@@ -56,28 +55,28 @@ var properties = [
 		renderDivId :  "videoViewerId",
 		defaultWidget : true,
 		style : {
-			width : "500px",
-			height : "375px"
-		}
-	},
-	{
-		name : "Cesium",
-		url  : "viewers/Cesium/cesium.html",
-		renderDivId :  "cesiumViewerId",
-		defaultWidget : true,
-		style : {
 			width : "50%",
-			height : "500px"
+			height : "330px"
 		}
 	},
 	{
 		name : "OpenLayer",
 		url  : "viewers/OpenLayer/openLayerMapViewer.html",
 		renderDivId :  "OpenLayerViewerId",
-		defaultWidget : false,
+		defaultWidget : true,
 		style : {
-			width : "45%",
-			height : "680px"
+			width : "50%",
+			height : "330px"
+		}
+	},
+	{
+		name : "LeafLet",
+		url  : "viewers/Leaflet/leaflet.html",
+		renderDivId :  "leafletViewerId",
+		defaultWidget : true,
+		style : {
+			width : "50%",
+			height : "330px"
 		}
 	}
 ];

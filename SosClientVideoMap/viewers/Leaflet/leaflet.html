@@ -48,7 +48,7 @@ function initStream(){
 	
 	// GPS
    // query SOS GPS stream
-   var ws = new WebSocket("ws://botts-geo.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
+   var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
    ws.binaryType = 'arraybuffer';
    ws.onmessage = function(event) {
 	 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
