@@ -1,0 +1,141 @@
+<div id="OpenLayerViewerId">
+	
+<!-- OpenLayers -->
+<link rel="stylesheet" type="text/css" href="viewers/OpenLayer/css/OpenLayers.css" />
+<script type="text/javascript" src="viewers/OpenLayer/js/OpenLayers.js"></script>
+<script id="al" src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> 
+<script id="al" pe="text/javascript" src="common/js/sync.js"></script>
+
+<script>
+var map;
+var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+var clientId = "498775";
+
+function init() {
+    map = new OpenLayers.Map('OpenLayerViewerId', {
+        projection: 'EPSG:900913',
+        layers: [
+			new OpenLayers.Layer.Google("Google Streets"),
+            new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: google.maps.MapTypeId.TERRAIN}
+            ),
+            new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: google.maps.MapTypeId.HYBRID}
+            ),
+            new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: google.maps.MapTypeId.SATELLITE}
+            ),
+            new OpenLayers.Layer.OSM("OSM")
+        ],
+        controls : [ 
+			  new OpenLayers.Control.LayerSwitcher(),
+			  new OpenLayers.Control.Navigation({
+				  zoomBoxEnabled : true,
+				  zoomWheelEnabled : true
+			  }), 
+			  new OpenLayers.Control.PanZoomBar(),
+			  new OpenLayers.Control.MousePosition(),
+			  new OpenLayers.Control.ScaleLine() ],
+	  
+      center: new OpenLayers.LonLat(-86.5613446553107, 34.6916025276591)
+            // Google.v3 uses web mercator as projection, so we have to
+            // transform our coordinates
+            .transform(epsg4326, 'EPSG:900913'),
+        zoom: 15,
+        numZoomLevels : 17
+    });
+    
+    // vector layer
+  markers = new OpenLayers.Layer.Markers("Markers");
+  map.addLayer(markers);
+  
+  var lineLayer = new OpenLayers.Layer.Vector("Path"); 
+  map.addLayer(lineLayer);                    
+  map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));    
+  
+  // create marker
+  var size = new OpenLayers.Size(30, 30);
+  var offset = new OpenLayers.Pixel(-size.w / 2, -size.h / 2);
+  var icon = new OpenLayers.Icon('viewers/OpenLayer/js/draw_point_on.png', size, offset);
+  marker = new OpenLayers.Marker(new OpenLayers.LonLat(0, 0), icon);
+  markers.addMarker(marker);
+  
+  // create path
+  var points = new Array();
+  var line = new OpenLayers.Geometry.LineString(points);
+  var style = { 
+	  strokeColor: '#0000ff', 
+	  strokeOpacity: 0.5,
+	  strokeWidth: 5
+  };
+
+  var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+  lineLayer.addFeatures([lineFeature]);
+   
+   var tickTime = 49;
+   
+   function getSyncData(dataArray){
+	   for(var i= 0 ;i < dataArray.length;i++){
+		 var data = dataArray[i];
+		 var rec = String.fromCharCode.apply(null, new Uint8Array(data));
+		 var tokens = rec.trim().split(",");
+		 var lat = parseFloat(tokens[1]);
+		 var lon = parseFloat(tokens[2]);
+		 var alt = parseFloat(tokens[3]);
+		 
+		 if(!isNaN(lon) && !isNaN(lat)){
+			 // update center
+			 if((++tickTime) % 50 == 0){
+				var center = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+				map.setCenter(center, map.getZoom());
+				tickTime = 0;
+			 }
+			 
+			 if(points.length > 1000){
+				points.shift();
+			 }
+		 
+			 // update center
+			 points.push(new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326, map.getProjectionObject()));
+			 lineLayer.removeAllFeatures();
+			 
+			 // update path
+			 lineLayer.removeAllFeatures();
+			 var line = new OpenLayers.Geometry.LineString(points);
+			 var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+			 lineLayer.addFeatures([lineFeature]);
+			 
+			 // update marker
+			 marker.lonlat = new OpenLayers.LonLat(lon, lat).transform(epsg4326, map.getProjectionObject());
+			 markers.redraw();
+		 }
+	 }
+   };
+   
+   registerForSync(clientId,getSyncData);
+   
+   // GPS
+   // query SOS GPS stream
+   ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
+   ws.binaryType = 'arraybuffer';
+   ws.onmessage = function(event) {
+	  var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+	  var tokens = rec.trim().split(",");
+	  var date = new Date(tokens[0]);
+	  updateDataForSync(clientId,event.data,event.timeStamp);
+   }
+   
+   ws.onerror = function(event) {
+	  ws.close();
+   }
+}
+
+init();
+</script>
+</div>
+
+
+

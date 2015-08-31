@@ -1,0 +1,82 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>Sos Client Video Map</title>
+<link href="common/css/GpsStreamViewer.css" rel="stylesheet">
+
+<!-- ANGULAR -->
+<link rel="stylesheet" href="common/malhar-dashboard/stylesheet.min.css">
+<script type="text/javascript" src="common/js/angular/all-in-one.min.js"></script>
+<script type="text/javascript" src="common/malhar-dashboard/ui-dashboard-module.js"></script>
+<script type="text/javascript" src="common/js/angular/jquery-watcher.js"></script>
+
+<script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
+
+<!-- NEEDED for openlayer viewer; Google lib tries to write inside the head/body and it is not allowed. Need to be 
+loaded here -->
+
+<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> 
+
+<!-- hashtable -->
+<script type="text/javascript" src="common/js/jhashtable.js"></script>
+
+<!-- sync lib -->
+<script type="text/javascript" src="common/js/sync.js"></script>
+
+</head>
+
+<body ng-app="app">
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="http://www.opensensorhub.org/">
+          	<img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png" style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+          OpenSensorHub</a>
+        </div>
+      </div>
+    </nav>
+	<div ng-view=""></div>
+</body>
+<script>
+ 
+var properties = [
+	{
+		name : "Cesium",
+		url  : "viewers/Cesium/cesium.html",
+		renderDivId :  "cesiumViewerId",
+		defaultWidget : false,
+		style : {
+			width : "50%",
+			height : "330px"
+		}
+	},
+	{
+		name : "Video",
+		url  : "viewers/Video/video.html",
+		renderDivId :  "videoViewerId",
+		defaultWidget : true,
+		style : {
+			width : "50%",
+			height : "330px"
+		}
+	},
+	{
+		name : "LeafLet",
+		url  : "viewers/Leaflet/leaflet.html",
+		renderDivId :  "leafletViewerId",
+		defaultWidget : true,
+		style : {
+			width : "50%",
+			height : "330px"
+		}
+	}
+];
+
+addWidgets(properties);	
+</script>
+</html>

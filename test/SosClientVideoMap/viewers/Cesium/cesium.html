@@ -1,0 +1,173 @@
+<div id="cesiumViewerId">
+
+<div id="cesiumContainer"></div>
+<link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
+<script src="viewers/Cesium/js/Cesium.js"></script>
+  <script>
+	  var currentUrl = {
+		  host : 'sensiasoft.net:8181'
+	  };
+	  
+    var viewer = new Cesium.Viewer('cesiumContainer', {targetFrameRate: 10});
+    var rfPos = [-86.5880, 34.7275, 0.0];
+    
+    var west = Cesium.Math.toRadians(-86.595);
+    var south = Cesium.Math.toRadians(34.725);
+    var east = Cesium.Math.toRadians(-86.585);
+    var north = Cesium.Math.toRadians(34.73);
+    var rect = new Cesium.Rectangle(west, south, east, north);
+    //viewer.camera.viewRectangle(rect)
+    var camTarget = Cesium.Cartesian3.fromDegrees(-86.589, 34.727, 0.0);
+    var camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 800.0);
+    viewer.camera.lookAt(camTarget, camPos);
+    viewer.clock.shouldAnimate = false;
+    viewer.clock.multiplier = 1;
+
+    // add city buildings
+    var position = Cesium.Cartesian3.fromDegrees(-86.59015675189, 34.72499930624, 0.0);
+    var heading = Cesium.Math.toRadians(0.2335140809488);
+    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, 0, 0);
+    /*viewer.entities.add({
+        name : "Embassy Suites",
+        position : position,
+        orientation : orientation,
+        model : {
+            uri : "embassy_suites.bgltf"
+        }
+    });*/
+    
+    position = Cesium.Cartesian3.fromDegrees(-86.58643201592, 34.7286354703, 0.0);
+    heading = Cesium.Math.toRadians(0.2356579220988);
+    orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, 0, 0);
+   /* viewer.entities.add({
+        name : "Municipal Building",
+        position : position,
+        orientation : orientation,
+        model : {
+            uri : "municipal_building.bgltf"
+        }
+    });*/
+    
+    position = Cesium.Cartesian3.fromDegrees(-86.58874164418, 34.72869003861, 0.0);
+    heading = Cesium.Math.toRadians(0.2343421483055);
+    orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, 0, 0);
+    /*viewer.entities.add({
+        name : "Summit Center",
+        position : position,
+        orientation : orientation,
+        model : {
+            uri : "summit_center.bgltf"
+        }
+    });*/
+    
+    position = Cesium.Cartesian3.fromDegrees(-86.59079648585, 34.72699075691, 0.0);
+    heading = Cesium.Math.toRadians(0.2331612632112);
+    orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, 0, 0);
+    /*viewer.entities.add({
+        name : "Von Braun Center",
+        position : position,
+        orientation : orientation,
+        model : {
+            uri : "von_braun_center.bgltf"
+        }
+    });*/
+    
+    // gps position
+    var sensorPos = viewer.entities.add({
+        position : Cesium.Cartesian3.fromDegrees(rfPos[0], rfPos[1]),
+        point : {
+            color : Cesium.Color.SKYBLUE, // default: WHITE
+            pixelSize : 10, // default: 1
+            outlineColor : Cesium.Color.YELLOW, // default: BLACK
+            outlineWidth : 3 // default: 0
+        }
+    });
+
+    var targetPos = viewer.entities.add({
+        polyline : {
+            width : 3.0,
+            material : new Cesium.PolylineGlowMaterialProperty({
+                color : Cesium.Color.DEEPSKYBLUE,
+                glowPower : 0.25
+            })
+        }
+    });
+    
+        
+    // query GPS stream from SOS using websockets
+    var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
+    ws.binaryType = 'arraybuffer';
+    var firstGps = true;
+    var gpsAlt;
+    ws.onmessage = function (event) {
+      
+        var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+        //console.log(rec);
+      
+        var tokens = rec.trim().split(",");
+        var julianDate = Cesium.JulianDate.fromIso8601(tokens[0]);
+        var lat = parseFloat(tokens[1]);
+        var lon = parseFloat(tokens[2]);
+        gpsAlt = parseFloat(tokens[3]);
+        var alt = 0.0;//parseFloat(tokens[3]) - 193;
+        
+        // set clock to GPS time
+        viewer.clock.currentTime = julianDate;
+        
+        // update sensor position marker
+        rfPos = [lon, lat, alt];
+        sensorPos.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+
+        if (firstGps) {
+           var camTarget = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+           viewer.camera.lookAt(camTarget, camPos);
+           firstGps = false;
+        }
+        
+    }
+    ws.onerror = function (event) {
+        ws.close();
+    }
+    
+    // query target location stream from SOS using websockets
+    //ws = new WebSocket("ws://" + currentUrl.host + "/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,now/2055-01-01");
+    /*var ws = new WebSocket("ws://botts-geo.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
+    ws.binaryType = 'arraybuffer';
+    ws.onmessage = function (event) {
+      
+        var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+        console.log(rec);
+      
+        // parse target location
+        var tokens = rec.trim().split(",");
+        var targetLat = parseFloat(tokens[1]);
+        var targetLon = parseFloat(tokens[2]);
+        var targetAlt = parseFloat(tokens[3]) - gpsAlt;
+
+        // handle case of NaN resulting from bad TruPulse measurement
+        if (isNaN(targetLat) || isNaN(targetLon) || isNaN(targetAlt))
+            return;
+        
+        // temporarily show the laser beam
+        targetPos.polyline.positions = Cesium.Cartesian3.fromDegreesArrayHeights([
+                                          rfPos[0], rfPos[1], rfPos[2],
+                                          targetLon, targetLat, targetAlt
+                                       ]);
+                  
+        // add marker at target location                     
+        viewer.entities.add({
+            position : Cesium.Cartesian3.fromDegrees(targetLon, targetLat, targetAlt),
+            point : {
+                color : Cesium.Color.RED, // default: WHITE
+                pixelSize : 7, // default: 1
+                outlineColor : Cesium.Color.WHITE, // default: BLACK
+                outlineWidth : 2 // default: 0
+        }
+    });
+    }
+    ws.onerror = function (event) {
+        ws.close();
+    }*/
+    
+ </script>
+ </div>
