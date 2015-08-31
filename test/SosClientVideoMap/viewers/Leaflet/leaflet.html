@@ -13,6 +13,8 @@ var tickTime = 49;
 var pathCoordinates = [];
 var lastTime = new Date().getTime();
 
+var UTCConvertTime = 16 * 1000;
+
 function initmap() {
 	// set up the map
 	map = new L.Map('leafletMap');
@@ -93,7 +95,7 @@ function initStream(){
 		 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 		 var tokens = rec.trim().split(",");
 		 var date = new Date(tokens[0]);
-		 pushIntoBuffer(clientId,event.data,date.getTime(),new Date().getTime());
+		 pushIntoBuffer(clientId,event.data,date.getTime()-UTCConvertTime,new Date().getTime());
    }
    
    ws.onerror = function(event) {
