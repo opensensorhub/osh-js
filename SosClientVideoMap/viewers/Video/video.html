@@ -5,14 +5,14 @@
       // query video stream from SOS using websockets
       var currentUrl = window.location;
       ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
-	  ws.binaryType = 'blob';
+	  ws.binaryType = 'arraybuffer';
       ws.onmessage = function (event) {
-          //event.data.type = "image/jpeg";
-          var blobURL = window.URL.createObjectURL(event.data);
+		  //var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
+          var imgBlob = new Blob([event.data]);
+          var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
           var oldBlobURL = imgTag.src;          
           imgTag.src = blobURL;
           window.URL.revokeObjectURL(oldBlobURL);
-          //document.getElementById("text").innerHTML = blobURL + " size=" + event.data.size;
       }
       ws.onerror = function (event) {
           ws.close();

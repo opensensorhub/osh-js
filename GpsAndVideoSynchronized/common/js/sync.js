@@ -57,6 +57,7 @@ function pushIntoBuffer(id,data,timeStamp) {
 		return 0;
 	});
 	if(observers.length > 0){
+		//callback percent
 		var p = ((timeStamp - startRealTime) * 100 ) / (endRealTime - startRealTime);
 		if(p > percent){
 			for(var i = 0; i < observers.length; i++){
