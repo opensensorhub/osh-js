@@ -1,0 +1,29 @@
+<div id="progressBarViewerId">
+
+<link rel="stylesheet" href="viewers/ProgressBuffering/css/progressbar.css" />
+<script type="text/javascript" src="viewers/ProgressBuffering/js/progressbar.min.js"></script>
+
+<script id="al" pe="text/javascript" src="common/js/sync.js"></script>
+
+<script type="text/javascript">
+
+var progressBar;
+
+progressBar = new ProgressBar("my-progressbar", {'width':'100%', 'height':'50px'});
+progressBar.setPercent(0);
+
+
+function onCallback(percent) {
+	progressBar.setPercent(percent);
+	document.getElementById('my-progressbar-text4').innerHTML = percent + '%';
+}
+
+addObserver(onCallback);
+
+</script>
+<div style="bottom:40%;position:absolute;width:95%;left:15px;">
+	<div id="my-progressbar-text1" class="progressbar-text top-left">Buffering...</div>
+	<div id="my-progressbar"></div>
+	<div id="my-progressbar-text4" class="progressbar-text bottom-right">0%</div>
+</div>
+</div>
