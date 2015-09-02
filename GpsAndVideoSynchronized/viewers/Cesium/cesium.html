@@ -4,10 +4,6 @@
 <link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
 <script src="viewers/Cesium/js/Cesium.js"></script>
   <script>
-	  var currentUrl = {
-		  host : 'sensiasoft.net:8181'
-	  };
-	  
     var viewer = new Cesium.Viewer('cesiumContainer', {targetFrameRate: 10});
     var rfPos = [0, 0 , 0.0];
     
@@ -47,7 +43,7 @@
             })
         }
     });
-    
+
     //SYNC PART
     var clientId = "f9e39ffd-027d-4643-a4c8-472bb2c4d711";
     var firstGps = true;

@@ -110,15 +110,13 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 					
 					//get html content and load it into the modal dialog content
 					$.get( widget.source, function( data ) {
-						widget.content = ($.trim(data));
-						var script = $("#"+widgetSourceCodeId+" script")
-						eval(script);
+						widget.content = $.trim(data);
 						
 						if($.mynamespace.desktop){
 								$(".modal.in .modal-dialog").css({"width":"50% "});
 							}else{
 								$(".modal.in .modal-dialog").css({"width":"100%"});
-							}
+							}	
 						var modalInstance = $modal.open(options),
 							onClose = widget.onSourcesCodeClose || scope.options.onSourcesCodeClose,
 							onDismiss = widget.onSourcesCodeDismiss || scope.options.onSourcesCodeDismiss;
@@ -126,8 +124,9 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 							onClose(result, widget, scope), scope.$emit("widgetChanged", widget)
 						}, function(reason) {
 							onDismiss(reason, scope)
-						})
+						});
 					});
+					
                 }, scope.addWidgetInternal = function(event, widgetDef) {
 					event.preventDefault(), scope.addWidget(widgetDef);
 				}, scope.saveDashboard = function(force) {

@@ -4,7 +4,7 @@ const WIDGET_HEIGHT_DESKTOP = "100%";
 const WIDGET_WIDTH_MOBILE = "100%";
 const WIDGET_HEIGHT_MOBILE = "55%";
 
-var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","matchMedia"]).config(function($routeProvider) {
+var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","matchMedia","ng-code-mirror"]).config(function($routeProvider) {
 			$routeProvider.when("/", {
 				templateUrl: "common/malhar-dashboard/template/view.html",
 				controller: "DemoCtrl",
