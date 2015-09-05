@@ -148,7 +148,7 @@ function onCallbackGps(data){
 	// update sensor position marker
 	rfPos = [lon, lat, alt];
 	sensorPos.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-
+	console.log("ici");
 	if (firstGps && viewer.trackedEntity == 'undefined') {
 	   viewer.zoomTo(viewer.entities,camPos);
 	   firstGps = false;

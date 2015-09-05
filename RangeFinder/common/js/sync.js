@@ -7,6 +7,8 @@ var buffer = new Array();
 
 var observers = new Array();
 var percent = 0;
+var startedBuffering = false;
+var bufferDelay = 10 * 1000;
 
 function start(){
 	startCurrentTime = new Date().getTime();
@@ -39,39 +41,46 @@ function computeNextData(){
 
 //buffering
 function pushIntoBuffer(id,data,timeStamp,type,name) {
-	var datum = {
-		id : id, 
-		data : data, 
-		timeStamp : timeStamp
-	}
-	
-	//TBD : improve sort !
-	buffer.push(datum);
-	buffer.sort(function (a, b) {
-		if (a.timeStamp > b.timeStamp) {
-			return 1;
+	if(!startedBuffering){
+		window.setTimeout(function(){
+			startedBuffering = true;
+			start();
+		},bufferDelay);
+	} else {
+		var datum = {
+			id : id, 
+			data : data, 
+			timeStamp : timeStamp
 		}
-		if (a.timeStamp < b.timeStamp) {
-			return -1;
-		}
-		return 0;
-	});
-	if(observers.length > 0){
-		//callback percent
-		var p = ((timeStamp - startRealTime) * 100 ) / (endRealTime - startRealTime);
-		for(var i = 0; i < observers.length; i++){
-			var callback = observers[i];
-			callback(
-				{
-					percent : percent.toFixed(2),
-					type : type,
-					name: name,
-					timeStamp : timeStamp,
-					received : new Date().getTime(),
-					data : data
-				}
-			);
-		percent = p;
+		
+		//TBD : improve sort !
+		buffer.push(datum);
+		buffer.sort(function (a, b) {
+			if (a.timeStamp > b.timeStamp) {
+				return 1;
+			}
+			if (a.timeStamp < b.timeStamp) {
+				return -1;
+			}
+			return 0;
+		});
+		if(observers.length > 0){
+			//callback percent
+			var p = ((timeStamp - startRealTime) * 100 ) / (endRealTime - startRealTime);
+			for(var i = 0; i < observers.length; i++){
+				var callback = observers[i];
+				callback(
+					{
+						percent : percent.toFixed(2),
+						type : type,
+						name: name,
+						timeStamp : timeStamp,
+						received : new Date().getTime(),
+						data : data
+					}
+				);
+			percent = p;
+			}
 		}
 	}
 }
@@ -86,6 +95,14 @@ function waitCB(){
 	computeNextData();
 }
 
-window.setTimeout(function(){
-	start();
-},10000);
+function setDelay(delay){
+	bufferDelay = delay;
+}
+
+function setStartDate(date){
+	startRealTime = date.getTime();
+}
+
+function setEndDate(date){
+	endRealTime = date.getTime();
+}
