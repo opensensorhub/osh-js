@@ -22,11 +22,6 @@
 
 <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
-<!-- NEEDED for openlayer viewer; Google lib tries to write inside the head/body and it is not allowed. Need to be 
-loaded here -->
-
-<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> 
-
 </head>
 
 <body ng-app="app">
@@ -52,7 +47,7 @@ var properties = [
 		renderDivId :  "TemperatureWidgetViewerId",
 		defaultWidget : true,
 		style : {
-			width : "40%",
+			width : "50%",
 			height : "320px"
 		}
 	},
@@ -62,7 +57,7 @@ var properties = [
 		renderDivId :  "d3ChartViewerId",
 		defaultWidget : true,
 		style : {
-			width : "60%",
+			width : "50%",
 			height : "320px"
 		}
 	},
@@ -72,17 +67,17 @@ var properties = [
 		renderDivId :  "highChartViewerId",
 		defaultWidget : true,
 		style : {
-			width : "40%",
+			width : "50%",
 			height : "320px"
 		}
 	},
 	{
-		name : "OpenLayer",
-		url  : "viewers/OpenLayer/openLayerMapViewer.html",
-		renderDivId :  "OpenLayerViewerId",
+		name : "OpenLayer v3",
+		url  : "viewers/OpenLayerV3/openlayerV3.html",
+		renderDivId :  "OpenLayerV3ViewerId",
 		defaultWidget : true,
 		style : {
-			width : "60%",
+			width : "50%",
 			height : "320px"
 		}
 	}

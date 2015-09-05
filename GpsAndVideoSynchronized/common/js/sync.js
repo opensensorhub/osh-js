@@ -38,7 +38,7 @@ function computeNextData(){
 }
 
 //buffering
-function pushIntoBuffer(id,data,timeStamp) {
+function pushIntoBuffer(id,data,timeStamp,type,name) {
 	var datum = {
 		id : id, 
 		data : data, 
@@ -59,12 +59,19 @@ function pushIntoBuffer(id,data,timeStamp) {
 	if(observers.length > 0){
 		//callback percent
 		var p = ((timeStamp - startRealTime) * 100 ) / (endRealTime - startRealTime);
-		if(p > percent){
-			for(var i = 0; i < observers.length; i++){
-				var callback = observers[i];
-				callback(percent.toFixed(2));
-			}
-			percent = p;
+		for(var i = 0; i < observers.length; i++){
+			var callback = observers[i];
+			callback(
+				{
+					percent : percent.toFixed(2),
+					type : type,
+					name: name,
+					timeStamp : timeStamp,
+					received : new Date().getTime(),
+					data : data
+				}
+			);
+		percent = p;
 		}
 	}
 }
@@ -72,6 +79,7 @@ function pushIntoBuffer(id,data,timeStamp) {
 function addObserver(observerCB) {
 	observers.push(observerCB);
 }
+
 function waitCB(){
 	var next = buffer.shift();
 	clientTable.get(next.id).callback(next.data);

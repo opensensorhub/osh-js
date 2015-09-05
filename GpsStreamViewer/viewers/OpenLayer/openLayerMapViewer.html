@@ -11,7 +11,7 @@ var epsg4326 = new OpenLayers.Projection("EPSG:4326");
 
 function init() {
     map = new OpenLayers.Map('OpenLayerViewerId', {
-        projection: 'EPSG:900913',
+        projection: 'EPSG:4326',
         layers: [
 			new OpenLayers.Layer.Google("Google Streets"),
             new OpenLayers.Layer.Google(
@@ -41,7 +41,7 @@ function init() {
       center: new OpenLayers.LonLat(-86.5613446553107, 34.6916025276591)
             // Google.v3 uses web mercator as projection, so we have to
             // transform our coordinates
-            .transform(epsg4326, 'EPSG:900913'),
+            .transform(epsg4326, 'EPSG:4326'),
         zoom: 15,
         numZoomLevels : 17
     });
@@ -75,6 +75,7 @@ function init() {
    
    var tickTime = 9;
    
+   var zoomToExtend = false;
    // GPS
    // query SOS GPS stream
    ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering02&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,now/2055-01-01");

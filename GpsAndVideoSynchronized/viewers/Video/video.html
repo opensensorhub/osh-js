@@ -23,7 +23,7 @@ window.setTimeout(function(){
 	  ws.binaryType = 'arraybuffer';
       ws.onmessage = function (event) {
           var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
-          pushIntoBuffer(clientId,event.data,timeStamp*1000);  
+          pushIntoBuffer(clientId,event.data,timeStamp*1000,"video","Video frame");  
       }
       ws.onerror = function (event) {
           ws.close();

@@ -3,7 +3,56 @@
 <link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
 <script src="viewers/Cesium/js/Cesium.js"></script>
   <script>
-    var viewer = new Cesium.Viewer('cesiumContainer', {targetFrameRate: 10});
+var StoredView = function(){
+        this.position = undefined;
+        this.direction = undefined;
+        this.up = undefined;
+        this.right = undefined;
+        this.transform = undefined;
+        this.frustum = undefined;
+};
+
+StoredView.prototype.isInit = function(){
+	return (typeof this.position === 'undefined');
+}
+
+StoredView.prototype.save = function(camera){
+        if(typeof camera === 'undefined'){
+            throw new DeveloperError('camera is required');
+        }
+
+        this.position = camera.position.clone(this.position);
+        this.direction = camera.direction.clone(this.direction);
+        this.up = camera.up.clone(this.up);
+        this.right = camera.right.clone(this.right);
+        this.transform = camera.transform.clone(this.transform);
+        this.frustum = camera.frustum.clone(this.frustum);
+};
+
+StoredView.prototype.load = function(camera){
+        if(typeof this.position === 'undefined') {
+            throw new DeveloperError('no view has been stored');
+        }
+
+        this.position.clone(camera.position);
+        this.direction.clone(camera.direction);
+        this.up.clone(camera.up);
+        this.right.clone(camera.right);
+        this.transform.clone(camera.transform);
+        this.frustum.clone(camera.frustum);
+};
+
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+		targetFrameRate: 10,
+		timeline : false,
+		homeButton : false,
+		navigationInstructionsInitiallyVisible : false,
+		navigationHelpButton : false,
+		geocoder : false,
+		fullscreenButton : false,
+		showRenderLoopErrors : false
+		
+	});
     var rfPos = [0, 0, 0.0];
     
     var west = Cesium.Math.toRadians(0);
@@ -14,12 +63,12 @@
     //viewer.camera.viewRectangle(rect)
 
 	
-	viewer.camera.setView({
+	/*viewer.camera.setView({
         position : Cesium.Cartesian3.fromDegrees(0.0, 0.0, 800.0),
         heading : Cesium.Math.toRadians(-10),
         pitch : Cesium.Math.toRadians(-30),
         roll : 0.0
-    });
+    });*/
     
     viewer.clock.shouldAnimate = false;
     viewer.clock.multiplier = 1;
@@ -45,22 +94,33 @@
         }
     });
     
-    viewer.camera.FlightCancelledCallback = function(){
-		console.log("ici");
+    viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
+						   Cesium.Math.toRadians(-30),
+						   500));
+                                           
+    var lastSceneMode = viewer.scene.mode;
+		
+    function onPostRender(){
+			if(viewer.scene.mode != lastSceneMode){
+				viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
+                                           Cesium.Math.toRadians(-30),
+                                           500));
+				lastSceneMode = viewer.scene.mode;
+				// storedView.load(viewer.camera);
+			}
 	};
 	
-        
+	viewer.scene.postRender.addEventListener(onPostRender);
+	
     // query GPS stream from SOS using websockets
     var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
     ws.binaryType = 'arraybuffer';
     var firstGps = true;
     var gpsAlt;
-     
+
     ws.onmessage = function (event) {
       
         var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
-        //console.log(rec);
-      
         var tokens = rec.trim().split(",");
         var julianDate = Cesium.JulianDate.fromIso8601(tokens[0]);
         var lat = parseFloat(tokens[1]);
@@ -73,21 +133,23 @@
         
         // update sensor position marker
         rfPos = [lon, lat, alt];
-        sensorPos.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+        var transformedPoint = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+        sensorPos.position = transformedPoint;
 
-        if (firstGps) {
-           viewer.camera.setView({
-				position : Cesium.Cartesian3.fromDegrees(lon, lat, alt),
-				heading : Cesium.Math.toRadians(-10),
-				pitch : Cesium.Math.toRadians(-30),
-				roll : 0.0
-		   });
-           firstGps = false;
-        }
-        
+         // update center
+		 if(firstGps){
+			//viewer.trackedEntity = sensorPos;
+			viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
+                                           Cesium.Math.toRadians(-30),
+                                           500));
+			firstGps = false;
+		 }
     }
     ws.onerror = function (event) {
         ws.close();
     }
+    
+    
+
  </script>
  </div>

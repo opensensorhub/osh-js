@@ -4,7 +4,18 @@
 <link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
 <script src="viewers/Cesium/js/Cesium.js"></script>
   <script>
-    var viewer = new Cesium.Viewer('cesiumContainer', {targetFrameRate: 10});
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+		targetFrameRate: 10,
+		timeline : false,
+		homeButton : false,
+		navigationInstructionsInitiallyVisible : false,
+		navigationHelpButton : false,
+		geocoder : false,
+		fullscreenButton : false,
+		showRenderLoopErrors : false
+		
+	});
+	
     var rfPos = [0, 0 , 0.0];
     
     var west = Cesium.Math.toRadians(0);
@@ -44,6 +55,25 @@
         }
     });
 
+    viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
+						   Cesium.Math.toRadians(-30),
+						   500));
+    viewer.selectedEntity =  sensorPos;                                      
+    viewer.trackedEntity =  sensorPos;
+    
+    var lastSceneMode = viewer.scene.mode;
+		
+    function onPostRender(){
+			if(viewer.scene.mode != lastSceneMode){
+				viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
+                                           Cesium.Math.toRadians(-30),
+                                           500));
+				lastSceneMode = viewer.scene.mode;
+			}
+	};
+	
+	viewer.scene.postRender.addEventListener(onPostRender);
+	
     //SYNC PART
     var clientId = "f9e39ffd-027d-4643-a4c8-472bb2c4d711";
     var firstGps = true;
@@ -66,13 +96,10 @@
         rfPos = [lon, lat, alt];
         sensorPos.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 
-        if (firstGps) {
-           viewer.camera.setView({
-				position : Cesium.Cartesian3.fromDegrees(lon, lat, alt),
-				heading : Cesium.Math.toRadians(-10),
-				pitch : Cesium.Math.toRadians(-30),
-				roll : 0.0
-		   });
+        if (firstGps && viewer.trackedEntity == 'undefined') {
+           viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
+                                           Cesium.Math.toRadians(-30),
+                                           500));
            firstGps = false;
         }
 	}
@@ -87,7 +114,7 @@
 		var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 		var tokens = rec.trim().split(",");
 		var date = new Date(tokens[0]);
-		pushIntoBuffer(clientId,event.data,date.getTime()-(16*1000));
+		pushIntoBuffer(clientId,event.data,date.getTime()-(16*1000),"text","Cesium GPS data");
     }
     
     ws.onerror = function (event) {

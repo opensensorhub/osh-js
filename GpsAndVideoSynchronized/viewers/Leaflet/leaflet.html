@@ -95,7 +95,7 @@ function initStream(){
 		 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 		 var tokens = rec.trim().split(",");
 		 var date = new Date(tokens[0]);
-		 pushIntoBuffer(clientId,event.data,date.getTime()-UTCAndroidShiftTime);
+		 pushIntoBuffer(clientId,event.data,date.getTime()-UTCAndroidShiftTime,"text","Leaflet GPS data");
    }
    
    ws.onerror = function(event) {
