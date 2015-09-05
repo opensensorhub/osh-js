@@ -61,7 +61,7 @@ StoredView.prototype.load = function(camera){
     var north = Cesium.Math.toRadians(0);
     var rect = new Cesium.Rectangle(west, south, east, north);
     //viewer.camera.viewRectangle(rect)
-
+	var camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 800.0);
 	
 	/*viewer.camera.setView({
         position : Cesium.Cartesian3.fromDegrees(0.0, 0.0, 800.0),
@@ -94,17 +94,13 @@ StoredView.prototype.load = function(camera){
         }
     });
     
-    viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
-						   Cesium.Math.toRadians(-30),
-						   500));
+    viewer.zoomTo(viewer.entities,camPos);
                                            
     var lastSceneMode = viewer.scene.mode;
 		
     function onPostRender(){
 			if(viewer.scene.mode != lastSceneMode){
-				viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
-                                           Cesium.Math.toRadians(-30),
-                                           500));
+				viewer.zoomTo(viewer.entities,camPos);
 				lastSceneMode = viewer.scene.mode;
 				// storedView.load(viewer.camera);
 			}
@@ -139,9 +135,7 @@ StoredView.prototype.load = function(camera){
          // update center
 		 if(firstGps){
 			//viewer.trackedEntity = sensorPos;
-			viewer.zoomTo(viewer.entities,new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10),
-                                           Cesium.Math.toRadians(-30),
-                                           500));
+			viewer.zoomTo(viewer.entities,camPos);
 			firstGps = false;
 		 }
     }

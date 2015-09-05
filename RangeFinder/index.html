@@ -8,18 +8,26 @@
 <title>Sos Client Video Map</title>
 <link href="common/css/GpsStreamViewer.css" rel="stylesheet">
 
+<!-- ANGULAR CODE MIRROR -->
+<link rel="stylesheet" href="common/js/angular-code-mirror/angular-code-mirror.css"/>
+
 <!-- ANGULAR -->
 <link rel="stylesheet" href="common/malhar-dashboard/stylesheet.min.css">
 <script type="text/javascript" src="common/js/angular/all-in-one.min.js"></script>
 <script type="text/javascript" src="common/malhar-dashboard/ui-dashboard-module.js"></script>
 <script type="text/javascript" src="common/js/angular/jquery-watcher.js"></script>
 
+<!-- ANGULAR CODE MIRROR -->
+<script src="common/js/angular-code-mirror/angular-code-mirror.min.js"></script>
+
+
 <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
-<!-- NEEDED for openlayer viewer; Google lib tries to write inside the head/body and it is not allowed. Need to be 
-loaded here -->
+<!-- hashtable -->
+<script type="text/javascript" src="common/js/jhashtable.js"></script>
 
-<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script> 
+<!-- sync lib -->
+<script type="text/javascript" src="common/js/sync.js"></script>
 
 </head>
 
@@ -43,36 +51,6 @@ var properties = [
 		name : "Cesium",
 		url  : "viewers/Cesium/cesium.html",
 		renderDivId :  "cesiumViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
-	},
-	{
-		name : "Video",
-		url  : "viewers/Video/video.html",
-		renderDivId :  "videoViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
-	},
-	{
-		name : "OpenLayer",
-		url  : "viewers/OpenLayer/openLayerMapViewer.html",
-		renderDivId :  "OpenLayerViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
-	},
-	{
-		name : "LeafLet",
-		url  : "viewers/Leaflet/leaflet.html",
-		renderDivId :  "leafletViewerId",
 		defaultWidget : true,
 		style : {
 			width : "50%",
