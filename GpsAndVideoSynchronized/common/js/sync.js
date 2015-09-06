@@ -1,44 +1,63 @@
-var startCurrentTime = 0;
-var startRealTime = new Date("2015-02-16T07:58:00Z").getTime();
-var endRealTime   = new Date("2015-02-16T08:09:00Z").getTime();
-var replayFactor = 5;
-var clientTable = new Hashtable();
-var buffer = new Array();
+////////
 
-var observers = new Array();
-var percent = 0;
+var BUFFER_MODE = {
+  REALTIME: 0,
+  REPLAY : 1
+};
 
-function start(){
-	startCurrentTime = new Date().getTime();
-	computeNextData();
-}
+var instance = null;
+const defaultDelay = 10 * 1000;
 
-function Client(callback){
-	this.callback = callback;
+var Buffer = function(){
+	this.startCurrentTime = null;
+	this.startRealTime = null;
+	this.endRealTime = null;
+	this.replayFactor = null;
 	this.buffer = new Array();
+	this.clientTable = new Hashtable();
+	this.observers = new Array();
+	this.startedBuffering = false;
+	this.bufferDelay = defaultDelay;
+	this.currentMode = BUFFER_MODE.REPLAY;
+	this.noData = true;
 }
 
-function registerForSync(id,callback){
-	clientTable.put(id,new Client(callback));
-}
-
-function computeNextData(){
-	var currentEllapsedTime = new Date().getTime() - startCurrentTime;
-	if(buffer.length > 0) {
-		var next = buffer[0];
-		var waitTime = (((next.timeStamp-startRealTime) / replayFactor) - currentEllapsedTime);
-		if( waitTime > 0 ){
-			window.setTimeout(function(){
-				waitCB();
-			},waitTime);
-		} else {
-			waitCB();
-		}
+function getBufferSingleton() {
+	if(instance == null){
+		instance = new Buffer();
 	}
+	return instance;
+}
+
+
+Buffer.prototype.setDelay = function(delay){
+	this.bufferDelay = delay;
+}
+
+Buffer.prototype.setStartDate = function(date) {
+	this.startRealTime = date.getTime();
+}
+
+Buffer.prototype.setEndDate = function(date){
+	this.endRealTime = date.getTime();
+}
+
+Buffer.prototype.setReplayFactor = function(replayFactor){
+	this.replayFactor = replayFactor;
+}
+
+Buffer.prototype.addObserver = function(observerCB){
+	this.observers.push(observerCB);
 }
 
 //buffering
-function pushIntoBuffer(id,data,timeStamp,type,name) {
+Buffer.prototype.push = function(id,data,timeStamp,type,name){
+	//start buffering if first data received
+	if(!this.startedBuffering){
+		this.startedBuffering = true;
+		this.start();
+	} 
+	
 	var datum = {
 		id : id, 
 		data : data, 
@@ -46,8 +65,8 @@ function pushIntoBuffer(id,data,timeStamp,type,name) {
 	}
 	
 	//TBD : improve sort !
-	buffer.push(datum);
-	buffer.sort(function (a, b) {
+	this.buffer.push(datum);
+	this.buffer.sort(function (a, b) {
 		if (a.timeStamp > b.timeStamp) {
 			return 1;
 		}
@@ -56,11 +75,11 @@ function pushIntoBuffer(id,data,timeStamp,type,name) {
 		}
 		return 0;
 	});
-	if(observers.length > 0){
-		//callback percent
-		var p = ((timeStamp - startRealTime) * 100 ) / (endRealTime - startRealTime);
-		for(var i = 0; i < observers.length; i++){
-			var callback = observers[i];
+	if(this.observers.length > 0){
+		//callback 
+		var percent = ((timeStamp - this.startRealTime) * 100 ) / (this.endRealTime - this.startRealTime);
+		for(var i = 0; i < this.observers.length; i++){
+			var callback = this.observers[i];
 			callback(
 				{
 					percent : percent.toFixed(2),
@@ -71,21 +90,67 @@ function pushIntoBuffer(id,data,timeStamp,type,name) {
 					data : data
 				}
 			);
-		percent = p;
 		}
+	}
+	//handle case where some data come after the last computeNextData chaining
+	var currentEllapsedTime = new Date().getTime() - this.startCurrentTime;
+	if(this.bufferDelay - currentEllapsedTime < 0 && this.noData && this.startCurrentTime != null){
+		this.computeNextData();
 	}
 }
 
-function addObserver(observerCB) {
-	observers.push(observerCB);
+Buffer.prototype.computeNextData = function(){
+	var currentEllapsedTime = new Date().getTime() - this.startCurrentTime;
+	if(this.buffer.length > 0) {
+		this.noData = false;
+		var next = this.buffer[0];
+		var waitTime = (((next.timeStamp-this.startRealTime) / this.replayFactor) - currentEllapsedTime) * this.currentMode;
+		if( waitTime > 0 ){
+			window.setTimeout(function(){
+				this.waitCB();
+			}.bind(this),waitTime);
+		} else {
+			this.waitCB();
+		}
+	} else {
+		this.noData = true;
+	}
 }
 
-function waitCB(){
-	var next = buffer.shift();
-	clientTable.get(next.id).callback(next.data);
-	computeNextData();
+Buffer.prototype.waitCB = function(){
+	var next = this.buffer.shift();
+	if(typeof(next) != 'undefined'){
+		this.clientTable.get(next.id)(next.data);
+	}
+	this.computeNextData();
 }
 
-window.setTimeout(function(){
-	start();
-},10000);
+Buffer.prototype.register = function(id,callback){
+	this.clientTable.put(id,callback);
+}
+
+Buffer.prototype.start = function(){
+	window.setTimeout(function(){
+		this.startCurrentTime = new Date().getTime();
+		this.computeNextData();
+	 }.bind(this),this.bufferDelay);
+}
+
+Buffer.prototype.switchMode = function(mode){
+	if(mode != this.currentMode){
+		if(mode == BUFFER_MODE.REPLAY){
+			this.bufferDelay = defaultDelay;
+			this.currentMode = BUFFER_MODE.REPLAY;
+			this.startCurrentTime = null;
+			this.startedBuffering = false;
+			this.noData = false;
+		} else if(mode == BUFFER_MODE.REALTIME){
+			this.bufferDelay = 0;
+			this.currentMode = BUFFER_MODE.REALTIME;
+			this.startCurrentTime = new Date().getTime();
+			this.startedBuffering = true;
+			this.noData = true;
+		}
+		this.buffer = new Array();
+	}
+}

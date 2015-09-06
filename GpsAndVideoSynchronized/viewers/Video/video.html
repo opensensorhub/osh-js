@@ -3,6 +3,10 @@
 <script>
 
 var lastTime = 0;
+var buffer = getBufferSingleton();
+buffer.setStartDate(new Date("2015-02-16T07:58:00Z"));
+buffer.setEndDate(new Date("2015-02-16T08:09:00Z"));
+buffer.setReplayFactor(5);
 
 window.setTimeout(function(){
 	  var clientId = "a9e0182e-3abf-4aef-848d-490edfadaf7e";
@@ -15,7 +19,7 @@ window.setTimeout(function(){
           window.URL.revokeObjectURL(oldBlobURL);
 	  }
 	  
-	  registerForSync(clientId,onCallback);
+	  buffer.register(clientId,onCallback);
 	   
       var imgTag = document.getElementById("video");
       // query video stream from SOS using websockets
@@ -23,7 +27,7 @@ window.setTimeout(function(){
 	  ws.binaryType = 'arraybuffer';
       ws.onmessage = function (event) {
           var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
-          pushIntoBuffer(clientId,event.data,timeStamp*1000,"video","Video frame");  
+          buffer.push(clientId,event.data,timeStamp*1000,"video","Video frame");  
       }
       ws.onerror = function (event) {
           ws.close();

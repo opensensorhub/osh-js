@@ -1,7 +1,36 @@
 <div id="cesiumViewerId">
 
+
 <div id="cesiumContainer"></div>
-<div><input type="checkbox" checked="true" onclick="handleClick(this);"/>Toggle Buildings</div>
+
+<style>
+#cesiumContainer{
+	height:92%;
+}
+	
+.building-label {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+}
+.building-input {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin:0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+    *overflow: hidden;
+}
+
+</style>
+
+<form>
+    <div style="padding:5 0 0 5">
+        <label class="building-label"><input class="building-input" type="checkbox" id="building"  onclick="handleClick(this);" checked/>Toggle Buildings</label>
+    </div>
+</form>
 
 <link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
 <script src="viewers/Cesium/js/Cesium.js"></script>
@@ -20,25 +49,25 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 	
 });
 
-var rfPos = [-86.5880, 34.7275, 0.0];
+var rfPos = [0, 0 , 0.0];
 
-var west = Cesium.Math.toRadians(-86.595);
-var south = Cesium.Math.toRadians(34.725);
-var east = Cesium.Math.toRadians(-86.585);
-var north = Cesium.Math.toRadians(34.73);
+var west = Cesium.Math.toRadians(0);
+var south = Cesium.Math.toRadians(0);
+var east = Cesium.Math.toRadians(0);
+var north = Cesium.Math.toRadians(0);
 var rect = new Cesium.Rectangle(west, south, east, north);
-//viewer.camera.viewRectangle(rect)
-var camTarget = Cesium.Cartesian3.fromDegrees(-86.589, 34.727, 0.0);
 var camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 800.0);
-viewer.clock.shouldAnimate = false;
+
+//viewer.clock.shouldAnimate = true;
 viewer.clock.multiplier = 5;
+//viewer.scene.globe.depthTestAgainstTerrain = true;
 
 var terrainProvider = new Cesium.CesiumTerrainProvider({
-	url : 'http://assets.agi.com/stk-terrain/world'
+    url : 'http://assets.agi.com/stk-terrain/world'
 });
-viewer.terrainProvider = terrainProvider
-viewer.scene.globe.depthTestAgainstTerrain = true;
-
+viewer.terrainProvider = terrainProvider;
+//viewer.scene.globe.depthTestAgainstTerrain = true;
+    
 // add city buildings
 var position = Cesium.Cartesian3.fromDegrees(-86.59015675189, 34.72499930624, 153.0);
 var heading = Cesium.Math.toRadians(0.2335140809488);
@@ -88,10 +117,10 @@ viewer.entities.add({
 		uri : "viewers/Cesium/shapes/von_braun_center.bgltf"
 	}
 });
-
-// range finder position
+    
+// gps position
 var sensorPos = viewer.entities.add({
-	position : Cesium.Cartesian3.fromDegrees(rfPos[0], rfPos[1]),
+	position : Cesium.Cartesian3.fromDegrees(rfPos[0], rfPos[1],getAltitude(rfPos[0],rfPos[1])),
 	point : {
 		color : Cesium.Color.SKYBLUE, // default: WHITE
 		pixelSize : 10, // default: 1
@@ -100,7 +129,7 @@ var sensorPos = viewer.entities.add({
 	}
 });
 
-var targetPos = viewer.entities.add({
+ var targetPos = viewer.entities.add({
 	polyline : {
 		width : 3.0,
 		material : new Cesium.PolylineGlowMaterialProperty({
@@ -109,9 +138,10 @@ var targetPos = viewer.entities.add({
 		})
 	}
 });
-
-
+    
 viewer.zoomTo(viewer.entities,camPos);
+viewer.selectedEntity =  sensorPos;                                      
+viewer.trackedEntity =  sensorPos;
 
 var lastSceneMode = viewer.scene.mode;
 	
@@ -124,15 +154,18 @@ function onPostRender(){
 
 viewer.scene.postRender.addEventListener(onPostRender);
 
-viewer.selectedEntity =  sensorPos;                                      
-viewer.trackedEntity =  sensorPos;
-
 //SYNC PART
-var clientIdGps = "f9e39ffd-027d-4643-a4c8-472bb2c4d711";
+//Set buffer in a replay mode
+var buffer = getBufferSingleton();
+buffer.setStartDate(new Date("2015-08-11T20:19:00Z"));
+buffer.setEndDate(new Date("2055-01-01T00:00:00Z"));
+buffer.setReplayFactor(5);
+
+var clientGpsPosId = "513c58ae-507b-4a12-9bda-f58288000a3d";
 var firstGps = true;
 var gpsAlt;
 
-function onCallbackGps(data){
+function onCallbackGpsPos(data){
 	 var rec = String.fromCharCode.apply(null, new Uint8Array(data));
   
 	var tokens = rec.trim().split(",");
@@ -147,32 +180,101 @@ function onCallbackGps(data){
 	
 	// update sensor position marker
 	rfPos = [lon, lat, alt];
-	sensorPos.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-	console.log("ici");
+	var altitude = getAltitude(lat,lon);
+	if(altitude > 1 ) {
+		altitude += 0.3;
+	}
+	
+	sensorPos.position = Cesium.Cartesian3.fromDegrees(lon, lat, altitude);
+
 	if (firstGps && viewer.trackedEntity == 'undefined') {
 	   viewer.zoomTo(viewer.entities,camPos);
 	   firstGps = false;
 	}
 }
 
-registerForSync(clientIdGps,onCallbackGps);
+//register the client to get callback working
+buffer.register(clientGpsPosId,onCallbackGpsPos);
 
 // query GPS stream from SOS using websockets
-var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-08-11T20:19:00Z/2055-01-01&replaySpeed=5");
+var ws = new WebSocket("ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-08-11T20:19:00Z/2055-01-01&replaySpeed=5");
 ws.binaryType = 'arraybuffer';
 
 ws.onmessage = function (event) {
 	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 	var tokens = rec.trim().split(",");
 	var date = new Date(tokens[0]);
-	pushIntoBuffer(clientId,event.data,date.getTime()-(16*1000),"text","Cesium GPS data");
+	buffer.push(clientGpsPosId,event.data,date.getTime(),"text","Cesium Replay GPS data");
 }
 
 ws.onerror = function (event) {
 	ws.close();
 }
 
-var clientTargetPosId = "e83695ea-61fb-4be8-befe-bf2c21990ece";
+var clientTargetId = "d11012b0-afda-4b20-a3f5-79e804d9e99b";
+
+function onCallbackTarget(data){
+	var rec = String.fromCharCode.apply(null, new Uint8Array(data));
+  
+	// parse target location
+	var tokens = rec.trim().split(",");
+	var targetLat = parseFloat(tokens[1]);
+	var targetLon = parseFloat(tokens[2]);
+	var targetAlt = parseFloat(tokens[3]); // or subtract gpsAlt if no terrain
+
+	// handle case of NaN resulting from bad TruPulse measurement
+	if (isNaN(targetLat) || isNaN(targetLon) || isNaN(targetAlt))
+		return;
 	
+	var altitude = getAltitude(targetLat,targetLon);
+	if(altitude > 1 ) {
+		altitude += 0.3;
+	}
+	// temporarily show the laser beam
+	targetPos.polyline.positions = Cesium.Cartesian3.fromDegreesArrayHeights([
+						  rfPos[0], rfPos[1], altitude,
+						  targetLon, targetLat, targetAlt
+					   ]);
+	setTimeout(function(){
+		targetPos.polyline.positions = [];
+	},1000);
+	
+	setTimeout(function(){	  
+		// add marker at target location                     
+		viewer.entities.add({
+			position : Cesium.Cartesian3.fromDegrees(targetLon, targetLat, targetAlt),
+			point : {
+				color : Cesium.Color.RED, // default: WHITE
+				pixelSize : 7, // default: 1
+				outlineColor : Cesium.Color.WHITE, // default: BLACK
+				outlineWidth : 2 // default: 0
+			}
+		});
+	},200);
+}
+
+buffer.register(clientTargetId,onCallbackTarget);
+
+// query target location stream from SOS using websockets
+var ws2 = new WebSocket("ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-08-11T20:19:01Z/2055-01-01&replaySpeed=5");
+ws2.binaryType = 'arraybuffer';
+ws2.onmessage = function (event) {
+	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+	var tokens = rec.trim().split(",");
+	var date = new Date(tokens[0]);
+	buffer.push(clientTargetId,event.data,date.getTime(),"text","Cesium Replay GPS data");
+}
+
+ws2.onerror = function (event) {
+	ws2.close();
+}
+    
+function getAltitude(lat, lng) {
+	var position = Cesium.Cartesian3.fromDegrees(lng, lat, 0, viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
+	var altitude = viewer.scene.globe.getHeight(Cesium.Ellipsoid.WGS84.cartesianToCartographic(position));
+
+	if(altitude == 'undefined' || altitude <= 0) altitude = 0.1;
+	return altitude;
+}
 </script>
 </div>

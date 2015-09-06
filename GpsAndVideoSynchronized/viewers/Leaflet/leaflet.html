@@ -15,6 +15,11 @@ var lastTime = new Date().getTime();
 
 var UTCAndroidShiftTime = 16 * 1000;
 
+var buffer = getBufferSingleton();
+buffer.setStartDate(new Date("2015-02-16T07:58:00Z"));
+buffer.setEndDate(new Date("2015-02-16T08:09:00Z"));
+buffer.setReplayFactor(5);
+
 function initmap() {
 	// set up the map
 	map = new L.Map('leafletMap');
@@ -95,7 +100,7 @@ function initStream(){
 		 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 		 var tokens = rec.trim().split(",");
 		 var date = new Date(tokens[0]);
-		 pushIntoBuffer(clientId,event.data,date.getTime()-UTCAndroidShiftTime,"text","Leaflet GPS data");
+		 buffer.push(clientId,event.data,date.getTime()-UTCAndroidShiftTime,"text","Leaflet GPS data");
    }
    
    ws.onerror = function(event) {
@@ -103,7 +108,7 @@ function initStream(){
    }
 }
 
-registerForSync(clientId,onCallback);
+buffer.register(clientId,onCallback);
 initmap();
 initStream();
 </script>	

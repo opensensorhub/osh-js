@@ -58,10 +58,12 @@ function parseTextData(data){
 }
 
 function parseVideoData(timeStamp){
-	return new Date(event.timeStamp).toISOString()+", binary";
+	return new Date(timeStamp).toISOString()+", binary";
 }
 
-addObserver(onCallback);
+var buffer = getBufferSingleton();
+
+buffer.addObserver(onCallback);
 
 </script>
 </div>
