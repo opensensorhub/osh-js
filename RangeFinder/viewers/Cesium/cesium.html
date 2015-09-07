@@ -1,6 +1,11 @@
 <div id="cesiumViewerId">
 
 
+<link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
+<script src="viewers/Cesium/js/Cesium.js"></script>
+<script id="al" pe="text/javascript" src="common/js/sync.js"></script>
+<script id="al" type="text/javascript" src="common/js/angular/jquery-2.1.4.min.js"></script>
+
 <div id="cesiumContainer"></div>
 
 <style>
@@ -31,10 +36,6 @@
         <label class="building-label"><input class="building-input" type="checkbox" id="building"  onclick="handleClick(this);" checked/>Toggle Buildings</label>
     </div>
 </form>
-
-<link rel="stylesheet" type="text/css" href="viewers/Cesium/css/Widget.css" />
-<script src="viewers/Cesium/js/Cesium.js"></script>
-<script id="al" pe="text/javascript" src="common/js/sync.js"></script>
 
 <script>
 var viewer = new Cesium.Viewer('cesiumContainer', {
@@ -155,6 +156,23 @@ function onPostRender(){
 viewer.scene.postRender.addEventListener(onPostRender);
 
 //SYNC PART
+
+function getGPSRequest(mode){
+  if(mode == BUFFER_MODE.REPLAY){
+	 return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-08-11T20:19:00Z/2055-01-01&replaySpeed=5";
+  } else if (mode == BUFFER_MODE.REALTIME){
+	 return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,now/2055-01-01";
+  }
+}
+
+function getTargetRequest(mode){
+  if(mode == BUFFER_MODE.REPLAY){
+	 return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-08-11T20:19:01Z/2055-01-01&replaySpeed=5";
+  } else if (mode == BUFFER_MODE.REALTIME){
+	 return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,now/2055-01-01";
+  }
+}
+
 //Set buffer in a replay mode
 var buffer = getBufferSingleton();
 buffer.setStartDate(new Date("2015-08-11T20:19:00Z"));
@@ -197,7 +215,7 @@ function onCallbackGpsPos(data){
 buffer.register(clientGpsPosId,onCallbackGpsPos);
 
 // query GPS stream from SOS using websockets
-var ws = new WebSocket("ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-08-11T20:19:00Z/2055-01-01&replaySpeed=5");
+var ws = new WebSocket(getGPSRequest(buffer.getMode()));
 ws.binaryType = 'arraybuffer';
 
 ws.onmessage = function (event) {
@@ -256,7 +274,7 @@ function onCallbackTarget(data){
 buffer.register(clientTargetId,onCallbackTarget);
 
 // query target location stream from SOS using websockets
-var ws2 = new WebSocket("ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-08-11T20:19:01Z/2055-01-01&replaySpeed=5");
+var ws2 = new WebSocket(getTargetRequest(buffer.getMode()));
 ws2.binaryType = 'arraybuffer';
 ws2.onmessage = function (event) {
 	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
@@ -276,5 +294,39 @@ function getAltitude(lat, lng) {
 	if(altitude == 'undefined' || altitude <= 0) altitude = 0.1;
 	return altitude;
 }
+
+$("body" ).on("modeChange", function( event, mode) {
+  ws.close();
+  ws2.close();
+  
+  ws = new WebSocket(getGPSRequest(mode));
+  ws.binaryType = 'arraybuffer';
+
+  ws.onmessage = function (event) {
+	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+	var tokens = rec.trim().split(",");
+	var date = new Date(tokens[0]);
+	buffer.push(clientGpsPosId,event.data,date.getTime(),"text","Cesium Replay GPS data");
+  }
+
+  ws.onerror = function (event) {
+	 ws.close();
+  }
+
+  ws2 = new WebSocket(getTargetRequest(mode));
+  ws2.binaryType = 'arraybuffer';
+  ws2.onmessage = function (event) {
+	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+	var tokens = rec.trim().split(",");
+	var date = new Date(tokens[0]);
+	buffer.push(clientTargetId,event.data,date.getTime(),"text","Cesium Replay GPS data");
+   }
+
+   ws2.onerror = function (event) {
+    ws2.close();
+   }
+
+});
+
 </script>
 </div>

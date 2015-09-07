@@ -16,11 +16,11 @@
             </button>
         </div>
         <div style="float:right">
-			 <input type="radio" class="mode-input" id="radio1" name="radios" value="" checked="checked" onclick='switchMode(BUFFER_MODE.REPLAY);' >
-				<label for="radio1">Replay</label>
+			 <input type="radio" class="mode-input" id="replayButton" value="1" name="radios" ng-model="mode" ng-change='changeMode(widgets,1)'>
+				<label for="replayButton">Replay</label>
 			 </input>
-			 <input type="radio" class="mode-input" id="radio2" name="radios" value="false" onclick='switchMode(BUFFER_MODE.REALTIME)'>
-				<label for="radio2">Real-time</label>
+			 <input type="radio" class="mode-input" id="realtimeButton" value="0" name="radios" ng-model="mode" ng-change='changeMode(widgets,0)'>
+				<label for="realtimeButton">Real-time</label>
 			 </input>
 		</div>
     </div>
@@ -46,9 +46,4 @@
     </div>
 </div>
 
-<script>
-function switchMode(mode){
-	var buffer = getBufferSingleton();
-	buffer.switchMode(mode);
-}
-</script>
+

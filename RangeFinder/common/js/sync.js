@@ -154,3 +154,7 @@ Buffer.prototype.switchMode = function(mode){
 		this.buffer = new Array();
 	}
 }
+
+Buffer.prototype.getMode = function(){
+	return this.currentMode;
+}

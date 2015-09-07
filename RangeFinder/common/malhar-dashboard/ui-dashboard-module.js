@@ -129,6 +129,14 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 					
                 }, scope.addWidgetInternal = function(event, widgetDef) {
 					event.preventDefault(), scope.addWidget(widgetDef);
+				}, scope.changeMode = function(widgets,mode) {
+					var buffer = getBufferSingleton();
+					if(mode != buffer.getMode()){
+						scope.mode = mode;
+						buffer.switchMode(mode);
+						$( "body").trigger( "modeChange",[mode]);
+					}
+		
 				}, scope.saveDashboard = function(force) {
                     scope.options.explicitSave ? ("number" != typeof scope.options.unsavedChangeCount && (scope.options.unsavedChangeCount = 0), force ? (scope.options.unsavedChangeCount = 0, scope.dashboardState.save(scope.widgets)) : ++scope.options.unsavedChangeCount) : scope.dashboardState.save(scope.widgets)
                 }, scope.externalSaveDashboard = function() {

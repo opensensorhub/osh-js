@@ -136,8 +136,11 @@ function addWidgets(def){
 			defaultWidgets: defaultWidgets,
 			storage: $window.localStorage,
 			storageId: "demo"
-		}
+		};
 		
+		//mode set for realtime/replay default radio button
+		$scope.mode = 1;
+		 		
 	}).factory("widgetDefinitions", function() {
 		return widgetDefinitions;
 	}).value("defaultWidgets", defaultWidgets);
