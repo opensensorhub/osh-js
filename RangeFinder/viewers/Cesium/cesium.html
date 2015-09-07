@@ -307,7 +307,7 @@ function getNewTargetWebSocket(mode){
 	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
 	var tokens = rec.trim().split(",");
 	var date = new Date(tokens[0]);
-	buffer.push(clientTargetId,event.data,date.getTime(),"text","Cesium Replay GPS data");
+	buffer.push(clientTargetId,event.data,date.getTime(),"text","Cesium Target GPS data");
    }
 
    ws2.onerror = function (event) {
