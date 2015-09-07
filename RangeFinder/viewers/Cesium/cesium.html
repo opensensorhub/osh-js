@@ -215,19 +215,7 @@ function onCallbackGpsPos(data){
 buffer.register(clientGpsPosId,onCallbackGpsPos);
 
 // query GPS stream from SOS using websockets
-var ws = new WebSocket(getGPSRequest(buffer.getMode()));
-ws.binaryType = 'arraybuffer';
-
-ws.onmessage = function (event) {
-	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
-	var tokens = rec.trim().split(",");
-	var date = new Date(tokens[0]);
-	buffer.push(clientGpsPosId,event.data,date.getTime(),"text","Cesium Replay GPS data");
-}
-
-ws.onerror = function (event) {
-	ws.close();
-}
+var ws = getNewGPSWebSocket(buffer.getMode());
 
 var clientTargetId = "d11012b0-afda-4b20-a3f5-79e804d9e99b";
 
@@ -274,18 +262,7 @@ function onCallbackTarget(data){
 buffer.register(clientTargetId,onCallbackTarget);
 
 // query target location stream from SOS using websockets
-var ws2 = new WebSocket(getTargetRequest(buffer.getMode()));
-ws2.binaryType = 'arraybuffer';
-ws2.onmessage = function (event) {
-	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
-	var tokens = rec.trim().split(",");
-	var date = new Date(tokens[0]);
-	buffer.push(clientTargetId,event.data,date.getTime(),"text","Cesium Replay GPS data");
-}
-
-ws2.onerror = function (event) {
-	ws2.close();
-}
+var ws2 = getNewTargetWebSocket(buffer.getMode());
     
 function getAltitude(lat, lng) {
 	var position = Cesium.Cartesian3.fromDegrees(lng, lat, 0, viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
@@ -299,7 +276,14 @@ $("body" ).on("modeChange", function( event, mode) {
   ws.close();
   ws2.close();
   
-  ws = new WebSocket(getGPSRequest(mode));
+  ws = getNewGPSWebSocket(mode);
+  ws2 = getNewTargetWebSocket(mode);
+
+});
+
+
+function getNewGPSWebSocket(mode){
+  var ws = new WebSocket(getGPSRequest(mode));
   ws.binaryType = 'arraybuffer';
 
   ws.onmessage = function (event) {
@@ -312,8 +296,12 @@ $("body" ).on("modeChange", function( event, mode) {
   ws.onerror = function (event) {
 	 ws.close();
   }
+  return ws;
+}
 
-  ws2 = new WebSocket(getTargetRequest(mode));
+
+function getNewTargetWebSocket(mode){
+  var ws2 = new WebSocket(getTargetRequest(mode));
   ws2.binaryType = 'arraybuffer';
   ws2.onmessage = function (event) {
 	var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
@@ -325,8 +313,7 @@ $("body" ).on("modeChange", function( event, mode) {
    ws2.onerror = function (event) {
     ws2.close();
    }
-
-});
-
+   return ws2;
+}
 </script>
 </div>
