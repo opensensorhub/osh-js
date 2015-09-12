@@ -1,8 +1,8 @@
-const WIDGET_WIDTH_DESKTOP = "33%";
-const WIDGET_HEIGHT_DESKTOP = "100%";
+const WIDGET_WIDTH_DESKTOP = "50%";
+const WIDGET_HEIGHT_DESKTOP = "38%";
 
 const WIDGET_WIDTH_MOBILE = "100%";
-const WIDGET_HEIGHT_MOBILE = "55%";
+const WIDGET_HEIGHT_MOBILE = "330px";
 
 var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","matchMedia","ng-code-mirror"]).config(function($routeProvider) {
 			$routeProvider.when("/", {
@@ -117,19 +117,30 @@ function addWidgets(def){
 		
 		if(!$scope.desktop){
 			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
+			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
+		}else{
+			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
+			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
 		}
 		
 		// Using dynamic method `on`, which will set the variables initially and then update the variable on window resize
-		//$scope.desktop = screenSize.on('md, lg', function(match){
-		//	$scope.desktop = match;
-		//	$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
-		//	$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
-		//});
+		$scope.desktop = screenSize.on('md, lg', function(match){
+			$scope.desktop = match;
+			$.mynamespace.width = WIDGET_WIDTH_DESKTOP;
+			$.mynamespace.height = WIDGET_HEIGHT_DESKTOP;
+		});
+		
 		$scope.mobile = screenSize.on('xs, sm', function(match){
 			$scope.mobile = match;
 			$.mynamespace.width = WIDGET_WIDTH_MOBILE;
+			$.mynamespace.height = WIDGET_HEIGHT_MOBILE;
 		});
 
+		//update widgetsDefinition depending on Mobile/Desktop view
+		for(var i = 0;i < widgetDefinitions.length;i++){
+			widgetDefinitions[i].size.height = $.mynamespace.height;
+		}
+		
 		$scope.dashboardOptions = {
 			widgetButtons: !0,
 			widgetDefinitions: widgetDefinitions,
@@ -251,8 +262,7 @@ function addWidgets(def){
 }
 
 function resursiveLoad(arrayFiles){
-	var file = arrayFiles[0];
-	arrayFiles.shift();
+	var file = arrayFiles.shift();
 	if(file != null){
 		if(file.type == 'remoteJs'){
 			$.cachedScript( file.src ).done(function( script, textStatus ) {

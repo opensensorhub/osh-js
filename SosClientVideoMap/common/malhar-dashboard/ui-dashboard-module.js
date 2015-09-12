@@ -518,37 +518,68 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                 attr !== widget.directive && (templateString += " " + attr + '="' + value + '"')
             })), templateString += "></div>"), templateString
         }, $scope.grabResizer = function(e) {
-            var widget = $scope.widget,
-                widgetElm = $element.find(".widget");
-            if (1 === e.which) {
-                e.stopPropagation(), e.originalEvent.preventDefault();
-                var initX = e.clientX,
-                    pixelWidth = widgetElm.width(),
-                    pixelHeight = widgetElm.height(),
-                    widgetStyleWidth = widget.containerStyle.width,
-                    widthUnits = widget.widthUnits,
-                    unitWidth = parseFloat(widgetStyleWidth),
-                    $marquee = angular.element('<div class="widget-resizer-marquee" style="height: ' + pixelHeight + "px; width: " + pixelWidth + 'px;"></div>');
-                widgetElm.append($marquee);
-                var transformMultiplier = unitWidth / pixelWidth,
-                    mousemove = function(e) {
-                        var curX = e.clientX,
-                            pixelChange = curX - initX,
-                            newWidth = pixelWidth + pixelChange;
-                        $marquee.css("width", newWidth + "px")
-                    },
-                    mouseup = function(e) {
-                        jQuery($window).off("mousemove", mousemove), $marquee.remove();
-                        var curX = e.clientX,
-                            pixelChange = curX - initX,
-                            unitChange = Math.round(pixelChange * transformMultiplier * 100) / 100,
-                            newWidth = 1 * unitWidth + unitChange;
-                        widget.setWidth(newWidth + widthUnits), $scope.$emit("widgetChanged", widget), $scope.$apply()
-                        $("#"+$scope.widget.name).trigger('widgetResized',[newWidth,widgetElm.height()]);
-                    };
-                jQuery($window).on("mousemove", mousemove).one("mouseup", mouseup);
-                
-            }
+            var widgetElm = $element.find('.widget');
+
+			  // ignore middle- and right-click
+			  if (e.which !== 1) {
+				return;
+			  }
+
+			  e.stopPropagation();
+			  e.originalEvent.preventDefault();
+
+			  // get the starting horizontal position
+			  var initX = e.clientX;
+			  // console.log('initX', initX);
+
+			  // Get the current width of the widget and dashboard
+			  var pixelWidth = widgetElm.width();
+			  var pixelHeight = widgetElm.height();
+
+			  // create marquee element for resize action
+			  var $marquee = angular.element('<div class="widget-resizer-marquee" style="height: ' + pixelHeight + 'px; width: ' + pixelWidth + 'px;"></div>');
+			  widgetElm.append($marquee);
+
+			  // updates marquee with preview of new width
+			  var mousemove = function (e) {
+				var curX = e.clientX;
+				var pixelChange = curX - initX;
+				var newWidth = pixelWidth + pixelChange;
+				$marquee.css('width', newWidth + 'px');
+			  };
+
+			  // sets new widget width on mouseup
+			  var mouseup = function (e) {
+				// remove listener and marquee
+				jQuery($window).off('mousemove', mousemove);
+				$marquee.remove();
+
+				// calculate width change
+				var curX = e.clientX;
+				var pixelChange = curX - initX;
+
+				//var widgetContainer = widgetElm.parent(); // widget container responsible for holding widget width and height
+				var widgetContainer = widgetElm.find('.widget-content');
+
+				var diff = pixelChange;
+				var width = parseInt(widgetContainer.css('width'), 10);
+				var newWidth = (width + diff);
+
+				//$scope.widget.style.height = newHeight + 'px';
+
+				$scope.widget.setWidth(newWidth + 'px');
+
+				$scope.$emit('widgetChanged', $scope.widget);
+				$scope.$apply(); // make AngularJS to apply style changes
+
+				$scope.$broadcast('widgetResized', {
+				  width: newWidth
+				});
+				
+				$("#"+$scope.widget.name).trigger('widgetResized',[newWidth,widgetElm.height()]);
+			  };
+
+			  jQuery($window).on('mousemove', mousemove).one('mouseup', mouseup);
         }, $scope.grabSouthResizer = function (e) {
 			  var widgetElm = $element.find('.widget');
 

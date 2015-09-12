@@ -1,5 +1,6 @@
 <div id="highChartViewerId">
 
+<div id="windChart" style="height:100%;width:100%;"></div>
 
 <script id="al" src="viewers/WeatherWindDirection/js/jquery-2.1.4.min.js"></script>
 
@@ -11,19 +12,22 @@
 var chart;
 
 $(function () {
+	var height = document.getElementById("windChart").offsetHeight+15;
+	var width = document.getElementById("windChart").offsetWidth;
+	
         var langWindDir = new Array("N", "NNE", "NE", "ENE","E", "ESE", "SE", "SSE","S", "SSW", "SW", "WSW","W", "WNW", "NW", "NNW");
         function windDirLang ($winddir)        {
                 return langWindDir[Math.floor(((parseInt($winddir,10) + 11.25) / 22.5))];
         }
         chart = new Highcharts.Chart({
             chart: {
-                renderTo: 'highChartViewerId',
+                renderTo: 'windChart',
                 type: 'gauge',
                 plotBackgroundColor: null,
                 plotBackgroundImage: null,
                 plotBorderWidth: 0,
                 plotShadow: false,
-                height:330
+                height:height
             },
             title: {
                 text: null
@@ -108,7 +112,10 @@ $(function () {
 });
 
 $('#highChartViewerId').on('widgetResized',function(event,width,height) {
-    chart.setSize(width-10, height, doAnimation = true);
+	//apply 15 of margin
+	var height = document.getElementById("windChart").offsetHeight;
+	var width = document.getElementById("windChart").offsetWidth;
+    chart.setSize(width, height+15, doAnimation = true);
 });
 </script>
 </div>

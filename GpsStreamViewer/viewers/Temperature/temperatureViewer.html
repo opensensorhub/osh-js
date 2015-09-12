@@ -1,5 +1,6 @@
 <div id="TemperatureWidgetViewerId">
 
+<div id="tempChart" style="height:100%;width:100%;"></div>
 <!-- Load Depending Libraries -->
 <script src="viewers/Temperature/js/d3.v3.js"></script>
 <script type="text/javascript" src="viewers/Temperature/js/gauge.js"></script>
@@ -8,8 +9,10 @@
 var gauges = [];
 			
 function createGauge(name, label, min, max){
+	var height = document.getElementById("tempChart").offsetHeight;
+	var width = document.getElementById("tempChart").offsetWidth;
 	var config = {
-		size: 310,
+		size: Math.min(height,width),
 		label: label,
 		min: undefined != min ? min : 0,
 		max: undefined != max ? max : 60,
@@ -20,7 +23,7 @@ function createGauge(name, label, min, max){
 	config.yellowZones = [{ from: config.min + range*0.5, to: config.min + range*0.9 }];
 	config.redZones = [{ from: config.min + range*0.9, to: config.max }];
 	
-	gauges[name] = new Gauge("TemperatureWidgetViewerId", config);
+	gauges[name] = new Gauge("tempChart", config);
 	gauges[name].render();
 }
 
@@ -49,8 +52,11 @@ ws.onerror = function(event) {
 //CAN BE REMOVED
 $('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) {
     gauges["temperature"].remove();
+    //apply 50 of margin
+    var height = document.getElementById("tempChart").offsetHeight;
+	var width = document.getElementById("tempChart").offsetWidth;
     var config = {
-		size: Math.min.apply(Math,[width,height]),
+		size: Math.min(height,width),
 		label: "Temperature",
 		min: 0,
 		max: 60,
@@ -61,7 +67,7 @@ $('#TemperatureWidgetViewerId').on('widgetResized',function(event,width,height) 
 	config.yellowZones = [{ from: config.min + range*0.5, to: config.min + range*0.9 }];
 	config.redZones = [{ from: config.min + range*0.9, to: config.max }];
 	
-	gauges["temperature"] = new Gauge("TemperatureWidgetViewerId", config);
+	gauges["temperature"] = new Gauge("tempChart", config);
 	gauges["temperature"].render();
     
 });
