@@ -11,15 +11,16 @@
 <script>
 var chart;
 
-$(function () {
-	var height = document.getElementById("windChart").offsetHeight+15;
-	var width = document.getElementById("windChart").offsetWidth;
-	
-        var langWindDir = new Array("N", "NNE", "NE", "ENE","E", "ESE", "SE", "SSE","S", "SSW", "SW", "WSW","W", "WNW", "NW", "NNW");
-        function windDirLang ($winddir)        {
-                return langWindDir[Math.floor(((parseInt($winddir,10) + 11.25) / 22.5))];
-        }
-        chart = new Highcharts.Chart({
+$(function() {
+    var height = document.getElementById("windChart").offsetHeight + 15;
+    var width = document.getElementById("windChart").offsetWidth;
+
+    var langWindDir = new Array("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW");
+
+    function windDirLang($winddir) {
+        return langWindDir[Math.floor(((parseInt($winddir, 10) + 11.25) / 22.5))];
+    }
+    chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'windChart',
                 type: 'gauge',
@@ -27,18 +28,23 @@ $(function () {
                 plotBackgroundImage: null,
                 plotBorderWidth: 0,
                 plotShadow: false,
-                height:height
+                height: height
             },
             title: {
                 text: null
             },
             credits: {
-                                enabled: false
-                },
-                pane: {
-                   background: [{
+                enabled: false
+            },
+            pane: {
+                background: [{
                     backgroundColor: {
-                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
                         stops: [
                             [0, '#FFF'],
                             [1, '#333']
@@ -48,7 +54,12 @@ $(function () {
                     outerRadius: '109%'
                 }, {
                     backgroundColor: {
-                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
                         stops: [
                             [0, '#333'],
                             [1, '#FFF']
@@ -69,7 +80,7 @@ $(function () {
             yAxis: {
                 min: 0,
                 max: 360,
-       
+
                 tickInterval: 22.5,
                 tickWidth: 2,
                 tickPosition: 'inside',
@@ -78,10 +89,9 @@ $(function () {
                 labels: {
                     step: 2,
                     rotation: 'auto',
-                                formatter:
-                                function() {
-                                        return windDirLang(this.value);
-                                }
+                    formatter: function() {
+                        return windDirLang(this.value);
+                    }
                 }
             },
             series: [{
@@ -92,30 +102,30 @@ $(function () {
                 }
             }]
         },
-        function (chart) {
-			//query Weather stream
-			var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
-			ws.binaryType = 'arraybuffer';
-			ws.onmessage = function(event) {
-			 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
-			 var tokens = rec.trim().split(",");
-			 
-			 var windDirection = parseFloat(tokens[4]);
-			 var point = chart.series[0].points[0];
-             point.update(Math.floor(windDirection * 100) / 100);
-			}
+        function(chart) {
+            //query Weather stream
+            var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now/2055-01-01Z");
+            ws.binaryType = 'arraybuffer';
+            ws.onmessage = function(event) {
+                var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+                var tokens = rec.trim().split(",");
 
-			ws.onerror = function(event) {
-			  ws.close();
-			}
-    });
+                var windDirection = parseFloat(tokens[4]);
+                var point = chart.series[0].points[0];
+                point.update(Math.floor(windDirection * 100) / 100);
+            }
+
+            ws.onerror = function(event) {
+                ws.close();
+            }
+        });
 });
 
-$('#highChartViewerId').on('widgetResized',function(event,width,height) {
-	//apply 15 of margin
-	var height = document.getElementById("windChart").offsetHeight;
-	var width = document.getElementById("windChart").offsetWidth;
-    chart.setSize(width, height+15, doAnimation = true);
+$('#highChartViewerId').on('widgetResized', function(event, width, height) {
+    //apply 15 of margin
+    var height = document.getElementById("windChart").offsetHeight;
+    var width = document.getElementById("windChart").offsetWidth;
+    chart.setSize(width, height + 15, doAnimation = true);
 });
 </script>
 </div>

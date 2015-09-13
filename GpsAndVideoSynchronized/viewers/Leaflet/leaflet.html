@@ -6,7 +6,6 @@
 <script id="al" pe="text/javascript" src="common/js/sync.js"></script>
 
 <script>
-
 var map;
 var marker;
 var tickTime = 49;
@@ -21,94 +20,99 @@ buffer.setEndDate(new Date("2015-02-16T08:09:00Z"));
 buffer.setReplayFactor(5);
 
 function initmap() {
-	// set up the map
-	map = new L.Map('leafletMap');
+    // set up the map
+    map = new L.Map('leafletMap');
 
-	// create the tile layer with correct attribution
-	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-	var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 17, attribution: osmAttrib});		
-     //,
+    // create the tile layer with correct attribution
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {
+        minZoom: 1,
+        maxZoom: 17,
+        attribution: osmAttrib
+    });
+    //,
 
-	map.setView(new L.LatLng(0, 0),15);
-	map.addLayer(osm);
-	
-	
-	//create marker
-	var markerIcon = L.icon({
-		 iconAnchor: [16, 16],
+    map.setView(new L.LatLng(0, 0), 15);
+    map.addLayer(osm);
+
+
+    //create marker
+    var markerIcon = L.icon({
+        iconAnchor: [16, 16],
         iconUrl: 'viewers/Leaflet/img/draw_point_on.png'
     });
-    
-	marker = L.marker([0,0],{icon:markerIcon}).addTo(map);
-	
-	//create path
-	path = new L.Polyline(pathCoordinates, {
-		color: 'blue',
-		weight: 3,
-		opacity: 0.5,
-		smoothFactor: 1
-	});
-	
-	path.addTo(map);
-}
 
+    marker = L.marker([0, 0], {
+        icon: markerIcon
+    }).addTo(map);
+
+    //create path
+    path = new L.Polyline(pathCoordinates, {
+        color: 'blue',
+        weight: 3,
+        opacity: 0.5,
+        smoothFactor: 1
+    });
+
+    path.addTo(map);
+}
 
 var clientId = "1260ea0d-d2ac-407d-8dcc-1b03f5c8c8ff";
 
-function onCallback(data){
-	 var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-	 var tokens = rec.trim().split(",");
-	 var lat = parseFloat(tokens[1]);
-	 var lon = parseFloat(tokens[2]);
-	 var alt = parseFloat(tokens[3]);
-	 
-	 if(!isNaN(lon) && !isNaN(lat)){
-		 var newLatLng = new L.LatLng(lat, lon);
-		 marker.setLatLng(newLatLng); 
-		 
-		 if((++tickTime) % 1 == 0){
-			map.setView(marker.getLatLng(),map.getZoom()); 
-			tickTime = 0;
-		 }
-		 
-		 //update path
-		 if(pathCoordinates.length > 200){
-			pathCoordinates.shift();
-		 }
-		 
-		 map.removeLayer(path);
-		 pathCoordinates.push(new L.LatLng(lat, lon));
-		 path = new L.Polyline(pathCoordinates, {
-			color: 'blue',
-			weight: 5,
-			opacity: 0.5,
-			smoothFactor: 1
-		});
-		
-		path.addTo(map);
-	}
+function onCallback(data) {
+    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
+    var tokens = rec.trim().split(",");
+    var lat = parseFloat(tokens[1]);
+    var lon = parseFloat(tokens[2]);
+    var alt = parseFloat(tokens[3]);
+
+    if (!isNaN(lon) && !isNaN(lat)) {
+        var newLatLng = new L.LatLng(lat, lon);
+        marker.setLatLng(newLatLng);
+
+        if ((++tickTime) % 1 == 0) {
+            map.setView(marker.getLatLng(), map.getZoom());
+            tickTime = 0;
+        }
+
+        //update path
+        if (pathCoordinates.length > 200) {
+            pathCoordinates.shift();
+        }
+
+        map.removeLayer(path);
+        pathCoordinates.push(new L.LatLng(lat, lon));
+        path = new L.Polyline(pathCoordinates, {
+            color: 'blue',
+            weight: 5,
+            opacity: 0.5,
+            smoothFactor: 1
+        });
+
+        path.addTo(map);
+    }
 }
 
-function initStream(){
-	
-	// GPS
-   // query SOS GPS stream
-   var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=5");
-   ws.binaryType = 'arraybuffer';
-   ws.onmessage = function(event) {
-		 var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
-		 var tokens = rec.trim().split(",");
-		 var date = new Date(tokens[0]);
-		 buffer.push(clientId,event.data,date.getTime()-UTCAndroidShiftTime,"text","Leaflet GPS data");
-   }
-   
-   ws.onerror = function(event) {
-	  ws.close();
-   }
+function initStream() {
+
+    // GPS
+    // query SOS GPS stream
+    var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=3");
+    ws.binaryType = 'arraybuffer';
+    ws.onmessage = function(event) {
+        var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+        var tokens = rec.trim().split(",");
+        var date = new Date(tokens[0]);
+        buffer.push(clientId, event.data, date.getTime() - UTCAndroidShiftTime, "text", "Leaflet GPS data");
+    }
+
+    ws.onerror = function(event) {
+        ws.close();
+    }
 }
 
-buffer.register(clientId,onCallback);
+buffer.register(clientId, onCallback);
 initmap();
 initStream();
 </script>	
