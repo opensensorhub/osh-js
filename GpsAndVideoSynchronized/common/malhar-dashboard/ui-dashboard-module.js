@@ -451,12 +451,11 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 		  }
 
 		  if (this.size && _.has(this.size, 'width')) {
-			 if(typeof($.mynamespace.width) != 'undefined'){
-				this.setWidth($.mynamespace.width);
-			 }else{
-				this.setWidth(this.size.width);
-			 }	 
-			
+			 if(this.size.width != 'undefined'){
+          this.setWidth(this.size.width);
+       } else {
+          this.setWidth($.mynamespace.width);
+       }
 		  }
 		}
 		

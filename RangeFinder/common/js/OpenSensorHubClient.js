@@ -67,18 +67,37 @@ function addWidgets(def){
 				directiveName += directiveNameSplit[j].toLowerCase()+"-";
 			}
 			
-			var style = {
-					width : "33%",
-					height : "50%"
+			var customStyle = {
+          mobile : {
+					  width : null,
+					  height : null
+          },
+          desktop : {
+            width : null,
+					  height : null
+          }
 			};
 			
 			if(typeof(prop.style) != 'undefined'){
-				if(typeof(prop.style.height) != 'undefined'){
-					style.height = prop.style.height;
-				}
-				if(typeof(prop.style.width) != 'undefined'){
-					style.width = prop.style.width;
-				}
+        //custom desktop style
+        if(typeof(prop.style.desktop) != 'undefined'){
+          if(typeof(prop.style.desktop.height) != 'undefined'){
+					  customStyle.desktop.height = prop.style.desktop.height;
+				  }
+				  if(typeof(prop.style.desktop.width) != 'undefined'){
+					  customStyle.desktop.width = prop.style.desktop.width;
+				  }
+        }
+        
+        //custom mobile style
+        if(typeof(prop.style.mobile) != 'undefined'){
+          if(typeof(prop.style.mobile.height) != 'undefined'){
+					  customStyle.mobile.height = prop.style.mobile.height;
+				  }
+				  if(typeof(prop.style.mobile.width) != 'undefined'){
+					  customStyle.mobile.width = prop.style.mobile.width;
+				  }
+        }
 			}
 			directiveName += "sensor";
  			widgetDefinitions[pos] = {
@@ -87,11 +106,10 @@ function addWidgets(def){
 				directive : directiveName,
 				source : prop.url,
 				size: {
-				  width: style.width,
-				  height: style.height
+				  width: null,
+				  height: null
 				},
-				enableVerticalResize : true
-				
+        customStyle : customStyle
 			}
 			
 			if(prop.hasOwnProperty("defaultWidget") && prop.defaultWidget){
@@ -138,17 +156,41 @@ function addWidgets(def){
 
 		//update widgetsDefinition depending on Mobile/Desktop view
 		for(var i = 0;i < widgetDefinitions.length;i++){
-			widgetDefinitions[i].size.height = $.mynamespace.height;
+      if($scope.desktop){
+        if(widgetDefinitions[i].customStyle.desktop.height == null){
+          widgetDefinitions[i].size.height = $.mynamespace.height;
+        } else{
+          widgetDefinitions[i].size.height  = widgetDefinitions[i].customStyle.desktop.height;
+        }
+        if(widgetDefinitions[i].customStyle.desktop.width == null){
+          widgetDefinitions[i].size.width = $.mynamespace.width;
+        } else{
+          widgetDefinitions[i].size.width  = widgetDefinitions[i].customStyle.desktop.width;
+        }
+      }else{
+        if(widgetDefinitions[i].customStyle.mobile.height == null){
+          widgetDefinitions[i].size.height = $.mynamespace.height;
+        }else{
+          widgetDefinitions[i].size.height  = widgetDefinitions[i].customStyle.mobile.height;
+        }
+        if(widgetDefinitions[i].customStyle.mobile.width == null){
+          widgetDefinitions[i].size.width = $.mynamespace.width;
+        }else{
+          widgetDefinitions[i].size.width  = widgetDefinitions[i].customStyle.mobile.width;
+        }
+      }
 		}
 		
+    
 		$scope.dashboardOptions = {
 			widgetButtons: !0,
 			widgetDefinitions: widgetDefinitions,
 			defaultWidgets: defaultWidgets,
 			storage: $window.localStorage,
 			storageId: "demo"
-		};
+		}
 		
+	}).factory("widgetDefinitions", function() {
 		//mode set for realtime/replay default radio button
 		$scope.mode = 1;
 		 		

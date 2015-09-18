@@ -5,7 +5,7 @@
 <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-<title>Sos Client Video Map</title>
+<title>GPS And Video Synchronized</title>
 <link href="common/css/GpsStreamViewer.css" rel="stylesheet">
 
 <!-- ANGULAR CODE MIRROR -->
@@ -56,41 +56,25 @@ var properties = [
 		name : "Video",
 		url  : "viewers/Video/video.html",
 		renderDivId :  "videoViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
+		defaultWidget : true
 	},
 	{
 		name : "LeafLet",
 		url  : "viewers/Leaflet/leaflet.html",
 		renderDivId :  "leafletViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
+		defaultWidget : true
 	},
 	{
 		name : "Cesium",
 		url  : "viewers/Cesium/cesium.html",
 		renderDivId :  "cesiumViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
+		defaultWidget : true
 	},
 	{
 		name : "Log",
 		url  : "viewers/Console/console.html",
 		renderDivId :  "consoleViewerId",
-		defaultWidget : true,
-		style : {
-			width : "50%",
-			height : "330px"
-		}
+		defaultWidget : true
 	}
 ];
 

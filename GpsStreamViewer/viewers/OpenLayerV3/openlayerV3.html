@@ -149,5 +149,10 @@ ws.onmessage = function(event) {
 ws.onerror = function(event) {
     ws.close();
 }
+//on window resizing
+//CAN BE DELETED
+$('#OpenLayerV3ViewerId').on('widgetResized', function(event, width, height) {
+  map.updateSize();
+});
 </script>
 </div>
