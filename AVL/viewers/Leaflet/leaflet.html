@@ -17,6 +17,7 @@ var lastDataMap = new Hashtable();
 var fireDepartmentNormalIcon = 'icons/firemen.png';
 var fireDepartmentEventIcon = 'icons/firemen-event.png';
 
+var wsFire;
 
 function initmap() {
     // set up the map
@@ -40,13 +41,17 @@ function initmap() {
 
 var firstGps = true;
 
-function initLayerStream(layerId,normalIcon,eventIcon,offering) {
+function initLayerStream(layerId,normalIcon,eventIcon,offering,startDateTime,endDateTime) {
 
     // GPS
     // query SOS GPS stream
-    var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering="+offering+"&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,2014-03-30T02:34:19Z/2014-03-30T05:05:03Z&replaySpeed=20");
-    ws.binaryType = 'arraybuffer';
-    ws.onmessage = function(event) {
+    if(typeof(wsFire) != 'undefined' && wsFire != null){
+      wsFire.close();
+    }
+    
+    wsFire = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering="+offering+"&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,"+startDateTime+"/"+endDateTime+"&replaySpeed=20");
+    wsFire.binaryType = 'arraybuffer';
+    wsFire.onmessage = function(event) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
         var tokens = rec.trim().split(",");
 
@@ -59,6 +64,8 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering) {
         var status = tokens[6];
         var eventId = tokens[7];
         
+        $("#slider").dateRangeSlider("values", date, new Date(endDateTime));
+
         var popupContent = "<b>mtd-id : </b>"+mdtId+"</br>";
             popupContent += "<b>veh-id : </b>"+vehId+"</br>";
             popupContent += "<b>unit-id : </b>"+unitId+"</br>";
@@ -122,7 +129,6 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering) {
             });
             marker.setIcon(markerIcon);
             
-            
             //need to recreate popup
             marker.bindPopup(popupContent,{offset: new L.Point(0, -16)});
             if(isOpen){
@@ -148,7 +154,7 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering) {
         }
     }
 
-    ws.onerror = function(event) {
+    wsFire.onerror = function(event) {
         this.close();
     }
 }
@@ -168,7 +174,8 @@ $("#fireDepartmentId,#fireDepartmentId-1").change(function(){
     }else{
       //create the hashtable and init web socket connection
       vehicleMap.put(layerId,new Hashtable());
-      initLayerStream(layerId,fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl");
+      var dateValues = $("#slider").dateRangeSlider("values");
+      initLayerStream(layerId,fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",dateValues.min.toISOString(),dateValues.max.toISOString());
     }
   } else {
     //remove marker from the map but they still exists and are updated since the socket is openned
@@ -245,5 +252,28 @@ $('#filter').on("input", function() {
 });
 
 
+$("#slider").bind("valuesChanging", function(e, data){
+
+  //close websocket
+  if(typeof(wsFire) != 'undefined' & wsFire != null){
+     wsFire.close();
+     wsFire = null;
+  }
+});
+
+// Preferred method
+$("#slider").on("userValuesChanged", function(e, data){
+    if($("#fireDepartmentId").is(":checked")){
+      //remove marker from the map but they still exists and are updated since the socket is openned
+      var values = vehicleMap.get("fireDepartment").values();
+      for(var i =0;i < values.length;i++){
+        map.removeLayer(values[i]);
+      }
+      vehicleMap.get("fireDepartment").clear();
+      
+      //TODO : make it generic by using class for layer and store icons,layerId and offering
+      initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.values.min.toISOString(),data.values.max.toISOString());
+    }
+});
 </script>	
 </div>

@@ -175,7 +175,7 @@ pre code {
   
   
 .navbar-default{ /* assigning the top bar to the entire navbar div element */
-   text-align: center !important;
+   /*text-align: center !important;*/
    box-shadow: inset 0px 1px 0px #e7e7e7 !important; /* initial gray color to the top bar */   
 }
 

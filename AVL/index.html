@@ -32,6 +32,29 @@
 <!-- Radix Tree -->
 <script type="text/javascript" src="common/js/RadixTree.js"></script>
 
+<!-- Range Slider -->
+<link rel="stylesheet" href="common/js/jQRangeSlider/css/classic-min.css" type="text/css" />
+<script src="common/js/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
+
+<style>
+
+.ui-rangeSlider .ui-rangeSlider-innerBar {
+    height: 20px !important;
+    background: #DDD !important;
+    margin: 0px 6px 3px 6px !important;
+}
+
+.sliderCustomLabel {
+  border-left:1px solid #f8f8f8;
+  height:20px;
+}
+
+.ui-ruler-tick-label {
+  margin: 0 0 0 -2px;
+  background-color: #DDD;
+}
+</style>
+
 </head>
 
 <body ng-app="app">
@@ -81,6 +104,7 @@
         </ul>
       </div>
     </div>
+    <div id="slider" style="width:400px;float:right;margin-top:-30px;"></div>
   </nav>
 	<div ng-view=""></div>
 </body>
@@ -105,7 +129,48 @@ var properties = [
 ];
 
 addWidgets(properties);	
+//2014-03-30T02:34:19Z/2014-03-30T05:05:03
+function TwoDigits(val){
+    if (val < 10){
+         return "0" + val;
+    }
+    
+    return val;
+}
 
+$("#slider").dateRangeSlider({
+    bounds: {min: new Date("2014-03-29T05:00:00Z"), max: new Date("2014-03-30T05:05:03Z")},
+    defaultValues: {min: new Date("2014-03-29T21:00:00Z"), max: new Date("2014-03-30T05:05:03Z")},
+    formatter: function(value){
+        var hours = value.getHours(),
+            minutes = value.getMinutes();
+        return TwoDigits(hours) + ":" + TwoDigits(minutes);
+    },
+    
+    scales: [{
+        first: function (value) {
+            return value;
+        },
+        end: function (value) {
+            return value;
+        },
+        next: function (value) {
+            var next = new Date(value);
+            return new Date(next.setHours(value.getHours() + 1));
+        },
+        label: function (value) {
+            if( value.getHours() %  3 == 0){
+              return (value.getHours() > 0 )?TwoDigits(value.getHours()): 0;            
+            } else {
+              return "";
+            }
+        },
+        format: function(tickContainer, tickStart, tickEnd){ 
+          tickContainer.addClass("sliderCustomLabel");
+        }
+    }]
+});
+          
 $('ul.dropdown-menu').click(function(e){
     e.stopPropagation();
 });
