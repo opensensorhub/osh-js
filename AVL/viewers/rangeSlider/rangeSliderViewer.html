@@ -1,0 +1,53 @@
+<div id="rangeSliderViewerId" style="margin-top:30px">
+
+<!-- Range Slider -->
+<link rel="stylesheet" href="viewers/rangeSlider/jQRangeSlider/css/classic-min.css" type="text/css" />
+<script src="viewers/rangeSlider/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
+
+
+<div id="slider" class="rangeSlider"></div>
+
+<script>
+function TwoDigits(val){
+    if (val < 10){
+         return "0" + val;
+    }
+    
+    return val;
+}
+
+$("#slider").dateRangeSlider({
+    bounds: {min: new Date("2014-03-29T05:00:00Z"), max: new Date("2014-03-30T05:05:03Z")},
+    defaultValues: {min: new Date("2014-03-29T21:00:00Z"), max: new Date("2014-03-30T05:05:03Z")},
+    formatter: function(value){
+        var hours = value.getHours(),
+            minutes = value.getMinutes();
+        return TwoDigits(hours) + ":" + TwoDigits(minutes);
+    },
+    
+    scales: [{
+        first: function (value) {
+            return value;
+        },
+        end: function (value) {
+            return value;
+        },
+        next: function (value) {
+            var next = new Date(value);
+            return new Date(next.setHours(value.getHours() + 1));
+        },
+        label: function (value) {
+            if( value.getHours() %  3 == 0){
+              return (value.getHours() > 0 )?TwoDigits(value.getHours()): 0;            
+            } else {
+              return "";
+            }
+        },
+        format: function(tickContainer, tickStart, tickEnd){ 
+          tickContainer.addClass("sliderCustomLabel");
+        }
+    }]
+});
+</script>
+
+</div>
