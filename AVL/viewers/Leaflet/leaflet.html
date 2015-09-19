@@ -1,5 +1,24 @@
 <div id="leafletViewerId">
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />	
+<style>
+
+.ui-rangeSlider .ui-rangeSlider-innerBar {
+    height: 20px !important;
+    background: #DDD !important;
+    margin: 0px 6px 3px 6px !important;
+}
+
+.sliderCustomLabel {
+  border-left:1px solid #f8f8f8;
+  height:20px;
+}
+
+.ui-ruler-tick-label {
+  margin: 0 0 0 -2px;
+  background-color: #DDD;
+}
+</style>
+
 <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 
 <div id="leafletMap" style="height:100%;width:100%"></div>
@@ -64,7 +83,7 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering,startDateTime,end
         var status = tokens[6];
         var eventId = tokens[7];
         
-        $("#slider").dateRangeSlider("values", date, new Date(endDateTime));
+        updateSlider(date,new Date(endDateTime));
 
         var popupContent = "<b>mtd-id : </b>"+mdtId+"</br>";
             popupContent += "<b>veh-id : </b>"+vehId+"</br>";
@@ -162,6 +181,8 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering,startDateTime,end
 initmap();
 
 
+
+// ----------- THIS PART INTERACTS WITH THE MAIN APP  FUNCTIONS--------//
 $("#fireDepartmentId,#fireDepartmentId-1").change(function(){
    var layerId = "fireDepartment";
    if(this.checked){
@@ -252,8 +273,17 @@ $('#filter').on("input", function() {
 });
 
 
-$("#slider").bind("valuesChanging", function(e, data){
 
+var isSliding = false;
+
+function updateSlider(startDate,endDate){
+  if(!isSliding){
+     $("#slider").dateRangeSlider("values", startDate, endDate);
+  }
+}
+
+$("#slider").bind("valuesChanging", function(e, data){
+  isSliding = true;
   //close websocket
   if(typeof(wsFire) != 'undefined' & wsFire != null){
      wsFire.close();
@@ -264,6 +294,7 @@ $("#slider").bind("valuesChanging", function(e, data){
 // Preferred method
 $("#slider").on("userValuesChanged", function(e, data){
     if($("#fireDepartmentId").is(":checked")){
+      isSliding = false;
       //remove marker from the map but they still exists and are updated since the socket is openned
       var values = vehicleMap.get("fireDepartment").values();
       for(var i =0;i < values.length;i++){
@@ -273,6 +304,7 @@ $("#slider").on("userValuesChanged", function(e, data){
       
       //TODO : make it generic by using class for layer and store icons,layerId and offering
       initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.values.min.toISOString(),data.values.max.toISOString());
+      
     }
 });
 </script>	
