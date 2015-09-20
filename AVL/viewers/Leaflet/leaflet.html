@@ -30,6 +30,10 @@ var radixTreeVehId = new RadixTree();
 
 //keep the vehicle data
 var vehicleMap = new Hashtable();
+
+//keep path for each vehicle
+var pathsMap = new Hashtable();
+
 //keep last data
 var lastDataMap = new Hashtable();
 
@@ -102,7 +106,7 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering,startDateTime,end
         
         if(typeof(vehId) != 'undefined'){
           var marker;
-          
+          var path;
           //create and insert new vehicle into hashTable
           if(!vehicleMap.get(layerId).containsKey(vehId)){
           
@@ -128,8 +132,33 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering,startDateTime,end
             
             lastDataMap.put(vehId,{iconTypeUrl:iconTypeUrl,popup:popupContent});
             
+            //create polyline (for path)
+            path = new L.Polyline([], {
+                color: 'blue',
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            
+            pathsMap.get(layerId).put(vehId,path);
+            
+            //events
+            marker.on('click', function(event){
+              //display or not the path
+              var currentPath = pathsMap.get(layerId).get(vehId);
+              if(map.hasLayer(currentPath)){
+                //remove from the map
+                map.removeLayer(currentPath);
+              } else {
+                //add to the map
+                currentPath.addTo(map);
+              }
+            });
           } else {
+            //get existing marker
             marker = vehicleMap.get(layerId).get(vehId);
+            //get existing path
+            path = pathsMap.get(layerId).get(vehId);
           }
           
           radixTreeStatus.insert(status,{key : vehId,layer : layerId});
@@ -164,8 +193,31 @@ function initLayerStream(layerId,normalIcon,eventIcon,offering,startDateTime,end
           }
           
           if (!isNaN(lon) && !isNaN(lat)) {
+            //update marker position
             var newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
+
+            //get the last coordinates
+            var coords = path.getLatLngs();
+            var cLength = coords.length;
+            
+            var isSameCoords = false;
+            
+            if(cLength > 0){
+              var lastCoords = coords[cLength-1];
+              isSameCoords = (lastCoords.lat == lat) && (lastCoords.lon == lon); 
+            }
+            
+            //if the last coords is the same as the current one, don't add to the path
+            if(!isSameCoords){
+              path.addLatLng(newLatLng);
+            }
+            
+            //update path position
+            if(path.getLatLngs().length > 200){
+               path.splice(0,1);
+            }
+            //center on view if first data
             if(firstGps){
                map.setView(marker.getLatLng(), map.getZoom());
                firstGps = false;
@@ -199,6 +251,7 @@ $("#fireDepartmentId,#fireDepartmentId-1").change(function(){
     }else{
       //create the hashtable and init web socket connection
       vehicleMap.put(layerId,new Hashtable());
+      pathsMap.put(layerId,new Hashtable());
       var dateValues = $("#slider").dateRangeSlider("values");
       initLayerStream(layerId,fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",dateValues.min.toISOString(),dateValues.max.toISOString());
     }
@@ -279,34 +332,8 @@ $('#filter').on("input", function() {
 
 var lock = false;
 
-/*$("#editButton").click(function () {
-  if(editValidate.hasClass("glyphicon-edit")){
-    lock = true;
-    }
-});
-
-$("#validateButton").click(function () {
-
-   if(vehicleMap.containsKey("fireDepartment")){
-      //remove marker from the map but they still exists and are updated since the socket is openned
-      var values = vehicleMap.get("fireDepartment").values();
-      for(var i =0;i < values.length;i++){
-        map.removeLayer(values[i]);
-      }
-  
-  
-      vehicleMap.get("fireDepartment").clear();
-      var data = $("#slider").dateRangeSlider("values");
-      //TODO : make it generic by using class for layer and store icons,layerId and offering
-      initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.min.toISOString(),data.max.toISOString(),$("#fireDepartmentId").is(":checked"));
-    }
-    lock = false;
-});*/
-var lock = false;
-
-$("#editButton").click(function () {
-  var editValidate = $("#editValidate");
-  if(!editValidate.hasClass("glyphicon-ok")){
+$("#editButton").on("change",function (event,state) {
+  if(state == "validate"){
     if(vehicleMap.containsKey("fireDepartment")){
       //remove marker from the map but they still exists and are updated since the socket is openned
       var values = vehicleMap.get("fireDepartment").values();
@@ -314,6 +341,7 @@ $("#editButton").click(function () {
         map.removeLayer(values[i]);
       }
       vehicleMap.get("fireDepartment").clear();
+      pathsMap.get("fireDepartment").clear();
       var data = $("#slider").dateRangeSlider("values");
       //TODO : make it generic by using class for layer and store icons,layerId and offering
       initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.min.toISOString(),data.max.toISOString(),($("#fireDepartmentId").is(":checked") | $("#fireDepartmentId-1").is(":checked")));
@@ -321,7 +349,7 @@ $("#editButton").click(function () {
     lock = false;
   } else {
     lock = true;
-  }
+  } 
 });
 
 function updateSlider(startDate,endDate){

@@ -93,12 +93,13 @@ $("#editButton").click(function () {
       $("#editValidate").addClass("glyphicon-ok");
       $('#editButton').attr("title", "validate");	
       $("#slider").dateRangeSlider("enable");
-      
+      $("#editButton").trigger( "change", ["edit"] );
     } else {
       $("#editValidate").removeClass("glyphicon-ok");
       $("#editValidate").addClass("glyphicon-edit");
       $('#editButton').attr("title", "edit");	
       $("#slider").dateRangeSlider("disable");
+      $("#editButton").trigger( "change", ["validate"] );
     }    
     return false;
 });
