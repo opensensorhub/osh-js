@@ -1,11 +1,18 @@
-<div id="rangeSliderViewerId" style="margin-top:30px">
+<div id="rangeSliderViewerId">
 
 <!-- Range Slider -->
 <link rel="stylesheet" href="viewers/rangeSlider/jQRangeSlider/css/classic-min.css" type="text/css" />
 <script src="viewers/rangeSlider/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
 
-
-<div id="slider" class="rangeSlider"></div>
+<div id="slider" class="rangeSlider" style="margin-top:30px;width:92%;float:left;"></div>
+<div style="float:right;margin-top: 28px;margin-right: 10px;">
+   <button type="button" class="btn btn-default btn-sm" id="editButton" title="Edit">
+     <span class="glyphicon glyphicon-edit"></span> 
+   </button>
+   <button type="button" class="btn btn-default btn-sm" style="visibility: hidden;" id="validateButton" title="Validate">
+     <span class="glyphicon glyphicon-ok"></span> 
+   </button>
+</div>
 
 <script>
 function TwoDigits(val){
@@ -18,6 +25,7 @@ function TwoDigits(val){
 
 $("#slider").dateRangeSlider({
     bounds: {min: new Date("2014-03-29T05:00:00Z"), max: new Date("2014-03-30T05:05:03Z")},
+    enabled: false,
     defaultValues: {min: new Date("2014-03-29T21:00:00Z"), max: new Date("2014-03-30T05:05:03Z")},
     formatter: function(value){
         var hours = value.getHours(),
@@ -47,6 +55,22 @@ $("#slider").dateRangeSlider({
           tickContainer.addClass("sliderCustomLabel");
         }
     }]
+});
+
+$("#editButton").click(function () {
+    $('#editButton').attr("disabled", true);
+    $('#validateButton').attr("disabled", false);		
+    $('#validateButton').css({"visibility":"visible"});
+    $("#slider").dateRangeSlider("enable");
+    return false;
+});
+
+$("#validateButton").click(function () {
+    $('#editButton').attr("disabled", false);	
+    $('#validateButton').attr("disabled", true);
+    $('#validateButton').css({"visibility":"hidden"});
+    $("#slider").dateRangeSlider("disable");		
+    return false;
 });
 </script>
 
