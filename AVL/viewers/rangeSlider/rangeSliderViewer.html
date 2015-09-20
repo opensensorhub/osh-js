@@ -4,13 +4,41 @@
 <link rel="stylesheet" href="viewers/rangeSlider/jQRangeSlider/css/classic-min.css" type="text/css" />
 <script src="viewers/rangeSlider/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
 
-<div id="slider" class="rangeSlider" style="margin-top:30px;width:92%;float:left;"></div>
+<style>
+
+@media (min-width: $screen-xs) and (max-width: $screen-sm) {
+  .rangeSlider{
+      width:200px;
+      float:right;
+      margin-top:-30px;
+    }
+}
+
+@media (min-width: $screen-md) and (max-width: $screen-lg) {
+  .rangeSlider{
+      width:400px;
+      float:right;
+      margin-top:-30px;
+    }
+}
+
+.adapt-size {
+  width:85%;
+  margin-top:30px;
+  float:left;
+}
+@media (min-width: 768px) {
+  .adapt-size {
+    width:94%;
+    margin-top:30px;
+    float:left;
+  }
+}
+</style>
+<div id="slider" class="rangeSlider adapt-size"></div>
 <div style="float:right;margin-top: 28px;margin-right: 10px;">
    <button type="button" class="btn btn-default btn-sm" id="editButton" title="Edit">
-     <span class="glyphicon glyphicon-edit"></span> 
-   </button>
-   <button type="button" class="btn btn-default btn-sm" style="visibility: hidden;" id="validateButton" title="Validate">
-     <span class="glyphicon glyphicon-ok"></span> 
+     <span class="glyphicon glyphicon-edit" id="editValidate"></span> 
    </button>
 </div>
 
@@ -58,18 +86,20 @@ $("#slider").dateRangeSlider({
 });
 
 $("#editButton").click(function () {
-    $('#editButton').attr("disabled", true);
-    $('#validateButton').attr("disabled", false);		
-    $('#validateButton').css({"visibility":"visible"});
-    $("#slider").dateRangeSlider("enable");
-    return false;
-});
-
-$("#validateButton").click(function () {
-    $('#editButton').attr("disabled", false);	
-    $('#validateButton').attr("disabled", true);
-    $('#validateButton').css({"visibility":"hidden"});
-    $("#slider").dateRangeSlider("disable");		
+    
+    var editValidate = $("#editValidate");
+    if(editValidate.hasClass("glyphicon-edit")){
+      $("#editValidate").removeClass("glyphicon-edit");
+      $("#editValidate").addClass("glyphicon-ok");
+      $('#editButton').attr("title", "validate");	
+      $("#slider").dateRangeSlider("enable");
+      
+    } else {
+      $("#editValidate").removeClass("glyphicon-ok");
+      $("#editValidate").addClass("glyphicon-edit");
+      $('#editButton').attr("title", "edit");	
+      $("#slider").dateRangeSlider("disable");
+    }    
     return false;
 });
 </script>

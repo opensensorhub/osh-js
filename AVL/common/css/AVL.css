@@ -173,22 +173,6 @@ pre code {
   }
   
   
-@media (min-width: $screen-xs) and (max-width: $screen-sm) {
-  .rangeSlider{
-      width:200px;
-      float:right;
-      margin-top:-30px;
-    }
-}
-
-@media (min-width: $screen-md) and (max-width: $screen-lg) {
-  .rangeSlider{
-      width:400px;
-      float:right;
-      margin-top:-30px;
-    }
-}
-  
 .navbar-default{ /* assigning the top bar to the entire navbar div element */
    /*text-align: center !important;*/
    box-shadow: inset 0px 1px 0px #e7e7e7 !important; /* initial gray color to the top bar */   

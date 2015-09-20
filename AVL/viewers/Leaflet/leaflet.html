@@ -279,8 +279,10 @@ $('#filter').on("input", function() {
 
 var lock = false;
 
-$("#editButton").click(function () {
-  lock = true;
+/*$("#editButton").click(function () {
+  if(editValidate.hasClass("glyphicon-edit")){
+    lock = true;
+    }
 });
 
 $("#validateButton").click(function () {
@@ -299,6 +301,27 @@ $("#validateButton").click(function () {
       initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.min.toISOString(),data.max.toISOString(),$("#fireDepartmentId").is(":checked"));
     }
     lock = false;
+});*/
+var lock = false;
+
+$("#editButton").click(function () {
+  var editValidate = $("#editValidate");
+  if(!editValidate.hasClass("glyphicon-ok")){
+    if(vehicleMap.containsKey("fireDepartment")){
+      //remove marker from the map but they still exists and are updated since the socket is openned
+      var values = vehicleMap.get("fireDepartment").values();
+      for(var i =0;i < values.length;i++){
+        map.removeLayer(values[i]);
+      }
+      vehicleMap.get("fireDepartment").clear();
+      var data = $("#slider").dateRangeSlider("values");
+      //TODO : make it generic by using class for layer and store icons,layerId and offering
+      initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.min.toISOString(),data.max.toISOString(),($("#fireDepartmentId").is(":checked") | $("#fireDepartmentId-1").is(":checked")));
+    }
+    lock = false;
+  } else {
+    lock = true;
+  }
 });
 
 function updateSlider(startDate,endDate){
