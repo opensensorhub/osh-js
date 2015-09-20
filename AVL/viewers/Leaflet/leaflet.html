@@ -284,19 +284,21 @@ $("#editButton").click(function () {
 });
 
 $("#validateButton").click(function () {
-   //remove marker from the map but they still exists and are updated since the socket is openned
-   var values = vehicleMap.get("fireDepartment").values();
-   for(var i =0;i < values.length;i++){
-      map.removeLayer(values[i]);
-  }
+
+   if(vehicleMap.containsKey("fireDepartment")){
+      //remove marker from the map but they still exists and are updated since the socket is openned
+      var values = vehicleMap.get("fireDepartment").values();
+      for(var i =0;i < values.length;i++){
+        map.removeLayer(values[i]);
+      }
   
-  if(vehicleMap.containsKey("fireDepartment")){
+  
       vehicleMap.get("fireDepartment").clear();
       var data = $("#slider").dateRangeSlider("values");
       //TODO : make it generic by using class for layer and store icons,layerId and offering
       initLayerStream("fireDepartment",fireDepartmentNormalIcon,fireDepartmentEventIcon,"urn:mysos:avl",data.min.toISOString(),data.max.toISOString(),$("#fireDepartmentId").is(":checked"));
-  }
-  lock = false;
+    }
+    lock = false;
 });
 
 function updateSlider(startDate,endDate){
