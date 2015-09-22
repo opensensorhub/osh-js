@@ -1,8 +1,8 @@
-const WIDGET_WIDTH_DESKTOP = "50%";
-const WIDGET_HEIGHT_DESKTOP = "38%";
+var WIDGET_WIDTH_DESKTOP = "50%";
+var WIDGET_HEIGHT_DESKTOP = "38%";
 
-const WIDGET_WIDTH_MOBILE = "100%";
-const WIDGET_HEIGHT_MOBILE = "330px";
+var WIDGET_WIDTH_MOBILE = "100%";
+var WIDGET_HEIGHT_MOBILE = "330px";
 
 var app = null;
 function init(){
