@@ -332,14 +332,18 @@ function getNewTargetWebSocket(mode) {
     return ws2;
 }
 
-$("#building").click(function(cb) {
-    var entities = viewer.entities.values;
-    for (var i = 0; i < entities.length; i++) {
-        var entity = entities[i];
-        if (entity.model != null) {
-            entity.show = cb.checked;
-        }
-    }
+$("#building").change(function(){
+    var collection = viewer.entities;
+		var entities = collection.values;
+		var length = entities.length;
+		collection.suspendEvents();
+		for (var i = 0; i < length; ++i) {
+			var entity = entities[i];
+      if (entity.model != null) {
+			  entity.show = this.checked;
+      }
+		}
+		collection.resumeEvents();
 });
 
 
