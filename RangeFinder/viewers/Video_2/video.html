@@ -1,41 +1,38 @@
 <div id="videoViewerId2">
-<img id="video" width="100%" height="100%"></img>
-<script>
+    <img id="video" width="100%" height="100%"></img>
+    <script>
+        //put the url here
+        var url = "";
 
-//put the url here
-var url = "";
+        var lastTime = 0;
+        var clientId = "c0214fe2-7fec-43c2-8089-55be228f4681";
 
-var lastTime = 0;
-var clientId = "c0214fe2-7fec-43c2-8089-55be228f4681";
+        function onCallback(data) {
+            var imgBlob = new Blob([data]);
+            var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
+            var oldBlobURL = imgTag.src;
+            imgTag.src = blobURL;
+            window.URL.revokeObjectURL(oldBlobURL);
+        }
 
-function onCallback(data){
-  var imgBlob = new Blob([data]);
-      var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
-      var oldBlobURL = imgTag.src;          
-      imgTag.src = blobURL;
-      window.URL.revokeObjectURL(oldBlobURL);
-}
+        //Set buffer in a replay mode
+        var buffer = getBufferSingleton();
+        buffer.setStartDate(new Date("2015-08-11T20:19:00Z"));
+        buffer.setEndDate(new Date("2055-01-01T00:00:00Z"));
+        buffer.setReplayFactor(3);
 
-//Set buffer in a replay mode
-var buffer = getBufferSingleton();
-buffer.setStartDate(new Date("2015-08-11T20:19:00Z"));
-buffer.setEndDate(new Date("2055-01-01T00:00:00Z"));
-buffer.setReplayFactor(3);
+        buffer.register(clientId, onCallback);
 
-buffer.register(clientId, onCallback);
- 
-var imgTag = document.getElementById("video");
-// query video stream from SOS using websockets
-var wws = new WebSocket(url);
-ws.binaryType = 'arraybuffer';
-ws.onmessage = function (event) {
-    var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
-    pushIntoBuffer(clientId,event.data,timeStamp*1000,"video","Video frame");  
-}
-ws.onerror = function (event) {
-   ws.close();
-}
-
-</script>
+        var imgTag = document.getElementById("video");
+        // query video stream from SOS using websockets
+        var wws = new WebSocket(url);
+        ws.binaryType = 'arraybuffer';
+        ws.onmessage = function(event) {
+            var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
+            pushIntoBuffer(clientId, event.data, timeStamp * 1000, "video", "Video frame");
+        }
+        ws.onerror = function(event) {
+            ws.close();
+        }
+    </script>
 </div>
-
