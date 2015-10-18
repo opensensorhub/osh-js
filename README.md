@@ -1,2 +1,1 @@
-# OpenSensorHub-client
-client to connect to the OpenSensorHub project
+# js-client-examples
