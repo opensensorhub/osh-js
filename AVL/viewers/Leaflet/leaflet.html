@@ -78,7 +78,7 @@
         avlLayer.ws.close();
       }
 
-      avlLayer.ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=" + avlLayer.offering + "&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime," + startDateTime + "/" + endDateTime + "&replaySpeed=20");
+      avlLayer.ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=" + avlLayer.offering + "&observedProperty=http://sensorml.com/ont/swe/property/AVLData&temporalFilter=phenomenonTime," + startDateTime + "/" + endDateTime + "&replaySpeed=20");
       avlLayer.ws.binaryType = 'arraybuffer';
       avlLayer.ws.onmessage = function(event) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
