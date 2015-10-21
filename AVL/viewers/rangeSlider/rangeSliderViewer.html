@@ -2,8 +2,6 @@
 
 <!-- Range Slider -->
 <link rel="stylesheet" href="viewers/rangeSlider/jQRangeSlider/css/classic-min.css" type="text/css" />
-<script src="viewers/rangeSlider/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
-
 <style>
 
 @media (min-width: $screen-xs) and (max-width: $screen-sm) {
@@ -34,7 +32,28 @@
     float:left;
   }
 }
+
+.glyphicon-custom-color {
+  color : red;
+}
+
+.ui-rangeSlider .ui-rangeSlider-innerBar {
+  height: 20px !important;
+  background: #DDD !important;
+  margin: 0px 6px 3px 6px !important;
+}
+
+.sliderCustomLabel {
+  border-left: 1px solid #f8f8f8;
+  height: 20px;
+}
+
+.ui-ruler-tick-label {
+  margin: 0 0 0 -2px;
+  background-color: #DDD;
+}
 </style>
+<script src="viewers/rangeSlider/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
 <div id="slider" class="rangeSlider adapt-size"></div>
 <div style="float:right;margin-top: 28px;margin-right: 10px;">
    <button type="button" class="btn btn-default btn-sm" id="editButton" title="Edit">
@@ -54,7 +73,7 @@ function TwoDigits(val){
 $("#slider").dateRangeSlider({
     bounds: {min: new Date("2014-03-29T05:00:00Z"), max: new Date("2014-03-30T04:59:53Z")},
     enabled: false,
-    defaultValues: {min: new Date("2014-03-29T21:00:00Z"), max: new Date("2014-03-30T04:59:53Z")},
+    defaultValues: {min: new Date("2014-03-29T21:58:00Z"), max: new Date("2014-03-30T04:59:53Z")},
     formatter: function(value){
         var hours = value.getHours(),
             minutes = value.getMinutes();
@@ -91,12 +110,14 @@ $("#editButton").click(function () {
     if(editValidate.hasClass("glyphicon-edit")){
       $("#editValidate").removeClass("glyphicon-edit");
       $("#editValidate").addClass("glyphicon-ok");
+      $("#editValidate").addClass("glyphicon-custom-color");
       $('#editButton').attr("title", "validate");	
       $("#slider").dateRangeSlider("enable");
       $("#editButton").trigger( "change", ["edit"] );
     } else {
       $("#editValidate").removeClass("glyphicon-ok");
       $("#editValidate").addClass("glyphicon-edit");
+      $("#editValidate").removeClass("glyphicon-custom-color");
       $('#editButton').attr("title", "edit");	
       $("#slider").dateRangeSlider("disable");
       $("#editButton").trigger( "change", ["validate"] );

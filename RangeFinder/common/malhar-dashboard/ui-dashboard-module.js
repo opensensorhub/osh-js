@@ -68,17 +68,10 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
 						title = widgetToInstantiate.title ? widgetToInstantiate.title : defaultWidgetDefinition.title ? defaultWidgetDefinition.title : "Widget " + count++, widgetToInstantiate = jQuery.extend(!0, {}, defaultWidgetDefinition, widgetToInstantiate);
 						var widget = new WidgetModel(widgetToInstantiate, {
 							title: title,
-							source : widgetToInstantiate.source
+							source : widgetToInstantiate.source,
+              showSource : widgetToInstantiate.showSource
 						});
 						scope.widgets.push(widget), doNotSave || scope.saveDashboard();	
-
-						//get content and evaluate it
-						//TBD
-						/*$.get( widget.source, function( data ) {
-							var script = $(data).find("script");
-							console.log(script.text());
-							eval(script.text());
-						});*/					
 					}
                 }, scope.removeWidget = function(widget) {
                     scope.widgets.splice(_.indexOf(scope.widgets, widget), 1), scope.saveDashboard()

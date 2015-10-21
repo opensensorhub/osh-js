@@ -119,7 +119,7 @@ Buffer.prototype.computeNextData = function(){
 
 Buffer.prototype.waitCB = function(){
 	var next = this.buffer.shift();
-	if(typeof(next) != 'undefined'){
+	if(typeof(next) != 'undefined' && !isNaN(next.timeStamp)){
 		this.clientTable.get(next.id)(next.data);
 	}
 	this.computeNextData();
@@ -136,6 +136,7 @@ Buffer.prototype.start = function(){
 	 }.bind(this),this.bufferDelay);
 }
 
+//TBD dupplicated
 Buffer.prototype.switchMode = function(mode){
 	if(mode != this.currentMode){
 		if(mode == BUFFER_MODE.REPLAY){
@@ -153,6 +154,25 @@ Buffer.prototype.switchMode = function(mode){
 		}
 		this.buffer = new Array();
 	}
+}
+
+
+//TBD dupplicated
+Buffer.prototype.reset = function(){
+  if(this.currentMode == BUFFER_MODE.REPLAY){
+			this.bufferDelay = defaultDelay;
+			this.currentMode = BUFFER_MODE.REPLAY;
+			this.startCurrentTime = null;
+			this.startedBuffering = false;
+			this.noData = false;
+		} else if(this.currentMode == BUFFER_MODE.REALTIME){
+			this.bufferDelay = 0;
+			this.currentMode = BUFFER_MODE.REALTIME;
+			this.startCurrentTime = new Date().getTime();
+			this.startedBuffering = true;
+			this.noData = true;
+		}
+		this.buffer = new Array();
 }
 
 Buffer.prototype.getMode = function(){

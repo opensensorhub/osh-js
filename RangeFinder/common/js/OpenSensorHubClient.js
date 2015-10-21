@@ -99,12 +99,19 @@ function addWidgets(def){
 				  }
         }
 			}
+      
+      var showSource = true;
+      if(typeof(prop.showSource) != 'undefined' && prop.showSource != null){
+        showSource = prop.showSource;
+      }
+      
 			directiveName += "sensor";
  			widgetDefinitions[pos] = {
 				name : prop.renderDivId,
 				title : prop.name,
 				directive : directiveName,
 				source : prop.url,
+        showSource : showSource,
 				size: {
 				  width: null,
 				  height: null

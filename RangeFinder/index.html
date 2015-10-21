@@ -51,28 +51,38 @@ var properties = [
 		name : "Cesium",
 		url  : "viewers/Cesium/cesium.html",
 		renderDivId :  "cesiumViewerId",
-		defaultWidget : true
+		defaultWidget : true,
+    style : {
+      desktop : {
+        width : "100%",
+        height : "78%"
+      },
+      mobile : {
+        width : "100%",
+        height : "87%"
+      }
+    }
 	},
-	{
-		name : "Log",
-		url  : "viewers/Console/console.html",
-		renderDivId :  "consoleViewerId",
-		defaultWidget : true
-	},
-	{
-		name : "Video1",
-		url  : "viewers/Video/video.html",
-		renderDivId :  "videoViewerId",
-		defaultWidget : true
-	},
-	{
-		name : "Video2",
-		url  : "viewers/Video_2/video.html",
-		renderDivId :  "videoViewerId2",
-		defaultWidget : true
+  {
+		name : "RangeSlider",
+		url  : "viewers/rangeSlider/rangeSliderViewer.html",
+		renderDivId :  "rangeSliderViewerId",
+		defaultWidget : true,
+    showSource : false,
+    style : {
+      desktop : {
+        width : "100%",
+        height : "53px"
+      },
+      mobile : {
+        width : "100%",
+        height : "53px"
+      }
+    }
 	}
 ];
 
 addWidgets(properties);	
+
 </script>
 </html>
