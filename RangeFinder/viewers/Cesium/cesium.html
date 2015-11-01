@@ -163,11 +163,11 @@
 
         function getGPSRequest(mode) {
             if (mode == BUFFER_MODE.REPLAY) {
-                var dateValues = $("#slider").dateRangeSlider("values");
+                /*var dateValues = $("#slider").dateRangeSlider("values");
                 var startTime = dateValues.min.toISOString();
-                var endTime = dateValues.max.toISOString();
-                //return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-08-11T20:19:00Z/2055-01-01&replaySpeed=3";
-                return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&replaySpeed=3";
+                var endTime = dateValues.max.toISOString();*/
+                return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-08-11T20:19:00Z/2055-01-01&replaySpeed=3";
+                //return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&replaySpeed=3";
             } else if (mode == BUFFER_MODE.REALTIME) {
                 return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,now/2055-01-01";
             }
@@ -175,22 +175,24 @@
 
         function getTargetRequest(mode) {
             if (mode == BUFFER_MODE.REPLAY) {
-                //return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-08-11T20:19:01Z/2055-01-01&replaySpeed=3";
-                var dateValues = $("#slider").dateRangeSlider("values");
+                return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-08-11T20:19:01Z/2055-01-01&replaySpeed=3";
+               /* var dateValues = $("#slider").dateRangeSlider("values");
                 var startTime = dateValues.min.toISOString();
                 var endTime = dateValues.max.toISOString();
-                return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&replaySpeed=3";
+                return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&replaySpeed=3";*/
             } else if (mode == BUFFER_MODE.REALTIME) {
                 return "ws://sensiasoft.net:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,now/2055-01-01";
             }
         }
 
         //Set buffer in a replay mode
-        var dateValues = $("#slider").dateRangeSlider("values");
+        //var dateValues = $("#slider").dateRangeSlider("values");
                 
         var buffer = getBufferSingleton();
-        buffer.setStartDate(dateValues.min);
-        buffer.setEndDate(dateValues.max);
+       // buffer.setStartDate(dateValues.min);
+       // buffer.setEndDate(dateValues.max);
+       buffer.setStartDate(new Date("2015-08-11T20:19:00Z"));
+       buffer.setEndDate(new Date("2055-01-01"));
         buffer.setReplayFactor(3);
         //no bufferring
         buffer.setDelay(0);
@@ -382,10 +384,10 @@
       });
 
       function updateSlider(startDate) {
-        if (!lock) {
+       /* if (!lock) {
           var dateValues = $("#slider").dateRangeSlider("values");
           $("#slider").dateRangeSlider("values", startDate, dateValues.max);
-        }
+        }*/
       }
     });
     </script>
