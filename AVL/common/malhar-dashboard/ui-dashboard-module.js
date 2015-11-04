@@ -262,8 +262,8 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
             this.stringifyStorage && (state = JSON.stringify(state)), this.storage.setItem(this.id, state), this.options.unsavedChangeCount = 0
         },
         load: function() {
-            var serialized = this.storage.getItem(this.id);
-            this.clear(), serialized ? "object" == typeof serialized && "function" == typeof serialized.then ? this._handleAsyncLoad(serialized) : this._handleSyncLoad(serialized) : this._addDefaultLayouts()
+            //var serialized = this.storage.getItem(this.id);
+            this.clear(), /*serialized ? "object" == typeof serialized && "function" == typeof serialized.then ? this._handleAsyncLoad(serialized) : this._handleSyncLoad(serialized) : */this._addDefaultLayouts()
         },
         clear: function() {
             this.layouts = [], this.states = {}
@@ -302,13 +302,14 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
             }), result
         },
         _handleSyncLoad: function(serialized) {
-            var deserialized;
+            return void this._addDefaultLayouts()
+            /*var deserialized;
             if (this.stringifyStorage) try {
                 deserialized = JSON.parse(serialized)
             } catch (e) {
                 return void this._addDefaultLayouts()
             } else deserialized = serialized;
-            return this.storageHash !== deserialized.storageHash ? void this._addDefaultLayouts() : (this.states = deserialized.states, void this.add(deserialized.layouts))
+            return this.storageHash !== deserialized.storageHash ? void this._addDefaultLayouts() : (this.states = deserialized.states, void this.add(deserialized.layouts))*/
         },
         _handleAsyncLoad: function(promise) {
             var self = this;
@@ -356,12 +357,13 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
             return this.stringify && (item = JSON.stringify(item)), this.storage.setItem(this.id, item), !0
         },
         load: function() {
-            if (!this.storage) return null;
+            return null;
+            /*if (!this.storage) return null;
             var serialized;
-            return serialized = this.storage.getItem(this.id), serialized ? "object" == typeof serialized && "function" == typeof serialized.then ? this._handleAsyncLoad(serialized) : this._handleSyncLoad(serialized) : null
+            return serialized = this.storage.getItem(this.id), serialized ? "object" == typeof serialized && "function" == typeof serialized.then ? this._handleAsyncLoad(serialized) : this._handleSyncLoad(serialized) : null*/
         },
         _handleSyncLoad: function(serialized) {
-            var deserialized, result = [];
+            /*var deserialized, result = [];
             if (!serialized) return null;
             if (this.stringify) try {
                 deserialized = JSON.parse(serialized)
@@ -374,7 +376,8 @@ angular.module("ui.dashboard", ["ui.bootstrap", "ui.sortable"]), angular.module(
                     widgetDefinition = this.widgetDefinitions.getByName(savedWidgetDef.name);
                 widgetDefinition ? widgetDefinition.hasOwnProperty("storageHash") && widgetDefinition.storageHash !== savedWidgetDef.storageHash ? $log.info('Widget Definition Object with name "' + savedWidgetDef.name + '" was found but the storageHash property on the widget definition is different from that on the serialized widget loaded from storage. hash from storage: "' + savedWidgetDef.storageHash + '", hash from WDO: "' + widgetDefinition.storageHash + '"') : result.push(savedWidgetDef) : $log.warn('Widget with name "' + savedWidgetDef.name + '" was not found in given widget definition objects')
             }
-            return result
+            return result*/
+            return null
         },
         _handleAsyncLoad: function(promise) {
             var self = this,

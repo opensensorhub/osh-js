@@ -15,7 +15,7 @@ var app = angular.module("app", ["ngRoute", "ui.dashboard", "btford.markdown","m
 			})
 		});
 
-		
+
 // Extended disable function
 // Disable toggle 
 jQuery.fn.extend({
@@ -129,6 +129,7 @@ function addWidgets(def){
 
 	//build for each factory + directive
 	app.controller("DemoCtrl", function($scope, $interval, $window, widgetDefinitions, defaultWidgets,screenSize) {
+    
 		$scope.desktop = screenSize.is('md, lg');
 		//$scope.mobile = screenSize.is('xs, sm');
 		$.mynamespace.desktop = $scope.desktop;
