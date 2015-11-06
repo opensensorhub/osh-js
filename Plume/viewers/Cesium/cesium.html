@@ -44,39 +44,18 @@
           }
       };
 
-      function currentClockTimeChanged(value) {
-        if(change){
-          startTime = new Date(value).toISOString();
-          //update WS
-          createNewWSRequest();
-        }
-      }
-    
-      function currentClockMultiplierChanged(value) {
-        //update WS
-        multiplier = value;
-        startTime = new Date(viewer.clock.currentTime).toISOString();
-        createNewWSRequest();
-      }
-      
-      function onTimelineChanged(e) {
-        if(change){
-          var clock = e.clock;
-          clock.currentTime = e.timeJulian;
-          clock.shouldAnimate = false;
-          startTime = e.timeJulian.toString();
-          //update WS
-          createNewWSRequest();
-        }
-      }
-      
       //add event on clock time changes
       var clockViewModel = new Cesium.ClockViewModel(viewer.clock);
       var viewModel = new Cesium.AnimationViewModel(clockViewModel);
-      Cesium.knockout.getObservable(clockViewModel, 'currentTime').subscribe(currentClockTimeChanged);
-      Cesium.knockout.getObservable(clockViewModel, 'multiplier').subscribe(currentClockMultiplierChanged);
+      Cesium.knockout.getObservable(clockViewModel, 'currentTime').subscribe(changeFunction);
+      Cesium.knockout.getObservable(clockViewModel, 'multiplier').subscribe(onMultiplierChange);
       
       var change = false;
+      
+      function onMultiplierChange(){
+        change = true;
+        changeFunction();
+      }
       
       function updateTimeline(julianDate){
         if(!change){
@@ -85,14 +64,22 @@
       } 
       
       function changeFunction(){
-        change = true;
+        if(change){
+          startTime = new Date(viewer.clock.currentTime).toISOString();
+          multiplier = viewer.clock.multiplier;
+          createNewWSRequest();
+        }
       }
       
+      
+      function onMouseDownTimeLine(){
+        change = true;
+      }
       //add event on timeline changes
-      viewer.timeline.addEventListener('settime', onTimelineChanged, false);
+      viewer.timeline.addEventListener('settime', changeFunction, false);
       viewer.scene.postRender.addEventListener(onPostRender);
       
-      viewer.timeline.addEventListener('mousedown', changeFunction, false);
+      viewer.timeline.addEventListener('mousedown', onMouseDownTimeLine, false);
       var ws1 = null;
       function createNewWSRequest(){
         if(ws1 != null){
