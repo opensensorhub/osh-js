@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="simpleTypes.rng"/>
+   <!-- -->
+   <start combine="choice">
+      <ref name="swe.AnyData"/>
+   </start>
+   <!-- DataRecord -->
+   <define name="swe.DataRecord">
+      <a:documentation>Data Record (Group of fields of any type)</a:documentation>
+      <element name="swe:DataRecord">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <oneOrMore>
+            <a:documentation>Field</a:documentation>
+            <ref name="swe.field"/>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- SimpleDataRecord -->
+   <define name="swe.SimpleDataRecord">
+      <a:documentation>Simple Record (Group of scalar fields)</a:documentation>
+      <element name="swe:SimpleDataRecord">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <oneOrMore>
+            <ref name="swe.simpleField"/>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- Vector -->
+   <define name="swe.Vector">
+      <a:documentation>N-Dimensions Vector of numerical quantities</a:documentation>
+      <element name="swe:Vector">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.PositionComponentAttributeGroup"/>
+         <oneOrMore>
+            <ref name="swe.coordinate"/>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- ConditionData -->
+   <define name="swe.ConditionalData">
+      <a:documentation>Conditional Data</a:documentation>
+      <element name="swe:ConditionalData">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <oneOrMore>
+            <a:documentation>Case</a:documentation>
+            <ref name="swe.case"/>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- ConditionalValue -->
+   <define name="swe.ConditionalValue">
+      <a:documentation>Conditional Value</a:documentation>
+      <element name="swe:ConditionalValue">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <oneOrMore>
+            <a:documentation>Condition</a:documentation>
+            <ref name="swe.condition"/>
+         </oneOrMore>
+         <ref name="swe.data"/>
+      </element>
+   </define>
+   <!-- DataArray -->
+   <define name="swe.DataArray">
+      <a:documentation>Data Array (Array of N identical components)</a:documentation>
+      <element name="swe:DataArray">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <ref name="swe.nameAtt"/>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.AnyData"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>
+   <!-- Curve -->
+   <define name="swe.Curve">
+      <a:documentation>One Dimensional Curve (List of points given as tuples of N coordinates)</a:documentation>
+      <element name="swe:Curve">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.SimpleDataRecord"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>
+   <!-- elementCount -->
+   <define name="swe.elementCount">
+      <element name="swe:elementCount">
+         <choice>
+            <attribute name="ref">
+               <data type="IDREF"/>
+            </attribute>
+            <ref name="swe.Count"/>
+         </choice>
+      </element>
+   </define>
+   <!-- dataComponentProperty -->
+   <define name="swe.dataComponentProperty">
+      <optional>
+         <ref name="xlink.roles"/>
+      </optional>
+      <choice>
+         <ref name="xlink.href"/>
+	     <group>
+            <ref name="swe.AnyData"/>
+         </group>
+      </choice>
+   </define>
+   <!-- dataComponentPropertyWithName -->
+   <define name="swe.dataComponentPropertyWithName">
+      <ref name="swe.nameAtt"/>
+      <ref name="swe.dataComponentProperty"/>
+   </define>
+   <!-- field -->
+   <define name="swe.field">
+      <element name="swe:field">
+         <ref name="swe.dataComponentPropertyWithName"/>
+      </element>
+   </define>
+   <!-- simple field -->
+   <define name="swe.simpleField">
+      <element name="swe:field">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <group>
+               <ref name="swe.AnyScalar"/>
+            </group>
+         </choice>       
+      </element>
+   </define>
+   <!-- coordinate -->
+   <define name="swe.coordinate">
+      <element name="swe:coordinate">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+		    <group>
+               <ref name="swe.AnyNumerical"/>
+            </group>
+         </choice>
+      </element>
+   </define>
+   <!-- condition -->
+   <define name="swe.condition">
+      <element name="swe:condition">
+         <ref name="swe.dataComponentPropertyWithName"/>
+      </element>
+   </define>
+   <!-- data -->
+   <define name="swe.data">
+      <element name="swe:data">
+         <ref name="swe.dataComponentProperty"/>
+      </element>
+   </define>
+   <!-- case -->
+   <define name="swe.case">
+      <element name="swe:case">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <group>
+               <ref name="swe.ConditionalValue"/>
+            </group>
+         </choice>
+      </element>
+   </define>
+   <!-- PositionComponentAttributeGroup -->
+   <define name="swe.PositionComponentAttributeGroup">
+      <optional>
+         <ref name="swe.DataComponentAttributeGroup"/>
+      </optional>
+      <optional>
+         <ref name="swe.referenceFrame"/>
+      </optional>
+      <optional>
+         <ref name="swe.localFrame"/>
+      </optional>
+   </define>
+   <!-- AnyData Group -->
+   <define name="swe.AnyData">
+      <choice>
+         <ref name="swe.AnySimple"/>
+         <ref name="swe.SimpleDataRecord"/>
+         <ref name="swe.DataRecord"/>
+         <ref name="swe.ConditionalData"/>
+         <ref name="swe.ConditionalValue"/>
+         <ref name="swe.DataArray"/>
+         <ref name="swe.Curve"/>
+         <ref name="swe.Vector"/>
+      </choice>
+   </define>
+   <!-- EncodedValueGroup -->
+   <define name="swe.EncodedValuesGroup">
+      <ref name="swe.encoding"/>
+      <optional>
+         <ref name="swe.arrayValues"/>
+      </optional>
+   </define>
+   <!-- arrayValues -->
+   <define name="swe.arrayValues">
+      <optional>
+         <ref name="xlink.roles"/>
+      </optional>
+      <choice>
+         <ref name="xlink.href"/>
+         <element name="swe:values">
+            <text/>
+         </element>
+      </choice>
+   </define>
+   <!-- Position -->
+   <define name="swe.PositionElement">
+      <element name="swe:Position">
+         <ref name="swe.PositionComponentAttributeGroup"/>
+         <choice>
+            <group>
+               <optional>
+                  <element name="swe:time">
+                     <ref name="swe.Time"/>
+                  </element>            
+               </optional>
+               <optional>
+                  <element name="swe:location">
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <group>
+                           <ref name="swe.Vector"/>                                
+                        </group>
+                     </choice>
+                  </element>            
+               </optional>
+               <optional>
+                  <element name="swe:orientation">
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <group>
+                           <ref name="swe.Vector"/>
+                           <ref name="swe.SquareMatrix"/>
+                        </group>
+                     </choice>
+                  </element>            
+               </optional>
+               <optional>
+                  <element name="swe:velocity">
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <group>
+                           <ref name="swe.Vector"/>                                
+                        </group>
+                     </choice>
+                  </element>            
+               </optional>
+               <optional>
+                  <element name="swe:angularVelocity">
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <group>
+                           <ref name="swe.Vector"/>
+                           <ref name="swe.SquareMatrix"/>
+                        </group>
+                     </choice>
+                  </element>            
+               </optional>
+               <optional>
+                  <element name="swe:acceleration">
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <group>
+                           <ref name="swe.Vector"/>                                
+                        </group>
+                     </choice>
+                  </element>            
+               </optional>
+               <optional>
+                  <element name="swe:angularAcceleration">
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <group>
+                           <ref name="swe.Vector"/>
+                           <ref name="swe.SquareMatrix"/>
+                        </group>
+                     </choice>
+                  </element>            
+               </optional>
+            </group>
+            <group>
+                <element name="swe:state">
+                  <choice>
+                     <ref name="xlink.href"/>
+                     <group>
+                        <ref name="swe.Vector"/>
+                        <ref name="swe.SquareMatrix"/>
+                     </group>
+                  </choice>
+                </element> 
+            </group>
+         </choice>
+      </element>
+   </define>
+   <!-- SquareMatrix -->
+   <define name="swe.SquareMatrix">
+      <a:documentation>Square Matrix (Array of 3 or 4 identical components)</a:documentation>
+      <element name="swe:SquareMatrix">
+         <ref name="swe.PositionComponentAttributeGroup"/>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <ref name="swe.nameAtt"/>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.AnyData"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>  
+   <!-- DataRecordGroup -->
+   <define name="swe.DataRecordGroup">
+      <choice>
+         <ref name="swe.ConditionalData"/>
+         <ref name="swe.ConditionalValue"/>
+         <ref name="swe.DataRecord"/>
+         <!-- <ref name="swe.Envelope"/> -->
+         <!-- <ref name="swe.GeoLocationArea"/> -->
+         <!-- <ref name="swe.NormalizedCurve"/> -->
+         <ref name="swe.PositionElement"/>        
+         <ref name="swe.SimpleDataRecord"/>
+         <ref name="swe.Vector"/>
+      </choice>
+   </define>
+</grammar>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="system.rng"/>
+   <!-- -->
+   <start combine="choice">
+      <ref name="sml.SensorML"/>
+   </start>
+   <!-- -->
+   <define name="sml.SensorML">
+      <element name="sml:SensorML">
+         <attribute name="version">
+            <value>1.0.1</value>
+         </attribute>
+         <optional>
+            <attribute ns="http://www.w3.org/2001/XMLSchema-instance" name="schemaLocation"/>
+         </optional>
+         <oneOrMore>
+            <a:documentation>Document Part</a:documentation>
+            <element name="sml:member">               
+               <ref name="sml.memberGroup"/>
+            </element>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.memberGroup">
+      <optional>
+         <ref name="xlink.roles"/>
+      </optional>
+      <choice>
+         <ref name="xlink.href"/>
+	     <ref name="sml.ProcessGroup"/>
+      </choice>
+   </define>   
+</grammar>

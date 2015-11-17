@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="process.rng">
+      <define name="sml.ProcessGroup">
+         <choice>
+            <ref name="sml.ProcessModel"/>
+            <ref name="sml.ProcessChain"/>
+            <ref name="sml.System"/>
+            <ref name="sml.Component"/>
+            <ref name="sml.DataSource"/>
+         </choice>
+      </define>
+   </include>   
+   <!-- -->
+   <define name="sml.System">
+      <element name="sml:System">
+         <ref name="sml.ProcessHeaderGroup"/>
+         <ref name="sml.PhysicalProcessContents"/>
+         <ref name="sml.ProcessContents"/>
+         <optional>
+            <ref name="sml.components"/>
+         </optional>
+         <optional>
+            <ref name="sml.PositionList"/>
+         </optional>
+         <optional>
+            <ref name="sml.connections"/>
+         </optional>       
+     </element>
+   </define>
+   <!-- -->
+   <define name="sml.Component">
+      <element name="sml:Component">
+         <ref name="sml.ProcessHeaderGroup"/>
+         <ref name="sml.PhysicalProcessContents"/>
+         <ref name="sml.ProcessContents"/>
+         <optional>
+            <ref name="sml.method"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.PhysicalProcessContents">
+      <optional>
+         <ref name="gml.spatialFrame"/>      
+      </optional>
+      <optional>
+         <ref name="gml.temporalFrame"/>        
+      </optional>
+      <!-- NOTE: support for gml:Point and Curve left out here -->
+      <optional>
+         <ref name="sml.position"/>
+      </optional>
+      <optional>
+         <ref name="sml.timePosition"/>
+      </optional>
+      <optional>
+        <ref name="sml.interfaces"/>
+      </optional>      
+   </define>
+   <!-- Position Group -->
+   <define name="sml.position">
+      <element name="sml:position">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <choice>
+               <ref name="sml.ProcessGroup"/>
+               <ref name="swe.Vector"/>
+               <ref name="swe.PositionElement"/>
+            </choice>
+         </choice>         
+      </element>
+   </define>
+   <!-- Position Group -->
+   <define name="sml.timePosition">
+      <element name="sml:timePosition">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <choice>
+               <ref name="sml.ProcessGroup"/>
+               <ref name="swe.Time"/>
+            </choice>
+         </choice>         
+      </element>
+   </define>
+   <!-- POSITIONLIST  -->
+   <define name="sml.PositionList">
+      <element name="sml:positions">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:PositionList">
+               <optional>
+                  <ref name="swe.objectID"/>
+               </optional>
+               <choice>
+                  <oneOrMore>
+                     <ref name="sml.position"/>                   
+                  </oneOrMore>
+                  <ref name="sml.timePosition"/>
+               </choice>
+             </element>
+         </choice>          
+      </element>
+   </define>   
+   <!-- interfaces -->
+   <define name="sml.interfaces">
+      <element name="sml:interfaces">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:InterfaceList">
+               <optional>
+                  <ref name="swe.objectID"/>
+               </optional>
+               <oneOrMore>
+                  <element name="sml:interface">
+                     <ref name="swe.nameAtt"/>
+                     <optional>
+                        <ref name="xlink.roles"/>
+                     </optional>
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <ref name="sml.InterfaceDefinition"/>
+                     </choice>                       
+                  </element>                   
+               </oneOrMore>               
+            </element>
+         </choice>          
+      </element>
+   </define> 
+   <!-- InterfaceDefinition -->
+   <define name="sml.InterfaceDefinition">
+      <element name="sml:InterfaceDefinition">
+         <optional>
+            <ref name="gml.id"/>
+         </optional>
+         <optional>
+            <element name="sml:serviceLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:applicationLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:presentationLayer">
+               <optional>
+                  <ref name="xlink.roles"/>
+               </optional>
+               <choice>
+                  <ref name="xlink.href"/>
+                  <group>
+                     <choice>
+                        <ref name="swe.DataRecordGroup"/>
+                        <ref name="swe.Category"/>  
+                        <ref name="swe.DataBlockDefinition"/>
+                        <ref name="swe.DataStreamDefinition"/>
+                     </choice>                
+                  </group>
+               </choice>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:sessionLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:transportLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:networkLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:dataLinkLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:physicalLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:mechanicalLayer">
+               <ref name="sml.simpleLayer"/>
+            </element>
+         </optional>
+      </element>      
+   </define>
+   <!-- simpleLayer -->
+   <define name="sml.simpleLayer">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <group>
+               <choice>
+                  <ref name="swe.DataRecordGroup"/>
+                  <ref name="swe.Category"/>  
+               </choice>                
+            </group>
+         </choice>
+   </define>
+</grammar>

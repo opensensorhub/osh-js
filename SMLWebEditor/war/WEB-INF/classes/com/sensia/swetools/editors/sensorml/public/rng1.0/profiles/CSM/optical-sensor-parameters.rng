@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sml="http://www.opengis.net/sensorML/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sch="http://www.ascc.net/xml/schematron" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1"/>
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="csm-common.rng"/>
+   <!-- -->
+   <define name="csm.PixelGridCharacteristics">
+      <a:documentation>Pixel Grid Characteristics</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Number of Rows in Frame</value>
+            </attribute>
+            <element name="swe:Count">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:NROWS</value>
+               </attribute>
+               <element name="swe:value">
+                  <data type="integer">
+                     <param name="minExclusive">0</param>
+                  </data>
+               </element>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Number of Columns in Frame</value>
+            </attribute>
+            <element name="swe:Count">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:NCOLS</value>
+               </attribute>
+               <element name="swe:value">
+                  <data type="integer">
+                     <param name="minExclusive">0</param>
+                  </data>
+               </element>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Row Spacing</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:ROW_SPACING</value>
+               </attribute>
+               <ref name="csm.distanceUnit"/>
+               <element name="swe:value">
+                  <data type="double">
+                     <param name="minExclusive">0.0</param>
+                  </data>
+               </element>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Column Spacing</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:COL_SPACING</value>
+               </attribute>
+               <ref name="csm.distanceUnit"/>
+               <element name="swe:value">
+                  <data type="double">
+                     <param name="minExclusive">0.0</param>
+                  </data>
+               </element>
+            </element>
+         </element>
+         <optional>
+            <a:documentation>Row Axis Offset</a:documentation>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Row Axis Offset</value>
+               </attribute>
+               <element name="swe:Quantity">
+                  <attribute name="definition">
+                     <value>urn:ogc:def:property:CSM:ROW_AXIS_OFFSET</value>
+                  </attribute>
+                  <ref name="csm.distanceUnit"/>
+                  <ref name="swe.quantityValue"/>
+               </element>
+            </element>
+         </optional>
+         <optional>
+            <a:documentation>Column Axis Offset</a:documentation>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Column Axis Offset</value>
+               </attribute>
+               <element name="swe:Quantity">
+                  <attribute name="definition">
+                     <value>urn:ogc:def:property:CSM:COL_AXIS_OFFSET</value>
+                  </attribute>
+                  <ref name="csm.distanceUnit"/>
+                  <ref name="swe.quantityValue"/>
+               </element>
+            </element>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.OpticalDistortionCharacteristics">
+      <a:documentation>Optical Distortions</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Principal Point</value>
+            </attribute>
+            <ref name="csm.PrincipalPointCoordinates"/>
+         </element>         
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Affine Distortion</value>
+               </attribute>
+               <ref name="csm.AffineDistortionCoefficients"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Radial Distortion</value>
+               </attribute>
+               <ref name="csm.RadialDistortionCoefficients"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Decentering</value>
+               </attribute>
+               <ref name="csm.DecenteringCoefficients"/>
+            </element>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.PrincipalPointCoordinates">
+      <a:documentation>Principal Point Coordinates</a:documentation>
+      <element name="swe:Vector">
+         <attribute name="referenceFrame">
+            <value>urn:ogc:def:crs:CSM:imagePlaneCRS</value>
+         </attribute>
+         <element name="swe:coordinate">
+            <attribute name="name">
+               <value>x0</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:PRIN_OFFSETX</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="csm.distanceUnit"/>
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:coordinate">
+            <attribute name="name">
+               <value>y0</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:PRIN_OFFSETY</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="csm.distanceUnit"/>
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.AffineDistortionCoefficients">
+      <a:documentation>Affine Distortion Coefficients</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>a1</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_A1</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>b1</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_B1</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>c1</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_C1</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>a2</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_A2</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>b2</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_B2</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>c2</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_C2</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.RadialDistortionCoefficients">
+      <a:documentation>Lens Radial Distortion Coefficients</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>k1</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_RAD1</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <element name="swe:uom">
+                  <attribute name="code">
+                     <value>mm-2</value>
+                  </attribute>
+               </element>
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>k2</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_RAD2</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <element name="swe:uom">
+                  <attribute name="code">
+                     <value>mm-2</value>
+                  </attribute>
+               </element>
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>k3</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DISTOR_RAD3</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <element name="swe:uom">
+                  <attribute name="code">
+                     <value>mm-2</value>
+                  </attribute>
+               </element>
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.DecenteringCoefficients">
+      <a:documentation>Decentering Lens Correction Coefficients</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>p1</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DECEN_LENS1</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <element name="swe:uom">
+                  <attribute name="code">
+                     <value>mm-1</value>
+                  </attribute>
+               </element>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>p2</value>
+            </attribute>
+            <element name="swe:Quantity">
+               <attribute name="definition">
+                  <value>urn:ogc:def:property:CSM:DECEN_LENS2</value>
+               </attribute>
+               <optional>
+                  <ref name="swe.quality"/>
+               </optional> 
+               <element name="swe:uom">
+                  <attribute name="code">
+                     <value>mm-1</value>
+                  </attribute>
+               </element>
+               <ref name="swe.quantityValue"/>
+            </element>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.IdealOpticalCharacteristics">
+      <element name="swe:DataRecord">
+         <choice>            
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Focal Length</value>
+               </attribute>
+               <ref name="csm.FocalLength"/>
+            </element>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Calibrated Focal Length</value>
+               </attribute>
+               <ref name="csm.CalibratedFocalLength"/>
+            </element>         
+         </choice>
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Across-Track FOV</value>
+               </attribute>
+               <ref name="csm.AcrossTrackFOV"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Along-Track FOV</value>
+               </attribute>
+               <ref name="csm.AlongTrackFOV"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Across-Track IFOV</value>
+               </attribute>
+               <ref name="csm.AcrossTrackIFOV"/>
+            </element>
+         </optional> 
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>Along-Track IFOV</value>
+               </attribute>
+               <ref name="csm.AlongTrackIFOV"/>
+            </element>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.FocalLength">
+      <a:documentation>Focal Length</a:documentation>
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:FOCAL_LENGTH</value>
+         </attribute>
+         <optional>
+            <ref name="swe.quality"/>
+         </optional> 
+         <ref name="csm.pixelOrDistanceUnit"/>
+         <ref name="swe.quantityValue"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.CalibratedFocalLength">
+      <a:documentation>Calibrated Focal Length</a:documentation>
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:FOCAL_LENGTH_CAL</value>
+         </attribute>
+         <optional>
+            <ref name="swe.quality"/>
+         </optional> 
+         <ref name="csm.pixelOrDistanceUnit"/>
+         <ref name="swe.quantityValue"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.AcrossTrackFOV">
+      <a:documentation>Across-Track FOV</a:documentation>
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:ACROSS_TRACK_FOV</value>
+         </attribute>
+         <ref name="csm.angleUnit"/>
+         <ref name="swe.quantityValue"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.AlongTrackFOV">
+      <a:documentation>Along-Track FOV</a:documentation>
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:ALONG_TRACK_FOV</value>
+         </attribute>
+         <ref name="csm.angleUnit"/>
+         <ref name="swe.quantityValue"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.AcrossTrackIFOV">
+      <a:documentation>Across-Track IFOV</a:documentation>
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:ACROSS_TRACK_IFOV</value>
+         </attribute>
+         <ref name="csm.angleUnit"/>
+         <ref name="swe.quantityValue"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.AlongTrackIFOV">
+      <a:documentation>Along-Track IFOV</a:documentation>
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:ALONG_TRACK_IFOV</value>
+         </attribute>
+         <ref name="csm.angleUnit"/>
+         <ref name="swe.quantityValue"/>
+      </element>
+   </define>
+</grammar>
