@@ -18,21 +18,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGAttribute;
@@ -61,6 +52,20 @@ import com.sensia.relaxNG.XSDDouble;
 import com.sensia.relaxNG.XSDInteger;
 import com.sensia.relaxNG.XSDString;
 import com.sensia.swetools.editors.sensorml.client.panels.SectionsWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.GenericContainerWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGDataWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGElementWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGRefWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGTextWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGValueWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDAnyURIWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDDateTimeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDDecimalWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDDoubleWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDIntegerWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDStringWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDWidget;
 
 
 /**
@@ -114,15 +119,14 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
     
     
-    protected void addWidgetsToPanel(Panel panel)
+    protected void addWidgetsToPanel(AbstractWidget panel)
     {
         List<AbstractWidget> wList = widgets.pop();
-        for (AbstractWidget w: wList)
-            panel.add(w.getWidget());
+        for (AbstractWidget w: wList){
+            panel.getPanel().add(w.getWidget());
+        }
         
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(panel);
-        widgets.peek().add(w);
+        widgets.peek().add(panel);
     }
 
 
@@ -136,48 +140,36 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
 
 
-    @Override
-    public void visit(RNGDefine define)
-    {
-        this.visitChildren(define.getChildren());
-    }
+	@Override
+	public void visit(RNGDefine define) {
+		this.visitChildren(define.getChildren());
+	}
+
+	@Override
+	public void visit(RNGElement elt) {
+		RNGElementWidget widget = new RNGElementWidget(elt);
+		newWidgetList();
+		this.visitChildren(elt.getChildren());
+		addWidgetsToPanel(widget);
+	}
+
+
+	@Override
+	public void visit(RNGAttribute attribute) {
+		RNGAttributeWidget widget = new RNGAttributeWidget(attribute);
+		newWidgetList();
+		this.visitChildren(attribute.getChildren());
+		addWidgetsToPanel(widget);
+	}
 
 
     @Override
-    public void visit(RNGElement elt)
-    {
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(new Label(toNiceLabel(elt.getName())));
-        newWidgetList();
-        this.visitChildren(elt.getChildren());
-        addWidgetsToPanel(panel);
-    }
-
-
-    @Override
-    public void visit(RNGAttribute attribute)
-    {
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.setSpacing(5);
-        panel.add(new Label(toNiceLabel(attribute.getName()) + ":"));
-        newWidgetList();
-        this.visitChildren(attribute.getChildren());
-        addWidgetsToPanel(panel);
-    }
-
-
-    @Override
-    public void visit(RNGRef ref)
-    {
-        if (ref.getPattern() != null)
+    public void visit(RNGRef ref) {
+        if (ref.getPattern() != null) {
             ref.getPattern().accept(this);
-        else
-        {
-            Label label = new Label("Error fetching referenced pattern: " + ref.getPatternName());
-            label.addStyleName("rng-error");
-            AbstractWidget w = new AbstractWidget();
-            w.setWidget(label);
-            widgets.peek().add(w);
+        } else {
+        	RNGRefWidget widget = new RNGRefWidget(ref);
+            widgets.peek().add(widget);
         }
     }
     
@@ -186,8 +178,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
     public void visit(final RNGChoice choice)
     {
         // if an entry has been selected
-        if (choice.isSelected())
-        {
+        if (choice.isSelected()) {
             final HorizontalPanel panel = new HorizontalPanel();
             
             // aggregate content widgets
@@ -214,14 +205,11 @@ public abstract class RNGRenderer implements RNGTagVisitor
                     onPatternChanged(choice, panel);           
                 }
             });
-            AbstractWidget w = new AbstractWidget();
-            w.setWidget(panel);
-            widgets.peek().add(w);
-        }
-        
+            GenericContainerWidget widget = new GenericContainerWidget();
+            widget.setPanel(panel);
+            widgets.peek().add(widget);
+        } else {
         // if nothing is selected, show a combo
-        else
-        {
             final ListBox combo = new ListBox();
             combo.setVisibleItemCount(1);
             combo.addItem("----", "none");
@@ -257,9 +245,10 @@ public abstract class RNGRenderer implements RNGTagVisitor
                     onPatternChanged(choice, combo);
                 }
             });
-            AbstractWidget w = new AbstractWidget();
-            w.setWidget(combo);
-            widgets.peek().add(w);
+            GenericContainerWidget widget = new GenericContainerWidget();
+            widget.setWidget(combo);
+            
+            widgets.peek().add(widget);
         }
     }
 
@@ -312,9 +301,9 @@ public abstract class RNGRenderer implements RNGTagVisitor
             }
         }
         
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(panel);
-        widgets.peek().add(w);
+        GenericContainerWidget widget = new GenericContainerWidget();
+        widget.setPanel(panel);
+        widgets.peek().add(widget);
     }
 
 
@@ -362,11 +351,11 @@ public abstract class RNGRenderer implements RNGTagVisitor
         });
         morePanel.add(b);
         morePanel.add(new Label(label));
-        
-        AbstractWidget w = new AbstractWidget();
         mainPanel.addStyleName("swe-property-panel");
-        w.setWidget(mainPanel);
-        widgets.peek().add(w);
+        
+        GenericContainerWidget  widget = new GenericContainerWidget();
+        widget.setPanel(mainPanel);
+        widgets.peek().add(widget);
     }
     
     
@@ -423,27 +412,17 @@ public abstract class RNGRenderer implements RNGTagVisitor
 
 
     @Override
-    public void visit(RNGText text)
-    {
-        TextBox textBox = new TextBox();
-        textBox.setVisibleLength(30);
-
-        if (text.getText() != null)
-            textBox.setText(text.getText());
-        
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(textBox);
-        widgets.peek().add(w);
+    public void visit(RNGText text) {
+        RNGTextWidget widget = new RNGTextWidget(text);
+        widgets.peek().add(widget);
     }
     
     
-    @Override
-    public void visit(RNGValue val)
-    {
-    	AbstractWidget w = new AbstractWidget();
-    	w.setWidget(new Label(val.getText()));
-        widgets.peek().add(w);
-    }
+	@Override
+	public void visit(RNGValue val) {
+		RNGValueWidget widget = new RNGValueWidget(val);
+		widgets.peek().add(widget);
+	}
 
 
     @Override
@@ -453,36 +432,18 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
 
 
-    @Override
-    public void visit(RNGData<?> data)
-    {
-        TextBox textBox = new TextBox();
-        textBox.setVisibleLength(30);
-
-        if (data.getValue() != null)
-            textBox.setText(data.getValue().toString());
-        
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(textBox);
-        widgets.peek().add(w);
-    }
+	@Override
+	public void visit(RNGData<?> data) {
+		RNGDataWidget widget = new RNGDataWidget(data);
+		widgets.peek().add(widget);
+	}
     
     
-    @Override
-    public void visit(final XSDString data)
-    {
-        int length = -1;
-        
-        int fixedLength = data.getLength();
-        if (fixedLength > 0)
-            length = fixedLength;
-        
-        int maxLength = data.getMaxLength();
-        if (maxLength > 0)
-            length = maxLength;
-        
-        renderTextInput(data, length, null);
-    }
+	@Override
+	public void visit(final XSDString data) {
+		XSDWidget widget = new XSDStringWidget(data);
+		widgets.peek().add(widget);
+	}
 
 
     @Override
@@ -492,58 +453,39 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
     
     
-    @Override
-    public void visit(XSDDecimal data)
-    {
-        int length = 10;
-        renderTextInput(data, length, ".-+0123456789");
-    }
+	@Override
+	public void visit(XSDDecimal data) {
+		XSDWidget widget = new XSDDecimalWidget(data);
+		widgets.peek().add(widget);
+	}
 
 
-    @Override
-    public void visit(final XSDDouble data)
-    {
-        int length = 10;
-        renderTextInput(data, length, ".-+e0123456789");
-    }
+	@Override
+	public void visit(final XSDDouble data) {
+		XSDWidget widget = new XSDDoubleWidget(data);
+		widgets.peek().add(widget);
+	}
 
 
-    @Override
-    public void visit(final XSDInteger data)
-    {
-        int length = 10;
-        
-        int fixedLength = data.getTotalDigits();
-        if (fixedLength > 0)
-            length = fixedLength + 1;
-        
-        renderTextInput(data, length, "-+0123456789");
-    }
+	@Override
+	public void visit(final XSDInteger data) {
+		XSDWidget widget = new XSDIntegerWidget(data);
+		widgets.peek().add(widget);
+	}
     
     
-    @Override
-    public void visit(XSDAnyURI data)
-    {
-        int length = 60;
-        
-        int fixedLength = data.getLength();
-        if (fixedLength > 0)
-            length = fixedLength;
-        
-        int maxLength = data.getMaxLength();
-        if (maxLength > 0)
-            length = maxLength;
-        
-        renderTextInput(data, length, null);
-    }
+	@Override
+	public void visit(XSDAnyURI data) {
+		XSDWidget widget = new XSDAnyURIWidget(data);
+		widgets.peek().add(widget);
+	}
 
 
-    @Override
-    public void visit(XSDDateTime data)
-    {
-        int length = 28;
-        renderTextInput(data, length, null);
-    }
+	@Override
+	public void visit(XSDDateTime data) {
+		XSDWidget widget = new XSDDateTimeWidget(data);
+		widgets.peek().add(widget);
+	}
     
     
     /*protected void renderConfirmedValue(final RNGData<?> data)
@@ -570,110 +512,6 @@ public abstract class RNGRenderer implements RNGTagVisitor
         
         widgets.peek().add(l);
     }*/
-    
-    
-    /**
-     * Renders the validating text box for any RNG/XSD datatype
-     * @param data
-     * @param length
-     * @param allowedChars
-     * @param regex
-     */
-    protected void renderTextInput(final RNGData<?> data, final int length, final String allowedChars)
-    {
-        final TextBoxBase textBox;
-        
-        if (length < 0)
-        {
-            textBox = new TextBox();
-            ((TextBox)textBox).setVisibleLength(50);
-        }
-        else if (length <= 60)
-        {
-            textBox = new TextBox();
-            ((TextBox)textBox).setVisibleLength(length);
-            ((TextBox)textBox).setMaxLength(length);
-        }
-        else
-        {
-            textBox = new TextArea();
-            ((TextArea)textBox).setVisibleLines(length/50);
-        }
-        
-        // put saved value in text box
-        if (data.getValue() != null)
-        {
-            textBox.setText(data.getValue().toString());
-            if (data.isConfirmed())
-                textBox.setReadOnly(true);
-        }
-        
-        // double click handler for changing after confirm
-        textBox.addDoubleClickHandler(new DoubleClickHandler() {
-            @Override
-            public void onDoubleClick(DoubleClickEvent event)
-            {
-                data.setConfirmed(false);
-                textBox.setReadOnly(false);
-            }
-        });
-        
-        // validating keypress handler
-        textBox.addKeyPressHandler(new KeyPressHandler() {
-            @Override
-            public void onKeyPress(KeyPressEvent event)
-            {
-                char c = event.getCharCode();
-                if (c <= 13)
-                    return;
-                
-                // check what was just typed                
-                if ((allowedChars != null && allowedChars.indexOf(c) < 0))
-                {
-                    textBox.cancelKey();
-                    return;
-                }
-            }
-        });
-        
-        // validating keyup handler
-        textBox.addKeyUpHandler(new KeyUpHandler() {
-            @Override
-            public void onKeyUp(KeyUpEvent event)
-            {
-                if (data.isValid(textBox.getText()))
-                {
-                    textBox.removeStyleName("invalid-value");
-                    textBox.addStyleName("valid-value");
-                    data.setStringValue(textBox.getText());
-                }
-                else
-                {
-                    textBox.removeStyleName("valid-value");
-                    textBox.addStyleName("invalid-value");
-                }
-            }
-        });
-        
-        // validating change handler
-        textBox.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event)
-            {
-                if (data.isValid(textBox.getText()))
-                {
-                    data.setConfirmed(true);                    
-                    textBox.removeStyleName("valid-value");
-                    textBox.removeStyleName("invalid-value");
-                    textBox.setReadOnly(true);
-                }
-            }        
-        });
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(textBox);
-        widgets.peek().add(w);
-    }
-    
     
     protected void onPatternChanged(RNGTag tag, Widget oldWidget)
     {

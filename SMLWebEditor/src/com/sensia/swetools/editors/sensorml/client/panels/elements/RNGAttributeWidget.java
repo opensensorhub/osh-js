@@ -1,27 +1,27 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sensia.relaxNG.RNGElement;
+import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
 
 /**
- * Create the generic panel for RNG Element
+ * Create the generic panel for RNG Attribute
  * @author mathieu dhainaut
- *
  */
-public class RNGElementWidget extends AbstractWidget{
+public class RNGAttributeWidget extends AbstractWidget{
 
-	private VerticalPanel panel;
+	private HorizontalPanel panel;
 	
-	public RNGElementWidget(final RNGElement elt){
-		super(toNiceLabel(elt.getName()),"");
-		panel = new VerticalPanel();
+	public RNGAttributeWidget(final RNGAttribute attribute) {
+		super(toNiceLabel(attribute.getName()) + ":","");
+		panel = new HorizontalPanel();
+        panel.setSpacing(5);
         panel.add(new Label(getName()));
 	}
-
+	
 	@Override
 	public Widget getWidget() {
 		return panel;
@@ -31,4 +31,5 @@ public class RNGElementWidget extends AbstractWidget{
 	public Panel getPanel() {
 		return panel;
 	}
+
 }

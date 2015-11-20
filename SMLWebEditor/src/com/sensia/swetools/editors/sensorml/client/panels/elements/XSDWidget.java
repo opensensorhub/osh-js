@@ -1,4 +1,4 @@
-package com.sensia.swetools.editors.sensorml.client.panels.elementsold;
+package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -8,23 +8,24 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGData;
+import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
 
-public class GenericXSDPanel extends AbstractSensorMLPanel{
+public abstract class XSDWidget extends AbstractWidget{
 
-	private static final String CSS_CLASS = "";
+	protected TextBoxBase textBox;
+	private FlowPanel container;
 	
-	private TextBoxBase textBox;
-	
-	public GenericXSDPanel(final RNGData<?> data, final int length, final String allowedChars) {
-		super();
-		setName("");
-        
-        if (length < 0)
+	protected XSDWidget(final RNGData<?> data,final int length,final String allowedChars) {
+		super("", "");
+		
+		if (length < 0)
         {
             textBox = new TextBox();
             ((TextBox)textBox).setVisibleLength(50);
@@ -110,11 +111,18 @@ public class GenericXSDPanel extends AbstractSensorMLPanel{
                 }
             }        
         });
-		//textBox.addStyleName(CSS_CLASS);
+        
+        container = new FlowPanel();
+        container.add(textBox);
 	}
 
 	@Override
 	public Widget getWidget() {
 		return textBox;
+	}
+
+	@Override
+	public Panel getPanel() {
+		return container;
 	}
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -26,7 +27,30 @@ import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
-import com.sensia.relaxNG.*;
+import com.sensia.relaxNG.RNGAttribute;
+import com.sensia.relaxNG.RNGChoice;
+import com.sensia.relaxNG.RNGData;
+import com.sensia.relaxNG.RNGDefine;
+import com.sensia.relaxNG.RNGElement;
+import com.sensia.relaxNG.RNGGrammar;
+import com.sensia.relaxNG.RNGGroup;
+import com.sensia.relaxNG.RNGList;
+import com.sensia.relaxNG.RNGOneOrMore;
+import com.sensia.relaxNG.RNGOptional;
+import com.sensia.relaxNG.RNGRef;
+import com.sensia.relaxNG.RNGTag;
+import com.sensia.relaxNG.RNGTagList;
+import com.sensia.relaxNG.RNGText;
+import com.sensia.relaxNG.RNGValue;
+import com.sensia.relaxNG.RNGZeroOrMore;
+import com.sensia.relaxNG.XSDAnyURI;
+import com.sensia.relaxNG.XSDBoolean;
+import com.sensia.relaxNG.XSDDateTime;
+import com.sensia.relaxNG.XSDDecimal;
+import com.sensia.relaxNG.XSDDouble;
+import com.sensia.relaxNG.XSDInteger;
+import com.sensia.relaxNG.XSDString;
+import com.sensia.relaxNG.XSDToken;
 
 
 /**

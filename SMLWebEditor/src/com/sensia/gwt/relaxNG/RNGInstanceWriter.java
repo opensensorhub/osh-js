@@ -15,13 +15,26 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import com.google.gwt.xml.client.Comment;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
-import com.sensia.relaxNG.*;
+import com.sensia.relaxNG.RNGAttribute;
+import com.sensia.relaxNG.RNGChoice;
+import com.sensia.relaxNG.RNGData;
+import com.sensia.relaxNG.RNGElement;
+import com.sensia.relaxNG.RNGGrammar;
+import com.sensia.relaxNG.RNGGroup;
+import com.sensia.relaxNG.RNGList;
+import com.sensia.relaxNG.RNGOptional;
+import com.sensia.relaxNG.RNGRef;
+import com.sensia.relaxNG.RNGTag;
+import com.sensia.relaxNG.RNGText;
+import com.sensia.relaxNG.RNGValue;
+import com.sensia.relaxNG.RNGZeroOrMore;
 
 
 /**
