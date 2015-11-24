@@ -1,6 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -14,7 +15,7 @@ import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
 public class RNGRefWidget extends AbstractWidget{
 
 	private Label label;
-	private FlowPanel container;
+	private Panel container;
 	
 	public RNGRefWidget(final RNGRef ref){
 		super("Error fetching referenced pattern: " + ref.getPatternName(),"");

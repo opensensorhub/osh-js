@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGChoice;
@@ -28,7 +26,9 @@ import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.relaxNG.RNGValue;
 import com.sensia.relaxNG.RNGZeroOrMore;
+import com.sensia.swetools.editors.sensorml.client.panels.SectionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.SectionsWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.ObjectTypeWidget;
 
 
 /**
@@ -56,7 +56,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     protected final static String GML_NS = "http://www.opengis.net/gml";
     
     protected SectionsWidget rootPanel;
-    protected Map<String, Panel> tabs;
+    protected Map<String, AbstractWidget> tabs;
     protected Map<String, String> eltNamesToSectionName;
     protected Map<String, RenderType> eltNamesToRenderType;
     
@@ -69,7 +69,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
 
     public RNGRendererSML()
     {
-        tabs = new HashMap<String, Panel>();        
+        tabs = new HashMap<String, AbstractWidget>();        
         
         // assign top level elements to tabs
         eltNamesToSectionName = new HashMap<String, String>();
@@ -160,8 +160,6 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
             return;
         }
         
-        System.out.println(eltName);
-        
         // determine tab to render to
         // only for top level elements
         boolean isTopLevel = widgets.size() == 1;
@@ -189,11 +187,8 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
                     break;
                     
                 case OBJECT_TYPE:
-                    Label label = new Label("Type: " + toNiceLabel(eltName));
-                    label.addStyleName("swe-object-type");
-                    AbstractWidget w = new AbstractWidget();
-                    w.setWidget(label);
-                    widgets.peek().add(w);
+                    AbstractWidget widget = new ObjectTypeWidget(elt);
+                    widgets.peek().add(widget);
                     visitChildren(elt.getChildren());
                     break;
                 
@@ -322,22 +317,16 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     }
     
     
-    protected Panel getMainTab(String sectionName)
-    {
-        Panel tab = tabs.get(sectionName);
-        
-        if (tab == null)
-        {
-            tab = new FlowPanel();
-            AbstractWidget abstractSectionWidget = new AbstractWidget();
-            abstractSectionWidget.setName(sectionName);
-            abstractSectionWidget.setWidget(tab);
-            rootPanel.add(abstractSectionWidget);
-            tabs.put(sectionName, tab);
-        }
-        
-        return tab;
-    }
+    //TODO: returns AbstractWidget instead
+	protected Panel getMainTab(String sectionName) {
+		if(!tabs.containsKey(sectionName)) {
+			AbstractWidget section = new SectionWidget(sectionName,"");
+			rootPanel.add(section);
+			tabs.put(sectionName, section);
+		}
+
+		return tabs.get(sectionName).getPanel();
+	}
     
     
     @Override

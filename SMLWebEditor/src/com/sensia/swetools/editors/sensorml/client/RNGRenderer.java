@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -207,6 +208,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
             });
             GenericContainerWidget widget = new GenericContainerWidget();
             widget.setPanel(panel);
+            widget.setWidget(panel);
             widgets.peek().add(widget);
         } else {
         // if nothing is selected, show a combo
@@ -247,7 +249,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
             });
             GenericContainerWidget widget = new GenericContainerWidget();
             widget.setWidget(combo);
-            
+            widget.setPanel(new FlowPanel());
             widgets.peek().add(widget);
         }
     }
@@ -303,6 +305,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
         
         GenericContainerWidget widget = new GenericContainerWidget();
         widget.setPanel(panel);
+        widget.setWidget(panel);
         widgets.peek().add(widget);
     }
 
@@ -355,6 +358,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
         
         GenericContainerWidget  widget = new GenericContainerWidget();
         widget.setPanel(mainPanel);
+        widget.setWidget(mainPanel);
         widgets.peek().add(widget);
     }
     

@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -20,7 +21,7 @@ import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
 public abstract class XSDWidget extends AbstractWidget{
 
 	protected TextBoxBase textBox;
-	private FlowPanel container;
+	private Panel container;
 	
 	protected XSDWidget(final RNGData<?> data,final int length,final String allowedChars) {
 		super("", "");

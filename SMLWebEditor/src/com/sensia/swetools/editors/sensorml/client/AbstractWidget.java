@@ -38,6 +38,18 @@ public abstract class AbstractWidget{
 	
 	public abstract Panel getPanel();
 	
+	protected String SMLtoNiceLabel(String name) {
+		// special cases
+		if (name.equals("id"))
+			name = "Local ID";
+		else if (name.equals("beginPosition"))
+			name = "Begin";
+		else if (name.equals("endPosition"))
+			name = "End";
+
+		return toNiceLabel(name);
+	}
+    
 	protected static String toNiceLabel(String name) {
 		String label = toCamelCase(name).replace('_', ' ');
 		StringBuilder b = new StringBuilder(label);

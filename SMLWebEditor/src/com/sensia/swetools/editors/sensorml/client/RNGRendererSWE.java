@@ -23,6 +23,9 @@ import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.relaxNG.RNGValue;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.GenericContainerWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.SWEDataComponentWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.SWELabeledFieldWidget;
 
 
 /**
@@ -123,7 +126,7 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor
         }
     }
     
-    
+    //TODO : create panel
     protected void renderPropertyPanel(RNGElement elt)
     {
         String title = toNiceLabel(elt.getName());
@@ -160,9 +163,13 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor
                 contentPanel.add(w.getWidget());
         }
         
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(hidePanel);
-        widgets.peek().add(w);
+        GenericContainerWidget widget = new GenericContainerWidget();
+        widget.setWidget(hidePanel);
+        
+        FlowPanel container = new FlowPanel();
+        container.add(hidePanel);
+        widget.setPanel(container);
+        widgets.peek().add(widget);
     }
     
     
@@ -194,39 +201,30 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor
             }
         }
         
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(hidePanel);
-        widgets.peek().add(w);
+        GenericContainerWidget widget = new GenericContainerWidget();
+        widget.setWidget(hidePanel);
+        
+        FlowPanel container = new FlowPanel();
+        container.add(hidePanel);
+        widget.setPanel(container);
+        widgets.peek().add(widget);
     }
     
     
     protected void renderDataComponent(RNGElement elt)
     {
-        Label label = new Label("Type: " + toNiceLabel(elt.getName()));
-        label.addStyleName("swe-object-type");
-        label.addStyleName("swe-property-panel");
-        AbstractWidget w = new AbstractWidget();
-        w.setWidget(label);
-        widgets.peek().add(w);
+        AbstractWidget widget = new SWEDataComponentWidget(elt);
+        widgets.peek().add(widget);
         visitChildren(elt.getChildren());
     }
     
     
     protected void renderLabeledField(RNGTagList tagList, String label)
     {
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.addStyleName("swe-simple-field");
-        panel.addStyleName("swe-property-panel");
-        String tooltip = tagList.getAnnotation();
-        if (tooltip != null)
-            panel.setTitle(tooltip);
-        
-        if (label != null)
-            panel.add(new Label(label + ":"));
-        
+        AbstractWidget widget = new SWELabeledFieldWidget(tagList, label);
         newWidgetList();
         this.visitChildren(tagList.getChildren());
-        addWidgetsToPanel(panel);
+        addWidgetsToPanel(widget);
     }
     
     
