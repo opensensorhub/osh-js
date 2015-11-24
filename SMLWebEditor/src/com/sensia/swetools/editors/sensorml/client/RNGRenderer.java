@@ -52,6 +52,7 @@ import com.sensia.relaxNG.XSDDecimal;
 import com.sensia.relaxNG.XSDDouble;
 import com.sensia.relaxNG.XSDInteger;
 import com.sensia.relaxNG.XSDString;
+import com.sensia.swetools.editors.sensorml.client.listeners.IClickListener;
 import com.sensia.swetools.editors.sensorml.client.panels.SectionsWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.GenericContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeWidget;
@@ -120,14 +121,14 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
     
     
-    protected void addWidgetsToPanel(AbstractSensorWidget panel)
+    protected void addWidgetsToWidget(AbstractSensorWidget widget)
     {
         List<AbstractSensorWidget> wList = widgets.pop();
         for (AbstractSensorWidget w: wList){
-            panel.getPanel().add(w.getWidget());
+        	widget.getPanel().add(w.getWidget());
         }
         
-        widgets.peek().add(panel);
+        widgets.peek().add(widget);
     }
 
 
@@ -151,7 +152,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
 		RNGElementWidget widget = new RNGElementWidget(elt);
 		newWidgetList();
 		this.visitChildren(elt.getChildren());
-		addWidgetsToPanel(widget);
+		addWidgetsToWidget(widget);
 	}
 
 
@@ -160,7 +161,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
 		RNGAttributeWidget widget = new RNGAttributeWidget(attribute);
 		newWidgetList();
 		this.visitChildren(attribute.getChildren());
-		addWidgetsToPanel(widget);
+		addWidgetsToWidget(widget);
 	}
 
 
@@ -317,90 +318,14 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
 
 
-    @Override
-    public void visit(final RNGZeroOrMore zeroOrMore)
-    {
-        final VerticalPanel mainPanel = new VerticalPanel();
-        
-        // get a nice label
-        final String label = findLabel(zeroOrMore);
-        
-        // added occurences
-        int i = 0;
-        for (final List<RNGTag> tags: zeroOrMore.getPatternInstances())
-        {
-            boolean allowRemove = !(zeroOrMore instanceof RNGOneOrMore && i == 0);
-            Panel itemPanel = renderOccurence(zeroOrMore, tags, label, allowRemove);
-            mainPanel.add(itemPanel);
-            i++;
-        }
-        
-        final HorizontalPanel morePanel = new HorizontalPanel();
-        mainPanel.add(morePanel);
-        
-        // add button on left
-        Label b = new Label();
-        b.addStyleName("rng-optional-select");
-        b.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-                List<RNGTag> tags = zeroOrMore.newOccurence();
-                Panel itemPanel = renderOccurence(zeroOrMore, tags, label, true);
-                morePanel.removeFromParent();
-                mainPanel.add(itemPanel);
-                mainPanel.add(morePanel);
-            }
-        });
-        morePanel.add(b);
-        morePanel.add(new Label(label));
-        mainPanel.addStyleName("swe-property-panel");
-        
-        GenericContainerWidget  widget = new GenericContainerWidget();
-        widget.setPanel(mainPanel);
-        widget.setWidget(mainPanel);
-        widgets.peek().add(widget);
-    }
+	@Override
+	public void visit(final RNGZeroOrMore zeroOrMore) {
+
+		RNGZeroOrMoreWidget widget = new RNGZeroOrMoreWidget(zeroOrMore);
+		widgets.peek().add(widget);
+	}
     
     
-    protected Panel renderOccurence(final RNGZeroOrMore zeroOrMore, final List<RNGTag> tags, String label, boolean allowRemove)
-    {
-        final HorizontalPanel itemPanel = new HorizontalPanel();
-        
-        /*DisclosurePanel hidePanel = new DisclosurePanel();
-        hidePanel.setAnimationEnabled(true);
-        hidePanel.setHeader(new Label(label));
-        itemPanel.add(hidePanel);*/
-        
-        VerticalPanel contentPanel = new VerticalPanel();
-        //hidePanel.setContent(contentPanel);
-        itemPanel.add(contentPanel);
-                    
-        newWidgetList();
-        this.visitChildren(tags);
-        for (AbstractSensorWidget w: widgets.pop())
-            contentPanel.add(w.getWidget());
-        
-        if (allowRemove)
-        {
-            // delete button
-            Label b = new Label();
-            b.addStyleName("rng-optional-unselect");
-            b.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event)
-                {
-                    zeroOrMore.getPatternInstances().remove(tags);
-                    itemPanel.removeFromParent();
-                }
-            });
-            itemPanel.add(b);
-        }
-        
-        return itemPanel;
-    }
-
-
     @Override
     public void visit(RNGGroup group)
     {
@@ -629,5 +554,92 @@ public abstract class RNGRenderer implements RNGTagVisitor
         if (s.length() > 1)
             s1 += s.substring(1);
         return s1;
+    }
+    
+    
+    //----------  DEPENDENT WIDGET -------------/
+    
+    public class RNGZeroOrMoreWidget extends AbstractSensorWidget{
+
+    	private VerticalPanel mainPanel;
+    	
+		public RNGZeroOrMoreWidget(final RNGZeroOrMore zeroOrMore) {
+			super("", "");
+			
+			 mainPanel = new VerticalPanel();
+	        
+	        // get a nice label
+	        final String label = findLabel(zeroOrMore);
+	        
+	        // added occurences
+	        int i = 0;
+	        for (final List<RNGTag> tags: zeroOrMore.getPatternInstances())
+	        {
+	            boolean allowRemove = !(zeroOrMore instanceof RNGOneOrMore && i == 0);
+	            Panel itemPanel = renderOccurence(zeroOrMore, tags, label, allowRemove);
+	            mainPanel.add(itemPanel);
+	            i++;
+	        }
+	        
+	        final HorizontalPanel morePanel = new HorizontalPanel();
+	        mainPanel.add(morePanel);
+	        
+	        // add button on left
+	        Label b = new Label();
+	        b.addStyleName("rng-optional-select");
+	        b.addClickHandler(new ClickHandler() {
+	            @Override
+	            public void onClick(ClickEvent event)
+	            {
+	                List<RNGTag> tags = zeroOrMore.newOccurence();
+	                Panel itemPanel = renderOccurence(zeroOrMore, tags, label, true);
+	                morePanel.removeFromParent();
+	                mainPanel.add(itemPanel);
+	                mainPanel.add(morePanel);
+	            }
+	        });
+	        morePanel.add(b);
+	        morePanel.add(new Label(label));
+	        mainPanel.addStyleName("swe-property-panel");
+		}
+
+		@Override
+		public Widget getWidget() {
+			return mainPanel;
+		}
+
+		@Override
+		public Panel getPanel() {
+			return mainPanel;
+		}
+		
+		protected Panel renderOccurence(final RNGZeroOrMore zeroOrMore, final List<RNGTag> tags, String label, boolean allowRemove) {
+			final HorizontalPanel itemPanel = new HorizontalPanel();
+
+			VerticalPanel contentPanel = new VerticalPanel();
+			itemPanel.add(contentPanel);
+
+			newWidgetList();
+			visitChildren(tags);
+			for (AbstractSensorWidget w : widgets.pop())
+				contentPanel.add(w.getWidget());
+
+			if (allowRemove) {
+				// delete button
+				Label b = new Label();
+				b.addStyleName("rng-optional-unselect");
+				b.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						zeroOrMore.getPatternInstances().remove(tags);
+						itemPanel.removeFromParent();
+					}
+				});
+				itemPanel.add(b);
+			}
+
+			return itemPanel;
+		}
+    	
     }
 }

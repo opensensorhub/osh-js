@@ -139,7 +139,7 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		AbstractSensorWidget widget = new SWELabeledFieldWidget(tagList, label);
 		newWidgetList();
 		this.visitChildren(tagList.getChildren());
-		addWidgetsToPanel(widget);
+		addWidgetsToWidget(widget);
 	}
 
 	@Override
