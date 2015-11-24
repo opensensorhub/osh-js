@@ -5,9 +5,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGTagList;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
-public class SWELabeledFieldWidget extends AbstractWidget{
+public class SWELabeledFieldWidget extends AbstractSensorWidget{
 
 	private HorizontalPanel panel;
 	

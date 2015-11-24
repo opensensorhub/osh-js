@@ -4,9 +4,9 @@ import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
-public class SectionPanel extends AbstractWidget{
+public class SectionPanel extends AbstractSensorWidget{
 
 	private DecoratorPanel decorator;
 	private DisclosurePanel hidePanel;

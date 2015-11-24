@@ -3,13 +3,13 @@ package com.sensia.swetools.editors.sensorml.client;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-public abstract class AbstractWidget{
+public abstract class AbstractSensorWidget{
 
 	private String name;
 	
 	private String description;
 
-	protected AbstractWidget(final String name, final String description){
+	protected AbstractSensorWidget(final String name, final String description){
 		this.name = name;
 		this.description = description;
 	}

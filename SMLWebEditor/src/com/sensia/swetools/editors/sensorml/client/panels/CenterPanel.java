@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 import com.sensia.swetools.editors.sensorml.client.listeners.LoadButtonClickListener;
@@ -65,9 +65,9 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	 * @see com.sensia.swetools.editors.sensorml.client.IParsingObserver#parseDone(com.sensia.swetools.editors.sensorml.client.panels.model.INodeWidget)
 	 */
 	@Override
-	public void parseDone(final List<AbstractWidget> topElements) {
+	public void parseDone(final List<AbstractSensorWidget> topElements) {
 		dynamicCenterPanel.clear();
-		for(final AbstractWidget section : topElements) {
+		for(final AbstractSensorWidget section : topElements) {
 			SectionPanel sectionPanel = new SectionPanel(section.getName());
 			sectionPanel.addWidget(section.getWidget());
 			dynamicCenterPanel.add(sectionPanel.getWidget());

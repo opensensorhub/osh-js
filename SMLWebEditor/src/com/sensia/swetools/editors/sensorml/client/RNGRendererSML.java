@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.Panel;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGChoice;
 import com.sensia.relaxNG.RNGElement;
@@ -56,7 +55,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     protected final static String GML_NS = "http://www.opengis.net/gml";
     
     protected SectionsWidget rootPanel;
-    protected Map<String, AbstractWidget> tabs;
+    protected Map<String, AbstractSensorWidget> tabs;
     protected Map<String, String> eltNamesToSectionName;
     protected Map<String, RenderType> eltNamesToRenderType;
     
@@ -69,7 +68,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
 
     public RNGRendererSML()
     {
-        tabs = new HashMap<String, AbstractWidget>();        
+        tabs = new HashMap<String, AbstractSensorWidget>();        
         
         // assign top level elements to tabs
         eltNamesToSectionName = new HashMap<String, String>();
@@ -130,21 +129,17 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     public void visit(RNGGrammar grammar)
     {
         newWidgetList();
-        //rootPanel = new TabLayoutPanel(2.5, Unit.EM);
-        //rootPanel.setAnimationDuration(1000);
-        //rootPanel.setAnimationVertical(true);
-        //widgets.peek().add(rootPanel);
         rootPanel = new SectionsWidget();
         widgets.peek().add(rootPanel);
         super.visit(grammar);
     }
     
     
-    protected void addWidgetsToTab(Panel tab)
+    protected void addWidgetsToSection(AbstractSensorWidget section)
     {
-        List<AbstractWidget> wList = widgets.pop();
-        for (AbstractWidget w: wList)
-            tab.add(w.getWidget());
+        List<AbstractSensorWidget> wList = widgets.pop();
+        for (AbstractSensorWidget w: wList)
+        	section.getPanel().add(w.getWidget());
     }
 
 
@@ -163,14 +158,14 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
         // determine tab to render to
         // only for top level elements
         boolean isTopLevel = widgets.size() == 1;
-        Panel tab = findTab(elt);
-        if (isTopLevel && tab != null)
+        AbstractSensorWidget section = findSection(elt);
+        if (isTopLevel && section != null)
             newWidgetList();
         
         // determine render type
         String nameKey = nsUri.equals(SML_NS) ? eltName : nsUri + eltName;
         RenderType renderType = eltNamesToRenderType.get(nameKey);
-        if (tab != null && renderType == null)
+        if (section != null && renderType == null)
             renderType = RenderType.DECORATED_PANEL;
         
         // render element
@@ -187,7 +182,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
                     break;
                     
                 case OBJECT_TYPE:
-                    AbstractWidget widget = new ObjectTypeWidget(elt);
+                    AbstractSensorWidget widget = new ObjectTypeWidget(elt);
                     widgets.peek().add(widget);
                     visitChildren(elt.getChildren());
                     break;
@@ -206,22 +201,22 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
                 super.visit(elt);
         }
         
-        if (isTopLevel && tab != null)
-            addWidgetsToTab(tab);
+        if (isTopLevel && section != null)
+            addWidgetsToSection(section);
     }
     
     
     @Override
     public void visit(RNGAttribute att)
     {
-        Panel tab = findTab(att);
-        if (tab == null || widgets.size() > 1)
+        AbstractSensorWidget section = findSection(att);
+        if (section == null || widgets.size() > 1)
             super.visit(att);
         else
         {
             newWidgetList();
             super.visit(att);
-            addWidgetsToTab(tab);
+            addWidgetsToSection(section);
         }
     }
     
@@ -229,14 +224,14 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     @Override
     public void visit(RNGOptional optional)
     {
-        Panel tab = findTab(optional);       
-        if (tab == null || widgets.size() > 1)
+    	AbstractSensorWidget section = findSection(optional);       
+        if (section == null || widgets.size() > 1)
             super.visit(optional);
         else
         {
             newWidgetList();
             super.visit(optional);
-            addWidgetsToTab(tab);
+            addWidgetsToSection(section);
         }
     }
     
@@ -244,14 +239,14 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     @Override
     public void visit(RNGChoice choice)
     {
-        Panel tab = findTab(choice);       
-        if (tab == null || widgets.size() > 1)
+    	AbstractSensorWidget section = findSection(choice);       
+        if (section == null || widgets.size() > 1)
             super.visit(choice);
         else
         {
             newWidgetList();
             super.visit(choice);
-            addWidgetsToTab(tab);
+            addWidgetsToSection(section);
         }
     }
     
@@ -259,19 +254,19 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
     @Override
     public void visit(RNGZeroOrMore zeroOrMore)
     {
-        Panel tab = findTab(zeroOrMore);        
-        if (tab == null || widgets.size() > 1)
+    	AbstractSensorWidget section = findSection(zeroOrMore);        
+        if (section == null || widgets.size() > 1)
             super.visit(zeroOrMore);
         else
         {
             newWidgetList();
             super.visit(zeroOrMore);
-            addWidgetsToTab(tab);
+            addWidgetsToSection(section);
         }
     }
     
     
-    protected Panel findTab(RNGTag tag)
+    protected AbstractSensorWidget findSection(RNGTag tag)
     {
         String name = null;
         //String nsUri = null;
@@ -292,7 +287,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
         
         else if (tag instanceof RNGRef)
         {
-            return findTab(((RNGRef)tag).getPattern());
+            return findSection(((RNGRef)tag).getPattern());
         }
         
         else if (tag instanceof RNGTagList)
@@ -300,9 +295,9 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
             RNGTagList tagList = (RNGTagList)tag;
             for (RNGTag child: tagList.getChildren())
             {
-                Panel panel = findTab(child);
-                if (panel != null)
-                    return panel;
+            	AbstractSensorWidget section = findSection(child);
+                if (section != null)
+                    return section;
             }
         }
         
@@ -310,22 +305,21 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor
         {            
             String sectionName = eltNamesToSectionName.get(name);
             if (sectionName != null)
-                return getMainTab(sectionName);
+                return getSection(sectionName);
         }
         
         return null;
     }
     
     
-    //TODO: returns AbstractWidget instead
-	protected Panel getMainTab(String sectionName) {
+	protected AbstractSensorWidget getSection(String sectionName) {
 		if(!tabs.containsKey(sectionName)) {
-			AbstractWidget section = new SectionWidget(sectionName,"");
+			AbstractSensorWidget section = new SectionWidget(sectionName,"");
 			rootPanel.add(section);
 			tabs.put(sectionName, section);
 		}
 
-		return tabs.get(sectionName).getPanel();
+		return tabs.get(sectionName);
 	}
     
     

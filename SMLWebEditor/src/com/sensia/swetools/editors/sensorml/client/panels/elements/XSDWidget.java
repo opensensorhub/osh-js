@@ -9,16 +9,15 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGData;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
-public abstract class XSDWidget extends AbstractWidget{
+public abstract class XSDWidget extends AbstractSensorWidget{
 
 	protected TextBoxBase textBox;
 	private Panel container;

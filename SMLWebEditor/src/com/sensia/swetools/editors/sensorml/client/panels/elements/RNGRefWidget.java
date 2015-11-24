@@ -1,18 +1,17 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGRef;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
 /**
  * Create the generic panel for RNG Ref
  * @author mathieu dhainaut
  */
-public class RNGRefWidget extends AbstractWidget{
+public class RNGRefWidget extends AbstractSensorWidget{
 
 	private Label label;
 	private Panel container;

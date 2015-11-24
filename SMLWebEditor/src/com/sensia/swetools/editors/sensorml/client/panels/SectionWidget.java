@@ -1,12 +1,11 @@
 package com.sensia.swetools.editors.sensorml.client.panels;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
-public class SectionWidget extends AbstractWidget{
+public class SectionWidget extends AbstractSensorWidget{
 
 	private Panel section;
 	

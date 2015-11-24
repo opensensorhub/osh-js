@@ -2,14 +2,14 @@ package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
 /**
  * Temporary class to accept non-mapped panel elements
  * @author mathieu dhainaut
  *
  */
-public class GenericContainerWidget extends AbstractWidget{
+public class GenericContainerWidget extends AbstractSensorWidget{
 
 	private Widget widget;
 	private Panel panel;

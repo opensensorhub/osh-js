@@ -5,13 +5,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGValue;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
 /**
  * Create the generic panel for RNG Attribute
  * @author mathieu dhainaut
  */
-public class RNGValueWidget extends AbstractWidget{
+public class RNGValueWidget extends AbstractSensorWidget{
 
 	private HorizontalPanel panel;
 	

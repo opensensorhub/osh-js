@@ -5,14 +5,14 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGElement;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
 /**
  * Create the generic panel for RNG Element
  * @author mathieu dhainaut
  *
  */
-public class RNGElementWidget extends AbstractWidget{
+public class RNGElementWidget extends AbstractSensorWidget{
 
 	private VerticalPanel panel;
 	

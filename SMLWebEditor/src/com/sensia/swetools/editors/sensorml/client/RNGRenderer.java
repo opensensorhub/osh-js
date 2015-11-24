@@ -84,18 +84,18 @@ import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDWidget;
  */
 public abstract class RNGRenderer implements RNGTagVisitor
 {
-    protected Stack<List<AbstractWidget>> widgets;
+    protected Stack<List<AbstractSensorWidget>> widgets;
         
 
     public RNGRenderer()
     {
-        widgets = new Stack<List<AbstractWidget>>();
+        widgets = new Stack<List<AbstractSensorWidget>>();
     }
 
 
-    public List<AbstractWidget> getWidgets()
+    public List<AbstractSensorWidget> getWidgets()
     {
-    	List<AbstractWidget> top = widgets.peek();
+    	List<AbstractSensorWidget> top = widgets.peek();
     	if(top.get(0) instanceof SectionsWidget) {
     		top = ((SectionsWidget)top.get(0)).getSections();
     	} 
@@ -104,9 +104,9 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
     
     
-    protected List<AbstractWidget> newWidgetList()
+    protected List<AbstractSensorWidget> newWidgetList()
     {
-        List<AbstractWidget> wList = new ArrayList<AbstractWidget>();
+        List<AbstractSensorWidget> wList = new ArrayList<AbstractSensorWidget>();
         widgets.push(wList);
         return wList;
     }    
@@ -120,10 +120,10 @@ public abstract class RNGRenderer implements RNGTagVisitor
     }
     
     
-    protected void addWidgetsToPanel(AbstractWidget panel)
+    protected void addWidgetsToPanel(AbstractSensorWidget panel)
     {
-        List<AbstractWidget> wList = widgets.pop();
-        for (AbstractWidget w: wList){
+        List<AbstractSensorWidget> wList = widgets.pop();
+        for (AbstractSensorWidget w: wList){
             panel.getPanel().add(w.getWidget());
         }
         
@@ -187,7 +187,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
             VerticalPanel contentPanel = new VerticalPanel();
             newWidgetList();
             choice.getSelectedPattern().accept(this);
-            for (AbstractWidget w: widgets.pop())
+            for (AbstractSensorWidget w: widgets.pop())
                 contentPanel.add(w.getWidget());
             panel.add(contentPanel);
             
@@ -280,7 +280,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
                 VerticalPanel contentPanel = new VerticalPanel();
                 newWidgetList();
                 this.visitChildren(optional.getChildren());
-                for (AbstractWidget w: widgets.pop()){
+                for (AbstractSensorWidget w: widgets.pop()){
                     contentPanel.add(w.getWidget());
                 }
                 panel.add(contentPanel);
@@ -378,7 +378,7 @@ public abstract class RNGRenderer implements RNGTagVisitor
                     
         newWidgetList();
         this.visitChildren(tags);
-        for (AbstractWidget w: widgets.pop())
+        for (AbstractSensorWidget w: widgets.pop())
             contentPanel.add(w.getWidget());
         
         if (allowRemove)
@@ -522,10 +522,10 @@ public abstract class RNGRenderer implements RNGTagVisitor
         // regenerate widgets
         newWidgetList();
         tag.accept(this);
-        List<AbstractWidget> newWidgets = widgets.pop();
+        List<AbstractSensorWidget> newWidgets = widgets.pop();
         
         // add to parent widget temporarily
-        AbstractWidget newWidget = newWidgets.get(0);
+        AbstractSensorWidget newWidget = newWidgets.get(0);
         Widget parentWidget = oldWidget.getParent();
         
         if (parentWidget instanceof SimplePanel)

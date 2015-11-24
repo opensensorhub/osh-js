@@ -4,31 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sensia.swetools.editors.sensorml.client.AbstractWidget;
+import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
-public class SectionsWidget extends AbstractWidget{
+public class SectionsWidget extends AbstractSensorWidget{
 
 	public SectionsWidget() {
 		super("", "");
 	}
 
-	private List<AbstractWidget> sections;
+	private List<AbstractSensorWidget> sections;
 	
 	private Panel container;
 	
-	public void add(AbstractWidget section) {
+	public void add(AbstractSensorWidget section) {
 		if(sections == null) {
-			this.sections = new ArrayList<AbstractWidget>();
+			this.sections = new ArrayList<AbstractSensorWidget>();
 			container = new FlowPanel();
 		}
 		sections.add(section);
 		container.add(section.getWidget());
 	}
 	
-	public List<AbstractWidget> getSections(){
+	public List<AbstractSensorWidget> getSections(){
 		return sections;
 	}
 
