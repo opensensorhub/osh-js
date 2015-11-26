@@ -82,7 +82,7 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 
 		if (attName.equals("name")) {
 			visitChildren(att.getChildren());
-			widgets.peek().get(0).getWidget().setTitle("Enter name");
+			peek().get(0).getWidget().setTitle("Enter name");
 		}
 
 		else if (attName.equals("code")) {
@@ -99,14 +99,14 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 
 		newWidgetList();
 		visitChildren(elt.getChildren());
-		for (AbstractSensorWidget w : widgets.pop()) {
+		for (AbstractSensorWidget w : pop()) {
 			if (w.getWidget().getTitle().equals("Enter name"))
 				propertyPanel.getHeaderPanel().add(w.getWidget());
 			else
 				propertyPanel.getContentPanel().add(w.getWidget());
 		}
 
-		widgets.peek().add(propertyPanel);
+		peek().add(propertyPanel);
 	}
 
 	protected void renderDataComponentProperty(RNGElement elt) {
@@ -116,22 +116,22 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 			newWidgetList();
 			child.accept(this);
 
-			if (widgets.peek().size() > 0 && widgets.peek().get(0).getWidget().getTitle().equals("Enter name")) {
+			if (peek().size() > 0 && peek().get(0).getWidget().getTitle().equals("Enter name")) {
 				// assign name attribute widget to header
-				AbstractSensorWidget w = widgets.pop().get(0);
+				AbstractSensorWidget w = pop().get(0);
 				dataComponentPropertyWidget.setHeader(w.getWidget());
 			} else {
-				for (AbstractSensorWidget w : widgets.pop())
+				for (AbstractSensorWidget w : pop())
 					dataComponentPropertyWidget.getContentPanel().add(w.getWidget());
 			}
 		}
 
-		widgets.peek().add(dataComponentPropertyWidget);
+		peek().add(dataComponentPropertyWidget);
 	}
 
 	protected void renderDataComponent(RNGElement elt) {
 		AbstractSensorWidget widget = new SWEDataComponentWidget(elt);
-		widgets.peek().add(widget);
+		peek().add(widget);
 		visitChildren(elt.getChildren());
 	}
 

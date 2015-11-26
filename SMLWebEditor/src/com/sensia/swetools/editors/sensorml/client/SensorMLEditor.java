@@ -50,7 +50,7 @@ public class SensorMLEditor {
 	    dock.setHorizontalAlignment(DockPanel.ALIGN_LEFT);
 	    // Add text all around
 	    
-	    dock.add(navigationPanel, DockPanel.WEST);
+	    //dock.add(navigationPanel, DockPanel.WEST);
 	    dock.add(centerPanel, DockPanel.CENTER);
 
 	    // Return the content

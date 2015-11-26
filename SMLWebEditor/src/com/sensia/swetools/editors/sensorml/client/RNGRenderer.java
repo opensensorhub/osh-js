@@ -85,14 +85,30 @@ import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDWidget;
  * @date Aug 27, 2011
  */
 public abstract class RNGRenderer implements RNGTagVisitor {
-	protected Stack<List<AbstractSensorWidget>> widgets;
+	private Stack<List<AbstractSensorWidget>> widgets;
 
 	public RNGRenderer() {
 		widgets = new Stack<List<AbstractSensorWidget>>();
 	}
 
+	protected List<AbstractSensorWidget> pop() {
+		return widgets.pop();
+	}
+	
+	protected List<AbstractSensorWidget> peek() {
+		return widgets.peek();
+	}
+	
+	protected void push(List<AbstractSensorWidget> w) {
+		widgets.push(w);
+	}
+	
+	protected int getStackSize() {
+		return widgets.size();
+	}
+	
 	public List<AbstractSensorWidget> getWidgets() {
-		List<AbstractSensorWidget> top = widgets.peek();
+		List<AbstractSensorWidget> top = peek();
 		if (top.get(0) instanceof SectionsWidget) {
 			top = ((SectionsWidget) top.get(0)).getSections();
 		}
@@ -102,7 +118,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 
 	protected List<AbstractSensorWidget> newWidgetList() {
 		List<AbstractSensorWidget> wList = new ArrayList<AbstractSensorWidget>();
-		widgets.push(wList);
+		push(wList);
 		return wList;
 	}
 
@@ -113,12 +129,12 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	}
 
 	protected void addWidgetsToWidget(AbstractSensorWidget widget) {
-		List<AbstractSensorWidget> wList = widgets.pop();
+		List<AbstractSensorWidget> wList  = pop();
 		for (AbstractSensorWidget w : wList) {
 			widget.getPanel().add(w.getWidget());
 		}
 
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
@@ -156,21 +172,21 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 			ref.getPattern().accept(this);
 		} else {
 			RNGRefWidget widget = new RNGRefWidget(ref);
-			widgets.peek().add(widget);
+			peek().add(widget);
 		}
 	}
 
 	@Override
 	public void visit(final RNGChoice choice) {
 		RNGChoiceWidget widget = new RNGChoiceWidget(choice);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(final RNGOptional optional) {
 
 		RNGOptionalWidget widget = new RNGOptionalWidget(optional);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
@@ -182,7 +198,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	public void visit(final RNGZeroOrMore zeroOrMore) {
 
 		RNGZeroOrMoreWidget widget = new RNGZeroOrMoreWidget(zeroOrMore);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
@@ -198,13 +214,13 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	@Override
 	public void visit(RNGText text) {
 		RNGTextWidget widget = new RNGTextWidget(text);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(RNGValue val) {
 		RNGValueWidget widget = new RNGValueWidget(val);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
@@ -215,13 +231,13 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	@Override
 	public void visit(RNGData<?> data) {
 		RNGDataWidget widget = new RNGDataWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(final XSDString data) {
 		XSDWidget widget = new XSDStringWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
@@ -232,31 +248,31 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	@Override
 	public void visit(XSDDecimal data) {
 		XSDWidget widget = new XSDDecimalWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(final XSDDouble data) {
 		XSDWidget widget = new XSDDoubleWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(final XSDInteger data) {
 		XSDWidget widget = new XSDIntegerWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(XSDAnyURI data) {
 		XSDWidget widget = new XSDAnyURIWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	@Override
 	public void visit(XSDDateTime data) {
 		XSDWidget widget = new XSDDateTimeWidget(data);
-		widgets.peek().add(widget);
+		peek().add(widget);
 	}
 
 	/*
@@ -281,7 +297,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 		// regenerate widgets
 		newWidgetList();
 		tag.accept(this);
-		List<AbstractSensorWidget> newWidgets = widgets.pop();
+		List<AbstractSensorWidget> newWidgets = pop();
 
 		// add to parent widget temporarily
 		AbstractSensorWidget newWidget = newWidgets.get(0);
@@ -431,7 +447,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 
 			newWidgetList();
 			visitChildren(tags);
-			for (AbstractSensorWidget w : widgets.pop())
+			for (AbstractSensorWidget w : pop())
 				contentPanel.add(w.getWidget());
 
 			if (allowRemove) {
@@ -479,7 +495,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 					VerticalPanel contentPanel = new VerticalPanel();
 					newWidgetList();
 					RNGRenderer.this.visitChildren(optional.getChildren());
-					for (AbstractSensorWidget w : widgets.pop()) {
+					for (AbstractSensorWidget w : pop()) {
 						contentPanel.add(w.getWidget());
 					}
 					panel.add(contentPanel);
@@ -531,7 +547,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 				VerticalPanel contentPanel = new VerticalPanel();
 				newWidgetList();
 				choice.getSelectedPattern().accept(RNGRenderer.this);
-				for (AbstractSensorWidget w : widgets.pop())
+				for (AbstractSensorWidget w : pop())
 					contentPanel.add(w.getWidget());
 				panel.add(contentPanel);
 

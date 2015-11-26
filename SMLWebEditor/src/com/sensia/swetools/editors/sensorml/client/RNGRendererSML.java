@@ -126,12 +126,12 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	public void visit(RNGGrammar grammar) {
 		newWidgetList();
 		rootPanel = new SectionsWidget();
-		widgets.peek().add(rootPanel);
+		peek().add(rootPanel);
 		super.visit(grammar);
 	}
 
 	protected void addWidgetsToSection(AbstractSensorWidget section) {
-		List<AbstractSensorWidget> wList = widgets.pop();
+		List<AbstractSensorWidget> wList = pop();
 		for (AbstractSensorWidget w : wList)
 			section.getPanel().add(w.getWidget());
 	}
@@ -148,7 +148,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 
 		// determine tab to render to
 		// only for top level elements
-		boolean isTopLevel = widgets.size() == 1;
+		boolean isTopLevel = getStackSize() == 1;
 		AbstractSensorWidget section = findSection(elt);
 		if (isTopLevel && section != null)
 			newWidgetList();
@@ -172,7 +172,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 
 			case OBJECT_TYPE:
 				AbstractSensorWidget widget = new ObjectTypeWidget(elt);
-				widgets.peek().add(widget);
+				peek().add(widget);
 				visitChildren(elt.getChildren());
 				break;
 
@@ -195,7 +195,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	@Override
 	public void visit(RNGAttribute att) {
 		AbstractSensorWidget section = findSection(att);
-		if (section == null || widgets.size() > 1)
+		if (section == null || getStackSize() > 1)
 			super.visit(att);
 		else {
 			newWidgetList();
@@ -207,7 +207,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	@Override
 	public void visit(RNGOptional optional) {
 		AbstractSensorWidget section = findSection(optional);
-		if (section == null || widgets.size() > 1)
+		if (section == null || getStackSize() > 1)
 			super.visit(optional);
 		else {
 			newWidgetList();
@@ -219,7 +219,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	@Override
 	public void visit(RNGChoice choice) {
 		AbstractSensorWidget section = findSection(choice);
-		if (section == null || widgets.size() > 1)
+		if (section == null || getStackSize() > 1)
 			super.visit(choice);
 		else {
 			newWidgetList();
@@ -231,7 +231,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	@Override
 	public void visit(RNGZeroOrMore zeroOrMore) {
 		AbstractSensorWidget section = findSection(zeroOrMore);
-		if (section == null || widgets.size() > 1)
+		if (section == null || getStackSize() > 1)
 			super.visit(zeroOrMore);
 		else {
 			newWidgetList();
