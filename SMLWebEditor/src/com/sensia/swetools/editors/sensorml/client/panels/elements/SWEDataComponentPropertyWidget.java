@@ -10,30 +10,30 @@ import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
 public class SWEDataComponentPropertyWidget extends AbstractSensorWidget{
 
-	private VerticalPanel contentPanel;
+	//private VerticalPanel contentPanel;
 	private Panel container;
-	private DisclosurePanel hidePanel;
+	//private DisclosurePanel hidePanel;
 	
 	public SWEDataComponentPropertyWidget(final RNGElement elt) {
 		super("", "");
-		hidePanel = new DisclosurePanel();
-        hidePanel.setAnimationEnabled(true);
-        hidePanel.setOpen(false);
+		//hidePanel = new DisclosurePanel();
+        //hidePanel.setAnimationEnabled(true);
+        //hidePanel.setOpen(false);
         
-        contentPanel = new VerticalPanel();
-        hidePanel.setContent(contentPanel);
-        contentPanel.setSpacing(10);
+		container = new VerticalPanel();
+        //hidePanel.setContent(contentPanel);
+        //contentPanel.setSpacing(10);
         
-        container = new FlowPanel();
-        container.add(hidePanel);
+        //container = new FlowPanel();
+        //container.add(hidePanel);
 	}
 
 	public void setHeader(final Widget header) {
-		hidePanel.setHeader(header);
+		//hidePanel.setHeader(header);
 	}
 	
 	public Panel getContentPanel() {
-		return contentPanel;
+		return container;
 	}
 	
 	@Override

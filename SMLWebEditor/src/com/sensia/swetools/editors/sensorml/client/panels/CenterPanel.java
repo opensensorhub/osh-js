@@ -13,12 +13,13 @@ import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 import com.sensia.swetools.editors.sensorml.client.listeners.LoadButtonClickListener;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SectionPanel;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.SectionWidget;
 
 public class CenterPanel extends Composite implements IParsingObserver{
 	private static final long serialVersionUID = -7684111574093800909L;
 
-	private final String[] LIST_PROFILES = { 
+	private final String[] LIST_PROFILES = {
+			"anemometer",
 			"frame-sensor-model",
 			"csm-common",
 			"optical-sensor-parameters",
@@ -68,9 +69,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	public void parseDone(final List<AbstractSensorWidget> topElements) {
 		dynamicCenterPanel.clear();
 		for(final AbstractSensorWidget section : topElements) {
-			SectionPanel sectionPanel = new SectionPanel(section.getName());
-			sectionPanel.addWidget(section.getWidget());
-			dynamicCenterPanel.add(sectionPanel.getWidget());
+			dynamicCenterPanel.add(section.getWidget());
 		}
 	}
 }

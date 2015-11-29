@@ -67,7 +67,8 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 			renderPropertyPanel(elt);
 		}
 
-		else if (eltName.equals("identifier") || eltName.equals("label") || eltName.equals("description") || eltName.equals("uom") || eltName.equals("value")) {
+		else if (eltName.equals("identifier") || eltName.equals("label") || eltName.equals("description") || eltName.equals("uom") || eltName.equals("value")
+				|| eltName.equals("defaultValue")) {
 			renderLabeledField(elt, toNiceLabel(elt.getName()));
 		}
 
@@ -101,9 +102,9 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		visitChildren(elt.getChildren());
 		for (AbstractSensorWidget w : pop()) {
 			if (w.getWidget().getTitle().equals("Enter name"))
-				propertyPanel.getHeaderPanel().add(w.getWidget());
+				propertyPanel.addHeader(w.getWidget());
 			else
-				propertyPanel.getContentPanel().add(w.getWidget());
+				propertyPanel.addContent(w.getWidget());
 		}
 
 		peek().add(propertyPanel);

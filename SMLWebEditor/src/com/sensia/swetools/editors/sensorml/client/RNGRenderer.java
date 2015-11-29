@@ -131,7 +131,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	protected void addWidgetsToWidget(AbstractSensorWidget widget) {
 		List<AbstractSensorWidget> wList  = pop();
 		for (AbstractSensorWidget w : wList) {
-			widget.getPanel().add(w.getWidget());
+			widget.addPanel(w.getPanel());
 		}
 
 		peek().add(widget);
@@ -448,7 +448,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 			newWidgetList();
 			visitChildren(tags);
 			for (AbstractSensorWidget w : pop())
-				contentPanel.add(w.getWidget());
+				contentPanel.add(w.getPanel());
 
 			if (allowRemove) {
 				// delete button

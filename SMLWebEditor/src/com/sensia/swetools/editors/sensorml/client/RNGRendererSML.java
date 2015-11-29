@@ -25,9 +25,10 @@ import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.relaxNG.RNGValue;
 import com.sensia.relaxNG.RNGZeroOrMore;
-import com.sensia.swetools.editors.sensorml.client.panels.SectionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.SectionsWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.ObjectTypeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.SectionWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.TitleSectionWidget;
 
 /**
  * <p>
@@ -53,6 +54,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected final static String CONTACTS_TAB = "Contacts";
 	protected final static String DOCS_TAB = "Documentation";
 	protected final static String IO_TAB = "I/O Signals";
+	protected final static String TITLE_TAB = "Title";
 	protected final static String SML_NS = "http://www.opengis.net/sensorML/1.0.1";
 	protected final static String GML_NS = "http://www.opengis.net/gml";
 
@@ -62,7 +64,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected Map<String, RenderType> eltNamesToRenderType;
 
 	enum RenderType {
-		SKIP, DECORATED_PANEL, LABELED_FIELD, OBJECT_TYPE
+		SKIP, DECORATED_PANEL, LABELED_FIELD, OBJECT_TYPE, TITLE
 	}
 
 	public RNGRendererSML() {
@@ -73,7 +75,6 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		eltNamesToSectionName.put("id", ID_TAB);
 		eltNamesToSectionName.put("identifier", ID_TAB);
 		eltNamesToSectionName.put("name", ID_TAB);
-		eltNamesToSectionName.put("description", ID_TAB);
 		eltNamesToSectionName.put("keywords", ID_TAB);
 		eltNamesToSectionName.put("identification", ID_TAB);
 		eltNamesToSectionName.put("classification", ID_TAB);
@@ -89,9 +90,14 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		eltNamesToSectionName.put("outputs", IO_TAB);
 		eltNamesToSectionName.put("parameters", IO_TAB);
 
+		//add name and description to TITLE_TAB
+		//eltNamesToSectionName.put("name", TITLE_TAB);
+		//eltNamesToSectionName.put("description", TITLE_TAB);
+		
 		// assign element names to rendering types
 		eltNamesToRenderType = new HashMap<String, RenderType>();
 		eltNamesToRenderType.put("ProcessModel", RenderType.SKIP);
+		eltNamesToRenderType.put("Component", RenderType.SKIP);
 		eltNamesToRenderType.put("IdentifierList", RenderType.SKIP);
 		eltNamesToRenderType.put("ClassifierList", RenderType.SKIP);
 		eltNamesToRenderType.put("InputList", RenderType.SKIP);
@@ -133,7 +139,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected void addWidgetsToSection(AbstractSensorWidget section) {
 		List<AbstractSensorWidget> wList = pop();
 		for (AbstractSensorWidget w : wList)
-			section.getPanel().add(w.getWidget());
+			section.addPanel(w.getPanel());
 	}
 
 	@Override
@@ -280,7 +286,12 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 
 	protected AbstractSensorWidget getSection(String sectionName) {
 		if (!tabs.containsKey(sectionName)) {
-			AbstractSensorWidget section = new SectionWidget(sectionName, "");
+			AbstractSensorWidget section = null;
+			if(sectionName.equals(TITLE_TAB)){
+				section = new TitleSectionWidget(sectionName);
+			} else {
+				section = new SectionWidget(sectionName);
+			}
 			rootPanel.add(section);
 			tabs.put(sectionName, section);
 		}

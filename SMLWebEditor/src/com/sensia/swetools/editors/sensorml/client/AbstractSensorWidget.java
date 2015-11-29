@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -37,6 +38,11 @@ public abstract class AbstractSensorWidget{
 	public abstract Widget getWidget();
 	
 	public abstract Panel getPanel();
+	
+	public void addPanel(Panel panel) {
+		GWT.log(panel.getClass().toString());
+		getPanel().add(panel);
+	}
 	
 	protected String SMLtoNiceLabel(String name) {
 		// special cases

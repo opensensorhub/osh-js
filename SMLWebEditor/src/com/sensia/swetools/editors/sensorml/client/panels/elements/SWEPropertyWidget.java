@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -11,40 +12,23 @@ import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 
 public class SWEPropertyWidget extends AbstractSensorWidget{
 
-	private DisclosurePanel hidePanel;
-	private HorizontalPanel header;
-	private FlowPanel contentPanel;
+	//private DisclosurePanel hidePanel;
+	//private HorizontalPanel header;
+	//private FlowPanel contentPanel;
 	
 	private FlowPanel container;
 	
 	public SWEPropertyWidget(final RNGElement elt) {
-		super("", "");
+		super(elt.getName(), "");
 		
 		String title = toNiceLabel(elt.getName());
-        
-       // DecoratorPanel decorator = new DecoratorPanel();
-        hidePanel = new DisclosurePanel();
-        hidePanel.setAnimationEnabled(true);
-        hidePanel.setOpen(false);
-        hidePanel.addStyleName("swe-property-panel");
-        //decorator.add(hidePanel);
-        
-        // header section
-        header = new HorizontalPanel();
-        header.addStyleName("swe-section-header");
-        hidePanel.setHeader(header);
         
         // title in header
         Label label = new Label(title);
         label.addStyleName("swe-section-title");
-        header.add(label);
-        
-        // content section
-        contentPanel = new FlowPanel();
-        hidePanel.setContent(contentPanel);
         
         container = new FlowPanel();
-        container.add(hidePanel);
+        container.addStyleName("swe-property-panel");
 	}
 
 	@Override
@@ -57,16 +41,11 @@ public class SWEPropertyWidget extends AbstractSensorWidget{
 		return container;
 	}
 	
-	public Panel getContentPanel() {
-		return contentPanel;
+	public void addHeader(Widget widget){
+		container.add(widget);
 	}
 	
-	public Panel getHeaderPanel() {
-		return header;
+	public void addContent(Widget content) {
+		container.add(content);
 	}
-	
-	public DisclosurePanel DisclosurePanel() {
-		return hidePanel;
-	}
-
 }
