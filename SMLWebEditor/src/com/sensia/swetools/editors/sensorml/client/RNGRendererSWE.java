@@ -10,18 +10,30 @@
 
 package com.sensia.swetools.editors.sensorml.client;
 
+import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.shared.GWT;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGElement;
 import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.relaxNG.RNGValue;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SWEDataComponentPropertyWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SWEDataComponentWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SWELabeledFieldWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SWEPropertyWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeDefinitionWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGElementWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGIdentifierWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGValueWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataComponentPropertyWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataComponentWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataFieldWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataQuantityWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataRecordNameWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataRecordUOMWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataRecordWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWELabeledFieldWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEPropertyWidget;
 
 /**
  * <p>
@@ -55,19 +67,34 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 	public void visit(RNGElement elt) {
 		String eltName = elt.getName();
 
+		if(eltName.equals("DataRecord")){
+			renderDataRecord(elt);
+		}else if(eltName.equals("field")){
+			renderDataRecordField(elt);
+		} else if(eltName.equals("Quantity")){
+			renderDataRecordQuantity(elt);
+		} else if(eltName.equals("name")){
+			renderDataRecordName(elt);
+		} else if(eltName.equals("uom")) {
+			renderDataRecordUOM(elt);
+		}
+		
+		else {
+			
+			
 		if (eltName.startsWith("Boolean") || eltName.startsWith("Quantity") || eltName.startsWith("Count") || eltName.startsWith("Category")
-				|| eltName.startsWith("Time") || eltName.equals("Text") || eltName.equals("DataRecord") || eltName.equals("Vector")
+				|| eltName.startsWith("Time") || eltName.equals("Text") || eltName.equals("Vector")
 				|| eltName.equals("DataArray") || eltName.equals("Matrix") || eltName.equals("DataChoice") || eltName.equals("DataStream")) {
 			renderDataComponent(elt);
 		}
 
-		else if (eltName.equals("field") || eltName.equals("coordinate") || eltName.equals("elementType") || eltName.equals("item")
+		else if (eltName.equals("coordinate") || eltName.equals("elementType") || eltName.equals("item")
 				|| eltName.equals("quality") || eltName.equals("encoding")) {
 			renderDataComponentProperty(elt);
 			renderPropertyPanel(elt);
 		}
 
-		else if (eltName.equals("identifier") || eltName.equals("label") || eltName.equals("description") || eltName.equals("uom") || eltName.equals("value")
+		else if (eltName.equals("identifier") || eltName.equals("label") || eltName.equals("description")
 				|| eltName.equals("defaultValue")) {
 			renderLabeledField(elt, toNiceLabel(elt.getName()));
 		}
@@ -75,6 +102,7 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		else {
 			super.visit(elt);
 		}
+	 }
 	}
 
 	@Override
@@ -82,12 +110,29 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		String attName = att.getName();
 
 		if (attName.equals("name")) {
+			RNGAttributeWidget widget = new RNGAttributeWidget(att);
+			newWidgetList();
 			visitChildren(att.getChildren());
-			peek().get(0).getWidget().setTitle("Enter name");
+			//should have only 1 element inside
+			AbstractSensorWidget child = peek().get(0);
+			if(child instanceof RNGValueWidget) {
+				pop();
+				widget.setValue(child.getName());
+			}
+			peek().add(widget);
+			//peek().get(0).getWidget().setTitle("Enter name");
 		}
 
 		else if (attName.equals("code")) {
 			visitChildren(att.getChildren());
+		}
+		
+		else if (attName.equals("definition")) {
+			RNGAttributeDefinitionWidget widget = new RNGAttributeDefinitionWidget(att);
+			newWidgetList();
+			this.visitChildren(att.getChildren());
+			pop();
+			peek().add(widget);
 		}
 
 		else {
@@ -130,6 +175,67 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		peek().add(dataComponentPropertyWidget);
 	}
 
+	protected void renderDataRecord(RNGElement elt) {
+		AbstractSensorWidget widget = new SWEDataRecordWidget();
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+		
+	}
+	
+	protected void renderDataRecordField(RNGElement elt) {
+		AbstractSensorWidget widget = new SWEDataFieldWidget();
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+	}
+	
+	protected void renderDataRecordQuantity(RNGElement elt) {
+		AbstractSensorWidget widget = new SWEDataQuantityWidget();
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+	}
+	
+	protected void renderDataRecordName(RNGElement elt) {
+		AbstractSensorWidget widget = new SWEDataRecordNameWidget();
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+	}
+	
+	protected void renderDataRecordUOM(RNGElement elt) {
+		AbstractSensorWidget widget = new SWEDataRecordUOMWidget();
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+	}
+	
 	protected void renderDataComponent(RNGElement elt) {
 		AbstractSensorWidget widget = new SWEDataComponentWidget(elt);
 		peek().add(widget);
@@ -143,6 +249,18 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		addWidgetsToWidget(widget);
 	}
 
+	protected void renderIdentifierPanel(RNGElement elt) {
+		AbstractSensorWidget widget = new RNGIdentifierWidget();
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+	}
+	
 	@Override
 	protected String findLabel(RNGTag tag) {
 		if (tag instanceof RNGElement) {

@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="encoding.rng"/>   
+   <!-- -->
+   <define name="swe.DataComponentAttributeGroup">
+      <optional>
+         <ref name="swe.fixed"/>
+      </optional>
+      <optional>
+         <ref name="swe.definition"/>
+      </optional>
+   </define>
+   <!-- -->
+   <define name="swe.SimpleComponentAttributeGroup">
+      <ref name="swe.DataComponentAttributeGroup"/>
+      <optional>
+         <ref name="swe.referenceFrame"/>
+      </optional>
+      <optional>
+         <ref name="swe.axisID"/>
+      </optional>
+   </define>
+   <!-- -->
+   <define name="swe.Boolean">
+      <element name="swe:Boolean">
+         <a:documentation>Boolean Field</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.SimpleComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.quality"/>
+         </optional>
+         <optional>
+            <ref name="swe.booleanValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.Quantity">
+      <element name="swe:Quantity">
+         <a:documentation>Quantity Field (Continuous value)</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.SimpleComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.uom"/>
+         </optional>
+         <optional>
+            <ref name="swe.quantityConstraints"/>
+         </optional>
+         <zeroOrMore>
+            <ref name="swe.quality"/>
+         </zeroOrMore>
+         <optional>
+            <ref name="swe.quantityValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.QuantityRange">
+      <element name="swe:QuantityRange">
+         <a:documentation>Quantity Range (Range for a continuous values)</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.SimpleComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.uom"/>
+         </optional>
+         <optional>
+            <ref name="swe.quantityConstraints"/>
+         </optional>
+         <zeroOrMore>
+            <ref name="swe.quality"/>
+         </zeroOrMore>
+         <optional>
+            <ref name="swe.quantityRangeValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.Count">
+      <element name="swe:Count">
+         <a:documentation>Count Field (Discrete countable value)</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.SimpleComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.countConstraints"/>
+         </optional>
+         <zeroOrMore>
+            <ref name="swe.quality"/>
+         </zeroOrMore>
+         <optional>
+            <ref name="swe.countValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.CountRange">
+      <element name="swe:CountRange">
+         <a:documentation>Count Range (Range of discrete values)</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.SimpleComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.countConstraints"/>
+         </optional>
+         <zeroOrMore>
+            <ref name="swe.quality"/>
+         </zeroOrMore>
+         <optional>
+            <ref name="swe.countRangeValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.Category">
+      <element name="swe:Category">
+         <a:documentation>Category Field (Discrete categorical value)</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.SimpleComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.codeSpace"/>
+         </optional>
+         <optional>
+            <ref name="swe.categoryConstraints"/>
+         </optional>
+         <optional>
+            <ref name="swe.quality"/>
+         </optional>
+         <optional>
+            <ref name="swe.categoryValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->   
+   <define name="swe.TimeComponentAttributeGroup">
+      <ref name="swe.SimpleComponentAttributeGroup"/>
+      <optional>
+         <ref name="swe.localFrame"/>
+      </optional>
+      <optional>
+         <ref name="swe.referenceTime"/>
+      </optional>
+   </define>
+   <!-- -->
+   <define name="swe.Time">
+      <element name="swe:Time">
+         <a:documentation>Absolute or relative (e.g. duration) temporal value</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>         
+         <ref name="swe.TimeComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.uom"/>
+         </optional>
+         <optional>
+            <ref name="swe.timeConstraints"/>
+         </optional>
+         <optional>
+            <ref name="swe.quality"/>
+         </optional>
+         <optional>
+            <ref name="swe.timeValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.TimeRange">
+      <element name="swe:TimeRange">
+         <a:documentation>Time Range (Range for a temporal values)</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.TimeComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.uom"/>
+         </optional>
+         <optional>
+            <ref name="swe.timeConstraints"/>
+         </optional>
+         <optional>
+            <ref name="swe.quality"/>
+         </optional>
+         <optional>
+            <ref name="swe.timeRangeValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.Text">
+      <element name="swe:Text">
+         <a:documentation>Text Field</a:documentation>
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.DataComponentAttributeGroup"/>
+         <optional>
+            <ref name="swe.textValue"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.ObservableProperty">
+      <element name="swe:ObservableProperty">
+         <ref name="gml.GmlObjectGroup"/>
+         <ref name="swe.definition"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.quality">
+      <element name="swe:quality">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <ref name="swe.Quantity"/>
+            <ref name="swe.QuantityRange"/>
+            <ref name="swe.Category"/>
+            <ref name="swe.Text"/>
+         </choice>
+      </element>
+   </define>   
+   <!-- -->
+   <define name="swe.quantityConstraints">
+      <element name="swe:constraint">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="swe:AllowedValues">
+               <a:documentation>List of allowed decimal values</a:documentation>
+               <choice>
+                  <element name="swe:min">
+                     <data type="double"/>
+                  </element>
+                  <element name="swe:max">
+                     <data type="double"/>
+                  </element>
+                  <oneOrMore>
+                     <choice>
+                        <element name="swe:interval">
+                           <list>
+                              <data type="double"/>
+                              <data type="double"/>
+                           </list>
+                        </element>
+                        <element name="swe:valueList">
+                           <list>
+                              <oneOrMore>
+                                 <data type="double"/>
+                              </oneOrMore>
+                           </list>
+                        </element>
+                     </choice>
+                  </oneOrMore>
+               </choice>
+               <optional>
+                  <ref name="swe.objectID"/>
+               </optional>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.countConstraints">
+      <element name="swe:constraint">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="swe:AllowedValues">
+               <a:documentation>List of allowed integer values</a:documentation>
+               <choice>
+                  <element name="swe:min">
+                     <data type="integer"/>
+                  </element>
+                  <element name="swe:max">
+                     <data type="integer"/>
+                  </element>
+                  <oneOrMore>
+                     <choice>
+                        <element name="swe:interval">
+                           <list>
+                              <data type="integer"/>
+                              <data type="integer"/>
+                           </list>
+                        </element>
+                        <element name="swe:valueList">
+                           <list>
+                              <oneOrMore>
+                                 <data type="integer"/>
+                              </oneOrMore>
+                           </list>
+                        </element>
+                     </choice>
+                  </oneOrMore>
+               </choice>
+               <optional>
+                  <ref name="swe.objectID"/>
+               </optional>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.categoryConstraints">
+      <element name="swe:constraint">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="swe:AllowedTokens">
+               <element name="swe:valueList">
+                  <list>
+                     <oneOrMore>
+                        <data type="token"/>
+                     </oneOrMore>
+                  </list>
+               </element>
+               <optional>
+                  <ref name="swe.objectID"/>
+               </optional>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.timeConstraints">
+      <element name="swe:constraint">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="swe:AllowedTimes">
+               <a:documentation>List of allowed integer values</a:documentation>
+               <choice>
+                  <element name="swe:min">
+                     <ref name="swe.timePositionType"/>
+                  </element>
+                  <element name="swe:max">
+                     <ref name="swe.timePositionType"/>
+                  </element>
+                  <oneOrMore>
+                     <choice>
+                        <element name="swe:interval">
+                           <list>
+                              <ref name="swe.timePositionType"/>
+                              <ref name="swe.timePositionType"/>
+                           </list>
+                        </element>
+                        <element name="swe:valueList">
+                           <list>
+                              <oneOrMore>
+                                 <ref name="swe.timePositionType"/>
+                              </oneOrMore>
+                           </list>
+                        </element>
+                     </choice>
+                  </oneOrMore>
+               </choice>
+               <optional>
+                  <ref name="swe.objectID"/>
+               </optional>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.AnyScalar">
+      <choice>
+         <ref name="swe.AnyNumerical"/>
+         <ref name="swe.Boolean"/>
+         <ref name="swe.Category"/>
+         <ref name="swe.Text"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="swe.AnyNumerical">
+      <choice>
+         <ref name="swe.Count"/>
+         <ref name="swe.Quantity"/>
+         <ref name="swe.Time"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="swe.AnyRange">
+      <choice>
+         <ref name="swe.QuantityRange"/>
+         <ref name="swe.CountRange"/>         
+         <ref name="swe.TimeRange"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="swe.AnySimple">
+      <choice>
+         <ref name="swe.AnyScalar"/>
+         <ref name="swe.AnyRange"/>
+      </choice>
+   </define>
+   <!--=============-->
+   <!-- Basic Types -->
+   <!--=============-->
+   <define name="swe.definition">
+      <attribute name="definition">
+         <data type="anyURI"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.fixed">
+      <attribute name="fixed">
+         <data type="boolean"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.referenceFrame">
+      <attribute name="referenceFrame">
+         <data type="anyURI"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.localFrame">
+      <attribute name="localFrame">
+         <data type="anyURI"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.axisID">
+      <attribute name="axisID">
+         <data type="token"/>
+      </attribute>
+   </define>   
+   <!-- -->
+   <define name="swe.codeSpace">
+      <element name="swe:codeSpace">
+         <ref name="xlink.href"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.uom">
+      <element name="swe:uom">
+         <choice>
+            <ref name="xlink.href"/>
+            <ref name="swe.uomCode"/>
+            <!--<ref name="gml.unit"/>-->
+         </choice>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.uomCode">
+      <attribute name="code">
+         <a:documentation>Unit code using UCUM syntax</a:documentation>      
+         <data type="token"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.referenceTime">
+      <attribute name="referenceTime">
+         <data type="date"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.booleanValue">
+      <element name="swe:value">
+         <data type="boolean"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.categoryValue">
+      <element name="swe:value">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.countValue">
+      <element name="swe:value">
+         <data type="integer"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.countRangeValue">
+      <element name="swe:value">
+         <list>
+            <data type="integer"/>
+            <data type="integer"/>
+         </list>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.quantityValue">
+      <element name="swe:value">
+         <data type="double"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.quantityRangeValue">
+      <element name="swe:value">
+         <list>
+            <data type="double"/>
+            <data type="double"/>
+         </list>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.timeValue">
+      <element name="swe:value">
+         <ref name="swe.timePositionType"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.timeRangeValue">
+      <element name="swe:value">
+         <list>
+            <ref name="swe.timePositionType"/>
+            <ref name="swe.timePositionType"/>
+         </list>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.textValue">
+      <element name="swe:value">
+         <data type="string">
+            <param name="minLength">1</param>
+         </data>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.timePositionType">
+      <choice>
+         <data type="double"/>
+         <data type="dateTime"/>
+         <data type="date"/>
+         <data type="time"/>
+         <ref name="gml.timeIndeterminateValueType"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="swe.nameAtt">
+      <attribute name="name">
+         <a:documentation>Field name</a:documentation>
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="swe.objectID">
+      <attribute name="id">
+         <data type="ID"/>
+      </attribute>
+   </define>
+</grammar>

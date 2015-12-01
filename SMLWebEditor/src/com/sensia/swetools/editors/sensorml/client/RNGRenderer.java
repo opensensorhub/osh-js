@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -131,7 +132,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	protected void addWidgetsToWidget(AbstractSensorWidget widget) {
 		List<AbstractSensorWidget> wList  = pop();
 		for (AbstractSensorWidget w : wList) {
-			widget.addPanel(w.getPanel());
+			widget.addPanel(w);
 		}
 
 		peek().add(widget);

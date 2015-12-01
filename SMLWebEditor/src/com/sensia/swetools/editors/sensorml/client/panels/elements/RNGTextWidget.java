@@ -25,9 +25,9 @@ public class RNGTextWidget extends AbstractSensorWidget{
         }
         
 		textBox = new TextBox();
-        textBox.setVisibleLength(30);
+        textBox.setVisibleLength(10);
         textBox.setText(textStr);
-        
+        textBox.setEnabled(false);
         container = new FlowPanel();
         container.add(textBox);
 	}

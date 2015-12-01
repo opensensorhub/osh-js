@@ -2,6 +2,7 @@ package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,6 +35,15 @@ public class SectionWidget extends AbstractSensorWidget{
 		return container;
 	}
 	
+	@Override
+	public void addPanel(AbstractSensorWidget widget) {
+		if(widget instanceof RNGAttributeWidget) {
+			hidePanel.getHeaderTextAccessor().setText((((RNGAttributeWidget)widget).getValue()));
+		} else {
+			super.addPanel(widget);
+		}
+	}
+	
 	public void addWidget(Widget widget){
 		contentPanel.add(widget);
 	}
@@ -42,6 +52,5 @@ public class SectionWidget extends AbstractSensorWidget{
 	public Panel getPanel() {
 		return contentPanel;
 	}
-	
 	
 }

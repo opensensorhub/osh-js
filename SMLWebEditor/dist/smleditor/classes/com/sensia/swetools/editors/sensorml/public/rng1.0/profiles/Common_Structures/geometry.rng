@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sml="http://www.opengis.net/sensorML/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sch="http://www.ascc.net/xml/schematron" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="../../swe/data.rng">
+      <start>
+         <element name="test">
+            <oneOrMore>
+               <choice>
+                  <ref name="swx.Point"/>
+                  <ref name="swx.LineString"/>
+                  <ref name="swx.LinearRing"/>
+                  <ref name="swx.Polygon"/>
+               </choice>
+            </oneOrMore>
+         </element>
+      </start>
+   </include>
+   <!-- -->
+   <define name="swx.Point">
+      <a:documentation>SWE encoding of ISO 19107 Point geometry</a:documentation>
+      <element name="swe:Vector">
+         <ref name="gml.GmlObjectGroup"/>
+         <optional>
+            <ref name="swe.fixed"/>
+         </optional>
+         <optional>
+            <ref name="swe.referenceFrame"/>
+         </optional>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:OGC:Point</value>
+         </attribute>
+         <oneOrMore>
+            <ref name="swe.coordinate"/>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swx.LineString">
+      <a:documentation>SWE encoding of ISO 19107 LineString geometry</a:documentation>
+      <element name="swe:DataArray">
+         <ref name="gml.GmlObjectGroup"/>
+         <optional>
+            <ref name="swe.fixed"/>
+         </optional>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:OGC:LineString</value>
+         </attribute>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <attribute name="name">
+               <value>point</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swx.Point"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>      
+   </define>
+   <!-- -->
+   <define name="swx.LinearRing">
+      <a:documentation>SWE encoding of ISO 19107 LinearRing geometry</a:documentation>
+      <element name="swe:DataArray">
+         <ref name="gml.GmlObjectGroup"/>
+         <optional>
+            <ref name="swe.fixed"/>
+         </optional>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:OGC:LinearRing</value>
+         </attribute>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <attribute name="name">
+               <value>point</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swx.Point"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="swx.Polygon">
+      <a:documentation>SWE encoding of ISO 19107 Polygon geometry</a:documentation>
+      <element name="swe:DataRecord">
+         <ref name="gml.GmlObjectGroup"/>
+         <optional>
+            <ref name="swe.fixed"/>
+         </optional>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:OGC:Polygon</value>
+         </attribute>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>exterior</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swx.LinearRing"/>
+            </choice>
+         </element>
+         <optional>
+            <element name="swe:field">
+               <attribute name="name">
+                  <value>interiorList</value>
+               </attribute>
+               <choice>
+                  <ref name="xlink.href"/>
+                  <element name="swe:DataArray">
+                     <ref name="gml.GmlObjectGroup"/>
+                     <ref name="swe.elementCount"/>
+                     <element name="swe:elementType">
+                        <attribute name="name">
+                           <value>interior</value>
+                        </attribute>
+                        <choice>
+                           <ref name="xlink.href"/>
+                           <ref name="swx.LinearRing"/>
+                        </choice>
+                     </element>
+                     <optional>
+                        <ref name="swe.EncodedValuesGroup"/>
+                     </optional>
+                  </element>
+               </choice>
+            </element>
+         </optional>
+      </element>
+   </define>
+</grammar>

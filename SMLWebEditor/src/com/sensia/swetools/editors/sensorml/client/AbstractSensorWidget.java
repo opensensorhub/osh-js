@@ -31,6 +31,7 @@ public abstract class AbstractSensorWidget{
 		this.description = description;
 	}
 	
+	
 	/**
 	 * Get the corresponding widget.
 	 * @return the corresponding widget
@@ -39,9 +40,8 @@ public abstract class AbstractSensorWidget{
 	
 	public abstract Panel getPanel();
 	
-	public void addPanel(Panel panel) {
-		GWT.log(panel.getClass().toString());
-		getPanel().add(panel);
+	public void addPanel(AbstractSensorWidget widget) {
+		getPanel().add(widget.getPanel());
 	}
 	
 	protected String SMLtoNiceLabel(String name) {

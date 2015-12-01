@@ -229,7 +229,7 @@ html>body .gwt-DecoratedTabBar {
 }
 
 .swe-property-panel {
-	margin-left:20px;
+	margin-left:35px;
 }
 
 .swe-object-type {
@@ -271,3 +271,17 @@ table.gwt-DisclosurePanel-open>tbody>tr>td> a.header {
 .gwt-DisclosurePanel-closed .swe-property-panel a.header {
   background-image: url(images/show_section.png) !important;;
 }
+
+/* Center the definition image */
+.sml-attribute-definition {
+	vertical-align: middle;
+}
+
+td, th  {
+    display: table-cell !important;
+    vertical-align: middle !important;
+    align : right !important;
+    text-align: right !important;
+}
+
+

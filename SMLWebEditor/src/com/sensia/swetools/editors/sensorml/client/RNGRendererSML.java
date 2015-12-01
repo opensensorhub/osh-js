@@ -64,7 +64,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected Map<String, RenderType> eltNamesToRenderType;
 
 	enum RenderType {
-		SKIP, DECORATED_PANEL, LABELED_FIELD, OBJECT_TYPE, TITLE
+		SKIP, DECORATED_PANEL, LABELED_FIELD, OBJECT_TYPE, TITLE,IDENTIFIER_PANEL
 	}
 
 	public RNGRendererSML() {
@@ -114,7 +114,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		eltNamesToRenderType.put("input", RenderType.DECORATED_PANEL);
 		eltNamesToRenderType.put("output", RenderType.DECORATED_PANEL);
 		eltNamesToRenderType.put("parameter", RenderType.DECORATED_PANEL);
-		eltNamesToRenderType.put("identifier", RenderType.DECORATED_PANEL);
+		eltNamesToRenderType.put("identifier", RenderType.IDENTIFIER_PANEL);
 		eltNamesToRenderType.put("classifier", RenderType.DECORATED_PANEL);
 		eltNamesToRenderType.put("name", RenderType.LABELED_FIELD);
 		eltNamesToRenderType.put(GML_NS + "identifier", RenderType.LABELED_FIELD);
@@ -139,7 +139,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected void addWidgetsToSection(AbstractSensorWidget section) {
 		List<AbstractSensorWidget> wList = pop();
 		for (AbstractSensorWidget w : wList)
-			section.addPanel(w.getPanel());
+			section.addPanel(w);
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 				break;
 
 			case DECORATED_PANEL:
-				renderPropertyPanel(elt);
+				visitChildren(elt.getChildren());
 				break;
 
 			case OBJECT_TYPE:
@@ -184,6 +184,10 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 
 			case LABELED_FIELD:
 				renderLabeledField(elt, toNiceLabel(eltName));
+				break;
+				
+			case IDENTIFIER_PANEL:
+				renderIdentifierPanel(elt);
 				break;
 			}
 		} else {
@@ -201,7 +205,14 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	@Override
 	public void visit(RNGAttribute att) {
 		AbstractSensorWidget section = findSection(att);
-		if (section == null || getStackSize() > 1)
+		if(getStackSize() == 1 && section == null) {
+			section = getSection(att.getChildValue().getText());
+			newWidgetList();
+			super.visit(att);
+			addWidgetsToSection(section);
+		} else {
+			
+		} if (getStackSize() > 1)
 			super.visit(att);
 		else {
 			newWidgetList();
@@ -253,6 +264,8 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		if (tag instanceof RNGElement) {
 			RNGElement elt = (RNGElement) tag;
 			// nsUri = elt.getNamespace();
+			//try to find name
+	
 			name = elt.getName();
 		}
 

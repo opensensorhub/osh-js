@@ -1,6 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -21,6 +22,7 @@ public class RNGElementWidget extends AbstractSensorWidget{
 		super(toNiceLabel(elt.getName()),"");
 		panel = new VerticalPanel();
         panel.add(new Label(getName()));
+        panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 	}
 
 	@Override

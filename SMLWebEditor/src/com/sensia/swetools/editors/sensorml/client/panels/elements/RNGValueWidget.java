@@ -1,6 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -19,9 +20,10 @@ public class RNGValueWidget extends AbstractSensorWidget{
 	public RNGValueWidget(RNGValue val) {
 		super(val.getText(),"");
 		panel = new HorizontalPanel();
-        panel.setSpacing(5);
+		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        panel.setSpacing(10);
         panel.add(new Label(val.getText()));
-        GWT.log(val.getText());
+        
 	}
 	
 	@Override
@@ -33,5 +35,4 @@ public class RNGValueWidget extends AbstractSensorWidget{
 	public Panel getPanel() {
 		return panel;
 	}
-
 }
