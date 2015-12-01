@@ -77,6 +77,8 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 			renderDataRecordName(elt);
 		} else if(eltName.equals("uom")) {
 			renderDataRecordUOM(elt);
+		} else if(eltName.equals("value")) {
+			renderDataRecordValue(elt);
 		}
 		
 		else {
@@ -222,6 +224,15 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 		}
 
 		peek().add(widget);
+	}
+	
+	/**
+	 * Handle XSD values?
+	 * @param elt
+	 */
+	protected void renderDataRecordValue(RNGElement elt) {
+		visitChildren(elt.getChildren());
+
 	}
 	
 	protected void renderDataRecordUOM(RNGElement elt) {

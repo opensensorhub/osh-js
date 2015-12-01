@@ -280,8 +280,8 @@ table.gwt-DisclosurePanel-open>tbody>tr>td> a.header {
 td, th  {
     display: table-cell !important;
     vertical-align: middle !important;
-    align : right !important;
-    text-align: right !important;
+    /*align : right !important;
+    text-align: right !important;*/
 }
 
 

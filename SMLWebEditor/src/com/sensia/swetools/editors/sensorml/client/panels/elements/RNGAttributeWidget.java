@@ -29,6 +29,7 @@ public class RNGAttributeWidget extends AbstractSensorWidget{
         panel.setSpacing(5);
         label = new Label(getName());
         panel.add(label);
+        panel.setWidth("120px");
 	}
 	
 	@Override

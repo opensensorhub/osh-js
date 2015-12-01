@@ -25,9 +25,9 @@ public class RNGIdentifierWidget extends AbstractSensorWidget{
 		contentPanel = new HorizontalPanel();
 		defPanel = new HorizontalPanel();
 		
-		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		contentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		defPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		contentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		defPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
 		container.add(contentPanel);
 		container.add(defPanel);

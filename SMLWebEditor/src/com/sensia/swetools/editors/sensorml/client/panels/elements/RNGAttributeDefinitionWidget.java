@@ -17,7 +17,7 @@ public class RNGAttributeDefinitionWidget extends AbstractSensorWidget{
 		super("","");
 		String def = attribute.getChildValue().getText();
 		container = new HorizontalPanel();
-		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		Image defImage = new Image(GWT.getModuleBaseURL()+"images/icon_info.png");
 		defImage.setTitle(def);
 		container.add(defImage);

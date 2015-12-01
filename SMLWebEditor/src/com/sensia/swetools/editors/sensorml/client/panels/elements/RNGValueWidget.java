@@ -20,7 +20,7 @@ public class RNGValueWidget extends AbstractSensorWidget{
 	public RNGValueWidget(RNGValue val) {
 		super(val.getText(),"");
 		panel = new HorizontalPanel();
-		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
         panel.setSpacing(10);
         panel.add(new Label(val.getText()));
         
