@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -54,19 +55,19 @@ import com.sensia.relaxNG.XSDDouble;
 import com.sensia.relaxNG.XSDInteger;
 import com.sensia.relaxNG.XSDString;
 import com.sensia.swetools.editors.sensorml.client.panels.SectionsWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGDataWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGElementWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGRefWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGTextWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGValueWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDAnyURIWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDDateTimeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDDecimalWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDDoubleWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDIntegerWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDStringWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGDataWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGElementWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGRefWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGTextWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGValueWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDAnyURIWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDDateTimeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDDecimalWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDDoubleWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDIntegerWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDStringWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDWidget;
 
 /**
  * <p>
@@ -226,7 +227,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 
 	@Override
 	public void visit(RNGList list) {
-
+		visitChildren(list.getChildren());
 	}
 
 	@Override
@@ -276,6 +277,17 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 		peek().add(widget);
 	}
 
+	protected void renderSubTopElement(RNGElement elt,AbstractSensorWidget widget) {
+		for (RNGTag child : elt.getChildren()) {
+			newWidgetList();
+			child.accept(this);
+			for (AbstractSensorWidget w : pop())
+				widget.addPanel(w);
+		}
+
+		peek().add(widget);
+	}
+	
 	/*
 	 * protected void renderConfirmedValue(final RNGData<?> data) { final
 	 * HorizontalPanel panel = new HorizontalPanel();
@@ -532,12 +544,12 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 
 	public class RNGChoiceWidget extends AbstractSensorWidget {
 
-		private Panel container;
+		private HorizontalPanel container;
 		
 		protected RNGChoiceWidget(final RNGChoice choice) {
 			super("", "");
 			
-			container = new FlowPanel();
+			container = new HorizontalPanel();
 			
 			// if an entry has been selected
 			if (choice.isSelected()) {
@@ -600,6 +612,9 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 					}
 				});
 				container.add(combo);
+				container.add(new HTML("&nbsp;&nbsp;"));
+				container.setSpacing(10);
+				combo.setEnabled(false);
 			}
 		}
 

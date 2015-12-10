@@ -7,11 +7,12 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeDefinitionWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGValueWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SMLLabelWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.XSDWidget;
+import com.sensia.swetools.editors.sensorml.client.RNGRenderer.RNGChoiceWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeDefinitionWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGValueWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.sml.SMLLabelWidget;
 
 public class SWEDataQuantityWidget extends AbstractSensorWidget{
 
@@ -21,6 +22,7 @@ public class SWEDataQuantityWidget extends AbstractSensorWidget{
 	private Panel container;
 	private HorizontalPanel defPanel;
 	private HorizontalPanel uomPanel;
+	private Label dotSeparatorLabel;
 	
 	public SWEDataQuantityWidget() {
 		super("", "");
@@ -30,9 +32,10 @@ public class SWEDataQuantityWidget extends AbstractSensorWidget{
 		namePanel = new HorizontalPanel();
 		quantityPanel = new HorizontalPanel();
 		uomPanel = new HorizontalPanel();
+		dotSeparatorLabel = new Label(getNormalizedLabel(110));
 		
 		container.add(namePanel);
-		container.add(new Label(getNormalizedLabel(70)));
+		container.add(dotSeparatorLabel);
 		container.add(quantityPanel);
 		container.add(uomPanel);
 		container.add(defPanel);
@@ -54,7 +57,8 @@ public class SWEDataQuantityWidget extends AbstractSensorWidget{
 			defPanel.add(widget.getWidget());
 		} else if (widget instanceof SMLLabelWidget){
 			namePanel.add(widget.getWidget());
-		} else if (widget instanceof RNGValueWidget || widget instanceof XSDWidget){
+			dotSeparatorLabel.setText(getNormalizedLabel(0));
+		} else if (widget instanceof RNGValueWidget || widget instanceof XSDWidget || widget instanceof RNGChoiceWidget){
 			quantityPanel.add(widget.getWidget());
 		} else if(widget instanceof SWEDataRecordUOMWidget){
 			uomPanel.add(widget.getWidget());
@@ -62,15 +66,4 @@ public class SWEDataQuantityWidget extends AbstractSensorWidget{
 			super.addPanel(widget);
 		}
 	}
-
-	private String getNormalizedLabel(int value) {
-		int normValue = 70;
-		String newValue = "";
-		
-		for(int i=0;i < normValue;i++) {
-			newValue += ".";
-		}
-		return newValue;
-	}
-
 }

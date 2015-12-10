@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
+import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
 
 public class NavigationPanel extends Composite implements IParsingObserver{
 	
@@ -23,10 +24,10 @@ public class NavigationPanel extends Composite implements IParsingObserver{
 	}
 
 	@Override
-	public void parseDone(final List<AbstractSensorWidget> topElements) {
+	public void parseDone(final ISensorWidget topElement) {
 		verticalPanel.clear();
-		for(final AbstractSensorWidget section : topElements) {
-			verticalPanel.add(new HTML("<a href=\"\">"+section.getName()+"</a>"));
-		}
+		//for(final AbstractSensorWidget section : topElements) {
+		//	verticalPanel.add(new HTML("<a href=\"\">"+section.getName()+"</a>"));
+		//}
 	}
 }

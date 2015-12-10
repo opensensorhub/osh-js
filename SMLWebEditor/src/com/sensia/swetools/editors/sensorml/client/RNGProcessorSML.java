@@ -26,10 +26,10 @@ public class RNGProcessorSML {
 			@Override
 			public void onParseDone(final RNGGrammar grammar) {
 				loadedGrammar = grammar;
-				RNGRendererSML renderer = new RNGRendererSML();
+				com.sensia.swetools.editors.sensorml.client.v2.RNGRendererSML renderer = new com.sensia.swetools.editors.sensorml.client.v2.RNGRendererSML();
 				renderer.visit(grammar);
 				for(final IParsingObserver observer : observers) {
-					observer.parseDone(renderer.getWidgets());
+					observer.parseDone(renderer.getRoot());
 				}
 			}
 		});

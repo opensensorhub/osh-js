@@ -188,8 +188,8 @@ html>body .gwt-DecoratedTabBar {
   cursor: hand;
   cursor: pointer;
   margin-top: 1px;
-  margin-bottom: 5px;
-  margin-right: 5px;
+  /*margin-bottom: 5px;
+  margin-right: 5px;*/
 }
 
 .rng-optional-unselect {
@@ -229,7 +229,7 @@ html>body .gwt-DecoratedTabBar {
 }
 
 .swe-property-panel {
-	margin-left:35px;
+	margin-left:35px !important;
 }
 
 .swe-object-type {

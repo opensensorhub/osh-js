@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeWidget;
 
 public class SWEDataRecordWidget extends AbstractSensorWidget{
 

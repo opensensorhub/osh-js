@@ -1,7 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels;
 
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -9,11 +8,10 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 import com.sensia.swetools.editors.sensorml.client.listeners.LoadButtonClickListener;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SectionWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
 
 public class CenterPanel extends Composite implements IParsingObserver{
 	private static final long serialVersionUID = -7684111574093800909L;
@@ -22,6 +20,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 			"anemometer",
 			"frame-sensor-model",
 			"csm-common",
+			"geopositioning-models",
 			"optical-sensor-parameters",
 			"pushbroom-sensor-model",
 			"scanner-sensor-parameters",
@@ -46,10 +45,14 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		HTML title = new HTML("<b>Profiles:</b>");
 		
 		Button load = new Button("Load");
+		Button edit = new Button("Edit");
 		
 		panel.add(title);
 		panel.add(profileListBox);
 		panel.add(load);
+		panel.add(edit);
+		
+		edit.setEnabled(false);
 		
 		dynamicCenterPanel = new VerticalPanel();
 		
@@ -66,10 +69,8 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	 * @see com.sensia.swetools.editors.sensorml.client.IParsingObserver#parseDone(com.sensia.swetools.editors.sensorml.client.panels.model.INodeWidget)
 	 */
 	@Override
-	public void parseDone(final List<AbstractSensorWidget> topElements) {
+	public void parseDone(final ISensorWidget topElement) {
 		dynamicCenterPanel.clear();
-		for(final AbstractSensorWidget section : topElements) {
-			dynamicCenterPanel.add(section.getWidget());
-		}
+		dynamicCenterPanel.add(topElement.getPanel());
 	}
 }

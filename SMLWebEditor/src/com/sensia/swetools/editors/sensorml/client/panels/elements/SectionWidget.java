@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeWidget;
 
 public class SectionWidget extends AbstractSensorWidget{
 	private static final String CSS_CLASS = "swe-section-panel";

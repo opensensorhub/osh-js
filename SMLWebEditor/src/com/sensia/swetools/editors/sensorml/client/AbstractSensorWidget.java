@@ -9,7 +9,9 @@ public abstract class AbstractSensorWidget{
 	private String name;
 	
 	private String description;
-
+	
+	private static final int NORMALIZE_DOT_SEPARATOR_SIZE = 70;
+	
 	protected AbstractSensorWidget(final String name, final String description){
 		this.name = name;
 		this.description = description;
@@ -88,5 +90,14 @@ public abstract class AbstractSensorWidget{
 		if (s.length() > 1)
 			s1 += s.substring(1);
 		return s1;
+	}
+	
+
+	protected String getNormalizedLabel(int originalSize) {
+		String newValue = "";
+		for(int i=0;i < NORMALIZE_DOT_SEPARATOR_SIZE;i++) {
+			newValue += ".";
+		}
+		return newValue;
 	}
 }

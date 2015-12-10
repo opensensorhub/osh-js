@@ -28,10 +28,11 @@ import com.sensia.relaxNG.RNGValue;
 import com.sensia.relaxNG.RNGZeroOrMore;
 import com.sensia.swetools.editors.sensorml.client.panels.SectionsWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.ObjectTypeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.RNGIdentifierWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.SMLLabelWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.SectionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.TitleSectionWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.sml.SMLIdentifierWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.sml.SMLLabelWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.elements.sml.SMLOutputWidget;
 
 /**
  * <p>
@@ -56,8 +57,9 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected final static String CAPS_TAB = "Characteristics";
 	protected final static String CONTACTS_TAB = "Contacts";
 	protected final static String DOCS_TAB = "Documentation";
-	protected final static String CUSTOM_TAB = "Enter a section name";
+	protected final static String CUSTOM_TAB = "Other";
 	protected final static String IO_TAB = "I/O Signals";
+	protected final static String OUTPUTS_TAB = "Outputs";
 	protected final static String TITLE_TAB = "Title";
 	protected final static String SML_NS = "http://www.opengis.net/sensorML/1.0.1";
 	protected final static String GML_NS = "http://www.opengis.net/gml";
@@ -68,7 +70,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	protected Map<String, RenderType> eltNamesToRenderType;
 
 	enum RenderType {
-		SKIP, DECORATED_PANEL, LABELED_FIELD, OBJECT_TYPE, TITLE,IDENTIFIER_PANEL,SML_FIELD
+		SKIP, DECORATED_PANEL, LABELED_FIELD, OBJECT_TYPE, TITLE,IDENTIFIER_PANEL,SML_FIELD,OUTPUT
 	}
 
 	public RNGRendererSML() {
@@ -91,7 +93,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		eltNamesToSectionName.put("contact", CONTACTS_TAB);
 		eltNamesToSectionName.put("documentation", DOCS_TAB);
 		eltNamesToSectionName.put("inputs", IO_TAB);
-		eltNamesToSectionName.put("outputs", IO_TAB);
+		eltNamesToSectionName.put("outputs", OUTPUTS_TAB);
 		eltNamesToSectionName.put("parameters", IO_TAB);
 
 		//add name and description to TITLE_TAB
@@ -116,7 +118,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		eltNamesToRenderType.put("phone", RenderType.DECORATED_PANEL);
 		eltNamesToRenderType.put("address", RenderType.DECORATED_PANEL);
 		eltNamesToRenderType.put("input", RenderType.DECORATED_PANEL);
-		eltNamesToRenderType.put("output", RenderType.DECORATED_PANEL);
+		eltNamesToRenderType.put("output", RenderType.OUTPUT);
 		eltNamesToRenderType.put("parameter", RenderType.DECORATED_PANEL);
 		eltNamesToRenderType.put("identifier", RenderType.IDENTIFIER_PANEL);
 		eltNamesToRenderType.put("classifier", RenderType.DECORATED_PANEL);
@@ -193,7 +195,10 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 				break;
 				
 			case IDENTIFIER_PANEL:
-				renderIdentifierPanel(elt);
+				renderSubTopElement(elt,new SMLIdentifierWidget());
+				break;
+			case OUTPUT:
+				renderSubTopElement(elt,new SMLOutputWidget());
 				break;
 			case SML_FIELD : {
 				widget = new SMLLabelWidget(elt);
