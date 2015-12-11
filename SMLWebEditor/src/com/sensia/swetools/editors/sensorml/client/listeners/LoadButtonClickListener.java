@@ -2,6 +2,7 @@ package com.sensia.swetools.editors.sensorml.client.listeners;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 
@@ -9,10 +10,12 @@ public class LoadButtonClickListener implements ClickHandler{
 
 	private ListBox profileListBox;
 	private RNGProcessorSML sgmlEditorProcessor;
+	private Button edit;
 	
-	public LoadButtonClickListener(final ListBox profileListBox,final RNGProcessorSML sgmlEditorProcessor) {
+	public LoadButtonClickListener(final ListBox profileListBox,final RNGProcessorSML sgmlEditorProcessor,Button edit) {
 		this.profileListBox = profileListBox;
 		this.sgmlEditorProcessor = sgmlEditorProcessor;
+		this.edit = edit;
 	}
 	
 	@Override
@@ -21,6 +24,8 @@ public class LoadButtonClickListener implements ClickHandler{
 		if(value != null && !value.isEmpty()){
 			final String url = "rng1.0/profiles/CSM/"+value+".rng";
 			sgmlEditorProcessor.parse(url);
+			edit.setVisible(true);
+			edit.setEnabled(true);
 		}
 	}
 

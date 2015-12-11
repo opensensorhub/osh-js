@@ -22,7 +22,6 @@ import com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd.SensorXSDD
 
 public class SensorZeroOrMoreWidget extends AbstractSensorElementWidget{
 
-	private List<ISensorWidget> panelsToAdd;
 	private VerticalPanel container;
 	private RNGZeroOrMore zeroOrMore;
 	
@@ -39,10 +38,10 @@ public class SensorZeroOrMoreWidget extends AbstractSensorElementWidget{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(panelsToAdd != null && getMode() == MODE.EDIT) {
+				if(!getElements().isEmpty() && getMode() == MODE.EDIT) {
 					//concatenates every panels
 					VerticalPanel allEditPanels = new VerticalPanel();
-					for(final ISensorWidget panelToAdd : panelsToAdd) {
+					for(final ISensorWidget panelToAdd : getElements()) {
 						ISensorWidget clone = panelToAdd.cloneSensorWidget();
 						if(clone != null) {
 							allEditPanels.add(clone.getPanel());	
@@ -67,10 +66,7 @@ public class SensorZeroOrMoreWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
-		if(panelsToAdd == null) {
-			panelsToAdd = new ArrayList<ISensorWidget>();
-		}
-		panelsToAdd.add(widget);
+		//do nothing
 	}
 
 	@Override

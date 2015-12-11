@@ -32,6 +32,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	
 	private VerticalPanel dynamicCenterPanel;
 	private Button edit;
+	private ISensorWidget root;
 	
 	public CenterPanel(final RNGProcessorSML sgmlEditorProcessor){
 		sgmlEditorProcessor.addObserver(this);
@@ -57,7 +58,19 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		panel.add(edit);
 		
 		edit.setVisible(false);
+		edit.setEnabled(true);
 		
+		edit.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(root != null){
+					root.switchMode(MODE.EDIT);
+					edit.setEnabled(false);
+				}
+			}
+		});
+
 		dynamicCenterPanel = new VerticalPanel();
 		
 		final VerticalPanel verticalPanel = new VerticalPanel();
@@ -65,7 +78,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		verticalPanel.add(dynamicCenterPanel);
 		initWidget(verticalPanel);
 		
-		load.addClickHandler(new LoadButtonClickListener(profileListBox, sgmlEditorProcessor));
+		load.addClickHandler(new LoadButtonClickListener(profileListBox, sgmlEditorProcessor,edit));
 	}
 
 	/*
@@ -76,15 +89,6 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	public void parseDone(final ISensorWidget topElement) {
 		dynamicCenterPanel.clear();
 		dynamicCenterPanel.add(topElement.getPanel());
-		
-		edit.setVisible(true);
-		edit.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				topElement.switchMode(MODE.EDIT);
-				edit.setEnabled(false);
-			}
-		});
+		root = topElement;
 	}
 }
