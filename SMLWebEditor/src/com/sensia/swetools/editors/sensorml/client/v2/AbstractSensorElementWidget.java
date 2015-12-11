@@ -3,6 +3,15 @@ package com.sensia.swetools.editors.sensorml.client.v2;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGData;
 import com.sensia.relaxNG.RNGDefine;
@@ -14,6 +23,8 @@ import com.sensia.relaxNG.RNGRef;
 import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGZeroOrMore;
+import com.sensia.swetools.editors.sensorml.client.panels.Utils;
+import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.MODE;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.sml.SMLSensorIdentifierWidget;
 
 public abstract class AbstractSensorElementWidget implements ISensorWidget{
@@ -175,5 +186,39 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	}
 	
 	protected abstract AbstractSensorElementWidget newInstance();
+	
+	protected Panel getAddButtonPanel(String annotation,String label) {
+		Label addButton = new Label(annotation);
+		addButton.addStyleName("rng-optional-select");
+		
+		addButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(!getElements().isEmpty() && getMode() == MODE.EDIT) {
+					//concatenates every panels
+					VerticalPanel allEditPanels = new VerticalPanel();
+					for(final ISensorWidget panelToAdd : getElements()) {
+						ISensorWidget clone = panelToAdd.cloneSensorWidget();
+						if(clone != null) {
+							allEditPanels.add(clone.getPanel());	
+						} else {
+							GWT.log("Clone method is not implemented yet for class : "+panelToAdd.getClass().toString());
+						}
+						
+					}
+					
+					final DialogBox dialogBox = Utils.createDialogBox(allEditPanels);
+					dialogBox.show();
+				}
+			}
+		});
+		
+		final HorizontalPanel panel = new HorizontalPanel();
+		panel.add(addButton);
+		panel.add(new HTML(label));
+		
+		return panel;
+	}
 	
 }
