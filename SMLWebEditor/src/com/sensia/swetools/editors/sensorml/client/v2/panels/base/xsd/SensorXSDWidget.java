@@ -132,4 +132,9 @@ public abstract class SensorXSDWidget extends AbstractSensorElementWidget{
 	public Panel getPanel() {
 		return container;
 	}
+
+	
+	protected void activeMode(MODE mode) {
+		
+	}
 }

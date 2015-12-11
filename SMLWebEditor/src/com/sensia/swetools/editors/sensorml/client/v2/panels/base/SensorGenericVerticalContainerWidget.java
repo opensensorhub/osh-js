@@ -33,4 +33,15 @@ public class SensorGenericVerticalContainerWidget extends AbstractSensorElementW
 		GWT.log("Widget : "+getName()+" added "+widget.getName()+ " widget");
 	}
 
+	@Override
+	protected void activeMode(MODE mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SensorGenericVerticalContainerWidget(getName(),getDef(),getType());
+	}
+
 }

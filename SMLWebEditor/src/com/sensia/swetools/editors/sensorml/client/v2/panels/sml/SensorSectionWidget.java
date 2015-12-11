@@ -52,8 +52,19 @@ public class SensorSectionWidget extends AbstractSensorElementWidget{
 			}
 			
 		} else {
-			getPanel().add(widget.getPanel());
+			contentPanel.add(widget.getPanel());
 		}
+	}
+
+	@Override
+	protected void activeMode(MODE mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SensorSectionWidget(getName());
 	}
 
 }

@@ -14,6 +14,7 @@ import com.sensia.relaxNG.RNGRef;
 import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGZeroOrMore;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.sml.SMLSensorIdentifierWidget;
 
 public abstract class AbstractSensorElementWidget implements ISensorWidget{
 
@@ -40,11 +41,17 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		this.name = name;
 	}
 	
-	public void setMode(MODE mode) {
+	public void switchMode(MODE mode) {
 		editorMode = mode;
-		//do action or nothing
-		//need to be override by subclasses
+		activeMode(mode);
+		
+		//propagate edit mode
+		for(final ISensorWidget sensorWidget : elements) {
+			sensorWidget.switchMode(mode);
+		}
 	}
+	
+	protected abstract void activeMode(MODE mode);
 	
 	protected MODE getMode() {
 		return editorMode;
@@ -152,5 +159,21 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 			s1 += s.substring(1);
 		return s1;
 	}
+	
+	@Override
+	public ISensorWidget cloneSensorWidget(){
+		AbstractSensorElementWidget clone = newInstance();
+		
+		for(final ISensorWidget element : getElements()) {
+			ISensorWidget cloneChild = element.cloneSensorWidget();
+			if(cloneChild != null) {
+				clone.addSensorWidget(cloneChild);
+			}
+		}
+		
+		return clone;
+	}
+	
+	protected abstract AbstractSensorElementWidget newInstance();
 	
 }

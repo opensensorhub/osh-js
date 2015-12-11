@@ -1,5 +1,8 @@
 package com.sensia.swetools.editors.sensorml.client.v2.panels.sml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -48,5 +51,16 @@ public class SMLSensorIdentifierWidget extends AbstractSensorElementWidget{
 		} else {
 			contentPanel.add(widget.getPanel());
 		}
+	}
+
+	@Override
+	protected void activeMode(MODE mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SMLSensorIdentifierWidget();
 	}
 }

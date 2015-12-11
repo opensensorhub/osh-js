@@ -6,19 +6,19 @@ import com.google.gwt.user.client.ui.Panel;
 
 public interface ISensorWidget {
 
-	enum MODE {
+	public enum MODE {
 		VIEW,
 		EDIT
 	}
 	
-	enum TAG_DEF {
+	public enum TAG_DEF {
 		SML,
 		GML,
 		SWE,
 		RNG
 	}
 	
-	enum TAG_TYPE {
+	public enum TAG_TYPE {
 		ATTRIBUTE,
 		VALUE,
 		ELEMENT,
@@ -30,7 +30,7 @@ public interface ISensorWidget {
 	
 	void setName(String name);
 	
-	void setMode(MODE mode);
+	void switchMode(MODE mode);
 	
 	TAG_DEF getDef();
 	
@@ -41,4 +41,6 @@ public interface ISensorWidget {
 	void addElement(ISensorWidget element);
 	
 	Panel getPanel();
+	
+	ISensorWidget cloneSensorWidget();
 }

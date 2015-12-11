@@ -47,4 +47,15 @@ public class SensorSectionsWidget extends AbstractSensorElementWidget{
 			container.add(widget.getPanel());
 		}
 	}
+
+	@Override
+	protected void activeMode(MODE mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SensorSectionsWidget();
+	}
 }

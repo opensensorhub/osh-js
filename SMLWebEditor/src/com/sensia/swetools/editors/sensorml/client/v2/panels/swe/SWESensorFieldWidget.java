@@ -25,10 +25,7 @@ public class SWESensorFieldWidget extends AbstractSensorElementWidget{
 		
 		container.add(contentPanel);
 		container.add(defPanel);
-		
-		//contentPanel.addStyleName("swe-property-panel");
 		container.setSpacing(5);
-		//contentPanel.setSpacing(5);
 	}
 
 	@Override
@@ -52,5 +49,16 @@ public class SWESensorFieldWidget extends AbstractSensorElementWidget{
 		} else {
 			contentPanel.add(widget.getPanel());
 		}
+	}
+
+	@Override
+	protected void activeMode(MODE mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SWESensorFieldWidget();
 	}
 }

@@ -1,11 +1,16 @@
 package com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd;
 
 import com.sensia.relaxNG.XSDAnyURI;
+import com.sensia.swetools.editors.sensorml.client.v2.AbstractSensorElementWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
 
 public class SensorXSDAnyURIWidget extends SensorXSDWidget{
 	
+	private XSDAnyURI data;
+	
 	public SensorXSDAnyURIWidget(final XSDAnyURI data) {
 		super(data,getLength(data),null);
+		this.data = data;
 	}
 	
 	private static int getLength(XSDAnyURI data){
@@ -20,5 +25,10 @@ public class SensorXSDAnyURIWidget extends SensorXSDWidget{
             length = maxLength;
         
         return length;
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SensorXSDAnyURIWidget(data);
 	}
 }
