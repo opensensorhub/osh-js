@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -31,7 +32,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	};
 	
 	private VerticalPanel dynamicCenterPanel;
-	private Button edit;
+	private CheckBox edit;
 	private ISensorWidget root;
 	
 	public CenterPanel(final RNGProcessorSML sgmlEditorProcessor){
@@ -50,7 +51,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		HTML title = new HTML("<b>Profiles:</b>");
 		
 		Button load = new Button("Load");
-		edit = new Button("Edit");
+		edit = new CheckBox("Edit");
 		
 		panel.add(title);
 		panel.add(profileListBox);
@@ -58,15 +59,14 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		panel.add(edit);
 		
 		edit.setVisible(false);
-		edit.setEnabled(true);
 		
 		edit.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				if(root != null){
-					root.switchMode(MODE.EDIT);
-					edit.setEnabled(false);
+					MODE mode = (edit.isChecked()) ? MODE.EDIT : MODE.VIEW;
+					root.switchMode(mode);
 				}
 			}
 		});

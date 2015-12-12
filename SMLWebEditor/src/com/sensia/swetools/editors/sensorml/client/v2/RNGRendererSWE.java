@@ -39,6 +39,10 @@ import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEProper
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_TYPE;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorGenericVerticalContainerWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.swe.SWESensorCategoryWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.swe.SWESensorFieldWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.swe.SWESensorQuantityRangeWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.swe.SWESensorQuantityWidget;
 
 /**
  * <p>
@@ -61,23 +65,22 @@ import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorGenericV
 public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 	protected final static String SWE_NS = "http://www.opengis.net/swe/1.0.1";
 
-	public RNGRendererSWE() {
-	}
+	public RNGRendererSWE() {}
 
 	@Override
 	public void visit(RNGElement elt) {
 		if(elt.getName().equals("DataRecord")) {
 			pushAndVisitChildren(new SensorGenericVerticalContainerWidget(elt.getName(), TAG_DEF.SWE, TAG_TYPE.ELEMENT), elt.getChildren());
 		} else if(elt.getName().equals("field")){
-			
-		} else {
+			pushAndVisitChildren(new SWESensorFieldWidget(), elt.getChildren());
+		} else if(elt.getName().equals("Quantity")){
+			pushAndVisitChildren(new SWESensorQuantityWidget(), elt.getChildren());
+		} else if(elt.getName().equals("QuantityRange")){
+			pushAndVisitChildren(new SWESensorQuantityRangeWidget(), elt.getChildren());
+		}else if(elt.getName().equals("Category")){
+			pushAndVisitChildren(new SWESensorCategoryWidget(), elt.getChildren());
+		}else {
 			super.visit(elt);
 		}
 	}
-
-	@Override
-	public void visit(RNGAttribute att) {
-		super.visit(att);
-	}
-
 }

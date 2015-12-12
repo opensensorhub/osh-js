@@ -30,7 +30,6 @@ public class SensorGenericVerticalContainerWidget extends AbstractSensorElementW
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
 		container.add(widget.getPanel());
-		GWT.log("Widget : "+getName()+" added "+widget.getName()+ " widget");
 	}
 
 	@Override

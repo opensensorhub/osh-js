@@ -1,8 +1,5 @@
 package com.sensia.swetools.editors.sensorml.client.v2.panels.sml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -28,10 +25,7 @@ public class SMLSensorIdentifierWidget extends AbstractSensorElementWidget{
 		
 		container.add(contentPanel);
 		container.add(defPanel);
-		
-		//contentPanel.addStyleName("swe-property-panel");
 		container.setSpacing(5);
-		//contentPanel.setSpacing(5);
 	}
 
 	@Override

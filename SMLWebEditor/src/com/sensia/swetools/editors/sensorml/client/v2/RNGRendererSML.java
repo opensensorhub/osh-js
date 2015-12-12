@@ -144,7 +144,8 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 			//it is a sub element
 			if(nsUri.equals(GML_NS)) {
 				//TODO: default = skip ??
-				visitChildren(elt.getChildren());
+				//visitChildren(elt.getChildren());
+				super.visit(elt);
 			} else if(nsUri.equals(SML_NS)) {
 				ISensorWidget widget = null;
 				//TODO: to be completed : identifier, Value, classification, validTime, securityConstraint,
@@ -170,20 +171,5 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		} else {
 			super.visit(att);
 		}
-	}
-
-	@Override
-	public void visit(RNGOptional optional) {
-		super.visit(optional);
-	}
-
-	@Override
-	public void visit(RNGChoice choice) {
-		super.visit(choice);
-	}
-
-	@Override
-	public void visit(RNGZeroOrMore zeroOrMore) {
-		super.visit(zeroOrMore);
 	}
 }

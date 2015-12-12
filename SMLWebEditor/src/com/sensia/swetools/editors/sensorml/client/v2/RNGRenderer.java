@@ -40,6 +40,7 @@ import com.sensia.relaxNG.XSDString;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_TYPE;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorChoiceWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorGenericHorizontalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorGenericVerticalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorValueWidget;
@@ -107,14 +108,12 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 
 	@Override
 	public void visit(RNGElement elt) {
-		//skip element and visit the children
-		visitChildren(elt.getChildren());
+		pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.RNG, TAG_TYPE.ELEMENT), elt.getChildren());
 	}
 
 	@Override
 	public void visit(RNGChoice choice) {
-		// TODO Auto-generated method stub
-		
+		pushAndVisitChildren(new SensorChoiceWidget(), choice.getChildren());
 	}
 
 	@Override

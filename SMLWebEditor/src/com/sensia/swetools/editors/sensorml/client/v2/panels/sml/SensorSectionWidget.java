@@ -13,7 +13,7 @@ public class SensorSectionWidget extends AbstractSensorElementWidget{
 
 	private static final String CSS_CLASS = "swe-section-panel";
 	private DisclosurePanel hidePanel;
-	private Panel contentPanel;
+	private VerticalPanel contentPanel;
 	private Panel container;
 	
 	public SensorSectionWidget(String name) {

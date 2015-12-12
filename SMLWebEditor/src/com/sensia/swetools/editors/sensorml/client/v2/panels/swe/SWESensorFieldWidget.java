@@ -25,7 +25,6 @@ public class SWESensorFieldWidget extends AbstractSensorElementWidget{
 		
 		container.add(contentPanel);
 		container.add(defPanel);
-		container.setSpacing(5);
 	}
 
 	@Override
@@ -35,20 +34,12 @@ public class SWESensorFieldWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
-		if(widget.getDef() == TAG_DEF.SWE && widget.getType() == TAG_TYPE.ATTRIBUTE
+		if(widget.getDef() == TAG_DEF.SML && widget.getType() == TAG_TYPE.ATTRIBUTE
 				&& widget.getName().equals("name")) {
 			//skip name attribute
 			return;
 		}
-		
-		if(widget.getDef() == TAG_DEF.SWE && widget.getType() == TAG_TYPE.ELEMENT 
-				&& (widget.getName().equals("Quantity") || (widget.getName().equals("QuantityRange")))){
-			
-			contentPanel.add(widget.getPanel());
-			contentPanel.add(new HTML(getDotsLine()));	
-		} else {
-			contentPanel.add(widget.getPanel());
-		}
+		contentPanel.add(widget.getPanel());
 	}
 
 	@Override

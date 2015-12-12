@@ -32,9 +32,7 @@ public class Utils {
 		
 		dialogBox.add(main);
 		
-		int left = Window.getClientWidth()/ 2;
-        int top = Window.getClientHeight()/ 2;
-        dialogBox.setPopupPosition(left, top);
+		dialogBox.center();
          
 		return dialogBox;
 	}

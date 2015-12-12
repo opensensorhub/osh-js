@@ -23,7 +23,8 @@ public interface ISensorWidget {
 		VALUE,
 		ELEMENT,
 		ZERO_OR_MORE,
-		DATA
+		DATA,
+		CHOICE
 	}
 	
 	String getName();
