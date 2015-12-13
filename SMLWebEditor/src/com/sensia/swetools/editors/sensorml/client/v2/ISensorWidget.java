@@ -44,4 +44,8 @@ public interface ISensorWidget {
 	Panel getPanel();
 	
 	ISensorWidget cloneSensorWidget();
+	
+	ISensorWidget getParent();
+	
+	void setParent(ISensorWidget parent);
 }

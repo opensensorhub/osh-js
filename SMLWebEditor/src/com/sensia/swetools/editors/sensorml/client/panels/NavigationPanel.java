@@ -1,11 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;

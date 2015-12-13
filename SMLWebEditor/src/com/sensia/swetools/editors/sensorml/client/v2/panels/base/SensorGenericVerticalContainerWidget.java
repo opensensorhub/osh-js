@@ -1,7 +1,5 @@
 package com.sensia.swetools.editors.sensorml.client.v2.panels.base;
 
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.v2.AbstractSensorElementWidget;

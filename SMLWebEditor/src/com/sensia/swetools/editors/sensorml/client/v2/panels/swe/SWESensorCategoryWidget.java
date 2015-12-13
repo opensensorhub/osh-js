@@ -6,7 +6,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.sensia.swetools.editors.sensorml.client.v2.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
-import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_TYPE;
 
 public class SWESensorCategoryWidget extends AbstractSensorElementWidget{
 

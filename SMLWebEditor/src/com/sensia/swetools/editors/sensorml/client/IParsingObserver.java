@@ -1,7 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
 

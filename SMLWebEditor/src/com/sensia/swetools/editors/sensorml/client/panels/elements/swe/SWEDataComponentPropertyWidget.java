@@ -1,10 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements.swe;
 
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sensia.relaxNG.RNGElement;
 import com.sensia.swetools.editors.sensorml.client.AbstractSensorWidget;

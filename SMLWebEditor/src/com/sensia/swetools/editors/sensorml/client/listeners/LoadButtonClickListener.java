@@ -25,6 +25,7 @@ public class LoadButtonClickListener implements ClickHandler{
 			final String url = "rng1.0/profiles/CSM/"+value+".rng";
 			sgmlEditorProcessor.parse(url);
 			edit.setVisible(true);
+			edit.setChecked(false);
 		}
 	}
 

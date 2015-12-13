@@ -2,7 +2,6 @@ package com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd;
 
 import com.sensia.relaxNG.XSDAnyURI;
 import com.sensia.swetools.editors.sensorml.client.v2.AbstractSensorElementWidget;
-import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
 
 public class SensorXSDAnyURIWidget extends SensorXSDWidget{
 	

@@ -16,15 +16,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sensia.relaxNG.RNGAttribute;
-import com.sensia.relaxNG.RNGChoice;
 import com.sensia.relaxNG.RNGElement;
 import com.sensia.relaxNG.RNGGrammar;
-import com.sensia.relaxNG.RNGOptional;
 import com.sensia.relaxNG.RNGTagVisitor;
-import com.sensia.relaxNG.RNGZeroOrMore;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.TAG_TYPE;
-import com.sensia.swetools.editors.sensorml.client.v2.panels.base.SensorGenericVerticalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.gml.GMLSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.sml.SMLSensorAttributeWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.sml.SMLSensorIdentifierWidget;

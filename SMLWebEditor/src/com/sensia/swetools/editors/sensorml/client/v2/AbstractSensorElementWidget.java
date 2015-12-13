@@ -24,8 +24,7 @@ import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGZeroOrMore;
 import com.sensia.swetools.editors.sensorml.client.panels.Utils;
-import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.MODE;
-import com.sensia.swetools.editors.sensorml.client.v2.panels.sml.SMLSensorIdentifierWidget;
+import com.sensia.swetools.editors.sensorml.client.v2.panels.listeners.IAddCallback;
 
 public abstract class AbstractSensorElementWidget implements ISensorWidget{
 
@@ -35,6 +34,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	private TAG_TYPE type;
 	private List<ISensorWidget> elements = new ArrayList<ISensorWidget>(); 
 	private MODE editorMode = MODE.VIEW;
+	private ISensorWidget parent;
 	
 	private static final int NORMALIZE_DOT_SEPARATOR_SIZE = 70;
 	
@@ -80,6 +80,14 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return elements;
 	}
 	
+	public ISensorWidget getParent() {
+		return parent;
+	}
+
+	public void setParent(ISensorWidget parent) {
+		this.parent = parent;
+	}
+
 	protected abstract void addSensorWidget(ISensorWidget widget);	
 	
 	public void addElement(ISensorWidget element) {
@@ -178,7 +186,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		for(final ISensorWidget element : getElements()) {
 			ISensorWidget cloneChild = element.cloneSensorWidget();
 			if(cloneChild != null) {
-				clone.addSensorWidget(cloneChild);
+				clone.addElement(cloneChild);
 			}
 		}
 		
@@ -187,7 +195,8 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	
 	protected abstract AbstractSensorElementWidget newInstance();
 	
-	protected Panel getAddButtonPanel(String annotation,String label) {
+	protected Panel getAddButtonPanel(String annotation,final String label) {
+		
 		Label addButton = new Label(annotation);
 		addButton.addStyleName("rng-optional-select");
 		
@@ -198,9 +207,13 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 				if(!getElements().isEmpty() && getMode() == MODE.EDIT) {
 					//concatenates every panels
 					VerticalPanel allEditPanels = new VerticalPanel();
+					final List<ISensorWidget> clones = new ArrayList<ISensorWidget>();
+					
 					for(final ISensorWidget panelToAdd : getElements()) {
 						ISensorWidget clone = panelToAdd.cloneSensorWidget();
 						if(clone != null) {
+							clone.switchMode(getMode());
+							clones.add(clone);
 							allEditPanels.add(clone.getPanel());	
 						} else {
 							GWT.log("Clone method is not implemented yet for class : "+panelToAdd.getClass().toString());
@@ -208,7 +221,15 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 						
 					}
 					
-					final DialogBox dialogBox = Utils.createDialogBox(allEditPanels);
+					final DialogBox dialogBox = Utils.createAddDialogBox(allEditPanels, "Add "+label,new IAddCallback() {
+						
+						@Override
+						public void onClick() {
+							for(ISensorWidget clone : clones) {
+								getParent().addElement(clone);
+							}
+						}
+					});
 					dialogBox.show();
 				}
 			}

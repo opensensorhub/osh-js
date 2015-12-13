@@ -1,11 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements.sml;
 
-import javax.swing.JLabel;
-
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;

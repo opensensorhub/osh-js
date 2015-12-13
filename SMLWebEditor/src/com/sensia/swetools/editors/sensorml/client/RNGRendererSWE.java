@@ -10,10 +10,8 @@
 
 package com.sensia.swetools.editors.sensorml.client;
 
-import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.shared.GWT;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGElement;
 import com.sensia.relaxNG.RNGTag;
@@ -22,9 +20,7 @@ import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.relaxNG.RNGValue;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeDefinitionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGValueWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.sml.SMLIdentifierWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataCategoryWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataComponentPropertyWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataComponentWidget;

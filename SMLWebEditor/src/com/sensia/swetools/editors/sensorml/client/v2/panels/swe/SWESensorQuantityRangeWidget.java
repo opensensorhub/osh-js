@@ -3,7 +3,6 @@ package com.sensia.swetools.editors.sensorml.client.v2.panels.swe;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.sensia.swetools.editors.sensorml.client.v2.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;

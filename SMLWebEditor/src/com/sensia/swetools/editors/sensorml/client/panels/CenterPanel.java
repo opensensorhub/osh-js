@@ -1,6 +1,5 @@
 package com.sensia.swetools.editors.sensorml.client.panels;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -21,14 +20,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	private static final long serialVersionUID = -7684111574093800909L;
 
 	private final String[] LIST_PROFILES = {
-			"anemometer",
-			"frame-sensor-model",
-			"csm-common",
-			"geopositioning-models",
-			"optical-sensor-parameters",
-			"pushbroom-sensor-model",
-			"scanner-sensor-parameters",
-			"whiskbroom-sensor-model"
+			"anemometer"
 	};
 	
 	private VerticalPanel dynamicCenterPanel;

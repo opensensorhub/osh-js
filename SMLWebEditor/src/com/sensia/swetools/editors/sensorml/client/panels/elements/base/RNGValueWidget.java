@@ -1,6 +1,5 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements.base;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;

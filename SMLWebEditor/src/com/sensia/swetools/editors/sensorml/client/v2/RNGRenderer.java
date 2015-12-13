@@ -51,7 +51,6 @@ import com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd.SensorXSDD
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd.SensorXSDDoubleWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd.SensorXSDIntegerWidget;
 import com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd.SensorXSDStringWidget;
-import com.sensia.swetools.editors.sensorml.client.v2.panels.base.xsd.SensorXSDWidget;
 
 /**
  * <p>
@@ -231,6 +230,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 			}
 			if(stackSize < getStackSize()){
 				ISensorWidget child = pop();
+				child.setParent(peek);
 				peek.addElement(child);
 			}
 		}
@@ -246,6 +246,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 			}
 			if(stackSize < getStackSize()){
 				ISensorWidget child = pop();
+				child.setParent(widget);
 				widget.addElement(child);
 			}
 		}

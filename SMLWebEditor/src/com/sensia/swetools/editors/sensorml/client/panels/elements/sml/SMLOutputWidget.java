@@ -1,11 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.elements.sml;
 
-import javax.swing.JLabel;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -14,7 +9,6 @@ import com.sensia.swetools.editors.sensorml.client.RNGRenderer.RNGChoiceWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGAttributeDefinitionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.base.RNGValueWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.elements.base.XSDWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.elements.swe.SWEDataRecordUOMWidget;
 
 public class SMLOutputWidget extends AbstractSensorWidget{
 

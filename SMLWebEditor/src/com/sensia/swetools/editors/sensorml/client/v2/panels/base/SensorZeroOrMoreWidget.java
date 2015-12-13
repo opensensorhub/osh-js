@@ -17,8 +17,10 @@ public class SensorZeroOrMoreWidget extends AbstractSensorElementWidget{
 		this.zeroOrMore = zeroOrMore;
 		container = new VerticalPanel();
 		
-		getPanel().add(getAddButtonPanel(zeroOrMore.getAnnotation(),findLabel(zeroOrMore)));
-	}
+		container.add(getAddButtonPanel(zeroOrMore.getAnnotation(),findLabel(zeroOrMore)));
+		
+		activeMode(getMode());
+	}	
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
@@ -32,7 +34,11 @@ public class SensorZeroOrMoreWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void activeMode(MODE mode) {
-		// TODO Auto-generated method stub
+		if(mode == MODE.EDIT){
+			container.setVisible(true);
+		} else {
+			container.setVisible(false);
+		}
 		
 	}
 
