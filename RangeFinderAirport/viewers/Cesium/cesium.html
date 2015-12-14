@@ -130,7 +130,7 @@
     var currentUrl = window.location;
     
     // query GPS stream from SOS using websockets
-    ws = new WebSocket("ws://botts-geo.com:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-12-12T20:12:00Z/2015-12-12T20:15:00Z&replaySpeed=1");
+    ws = new WebSocket("ws://botts-geo.com:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:89845ed469b7edc7-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-12-12T20:12:00Z/2015-12-12T20:15:00Z&replaySpeed=2");
     ws.binaryType = 'arraybuffer';
     var firstGps = true;
     var gpsAlt;
@@ -163,7 +163,7 @@
         ws.close();
     }
     // query target location stream from SOS using websockets
-    ws = new WebSocket("ws://botts-geo.com:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-12-12T20:12:00Z/2015-12-12T20:15:00Z&replaySpeed=1");
+    ws = new WebSocket("ws://botts-geo.com:8080/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:offering:trupulse:target&observedProperty=http://sensorml.com/ont/swe/property/TargetLocation&temporalFilter=phenomenonTime,2015-12-12T20:12:00Z/2015-12-12T20:15:00Z&replaySpeed=2");
     ws.binaryType = 'arraybuffer';
     ws.onmessage = function (event) {
       
