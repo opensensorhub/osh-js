@@ -10,10 +10,11 @@
 
     <script>
     $(document).ready(function(){
-      var startTime = "2015-09-10T21:09:19Z";
+      var startTime = "2015-09-10T19:30:00Z";
       var endTime = "2015-09-11T02:59:19Z";
       var multiplier = 300;
       
+
       var viewer = new Cesium.Viewer('cesiumContainer', {
             targetFrameRate: 10,
             timeline: true,
@@ -22,19 +23,25 @@
             navigationHelpButton: false,
             geocoder: false,
             fullscreenButton: false,
-            showRenderLoopErrors: false
-
+            showRenderLoopErrors: false,
+            sceneMode : Cesium.SceneMode.SCENE2D,
+            imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+                url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+            }),
+            baseLayerPicker : false
         });
-        
-      var camTarget = Cesium.Cartesian3.fromDegrees(-86.5, 34.7, 50.0);
-      var camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 2000.0);
-      viewer.camera.lookAt(camTarget,camPos);
+      
+      viewer.camera.flyTo({
+        destination : Cesium.Cartesian3.fromDegrees(-86.53522,34.74844, 50000.0),
+        duration : 0
+      });
       
       viewer.clock.shouldAnimate = false;
       viewer.clock.multiplier = multiplier;
       
       viewer.timeline.zoomTo(Cesium.JulianDate.fromDate(new Date(startTime)),
                              Cesium.JulianDate.fromDate(new Date(endTime)));
+                             
       //Rezoomning on entities when the scene changes
       var lastSceneMode = viewer.scene.mode;
       function onPostRender() {
@@ -111,7 +118,7 @@
               // add marker at target location
               points.add({
                   position : Cesium.Cartesian3.fromDegrees(lon, lat, alt),
-                  color : Cesium.Color.YELLOW,
+                  color : Cesium.Color.MAGENTA,
                   pixelSize : 3
               });
           }
@@ -120,8 +127,8 @@
           var julianDate = Cesium.JulianDate.fromDate(new Date(timeStamp*1000));
           //viewer.clock.currentTime = julianDate;
             
-            //if (oldPoints != null)
-            //    viewer.scene.primitives.remove(oldPoints);
+           if (oldPoints != null)
+                viewer.scene.primitives.remove(oldPoints);
           updateTimeline(julianDate);  
           viewer.scene.primitives.add(points);
           oldPoints = points;

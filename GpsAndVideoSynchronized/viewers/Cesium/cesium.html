@@ -20,11 +20,6 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 
 var rfPos = [0, 0 , 0.0];
 
-var west = Cesium.Math.toRadians(0);
-var south = Cesium.Math.toRadians(0);
-var east = Cesium.Math.toRadians(0);
-var north = Cesium.Math.toRadians(0);
-var rect = new Cesium.Rectangle(west, south, east, north);
 var camPos = new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-10), Cesium.Math.toRadians(-30), 800.0);
 
 viewer.clock.shouldAnimate = false;
