@@ -26,7 +26,7 @@ public class RNGProcessorSML {
 			@Override
 			public void onParseDone(final RNGGrammar grammar) {
 				loadedGrammar = grammar;
-				com.sensia.swetools.editors.sensorml.client.v2.RNGRendererSML renderer = new com.sensia.swetools.editors.sensorml.client.v2.RNGRendererSML();
+				com.sensia.swetools.editors.sensorml.client.renderer.RNGRendererSML renderer = new com.sensia.swetools.editors.sensorml.client.renderer.RNGRendererSML();
 				renderer.visit(grammar);
 				for(final IParsingObserver observer : observers) {
 					observer.parseDone(renderer.getRoot());

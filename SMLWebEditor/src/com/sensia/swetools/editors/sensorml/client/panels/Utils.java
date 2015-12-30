@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.sensia.swetools.editors.sensorml.client.v2.panels.listeners.IAddCallback;
+import com.sensia.swetools.editors.sensorml.client.listeners.IAddCallback;
 
 public class Utils {
 

@@ -13,14 +13,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 import com.sensia.swetools.editors.sensorml.client.listeners.LoadButtonClickListener;
-import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
-import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget.MODE;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;
 
 public class CenterPanel extends Composite implements IParsingObserver{
 	private static final long serialVersionUID = -7684111574093800909L;
 
 	private final String[] LIST_PROFILES = {
-			"anemometer"
+			"anemometer",
+			"thermometer-minimal-view",
+			"thermometer-minimal-edit"
 	};
 	
 	private VerticalPanel dynamicCenterPanel;

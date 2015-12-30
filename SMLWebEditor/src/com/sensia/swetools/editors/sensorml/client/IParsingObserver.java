@@ -2,7 +2,7 @@ package com.sensia.swetools.editors.sensorml.client;
 
 import java.io.Serializable;
 
-import com.sensia.swetools.editors.sensorml.client.v2.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
 public interface IParsingObserver extends Serializable{
 
