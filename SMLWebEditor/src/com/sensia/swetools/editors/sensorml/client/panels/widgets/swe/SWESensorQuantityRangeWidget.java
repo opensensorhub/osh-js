@@ -4,39 +4,35 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
 public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 
-	private HorizontalPanel namePanel;
 	private HorizontalPanel minPanel;
 	private HorizontalPanel maxPanel;
 	private HorizontalPanel container;
 	private HorizontalPanel defPanel;
 	private HorizontalPanel uomPanel;
-	private HTML dotSeparatorLabel;
+	
+	private VerticalPanel advancedPanel;
 	
 	public SWESensorQuantityRangeWidget() {
 		super("QuantityRange",TAG_DEF.SWE,TAG_TYPE.ELEMENT);
 		
 		container = new HorizontalPanel();
 		defPanel = new HorizontalPanel();
-		namePanel = new HorizontalPanel();
 		minPanel = new HorizontalPanel();
 		maxPanel = new HorizontalPanel();
 		uomPanel = new HorizontalPanel();
-		dotSeparatorLabel = new HTML(getDotsLine());
 		
 		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		defPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		uomPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		namePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		minPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		maxPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
-		container.add(namePanel);
-		container.add(dotSeparatorLabel);
 		container.add(minPanel);
 		container.add(new HTML("&nbsp;&nbsp;to&nbsp;&nbsp;"));
 		container.add(maxPanel);
@@ -59,11 +55,9 @@ public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 	protected void addSensorWidget(ISensorWidget widget) {
 		if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("definition")){
 			defPanel.add(widget.getPanel());
-		} else if(widget.getType() == TAG_TYPE.ELEMENT && widget.getName().equals("name")){
-			namePanel.add(widget.getPanel());
 		} else if(widget.getType() == TAG_TYPE.ELEMENT && widget.getName().equals("uom")){
 			uomPanel.add(widget.getPanel());
-		} else if(widget.getName().equals("value") && widget.getType() == TAG_TYPE.ELEMENT && widget.getDef() == TAG_DEF.RNG){
+		} else if(widget.getName().equals("value") && widget.getType() == TAG_TYPE.ELEMENT && widget.getDef() == TAG_DEF.SWE){
 			if(widget.getElements().size() >= 1) {
 				minPanel.add(widget.getElements().get(0).getPanel());
 			}
@@ -73,11 +67,12 @@ public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 		} else {
 			uomPanel.add(widget.getPanel());
 		}
+		
+		//add advanced panel
 	}
 
 	@Override
 	protected AbstractSensorElementWidget newInstance() {
 		return new SWESensorQuantityRangeWidget();
 	}
-
 }

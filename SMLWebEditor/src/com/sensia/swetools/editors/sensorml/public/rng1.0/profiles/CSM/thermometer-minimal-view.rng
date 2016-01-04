@@ -60,6 +60,7 @@
         </element>
       </element>
     </element>
+    
     <element name="sml:parameters">
       <element name="sml:ParameterList">
         <element name="sml:parameter">
@@ -126,7 +127,7 @@
             <element name="swe:encoding">
               <element name="swe:TextEncoding">
                 <attribute name="tokenSeparator">
-                  <value />
+                  <value></value>
                 </attribute>
                 <attribute name="blockSeparator">
                   <value>,</value>
@@ -171,6 +172,13 @@
         </element>
       </element>
     </element>
+    <!-- Other Stuff -->
+     <zeroOrMore>
+        <ref name="sml.contact" />
+     </zeroOrMore>
+     <zeroOrMore>
+        <ref name="sml.documentation" />
+     </zeroOrMore> 
     <element name="sml:method">
       <attribute name="xlink:href">
         <value>http://sensorml.com/def/process/detector</value>

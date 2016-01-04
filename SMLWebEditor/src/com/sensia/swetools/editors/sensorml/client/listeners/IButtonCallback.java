@@ -1,6 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.listeners;
 
-public interface IAddCallback {
+public interface IButtonCallback {
 
 	void onClick();
 }

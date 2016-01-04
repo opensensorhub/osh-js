@@ -14,8 +14,12 @@ import com.sensia.relaxNG.RNGElement;
 import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericHorizontalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericVerticalContainerWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataRecordWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorElementTypeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorCategoryWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataArrayWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorFieldWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQuantityRangeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQuantityWidget;
@@ -45,17 +49,21 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 
 	@Override
 	public void visit(RNGElement elt) {
-		if(elt.getName().equals("DataRecord")) {
-			pushAndVisitChildren(new SensorGenericVerticalContainerWidget(elt.getName(), TAG_DEF.SWE, TAG_TYPE.ELEMENT), elt.getChildren());
-		} else if(elt.getName().equals("field")){
-			pushAndVisitChildren(new SWESensorFieldWidget(), elt.getChildren());
-		} else if(elt.getName().equals("Quantity")){
+		 if(elt.getName().equals("Quantity")){
 			pushAndVisitChildren(new SWESensorQuantityWidget(), elt.getChildren());
 		} else if(elt.getName().equals("QuantityRange")){
 			pushAndVisitChildren(new SWESensorQuantityRangeWidget(), elt.getChildren());
-		}else if(elt.getName().equals("Category")){
+		} else if(elt.getName().equals("Category")){
 			pushAndVisitChildren(new SWESensorCategoryWidget(), elt.getChildren());
-		}else {
+		} else if(elt.getName().equals("DataArray")){
+			pushAndVisitChildren(new SWESensorDataArrayWidget(), elt.getChildren());
+		} else if(elt.getName().equals("elementType")){
+			pushAndVisitChildren(new SWESensorElementTypeWidget(), elt.getChildren());
+		} else if(elt.getName().equals("DataRecord")){
+			pushAndVisitChildren(new SWESensorDataRecordWidget(), elt.getChildren());
+		} else if(elt.getNamespace().equals(SWE_NS)) {
+			pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SWE, TAG_TYPE.ELEMENT), elt.getChildren());
+		} else {
 			super.visit(elt);
 		}
 	}

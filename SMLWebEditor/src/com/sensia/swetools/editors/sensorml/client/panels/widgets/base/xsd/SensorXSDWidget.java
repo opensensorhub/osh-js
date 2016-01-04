@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base.xsd;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -136,6 +137,13 @@ public abstract class SensorXSDWidget extends AbstractSensorElementWidget{
 			 ((TextBox)textBox).setEnabled(true);
 		} else if(mode == MODE.VIEW) {
 			 ((TextBox)textBox).setEnabled(false);
+		}
+	}
+	
+	@Override
+	public void setValue(String elementName, String value) {
+		if(elementName.equals(getParent().getName())) {
+			((TextBox)textBox).setText(value);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -37,5 +39,13 @@ public class SensorValueWidget extends AbstractSensorElementWidget{
 	@Override
 	protected AbstractSensorElementWidget newInstance() {
 		return new SensorValueWidget(getName());
+	}
+	
+	@Override
+	public void setValue(String elementName,String value) {
+		if(elementName.equals(getParent().getName())) {
+			container.clear();
+			container.add(new HTML(value));
+		}
 	}
 }

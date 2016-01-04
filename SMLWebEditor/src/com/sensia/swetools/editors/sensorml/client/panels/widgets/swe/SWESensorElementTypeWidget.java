@@ -1,25 +1,20 @@
-package com.sensia.swetools.editors.sensorml.client.panels.widgets.base;
+package com.sensia.swetools.editors.sensorml.client.panels.widgets.swe;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
-public class SensorChoiceWidget extends AbstractSensorElementWidget{
+public class SWESensorElementTypeWidget extends AbstractSensorElementWidget{
 
-	private ListBox choices;
 	private HorizontalPanel container;
 	
-	public SensorChoiceWidget() {
-		super("choice", TAG_DEF.RNG, TAG_TYPE.CHOICE);
+	public SWESensorElementTypeWidget() {
+		super("elementType", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
 		
-		choices = new ListBox();
 		container = new HorizontalPanel();
-		
-		container.add(choices);
-		
-		container.setSpacing(5);
 	}
 
 	@Override
@@ -35,15 +30,18 @@ public class SensorChoiceWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
-		if(widget.getType() == TAG_TYPE.VALUE) {
-			choices.addItem(widget.getName());
+		if(widget.getDef() == TAG_DEF.SWE && widget.getName().equals("DataRecord")) {
+			//remove attribute from elementType
+			container.clear();
+			container.add(widget.getPanel());
 		} else {
 			container.add(widget.getPanel());
 		}
+			
 	}
 
 	@Override
 	protected AbstractSensorElementWidget newInstance() {
-		return new SensorChoiceWidget();
+		return new SWESensorElementTypeWidget();
 	}
 }

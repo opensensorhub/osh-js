@@ -10,6 +10,8 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorAtt
 
 public class SMLSensorAttributeWidget extends SensorAttributeWidget{
 
+	private Image defImage;
+	
 	public SMLSensorAttributeWidget(RNGAttribute attribute) {
 		super(attribute.getName(),TAG_DEF.SML,TAG_TYPE.ATTRIBUTE);
 		
@@ -20,11 +22,18 @@ public class SMLSensorAttributeWidget extends SensorAttributeWidget{
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
 		if(getName().equals("definition") && widget.getType() == TAG_TYPE.VALUE) {
-			Image defImage = new Image(GWT.getModuleBaseURL()+"images/icon_info.png");
+			defImage = new Image(GWT.getModuleBaseURL()+"images/icon_info.png");
 			defImage.setTitle(widget.getName());
 			container.add(defImage);
 		} else {
 			super.addSensorWidget(widget);
+		}
+	}
+	
+	@Override
+	public void setValue(String elementName,String value) {
+		if(getName().equals(elementName)) {
+			defImage.setTitle(value);
 		}
 	}
 }

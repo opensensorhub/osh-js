@@ -10,8 +10,8 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 public class SensorSectionsWidget extends AbstractSensorElementWidget{
 
 	private Panel container;
-	private Panel name;
-	private Panel description;
+	private Panel namePanel;
+	private Panel descriptionPanel;
 	
 	private Panel endPanel;
 	private Panel startPanel;
@@ -21,13 +21,13 @@ public class SensorSectionsWidget extends AbstractSensorElementWidget{
 		
 		container = new VerticalPanel();
 		container.setWidth("1024px");
-		name = new HorizontalPanel();
-		description = new HorizontalPanel();
+		namePanel = new HorizontalPanel();
+		descriptionPanel = new HorizontalPanel();
 		
-		container.add(name);
+		container.add(namePanel);
 		//draw horizontal line
 		container.add(new HTML("<hr  style=\"width:100%;\" />"));
-		container.add(description);
+		container.add(descriptionPanel);
 		
 		container.add(new HTML("<h2>Specifications</h2>"));
 		container.add(new HTML("<hr  style=\"width:100%;\" />"));
@@ -48,9 +48,9 @@ public class SensorSectionsWidget extends AbstractSensorElementWidget{
 	protected void addSensorWidget(ISensorWidget widget) {
 		if(widget.getDef() == TAG_DEF.GML) {
 			if(widget.getName().equals("name")){
-				name.add(widget.getPanel());
+				namePanel.add(widget.getPanel());
 			} else if(widget.getName().equals("description")) {
-				description.add(widget.getPanel());
+				descriptionPanel.add(widget.getPanel());
 			}
 		} else if(widget.getType() == TAG_TYPE.ZERO_OR_MORE){
 			endPanel.add(widget.getPanel());

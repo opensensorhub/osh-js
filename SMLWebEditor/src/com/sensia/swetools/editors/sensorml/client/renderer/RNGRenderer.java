@@ -46,6 +46,7 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGen
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericVerticalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorValueWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorZeroOrMoreWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.line.SensorGenericLineWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.xsd.SensorXSDAnyURIWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.xsd.SensorXSDDateTimeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.xsd.SensorXSDDecimalWidget;
@@ -259,5 +260,9 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 	
 	protected ISensorWidget renderHorizontalWidget(String name, TAG_DEF def, TAG_TYPE type) {
 		return new SensorGenericHorizontalContainerWidget(name, def, type);
+	}
+	
+	protected ISensorWidget renderLineWidget() {
+		return new SensorGenericLineWidget();
 	}
 }

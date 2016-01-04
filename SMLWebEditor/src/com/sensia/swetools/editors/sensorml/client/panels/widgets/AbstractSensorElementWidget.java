@@ -23,7 +23,7 @@ import com.sensia.relaxNG.RNGRef;
 import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGZeroOrMore;
-import com.sensia.swetools.editors.sensorml.client.listeners.IAddCallback;
+import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
 import com.sensia.swetools.editors.sensorml.client.panels.Utils;
 
 public abstract class AbstractSensorElementWidget implements ISensorWidget{
@@ -35,6 +35,8 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	private List<ISensorWidget> elements = new ArrayList<ISensorWidget>(); 
 	private MODE editorMode = MODE.VIEW;
 	private ISensorWidget parent;
+	
+	private VerticalPanel advancedPanel;
 	
 	private static final int NORMALIZE_DOT_SEPARATOR_SIZE = 70;
 	
@@ -88,7 +90,61 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		this.parent = parent;
 	}
 
-	protected abstract void addSensorWidget(ISensorWidget widget);	
+	
+	public List<String> getValues(String elementName) {
+		final List<String> values = new ArrayList<String>();
+		findRecursiveValues(this,elementName,values);
+		return values;
+	}
+	
+	public String getValue(String elementName) {
+		return findRecursiveValue(this,elementName);
+	}
+	
+	private String findRecursiveValue(ISensorWidget widget,String elementName) {
+		//multiple values for choice tag
+		if(widget.getType() == TAG_TYPE.VALUE && widget.getParent().getName().equals(elementName)) {
+			return widget.getName();
+		} else {
+			String value = null;
+			for(ISensorWidget w : widget.getElements()) {
+				value = findRecursiveValue(w, elementName);
+				if(value != null) {
+					break;
+				}
+			}
+			return value;
+		}
+	}
+	
+	private void findRecursiveValues(ISensorWidget widget,String elementName,List<String> values) {
+		//multiple values for choice tag
+		if(widget.getType() == TAG_TYPE.VALUE && widget.getParent().getName().equals(elementName)) {
+			values.add(widget.getName());
+		}
+		if(values.isEmpty()) {
+			for(ISensorWidget w : widget.getElements()) {
+				findRecursiveValues(w, elementName,values);
+			}
+		}
+	}
+	
+	public void setValues(String elementName, List<String> values) {
+		for(ISensorWidget w : getElements()) {
+			w.setValues(elementName, values);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void setValue(String elementName, String value) {
+		for(ISensorWidget w : getElements()) {
+			w.setValue(elementName, value);
+		}
+	}
+	
+	protected abstract void addSensorWidget(ISensorWidget widget);
 	
 	public void addElement(ISensorWidget element) {
 		addSensorWidget(element);
@@ -221,7 +277,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 						
 					}
 					
-					final DialogBox dialogBox = Utils.createAddDialogBox(allEditPanels, "Add "+label,new IAddCallback() {
+					final DialogBox dialogBox = Utils.createAddDialogBox(allEditPanels, "Add "+label,new IButtonCallback() {
 						
 						@Override
 						public void onClick() {
@@ -242,4 +298,59 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return panel;
 	}
 	
+	protected static Panel findPanel(ISensorWidget widget, String name, TAG_DEF def,TAG_TYPE type) {
+		Panel panel = null;
+		if(widget.getName().equals(name) && widget.getType() == type && widget.getDef() == def) {
+			panel =  widget.getPanel();
+		} else {
+			for(ISensorWidget w : widget.getElements()) {
+				panel = findPanel(w, name, def, type);
+				if(panel != null) {
+					break;
+				}
+			}
+		}
+		
+		return panel;
+	}
+	
+	protected static ISensorWidget findWidget(ISensorWidget widget, String name, TAG_DEF def,TAG_TYPE type) {
+		ISensorWidget foundWidget = null;
+		if(widget.getName().equals(name) && widget.getType() == type && widget.getDef() == def) {
+			foundWidget =  widget;
+		} else {
+			for(ISensorWidget w : widget.getElements()) {
+				foundWidget = findWidget(w, name, def, type);
+				if(foundWidget != null) {
+					break;
+				}
+			}
+		}
+		
+		return foundWidget;
+	}
+	
+	protected void displayEditPanel(Panel panel,String label,IButtonCallback cb) {
+		final DialogBox dialogBox = Utils.createEditDialogBox(panel, label,cb);
+		dialogBox.show();
+	}
+		
+	protected String splitAndCapitalize(final String str) {
+		if(str == null || str.isEmpty()) {
+			return str;
+		} else if(str.length() == 1) {
+			return str.toUpperCase();
+		} else {
+			return toNiceLabel(str).trim();
+		}
+	}
+	
+	protected Panel getEditPanel(String label) {
+		HorizontalPanel hPanel = new HorizontalPanel();
+		Label hlabel = new Label(label);
+		hlabel.setWidth("100px");
+		hPanel.add(hlabel);
+		hPanel.add(new HTML("&nbsp;:&nbsp;"));
+		return hPanel;
+	}
 }

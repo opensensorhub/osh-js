@@ -64,5 +64,4 @@ public class SensorSectionWidget extends AbstractSensorElementWidget{
 	protected AbstractSensorElementWidget newInstance() {
 		return new SensorSectionWidget(getName());
 	}
-
 }

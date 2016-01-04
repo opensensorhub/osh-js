@@ -192,6 +192,17 @@ html>body .gwt-DecoratedTabBar {
   margin-right: 5px;*/
 }
 
+.rng-advanced-button {
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-image: url(images/advanced.png);
+  cursor: hand;
+  cursor: pointer;
+  margin-top: 1px;
+}
+  
 .rng-optional-unselect {
   width: 16px;
   height: 16px;
@@ -284,4 +295,7 @@ td, th  {
     text-align: right !important;*/
 }
 
+.font-bold { 
+	font-weight: bold; 
+}
 

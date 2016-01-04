@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.core.shared.GWT;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGElement;
 import com.sensia.relaxNG.RNGGrammar;
@@ -22,6 +23,7 @@ import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericHorizontalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.gml.GMLSensorWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorAttributeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorIdentifierWidget;
@@ -48,15 +50,21 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSect
 public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 
 	private Map<String,String> renderSectionsList = new HashMap<String,String>();
-	private Map<String,RENDER_TYPE> renderElementList = new HashMap<String,RENDER_TYPE>();
+	private Map<String,RENDER_LIST_TYPE> renderElementList = new HashMap<String,RENDER_LIST_TYPE>();
+	private Map<String,RENDER_ELEMENT_TYPE> renderElements= new HashMap<String,RENDER_ELEMENT_TYPE>();
+	
 	private Set<String> skipList = new HashSet<String>();
 	
 	protected final static String SML_NS = "http://www.opengis.net/sensorML/1.0.1";
 	protected final static String GML_NS = "http://www.opengis.net/gml";
 	
-	enum RENDER_TYPE {
+	enum RENDER_LIST_TYPE {
 		GENERIC_HORIZONTAL,
 		GENERIC_VERTICAL
+	}
+	
+	enum RENDER_ELEMENT_TYPE {
+		LINE
 	}
 	
 	public RNGRendererSML() {
@@ -69,13 +77,20 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		renderSectionsList.put("parameters", "Parameters");
 		renderSectionsList.put("method", "Method");
 		
-		//render default defined elements
+		//render default defined list elements
+		renderElementList.put("OutputList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("InputList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("IdentifierList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("ClassifierList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("ParameterList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
 		
-		renderElementList.put("OutputList", RENDER_TYPE.GENERIC_VERTICAL);
-		renderElementList.put("DataRecord", RENDER_TYPE.GENERIC_VERTICAL);
-		renderElementList.put("InputList", RENDER_TYPE.GENERIC_VERTICAL);
-		renderElementList.put("IdentifierList", RENDER_TYPE.GENERIC_VERTICAL);
-		renderElementList.put("ClassifierList", RENDER_TYPE.GENERIC_VERTICAL);
+		//render default defined elements
+		renderElements.put("input",RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("output",RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("parameter", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("field", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("identifier", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("elementCount", RENDER_ELEMENT_TYPE.LINE);
 		
 		//skip list
 		skipList.add("Component");
@@ -99,11 +114,6 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		String eltName = elt.getName();
 		String nsUri = elt.getNamespace();
 
-		if (nsUri.equals(SWE_NS)) {
-			super.visit(elt);
-			return;
-		}
-		
 		//skip the element and visit children
 		if(skipList.contains(eltName)) {
 			visitChildren(elt.getChildren());
@@ -115,10 +125,11 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		
 			ISensorWidget widget = null;
 			//Add Name / Description
+			//TODO: may add SWE/SML support?
 			if(nsUri.equals(GML_NS)) {
 				widget = new GMLSensorWidget(elt);
 			} else {
-				//it is a non listed section
+				//it is a non pre-defined section
 				//add default name
 				String sectionName = "No Supported Name";
 				
@@ -131,36 +142,44 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 			}
 			pushAndVisitChildren(widget,elt.getChildren());
 		} else if(renderElementList.containsKey(eltName)) { 
-			RENDER_TYPE type = renderElementList.get(eltName);
+			RENDER_LIST_TYPE type = renderElementList.get(eltName);
+			
+			ISensorWidget widget = null;
+			//get ns
+			TAG_DEF ns = TAG_DEF.RNG;
+			
+			if (nsUri.equals(SML_NS)) {
+				ns = TAG_DEF.SML;
+			} else if (nsUri.equals(SWE_NS)) {
+				ns = TAG_DEF.SWE;
+			} else if (nsUri.equals(GML_NS)) {
+				ns = TAG_DEF.GML;
+			} 
+			
+			switch(type) {
+				case GENERIC_VERTICAL : widget = renderVerticalWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
+				case GENERIC_HORIZONTAL : widget = renderHorizontalWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
+				default:break;
+			}
+			pushAndVisitChildren(widget, elt.getChildren());
+		}  else if(renderElements.containsKey(eltName)) { 
+			RENDER_ELEMENT_TYPE type = renderElements.get(eltName);
 			
 			ISensorWidget widget = null;
 			switch(type) {
-				case GENERIC_VERTICAL : widget = renderVerticalWidget(eltName, TAG_DEF.SML, TAG_TYPE.ELEMENT);break;
-				case GENERIC_HORIZONTAL : widget = renderHorizontalWidget(eltName, TAG_DEF.SML, TAG_TYPE.ELEMENT);break;
+				case LINE : widget = renderLineWidget();break;
 				default:break;
 			}
 			pushAndVisitChildren(widget, elt.getChildren());
 		} else {
-			//it is a sub element
 			if(nsUri.equals(GML_NS)) {
-				//TODO: default = skip ??
-				//visitChildren(elt.getChildren());
-				super.visit(elt);
-			} else if(nsUri.equals(SML_NS)) {
-				ISensorWidget widget = null;
-				//TODO: to be completed : identifier, Value, classification, validTime, securityConstraint,
-				if(eltName.equals("identifier")){
-					widget = new SMLSensorIdentifierWidget();
-				} 
-				
-				if(widget == null) {
-					super.visit(elt);
-				} else {
-					pushAndVisitChildren(widget, elt.getChildren());
-				}
+				pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.GML, TAG_TYPE.ELEMENT), elt.getChildren());
+			} else if (nsUri.equals(SML_NS)) {
+				pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SML, TAG_TYPE.ELEMENT), elt.getChildren());
 			} else {
 				super.visit(elt);
 			}
+			
 		}
 	}
 
