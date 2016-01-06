@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.relaxNG.RNGZeroOrMore;

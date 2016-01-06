@@ -262,7 +262,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 		return new SensorGenericHorizontalContainerWidget(name, def, type);
 	}
 	
-	protected ISensorWidget renderLineWidget() {
-		return new SensorGenericLineWidget();
+	protected ISensorWidget renderLineWidget(String name, TAG_DEF def, TAG_TYPE type) {
+		return new SensorGenericLineWidget(name, def, type);
 	}
 }

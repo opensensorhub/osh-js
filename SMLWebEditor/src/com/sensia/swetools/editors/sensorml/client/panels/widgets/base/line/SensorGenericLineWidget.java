@@ -23,8 +23,8 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	
 	private boolean isLabelProvided = false;
 	
-	public SensorGenericLineWidget() {
-		super("", TAG_DEF.RNG,TAG_TYPE.ELEMENT);
+	public SensorGenericLineWidget(String name, TAG_DEF def, TAG_TYPE type) {
+		super(name, def, type);
 		linePanel = new HorizontalPanel();
 		labelPanel = new HorizontalPanel();
 		dotSeparatorLabel = new HTML(getDotsLine());
@@ -76,7 +76,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected AbstractSensorElementWidget newInstance() {
-		return new SensorGenericLineWidget();
+		return new SensorGenericLineWidget(getName(),getDef(),getType());
 	}
 
 	@Override

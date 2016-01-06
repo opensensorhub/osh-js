@@ -89,18 +89,29 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		if(editPanel == null){
 			editPanel = new VerticalPanel();
 			editPanel.setSpacing(10);
+
+			String value = null;
+			String name = "";
 			for(ISensorWidget child : getElements()) {
 				if((child.getType() == TAG_TYPE.ELEMENT && child.getName().equals("label"))){
-					Panel aPanel = getEditPanel(child.getName());
-					String value = getValue("label");
-					nameBox = new TextBox();
-					nameBox.setWidth("500px");
-					nameBox.setText(value);
-					
-					aPanel.add(nameBox);
-					editPanel.add(aPanel);
+					name = child.getName();
+					value = getValue("label");
+					break;
+				} else if(child.getType() == TAG_TYPE.ATTRIBUTE && child.getName().equals("name")) {
+					name = child.getName();
+					value = getValue("name");
 				}
 			}
+			
+			Panel aPanel = getEditPanel(name);
+			
+			nameBox = new TextBox();
+			nameBox.setWidth("500px");
+			nameBox.setText(value);
+			
+			aPanel.add(nameBox);
+			editPanel.add(aPanel);
+			
 		}
 		return editPanel;
 	}

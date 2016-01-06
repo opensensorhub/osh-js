@@ -141,10 +141,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 				widget = new SensorSectionWidget(sectionName);
 			}
 			pushAndVisitChildren(widget,elt.getChildren());
-		} else if(renderElementList.containsKey(eltName)) { 
-			RENDER_LIST_TYPE type = renderElementList.get(eltName);
-			
-			ISensorWidget widget = null;
+		} else {
 			//get ns
 			TAG_DEF ns = TAG_DEF.RNG;
 			
@@ -156,30 +153,37 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 				ns = TAG_DEF.GML;
 			} 
 			
-			switch(type) {
-				case GENERIC_VERTICAL : widget = renderVerticalWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
-				case GENERIC_HORIZONTAL : widget = renderHorizontalWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
-				default:break;
-			}
-			pushAndVisitChildren(widget, elt.getChildren());
-		}  else if(renderElements.containsKey(eltName)) { 
-			RENDER_ELEMENT_TYPE type = renderElements.get(eltName);
-			
-			ISensorWidget widget = null;
-			switch(type) {
-				case LINE : widget = renderLineWidget();break;
-				default:break;
-			}
-			pushAndVisitChildren(widget, elt.getChildren());
-		} else {
-			if(nsUri.equals(GML_NS)) {
-				pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.GML, TAG_TYPE.ELEMENT), elt.getChildren());
-			} else if (nsUri.equals(SML_NS)) {
-				pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SML, TAG_TYPE.ELEMENT), elt.getChildren());
+			if(renderElementList.containsKey(eltName)) { 
+				RENDER_LIST_TYPE type = renderElementList.get(eltName);
+				
+				ISensorWidget widget = null;
+				
+				
+				switch(type) {
+					case GENERIC_VERTICAL : widget = renderVerticalWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
+					case GENERIC_HORIZONTAL : widget = renderHorizontalWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
+					default:break;
+				}
+				pushAndVisitChildren(widget, elt.getChildren());
+			}  else if(renderElements.containsKey(eltName)) { 
+				RENDER_ELEMENT_TYPE type = renderElements.get(eltName);
+				
+				ISensorWidget widget = null;
+				switch(type) {
+					case LINE : widget = renderLineWidget(eltName, ns, TAG_TYPE.ELEMENT);break;
+					default:break;
+				}
+				pushAndVisitChildren(widget, elt.getChildren());
 			} else {
-				super.visit(elt);
+				if(nsUri.equals(GML_NS)) {
+					pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.GML, TAG_TYPE.ELEMENT), elt.getChildren());
+				} else if (nsUri.equals(SML_NS)) {
+					pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SML, TAG_TYPE.ELEMENT), elt.getChildren());
+				} else {
+					super.visit(elt);
+				}
+				
 			}
-			
 		}
 	}
 

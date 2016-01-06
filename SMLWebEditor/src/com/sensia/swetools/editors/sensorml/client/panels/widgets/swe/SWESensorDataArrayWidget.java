@@ -15,6 +15,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.googlecode.gwt.charts.client.ChartLoader;
+import com.googlecode.gwt.charts.client.ChartPackage;
 import com.googlecode.gwt.charts.client.ColumnType;
 import com.googlecode.gwt.charts.client.DataTable;
 import com.googlecode.gwt.charts.client.corechart.LineChart;
@@ -42,6 +44,8 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 	
 	//edit panel
 	private TextBox definitionBox;
+	
+	private boolean initTable;
 	
 	public SWESensorDataArrayWidget() {
 		super("DataArray", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
@@ -95,11 +99,16 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 		container.add(new HTML("&nbsp;&nbsp;"));
 		container.add(defPanel);
 		container.add(wrapper);
+		
+		initTable = false;
 	}
 
 	@Override
 	public Panel getPanel() {
-		getParent().getPanel().add(disclosurePanel);
+		if(!initTable) {
+			createTable();
+			getParent().getPanel().add(disclosurePanel);
+		}
 		return container;
 	}
 
@@ -116,23 +125,9 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 			innerContainer.add(widget.getPanel());
 		} else if(widget.getName().equals("encoding") && widget.getType() == TAG_TYPE.ELEMENT  && widget.getDef() == TAG_DEF.SWE) {
 			tokenSeparator = widget.getValue("tokenSeparator");
-			if(tokenSeparator == null || tokenSeparator.isEmpty()) {
-				tokenSeparator = " ";
-			}
-			
 			blockSeparator = widget.getValue("blockSeparator");
-			
-			if(blockSeparator == null || blockSeparator.isEmpty()) {
-				blockSeparator = " ";
-			}
-			if(values != null) {
-				createTable();
-			}
 		}else if(widget.getName().equals("values") && widget.getType() == TAG_TYPE.ELEMENT  && widget.getDef() == TAG_DEF.SWE) {
 			values = widget.getValue("values");
-			if(tokenSeparator != null && blockSeparator != null) {
-				createTable();
-			}
 		}//skip others
 	}
 
@@ -140,63 +135,126 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 	 * THe table is created after getting the separators AND values
 	 */
 	private void createTable() {
-		/*String [] blocks = values.split(blockSeparator);
+		if(tokenSeparator == null || tokenSeparator.isEmpty()) {
+			tokenSeparator = " ";
+		}
 		
-		if(blocks != null && blocks.length > 0) {
-			List<String[]> valuesArray = new ArrayList<String[]>();
-			
-			int maxNumberOfLinesChart = 0;
-			
-			for(int i=0;i < blocks.length;i++){
-				String [] token = blocks[i].split(tokenSeparator);
-				valuesArray.add(token);
-				maxNumberOfLinesChart = Math.max(maxNumberOfLinesChart, token.length);
+		if(blockSeparator == null || blockSeparator.isEmpty()) {
+			blockSeparator = " ";
+		}
+		
+		//find fields
+		List<ISensorWidget> fields = findWidgets(this, "field", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+		if(fields.size() == 2) {
+			create1LineVersusChart(fields.get(0), fields.get(1));
+		}
+		
+		initTable = true;
+	}
+	
+	private void create1LineVersusChart(ISensorWidget data1,ISensorWidget data2) {
+		String uom1 = "No supported uom";
+		String label1 = "No supported label";
+		
+		String uom2 = "No supported uom";
+		String label2 = "No supported label";
+		
+		//handle data 1
+		ISensorWidget quantity = findWidget(data1, "Quantity", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+		//if Quantity found
+		//TODO: add other tags if needed
+		if(quantity != null) {
+			label1 = quantity.getValue("label");
+			if(label1 == null) {
+				label1 = quantity.getValue("name");
 			}
 			
-			String[] legends = new String[] { "Temperature(cel)","Resistance(kohm)" };
-			
-			int[] x = new int[50];
-			for(int i=0;i < 50;i++) {
-				x[i] = i;
-			}
-			
-			
-			int[][] values = new int[][] { { 1336060, 1538156, 1576579, 1600652, 1968113, 1901067 },
-					{ 400361, 366849, 440514, 434552, 393032, 517206 },
-					{ 1001582, 1119450, 993360, 1004163, 979198, 916965 },
-					{ 997974, 941795, 930593, 897127, 1080887, 1056036 } };
-
-			
-			// Prepare the data
-			DataTable dataTable = DataTable.create();
-			dataTable.addColumn(ColumnType.STRING, "Cel/Kohm");
-			for (int i = 0; i < legends.length; i++) {
-				dataTable.addColumn(ColumnType.NUMBER, countries[i]);
-			}
-			dataTable.addRows(years.length);
-			for (int i = 0; i < years.length; i++) {
-				dataTable.setValue(i, 0, String.valueOf(years[i]));
-			}
-			for (int col = 0; col < values.length; col++) {
-				for (int row = 0; row < values[col].length; row++) {
-					dataTable.setValue(row, col + 1, values[col][row]);
+			ISensorWidget uom = findWidget(quantity, "uom", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+			if(uom != null) {
+				String uomValue = uom.getValue("code");
+				if(uomValue != null) {
+					uom1 = uomValue;
 				}
 			}
+		}
+		
+		//handle data 2
+		quantity = findWidget(data2, "Quantity", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+		//if Quantity found
+		//TODO: add other tags if needed
+		if(quantity != null) {
+			label2 = quantity.getValue("label");
+			if(label2 == null) {
+				label2 = quantity.getValue("name");
+			}
+			
+			ISensorWidget uom = findWidget(quantity, "uom", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+			if(uom != null) {
+				String uomValue = uom.getValue("code");
+				if(uomValue != null) {
+					uom2 = uomValue;
+				}
+			}
+		}
+		
+		//built values array
+		String [] tokens = values.split(tokenSeparator);
+		
+		if(tokens != null && tokens.length > 0) {
+			final double [][] valuesArray = new double[tokens.length][2];
+			
+			int pos = 0;
+			for(String token : tokens) {
+				String[] block = token.split(blockSeparator);
+				if(block != null && block.length == 2) {
+					valuesArray[pos][0] = Double.parseDouble(block[0]);
+					valuesArray[pos][1] = Double.parseDouble(block[1]);
+				}
+				pos++;
+			}
+			
+			final String xLabel = uom2;
+			final String yLabel = uom1;
+			
+			final String title = label2 + " vs. "+label1;
+			
+			 // Create the API Loader
+            ChartLoader chartLoader = new ChartLoader(ChartPackage.CORECHART);
+            chartLoader.loadApi(new Runnable() {
 
-			// Set options
-			LineChartOptions options = LineChartOptions.create();
-			options.setBackgroundColor("#f0f0f0");
-			options.setFontName("Tahoma");
-			options.setTitle("TODO");
-			options.setHAxis(HAxis.create("TODO"));
-			options.setVAxis(VAxis.create("TODO"));
-			
-			LineChart chart = new LineChart();
-			
-			// Draw the chart
-			chart.draw(dataTable, options);
-		}*/
+                    @Override
+                    public void run() {
+                    	// Prepare the data
+            			DataTable dataTable = DataTable.create();
+            			dataTable.addColumn(ColumnType.NUMBER);
+            			dataTable.addColumn(ColumnType.NUMBER);
+            			
+            			dataTable.addRows(valuesArray.length);
+            			
+            			for (int i = 0; i < valuesArray.length; i++) {
+            				dataTable.setValue(i, 0, valuesArray[i][1]);
+            				dataTable.setValue(i, 1, valuesArray[i][0]);
+            			}
+            			
+            			// Set options
+            			LineChartOptions options = LineChartOptions.create();
+            			options.setBackgroundColor("#f0f0f0");
+            			options.setFontName("Tahoma");
+            			options.setTitle(title);
+            			options.setHAxis(HAxis.create(xLabel));
+            			options.setVAxis(VAxis.create(yLabel));
+            			options.setWidth(600);
+            			options.setHeight(400);
+            			
+            			// Draw the chart
+            			LineChart chart = new LineChart();
+            			innerContainer.add(chart);
+            			chart.draw(dataTable, options);
+                    }
+            });
+		}
 	}
+	
 	
 	private Panel getAdvancedPanel() {
 		if(editPanel == null){

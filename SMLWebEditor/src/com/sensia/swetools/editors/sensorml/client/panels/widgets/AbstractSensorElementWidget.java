@@ -330,6 +330,22 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return foundWidget;
 	}
 	
+	protected static List<ISensorWidget> findWidgets(ISensorWidget root, String name, TAG_DEF def,TAG_TYPE type) {
+		List<ISensorWidget> results = new ArrayList<ISensorWidget>();
+		findRecursiveWidgets(root, name, def, type, results);
+		return results;
+	}
+	
+	private static void findRecursiveWidgets(ISensorWidget root, String name, TAG_DEF def,TAG_TYPE type,List<ISensorWidget> results) {
+		if(root.getName().equals(name) && root.getType() == type && root.getDef() == def) {
+			results.add(root);
+		} else {
+			for(ISensorWidget widget : root.getElements()) {
+				findRecursiveWidgets(widget, name, def, type, results);
+			}
+		}
+	}
+	
 	protected void displayEditPanel(Panel panel,String label,IButtonCallback cb) {
 		final DialogBox dialogBox = Utils.createEditDialogBox(panel, label,cb);
 		dialogBox.show();
