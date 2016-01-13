@@ -20,9 +20,10 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	private static final long serialVersionUID = -7684111574093800909L;
 
 	private final String[] LIST_PROFILES = {
-			"anemometer",
+			//"frame-sensor-model",
+			//"anemometer",
 			"thermometer-minimal-view",
-			"thermometer-minimal-edit"
+			//"thermometer-minimal-edit"
 	};
 	
 	private VerticalPanel dynamicCenterPanel;

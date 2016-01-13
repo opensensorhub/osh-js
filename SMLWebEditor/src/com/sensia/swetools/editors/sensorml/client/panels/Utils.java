@@ -88,4 +88,17 @@ public class Utils {
          
 		return dialogBox;
 	}
+	
+	private static final String DEGREE  = "\u00b0";
+	private static final String OHM = "\u2126";
+	
+	public static String getUOMSymbol(String uom) {
+		if(uom.equals("cel")) {
+			return DEGREE+"C";
+		} else if(uom.equals("kohm")) {
+			return "k"+OHM;
+		} else {
+			return uom;
+		}
+	}
 }

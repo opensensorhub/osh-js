@@ -299,3 +299,16 @@ td, th  {
 	font-weight: bold; 
 }
 
+.data-table {
+	margin-left:35px;
+}
+
+.data-table-header {
+    border-bottom: 1px solid #000000 !important;
+    padding: 3px 15px;
+    text-align: center !important; 
+    color: #000000 !important; 
+    text-shadow: none !important;
+    overflow: hidden;
+}
+

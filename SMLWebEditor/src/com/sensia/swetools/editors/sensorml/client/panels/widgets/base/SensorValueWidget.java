@@ -46,6 +46,7 @@ public class SensorValueWidget extends AbstractSensorElementWidget{
 		if(elementName.equals(getParent().getName())) {
 			container.clear();
 			container.add(new HTML(value));
+			setName(value);
 		}
 	}
 }

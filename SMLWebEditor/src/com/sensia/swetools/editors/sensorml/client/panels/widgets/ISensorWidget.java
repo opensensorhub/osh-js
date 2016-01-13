@@ -56,4 +56,6 @@ public interface ISensorWidget {
 	public void setValues(String elementName,List<String> values);
 	
 	public void setValue(String elementName,String value);
+	
+	public void refresh();
 }

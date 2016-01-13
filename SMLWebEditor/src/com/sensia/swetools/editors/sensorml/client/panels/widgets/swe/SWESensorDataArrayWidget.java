@@ -1,6 +1,5 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.swe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -13,17 +12,14 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.googlecode.gwt.charts.client.ChartLoader;
-import com.googlecode.gwt.charts.client.ChartPackage;
-import com.googlecode.gwt.charts.client.ColumnType;
-import com.googlecode.gwt.charts.client.DataTable;
-import com.googlecode.gwt.charts.client.corechart.LineChart;
-import com.googlecode.gwt.charts.client.corechart.LineChartOptions;
-import com.googlecode.gwt.charts.client.options.HAxis;
-import com.googlecode.gwt.charts.client.options.VAxis;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
+import com.sensia.swetools.editors.sensorml.client.panels.Utils;
+import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart;
+import com.sensia.swetools.editors.sensorml.client.panels.charts.SWESensorDataArrayChartHelper;
+import com.sensia.swetools.editors.sensorml.client.panels.charts.versusline.VersusLineChart;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
@@ -46,6 +42,8 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 	private TextBox definitionBox;
 	
 	private boolean initTable;
+	
+	private ISensorChart chart;
 	
 	public SWESensorDataArrayWidget() {
 		super("DataArray", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
@@ -101,6 +99,8 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 		container.add(wrapper);
 		
 		initTable = false;
+		
+		advancedPanel.setVisible(getMode() == MODE.EDIT);
 	}
 
 	@Override
@@ -114,7 +114,8 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void activeMode(MODE mode) {
-		
+		advancedPanel.setVisible(getMode() == MODE.EDIT);
+		chart.switchMode(mode);
 	}
 
 	@Override
@@ -144,117 +145,22 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 		}
 		
 		//find fields
-		List<ISensorWidget> fields = findWidgets(this, "field", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-		if(fields.size() == 2) {
-			create1LineVersusChart(fields.get(0), fields.get(1));
+		chart = SWESensorDataArrayChartHelper.createChart(this, values, tokenSeparator, blockSeparator);
+		
+		if(chart != null) {
+			HorizontalPanel hPanel = new HorizontalPanel();
+			hPanel.add(chart.getChart());
+			hPanel.add(chart.getTable());
+			innerContainer.add(hPanel);
 		}
 		
 		initTable = true;
 	}
 	
-	private void create1LineVersusChart(ISensorWidget data1,ISensorWidget data2) {
-		String uom1 = "No supported uom";
-		String label1 = "No supported label";
-		
-		String uom2 = "No supported uom";
-		String label2 = "No supported label";
-		
-		//handle data 1
-		ISensorWidget quantity = findWidget(data1, "Quantity", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-		//if Quantity found
-		//TODO: add other tags if needed
-		if(quantity != null) {
-			label1 = quantity.getValue("label");
-			if(label1 == null) {
-				label1 = quantity.getValue("name");
-			}
-			
-			ISensorWidget uom = findWidget(quantity, "uom", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-			if(uom != null) {
-				String uomValue = uom.getValue("code");
-				if(uomValue != null) {
-					uom1 = uomValue;
-				}
-			}
-		}
-		
-		//handle data 2
-		quantity = findWidget(data2, "Quantity", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-		//if Quantity found
-		//TODO: add other tags if needed
-		if(quantity != null) {
-			label2 = quantity.getValue("label");
-			if(label2 == null) {
-				label2 = quantity.getValue("name");
-			}
-			
-			ISensorWidget uom = findWidget(quantity, "uom", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-			if(uom != null) {
-				String uomValue = uom.getValue("code");
-				if(uomValue != null) {
-					uom2 = uomValue;
-				}
-			}
-		}
-		
-		//built values array
-		String [] tokens = values.split(tokenSeparator);
-		
-		if(tokens != null && tokens.length > 0) {
-			final double [][] valuesArray = new double[tokens.length][2];
-			
-			int pos = 0;
-			for(String token : tokens) {
-				String[] block = token.split(blockSeparator);
-				if(block != null && block.length == 2) {
-					valuesArray[pos][0] = Double.parseDouble(block[0]);
-					valuesArray[pos][1] = Double.parseDouble(block[1]);
-				}
-				pos++;
-			}
-			
-			final String xLabel = uom2;
-			final String yLabel = uom1;
-			
-			final String title = label2 + " vs. "+label1;
-			
-			 // Create the API Loader
-            ChartLoader chartLoader = new ChartLoader(ChartPackage.CORECHART);
-            chartLoader.loadApi(new Runnable() {
-
-                    @Override
-                    public void run() {
-                    	// Prepare the data
-            			DataTable dataTable = DataTable.create();
-            			dataTable.addColumn(ColumnType.NUMBER);
-            			dataTable.addColumn(ColumnType.NUMBER);
-            			
-            			dataTable.addRows(valuesArray.length);
-            			
-            			for (int i = 0; i < valuesArray.length; i++) {
-            				dataTable.setValue(i, 0, valuesArray[i][1]);
-            				dataTable.setValue(i, 1, valuesArray[i][0]);
-            			}
-            			
-            			// Set options
-            			LineChartOptions options = LineChartOptions.create();
-            			options.setBackgroundColor("#f0f0f0");
-            			options.setFontName("Tahoma");
-            			options.setTitle(title);
-            			options.setHAxis(HAxis.create(xLabel));
-            			options.setVAxis(VAxis.create(yLabel));
-            			options.setWidth(600);
-            			options.setHeight(400);
-            			
-            			// Draw the chart
-            			LineChart chart = new LineChart();
-            			innerContainer.add(chart);
-            			chart.draw(dataTable, options);
-                    }
-            });
-		}
+	@Override
+	public void refresh() {
+		SWESensorDataArrayChartHelper.updateChart(chart, this, values, tokenSeparator, blockSeparator);
 	}
-	
 	
 	private Panel getAdvancedPanel() {
 		if(editPanel == null){
@@ -280,5 +186,4 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 	protected AbstractSensorElementWidget newInstance() {
 		return new SWESensorDataArrayWidget();
 	}
-
 }

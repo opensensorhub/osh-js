@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
 public class SWESensorQuantityWidget extends AbstractSensorElementWidget{
 
@@ -70,6 +72,9 @@ public class SWESensorQuantityWidget extends AbstractSensorElementWidget{
 							//update value
 							setValue("value", valueBox.getText());
 						}
+						
+						//update chart into DataArray
+						getParent().refresh();
 					}
 				});
 		  }
@@ -80,6 +85,8 @@ public class SWESensorQuantityWidget extends AbstractSensorElementWidget{
 		container.add(defPanel);
 		container.add(wrapper);
 		
+		activeMode(getMode());
+		
 	}
 
 	@Override
@@ -89,7 +96,7 @@ public class SWESensorQuantityWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void activeMode(MODE mode) {
-		
+		advancedPanel.setVisible(getMode() == MODE.EDIT);
 	}
 
 	@Override

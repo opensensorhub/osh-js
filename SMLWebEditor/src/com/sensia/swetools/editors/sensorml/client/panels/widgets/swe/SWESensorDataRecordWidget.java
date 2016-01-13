@@ -50,6 +50,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		  }
 		});
 		
+		activeMode(getMode());
 	}
 
 	@Override
@@ -59,8 +60,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void activeMode(MODE mode) {
-		// TODO Auto-generated method stub
-		
+		wrapperAdvancedPanel.setVisible(getMode() == MODE.EDIT);
 	}
 
 	@Override

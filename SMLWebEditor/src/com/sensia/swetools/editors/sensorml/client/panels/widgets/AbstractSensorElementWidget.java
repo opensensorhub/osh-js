@@ -314,7 +314,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return panel;
 	}
 	
-	protected static ISensorWidget findWidget(ISensorWidget widget, String name, TAG_DEF def,TAG_TYPE type) {
+	public static ISensorWidget findWidget(ISensorWidget widget, String name, TAG_DEF def,TAG_TYPE type) {
 		ISensorWidget foundWidget = null;
 		if(widget.getName().equals(name) && widget.getType() == type && widget.getDef() == def) {
 			foundWidget =  widget;
@@ -330,7 +330,21 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return foundWidget;
 	}
 	
-	protected static List<ISensorWidget> findWidgets(ISensorWidget root, String name, TAG_DEF def,TAG_TYPE type) {
+	//BFS
+	public static ISensorWidget findParent(ISensorWidget widget, String name, TAG_DEF def,TAG_TYPE type) {
+		ISensorWidget foundWidget = null;
+		
+		if(widget != null) {
+			if(widget.getName().equals(name) && widget.getType() == type && widget.getDef() == def) {
+					foundWidget =  widget;
+			} else {
+				findParent(widget.getParent(), name, def, type);
+			}
+		}
+		return foundWidget;
+	}
+	
+	public static List<ISensorWidget> findWidgets(ISensorWidget root, String name, TAG_DEF def,TAG_TYPE type) {
 		List<ISensorWidget> results = new ArrayList<ISensorWidget>();
 		findRecursiveWidgets(root, name, def, type, results);
 		return results;
@@ -368,5 +382,11 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		hPanel.add(hlabel);
 		hPanel.add(new HTML("&nbsp;:&nbsp;"));
 		return hPanel;
+	}
+	
+	public void refresh() {
+		if(getParent() != null) {
+			getParent().refresh();
+		}
 	}
 }
