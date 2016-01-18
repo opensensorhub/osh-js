@@ -76,20 +76,6 @@ public class RNGParser
     protected RNGGrammar grammar;
     protected int numIncludes;
     
-    
-    protected class QName
-    {
-        public String namespaceURI;
-        public String localName;
-        
-        public QName(String ns, String name)
-        {
-            this.namespaceURI = ns;
-            this.localName = name;
-        }
-    }
-    
-    
     public static void clearCache()
     {
         grammarCache.clear();

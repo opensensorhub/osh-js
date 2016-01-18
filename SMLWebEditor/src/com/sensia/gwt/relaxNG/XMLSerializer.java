@@ -10,6 +10,7 @@
 
 package com.sensia.gwt.relaxNG;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Attr;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;

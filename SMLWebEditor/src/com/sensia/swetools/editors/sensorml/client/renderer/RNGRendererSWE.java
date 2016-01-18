@@ -43,7 +43,8 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQ
  * @date Aug 27, 2011
  */
 public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
-	protected final static String SWE_NS = "http://www.opengis.net/swe/1.0.1";
+	protected final static String SWE_NS_1 = "http://www.opengis.net/swe/1.0.1";
+	protected final static String SWE_NS_2 = "http://www.opengis.net/swe/2.0";
 
 	public RNGRendererSWE() {}
 
@@ -61,7 +62,7 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 			pushAndVisitChildren(new SWESensorElementTypeWidget(), elt.getChildren());
 		} else if(elt.getName().equals("DataRecord")){
 			pushAndVisitChildren(new SWESensorDataRecordWidget(), elt.getChildren());
-		} else if(elt.getNamespace().equals(SWE_NS)) {
+		} else if(elt.getNamespace().equals(SWE_NS_1) || elt.getNamespace().equals(SWE_NS_2)) {
 			pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SWE, TAG_TYPE.ELEMENT), elt.getChildren());
 		} else {
 			super.visit(elt);

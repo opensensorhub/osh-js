@@ -55,8 +55,12 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	
 	private Set<String> skipList = new HashSet<String>();
 	
-	protected final static String SML_NS = "http://www.opengis.net/sensorML/1.0.1";
-	protected final static String GML_NS = "http://www.opengis.net/gml";
+	protected final static String SML_NS_1 = "http://www.opengis.net/sensorML/1.0.1";
+	protected final static String SML_NS_2 = "http://www.opengis.net/sensorML/2.0";
+	
+	protected final static String GML_NS_1 = "http://www.opengis.net/gml";
+	protected final static String GML_NS_2 = "http://www.opengis.net/gml/3.2";
+	
 	
 	enum RENDER_LIST_TYPE {
 		GENERIC_HORIZONTAL,
@@ -100,6 +104,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		skipList.add("contactInfo");
 		skipList.add("Security");
 		skipList.add("ParameterList");
+		skipList.add("PhysicalComponent");
 	}
 
 	@Override
@@ -126,7 +131,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 			ISensorWidget widget = null;
 			//Add Name / Description
 			//TODO: may add SWE/SML support?
-			if(nsUri.equals(GML_NS)) {
+			if(nsUri.equals(GML_NS_1) || nsUri.equals(GML_NS_2)) {
 				widget = new GMLSensorWidget(elt);
 			} else {
 				//it is a non pre-defined section
@@ -145,11 +150,11 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 			//get ns
 			TAG_DEF ns = TAG_DEF.RNG;
 			
-			if (nsUri.equals(SML_NS)) {
+			if (nsUri.equals(SML_NS_1) || nsUri.equals(SML_NS_2)) {
 				ns = TAG_DEF.SML;
-			} else if (nsUri.equals(SWE_NS)) {
+			} else if (nsUri.equals(SWE_NS_1) || nsUri.equals(SWE_NS_2)) {
 				ns = TAG_DEF.SWE;
-			} else if (nsUri.equals(GML_NS)) {
+			} else if (nsUri.equals(GML_NS_1) || nsUri.equals(GML_NS_2)) {
 				ns = TAG_DEF.GML;
 			} 
 			
@@ -175,9 +180,9 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 				}
 				pushAndVisitChildren(widget, elt.getChildren());
 			} else {
-				if(nsUri.equals(GML_NS)) {
+				if(nsUri.equals(GML_NS_1) || nsUri.equals(GML_NS_2)) {
 					pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.GML, TAG_TYPE.ELEMENT), elt.getChildren());
-				} else if (nsUri.equals(SML_NS)) {
+				} else if (nsUri.equals(SML_NS_1) || nsUri.equals(SML_NS_2)) {
 					pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SML, TAG_TYPE.ELEMENT), elt.getChildren());
 				} else {
 					super.visit(elt);

@@ -1,0 +1,349 @@
+<sml:PhysicalComponent gml:id="Davis7817_complete"
+   xmlns:sml="http://www.opengis.net/sensorml/2.0"
+   xmlns:swe="http://www.opengis.net/swe/2.0"
+   xmlns:gml="http://www.opengis.net/gml/3.2"
+   xmlns:gmd="http://www.isotc211.org/2005/gmd"
+   xmlns:gco="http://www.isotc211.org/2005/gco"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.opengis.net/sensorml/2.0 http://schemas.opengis.net/sensorML/2.0/sensorml.xsd">
+   
+   <gml:description>
+     A simple weather resistant thermistor that outputs resistance as a function of temperature.
+   </gml:description>
+   <gml:identifier codeSpace="uid">urn:davis-instr:7817-1</gml:identifier>
+   <gml:name>Davis_7817 Thermometer</gml:name>
+
+   <!-- metadata -->
+
+   <sml:keywords>
+      <sml:KeywordList>
+         <sml:codeSpace xlink:href="http://gcmd.gsfc.nasa.gov" />
+         <sml:keyword>air temperature</sml:keyword>
+         <sml:keyword>thermistors</sml:keyword>
+      </sml:KeywordList>
+   </sml:keywords>
+
+   <sml:identification>
+      <sml:IdentifierList>
+         <sml:identifier>
+            <sml:Term definition="urn:ogc:def:identifier:OGC:longname">
+               <sml:label>Long Name</sml:label>
+               <sml:value>Davis 7817 External Temperature Sensor</sml:value>
+            </sml:Term>
+         </sml:identifier>
+         <sml:identifier>
+            <sml:Term definition="urn:ogc:def:identifier:OGC:shortname">
+               <sml:label>Short Name</sml:label>
+               <sml:value>Davis 7817 Thermometer</sml:value>
+            </sml:Term>
+         </sml:identifier>
+         <sml:identifier>
+            <sml:Term definition="urn:ogc:def:identifier:OGC:modelNumber">
+               <sml:label>Model Number</sml:label>
+               <sml:value>7817</sml:value>
+            </sml:Term>
+         </sml:identifier>
+         <sml:identifier>
+            <sml:Term definition="urn:ogc:def:identifier:OGC:manufacturer">
+               <sml:label>Manufacturer</sml:label>
+               <sml:value>Davis Instruments</sml:value>
+            </sml:Term>
+         </sml:identifier>
+      </sml:IdentifierList>
+   </sml:identification>
+
+   <sml:classification>
+      <sml:ClassifierList>
+         <sml:classifier>
+            <sml:Term definition="urn:ogc:def:classifier:OGC:application">
+               <sml:label>Intended Application</sml:label>
+               <sml:value>weather</sml:value>
+            </sml:Term>
+         </sml:classifier>
+         <sml:classifier>
+            <sml:Term definition="urn:ogc:def:classifier:OGC:application">
+               <sml:label>Intended Application</sml:label>
+               <sml:value>temperature</sml:value>
+            </sml:Term>
+         </sml:classifier>
+         <sml:classifier>
+            <sml:Term definition="urn:sensor:classifier:sensorType">
+               <sml:label>Instrument Type</sml:label>
+               <sml:codeSpace xlink:href="http://gcmdservices.gsfc.nasa.gov/static/kms/instruments/instruments.xml" />
+               <sml:value>thermistors</sml:value>
+            </sml:Term>
+         </sml:classifier>
+      </sml:ClassifierList>
+   </sml:classification>
+
+   <!-- PUT IN VALIDTIME, CONSTRAINTS ?? -->
+
+   <sml:characteristics name="physical">
+      <sml:CharacteristicList definition="urn:ogc:def:property:physicalProperties">
+         <swe:label>Physical Properties</swe:label>
+         <sml:characteristic name="weight">
+            <swe:Quantity definition="urn:ogc:def:property:weight">
+               <swe:label>Weight</swe:label>
+               <swe:uom code="mm" />
+               <swe:value>128</swe:value>
+            </swe:Quantity>
+         </sml:characteristic>
+         <sml:characteristic name="diameter">
+            <swe:Quantity definition="urn:ogc:def:property:diameter">
+               <swe:label>Diameter</swe:label>
+               <swe:uom code="mm" />
+               <swe:value>6.5</swe:value>
+            </swe:Quantity>
+         </sml:characteristic>
+         <sml:characteristic name="length">
+            <swe:Quantity definition="urn:ogc:def:property:length">
+               <swe:label>Length</swe:label>
+               <swe:uom code="mm" />
+               <swe:value>32</swe:value>
+            </swe:Quantity>
+         </sml:characteristic>
+      </sml:CharacteristicList>
+   </sml:characteristics>
+
+   <sml:capabilities name="measurement">
+      <sml:CapabilityList definition="urn:ogc:def:property:measurementProperties">
+         <sml:capability name="resolution" xlink:arcrole="urn:ogc:def:property:resolution">
+            <swe:Quantity definition="urn:ogc:def:property:temperature">
+               <swe:label>Temperature Resolution</swe:label>
+               <swe:uom code="cel" />
+               <swe:value>0.1</swe:value>
+            </swe:Quantity>
+         </sml:capability>
+         <sml:capability name="dynamicRange" xlink:arcrole="urn:ogc:def:property:dynamicRange">
+            <swe:QuantityRange definition="urn:ogc:def:property:temperature">
+               <swe:label>Temperature Range</swe:label>
+               <swe:uom code="cel" />
+               <swe:value>-45 60</swe:value>
+            </swe:QuantityRange>
+         </sml:capability>
+         <sml:capability name="accuracy" xlink:arcrole="urn:ogc:def:property:accuracy">
+            <swe:QuantityRange definition="urn:ogc:def:property:absoluteAccuracy">
+               <swe:label>Absolute Accuracy</swe:label>
+               <swe:uom code="%" />
+               <swe:value>-0.5 0.5</swe:value>
+            </swe:QuantityRange>
+         </sml:capability>
+      </sml:CapabilityList>
+   </sml:capabilities>
+   
+   <sml:contacts>
+      <sml:ContactList>
+         <sml:contact>
+            <gmd:CI_ResponsibleParty>
+               <gmd:organisationName>
+                  <gco:CharacterString>Davis Instruments Corporation</gco:CharacterString>
+               </gmd:organisationName>
+               <gmd:contactInfo>
+                  <gmd:CI_Contact>
+                     <gmd:phone>
+                        <gmd:CI_Telephone>
+                           <gmd:voice>
+                              <gco:CharacterString>+1-510-732-9229</gco:CharacterString>
+                           </gmd:voice>
+                        </gmd:CI_Telephone>
+                     </gmd:phone>
+                     <gmd:address>
+                        <gmd:CI_Address>
+                           <gmd:deliveryPoint>
+                              <gco:CharacterString> Diablo Avenue</gco:CharacterString>
+                           </gmd:deliveryPoint>
+                           <gmd:city>
+                              <gco:CharacterString>Hatwood</gco:CharacterString>
+                           </gmd:city>
+                           <gmd:administrativeArea>
+                              <gco:CharacterString>California</gco:CharacterString>
+                           </gmd:administrativeArea>
+                           <gmd:postalCode>
+                              <gco:CharacterString>94545</gco:CharacterString>
+                           </gmd:postalCode>
+                           <gmd:country>
+                              <gco:CharacterString>USA</gco:CharacterString>
+                           </gmd:country>
+                           <gmd:electronicMailAddress>
+                              <gco:CharacterString>support@davisnet.com</gco:CharacterString>
+                           </gmd:electronicMailAddress>
+                        </gmd:CI_Address>
+                     </gmd:address>
+                  </gmd:CI_Contact>
+               </gmd:contactInfo>
+               <gmd:role>
+                  <gmd:CI_RoleCode codeList="companyRoles" codeListValue="manufacturer" />
+               </gmd:role>
+            </gmd:CI_ResponsibleParty>
+         </sml:contact>
+         <sml:contact xlink:arcrole="expert" xlink:href="http://www.bobsSensors.com/contact/BobSomeone.xml" />
+      </sml:ContactList>
+   </sml:contacts>
+   
+   <sml:documentation>
+      <sml:DocumentList>
+         <sml:document xlink:arcrole="http://www.opengis.com/def/roles/specificationSheet">
+            <gmd:CI_OnlineResource>
+               <gmd:linkage>
+                  <gmd:URL>http://www.davisnet.com/product_documents/weather/spec_sheets/7817_spec_Rev_E.pdf</gmd:URL>
+               </gmd:linkage>
+               <gmd:description>
+                  <gco:CharacterString>Davis specification sheet for the 7817 external thermometer</gco:CharacterString>
+               </gmd:description>
+            </gmd:CI_OnlineResource>
+         </sml:document>
+         <sml:document xlink:arcrole="http://www.opengis.com/def/roles/productImage">
+            <gmd:CI_OnlineResource>
+               <gmd:linkage>
+                  <gmd:URL>http://www.davisnet.com/productpics/big/7817.jpg</gmd:URL>
+               </gmd:linkage>
+               <gmd:description>
+                  <gco:CharacterString>Image of external thermometer 7817</gco:CharacterString>
+               </gmd:description>
+            </gmd:CI_OnlineResource>
+         </sml:document>
+      </sml:DocumentList>
+   </sml:documentation>
+   
+   <!--~~~~~~~~~~~~~~~~ -->
+   <!-- Detector Inputs -->
+   <!--~~~~~~~~~~~~~~~~ -->
+   <!-- note: in most cases, a detector’s input will be a phenomenon and its output a measured digital value (e.g. Quantity) -->
+   <sml:inputs>
+      <sml:InputList>
+         <sml:input name="temperature">
+            <sml:ObservableProperty definition="urn:ogc:def:property:ogc:1.0:temperature" />
+         </sml:input>
+      </sml:InputList>
+   </sml:inputs>
+   
+   <!--~~~~~~~~~~~~~~~~~ -->
+   <!-- Detector Outputs -->
+   <!--~~~~~~~~~~~~~~~~~ -->
+   <!-- note: in this case, the detector’s output is also a phenomenon (electrical resistance) rather than measured digital values -->
+   <sml:outputs>
+      <sml:OutputList>
+         <sml:output name="measuredTemperature">
+            <sml:ObservableProperty definition="urn:ogc:def:property:ogc:1.0:resistance" />
+         </sml:output>
+      </sml:OutputList>
+   </sml:outputs>
+   
+   <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <!-- Temperature Response -->
+   <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+   <sml:parameters>
+      <sml:ParameterList>
+         <sml:parameter name="steadyState" xlink:arcrole="urn:ogc:def:property:calibration">
+            <swe:DataArray updatable="false">
+               <swe:elementCount>
+                  <swe:Count>
+                     <swe:value>21</swe:value>
+                  </swe:Count>
+               </swe:elementCount>
+               <swe:elementType name="calibrationPoint">
+                  <swe:DataRecord>
+                     <swe:field name="temperature">
+                        <swe:Quantity id="TEMP1" definition="urn:ogc:def:property:ogc:1.0:temperature">
+                           <swe:uom code="cel" />
+                        </swe:Quantity>
+                     </swe:field>
+                     <swe:field name="resistance">
+                        <swe:Quantity id="RES" definition="urn:ogc:def:property:ogc:1.0:resistance">
+                           <swe:uom code="kohm" />
+                        </swe:Quantity>
+                     </swe:field>
+                  </swe:DataRecord>
+               </swe:elementType>
+               <swe:encoding>
+                  <swe:TextEncoding tokenSeparator="&#x20;" blockSeparator="," decimalSeparator="." />
+               </swe:encoding>
+               <swe:values>
+                  -40,328.4 -35,237.7 -30,173.9
+                  -25,128.5 -20,95.89 -15,72.23
+                  -10,54.89 -5,42.07 0,32.51
+                  5,25.31 10,19.86 15,15.69
+                  20,12.49 25,10 30,8.06 35,6.536
+                  40,5.331 45,4.373 50,3.606
+                  55,2.989 60,2.49
+               </swe:values>
+            </swe:DataArray>
+         </sml:parameter>
+         <sml:parameter name="accuracy" xlink:arcrole="urn:ogc:def:property:OGC:measurementAccuracy">
+            <swe:ConditionalValue definition="urn:ogc:def:property:OGC:error">
+               <swe:condition name="cableLength">
+                  <swe:Quantity definition="urn:ogc:def:property:OGC:length">
+                     <swe:uom code="m" />
+                     <swe:constraint>
+                        <swe:AllowedValues>
+                           <swe:interval>-INF 10</swe:interval>
+                        </swe:AllowedValues>
+                     </swe:constraint>
+                  </swe:Quantity>
+               </swe:condition>
+               <swe:data>
+                  <swe:NormalizedCurve>
+                     <swe:function>
+                        <swe:Curve>
+                           <swe:elementCount>
+                              <swe:Count>
+                                 <swe:value>6</swe:value>
+                              </swe:Count>
+                           </swe:elementCount>
+                           <swe:elementType>
+                              <swe:SimpleDataRecord>
+                                 <swe:field name="realTemperature">
+                                    <swe:Quantity definition="urn:ogc:def:property:OGC:temperature">
+                                       <swe:uom code="cel" />
+                                    </swe:Quantity>
+                                 </swe:field>
+                                 <swe:field name="absoluteError">
+                                    <swe:Quantity definition="urn:ogc:def:property:OGC:absoluteError">
+                                       <swe:uom code="cel" />
+                                    </swe:Quantity>
+                                 </swe:field>
+                              </swe:SimpleDataRecord>
+                           </swe:elementType>
+                           <swe:encoding>
+                              <swe:TextBlock tokenSeparator="&#x20;" blockSeparator="," decimalSeparator="." />
+                           </swe:encoding>
+                           <swe:values>-40,0 -10,0.1 15,0.3 27,0.5 44,1 60,2.1</swe:values>
+                        </swe:Curve>
+                     </swe:function>
+                  </swe:NormalizedCurve>
+               </swe:data>
+            </swe:ConditionalValue>
+         </sml:parameter>
+         <sml:parameter name="latency" xlink:arcrole="urn:ogc:def:property:OGClatencyTime">
+            <swe:ConditionalValue>
+               <swe:condition name="medium">
+                  <swe:Category definition="urn:ogc:def:property:OGC:medium">
+                     <swe:value>air</swe:value>
+                  </swe:Category>
+               </swe:condition>
+               <swe:data>
+                  <swe:Quantity definition="urn:ogc:def:property:OGC:duration">
+                     <swe:uom code="s" />
+                     <swe:value>10</swe:value>
+                  </swe:Quantity>
+               </swe:data>
+            </swe:ConditionalValue>
+         </sml:parameter>
+      </sml:ParameterList>
+   </sml:parameters>
+   
+   <!-- REFERENCE FRAME -->
+   <sml:localReferenceFrame>
+      <sml:SpatialFrame>
+         <swe:label>Temperature Detector Spatial Frame</swe:label>
+         <swe:description></swe:description>
+         <sml:origin>origin is at the tip of the thermometer</sml:origin>
+         <sml:axis name="x">undetermined, in the plane normal to z</sml:axis>
+         <sml:axis name="y">undetermined, in the plane normal to z</sml:axis>
+         <sml:axis name="z">along the long axis of symmetry of the thermometer</sml:axis>
+      </sml:SpatialFrame>
+   </sml:localReferenceFrame>
+
+</sml:PhysicalComponent>
+

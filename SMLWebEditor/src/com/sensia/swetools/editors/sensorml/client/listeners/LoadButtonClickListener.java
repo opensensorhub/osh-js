@@ -1,5 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.listeners;
 
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -11,21 +13,25 @@ public class LoadButtonClickListener implements ClickHandler{
 	private ListBox profileListBox;
 	private RNGProcessorSML sgmlEditorProcessor;
 	private CheckBox edit;
+	private Map<String,String> profiles;
 	
-	public LoadButtonClickListener(final ListBox profileListBox,final RNGProcessorSML sgmlEditorProcessor,CheckBox edit) {
+	public LoadButtonClickListener(final ListBox profileListBox,final Map<String,String> profiles,final RNGProcessorSML sgmlEditorProcessor,CheckBox edit) {
 		this.profileListBox = profileListBox;
 		this.sgmlEditorProcessor = sgmlEditorProcessor;
 		this.edit = edit;
+		this.profiles = profiles;
 	}
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		String value = profileListBox.getValue(profileListBox.getSelectedIndex());
-		if(value != null && !value.isEmpty()){
-			final String url = "rng1.0/profiles/CSM/"+value+".rng";
-			sgmlEditorProcessor.parse(url);
-			edit.setVisible(true);
-			edit.setChecked(false);
+		String key = profileListBox.getValue(profileListBox.getSelectedIndex());
+		
+		if(key != null && !key.isEmpty()){
+			sgmlEditorProcessor.parse(profiles.get(key));
+			if(edit != null) {
+				edit.setVisible(true);
+				edit.setChecked(false);
+			}
 		}
 	}
 
