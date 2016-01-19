@@ -186,4 +186,9 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 	protected AbstractSensorElementWidget newInstance() {
 		return new SWESensorDataArrayWidget();
 	}
+	
+	@Override
+	public boolean appendToLine() {
+		return true;
+	}
 }

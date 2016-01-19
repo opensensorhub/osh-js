@@ -29,6 +29,7 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorA
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorIdentifierWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSectionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSectionsWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorTermWidget;
 
 /**
  * <p>
@@ -76,10 +77,21 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		renderSectionsList.put("identification","Identification");
 		renderSectionsList.put("characteristics","Custom");
 		renderSectionsList.put("outputs", "Outputs");
+		renderSectionsList.put("classification","Classification");
+		//TODO: make only one constraint section
+		renderSectionsList.put("validTime","Constraints (valid time)");
+		renderSectionsList.put("securityConstraints","Constraints (security)");
+		renderSectionsList.put("legalConstraints","Constraints (legal)");
 		renderSectionsList.put("inputs", "Inputs");
 		renderSectionsList.put("localReferenceFrame", "Local Reference Frame");
 		renderSectionsList.put("parameters", "Parameters");
 		renderSectionsList.put("method", "Method");
+		renderSectionsList.put("contacts", "Contacts");
+		renderSectionsList.put("documentation", "Documentation");
+		renderSectionsList.put("keywords", "Keywords");
+		renderSectionsList.put("connections", "Connections");
+		renderSectionsList.put("components", "Components");
+		renderSectionsList.put("position", "Position");
 		
 		//render default defined list elements
 		renderElementList.put("OutputList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
@@ -87,24 +99,37 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		renderElementList.put("IdentifierList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
 		renderElementList.put("ClassifierList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
 		renderElementList.put("ParameterList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("CharacteristicList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("CapabilityList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("ContactList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("DocumentList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("KeywordList", RENDER_LIST_TYPE.GENERIC_HORIZONTAL);
+		renderElementList.put("ComponentList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		renderElementList.put("ConnectionList", RENDER_LIST_TYPE.GENERIC_VERTICAL);
+		
 		
 		//render default defined elements
 		renderElements.put("input",RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("output",RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("parameter", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("field", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("characteristic", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("identifier", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("capability", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("elementCount", RENDER_ELEMENT_TYPE.LINE);
-		
+		renderElements.put("classifier", RENDER_ELEMENT_TYPE.LINE);
+
 		//skip list
 		skipList.add("Component");
 		skipList.add("ProcessModel");
 		skipList.add("Document");
-		skipList.add("Term");
 		skipList.add("contactInfo");
 		skipList.add("Security");
-		skipList.add("ParameterList");
 		skipList.add("PhysicalComponent");
+		skipList.add("SimpleProcess");
+		skipList.add("PhysicalSystem");
+		skipList.add("Term");
+		
 	}
 
 	@Override

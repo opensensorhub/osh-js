@@ -49,13 +49,15 @@ public interface ISensorWidget {
 	
 	void setParent(ISensorWidget parent);
 	
-	public List<String> getValues(String elementName);
+	List<String> getValues(String elementName);
 	
-	public String getValue(String elementName);
+	String getValue(String elementName);
 	
-	public void setValues(String elementName,List<String> values);
+	void setValues(String elementName,List<String> values);
 	
-	public void setValue(String elementName,String value);
+	void setValue(String elementName,String value);
 	
-	public void refresh();
+	void refresh();
+	
+	boolean appendToLine();
 }

@@ -389,4 +389,8 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 			getParent().refresh();
 		}
 	}
+	
+	public boolean appendToLine() {
+		return false;
+	}
 }

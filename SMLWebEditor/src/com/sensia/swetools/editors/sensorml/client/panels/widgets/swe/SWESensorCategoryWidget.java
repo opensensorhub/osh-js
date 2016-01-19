@@ -58,5 +58,10 @@ public class SWESensorCategoryWidget extends AbstractSensorElementWidget{
 	protected AbstractSensorElementWidget newInstance() {
 		return new SWESensorCategoryWidget();
 	}
+	
+	@Override
+	public boolean appendToLine() {
+		return true;
+	}
 
 }

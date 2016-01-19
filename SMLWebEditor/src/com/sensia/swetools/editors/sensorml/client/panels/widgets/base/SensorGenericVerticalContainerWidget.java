@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
@@ -14,6 +15,8 @@ public class SensorGenericVerticalContainerWidget extends AbstractSensorElementW
 
 	protected VerticalPanel container;
 	protected VerticalPanel innerContainer;
+	
+	protected HorizontalPanel defPanel;
 	
 	public SensorGenericVerticalContainerWidget(String name, TAG_DEF def, TAG_TYPE type) {
 		super(name, def, type);

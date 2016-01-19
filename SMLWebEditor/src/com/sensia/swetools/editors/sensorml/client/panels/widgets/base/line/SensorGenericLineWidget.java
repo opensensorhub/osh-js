@@ -56,8 +56,12 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		//handle generic panel like identifier
 		else if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("definition")){
 			defPanel.add(widget.getPanel());
-		} else if(widget.getType() == TAG_TYPE.VALUE ){
+		} else if(widget.getType() == TAG_TYPE.VALUE || (widget.getName().equals("value"))){//case of Term: value
 			optPanel.add(widget.getPanel());
+		} else if (widget.getType() == TAG_TYPE.ELEMENT && widget.getName().equals("label")) {
+			labelPanel.clear();
+			labelPanel.add(widget.getPanel());
+			isLabelProvided=true;
 		} else {
 			//looking for label
 			//prior display for label if exists
@@ -70,10 +74,31 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 					break;
 				}
 			}
-			optPanel.add(widget.getPanel());
+			
+			//looking for element to append to line
+			//if(widget.appendToLine()) {
+			//	optPanel.add(widget.getPanel());
+			//}
+			recursiveAppendToLine(widget);
 		}
 	}
 
+	private boolean recursiveAppendToLine(ISensorWidget widget) {
+		if(widget.appendToLine()) {
+			optPanel.add(widget.getPanel());
+			return true;
+		} else {
+			boolean append = false;
+			for(ISensorWidget child : widget.getElements()) {
+				append = recursiveAppendToLine(child);
+				if(append) {
+					break;
+				}
+			}
+			return append;
+		}
+	}
+	
 	@Override
 	protected AbstractSensorElementWidget newInstance() {
 		return new SensorGenericLineWidget(getName(),getDef(),getType());

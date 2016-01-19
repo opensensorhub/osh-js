@@ -36,4 +36,9 @@ public class SMLSensorAttributeWidget extends SensorAttributeWidget{
 			defImage.setTitle(value);
 		}
 	}
+	
+	@Override
+	public boolean appendToLine() {
+		return getName().equals("definition");
+	}
 }

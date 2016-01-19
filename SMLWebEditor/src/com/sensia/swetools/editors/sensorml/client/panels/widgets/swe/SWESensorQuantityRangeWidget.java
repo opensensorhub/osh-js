@@ -75,4 +75,9 @@ public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 	protected AbstractSensorElementWidget newInstance() {
 		return new SWESensorQuantityRangeWidget();
 	}
+	
+	@Override
+	public boolean appendToLine() {
+		return true;
+	}
 }

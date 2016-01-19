@@ -115,5 +115,10 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		}
 		return editPanel;
 	}
+	
+	@Override
+	public boolean appendToLine() {
+		return true;
+	}
 
 }
