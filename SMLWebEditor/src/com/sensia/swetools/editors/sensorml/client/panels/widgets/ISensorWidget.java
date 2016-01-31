@@ -3,6 +3,7 @@ package com.sensia.swetools.editors.sensorml.client.panels.widgets;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public interface ISensorWidget {
 
@@ -15,6 +16,8 @@ public interface ISensorWidget {
 		SML,
 		GML,
 		SWE,
+		GMD,
+		GCO,
 		RNG
 	}
 	
@@ -49,9 +52,9 @@ public interface ISensorWidget {
 	
 	void setParent(ISensorWidget parent);
 	
-	List<String> getValues(String elementName);
+	List<String> getValues(String parentName);
 	
-	String getValue(String elementName);
+	String getValue(String parentName);
 	
 	void setValues(String elementName,List<String> values);
 	
@@ -60,4 +63,6 @@ public interface ISensorWidget {
 	void refresh();
 	
 	boolean appendToLine();
+	
+	void getAdvancedPanel(Panel container);
 }

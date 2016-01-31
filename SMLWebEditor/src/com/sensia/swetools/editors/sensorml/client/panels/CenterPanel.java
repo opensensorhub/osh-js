@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.IParsingObserver;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
 import com.sensia.swetools.editors.sensorml.client.listeners.LoadButtonClickListener;
+import com.sensia.swetools.editors.sensorml.client.listeners.ViewAsXMLButtonClickListener;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;
 
@@ -37,6 +38,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		profiles.put("Anemometer","rng1.0/profiles/CSM/anemometer.rng");
 		profiles.put("Thermometer","rng1.0/profiles/CSM/thermometer-minimal-view.rng");
 		
+		xmlViews.put("Gamma 2070", "sensorML/gamma2070.xml");
 		xmlViews.put("Davis_7817_complete", "sensorML/Davis_7817_complete.xml");
 		xmlViews.put("Davis_7817_min", "sensorML/Davis_7817_min.xml");
 		xmlViews.put("characteristics", "sensorML/characteristics.xml");
@@ -72,9 +74,15 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		Panel profilePanel = getProfilePanel();
 		Panel viewXmlPanel = getXMLViewPanel();
 		
+
+		//add View as XML button
+		Button viewAsXML = new Button("View as XML");
+		viewAsXML.addClickHandler(new ViewAsXMLButtonClickListener(sgmlEditorProcessor));
+		
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.add(viewXmlPanel);
 		panel.add(profilePanel);
+		panel.add(viewAsXML);
 		
 		dynamicCenterPanel = new VerticalPanel();
 		

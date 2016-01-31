@@ -7,8 +7,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
@@ -21,7 +23,11 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	protected Panel optPanel;
 	protected Panel defPanel;
 	
+	protected HorizontalPanel advancedPanel;
+	
 	private boolean isLabelProvided = false;
+	
+	private ISensorWidget titleValueWidget;
 	
 	public SensorGenericLineWidget(String name, TAG_DEF def, TAG_TYPE type) {
 		super(name, def, type);
@@ -31,6 +37,36 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		optPanel = new HorizontalPanel();
 		multiLinesPanel = new VerticalPanel();
 		
+		advancedPanel = new HorizontalPanel();
+		
+		advancedPanel.addStyleName("rng-advanced-button");
+		advancedPanel.setTitle("Edit");
+		
+		labelPanel.addStyleName("line-generic-label-panel");
+		
+		FocusPanel wrapper = new FocusPanel();
+		wrapper.add(advancedPanel);
+		wrapper.addClickHandler(new ClickHandler() {
+		  @Override
+		  public void onClick(ClickEvent event) {
+			  VerticalPanel container = new VerticalPanel();
+			  container.addStyleName("advanced-panel");
+			  getAdvancedPanel(container);
+			  if(container != null) {
+				  displayEditPanel(container,"Edit",new IButtonCallback() {
+						@Override
+						public void onClick() {
+							refresh();
+							if(titleValueWidget != null) {
+								labelPanel.clear();
+								labelPanel.add(new HTML(splitAndCapitalize(titleValueWidget.getName())));
+							}
+						}
+					});
+			  }
+		  }
+		});
+		
 		//for generic ones
 		defPanel = new HorizontalPanel();
 		
@@ -39,8 +75,11 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		linePanel.add(dotSeparatorLabel);
 		linePanel.add(optPanel);
 		linePanel.add(defPanel);
+		linePanel.add(wrapper);
 		
 		multiLinesPanel.add(linePanel);
+		
+		activeMode(getMode());
 	}
 
 	@Override
@@ -49,8 +88,9 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 			//provide name as label only if label does not exist
 			if(!isLabelProvided) {
 				//get the associated value
-				ISensorWidget valueWidget = widget.getElements().get(0);
-				labelPanel.add(new HTML(splitAndCapitalize(valueWidget.getName())));
+				titleValueWidget = widget.getElements().get(0);
+				labelPanel.add(new HTML(splitAndCapitalize(titleValueWidget.getName())));
+				//labelPanel.add(widget.getPanel());
 			}
 		} 
 		//handle generic panel like identifier
@@ -111,6 +151,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void activeMode(MODE mode) {
+		advancedPanel.setVisible(getMode() == MODE.EDIT);
 	}
 
 }

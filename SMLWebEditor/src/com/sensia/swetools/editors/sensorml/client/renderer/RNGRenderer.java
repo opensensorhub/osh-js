@@ -171,7 +171,7 @@ public abstract class RNGRenderer implements RNGTagVisitor {
 
 	@Override
 	public void visit(RNGValue val) {
-		push(new SensorValueWidget(val.getText()));
+		push(new SensorValueWidget(val.getText(),val));
 	}
 
 	@Override

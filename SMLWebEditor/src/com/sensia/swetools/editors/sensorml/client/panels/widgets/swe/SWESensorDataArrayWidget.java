@@ -81,7 +81,9 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 		wrapper.addClickHandler(new ClickHandler() {
 		  @Override
 		  public void onClick(ClickEvent event) {
-			  displayEditPanel(getAdvancedPanel(),"Edit DataArray",new IButtonCallback() {
+			  VerticalPanel container = new VerticalPanel();
+			  getAdvancedPanel(container);
+			  displayEditPanel(container,"Edit DataArray",new IButtonCallback() {
 					@Override
 					public void onClick() {
 						if(definitionBox != null) {
@@ -162,7 +164,8 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 		SWESensorDataArrayChartHelper.updateChart(chart, this, values, tokenSeparator, blockSeparator);
 	}
 	
-	private Panel getAdvancedPanel() {
+	@Override
+	public void getAdvancedPanel(Panel container){
 		if(editPanel == null){
 			editPanel = new VerticalPanel();
 			editPanel.setSpacing(10);
@@ -179,7 +182,7 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 				}
 			}
 		}
-		return editPanel;
+		container.add(editPanel);
 	}
 	
 	@Override

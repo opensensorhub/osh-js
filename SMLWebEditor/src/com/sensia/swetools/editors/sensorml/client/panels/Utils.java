@@ -89,6 +89,35 @@ public class Utils {
 		return dialogBox;
 	}
 	
+	public static final DialogBox createDialogBox(final Panel panel,final String title,final IButtonCallback addCB){
+		final DialogBox dialogBox = new DialogBox();
+		dialogBox.setText(title);
+		dialogBox.setGlassEnabled(true);
+		dialogBox.setAnimationEnabled(true);
+		
+		//create Panel
+		Panel main = new VerticalPanel();
+		
+		Button close = new Button("Close");
+		close.addClickHandler(new ClickHandler() {
+           public void onClick(ClickEvent event) {
+        	   dialogBox.hide();
+           }
+        });
+        
+		HorizontalPanel buttons = new HorizontalPanel();
+		buttons.add(close);
+		buttons.setSpacing(5);
+		
+		main.add(panel);
+		main.add(buttons);
+		
+		dialogBox.add(main);
+		dialogBox.center();
+         
+		return dialogBox;
+	}
+	
 	private static final String DEGREE  = "\u00b0";
 	private static final String OHM = "\u2126";
 	

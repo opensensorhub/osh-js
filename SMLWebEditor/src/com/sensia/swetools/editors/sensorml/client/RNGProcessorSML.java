@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.XMLParser;
 import com.sensia.gwt.relaxNG.RNGInstanceWriter;
 import com.sensia.gwt.relaxNG.RNGParser;
 import com.sensia.gwt.relaxNG.RNGParserCallback;
+import com.sensia.gwt.relaxNG.RNGWriter;
 import com.sensia.gwt.relaxNG.XMLSensorMLParser;
 import com.sensia.gwt.relaxNG.XMLSerializer;
 import com.sensia.relaxNG.RNGGrammar;
@@ -32,34 +34,39 @@ public class RNGProcessorSML {
 			parser.parse(url, new RNGParserCallback() {
 				@Override
 				public void onParseDone(final RNGGrammar grammar) {
-					loadedGrammar = grammar;
-					RNGRendererSML renderer = new RNGRendererSML();
-					renderer.visit(grammar);
-					for(final IParsingObserver observer : observers) {
-						observer.parseDone(renderer.getRoot());
-					}
+					parseRNG(grammar);
 				}
 			});
 		} else if(url.toLowerCase().endsWith(".xml")) {
 		
+			//transform XML document into RNG profile
 			final XMLSensorMLParser parser = new XMLSensorMLParser();
 			parser.parse(url, new RNGParserCallback() {
 				
 				@Override
 				public void onParseDone(final RNGGrammar grammar) {
-					RNGInstanceWriter instanceWriter = new RNGInstanceWriter();
-					GWT.log("Parsing done");
-					Document dom = instanceWriter.writeInstance(grammar);
-					
-					GWT.log(XMLSerializer.serialize(dom));
-					loadedGrammar = grammar;
-					RNGRendererSML renderer = new RNGRendererSML();
-					renderer.visit(grammar);
-					for(final IParsingObserver observer : observers) {
-						observer.parseDone(renderer.getRoot());
-					}
+					parseRNG(grammar);
 				}
 			});
 		}
+	}
+
+	private void parseRNG(final RNGGrammar grammar) {
+		RNGWriter rngWriter = new RNGWriter();
+		Document doc = rngWriter.writeSchema(grammar, true);
+		setLoadedGrammar(grammar);
+		RNGRendererSML renderer = new RNGRendererSML();
+		renderer.visit(grammar);
+		for(final IParsingObserver observer : observers) {
+			observer.parseDone(renderer.getRoot());
+		}
+	}
+	
+	public RNGGrammar getLoadedGrammar() {
+		return loadedGrammar;
+	}
+
+	public void setLoadedGrammar(RNGGrammar loadedGrammar) {
+		this.loadedGrammar = loadedGrammar;
 	}
 }

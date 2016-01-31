@@ -1,6 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.sml;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -9,9 +10,11 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
 public class SensorSectionsWidget extends AbstractSensorElementWidget{
 
-	private Panel container;
-	private Panel namePanel;
-	private Panel descriptionPanel;
+	private VerticalPanel container;
+	private HTML namePanel;
+	private HorizontalPanel descriptionPanel;
+	private HorizontalPanel identifierPanel;
+	private HorizontalPanel keywordPanel;
 	
 	private Panel endPanel;
 	private Panel startPanel;
@@ -21,15 +24,27 @@ public class SensorSectionsWidget extends AbstractSensorElementWidget{
 		
 		container = new VerticalPanel();
 		container.setWidth("1024px");
-		namePanel = new HorizontalPanel();
+		container.setSpacing(5);
+		namePanel = new HTML();
+		namePanel.addStyleName("document-title");
+		
 		descriptionPanel = new HorizontalPanel();
+		identifierPanel  = new HorizontalPanel();
+		keywordPanel  = new HorizontalPanel();
 		
 		container.add(namePanel);
+		
 		//draw horizontal line
 		container.add(new HTML("<hr  style=\"width:100%;\" />"));
+		container.add(identifierPanel);
 		container.add(descriptionPanel);
+		container.add(keywordPanel);
 		
-		container.add(new HTML("<h2>Specifications</h2>"));
+		HTML specTitle = new HTML("<h2>Specifications</h2>");
+		specTitle.addStyleName("document-title");
+		
+		container.add(specTitle);
+		//draw horizontal line
 		container.add(new HTML("<hr  style=\"width:100%;\" />"));
 		
 		startPanel = new VerticalPanel();
@@ -46,12 +61,15 @@ public class SensorSectionsWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
-		if(widget.getDef() == TAG_DEF.GML) {
-			if(widget.getName().equals("name")){
-				namePanel.add(widget.getPanel());
-			} else if(widget.getName().equals("description")) {
-				descriptionPanel.add(widget.getPanel());
-			}
+		if(widget.getName().equals("name")){
+			namePanel.setHTML("<h2>"+widget.getValue("name")+"</h2>");
+		} else if(widget.getName().equals("description")) {
+			descriptionPanel.add(widget.getPanel());
+		} else if (widget.getName().equals("identifier")) {
+			HTML identifier = new HTML("UniqueID: "+widget.getValue("identifier"));
+			identifierPanel.add(identifier);
+		} else if (widget.getName().equals("KeywordList")) {
+			keywordPanel.add(widget.getPanel());
 		} else if(widget.getType() == TAG_TYPE.ZERO_OR_MORE){
 			endPanel.add(widget.getPanel());
 		} else {

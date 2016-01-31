@@ -37,7 +37,9 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		wrapperAdvancedPanel.addClickHandler(new ClickHandler() {
 		  @Override
 		  public void onClick(ClickEvent event) {
-			  displayEditPanel(getAdvancedPanel(),"Edit DataRecord",new IButtonCallback() {
+			  VerticalPanel container = new VerticalPanel();
+			  getAdvancedPanel(container);
+			  displayEditPanel(container,"Edit DataRecord",new IButtonCallback() {
 					@Override
 					public void onClick() {
 						if(nameBox != null) {
@@ -85,7 +87,8 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		return new SWESensorDataRecordWidget();
 	}
 	
-	private Panel getAdvancedPanel() {
+	@Override
+	public void getAdvancedPanel(Panel container) {
 		if(editPanel == null){
 			editPanel = new VerticalPanel();
 			editPanel.setSpacing(10);
@@ -113,7 +116,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 			editPanel.add(aPanel);
 			
 		}
-		return editPanel;
+		container.add(editPanel);
 	}
 	
 	@Override

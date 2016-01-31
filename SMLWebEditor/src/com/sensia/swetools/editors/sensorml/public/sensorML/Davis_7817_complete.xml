@@ -177,7 +177,6 @@
                </gmd:role>
             </gmd:CI_ResponsibleParty>
          </sml:contact>
-         <sml:contact xlink:arcrole="expert" xlink:href="http://www.bobsSensors.com/contact/BobSomeone.xml" />
       </sml:ContactList>
    </sml:contacts>
    

@@ -200,7 +200,6 @@ html>body .gwt-DecoratedTabBar {
   background-image: url(images/advanced.png);
   cursor: hand;
   cursor: pointer;
-  margin-top: 1px;
 }
   
 .rng-optional-unselect {
@@ -237,6 +236,7 @@ html>body .gwt-DecoratedTabBar {
 
 .swe-section-panel {
 	margin-left:-20px;
+	margin-bottom:20px;
 }
 
 .swe-property-panel {
@@ -312,3 +312,35 @@ td, th  {
     overflow: hidden;
 }
 
+.line-generic-label-panel {
+	width : 200px;	
+}
+
+table.swe-generic-vertical-panel {
+	padding : 0 0 0 0;
+	border-spacing: 10px;
+	margin-top: -10px;
+}
+
+table.advanced-panel {
+	border-spacing: 10px;
+	padding: 5px;
+}
+
+table.sub-address-panel {
+	border-spacing: 10px;
+	margin-left : -10px;
+}
+
+.sub-address-country-separator {
+	margin-left : -15px;
+}
+
+/*Center the Specification name */
+td div.document-title {
+	text-align:center;
+}
+
+.document-title {
+	padding : 20 0 0 0;
+}

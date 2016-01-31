@@ -91,24 +91,24 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	}
 
 	
-	public List<String> getValues(String elementName) {
+	public List<String> getValues(String parentName) {
 		final List<String> values = new ArrayList<String>();
-		findRecursiveValues(this,elementName,values);
+		findRecursiveValues(this,parentName,values);
 		return values;
 	}
 	
-	public String getValue(String elementName) {
-		return findRecursiveValue(this,elementName);
+	public String getValue(String parentName) {
+		return findRecursiveValue(this,parentName);
 	}
 	
-	private String findRecursiveValue(ISensorWidget widget,String elementName) {
+	private String findRecursiveValue(ISensorWidget widget,String parentName) {
 		//multiple values for choice tag
-		if(widget.getType() == TAG_TYPE.VALUE && widget.getParent().getName().equals(elementName)) {
+		if(widget.getType() == TAG_TYPE.VALUE && widget.getParent().getName().equals(parentName)) {
 			return widget.getName();
 		} else {
 			String value = null;
 			for(ISensorWidget w : widget.getElements()) {
-				value = findRecursiveValue(w, elementName);
+				value = findRecursiveValue(w, parentName);
 				if(value != null) {
 					break;
 				}
@@ -117,30 +117,30 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		}
 	}
 	
-	private void findRecursiveValues(ISensorWidget widget,String elementName,List<String> values) {
+	private void findRecursiveValues(ISensorWidget widget,String parentName,List<String> values) {
 		//multiple values for choice tag
-		if(widget.getType() == TAG_TYPE.VALUE && widget.getParent().getName().equals(elementName)) {
+		if(widget.getType() == TAG_TYPE.VALUE && widget.getParent().getName().equals(parentName)) {
 			values.add(widget.getName());
 		}
 		if(values.isEmpty()) {
 			for(ISensorWidget w : widget.getElements()) {
-				findRecursiveValues(w, elementName,values);
+				findRecursiveValues(w, parentName,values);
 			}
 		}
 	}
 	
-	public void setValues(String elementName, List<String> values) {
+	public void setValues(String parentName, List<String> values) {
 		for(ISensorWidget w : getElements()) {
-			w.setValues(elementName, values);
+			w.setValues(parentName, values);
 		}
 	}
 	
 	/**
 	 * 
 	 */
-	public void setValue(String elementName, String value) {
+	public void setValue(String parentName, String value) {
 		for(ISensorWidget w : getElements()) {
-			w.setValue(elementName, value);
+			w.setValue(parentName, value);
 		}
 	}
 	
@@ -385,6 +385,18 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	}
 	
 	public void refresh() {
+		//parentRefresh();
+		childRefresh();
+	}
+
+	
+	protected void childRefresh() {
+		for(ISensorWidget child : getElements()) {
+			child.refresh();
+		}
+	}
+	
+	protected void parentRefresh() {
 		if(getParent() != null) {
 			getParent().refresh();
 		}
@@ -392,5 +404,11 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	
 	public boolean appendToLine() {
 		return false;
+	}
+	
+	public void getAdvancedPanel(Panel container) {
+		for(ISensorWidget child : getElements()) {
+			child.getAdvancedPanel(container);
+		}
 	}
 }

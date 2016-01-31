@@ -33,10 +33,6 @@ public class SWESensorCategoryWidget extends AbstractSensorElementWidget{
 		return container;
 	}
 
-	protected Panel getEditPanel() {
-		return null;
-	}
-	
 	@Override
 	protected void activeMode(MODE mode) {
 		// TODO Auto-generated method stub

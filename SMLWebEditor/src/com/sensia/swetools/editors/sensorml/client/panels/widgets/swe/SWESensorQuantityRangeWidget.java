@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.swe;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -16,7 +17,7 @@ public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 	private HorizontalPanel defPanel;
 	private HorizontalPanel uomPanel;
 	
-	private VerticalPanel advancedPanel;
+	private ISensorWidget rangeValueWidget;
 	
 	public SWESensorQuantityRangeWidget() {
 		super("QuantityRange",TAG_DEF.SWE,TAG_TYPE.ELEMENT);
@@ -59,7 +60,21 @@ public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 			uomPanel.add(widget.getPanel());
 		} else if(widget.getName().equals("value") && widget.getType() == TAG_TYPE.ELEMENT && widget.getDef() == TAG_DEF.SWE){
 			if(widget.getElements().size() >= 1) {
-				minPanel.add(widget.getElements().get(0).getPanel());
+				//FIXME:
+				//Hack to get the both values of min max given <swe:value>-0.5 0.5</swe:value>
+				String value = widget.getValue("value");
+				if(value != null) {
+					String [] split = value.split(" ");
+					if(split != null && split.length == 2) {
+						minPanel.add(new HTML(split[0]));
+						maxPanel.add(new HTML(split[1]+"&nbsp;"));
+						rangeValueWidget = widget;
+					} else {
+						minPanel.add(widget.getElements().get(0).getPanel());
+					}
+				}else {
+					minPanel.add(widget.getElements().get(0).getPanel());
+				}
 			}
 			if(widget.getElements().size() >= 2) {
 				maxPanel.add(widget.getElements().get(1).getPanel());
@@ -79,5 +94,25 @@ public class SWESensorQuantityRangeWidget extends AbstractSensorElementWidget{
 	@Override
 	public boolean appendToLine() {
 		return true;
+	}
+	
+	@Override
+	public void refresh() {
+		super.refresh();
+		
+		//FIXME : should be driven by the RNG profile
+		//update value by splitting min/max
+		if(rangeValueWidget != null) {
+			String value = rangeValueWidget.getValue("value");
+			String [] split = value.split(" ");
+			if(split.length == 2) {
+				minPanel.clear();
+				maxPanel.clear();
+				
+				minPanel.add(new HTML(split[0]));
+				maxPanel.add(new HTML(split[1]+"&nbsp;"));
+			}
+		}
+		
 	}
 }

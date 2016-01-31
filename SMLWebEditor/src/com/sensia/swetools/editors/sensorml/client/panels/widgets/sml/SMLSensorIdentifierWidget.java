@@ -25,7 +25,7 @@ public class SMLSensorIdentifierWidget extends AbstractSensorElementWidget{
 		
 		container.add(contentPanel);
 		container.add(defPanel);
-		container.setSpacing(5);
+		//container.setSpacing(5);
 	}
 
 	@Override

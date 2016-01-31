@@ -151,7 +151,7 @@ public class XMLSensorMLParser {
                 parseChildren(rngElt, elt);
             } else if(node.getNodeType() == Node.COMMENT_NODE) {
             	RNGText rngComment = new RNGText();
-            	rngComment.setText("<!--"+node.getNodeValue()+"-->");
+            	rngComment.setText("\n<!--"+node.getNodeValue()+"-->");
             	((RNGTagList)parent).add(rngComment);
             }
 		}

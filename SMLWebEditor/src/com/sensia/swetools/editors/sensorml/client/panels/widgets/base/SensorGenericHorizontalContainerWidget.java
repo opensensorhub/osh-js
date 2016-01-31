@@ -1,5 +1,6 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
@@ -17,8 +18,8 @@ public class SensorGenericHorizontalContainerWidget extends AbstractSensorElemen
 	public SensorGenericHorizontalContainerWidget(String name, TAG_DEF def, TAG_TYPE type) {
 		super(name, def, type);
 		container = new HorizontalPanel();
-		container.setSpacing(5);
-		//container.addStyleName("swe-property-panel");
+		//container.setSpacing(5);
+		container.addStyleName("swe-generic-horizontal-panel");
 	}
 
 	@Override
@@ -29,6 +30,7 @@ public class SensorGenericHorizontalContainerWidget extends AbstractSensorElemen
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
 		container.add(widget.getPanel());
+		container.add(new HTML("&nbsp;&nbsp;"));
 	}
 
 	@Override
