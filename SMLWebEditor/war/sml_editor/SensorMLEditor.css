@@ -344,3 +344,7 @@ td div.document-title {
 .document-title {
 	padding : 20 0 0 0;
 }
+
+.icon-def-section-header {
+	margin-top:2px;
+}

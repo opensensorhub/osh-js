@@ -1,6 +1,5 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base.xsd;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;

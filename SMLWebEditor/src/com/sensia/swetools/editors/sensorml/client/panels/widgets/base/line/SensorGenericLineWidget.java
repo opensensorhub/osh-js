@@ -10,9 +10,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
 public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	
@@ -107,18 +104,20 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 			//prior display for label if exists
 			for(ISensorWidget child : widget.getElements()) {
 				//for <element name="swe:label"> or <element name="gml:name">
-				if(child.getType() == TAG_TYPE.ELEMENT && (child.getName().equals("label") || child.getName().equals("name"))) {
-					labelPanel.clear();
-					labelPanel.add(child.getPanel());
-					isLabelProvided=true;
-					break;
+				if(child.getType() == TAG_TYPE.ELEMENT) {
+					if((child.getName().equals("label"))) {
+						labelPanel.clear();
+						labelPanel.add(child.getPanel());
+						isLabelProvided=true;
+						break;
+					} else if((child.getName().equals("name") && !isLabelProvided)) {
+						labelPanel.clear();
+						labelPanel.add(child.getPanel());
+					}
 				}
 			}
 			
 			//looking for element to append to line
-			//if(widget.appendToLine()) {
-			//	optPanel.add(widget.getPanel());
-			//}
 			recursiveAppendToLine(widget);
 		}
 	}
@@ -153,5 +152,4 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	protected void activeMode(MODE mode) {
 		advancedPanel.setVisible(getMode() == MODE.EDIT);
 	}
-
 }

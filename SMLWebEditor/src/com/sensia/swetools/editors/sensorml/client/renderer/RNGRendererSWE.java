@@ -15,12 +15,10 @@ import com.sensia.relaxNG.RNGTagVisitor;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericHorizontalContainerWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericVerticalContainerWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataRecordWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorElementTypeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorCategoryWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataArrayWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorFieldWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataRecordWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorElementTypeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQuantityRangeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQuantityWidget;
 

@@ -2,12 +2,9 @@ package com.sensia.swetools.editors.sensorml.client.listeners;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.xml.client.Document;
 import com.sensia.gwt.relaxNG.RNGInstanceWriter;
 import com.sensia.gwt.relaxNG.XMLSerializer;

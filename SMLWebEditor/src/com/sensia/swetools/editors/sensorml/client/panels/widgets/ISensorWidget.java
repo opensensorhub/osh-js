@@ -3,7 +3,6 @@ package com.sensia.swetools.editors.sensorml.client.panels.widgets;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public interface ISensorWidget {
 

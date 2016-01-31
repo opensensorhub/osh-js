@@ -3,15 +3,11 @@ package com.sensia.swetools.editors.sensorml.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.XMLParser;
-import com.sensia.gwt.relaxNG.RNGInstanceWriter;
 import com.sensia.gwt.relaxNG.RNGParser;
 import com.sensia.gwt.relaxNG.RNGParserCallback;
 import com.sensia.gwt.relaxNG.RNGWriter;
 import com.sensia.gwt.relaxNG.XMLSensorMLParser;
-import com.sensia.gwt.relaxNG.XMLSerializer;
 import com.sensia.relaxNG.RNGGrammar;
 import com.sensia.swetools.editors.sensorml.client.renderer.RNGRendererSML;
 

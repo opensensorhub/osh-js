@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.core.shared.GWT;
 import com.sensia.relaxNG.RNGAttribute;
 import com.sensia.relaxNG.RNGElement;
 import com.sensia.relaxNG.RNGGrammar;
@@ -28,7 +27,6 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.gml.GMLSensorW
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLContactWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLKeywordsWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorAttributeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorIdentifierWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSectionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSectionsWidget;
 
@@ -74,7 +72,8 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 	public RNGRendererSML() {
 		//render section names
 		renderSectionsList.put("identification","Identification");
-		renderSectionsList.put("characteristics","Custom");
+		renderSectionsList.put("characteristics","Characteristics");
+		renderSectionsList.put("capabilities","Capabilities");
 		renderSectionsList.put("outputs", "Outputs");
 		renderSectionsList.put("classification","Classification");
 		//TODO: make only one constraint section

@@ -1,11 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.base;
 
-import java.util.List;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.sensia.relaxNG.RNGValue;
