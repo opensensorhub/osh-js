@@ -256,7 +256,7 @@
                   </swe:DataRecord>
                </swe:elementType>
                <swe:encoding>
-                  <swe:TextEncoding tokenSeparator="&#x20;" blockSeparator="," decimalSeparator="." />
+                  <swe:TextEncoding tokenSeparator="," blockSeparator="&#x20;" decimalSeparator="." />
                </swe:encoding>
                <swe:values>
                   -40,328.4 -35,237.7 -30,173.9

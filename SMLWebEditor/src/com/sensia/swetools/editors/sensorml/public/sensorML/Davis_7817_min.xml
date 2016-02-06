@@ -71,7 +71,7 @@ xmlns:swe="http://www.opengis.net/swe/2.0"
 						</swe:DataRecord>
 					</swe:elementType>
 					<swe:encoding>
-						<swe:TextEncoding tokenSeparator="" blockSeparator="," decimalSeparator="."/>
+						<swe:TextEncoding tokenSeparator="," blockSeparator="&#x20;" decimalSeparator="."/>
 					</swe:encoding>
 					<swe:values>
 						-40,328.4 -35,237.7 -30,173.9 -25,128.5 -20,95.89 -15,72.23 -10,54.89 -5,42.07 0,32.51 5,25.310 10,19.86 15,15.69 20,12.49 25,10 30,8.06 35,6.536 40,5.331 45,4.373 50,3.606 55,2.989 60,2.49

@@ -202,7 +202,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return null;
 	}
 
-	protected String toNiceLabel(String name) {
+	public static String toNiceLabel(String name) {
 		String label = toCamelCase(name).replace('_', ' ');
 		StringBuilder b = new StringBuilder(label);
 
@@ -228,7 +228,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return b.toString();
 	}
 
-	protected String toCamelCase(String s) {
+	public static String toCamelCase(String s) {
 		String s1 = s.substring(0, 1).toUpperCase();
 		if (s.length() > 1)
 			s1 += s.substring(1);

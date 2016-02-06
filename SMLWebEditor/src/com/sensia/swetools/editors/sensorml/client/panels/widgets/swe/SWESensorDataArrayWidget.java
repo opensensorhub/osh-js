@@ -126,6 +126,9 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 			blockSeparator = widget.getValue("blockSeparator");
 		}else if(widget.getName().equals("values") && widget.getType() == TAG_TYPE.ELEMENT  && widget.getDef() == TAG_DEF.SWE) {
 			values = widget.getValue("values");
+			if(values != null) {
+				values = values.replaceAll("\n", "").replaceAll("\\s+", " ").trim();
+			}
 		}//skip others
 	}
 
