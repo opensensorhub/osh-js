@@ -56,11 +56,11 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 			pushAndVisitChildren(new SWESensorCategoryWidget(), elt.getChildren());
 		} else if(elt.getName().equals("DataArray")){
 			pushAndVisitChildren(new SWESensorDataArrayWidget(), elt.getChildren());
-		} else if(elt.getName().equals("elementType")){
+		}/* else if(elt.getName().equals("elementType")){
 			pushAndVisitChildren(new SWESensorElementTypeWidget(), elt.getChildren());
 		} else if(elt.getName().equals("DataRecord")){
 			pushAndVisitChildren(new SWESensorDataRecordWidget(), elt.getChildren());
-		} else if(elt.getNamespace().equals(SWE_NS_1) || elt.getNamespace().equals(SWE_NS_2)) {
+		}*/ else if(elt.getNamespace().equals(SWE_NS_1) || elt.getNamespace().equals(SWE_NS_2)) {
 			pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SWE, TAG_TYPE.ELEMENT), elt.getChildren());
 		} else {
 			super.visit(elt);

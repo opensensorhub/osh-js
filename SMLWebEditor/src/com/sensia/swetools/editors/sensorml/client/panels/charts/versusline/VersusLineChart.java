@@ -134,6 +134,8 @@ public class VersusLineChart implements ISensorChart {
 
 	@Override
 	public void switchMode(MODE mode) {
-		dataGrid.switchMode(mode);
+		if(dataGrid != null) {
+			dataGrid.switchMode(mode);
+		}
 	}
 }

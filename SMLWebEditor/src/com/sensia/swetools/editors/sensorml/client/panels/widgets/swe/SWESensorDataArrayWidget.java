@@ -1,5 +1,7 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.swe;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,6 +12,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
@@ -17,8 +20,9 @@ import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.SWESensorDataArrayChartHelper;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
-public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
+/*public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 
 	private HorizontalPanel container;
 	
@@ -132,9 +136,9 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 		}//skip others
 	}
 
-	/**
-	 * THe table is created after getting the separators AND values
-	 */
+	//
+	//  THe table is created after getting the separators AND values
+	//
 	private void createTable() {
 		if(tokenSeparator == null || tokenSeparator.isEmpty()) {
 			tokenSeparator = " ";
@@ -191,5 +195,163 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 	@Override
 	public boolean appendToLine() {
 		return true;
+	}
+}*/
+/**
+ * The DataArray is represented as a part of a line such as : 
+ * @author nevro
+ *
+ */
+public class SWESensorDataArrayWidget extends AbstractSensorElementWidget {
+	
+	private static final String VS = " vs ";
+
+	private HorizontalPanel container;
+	
+	private String values;
+	private String blockSeparator;
+	private String tokenSeparator;
+	private String decimalSeparator;
+	
+	private Panel concatenedAxisNamesPanel;
+	private Panel defPanel;
+	
+	private ISensorChart chart;
+	
+	public SWESensorDataArrayWidget() {
+		super("DataArray", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+		
+		//create panels
+		container = new HorizontalPanel();
+		concatenedAxisNamesPanel = new HorizontalPanel();
+		defPanel = new HorizontalPanel();
+		
+		Image graphicImage = new Image(GWT.getModuleBaseURL()+"images/data_array.png");
+		graphicImage.setTitle("Graphic");
+		
+		Image tableImage = new Image(GWT.getModuleBaseURL()+"images/table.png");
+		tableImage.setTitle("Table");
+		
+		FocusPanel graphicImageWrapper = new FocusPanel(graphicImage);
+		FocusPanel tableImageWrapper = new FocusPanel(tableImage);
+		
+		//add icons
+		graphicImageWrapper.addStyleName("graphic-icon");
+		tableImageWrapper.addStyleName("graphic-icon");
+		defPanel.addStyleName("graphic-icon");
+		
+		//add to container
+		container.add(concatenedAxisNamesPanel);
+		container.add(graphicImageWrapper);
+		container.add(tableImageWrapper);
+		container.add(defPanel);
+		
+		
+		//add listeners
+		graphicImageWrapper.addClickHandler(new GraphicImageWrapperHandler());
+		tableImageWrapper.addClickHandler(new TableImageWrapperHandler());
+	}
+
+	@Override
+	public Panel getPanel() {
+		return container;
+	}
+
+	@Override
+	protected void activeMode(MODE mode) {
+	}
+
+	@Override
+	protected void addSensorWidget(ISensorWidget widget) {
+		if(widget.getDef() == TAG_DEF.SWE) {
+			String name = widget.getName();
+			if(name.equals("encoding")) {
+				//looking for separator
+				//<swe:TextEncoding tokenSeparator="" blockSeparator="" decimalSeparator="" />
+				tokenSeparator = widget.getValue("tokenSeparator");
+				blockSeparator = widget.getValue("blockSeparator");
+				decimalSeparator = widget.getValue("decimalSeparator");
+			} else if(name.equals("values")) {
+				//<swe:values>...</swe:values>
+				values = widget.getValue("values");
+				if(values != null) {
+					values = values.replaceAll("\n", "").replaceAll("\\s+", " ").trim();
+				}
+			} else if(name.equals("elementType")) {
+				//looking for fields
+				List<ISensorWidget> fields = findWidgets(widget, "field", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
+				
+				//<swe:DataRecord> <swe:field name=".."> ... </swe:field> </swe:DataRecord>
+				String concatenedAxisNames = "";
+				for(ISensorWidget field : fields) {
+					//prior label
+					String label = field.getValue("label");
+					if(label == null) {
+						//if no label, takes the attribute name
+						label = toNiceLabel(field.getValue("name"));
+					}
+					concatenedAxisNames +=  label + VS;
+				}
+				
+				//remove extra "vs"
+				if(!concatenedAxisNames.isEmpty()) {
+					concatenedAxisNames = concatenedAxisNames.substring(0, concatenedAxisNames.length()-VS.length());
+				}
+				concatenedAxisNamesPanel.add(new HTML(concatenedAxisNames));
+			}
+		} else if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("definition")){
+			defPanel.add(widget.getPanel());
+		}
+	}
+
+	@Override
+	protected AbstractSensorElementWidget newInstance() {
+		return new SWESensorDataArrayWidget();
+	}
+	
+	@Override
+	public boolean appendToLine() {
+		return true;
+	}
+	
+	private class GraphicImageWrapperHandler implements ClickHandler{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			if(chart == null) {
+				chart = SWESensorDataArrayChartHelper.createChart(SWESensorDataArrayWidget.this, values, tokenSeparator, blockSeparator);
+			}
+			
+			SimplePanel panel = new SimplePanel(chart.getChart());
+			panel.addStyleName("graph-dataarray-panel");
+		    displayEditPanel(panel,"Edit DataArray",null);
+		}
+	}
+	
+	private class TableImageWrapperHandler implements ClickHandler{
+
+		@Override
+		public void onClick(ClickEvent event) {
+			if(chart == null) {
+				chart = SWESensorDataArrayChartHelper.createChart(SWESensorDataArrayWidget.this, values, tokenSeparator, blockSeparator);
+			}
+			SimplePanel panel = new SimplePanel(chart.getTable());
+			panel.addStyleName("table-dataarray-panel");
+			
+			chart.switchMode(getMode());
+			
+			IButtonCallback cb = null;
+			
+			if(getMode() == MODE.EDIT) {
+				cb = new IButtonCallback() {
+					
+					@Override
+					public void onClick() {
+						
+					}
+				};
+			}
+			displayEditPanel(panel,"Edit DataArray",cb);
+		}
 	}
 }

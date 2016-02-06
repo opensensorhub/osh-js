@@ -351,7 +351,7 @@ xsi:schemaLocation="http://www.opengis.net/sensorml/2.0 http://schemas.opengis.n
 						</swe:DataRecord>
 					</swe:elementType>
 					<swe:encoding>
-						<swe:TextEncoding blockSeparator="" tokenSeparator=","/>
+						<swe:TextEncoding blockSeparator=" " tokenSeparator=","/>
 					</swe:encoding>
 					<swe:values>
 						10.0,73 17.5,89.5 20.0,94.0 30.,95.5 40.0,96.0 50.0,96.0 100.0,94.0

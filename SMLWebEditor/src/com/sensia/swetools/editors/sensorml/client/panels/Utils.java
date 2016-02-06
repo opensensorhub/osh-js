@@ -67,16 +67,21 @@ public class Utils {
            }
         });
         
-		Button add = new Button("Save");
-		add.addClickHandler(new ClickHandler() {
-           public void onClick(ClickEvent event) {
-        	   addCB.onClick();
-        	   dialogBox.hide();
-           }
-        });
-		
 		HorizontalPanel buttons = new HorizontalPanel();
-		buttons.add(add);
+		
+		if(addCB != null) {
+			Button add = new Button("Save");
+			add.addClickHandler(new ClickHandler() {
+	           public void onClick(ClickEvent event) {
+	        	   addCB.onClick();
+	        	   dialogBox.hide();
+	           }
+	        });
+			
+			buttons.add(add);
+		}
+		
+		
 		buttons.add(close);
 		buttons.setSpacing(5);
 		

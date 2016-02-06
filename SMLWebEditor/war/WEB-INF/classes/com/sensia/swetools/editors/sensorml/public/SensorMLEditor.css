@@ -348,3 +348,15 @@ td div.document-title {
 .icon-def-section-header {
 	margin-top:2px;
 }
+
+.graphic-icon {
+	margin-left:10px;
+}
+
+.graph-dataarray-panel {
+	width : 800px;
+}
+
+.table-dataarray-panel {
+	width : 600px;
+}

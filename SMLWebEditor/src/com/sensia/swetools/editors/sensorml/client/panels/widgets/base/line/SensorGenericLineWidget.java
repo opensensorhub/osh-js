@@ -13,7 +13,6 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
 public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	
-	protected VerticalPanel multiLinesPanel;
 	protected HorizontalPanel linePanel;
 	protected Panel labelPanel;
 	protected HTML dotSeparatorLabel;
@@ -32,7 +31,6 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		labelPanel = new HorizontalPanel();
 		dotSeparatorLabel = new HTML(getDotsLine());
 		optPanel = new HorizontalPanel();
-		multiLinesPanel = new VerticalPanel();
 		
 		advancedPanel = new HorizontalPanel();
 		
@@ -73,8 +71,6 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		linePanel.add(optPanel);
 		linePanel.add(defPanel);
 		linePanel.add(wrapper);
-		
-		multiLinesPanel.add(linePanel);
 		
 		activeMode(getMode());
 	}
@@ -145,7 +141,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 
 	@Override
 	public Panel getPanel() {
-		return multiLinesPanel;
+		return linePanel;
 	}
 
 	@Override

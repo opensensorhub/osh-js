@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -50,7 +51,7 @@ public class SensorVersusDataArrayTable extends Composite{
 		super();
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
-		this.mode = mode.VIEW;
+		this.mode   = MODE.VIEW;
 		create(values);
 	}
 	
@@ -136,16 +137,14 @@ public class SensorVersusDataArrayTable extends Composite{
 
 	    }); 
 	    
-	    SafeHtmlHeader removeRowLabelHeader = getRemoveRowLabelHeader();
 	    
 	    yLabelHeader.setHeaderStyleNames("data-table-header");
 	    xLabelHeader.setHeaderStyleNames("data-table-header");
 	    
 	    table.addColumn(xColumn,xLabelHeader);
 	    table. addColumn(yColumn,yLabelHeader);
-	   	table.addColumn(deleteBtn, removeRowLabelHeader);
-	    table. setColumnWidth(xColumn, 230, com.google.gwt.dom.client.Style.Unit.PX);
-	    table. setColumnWidth(yColumn, 230, com.google.gwt.dom.client.Style.Unit.PX);
+	    table. setColumnWidth(xColumn, 600, com.google.gwt.dom.client.Style.Unit.PX);
+	    table. setColumnWidth(yColumn, 600, com.google.gwt.dom.client.Style.Unit.PX);
 	    
 	    table.setRowCount(coords.size());
 	    table.setRowData(coords);
@@ -156,7 +155,7 @@ public class SensorVersusDataArrayTable extends Composite{
 
 	    SimplePager pager = new SimplePager();
 	    pager.setDisplay(table);
-	    pager.setPageSize(10); // 20 rows will be shown at a time
+	    pager.setPageSize(15); // 20 rows will be shown at a time
 
 	    VerticalPanel vPanel = new VerticalPanel();
 	    vPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -169,8 +168,6 @@ public class SensorVersusDataArrayTable extends Composite{
 	    
 	    initWidget(new ScrollPanel(vPanel));
 	    addStyleName("data-table");
-	    
-	    switchMode(mode);
 	}
 	
 	private Button getAddButton() {
@@ -260,16 +257,17 @@ public class SensorVersusDataArrayTable extends Composite{
 	}
 	
 	public void switchMode(MODE mode) {
-		this.mode = mode;
-		if(mode == MODE.VIEW) {
-			addButton.setVisible(false);
-			table. removeColumn(deleteBtn);
-		} else if (mode == MODE.EDIT) {
-			addButton.setVisible(true);
-			SafeHtmlHeader removeRowLabelHeader = getRemoveRowLabelHeader();
-			table.addColumn(deleteBtn, removeRowLabelHeader);
-			
+		if(mode != this.mode) {
+			if(mode == MODE.VIEW) {
+				addButton.setVisible(false);
+				table. removeColumn(deleteBtn);
+			} else if (mode == MODE.EDIT) {
+				addButton.setVisible(true);
+				SafeHtmlHeader removeRowLabelHeader = getRemoveRowLabelHeader();
+				table.addColumn(deleteBtn, removeRowLabelHeader);
+			}
 		}
+		
 	}
 	
 	public SafeHtmlHeader getRemoveRowLabelHeader() {
