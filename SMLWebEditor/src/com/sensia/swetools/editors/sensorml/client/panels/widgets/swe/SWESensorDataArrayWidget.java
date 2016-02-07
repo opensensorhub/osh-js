@@ -20,6 +20,7 @@ import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.SWESensorDataArrayChartHelper;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.APPENDER;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
 /*public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
@@ -310,8 +311,8 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget {
 	}
 	
 	@Override
-	public boolean appendToLine() {
-		return true;
+	public APPENDER appendTo() {
+		return APPENDER.HORIZONTAL;
 	}
 	
 	private class GraphicImageWrapperHandler implements ClickHandler{

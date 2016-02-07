@@ -23,7 +23,7 @@ public class SensorValueWidget extends AbstractSensorElementWidget{
 		container.add(new HTML(value));
 		
 		valueBox = new TextBox();
-		valueBox.setText(value);
+		valueBox.setText(value.trim());
 	}
 
 	@Override

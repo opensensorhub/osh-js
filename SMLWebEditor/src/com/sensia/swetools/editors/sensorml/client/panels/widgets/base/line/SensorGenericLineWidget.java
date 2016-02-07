@@ -13,6 +13,7 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
 public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	
+	protected VerticalPanel multiLinesPanel;
 	protected HorizontalPanel linePanel;
 	protected Panel labelPanel;
 	protected HTML dotSeparatorLabel;
@@ -31,7 +32,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		labelPanel = new HorizontalPanel();
 		dotSeparatorLabel = new HTML(getDotsLine());
 		optPanel = new HorizontalPanel();
-		
+		multiLinesPanel = new VerticalPanel();
 		advancedPanel = new HorizontalPanel();
 		
 		advancedPanel.addStyleName("rng-advanced-button");
@@ -72,12 +73,16 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		linePanel.add(defPanel);
 		linePanel.add(wrapper);
 		
+		multiLinesPanel.add(linePanel);
 		activeMode(getMode());
 	}
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
-		if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("name")){
+		if(widget.appendTo() == APPENDER.OVERRIDE_LINE) {
+			multiLinesPanel.clear();
+			multiLinesPanel.add(widget.getPanel());
+		}else if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("name")){
 			//provide name as label only if label does not exist
 			if(!isLabelProvided) {
 				//get the associated value
@@ -114,18 +119,21 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 			}
 			
 			//looking for element to append to line
-			recursiveAppendToLine(widget);
+			recursiveAppendTo(widget);
 		}
 	}
 
-	private boolean recursiveAppendToLine(ISensorWidget widget) {
-		if(widget.appendToLine()) {
+	private boolean recursiveAppendTo(ISensorWidget widget) {
+		if(widget.appendTo() == APPENDER.HORIZONTAL) {
 			optPanel.add(widget.getPanel());
+			return true;
+		} else if(widget.appendTo() == APPENDER.VERTICAL) {
+			multiLinesPanel.add(widget.getPanel());
 			return true;
 		} else {
 			boolean append = false;
 			for(ISensorWidget child : widget.getElements()) {
-				append = recursiveAppendToLine(child);
+				append = recursiveAppendTo(child);
 				if(append) {
 					break;
 				}
@@ -141,7 +149,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 
 	@Override
 	public Panel getPanel() {
-		return linePanel;
+		return multiLinesPanel;
 	}
 
 	@Override

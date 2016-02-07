@@ -360,3 +360,8 @@ td div.document-title {
 .table-dataarray-panel {
 	width : 600px;
 }
+
+.swe-dataRecord-vertical-panel {
+	padding : 0 0 0 0;
+	border-spacing: 10px;
+}

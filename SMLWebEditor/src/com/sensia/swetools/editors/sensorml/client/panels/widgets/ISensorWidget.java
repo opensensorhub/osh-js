@@ -29,6 +29,13 @@ public interface ISensorWidget {
 		CHOICE
 	}
 	
+	public enum APPENDER {
+		VERTICAL,
+		HORIZONTAL,
+		NONE,
+		OVERRIDE_LINE
+	}
+	
 	String getName();
 	
 	void setName(String name);
@@ -61,7 +68,9 @@ public interface ISensorWidget {
 	
 	void refresh();
 	
-	boolean appendToLine();
+	APPENDER appendTo();
+	
+	void setAppender(APPENDER appender);
 	
 	void getAdvancedPanel(Panel container);
 }

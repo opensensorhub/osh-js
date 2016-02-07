@@ -36,7 +36,7 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 	private MODE editorMode = MODE.VIEW;
 	private ISensorWidget parent;
 	
-	private VerticalPanel advancedPanel;
+	private APPENDER appender = APPENDER.NONE;
 	
 	private static final int NORMALIZE_DOT_SEPARATOR_SIZE = 70;
 	
@@ -402,8 +402,13 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		}
 	}
 	
-	public boolean appendToLine() {
-		return false;
+	@Override
+	public APPENDER appendTo() {
+		return appender;
+	}
+	
+	public void setAppender(APPENDER appender) {
+		this.appender = appender;
 	}
 	
 	public void getAdvancedPanel(Panel container) {

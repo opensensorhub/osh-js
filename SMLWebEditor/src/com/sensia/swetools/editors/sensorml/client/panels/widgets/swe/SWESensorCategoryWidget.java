@@ -55,8 +55,8 @@ public class SWESensorCategoryWidget extends AbstractSensorElementWidget{
 	}
 	
 	@Override
-	public boolean appendToLine() {
-		return true;
+	public APPENDER appendTo() {
+		return APPENDER.HORIZONTAL;
 	}
 
 }

@@ -56,7 +56,7 @@ public class SMLSensorAttributeWidget extends SensorAttributeWidget{
 	}
 	
 	@Override
-	public boolean appendToLine() {
-		return getName().equals("definition");
+	public APPENDER appendTo() {
+		return (getName().equals("definition")) ? APPENDER.HORIZONTAL:APPENDER.NONE;
 	}
 }

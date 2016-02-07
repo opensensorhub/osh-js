@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.APPENDER;
 
 public class SWESensorQuantityWidget extends AbstractSensorElementWidget{
 
@@ -61,7 +62,7 @@ public class SWESensorQuantityWidget extends AbstractSensorElementWidget{
 	}
 
 	@Override
-	public boolean appendToLine() {
-		return true;
+	public APPENDER appendTo() {
+		return APPENDER.HORIZONTAL;
 	}
 }

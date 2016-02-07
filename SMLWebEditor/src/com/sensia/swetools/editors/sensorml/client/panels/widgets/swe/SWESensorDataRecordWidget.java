@@ -1,58 +1,40 @@
 package com.sensia.swetools.editors.sensorml.client.panels.widgets.swe;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FocusPanel;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
 public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 
-	private VerticalPanel container;
+	private Panel container;
+	private Panel linePanel;
+	private Panel labelPanel;
+	private Panel defPanel;
 	
-	private FocusPanel wrapperAdvancedPanel;
-	private VerticalPanel editPanel;
-	
-	//edit panel
-	private TextBox nameBox;
+	private Panel innerContainer;
 	
 	public SWESensorDataRecordWidget() {
 		super("DataRecord", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-		
 		container = new VerticalPanel();
-		HorizontalPanel advancedPanel = new HorizontalPanel();
+		linePanel = new HorizontalPanel();
+		defPanel = new HorizontalPanel();
+		labelPanel = new HorizontalPanel();
+		innerContainer = new VerticalPanel();
 		
-		advancedPanel.addStyleName("rng-advanced-button");
-		advancedPanel.setTitle("Edit Data Array");
+		linePanel.add(labelPanel);
+		linePanel.add(defPanel);
 		
-		wrapperAdvancedPanel = new FocusPanel();
-		wrapperAdvancedPanel.add(advancedPanel);
+		container.add(linePanel);
+		container.add(innerContainer);
 		
-		final ISensorWidget currentWidget = this;
-		wrapperAdvancedPanel.addClickHandler(new ClickHandler() {
-		  @Override
-		  public void onClick(ClickEvent event) {
-			  VerticalPanel container = new VerticalPanel();
-			  getAdvancedPanel(container);
-			  displayEditPanel(container,"Edit DataRecord",new IButtonCallback() {
-					@Override
-					public void onClick() {
-						if(nameBox != null) {
-							//update label
-							ISensorWidget labelWidget = findWidget(currentWidget, "label", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
-							labelWidget.setValue("label", nameBox.getText());
-						}
-					}
-				});
-		  }
-		});
-		
-		activeMode(getMode());
+		innerContainer.addStyleName("swe-dataRecord-vertical-panel");
 	}
 
 	@Override
@@ -62,7 +44,6 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 
 	@Override
 	protected void activeMode(MODE mode) {
-		wrapperAdvancedPanel.setVisible(getMode() == MODE.EDIT);
 	}
 
 	@Override
@@ -71,15 +52,37 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 			if(!widget.getElements().isEmpty()) {
 				widget.getElements().get(0).getPanel().addStyleName("font-bold");
 			}
-			HorizontalPanel hPanel = new HorizontalPanel();
-			hPanel.add(widget.getPanel());
-			hPanel.add(wrapperAdvancedPanel);
-			container.add(hPanel);
+			labelPanel.add(widget.getPanel());
+		} else if(widget.getName().equals("definition") && widget.getType() == TAG_TYPE.ATTRIBUTE) { 
+			defPanel.add(widget.getPanel());
+		} else if(widget.getName().equals("field")){
+			//container.add(widget.getPanel());
+			//find every fields and display it
+			List<ISensorWidget> children = widget.getElements();
 			
-		} else {
-			container.add(widget.getPanel());
+			boolean foundDataRecord = false;
+			for(ISensorWidget child : children){
+				if(child.getName().equals("DataRecord")) {
+					foundDataRecord = true;
+					break;
+				} 
+			}
+			
+			if(!foundDataRecord) {
+				innerContainer.add(widget.getPanel());
+			} else {
+				for(ISensorWidget child : children){
+					if(child.getName().equals("DataRecord")) {
+						//skip DataRecord element
+						for(ISensorWidget dataRecordChild : child.getElements()) {
+							addSensorWidget(dataRecordChild);
+						}
+					} else {
+						innerContainer.add(child.getPanel());
+					}
+				}
+			}
 		}
-		
 	}
 
 	@Override
@@ -87,41 +90,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		return new SWESensorDataRecordWidget();
 	}
 	
-	@Override
-	public void getAdvancedPanel(Panel container) {
-		if(editPanel == null){
-			editPanel = new VerticalPanel();
-			editPanel.setSpacing(10);
-
-			String value = null;
-			String name = "";
-			for(ISensorWidget child : getElements()) {
-				if((child.getType() == TAG_TYPE.ELEMENT && child.getName().equals("label"))){
-					name = child.getName();
-					value = getValue("label");
-					break;
-				} else if(child.getType() == TAG_TYPE.ATTRIBUTE && child.getName().equals("name")) {
-					name = child.getName();
-					value = getValue("name");
-				}
-			}
-			
-			Panel aPanel = getEditPanel(name);
-			
-			nameBox = new TextBox();
-			nameBox.setWidth("500px");
-			nameBox.setText(value);
-			
-			aPanel.add(nameBox);
-			editPanel.add(aPanel);
-			
-		}
-		container.add(editPanel);
+	public APPENDER appendTo() {
+		return APPENDER.OVERRIDE_LINE;
 	}
-	
-	@Override
-	public boolean appendToLine() {
-		return true;
-	}
-
 }
