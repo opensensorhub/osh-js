@@ -25,7 +25,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	private boolean isLabelProvided = false;
 	
 	private ISensorWidget titleValueWidget;
-	
+	private boolean hasTitle = false;
 	public SensorGenericLineWidget(String name, TAG_DEF def, TAG_TYPE type) {
 		super(name, def, type);
 		linePanel = new HorizontalPanel();
@@ -88,7 +88,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 				//get the associated value
 				titleValueWidget = widget.getElements().get(0);
 				labelPanel.add(new HTML(splitAndCapitalize(titleValueWidget.getName())));
-				//labelPanel.add(widget.getPanel());
+				hasTitle = true;
 			}
 		} 
 		//handle generic panel like identifier
@@ -96,10 +96,14 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 			defPanel.add(widget.getPanel());
 		} else if(widget.getType() == TAG_TYPE.VALUE || (widget.getName().equals("value"))){//case of Term: value
 			optPanel.add(widget.getPanel());
+			if(!hasTitle) {
+				labelPanel.add(new HTML(widget.getParent().getName()));
+			}
 		} else if (widget.getType() == TAG_TYPE.ELEMENT && widget.getName().equals("label")) {
 			labelPanel.clear();
 			labelPanel.add(widget.getPanel());
 			isLabelProvided=true;
+			hasTitle = true;
 		} else {
 			//looking for label
 			//prior display for label if exists
@@ -110,10 +114,12 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 						labelPanel.clear();
 						labelPanel.add(child.getPanel());
 						isLabelProvided=true;
+						hasTitle = true;
 						break;
 					} else if((child.getName().equals("name") && !isLabelProvided)) {
 						labelPanel.clear();
 						labelPanel.add(child.getPanel());
+						hasTitle = true;
 					}
 				}
 			}

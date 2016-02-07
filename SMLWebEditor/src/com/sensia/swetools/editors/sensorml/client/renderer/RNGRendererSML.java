@@ -27,6 +27,7 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.gml.GMLSensorW
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLContactWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLKeywordsWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorAttributeWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SMLSensorSpatialFrame;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSectionWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.sml.SensorSectionsWidget;
 
@@ -114,6 +115,8 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		renderElements.put("capability", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("elementCount", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("classifier", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("axis", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("origin", RENDER_ELEMENT_TYPE.LINE);
 		
 		//skip list
 		skipList.add("Component");
@@ -206,6 +209,8 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 			}  else {
 				if(eltName.equals("contact")) {
 					pushAndVisitChildren(new SMLContactWidget(), elt.getChildren());
+				} else if(eltName.equals("SpatialFrame")) {
+					pushAndVisitChildren(new SMLSensorSpatialFrame(), elt.getChildren());
 				} else if(nsUri.equals(GML_NS_1) || nsUri.equals(GML_NS_2)) {
 					pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.GML, TAG_TYPE.ELEMENT), elt.getChildren());
 				} else if (nsUri.equals(SML_NS_1) || nsUri.equals(SML_NS_2)) {
