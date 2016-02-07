@@ -256,18 +256,20 @@ public class SensorVersusDataArrayTable extends Composite{
 		}
 	}
 	
+	//FIXME:should not be called twice
 	public void switchMode(MODE mode) {
-		if(mode != this.mode) {
-			if(mode == MODE.VIEW) {
-				addButton.setVisible(false);
+		if(mode == MODE.VIEW) {
+			addButton.setVisible(false);
+			if(table.getColumnCount() == 3){
 				table. removeColumn(deleteBtn);
-			} else if (mode == MODE.EDIT) {
-				addButton.setVisible(true);
+			}
+		} else if (mode == MODE.EDIT) {
+			addButton.setVisible(true);
+			if(table.getColumnCount() == 2){
 				SafeHtmlHeader removeRowLabelHeader = getRemoveRowLabelHeader();
 				table.addColumn(deleteBtn, removeRowLabelHeader);
 			}
 		}
-		
 	}
 	
 	public SafeHtmlHeader getRemoveRowLabelHeader() {
@@ -281,5 +283,18 @@ public class SensorVersusDataArrayTable extends Composite{
 	    }); 
 		removeRowLabelHeader.setHeaderStyleNames("data-table-header");
 		return removeRowLabelHeader;
+	}
+	
+	public Number[][] getRowData() {
+		List<XYCoordinatesModel> model = dataProvider.getList();
+		Number[][] rowData = new Number[model.size()][2];
+		int row = 0;
+		for(XYCoordinatesModel data : model) {
+			rowData[row][0] = data.getX();
+			rowData[row][1] = data.getY();
+	    	row++;
+		}
+		
+		return rowData;
 	}
 }

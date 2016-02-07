@@ -91,9 +91,13 @@ public class SensorSectionWidget extends AbstractSensorElementWidget{
 						break;
 					}
 				}
-				contentPanel.add(widget.getPanel());
+				Panel panel = widget.getPanel();
+				panel.addStyleName("swe-generic-vertical-panel");
+				contentPanel.add(panel);
 			} else {
-				contentPanel.add(widget.getPanel());
+				Panel panel = widget.getPanel();
+				panel.addStyleName("swe-generic-vertical-panel");
+				contentPanel.add(panel);
 			}
 		} else if(widget.getType() == TAG_TYPE.ATTRIBUTE) {
 			//get header from child value
@@ -104,7 +108,9 @@ public class SensorSectionWidget extends AbstractSensorElementWidget{
 				hidePanel.getHeaderTextAccessor().setText(value);
 			}
 		} else {
-			contentPanel.add(widget.getPanel());
+			Panel panel = widget.getPanel();
+			panel.addStyleName("swe-generic-vertical-panel");
+			contentPanel.add(panel);
 		}
 	}
 

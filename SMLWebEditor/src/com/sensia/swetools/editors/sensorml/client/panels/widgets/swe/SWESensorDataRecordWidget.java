@@ -20,6 +20,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 	
 	private Panel innerContainer;
 	
+	private boolean hasLabel= false;
 	public SWESensorDataRecordWidget() {
 		super("DataRecord", TAG_DEF.SWE, TAG_TYPE.ELEMENT);
 		container = new VerticalPanel();
@@ -34,7 +35,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 		container.add(linePanel);
 		container.add(innerContainer);
 		
-		innerContainer.addStyleName("swe-dataRecord-vertical-panel");
+		//innerContainer.addStyleName("swe-dataRecord-vertical-panel");
 	}
 
 	@Override
@@ -53,6 +54,7 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 				widget.getElements().get(0).getPanel().addStyleName("font-bold");
 			}
 			labelPanel.add(widget.getPanel());
+			hasLabel = true;
 		} else if(widget.getName().equals("definition") && widget.getType() == TAG_TYPE.ATTRIBUTE) { 
 			defPanel.add(widget.getPanel());
 		} else if(widget.getName().equals("field")){
@@ -82,6 +84,10 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 						//innerContainer.add(child.getPanel());
 					}
 				}
+			}
+			
+			if(hasLabel) {
+				innerContainer.addStyleName("swe-dataRecord-vertical-panel");
 			}
 		}
 	}

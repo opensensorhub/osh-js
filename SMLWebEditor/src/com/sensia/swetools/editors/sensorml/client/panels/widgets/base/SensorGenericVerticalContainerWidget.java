@@ -21,7 +21,7 @@ public class SensorGenericVerticalContainerWidget extends AbstractSensorElementW
 	public SensorGenericVerticalContainerWidget(String name, TAG_DEF def, TAG_TYPE type) {
 		super(name, def, type);
 		container = new VerticalPanel();
-		container.addStyleName("swe-generic-vertical-panel");
+		//container.addStyleName("swe-generic-vertical-panel");
 		//container.setSpacing(10);
 		//container.addStyleName("swe-property-panel");
 	}

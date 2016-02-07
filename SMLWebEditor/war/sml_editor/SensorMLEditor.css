@@ -317,9 +317,9 @@ td, th  {
 }
 
 table.swe-generic-vertical-panel {
-	padding : 0 0 0 0;
-	border-spacing: 10px;
-	margin-top: -8px;
+	padding : 0 0 10 15 !important;
+	border-spacing: 10px !important;
+	margin-top: -5px;
 }
 
 table.advanced-panel {
@@ -362,6 +362,6 @@ td div.document-title {
 }
 
 .swe-dataRecord-vertical-panel {
-	padding : 0 0 0 0;
+	padding : 5 0 5 10;
 	border-spacing: 10px;
 }

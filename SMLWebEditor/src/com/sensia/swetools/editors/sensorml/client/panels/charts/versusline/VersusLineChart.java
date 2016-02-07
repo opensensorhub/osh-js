@@ -34,6 +34,8 @@ public class VersusLineChart implements ISensorChart {
 		this.yLabel = yLabel;
 		this.title  = title;
 		this.values = values;
+		getChart();
+		getTable();
 	}
 
 	@Override
@@ -57,6 +59,13 @@ public class VersusLineChart implements ISensorChart {
 			chart.getXAxis().setAxisTitleText(xLabel);
 			chart.getXAxis().setGridLineWidth(1);
 	
+			serie = chart.createSeries().setPoints(values);
+			serie.setOption("showInLegend", false);
+			chart.addSeries(serie);
+		} else {
+			//sync table and chart
+			Number[][] values = dataGrid.getRowData();
+			chart.removeAllSeries();
 			serie = chart.createSeries().setPoints(values);
 			serie.setOption("showInLegend", false);
 			chart.addSeries(serie);
@@ -110,7 +119,7 @@ public class VersusLineChart implements ISensorChart {
 		String title = args[0];
 		String xLabel = args[1];
 		String yLabel = args[2];
-
+		
 		//update chart axis
 		chart.getYAxis().setAxisTitleText(yLabel);
 		chart.getXAxis().setAxisTitleText(xLabel);

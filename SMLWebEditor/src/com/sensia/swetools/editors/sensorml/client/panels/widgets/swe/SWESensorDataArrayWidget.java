@@ -260,6 +260,9 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget {
 
 	@Override
 	protected void activeMode(MODE mode) {
+		if(chart != null) {
+			chart.switchMode(mode);
+		}
 	}
 
 	@Override
