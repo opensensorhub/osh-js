@@ -159,6 +159,14 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 		return newValue;
 	}
 
+	protected String getDotsLine(int nb) {
+		String newValue = "";
+		for(int i=0;i < nb;i++) {
+			newValue += ".";
+		}
+		return newValue;
+	}
+	
 	@Override
 	public String toString() {
 		return getClass().toString()+" [name=" + name + ", def=" + def + ", type=" + type + "]";

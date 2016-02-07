@@ -88,6 +88,8 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 			
 			if(hasLabel) {
 				innerContainer.addStyleName("swe-dataRecord-vertical-panel");
+			} else {
+				innerContainer.addStyleName("swe-dataRecord-nolabel-vertical-panel");
 			}
 		}
 	}

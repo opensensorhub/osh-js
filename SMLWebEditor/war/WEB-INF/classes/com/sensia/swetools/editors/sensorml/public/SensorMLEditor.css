@@ -312,16 +312,6 @@ td, th  {
     overflow: hidden;
 }
 
-.line-generic-label-panel {
-	width : 200px;	
-}
-
-table.swe-generic-vertical-panel {
-	padding : 0 0 10 15 !important;
-	border-spacing: 10px !important;
-	margin-top: -5px;
-}
-
 table.advanced-panel {
 	border-spacing: 10px;
 	padding: 5px;
@@ -364,4 +354,19 @@ td div.document-title {
 .swe-dataRecord-vertical-panel {
 	padding : 5 0 5 10;
 	border-spacing: 10px;
+}
+
+.line-generic-label-panel {
+	width : 225px;
+}
+
+table.swe-generic-vertical-panel {
+	padding : 0 0 10 15 !important;
+	border-spacing: 10px !important;
+	margin-top: -5px;
+}
+
+table.swe-dataRecord-nolabel-vertical-panel {
+	border-spacing: 10px !important;
+	margin-left:-10px;
 }

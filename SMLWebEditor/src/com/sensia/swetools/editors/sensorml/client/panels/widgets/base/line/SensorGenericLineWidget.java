@@ -99,7 +99,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 			if(!hasTitle) {
 				String parentName = widget.getParent().getName();
 				if(parentName != null) {
-					labelPanel.add(new HTML(toNiceLabel(parentName)));
+					labelPanel.add(new HTML(toNiceLabel(widget.getParent().getName())));
 				}
 			}
 		} else if (widget.getType() == TAG_TYPE.ELEMENT && widget.getName().equals("label")) {
