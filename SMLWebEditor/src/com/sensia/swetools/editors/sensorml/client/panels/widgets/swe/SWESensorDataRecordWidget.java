@@ -78,7 +78,8 @@ public class SWESensorDataRecordWidget extends AbstractSensorElementWidget{
 							addSensorWidget(dataRecordChild);
 						}
 					} else {
-						innerContainer.add(child.getPanel());
+						//TBD: add intermediate DataRecord name?
+						//innerContainer.add(child.getPanel());
 					}
 				}
 			}
