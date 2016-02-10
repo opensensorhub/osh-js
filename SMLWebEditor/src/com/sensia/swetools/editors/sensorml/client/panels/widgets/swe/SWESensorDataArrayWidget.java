@@ -5,23 +5,17 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.SWESensorDataArrayChartHelper;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.APPENDER;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 
 /*public class SWESensorDataArrayWidget extends AbstractSensorElementWidget{
 
@@ -315,7 +309,7 @@ public class SWESensorDataArrayWidget extends AbstractSensorElementWidget {
 	
 	@Override
 	public APPENDER appendTo() {
-		return APPENDER.HORIZONTAL;
+		return APPENDER.HORIZONTAL_STRICT;
 	}
 	
 	private class GraphicImageWrapperHandler implements ClickHandler{

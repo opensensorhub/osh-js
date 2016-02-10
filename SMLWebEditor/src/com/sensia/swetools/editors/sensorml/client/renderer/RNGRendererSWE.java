@@ -16,10 +16,10 @@ import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.SensorGenericHorizontalContainerWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorCategoryWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorCondtionWidget;
+import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorCurveWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataArrayWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorDataRecordWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorElementTypeWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorFieldWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQuantityRangeWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.swe.SWESensorQuantityWidget;
 
@@ -57,10 +57,12 @@ public class RNGRendererSWE extends RNGRenderer implements RNGTagVisitor {
 			pushAndVisitChildren(new SWESensorCategoryWidget(), elt.getChildren());
 		} else if(elt.getName().equals("DataArray")){
 			pushAndVisitChildren(new SWESensorDataArrayWidget(), elt.getChildren());
-		} /*else if(elt.getName().equals("field")){
-			pushAndVisitChildren(new SWESensorFieldWidget(), elt.getChildren());
-		}*/ else if(elt.getName().equals("DataRecord")){
+		} else if(elt.getName().equals("Curve")){
+			pushAndVisitChildren(new SWESensorCurveWidget(), elt.getChildren());
+		} else if(elt.getName().equals("DataRecord")){
 			pushAndVisitChildren(new SWESensorDataRecordWidget(), elt.getChildren());
+		} else if(elt.getName().equals("condition")){
+			pushAndVisitChildren(new SWESensorCondtionWidget(), elt.getChildren());
 		} else if(elt.getNamespace().equals(SWE_NS_1) || elt.getNamespace().equals(SWE_NS_2)) {
 			pushAndVisitChildren(new SensorGenericHorizontalContainerWidget(elt.getName(), TAG_DEF.SWE, TAG_TYPE.ELEMENT), elt.getChildren());
 		} else {

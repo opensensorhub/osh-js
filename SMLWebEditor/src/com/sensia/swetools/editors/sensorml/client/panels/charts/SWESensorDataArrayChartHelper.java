@@ -6,7 +6,6 @@ import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart.CH
 import com.sensia.swetools.editors.sensorml.client.panels.charts.versusline.SWESensorDataArrayVersusLineHelper;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
-import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
 

@@ -32,6 +32,8 @@ public interface ISensorWidget {
 	public enum APPENDER {
 		VERTICAL,
 		HORIZONTAL,
+		VERTICAL_STRICT,
+		HORIZONTAL_STRICT,
 		NONE,
 		OVERRIDE_LINE
 	}
@@ -73,4 +75,6 @@ public interface ISensorWidget {
 	void setAppender(APPENDER appender);
 	
 	void getAdvancedPanel(Panel container);
+	
+	boolean isIcon();
 }

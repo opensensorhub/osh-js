@@ -305,7 +305,7 @@
                               </swe:SimpleDataRecord>
                            </swe:elementType>
                            <swe:encoding>
-                              <swe:TextBlock tokenSeparator="&#x20;" blockSeparator="," decimalSeparator="." />
+                              <swe:TextBlock tokenSeparator="," blockSeparator="&#x20;" decimalSeparator="." />
                            </swe:encoding>
                            <swe:values>-40,0 -10,0.1 15,0.3 27,0.5 44,1 60,2.1</swe:values>
                         </swe:Curve>

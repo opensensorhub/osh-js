@@ -37,10 +37,11 @@ public class ViewAsXMLButtonClickListener implements ClickHandler{
 			panel.setHeight("768px");
 			panel.setWidth("1024px");
 			
-			Utils.createDialogBox(panel, "Sensor ML document", new IButtonCallback() {
+			Utils.createDialogBox(panel, "Sensor ML document",new IButtonCallback() {
 				
 				@Override
 				public void onClick() {
+					// TODO Auto-generated method stub
 					
 				}
 			});

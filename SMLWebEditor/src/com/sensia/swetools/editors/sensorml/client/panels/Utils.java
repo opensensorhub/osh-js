@@ -1,13 +1,20 @@
 package com.sensia.swetools.editors.sensorml.client.panels;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
+import com.sensia.swetools.editors.sensorml.client.listeners.ILoadFiledCallback;
 
 public class Utils {
 
@@ -101,7 +108,7 @@ public class Utils {
 		dialogBox.setAnimationEnabled(true);
 		
 		//create Panel
-		Panel main = new VerticalPanel();
+		VerticalPanel main = new VerticalPanel();
 		
 		Button close = new Button("Close");
 		close.addClickHandler(new ClickHandler() {
@@ -117,6 +124,7 @@ public class Utils {
 		main.add(panel);
 		main.add(buttons);
 		
+		main.setSpacing(10);
 		dialogBox.add(main);
 		dialogBox.center();
          
@@ -134,5 +142,22 @@ public class Utils {
 		} else {
 			return uom;
 		}
+	}
+	
+	public static void getFile(String url, final ILoadFiledCallback callback) {
+		RequestBuilder requestBuilder = new RequestBuilder( RequestBuilder.GET, url );
+	    try {
+	        requestBuilder.sendRequest( null, new RequestCallback(){
+	            public void onError(Request request, Throwable exception) {
+	                GWT.log( "failed file reading", exception );
+	            }
+	
+	            public void onResponseReceived(Request request, Response response) {
+	                callback.onLoad(response.getText());
+	
+	            }} );
+	    } catch (RequestException e) {
+	        GWT.log( "failed file reading", e );
+	    }
 	}
 }

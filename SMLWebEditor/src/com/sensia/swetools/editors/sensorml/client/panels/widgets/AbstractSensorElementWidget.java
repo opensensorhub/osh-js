@@ -424,4 +424,8 @@ public abstract class AbstractSensorElementWidget implements ISensorWidget{
 			child.getAdvancedPanel(container);
 		}
 	}
+	
+	public boolean isIcon() {
+		return false;
+	}
 }

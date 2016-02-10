@@ -9,10 +9,8 @@ import org.moxieapps.gwt.highcharts.client.ToolTip;
 import org.moxieapps.gwt.highcharts.client.ToolTipData;
 import org.moxieapps.gwt.highcharts.client.ToolTipFormatter;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart;
-import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart.CHART_TYPE;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.table.IDataChangeListener;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.table.SensorVersusDataArrayTable;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;

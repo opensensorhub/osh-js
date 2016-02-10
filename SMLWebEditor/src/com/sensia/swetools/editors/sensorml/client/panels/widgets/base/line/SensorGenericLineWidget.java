@@ -18,6 +18,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	protected Panel labelPanel;
 	protected HTML dotSeparatorLabel;
 	protected Panel optPanel;
+	protected Panel iconPanel;
 	protected Panel defPanel;
 	
 	protected HorizontalPanel advancedPanel;
@@ -34,6 +35,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		optPanel = new HorizontalPanel();
 		multiLinesPanel = new VerticalPanel();
 		advancedPanel = new HorizontalPanel();
+		iconPanel = new HorizontalPanel();
 		
 		advancedPanel.addStyleName("rng-advanced-button");
 		advancedPanel.setTitle("Edit");
@@ -70,6 +72,7 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		linePanel.add(labelPanel);
 		linePanel.add(dotSeparatorLabel);
 		linePanel.add(optPanel);
+		linePanel.add(iconPanel);
 		linePanel.add(defPanel);
 		linePanel.add(wrapper);
 		
@@ -94,7 +97,10 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 		//handle generic panel like identifier
 		else if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("definition")){
 			defPanel.add(widget.getPanel());
-		} else if(widget.getType() == TAG_TYPE.VALUE || (widget.getName().equals("value"))){//case of Term: value
+		} else if(widget.isIcon()) {
+			iconPanel.add(widget.getPanel());
+		} 
+		else if(widget.getType() == TAG_TYPE.VALUE || (widget.getName().equals("value"))){//case of Term: value
 			optPanel.add(widget.getPanel());
 			if(!hasTitle) {
 				String parentName = widget.getParent().getName();
@@ -133,12 +139,21 @@ public class SensorGenericLineWidget extends AbstractSensorElementWidget{
 	}
 
 	private boolean recursiveAppendTo(ISensorWidget widget) {
-		if(widget.appendTo() == APPENDER.HORIZONTAL) {
-			optPanel.add(widget.getPanel());
-			return true;
-		} else if(widget.appendTo() == APPENDER.VERTICAL) {
+		if(widget.appendTo() == APPENDER.HORIZONTAL || widget.appendTo() == APPENDER.HORIZONTAL_STRICT) {
+			if(widget.isIcon()) {
+				iconPanel.add(widget.getPanel());
+			} //handle generic panel like identifier
+			else if(widget.getType() == TAG_TYPE.ATTRIBUTE && widget.getName().equals("definition")){
+				defPanel.add(widget.getPanel());
+			} else if(widget.isIcon()) {
+				iconPanel.add(widget.getPanel());
+			} else {
+				optPanel.add(widget.getPanel());
+			}
+			return widget.appendTo() == APPENDER.HORIZONTAL_STRICT;
+		} else if(widget.appendTo() == APPENDER.VERTICAL || widget.appendTo() == APPENDER.VERTICAL_STRICT) {
 			multiLinesPanel.add(widget.getPanel());
-			return true;
+			return widget.appendTo() == APPENDER.VERTICAL_STRICT;
 		} else {
 			boolean append = false;
 			for(ISensorWidget child : widget.getElements()) {
