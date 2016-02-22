@@ -25,6 +25,7 @@ public class SWESensorCategoryWidget extends AbstractSensorElementWidget{
 		
 		container.add(categoryPanel);
 		container.add(defPanel);
+		
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.sensia.swetools.editors.sensorml.client.panels;
+package com.sensia.swetools.editors.sensorml.client.utils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

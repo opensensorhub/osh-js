@@ -10,7 +10,7 @@ import com.sensia.gwt.relaxNG.RNGInstanceWriter;
 import com.sensia.gwt.relaxNG.XMLSerializer;
 import com.sensia.relaxNG.RNGGrammar;
 import com.sensia.swetools.editors.sensorml.client.RNGProcessorSML;
-import com.sensia.swetools.editors.sensorml.client.panels.Utils;
+import com.sensia.swetools.editors.sensorml.client.utils.Utils;
 
 public class ViewAsXMLButtonClickListener implements ClickHandler{
 

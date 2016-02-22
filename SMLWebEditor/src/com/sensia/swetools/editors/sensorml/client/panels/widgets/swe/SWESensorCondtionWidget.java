@@ -8,10 +8,10 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
-import com.sensia.swetools.editors.sensorml.client.panels.Utils;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.base.line.SensorGenericLineWidget;
+import com.sensia.swetools.editors.sensorml.client.utils.Utils;
 	
 public class SWESensorCondtionWidget extends AbstractSensorElementWidget{
 

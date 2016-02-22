@@ -370,3 +370,17 @@ table.swe-dataRecord-nolabel-vertical-panel {
 	border-spacing: 10px !important;
 	margin-left:-10px;
 }
+
+.ontology-table-result {
+	height: 100px;
+	width : 1024px;
+	margin-top:25px;
+}
+
+.ontology-sourcesBox {
+	margin-right:35px;
+}
+
+.ontology-table-panel {
+	height:800px;	
+}

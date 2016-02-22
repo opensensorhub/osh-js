@@ -1,4 +1,4 @@
-package com.sensia.swetools.editors.sensorml.client;
+package com.sensia.swetools.editors.sensorml.client.utils;
 
 public class UtilsNative {
 

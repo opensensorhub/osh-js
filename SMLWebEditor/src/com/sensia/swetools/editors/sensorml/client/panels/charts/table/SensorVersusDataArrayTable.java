@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
-import com.sensia.swetools.editors.sensorml.client.panels.Utils;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.MODE;
+import com.sensia.swetools.editors.sensorml.client.utils.Utils;
 
 public class SensorVersusDataArrayTable extends Composite{
 
@@ -147,7 +147,6 @@ public class SensorVersusDataArrayTable extends Composite{
 	    
 	    table.setRowCount(coords.size());
 	    table.setRowData(coords);
-	    
 	    
 	    dataProvider.addDataDisplay(table);
 	    dataProvider.setList(coords);

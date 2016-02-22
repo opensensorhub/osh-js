@@ -1,11 +1,11 @@
 package com.sensia.swetools.editors.sensorml.client.panels.charts.versusline;
 
-import com.sensia.swetools.editors.sensorml.client.panels.Utils;
 import com.sensia.swetools.editors.sensorml.client.panels.charts.ISensorChart;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_DEF;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget.TAG_TYPE;
+import com.sensia.swetools.editors.sensorml.client.utils.Utils;
 
 public class SWESensorDataArrayVersusLineHelper {
 

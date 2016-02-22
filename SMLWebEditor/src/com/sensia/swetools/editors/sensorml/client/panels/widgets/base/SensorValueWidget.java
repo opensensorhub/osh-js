@@ -23,7 +23,7 @@ public class SensorValueWidget extends AbstractSensorElementWidget{
 		container.add(new HTML(value));
 		
 		valueBox = new TextBox();
-		valueBox.setText(value.trim());
+		valueBox.setText(value.replaceAll("\\s+", " "));
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class SensorValueWidget extends AbstractSensorElementWidget{
 		container.clear();
 		container.add(new HTML(value));
 		setName(value);
-		valueBox.setText(value);
+		valueBox.setText(value.replaceAll("\\s+", " "));
 		this.rngValue.setText(value);
 	}
 }

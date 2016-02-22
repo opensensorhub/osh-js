@@ -3,6 +3,7 @@ package com.sensia.swetools.editors.sensorml.client.panels.widgets.sml;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.sensia.swetools.editors.sensorml.client.SensorConstants;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.AbstractSensorElementWidget;
 import com.sensia.swetools.editors.sensorml.client.panels.widgets.ISensorWidget;
 
@@ -19,7 +20,7 @@ public class SMLKeywordsWidget extends AbstractSensorElementWidget {
 		container = new HorizontalPanel();
 		codeSpace = new HTML();
 		keywords = new HTML();
-		separator = new HTML(":&nbsp;");
+		separator = new HTML(":"+SensorConstants.HTML_SPACE);
 		
 		container.add(new HTML("Keywords &nbsp;"));
 		container.add(codeSpace);

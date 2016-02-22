@@ -24,7 +24,7 @@ import com.sensia.relaxNG.RNGTag;
 import com.sensia.relaxNG.RNGTagList;
 import com.sensia.relaxNG.RNGZeroOrMore;
 import com.sensia.swetools.editors.sensorml.client.listeners.IButtonCallback;
-import com.sensia.swetools.editors.sensorml.client.panels.Utils;
+import com.sensia.swetools.editors.sensorml.client.utils.Utils;
 
 public abstract class AbstractSensorElementWidget implements ISensorWidget{
 
