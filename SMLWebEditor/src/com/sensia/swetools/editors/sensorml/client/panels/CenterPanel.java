@@ -37,6 +37,7 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		profiles.put("Anemometer","rng1.0/profiles/CSM/anemometer.rng");
 		profiles.put("Thermometer","rng1.0/profiles/CSM/thermometer-minimal-view.rng");
 		
+		xmlViews.put("Ext Sensor", "sensorML/extSensor.xml");
 		xmlViews.put("Gamma 2070", "sensorML/gamma2070.xml");
 		xmlViews.put("Davis_7817_complete", "sensorML/Davis_7817_complete.xml");
 		xmlViews.put("Davis_7817_min", "sensorML/Davis_7817_min.xml");

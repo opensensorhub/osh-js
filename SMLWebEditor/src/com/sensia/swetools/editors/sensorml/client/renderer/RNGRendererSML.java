@@ -117,6 +117,7 @@ public class RNGRendererSML extends RNGRendererSWE implements RNGTagVisitor {
 		renderElements.put("classifier", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("axis", RENDER_ELEMENT_TYPE.LINE);
 		renderElements.put("origin", RENDER_ELEMENT_TYPE.LINE);
+		renderElements.put("ObservableProperty", RENDER_ELEMENT_TYPE.LINE);
 		
 		//skip list
 		skipList.add("Component");
