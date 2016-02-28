@@ -373,7 +373,7 @@ table.swe-dataRecord-nolabel-vertical-panel {
 
 .ontology-table-result {
 	height: 100px;
-	width : 1024px;
+	width : 768px;
 	margin-top:25px;
 }
 
@@ -382,5 +382,9 @@ table.swe-dataRecord-nolabel-vertical-panel {
 }
 
 .ontology-table-panel {
-	height:800px;	
+	height:450px;	
+}
+
+.ontology-icon {
+	margin-left: 15px;	
 }

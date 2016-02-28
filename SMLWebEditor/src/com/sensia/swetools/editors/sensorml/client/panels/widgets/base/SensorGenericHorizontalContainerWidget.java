@@ -29,7 +29,13 @@ public class SensorGenericHorizontalContainerWidget extends AbstractSensorElemen
 
 	@Override
 	protected void addSensorWidget(ISensorWidget widget) {
-		container.add(widget.getPanel());
+		if(widget instanceof SensorGenericHorizontalContainerWidget) {
+			for(ISensorWidget child : widget.getElements()) {
+				container.add(child.getPanel());
+			}
+		}else {
+			container.add(widget.getPanel());
+		}
 		container.add(new HTML("&nbsp;&nbsp;"));
 	}
 
