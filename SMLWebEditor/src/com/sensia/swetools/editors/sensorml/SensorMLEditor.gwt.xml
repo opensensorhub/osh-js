@@ -8,6 +8,7 @@
    <inherits name='com.sensia.RelaxNG'/>
    <inherits name='com.google.gwt.user.theme.clean.Clean'/>
    <inherits name="org.moxieapps.gwt.highcharts.Highcharts"/>
+   <inherits name="elemental.Elemental"/>
    <inherits name="com.google.gwt.resources.Resources" />
    <entry-point class='com.sensia.swetools.editors.sensorml.client.SensorMLModule'/>
    <stylesheet src='SensorMLEditor.css' />

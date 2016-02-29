@@ -47,6 +47,13 @@ public class RNGProcessorSML {
 		}
 	}
 
+	public void parse(final String fileName,final String xmlContent) {
+		//transform XML document into RNG profile
+		final XMLSensorMLParser parser = new XMLSensorMLParser();
+		final RNGGrammar grammar = parser.parse(fileName, xmlContent);
+		parseRNG(grammar);
+	}
+	
 	private void parseRNG(final RNGGrammar grammar) {
 		RNGWriter rngWriter = new RNGWriter();
 		Document doc = rngWriter.writeSchema(grammar, true);

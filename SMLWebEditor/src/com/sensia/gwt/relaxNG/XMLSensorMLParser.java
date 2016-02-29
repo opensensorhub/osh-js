@@ -102,7 +102,9 @@ public class XMLSensorMLParser {
 		grammar.setStartPattern(startPattern);
 
 		grammarCache.put(grammar.getId(), grammar);
-	    callback.onParseDone(grammar);
+		if(callback != null) {
+			callback.onParseDone(grammar);	
+		}
 	}
 
 	

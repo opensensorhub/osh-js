@@ -1,3 +1,13 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are Copyright (C) 2016 DHAINAUT.
+ All Rights Reserved.
+ 
+ Contributor(s): 
+    Mathieu DHAINAUT <mathieu.dhainaut@gmail.com>
+ 
+ ******************************* END LICENSE BLOCK ***************************/
+
 package com.sensia.swetools.editors.sensorml.client.panels;
 
 import java.util.HashMap;
@@ -31,40 +41,11 @@ public class CenterPanel extends Composite implements IParsingObserver{
 	private RNGProcessorSML sgmlEditorProcessor;
 	
 	private static Map<String,String> profiles = new HashMap<String,String>();
-	private static Map<String,String> xmlViews = new TreeMap<String,String>();
 	
 	static {
 		profiles.put("Anemometer","rng1.0/profiles/CSM/anemometer.rng");
 		profiles.put("Thermometer","rng1.0/profiles/CSM/thermometer-minimal-view.rng");
 		
-		xmlViews.put("Ext Sensor", "sensorML/extSensor.xml");
-		xmlViews.put("Gamma 2070", "sensorML/gamma2070.xml");
-		xmlViews.put("Davis_7817_complete", "sensorML/Davis_7817_complete.xml");
-		xmlViews.put("Davis_7817_min", "sensorML/Davis_7817_min.xml");
-		xmlViews.put("characteristics", "sensorML/characteristics.xml");
-		xmlViews.put("csmFrame", "sensorML/csmFrame.xml");
-		xmlViews.put("description", "sensorML/description.xml");
-		xmlViews.put("disparateNetwork", "sensorML/disparateNetwork.xml");
-		xmlViews.put("friendlyProcess", "sensorML/friendlyProcess.xml");
-		xmlViews.put("identifiers", "sensorML/identifiers.xml");
-		xmlViews.put("iotSimple", "sensorML/iotSimple.xml");
-		xmlViews.put("locDescription", "sensorML/locDescription.xml");
-		xmlViews.put("locDynamic", "sensorML/locDynamic.xml");
-		xmlViews.put("locGML", "sensorML/locGML.xml");
-		xmlViews.put("locOrientation", "sensorML/locOrientation.xml");
-		xmlViews.put("locOutput", "sensorML/locOutput.xml");
-		xmlViews.put("locStatic", "sensorML/locStatic.xml");
-		xmlViews.put("metadata", "sensorML/metadata.xml");
-		xmlViews.put("outputsParameters", "sensorML/outputsParameters.xml");
-		xmlViews.put("outputsPosition", "sensorML/outputsPosition.xml");
-		xmlViews.put("simpleMultiplex", "sensorML/simpleMultiplex.xml");
-		xmlViews.put("simpleNetwork", "sensorML/simpleNetwork.xml");
-		xmlViews.put("simpleProcess", "sensorML/simpleProcess.xml");
-		xmlViews.put("streamRTP", "sensorML/streamRTP.xml");
-		xmlViews.put("streamSimple", "sensorML/streamSimple.xml");
-		xmlViews.put("streamingCBRNE", "sensorML/streamingCBRNE.xml");
-		xmlViews.put("streamingNav", "sensorML/streamingNav.xml");
-		xmlViews.put("weatherStation", "sensorML/weatherStation.xml");
 	}
 	
 	public CenterPanel(final RNGProcessorSML sgmlEditorProcessor){
@@ -99,22 +80,17 @@ public class CenterPanel extends Composite implements IParsingObserver{
 		panel.setSpacing(20);
 		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		
-		final ListBox viewXmlListBox = new ListBox(false);
-		
-		viewXmlListBox.addItem("");
-		for(final String xmlView : xmlViews.keySet()) {
-			viewXmlListBox.addItem(xmlView);
-		}
-		
 		HTML titleProfile = new HTML("<b>SensorML XML:</b>");
+		FileUploadPanel fileUploadPanel = new FileUploadPanel();
 		
 		Button load = new Button("Load");
 		
 		panel.add(titleProfile);
-		panel.add(viewXmlListBox);
+		panel.add(fileUploadPanel.getPanel());
 		panel.add(load);
 		
-		load.addClickHandler(new LoadButtonClickListener(viewXmlListBox,xmlViews, sgmlEditorProcessor,edit));
+		//add listener to handle event
+		load.addClickHandler(new LoadButtonClickListener(fileUploadPanel, sgmlEditorProcessor,edit));
 		
 		return panel;
 	}

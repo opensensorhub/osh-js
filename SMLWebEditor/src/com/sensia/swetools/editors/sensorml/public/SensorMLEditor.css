@@ -392,3 +392,11 @@ table.swe-dataRecord-nolabel-vertical-panel {
 .ontology-icon {
 	margin-left: 15px;	
 }
+
+.file-upload {
+	width:300px; 	
+	border-radius: 0px 10px 10px 0px;
+	-moz-border-radius: 0px 10px 10px 0px;
+	-webkit-border-radius: 0px 10px 10px 0px;
+	border: 1px solid #c4b29d;
+}
