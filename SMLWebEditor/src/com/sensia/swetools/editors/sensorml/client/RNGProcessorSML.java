@@ -47,7 +47,7 @@ public class RNGProcessorSML {
 		}
 	}
 
-	public void parse(final String fileName,final String xmlContent) {
+	public void parse(final String fileName,final String xmlContent) throws Exception {
 		//transform XML document into RNG profile
 		final XMLSensorMLParser parser = new XMLSensorMLParser();
 		final RNGGrammar grammar = parser.parse(fileName, xmlContent);

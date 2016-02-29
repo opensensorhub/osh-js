@@ -3,12 +3,14 @@ package com.sensia.gwt.relaxNG;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -46,15 +48,21 @@ public class XMLSensorMLParser {
 					public void onError(Request request, Throwable exception) {
 						// Couldn't connect to server (could be timeout, SOP
 						// violation, etc.)
+						
 					}
 
 					public void onResponseReceived(Request request, Response resp) {
 						if (200 == resp.getStatusCode()) {
 							String text = resp.getText();
-							parse(url, text);
+							try {
+								parse(url, text);
+							} catch(Exception ex) {
+								Window.alert("An error occured while parsing the file. Check that it is a valid XML file");
+							}
 						} else {
 							// Handle the error. Can get the status text from
 							// response.getStatusText()
+							Window.alert("Cannot get the file from server, it does not exist or you do not have sufficient security credentials to access it.");
 						}
 					}
 				});
@@ -64,7 +72,7 @@ public class XMLSensorMLParser {
 		}
 	}
 
-	public RNGGrammar parse(String url, String xml) {
+	public RNGGrammar parse(String url, String xml) throws Exception{
 		Document dom = XMLParser.parse(xml);
 		XMLParser.removeWhitespace(dom);
 		createGrammar(url, dom.getDocumentElement());
