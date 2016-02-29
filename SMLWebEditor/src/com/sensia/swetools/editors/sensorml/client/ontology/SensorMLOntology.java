@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SafeHtmlHeader;
@@ -14,8 +16,10 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -33,6 +37,10 @@ public class SensorMLOntology {
 	private List<Property> originalData;
 	private List<Property> filteredData;
 	private int lentghPattern = 0;
+	
+	private CellTable.Resources tableRes = GWT.create(TableRes.class);
+	
+	@UiField(provided=true)
 	private CellTable<Property> table;
 	
 	private Property selectedProperty;
@@ -114,7 +122,7 @@ public class SensorMLOntology {
 	
 	public Panel createTable() {
 		if(table == null) {
-			table  = new CellTable<Property>();
+			table  = new CellTable<Property>(10,tableRes);
 			table.setStyleName("ontology-table-result");
 			
 			//define URL column
@@ -226,46 +234,17 @@ public class SensorMLOntology {
 			table.setSkipRowHoverStyleUpdate(true);
 			table.setVisibleRange(0, 100000);
 			
-			table.setSelectionModel(new SelectionModel<Property>() {
-
-				@Override
-				public void fireEvent(GwtEvent<?> event) {
-					
-				}
-
-				@Override
-				public Object getKey(Property item) {
-					return null;
-				}
-
-				@Override
-				public HandlerRegistration addSelectionChangeHandler(Handler handler) {
-					return null;
-				}
-
-				@Override
-				public boolean isSelected(Property object) {
-					return selectedProperty == object;
-				}
-
-				@Override
-				public void setSelected(Property object, boolean selected) {
-					if(selected){
-						selectedProperty = object;
-					}
-				}
-			});
-		    //dataProvider.setList(test);
-	
-		   /* SimplePager pager = new SimplePager();
-		    pager.setDisplay(table);
-		    pager.setPageSize(10); // 15 rows will be shown at a time
-	
-		    VerticalPanel vPanel = new VerticalPanel();
-		    vPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		    vPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		    vPanel.add(table);
-		    vPanel.add(pager);*/
+			// Add a selection model to handle user selection.
+		    final SingleSelectionModel<Property> selectionModel = new SingleSelectionModel<Property>();
+		    table.setSelectionModel(selectionModel);
+		    selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+		      public void onSelectionChange(SelectionChangeEvent event) {
+		    	  Property selected = selectionModel.getSelectedObject();
+			      if (selected != null) {
+			    	  selectedProperty = selected;
+			      }
+		      }
+		    });
 		}
 		ScrollPanel sPanel = new ScrollPanel();
 		sPanel.setStyleName("ontology-table-panel");

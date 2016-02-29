@@ -375,6 +375,10 @@ table.swe-dataRecord-nolabel-vertical-panel {
 	height: 100px;
 	width : 768px;
 	margin-top:25px;
+	border-width:1px; 
+ 	border-style:solid; 
+ 	border-color:black;
+ 	border-collapse:collapse;
 }
 
 .ontology-sourcesBox {
