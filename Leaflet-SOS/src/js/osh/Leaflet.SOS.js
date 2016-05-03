@@ -64,9 +64,12 @@ L.SOS = L.FeatureGroup.extend({
         var dataMarker = new OSH.LeafletDataMarker(map, this, markerOpts);
 
         // adds location, orientation and video stream for this marker
-        controller.addDataSource(this, url + options.locationProp, options.id + "_loc", OSH.TimeStampParser.parseAndroidText, dataMarker.onUpdateLocationData.bind(dataMarker));
-        controller.addDataSource(this, url + options.orientationProp, options.id + "_rot", OSH.TimeStampParser.parseAndroidText, dataMarker.onUpdateOrientationData.bind(dataMarker));
-        controller.addDataSource(this, url + options.videoProp, options.id + "_vid", OSH.TimeStampParser.parseVideo, dataMarker.onUpdateVideoData.bind(dataMarker));
+        if (options.locationProp)
+        	controller.addDataSource(this, url + options.locationProp, options.id + "_loc", OSH.TimeStampParser.parseAndroidText, dataMarker.onUpdateLocationData.bind(dataMarker));
+        if (options.orientationProp)
+            controller.addDataSource(this, url + options.orientationProp, options.id + "_rot", OSH.TimeStampParser.parseAndroidText, dataMarker.onUpdateOrientationData.bind(dataMarker));
+        if (options.videoProp)
+        	controller.addDataSource(this, url + options.videoProp, options.id + "_vid", OSH.TimeStampParser.parseVideo, dataMarker.onUpdateVideoData.bind(dataMarker));
     },
 
     sosLayerGroup: L.layerGroup(),
