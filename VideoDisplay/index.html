@@ -23,7 +23,8 @@
 	    <link rel="stylesheet" type="text/css" href="../Toolkit/vendor/cesium/Widgets/widgets.css" />
 	
 	    <!-- OSH libs -->
-	    <!-- Hashtable -->
+	    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css" />
+	    
 	    <script type="text/javascript" src= "../Toolkit/src/common/prototype.min.js"></script>
 	    
 	    <!-- OSH Core -->
@@ -46,6 +47,8 @@
 	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-VideoMp4.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-Video.js"></script>
 	    
+	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-Dialog.js"></script>
+	    
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
@@ -57,7 +60,7 @@
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-Mp4View.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-H264View.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-VideoView.js"></script>
-	
+	    
 		<!------------ VIDEO DISPLAY ------------>
 		<link rel="stylesheet" type="text/css" href="css/video-display.css">
 		<script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
@@ -74,7 +77,7 @@
 	    </div>
 	  </nav>
      <div id="main-container" class="main-view"></div>
-     <div style="position:absolute;top:60px;right:15px;">
+     <div class="video-main-container">
 	     <div id="container-video1" class="video-box"></div>
 		 <div id="container-video2" class="video-box"></div>
 		 <div id="container-video3" class="video-box"></div>
@@ -219,28 +222,36 @@
 			dataSourceId:androidPhoneVideoDataSource.getId(),
 			format: "mjpeg",
 			css:"video",
-			cssSelected:"video-selected"
+			cssSelected:"video-selected",
+			name:"Android video",
+			draggable: true
 		});
 		
 		var videoView2 = new OSH.UI.VideoView("container-video2",{
 			dataSourceId:virb1VideoDataSource.getId(),
 			format: "mp4",
 			css:"video",
-			cssSelected:"video-selected"
+			cssSelected:"video-selected",
+			name:"VIRB 1",
+			draggable: true
 		});
 		
 		var videoView3 = new OSH.UI.VideoView("container-video3",{
 			dataSourceId:virb2VideoDataSource.getId(),
 			format: "mp4",
 			css:"video",
-			cssSelected:"video-selected"
+			cssSelected:"video-selected",
+			name:"VIRB 2",
+			draggable: true
 		});
 		
 		var videoView4 = new OSH.UI.VideoView("container-video4",{
 			dataSourceId:flirVideoDataSource.getId(),
 			format: "mjpeg",
 			css:"video",
-			cssSelected:"video-selected"
+			cssSelected:"video-selected",
+			name:"FLIR",
+			draggable: true
 		});
 		
 		// creates stylers

@@ -1,15 +1,18 @@
 .pop-over {
-  position:fixed;
+  position:relative;
   background-color: rgba(5, 107, 166, 0.6);
   min-height:100px;
   min-width:100px;
   border:1px solid #bbbbbb;
   border-radius:6px;
   top:50px;
-  left:50%;
-  margin-left:-210px;
+  right:15px;
   box-shadow:0 0 7px #000000;
   z-index:9999;
+}
+
+.pop-over-selected {
+  background-color: rgba(0, 160, 0, 0.6);
 }
 
 .pop-over h3 {
@@ -31,7 +34,7 @@
   position:static;
   width:384px;
   margin:0 8px 8px;
-  background-color:#FCFCFC;
+  /*background-color:#FCFCFC;*/
 }
 
 .pop-close {
