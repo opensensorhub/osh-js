@@ -106,9 +106,36 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	
 	//---------- MAP SETUP --------------//
 	initMap:function() {
+		 var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+		 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+		 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		 mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw';
+
+		 var esriLink = '<a href="http://www.esri.com/">Esri</a>';
+	     var esriWholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+	     var esriLayer = L.tileLayer(
+	        'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	        attribution: '&copy; '+esriLink+', '+esriWholink,
+	        maxZoom: 18,
+	     });
+	     
+		 streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+
 		  this.map = new L.Map(this.divId, {
-	         fullscreenControl: true
+	         fullscreenControl: true,
+	         layers: [streets,esriLayer]
 	      });
+		  
+		  var baseLayers = {
+		     "MapBox Streets": streets
+		  };
+		  
+		  var overlays = {
+			 "Esri Satellite" : esriLayer
+		  };
+		  
+		  L.control.layers(baseLayers,overlays).addTo(this.map);
+		  
 	      this.map.setView(new L.LatLng(0, 0), 10);
 	      this.initLayers();
 	      this.markers = {};
@@ -155,6 +182,10 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	    var id = "view-marker-"+OSH.Utils.randomUUID();
 	    this.markers[id] = marker;
 	    
+	    if(this.first) {
+	    	this.first = false;
+	    	this.map.setView(new L.LatLng(properties.lat, properties.lon), 10);
+	    }
 	    var self = this;
 	    
 	    // adds onclick event
