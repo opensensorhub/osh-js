@@ -7,6 +7,7 @@
 		<title>Video display</title>
 		
 		<script src="js/jquery-2.2.3.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 		
@@ -23,12 +24,12 @@
 	    <link rel="stylesheet" type="text/css" href="../Toolkit/vendor/cesium/Widgets/widgets.css" />
 	
 		<!--  JQRangeSlider libs -->
-		<!-- link rel="stylesheet" href="../Toolkit/vendor/jQRangeSlider/css/classic-min.css" type="text/css" />
-		<script src="../Toolkit/vendor/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script-->
+		<link rel="stylesheet" href="../Toolkit/vendor/jQRangeSlider/css/classic-min.css" type="text/css" />
+		<script src="../Toolkit/vendor/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
 		
 	    <!-- OSH libs -->
 	    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css" />
-	    <!-- link rel="stylesheet" type="text/css" href="../Toolkit/src/css/rangeSlider.css" /-->
+	    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/rangeSlider.css">
 	     
 	    <script type="text/javascript" src= "../Toolkit/src/common/prototype.min.js"></script>
 	    
@@ -53,7 +54,7 @@
 	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-Video.js"></script>
 	    
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-Dialog.js"></script>
-	    <!-- script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-JQRangeSlider.js"></script-->
+	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-JQRangeSlider.js"></script>
 	    
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
@@ -82,9 +83,7 @@
 	      </div>
 	    </div>
 	  </nav>
-	 <div style="height: 100%"> 
      	<div id="main-container" class="main-view"></div>
-     </div>
      
      <div class="video-main-container">
 	     <div id="container-video1" class="video-box"></div>
@@ -92,7 +91,9 @@
 		 <div id="container-video3" class="video-box"></div>
 		 <div id="container-video4" class="video-box"></div>
 	 </div>
-	 
+	 <div  class="jrangeSlider">
+	 	<div id="rangeSlider" style="margin: 5 10 5 15;"></div>
+	 </div>
 	 <script type="text/javascript">
 		var dataProviderController = new OSH.DataProvider.DataProviderController({
 			bufferingTime : 2*1000, // 0 seconds
@@ -412,10 +413,10 @@
 		
 		
 		// inits rangeSlider
-		/*var rangeSlider = new OSH.UI.JQRangeSlider("rangeSlider", {
+		var rangeSlider = new OSH.UI.JQRangeSlider("rangeSlider", {
 			startDate: "2016-06-08T19:59:31.535Z",
 			endDate: "2016-06-08T20:35:06.983Z"
-		});*/	
+		});	
 	</script>
 	</body>
 </html>

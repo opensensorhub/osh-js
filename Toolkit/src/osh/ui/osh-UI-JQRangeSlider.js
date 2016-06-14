@@ -4,8 +4,17 @@
  *  endDate : ''
  * }
  */
+var $j = jQuery.noConflict();
+
 OSH.UI.JQRangeSlider = Class.create({
 	initialize : function(divId,properties) {
+		function TwoDigits(val){
+		    if (val < 10){
+		         return "0" + val;
+		    }
+		    return val;
+		}
+		
 		var rangeSliderProperties = {
 		    bounds: {min: new Date(properties.startDate), max: new Date(properties.endDate)},
 		    enabled: false,
@@ -25,11 +34,11 @@ OSH.UI.JQRangeSlider = Class.create({
 		        },
 		        next: function (value) {
 		            var next = new Date(value);
-		            return new Date(next.setHours(value.getHours() + 1));
+		            return new Date(next.setMinutes(value.getMinutes() + 1));
 		        },
 		        label: function (value) {
-		            if( value.getHours() %  3 == 0){
-		              return (value.getHours() > 0 )?TwoDigits(value.getHours()): 0;            
+		            if( value.getMinutes() %  1 == 0){
+		              return (value.getMinutes() > 0 )?TwoDigits(value.getMinutes()): 0;            
 		            } else {
 		              return "";
 		            }
@@ -74,7 +83,9 @@ OSH.UI.JQRangeSlider = Class.create({
 		// adds container button div to div
 		div.appendChild(containerButtonDiv);
 		
-		sliderDiv.dateRangeSlider(rangeSliderProperties);
+		var obj = $(sliderDiv);
+		
+		$j(sliderDiv).dateRangeSlider(rangeSliderProperties);
 		
 		this.initEvents(editButton);
 	},
@@ -83,21 +94,21 @@ OSH.UI.JQRangeSlider = Class.create({
 	//TODO: use dynamic ids instead of static ones
 	initEvents: function(editButtonDivId) {
 	  $(editButtonDivId).observe("click", function(event) {
-	    var editValidate = $("#editValidate");
+	    var editValidate = $j("#editValidate");
 	    if(editValidate.hasClass("glyphicon-edit")){
-	      $("#editValidate").removeClass("glyphicon-edit");
-	      $("#editValidate").addClass("glyphicon-ok");
-	      $("#editValidate").addClass("glyphicon-custom-color");
-	      $('#editButton').attr("title", "validate");	
-	      $("#slider").dateRangeSlider("enable");
-	      $("#editButton").trigger( "change", ["edit"] );
+	      $j("#editValidate").removeClass("glyphicon-edit");
+	      $j("#editValidate").addClass("glyphicon-ok");
+	      $j("#editValidate").addClass("glyphicon-custom-color");
+	      $j('#editButton').attr("title", "validate");	
+	      $j("#slider").dateRangeSlider("enable");
+	      $j("#editButton").trigger( "change", ["edit"] );
 	    } else {
-	      $("#editValidate").removeClass("glyphicon-ok");
-	      $("#editValidate").addClass("glyphicon-edit");
-	      $("#editValidate").removeClass("glyphicon-custom-color");
-	      $('#editButton').attr("title", "edit");	
-	      $("#slider").dateRangeSlider("disable");
-	      $("#editButton").trigger( "change", ["validate"] );
+	      $j("#editValidate").removeClass("glyphicon-ok");
+	      $j("#editValidate").addClass("glyphicon-edit");
+	      $j("#editValidate").removeClass("glyphicon-custom-color");
+	      $j('#editButton').attr("title", "edit");	
+	      $j("#slider").dateRangeSlider("disable");
+	      $j("#editButton").trigger( "change", ["validate"] );
 	    }    
 	    return false;
 	  });

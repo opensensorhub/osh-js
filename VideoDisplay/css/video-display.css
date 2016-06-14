@@ -8,7 +8,7 @@ html {
 }
 
 .main-view {
-	height: 100%;
+	height: calc(100% - 75px);
 }
 
 header.navbar {
@@ -60,4 +60,16 @@ a.navbar-brand:hover {
 	position:absolute;
 	top:60px;
 	right:15px;
+}
+
+.jrangeSlider {
+	height: 65px;
+    margin: 5 30 0 30;
+    background-color: #fff;
+    border: 1px solid #444;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
