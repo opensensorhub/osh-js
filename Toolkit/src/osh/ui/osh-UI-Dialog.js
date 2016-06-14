@@ -70,7 +70,8 @@ OSH.UI.Dialog = Class.create({
 	},
 
 	close: function() {
-  	  this.div.parentNode.removeChild(this.div);	
+  	  //this.div.parentNode.removeChild(this.div);
+	  this.div.style.display = "none";
 	  if(this.onClose) {
 	    this.onClose();
 	  }

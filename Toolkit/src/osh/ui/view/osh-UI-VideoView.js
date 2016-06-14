@@ -35,7 +35,7 @@ OSH.UI.VideoView = Class.create(OSH.UI.View, {
 			this.dialog.appendContent(divDialogContent);
 			//this.dialog.setContentSize(contentDiv.width+"px",contentDiv.height+"px");
 			this.dialog.setContentSize("150px","150px");
-			
+			this.divDialog.style.display = "none";
 			this.css = this.divDialog.className;
 			
 			currentDivId = divDialogContent.id;
@@ -59,6 +59,7 @@ OSH.UI.VideoView = Class.create(OSH.UI.View, {
 	selectDataView: function($super,dataSourceIds) {
 		if(typeof(this.divDialog) != "undefined") {
 			if(dataSourceIds.indexOf(this.dataSourceId) > -1) {
+				this.divDialog.style.display = "block";
 				this.divDialog.setAttribute("class",this.css+" pop-over-selected");  
 			} else {
 				this.divDialog.setAttribute("class",this.css);
