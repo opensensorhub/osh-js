@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="dist"/>
+	<classpathentry excluding="broadway/" kind="src" path="src/common"/>
+	<classpathentry kind="src" path="src/common/broadway"/>
+	<classpathentry excluding="dataconnector/|dataprovider/|ui/view/|ui/styler/" kind="src" path="src/osh"/>
+	<classpathentry kind="src" path="src/osh/dataconnector"/>
+	<classpathentry kind="src" path="src/osh/dataprovider"/>
+	<classpathentry kind="src" path="src/osh/ui/styler"/>
+	<classpathentry kind="src" path="src/osh/ui/view"/>
+	<classpathentry kind="src" path="src/plugins/cesium"/>
+	<classpathentry excluding="js/" kind="src" path="src/plugins/d3"/>
+	<classpathentry kind="src" path="src/plugins/d3/js"/>
+	<classpathentry kind="src" path="src/plugins/leaflet"/>
+	<classpathentry kind="src" path="vendor/broadway"/>
+	<classpathentry excluding="ThirdParty/Workers/|Workers/" kind="src" path="vendor/cesium"/>
+	<classpathentry kind="src" path="vendor/cesium/ThirdParty/Workers"/>
+	<classpathentry kind="src" path="vendor/cesium/Workers"/>
+	<classpathentry kind="src" path="vendor/leaflet"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

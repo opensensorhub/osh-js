@@ -1,0 +1,50 @@
+.pop-over {
+  position:fixed;
+  background-color: rgba(5, 107, 166, 0.6);
+  min-height:100px;
+  min-width:100px;
+  border:1px solid #bbbbbb;
+  border-radius:6px;
+  top:50px;
+  left:50%;
+  margin-left:-210px;
+  box-shadow:0 0 7px #000000;
+  z-index:9999;
+}
+
+.pop-over h3 {
+  font-size:14px;
+  font-family:Tahoma, Sans;
+  color:white;
+  margin: 3px 3px 3px 15px;
+  text-shadow:0 0 10px rgba(255, 255, 255 .3);
+}
+
+.pop-over h3:hover {
+  cursor:move;
+}
+
+.pop-over:hover {
+  cursor:move;
+}
+.pop-content {
+  position:static;
+  width:384px;
+  margin:0 8px 8px;
+  background-color:#FCFCFC;
+}
+
+.pop-close {
+   position: absolute; 
+   top: 0; 
+   right: 0; 
+   padding: 4px 4px 0 0;
+   text-align: center; 
+   width: 18px; 
+   height: 14px; 
+   font: 16px/14px Tahoma, Verdana, sans-serif; 
+   color: #c3c3c3; 
+   text-decoration: none; 
+   font-weight: bold; 
+   background: transparent; 
+}

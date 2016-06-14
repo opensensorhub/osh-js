@@ -1,0 +1,300 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>OSH Leaflet viewer</title>
+    
+    <!-- LEAFLET libs -->
+    <link rel="stylesheet" href="../../vendor/leaflet/leaflet.css" />	
+    <script src="../../vendor/leaflet/leaflet.js"></script>
+    <!-- FullScreen -->
+    <script src='../../vendor/leaflet/Leaflet.fullscreen.min.js'></script>
+    <link href='../../vendor/leaflet/leaflet.fullscreen.css' rel='stylesheet' />
+    
+    <!--  CESIUM libs -->
+    <script src="../../vendor/cesium/Cesium.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../vendor/cesium/Widgets/widgets.css" />
+
+    <!-- OSH libs -->
+    <!-- Hashtable -->
+    <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
+    
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Controller.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProviderController.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-OrientationQuaternion.js"></script>
+      <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-VideoH264.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-VideoMjpeg.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-VideoMp4.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-Video.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-LeafletView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-CesiumView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-MjpegView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-Mp4View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-H264View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-VideoView.js"></script>
+	<style media="screen" type="text/css">
+	html, body {
+		height: 100%;
+		margin: 0;
+	}
+	
+	.leaflet {
+		relative;
+		bottom: 0;
+		width: 47%;
+		height: 400px;
+		float: left;
+  		margin: 0 1.5%;
+	}
+	
+	.cesium {
+		relative;
+		bottom: 0;
+		width: 47%;
+		height: 400px;
+		float: right;
+  		margin: 0 1.5%;
+	}
+	
+	.video {
+		width: 400px;
+		height: 400px;
+	}
+	
+	.video-selected {
+	  border-radius: 3px;
+	  box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+	}
+	</style>
+</head>
+    <body>
+     <h2>This is an example of Leaflet/Cesium RealTime data use</h2>
+     <div id="container-leaflet" class="leaflet"></div>
+     <div id="container-cesium" class="cesium"></div>
+     <div id="madison-virb1-video-mp4" style="position:absolute;top:500px;left:30px"></div>
+	<script type="text/javascript">
+		var dataProviderController = new OSH.DataProvider.DataProviderController(
+				{
+					bufferingTime : 0, // 2 seconds
+					synchronizedTime : false // does not sync the data
+				});
+
+		// creates datasource
+		var latLondataSource = new OSH.DataProvider.LatLonAlt("gps1", {
+		  protocol : "ws",
+		  service: "SOS",
+		  endpointUrl: "botts.pscloud.org:8181/sensorhub/sos",
+		  offeringID: "urn:mysos:offering02",
+		  observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
+		  startTime: "now",
+		  endTime: "2080-01-01",
+		  replaySpeed: "1"
+		});
+				
+		
+		var latLonVirbDataSource = new OSH.DataProvider.LatLonAlt("virb1-gps", {
+		  protocol : "ws",
+		  service: "SOS",
+		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
+		  offeringID: "urn:osh:virb1",
+		  observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
+		  startTime: "2016-06-08T19:35:27.413Z",
+		  endTime: "2016-06-08T20:35:06.983Z",
+		  replaySpeed: "1"
+		});
+
+		var madisonVirb1VideoDataSource = new OSH.DataProvider.Video("madisonVirb1Video", {
+		  protocol : "ws",
+		  service: "SOS",
+		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
+		  offeringID: "urn:osh:virb1",
+		  observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+		  startTime: "2016-06-08T19:35:27.413Z",
+		  endTime: "2016-06-08T20:35:06.983Z",
+		  replaySpeed: "1",
+		  responseFormat: "video/mp4"
+		},{
+			format: "mp4"					
+		});
+		
+		// creates view
+		var leafletView = new OSH.UI.LeafletView("container-leaflet");
+
+		var cesiumView = new OSH.UI.CesiumView("container-cesium");
+		
+		var madisonVirb1View = new OSH.UI.VideoView("madison-virb1-video-mp4",{
+			dataSourceId:madisonVirb1VideoDataSource.getId(),
+			format: "mp4",
+			css:"video",
+			cssSelected:"video-selected"
+		});
+		
+		// creates stylers
+		var markerStyler = new OSH.UI.Styler.PointMarker({
+			location : {
+				x : 10,
+				y : 20,
+				z : 30
+			},
+			locationFunc : {
+				dataSourceIds : [latLondataSource.getId()],
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			icon : 'images/cameralook.png',
+			iconFunc : {
+				dataSourceIds: [latLondataSource.getId()],
+				handler : function(rec,options) {
+					if(options.selected) {
+						return 'images/cameralook-selected.png'
+					} else {
+						return 'images/cameralook.png';
+					};
+				}
+			}
+		});
+
+		// creates stylers
+		var markerStyler2 = new OSH.UI.Styler.PointMarker({
+			location : {
+				x : 10,
+				y : 20,
+				z : 30
+			},
+			locationFunc : {
+				dataSourceIds : [latLonVirbDataSource.getId()],
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			icon : 'images/cameralook.png',
+			iconFunc : {
+				dataSourceIds: [latLonVirbDataSource.getId()],
+				handler : function(rec,options) {
+					if(options.selected) {
+						return 'images/cameralook-selected.png'
+					} else {
+						return 'images/cameralook.png';
+					};
+				}
+			}
+		});
+		
+		var polylineStyler = new OSH.UI.Styler.Polyline({
+			locationFunc : {
+				dataSourceIds : [latLondataSource.getId()],
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			color : 'blue',
+			weight : 5,
+			opacity : .5,
+			smoothFactor : 1,
+			maxPoints : 200
+		});
+
+		var polylineStyler2 = new OSH.UI.Styler.Polyline({
+			locationFunc : {
+				dataSourceIds : [latLonVirbDataSource.getId()],
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			color : 'blue',
+			weight : 5,
+			opacity : .5,
+			smoothFactor : 1,
+			maxPoints : 200
+		});
+		
+		// adds view item to the view
+		leafletView.addViewItem({
+			styler : markerStyler
+		});
+
+		leafletView.addViewItem({
+			styler : markerStyler2
+		});
+		
+		leafletView.addViewItem({
+			styler : polylineStyler
+		});
+		
+		leafletView.addViewItem({
+			styler : polylineStyler2
+		});
+		
+		cesiumView.addViewItem({
+			styler : markerStyler
+		});
+
+		cesiumView.addViewItem({
+			styler : markerStyler2
+		});
+		
+		// adds datasources to dataProviderController
+		dataProviderController.addDataSource(latLondataSource);
+		dataProviderController.addDataSource(madisonVirb1VideoDataSource);
+		dataProviderController.addDataSource(latLonVirbDataSource);
+		
+		// registers the view into the data provider
+		dataProviderController.registerObserver(leafletView);
+		dataProviderController.registerObserver(cesiumView);
+		dataProviderController.registerObserver(madisonVirb1View);
+		
+		// adds controller to interact between views
+		var controller = new OSH.Controller();
+		controller.addView(leafletView);
+		controller.addView(cesiumView);
+		controller.addView(madisonVirb1View);
+		
+		// creates entities
+		var entity = {
+			dataSources: [latLonVirbDataSource.getId(),madisonVirb1VideoDataSource.getId()]
+		}
+		
+		controller.addEntity(entity);
+		
+		dataProviderController.connectAll();
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>OSH Leaflet viewer</title>
+    
+    <!-- LEAFLET libs -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />	
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <!-- FullScreen -->
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+    
+    <!-- OSH libs -->
+    <!-- Hashtable -->
+    <script type="text/javascript" src= "../../src/common/jhashtable.js"></script>
+    <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
+    
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Controller.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProviderController.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-OrientationQuaternion.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/renderer/osh-UI-Renderer.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/renderer/osh-UI-LeafletRenderer.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-LeafletView.js"></script>
+	<style media="screen" type="text/css">
+	html, body {
+		height: 100%;
+		overflow: hidden;
+		margin: 0;
+	}
+	
+	.map {relative;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+	}
+	</style>
+</head>
+    <body>
+     <h2>This is an example of Leaflet use</h2>
+     <div id="container" class="map"></div>
+
+	<script type="text/javascript">
+		var dataProviderController = new OSH.DataProvider.DataProviderController(
+				{
+					bufferingTime : 2 * 1000, // 2 seconds
+					synchronizedTime : false, // does not sync the data
+					replayFactor : 3
+				});
+
+		// creates datasource
+		var latLondataSource = new OSH.DataProvider.LatLonAlt(
+				"gps1",
+				"ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:01:00Z/2015-02-16T08:09:00Z&replaySpeed=3");
+		
+		var latLondataSource2 = new OSH.DataProvider.LatLonAlt(
+				"gps2",
+				"ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T08:03:00Z/2015-02-16T08:09:00Z&replaySpeed=3");
+	
+		var orientationDataSource = new OSH.DataProvider.OrientationQuaternion(
+				"orient1",
+				"ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:01:00Z/2015-02-16T08:09:00Z&replaySpeed=3");
+		
+		var orientationDataSource2 = new OSH.DataProvider.OrientationQuaternion(
+				"orient2",
+				"ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/OrientationQuaternion&temporalFilter=phenomenonTime,2015-02-16T08:03:00Z/2015-02-16T08:09:00Z&replaySpeed=3");
+
+		// creates view
+		var view = new OSH.UI.LeafletView("container");
+
+		// creates stylers
+		var markerStyler = new OSH.UI.Styler.PointMarker({
+			location : {
+				x : 10,
+				y : 20,
+				z : 30
+			},
+			locationFunc : {
+				dataSourceId : latLondataSource.getId(),
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			icon : '../../src/images/cameralook.png',
+			orientationFunc : {
+				dataSourceId : orientationDataSource.getId(),
+				handler : function(rec) {
+					return {
+						heading : rec.heading
+					};
+				}
+			}
+		});
+
+		var markerStyler2 = new OSH.UI.Styler.PointMarker({
+			location : {
+				x : 10,
+				y : 20,
+				z : 30
+			},
+			locationFunc : {
+				dataSourceId : latLondataSource2.getId(),
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			icon : '../../src/images/cameralook.png',
+			orientationFunc : {
+				dataSourceId : orientationDataSource2.getId(),
+				handler : function(rec) {
+					return {
+						heading : rec.heading
+					};
+				}
+			}
+		});
+		
+		var polylineStyler = new OSH.UI.Styler.Polyline({
+			locationFunc : {
+				dataSourceId : latLondataSource.getId(),
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			color : 'blue',
+			weight : 5,
+			opacity : .5,
+			smoothFactor : 1,
+			maxPoints : 200
+		});
+
+		var polylineStyler2 = new OSH.UI.Styler.Polyline({
+			locationFunc : {
+				dataSourceId : latLondataSource2.getId(),
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			color : 'yellow',
+			weight : 5,
+			opacity : .5,
+			smoothFactor : 1,
+			maxPoints : 200
+		});
+		
+		// adds view item to the view
+		view.addViewItem({
+			styler : markerStyler
+		});
+
+		view.addViewItem({
+			styler : markerStyler2
+		});
+		
+		view.addViewItem({
+			styler : polylineStyler
+		});
+
+		view.addViewItem({
+			styler : polylineStyler2
+		});
+		
+		// adds datasources to dataProviderController
+		dataProviderController.addDataSource(latLondataSource);
+		dataProviderController.addDataSource(latLondataSource2);
+		dataProviderController.addDataSource(orientationDataSource);
+		dataProviderController.addDataSource(orientationDataSource2);
+		
+		// registers the view into the data provider
+		dataProviderController.registerObserver(view);
+
+		dataProviderController.connectAll();
+	</script>
+
+</body>
+</html>
