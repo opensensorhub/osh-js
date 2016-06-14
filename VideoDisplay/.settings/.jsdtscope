@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="osh/|osh/plugins/d3/|osh/plugins/d3/js/|osh/plugins/cesium/|Cesium/Workers/|Cesium/ThirdParty/Workers/|Cesium/|osh/plugins/leaflet/" kind="src" path="js"/>
+	<classpathentry kind="src" path="js-local/dist"/>
+	<classpathentry excluding="broadway/" kind="src" path="js-local/src/common"/>
+	<classpathentry kind="src" path="js-local/src/common/broadway"/>
+	<classpathentry excluding="dataconnector/|ui/view/|dataprovider/|ui/styler/" kind="src" path="js-local/src/osh"/>
+	<classpathentry kind="src" path="js-local/src/osh/dataconnector"/>
+	<classpathentry kind="src" path="js-local/src/osh/dataprovider"/>
+	<classpathentry kind="src" path="js-local/src/osh/ui/styler"/>
+	<classpathentry kind="src" path="js-local/src/osh/ui/view"/>
+	<classpathentry kind="src" path="js-local/src/plugins/cesium"/>
+	<classpathentry excluding="js/" kind="src" path="js-local/src/plugins/d3"/>
+	<classpathentry kind="src" path="js-local/src/plugins/d3/js"/>
+	<classpathentry kind="src" path="js-local/src/plugins/leaflet"/>
+	<classpathentry kind="src" path="js-local/vendor/broadway"/>
+	<classpathentry excluding="ThirdParty/Workers/|Workers/" kind="src" path="js-local/vendor/cesium"/>
+	<classpathentry kind="src" path="js-local/vendor/cesium/ThirdParty/Workers"/>
+	<classpathentry kind="src" path="js-local/vendor/cesium/Workers"/>
+	<classpathentry kind="src" path="js-local/vendor/leaflet"/>
+	<classpathentry excluding="Workers/|ThirdParty/Workers/" kind="src" path="js/Cesium"/>
+	<classpathentry kind="src" path="js/Cesium/ThirdParty/Workers"/>
+	<classpathentry kind="src" path="js/Cesium/Workers"/>
+	<classpathentry excluding="plugins/d3/|plugins/d3/js/|plugins/cesium/|plugins/leaflet/" kind="src" path="js/osh"/>
+	<classpathentry kind="src" path="js/osh/plugins/cesium"/>
+	<classpathentry excluding="js/" kind="src" path="js/osh/plugins/d3"/>
+	<classpathentry kind="src" path="js/osh/plugins/d3/js"/>
+	<classpathentry kind="src" path="js/osh/plugins/leaflet"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
