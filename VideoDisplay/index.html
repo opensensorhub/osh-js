@@ -96,8 +96,8 @@
 	 </div>
 	 <script type="text/javascript">
 		var dataProviderController = new OSH.DataProvider.DataProviderController({
-			bufferingTime : 5*1000, // 0 seconds
-			synchronizedTime : true // does not sync the data
+			bufferingTime : 2*1000, // 2 seconds
+			synchronizedTime : false // true to sync the data
 		});
 
 		// creates datasource
@@ -109,7 +109,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:android:device:89845ed469b7edc7-sos",
 		  observedProperty: "http://sensorml.com/ont/swe/property/Location",
-		  startTime: "2016-06-08T19:46:24.732Z",
+		  startTime: "2016-06-08T19:46:07Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1"
 		});
@@ -120,7 +120,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:android:device:89845ed469b7edc7-sos",
 		  observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-		  startTime: "2016-06-08T19:46:24.732Z",
+		  startTime: "2016-06-08T19:46:07Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1"
 		});
@@ -131,7 +131,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:android:device:89845ed469b7edc7-sos",
 		  observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-		  startTime: "2016-06-08T19:46:24.732Z",
+		  startTime: "2016-06-08T19:46:07Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1"
 		},{
@@ -146,7 +146,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:osh:virb1",
 		  observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
-		  startTime: "2016-06-08T19:35:27.413Z",
+		  startTime: "2016-06-08T19:46:10Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1"
 		});
@@ -157,7 +157,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:osh:virb1",
 		  observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-		  startTime: "2016-06-08T19:35:27.413Z",
+		  startTime: "2016-06-08T19:46:10Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1",
 		  responseFormat: "video/mp4"
@@ -171,7 +171,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:osh:virb2",
 		  observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
-		  startTime: "2016-06-08T19:35:27.413Z",
+		  startTime: "2016-06-08T19:46:10Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1"
 		});
@@ -182,7 +182,7 @@
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
 		  offeringID: "urn:osh:virb2",
 		  observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-		  startTime: "2016-06-08T19:35:27.413Z",
+		  startTime: "2016-06-08T19:46:10Z",
 		  endTime: "2016-06-08T20:35:06.983Z",
 		  replaySpeed: "1",
 		  responseFormat: "video/mp4"
@@ -211,18 +211,22 @@
 		
 		// creates entities
 		var androidEntity = {
+                        name: "Android Phone",
 			dataSources: [androidPhoneGpsDataSource.getId(), androidPhoneOrientationDataSource.getId(), androidPhoneVideoDataSource.getId()]
 		}
 		
 		var virb1Entity = {
+			name: "VIRB1 Camera",
 			dataSources: [virb1GpsDataSource.getId(), virb1VideoDataSource.getId()]
 		}
 		
 		var virb2Entity = {
+			name: "VIRB2 Camera",
 			dataSources: [virb2GpsDataSource.getId(), virb2VideoDataSource.getId()]
 		}
 		
 		var flirEntity = {
+			name: "FLIR Camera",
 			dataSources: [androidPhoneGpsDataSource.getId(), flirVideoDataSource.getId()]	
 		}
 		
@@ -234,7 +238,7 @@
 			format: "mjpeg",
 			css:"video",
 			cssSelected:"video-selected",
-			name:"Android video",
+			name:"Android Video",
 			draggable: true
 		});
 		

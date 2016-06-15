@@ -116,27 +116,28 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	     var esriLayer = L.tileLayer(
 	        'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 	        attribution: '&copy; '+esriLink+', '+esriWholink,
-	        maxZoom: 18,
+	        maxZoom: 22,
 	     });
 	     
 		 streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
 
 		  this.map = new L.Map(this.divId, {
 	         fullscreenControl: true,
-	         layers: [streets,esriLayer]
+	         layers: [esriLayer]
 	      });
 		  
 		  var baseLayers = {
-		     "MapBox Streets": streets
+		     
 		  };
 		  
 		  var overlays = {
-			 "Esri Satellite" : esriLayer
+                     "MapBox Streets": streets,
+		     "Esri Satellite" : esriLayer
 		  };
 		  
 		  L.control.layers(baseLayers,overlays).addTo(this.map);
 		  
-	      this.map.setView(new L.LatLng(0, 0), 10);
+	      this.map.setView(new L.LatLng(34.7255687, -86.7433953), 15);
 	      this.initLayers();
 	      this.markers = {};
 	      this.first = true;
@@ -147,7 +148,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	   // create the tile layer with correct attribution
 	   var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	   var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-	   var osm = new L.TileLayer(osmUrl, {
+	   var osm = new L.tileLayer(osmUrl, {
 	         minZoom: 1,
 	         maxZoom: 22,
 	         attribution: osmAttrib
@@ -184,7 +185,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	    
 	    if(this.first) {
 	    	this.first = false;
-	    	this.map.setView(new L.LatLng(properties.lat, properties.lon), 10);
+	    	this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
 	    }
 	    var self = this;
 	    
@@ -231,7 +232,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
         }
         
         if(this.first) {
-            this.map.setView(new L.LatLng(lat, lon), this.map.getZoom());
+            this.map.setView(new L.LatLng(lat, lon), 19);
             this.first = false;
         }  
 	},
