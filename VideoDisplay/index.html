@@ -232,17 +232,8 @@
 		
 		// creates view
 		var leafletView = new OSH.UI.LeafletView("main-container");
-		
-		var videoView1 = new OSH.UI.VideoView("container-video1",{
-			dataSourceId:androidPhoneVideoDataSource.getId(),
-			format: "mjpeg",
-			css:"video",
-			cssSelected:"video-selected",
-			name:"Android Video",
-			draggable: true
-		});
-		
-		var videoView2 = new OSH.UI.VideoView("container-video2",{
+				
+		var videoView2 = new OSH.UI.VideoView("container-video1",{
 			dataSourceId:virb1VideoDataSource.getId(),
 			format: "mp4",
 			css:"video",
@@ -251,12 +242,21 @@
 			draggable: true
 		});
 		
-		var videoView3 = new OSH.UI.VideoView("container-video3",{
+		var videoView3 = new OSH.UI.VideoView("container-video2",{
 			dataSourceId:virb2VideoDataSource.getId(),
 			format: "mp4",
 			css:"video",
 			cssSelected:"video-selected",
 			name:"VIRB 2",
+			draggable: true
+		});
+
+                var videoView1 = new OSH.UI.VideoView("container-video3",{
+			dataSourceId:androidPhoneVideoDataSource.getId(),
+			format: "mjpeg",
+			css:"video",
+			cssSelected:"video-selected",
+			name:"Android Video",
 			draggable: true
 		});
 		
