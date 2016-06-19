@@ -297,7 +297,7 @@
 			icon : 'images/cameralook.png',
 			iconFunc : {
 				dataSourceIds: [androidPhoneGpsDataSource.getId()],
-				handler : function(rec,options) {
+				handler : function(rec,timeStamp,options) {
 					if(options.selected) {
 						return 'images/cameralook-selected.png'
 					} else {
@@ -326,7 +326,7 @@
 			icon : 'images/cameralook.png',
 			iconFunc : {
 				dataSourceIds: [virb1GpsDataSource.getId()],
-				handler : function(rec,options) {
+				handler : function(rec,timeStamp,options) {
 					if(options.selected) {
 						return 'images/cameralook-selected.png'
 					} else {
@@ -344,7 +344,7 @@
 			},
 			locationFunc : {
 				dataSourceIds : [virb2GpsDataSource.getId()],
-				handler : function(rec) {
+				handler : function(rec,timeStamp,options) {
 					return {
 						x : rec.lon,
 						y : rec.lat,
@@ -355,7 +355,7 @@
 			icon : 'images/cameralook.png',
 			iconFunc : {
 				dataSourceIds: [virb2GpsDataSource.getId()],
-				handler : function(rec,options) {
+				handler : function(rec,timeStamp,options) {
 					if(options.selected) {
 						return 'images/cameralook-selected.png'
 					} else {

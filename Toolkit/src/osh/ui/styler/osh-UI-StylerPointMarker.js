@@ -26,29 +26,29 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		} 
 		
 		if(typeof(properties.locationFunc) != "undefined") {
-			var fn = function(rec,options) {
-				this.location = properties.locationFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				this.location = properties.locationFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.locationFunc.dataSourceIds,fn);
 		}
 		
 		if(typeof(properties.orientationFunc) != "undefined") {
-			var fn = function(rec,options) {
-				this.orientation = properties.orientationFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				this.orientation = properties.orientationFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.orientationFunc.dataSourceIds,fn);
 		}
 		
 		if(typeof(properties.iconFunc) != "undefined") {
-			var fn = function(rec,options) {
-				this.icon = properties.iconFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				this.icon = properties.iconFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.iconFunc.dataSourceIds,fn);
 		}
 		
 		if(typeof(properties.colorFunc) != "undefined") {
-			var fn = function(rec,options) {
-				this.color = properties.colorFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				this.color = properties.colorFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.colorFunc.dataSourceIds,fn);
 		}

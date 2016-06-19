@@ -25,22 +25,22 @@ OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 		} 
 		
 		if(typeof(properties.strokeFunc) != "undefined") {
-			var fn = function(rec,options) {
-				this.stroke = properties.strokeFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				this.stroke = properties.strokeFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.strokeFunc.dataSourceIds,fn);
 		}
 		
 		if(typeof(properties.colorFunc) != "undefined") {
-			var fn = function(rec,options) {
-				this.color = properties.colorFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				this.color = properties.colorFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.colorFunc.dataSourceIds,fn);
 		}
 		
 		if(typeof(properties.valuesFunc) != "undefined") {
-			var fn = function(rec,options) {
-				var values = properties.valuesFunc.handler(rec,options);
+			var fn = function(rec,timeStamp,options) {
+				var values = properties.valuesFunc.handler(rec,timeStamp,options);
 				this.x = values.x;
 				this.y = values.y;
 			}.bind(this);
