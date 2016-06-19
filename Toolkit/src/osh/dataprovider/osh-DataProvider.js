@@ -37,7 +37,7 @@ OSH.DataProvider.DataProvider = Class.create({
   },
   
   /**
-   * data is represented by 
+   * data is represented as 
    * data = { 
    *    timeStamp: timeStamp // number
    *    data: data // data to render
