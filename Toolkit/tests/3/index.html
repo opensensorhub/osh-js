@@ -62,14 +62,14 @@
 		var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("container-chart-windspeed",{
 			dataSourceId: weatherDataSource.getId(),
 			name:"WindSpeed chart",
-			yLabel : 'Pressure (hPa)',
+			yLabel : 'Wind Speed (m/s)',
 			xLabel : 'Time'
 		});
 		
 		var pressureChartView = new OSH.UI.Nvd3CurveChartView("container-chart-pressure",{
 			dataSourceId: weatherDataSource.getId(),
 			name:"WindSpeed chart",
-			yLabel : 'Wind Speed (m/s)',
+			yLabel : 'Pressure (hPa)',
 			xLabel : 'Time'
 		});
 		
@@ -81,7 +81,7 @@
 				handler : function(rec,timeStamp) {
 					return {
 						x : timeStamp,
-						y : parseFloat(rec[3])
+						y : parseFloat(rec[2])
 					};
 				}
 			}
@@ -93,7 +93,7 @@
 				handler : function(rec,timeStamp) {
 					return {
 						x : timeStamp,
-						y : rec[2]
+						y : rec[1]
 					};
 				}
 			}

@@ -73,7 +73,8 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		});
 
 		this.chart.yAxis //Chart y-axis settings
-		.axisLabel(yLabel).tickFormat(d3.format('.02f'));
+		.axisLabel(yLabel).tickFormat(d3.format('.02f'))
+		.axisLabelDistance(15);
 
 		this.width = "500px";
 		this.height = "300px";
