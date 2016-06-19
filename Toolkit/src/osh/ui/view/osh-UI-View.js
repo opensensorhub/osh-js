@@ -19,6 +19,7 @@ OSH.UI.View = Class.create({
       // list of stylers
       this.stylers = [];
       this.viewItems = [];
+      this.names = {};
     },
     
     getId: function() {
@@ -29,5 +30,20 @@ OSH.UI.View = Class.create({
       return this.divId;
     },
     
-    selectDataView: function(dataSourceIds) {}
+    selectDataView: function(dataSourceIds) {},
+    
+	/**
+	 * Add viewItem to the view
+	 */
+	addViewItem: function(viewItem) {
+		if(viewItem.hasOwnProperty("styler")) {
+			this.viewItems.push(viewItem);
+			var styler = viewItem.styler;
+			this.stylers.push(styler);
+			
+			if(viewItem.hasOwnProperty("name")) {
+				this.names[styler.getId()] = viewItem.name;
+			}
+		}
+	}
 });

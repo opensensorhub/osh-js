@@ -26,11 +26,11 @@ OSH.UI.Styler = Class.create({
 		}
 	},
 
-	setData : function($super, dataSourceId, rec, view, options) {
+	setData : function(dataSourceId, rec, view, options) {
 		if (dataSourceId in this.dataSourceToStylerMap) {
 			var fnArr = this.dataSourceToStylerMap[dataSourceId];
 			for (var i = 0; i < fnArr.length; i++) {
-				fnArr[i](rec.data, options);
+				fnArr[i](rec.data, rec.timeStamp, options);
 			}
 			return true;
 		} else {

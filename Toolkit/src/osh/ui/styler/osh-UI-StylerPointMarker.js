@@ -7,7 +7,6 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		this.icon = null;
 		this.color = "#000000";
 		
-		this.functions = [];
 		this.options = {};
 		
 		if(typeof(properties.location) != "undefined"){
@@ -27,7 +26,6 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		} 
 		
 		if(typeof(properties.locationFunc) != "undefined") {
-			this.functions.push(properties.locationFunc);
 			var fn = function(rec,options) {
 				this.location = properties.locationFunc.handler(rec,options);
 			}.bind(this);

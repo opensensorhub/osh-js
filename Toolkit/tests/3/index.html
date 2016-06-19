@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Issue #3: OSH Chart viewer</title>
+    
+    <!-- Nvd3 libs -->
+    <link rel="stylesheet" href="../../vendor/nvd3/css/nv.d3.css" />
+    <script src="../../vendor/nvd3/js/d3.v3.min.js"></script>
+	<script src="../../vendor/nvd3/js/nv.d3.min.js"></script>
+	
+    <!-- OSH libs -->
+    <!-- Hashtable -->
+    <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
+    
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Controller.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProviderController.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-Chart.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-Nvd3CurveChartView.js"></script>
+    
+</head>
+    <body>
+     <h2>Issue #3: Add chart viewer</h2>
+     <div id="container-chart-windspeed"></div>
+	 <div id="container-chart-pressure"></div>
+
+	<script type="text/javascript">
+		var dataProviderController = new OSH.DataProvider.DataProviderController({
+			bufferingTime : 2, // 0 seconds
+			synchronizedTime : false // does not sync data
+		});
+
+		// creates datasource
+		var weatherDataSource = new OSH.DataProvider.Chart("weather", {
+		  protocol : "ws",
+		  service: "SOS",
+		  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+		  offeringID: "urn:mysos:offering03",
+		  observedProperty: "http://sensorml.com/ont/swe/property/Weather",
+		  startTime: "now",
+		  endTime: "2055-01-01Z"
+		});
+		
+		// creates view
+		var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("container-chart-windspeed",{
+			dataSourceId: weatherDataSource.getId(),
+			name:"WindSpeed chart",
+			yLabel : 'Pressure (hPa)',
+			xLabel : 'Time'
+		});
+		
+		var pressureChartView = new OSH.UI.Nvd3CurveChartView("container-chart-pressure",{
+			dataSourceId: weatherDataSource.getId(),
+			name:"WindSpeed chart",
+			yLabel : 'Wind Speed (m/s)',
+			xLabel : 'Time'
+		});
+		
+		
+		// creates stylers
+		var windSpeedChartCurveStyler = new OSH.UI.Styler.Curve({
+			valuesFunc : {
+				dataSourceIds : [weatherDataSource.getId()],
+				handler : function(rec,timeStamp) {
+					return {
+						x : timeStamp,
+						y : parseFloat(rec[3])
+					};
+				}
+			}
+		});
+		
+		var pressureChartCurveStyler = new OSH.UI.Styler.Curve({
+			valuesFunc : {
+				dataSourceIds : [weatherDataSource.getId()],
+				handler : function(rec,timeStamp) {
+					return {
+						x : timeStamp,
+						y : rec[2]
+					};
+				}
+			}
+		});
+		
+		
+		// adds view item to the view
+		windSpeedChartView.addViewItem({
+			styler : windSpeedChartCurveStyler,
+			name : "Wind speed curve"
+		});
+		
+		pressureChartView.addViewItem({
+			styler : pressureChartCurveStyler,
+			name : "Pressure curve"
+		});
+		
+		// adds datasources to dataProviderController
+		dataProviderController.addDataSource(weatherDataSource);
+		
+		// registers the view into the data provider
+		dataProviderController.registerObserver(windSpeedChartView);
+		dataProviderController.registerObserver(pressureChartView);
+		
+		// starts streaming
+		dataProviderController.connectAll();
+	</script>
+
+</body>
+</html>

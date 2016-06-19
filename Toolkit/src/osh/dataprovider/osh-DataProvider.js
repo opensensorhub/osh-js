@@ -80,8 +80,10 @@ OSH.DataProvider.DataProvider = Class.create({
 	  // adds temporalFilter
 	  url += "temporalFilter=phenomenonTime,"+properties.startTime+"/"+properties.endTime+"&";
 	  
-	  // adds replaySpeed
-	  url += "replaySpeed="+properties.replaySpeed;
+	  if(properties.replaySpeed) {
+		  // adds replaySpeed
+		  url += "replaySpeed="+properties.replaySpeed;
+	  }
 	  
 	  // adds responseFormat (optional)
 	  if(properties.responseFormat) {

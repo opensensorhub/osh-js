@@ -6,24 +6,6 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 		this.lastRec = {};
 		this.selectedDataSources = [];
 		this.dataSources = [];
-		
-		//todelete
-		this.names = {};
-	},
-	
-	/**
-	 * Add viewItem to the view
-	 */
-	addViewItem: function(viewItem) {
-		if(viewItem.hasOwnProperty("styler")) {
-			this.viewItems.push(viewItem);
-			var styler = viewItem.styler;
-			this.stylers.push(styler);
-			
-			if(viewItem.hasOwnProperty("name")) {
-				this.names[styler.getId()] = viewItem.name;
-			}
-		}
 	},
 	
 	updateMarker: function(styler) {
