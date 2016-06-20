@@ -1,11 +1,13 @@
 OSH.UI.LeafletView = Class.create(OSH.UI.View,{
-	initialize:function($super,divId, properties) {
+	initialize:function($super,divId, options) {
 		$super(divId);
 		this.stylerToObj = {};
-		this.initMap();
 		this.lastRec = {};
 		this.selectedDataSources = [];
 		this.dataSources = [];
+		
+		// inits the map
+		this.initMap(options);
 	},
 	
 	updateMarker: function(styler) {
@@ -87,7 +89,77 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	},
 	
 	//---------- MAP SETUP --------------//
-	initMap:function() {
+	initMap:function(options) {
+		
+		 var initialView = null;
+		 this.first = true;
+		 var overlays = {};
+		 var baseLayers = {};
+		 var defaultLayer = null;
+		 var defaultLayers = this.getDefaultLayers();
+		 
+		 if(typeof(options) != "undefined") {
+			 if(options.initialView) {
+				 initialView = {
+					location : new L.LatLng(options.initialView.lat, options.initialView.lon),
+					zoom : options.initialView.zoom
+				 }
+			 } else {
+				 // loads the default one
+				 initialView = {
+					location : new L.LatLng(0, 0),
+					zoom : 3
+				 }
+			 }
+			 
+			 // checks autoZoom
+			 if(!options.autoZoomOnFirstMarker) {
+					 this.first = false;
+			 }
+			 
+			 // checks overlayers
+			 if(options.overlayLayers){
+				 overlays = options.overlayLayers;
+			 } else {
+				 overlays[defaultLayers[1].name] = defaultLayers[1].layer;
+			 }
+			 
+			 // checks baseLayer
+			 if(options.baseLayers){
+				 baseLayers = options.baseLayers;
+			 } else {
+				 baseLayers[defaultLayers[0].name] = defaultLayers[0].layer;
+			 }
+			 
+			 // checks defaultLayer
+			 if(options.defaultLayer) {
+				 defaultLayer = options.defaultLayer;
+			 } else {
+				 defaultLayer = defaultLayers[0].layer;
+			 }
+		 }
+		 
+		 // sets layers to map
+		  this.map = new L.Map(this.divId, {
+	         fullscreenControl: true,
+	         layers : defaultLayer
+	      });
+		  
+		  L.control.layers(baseLayers,overlays).addTo(this.map);
+		  
+	      this.map.setView(initialView.location, initialView.zoom);
+	      //this.initLayers();
+	      this.markers = {};
+	      this.polylines = {};
+	},
+	
+	getDefaultBaseLayers: function() {
+		return {};
+	},
+	
+	
+	getDefaultLayers: function() {
+		// copyrights
 		 var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
 		 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
 		 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -95,35 +167,23 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 
 		 var esriLink = '<a href="http://www.esri.com/">Esri</a>';
 	     var esriWholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+	     
+	  // leaflet layers
 	     var esriLayer = L.tileLayer(
 	        'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 	        attribution: '&copy; '+esriLink+', '+esriWholink,
 	        maxZoom: 22,
 	     });
 	     
-		 streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
-
-		  this.map = new L.Map(this.divId, {
-	         fullscreenControl: true,
-	         layers: [esriLayer]
-	      });
-		  
-		  var baseLayers = {
-		     
-		  };
-		  
-		  var overlays = {
-                     "MapBox Streets": streets,
-		     "Esri Satellite" : esriLayer
-		  };
-		  
-		  L.control.layers(baseLayers,overlays).addTo(this.map);
-		  
-	      this.map.setView(new L.LatLng(34.7255687, -86.7433953), 15);
-	      this.initLayers();
-	      this.markers = {};
-	      this.first = true;
-	      this.polylines = {};
+		 var streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+		 
+		 return [{
+			 name : "MapBox Streets",
+			 layer : streets
+		 },{
+			 name : "Esri Satellite",
+			 layer : esriLayer
+		 }];
 	},
 	
 	initLayers: function() {
