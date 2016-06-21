@@ -28,9 +28,6 @@ OSH.UI.Styler = Class.create({
 
 	setData : function(dataSourceId, rec, view, options) {
 		if (dataSourceId in this.dataSourceToStylerMap) {
-			if(options.selected) {
-				console.log("ici");
-			}
 			var fnArr = this.dataSourceToStylerMap[dataSourceId];
 			for (var i = 0; i < fnArr.length; i++) {
 				fnArr[i](rec.data, rec.timeStamp, options);

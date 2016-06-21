@@ -180,6 +180,28 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View,{
 
 		 this.map.addControl(layerSwitcher);
 		 
+		 // inits onClick events
+		 var select_interaction = new ol.interaction.Select();
+
+		 var self = this;
+	     select_interaction.getFeatures().on("add", function (e) { 
+	        var feature = e.element; //the feature selected
+	        var memo = [];
+	    	for (var styler in self.stylerToObj) {
+	    		if(self.stylerToObj[styler] == feature.getId()) {
+	    			for(var i=0;i < self.stylers.length;i++) {
+		    			if(self.stylers[i].getId() == styler) {
+			    			memo = memo.concat(self.stylers[i].getDataSourceIds());
+			    			break;
+		    			}
+	    			}
+	    		}
+	    	}
+	    	$(self.divId).fire("osh:select", memo);
+	     });
+
+		 this.map.addInteraction(select_interaction);
+		    
 	     //this.initLayers();
 	     this.markers = {};
 	     this.polylines = {};
@@ -233,6 +255,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View,{
 		this.map.addLayer(vectorMarkerLayer);
 		
 	    var id = "view-marker-"+OSH.Utils.randomUUID();
+	    markerFeature.setId(id);
 	    this.markers[id] = markerFeature;
 	    
 	    if(this.first) {
@@ -240,23 +263,6 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View,{
 	    	this.map.getView().setCenter(ol.proj.transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
 	    	this.map.getView().setZoom(19);
 	    }
-	    var self = this;
-	    
-	    // adds onclick event
-	    marker.on('click',function(){
-	    	var memo = [];
-	    	for (var styler in self.stylerToObj) {
-	    		if(self.stylerToObj[styler] == id) {
-	    			for(var i=0;i < self.stylers.length;i++) {
-		    			if(self.stylers[i].getId() == styler) {
-			    			memo = memo.concat(self.stylers[i].getDataSourceIds());
-			    			break;
-		    			}
-	    			}
-	    		}
-	    	}
-	    	$(self.divId).fire("osh:select", memo);
-	    });
 	    
 	    return id;
 	},
@@ -312,36 +318,28 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View,{
 		        }),
 		        stroke: new ol.style.Stroke({
 		            color: properties.color,
-		            width: 5
+		            width: properties.weight
 		        })
 		    })
 		});
 		
 		this.map.addLayer(vectorPathLayer);
 		var id = "view-polyline-"+OSH.Utils.randomUUID();
-		this.polylines[id] = source;
+		this.polylines[id] = pathGeometry;
 		
 		return id;
 	},
 	
 	updateMapPolyline: function(id,properties) {
 		if(id in this.polylines) {
-			var source = this.polylines[id];
+			var geometry = this.polylines[id];
 			
-			// removes the layer
-	        source.removeAllFeatures();
-	        
 	        var polylinePoints = [];
 	        for(var i=0;i < properties.locations.length;i++) {
 	        	polylinePoints.push(ol.proj.transform([properties.locations[i].x, properties.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
 	        }
 	        
-	        var pathGeometry = new ol.geom.LineString(polylinePoints);
-			var feature = new ol.Feature({
-	            geometry: pathGeometry,
-	            name: 'Line'
-	        });
-			source.addFeature(feature);
+	        geometry.setCoordinates(polylinePoints);
 		}
 	}
 });

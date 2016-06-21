@@ -66,27 +66,27 @@
 		});
 	
 		// creates datasource
-		
-		//--Android Phone Video, Orientation and GPS Location (MJPEG)
+
+		//--Android Phone Video
 		var androidPhoneGpsDataSource = new OSH.DataProvider.LatLonAlt("android-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
-		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
-		  offeringID: "urn:android:device:89845ed469b7edc7-sos",
+		  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+		  offeringID: "urn:android:device:060693280a28e015-sos",
 		  observedProperty: "http://sensorml.com/ont/swe/property/Location",
-		  startTime: "2016-06-08T19:46:07Z",
-		  endTime: "2016-06-08T20:35:06.983Z",
+		  startTime: "2015-02-16T07:58:00Z",
+		  endTime: "2015-02-16T08:09:00Z",
 		  replaySpeed: "1"
 		});
 	
 		var androidPhoneOrientationDataSource = new OSH.DataProvider.OrientationQuaternion("android-Orientation", {
 			  protocol : "ws",
 			  service: "SOS",
-			  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
-			  offeringID: "urn:android:device:89845ed469b7edc7-sos",
+			  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+			  offeringID: "urn:android:device:060693280a28e015-sos",
 			  observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-			  startTime: "2016-06-08T19:46:07Z",
-			  endTime: "2016-06-08T20:35:06.983Z",
+			  startTime: "2015-02-16T07:58:00Z",
+			  endTime: "2015-02-16T08:09:00Z",
 			  replaySpeed: "1"
 			});
 		
@@ -107,7 +107,7 @@
 			baseLayers: [],
 			overlayLayers: [osm],
 			defaultLayer : osm,
-			initialView: {lat: 34.7255687, lon: -86.7433953, zoom: 15},
+			initialView: {lon: 1.42376557, lat: 43.61758626, zoom: 17},
 			autoZoomOnFirstMarker: true,
 			maxZoom : 22
 		});
@@ -115,8 +115,8 @@
 		// creates stylers
 		var androidMarkerStyler = new OSH.UI.Styler.PointMarker({
 			location : {
-				x : -86.7433953,
-				y : 34.7255687,
+				x : 1.42376557,
+				y : 43.61758626,
 				z : 100
 			},
 			locationFunc : {
@@ -161,8 +161,8 @@
 					};
 				}
 			},
-			color : 'yellow',
-			weight : 5,
+			color : 'rgba(0,0,255,0.5)',
+			weight : 10,
 			opacity : .5,
 			smoothFactor : 1,
 			maxPoints : 200
