@@ -1,4 +1,4 @@
-OSH.DataProvider.Video = Class.create(OSH.DataProvider.DataProvider,{
+OSH.DataReceiver.Video = Class.create(OSH.DataReceiver.DataSource,{
   initialize: function($super,name,properties,options) {
     $super(name,properties,options);
     
@@ -11,11 +11,11 @@ OSH.DataProvider.Video = Class.create(OSH.DataProvider.DataProvider,{
     this.videoDataSource = null;
     
     if(format == "mp4") {
-      this.videoDataSource = new OSH.DataProvider.VideoMp4(name,properties);
+      this.videoDataSource = new OSH.DataReceiver.VideoMp4(name,properties);
     } else if(format == "h264") {
-      this.videoDataSource = new OSH.DataProvider.VideoH264(name,properties);
+      this.videoDataSource = new OSH.DataReceiver.VideoH264(name,properties);
     } else if(format == "mjpeg"){
-      this.videoDataSource = new OSH.DataProvider.VideoMjpeg(name,properties);
+      this.videoDataSource = new OSH.DataReceiver.VideoMjpeg(name,properties);
     }
   },
   

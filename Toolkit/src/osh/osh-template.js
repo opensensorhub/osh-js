@@ -28,11 +28,11 @@ OSH.UI.Styler = {
 
 window.OSH.Styler = OSH.Styler;
 		
-OSH.DataProvider = {
+OSH.DataReceiver = {
 	version: 'dev'
 };
 
-window.OSH.DataProvider = OSH.DataProvider;
+window.OSH.DataReceiver = OSH.DataReceiver;
 
 OSH.DataConnector = {
 	version: 'dev'
@@ -45,3 +45,9 @@ OSH.Utils = {
 };
 
 window.OSH.Utils = OSH.Utils;
+
+OSH.DataSender = {
+	version: 'dev'
+};
+
+window.OSH.DataSender = OSH.DataSender;

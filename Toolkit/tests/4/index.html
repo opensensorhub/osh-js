@@ -26,10 +26,10 @@
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProviderController.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-LatLonAlt.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-OrientationQuaternion.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
     
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
@@ -60,7 +60,7 @@
      <div id="container"></div>
 
 	<script type="text/javascript">
-		var dataProviderController = new OSH.DataProvider.DataProviderController({
+		var dataProviderController = new OSH.DataReceiver.DataReceiverController({
 			bufferingTime : 0*1000, // 2 seconds
 			synchronizedTime : false // true to sync the data
 		});
@@ -68,7 +68,7 @@
 		// creates datasource
 
 		//--Android Phone Video
-		var androidPhoneGpsDataSource = new OSH.DataProvider.LatLonAlt("android-GPS", {
+		var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -79,7 +79,7 @@
 		  replaySpeed: "1"
 		});
 	
-		var androidPhoneOrientationDataSource = new OSH.DataProvider.OrientationQuaternion("android-Orientation", {
+		var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
 			  protocol : "ws",
 			  service: "SOS",
 			  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

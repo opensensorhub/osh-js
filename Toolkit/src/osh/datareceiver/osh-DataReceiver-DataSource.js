@@ -1,4 +1,4 @@
-OSH.DataProvider.DataProvider = Class.create({
+OSH.DataReceiver.DataSource = Class.create({
   initialize: function(name,properties,options) {
     // checks if type is WebSocket
     if(properties.protocol == "ws") {

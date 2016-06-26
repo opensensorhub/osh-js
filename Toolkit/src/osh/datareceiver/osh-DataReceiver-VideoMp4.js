@@ -1,4 +1,4 @@
-OSH.DataProvider.VideoMp4 = Class.create(OSH.DataProvider.DataProvider,{
+OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource,{
   initialize: function($super,name,properties,options) {
     $super(name,properties,options);
     this.absoluteTime = -1;

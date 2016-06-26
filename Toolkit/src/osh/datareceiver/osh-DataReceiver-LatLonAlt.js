@@ -1,4 +1,4 @@
-OSH.DataProvider.LatLonAlt = Class.create(OSH.DataProvider.DataProvider,{
+OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
 
   parseTimeStamp: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));

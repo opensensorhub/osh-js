@@ -44,14 +44,14 @@
 	    <!-- OSH Video component parser -->
 	    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProviderController.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-LatLonAlt.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-OrientationQuaternion.js"></script>
-	      <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-VideoH264.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-VideoMjpeg.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-VideoMp4.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataprovider/osh-DataProvider-Video.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
+	      <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMp4.js"></script>
+	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
 	    
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-Dialog.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-JQRangeSlider.js"></script>
@@ -95,7 +95,7 @@
 	 	<div id="rangeSlider" style="margin: 5 10 5 15;"></div>
 	 </div>
 	 <script type="text/javascript">
-		var dataProviderController = new OSH.DataProvider.DataProviderController({
+		var dataProviderController = new OSH.DataReceiver.DataReceiverController({
 			bufferingTime : 2*1000, // 2 seconds
 			synchronizedTime : false // true to sync the data
 		});
@@ -103,7 +103,7 @@
 		// creates datasource
 		
 		//--Android Phone Video, Orientation and GPS Location (MJPEG)
-		var androidPhoneGpsDataSource = new OSH.DataProvider.LatLonAlt("android-GPS", {
+		var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -114,7 +114,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var androidPhoneOrientationDataSource = new OSH.DataProvider.OrientationQuaternion("android-Orientation", {
+		var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -125,7 +125,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var androidPhoneVideoDataSource = new OSH.DataProvider.VideoMjpeg("android-Video", {
+		var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -140,7 +140,7 @@
 		//--
 		
 		//--Virb Video (MP4) and GPS Location
-		var virb1GpsDataSource = new OSH.DataProvider.LatLonAlt("virb1-GPS", {
+		var virb1GpsDataSource = new OSH.DataReceiver.LatLonAlt("virb1-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -151,7 +151,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var virb1VideoDataSource = new OSH.DataProvider.VideoMp4("virb1-Video", {
+		var virb1VideoDataSource = new OSH.DataReceiver.VideoMp4("virb1-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -165,7 +165,7 @@
 			format: "mp4"					
 		});
 		
-		var virb2GpsDataSource = new OSH.DataProvider.LatLonAlt("virb2-GPS", {
+		var virb2GpsDataSource = new OSH.DataReceiver.LatLonAlt("virb2-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -176,7 +176,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var virb2VideoDataSource = new OSH.DataProvider.VideoMp4("virb2-Video", {
+		var virb2VideoDataSource = new OSH.DataReceiver.VideoMp4("virb2-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -193,7 +193,7 @@
 		//--
 		
 		//-- Thermal IR video from FLIR (MJPEG)
-		var flirVideoDataSource = new OSH.DataProvider.VideoMjpeg("flir-Video", {
+		var flirVideoDataSource = new OSH.DataReceiver.VideoMjpeg("flir-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",

@@ -1,4 +1,4 @@
-OSH.DataProvider.DataProviderController = Class.create({
+OSH.DataReceiver.DataReceiverController = Class.create({
   initialize: function(options) {
     this.buffer = new OSH.Buffer();
     if(options.startTime) {

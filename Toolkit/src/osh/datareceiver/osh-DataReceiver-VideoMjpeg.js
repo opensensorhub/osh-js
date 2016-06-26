@@ -1,4 +1,4 @@
-OSH.DataProvider.VideoMjpeg = Class.create(OSH.DataProvider.DataProvider,{
+OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
   initialize: function($super,name,properties,options) {
     $super(name,properties,options);
   },

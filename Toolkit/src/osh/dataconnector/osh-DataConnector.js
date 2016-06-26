@@ -10,7 +10,5 @@ OSH.DataConnector.DataConnector = Class.create({
   
   getUrl: function() {
     return this.url;
-  },
-  
-  onMessage: function(data) {} 
+  }
 });

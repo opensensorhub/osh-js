@@ -1,4 +1,4 @@
-OSH.DataProvider.OrientationQuaternion = Class.create(OSH.DataProvider.DataProvider,{
+OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSource,{
 
   parseTimeStamp: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));

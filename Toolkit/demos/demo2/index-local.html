@@ -32,14 +32,14 @@
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProviderController.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-LatLonAlt.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-OrientationQuaternion.js"></script>
-      <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-VideoH264.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-VideoMjpeg.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-VideoMp4.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-Video.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
+      <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoMp4.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
     
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
@@ -93,14 +93,14 @@
      <div id="container-cesium" class="cesium"></div>
      <div id="madison-virb1-video-mp4" style="position:absolute;top:500px;left:30px"></div>
 	<script type="text/javascript">
-		var dataProviderController = new OSH.DataProvider.DataProviderController(
+		var dataProviderController = new OSH.DataReceiver.DataReceiverController(
 				{
 					bufferingTime : 0, // 2 seconds
 					synchronizedTime : false // does not sync the data
 				});
 
 		// creates datasource
-		var latLondataSource = new OSH.DataProvider.LatLonAlt("gps1", {
+		var latLondataSource = new OSH.DataReceiver.LatLonAlt("gps1", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "botts.pscloud.org:8181/sensorhub/sos",
@@ -112,7 +112,7 @@
 		});
 				
 		
-		var latLonVirbDataSource = new OSH.DataProvider.LatLonAlt("virb1-gps", {
+		var latLonVirbDataSource = new OSH.DataReceiver.LatLonAlt("virb1-gps", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -123,7 +123,7 @@
 		  replaySpeed: "1"
 		});
 
-		var madisonVirb1VideoDataSource = new OSH.DataProvider.Video("madisonVirb1Video", {
+		var madisonVirb1VideoDataSource = new OSH.DataReceiver.Video("madisonVirb1Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",

@@ -25,9 +25,9 @@
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProviderController.js"></script>
-    <script type="text/javascript" src="../../src/osh/dataprovider/osh-DataProvider-Chart.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-Chart.js"></script>
     
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
@@ -42,13 +42,13 @@
 	 <div id="container-chart-pressure"></div>
 
 	<script type="text/javascript">
-		var dataProviderController = new OSH.DataProvider.DataProviderController({
+		var dataProviderController = new OSH.DataReceiver.DataReceiverController({
 			bufferingTime : 2, // 0 seconds
 			synchronizedTime : false // does not sync data
 		});
 
 		// creates datasource
-		var weatherDataSource = new OSH.DataProvider.Chart("weather", {
+		var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

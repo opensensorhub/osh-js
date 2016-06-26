@@ -1,4 +1,4 @@
-OSH.DataProvider.VideoH264 = Class.create(OSH.DataProvider.DataProvider,{
+OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource,{
   initialize: function($super,name,properties,options) {
     $super(name,properties,options);
   },

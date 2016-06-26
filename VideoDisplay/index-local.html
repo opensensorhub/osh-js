@@ -81,7 +81,7 @@
 		 <div id="container-video4" class="video-box"></div>
 	 </div>
 	 <script type="text/javascript">
-		var dataProviderController = new OSH.DataProvider.DataProviderController({
+		var dataProviderController = new OSH.DataReceiver.DataReceiverController({
 			bufferingTime : 2*1000, // 0 seconds
 			synchronizedTime : false // does not sync the data
 		});
@@ -89,7 +89,7 @@
 		// creates datasource
 		
 		//--Android Phone Video, Orientation and GPS Location (MJPEG)
-		var androidPhoneGpsDataSource = new OSH.DataProvider.LatLonAlt("android-GPS", {
+		var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -100,7 +100,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var androidPhoneOrientationDataSource = new OSH.DataProvider.OrientationQuaternion("android-Orientation", {
+		var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -111,7 +111,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var androidPhoneVideoDataSource = new OSH.DataProvider.VideoMjpeg("android-Video", {
+		var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -126,7 +126,7 @@
 		//--
 		
 		//--Virb Video (MP4) and GPS Location
-		var virb1GpsDataSource = new OSH.DataProvider.LatLonAlt("virb1-GPS", {
+		var virb1GpsDataSource = new OSH.DataReceiver.LatLonAlt("virb1-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -137,7 +137,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var virb1VideoDataSource = new OSH.DataProvider.VideoMp4("virb1-Video", {
+		var virb1VideoDataSource = new OSH.DataReceiver.VideoMp4("virb1-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -151,7 +151,7 @@
 			format: "mp4"					
 		});
 		
-		var virb2GpsDataSource = new OSH.DataProvider.LatLonAlt("virb2-GPS", {
+		var virb2GpsDataSource = new OSH.DataReceiver.LatLonAlt("virb2-GPS", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -162,7 +162,7 @@
 		  replaySpeed: "1"
 		});
 		
-		var virb2VideoDataSource = new OSH.DataProvider.VideoMp4("virb2-Video", {
+		var virb2VideoDataSource = new OSH.DataReceiver.VideoMp4("virb2-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
@@ -179,7 +179,7 @@
 		//--
 		
 		//-- Thermal IR video from FLIR (MJPEG)
-		var flirVideoDataSource = new OSH.DataProvider.VideoMjpeg("flir-Video", {
+		var flirVideoDataSource = new OSH.DataReceiver.VideoMjpeg("flir-Video", {
 		  protocol : "ws",
 		  service: "SOS",
 		  endpointUrl: "www.bottsgeo.com:8080/sensorhub/sos",
