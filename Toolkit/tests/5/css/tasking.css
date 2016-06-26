@@ -44,11 +44,11 @@
 }
 
 .preset>label {
-    margin-right:15px;
+    margin-right:10px;
 }
 
 .preset {
-    margin-bottom:40px;
+    margin-bottom:55px;
 }
 
 .ptz {
@@ -66,11 +66,17 @@
 }
 
 .pan>label {
-    margin-right:23px;
+    display:block;
+    width:60px;
+    float:left;
 }
 .tilt>label {
-    margin-right:28px;
+    display:block;
+    width:60px;
+    float:left;
 }
 .zoom>label {
-    margin-right:10px;
+    display:block;
+    width:60px;
+    float:left;
 }
