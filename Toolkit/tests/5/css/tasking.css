@@ -1,18 +1,36 @@
 .remote-left {
-    margin-bottom: -60px;
+    margin-top: 72px;
+    position: absolute;
 }
 
 .remote-right {
-    margin-bottom: -60px;
+    position: absolute;
+    margin-left: 140px;
+    margin-top: -70px;
 }
 
 .remote-up {
+    margin-left: 70px;
+}
 
+.remote-zoomin {
+    margin-left: 70px;
+}
+
+.remote-zoomin .remote-button{
+    border-radius: 200px 200px 0px 0px !important;
+}
+
+.remote-zoomout .remote-button{
+    border-radius: 0px 0px 200px 200px !important;
+}
+
+.remote-zoomout {
+    margin-left: 70px;
 }
 
 .remote-down {
-    margin-bottom: -120px;
-    margin-left: -128px;
+    margin-left: 70px;
 }
 
 .remote-button:active {

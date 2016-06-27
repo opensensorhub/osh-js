@@ -49,9 +49,12 @@
     // adds datasources to dataSenderController
     dataSenderController.addDataSource(taskingVideoDataSource);
 
-    var taskingView = new OSH.UI.TaskingView("container");
+    var taskingView = new OSH.UI.TaskingView("container",{
+        dataSourceId : taskingVideoDataSource.getId()
+    });
     // registers the view into the data provider
-    // view.register(dataSenderController)
+    taskingView.register(dataSenderController);
+
 </script>
 </body>
 </html>

@@ -1,10 +1,12 @@
 var htmlTaskingComponent =
     "<div class=\"flex-container\">"+
         "<div class=\"remote fixed\">" +
-            "<input id=\"button-pan-left\" type=\"image\" src=\"images/remote-left.png\" class=\"remote-left remote-button\"/>" +
-            "<input id=\"button-tilt-up\" type=\"image\" src=\"images/remote-up.png\" class=\"remote-up remote-button\"/>" +
-            "<input id=\"button-pan-right\" type=\"image\" src=\"images/remote-right.png\" class=\"remote-right remote-button\"/>"+
-            "<input id=\"button-tilt-down\" type=\"image\" src=\"images/remote-down.png\" class=\"remote-down remote-button\"/>"+
+            "<div class=\"remote-left\"><input id=\"button-pan-left\" type=\"image\" src=\"images/remote-left.png\" class=\"remote-button\"/></div>" +
+            "<div class=\"remote-up\"><input id=\"button-tilt-up\" type=\"image\" src=\"images/remote-up.png\" class=\"remote-button\"/></div>" +
+            "<div class=\"remote-zoomin\"><input id=\"button-zoom-in\" type=\"image\" src=\"images/remote-zoomin.png\" class=\"remote-button\"/></div>" +
+            "<div class=\"remote-zoomout\"><input id=\"button-zoom-out\" type=\"image\" src=\"images/remote-zoomout.png\" class=\"remote-button\"/></div>" +
+            "<div class=\"remote-right\"><input id=\"button-pan-right\" type=\"image\" src=\"images/remote-right.png\" class=\"remote-button\"/></div>"+
+            "<div class=\"remote-down\"><input id=\"button-tilt-down\" type=\"image\" src=\"images/remote-down.png\" class=\"remote-button\"/></div>"+
         "</div>"+
         "<div class=\"ptz flex-item\">" +
             "<div class=\"preset\">" +
@@ -47,6 +49,10 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
             if (options.cssSelected) {
                 this.cssSelected = options.cssSelected;
             }
+
+            if(options.dataSourceId) {
+                this.dataSourceId = options.dataSourceId;
+            }
         }
 
         // creates video tag element
@@ -72,6 +78,8 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
         $("button-tilt-down").observe('click', function(){this.onTiltClick(-1)}.bind(this));
         $("button-pan-left").observe('click', function(){this.onPanClick(-1)}.bind(this));
         $("button-pan-right").observe('click', function(){this.onPanClick(1)}.bind(this));
+        $("button-zoom-in").observe('click', function(){this.onZoomClick(1)}.bind(this));
+        $("button-zoom-out").observe('click', function(){this.onZoomClick(-1)}.bind(this));
     },
 
     onTiltClick: function(value) {
@@ -86,16 +94,22 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
         this.onChange();
     },
 
+    onZoomClick: function(value) {
+        this.zoom += value;
+        document.getElementById("input-zoom").value = this.zoom;
+        this.onChange();
+    },
+
     onChange: function() {
         //TODO: get values from INPUT
         var properties = {
             pan : this.pan,
-            zoom: 50,
+            zoom: this.zoom,
             tilt : this.tilt
         }
 
         for(var i=0;i < this.observers.length;i++) {
-            this.observers[i].sendRequest(properties);
+            this.observers[i].sendRequest(this.dataSourceId,properties);
         }
     },
 
