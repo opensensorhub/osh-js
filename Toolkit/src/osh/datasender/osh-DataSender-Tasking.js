@@ -27,7 +27,8 @@ OSH.DataSender.Tasking = Class.create(OSH.DataSender.DataSource,{
         // adds endings
         xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
 
-        console.log(xmlSpsRequest);
+        document.fire("osh:log", xmlSpsRequest);
+
         return xmlSpsRequest;
     }
 });

@@ -3,6 +3,7 @@ OSH.UI.Dialog = Class.create({
 		// creates HTML element
 		var uniqueId = "dialog-"+OSH.Utils.randomUUID();
 
+		var appendToBody = false;
 		if(typeof(options.div) != "undefined") {
 			this.div = options.div;
 			var css= options.div.className;
@@ -12,6 +13,7 @@ OSH.UI.Dialog = Class.create({
 			this.div = document.createElement("div");
 			this.div.setAttribute("class", "pop-over");
 			this.div.setAttribute("id", uniqueId);
+			appendToBody = true;
 		}
 		
 		this.div.setAttribute("draggable", "true");
@@ -43,10 +45,12 @@ OSH.UI.Dialog = Class.create({
 		this.div.appendChild(this.divContent);
 
 		// adds style
-		this.div.style.display = "block";
+		//this.div.style.display = "block";
 
 		// adds div to body
-		//document.body.appendChild(this.div);
+		if(appendToBody) {
+			document.body.appendChild(this.div);
+		}
 
 		// adds listener
 		this.div.addEventListener('dragstart', this.drag_start.bind(this), false);
@@ -61,8 +65,8 @@ OSH.UI.Dialog = Class.create({
 	},
 	
 	setContentSize: function(width,height) {
-	  this.divContent.style.width = width;
-	  this.divContent.style.height = height;
+	  this.div.style.width = width;
+	  this.div.style.height = height;
 	},
 
 	onClose: function (callback) {
