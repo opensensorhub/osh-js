@@ -78,7 +78,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 
 		this.width = "500px";
 		this.height = "300px";
-		var css = "";
+		var css = document.getElementById(this.divId).className;
 
 		if (options.width) {
 			this.width = options.width;
@@ -89,7 +89,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		}
 
 		if (options.css) {
-			css = options.css;
+			css += " "+options.css;
 		}
 
 		//create svg element

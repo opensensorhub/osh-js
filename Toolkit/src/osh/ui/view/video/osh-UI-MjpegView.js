@@ -7,19 +7,9 @@ OSH.UI.MJpegView = Class.create(OSH.UI.View,{
     if(typeof(options.dataSourceId) != "undefined") {
     	this.dataSourceId = options.dataSourceId;
     }
-    var width = "640";
-    var height = "480";
     this.css = "";
     
     this.cssSelected = "";
-    
-    if(options.width) {
-    	width = options.width;
-    }
-    
-    if(options.height) {
-    	height = options.height;
-    }
     
     if(options.css) {
     	this.css = options.css;
@@ -31,8 +21,6 @@ OSH.UI.MJpegView = Class.create(OSH.UI.View,{
     
     // creates video tag element
     this.imgTag = document.createElement("img");
-    this.imgTag.setAttribute("height", height);
-    this.imgTag.setAttribute("width", width);
     this.imgTag.setAttribute("class", this.css);
     this.imgTag.setAttribute("id", "dataview-"+OSH.Utils.randomUUID());
     
