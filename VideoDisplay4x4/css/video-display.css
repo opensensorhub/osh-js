@@ -51,18 +51,24 @@ a.navbar-brand:hover {
     float: left;
     width:calc(50% - 10px);
     height:calc(100% - 10px);
+    border-right: solid 1px;
+    border-bottom: solid 1px;
 }
 
 .top-right {
     margin-left:50%;
     height:calc(100% - 10px);
     width:calc(50% - 10px);
+    border-left: solid 1px;
+    border-bottom: solid 1px;
 }
 
 .bottom-left {
     float: left;
     width:calc(50% - 10px) !important;;
     height:100% !important;
+    border-right: solid 1px;
+    border-top: solid 1px;
 }
 
 .bottom-right {
@@ -70,6 +76,8 @@ a.navbar-brand:hover {
     height:100%;
     width:calc(50% - 10px);
     padding:150px 0px 0px 150px;
+    border-left: solid 1px;
+    border-top: solid 1px;
 }
 
 .video {
