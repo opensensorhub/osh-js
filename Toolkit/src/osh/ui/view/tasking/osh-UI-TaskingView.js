@@ -75,23 +75,31 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
         this.timerId = 0;
 
         var interval = 100;
+        this.timerIds = new Array();
         // inits listeners
-        $("button-tilt-up").observe('mousedown',  function(){this.timerId = setInterval(function(){this.onTiltClick(1)}.bind(this),interval)}.bind(this));
-        $("button-tilt-down").observe('mousedown',  function(){this.timerId = setInterval(function(){this.onTiltClick(-1)}.bind(this),interval)}.bind(this));
-        $("button-pan-left").observe('mousedown',  function(){this.timerId = setInterval(function(){this.onPanClick(-1)}.bind(this),interval)}.bind(this));
-        $("button-pan-right").observe('mousedown',  function(){this.timerId = setInterval(function(){this.onPanClick(1)}.bind(this),interval)}.bind(this));
-        $("button-zoom-in").observe('mousedown',  function(){this.timerId = setInterval(function(){this.onZoomClick(1)}.bind(this),interval*5)}.bind(this));
-        $("button-zoom-out").observe('mousedown',  function(){this.timerId = setInterval(function(){this.onZoomClick(-1)}.bind(this),interval*5)}.bind(this));
+        $("button-tilt-up").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(1)}.bind(this),interval))}.bind(this));
+        $("button-tilt-down").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(-1)}.bind(this),interval))}.bind(this));
+        $("button-pan-left").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onPanClick(-1)}.bind(this),interval))}.bind(this));
+        $("button-pan-right").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onPanClick(1)}.bind(this),interval))}.bind(this));
+        $("button-zoom-in").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onZoomClick(1)}.bind(this),interval*5))}.bind(this));
+        $("button-zoom-out").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onZoomClick(-1)}.bind(this),interval*5))}.bind(this));
 
-        $("button-tilt-up").observe('mouseup',  function(){clearInterval(this.timerId);}.bind(this));
-        $("button-tilt-down").observe('mouseup',  function(){clearInterval(this.timerId);}.bind(this));
-        $("button-pan-left").observe('mouseup',  function(){clearInterval(this.timerId);}.bind(this));
-        $("button-pan-right").observe('mouseup',  function(){clearInterval(this.timerId);}.bind(this));
-        $("button-zoom-in").observe('mouseup',  function(){clearInterval(this.timerId);}.bind(this));
-        $("button-zoom-out").observe('mouseup',  function(){clearInterval(this.timerId);}.bind(this));
+        $("button-tilt-up").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+        $("button-tilt-down").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+        $("button-pan-left").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+        $("button-pan-right").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+        $("button-zoom-in").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+        $("button-zoom-out").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+    },
+
+    removeInterval: function(interval) {
+        if(this.timerIds.length > 0) {
+            setTimeout(clearInterval(this.timerIds.pop()),interval+50);
+        }
     },
 
     onTiltClick: function (value) {
+        console.log("press");
         this.tilt += value;
         document.getElementById("input-tilt").value = this.tilt;
         this.onChange();
