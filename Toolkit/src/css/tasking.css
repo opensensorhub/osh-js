@@ -53,6 +53,7 @@
 /** Display remote & PTZ side by side using CSS 3 and flex display **/
 .flex-container {
     display:flex;
+    width:100%;
 }
 
 .fixed{
@@ -60,7 +61,8 @@
 }
 
 .flex-item{
-    flex-grow: 1;
+    /*flex-grow: 1;*/
+    width:150px;
 }
 
 /** End Flex **/
