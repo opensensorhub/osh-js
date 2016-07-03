@@ -199,4 +199,10 @@ function init() {
 
     // starts streaming
     dataProviderController.connectAll();
+
+    // inits rangeSlider
+    /*var rangeSlider = new OSH.UI.JQRangeSlider("rangeSlider", {
+        startDate: "2015-02-16T07:58:00Z",
+        endDate: "2015-02-16T08:09:00Z"
+    });*/
 }

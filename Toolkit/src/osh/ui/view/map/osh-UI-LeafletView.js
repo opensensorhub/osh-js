@@ -8,6 +8,28 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 		
 		// inits the map
 		this.initMap(options);
+
+		this.initEvents();
+	},
+
+	initEvents: function() {
+		// observers for right click events
+		$(this.divId).observe('mousedown', function(event) {
+			if(event.which == 3) {
+				console.log("right click");
+				event.stopPropagation();
+				event.preventDefault();
+			}
+		});
+
+		$(this.divId).oncontextmenu = function(e) {
+			var evt = new Object({keyCode: 93});
+			if(event.preventDefault != undefined)
+				event.preventDefault();
+			if(event.stopPropagation != undefined)
+				event.stopPropagation();
+		};
+
 	},
 
 	updateMarker: function(styler) {
