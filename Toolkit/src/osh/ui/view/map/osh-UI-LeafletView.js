@@ -13,16 +13,8 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	},
 
 	initEvents: function() {
-		// observers for right click events
-		$(this.divId).observe('mousedown', function(event) {
-			if(event.which == 3) {
-				console.log("right click");
-				event.stopPropagation();
-				event.preventDefault();
-			}
-		});
-
-		$(this.divId).oncontextmenu = function(e) {
+		// removes default right click
+		document.oncontextmenu = function(e) {
 			var evt = new Object({keyCode: 93});
 			if(event.preventDefault != undefined)
 				event.preventDefault();
@@ -32,7 +24,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 
 	},
 
-	updateMarker: function(styler) {
+	updateMarker: function(styler,contextmenu) {
 		var markerId = 0;
 		
 		if(!(styler.getId() in this.stylerToObj)) {
@@ -45,7 +37,28 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 				icon:styler.icon,
 				name: this.names[styler.getId()]
 			});
-			
+
+			// TODO: debugging
+			// gets contextmenu
+			for(var i in this.viewItems) {
+				if(this.viewItems[i].styler.getId() == styler.getId()) {
+					if(typeof(this.viewItems[i].contextmenu) != undefined) {
+						// overrides default right click
+						$(markerId).oncontextmenu = function (e) {
+							var evt = new Object({keyCode: 93});
+
+							if (event.preventDefault != undefined)
+								event.preventDefault();
+							if (event.stopPropagation != undefined)
+								event.stopPropagation();
+
+							this.viewItems[i].contextmenu.show(event.pageX,event.pageY);
+						}.bind(this);
+					}
+					break;
+				}
+			}
+			//END debugging
 			this.stylerToObj[styler.getId()] = markerId;
 		} else {
 			markerId = this.stylerToObj[styler.getId()];
@@ -267,7 +280,9 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 	    	}
 	    	$(self.divId).fire("osh:select", memo);
 	    });
-	    
+
+		marker._icon.id = id;
+
 	    return id;
 	},
 	

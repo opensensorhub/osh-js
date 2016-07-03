@@ -1,0 +1,91 @@
+/* Demo by http://creative-punch.net */
+
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
+
+.circular-menu-container {
+    position:absolute;
+}
+
+.circular-menu {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    position: absolute;
+}
+
+.circular-menu-circle {
+    width: 250px;
+    height: 250px;
+    opacity: 0;
+
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    transform: scale(0);
+
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.open.circular-menu-circle {
+    opacity: 1;
+
+    -webkit-transform: scale(0.6);
+    -moz-transform: scale(0.6);
+    transform: scale(0.5);
+    box-shadow: 0px 0px 20px 1px #777;
+    border-radius:130px;
+    background-color:#777;
+    filter: alpha(opacity=60);
+    /* IE */
+    -moz-opacity: 0.6;
+    /* Mozilla */
+    opacity: 0.6;
+}
+
+.circular-menu-circle a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    margin-left: -20px;
+    margin-top: -20px;
+    position: absolute;
+    text-align: center;
+
+}
+
+.circular-menu-circle a:hover {
+    color: #eef;
+    text-decoration: none;
+}
+
+.menu-button {
+  position: absolute;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+  text-decoration: none;
+  text-align: center;
+  color: #444;
+  border-radius: 50%;
+  display: block;
+  height: 40px;
+  width: 40px;
+  background: #FFF;
+  padding:5px;
+  text-decoration: none;
+}
+
+.circular-menu a {
+    text-decoration: none;
+}
+
+/*.circular-menu-circle .fa:hover{
+    color:forestgreen;
+}*/
+
+.fa-3x:hover {
+    font-size:4.5em;
+}

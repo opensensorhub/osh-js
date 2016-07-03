@@ -27,7 +27,13 @@ OSH.UI.Styler = {
 };
 
 window.OSH.Styler = OSH.Styler;
-		
+
+OSH.UI.ContextMenu = {
+	version: 'dev'
+};
+
+window.OSH.ContextMenu = OSH.ContextMenu;
+
 OSH.DataReceiver = {
 	version: 'dev'
 };

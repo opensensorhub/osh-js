@@ -137,6 +137,8 @@ function init() {
         maxPoints : 200
     });
 
+    var pointMarkerContextMenu = new OSH.UI.ContextMenu.PointMarker();
+
     /*var windSpeedChartCurveStyler = new OSH.UI.Styler.Curve({
         valuesFunc : {
             dataSourceIds : [weatherDataSource.getId()],
@@ -152,6 +154,7 @@ function init() {
     // adds view item to the view
     mapView.addViewItem({
         styler : androidMarkerStyler,
+        contextmenu: pointMarkerContextMenu,
         name : "Android Phone GPS"
     });
 

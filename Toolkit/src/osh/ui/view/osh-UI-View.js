@@ -18,6 +18,7 @@ OSH.UI.View = Class.create({
 
       // list of stylers
       this.stylers = [];
+      this.contextMenus = [];
       this.viewItems = [];
       this.names = {};
     },
@@ -36,15 +37,17 @@ OSH.UI.View = Class.create({
 	 * Add viewItem to the view
 	 */
 	addViewItem: function(viewItem) {
+        this.viewItems.push(viewItem);
 		if(viewItem.hasOwnProperty("styler")) {
-			this.viewItems.push(viewItem);
 			var styler = viewItem.styler;
 			this.stylers.push(styler);
-			
 			if(viewItem.hasOwnProperty("name")) {
 				this.names[styler.getId()] = viewItem.name;
 			}
             styler.init(this);
 		}
+        if(viewItem.hasOwnProperty("contextmenu")) {
+            this.contextMenus.push(viewItem.contextmenu);
+        }
 	}
 });
