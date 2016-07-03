@@ -42,16 +42,21 @@
 	    <!-- OSH controller lib -->
 	    <script type="text/javascript" src="../Toolkit/src/osh/osh-Controller.js"></script>
 	    <!-- OSH Video component parser -->
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
-	      <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMp4.js"></script>
-	    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMp4.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-Chart.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datasender/osh-DataSenderController.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datasender/osh-DataSender-DataSource.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/datasender/osh-DataSender-Tasking.js"></script>
 	    
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-Dialog.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/osh-UI-JQRangeSlider.js"></script>
@@ -59,7 +64,8 @@
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
-	    
+		<script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-View.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
@@ -67,12 +73,14 @@
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-H264View.js"></script>
 	    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-VideoView.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
+		<script type="text/javascript" src="../Toolkit/src/osh/ui/view/tasking/osh-UI-TaskingView.js"></script>
 	    
 		<!------------ VIDEO DISPLAY ------------>
 		<link rel="stylesheet" type="text/css" href="css/video-display.css">
 		<script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
 
-		<script type="text/javascript" src="js/config-1.js"></script>
+		<script type="text/javascript" src="js/config-2.js"></script>
 	</head>
 
 	<body onload="init()">
