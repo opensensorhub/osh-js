@@ -9,7 +9,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 		// inits the map
 		this.initMap(options);
 	},
-	
+
 	updateMarker: function(styler) {
 		var markerId = 0;
 		

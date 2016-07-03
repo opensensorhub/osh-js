@@ -44,6 +44,7 @@ OSH.UI.View = Class.create({
 			if(viewItem.hasOwnProperty("name")) {
 				this.names[styler.getId()] = viewItem.name;
 			}
+            styler.init(this);
 		}
 	}
 });

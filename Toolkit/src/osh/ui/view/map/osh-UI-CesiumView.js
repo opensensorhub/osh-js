@@ -31,7 +31,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 				color : styler.color,
 				icon : styler.icon,
 				timeStamp: timeStamp,
-				selected:options.selected
+				selected: ((typeof(options.selected) != "undefined")? options.selected : false)
 			});
 
 			this.stylerToObj[styler.getId()] = markerId;
@@ -47,7 +47,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 			color : styler.color,
 			icon : styler.icon,
 			timeStamp: timeStamp,
-			selected:options.selected
+			selected:((typeof(options.selected) != "undefined")? options.selected : false)
 		});
 	},
 

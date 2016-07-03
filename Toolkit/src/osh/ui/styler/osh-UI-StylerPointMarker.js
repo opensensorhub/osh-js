@@ -53,7 +53,14 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 			this.addFn(properties.colorFunc.dataSourceIds,fn);
 		}
 	},
-		
+
+	init: function($super,view) {
+		$super(view);
+		if(typeof(view) != "undefined") {
+			view.updateMarker(this,0,{});
+		}
+	},
+
 	setData: function($super,dataSourceId,rec,view,options) {
 		if($super(dataSourceId,rec,view,options)) {
 			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
@@ -62,4 +69,5 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 			}
 		}
 	}
+
 });

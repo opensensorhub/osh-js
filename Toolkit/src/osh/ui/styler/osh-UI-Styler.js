@@ -44,5 +44,7 @@ OSH.UI.Styler = Class.create({
 			res.push(i);
 		}
 		return res;
-	}
+	},
+
+	init: function() {}
 });
