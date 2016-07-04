@@ -191,14 +191,14 @@ function init() {
     // registers the view into the data provider
     taskingView.register(dataSenderController);*/
 
-    // adds controller to interact between views
-    var controller = new OSH.EventManager();
-    controller.addView(mapView);
+    // adds eventManager to interact between views
+    var eventManager = new OSH.EventManager();
+    eventManager.addView(mapView);
     //controller.addView(windSpeedChartView);
     //controller.addView(videoView);
 
     // adds entities to controller
-    controller.addEntity(androidEntity);
+    eventManager.addEntity(androidEntity);
 
     // starts streaming
     dataProviderController.connectAll();

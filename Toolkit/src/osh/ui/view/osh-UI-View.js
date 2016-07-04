@@ -49,5 +49,7 @@ OSH.UI.View = Class.create({
         if(viewItem.hasOwnProperty("contextmenu")) {
             this.contextMenus.push(viewItem.contextmenu);
         }
-	}
+	},
+
+    handleEvent: function(event) {}
 });
