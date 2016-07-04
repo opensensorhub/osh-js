@@ -55,7 +55,7 @@ function init() {
 
     var androidEntity = {
         name: "Android Phone",
-        dataSources: [androidPhoneGpsDataSource.getId(), androidPhoneOrientationDataSource.getId(),androidPhoneVideoDataSource.getId()]
+        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource]
     };
 
   /*  var videoView = new OSH.UI.VideoView("top-right",{
@@ -164,9 +164,7 @@ function init() {
         bufferingTime : 0*1000, // 2 seconds
         synchronizedTime : false // true to sync the data
     });
-    dataProviderController.addDataSource(androidPhoneGpsDataSource);
-    dataProviderController.addDataSource(androidPhoneOrientationDataSource);
-    dataProviderController.addDataSource(androidPhoneVideoDataSource);
+    dataProviderController.addEntity(androidEntity);
     dataProviderController.addDataSource(weatherDataSource);
 
     // registers the view into the data provider

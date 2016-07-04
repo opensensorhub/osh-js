@@ -27,7 +27,7 @@ OSH.UI.View = Class.create({
         this.init(options);
 
         if (typeof (viewItems) != "undefined") {
-            for (var i in viewItems) {
+            for (var i =0;i < viewItems.length;i++) {
                 this.addViewItem(viewItems[i]);
             }
         }

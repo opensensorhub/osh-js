@@ -22,8 +22,8 @@ OSH.EventManager = Class.create({
 	  }
   },
   
-  addDataSource: function(dataSourceIds) {
-	  this.dataSources.push(dataSourceIds);
+  addDataSource: function(dataSource) {
+	  this.dataSources.push(dataSource);
   },
   
   addView: function(oshView) {

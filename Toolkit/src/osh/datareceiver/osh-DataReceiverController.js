@@ -44,7 +44,15 @@ OSH.DataReceiver.DataReceiverController = Class.create({
   registerObserver: function(observer) {
 	  this.observers.push(observer);
   },
-  
+
+  addEntity : function(entity) {
+    if(typeof (entity.dataSources) != "undefined") {
+      for(var i=0;i < entity.dataSources.length;i++) {
+        this.addDataSource(entity.dataSources[i]);
+      }
+    }
+  },
+
   addDataSource: function(dataSource) {
     this.dataSources.push(dataSource);
     this.buffer.register(dataSource.getId(),function(data) {
