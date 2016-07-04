@@ -24,7 +24,7 @@ function init() {
     });
 
 
-    var androidPhoneVideoDataSource = new OSH.DataReceiver.Video("android-Video", {
+    var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
         protocol : "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -33,8 +33,6 @@ function init() {
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
         replaySpeed: "1"
-    },{
-        format: "mjpeg"
     });
 
     var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
@@ -79,62 +77,6 @@ function init() {
     });*/
 
     // creates stylers
-    var androidMarkerStyler = new OSH.UI.Styler.PointMarker({
-        location : {
-            x : 1.42376557,
-            y : 43.61758626,
-            z : 100
-        },
-        locationFunc : {
-            dataSourceIds : [androidPhoneGpsDataSource.getId()],
-            handler : function(rec) {
-                return {
-                    x : rec.lon,
-                    y : rec.lat,
-                    z : rec.alt
-                };
-            }
-        },
-        orientationFunc : {
-            dataSourceIds : [androidPhoneOrientationDataSource.getId()],
-            handler : function(rec) {
-                return {
-                    heading : rec.heading
-                };
-            }
-        },
-        icon : 'images/cameralook.png',
-        iconFunc : {
-            dataSourceIds: [androidPhoneGpsDataSource.getId()],
-            handler : function(rec,timeStamp,options) {
-                if(options.selected) {
-                    return 'images/cameralook-selected.png'
-                } else {
-                    return 'images/cameralook.png';
-                };
-            }
-        }
-    });
-
-    var polylineStyler = new OSH.UI.Styler.Polyline({
-        locationFunc : {
-            dataSourceIds : [androidPhoneGpsDataSource.getId()],
-            handler : function(rec) {
-                return {
-                    x : rec.lon,
-                    y : rec.lat,
-                    z : rec.alt
-                };
-            }
-        },
-        color : 'rgba(0,0,255,0.5)',
-        weight : 10,
-        opacity : .5,
-        smoothFactor : 1,
-        maxPoints : 200
-    });
-
-    var pointMarkerContextMenu = new OSH.UI.ContextMenu.PointMarker();
 
     /*var windSpeedChartCurveStyler = new OSH.UI.Styler.Curve({
         valuesFunc : {
@@ -151,12 +93,63 @@ function init() {
     // creates views
     var mapView = new OSH.UI.LeafletView("main-container",
         [{
-            styler : androidMarkerStyler,
-            contextmenu: pointMarkerContextMenu,
+            styler :  new OSH.UI.Styler.PointMarker({
+                location : {
+                    x : 1.42376557,
+                    y : 43.61758626,
+                    z : 100
+                },
+                locationFunc : {
+                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                    handler : function(rec) {
+                        return {
+                            x : rec.lon,
+                            y : rec.lat,
+                            z : rec.alt
+                        };
+                    }
+                },
+                orientationFunc : {
+                    dataSourceIds : [androidPhoneOrientationDataSource.getId()],
+                    handler : function(rec) {
+                        return {
+                            heading : rec.heading
+                        };
+                    }
+                },
+                icon : 'images/cameralook.png',
+                iconFunc : {
+                    dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                    handler : function(rec,timeStamp,options) {
+                        if(options.selected) {
+                            return 'images/cameralook-selected.png'
+                        } else {
+                            return 'images/cameralook.png';
+                        };
+                    }
+                }
+            }),
+            contextmenu: new OSH.UI.ContextMenu.PointMarker(),
             name : "Android Phone GPS"
         },
         {
-            styler : polylineStyler,
+            styler : new OSH.UI.Styler.Polyline({
+                locationFunc : {
+                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                    handler : function(rec) {
+                        return {
+                            x : rec.lon,
+                            y : rec.lat,
+                            z : rec.alt
+                        };
+                    }
+                },
+                color : 'rgba(0,0,255,0.5)',
+                weight : 10,
+                opacity : .5,
+                smoothFactor : 1,
+                maxPoints : 200
+            }),
             name : "Android Phone GPS Path"
         }]
     );
