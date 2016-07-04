@@ -60,9 +60,6 @@ function init() {
         dataSources: [androidPhoneGpsDataSource.getId(), androidPhoneOrientationDataSource.getId(),androidPhoneVideoDataSource.getId()]
     };
 
-    // creates views
-    var mapView = new OSH.UI.LeafletView("main-container");
-
   /*  var videoView = new OSH.UI.VideoView("top-right",{
         dataSourceId:androidPhoneVideoDataSource.getId(),
         format: "mjpeg",
@@ -151,17 +148,18 @@ function init() {
         }
     });*/
 
-    // adds view item to the view
-    mapView.addViewItem({
-        styler : androidMarkerStyler,
-        contextmenu: pointMarkerContextMenu,
-        name : "Android Phone GPS"
-    });
-
-    mapView.addViewItem({
-        styler : polylineStyler,
-        name : "Android Phone GPS Path"
-    });
+    // creates views
+    var mapView = new OSH.UI.LeafletView("main-container",
+        [{
+            styler : androidMarkerStyler,
+            contextmenu: pointMarkerContextMenu,
+            name : "Android Phone GPS"
+        },
+        {
+            styler : polylineStyler,
+            name : "Android Phone GPS Path"
+        }]
+    );
 
     /*windSpeedChartView.addViewItem({
         styler : windSpeedChartCurveStyler,

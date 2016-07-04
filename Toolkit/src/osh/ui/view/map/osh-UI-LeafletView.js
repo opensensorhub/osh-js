@@ -1,14 +1,15 @@
 OSH.UI.LeafletView = Class.create(OSH.UI.View,{
-	initialize:function($super,divId, options) {
-		$super(divId);
-		this.stylerToObj = {};
+	initialize:function($super,divId,viewItems, options) {
+		$super(divId,viewItems,options);
+	},
+
+	init:function($super,options) {
 		this.lastRec = {};
 		this.selectedDataSources = [];
 		this.dataSources = [];
-		
+
 		// inits the map
 		this.initMap(options);
-
 		this.initEvents();
 	},
 
