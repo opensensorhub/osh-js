@@ -192,7 +192,7 @@ function init() {
     taskingView.register(dataSenderController);*/
 
     // adds controller to interact between views
-    var controller = new OSH.Controller();
+    var controller = new OSH.EventManager();
     controller.addView(mapView);
     //controller.addView(windSpeedChartView);
     //controller.addView(videoView);

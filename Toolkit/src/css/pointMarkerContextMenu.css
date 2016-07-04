@@ -9,8 +9,22 @@
 .circular-menu {
     width: 250px;
     height: 250px;
-    margin: 0 auto;
+    margin-top:-110px;
+    margin-left:-40px;
     position: absolute;
+    cursor: pointer;
+}
+
+.open.circular-menu {
+    display:block;
+}
+
+.close.circular-menu-container {
+    display:none;
+}
+
+.close.circular-menu {
+    display:none;
 }
 
 .circular-menu-circle {
@@ -28,11 +42,9 @@
 }
 
 .open.circular-menu-circle {
-    opacity: 1;
-
     -webkit-transform: scale(0.6);
     -moz-transform: scale(0.6);
-    transform: scale(0.5);
+    transform: scale(0.6);
     box-shadow: 0px 0px 20px 1px #777;
     border-radius:130px;
     background-color:#777;
@@ -44,7 +56,6 @@
 }
 
 .circular-menu-circle a {
-    text-decoration: none;
     color: white;
     display: block;
     height: 40px;
@@ -54,12 +65,37 @@
     margin-top: -20px;
     position: absolute;
     text-align: center;
-
 }
 
 .circular-menu-circle a:hover {
     color: #eef;
     text-decoration: none;
+}
+
+.open.menu-button {
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.close.menu-button {
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.open.circular-menu-container{
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+    display:block;
+}
+
+.close.circular-menu-container{
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+    display:none;
 }
 
 .menu-button {
@@ -68,13 +104,13 @@
   left: calc(50% - 20px);
   text-decoration: none;
   text-align: center;
-  color: #444;
+  color: #444 !important;
   border-radius: 50%;
   display: block;
   height: 40px;
   width: 40px;
   background: #FFF;
-  padding:5px;
+  padding:7px;
   text-decoration: none;
 }
 
@@ -86,6 +122,9 @@
     color:forestgreen;
 }*/
 
+.menu-button:hover {
+    color: #0078A8 !important;
+}
 .fa-3x:hover {
     font-size:4.5em;
 }

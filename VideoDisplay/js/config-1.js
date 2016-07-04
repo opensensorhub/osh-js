@@ -306,7 +306,7 @@ function init() {
     dataProviderController.registerObserver(videoView4);
 
     // adds controller to interact between views
-    var controller = new OSH.Controller();
+    var controller = new OSH.EventManager();
     controller.addView(leafletView);
     controller.addView(videoView1);
     controller.addView(videoView2);
