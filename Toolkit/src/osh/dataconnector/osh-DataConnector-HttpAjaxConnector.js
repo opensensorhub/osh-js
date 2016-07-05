@@ -15,6 +15,9 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
         xmlhttp.send(request);
 
         xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                console.log("ici");
+            }
             /*if (xhr.readyState < 4) {
                 // while waiting response from server
             }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.

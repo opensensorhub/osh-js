@@ -77,7 +77,7 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
         var interval = 100;
         this.timerIds = new Array();
         // inits listeners
-        $("button-tilt-up").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(1)}.bind(this),interval))}.bind(this));
+       /* $("button-tilt-up").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(1)}.bind(this),interval))}.bind(this));
         $("button-tilt-down").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(-1)}.bind(this),interval))}.bind(this));
         $("button-pan-left").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onPanClick(-1)}.bind(this),interval))}.bind(this));
         $("button-pan-right").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onPanClick(1)}.bind(this),interval))}.bind(this));
@@ -89,7 +89,16 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
         $("button-pan-left").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
         $("button-pan-right").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
         $("button-zoom-in").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
-        $("button-zoom-out").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
+        $("button-zoom-out").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));*/
+
+
+        var increment = 5;
+        $("button-tilt-up").observe('click',  function(){this.onTiltClick(increment)}.bind(this));
+        $("button-tilt-down").observe('click',  function(){this.onTiltClick(-1*increment)}.bind(this));
+        $("button-pan-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));
+        $("button-pan-right").observe('click',  function(){this.onPanClick(increment)}.bind(this));
+        $("button-zoom-in").observe('click',  function(){this.onZoomClick(-1*increment)}.bind(this));
+        $("button-zoom-out").observe('click',  function(){this.onZoomClick(increment)}.bind(this));
     },
 
     removeInterval: function(interval) {
