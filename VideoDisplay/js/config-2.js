@@ -202,6 +202,10 @@ function init() {
             }]
     );
 
+    var taskingView = new OSH.UI.TaskingView("tasking-container",{
+        dataSourceId : ""
+    });
+
     // adds datasources to dataProviderController
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
         bufferingTime : 0*1000, // 2 seconds

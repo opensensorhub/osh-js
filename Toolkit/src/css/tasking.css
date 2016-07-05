@@ -68,10 +68,10 @@
 /** End Flex **/
 
 .remote {
-    border-radius: 200px;
+    border-radius: 250px;
     background-color: rgba(119,119,119,0.3);
-    width: 205px;
-    height: 205px;
+    width: 215px;
+    height: 215px;
     box-shadow: 0px 0px 20px 1px #777;
     /* opacity: 0.99; */
     margin-right: 15px;
@@ -87,7 +87,7 @@
 }
 
 .ptz {
-
+    margin-top:25px;
 }
 
 .pan {

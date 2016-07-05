@@ -85,3 +85,9 @@ a.navbar-brand:hover {
     width:280px !important;
     height:160px !important;
 }
+
+.tasking-container {
+    width: 420px;
+    position: absolute;
+    top: calc(100% - 290px);
+}
