@@ -58,8 +58,10 @@ a.navbar-brand:hover {
 
 .video-main-container {
 	position:absolute;
-	top:60px;
+	top:100px;
 	right:15px;
+    width:300px;
+    height:calc(100% - 190px);
 }
 
 .jrangeSlider {
@@ -72,4 +74,9 @@ a.navbar-brand:hover {
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 5px;
+}
+
+.dialog {
+    width:300px;
+    height:180px;
 }

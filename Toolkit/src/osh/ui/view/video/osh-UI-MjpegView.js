@@ -1,4 +1,4 @@
-OSH.UI.MJpegView = Class.create(OSH.UI.View,{
+OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId);
     

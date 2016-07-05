@@ -161,6 +161,25 @@ function init() {
         name: "Android Video"
     });
 
+    var videoDialog = new OSH.UI.Dialog("video-main-container", {
+        draggable: false,
+        css: "dialog",
+        name: "Android Video 1"
+    });
+
+    var videoView2 = new OSH.UI.MjpegView("video-main-container-2", {
+        dataSourceId: androidPhoneVideoDataSource.getId(),
+        css: "video",
+        cssSelected: "video-selected",
+        name: "Android Video 2"
+    });
+
+    var videoDialog2 = new OSH.UI.Dialog("video-main-container-2", {
+        draggable: false,
+        css: "dialog",
+        name: "Android Video 2"
+    });
+
     /*windSpeedChartView.addViewItem({
         styler : windSpeedChartCurveStyler,
         name : "Wind speed curve"
@@ -177,6 +196,7 @@ function init() {
     // registers the view into the data provider
     dataProviderController.registerObserver(mapView);
     dataProviderController.registerObserver(videoView);
+    dataProviderController.registerObserver(videoView2);
     //dataProviderController.registerObserver(windSpeedChartView);
     //dataProviderController.registerObserver(videoView);
 
@@ -192,6 +212,7 @@ function init() {
     var eventManager = new OSH.EventManager();
     eventManager.addView(mapView);
     eventManager.addView(videoView);
+    eventManager.addView(videoView2);
     //controller.addView(windSpeedChartView);
     //controller.addView(videoView);
 
