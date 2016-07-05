@@ -12,6 +12,11 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
                     if(typeof (properties.items[i].css) != "undefined"){
                         htmlVar += "class=\""+properties.items[i].css+"\" ";
                     }
+                    var name = "";
+                    if(typeof (properties.items[i].name) != "undefined") {
+                        name = properties.items[i].name;
+                    }
+                    htmlVar += "title=\""+name+"\"";
                     htmlVar += "><\/a>";
 
                     var action = "";

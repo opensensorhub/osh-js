@@ -58,23 +58,6 @@ function init() {
         dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource]
     };
 
-  /*  var videoView = new OSH.UI.VideoView("top-right",{
-        dataSourceId:androidPhoneVideoDataSource.getId(),
-        format: "mjpeg",
-        css:"video",
-        cssSelected:"video-selected",
-        name:"Android Phone Video"
-    });
-
-    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("bottom-left",{
-        name:"WindSpeed chart",
-        yLabel : 'Wind Speed (m/s)',
-        xLabel : 'Time'
-    });
-
-    var taskingView = new OSH.UI.TaskingView("bottom-right",{
-        dataSourceId : taskingVideoDataSource.getId()
-    });*/
 
     var videoView = new OSH.UI.MjpegView("box-1", {
         dataSourceId: androidPhoneVideoDataSource.getId(),
@@ -173,20 +156,25 @@ function init() {
             }),
             contextmenu: new OSH.UI.ContextMenu.CircularPointMarker({
                 items:[{
-                    name: "video",
+                    name: "Android Video",
                     viewId: videoDialog.getId(),
                     css: "fa fa-video-camera fa-3x",
                     action: "show"
                 },{
-                    name: "video2",
+                    name: "Same Android Video",
                     viewId: videoDialog2.getId(),
                     css: "fa fa-video-camera fa-3x",
                     action: "show"
                 },{
-                        name: "chart",
+                        name: "Weather chart",
                         viewId: chartDialog.getId(),
                         css: "fa fa-bar-chart fa-3x",
                         action: "show"
+                },{
+                    name: "Tasking",
+                    viewId: "",
+                    css: "fa fa-arrows fa-3x",
+                    action: "show"
                 }
                 ]
             }),
@@ -246,7 +234,6 @@ function init() {
     eventManager.addView(videoDialog2);
     eventManager.addView(chartDialog);
     eventManager.addView(windSpeedChartView);
-    //controller.addView(videoView);
 
     // adds entities to controller
     eventManager.addEntity(androidEntity);
