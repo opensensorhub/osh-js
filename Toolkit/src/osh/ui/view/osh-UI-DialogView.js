@@ -38,13 +38,14 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         div.style.top = "";
         div.style.left = "";
 
+        var classList = div.className;
+
         // removes the div from its parent
         div.parentNode.removeChild(div);
 
         // plugs it into the new draggable dialog
         this.rootTag.appendChild(div);
-        div.setAttribute("class", "pop-content");
-
+        div.setAttribute("class", "pop-content "+classList);
         if(this.draggable) {
             document.body.appendChild(this.rootTag);
         } else {

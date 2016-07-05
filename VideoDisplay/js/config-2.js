@@ -76,45 +76,59 @@ function init() {
         dataSourceId : taskingVideoDataSource.getId()
     });*/
 
-    // creates stylers
-
-    /*var windSpeedChartCurveStyler = new OSH.UI.Styler.Curve({
-        valuesFunc : {
-            dataSourceIds : [weatherDataSource.getId()],
-            handler : function(rec,timeStamp) {
-                return {
-                    x : timeStamp,
-                    y : parseFloat(rec[2])
-                };
-            }
-        }
-    });*/
-
-    var videoView = new OSH.UI.MjpegView("video-main-container", {
+    var videoView = new OSH.UI.MjpegView("box-1", {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         css: "video",
         cssSelected: "video-selected",
         name: "Android Video"
     });
 
-    var videoDialog = new OSH.UI.DialogView("video-main-container", {
+    var videoDialog = new OSH.UI.DialogView("box-1", {
         draggable: false,
         css: "dialog",
         name: "Android Video 1",
         show:false
     });
 
-    var videoView2 = new OSH.UI.MjpegView("video-main-container-2", {
+    var videoView2 = new OSH.UI.MjpegView("box-2", {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         css: "video",
         cssSelected: "video-selected",
         name: "Android Video 2"
     });
 
-    var videoDialog2 = new OSH.UI.DialogView("video-main-container-2", {
+    var videoDialog2 = new OSH.UI.DialogView("box-2", {
         draggable: false,
         css: "dialog",
         name: "Android Video 2",
+        show:false
+    });
+
+    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("box-3",
+        [{
+            styler: new OSH.UI.Styler.Curve({
+                valuesFunc: {
+                    dataSourceIds: [weatherDataSource.getId()],
+                    handler: function (rec, timeStamp) {
+                        return {
+                            x: timeStamp,
+                            y: parseFloat(rec[2])
+                        };
+                    }
+                }
+            })
+        }],
+        {
+            name: "WindSpeed chart",
+            yLabel: 'Wind Speed (m/s)',
+            xLabel: 'Time',
+            css:"chart-view"
+        });
+
+    var chartDialog = new OSH.UI.DialogView("box-3", {
+        draggable: false,
+        css: "dialog",
+        name: "Chart Weather",
         show:false
     });
 
@@ -163,13 +177,18 @@ function init() {
                     viewId: videoDialog.getId(),
                     css: "fa fa-video-camera fa-3x",
                     action: "show"
-                },
-                {
+                },{
                     name: "video2",
                     viewId: videoDialog2.getId(),
                     css: "fa fa-video-camera fa-3x",
                     action: "show"
-                }]
+                },{
+                        name: "chart",
+                        viewId: chartDialog.getId(),
+                        css: "fa fa-bar-chart fa-3x",
+                        action: "show"
+                }
+                ]
             }),
             name : "Android Phone GPS"
         },
@@ -194,10 +213,6 @@ function init() {
                 name : "Android Phone GPS Path"
             }]
     );
-    /*windSpeedChartView.addViewItem({
-        styler : windSpeedChartCurveStyler,
-        name : "Wind speed curve"
-    });*/
 
     // adds datasources to dataProviderController
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
@@ -211,7 +226,7 @@ function init() {
     dataProviderController.registerObserver(mapView);
     dataProviderController.registerObserver(videoView);
     dataProviderController.registerObserver(videoView2);
-    //dataProviderController.registerObserver(windSpeedChartView);
+    dataProviderController.registerObserver(windSpeedChartView);
     //dataProviderController.registerObserver(videoView);
 
     /*var dataSenderController = new OSH.DataSender.DataSenderController({});
@@ -229,11 +244,13 @@ function init() {
     eventManager.addView(videoView2);
     eventManager.addView(videoDialog);
     eventManager.addView(videoDialog2);
-    //controller.addView(windSpeedChartView);
+    eventManager.addView(chartDialog);
+    eventManager.addView(windSpeedChartView);
     //controller.addView(videoView);
 
     // adds entities to controller
     eventManager.addEntity(androidEntity);
+    eventManager.addDataSource(weatherDataSource);
 
     // starts streaming
     dataProviderController.connectAll();

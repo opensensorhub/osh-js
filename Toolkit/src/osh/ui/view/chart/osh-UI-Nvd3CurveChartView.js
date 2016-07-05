@@ -1,6 +1,6 @@
 OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
-	initialize : function($super, divId, options) {
-		$super(divId);
+	initialize : function($super,divId,viewItems, options) {
+		$super(divId,viewItems,options);
 
 		var xLabel = 'Time';
 		var yLabel = 'yLabel';

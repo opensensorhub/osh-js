@@ -80,3 +80,8 @@ a.navbar-brand:hover {
     width:300px;
     height:180px;
 }
+
+.chart-view {
+    width:280px !important;
+    height:160px !important;
+}
