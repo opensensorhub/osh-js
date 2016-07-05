@@ -1,7 +1,8 @@
-OSH.UI.Dialog = Class.create({
-    initialize: function (divId, options) {
+OSH.UI.DialogView = Class.create(OSH.UI.View,{
+    initialize: function ($super,divId, options) {
+        //$super(divId,[],options);
         // creates HTML element
-        var uniqueId = "dialog-" + OSH.Utils.randomUUID();
+        this.id = "dialog-" + OSH.Utils.randomUUID();
         var pinDiv = "dialog-" + OSH.Utils.randomUUID();
         var closeDiv = "dialog-" + OSH.Utils.randomUUID();
 
@@ -20,7 +21,7 @@ OSH.UI.Dialog = Class.create({
         this.rootTag.innerHTML = htmlVar;
 
         this.rootTag = this.rootTag.firstChild;
-        this.rootTag.setAttribute("id", uniqueId);
+        this.rootTag.setAttribute("id", this.id);
         this.rootTag.setAttribute("class", "pop-over");
         this.rootTag.setAttribute("draggable", this.draggable);
 
@@ -63,6 +64,12 @@ OSH.UI.Dialog = Class.create({
 
         document.getElementById(closeDiv).onclick = this.close.bind(this);
         document.getElementById(pinDiv).onclick = this.unpin.bind(this);
+    },
+
+    show: function($super,properties) {
+        if(properties.viewIds.indexOf(this.getId()) > -1) {
+            this.rootTag.style.display = "block";
+        }
     },
 
     unpin: function() {
@@ -127,5 +134,9 @@ OSH.UI.Dialog = Class.create({
         this.rootTag.style.top = (event.clientY + parseInt(offset[1], 10)) + 'px';
         event.preventDefault();
         return false;
+    },
+
+    getId: function() {
+        return this.id;
     }
 });

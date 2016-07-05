@@ -33,8 +33,8 @@ OSH.UI.View = Class.create({
         }
 
         if(typeof (options) != "undefined") {
-            if(typeof (options.show) != "undefined" && !options.show) {
-                document.getElementById(this.divId).style.display = "none";
+            if(typeof (options.show) != "undefined") {
+                document.getElementById(this.divId).style.display = (options.show)? "block": "none";
             }
         }
     },
@@ -50,6 +50,9 @@ OSH.UI.View = Class.create({
     },
 
     selectDataView: function (dataSourceIds) {
+    },
+
+    show: function(properties) {
     },
 
     /**
@@ -70,6 +73,12 @@ OSH.UI.View = Class.create({
         }
     },
 
-    handleEvent: function (event) {
+    handleEvent: function (event,properties) {
+        if(event == "select") {
+            this.selectDataView(properties.dataSourcesId);
+        } else if(event == "show") {
+            this.show(properties)
+        }
+
     }
 });

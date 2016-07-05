@@ -1,20 +1,55 @@
 OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
     initialize:function($super,properties) {
         $super(properties);
+
+        this.items = [];
+
+        if(typeof(properties) != "undefined") {
+            if(typeof (properties.items) != "undefined") {
+                for(var i = 0;i < properties.items.length;i++) {
+                    var elId = OSH.Utils.randomUUID();
+                    var htmlVar = "<a  id=\""+elId+"\" ";
+                    if(typeof (properties.items[i].css) != "undefined"){
+                        htmlVar += "class=\""+properties.items[i].css+"\" ";
+                    }
+                    htmlVar += "><\/a>";
+
+                    var action = "";
+                    if(typeof (properties.items[i].action) != "undefined") {
+                        action = properties.items[i].action;
+                    }
+                    var viewId = "";
+                    if(typeof (properties.items[i].viewId) != "undefined") {
+                        viewId = properties.items[i].viewId;
+                    }
+                    this.items.push({
+                        html : htmlVar,
+                        id : elId,
+                        action : action,
+                        viewId : viewId
+                    })
+                }
+            }
+        }
     },
 
     show:function($super,properties) {
         this.removeElement();
         var closeId = OSH.Utils.randomUUID();
+        var videoId = OSH.Utils.randomUUID();
 
         var htmlVar="";
         htmlVar += "<div class=\"circular-menu\">";
         htmlVar += "  <div class=\"circular-menu-circle\">";
-        htmlVar += "    <a  class=\"fa fa-home fa-3x\"><\/a>";
-        htmlVar += "    <a  class=\"fa fa-video-camera fa-3x\"><\/a>";
+        /*htmlVar += "    <a  class=\"fa fa-home fa-3x\"><\/a>";
+        htmlVar += "    <a  id=\""+videoId+"\" class=\"fa fa-video-camera fa-3x\"><\/a>";
         htmlVar += "    <a  class=\"fa fa-bar-chart fa-3x\"><\/a>";
         htmlVar += "    <a  class=\"fa fa-external-link-square fa-3x\"><\/a>";
-        htmlVar += "    <a  class=\"fa fa-gear fa-3x\"><\/a>";
+        htmlVar += "    <a  class=\"fa fa-gear fa-3x\"><\/a>";*/
+        // adds items
+        for(var i = 0; i < this.items.length; i++) {
+            htmlVar += this.items[i].html;
+        }
         htmlVar += "  <\/div>";
         htmlVar += "  <a id=\""+closeId+"\"class=\"menu-button fa fa-times fa-2x\"><\/a>";
         htmlVar += "<\/div>";
@@ -51,6 +86,19 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
         });
 
         this.observer.observe(properties.div, { attributes : true, attributeFilter : ['style'] });
+
+
+        // binds actions based on items
+        this.bindEvents = {};
+        for(var i = 0; i < this.items.length; i++) {
+            var item =  this.items[i];
+            this.bindEvents[item.id] = item.viewId;
+            $(item.id).on("click",function(event){
+                document.fire("osh:"+item.action, {
+                    viewId: this.bindEvents[event.srcElement.id]
+                });
+            }.bind(this));
+        }
     },
 
     hide:function($super){

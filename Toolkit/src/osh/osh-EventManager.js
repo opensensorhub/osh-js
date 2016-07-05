@@ -10,7 +10,14 @@ OSH.EventManager = Class.create({
         document.observe("osh:select", function (event) {
             var ds = this.getDataSourcesId(event.memo);
             for (var i = 0; i < this.views.length; i++) {
-                this.views[i].selectDataView(ds);
+                this.views[i].handleEvent("select",{dataSourcesId:ds});
+            }
+        }.bind(this));
+
+        document.observe("osh:show", function (event) {
+            var ds = this.getDataSourcesId(event.memo);
+            for (var i = 0; i < this.views.length; i++) {
+                this.views[i].handleEvent("show",{viewIds:event.memo.viewId});
             }
         }.bind(this));
     },

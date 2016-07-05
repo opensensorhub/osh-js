@@ -90,6 +90,34 @@ function init() {
         }
     });*/
 
+    var videoView = new OSH.UI.MjpegView("video-main-container", {
+        dataSourceId: androidPhoneVideoDataSource.getId(),
+        css: "video",
+        cssSelected: "video-selected",
+        name: "Android Video"
+    });
+
+    var videoDialog = new OSH.UI.DialogView("video-main-container", {
+        draggable: false,
+        css: "dialog",
+        name: "Android Video 1",
+        show:false
+    });
+
+    var videoView2 = new OSH.UI.MjpegView("video-main-container-2", {
+        dataSourceId: androidPhoneVideoDataSource.getId(),
+        css: "video",
+        cssSelected: "video-selected",
+        name: "Android Video 2"
+    });
+
+    var videoDialog2 = new OSH.UI.DialogView("video-main-container-2", {
+        draggable: false,
+        css: "dialog",
+        name: "Android Video 2",
+        show:false
+    });
+
     // creates views
     var mapView = new OSH.UI.LeafletView("main-container",
         [{
@@ -129,59 +157,43 @@ function init() {
                     }
                 }
             }),
-            contextmenu: new OSH.UI.ContextMenu.CircularPointMarker(),
+            contextmenu: new OSH.UI.ContextMenu.CircularPointMarker({
+                items:[{
+                    name: "video",
+                    viewId: videoDialog.getId(),
+                    css: "fa fa-video-camera fa-3x",
+                    action: "show"
+                },
+                {
+                    name: "video2",
+                    viewId: videoDialog2.getId(),
+                    css: "fa fa-video-camera fa-3x",
+                    action: "show"
+                }]
+            }),
             name : "Android Phone GPS"
         },
-        {
-            styler : new OSH.UI.Styler.Polyline({
-                locationFunc : {
-                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                    handler : function(rec) {
-                        return {
-                            x : rec.lon,
-                            y : rec.lat,
-                            z : rec.alt
-                        };
-                    }
-                },
-                color : 'rgba(0,0,255,0.5)',
-                weight : 10,
-                opacity : .5,
-                smoothFactor : 1,
-                maxPoints : 200
-            }),
-            name : "Android Phone GPS Path"
-        }]
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path"
+            }]
     );
-
-    var videoView = new OSH.UI.MjpegView("video-main-container", {
-        dataSourceId: androidPhoneVideoDataSource.getId(),
-        css: "video",
-        cssSelected: "video-selected",
-        name: "Android Video"
-    });
-
-    var videoDialog = new OSH.UI.Dialog("video-main-container", {
-        draggable: false,
-        css: "dialog",
-        name: "Android Video 1",
-        show:false
-    });
-
-    var videoView2 = new OSH.UI.MjpegView("video-main-container-2", {
-        dataSourceId: androidPhoneVideoDataSource.getId(),
-        css: "video",
-        cssSelected: "video-selected",
-        name: "Android Video 2"
-    });
-
-    var videoDialog2 = new OSH.UI.Dialog("video-main-container-2", {
-        draggable: false,
-        css: "dialog",
-        name: "Android Video 2",
-        show:false
-    });
-
     /*windSpeedChartView.addViewItem({
         styler : windSpeedChartCurveStyler,
         name : "Wind speed curve"
@@ -215,6 +227,8 @@ function init() {
     eventManager.addView(mapView);
     eventManager.addView(videoView);
     eventManager.addView(videoView2);
+    eventManager.addView(videoDialog);
+    eventManager.addView(videoDialog2);
     //controller.addView(windSpeedChartView);
     //controller.addView(videoView);
 
