@@ -1,6 +1,6 @@
 OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
-    $super(divId);
+    $super(divId,[],options);
     
     this.dataSourceId = -1;
     // sets dataSourceId

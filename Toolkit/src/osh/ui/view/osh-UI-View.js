@@ -31,6 +31,12 @@ OSH.UI.View = Class.create({
                 this.addViewItem(viewItems[i]);
             }
         }
+
+        if(typeof (options) != "undefined") {
+            if(typeof (options.show) != "undefined" && !options.show) {
+                document.getElementById(this.divId).style.display = "none";
+            }
+        }
     },
 
     init: function (options) {},

@@ -1,4 +1,4 @@
-OSH.UI.ContextMenu.PointMarker = Class.create(OSH.UI.ContextMenu, {
+OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
     initialize:function($super,properties) {
         $super(properties);
     },

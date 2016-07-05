@@ -50,6 +50,12 @@ OSH.UI.Dialog = Class.create({
             this.parentDiv.appendChild(this.rootTag);
         }
 
+        if(typeof (options) != "undefined") {
+            if(typeof (options.show) != "undefined" && !options.show) {
+                this.rootTag.style.display = "none";
+            }
+        }
+
         // adds listener
         this.rootTag.addEventListener('dragstart', this.drag_start.bind(this), false);
         document.addEventListener('dragover', this.drag_over.bind(this), false);

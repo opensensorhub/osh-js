@@ -129,7 +129,7 @@ function init() {
                     }
                 }
             }),
-            contextmenu: new OSH.UI.ContextMenu.PointMarker(),
+            contextmenu: new OSH.UI.ContextMenu.CircularPointMarker(),
             name : "Android Phone GPS"
         },
         {
@@ -164,7 +164,8 @@ function init() {
     var videoDialog = new OSH.UI.Dialog("video-main-container", {
         draggable: false,
         css: "dialog",
-        name: "Android Video 1"
+        name: "Android Video 1",
+        show:false
     });
 
     var videoView2 = new OSH.UI.MjpegView("video-main-container-2", {
@@ -177,7 +178,8 @@ function init() {
     var videoDialog2 = new OSH.UI.Dialog("video-main-container-2", {
         draggable: false,
         css: "dialog",
-        name: "Android Video 2"
+        name: "Android Video 2",
+        show:false
     });
 
     /*windSpeedChartView.addViewItem({
