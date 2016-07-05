@@ -99,7 +99,6 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
     },
 
     onTiltClick: function (value) {
-        console.log("press");
         this.tilt += value;
         document.getElementById("input-tilt").value = this.tilt;
         this.onChange();

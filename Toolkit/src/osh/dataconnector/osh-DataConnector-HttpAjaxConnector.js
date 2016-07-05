@@ -9,25 +9,22 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
      */
     sendRequest: function (request) {
         var self = this;
-        new Ajax.Request(this.getUrl(), {
-            onSuccess: function (response) {
-                // Handles the response content...
-                self.onSuccess(response);
-            },
-            onComplete: function(response) {
-                if (200 == response.status) {
-                    // yada yada yada
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", this.getUrl(), true);
+        xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+        xmlhttp.send(request);
+
+        xmlhttp.onreadystatechange = function() {
+            if (xhr.readyState < 4) {
+                // while waiting response from server
+            }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.
+                if (xhr.status == 200 && xhr.status < 300) { // http status between 200 to 299 are all successful
+                    this.onSuccess(xhr.responseText);
                 } else {
-                    self.onError(response);
+                    this.onError("");
                 }
-            },
-            onFailure: function(response) {
-                self.onError(response);
-            },
-            onException: function(response) {
-                self.onError(response);
             }
-        });
+        }.bind(this);
     },
 
     onError:function(event){

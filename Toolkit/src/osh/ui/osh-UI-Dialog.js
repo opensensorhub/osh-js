@@ -1,9 +1,32 @@
 OSH.UI.Dialog = Class.create({
-	initialize : function(options) {
+	initialize : function(divId,options) {
 		// creates HTML element
 		var uniqueId = "dialog-"+OSH.Utils.randomUUID();
 
-		var appendToBody = false;
+		var strVar = "";
+		strVar += "<div id=\"dialog-0142ab00-59f1-4a15-a41b-4f1c3ca0c0dc\" class=\" pop-over\" draggable=\"true\" style=\"width: 150px; height: 150px; display: block; left: -21.7708%; top: 109px;\">" +
+			"<a class=\"pop-close\">x<\/a>" +
+			"<h3>Android Video<\/h3>" +
+			"</div>";
+
+		this.rootTag = document.createElement("div");
+		this.rootTag.setAttribute("id",uniqueId);
+		this.rootTag.setAttribute("class","pop-over");
+		this.rootTag.setAttribute("draggable",(typeof(options.draggable) != "undefined")?options.draggable: false);
+		this.rootTag.innerHTML = htmlVar;
+
+
+		document.body.appendChild(this.rootTag);
+
+		// removes the div from its parent
+		var div = document.getElementById(divId);
+		div.parentNode.removeChild(div);
+
+		// plugs it into the new draggable dialog
+		this.rootTag.appendChild(div);
+		div.setAttribute("class","pop-content");
+
+		/*var appendToBody = false;
 		if(typeof(options.div) != "undefined") {
 			this.div = options.div;
 			var css= options.div.className;
@@ -55,20 +78,9 @@ OSH.UI.Dialog = Class.create({
 		// adds listener
 		this.div.addEventListener('dragstart', this.drag_start.bind(this), false);
 		document.addEventListener('dragover', this.drag_over.bind(this), false);
-		document.addEventListener('drop', this.drop.bind(this), false);
+		document.addEventListener('drop', this.drop.bind(this), false);*/
 	},
 	
-	appendContent: function(div) {
-		  this.divContent.style.width = div.style.width+"px";
-		  this.divContent.style.height = div.style.height+"px";
-		  this.divContent.appendChild(div);
-	},
-	
-	setContentSize: function(width,height) {
-	  this.div.style.width = width;
-	  this.div.style.height = height;
-	},
-
 	onClose: function (callback) {
 		  this.onClose = callback;
 	},
