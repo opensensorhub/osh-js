@@ -78,29 +78,35 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 
 		this.width = "500px";
 		this.height = "300px";
-		var css = document.getElementById(this.divId).className;
+		this.css = document.getElementById(this.divId).className;
 
-		if (options.width) {
-			this.width = options.width;
-		}
+		if(typeof (options) != "undefined") {
+			if (options.width) {
+				this.width = options.width;
+			}
 
-		if (options.height) {
-			this.height = options.height;
-		}
+			if (options.height) {
+				this.height = options.height;
+			}
 
-		if (options.css) {
-			css += " "+options.css;
+			if (options.css) {
+				this.css += " " + options.css;
+			}
+
+			if (options.cssSelected) {
+				this.cssSelected = options.cssSelected;
+			}
 		}
 
 		//create svg element
 		var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
 
-		var div = document.getElementById(divId);
-		div.setAttribute("class", css);
-		div.appendChild(svg);
+		this.div = document.getElementById(divId);
+		this.div.setAttribute("class", this.css);
+		this.div.appendChild(svg);
 
-		div.style.width = this.width;
-		div.style.height = this.height;
+		this.div.style.width = this.width;
+		this.div.style.height = this.height;
 		
 		this.svgChart = d3.select('#' + divId + ' svg'); //Select the <svg> element you want to render the chart in.
 		
@@ -147,6 +153,14 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		this.chart.update();
 		if (this.data.values.length > 20) {
 			this.data.values.shift();
+		}
+	},
+
+	selectDataView: function($super,dataSourceIds) {
+		if(dataSourceIds.indexOf(this.dataSourceId) > -1) {
+			this.div.setAttribute("class",this.css+" "+this.cssSelected);
+		} else {
+			this.div.setAttribute("class",this.css);
 		}
 	}
 

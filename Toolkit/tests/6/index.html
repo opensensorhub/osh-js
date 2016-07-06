@@ -22,11 +22,9 @@
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
 	<script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
     
     <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
-	<script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-VideoView.js"></script>
 	<script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
 	<style>
 
@@ -49,7 +47,7 @@
 		// creates datasource
 
 		//--Android Phone Video
-		var androidPhoneVideoDataSource = new OSH.DataReceiver.Video("android-Video", {
+		var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
 			protocol : "ws",
 			service: "SOS",
 			endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -58,13 +56,10 @@
 			startTime: "2015-02-16T07:58:00Z",
 			endTime: "2015-02-16T08:09:00Z",
 			replaySpeed: "1"
-		},{
-			format: "mjpeg"
 		});
 
-		var videoView = new OSH.UI.VideoView("container",{
+		var videoView = new OSH.UI.MjpegView("container",{
 			dataSourceId:androidPhoneVideoDataSource.getId(),
-			format: "mjpeg",
 			css:"video",
 			cssSelected:"video-selected",
 			name:"Android Phone Video"

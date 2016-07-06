@@ -55,7 +55,7 @@ function init() {
 
     var androidEntity = {
         name: "Android Phone",
-        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource]
+        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource]
     };
 
 
@@ -105,7 +105,8 @@ function init() {
             name: "WindSpeed chart",
             yLabel: 'Wind Speed (m/s)',
             xLabel: 'Time',
-            css:"chart-view"
+            css:"chart-view",
+            cssSelected: "video-selected"
         });
 
     var chartDialog = new OSH.UI.DialogView("box-3", {
