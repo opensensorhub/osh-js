@@ -19,6 +19,10 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
     },
 
     onMessage: function (data) {
+    },
+
+    close: function() {
+        this.ws.close();
     }
 });
 
