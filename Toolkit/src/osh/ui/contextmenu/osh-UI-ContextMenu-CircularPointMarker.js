@@ -130,8 +130,9 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
         results.push(0);
         return results.slice(5, 8); // returns the [X,Y,Z,1] values*/
         var transform = el.style.transform;
-        var regExp = /\(([^)]+)\)/;
+        var regExp = /^\s*((\w+)\s*\(([^)]+)\))/;
         var matches = regExp.exec(transform);
-        return "translate3d"+matches[0];
+
+        return matches[1];
     }
 });
