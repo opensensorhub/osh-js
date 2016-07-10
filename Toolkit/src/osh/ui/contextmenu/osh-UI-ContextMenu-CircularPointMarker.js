@@ -100,7 +100,7 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
             this.bindEvents[item.id] = item.viewId;
             $(item.id).on("click",function(event){
                 document.fire("osh:"+item.action, {
-                    viewId: this.bindEvents[event.srcElement.id]
+                    viewId: this.bindEvents[event.target.id]
                 });
             }.bind(this));
         }
