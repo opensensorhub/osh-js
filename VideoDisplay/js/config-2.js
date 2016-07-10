@@ -122,6 +122,36 @@ function init() {
         closeable: true
     });
 
+    var  menuItems = [{
+        name: "Android Video",
+        viewId: videoDialog.getId(),
+        css: "fa fa-video-camera fa-3x",
+        action: "show"
+    },{
+        name: "Same Android Video",
+        viewId: videoDialog2.getId(),
+        css: "fa fa-video-camera fa-3x",
+        action: "show"
+    },{
+        name: "Weather chart",
+        viewId: chartDialog.getId(),
+        css: "fa fa-bar-chart fa-3x",
+        action: "show"
+    },{
+        name: "Tasking",
+        viewId: "",
+        css: "fa fa-arrows fa-3x",
+        action: "show"
+    }];
+
+    var contextCircularMenu = new OSH.UI.ContextMenu.CircularPointMarker({
+        items: menuItems
+    });
+
+    var contextStackMenu = new OSH.UI.ContextMenu.StackMenu({
+        items: menuItems
+    });
+
     // creates views
     var mapView = new OSH.UI.LeafletView("main-container",
         [{
@@ -161,30 +191,7 @@ function init() {
                     }
                 }
             }),
-            contextmenu: new OSH.UI.ContextMenu.CircularPointMarker({
-                items:[{
-                    name: "Android Video",
-                    viewId: videoDialog.getId(),
-                    css: "fa fa-video-camera fa-3x",
-                    action: "show"
-                },{
-                    name: "Same Android Video",
-                    viewId: videoDialog2.getId(),
-                    css: "fa fa-video-camera fa-3x",
-                    action: "show"
-                },{
-                        name: "Weather chart",
-                        viewId: chartDialog.getId(),
-                        css: "fa fa-bar-chart fa-3x",
-                        action: "show"
-                },{
-                    name: "Tasking",
-                    viewId: "",
-                    css: "fa fa-arrows fa-3x",
-                    action: "show"
-                }
-                ]
-            }),
+            contextmenu: contextCircularMenu,
             name : "Android Phone GPS"
         },
             {
@@ -254,7 +261,10 @@ function init() {
     dataProviderController.connectAll();
 
     // test tree
-    var entityTree = new OSH.UI.EntityTreeView("tree-container",{});
+    var entityTree = new OSH.UI.EntityTreeView("tree-container",[],{
+        contextMenu:contextCircularMenu
+    });
+
     var entityTreeDialog = new OSH.UI.DialogView("tree-container", {
         css: "tree-dialog",
         name: "Entities",

@@ -139,12 +139,12 @@ span.node_selected a {
 }
 
 .menu li:hover {
-  background: aquamarine;
-	cursor: pointer;
+  background: #eee;
+  cursor: pointer;
 }
 
 .sub-menu li:hover {
-  background: aquamarine;
+  background:  #eee;
 }
 .menu li:hover > .sub-menu {
   display: block;
@@ -153,12 +153,13 @@ span.node_selected a {
 .menu {
 	width: 150px;
 	position: absolute;
-	background: #F1F1F1;
-	-webkit-user-select: none; /* Chrome/Safari */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE10+ */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	cursor: default;
-	box-shadow: 2px 2px 3px #BDBDBD;
+	z-index: 9999;
+	box-shadow: 2px 2px 5px 2px #777;
+	background-color: #e4e4e4;
 }
 
 
@@ -166,10 +167,14 @@ span.node_selected a {
   display: none;
   position: absolute;
   min-width: 150px;
-	box-shadow: 2px 2px 3px #BDBDBD;
+	box-shadow: 2px 2px 3px #e4e4e4;
 }
 
 .menu .sub-menu {
   top: 0;
   left: 100%;
+}
+
+.menu a {
+	color: #000;
 }

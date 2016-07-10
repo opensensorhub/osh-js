@@ -21,12 +21,13 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		// p_parentNode: Reference to the parent node. Set null to create the node on the root;
 		// p_tag: Tag is used to store additional information on the node. All node attributes are visible when programming events and context menu actions;
 		// p_contextmenu: Name of the context menu, which is one of the attributes of the p_contextMenu object created with the tree;
-		createNode: function(p_text,p_expanded, p_icon, p_parentNode,p_tag,p_contextmenu) {
+		createNode: function(p_text,p_expanded, p_icon,p_class, p_parentNode,p_tag,p_contextmenu) {
 			v_tree = this;
 			node = {
-				id: 'node_' + this.nodeCounter,
+				id: 'node_' + OSH.Utils.randomUUID(),
 				text: p_text,
 				icon: p_icon,
+				class: p_class,
 				parent: p_parentNode,
 				expanded : p_expanded,
 				childNodes : [],
@@ -56,7 +57,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				// p_icon: Icon;
 				// p_tag: Tag;
 				// p_contextmenu: Context Menu;
-				createChildNode: function(p_text,p_expanded,p_icon,p_tag,p_contextmenu) { return v_tree.createNode(p_text,p_expanded,p_icon,this,p_tag,p_contextmenu); }
+				createChildNode: function(p_text,p_expanded,p_icon,p_class,p_tag,p_contextmenu) { return v_tree.createNode(p_text,p_expanded,p_icon,p_class,this,p_tag,p_contextmenu); }
 			}
 
 			this.nodeCounter++;
@@ -71,14 +72,14 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					if (p_parentNode.childNodes.length==0) {
 						if (p_parentNode.expanded) {
 						p_parentNode.elementLi.getElementsByTagName("ul")[0].style.display = 'block';
-						v_img = p_parentNode.elementLi.getElementsByTagName("img")[0];
+						v_img = p_parentNode.elementLi.getElementsByTagName("a")[0];
 						v_img.style.visibility = "visible";
 						v_img.src = 'images/tree/collapse.png';
 						v_img.id = 'toggle_off';
 						}
 						else {
 							p_parentNode.elementLi.getElementsByTagName("ul")[0].style.display = 'none';
-							v_img = p_parentNode.elementLi.getElementsByTagName("img")[0];
+							v_img = p_parentNode.elementLi.getElementsByTagName("a")[0];
 							v_img.style.visibility = "visible";
 							v_img.src = 'images/tree/expand.png';
 							v_img.id = 'toggle_on';
@@ -127,8 +128,13 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 			var v_icon = null;
 
+			var classElt = "icon_tree";
+
+			if(p_node.class != null) {
+				classElt = p_node.class;
+			}
 			if (p_node.icon!=null)
-				v_icon = createImgElement(null,'icon_tree',p_node.icon);
+				v_icon = createImgElement(null,classElt,p_node.icon);
 
 			var v_li = document.createElement('li');
 			p_node.elementLi = v_li;
@@ -170,7 +176,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			if (v_icon!=undefined)
 				v_span.appendChild(v_icon);
 
-				v_a = createSimpleElement('a',null,null);
+				v_a = createSimpleElement('a',p_node.id,null);
 				v_a.innerHTML=p_node.text;
 				v_span.appendChild(v_a);
 				v_li.appendChild(v_exp_col);
@@ -241,7 +247,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				if (this.nodeBeforeOpenEvent!=undefined)
 					this.nodeBeforeOpenEvent(p_node);
 
-				var img=p_node.elementLi.getElementsByTagName("img")[0];
+				var img=p_node.elementLi.getElementsByTagName("a")[0];
 
 				p_node.expanded = true;
 
@@ -258,7 +264,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		// p_node: Reference to the node;
 		collapseNode: function(p_node) {
 			if (p_node.childNodes.length>0 && p_node.expanded==true) {
-				var img=p_node.elementLi.getElementsByTagName("img")[0];
+				var img=p_node.elementLi.getElementsByTagName("a")[0];
 
 				p_node.expanded = false;
 				if (this.nodeBeforeCloseEvent!=undefined)
@@ -309,7 +315,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			p_node.parent.childNodes.splice(index, 1);
 
 			if (p_node.parent.childNodes.length==0) {
-				var v_img = p_node.parent.elementLi.getElementsByTagName("img")[0];
+				var v_img = p_node.parent.elementLi.getElementsByTagName("a")[0];
 				v_img.style.visibility = "hidden";
 			}
 
@@ -321,7 +327,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			if (p_node.childNodes.length>0) {
 				var v_ul = p_node.elementLi.getElementsByTagName("ul")[0];
 
-				var v_img = p_node.elementLi.getElementsByTagName("img")[0];
+				var v_img = p_node.elementLi.getElementsByTagName("a")[0];
 				v_img.style.visibility = "hidden";
 
 				p_node.childNodes = [];
@@ -339,7 +345,16 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 					v_tree = this;
 
-					var v_menu = this.contextMenu[p_node.contextMenu];
+					var v_left = p_event.pageX-5;
+					var v_right = p_event.pageY-5;
+
+					var divNode = document.getElementById(p_node.id);
+					p_node.contextMenu.show({
+						div: divNode,
+						offsetX: 140,
+						offsetY: 20
+					});
+					/*var v_menu = this.contextMenu[p_node.contextMenu];
 
 					var v_div;
 					if (this.contextMenuDiv==null) {
@@ -374,7 +389,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 						v_li.appendChild(v_span);
 
 						if (v_menu.elements[i].icon!=undefined) {
-							var v_img = createImgElement('null','null',v_menu.elements[i].icon);
+							var v_img = createImgElement('null',v_menu.elements[i].class,v_menu.elements[i].icon);
 							v_li.appendChild(v_img);
 						}
 
@@ -390,8 +405,8 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 						}
 
 					})(i);
-
-					this.contextMenuDiv = v_div;
+					*/
+					this.contextMenuDiv = divNode;
 
 				}
 			}
@@ -419,7 +434,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				v_li.appendChild(v_span);
 
 				if (p_submenu.elements[i].icon!=undefined) {
-					var v_img = createImgElement('null','null',p_submenu.elements[i].icon);
+					var v_img = createImgElement('null',p_submenu.elements[i].class,p_submenu.elements[i].icon);
 					v_li.appendChild(v_img);
 				}
 
@@ -478,8 +493,8 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 	}
 
 	window.onclick = function() {
-		if (tree.contextMenuDiv!=null)
-			tree.contextMenuDiv.style.display = 'none';
+		//if (tree.contextMenuDiv!=null)
+		//			tree.contextMenuDiv.style.display = 'none';
 	}
 
 	return tree;
@@ -499,7 +514,7 @@ function createSimpleElement(p_type,p_id,p_class) {
 
 //Create img element
 function createImgElement(p_id,p_class,p_src) {
-	element = document.createElement('img');
+	element = document.createElement('a');
 	if (p_id!=undefined)
 		element.id = p_id;
 	if (p_class!=undefined)

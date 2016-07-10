@@ -110,7 +110,7 @@
   height: 40px;
   width: 40px;
   background: #FFF;
-  padding:7px;
+  padding:7px !important;
   text-decoration: none;
 }
 

@@ -73,9 +73,20 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
 
         $(closeId).on("click",this.hide.bind(this));
 
+        var offsetX = 0;
+        var offsetY = 0;
+
+        if(properties.offsetX) {
+            offsetX = properties.offsetX;
+        }
+
+        if(properties.offsetY) {
+            offsetY = properties.offsetY;
+        }
+
         document.querySelector('.circular-menu-circle').classList.toggle('open');
-        this.rootTag.style.top = properties.div.style.top;
-        this.rootTag.style.left = properties.div.style.left;
+        this.rootTag.style.top = properties.div.style.top+offsetY;
+        this.rootTag.style.left = properties.div.style.left+offsetX;
         this.rootTag.style.transform = this.getTransform(properties.div);
 
         var self = this;
@@ -121,6 +132,9 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
 
     getTransform: function(el) {
         var transform = el.style.transform;
+        if(!transform || 0 === transform.length) {
+            return "";
+        }
         var regExp = /^\s*((\w+)\s*\(([^)]+)\))/;
         var matches = regExp.exec(transform);
 
