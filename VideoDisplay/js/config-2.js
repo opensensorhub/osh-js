@@ -70,7 +70,9 @@ function init() {
         draggable: false,
         css: "dialog",
         name: "Android Video 1",
-        show:false
+        show:false,
+        dockable: true,
+        closeable: true
     });
 
     var videoView2 = new OSH.UI.MjpegView("box-2", {
@@ -84,7 +86,9 @@ function init() {
         draggable: false,
         css: "dialog",
         name: "Android Video 2",
-        show:false
+        show:false,
+        dockable: true,
+        closeable: true
     });
 
     var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("box-3",
@@ -113,7 +117,9 @@ function init() {
         draggable: false,
         css: "dialog",
         name: "Chart Weather",
-        show:false
+        show:false,
+        dockable: true,
+        closeable: true
     });
 
     // creates views
@@ -247,6 +253,16 @@ function init() {
     // starts streaming
     dataProviderController.connectAll();
 
+    // test tree
+    var entityTree = new OSH.UI.EntityTreeView("tree-container",{});
+    var entityTreeDialog = new OSH.UI.DialogView("tree-container", {
+        css: "tree-dialog",
+        name: "Entities",
+        show:true,
+        draggable:true,
+        dockable: false,
+        closeable: false
+    });
     // inits rangeSlider
     /*var rangeSlider = new OSH.UI.JQRangeSlider("rangeSlider", {
         startDate: "2015-02-16T07:58:00Z",

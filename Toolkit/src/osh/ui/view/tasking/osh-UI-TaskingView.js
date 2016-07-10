@@ -9,17 +9,17 @@ var htmlTaskingComponent =
             "<div class=\"remote-down\"><input id=\"button-tilt-down\" type=\"image\" src=\"images/remote-down.png\" class=\"remote-button\"/></div>"+
         "</div>"+
         "<div class=\"ptz flex-item\">" +
-            "<div class=\"preset\">" +
+            "<!--div class=\"preset\">" +
                 "<label for=\"preset\">Preset:</label>" +
                 "<select name=\"preset\">"+
                     "<option value=\"value1\">Value 1</option>"+
                     "<option value=\"value2\" selected>Value 2</option>"+
                     "<option value=\"value3\">Value 3</option>"+
                 "</select>" +
-            "</div>"+
-            "<div class=\"pan\"><label for=\"pan\">Pan:</label><input id=\"input-pan\" type=\"text\" name=\"pan\" size=\"8\" value=\"0\" disabled></div>"+
-            "<div class=\"tilt\"><label for=\"tilt\">Tilt:</label><input id=\"input-tilt\" type=\"text\" name=\"tilt\" size=\"8\" value=\"0\" disabled></div>"+
-            "<div class=\"zoom\"><label for=\"zoom\">Zoom:</label><input id=\"input-zoom\" type=\"text\" name=\"zoom\" size=\"8\" value=\"0\" disabled></div>"+
+            "</div-->"+
+            "<div class=\"pan\"><label for=\"pan\">Pan:</label><input id=\"input-pan\" type=\"text\" name=\"pan\" size=\"2\" value=\"0\" disabled></div>"+
+            "<div class=\"tilt\"><label for=\"tilt\">Tilt:</label><input id=\"input-tilt\" type=\"text\" name=\"tilt\" size=\"2\" value=\"0\" disabled></div>"+
+            "<div class=\"zoom\"><label for=\"zoom\">Zoom:</label><input id=\"input-zoom\" type=\"text\" name=\"zoom\" size=\"2\" value=\"0\" disabled></div>"+
         "</div>"+
     "</div>";
 

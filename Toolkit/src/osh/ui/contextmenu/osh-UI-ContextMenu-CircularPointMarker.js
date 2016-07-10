@@ -120,15 +120,6 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
     },
 
     getTransform: function(el) {
-       /* var transform = el.style.transform;
-        console.log(transform);
-        var results = transform.match(/matrix(?:(3d)\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))(?:, (-{0,1}\d+)), -{0,1}\d+\)|\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))\))/);
-
-        if(!results) return [0, 0, 0];
-        if(results[1] == '3d') return results.slice(2,5);
-
-        results.push(0);
-        return results.slice(5, 8); // returns the [X,Y,Z,1] values*/
         var transform = el.style.transform;
         var regExp = /^\s*((\w+)\s*\(([^)]+)\))/;
         var matches = regExp.exec(transform);

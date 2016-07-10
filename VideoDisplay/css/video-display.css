@@ -91,3 +91,15 @@ a.navbar-brand:hover {
     position: absolute;
     top: calc(100% - 290px);
 }
+
+.tree-container {
+    width:300px;
+    height:250px;
+    background-color:#FFF;
+}
+
+.tree-dialog {
+    position:absolute;
+    top:60px;
+    left:60px;
+}
