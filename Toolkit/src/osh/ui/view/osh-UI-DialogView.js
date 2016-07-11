@@ -33,7 +33,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
         this.rootTag = this.rootTag.firstChild;
         this.rootTag.setAttribute("id", this.id);
-        this.rootTag.setAttribute("class", "pop-over");
+        this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
         var div = document.getElementById(divId);
@@ -86,6 +86,10 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
     show: function($super,properties) {
         if(properties.viewIds.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
+            if(typeof(this.initialWidth) == "undefined" ) {
+                console.log(this.rootTag.offsetWidth);
+                this.initialWidth = this.rootTag.offsetWidth;
+            }
         }
     },
 
@@ -105,7 +109,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.draggable = true;
         } else {
             this.rootTag.style.top = 0;
-            this.rootTag.style.left = 0;
+            this.rootTag.style.left = 0 - (this.rootTag.offsetWidth-this.initialWidth);
             this.rootTag.style.position = "relative";
             this.rootTag.setAttribute("draggable", false);
             this.rootTag.parentNode.removeChild(this.rootTag);

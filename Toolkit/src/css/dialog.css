@@ -66,3 +66,8 @@
     background-image: url("../images/pin.png");
     cursor: pointer;
 }
+
+.resizable {
+    resize: both;   /* Options: horizontal, vertical, both */
+    overflow: auto; /* fix for Safari */
+}

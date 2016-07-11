@@ -47,8 +47,8 @@ a.navbar-brand:hover {
 }
 
 .video {
-	width: 280px;
-	height: 150px;
+	width: 100%;
+	height: calc(100% - 30px);
 }
 	
 .video-selected {
@@ -79,11 +79,12 @@ a.navbar-brand:hover {
 .dialog {
     width:300px;
     height:180px;
+    margin-bottom:10px;
 }
 
 .chart-view {
-    width:280px !important;
-    height:160px !important;
+    width:calc(100% - 15px) !important;
+    height:calc(100% - 30px) !important;
 }
 
 .tasking-container {
