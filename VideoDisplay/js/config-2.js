@@ -53,12 +53,6 @@ function init() {
         offeringID: "OFFERING_ID"
     });
 
-    var androidEntity = {
-        name: "Android Phone",
-        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource]
-    };
-
-
     var videoView = new OSH.UI.MjpegView("box-1", {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         css: "video",
@@ -220,6 +214,18 @@ function init() {
         dataSourceId : ""
     });
 
+
+    var androidEntity = {
+        name: "Android Phone",
+        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource],
+        path: "Sensors/Toulouse",
+        treeIcon : "android_icon.png",
+        contextMenu: contextCircularMenu
+    };
+
+    // test tree
+    var entityTree = new OSH.UI.EntityTreeView("tree-container",[androidEntity],{});
+
     // adds datasources to dataProviderController
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
         bufferingTime : 0*1000, // 2 seconds
@@ -259,11 +265,6 @@ function init() {
 
     // starts streaming
     dataProviderController.connectAll();
-
-    // test tree
-    var entityTree = new OSH.UI.EntityTreeView("tree-container",[],{
-        contextMenu:contextCircularMenu
-    });
 
     var entityTreeDialog = new OSH.UI.DialogView("tree-container", {
         css: "tree-dialog",

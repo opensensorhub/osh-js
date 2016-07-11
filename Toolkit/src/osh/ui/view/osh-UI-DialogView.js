@@ -87,7 +87,6 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         if(properties.viewIds.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
             if(typeof(this.initialWidth) == "undefined" ) {
-                console.log(this.rootTag.offsetWidth);
                 this.initialWidth = this.rootTag.offsetWidth;
             }
         }

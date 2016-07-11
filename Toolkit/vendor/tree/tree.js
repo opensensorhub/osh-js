@@ -21,13 +21,12 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		// p_parentNode: Reference to the parent node. Set null to create the node on the root;
 		// p_tag: Tag is used to store additional information on the node. All node attributes are visible when programming events and context menu actions;
 		// p_contextmenu: Name of the context menu, which is one of the attributes of the p_contextMenu object created with the tree;
-		createNode: function(p_text,p_expanded, p_icon,p_class, p_parentNode,p_tag,p_contextmenu) {
+		createNode: function(p_text,p_expanded, p_icon, p_parentNode,p_tag,p_contextmenu) {
 			v_tree = this;
 			node = {
 				id: 'node_' + OSH.Utils.randomUUID(),
 				text: p_text,
 				icon: p_icon,
-				class: p_class,
 				parent: p_parentNode,
 				expanded : p_expanded,
 				childNodes : [],
@@ -57,7 +56,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				// p_icon: Icon;
 				// p_tag: Tag;
 				// p_contextmenu: Context Menu;
-				createChildNode: function(p_text,p_expanded,p_icon,p_class,p_tag,p_contextmenu) { return v_tree.createNode(p_text,p_expanded,p_icon,p_class,this,p_tag,p_contextmenu); }
+				createChildNode: function(p_text,p_expanded,p_icon,p_tag,p_contextmenu) { return v_tree.createNode(p_text,p_expanded,p_icon,this,p_tag,p_contextmenu); }
 			}
 
 			this.nodeCounter++;
@@ -71,15 +70,15 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					var v_ul = p_parentNode.elementLi.getElementsByTagName("ul")[0];
 					if (p_parentNode.childNodes.length==0) {
 						if (p_parentNode.expanded) {
-						p_parentNode.elementLi.getElementsByTagName("ul")[0].style.display = 'block';
-						v_img = p_parentNode.elementLi.getElementsByTagName("a")[0];
-						v_img.style.visibility = "visible";
-						v_img.src = 'images/tree/collapse.png';
-						v_img.id = 'toggle_off';
+							p_parentNode.elementLi.getElementsByTagName("ul")[0].style.display = 'block';
+							v_img = p_parentNode.elementLi.getElementsByTagName("img")[0];
+							v_img.style.visibility = "visible";
+							v_img.src = 'images/tree/collapse.png';
+							v_img.id = 'toggle_off';
 						}
 						else {
 							p_parentNode.elementLi.getElementsByTagName("ul")[0].style.display = 'none';
-							v_img = p_parentNode.elementLi.getElementsByTagName("a")[0];
+							v_img = p_parentNode.elementLi.getElementsByTagName("img")[0];
 							v_img.style.visibility = "visible";
 							v_img.src = 'images/tree/expand.png';
 							v_img.id = 'toggle_on';
@@ -116,7 +115,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 			div_tree.appendChild(ulElement);
 
-      this.adjustLines(document.getElementById(this.name),true);
+			this.adjustLines(document.getElementById(this.name),true);
 
 		},
 		///// Drawing the node. This function is used when drawing the Tree and should not be called directly;
@@ -128,13 +127,8 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 			var v_icon = null;
 
-			var classElt = "icon_tree";
-
-			if(p_node.class != null) {
-				classElt = p_node.class;
-			}
 			if (p_node.icon!=null)
-				v_icon = createImgElement(null,classElt,p_node.icon);
+				v_icon = createImgElement(null,'icon_tree',p_node.icon);
 
 			var v_li = document.createElement('li');
 			p_node.elementLi = v_li;
@@ -176,11 +170,11 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			if (v_icon!=undefined)
 				v_span.appendChild(v_icon);
 
-				v_a = createSimpleElement('a',p_node.id,null);
-				v_a.innerHTML=p_node.text;
-				v_span.appendChild(v_a);
-				v_li.appendChild(v_exp_col);
-				v_li.appendChild(v_span);
+			v_a = createSimpleElement('a',p_node.id,null);
+			v_a.innerHTML=p_node.text;
+			v_span.appendChild(v_a);
+			v_li.appendChild(v_exp_col);
+			v_li.appendChild(v_span);
 
 			p_ulElement.appendChild(v_li);
 
@@ -247,7 +241,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				if (this.nodeBeforeOpenEvent!=undefined)
 					this.nodeBeforeOpenEvent(p_node);
 
-				var img=p_node.elementLi.getElementsByTagName("a")[0];
+				var img=p_node.elementLi.getElementsByTagName("img")[0];
 
 				p_node.expanded = true;
 
@@ -264,7 +258,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		// p_node: Reference to the node;
 		collapseNode: function(p_node) {
 			if (p_node.childNodes.length>0 && p_node.expanded==true) {
-				var img=p_node.elementLi.getElementsByTagName("a")[0];
+				var img=p_node.elementLi.getElementsByTagName("img")[0];
 
 				p_node.expanded = false;
 				if (this.nodeBeforeCloseEvent!=undefined)
@@ -315,7 +309,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			p_node.parent.childNodes.splice(index, 1);
 
 			if (p_node.parent.childNodes.length==0) {
-				var v_img = p_node.parent.elementLi.getElementsByTagName("a")[0];
+				var v_img = p_node.parent.elementLi.getElementsByTagName("img")[0];
 				v_img.style.visibility = "hidden";
 			}
 
@@ -327,7 +321,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			if (p_node.childNodes.length>0) {
 				var v_ul = p_node.elementLi.getElementsByTagName("ul")[0];
 
-				var v_img = p_node.elementLi.getElementsByTagName("a")[0];
+				var v_img = p_node.elementLi.getElementsByTagName("img")[0];
 				v_img.style.visibility = "hidden";
 
 				p_node.childNodes = [];
@@ -356,58 +350,57 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					});
 					/*var v_menu = this.contextMenu[p_node.contextMenu];
 
-					var v_div;
-					if (this.contextMenuDiv==null) {
-						v_div = createSimpleElement('ul','ul_cm','menu');
-						document.body.appendChild(v_div);
-					}
-					else
-						v_div = this.contextMenuDiv;
+					 var v_div;
+					 if (this.contextMenuDiv==null) {
+					 v_div = createSimpleElement('ul','ul_cm','menu');
+					 document.body.appendChild(v_div);
+					 }
+					 else
+					 v_div = this.contextMenuDiv;
 
-					v_div.innerHTML = '';
+					 v_div.innerHTML = '';
 
-					var v_left = p_event.pageX-5;
-					var v_right = p_event.pageY-5;
+					 var v_left = p_event.pageX-5;
+					 var v_right = p_event.pageY-5;
 
-					v_div.style.display = 'block';
-					v_div.style.position = 'absolute';
-					v_div.style.left = v_left + 'px';
-					v_div.style.top = v_right + 'px';
+					 v_div.style.display = 'block';
+					 v_div.style.position = 'absolute';
+					 v_div.style.left = v_left + 'px';
+					 v_div.style.top = v_right + 'px';
 
-					for (var i=0; i<v_menu.elements.length; i++) (function(i){
+					 for (var i=0; i<v_menu.elements.length; i++) (function(i){
 
-						var v_li = createSimpleElement('li',null,null);
+					 var v_li = createSimpleElement('li',null,null);
 
-						var v_span = createSimpleElement('span',null,null);
-						v_span.onclick = function () {  v_menu.elements[i].action(p_node) };
+					 var v_span = createSimpleElement('span',null,null);
+					 v_span.onclick = function () {  v_menu.elements[i].action(p_node) };
 
-						var v_a = createSimpleElement('a',null,null);
-						var v_ul = createSimpleElement('ul',null,'sub-menu');
+					 var v_a = createSimpleElement('a',null,null);
+					 var v_ul = createSimpleElement('ul',null,'sub-menu');
 
-						v_a.appendChild(document.createTextNode(v_menu.elements[i].text));
+					 v_a.appendChild(document.createTextNode(v_menu.elements[i].text));
 
-						v_li.appendChild(v_span);
+					 v_li.appendChild(v_span);
 
-						if (v_menu.elements[i].icon!=undefined) {
-							var v_img = createImgElement('null',v_menu.elements[i].class,v_menu.elements[i].icon);
-							v_li.appendChild(v_img);
-						}
+					 if (v_menu.elements[i].icon!=undefined) {
+					 var v_img = createImgElement('null',v_menu.elements[i].class,v_menu.elements[i].icon);
+					 v_li.appendChild(v_img);
+					 }
 
-						v_li.appendChild(v_a);
-						v_li.appendChild(v_ul);
-						v_div.appendChild(v_li);
+					 v_li.appendChild(v_a);
+					 v_li.appendChild(v_ul);
+					 v_div.appendChild(v_li);
 
-						if (v_menu.elements[i].submenu!=undefined) {
-							var v_span_more = createSimpleElement('div',null,null);
-							v_span_more.appendChild(createImgElement(null,'menu_img','images/tree/right.png'));
-							v_li.appendChild(v_span_more);
-							v_tree.contextMenuLi(v_menu.elements[i].submenu,v_ul,p_node);
-						}
+					 if (v_menu.elements[i].submenu!=undefined) {
+					 var v_span_more = createSimpleElement('div',null,null);
+					 v_span_more.appendChild(createImgElement(null,'menu_img','images/tree/right.png'));
+					 v_li.appendChild(v_span_more);
+					 v_tree.contextMenuLi(v_menu.elements[i].submenu,v_ul,p_node);
+					 }
 
-					})(i);
-					*/
+					 })(i);
+					 */
 					this.contextMenuDiv = divNode;
-
 				}
 			}
 		},
@@ -426,7 +419,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				var v_span = createSimpleElement('span',null,null);
 				v_span.onclick = function () {  p_submenu.elements[i].action(p_node) };
 
-				var v_a = createSimpleElement('a',null,null);
+				var v_a = createSimpleElement('a',p_node.id,null);
 				var v_ul = createSimpleElement('ul',null,'sub-menu');
 
 				v_a.appendChild(document.createTextNode(p_submenu.elements[i].text));
@@ -434,7 +427,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				v_li.appendChild(v_span);
 
 				if (p_submenu.elements[i].icon!=undefined) {
-					var v_img = createImgElement('null',p_submenu.elements[i].class,p_submenu.elements[i].icon);
+					var v_img = createImgElement('null','null',p_submenu.elements[i].icon);
 					v_li.appendChild(v_img);
 				}
 
@@ -456,29 +449,29 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		adjustLines: function(p_ul,p_recursive) {
 			var tree = p_ul;
 
-      var lists = [];
+			var lists = [];
 
 			if (tree.childNodes.length>0) {
 				lists = [ tree ];
 
 				if (p_recursive) {
-		      for (var i = 0; i < tree.getElementsByTagName("ul").length; i++) {
+					for (var i = 0; i < tree.getElementsByTagName("ul").length; i++) {
 						var check_ul = tree.getElementsByTagName("ul")[i];
 						if (check_ul.childNodes.length!=0)
-		        	lists[lists.length] = check_ul;
+							lists[lists.length] = check_ul;
 					}
 				}
 
 			}
 
-      for (var i = 0; i < lists.length; i++) {
-        var item = lists[i].lastChild;
+			for (var i = 0; i < lists.length; i++) {
+				var item = lists[i].lastChild;
 
-        while (!item.tagName || item.tagName.toLowerCase() != "li") {
-     	  item = item.previousSibling;
+				while (!item.tagName || item.tagName.toLowerCase() != "li") {
+					item = item.previousSibling;
 				}
 
-        item.className += "last";
+				item.className += "last";
 				item.style.backgroundColor = this.backcolor;
 
 				item = item.previousSibling;
@@ -488,13 +481,13 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 						item.className = "";
 						item.style.backgroundColor = 'transparent';
 					}
-      }
+			}
 		}
 	}
 
 	window.onclick = function() {
 		//if (tree.contextMenuDiv!=null)
-		//			tree.contextMenuDiv.style.display = 'none';
+		//	tree.contextMenuDiv.style.display = 'none';
 	}
 
 	return tree;
@@ -514,7 +507,7 @@ function createSimpleElement(p_type,p_id,p_class) {
 
 //Create img element
 function createImgElement(p_id,p_class,p_src) {
-	element = document.createElement('a');
+	element = document.createElement('img');
 	if (p_id!=undefined)
 		element.id = p_id;
 	if (p_class!=undefined)
