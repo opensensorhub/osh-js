@@ -32,9 +32,9 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
                 nbNodes--;
             }
             if(currentNode != null) {
-                var leaf = currentNode.createChildNode(currentEntity.name, false, currentEntity.icon, null, currentEntity.contextMenu);
+                var leaf = currentNode.createChildNode(currentEntity.name, false, currentEntity.treeIcon, null, currentEntity.contextMenu);
             } else {
-                this.tree.createNode(currentEntity.name,false,currentEntity.icon,null, currentEntity.contextMenu);
+                this.tree.createNode(currentEntity.name,false,currentEntity.treeIcon,null, currentEntity.contextMenu);
             }
         }
 

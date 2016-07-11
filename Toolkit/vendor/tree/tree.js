@@ -345,8 +345,8 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					var divNode = document.getElementById(p_node.id);
 					p_node.contextMenu.show({
 						div: divNode,
-						offsetX: 140,
-						offsetY: 20
+						offsetX: 145,
+						offsetY: 65
 					});
 					/*var v_menu = this.contextMenu[p_node.contextMenu];
 

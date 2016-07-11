@@ -219,7 +219,7 @@ function init() {
         name: "Android Phone",
         dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource],
         path: "Sensors/Toulouse",
-        treeIcon : "android_icon.png",
+        treeIcon : "images/android_icon.png",
         contextMenu: contextCircularMenu
     };
 
