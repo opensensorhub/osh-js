@@ -16,21 +16,23 @@ OSH.Server = Class.create({
     
     getCapabilities: function(successCallback, errorCallback) {
         var req = this.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities';
-        var xhr = new XMLHttpRequest('GET', req, true);
-        xhr.onreadystatechange = function (response) {
-            if (this.readyState == 4 && this.status == 200) {
-                this.capabilities = OSH.Utils.jsonix_XML2JSON(response.data);
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                this.capabilities = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
                 for(var i = 0; i < this.capabilities.value.contents.contents.offering.length; i++) {
-                    var sensor = new OSH.sensor(this.capabilities.value.contents.contents.offering[i].abstractOffering.value);
+                    var sensor = new OSH.Sensor(this.capabilities.value.contents.contents.offering[i].abstractOffering.value);
                     sensor.server = this;
                     this.sensors.push(sensor);
                 }
-                successCallback();
+                var s = successCallback.bind(this);
+                s(xhr.responseText);
             }
             else {
-                errorCallback();
+                errorCallback(xhr.responseText);
             }
-        };
-        xhr.send(null);
+        }.bind(this);
+        xhr.open('GET', req, true);
+        xhr.send();
     }
 });
