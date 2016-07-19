@@ -1,0 +1,1199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dae1ff5f-d0be-4eb2-b2d5-96cf941944cc" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/dist/osh-all.min.js" afterPath="$PROJECT_DIR$/Toolkit/dist/osh-all.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/make.sh" afterPath="$PROJECT_DIR$/Toolkit/make.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js" />
+    </list>
+    <ignored path="osh-js.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="osh-js" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="osh-Server.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Server.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="435">
+              <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-Sensor.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="594">
+              <caret line="50" column="59" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="make.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/make.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="43" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-DataReceiver-Video.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-Video.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="13" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-Sensor-Output.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor-Output.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-DataReceiver-VideoMp4.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMp4.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="480">
+              <caret line="61" column="30" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-DataReceiver-VideoMjpeg.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="19" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-DataReceiver-LatLonAlt.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="68" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="68" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-template.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-template.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-DataReceiver-DataSource.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" column="26" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js" />
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js" />
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Server.js" />
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor-Output.js" />
+        <option value="$PROJECT_DIR$/Toolkit/make.sh" />
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsBuildToolPackageJson" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="width" value="1440" />
+    <option name="height" value="900" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jsonix" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jsonix" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dist" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../MAGE" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="HbShouldOpenHtmlAsHb" value="" />
+    <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
+    <property name="FullScreen" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+      <method />
+    </configuration>
+    <configuration default="true" type="DartTestRunConfigurationType" factoryName="Dart Test">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" working-dir="">
+      <method />
+    </configuration>
+    <configuration default="true" type="cucumber.js" factoryName="Cucumber.js">
+      <option name="cucumberJsArguments" value="" />
+      <option name="executablePath" />
+      <option name="filePath" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner" factoryName="Mocha">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <working-directory />
+      <pass-parent-env>true</pass-parent-env>
+      <envs />
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>DIRECTORY</test-kind>
+      <test-directory />
+      <recursive>false</recursive>
+      <method />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dae1ff5f-d0be-4eb2-b2d5-96cf941944cc" name="Default" comment="" />
+      <created>1467745832135</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1467745832135</updated>
+      <workItem from="1467745833528" duration="2829000" />
+      <workItem from="1467757651785" duration="56452000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="59281000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3093728" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Toolkit/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="8" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-EventManager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/common/prototype.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1050">
+          <caret line="76" column="34" selection-start-line="76" selection-start-column="34" selection-end-line="76" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="32" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1125">
+          <caret line="75" column="6" selection-start-line="75" selection-start-column="6" selection-end-line="75" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="8" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-EventManager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/common/prototype.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="76" column="34" selection-start-line="76" selection-start-column="34" selection-end-line="76" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/.project">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datasender/osh-DataSender-DataSource.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Demos/js/all-in-one.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AVL/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-530">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GpsStreamViewer/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-725">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/demos/demo1/index-local.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="78" column="4" selection-start-line="75" selection-start-column="32" selection-end-line="78" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RangeFinder/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-450">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Demos/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1580">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Buffer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="192" column="4" selection-start-line="192" selection-start-column="4" selection-end-line="192" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiverController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-405">
+          <caret line="15" column="49" selection-start-line="15" selection-start-column="49" selection-end-line="15" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="17" column="19" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoH264.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/tests/6/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-365">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-Chart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/dist/osh-all.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding>
+            <marker date="1468605238000" expanded="true" signature="14:875" placeholder="{&quot;Version&quot;: &quot;1.7.3&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="330:720" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="530:717" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="986:2103" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="1088:2102" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="1106:1511" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="1520:2101" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="1543:2100" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="2118:4752" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="2421:3208" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="2607:2675" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="2691:3207" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="3048:3190" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="3975:4750" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="4800:6278" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="5289:6232" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="5642:5773" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="5726:5772" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="6839:7337" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="7537:11622" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="7724:8046" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="7820:8041" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="7844:8032" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="8494:8554" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="8802:11621" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="8821:9121" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="9465:9543" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="10035:10125" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="10565:10708" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="11091:11334" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="11653:12247" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="11760:12246" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="11890:12244" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="12328:14964" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="13071:14963" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="13812:13896" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="14293:14350" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="15200:18415" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="15632:15920" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="16163:16369" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="16181:16368" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="16568:16737" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="17395:18284" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="17682:17791" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="17718:17789" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="18497:19910" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="18709:19909" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="18931:18958" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="19390:19470" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="20871:21413" placeholder="{&quot;activeRequestCount&quot;: 0...}" />
+            <marker date="1468605238000" expanded="true" signature="20895:21070" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="22003:25414" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="22130:23070" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="22490:23034" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="23239:23915" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="24011:24101" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="24015:24082" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="24133:24825" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="24206:24594" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="25526:26951" placeholder="{&quot;status&quot;: 0...}" />
+            <marker date="1468605238000" expanded="true" signature="26023:26085" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="26027:26066" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="26993:27528" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="27577:28352" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="28367:29296" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="28567:28863" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="29153:29296" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="29338:29470" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="30314:30466" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="31831:31899" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="32313:32453" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="32838:33014" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="33418:34135" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="33427:33884" placeholder="{&quot;OPTGROUP&quot;: &quot;OptGroup&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="34290:34521" placeholder="{&quot;ELEMENT_NODE&quot;: 1...}" />
+            <marker date="1468605238000" expanded="true" signature="34862:34998" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="36572:38534" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="36657:37303" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="37334:37845" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="37500:37836" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="38067:38206" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="38552:39557" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="39030:39180" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="39579:39700" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="40535:40684" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="40591:40683" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="41581:42459" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="41602:41734" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="42547:43163" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="42570:42897" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="44028:44912" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="44060:44911" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="45199:58943" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="45643:46423" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="46436:46864" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="47024:47303" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="47635:50128" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="47667:47890" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="47737:47757" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="48115:48971" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="48139:48970" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="48163:48262" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="48268:48948" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="49775:50081" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="50159:53041" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="50621:53040" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="50935:51212" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="51496:51590" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="52566:52595" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="53436:53823" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="53559:53620" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="53869:54149" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="54472:54673" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="54494:54633" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="54694:58668" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="54952:55329" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="55079:55143" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="55420:55783" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="55457:55686" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="56111:56574" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="56597:56745" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="57115:57304" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="57569:57733" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="57763:58667" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="58959:59520" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="59129:59519" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="60386:79255" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="60406:61357" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="60554:61322" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="60782:60950" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="61369:61472" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="61723:61906" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="62347:62779" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="62869:63229" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="63362:63470" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="63494:64064" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="63563:64062" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="63834:63994" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="63843:63993" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="64077:64650" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="64372:64638" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="64428:64628" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="64666:65187" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="64718:65170" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="64873:64973" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="65421:65490" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="66172:66824" placeholder="{&quot;ID&quot;: /^#((?:\\.|[\w-]|[^\x00-\xa0])+)/...}" />
+            <marker date="1468605238000" expanded="true" signature="67534:71262" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="68077:68213" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="68602:68736" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="69631:69934" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="70564:70918" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="70932:71252" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="71687:71922" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="72473:77194" placeholder="{&quot;cacheLength&quot;: 50...}" />
+            <marker date="1468605238000" expanded="true" signature="72675:73254" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="72692:72809" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="73038:73253" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="73262:75166" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="73691:73985" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="73710:73984" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="74011:74848" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="74147:74847" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="74266:74846" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="75175:77193" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="75193:75385" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="75568:75847" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="75668:75846" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="76288:76353" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="76701:76829" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="77308:77329" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="77595:78221" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="77684:78159" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="77795:77918" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="78324:78385" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="79918:82121" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="79995:80646" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="80233:80464" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="80364:80452" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="80655:82026" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="81311:81603" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="81418:81469" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="82144:82841" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="82934:83793" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="83357:83792" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="84420:85062" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="85322:91457" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="85820:85958" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="86561:87012" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="87029:87617" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="87243:87381" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="87246:87372" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="89092:89587" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="89287:89439" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="89359:89438" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="89704:90315" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="90647:91058" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="90883:90955" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="91478:92114" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="92135:92658" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="93145:94634" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="93188:93382" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="93703:93990" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="94385:94435" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="94713:95401" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="95007:95325" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="95941:96708" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="96300:96706" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="96747:178053" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="97098:97451" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="97523:99970" placeholder="{&quot;xlinkFixRequired&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="97563:97742" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="98199:98535" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="98553:99038" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="99059:99440" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="99098:99366" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="99492:99969" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="99687:99908" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="99989:101814" placeholder="{&quot;CLASS_NAME&quot;: &quot;Jsonix.Request&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="100000:100338" placeholder="[...]" />
+            <marker date="1468605238000" expanded="true" signature="100280:100337" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="100386:101454" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="101188:101402" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="101906:104729" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="102302:102373" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="102862:104475" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="104833:106349" placeholder="{&quot;whitespaceCharacters&quot;: &quot;\t\n\x0B\f\r \u0085\u00a0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="104872:104920" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="105034:105457" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="105085:105448" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="105108:105447" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="105726:106017" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="106364:107538" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="106390:106473" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="106831:107018" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="107460:107537" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="107559:108417" placeholder="{&quot;key&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="107652:108027" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="108457:108800" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="108835:109104" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="109431:111401" placeholder="{&quot;date&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="109556:111367" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="111572:111708" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="112110:112298" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="112584:112672" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="113005:113211" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="113232:118764" placeholder="{&quot;root&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="113606:113952" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="113683:113762" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="113970:114546" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="114564:114996" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="115207:115313" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="115549:115749" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="116228:116418" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="117714:117770" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="118190:118585" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="119562:123212" placeholder="{&quot;document&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="119694:120029" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="120239:120798" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="121131:121696" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="121852:121896" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="122267:122415" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="122744:123065" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="123251:123651" placeholder="{&quot;marshaller&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="123704:124163" placeholder="{&quot;mappingStyle&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="123745:124127" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="123841:123978" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="124237:124884" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="124270:124774" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="124387:124446" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="124935:125620" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="125169:125619" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="125692:126148" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="125743:126147" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="125792:126146" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="126188:127472" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="126255:127034" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="126451:126547" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="126511:126539" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="127525:127607" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="127874:128280" placeholder="{&quot;context&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="128063:128240" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="128500:129506" placeholder="{&quot;context&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="128568:128615" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="128967:129321" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="129943:136557" placeholder="{&quot;name&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="130169:131245" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="131350:131677" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="131366:131676" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="131888:133381" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="132116:132382" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="132580:133193" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="133581:134068" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="134473:134781" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="134565:134780" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="135697:135834" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="136165:136430" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="136608:137280" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="137327:140265" placeholder="{&quot;name&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="137841:139444" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="137857:139443" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="138036:138777" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="138381:138646" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="138820:139318" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="138844:139317" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="138879:139139" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="139470:139524" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="139959:140124" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="140295:141002" placeholder="{&quot;elementName&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="140391:140822" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="141033:142380" placeholder="{&quot;name&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="141171:141855" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="142017:142069" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="142444:143296" placeholder="{&quot;CLASS_NAME&quot;: &quot;Jsonix.Model.AnyAttributePropertyInfo&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="143520:143999" placeholder="{&quot;typeInfo&quot;: &quot;String&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="143561:143692" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="144070:145021" placeholder="{&quot;attributeName&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="144112:144489" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="144515:144722" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="144567:144713" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="145088:145638" placeholder="{&quot;CLASS_NAME&quot;: &quot;Jsonix.Model.ValuePropertyInfo&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="145111:145211" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="145774:147368" placeholder="{&quot;wrapperElementName&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="146217:146478" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="146504:146830" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="146530:146829" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="146640:146730" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="147471:148368" placeholder="{&quot;typeInfo&quot;: &quot;String&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="147529:148004" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="148472:149980" placeholder="{&quot;elementTypeInfos&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="148542:148817" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="148941:149395" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="149267:149307" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="150058:152719" placeholder="{&quot;elementName&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="150137:150718" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="150744:151218" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="150776:151095" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="150802:151094" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="151332:151439" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="151708:152103" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="151752:152102" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="151810:151958" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="152344:152669" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="152370:152668" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="152970:156227" placeholder="{&quot;wrapperElementName&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="153058:153628" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="153654:154239" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="154265:154632" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="154291:154631" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="154401:154535" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="154662:155099" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="154930:155098" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="155427:155847" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="155990:156168" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="156308:157173" placeholder="{&quot;typeInfo&quot;: &quot;String&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="156366:156844" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="157075:157123" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="157452:158575" placeholder="{&quot;elementTypeInfos&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="157522:157800" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="158001:158373" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="158079:158372" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="158980:160629" placeholder="{&quot;CLASS_NAME&quot;: &quot;Jsonix.Model.AnyElementPropertyInfo&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="159044:159341" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="159367:159885" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="160103:160275" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="160869:165081" placeholder="{&quot;name&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="161018:161702" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="161138:161701" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="161734:161851" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="162035:162318" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="162102:162309" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="162762:163162" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="163701:164543" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="164790:164884" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="165454:166225" placeholder="{&quot;CLASS_NAME&quot;: &quot;Jsonix.Mapping.Style.Standard&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="166339:167179" placeholder="{&quot;CLASS_NAME&quot;: &quot;Jsonix.Mapping.Style.Simplified&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="167916:168584" placeholder="{&quot;name&quot;: &quot;AnySimpleType&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="168004:168059" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="168707:169748" placeholder="{&quot;name&quot;: null...}" />
+            <marker date="1468605238000" expanded="true" signature="168866:169188" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="169505:169711" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="169805:170163" placeholder="{&quot;name&quot;: &quot;String&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="172131:172226" placeholder="{&quot;name&quot;: &quot;NMToken&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="172643:173076" placeholder="{&quot;name&quot;: &quot;Boolean&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="173283:174733" placeholder="{&quot;name&quot;: &quot;Base64Binary&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="173713:173766" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="174195:174630" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="174957:175898" placeholder="{&quot;name&quot;: &quot;HexBinary&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="175070:175355" placeholder="{...}" />
+            <marker date="1468605238000" expanded="true" signature="176106:176595" placeholder="{&quot;name&quot;: &quot;Number&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="176783:177067" placeholder="{&quot;name&quot;: &quot;Float&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="177260:177592" placeholder="{&quot;name&quot;: &quot;Decimal&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="177793:178053" placeholder="{&quot;name&quot;: &quot;Integer&quot;...}" />
+            <marker date="1468605238000" expanded="true" signature="745025:745027" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="26" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-template.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/HTML5.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="1620" column="9" selection-start-line="1620" selection-start-column="9" selection-end-line="1620" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="68" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="19" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMp4.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="61" column="30" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-105">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor-Output.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-Video.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/make.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="43" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="50" column="59" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

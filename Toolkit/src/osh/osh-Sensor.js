@@ -16,11 +16,11 @@ OSH.Sensor = Class.create({
         if(this.timeRangeEnd == 'now') {
             var d = new Date();
             d.setUTCFullYear(9999);
-            this.timeRangeEnd = d.toISOString();;
+            this.timeRangeEnd = d.toISOString();
         }
 
-
         this.observableProperties = [];
+        this.outputs = [];
         this.featuresOfInterest = [];
         this.dataConnectors = [];
         //this.dataReceivers = [];
@@ -34,21 +34,37 @@ OSH.Sensor = Class.create({
         }
 
         if (typeof jsonix_offering.relatedFeature != 'undefined') {
-            for (var i = 0; i < jsonix_offering.relatedFeature.length; i++) {
+            for (i = 0; i < jsonix_offering.relatedFeature.length; i++) {
                 this.featuresOfInterest.push(jsonix_offering.relatedFeature[i].featureRelationship.target.href);
             }
         }
     },
 
-    //get result template for all properties
-    getResultTemplateAll: function () {
-        for (var i = 0; i < this.observableProperties.length; i++) {
-            var req = this.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetResultTemplate&offering=' + this.identifier + '&observedProperty=' + this.observableProperties[i];
+    //describe sensor retrieves data about a sensor's observable properties and metadata
+    describeSensor: function() {
+        var req = this.server.url + 'sensorhub/sos?service=SOS&version=2.0&request=DescribeSensor&procedure='+this.procedure;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(this.name);
+                var desc = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
+                //desc.value.description[0].sensorDescription.data.any.value.outputs.outputlist.output;
+                this.onDescribeSensor(desc);
+            }
+        }.bind(this);
+        xhr.open('GET', req, true);
+        xhr.send();
+    },
+
+    //get result template for single observable prop
+    getResultTemplate: function (observabeProp) {
+        if(this.hasObservableProperty(observabeProp)) {
+            var req = this.server.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetResultTemplate&offering=' + this.identifier + '&observedProperty=' + observabeProp;
             var xhr = new XMLHttpRequest();
-            xhr.prop = observableProperties[i];
-            xhr.onreadystatechange = function (response) {
-                if (this.readyState == 4 && this.status == 200) {
-                    this.prop.resultTemplate = OSH.Utils.jsonix_XML2JSON(response.data);
+            xhr.prop = observabeProp;
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    xhr.prop.resultTemplate = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
                 }
             };
             xhr.open('GET', req, true);
@@ -56,8 +72,15 @@ OSH.Sensor = Class.create({
         }
     },
 
+    //get result template for all properties
+    getResultTemplateAll: function () {
+        for (var i = 0; i < this.observableProperties.length; i++) {
+            this.getResultTemplate(this.observableProperties[i]);
+        }
+    },
+
     //creates a data connector based on specified parameters
-    createDataConnector: function(observableProp, featureOfInterest=null, spatialFilter=null, startTime=this.timeRangeStart, endTime=this.timeRangeEnd, playbackSpeed=1) {
+    createDataConnector: function(observableProp, featureOfInterest = null, spatialFilter=null, startTime=this.timeRangeStart, endTime=this.timeRangeEnd, playbackSpeed=1) {
         if(observableProp == null || typeof observableProp == 'undefined' || !this.hasObservableProperty(observableProp)) {
             console.log('Could not create data connector! Property: '+observableProp+' does not exist.');
             return null;
@@ -145,5 +168,10 @@ OSH.Sensor = Class.create({
         if(d >= start && d <= end)
             return true;
         return false;
+    },
+    
+    //callback for checking when a sensor description has returned
+    onDescribeSensor: function(data) {
+
     }
 });
