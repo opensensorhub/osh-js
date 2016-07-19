@@ -15,3 +15,26 @@ OSH.Utils.jsonix_XML2JSON = function(xmlStr) {
   return jsonData;
 };
 
+OSH.Utils.isOpera = function() {
+  return (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+};
+
+OSH.Utils.isFirefox = function() {
+  return typeof InstallTrigger !== 'undefined';
+};
+
+OSH.Utils.isSafari = function() {
+  return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+};
+
+OSH.Utils.isIE = function() {
+  return /*@cc_on!@*/false || !!document.documentMode;
+};
+
+OSH.Utils.isChrome = function() {
+  return !!window.chrome && !!window.chrome.webstore;
+};
+
+OSH.Utils.isBlink = function() {
+  return (isChrome || isOpera) && !!window.CSS;
+};

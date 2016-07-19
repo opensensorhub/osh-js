@@ -9,11 +9,22 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         var name = (typeof(options.name) != "undefined") ? options.name : "Untitled";
 
         var htmlVar = "";
-        htmlVar += "<div>" +
-            "<a id=\""+pinDiv+"\"class=\"pop-pin\"><\/a>" +
-            "<a id=\""+closeDiv+"\"class=\"pop-close\">x<\/a>" +
-            "<h3>"+name+"<\/h3>" +
-            "</div>";
+        htmlVar += "<div>";
+
+        this.dockable = false;
+        this.closeable = false;
+        if(typeof(options) != "undefined"){
+            if( typeof (options.dockable) != "undefined" && options.dockable) {
+                htmlVar +=  "<a id=\""+pinDiv+"\"class=\"pop-pin\"><\/a>";
+                this.dockable = true;
+            }
+
+            if(typeof (options.closeable) != "undefined" && options.closeable) {
+                htmlVar += "<a id=\""+closeDiv+"\"class=\"pop-close\">x<\/a>";
+                this.closeable = true;
+            }
+        }
+        htmlVar += "<h3>"+name+"<\/h3></div>";
 
         this.draggable = (typeof(options.draggable) != "undefined") ? options.draggable : false;
 
@@ -22,7 +33,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
         this.rootTag = this.rootTag.firstChild;
         this.rootTag.setAttribute("id", this.id);
-        this.rootTag.setAttribute("class", "pop-over");
+        this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
         var div = document.getElementById(divId);
@@ -63,13 +74,21 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         document.addEventListener('dragover', this.drag_over.bind(this), false);
         document.addEventListener('drop', this.drop.bind(this), false);
 
-        document.getElementById(closeDiv).onclick = this.close.bind(this);
-        document.getElementById(pinDiv).onclick = this.unpin.bind(this);
+        if(this.closeable) {
+            document.getElementById(closeDiv).onclick = this.close.bind(this);
+        }
+
+        if(this.dockable) {
+            document.getElementById(pinDiv).onclick = this.unpin.bind(this);
+        }
     },
 
     show: function($super,properties) {
         if(properties.viewIds.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
+            if(typeof(this.initialWidth) == "undefined" ) {
+                this.initialWidth = this.rootTag.offsetWidth;
+            }
         }
     },
 
@@ -89,7 +108,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.draggable = true;
         } else {
             this.rootTag.style.top = 0;
-            this.rootTag.style.left = 0;
+            this.rootTag.style.left = 0 - (this.rootTag.offsetWidth-this.initialWidth);
             this.rootTag.style.position = "relative";
             this.rootTag.setAttribute("draggable", false);
             this.rootTag.parentNode.removeChild(this.rootTag);

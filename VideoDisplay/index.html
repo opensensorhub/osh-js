@@ -16,6 +16,10 @@
     <script src="../Toolkit/vendor/nvd3/js/d3.v3.min.js"></script>
     <script src="../Toolkit/vendor/nvd3/js/nv.d3.min.js"></script>
 
+    <!-- Entity tree libs -->
+    <link rel="stylesheet" href="../Toolkit/vendor/tree/tree.css" />
+    <script src="../Toolkit/vendor/tree/tree.js"></script>
+
     <!---------------- OSH ------------------>
     <!-- LEAFLET libs -->
     <link rel="stylesheet" href="../Toolkit/vendor/leaflet/leaflet.css"/>
@@ -77,6 +81,8 @@
     <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
     <script type="text/javascript"
             src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularPointMarker.js"></script>
+    <script type="text/javascript"
+            src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
 
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-View.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-DialogView.js"></script>
@@ -87,6 +93,7 @@
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-H264View.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/tasking/osh-UI-TaskingView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
 
     <!------------ VIDEO DISPLAY ------------>
     <link rel="stylesheet" type="text/css" href="css/video-display.css">
@@ -107,6 +114,7 @@
     </div>
 </nav>
 <div id="main-container" class="main-view"></div>
+<div id="tree-container" class="tree-container"></div>
 <div id="tasking-container" class="tasking-container"></div>
 <div class="video-main-container">
     <div id="box-1"></div>

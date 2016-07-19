@@ -53,12 +53,6 @@ function init() {
         offeringID: "OFFERING_ID"
     });
 
-    var androidEntity = {
-        name: "Android Phone",
-        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource]
-    };
-
-
     var videoView = new OSH.UI.MjpegView("box-1", {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         css: "video",
@@ -70,7 +64,9 @@ function init() {
         draggable: false,
         css: "dialog",
         name: "Android Video 1",
-        show:false
+        show:false,
+        dockable: true,
+        closeable: true
     });
 
     var videoView2 = new OSH.UI.MjpegView("box-2", {
@@ -84,7 +80,9 @@ function init() {
         draggable: false,
         css: "dialog",
         name: "Android Video 2",
-        show:false
+        show:false,
+        dockable: true,
+        closeable: true
     });
 
     var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("box-3",
@@ -105,14 +103,47 @@ function init() {
             name: "WindSpeed chart",
             yLabel: 'Wind Speed (m/s)',
             xLabel: 'Time',
-            css:"chart-view"
+            css:"chart-view",
+            cssSelected: "video-selected"
         });
 
     var chartDialog = new OSH.UI.DialogView("box-3", {
         draggable: false,
         css: "dialog",
         name: "Chart Weather",
-        show:false
+        show:false,
+        dockable: true,
+        closeable: true
+    });
+
+    var  menuItems = [{
+        name: "Android Video",
+        viewId: videoDialog.getId(),
+        css: "fa fa-video-camera fa-3x",
+        action: "show"
+    },{
+        name: "Same Android Video",
+        viewId: videoDialog2.getId(),
+        css: "fa fa-video-camera fa-3x",
+        action: "show"
+    },{
+        name: "Weather chart",
+        viewId: chartDialog.getId(),
+        css: "fa fa-bar-chart fa-3x",
+        action: "show"
+    },{
+        name: "Tasking",
+        viewId: "",
+        css: "fa fa-arrows fa-3x",
+        action: "show"
+    }];
+
+    var contextCircularMenu = new OSH.UI.ContextMenu.CircularPointMarker({
+        items: menuItems
+    });
+
+    var contextStackMenu = new OSH.UI.ContextMenu.StackMenu({
+        items: menuItems
     });
 
     // creates views
@@ -154,30 +185,7 @@ function init() {
                     }
                 }
             }),
-            contextmenu: new OSH.UI.ContextMenu.CircularPointMarker({
-                items:[{
-                    name: "Android Video",
-                    viewId: videoDialog.getId(),
-                    css: "fa fa-video-camera fa-3x",
-                    action: "show"
-                },{
-                    name: "Same Android Video",
-                    viewId: videoDialog2.getId(),
-                    css: "fa fa-video-camera fa-3x",
-                    action: "show"
-                },{
-                        name: "Weather chart",
-                        viewId: chartDialog.getId(),
-                        css: "fa fa-bar-chart fa-3x",
-                        action: "show"
-                },{
-                    name: "Tasking",
-                    viewId: "",
-                    css: "fa fa-arrows fa-3x",
-                    action: "show"
-                }
-                ]
-            }),
+            contextmenu: contextCircularMenu,
             name : "Android Phone GPS"
         },
             {
@@ -205,6 +213,18 @@ function init() {
     var taskingView = new OSH.UI.TaskingView("tasking-container",{
         dataSourceId : ""
     });
+
+
+    var androidEntity = {
+        name: "Android Phone",
+        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource],
+        path: "Sensors/Toulouse",
+        treeIcon : "images/android_icon.png",
+        contextMenu: contextCircularMenu
+    };
+
+    // test tree
+    var entityTree = new OSH.UI.EntityTreeView("tree-container",[androidEntity],{});
 
     // adds datasources to dataProviderController
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
@@ -246,6 +266,14 @@ function init() {
     // starts streaming
     dataProviderController.connectAll();
 
+    var entityTreeDialog = new OSH.UI.DialogView("tree-container", {
+        css: "tree-dialog",
+        name: "Entities",
+        show:true,
+        draggable:true,
+        dockable: false,
+        closeable: false
+    });
     // inits rangeSlider
     /*var rangeSlider = new OSH.UI.JQRangeSlider("rangeSlider", {
         startDate: "2015-02-16T07:58:00Z",

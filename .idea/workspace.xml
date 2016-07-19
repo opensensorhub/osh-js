@@ -2,9 +2,127 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dae1ff5f-d0be-4eb2-b2d5-96cf941944cc" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/add1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/aimarajs.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/aimarajs2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/blue_key.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/collapse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/expand.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/file.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/folder.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/key_green.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/lastnode.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/leaf.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/magic_ball.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/monitor.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/node.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/right.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/star.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/base.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/cd.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/empty.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/folder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/folderopen.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/globe.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/imgfolder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/join.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/joinbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/line.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/minus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/minusbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/musicfolder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/nolines_minus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/nolines_plus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/page.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/plus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/plusbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/question.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/tree/trash.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/images/vline.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/android_icon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/add1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/aimarajs.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/aimarajs2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/blue_key.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/collapse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/expand.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/file.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/folder.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/key_green.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/lastnode.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/leaf.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/magic_ball.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/monitor.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/node.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/right.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/star.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/base.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/cd.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/empty.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/folder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/folderopen.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/globe.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/imgfolder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/join.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/joinbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/line.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/minus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/minusbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/musicfolder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/nolines_minus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/nolines_plus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/page.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/plus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/plusbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/question.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/tree/trash.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoDisplay/images/tree/vline.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/tree.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Toolkit/vendor/tree/tree.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/cameralook-selected.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/cameralook.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-down-selected.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/index.html" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/css/tasking.css" afterPath="$PROJECT_DIR$/VideoDisplay/css/tasking.css" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-down.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/remote-down.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-left.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/remote-left.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-right.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/remote-right.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-up.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/remote-up.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-zoomin.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/remote-zoomin.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/tests/5/images/remote-zoomout.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/remote-zoomout.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/cameralook-selected.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/cameralook-selected.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/cameralook.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/cameralook.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/loading.gif" afterPath="$PROJECT_DIR$/VideoDisplay/images/loading.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/modal-close.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/modal-close.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/sensorhub_logo_128.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/sensorhub_logo_128.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/settings-icon.png" afterPath="$PROJECT_DIR$/VideoDisplay/images/settings-icon.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/dist/osh-all.min.js" afterPath="$PROJECT_DIR$/Toolkit/dist/osh-all.min.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/make.sh" afterPath="$PROJECT_DIR$/Toolkit/make.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/css/dialog.css" afterPath="$PROJECT_DIR$/Toolkit/src/css/dialog.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/css/pointMarkerContextMenu.css" afterPath="$PROJECT_DIR$/Toolkit/src/css/pointMarkerContextMenu.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/css/tasking.css" afterPath="$PROJECT_DIR$/Toolkit/src/css/tasking.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/datasender/osh-DataSender-Tasking.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/datasender/osh-DataSender-Tasking.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularPointMarker.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularPointMarker.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/osh-UI-DialogView.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/osh-UI-DialogView.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/tasking/osh-UI-TaskingView.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/tasking/osh-UI-TaskingView.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/tests/6/index.html" afterPath="$PROJECT_DIR$/Toolkit/tests/6/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/vendor/nvd3/css/nv.d3.css" afterPath="$PROJECT_DIR$/Toolkit/vendor/nvd3/css/nv.d3.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/css/video-display.css" afterPath="$PROJECT_DIR$/VideoDisplay/css/video-display.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/images/arrow-direction.svg" afterPath="$PROJECT_DIR$/VideoDisplay/images/arrow-direction.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/index.html" afterPath="$PROJECT_DIR$/VideoDisplay/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoDisplay/js/config-2.js" afterPath="$PROJECT_DIR$/VideoDisplay/js/config-2.js" />
     </list>
     <ignored path="osh-js.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,11 +153,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="osh-Sensor.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="osh-Sensor.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="594">
               <caret line="50" column="59" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="osh-Utils.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="441">
+              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -115,16 +243,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="osh-DataReceiver-DataSource.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="26" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -141,11 +259,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js" />
-        <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js" />
         <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Server.js" />
         <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor-Output.js" />
         <option value="$PROJECT_DIR$/Toolkit/make.sh" />
         <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Sensor.js" />
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js" />
       </list>
     </option>
   </component>
@@ -251,7 +369,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
+              <option name="myItemId" value="osh" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -274,40 +392,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jsonix" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="osh-js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="osh-js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Toolkit" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jsonix" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="modules" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -413,12 +497,12 @@
       <option name="presentableId" value="Default" />
       <updated>1467745832135</updated>
       <workItem from="1467745833528" duration="2829000" />
-      <workItem from="1467757651785" duration="56452000" />
+      <workItem from="1467757651785" duration="56607000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59281000" />
+    <option name="totallyTimeSpent" value="59436000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -676,14 +760,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -1191,6 +1267,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="594">
           <caret line="50" column="59" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding />
         </state>
       </provider>

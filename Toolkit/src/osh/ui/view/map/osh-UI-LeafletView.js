@@ -17,10 +17,10 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 		// removes default right click
 		document.getElementById(this.divId).oncontextmenu = function(e) {
 			var evt = new Object({keyCode: 93});
-			if(event.preventDefault != undefined)
-				event.preventDefault();
-			if(event.stopPropagation != undefined)
-				event.stopPropagation();
+			if(e.preventDefault != undefined)
+				e.preventDefault();
+			if(e.stopPropagation != undefined)
+				e.stopPropagation();
 		};
 
 	},
@@ -48,10 +48,10 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 						$(markerId).oncontextmenu = function (e) {
 							var evt = new Object({keyCode: 93});
 
-							if (event.preventDefault != undefined)
-								event.preventDefault();
-							if (event.stopPropagation != undefined)
-								event.stopPropagation();
+							if (e.preventDefault != undefined)
+								e.preventDefault();
+							if (e.stopPropagation != undefined)
+								e.stopPropagation();
 
 							this.viewItems[i].contextmenu.show({
 								div: document.getElementById(markerId)

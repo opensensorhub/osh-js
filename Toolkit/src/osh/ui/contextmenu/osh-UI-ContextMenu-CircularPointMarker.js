@@ -73,9 +73,20 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
 
         $(closeId).on("click",this.hide.bind(this));
 
+        var offsetX = 0;
+        var offsetY = 0;
+
+        if(properties.offsetX) {
+            offsetX = properties.offsetX;
+        }
+
+        if(properties.offsetY) {
+            offsetY = properties.offsetY;
+        }
+
         document.querySelector('.circular-menu-circle').classList.toggle('open');
-        this.rootTag.style.top = properties.div.style.top;
-        this.rootTag.style.left = properties.div.style.left;
+        this.rootTag.style.top = properties.div.style.top+offsetY;
+        this.rootTag.style.left = properties.div.style.left+offsetX;
         this.rootTag.style.transform = this.getTransform(properties.div);
 
         var self = this;
@@ -100,7 +111,7 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
             this.bindEvents[item.id] = item.viewId;
             $(item.id).on("click",function(event){
                 document.fire("osh:"+item.action, {
-                    viewId: this.bindEvents[event.srcElement.id]
+                    viewId: this.bindEvents[event.target.id]
                 });
             }.bind(this));
         }
@@ -120,18 +131,13 @@ OSH.UI.ContextMenu.CircularPointMarker = Class.create(OSH.UI.ContextMenu, {
     },
 
     getTransform: function(el) {
-       /* var transform = el.style.transform;
-        console.log(transform);
-        var results = transform.match(/matrix(?:(3d)\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))(?:, (-{0,1}\d+)), -{0,1}\d+\)|\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))\))/);
-
-        if(!results) return [0, 0, 0];
-        if(results[1] == '3d') return results.slice(2,5);
-
-        results.push(0);
-        return results.slice(5, 8); // returns the [X,Y,Z,1] values*/
         var transform = el.style.transform;
-        var regExp = /\(([^)]+)\)/;
+        if(!transform || 0 === transform.length) {
+            return "";
+        }
+        var regExp = /^\s*((\w+)\s*\(([^)]+)\))/;
         var matches = regExp.exec(transform);
-        return "translate3d"+matches[0];
+
+        return matches[1];
     }
 });

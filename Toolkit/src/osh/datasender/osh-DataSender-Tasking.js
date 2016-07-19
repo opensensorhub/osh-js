@@ -22,7 +22,7 @@ OSH.DataSender.Tasking = Class.create(OSH.DataSender.DataSource,{
         xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
 
         // adds values
-        xmlSpsRequest += "<sps:values>pan,"+properties.pan+" zoom,"+properties.zoom+" tilt,"+properties.tilt+"</sps:values>";
+        xmlSpsRequest += "<sps:values>rpan,"+properties.pan+" rzoom,"+properties.zoom+" r tilt,"+properties.tilt+"</sps:values>";
 
         // adds endings
         xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
