@@ -104,4 +104,5 @@ a.navbar-brand:hover {
     position:absolute;
     top:60px;
     left:60px;
+    overflow:hidden;
 }

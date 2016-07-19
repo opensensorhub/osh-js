@@ -138,7 +138,7 @@ function init() {
         action: "show"
     }];
 
-    var contextCircularMenu = new OSH.UI.ContextMenu.CircularPointMarker({
+    var contextCircularMenu = new OSH.UI.ContextMenu.CircularMenu({
         items: menuItems
     });
 
@@ -220,7 +220,7 @@ function init() {
         dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource],
         path: "Sensors/Toulouse",
         treeIcon : "images/android_icon.png",
-        contextMenu: contextCircularMenu
+        contextMenu: contextStackMenu
     };
 
     // test tree

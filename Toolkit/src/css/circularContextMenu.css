@@ -98,7 +98,7 @@
     display:none;
 }
 
-.menu-button {
+.circular-menu-button {
   position: absolute;
   top: calc(50% - 20px);
   left: calc(50% - 20px);
@@ -122,7 +122,7 @@
     color:forestgreen;
 }*/
 
-.menu-button:hover {
+.circular-menu-button:hover {
     color: #0078A8 !important;
 }
 .fa-3x:hover {

@@ -40,25 +40,5 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
 
         //Rendering the tree
         this.tree.drawTree();
-    },
-
-    test:function(options) {
-        //Initializing Tree
-
-        //Tree Context Menu Structure
-        //Creating the tree
-        tree = createTree(this.divId,'white',null);
-
-        var node1 = tree.createNode('Level 0 - Node ',false,'images/tree/star.png',null,null,null,options.contextMenu);
-
-        //Rendering the tree
-        tree.drawTree();
-
-        //Adding node after tree is already rendered
-        /*var node = tree.createNode('Entity 1',false,'images/tree/leaf.png',null,null,'context1');
-        node.createChildNode('Sub test 2',false,'images/tree/leaf.png',null,null,'context1');
-        tree.createNode('Entity 3',false,'images/tree/leaf.png',null,null,'context1');
-        tree.createNode('Entity 4',false,'images/tree/leaf.png',null,null,'context1');
-        tree.createNode('Entity 5',false,'images/tree/leaf.png',null,null,'context1');*/
     }
 });

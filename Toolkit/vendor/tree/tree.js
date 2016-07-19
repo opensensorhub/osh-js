@@ -345,61 +345,9 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					var divNode = document.getElementById(p_node.id);
 					p_node.contextMenu.show({
 						div: divNode,
-						offsetX: 145,
-						offsetY: 65
+						offsetX: 150,
+						offsetY: 70
 					});
-					/*var v_menu = this.contextMenu[p_node.contextMenu];
-
-					 var v_div;
-					 if (this.contextMenuDiv==null) {
-					 v_div = createSimpleElement('ul','ul_cm','menu');
-					 document.body.appendChild(v_div);
-					 }
-					 else
-					 v_div = this.contextMenuDiv;
-
-					 v_div.innerHTML = '';
-
-					 var v_left = p_event.pageX-5;
-					 var v_right = p_event.pageY-5;
-
-					 v_div.style.display = 'block';
-					 v_div.style.position = 'absolute';
-					 v_div.style.left = v_left + 'px';
-					 v_div.style.top = v_right + 'px';
-
-					 for (var i=0; i<v_menu.elements.length; i++) (function(i){
-
-					 var v_li = createSimpleElement('li',null,null);
-
-					 var v_span = createSimpleElement('span',null,null);
-					 v_span.onclick = function () {  v_menu.elements[i].action(p_node) };
-
-					 var v_a = createSimpleElement('a',null,null);
-					 var v_ul = createSimpleElement('ul',null,'sub-menu');
-
-					 v_a.appendChild(document.createTextNode(v_menu.elements[i].text));
-
-					 v_li.appendChild(v_span);
-
-					 if (v_menu.elements[i].icon!=undefined) {
-					 var v_img = createImgElement('null',v_menu.elements[i].class,v_menu.elements[i].icon);
-					 v_li.appendChild(v_img);
-					 }
-
-					 v_li.appendChild(v_a);
-					 v_li.appendChild(v_ul);
-					 v_div.appendChild(v_li);
-
-					 if (v_menu.elements[i].submenu!=undefined) {
-					 var v_span_more = createSimpleElement('div',null,null);
-					 v_span_more.appendChild(createImgElement(null,'menu_img','images/tree/right.png'));
-					 v_li.appendChild(v_span_more);
-					 v_tree.contextMenuLi(v_menu.elements[i].submenu,v_ul,p_node);
-					 }
-
-					 })(i);
-					 */
 					this.contextMenuDiv = divNode;
 				}
 			}
@@ -489,7 +437,6 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		//if (tree.contextMenuDiv!=null)
 		//	tree.contextMenuDiv.style.display = 'none';
 	}
-
 	return tree;
 }
 
