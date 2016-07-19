@@ -54,7 +54,10 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View,{
 								e.stopPropagation();
 
 							this.viewItems[i].contextmenu.show({
-								div: document.getElementById(markerId)
+								div: document.getElementById(markerId),
+								offsetX:-77,
+								offsetY:-15
+
 							});
 						}.bind(this);
 					}

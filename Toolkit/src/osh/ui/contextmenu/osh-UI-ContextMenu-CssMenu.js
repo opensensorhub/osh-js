@@ -13,7 +13,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
             if(typeof (properties.items) != "undefined") {
                 for(var i = 0;i < properties.items.length;i++) {
                     var elId = OSH.Utils.randomUUID();
-                    var htmlVar = "<a  id=\""+elId+"\" ";
+                    var htmlVar = "<div><a  id=\""+elId+"\" ";
                     if(typeof (properties.items[i].css) != "undefined"){
                         htmlVar += "class=\""+properties.items[i].css+"\" ";
                     }
@@ -23,6 +23,8 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
                     }
                     htmlVar += "title=\""+name+"\"";
                     htmlVar += "><\/a>";
+
+                    htmlVar += "<label for=\""+elId+"\" class=\""+this.type+"-menu-label\">"+name+"</label></div>";
 
                     var action = "";
                     if(typeof (properties.items[i].action) != "undefined") {
@@ -51,11 +53,6 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         var htmlVar="";
         htmlVar += "<div class=\""+this.type+"-menu\">";
         htmlVar += "  <div class=\""+this.type+"-menu-circle\">";
-        /*htmlVar += "    <a  class=\"fa fa-home fa-3x\"><\/a>";
-         htmlVar += "    <a  id=\""+videoId+"\" class=\"fa fa-video-camera fa-3x\"><\/a>";
-         htmlVar += "    <a  class=\"fa fa-bar-chart fa-3x\"><\/a>";
-         htmlVar += "    <a  class=\"fa fa-external-link-square fa-3x\"><\/a>";
-         htmlVar += "    <a  class=\"fa fa-gear fa-3x\"><\/a>";*/
         // adds items
         for(var i = 0; i < this.items.length; i++) {
             htmlVar += this.items[i].html;
@@ -68,7 +65,9 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         this.rootTag.setAttribute("class",""+this.type+"-menu-container");
         this.rootTag.innerHTML = htmlVar;
 
-        properties.div.parentNode.appendChild(this.rootTag);
+        document.body.appendChild(this.rootTag);
+
+        var hasParentDiv = (typeof (properties) != "undefined" && typeof (properties.div) !="undefined");
         var items = document.querySelectorAll('.'+this.type+'-menu-circle a');
 
         for(var i = 0, l = items.length; i < l; i++) {
@@ -90,24 +89,26 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         }
 
         document.querySelector('.'+this.type+'-menu-circle').classList.toggle('open');
-        this.rootTag.style.top = properties.div.style.top+offsetY;
-        this.rootTag.style.left = properties.div.style.left+offsetX;
-        this.rootTag.style.transform = this.getTransform(properties.div);
+        if(hasParentDiv) {
+            this.rootTag.style.top = properties.div.style.top + offsetY;
+            this.rootTag.style.left = properties.div.style.left + offsetX;
+            this.rootTag.style.transform = this.getTransform(properties.div);
 
-        var self = this;
-        // observes style event
-        this.observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutationRecord) {
-                if(typeof(self.rootTag) != "undefined" && self.rootTag != null) {
-                    self.rootTag.style.top = properties.div.style.top;
-                    self.rootTag.style.left = properties.div.style.left;
-                    self.rootTag.style.transform = self.getTransform(properties.div);
-                }
+            var self = this;
+            // observes style event
+            this.observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutationRecord) {
+                    if(typeof(self.rootTag) != "undefined" && self.rootTag != null) {
+
+                        self.rootTag.style.top = properties.div.style.top;
+                        self.rootTag.style.left = properties.div.style.left;
+                        self.rootTag.style.transform = self.getTransform(properties.div);
+                    }
+                });
             });
-        });
 
-        this.observer.observe(properties.div, { attributes : true, attributeFilter : ['style'] });
-
+            this.observer.observe(properties.div, { attributes : true, attributeFilter : ['style'] });
+        }
 
         // binds actions based on items
         this.bindEvents = {};
@@ -128,7 +129,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
     },
 
     removeElement: function() {
-        if(typeof(this.rootTag) != "undefined" && this.rootTag != null) {
+        if(typeof(this.rootTag) != "undefined" && this.rootTag != null && typeof(this.rootTag.parentNode) != "undefined") {
             this.rootTag.parentNode.removeChild(this.rootTag);
             this.rootTag = null;
             this.observer.disconnect();

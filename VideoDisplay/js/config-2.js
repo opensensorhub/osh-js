@@ -119,22 +119,22 @@ function init() {
     var  menuItems = [{
         name: "Android Video",
         viewId: videoDialog.getId(),
-        css: "fa fa-video-camera fa-3x",
+        css: "fa fa-video-camera fa-2x",
         action: "show"
     },{
         name: "Same Android Video",
         viewId: videoDialog2.getId(),
-        css: "fa fa-video-camera fa-3x",
+        css: "fa fa-video-camera fa-2x",
         action: "show"
     },{
         name: "Weather chart",
         viewId: chartDialog.getId(),
-        css: "fa fa-bar-chart fa-3x",
+        css: "fa fa-bar-chart fa-2x",
         action: "show"
     },{
         name: "Tasking",
         viewId: "",
-        css: "fa fa-arrows fa-3x",
+        css: "fa fa-arrows fa-2x",
         action: "show"
     }];
 
@@ -264,7 +264,7 @@ function init() {
     eventManager.addDataSource(weatherDataSource);
 
     // starts streaming
-    dataProviderController.connectAll();
+    //dataProviderController.connectAll();
 
     var entityTreeDialog = new OSH.UI.DialogView("tree-container", {
         css: "tree-dialog",

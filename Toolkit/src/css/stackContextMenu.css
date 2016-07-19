@@ -61,7 +61,7 @@
     filter: alpha(opacity=60);
     -moz-opacity: 0.6;
     opacity: 0.6;
-    height: 35;
+    height: 35px;
 }
 
 .stack-menu-circle a {
