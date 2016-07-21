@@ -1,7 +1,7 @@
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {
         //$super(divId,[],options);
-
+        this.init(options);
         // creates HTML element
         this.id = "dialog-" + OSH.Utils.randomUUID();
         var pinDiv = "dialog-" + OSH.Utils.randomUUID();

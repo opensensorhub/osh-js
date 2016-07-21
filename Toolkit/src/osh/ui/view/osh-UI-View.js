@@ -7,7 +7,7 @@ OSH.UI.View = Class.create({
         this.selectedDataSources = [];
         this.selectedEntities = [];
         this.dataSources = [];
-        
+
         var div = document.getElementById(divId);
         if (div == "undefined" || div == null) {
             var hiddenDiv = document.createElement("div");
@@ -27,6 +27,7 @@ OSH.UI.View = Class.create({
         this.viewItems = [];
         this.names = {};
         this.stylerToObj = {};
+        this.dataSources = [];
 
         // inits the view before adding the viewItem
         this.init(options);
@@ -46,7 +47,9 @@ OSH.UI.View = Class.create({
         this.handleEvents();
     },
 
-    init: function (options) {},
+    init: function (options) {
+
+    },
 
     getId: function () {
         return this.id;
@@ -98,5 +101,44 @@ OSH.UI.View = Class.create({
         OSH.EventManager.observe(OSH.EventManager.EVENT.SHOW_VIEW,function(event){
             this.show(event);
         }.bind(this));
+    },
+
+    //TODO: to improve the way to select stylers
+    setData: function (dataSourceId, data) {
+        if (this.dataSources.indexOf(dataSourceId) == -1) {
+            this.dataSources.push(dataSourceId);
+        }
+
+        var selected = false;
+
+        // we check only dataSource when the selected entity is not set
+        if(typeof this.selectedEntity == "undefined") {
+            selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
+        }
+
+        for (var i = 0; i < this.stylers.length; i++) {
+            this.stylers[i].setData(dataSourceId, data, this, {
+                selected: selected || ((typeof this.selectedEntity != "undefined") && this.stylers[i].viewItem.entityId == this.selectedEntity)
+            });
+            this.lastRec[dataSourceId] = data;
+        }
+    },
+
+    /**
+     * Should be called after receiving osh:SELECT_VIEW event
+     * @param $super
+     * @param dataSourcesIds
+     * @param entitiesIds
+     */
+    selectDataView: function (dataSourcesIds,entityId) {
+        if(typeof this.dataSources != "undefined") {
+            this.selectedDataSources = dataSourcesIds;
+            // set the selected entity even if it is undefined
+            // this is handled by the setData function
+            this.selectedEntity = entityId;
+            for (var j = 0; j < this.dataSources.length; j++) {
+                this.setData(this.dataSources[j], this.lastRec[this.dataSources[j]]);
+            }
+        }
     }
 });
