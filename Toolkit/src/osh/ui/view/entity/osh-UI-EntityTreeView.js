@@ -12,13 +12,16 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
 
         // iterates over entities to create treeNode
         for(var i = 0;i < this.entityItems.length;i++) {
-            var currentEntity = this.entityItems[i];
-            // splits path into node folder
-            var path = currentEntity.path;
+            var currentItem = this.entityItems[i];
+            var entity = currentItem.entity;
+            var path = currentItem.path;
+            var treeIcon = currentItem.treeIcon;
+            var contextMenuId = currentItem.contextMenuId;
+
             if(path.endsWith("/")) {
                 path = path.substring(0,path.length-1);
             }
-            var folder = currentEntity.path.split("/");
+            var folder = path.split("/");
             var nbNodes = folder.length;
             var currentNode = null;
             var pos = 0;
@@ -32,9 +35,9 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
                 nbNodes--;
             }
             if(currentNode != null) {
-                var leaf = currentNode.createChildNode(currentEntity.name, false, currentEntity.treeIcon, null, currentEntity.contextMenu);
+                var leaf = currentNode.createChildNode(entity.name, false, treeIcon, null, contextMenuId);
             } else {
-                this.tree.createNode(currentEntity.name,false,currentEntity.treeIcon,null, currentEntity.contextMenu);
+                this.tree.createNode(entity.name,false,treeIcon,null, contextMenuId);
             }
         }
 

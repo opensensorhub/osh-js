@@ -38,7 +38,7 @@ OSH.UI.Styler = Class.create({
 		}
 	},
 
-	getDataSourceIds : function() {
+	getDataSourcesIds : function() {
 		var res = [];
 		for ( var i in this.dataSourceToStylerMap) {
 			res.push(i);

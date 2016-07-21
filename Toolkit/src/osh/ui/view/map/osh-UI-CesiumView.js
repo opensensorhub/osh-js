@@ -88,7 +88,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 		    		if(self.stylerToObj[styler] == entity._dsid) {
 		    			for(var i=0;i < self.stylers.length;i++) {
 			    			if(self.stylers[i].getId() == styler) {
-				    			memo = memo.concat(self.stylers[i].getDataSourceIds());
+				    			memo = memo.concat(self.stylers[i].getDataSourcesIds());
 				    			break;
 			    			}
 		    			}

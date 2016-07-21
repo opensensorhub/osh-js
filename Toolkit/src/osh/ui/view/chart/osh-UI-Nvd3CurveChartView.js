@@ -2,6 +2,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	initialize : function($super,divId,viewItems, options) {
 		$super(divId,viewItems,options);
 
+		this.entityId = options.entityId;
 		var xLabel = 'Time';
 		var yLabel = 'yLabel';
 		var xTickFormat = null;
@@ -109,7 +110,14 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		this.div.style.height = this.height;
 		
 		this.svgChart = d3.select('#' + divId + ' svg'); //Select the <svg> element you want to render the chart in.
-		
+
+		OSH.EventManager.observeDiv(this.divId,"click",function(event){
+			OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+				dataSourcesIds: [self.dataSourceId],
+				entityId : self.entityId
+			});
+		});
+
 	},
 
 	setData : function(dataSourceId, data) {

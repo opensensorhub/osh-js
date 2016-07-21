@@ -1,8 +1,9 @@
 OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
-    $super(divId);
+    $super(divId,options);
     
     this.dataSourceId = -1;
+    this.entityId = options.entityId;
     // sets dataSourceId
     if(typeof(options.dataSourceId) != "undefined") {
     	this.dataSourceId = options.dataSourceId;
@@ -50,10 +51,14 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
     // appends <video> tag to <div>
     document.getElementById(this.divId).appendChild(this.video);
     
- // adds listener
-    $(this.divId).observe("click", function(event) {
-    	$(this.divId).fire("osh:select", [this.dataSourceId]);
-    }.bind(this));
+    // adds listener
+    var self = this;
+    OSH.EventManager.observeDiv(this.divId,"click",function(event){
+      OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+        dataSourcesIds: [self.dataSourceId],
+        entityId : self.entityId
+      });
+    });
     
     // creates MediaSource object
     this.mediaSource = new MediaSource();
@@ -106,8 +111,8 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
 	}
   },
   
-  selectDataView: function($super,dataSourceIds) {
-	  if(dataSourceIds.indexOf(this.dataSourceId) > -1) {
+  selectDataView: function($super,dataSourceIds, entityId) {
+	  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 		  this.video.setAttribute("class",this.css+" "+this.cssSelected);  
 	  } else {
 		  this.video.setAttribute("class",this.css);

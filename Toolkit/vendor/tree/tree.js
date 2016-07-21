@@ -343,11 +343,14 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					var v_right = p_event.pageY-5;
 
 					var divNode = document.getElementById(p_node.id);
-					p_node.contextMenu.show({
+					OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+p_node.contextMenu,{
 						div: divNode,
 						offsetX: 150,
-						offsetY: 70
+						offsetY: 70,
+						action : "show"
+
 					});
+
 					this.contextMenuDiv = divNode;
 				}
 			}

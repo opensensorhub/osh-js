@@ -3,13 +3,26 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         $super(divId, viewItems, options);
     },
 
-    init: function ($super,options) {
+    init: function ($super, options) {
         this.lastRec = {};
         this.selectedDataSources = [];
+        this.selectedEntities = [];
         this.dataSources = [];
 
         // inits the map
         this.initMap(options);
+        this.initEvents();
+    },
+
+    initEvents: function () {
+        // removes default right click
+        document.getElementById(this.divId).oncontextmenu = function (e) {
+            var evt = new Object({keyCode: 93});
+            if (e.preventDefault != undefined)
+                e.preventDefault();
+            if (e.stopPropagation != undefined)
+                e.stopPropagation();
+        };
     },
 
     updateMarker: function (styler) {
@@ -70,22 +83,38 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         });
     },
 
+    //TODO: to improve the way to select stylers
     setData: function (dataSourceId, data) {
         if (this.dataSources.indexOf(dataSourceId) == -1) {
             this.dataSources.push(dataSourceId);
         }
-        var selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
+
+        var selected = false;
+
+        // we check only dataSource when the selected entity is not set
+        if(typeof this.selectedEntity == "undefined") {
+            selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
+        }
 
         for (var i = 0; i < this.stylers.length; i++) {
             this.stylers[i].setData(dataSourceId, data, this, {
-                selected: selected
+                selected: selected || ((typeof this.selectedEntity != "undefined") && this.stylers[i].viewItem.entityId == this.selectedEntity)
             });
             this.lastRec[dataSourceId] = data;
         }
     },
 
-    selectDataView: function ($super, dataSourceIds) {
-        this.selectedDataSources = dataSourceIds;
+    /**
+     * Should be called after receiving osh:SELECT_VIEW event
+     * @param $super
+     * @param dataSourcesIds
+     * @param entitiesIds
+     */
+    selectDataView: function ($super, dataSourcesIds,entityId) {
+        this.selectedDataSources = dataSourcesIds;
+        // set the selected entity even if it is undefined
+        // this is handled by the setData function
+        this.selectedEntity = entityId;
         for (var j = 0; j < this.dataSources.length; j++) {
             this.setData(this.dataSources[j], this.lastRec[this.dataSources[j]]);
         }
@@ -112,15 +141,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                     zoom: options.initialView.zoom,
                     maxZoom: maxZoom
                 });
-            } else {
-                // loads the default one
-                initialView = new ol.View({
-                    center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
-                    zoom: 11,
-                    maxZoom: maxZoom
-                });
             }
-
             // checks autoZoom
             if (!options.autoZoomOnFirstMarker) {
                 this.first = false;
@@ -140,6 +161,13 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
             if (options.defaultLayer) {
                 defaultLayer = options.defaultLayer;
             }
+        } else {
+            // loads the default one
+            initialView = new ol.View({
+                center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
+                zoom: 11,
+                maxZoom: maxZoom
+            });
         }
 
         // sets layers to map
@@ -193,7 +221,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                 if (self.stylerToObj[styler] == feature.getId()) {
                     for (var i = 0; i < self.stylers.length; i++) {
                         if (self.stylers[i].getId() == styler) {
-                            memo = memo.concat(self.stylers[i].getDataSourceIds());
+                            memo = memo.concat(self.stylers[i].getDataSourcesIds());
                             break;
                         }
                     }

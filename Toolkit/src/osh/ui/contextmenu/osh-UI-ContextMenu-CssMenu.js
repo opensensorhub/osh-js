@@ -22,9 +22,9 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
                         name = properties.items[i].name;
                     }
                     htmlVar += "title=\""+name+"\"";
-                    htmlVar += "><\/a>";
+                    htmlVar += "><span id =\""+elId+"\"class=\""+this.type+"-menu-label\">"+name+"</span><\/a></div>";
 
-                    htmlVar += "<label for=\""+elId+"\" class=\""+this.type+"-menu-label\">"+name+"</label></div>";
+                    //htmlVar += "<label for=\""+elId+"\" class=\""+this.type+"-menu-label\">"+name+"</label></div>";
 
                     var action = "";
                     if(typeof (properties.items[i].action) != "undefined") {
@@ -65,9 +65,12 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         this.rootTag.setAttribute("class",""+this.type+"-menu-container");
         this.rootTag.innerHTML = htmlVar;
 
-        document.body.appendChild(this.rootTag);
+
 
         var hasParentDiv = (typeof (properties) != "undefined" && typeof (properties.div) !="undefined");
+        if(hasParentDiv) {
+            properties.div.parentNode.appendChild(this.rootTag);
+        }
         var items = document.querySelectorAll('.'+this.type+'-menu-circle a');
 
         for(var i = 0, l = items.length; i < l; i++) {
@@ -100,8 +103,8 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
                 mutations.forEach(function(mutationRecord) {
                     if(typeof(self.rootTag) != "undefined" && self.rootTag != null) {
 
-                        self.rootTag.style.top = properties.div.style.top;
-                        self.rootTag.style.left = properties.div.style.left;
+                        self.rootTag.style.top = properties.div.style.top + offsetY;
+                        self.rootTag.style.left = properties.div.style.left + offsetX;
                         self.rootTag.style.transform = self.getTransform(properties.div);
                     }
                 });
@@ -116,7 +119,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
             var item =  this.items[i];
             this.bindEvents[item.id] = item.viewId;
             $(item.id).on("click",function(event){
-                document.fire("osh:"+item.action, {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
                     viewId: this.bindEvents[event.target.id]
                 });
             }.bind(this));

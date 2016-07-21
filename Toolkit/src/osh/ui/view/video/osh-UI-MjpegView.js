@@ -1,51 +1,57 @@
 OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
-    $super(divId,[],options);
-    
+    $super(divId,options);
+
     this.dataSourceId = -1;
     // sets dataSourceId
     if(typeof(options.dataSourceId) != "undefined") {
-    	this.dataSourceId = options.dataSourceId;
+      this.dataSourceId = options.dataSourceId;
     }
+    this.entityId = options.entityId;
     this.css = "";
-    
+
     this.cssSelected = "";
-    
+
     if(options.css) {
-    	this.css = options.css;
+      this.css = options.css;
     }
-    
+
     if(options.cssSelected) {
-    	this.cssSelected = options.cssSelected;
+      this.cssSelected = options.cssSelected;
     }
-    
+
     // creates video tag element
     this.imgTag = document.createElement("img");
     this.imgTag.setAttribute("class", this.css);
     this.imgTag.setAttribute("id", "dataview-"+OSH.Utils.randomUUID());
-    
+
     // appends <img> tag to <div>
     document.getElementById(this.divId).appendChild(this.imgTag);
-    
+
     // adds listener
-    $(this.divId).observe("click", function(event) {
-    	$(this.divId).fire("osh:select", [this.dataSourceId]);
-    }.bind(this));
+    var self = this;
+    OSH.EventManager.observeDiv(this.divId,"click",function(event){
+      OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+        dataSourcesIds: [self.dataSourceId],
+        entityId : self.entityId
+      });
+    });
   },
-  
+
   setData: function(dataSourceId,data) {
-	if(dataSourceId == this.dataSourceId) {
-	    var oldBlobURL = this.imgTag.src;
-	    this.imgTag.src = data.data;
-	    window.URL.revokeObjectURL(oldBlobURL);
-	}
+    if(dataSourceId == this.dataSourceId) {
+      var oldBlobURL = this.imgTag.src;
+      this.imgTag.src = data.data;
+      window.URL.revokeObjectURL(oldBlobURL);
+    }
   },
-  
-  selectDataView: function($super,dataSourceIds) {
-	  if(dataSourceIds.indexOf(this.dataSourceId) > -1) {
-		  this.imgTag.setAttribute("class",this.css+" "+this.cssSelected);  
-	  } else {
-		  this.imgTag.setAttribute("class",this.css);
-	  }
+
+  selectDataView: function($super,dataSourceIds,entityId) {
+    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
+      this.imgTag.setAttribute("class",this.css+" "+this.cssSelected);
+    } else {
+      this.imgTag.setAttribute("class",this.css);
+    }
   }
 });
+

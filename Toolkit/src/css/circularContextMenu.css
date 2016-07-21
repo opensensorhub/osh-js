@@ -4,6 +4,7 @@
 
 .circular-menu-container {
     position:absolute;
+    z-index:9999;
 }
 
 .circular-menu {

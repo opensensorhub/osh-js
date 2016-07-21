@@ -1,6 +1,7 @@
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {
         //$super(divId,[],options);
+
         // creates HTML element
         this.id = "dialog-" + OSH.Utils.randomUUID();
         var pinDiv = "dialog-" + OSH.Utils.randomUUID();
@@ -81,10 +82,13 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         if(this.dockable) {
             document.getElementById(pinDiv).onclick = this.unpin.bind(this);
         }
+
+        // calls super handleEvents
+        this.handleEvents();
     },
 
     show: function($super,properties) {
-        if(properties.viewIds.indexOf(this.getId()) > -1) {
+        if(properties.viewId.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
             if(typeof(this.initialWidth) == "undefined" ) {
                 this.initialWidth = this.rootTag.offsetWidth;

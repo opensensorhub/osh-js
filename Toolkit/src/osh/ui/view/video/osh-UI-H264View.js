@@ -1,8 +1,9 @@
 OSH.UI.H264View = Class.create(OSH.UI.View, {
 	initialize : function($super, divId, options) {
-		$super(divId);
+		$super(divId,options);
 
 		this.dataSourceId = -1;
+		this.entityId = options.entityId;
 		// sets dataSourceId
 		if (typeof (options.dataSourceId) != "undefined") {
 			this.dataSourceId = options.dataSourceId;
@@ -51,11 +52,15 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 		this.video.setAttribute("height", height);
 		var domNode = document.getElementById(this.divId);
 		domNode.appendChild(this.video);
-		
+
 		// adds listener
-	    $(this.divId).observe("click", function(event) {
-	    	$(this.divId).fire("osh:select", [this.dataSourceId]);
-	    }.bind(this));
+		var self = this;
+		OSH.EventManager.observeDiv(this.divId,"click",function(event){
+			OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+				dataSourcesIds: [self.dataSourceId],
+				entityId : self.entityId
+			});
+		});
 	},
 
 	decode : function(fullNal) {
@@ -124,9 +129,9 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 		}
 	},
 	
-	selectDataView: function($super,dataSourceIds) {
+	selectDataView: function($super,dataSourceIds,entityId) {
 		  document.getElementById(this.divId).setAttribute("class","");
-		  if(dataSourceIds.indexOf(this.dataSourceId) > -1) {
+		  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 			  document.getElementById(this.divId).setAttribute("class",this.originalCss+" "+this.cssSelected);  
 		  }
 	  }
