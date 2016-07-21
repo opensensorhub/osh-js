@@ -120,16 +120,6 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 
 	},
 
-	setData : function(dataSourceId, data) {
-		var selected = false;
-
-		for (var i = 0; i < this.stylers.length; i++) {
-			this.stylers[i].setData(dataSourceId, data, this, {
-				selected : selected
-			});
-		}
-	},
-
 	updateCurve : function(styler, timestamp, options) {
 		if (typeof (this.data) == "undefined") {
 			this.d3Data = [];	
