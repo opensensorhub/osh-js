@@ -18,7 +18,6 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     }
     
     this.dataSources = [];
-    this.observers = [];
   },
   
   setBufferingTime : function(bufferingTime) {
@@ -41,10 +40,6 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     return this.buffer.getReplayFactor();
   },
   
-  registerObserver: function(observer) {
-	  this.observers.push(observer);
-  },
-
   addEntity : function(entity) {
     if(typeof (entity.dataSources) != "undefined") {
       for(var i=0;i < entity.dataSources.length;i++) {
@@ -56,7 +51,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
   addDataSource: function(dataSource) {
     this.dataSources.push(dataSource);
     this.buffer.register(dataSource.getId(),function(data) {
-        this.onData(dataSource.getId(),data);
+        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA, {dataSourceId : dataSource.getId(),data : data});
     }.bind(this));
     
     dataSource.onData = function(data) {
@@ -71,13 +66,6 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     for(var i = 0; i< this.dataSources.length; i++) {
       // connects this current dataSource 
       this.dataSources[i].connect();
-    }
-  },
-  
-  onData: function(id,data) {
-	// notifies observers
-    for(var i=0;i < this.observers.length;i++) {
-    	this.observers[i].setData(id,data);
     }
   }
 });

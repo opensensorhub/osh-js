@@ -3,7 +3,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         $super(divId, viewItems, options);
     },
 
-    init: function ($super, options) {
+    beforeAddingItems: function ($super, options) {
         // inits the map
         this.initMap(options);
         this.initEvents();

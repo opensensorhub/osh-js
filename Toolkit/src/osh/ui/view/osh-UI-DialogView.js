@@ -1,7 +1,6 @@
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {
-        //$super(divId,[],options);
-        this.init(options);
+        $super(divId,[],options);
         // creates HTML element
         this.id = "dialog-" + OSH.Utils.randomUUID();
         var pinDiv = "dialog-" + OSH.Utils.randomUUID();
@@ -85,6 +84,15 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
         // calls super handleEvents
         this.handleEvents();
+    },
+
+    /**
+     * Override super method
+     * @param $super
+     * @param options
+     */
+    init:function($super,options) {
+
     },
 
     show: function($super,properties) {

@@ -1,14 +1,26 @@
 OSH.UI.View = Class.create({
     initialize: function (divId, viewItems,options) {
-        this.divId = divId;
-        this.id = "view-" + OSH.Utils.randomUUID();
-
+        this.dataSources = [];
+        // list of stylers
+        this.stylers = [];
+        this.contextMenus = [];
+        this.viewItems = [];
+        this.names = {};
+        this.stylerToObj = {};
         this.lastRec = {};
         this.selectedDataSources = [];
         this.selectedEntities = [];
         this.dataSources = [];
 
-        var div = document.getElementById(divId);
+        this.divId = divId;
+        this.id = "view-" + OSH.Utils.randomUUID();
+
+        // inits the view before adding the viewItem
+        this.init(viewItems,options);
+    },
+
+    init:function(viewItems,options) {
+        var div = document.getElementById(this.divId);
         if (div == "undefined" || div == null) {
             var hiddenDiv = document.createElement("div");
             hiddenDiv.style.display = "none";
@@ -16,21 +28,12 @@ OSH.UI.View = Class.create({
             document.body.appendChild(hiddenDiv);
 
             var elementDiv = document.createElement("div");
-            elementDiv.setAttribute("id", divId);
+            elementDiv.setAttribute("id", this.divId);
 
             hiddenDiv.appendChild(elementDiv);
         }
 
-        // list of stylers
-        this.stylers = [];
-        this.contextMenus = [];
-        this.viewItems = [];
-        this.names = {};
-        this.stylerToObj = {};
-        this.dataSources = [];
-
-        // inits the view before adding the viewItem
-        this.init(options);
+        this.beforeAddingItems(options);
 
         if (typeof (viewItems) != "undefined") {
             for (var i =0;i < viewItems.length;i++) {
@@ -43,11 +46,10 @@ OSH.UI.View = Class.create({
                 document.getElementById(this.divId).style.display = (options.show)? "block": "none";
             }
         }
-
         this.handleEvents();
     },
 
-    init: function (options) {
+    beforeAddingItems: function (options) {
 
     },
 
@@ -89,7 +91,7 @@ OSH.UI.View = Class.create({
     handleEvents: function() {
         // observes the data come in
         OSH.EventManager.observe(OSH.EventManager.EVENT.DATA,function(event){
-
+            this.setData(event.dataSourceId, event.data);
         }.bind(this));
 
         // observes the selected event

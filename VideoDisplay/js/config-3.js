@@ -247,13 +247,6 @@ function init() {
 
     dataProviderController.addEntity(androidEntity);
     dataProviderController.addDataSource(weatherDataSource);
-
-    // registers the view into the data provider
-    dataProviderController.registerObserver(mapView);
-    dataProviderController.registerObserver(videoView);
-    dataProviderController.registerObserver(videoView2);
-    dataProviderController.registerObserver(windSpeedChartView);
-
     //---------------------------------------------------------------//
     //---------------------------- Starts ---------------------------//
     //---------------------------------------------------------------//
