@@ -47,6 +47,13 @@ OSH.UI.View = Class.create({
             }
         }
         this.handleEvents();
+
+        // observes the event associated to the dataSourceId
+        if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
+            OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+options.dataSourceId, function (event) {
+                this.setData(options.dataSourceId, event.data);
+            }.bind(this));
+        }
     },
 
     beforeAddingItems: function (options) {
@@ -63,6 +70,8 @@ OSH.UI.View = Class.create({
 
     selectDataView: function (dataSourceIds) {
     },
+
+    setData: function(dataSourceId,data) {},
 
     show: function(properties) {
     },
@@ -86,14 +95,16 @@ OSH.UI.View = Class.create({
         if (viewItem.hasOwnProperty("contextmenu")) {
             this.contextMenus.push(viewItem.contextmenu);
         }
+
+        for(var i in styler.dataSourceToStylerMap) {
+            // observes the data come in
+            OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+i, function (event) {
+                this.setStylerData(styler,i, event.data);
+            }.bind(this));
+        }
     },
 
     handleEvents: function() {
-        // observes the data come in
-        OSH.EventManager.observe(OSH.EventManager.EVENT.DATA,function(event){
-            this.setData(event.dataSourceId, event.data);
-        }.bind(this));
-
         // observes the selected event
         OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW,function(event){
             this.selectDataView(event.dataSourcesIds,event.entityId);
@@ -106,11 +117,8 @@ OSH.UI.View = Class.create({
     },
 
     //TODO: to improve the way to select stylers
-    setData: function (dataSourceId, data) {
-        if (this.dataSources.indexOf(dataSourceId) == -1) {
-            this.dataSources.push(dataSourceId);
-        }
-
+    //FIXME: Should not have to loop over stylers to pass data
+    setStylerData: function (styler,dataSourceId, data) {
         var selected = false;
 
         // we check only dataSource when the selected entity is not set

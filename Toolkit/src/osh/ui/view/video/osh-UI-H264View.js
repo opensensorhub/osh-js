@@ -1,6 +1,6 @@
 OSH.UI.H264View = Class.create(OSH.UI.View, {
 	initialize : function($super, divId, options) {
-		$super(divId,options);
+		$super(divId,[],options);
 
 		this.dataSourceId = -1;
 		this.entityId = options.entityId;
@@ -68,23 +68,21 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 	},
 
 	setData : function(dataSourceId, data) {
-		if (dataSourceId == this.dataSourceId) {
-			this.computeFullNalFromRaw(data.data, function(nal) {
-				var nalType = nal[0] & 0x1F;
-				//7 => PPS
-				//8 => SPS
-				//6 => SEI
-				//5 => IDR
-				if (nalType != 7 && nalType != 8 && nalType != 1
-						&& nalType != 5 & nalType != 6)
-					return;
-				if (nalType == 7)
-					this.hasSps = true;
-				if (this.hasSps) {
-					this.decode(nal);
-				}
-			}.bind(this));
-		}
+		this.computeFullNalFromRaw(data.data, function(nal) {
+			var nalType = nal[0] & 0x1F;
+			//7 => PPS
+			//8 => SPS
+			//6 => SEI
+			//5 => IDR
+			if (nalType != 7 && nalType != 8 && nalType != 1
+					&& nalType != 5 & nalType != 6)
+				return;
+			if (nalType == 7)
+				this.hasSps = true;
+			if (this.hasSps) {
+				this.decode(nal);
+			}
+		}.bind(this));
 	},
 
 	computeFullNalFromRaw : function(data, callback) {

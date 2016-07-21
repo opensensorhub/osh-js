@@ -1,6 +1,6 @@
 OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
-    $super(divId,options);
+    $super(divId,[],options);
 
     this.dataSourceId = -1;
     // sets dataSourceId
@@ -38,12 +38,10 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
     });
   },
 
-  setData: function(dataSourceId,data) {
-    if(dataSourceId == this.dataSourceId) {
+  setData: function($super,dataSourceId,data) {
       var oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
       window.URL.revokeObjectURL(oldBlobURL);
-    }
   },
 
   selectDataView: function($super,dataSourceIds,entityId) {

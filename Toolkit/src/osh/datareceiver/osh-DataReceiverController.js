@@ -51,7 +51,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
   addDataSource: function(dataSource) {
     this.dataSources.push(dataSource);
     this.buffer.register(dataSource.getId(),function(data) {
-        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA, {dataSourceId : dataSource.getId(),data : data});
+        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSource.getId(), {data : data});
     }.bind(this));
     
     dataSource.onData = function(data) {

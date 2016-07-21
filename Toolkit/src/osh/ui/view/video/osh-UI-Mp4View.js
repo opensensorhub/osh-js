@@ -1,6 +1,6 @@
 OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
-    $super(divId,options);
+    $super(divId,[],options);
     
     this.dataSourceId = -1;
     this.entityId = options.entityId;
@@ -102,13 +102,11 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   },
   
   setData: function(dataSourceId,data) {
-	if(dataSourceId == this.dataSourceId) {  
-	    if (this.buffer.updating || this.queue.length > 0) {
-	      this.queue.push(data.data);
-	    } else {
-	      this.buffer.appendBuffer(data.data);
-	    }
-	}
+      if (this.buffer.updating || this.queue.length > 0) {
+        this.queue.push(data.data);
+      } else {
+        this.buffer.appendBuffer(data.data);
+      }
   },
   
   selectDataView: function($super,dataSourceIds, entityId) {
