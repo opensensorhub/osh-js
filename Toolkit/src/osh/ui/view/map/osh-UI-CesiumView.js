@@ -35,27 +35,6 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 		});
 	},
 
-	setData: function(dataSourceId,data) {
-		if(this.dataSources.indexOf(dataSourceId) == -1) {
-			this.dataSources.push(dataSourceId);
-		}
-		var selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
-		
-		for(var i=0;i < this.stylers.length;i++) {
-			this.stylers[i].setData(dataSourceId,data,this,{
-				selected:selected
-			});
-			this.lastRec[dataSourceId] = data;
-		}
-	},
-	
-	selectDataView: function($super,dataSourceIds) {
-		this.selectedDataSources = dataSourceIds;
-		for(var j=0; j < this.dataSources.length;j++) {
-			this.setData(this.dataSources[j],this.lastRec[this.dataSources[j]]);
-		}
-	},
-	
 	//---------- MAP SETUP --------------//
 	init : function($super,options) {
 		this.lastRec = {};
