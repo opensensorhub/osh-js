@@ -238,8 +238,9 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
 
                             OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+this.viewItems[i].contextMenuId,{
                                 div: document.getElementById(markerId),
-                                offsetX: -80,
-                                offsetY: -80,
+                                //TODO: values have to be provided by properties
+                                offsetX: -77,
+                                offsetY: -17,
                                 action: "show"
                             });
                         }.bind(this);

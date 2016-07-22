@@ -13,7 +13,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
             if(typeof (properties.items) != "undefined") {
                 for(var i = 0;i < properties.items.length;i++) {
                     var elId = OSH.Utils.randomUUID();
-                    var htmlVar = "<div><a  id=\""+elId+"\" ";
+                    var htmlVar = "<a  id=\""+elId+"\" ";
                     if(typeof (properties.items[i].css) != "undefined"){
                         htmlVar += "class=\""+properties.items[i].css+"\" ";
                     }
@@ -22,7 +22,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
                         name = properties.items[i].name;
                     }
                     htmlVar += "title=\""+name+"\"";
-                    htmlVar += "><span id =\""+elId+"\"class=\""+this.type+"-menu-label\">"+name+"</span><\/a></div>";
+                    htmlVar += "><span id =\""+elId+"\"class=\""+this.type+"-menu-label\">"+name+"</span><\/a>";
 
                     //htmlVar += "<label for=\""+elId+"\" class=\""+this.type+"-menu-label\">"+name+"</label></div>";
 
@@ -69,7 +69,8 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
 
         var hasParentDiv = (typeof (properties) != "undefined" && typeof (properties.div) !="undefined");
         if(hasParentDiv) {
-            properties.div.parentNode.appendChild(this.rootTag);
+            //properties.div.parentNode.appendChild(this.rootTag);
+            document.body.appendChild(this.rootTag);
         }
         var items = document.querySelectorAll('.'+this.type+'-menu-circle a');
 

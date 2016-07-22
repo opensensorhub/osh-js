@@ -345,8 +345,9 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					var divNode = document.getElementById(p_node.id);
 					OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+p_node.contextMenu,{
 						div: divNode,
-						offsetX: 150,
-						offsetY: 70,
+						//TODO: values have to be provided by properties
+						offsetX: 220,
+						offsetY: 130,
 						action : "show"
 
 					});

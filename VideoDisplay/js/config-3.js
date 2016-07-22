@@ -218,19 +218,19 @@ function init() {
     var menuItems = [{
         name: "Android Video",
         viewId: videoDialog.getId(),
-        css: "fa fa-video-camera fa-2x"
+        css: "fa fa-video-camera"
     },{
         name: "Same Android Video",
         viewId: videoDialog2.getId(),
-        css: "fa fa-video-camera fa-2x"
+        css: "fa fa-video-camera"
     },{
         name: "Weather chart",
         viewId: chartDialog.getId(),
-        css: "fa fa-bar-chart fa-2x"
+        css: "fa fa-bar-chart"
     },{
         name: "Tasking",
         viewId: "",
-        css: "fa fa-arrows fa-2x"
+        css: "fa fa-arrows"
     }];
 
     var contextCircularMenu = new OSH.UI.ContextMenu.CircularMenu({id : circularContextMenuId,groupId: androidMenuGroupId,items : menuItems});

@@ -125,7 +125,11 @@
 .circular-menu-button:hover {
     color: #0078A8 !important;
 }
-.circular-menu-circle a.fa-2x:hover {
+.circular-menu-circle a {
+    font-size:2em;
+}
+
+.circular-menu-circle a:hover {
     font-size:2.7em;
 }
 
