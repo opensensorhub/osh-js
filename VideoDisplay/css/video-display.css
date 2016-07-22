@@ -94,8 +94,8 @@ a.navbar-brand:hover {
 }
 
 .tree-container {
-    width:300px;
-    height:250px;
+    width:calc(100% - 15px) !important;
+    height:calc(100% - 30px) !important;
     background-color:#FFF;
     padding: 4px;
 }
@@ -105,4 +105,6 @@ a.navbar-brand:hover {
     top:60px;
     left:60px;
     overflow:hidden;
+    width:300px;
+    height:300px;
 }
