@@ -7,6 +7,7 @@ OSH.UI.View = Class.create({
         this.viewItems = [];
         this.names = {};
         this.stylerToObj = {};
+        this.stylerIdToStyler = {};
         this.lastRec = {};
         this.selectedDataSources = [];
         this.selectedEntities = [];
@@ -92,6 +93,7 @@ OSH.UI.View = Class.create({
             }
             styler.init(this);
             styler.viewItem = viewItem;
+            this.stylerIdToStyler[styler.id] = styler;
         }
         if (viewItem.hasOwnProperty("contextmenu")) {
             this.contextMenus.push(viewItem.contextmenu);

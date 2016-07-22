@@ -4,11 +4,6 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
     },
 
     beforeAddingItems: function ($super, options) {
-        this.lastRec = {};
-        this.selectedDataSources = [];
-        this.selectedEntities = [];
-        this.dataSources = [];
-
         // inits the map
         this.initMap(options);
         this.initEvents();
@@ -34,8 +29,22 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                     return feature;
                 });
             if (feature) {
-                console.log(feature);
-                // ...
+                var id = feature.ha;
+
+                // gets the corresponding styler
+                for(var stylerId in self.stylerToObj) {
+                    if(self.stylerToObj[stylerId] == id) {
+                        OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+self.stylerIdToStyler[stylerId].viewItem.contextMenuId,{
+                            //TODO: values have to be provided by properties
+                            offsetX: -70,
+                            offsetY: -70,
+                            action : "show",
+                            x:OSH.Utils.getXCursorPosition(),
+                            y:OSH.Utils.getYCursorPosition()
+                        });
+                        break;
+                    }
+                }
             }
         });
 
