@@ -6,13 +6,15 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 		var height = "480";
 		var css = "";
 		this.originalCss = document.getElementById(this.divId).className;
-		
-		if (options.width) {
-			width = options.width;
-		}
 
-		if (options.height) {
-			height = options.height;
+		if(typeof options != "undefined") {
+			if (options.width) {
+				width = options.width;
+			}
+
+			if (options.height) {
+				height = options.height;
+			}
 		}
 
 		var useWorker = false;
