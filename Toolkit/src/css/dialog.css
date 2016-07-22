@@ -67,6 +67,18 @@
     cursor: pointer;
 }
 
+.pop-pin:hover {
+    top : 0 !important;
+}
+
+.pop-pin-drag {
+    top : 0 !important;
+}
+
+.pop-pin-drag:hover {
+    top:4px !important;
+}
+
 .resizable {
     resize: both;   /* Options: horizontal, vertical, both */
     overflow: auto; /* fix for Safari */

@@ -3,7 +3,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         $super(divId,[],options);
         // creates HTML eflement
         this.id = "dialog-" + OSH.Utils.randomUUID();
-        var pinDiv = "dialog-" + OSH.Utils.randomUUID();
+        this.pinDivId = "dialog-" + OSH.Utils.randomUUID();
         var closeDiv = "dialog-" + OSH.Utils.randomUUID();
 
         var name = (typeof(options.name) != "undefined") ? options.name : "Untitled";
@@ -15,7 +15,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.closeable = false;
         if(typeof(options) != "undefined"){
             if( typeof (options.dockable) != "undefined" && options.dockable) {
-                htmlVar +=  "<a id=\""+pinDiv+"\"class=\"pop-pin\"><\/a>";
+                htmlVar +=  "<a id=\""+this.pinDivId+"\"class=\"pop-pin\"><\/a>";
                 this.dockable = true;
             }
 
@@ -79,7 +79,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         }
 
         if(this.dockable) {
-            document.getElementById(pinDiv).onclick = this.unpin.bind(this);
+            document.getElementById(this.pinDivId).onclick = this.unpin.bind(this);
         }
 
         // calls super handleEvents
@@ -118,6 +118,8 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.rootTag.style.left = offsetLeft - 350;
             this.rootTag.style.position = "absolute";
             this.draggable = true;
+
+            document.getElementById(this.pinDivId).setAttribute("class", "pop-pin pop-pin-drag");
         } else {
             this.rootTag.style.top = 0;
             this.rootTag.style.left = 0 - (this.rootTag.offsetWidth-this.initialWidth);
@@ -126,6 +128,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.rootTag.parentNode.removeChild(this.rootTag);
             this.parentDiv.appendChild(this.rootTag);
             this.draggable = false;
+            document.getElementById(this.pinDivId).setAttribute("class", "pop-pin");
         }
     },
 
