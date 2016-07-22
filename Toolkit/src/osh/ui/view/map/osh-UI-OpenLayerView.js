@@ -130,14 +130,17 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
             polylineId = this.stylerToObj[styler.getId()];
         }
 
-        this.updateMapPolyline(polylineId, {
-            color: styler.color,
-            weight: styler.weight,
-            locations: styler.locations,
-            maxPoints: styler.maxPoints,
-            opacity: styler.opacity,
-            smoothFactor: styler.smoothFactor
-        });
+        //TODO: handle opacity, smoothFactor, color and weight
+        if (polylineId in this.polylines) {
+            var geometry = this.polylines[polylineId];
+
+            var polylinePoints = [];
+            for (var i = 0; i < styler.locations.length; i++) {
+                polylinePoints.push(ol.proj.transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+            }
+
+            geometry.setCoordinates(polylinePoints);
+        }
     },
 
     //---------- MAP SETUP --------------//
@@ -317,31 +320,6 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         return id;
     },
 
-    updateMapMarker: function (id, properties) {
-        var markerFeature = this.markers[id];
-        // updates position
-        var lon = properties.lon;
-        var lat = properties.lat;
-
-        if (!isNaN(lon) && !isNaN(lat)) {
-            var coordinates = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
-            markerFeature.getGeometry().setCoordinates(coordinates);
-        }
-
-        // updates orientation
-        if (properties.icon != null) {
-            // updates icon
-            var iconStyle = new ol.style.Style({
-                image: new ol.style.Icon(({
-                    opacity: 0.75,
-                    src: properties.icon,
-                    rotation: properties.orientation * Math.PI / 180
-                }))
-            });
-            markerFeature.setStyle(iconStyle);
-        }
-    },
-
     addPolyline: function (properties) {
         var polylinePoints = [];
 
@@ -378,18 +356,5 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         this.polylines[id] = pathGeometry;
 
         return id;
-    },
-
-    updateMapPolyline: function (id, properties) {
-        if (id in this.polylines) {
-            var geometry = this.polylines[id];
-
-            var polylinePoints = [];
-            for (var i = 0; i < properties.locations.length; i++) {
-                polylinePoints.push(ol.proj.transform([properties.locations[i].x, properties.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-            }
-
-            geometry.setCoordinates(polylinePoints);
-        }
     }
 });
