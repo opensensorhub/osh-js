@@ -1,6 +1,6 @@
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
-    initialize: function ($super,divId, options) {
-        $super(divId,[],options);
+    initialize: function ($super,containerDivId,viewDivId, options) {
+        $super(viewDivId,[],options);
         // creates HTML eflement
         this.id = "dialog-" + OSH.Utils.randomUUID();
         this.pinDivId = "dialog-" + OSH.Utils.randomUUID();
@@ -36,8 +36,8 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
-        var div = document.getElementById(divId);
-        this.parentDiv = div.parentNode;
+        var div = document.getElementById(viewDivId);
+        this.containerDiv = document.getElementById(containerDivId);
 
         if(options.css) {
             this.rootTag.setAttribute("class",this.rootTag.className+" "+options.css);
@@ -52,15 +52,16 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         var classList = div.className;
 
         // removes the div from its parent
-        div.parentNode.removeChild(div);
-
+        var parent = div.parentNode;
+        parent.removeChild(div);
+        //parent.parentNode.removeChild(parent);
         // plugs it into the new draggable dialog
         this.rootTag.appendChild(div);
         div.setAttribute("class", "pop-content "+classList);
         if(this.draggable) {
             document.body.appendChild(this.rootTag);
         } else {
-            this.parentDiv.appendChild(this.rootTag);
+            this.containerDiv.appendChild(this.rootTag);
         }
 
         if(typeof (options) != "undefined") {
@@ -126,7 +127,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.rootTag.style.position = "relative";
             this.rootTag.setAttribute("draggable", false);
             this.rootTag.parentNode.removeChild(this.rootTag);
-            this.parentDiv.appendChild(this.rootTag);
+            this.containerDiv.appendChild(this.rootTag);
             this.draggable = false;
             document.getElementById(this.pinDivId).setAttribute("class", "pop-pin");
         }

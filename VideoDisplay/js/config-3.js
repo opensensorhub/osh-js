@@ -79,7 +79,7 @@ function init() {
     //--------------------------------------------------------//
 
     // Video 1 View
-    var videoView = new OSH.UI.MjpegView("box-1", {
+    var videoView = new OSH.UI.MjpegView(null, {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         entityId : androidEntity.id,
         css: "video",
@@ -88,7 +88,7 @@ function init() {
     });
 
     // Video 2 View
-    var videoView2 = new OSH.UI.MjpegView("box-2", {
+    var videoView2 = new OSH.UI.MjpegView(null, {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         entityId : androidEntity.id,
         css: "video",
@@ -97,7 +97,7 @@ function init() {
     });
 
     // Chart View
-    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("box-3",
+    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(null,
         [{
             styler: new OSH.UI.Styler.Curve({
                 valuesFunc: {
@@ -120,7 +120,7 @@ function init() {
         }
     );
 
-    var entityTree = new OSH.UI.EntityTreeView("tree-container",
+    var entityTreeView = new OSH.UI.EntityTreeView("tree-container",
             [{
                 entity : androidEntity,
                 path: "Sensors/Toulouse",
@@ -199,10 +199,10 @@ function init() {
     });
 
     // creates Dialog Views
-    var videoDialog         = createDialog("box-1","Android Video 1");
-    var videoDialog2        = createDialog("box-2","Android Video 2");
-    var chartDialog         = createDialog("box-3","Chart Weather");
-    var entityTreeDialog    = new OSH.UI.DialogView("tree-container", {
+    var videoDialog         = createDialog("dialog-main-container",videoView.getDivId(),"Android Video 1");
+    var videoDialog2        = createDialog("dialog-main-container",videoView2.getDivId(),"Android Video 2");
+    var chartDialog         = createDialog("dialog-main-container",windSpeedChartView.getDivId(),"Chart Weather");
+    var entityTreeDialog    = new OSH.UI.DialogView(document.body, "tree-container",{
         css: "tree-dialog",
         name: "Entities",
         show:true,
@@ -255,8 +255,8 @@ function init() {
     dataProviderController.connectAll();
 }
 
-function createDialog(divId, title) {
-    return new OSH.UI.DialogView(divId, {
+function createDialog(containerDivId,viewDivId, title) {
+    return new OSH.UI.DialogView(containerDivId, viewDivId,{
         draggable: false,
         css: "dialog",
         name: title,

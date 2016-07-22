@@ -21,16 +21,17 @@ OSH.UI.View = Class.create({
 
     init:function(viewItems,options) {
         var div = document.getElementById(this.divId);
-        if (div == "undefined" || div == null) {
+        if (this.divId == null || div == "undefined" || div == null) {
             var hiddenDiv = document.createElement("div");
             hiddenDiv.style.display = "none";
 
             document.body.appendChild(hiddenDiv);
 
             var elementDiv = document.createElement("div");
-            elementDiv.setAttribute("id", this.divId);
+            elementDiv.setAttribute("id", this.id);
 
             hiddenDiv.appendChild(elementDiv);
+            this.divId = this.id;
         }
 
         this.beforeAddingItems(options);

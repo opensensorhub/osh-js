@@ -94,6 +94,7 @@ a.navbar-brand:hover {
 }
 
 .tree-container {
+    position:absolute;
     width:calc(100% - 15px) !important;
     height:calc(100% - 30px) !important;
     background-color:#FFF;

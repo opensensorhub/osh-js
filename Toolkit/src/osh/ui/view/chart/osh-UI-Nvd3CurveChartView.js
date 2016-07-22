@@ -102,14 +102,14 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		//create svg element
 		var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
 
-		this.div = document.getElementById(divId);
+		this.div = document.getElementById(this.divId);
 		this.div.setAttribute("class", this.css);
 		this.div.appendChild(svg);
 
 		this.div.style.width = this.width;
 		this.div.style.height = this.height;
 		
-		this.svgChart = d3.select('#' + divId + ' svg'); //Select the <svg> element you want to render the chart in.
+		this.svgChart = d3.select('#' + this.divId + ' svg'); //Select the <svg> element you want to render the chart in.
 
 		OSH.EventManager.observeDiv(this.divId,"click",function(event){
 			OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
