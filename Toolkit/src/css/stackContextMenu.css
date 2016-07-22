@@ -22,9 +22,9 @@
 .open.stack-menu {
     box-shadow: 0px 0px 20px 1px #777;
     background-color: #777;
-    filter: alpha(opacity=60);
-    -moz-opacity: 0.6;
-    opacity: 0.6;
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.8;
+    opacity: 0.8;
     height: 100%;
     cursor: pointer;
 }
