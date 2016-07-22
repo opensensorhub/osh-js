@@ -24,10 +24,12 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                 e.stopPropagation();
         };
 
+        var self = this;
+
         this.map.getViewport().addEventListener('contextmenu', function (e) {
             e.preventDefault();
 
-            var feature = this.map.forEachFeatureAtPixel(this.map.getEventPixel(e),
+            var feature = self.map.forEachFeatureAtPixel(self.map.getEventPixel(e),
                 function (feature, layer) {
                     return feature;
                 });
@@ -35,7 +37,30 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                 console.log(feature);
                 // ...
             }
-        }.bind(this));
+        });
+
+        this.map.on("click", function(e) {
+            self.map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+                var id = feature.ha;
+                var dataSourcesIds = [];
+                var entityId;
+                for (var styler in self.stylerToObj) {
+                    if (self.stylerToObj[styler] == id) {
+                        for (var i = 0; i < self.stylers.length; i++) {
+                            if (self.stylers[i].getId() == styler) {
+                                dataSourcesIds = dataSourcesIds.concat(self.stylers[i].getDataSourcesIds());
+                                entityId = self.stylers[i].viewItem.entityId;
+                                break;
+                            }
+                        }
+                    }
+                }
+                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                    dataSourcesIds: dataSourcesIds,
+                    entityId : entityId
+                });
+            });
+        });
     },
 
     updateMarker: function (styler) {
