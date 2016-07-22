@@ -3,7 +3,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         $super(divId, viewItems, options);
     },
 
-    init: function ($super, options) {
+    beforeAddingItems: function ($super, options) {
         this.lastRec = {};
         this.selectedDataSources = [];
         this.selectedEntities = [];
@@ -23,6 +23,19 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
             if (e.stopPropagation != undefined)
                 e.stopPropagation();
         };
+
+        this.map.getViewport().addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+
+            var feature = this.map.forEachFeatureAtPixel(this.map.getEventPixel(e),
+                function (feature, layer) {
+                    return feature;
+                });
+            if (feature) {
+                console.log(feature);
+                // ...
+            }
+        }.bind(this));
     },
 
     updateMarker: function (styler) {
@@ -44,13 +57,28 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
             markerId = this.stylerToObj[styler.getId()];
         }
 
-        this.updateMapMarker(markerId, {
-            lat: styler.location.y,
-            lon: styler.location.x,
-            orientation: styler.orientation.heading,
-            color: styler.color,
-            icon: styler.icon
-        });
+        var markerFeature = this.markers[markerId];
+        // updates position
+        var lon = styler.location.x;
+        var lat = styler.location.y;
+
+        if (!isNaN(lon) && !isNaN(lat)) {
+            var coordinates = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
+            markerFeature.getGeometry().setCoordinates(coordinates);
+        }
+
+        // updates orientation
+        if (styler.icon != null) {
+            // updates icon
+            var iconStyle = new ol.style.Style({
+                image: new ol.style.Icon(({
+                    opacity: 0.75,
+                    src: styler.icon,
+                    orotation: styler.orientation.heading * Math.PI / 180
+                }))
+            });
+            markerFeature.setStyle(iconStyle);
+        }
     },
 
     updatePolyline: function (styler) {

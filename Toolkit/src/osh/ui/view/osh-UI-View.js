@@ -110,6 +110,7 @@ OSH.UI.View = Class.create({
                 //TODO: maybe done into the styler?
                 var ds = styler.getDataSourcesIds();
                 for(var i=0;i < ds.length;i++) {
+                    console.log(ds[i]);
                     styler.setData(ds[i], event.data, this, {
                         selected: selected
                     });
