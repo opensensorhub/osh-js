@@ -2,13 +2,6 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId,[],options);
     
-    this.dataSourceId = -1;
-    this.entityId = options.entityId;
-    // sets dataSourceId
-    if(typeof(options.dataSourceId) != "undefined") {
-    	this.dataSourceId = options.dataSourceId;
-    }
-    
     var width = "640";
     var height = "480";
 

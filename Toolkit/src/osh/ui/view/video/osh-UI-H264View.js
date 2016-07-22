@@ -4,7 +4,6 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 
 		var width = "640";
 		var height = "480";
-		var css = "";
 		this.originalCss = document.getElementById(this.divId).className;
 
 		if(typeof options != "undefined") {
@@ -33,7 +32,7 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 		});
 
 		this.video = this.avcWs.canvas
-		this.video.setAttribute("class", css);
+		this.video.setAttribute("class", this.css);
 		this.video.setAttribute("width", width);
 		this.video.setAttribute("height", height);
 		var domNode = document.getElementById(this.divId);
