@@ -162,6 +162,8 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         }
         var self = this;
 
+        marker._icon.id = id;
+
         // adds onclick event
         marker.on('click', function () {
             var dataSourcesIds = [];
@@ -178,7 +180,29 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
             }
         });
 
-        marker._icon.id = id;
+        $(id).oncontextmenu = function (e) {
+            var evt = new Object({keyCode: 93});
+
+            if (e.preventDefault != undefined)
+                e.preventDefault();
+            if (e.stopPropagation != undefined)
+                e.stopPropagation();
+
+            // gets the corresponding styler
+            for(var stylerId in self.stylerToObj) {
+                if(self.stylerToObj[stylerId] == id) {
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+self.stylerIdToStyler[stylerId].viewItem.contextMenuId,{
+                        //TODO: values have to be provided by properties
+                        offsetX: -70,
+                        offsetY: -70,
+                        action : "show",
+                        x:OSH.Utils.getXCursorPosition(),
+                        y:OSH.Utils.getYCursorPosition()
+                    });
+                    break;
+                }
+            }
+        }.bind(this);
 
         return id;
     },
@@ -216,35 +240,6 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
                 icon: styler.icon,
                 name: this.names[styler.getId()]
             });
-
-            // TODO: debugging
-            // gets contextmenu
-            for (var i in this.viewItems) {
-                if (this.viewItems[i].styler.getId() == styler.getId()) {
-                    if (typeof(this.viewItems[i].contextMenuId) != "undefined") {
-                        // overrides default right click
-                        $(markerId).oncontextmenu = function (e) {
-                            var evt = new Object({keyCode: 93});
-
-                            if (e.preventDefault != undefined)
-                                e.preventDefault();
-                            if (e.stopPropagation != undefined)
-                                e.stopPropagation();
-
-                            OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+this.viewItems[i].contextMenuId,{
-                                //TODO: values have to be provided by properties
-                                offsetX: -70,
-                                offsetY: -70,
-                                action : "show",
-                                x:OSH.Utils.getXCursorPosition(),
-                                y:OSH.Utils.getYCursorPosition()
-                            });
-                        }.bind(this);
-                    }
-                    break;
-                }
-            }
-            //END debugging
             this.stylerToObj[styler.getId()] = markerId;
         } else {
             markerId = this.stylerToObj[styler.getId()];
