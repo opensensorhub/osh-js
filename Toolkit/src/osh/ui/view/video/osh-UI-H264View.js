@@ -2,17 +2,9 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 	initialize : function($super, divId, options) {
 		$super(divId,[],options);
 
-		this.dataSourceId = -1;
-		this.entityId = options.entityId;
-		// sets dataSourceId
-		if (typeof (options.dataSourceId) != "undefined") {
-			this.dataSourceId = options.dataSourceId;
-		}
-
 		var width = "640";
 		var height = "480";
 		var css = "";
-		this.cssSelected = "";
 		this.originalCss = document.getElementById(this.divId).className;
 		
 		if (options.width) {
@@ -23,14 +15,6 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 			height = options.height;
 		}
 
-		if (options.css) {
-			css = options.css;
-		}
-
-		if(options.cssSelected) {
-	    	this.cssSelected = options.cssSelected;
-	    }
-		
 		var useWorker = false;
 		var reuseMemory = false;
 		var webgl = "auto";

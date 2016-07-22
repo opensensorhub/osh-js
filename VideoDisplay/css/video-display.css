@@ -109,3 +109,7 @@ a.navbar-brand:hover {
     width:250px;
     height:250px;
 }
+
+.mapDialog {
+    height:calc(100% - 35px);
+}

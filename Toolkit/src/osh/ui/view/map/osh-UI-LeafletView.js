@@ -1,6 +1,9 @@
 OSH.UI.LeafletView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, viewItems, options) {
         $super(divId, viewItems, options);
+
+        var cssClass = document.getElementById(this.divId).className;
+        document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
     },
 
     beforeAddingItems: function ($super, options) {

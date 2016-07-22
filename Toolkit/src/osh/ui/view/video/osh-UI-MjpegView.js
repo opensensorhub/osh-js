@@ -2,24 +2,6 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId,[],options);
 
-    this.dataSourceId = -1;
-    // sets dataSourceId
-    if(typeof(options.dataSourceId) != "undefined") {
-      this.dataSourceId = options.dataSourceId;
-    }
-    this.entityId = options.entityId;
-    this.css = "";
-
-    this.cssSelected = "";
-
-    if(options.css) {
-      this.css = options.css;
-    }
-
-    if(options.cssSelected) {
-      this.cssSelected = options.cssSelected;
-    }
-
     // creates video tag element
     this.imgTag = document.createElement("img");
     this.imgTag.setAttribute("class", this.css);

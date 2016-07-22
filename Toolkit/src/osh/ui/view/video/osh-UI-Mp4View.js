@@ -11,35 +11,31 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
     
     var width = "640";
     var height = "480";
-    this.cssSelected = "";
-    
+
     var width = "640";
     var height = "480";
-    this.css = "";
-    
-    this.cssSelected = "";
-    
-    if(options.width) {
-    	width = options.width;
-    }
-    
-    if(options.height) {
-    	height = options.height;
-    }
-    
-    if(options.css) {
-    	this.css = options.css;
-    }
-    
-    if(options.cssSelected) {
-    	this.cssSelected = options.cssSelected;
-    }
-    
+
     this.codecs = "avc1.64001E";
-    //this.codecs="avc1.42401F";
-    
-    if(options.codecs) {
-      this.codecs = options.codecs;
+
+
+    if(typeof options != "undefined" ) {
+      if (options.width) {
+        width = options.width;
+      }
+
+      if (options.height) {
+        height = options.height;
+      }
+
+      if (options.css) {
+        this.css = options.css;
+      }
+
+      //this.codecs="avc1.42401F";
+
+      if (options.codecs) {
+        this.codecs = options.codecs;
+      }
     }
     
     // creates video tag element

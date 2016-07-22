@@ -16,6 +16,27 @@ OSH.UI.View = Class.create({
         this.divId = divId;
         this.id = "view-" + OSH.Utils.randomUUID();
 
+        this.dataSourceId = -1;
+        // sets dataSourceId
+        if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
+            this.dataSourceId = options.dataSourceId;
+        }
+
+        if(typeof(options) != "undefined" && typeof(options.entityId) != "undefined") {
+            this.entityId = options.entityId;
+        }
+        this.css = "";
+
+        this.cssSelected = "";
+
+        if(typeof(options) != "undefined" && typeof(options.css) != "undefined") {
+            this.css = options.css;
+        }
+
+        if(typeof(options) != "undefined" && typeof(options.cssSelected) != "undefined") {
+            this.cssSelected = options.cssSelected;
+        }
+
         // inits the view before adding the viewItem
         this.init(viewItems,options);
     },
@@ -30,7 +51,6 @@ OSH.UI.View = Class.create({
 
             var elementDiv = document.createElement("div");
             elementDiv.setAttribute("id", this.id);
-
             hiddenDiv.appendChild(elementDiv);
             this.divId = this.id;
         }

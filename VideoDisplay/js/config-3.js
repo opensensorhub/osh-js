@@ -129,44 +129,80 @@ function init() {
             }]
     );
 
+    var pointMarker = new OSH.UI.Styler.PointMarker({
+        location : {
+            x : 1.42376557,
+            y : 43.61758626,
+            z : 100
+        },
+        locationFunc : {
+            dataSourceIds : [androidPhoneGpsDataSource.getId()],
+            handler : function(rec) {
+                return {
+                    x : rec.lon,
+                    y : rec.lat,
+                    z : rec.alt
+                };
+            }
+        },
+        orientationFunc : {
+            dataSourceIds : [androidPhoneOrientationDataSource.getId()],
+            handler : function(rec) {
+                return {
+                    heading : rec.heading
+                };
+            }
+        },
+        icon : 'images/cameralook.png',
+        iconFunc : {
+            dataSourceIds: [androidPhoneGpsDataSource.getId()],
+            handler : function(rec,timeStamp,options) {
+                if(options.selected) {
+                    return 'images/cameralook-selected.png'
+                } else {
+                    return 'images/cameralook.png';
+                };
+            }
+        }
+    });
+
+    var leafletMapView = new OSH.UI.LeafletView(null,
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }],
+        {
+            css: "mapDialog"
+        }
+    );
+
+
     var mapView = new OSH.UI.LeafletView("main-container",
         [{
-            styler :  new OSH.UI.Styler.PointMarker({
-                location : {
-                    x : 1.42376557,
-                    y : 43.61758626,
-                    z : 100
-                },
-                locationFunc : {
-                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                    handler : function(rec) {
-                        return {
-                            x : rec.lon,
-                            y : rec.lat,
-                            z : rec.alt
-                        };
-                    }
-                },
-                orientationFunc : {
-                    dataSourceIds : [androidPhoneOrientationDataSource.getId()],
-                    handler : function(rec) {
-                        return {
-                            heading : rec.heading
-                        };
-                    }
-                },
-                icon : 'images/cameralook.png',
-                iconFunc : {
-                    dataSourceIds: [androidPhoneGpsDataSource.getId()],
-                    handler : function(rec,timeStamp,options) {
-                        if(options.selected) {
-                            return 'images/cameralook-selected.png'
-                        } else {
-                            return 'images/cameralook.png';
-                        };
-                    }
-                }
-            }),
+            styler :  pointMarker,
             contextMenuId: circularContextMenuId,
             name : "Android Phone GPS",
             entityId : androidEntity.id
@@ -202,6 +238,7 @@ function init() {
     var videoDialog         = createDialog("dialog-main-container",videoView.getDivId(),"Android Video 1");
     var videoDialog2        = createDialog("dialog-main-container",videoView2.getDivId(),"Android Video 2");
     var chartDialog         = createDialog("dialog-main-container",windSpeedChartView.getDivId(),"Chart Weather");
+    var leafletMapDialog         = createDialog("dialog-main-container",leafletMapView.getDivId(),"Leaflet 2D");
     var entityTreeDialog    = new OSH.UI.DialogView(document.body, "tree-container",{
         css: "tree-dialog",
         name: "Entities",
@@ -227,6 +264,10 @@ function init() {
         name: "Weather chart",
         viewId: chartDialog.getId(),
         css: "fa fa-bar-chart"
+    },{
+        name: "Leaflet 2D",
+        viewId: leafletMapDialog.getId(),
+        css: "fa fa-map"
     },{
         name: "Tasking",
         viewId: "",
