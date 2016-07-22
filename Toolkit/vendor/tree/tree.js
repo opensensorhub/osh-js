@@ -353,8 +353,6 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 						y:OSH.Utils.getYCursorPosition()
 
 					});
-
-					this.contextMenuDiv = divNode;
 				}
 			}
 		},
