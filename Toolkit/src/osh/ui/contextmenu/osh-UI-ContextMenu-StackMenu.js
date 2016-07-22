@@ -21,13 +21,7 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
         this.rootTag.setAttribute("class",""+this.type+"-menu-container");
         this.rootTag.innerHTML = htmlVar;
 
-
-
-        var hasParentDiv = (typeof (properties) != "undefined" && typeof (properties.div) !="undefined");
-        if(hasParentDiv) {
-            //properties.div.parentNode.appendChild(this.rootTag);
-            document.body.appendChild(this.rootTag);
-        }
+        document.body.appendChild(this.rootTag);
 
         $(closeId).on("click",this.hide.bind(this));
 
@@ -42,27 +36,14 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
             offsetY = properties.offsetY;
         }
 
-        document.querySelector('.'+this.type+'-menu-circle').classList.toggle('open');
-        if(hasParentDiv) {
-            this.rootTag.style.top = properties.div.style.top + offsetY;
-            this.rootTag.style.left = properties.div.style.left + offsetX;
-            this.rootTag.style.transform = this.getTransform(properties.div);
-
-            var self = this;
-            // observes style event
-            this.observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutationRecord) {
-                    if(typeof(self.rootTag) != "undefined" && self.rootTag != null) {
-
-                        self.rootTag.style.top = properties.div.style.top + offsetY;
-                        self.rootTag.style.left = properties.div.style.left + offsetX;
-                        self.rootTag.style.transform = self.getTransform(properties.div);
-                    }
-                });
-            });
-
-            this.observer.observe(properties.div, { attributes : true, attributeFilter : ['style'] });
+        if(typeof properties.x != "undefined") {
+            this.rootTag.style.left = properties.x + offsetX;
         }
+        if(typeof properties.y != "undefined") {
+            this.rootTag.style.top = properties.y + offsetY;
+        }
+
+        document.querySelector('.'+this.type+'-menu-circle').classList.toggle('open');
 
         // binds actions based on items
         this.bindEvents = {};

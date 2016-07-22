@@ -65,13 +65,8 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         this.rootTag.setAttribute("class",""+this.type+"-menu-container");
         this.rootTag.innerHTML = htmlVar;
 
+        document.body.appendChild(this.rootTag);
 
-
-        var hasParentDiv = (typeof (properties) != "undefined" && typeof (properties.div) !="undefined");
-        if(hasParentDiv) {
-            //properties.div.parentNode.appendChild(this.rootTag);
-            document.body.appendChild(this.rootTag);
-        }
         var items = document.querySelectorAll('.'+this.type+'-menu-circle a');
 
         for(var i = 0, l = items.length; i < l; i++) {
@@ -93,25 +88,12 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         }
 
         document.querySelector('.'+this.type+'-menu-circle').classList.toggle('open');
-        if(hasParentDiv) {
-            this.rootTag.style.top = properties.div.style.top + offsetY;
-            this.rootTag.style.left = properties.div.style.left + offsetX;
-            this.rootTag.style.transform = this.getTransform(properties.div);
 
-            var self = this;
-            // observes style event
-            this.observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutationRecord) {
-                    if(typeof(self.rootTag) != "undefined" && self.rootTag != null) {
-
-                        self.rootTag.style.top = properties.div.style.top + offsetY;
-                        self.rootTag.style.left = properties.div.style.left + offsetX;
-                        self.rootTag.style.transform = self.getTransform(properties.div);
-                    }
-                });
-            });
-
-            this.observer.observe(properties.div, { attributes : true, attributeFilter : ['style'] });
+        if(typeof properties.x != "undefined") {
+            this.rootTag.style.left = properties.x + offsetX;
+        }
+        if(typeof properties.y != "undefined") {
+            this.rootTag.style.top = properties.y + offsetY;
         }
 
         // binds actions based on items
@@ -136,7 +118,9 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         if(typeof(this.rootTag) != "undefined" && this.rootTag != null && typeof(this.rootTag.parentNode) != "undefined") {
             this.rootTag.parentNode.removeChild(this.rootTag);
             this.rootTag = null;
-            this.observer.disconnect();
+            if(typeof this.observer != "undefined") {
+                this.observer.disconnect();
+            }
         }
     },
 

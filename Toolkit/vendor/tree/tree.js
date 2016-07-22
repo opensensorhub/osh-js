@@ -342,13 +342,17 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 					var v_left = p_event.pageX-5;
 					var v_right = p_event.pageY-5;
 
+					var divTree = document.getElementById(v_tree.div);
+
 					var divNode = document.getElementById(p_node.id);
+					var rect = divNode.getBoundingClientRect();
 					OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+p_node.contextMenu,{
-						div: divNode,
 						//TODO: values have to be provided by properties
-						offsetX: 220,
-						offsetY: 130,
-						action : "show"
+						offsetX: 50,
+						offsetY: 10,
+						action : "show",
+						x:rect.left,
+						y:rect.top
 
 					});
 
