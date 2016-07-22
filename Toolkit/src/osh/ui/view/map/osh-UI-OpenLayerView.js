@@ -53,21 +53,16 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                 var id = feature.ha;
                 var dataSourcesIds = [];
                 var entityId;
-                for (var styler in self.stylerToObj) {
-                    if (self.stylerToObj[styler] == id) {
-                        for (var i = 0; i < self.stylers.length; i++) {
-                            if (self.stylers[i].getId() == styler) {
-                                dataSourcesIds = dataSourcesIds.concat(self.stylers[i].getDataSourcesIds());
-                                entityId = self.stylers[i].viewItem.entityId;
-                                break;
-                            }
-                        }
+                for (var stylerId in self.stylerToObj) {
+                    if (self.stylerToObj[stylerId] == id) {
+                        var styler = self.stylerIdToStyler[stylerId];
+                        OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                            dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
+                            entityId : styler.viewItem.entityId
+                        });
+                        break;
                     }
                 }
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
-                    dataSourcesIds: dataSourcesIds,
-                    entityId : entityId
-                });
             });
         });
     },
