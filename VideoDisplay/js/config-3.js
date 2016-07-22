@@ -129,7 +129,7 @@ function init() {
             }]
     );
 
-    var mapView = new OSH.UI.OpenLayerView("main-container",
+    var mapView = new OSH.UI.LeafletView("main-container",
         [{
             styler :  new OSH.UI.Styler.PointMarker({
                 location : {
