@@ -236,14 +236,13 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
                             if (e.stopPropagation != undefined)
                                 e.stopPropagation();
 
-                            var rect = document.getElementById(markerId).getBoundingClientRect();
                             OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+this.viewItems[i].contextMenuId,{
                                 //TODO: values have to be provided by properties
-                                offsetX: -60,
-                                offsetY: -50,
-                                action: "show",
-                                x:rect.left,
-                                y:rect.top
+                                offsetX: -70,
+                                offsetY: -70,
+                                action : "show",
+                                x:OSH.Utils.getXCursorPosition(),
+                                y:OSH.Utils.getYCursorPosition()
                             });
                         }.bind(this);
                     }

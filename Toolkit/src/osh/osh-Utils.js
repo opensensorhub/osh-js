@@ -30,3 +30,23 @@ OSH.Utils.isChrome = function() {
 OSH.Utils.isBlink = function() {
   return (isChrome || isOpera) && !!window.CSS;
 };
+
+//------- GET X,Y absolute cursor position ---//
+var absoluteXposition = null;
+var absoluteYposition = null;
+
+document.addEventListener('mousemove', onMouseUpdate, false);
+document.addEventListener('mouseenter', onMouseUpdate, false);
+
+function onMouseUpdate(e) {
+  absoluteXposition = e.pageX;
+  absoluteYposition = e.pageY;
+}
+
+OSH.Utils.getXCursorPosition = function() {
+  return absoluteXposition;
+};
+
+OSH.Utils.getYCursorPosition = function() {
+  return absoluteYposition;
+};
