@@ -96,27 +96,29 @@ OSH.UI.View = Class.create({
         if (viewItem.hasOwnProperty("contextmenu")) {
             this.contextMenus.push(viewItem.contextmenu);
         }
-        for(var dataSourceId in styler.dataSourceToStylerMap) {
+        //for(var dataSourceId in styler.dataSourceToStylerMap) {
+        var ds = styler.getDataSourcesIds();
+        for(var i =0; i < ds.length;i++) {
+            var dataSourceId = ds[i];
             // observes the data come in
-            OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, function (event) {
-                var selected = false;
-                // we check only dataSource when the selected entity is not set
-                if(typeof this.selectedEntity == "undefined") {
-                    selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
-                }
-                selected = selected || ((typeof this.selectedEntity != "undefined") && viewItem.entityId == this.selectedEntity);
-                // update the whole corresponding datasources list
+            var self = this;
+            (function(frozenDataSourceId) { // use a close here to no share the dataSourceId variable
+                OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + frozenDataSourceId, function (event) {
+                    var selected = false;
+                    // we check only dataSource when the selected entity is not set
+                    if (typeof self.selectedEntity == "undefined") {
+                        selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
+                    }
+                    selected = selected || ((typeof self.selectedEntity != "undefined") && viewItem.entityId == self.selectedEntity);
+                    // update the whole corresponding datasources list
 
-                //TODO: maybe done into the styler?
-                var ds = styler.getDataSourcesIds();
-                for(var i=0;i < ds.length;i++) {
-                    console.log(ds[i]);
-                    styler.setData(ds[i], event.data, this, {
+                    //TODO: maybe done into the styler?
+                    styler.setData(frozenDataSourceId, event.data, self, {
                         selected: selected
                     });
-                    this.lastRec[ds[i]] = event.data;
-                }
-            }.bind(this));
+                    self.lastRec[frozenDataSourceId] = event.data;
+                });
+            })(dataSourceId); //passing the variable to freeze, creating a new closure
         }
     },
 

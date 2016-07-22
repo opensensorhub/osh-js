@@ -74,7 +74,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
                 image: new ol.style.Icon(({
                     opacity: 0.75,
                     src: styler.icon,
-                    orotation: styler.orientation.heading * Math.PI / 180
+                    rotation: styler.orientation.heading * Math.PI / 180
                 }))
             });
             markerFeature.setStyle(iconStyle);

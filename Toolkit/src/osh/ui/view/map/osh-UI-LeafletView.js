@@ -265,8 +265,11 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
             marker.setLatLng(newLatLng);
         }
 
+
         // updates orientation
-        marker.setRotationAngle(styler.orientation);
+        if(typeof styler.orientation != "undefined") {
+            marker.setRotationAngle(styler.orientation.heading);
+        }
 
         if (styler.icon != null && marker._icon.iconUrl != styler.icon) {
             // updates icon
