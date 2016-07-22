@@ -95,11 +95,25 @@ OSH.UI.View = Class.create({
         if (viewItem.hasOwnProperty("contextmenu")) {
             this.contextMenus.push(viewItem.contextmenu);
         }
-
-        for(var i in styler.dataSourceToStylerMap) {
+        for(var dataSourceId in styler.dataSourceToStylerMap) {
             // observes the data come in
-            OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+i, function (event) {
-                this.setStylerData(styler,i, event.data);
+            OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, function (event) {
+                var selected = false;
+                // we check only dataSource when the selected entity is not set
+                if(typeof this.selectedEntity == "undefined") {
+                    selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
+                }
+                selected = selected || ((typeof this.selectedEntity != "undefined") && viewItem.entityId == this.selectedEntity);
+                // update the whole corresponding datasources list
+
+                //TODO: maybe done into the styler?
+                var ds = styler.getDataSourcesIds();
+                for(var i=0;i < ds.length;i++) {
+                    styler.setData(ds[i], event.data, this, {
+                        selected: selected
+                    });
+                    this.lastRec[ds[i]] = event.data;
+                }
             }.bind(this));
         }
     },
@@ -114,24 +128,6 @@ OSH.UI.View = Class.create({
         OSH.EventManager.observe(OSH.EventManager.EVENT.SHOW_VIEW,function(event){
             this.show(event);
         }.bind(this));
-    },
-
-    //TODO: to improve the way to select stylers
-    //FIXME: Should not have to loop over stylers to pass data
-    setStylerData: function (styler,dataSourceId, data) {
-        var selected = false;
-
-        // we check only dataSource when the selected entity is not set
-        if(typeof this.selectedEntity == "undefined") {
-            selected = (this.selectedDataSources.indexOf(dataSourceId) > -1);
-        }
-
-        for (var i = 0; i < this.stylers.length; i++) {
-            this.stylers[i].setData(dataSourceId, data, this, {
-                selected: selected || ((typeof this.selectedEntity != "undefined") && this.stylers[i].viewItem.entityId == this.selectedEntity)
-            });
-            this.lastRec[dataSourceId] = data;
-        }
     },
 
     /**
