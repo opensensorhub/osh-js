@@ -199,6 +199,38 @@ function init() {
         }
     );
 
+    var cesiumMapView = new OSH.UI.CesiumView(null,
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }],
+        {
+            css: "mapCesiumDialog"
+        }
+    );
 
     var mapView = new OSH.UI.LeafletView("main-container",
         [{
@@ -235,10 +267,11 @@ function init() {
     });
 
     // creates Dialog Views
-    var videoDialog         = createDialog("dialog-main-container",videoView.getDivId(),"Android Video 1");
-    var videoDialog2        = createDialog("dialog-main-container",videoView2.getDivId(),"Android Video 2");
-    var chartDialog         = createDialog("dialog-main-container",windSpeedChartView.getDivId(),"Chart Weather");
-    var leafletMapDialog         = createDialog("dialog-main-container",leafletMapView.getDivId(),"Leaflet 2D");
+    var videoDialog         = createDialog("dialog-main-container",videoView.getDivId(),"Android Video 1",true);
+    var videoDialog2        = createDialog("dialog-main-container",videoView2.getDivId(),"Android Video 2",false);
+    var chartDialog         = createDialog("dialog-main-container",windSpeedChartView.getDivId(),"Chart Weather",true);
+    var leafletMapDialog         = createDialog("dialog-main-container",leafletMapView.getDivId(),"Leaflet 2D",true);
+    var cesiumMapDialog         = createDialog("dialog-main-container",cesiumMapView.getDivId(),"Cesium 3D",true);
     var entityTreeDialog    = new OSH.UI.DialogView(document.body, "tree-container",{
         css: "tree-dialog",
         name: "Entities",
@@ -269,6 +302,10 @@ function init() {
         viewId: leafletMapDialog.getId(),
         css: "fa fa-map"
     },{
+        name: "Cesium 3D",
+        viewId: cesiumMapDialog.getId(),
+        css: "fa fa-globe"
+    },{
         name: "Tasking",
         viewId: "",
         css: "fa fa-arrows"
@@ -296,12 +333,12 @@ function init() {
     dataProviderController.connectAll();
 }
 
-function createDialog(containerDivId,viewDivId, title) {
+function createDialog(containerDivId,viewDivId, title,defaultShow) {
     return new OSH.UI.DialogView(containerDivId, viewDivId,{
         draggable: false,
         css: "dialog",
         name: title,
-        show:true,
+        show:defaultShow,
         dockable: true,
         closeable: true
     });

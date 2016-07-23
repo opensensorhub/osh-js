@@ -1,6 +1,9 @@
 OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	initialize : function($super, divId,viewItems, properties) {
 		$super(divId,viewItems,properties);
+
+		var cssClass = document.getElementById(this.divId).className;
+		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 	},
 
 	updateMarker : function(styler,timeStamp,options) {
@@ -36,10 +39,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	},
 
 	//---------- MAP SETUP --------------//
-	init : function($super,options) {
-		this.lastRec = {};
-		this.selectedDataSources = [];
-		this.dataSources = [];
+	beforeAddingItems: function ($super, options) {
 		this.markers = {};
 	    this.first = true;
 	    

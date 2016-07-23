@@ -113,3 +113,6 @@ a.navbar-brand:hover {
 .mapDialog {
     height:calc(100% - 35px);
 }
+.mapCesiumDialog {
+    height:calc(100% - 35px);
+}
