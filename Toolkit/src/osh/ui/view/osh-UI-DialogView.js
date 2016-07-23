@@ -67,6 +67,8 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         if(typeof (options) != "undefined") {
             if(typeof (options.show) != "undefined" && !options.show) {
                 this.rootTag.style.display = "none";
+            } else {
+                this.initialWidth = this.rootTag.offsetWidth;
             }
         }
 
@@ -85,8 +87,6 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
         // calls super handleEvents
         this.handleEvents();
-
-        this.initialWidth = this.rootTag.offsetWidth;
     },
 
     /**
