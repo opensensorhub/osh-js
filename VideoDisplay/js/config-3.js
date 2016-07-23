@@ -301,7 +301,7 @@ function createDialog(containerDivId,viewDivId, title) {
         draggable: false,
         css: "dialog",
         name: title,
-        show:false,
+        show:true,
         dockable: true,
         closeable: true
     });
