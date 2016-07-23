@@ -85,6 +85,8 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
         // calls super handleEvents
         this.handleEvents();
+
+        this.initialWidth = this.rootTag.offsetWidth;
     },
 
     /**
