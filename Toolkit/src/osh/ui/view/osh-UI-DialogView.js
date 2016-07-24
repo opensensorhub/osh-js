@@ -1,6 +1,6 @@
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
-    initialize: function ($super,containerDivId,viewDivId, options) {
-        $super(viewDivId,[],options);
+    initialize: function ($super,containerDivId,oshView, options) {
+        $super(oshView.getDivId(),[],options);
         // creates HTML eflement
         this.id = "dialog-" + OSH.Utils.randomUUID();
         this.pinDivId = "dialog-" + OSH.Utils.randomUUID();
@@ -24,6 +24,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                 this.closeable = true;
             }
         }
+
         htmlVar += "<h3>"+name+"<\/h3></div>";
 
         this.draggable = (typeof(options.draggable) != "undefined") ? options.draggable : false;
@@ -36,7 +37,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
-        var div = document.getElementById(viewDivId);
+        var div = document.getElementById(oshView.getDivId());
         this.containerDiv = document.getElementById(containerDivId);
 
         if(options.css) {

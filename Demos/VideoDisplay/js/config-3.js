@@ -120,13 +120,16 @@ function init() {
         }
     );
 
-    var entityTreeView = new OSH.UI.EntityTreeView("tree-container",
+    var entityTreeView = new OSH.UI.EntityTreeView(null,
             [{
                 entity : androidEntity,
                 path: "Sensors/Toulouse",
                 treeIcon : "images/android_icon.png",
                 contextMenuId: stackContextMenuId
-            }]
+            }],
+        {
+            css: "tree-container"
+        }
     );
 
     var pointMarker = new OSH.UI.Styler.PointMarker({
@@ -267,12 +270,12 @@ function init() {
     });
 
     // creates Dialog Views
-    var videoDialog         = createDialog("dialog-main-container",videoView.getDivId(),"Android Video 1",true);
-    var videoDialog2        = createDialog("dialog-main-container",videoView2.getDivId(),"Android Video 2",false);
-    var chartDialog         = createDialog("dialog-main-container",windSpeedChartView.getDivId(),"Chart Weather",true);
-    var leafletMapDialog         = createDialog("dialog-main-container",leafletMapView.getDivId(),"Leaflet 2D",true);
-    var cesiumMapDialog         = createDialog("dialog-main-container",cesiumMapView.getDivId(),"Cesium 3D",true);
-    var entityTreeDialog    = new OSH.UI.DialogView(document.body, "tree-container",{
+    var videoDialog         = createDialog("dialog-main-container",videoView,"Android Video 1",true);
+    var videoDialog2        = createDialog("dialog-main-container",videoView2,"Android Video 2",false);
+    var chartDialog         = createDialog("dialog-main-container",windSpeedChartView,"Chart Weather",true);
+    var leafletMapDialog         = createDialog("dialog-main-container",leafletMapView,"Leaflet 2D",true);
+    var cesiumMapDialog         = createDialog("dialog-main-container",cesiumMapView,"Cesium 3D",true);
+    var entityTreeDialog    = new OSH.UI.DialogView(document.body, entityTreeView,{
         css: "tree-dialog",
         name: "Entities",
         show:true,
@@ -333,8 +336,8 @@ function init() {
     dataProviderController.connectAll();
 }
 
-function createDialog(containerDivId,viewDivId, title,defaultShow) {
-    return new OSH.UI.DialogView(containerDivId, viewDivId,{
+function createDialog(containerDivId,view, title,defaultShow) {
+    return new OSH.UI.DialogView(containerDivId, view,{
         draggable: false,
         css: "dialog",
         name: title,
