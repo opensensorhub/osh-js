@@ -26,6 +26,25 @@
 <link rel="stylesheet" href="fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
 <script type="text/javascript" src="fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
 
+<style>
+#container {
+    text-align: center;
+}
+#container a, figure {
+    display: inline-block;
+}
+#container figcaption {
+    margin: 10px 0 0 0;
+    font-variant: small-caps;
+    font-family: Arial;
+    font-weight: bold;
+    color: #bb3333;
+}
+#container figure {
+    padding: 5px;
+}
+
+</style>
 </head>
 <body>
   <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
@@ -44,23 +63,45 @@
       </div>
     </div>
   </nav>
-  <div class="row">
-    <div class="col-sm-6 col-md-4">
-      <div class="thumbnail">
-         <a class="fancybox" rel="group" href="images/VideoDisplay.png" title="VideoDisplay demo">
-            <img src="images/VideoDisplay.png" alt=""/>
-        </a>
-        <div class="caption">
-          <h3>VideoDisplay</h3>
-          <p>description</p>
-          <p>
-            <a href="VideoDisplay/" class="btn btn-primary" role="button">Demo</a>
-          </p>
-        </div>
-     </div>
-    </div>
-  </div>  
+  
+  <div id="container">
+    <a class="fancybox" rel="group" href="images/AVL.png" title="AVL demo">
+      <figure>
+        <img src="images/AVL_small.png" alt=""/>
+        <figcaption>AVL demo</figcaption>
+      </figure>
+    </a>
+    <a class="fancybox" rel="group" href="images/GpsStreamViewer.png" title="GPS & Weather demo">
+      <figure>
+        <img src="images/GpsStreamViewer_small.png" alt=""/>
+        <figcaption>GPS & Weather demo</figcaption>
+      </figure>
+    </a>
+    <a class="fancybox" rel="group" href="images/SosVideoViewer.png" title="GPS & Video demo">
+      <figure>
+        <img src="images/SosVideoViewer_small.png" alt=""/>
+        <figcaption>GPS & Video demo</figcaption>
+      </figure>
+    </a>
+    <a class="fancybox" rel="group" href="images/SosVideoViewerSync.png" title="Synchronized GPS & Video demo">
+      <figure>
+        <img src="images/SosVideoViewerSync_small.png" alt=""/>
+        <figcaption>Synchronized GPS & Video demo</figcaption>
+      </figure>
+    </a>
+    <a class="fancybox" rel="group" href="images/RangeFinder.png" title="Range finder demo">
+      <figure>
+        <img src="images/RangeFinder_small.png" alt=""/>
+        <figcaption>Range finder demo</figcaption>
+      </figure>
+    </a>
+    <!--a class="fancybox" rel="group" href="images/GpsStreamViewer.png"><img src="images/GpsStreamViewer_small.png" alt="" /></a>
+    <a class="fancybox" rel="group" href="images/SosVideoViewer.png"><img src="images/SosVideoViewer_small.png" alt="" /></a>
+    <a class="fancybox" rel="group" href="images/SosVideoViewerSync.png"><img src="images/SosVideoViewerSync_small.png" alt="" /></a>
+    <a class="fancybox" rel="group" href="images/RangeFinder.png"><img src="images/RangeFinder_small.png" alt="" /></a-->
+  </div>
 </body>
+
 <script>
 $(document).ready(function() {
     $(".fancybox").fancybox({
