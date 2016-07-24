@@ -71,8 +71,7 @@ OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 	
 	setData: function($super,dataSourceId,rec,view,options) {
 		if($super(dataSourceId,rec,view,options)) {
-			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
-			if(typeof(view) != "undefined") {
+			if(typeof(view) != "undefined" && typeof view.updatePolyline === 'function'){
 				view.updatePolyline(this);
 			}
 		}
