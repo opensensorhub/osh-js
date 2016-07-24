@@ -343,6 +343,7 @@ function createDialog(containerDivId,view, title,defaultShow) {
         name: title,
         show:defaultShow,
         dockable: true,
-        closeable: true
+        closeable: true,
+        canDisconnect : true
     });
 }

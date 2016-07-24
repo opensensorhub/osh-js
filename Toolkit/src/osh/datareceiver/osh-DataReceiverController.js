@@ -17,7 +17,24 @@ OSH.DataReceiver.DataReceiverController = Class.create({
       this.buffer.setSynchronized(options.synchronizedTime);
     }
     
-    this.dataSources = [];
+    this.dataSourcesIdToDataSources = {};
+    OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
+      var eventDataSourcesIds = event.dataSourcesId;
+      for (var i = 0; i < eventDataSourcesIds.length; i++) {
+        if(eventDataSourcesIds[i] in this.dataSourcesIdToDataSources) {
+          this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].connect();
+        }
+      }
+    }.bind(this));
+
+    OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
+      var eventDataSourcesIds = event.dataSourcesId;
+      for (var i = 0; i < eventDataSourcesIds.length; i++) {
+        if(eventDataSourcesIds[i] in this.dataSourcesIdToDataSources) {
+          this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].disconnect();
+        }
+      }
+    }.bind(this));
   },
   
   setBufferingTime : function(bufferingTime) {
@@ -49,7 +66,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
   },
 
   addDataSource: function(dataSource) {
-    this.dataSources.push(dataSource);
+    this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
     this.buffer.register(dataSource.getId(),function(data) {
         OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSource.getId(), {data : data});
     }.bind(this));
@@ -63,9 +80,8 @@ OSH.DataReceiver.DataReceiverController = Class.create({
    * Connects each connector
    */ 
   connectAll: function() {
-    for(var i = 0; i< this.dataSources.length; i++) {
-      // connects this current dataSource 
-      this.dataSources[i].connect();
+    for (var id in this.dataSourcesIdToDataSources) {
+      this.dataSourcesIdToDataSources[id].connect();
     }
   }
 });

@@ -48,7 +48,7 @@ a.navbar-brand:hover {
 
 .video {
 	width: 100%;
-	height: calc(100% - 30px);
+	height: calc(100% - 45px);
 }
 	
 .video-selected {
@@ -78,13 +78,14 @@ a.navbar-brand:hover {
 
 .dialog {
     width:300px;
-    height:180px;
+    height:190px;
     margin-bottom:10px;
 }
 
 .chart-view {
+    overflow:hidden;
     width:calc(100% - 15px) !important;
-    height:calc(100% - 30px) !important;
+    height:calc(100% - 35px) !important;
 }
 
 .tasking-container {
@@ -94,10 +95,10 @@ a.navbar-brand:hover {
 }
 
 .tree-container {
-    position:absolute;
-    width:calc(100% - 15px) !important;
-    height:calc(100% - 30px) !important;
-    background-color:#FFF;
+    position: absolute;
+    width: calc(100%) !important;
+    height: calc(100% - 50px) !important;
+    background-color: #FFF;
     padding: 4px;
 }
 
@@ -111,8 +112,8 @@ a.navbar-brand:hover {
 }
 
 .mapDialog {
-    height:calc(100% - 35px);
+    height:calc(100% - 45px);
 }
 .mapCesiumDialog {
-    height:calc(100% - 35px);
+    height:calc(100% - 45px);
 }

@@ -172,5 +172,23 @@ OSH.UI.View = Class.create({
                 this.setData(this.dataSources[j], this.lastRec[this.dataSources[j]]);
             }
         }
+    },
+
+    getDataSourcesId: function() {
+        var res = [];
+        if(this.dataSourceId != -1) {
+            res.push(this.dataSourceId);
+        }
+
+        // check for stylers
+        for(var i = 0; i < this.viewItems.length;i++) {
+            var viewItem = this.viewItems[i];
+            if (viewItem.hasOwnProperty("styler")) {
+                var styler = viewItem.styler;
+                res = res.concat(styler.getDataSourcesIds());
+            }
+        }
+
+        return res;
     }
 });

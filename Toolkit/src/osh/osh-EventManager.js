@@ -25,6 +25,8 @@ OSH.EventManager.EVENT = {
     DATA : "data",
     SELECT_VIEW : "selectView",
     CONTEXT_MENU : "contextMenu",
-    SHOW_VIEW : "showView"
+    SHOW_VIEW : "showView",
+    CONNECT_DATASOURCE : "connectDataSource",
+    DISCONNECT_DATASOURCE : "disconnectDataSource"
 };
 

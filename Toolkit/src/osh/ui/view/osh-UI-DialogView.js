@@ -3,24 +3,35 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         $super(oshView.getDivId(),[],options);
         // creates HTML eflement
         this.id = "dialog-" + OSH.Utils.randomUUID();
-        this.pinDivId = "dialog-" + OSH.Utils.randomUUID();
-        var closeDiv = "dialog-" + OSH.Utils.randomUUID();
+        this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
+        var closeDivId = "dialog-close-" + OSH.Utils.randomUUID();
+        this.connectDivId = "dialog-connect-" + OSH.Utils.randomUUID();
+
+        this.oshView = oshView;
 
         var name = (typeof(options.name) != "undefined") ? options.name : "Untitled";
 
         var htmlVar = "";
-        htmlVar += "<div>";
+        htmlVar += "<div id=\"yy\">";
 
         this.dockable = false;
         this.closeable = false;
+        this.connected = false;
+
         if(typeof(options) != "undefined"){
+            if( typeof (options.canDisconnect) != "undefined" && options.canDisconnect) {
+                // add connected icon to disconnect/connect datasource
+                htmlVar += "<a id=\"" + this.connectDivId + "\"class=\"pop-connect\"><\/a>";
+                this.connected = true;
+            }
+
             if( typeof (options.dockable) != "undefined" && options.dockable) {
                 htmlVar +=  "<a id=\""+this.pinDivId+"\"class=\"pop-pin\"><\/a>";
                 this.dockable = true;
             }
 
             if(typeof (options.closeable) != "undefined" && options.closeable) {
-                htmlVar += "<a id=\""+closeDiv+"\"class=\"pop-close\">x<\/a>";
+                htmlVar += "<a id=\""+closeDivId+"\"class=\"pop-close\">x<\/a>";
                 this.closeable = true;
             }
         }
@@ -79,15 +90,45 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         document.addEventListener('drop', this.drop.bind(this), false);
 
         if(this.closeable) {
-            document.getElementById(closeDiv).onclick = this.close.bind(this);
+            document.getElementById(closeDivId).onclick = this.close.bind(this);
         }
 
         if(this.dockable) {
             document.getElementById(this.pinDivId).onclick = this.unpin.bind(this);
         }
 
+        if(options.canDisconnect) {
+            document.getElementById(this.connectDivId).onclick = this.connect.bind(this);
+        }
+
         // calls super handleEvents
         this.handleEvents();
+
+        // observe events to update the dialog after disconnect/connect events handling
+        var currentViewDataSources = this.oshView.getDataSourcesId();
+        OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
+            var dataSources = event.dataSourcesId;
+            if(dataSources.length == currentViewDataSources.length) {
+                if(dataSources.filter(function(n) {
+                        return currentViewDataSources.indexOf(n) != -1;
+                    }).length == currentViewDataSources.length) {
+                    document.getElementById(this.connectDivId).setAttribute("class", "pop-connect");
+                    this.connected = true;
+                }
+            }
+        }.bind(this));
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
+            var dataSources = event.dataSourcesId;
+            if(dataSources.length == currentViewDataSources.length) {
+                if(dataSources.filter(function(n) {
+                        return currentViewDataSources.indexOf(n) != -1;
+                    }).length == currentViewDataSources.length) {
+                    document.getElementById(this.connectDivId).setAttribute("class", "pop-disconnect");
+                    this.connected = false;
+                }
+            }
+        }.bind(this));
     },
 
     /**
@@ -105,6 +146,19 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             if(typeof(this.initialWidth) == "undefined" ) {
                 this.initialWidth = this.rootTag.offsetWidth;
             }
+        }
+    },
+
+    connect: function() {
+        var ds = this.oshView.getDataSourcesId();
+        if(!this.connected) {
+           // document.getElementById(this.connectDivId).setAttribute("class", "pop-connect");
+            //this.connected = true;
+            OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId:ds});
+        } else {
+           // document.getElementById(this.connectDivId).setAttribute("class", "pop-disconnect");
+            //this.connected = false;
+            OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,{dataSourcesId:ds});
         }
     },
 
@@ -135,6 +189,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             document.getElementById(this.pinDivId).setAttribute("class", "pop-pin");
         }
     },
+
 
     onClose: function (callback) {
         this.onClose = callback;

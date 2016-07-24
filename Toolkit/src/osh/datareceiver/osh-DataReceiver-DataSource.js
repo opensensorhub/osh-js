@@ -14,8 +14,23 @@ OSH.DataReceiver.DataSource = Class.create({
     if(typeof(options) != "undefined"  && options.androidShift) {
       this.androidShift = 16 * 1000;  
     }
+
+    OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE+"-"+this.id,function(event){
+      this.connect();
+    }.bind(this));
+
+    OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE+"-"+this.id,function(event){
+      this.disconnect();
+    }.bind(this));
   },
-  
+
+  /**
+   * Disconnect the dataSource then the connector will be closed as well.
+   */
+  disconnect : function() {
+    this.connector.disconnect();
+  },
+
   connect: function() {
     this.connector.connect();
   },

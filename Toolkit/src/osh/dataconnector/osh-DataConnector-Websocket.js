@@ -18,6 +18,13 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
         }
     },
 
+    disconnect: function() {
+        if(this.ws != null) {
+            this.ws.close();
+            this.ws = null;
+        }
+    },
+
     onMessage: function (data) {
     }
 });
