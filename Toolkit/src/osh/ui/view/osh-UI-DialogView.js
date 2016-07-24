@@ -12,7 +12,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         var name = (typeof(options.name) != "undefined") ? options.name : "Untitled";
 
         var htmlVar = "";
-        htmlVar += "<div id=\"yy\">";
+        htmlVar += "<div>";
 
         this.dockable = false;
         this.closeable = false;
@@ -152,12 +152,8 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
     connect: function() {
         var ds = this.oshView.getDataSourcesId();
         if(!this.connected) {
-           // document.getElementById(this.connectDivId).setAttribute("class", "pop-connect");
-            //this.connected = true;
             OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId:ds});
         } else {
-           // document.getElementById(this.connectDivId).setAttribute("class", "pop-disconnect");
-            //this.connected = false;
             OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,{dataSourcesId:ds});
         }
     },
