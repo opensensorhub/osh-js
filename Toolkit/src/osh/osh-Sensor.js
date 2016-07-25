@@ -64,9 +64,55 @@ OSH.Sensor = Class.create({
             xhr.prop = observabeProp;
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    xhr.prop.resultTemplate = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
+                    var resultTemplate = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
+                    xhr.encodingType = resultTemplate.value.resultEncoding.abstractEncoding.name.localPart; //binary or text
+
+                   //There are Count, Time, DataArray, DataRecord, and Vector data types in the result struct
+                    
+                    //need a key value pair of names and values, where the values are info objects about the field
+                    var resStruct = {};
+                    var fields = resultTemplate.value.resultStructure.abstractDataComponent.value.field;
+                    for(var i = 0; i < fields.length; i++) {
+                        resStruct[fields[i].name] = "";
+
+                        //if(fields[i].name == 'Time' || fields[i].name =='Count')
+                        //    if(fields[i].name == 'DataArray' || fields[i].name =='Vector')
+                        //float
+                        //float
+                        //array.length[vector[lat,long, alt]];
+                    }
+
+                    resEncoding = {};
+                    resEncoding.type = resultTemplate.value.resultEncoding.abstractEncoding.name.localPart;
+                    if(resEncoding.type == 'BinaryEncoding') {
+                        var binaryEncodingOpts = resultTemplate.value.resultEncoding.abstractEncoding.value.member;
+                        for(i = 0; i < binaryEncodingOpts.length; i++) {
+                            //this is the variable/field that the encoding affects, the reference may be nested so there is some parsing to do
+                            var ref = binaryEncodingOpts[i].component.ref;
+                            refToks = ref.split('/');
+
+                            //for each token, discover its type in the result structure
+                            //points ->data array//does points exist? yes
+                            //point -> vector
+                            
+                            var dataTypeToks = binaryEncodingOpts[i].component.dataType.split('/');
+                            resEncoding[refToks[1]] = dataTypeToks[dataTypeToks.length-1];
+                        }
+
+                    } else if(resEncoding.type == 'TextEncoding') {
+                        var txtEncodingOpts = resultTemplate.value.resultEncoding.abstractEncoding.value;
+                        resEncoding.collapseWhiteSpaces = txtEncodingOpts.collapseWhiteSpaces;
+                        resEncoding.tokenSeparator = txtEncodingOpts.tokenSeparator;
+                        resEncoding.decimalSeparator = txtEncodingOpts.decimalSeparator;
+                    } else {
+                        //TODO: handle xml encoding if necessary
+                    }
+
+                    //build up rest of result structure
+                    this.onGetResultTemplate(observabeProp, resStruct, resEncoding);
+
                 }
-            };
+            }.bind(this);
             xhr.open('GET', req, true);
             xhr.send();
         }
@@ -105,7 +151,7 @@ OSH.Sensor = Class.create({
             url += '&replaySpeed='+playbackSpeed;
         }
 
-        //check features of interest (bad feature of interest wil not break request)
+        //check features of interest (bad feature of interest will not break request)
         if(featureOfInterest != null && hasFeatureOfInterest(featureOfInterest)) {
             url += '&featureOfInterest='+featureOfInterest;
         }
@@ -165,13 +211,15 @@ OSH.Sensor = Class.create({
         else
             end = new Date(this.timeRangeEnd);
         
-        if(d >= start && d <= end)
-            return true;
-        return false;
+       return (d >= start && d <= end);
     },
     
     //callback for checking when a sensor description has returned
     onDescribeSensor: function(data) {
 
+    },
+    
+    onGetResultTemplate: function(obsProperty, resultStruct, resultEncoding) {
+        
     }
 });

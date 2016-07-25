@@ -34,5 +34,13 @@ OSH.Server = Class.create({
         }.bind(this);
         xhr.open('GET', req, true);
         xhr.send();
+    },
+
+    getSensorById: function(id) {
+        for(var i = 0; i < this.sensors.length; i++) {
+            if(this.sensors[i].identifier == id)
+                return this.sensors[i];
+        }
+        return null;
     }
 });

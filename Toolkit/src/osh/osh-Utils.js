@@ -15,6 +15,49 @@ OSH.Utils.jsonix_XML2JSON = function(xmlStr) {
   return jsonData;
 };
 
+//buffer is an ArrayBuffer object, the offset if specified in bytes, and the type is a string
+//corresponding to an OGC data type.
+//See http://def.seegrid.csiro.au/sissvoc/ogc-def/resource?uri=http://www.opengis.net/def/dataType/OGC/0/
+OSH.Utils.ParseBytes = function(buffer, offset, type) {
+  var view = new DataView(bytes);
+
+  //Note: There exist types not listed in the map below that have OGC definitions, but no appropriate
+  //methods or corresponding types available for parsing in javascript. They are float128, float16, signedLong,
+  //and unsignedLong
+  var typeMap = {
+    double: function(buff, offset) {
+      return { val:view.getFloat64(buff, offset), bytes: 8 };
+    },
+    float64: function(buff, offset) {
+      return { val: view.getFloat64(buff, offset), bytes: 8 };
+    },
+    float32: function(buff, offset) {
+      return { val: view.getFloat32(buff, offset), bytes: 4 };
+    },
+    signedByte: function(buff, offset) {
+      return { val: view.getInt8(buff, offset), bytes: 1 };
+    },
+    signedInt: function(buff, offset) {
+      return { val: view.getInt32(buff, offset), bytes: 4 };
+    },
+    signedShort: function(buff, offset) {
+      return { val: view.getInt16(buff, offset), bytes: 2 };
+    },
+    unsignedByte: function(buff, offset) {
+      return { val: view.getUint8(buff, offset), bytes: 1 };
+    },
+    unsignedInt: function(buff, offset) {
+      return { val: view.getUint32(buff, offset), bytes: 4 };
+    },
+    unsignedShort: function(buff, offset) {
+      return { val: view.getUint16(buff, offset), bytes: 2 };
+    },
+    //TODO: string-utf-8:
+  };
+
+  return typeMap['type'](buffer, offset);
+}
+
 OSH.Utils.isOpera = function() {
   return (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 };
