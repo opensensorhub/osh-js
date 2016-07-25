@@ -344,6 +344,7 @@ function createDialog(containerDivId,view, title,defaultShow) {
         show:defaultShow,
         dockable: true,
         closeable: true,
-        canDisconnect : true
+        canDisconnect : true,
+        swapId: "main-container"
     });
 }

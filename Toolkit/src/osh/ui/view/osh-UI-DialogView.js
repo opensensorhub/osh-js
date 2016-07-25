@@ -6,10 +6,9 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
         var closeDivId = "dialog-close-" + OSH.Utils.randomUUID();
         this.connectDivId = "dialog-connect-" + OSH.Utils.randomUUID();
-
         this.oshView = oshView;
 
-        var name = (typeof(options.name) != "undefined") ? options.name : "Untitled";
+        this.name = (typeof(options.name) != "undefined") ? options.name : "Untitled";
 
         var htmlVar = "";
         htmlVar += "<div>";
@@ -17,8 +16,15 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.dockable = false;
         this.closeable = false;
         this.connected = false;
+        this.swapped = false;
 
         if(typeof(options) != "undefined"){
+            if( typeof (options.swapId) != "undefined" && options.swapId != "") {
+                this.swapDivId = "dialog-exchange-" + OSH.Utils.randomUUID();
+                htmlVar += "<a id=\"" + this.swapDivId + "\"class=\"pop-exchange fa fa-exchange\" title=\"swap\"><\/a>";
+                this.divIdToSwap  = options.swapId;
+            }
+
             if( typeof (options.canDisconnect) != "undefined" && options.canDisconnect) {
                 // add connected icon to disconnect/connect datasource
                 htmlVar += "<a id=\"" + this.connectDivId + "\"class=\"pop-connect\"><\/a>";
@@ -31,12 +37,13 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             }
 
             if(typeof (options.closeable) != "undefined" && options.closeable) {
-                htmlVar += "<a id=\""+closeDivId+"\"class=\"pop-close\">x<\/a>";
+                htmlVar += "<a id=\""+closeDivId+"\"class=\"pop-close\" title=\"close\">x<\/a>";
                 this.closeable = true;
             }
         }
 
-        htmlVar += "<h3>"+name+"<\/h3></div>";
+        this.titleId = "dialog-title-"+OSH.Utils.randomUUID();
+        htmlVar += "<h3 id=\""+this.titleId+"\">"+this.name+"<\/h3></div>";
 
         this.draggable = (typeof(options.draggable) != "undefined") ? options.draggable : false;
 
@@ -48,28 +55,24 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
-        var div = document.getElementById(oshView.getDivId());
+        var viewDiv = document.getElementById(oshView.getDivId());
         this.containerDiv = document.getElementById(containerDivId);
 
         if(options.css) {
             this.rootTag.setAttribute("class",this.rootTag.className+" "+options.css);
         }
 
-        // reset styles
-        this.rootTag.style.top = div.style.top;
-        this.rootTag.style.left = div.style.left;
-        div.style.top = "";
-        div.style.left = "";
-
-        var classList = div.className;
+        this.popContentDiv = document.createElement("div");
+        this.popContentDiv.setAttribute("class","pop-content");
 
         // removes the div from its parent
-        var parent = div.parentNode;
-        parent.removeChild(div);
-        //parent.parentNode.removeChild(parent);
+        var parent = viewDiv.parentNode;
+        parent.removeChild(viewDiv);
+
         // plugs it into the new draggable dialog
-        this.rootTag.appendChild(div);
-        div.setAttribute("class", "pop-content "+classList);
+        this.rootTag.appendChild(this.popContentDiv);
+        this.popContentDiv.appendChild(viewDiv);
+
         if(this.draggable) {
             document.body.appendChild(this.rootTag);
         } else {
@@ -97,8 +100,12 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             document.getElementById(this.pinDivId).onclick = this.unpin.bind(this);
         }
 
-        if(options.canDisconnect) {
+        if(typeof(options) != "undefined" && options.canDisconnect) {
             document.getElementById(this.connectDivId).onclick = this.connect.bind(this);
+        }
+
+        if(typeof  this.swapDivId != "undefined") {
+            document.getElementById(this.swapDivId).onclick = this.swapClick.bind(this);
         }
 
         // calls super handleEvents
@@ -129,6 +136,13 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                 }
             }
         }.bind(this));
+
+        OSH.EventManager.observe("swap-restore",function(event) {
+            if(this.swapped && event.exclude != this.id) {
+                this.swap();
+                this.swapped = false;
+            }
+        }.bind(this));
     },
 
     /**
@@ -138,6 +152,44 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
      */
     init:function($super,options) {
 
+    },
+
+    /**
+     * Swap the current div with the div given as parameter
+     */
+    swapClick: function() {
+        OSH.EventManager.fire("swap-restore",{exclude: this.id});
+        this.swap();
+    },
+
+    swap:function() {
+        // swap the child of the popContentDiv with the child contained in the the containerDiv
+        var containerDivToSwap = document.getElementById(this.divIdToSwap);
+        if(containerDivToSwap != "undefined" && containerDivToSwap != null) {
+            if(!this.swapped) {
+                // remove from popContentDiv
+                var viewDiv = document.getElementById(this.oshView.getDivId());
+                this.popContentDiv.removeChild(viewDiv);
+
+                var currentdivToSwapChild = containerDivToSwap.childNodes[0];
+                containerDivToSwap.appendChild(viewDiv);
+                this.popContentDiv.appendChild(currentdivToSwapChild);
+
+                document.getElementById(this.titleId).innerText = "- Swapped -";
+                this.swapped = true;
+            } else {
+                var viewDiv = document.getElementById(this.oshView.getDivId());
+                containerDivToSwap.removeChild(viewDiv);
+
+                var currentdivToSwapChild = this.popContentDiv.childNodes[0];
+                this.popContentDiv.removeChild(currentdivToSwapChild);
+
+                this.popContentDiv.appendChild(viewDiv);
+                containerDivToSwap.appendChild(currentdivToSwapChild);
+                document.getElementById(this.titleId).innerText = this.name;
+                this.swapped = false;
+            }
+        }
     },
 
     show: function($super,properties) {
@@ -150,16 +202,18 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
     },
 
     connect: function() {
-        var ds = this.oshView.getDataSourcesId();
-        if(!this.connected) {
-            OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId:ds});
-        } else {
-            OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,{dataSourcesId:ds});
+        if(!this.swapped) {
+            var ds = this.oshView.getDataSourcesId();
+            if (!this.connected) {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId: ds});
+            } else {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE, {dataSourcesId: ds});
+            }
         }
     },
 
     unpin: function() {
-        if(!this.draggable) {
+        if (!this.draggable) {
             var bodyRect = document.body.getBoundingClientRect(),
                 elemRect = this.rootTag.getBoundingClientRect(),
                 offsetTop = elemRect.top - bodyRect.top,
@@ -176,7 +230,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             document.getElementById(this.pinDivId).setAttribute("class", "pop-pin pop-pin-drag");
         } else {
             this.rootTag.style.top = 0;
-            this.rootTag.style.left = 0 - (this.rootTag.offsetWidth-this.initialWidth);
+            this.rootTag.style.left = 0 - (this.rootTag.offsetWidth - this.initialWidth);
             this.rootTag.style.position = "relative";
             this.rootTag.setAttribute("draggable", false);
             this.rootTag.parentNode.removeChild(this.rootTag);
