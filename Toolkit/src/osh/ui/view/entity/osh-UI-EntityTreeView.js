@@ -2,11 +2,8 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
     initialize:function($super,divId,entityItems, options) {
         $super(divId,[],options);
 
-        document.getElementById(this.divId).setAttribute("class",this.css);
-        //this.divId = divId;
         this.entityItems = entityItems;
         this.initTree(options);
-        //this.test(options);
     },
 
     initTree:function(options) {

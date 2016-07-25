@@ -4,7 +4,6 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
 
     // creates video tag element
     this.imgTag = document.createElement("img");
-    this.imgTag.setAttribute("class", this.css);
     this.imgTag.setAttribute("id", "dataview-"+OSH.Utils.randomUUID());
 
     // appends <img> tag to <div>
@@ -28,9 +27,9 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
 
   selectDataView: function($super,dataSourceIds,entityId) {
     if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
-      this.imgTag.setAttribute("class",this.css+" "+this.cssSelected);
+      document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {
-      this.imgTag.setAttribute("class",this.css);
+      document.getElementById(this.divId).setAttribute("class",this.css);
     }
   }
 });

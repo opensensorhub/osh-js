@@ -196,10 +196,7 @@ function init() {
                 }),
                 name : "Android Phone GPS Path",
                 entityId : androidEntity.id
-            }],
-        {
-            css: "mapDialog"
-        }
+            }]
     );
 
     var cesiumMapView = new OSH.UI.CesiumView(null,
@@ -229,10 +226,7 @@ function init() {
                 }),
                 name : "Android Phone GPS Path",
                 entityId : androidEntity.id
-            }],
-        {
-            css: "mapCesiumDialog"
-        }
+            }]
     );
 
     var mapView = new OSH.UI.LeafletView("main-container",

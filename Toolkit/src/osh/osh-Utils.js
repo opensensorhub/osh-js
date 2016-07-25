@@ -50,3 +50,7 @@ OSH.Utils.getXCursorPosition = function() {
 OSH.Utils.getYCursorPosition = function() {
   return absoluteYposition;
 };
+
+OSH.Utils.isArrayIntersect = function(a, b) {
+  return a.intersect(b).length > 0;
+};

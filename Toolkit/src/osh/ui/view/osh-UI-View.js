@@ -1,6 +1,5 @@
 OSH.UI.View = Class.create({
     initialize: function (divId, viewItems,options) {
-        this.dataSources = [];
         // list of stylers
         this.stylers = [];
         this.contextMenus = [];
@@ -10,7 +9,6 @@ OSH.UI.View = Class.create({
         this.stylerIdToStyler = {};
         this.lastRec = {};
         this.selectedDataSources = [];
-        this.selectedEntities = [];
         this.dataSources = [];
 
         //this.divId = divId;
@@ -44,6 +42,7 @@ OSH.UI.View = Class.create({
     init:function(divId,viewItems,options) {
         var elementDiv = document.createElement("div");
         elementDiv.setAttribute("id", this.id);
+        elementDiv.setAttribute("class", this.css);
 
         this.divId = this.id;
 

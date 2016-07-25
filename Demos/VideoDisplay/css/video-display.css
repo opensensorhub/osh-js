@@ -50,11 +50,17 @@ a.navbar-brand:hover {
 	height: 200px;
 }
 
-.video {
+
+.video img{
 	width: 100%;
-	height: calc(100% - 45px);
+	height: 100%;
 }
-	
+
+.video canvas{
+    width: 100%;
+    height: 100%;
+}
+
 .video-selected {
   border-radius: 3px;
   box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
@@ -88,8 +94,6 @@ a.navbar-brand:hover {
 
 .chart-view {
     overflow:hidden;
-    width:calc(100% - 15px) !important;
-    height:calc(100% - 35px) !important;
 }
 
 .tasking-container {
@@ -113,11 +117,4 @@ a.navbar-brand:hover {
     overflow:hidden;
     width:250px;
     height:250px;
-}
-
-.mapDialog {
-    height:calc(100% - 45px);
-}
-.mapCesiumDialog {
-    height:calc(100% - 45px);
 }

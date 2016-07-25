@@ -28,6 +28,7 @@
 .pop-content {
     position: static;
     margin-top:8px;
+    height:calc(100% - 45px) !important
 }
 
 .pop-close {

@@ -12,14 +12,6 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
 
 
     if(typeof options != "undefined" ) {
-      if (options.width) {
-        width = options.width;
-      }
-
-      if (options.height) {
-        height = options.height;
-      }
-
       if (options.css) {
         this.css = options.css;
       }
@@ -33,10 +25,7 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
     
     // creates video tag element
     this.video = document.createElement("video");
-    this.video.setAttribute("height", height);
     this.video.setAttribute("control", '');
-    this.video.setAttribute("width", width);
-    this.video.setAttribute("class", this.css);
     // appends <video> tag to <div>
     document.getElementById(this.divId).appendChild(this.video);
     
@@ -100,9 +89,9 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   
   selectDataView: function($super,dataSourceIds, entityId) {
 	  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
-		  this.video.setAttribute("class",this.css+" "+this.cssSelected);  
+		  document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
 	  } else {
-		  this.video.setAttribute("class",this.css);
+          document.getElementById(this.divId).setAttribute("class",this.css);
 	  }
   }
 });

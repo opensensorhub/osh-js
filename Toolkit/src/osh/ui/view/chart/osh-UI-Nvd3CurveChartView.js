@@ -77,19 +77,9 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		.axisLabel(yLabel).tickFormat(d3.format('.02f'))
 		.axisLabelDistance(15);
 
-		this.width = "500px";
-		this.height = "300px";
 		this.css = document.getElementById(this.divId).className;
 
 		if(typeof (options) != "undefined") {
-			if (options.width) {
-				this.width = options.width;
-			}
-
-			if (options.height) {
-				this.height = options.height;
-			}
-
 			if (options.css) {
 				this.css += " " + options.css;
 			}
@@ -103,7 +93,6 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		var svg = document.createElementNS(d3.ns.prefix.svg, 'svg');
 
 		this.div = document.getElementById(this.divId);
-		this.div.setAttribute("class", this.css);
 		this.div.appendChild(svg);
 
 		this.div.style.width = this.width;
@@ -111,9 +100,10 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		
 		this.svgChart = d3.select('#' + this.divId + ' svg'); //Select the <svg> element you want to render the chart in.
 
+		var self =this;
 		OSH.EventManager.observeDiv(this.divId,"click",function(event){
 			OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
-				dataSourcesIds: [self.dataSourceId],
+				dataSourcesIds: self.getDataSourcesId(),
 				entityId : self.entityId
 			});
 		});
@@ -155,7 +145,8 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	},
 
 	selectDataView: function($super,dataSourceIds) {
-		if(dataSourceIds.indexOf(this.dataSourceId) > -1) {
+		var currentDataSources= this.getDataSourcesId();
+		if(OSH.Utils.isArrayIntersect(dataSourceIds,currentDataSources)) {
 			this.div.setAttribute("class",this.css+" "+this.cssSelected);
 		} else {
 			this.div.setAttribute("class",this.css);
