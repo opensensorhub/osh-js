@@ -13,7 +13,7 @@ OSH.UI.View = Class.create({
         this.selectedEntities = [];
         this.dataSources = [];
 
-        this.divId = divId;
+        //this.divId = divId;
         this.id = "view-" + OSH.Utils.randomUUID();
 
         this.dataSourceId = -1;
@@ -38,21 +38,24 @@ OSH.UI.View = Class.create({
         }
 
         // inits the view before adding the viewItem
-        this.init(viewItems,options);
+        this.init(divId,viewItems,options);
     },
 
-    init:function(viewItems,options) {
-        var div = document.getElementById(this.divId);
-        if (this.divId == null || div == "undefined" || div == null) {
+    init:function(divId,viewItems,options) {
+        var elementDiv = document.createElement("div");
+        elementDiv.setAttribute("id", this.id);
+
+        this.divId = this.id;
+
+        var div = document.getElementById(divId);
+        if (divId == null || div == "undefined" || div == null) {
             var hiddenDiv = document.createElement("div");
             hiddenDiv.style.display = "none";
 
             document.body.appendChild(hiddenDiv);
-
-            var elementDiv = document.createElement("div");
-            elementDiv.setAttribute("id", this.id);
             hiddenDiv.appendChild(elementDiv);
-            this.divId = this.id;
+        } else {
+            div.appendChild(elementDiv);
         }
 
         this.beforeAddingItems(options);
