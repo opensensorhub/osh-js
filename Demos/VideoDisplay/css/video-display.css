@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  height: calc(100% - 130px);
+  height: calc(100% - 110px);
 }
 
 html {
@@ -75,7 +75,7 @@ a.navbar-brand:hover {
 }
 
 .rangeSlider-container {
-	height: 140px;
+	height: 120px;
     margin: 5 30 0 30;
     background-color: #fff;
     border: 1px solid #444;
