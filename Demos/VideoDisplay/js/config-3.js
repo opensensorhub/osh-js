@@ -311,15 +311,18 @@ function init() {
     var contextCircularMenu = new OSH.UI.ContextMenu.CircularMenu({id : circularContextMenuId,groupId: androidMenuGroupId,items : menuItems});
     var contextStackMenu = new OSH.UI.ContextMenu.StackMenu({id : stackContextMenuId,groupId: androidMenuGroupId,items : menuItems});
 
-    var rangeSlider = new OSH.UI.RangeSlider("rangeSlider");
+    var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
+        startTime: "2015-02-16T07:58:00Z",
+        endTime: "2015-02-16T08:09:00Z"
+    });
 
     //---------------------------------------------------------------//
     //--------------------- Creates DataProvider --------------------//
     //---------------------------------------------------------------//
 
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 0*1000,
-        synchronizedTime : false
+        bufferingTime : 5*1000,
+        synchronizedTime : true
     });
 
     dataProviderController.addEntity(androidEntity);

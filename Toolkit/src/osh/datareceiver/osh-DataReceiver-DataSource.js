@@ -1,19 +1,11 @@
 OSH.DataReceiver.DataSource = Class.create({
   initialize: function(name,properties,options) {
-    // checks if type is WebSocket
-    if(properties.protocol == "ws") {
-      this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
-      // connects the callback 
-      this.connector.onMessage = this.onMessage.bind(this);
-      this.id = "DataSource-"+OSH.Utils.randomUUID();
-      this.name = name;
-    }
-    
+    this.id = "DataSource-"+OSH.Utils.randomUUID();
+    this.properties = properties;
+    this.options = options;
+
+    this.initDataSource(name,properties,options);
     this.androidShift = 0;
-    
-    if(typeof(options) != "undefined"  && options.androidShift) {
-      this.androidShift = 16 * 1000;  
-    }
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE+"-"+this.id,function(event){
       this.connect();
@@ -24,6 +16,19 @@ OSH.DataReceiver.DataSource = Class.create({
     }.bind(this));
   },
 
+  initDataSource: function(name,properties,options) {
+    // checks if type is WebSocket
+    if(properties.protocol == "ws") {
+      this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
+      // connects the callback
+      this.connector.onMessage = this.onMessage.bind(this);
+      this.name = name;
+    }
+
+    if(typeof(options) != "undefined"  && options.androidShift) {
+      this.androidShift = 16 * 1000;
+    }
+  },
   /**
    * Disconnect the dataSource then the connector will be closed as well.
    */

@@ -23,10 +23,13 @@ OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {
 // This part defines the events used INTO the API
 OSH.EventManager.EVENT = {
     DATA : "data",
+    SYNC_DATA : "syncData",
     SELECT_VIEW : "selectView",
     CONTEXT_MENU : "contextMenu",
     SHOW_VIEW : "showView",
     CONNECT_DATASOURCE : "connectDataSource",
-    DISCONNECT_DATASOURCE : "disconnectDataSource"
+    DISCONNECT_DATASOURCE : "disconnectDataSource",
+    DATASOURCE_UPDATE_TIME: "updateDataSourceTime",
+    CURRENT_SYNC_TIME : "currentSyncTime"
 };
 

@@ -1,17 +1,31 @@
 OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 	initialize: function ($super, divId, options) {
 		$super(divId, [], options);
-		function timestamp(str){
-			return new Date(str).getTime();
+		var slider = document.getElementById(this.divId);
+
+		var startTime = new Date().getTime();
+		var endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
+		slider.setAttribute('disabled', true);
+
+		if(typeof options != "undefined") {
+			if(typeof options.startTime != "undefined") {
+				startTime = new Date(options.startTime).getTime();
+				slider.removeAttribute('disabled');
+			}
+
+			if(typeof options.endTime != "undefined") {
+				endTime = new Date(options.endTime).getTime();
+			}
+
+			if(typeof options.followCursor != "undefined") {
+				followCursor = options.followCursor;
+			}
 		}
-
-		var pipsValues = document.getElementById(this.divId);
-
-		noUiSlider.create(pipsValues, {
-			start: [timestamp("2015-02-16T07:58:00Z")]/*,timestamp("2015-02-16T08:09:00Z")]*/,
+		noUiSlider.create(slider, {
+			start: [startTime]/*,timestamp("2015-02-16T08:09:00Z")]*/,
 			range: {
-				min: timestamp("2015-02-16T07:58:00Z"),
-				max: timestamp("2015-02-16T08:09:00Z")
+				min: startTime,
+				max: endTime
 			},
 			//step:  1000* 60* 60,
 			format: wNumb({
@@ -40,8 +54,17 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 			}
 		});
 
-		pipsValues.noUiSlider.on('update', function ( values, handle ) {
-			console.log(new Date(parseInt(values[handle])).toISOString());
+		var eventName = 'end';
+
+		slider.noUiSlider.on("end", function ( values, handle ) {
+			OSH.EventManager.fire(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
+				startTime:new Date(parseInt(values[handle])).toISOString(),
+				endTime: new Date(endTime).toISOString()
+			})
+		});
+
+		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_SYNC_TIME, function(event) {
+			slider.noUiSlider.set([event.timeStamp]);
 		});
 	}
 });
