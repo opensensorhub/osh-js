@@ -259,9 +259,9 @@ function init() {
         }]
     );
 
-    var taskingView = new OSH.UI.TaskingView("tasking-container",{
+    /*var taskingView = new OSH.UI.TaskingView("tasking-container",{
         dataSourceId : ""
-    });
+    });*/
 
     // creates Dialog Views
     var videoDialog         = createDialog("dialog-main-container",videoView,"Android Video 1",true);
