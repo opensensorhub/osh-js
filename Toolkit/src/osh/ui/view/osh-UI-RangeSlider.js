@@ -7,6 +7,8 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		var endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 		slider.setAttribute('disabled', true);
 
+		this.dataSourcesId = [];
+
 		if(typeof options != "undefined") {
 			if(typeof options.startTime != "undefined") {
 				startTime = new Date(options.startTime).getTime();
@@ -20,7 +22,12 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 			if(typeof options.followCursor != "undefined") {
 				followCursor = options.followCursor;
 			}
+
+			if(typeof options.dataSourcesId != "undefined") {
+				this.dataSourcesId = options.dataSourcesId;
+			}
 		}
+
 		noUiSlider.create(slider, {
 			start: [startTime]/*,timestamp("2015-02-16T08:09:00Z")]*/,
 			range: {
@@ -56,15 +63,20 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 
 		var eventName = 'end';
 
-		slider.noUiSlider.on("end", function ( values, handle ) {
+		var self = this;
+		slider.noUiSlider.on("end", function (values, handle) {
 			OSH.EventManager.fire(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
-				startTime:new Date(parseInt(values[handle])).toISOString(),
-				endTime: new Date(endTime).toISOString()
+				startTime: new Date(parseInt(values[handle])).toISOString(),
+				endTime: new Date(endTime).toISOString(),
+				dataSourcesId: self.dataSourcesId
 			})
 		});
 
-		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_SYNC_TIME, function(event) {
-			slider.noUiSlider.set([event.timeStamp]);
-		});
+		// listen for DataSourceId
+		for(var i=0;i < this.dataSourcesId.length;i++) {
+			OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+this.dataSourcesId[i], function (event) {
+				slider.noUiSlider.set([event.data.timeStamp]);
+			});
+		}
 	}
 });

@@ -313,7 +313,8 @@ function init() {
 
     var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
         startTime: "2015-02-16T07:58:00Z",
-        endTime: "2015-02-16T08:09:00Z"
+        endTime: "2015-02-16T08:09:00Z",
+        dataSourcesId:[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id,androidPhoneVideoDataSource.id]
     });
 
     //---------------------------------------------------------------//
@@ -321,8 +322,8 @@ function init() {
     //---------------------------------------------------------------//
 
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 5*1000,
-        synchronizedTime : true
+        bufferingTime : 2*1000,
+        synchronizedTime : false
     });
 
     dataProviderController.addEntity(androidEntity);

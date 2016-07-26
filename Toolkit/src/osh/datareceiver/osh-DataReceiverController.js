@@ -22,31 +22,33 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     }.bind(this));
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event) {
-      this.initBuffer();
+      this.buffer.reset();
       //for now, reconnect each datasource
       for (var id in this.dataSourcesIdToDataSources) {
-        // disconnect stream
-        this.dataSourcesIdToDataSources[id].disconnect();
+        if(event.dataSourcesId.indexOf(id) > -1) {
+          // disconnect stream
+          this.dataSourcesIdToDataSources[id].disconnect();
 
-        // get current parameters
-        var props = this.dataSourcesIdToDataSources[id].properties;
-        var name = this.dataSourcesIdToDataSources[id].name;
-        var options = this.dataSourcesIdToDataSources[id].options;
+          // get current parameters
+          var props = this.dataSourcesIdToDataSources[id].properties;
+          var name = this.dataSourcesIdToDataSources[id].name;
+          var options = this.dataSourcesIdToDataSources[id].options;
 
-        // update start/end time
-        if(typeof event.startTime != "undefined") {
-          props.startTime = event.startTime;
+          // update start/end time
+          if (typeof event.startTime != "undefined") {
+            props.startTime = event.startTime;
+          }
+
+          if (typeof event.endTime != "undefined") {
+            props.endTime = event.endTime;
+          }
+
+          // reset parameters
+          this.dataSourcesIdToDataSources[id].initDataSource(name, props, options);
+
+          // reconnect the stream with new parameters
+          this.dataSourcesIdToDataSources[id].connect();
         }
-
-        if(typeof event.endTime != "undefined") {
-          props.endTime = event.endTime;
-        }
-
-        // reset parameters
-        this.dataSourcesIdToDataSources[id].initDataSource(name,props,options);
-
-        // reconnect the stream with new parameters
-        this.dataSourcesIdToDataSources[id].connect();
       }
     }.bind(this));
   },
@@ -104,12 +106,12 @@ OSH.DataReceiver.DataReceiverController = Class.create({
       OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_SYNC_TIME,{timeStamp : data.timeStamp});
       OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSource.getId(), {data : data});
     }.bind(this));
-    
+
     dataSource.onData = function(data) {
         this.buffer.push(dataSource.getId(), data.data, data.timeStamp , dataSource.getName());
     }.bind(this);
   },
-  
+
   /**
    * Connects each connector
    */ 
