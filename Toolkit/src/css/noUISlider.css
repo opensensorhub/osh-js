@@ -1,0 +1,38 @@
+.noUi-tooltip {
+    border-radius: 10px;
+    box-shadow: 6px 4px 5px 0px #777;
+    background-color: #777;
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.8;
+    opacity: 0.8;
+    border:none;
+    color: #FFF;
+    width:190px; /* is optimized for displaying date */
+}
+.noUi-horizontal .noUi-handle-lower .noUi-tooltip {
+    top: -40px;
+    left:-80px;
+}
+
+.noUi-connect {
+    background-color: rgba(5, 107, 166, 0.6);
+}
+
+.noUi-tooltip:after {
+    bottom: -14px;
+    margin-left: -10px;
+    border-top: 10px solid #fff;
+}
+
+.noUi-tooltip:after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    margin-left: -9px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid rgba(0, 0, 0, 0.1);
+}

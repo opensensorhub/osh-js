@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  height: calc(100% - 52px);
+  height: calc(100% - 130px);
 }
 
 html {
@@ -74,8 +74,8 @@ a.navbar-brand:hover {
     height:calc(100% - 190px);
 }
 
-.jrangeSlider {
-	height: 65px;
+.rangeSlider-container {
+	height: 140px;
     margin: 5 30 0 30;
     background-color: #fff;
     border: 1px solid #444;
@@ -84,6 +84,12 @@ a.navbar-brand:hover {
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 5px;
+}
+
+.rangeSlider {
+    margin-top: 50px;
+    margin-left: 20px;
+    margin-right: 5px;
 }
 
 .dialog {
@@ -99,7 +105,7 @@ a.navbar-brand:hover {
 .tasking-container {
     width: 420px;
     position: absolute;
-    top: calc(100% - 290px);
+    top: calc(100% - 370px);
 }
 
 .tree-container {
