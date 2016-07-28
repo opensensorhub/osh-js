@@ -5,6 +5,7 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		this.location;
 		this.orientation = {heading:0};
 		this.icon = null;
+		this.label = null;
 		this.color = "#000000";
 		
 		this.options = {};
@@ -19,7 +20,11 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		
 		if(typeof(properties.icon) != "undefined"){
 			this.icon = properties.icon;
-		} 
+		}
+		
+		if(typeof(properties.label) != "undefined"){
+			this.label = properties.label;
+		}
 		
 		if(typeof(properties.color) != "undefined"){
 			this.color = properties.color;
@@ -44,6 +49,13 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 				this.icon = properties.iconFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.iconFunc.dataSourceIds,fn);
+		}
+		
+		if(typeof(properties.labelFunc) != "undefined") {
+			var fn = function(rec,timeStamp,options) {
+				this.label = properties.labelFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.labelFunc.dataSourceIds,fn);
 		}
 		
 		if(typeof(properties.colorFunc) != "undefined") {
