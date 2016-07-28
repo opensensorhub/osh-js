@@ -1,4 +1,5 @@
 OSH.UI.CesiumView = Class.create(OSH.UI.View, {
+	
 	initialize : function($super, divId,viewItems, properties) {
 		$super(divId,viewItems,properties);
 
@@ -14,9 +15,10 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 				lat : styler.location.y,
 				lon : styler.location.x,
 				alt : styler.location.z,
-				orientation : styler.orientation.heading,
+				orientation : styler.orientation,
 				color : styler.color,
 				icon : styler.icon,
+				label : styler.label,
 				timeStamp: timeStamp,
 				selected: ((typeof(options.selected) != "undefined")? options.selected : false)
 			});
@@ -30,7 +32,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 			lat : styler.location.y,
 			lon : styler.location.x,
 			alt : styler.location.z,
-			orientation : styler.orientation.heading,
+			orientation : styler.orientation,
 			color : styler.color,
 			icon : styler.icon,
 			timeStamp: timeStamp,
@@ -52,7 +54,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 			homeButton : false,
 			navigationInstructionsInitiallyVisible : false,
 			navigationHelpButton : false,
-			geocoder : false,
+			geocoder : true,
 			fullscreenButton : false,
 			showRenderLoopErrors : false,
 			animation:false
@@ -62,38 +64,63 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 	        //change icon
 	        if (Cesium.defined(entity)) {
-	        	var memo = [];
-		    	for (var styler in self.stylerToObj) {
-		    		if(self.stylerToObj[styler] == entity._dsid) {
+	        	var dataSrcIds = [];
+	        	var entityId;
+		    	for (var stylerId in self.stylerToObj) {
+		    		if(self.stylerToObj[stylerId] == entity._dsid) {
 		    			for(var i=0;i < self.stylers.length;i++) {
-			    			if(self.stylers[i].getId() == styler) {
-				    			memo = memo.concat(self.stylers[i].getDataSourcesIds());
+			    			if(self.stylers[i].getId() == stylerId) {
+			    				dataSrcIds = dataSrcIds.concat(self.stylers[i].getDataSourcesIds());
+			    				entityId = self.stylers[i].viewItem.entityId;
 				    			break;
 			    			}
 		    			}
 		    		}
 		    	}
-		    	$(self.divId).fire("osh:select", memo);
+		    	OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+                    dataSourcesIds: dataSrcIds,
+                    entityId : entityId
+                });
 	        }
 	    }.bind(this));
 	},
 	
 	addMarker : function(properties) {
-		// gps position
+		
 		var imgIcon = 'images/cameralook.png';
 		if(properties.icon != null) {
 			imgIcon = properties.icon;
 		}
+		var isModel = imgIcon.endsWith(".glb");
+		var name = properties.label;
+		var geom;
 		
-		var entity = this.viewer.entities.add({
-			position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
-			billboard : {
-				image : imgIcon,
-				rotation : Cesium.Math.toRadians(-90),
-				horizontalOrigin : Cesium.HorizontalOrigin.CENTER
-			}
-		});
-
+		if (isModel)
+		{
+			geom = {
+				name: name,
+				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
+				model : {
+					uri: imgIcon,
+					scale: 4,
+					modelM: Cesium.Matrix4.IDENTITY.clone()
+				}
+			};
+		}
+		else
+		{
+			geom = {
+				//name: properties.label,
+				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
+				billboard : {
+					image : imgIcon,
+					rotation : Cesium.Math.toRadians(-90),
+					horizontalOrigin : Cesium.HorizontalOrigin.CENTER
+				}
+			};
+		}
+		
+		var entity = this.viewer.entities.add(geom);
 		var id = "view-marker-"+OSH.Utils.randomUUID();
 		entity._dsid = id;
 		this.markers[id] = entity;
@@ -101,34 +128,50 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 		return id;
 	},
 	
-	updateMapMarker: function(id,properties) {
+	updateMapMarker: function(id, properties) {
 		// updates position
         var lon = properties.lon;
         var lat = properties.lat;
         var alt = properties.lat;
+        var orient = properties.orientation;
         var imgIcon = properties.icon;
         
-        if (!isNaN(lon) && !isNaN(lat) && !isNaN(alt)) {
+        if (!isNaN(lon) && !isNaN(lat)) {
         	var marker =  this.markers[id];
-        	var julianDate = Cesium.JulianDate.fromIso8601(new Date(properties.timeStamp).toISOString());
-    		// set clock to GPS time
-    		this.viewer.clock.currentTime = julianDate;
-
-    		var rfPos = [ lon, lat, alt ];
-    		var altitude = this.getAltitude(lat, lon);
-    		if (altitude > 1) {
-    			altitude += 0.3;
+        	
+        	// get ground altitude if non specified
+        	if (typeof(alt) == "undefined" || isNaN(alt))
+        	{
+	    		alt = this.getAltitude(lat, lon);
+	    		if (alt > 1)
+	    			alt += 0.3;
     		}
 
-    		marker.position = Cesium.Cartesian3.fromDegrees(lon, lat, altitude);
-    		marker.billboard.image = imgIcon;
+    		// update position
+        	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+    		marker.position = pos
+    		    		
+    		// update orientation
+    		if (typeof(orient) != "undefined")
+    	    {
+    			var DTR = Math.PI/180.;
+    			var heading = orient.heading;
+	    		var pitch = 0.0;
+	    		var roll = 0.0;
+    			var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, heading*DTR, /*roll*DTR*/0.0, pitch*DTR); // inverse roll and pitch to go from NED to ENU
+	    		marker.orientation = quat;
+    	    }
     		
+    		// update icon or models
+    		//marker.billboard.image = imgIcon;
+    		
+    		// zoom map if first marker update
     		if (this.first) {
-    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(30), Cesium.Math.toRadians(-30),18000));
+    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 300));
     			this.first = false;
     		}
     		
-    		if(properties.selected) {
+    		if (properties.selected) {
     			 this.viewer.selectedEntity = marker;
     		}
         }
