@@ -2,7 +2,7 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {
 		$super(properties);
 		this.properties = properties;
-		this.location = {x:0,y:0,z:0};
+		this.location;
 		this.orientation = {heading:0};
 		this.icon = null;
 		this.color = "#000000";
@@ -56,7 +56,7 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 
 	init: function($super,view) {
 		$super(view);
-		if(typeof(view) != "undefined") {
+		if(typeof(view) != "undefined" && typeof(this.location) != "undefined") {
 			view.updateMarker(this,0,{});
 		}
 	},
@@ -64,7 +64,7 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	setData: function($super,dataSourceId,rec,view,options) {
 		if($super(dataSourceId,rec,view,options)) {
 			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
-			if(typeof(view) != "undefined") {
+			if (typeof(view) != "undefined" && typeof(this.location) != "undefined") {
 				view.updateMarker(this,rec.timeStamp,options);
 			}
 		}
