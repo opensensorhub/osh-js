@@ -48,7 +48,6 @@ OSH.Sensor = Class.create({
       if (xhr.readyState == 4 && xhr.status == 200) {
         console.log(this.name);
         var desc = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
-        //desc.value.description[0].sensorDescription.data.any.value.outputs.outputlist.output;
         this.onDescribeSensor(desc);
       }
     }.bind(this);
@@ -126,20 +125,16 @@ OSH.Sensor = Class.create({
 
   recurseFieldEncoding: function (pathToken, struct, encodingType) {
     var nextPath = pathToken.shift();
-    //console.log('next path '+nextPath);
-    //console.log('pathToken '+pathToken);
     if(pathToken.length > 0) {
       this.recurseFieldEncoding(pathToken, struct[nextPath], encodingType);
     }
     else {
-      //console.log('encoded '+nextPath+ ' '+ pathToken.length);
       struct[nextPath] = {val:null, type:encodingType};
     }
   },
 
   buildDataField: function(field, resultStruct) {
     var dataComp = field.abstractDataComponent;
-    //alert(dataComp.name);
     if(typeof dataComp != 'undefined' && dataComp != null) {
 
       if(dataComp.name.localPart == 'DataArray') {
@@ -167,7 +162,6 @@ OSH.Sensor = Class.create({
         for(var i = 0; i < dataComp.value.coordinate.length; i++) {
           this.buildDataField(dataComp.value.coordinate[i], resultStruct[field.name]);
           resultStruct[field.name].fieldOrder.push(dataComp.value.coordinate[i].name);
-          //resultStruct[field.name][dataComp.value.coordinate.name] = null;
         }
       } else {
         resultStruct[field.name] = null;
