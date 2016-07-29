@@ -88,8 +88,13 @@ OSH.Sensor = Class.create({
           }
           
           //Build the result structure
-          var resStruct = {};
-          resStruct.fieldOrder = [];
+          var resStruct = {fields:[]};
+          resStruct.findFieldByName = function(name) {
+            for(var f = 0; f < this.fields.length; f++) {
+              if(this.fields[f].name == name)
+                return this.fields[f];
+            }
+          }
           var fields = resultTemplate.value.resultStructure.abstractDataComponent.value.field;
           
           //the fields read from the json object may be complex such as a nested array
@@ -97,7 +102,6 @@ OSH.Sensor = Class.create({
           //a given field and produce the correct data structure for it
           for (var i = 0; i < fields.length; i++) {
             this.buildDataField(fields[i], resStruct);
-            resStruct.fieldOrder.push(fields[i].name);
           }
 
           for(var i = 0; i < resEncoding.fields.length; i++) {
@@ -113,23 +117,25 @@ OSH.Sensor = Class.create({
     }
   },
 
-  setFieldEncoding: function(struct, fieldEncoding) {
+  setFieldEncoding: function(fieldStruct, fieldEncoding) {
     var path = fieldEncoding.name;
     var pathToks = path.split('/');
     pathToks.shift();  //first item is always empty because the string starts with slash character
-    console.log('orig toks length'+pathToks.length);
-    if(pathToks.length >= 1) {
-      this.recurseFieldEncoding(pathToks, struct, fieldEncoding.type);
-    }
-  },
-
-  recurseFieldEncoding: function (pathToken, struct, encodingType) {
-    var nextPath = pathToken.shift();
-    if(pathToken.length > 0) {
-      this.recurseFieldEncoding(pathToken, struct[nextPath], encodingType);
-    }
-    else {
-      struct[nextPath] = {val:null, type:encodingType};
+    
+    currFieldStruct = fieldStruct;
+    while(pathToks.length > 0) {
+      for(var i = 0; i < currFieldStruct.fields.length; i++) {
+        if(currFieldStruct.fields[i].name == pathToks[0]) {
+          if(pathToks.length == 1) {
+            currFieldStruct.fields[i].type = fieldEncoding.type;
+            //console.log(fieldEncoding.type)
+          } else {
+            currFieldStruct = currFieldStruct.fields[i];
+          }
+          break;
+        }
+      }
+      pathToks.shift();
     }
   },
 
@@ -150,21 +156,21 @@ OSH.Sensor = Class.create({
         else
           countVal = elemCount.count.value;
         
-        resultStruct[field.name] = {val:[], count: countVal, fieldOrder:[]};
-        resultStruct[field.name].fieldOrder.push(elemType.name);
+        var field = {name: field.name, val:[], count: countVal, fields:[]};
+        resultStruct.fields.push(field);
 
         //recurse
-        this.buildDataField(elemType, resultStruct[field.name]);
+        this.buildDataField(elemType, field);
 
       } else if(dataComp.name.localPart == 'Vector') {
-        resultStruct[field.name] = {};
-        resultStruct[field.name].fieldOrder = [];
+        var field = {name: field.name, fields:[]};
+        resultStruct.fields.push(field);
+       
         for(var i = 0; i < dataComp.value.coordinate.length; i++) {
-          this.buildDataField(dataComp.value.coordinate[i], resultStruct[field.name]);
-          resultStruct[field.name].fieldOrder.push(dataComp.value.coordinate[i].name);
+          this.buildDataField(dataComp.value.coordinate[i], field);
         }
       } else {
-        resultStruct[field.name] = null;
+        resultStruct.fields.push({name: field.name, val : null, fields:[]});
         if(typeof dataComp.value.id != 'undefined') {
           //This map holds references between ids and the fields that they represent. 
           //This is used to reference values in one field from another. Example: A field
@@ -176,7 +182,7 @@ OSH.Sensor = Class.create({
       }
     }
     else {
-      resultStruct[field.name] = null;
+      resultStruct.fields.push({name: field.name, val : null, fields:[]});
     }
   },
 
