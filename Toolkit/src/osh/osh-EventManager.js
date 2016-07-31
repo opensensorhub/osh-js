@@ -1,15 +1,25 @@
+var observedEvent = {};
+
 OSH.EventManager = function() {}
 
 OSH.EventManager.fire = function(eventName,properties) {
     document.fire("osh:"+eventName, properties);
 }
 
-OSH.EventManager.observe = function(eventName,fnCallback) {
-    document.observe("osh:"+eventName, function (event) {
+OSH.EventManager.observe = function(eventName,fnCallback,id) {
+    var handleEvent = function (event) {
         if(typeof fnCallback != "undefined") {
             fnCallback(event.memo);
         }
-    });
+    };
+    observedEvent[id] = handleEvent;
+    document.observe("osh:"+eventName, handleEvent);
+};
+
+OSH.EventManager.stopObserving = function(eventName,fnCallback,id) {
+    if(typeof id != "undefined") {
+        document.stopObserving(eventName, observedEvent[id]);
+    }
 };
 
 OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {

@@ -1,3 +1,5 @@
+var MAX_LONG = Math.pow(2, 53) + 1;
+
 OSH.Utils = function() {}
 
 OSH.Utils.randomUUID = function() {

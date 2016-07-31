@@ -9,6 +9,7 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 
 		this.dataSourcesId = [];
 
+		this.multi = false;
 		if(typeof options != "undefined") {
 			if(typeof options.startTime != "undefined") {
 				startTime = new Date(options.startTime).getTime();
@@ -26,6 +27,7 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 			if(typeof options.dataSourcesId != "undefined") {
 				this.dataSourcesId = options.dataSourcesId;
 			}
+
 		}
 
 		noUiSlider.create(slider, {

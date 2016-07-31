@@ -4,8 +4,8 @@ OSH.DataReceiver.DataSource = Class.create({
     this.properties = properties;
     this.options = options;
 
-    this.initDataSource(name,properties,options);
     this.androidShift = 0;
+    this.initDataSource(name,properties,options);
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE+"-"+this.id,function(event){
       this.connect();
