@@ -33,7 +33,7 @@
 
 .pop-close {
     position: absolute;
-    top: 3;
+    top: 3px;
     right: 0;
     padding: 4px 4px 0 0;
     text-align: center;
@@ -50,8 +50,8 @@
 
 .pop-pin {
     position: absolute;
-    top: 7;
-    right: 24;
+    top: 7px;
+    right: 24px;
     padding: 4px 4px 0 0;
     text-align: center;
     width: 16px;
@@ -66,11 +66,11 @@
 }
 
 .pop-pin:hover {
-    top : 2 !important;
+    top : 2px !important;
 }
 
 .pop-pin-drag {
-    top : 2 !important;
+    top : 2px !important;
 }
 
 .pop-pin-drag:hover {
@@ -79,8 +79,8 @@
 
 .pop-connect {
     position: absolute;
-    top: 7;
-    right: 48;
+    top: 7px;
+    right: 48px;
     padding: 4px 4px 0 0;
     text-align: center;
     width: 16px;
@@ -104,8 +104,8 @@
 
 .pop-disconnect {
     position: absolute;
-    top: 7;
-    right: 48;
+    top: 7px;
+    right: 48px;
     padding: 4px 4px 0 0;
     text-align: center;
     width: 16px;
@@ -120,8 +120,8 @@
 
 .pop-exchange {
     position: absolute;
-    top: 5;
-    right: 72;
+    top: 5px;
+    right: 72px;
     padding: 4px 4px 0 0;
     text-align: center;
     width: 16px;
