@@ -17,6 +17,7 @@
     <!-- OSH libs -->
     <!-- OSH libs -->
     <link rel="stylesheet" type="text/css" href="../../src/css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="../../src/css/loading.css"/>
 
     <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
     <!-- OSH Core -->
@@ -44,7 +45,7 @@
     <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-DialogView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
-
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-Loading.js"></script>
     <style>
 
         body {
@@ -243,7 +244,7 @@
     );
 
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 5*1000,
+        bufferingTime : 15*1000,
         replayFactor: replayFactor+""
     });
 

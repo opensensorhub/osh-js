@@ -3,7 +3,7 @@
     height:100%;
     width:100%;
     background-color:#FFF;
-    opacity: 0.85;
+    opacity: 0.5;
     top:0px;
     z-index: 999999;
     cursor:default;
@@ -62,5 +62,5 @@
     color: black;
     font-size: 80px;
     margin-left:-70px;
-    color: #292929;
+    color:#292929;
 }
