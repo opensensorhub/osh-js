@@ -28,7 +28,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
 
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event) {
-      this.buffer.reset();
+      this.buffer.cancelAll();
       //for now, reconnect every datasources
       for (var id in this.dataSourcesIdToDataSources) {
         if(event.dataSourcesId.indexOf(id) > -1) {
@@ -56,6 +56,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
           this.dataSourcesIdToDataSources[id].connect();
         }
       }
+      this.buffer.startAll();
     }.bind(this));
   },
 

@@ -32,9 +32,6 @@ OSH.Buffer = Class.create({
 
         // define buffer variable
 
-        // define a status to cancel task after cancel() calling
-        this.cancelled = false;
-
         // defines a status to stop the buffer after stop() calling.
         // If start() method is called, this variable should be set to TRUE
         this.stop = false;
@@ -76,10 +73,9 @@ OSH.Buffer = Class.create({
     },
 
     cancelAll: function() {
-        this.cancelled = false;
-
-        // clear the buffers
-        this.buffers = {};
+        for(var dataSourceId in this.buffers){
+            this.cancelDataSource(dataSourceId);
+        }
     },
 
     /**
@@ -97,7 +93,13 @@ OSH.Buffer = Class.create({
      * @param dataSourceId
      */
     startDataSource: function(dataSourceId) {
-        this.buffers[dataSourceId].status = BUFFER_STATUS.START;
+        this.buffers[dataSourceId].status = BUFFER_STATUS.NOT_START_YET;
+    },
+
+    startAll: function() {
+        for(var dataSourceId in this.buffers){
+            this.startDataSource(dataSourceId);
+        }
     },
 
     addDataSource : function(dataSourceId,sync) {
