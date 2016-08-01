@@ -322,7 +322,7 @@ function init() {
     //---------------------------------------------------------------//
 
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 45*1000,
+        bufferingTime : 10*1000,
         synchronizedTime : true
     });
 
