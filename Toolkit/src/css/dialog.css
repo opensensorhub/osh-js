@@ -1,3 +1,5 @@
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
+
 .pop-over {
     position: relative;
     background-color: rgba(5, 107, 166, 0.6);
@@ -126,7 +128,6 @@
     text-align: center;
     width: 16px;
     height: 16px;
-    font: 16px/14px Tahoma, Verdana, sans-serif;
     color: #c3c3c3;
     text-decoration: none;
     font-weight: bold;
