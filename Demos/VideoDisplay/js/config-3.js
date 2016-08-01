@@ -314,7 +314,8 @@ function init() {
     var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        dataSourcesId:[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id,androidPhoneVideoDataSource.id]
+        dataSourcesId:[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id,androidPhoneVideoDataSource.id],
+        refreshRate:10
     });
 
     //---------------------------------------------------------------//
