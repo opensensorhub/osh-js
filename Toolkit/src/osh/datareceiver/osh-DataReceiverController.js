@@ -92,8 +92,8 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     this.buffer.addDataSource(dataSource.id,sync);
     //TODO: make frozen variables?
     dataSource.onData = function(data) {
-        //this.buffer.push(dataSource.getId(), data.data, data.timeStamp , dataSource.getName());
-        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA,{dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
+        this.buffer.push({dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
+        //OSH.EventManager.fire(OSH.EventManager.EVENT.DATA,{dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
     }.bind(this);
   },
 

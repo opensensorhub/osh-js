@@ -153,6 +153,7 @@ OSH.Buffer = Class.create({
                 currentBufferObj = this.buffers[dataSourceId];
                 if((mustBuffering = (currentBufferObj.buffer.length == 0) && currentBufferObj.status == BUFFER_STATUS.START)){
                     mustBufferingName = currentBufferObj.name;
+                    console.log(mustBufferingName);
                     break;
                 }
 
