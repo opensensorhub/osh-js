@@ -23,8 +23,6 @@ OSH.Sensor = Class.create({
     this.outputs = [];
     this.featuresOfInterest = [];
     this.dataConnectors = [];
-    //this.dataReceivers = [];
-    //this.dataSenders = [];
 
     //collect the observableProperty names that can be observed on this sensor
     if (typeof jsonix_offering.observableProperty != 'undefined') {
@@ -101,7 +99,7 @@ OSH.Sensor = Class.create({
           //or an array of vectors etc. buildDataField is a recursive function that will take
           //a given field and produce the correct data structure for it
           for (var i = 0; i < fields.length; i++) {
-            this.buildDataField(fields[i], resStruct);
+            this.buildDataFields(fields[i], resStruct);
           }
 
           for(var i = 0; i < resEncoding.fields.length; i++) {
@@ -139,7 +137,7 @@ OSH.Sensor = Class.create({
     }
   },
 
-  buildDataField: function(field, resultStruct) {
+  buildDataFields: function(field, resultStruct) {
     var dataComp = field.abstractDataComponent;
     if(typeof dataComp != 'undefined' && dataComp != null) {
 
@@ -160,14 +158,14 @@ OSH.Sensor = Class.create({
         resultStruct.fields.push(field);
 
         //recurse
-        this.buildDataField(elemType, field);
+        this.buildDataFields(elemType, field);
 
       } else if(dataComp.name.localPart == 'Vector') {
         var field = {name: field.name, fields:[]};
         resultStruct.fields.push(field);
        
         for(var i = 0; i < dataComp.value.coordinate.length; i++) {
-          this.buildDataField(dataComp.value.coordinate[i], field);
+          this.buildDataFields(dataComp.value.coordinate[i], field);
         }
       } else {
         resultStruct.fields.push({name: field.name, val : null, fields:[]});
