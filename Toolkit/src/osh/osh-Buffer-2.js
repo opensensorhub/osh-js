@@ -151,13 +151,12 @@ OSH.Buffer = Class.create({
 
             for (var dataSourceId in this.buffers) {
                 currentBufferObj = this.buffers[dataSourceId];
-                if((mustBuffering = (currentBufferObj.buffer.length == 0) && currentBufferObj.status == BUFFER_STATUS.START)){
+                if((mustBuffering = (currentBufferObj.buffer.length == 0) && currentBufferObj.status == BUFFER_STATUS.START && currentBufferObj.sync)){
                     mustBufferingName = currentBufferObj.name;
-                    console.log(mustBufferingName);
                     break;
                 }
 
-                if (currentBufferObj.status == BUFFER_STATUS.START && currentBufferObj.sync && currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
+                if (currentBufferObj.sync && currentBufferObj.status == BUFFER_STATUS.START && currentBufferObj.sync && currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
                     minTimeStampBufferObj = currentBufferObj;
                     minTimeStampDSId = dataSourceId;
                     minTimeStamp = currentBufferObj.buffer[0].timeStamp;

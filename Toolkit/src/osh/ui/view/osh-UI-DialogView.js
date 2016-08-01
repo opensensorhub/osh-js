@@ -2,7 +2,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {
         $super(divId,[],options);
         // creates HTML eflement
-        this.id = "dialog-" + OSH.Utils.randomUUID();
+        this.dialogId = "dialog-" + OSH.Utils.randomUUID();
         this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
         var closeDivId = "dialog-close-" + OSH.Utils.randomUUID();
         this.connectDivId = "dialog-connect-" + OSH.Utils.randomUUID();
@@ -46,7 +46,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                 this.draggable = options.draggable;
             }
 
-            if(typeof (options.name) != "undefined" && typeof options.name != "undefined") {
+            if(typeof (options.name) != "undefined") {
                 this.name = options.name;
             }
 
@@ -55,11 +55,9 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.titleId = "dialog-title-"+OSH.Utils.randomUUID();
         htmlVar += "<h3 id=\""+this.titleId+"\">"+this.name+"<\/h3></div>";
 
-        this.rootTag = document.createElement("div");
+        this.rootTag = document.getElementById(this.divId);
         this.rootTag.innerHTML = htmlVar;
 
-        this.rootTag = this.rootTag.firstChild;
-        this.rootTag.setAttribute("id", this.id);
         this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
@@ -73,12 +71,6 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
         // plugs it into the new draggable dialog
         this.rootTag.appendChild(this.popContentDiv);
-
-        if(this.draggable) {
-            document.body.appendChild(this.rootTag);
-        } else {
-            document.getElementById(this.divId).appendChild(this.rootTag);
-        }
 
         if(typeof (options) != "undefined") {
             if(typeof (options.show) != "undefined" && !options.show) {
@@ -145,15 +137,6 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                 self.swapped = false;
             }
         });
-    },
-
-    /**
-     * Override super method
-     * @param $super
-     * @param options
-     */
-    init:function($super,options) {
-
     },
 
     /**
@@ -245,8 +228,8 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.rootTag.style.left = 0 - (this.rootTag.offsetWidth - this.initialWidth);
             this.rootTag.style.position = "relative";
             this.rootTag.setAttribute("draggable", false);
-            this.rootTag.parentNode.removeChild(this.rootTag);
-            document.getElementById(this.divId).appendChild(this.rootTag);
+            document.body.removeChild(this.rootTag);
+            this.container.appendChild(this.rootTag);
             this.draggable = false;
             document.getElementById(this.pinDivId).setAttribute("class", "pop-pin");
         }
@@ -290,9 +273,5 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.rootTag.style.top = (event.clientY + parseInt(offset[1], 10)) + 'px';
         event.preventDefault();
         return false;
-    },
-
-    getId: function() {
-        return this.id;
     }
 });
