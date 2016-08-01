@@ -78,8 +78,23 @@ function init() {
     //--------------------- Creates views --------------------//
     //--------------------------------------------------------//
 
+    // creates Dialog Views
+    var videoDialog         = createDialog("dialog-main-container",[androidPhoneVideoDataSource],"Android Video 1",true);
+    var videoDialog2        = createDialog("dialog-main-container",[androidPhoneVideoDataSource],"Android Video 2",false);
+    var chartDialog         = createDialog("dialog-main-container",[weatherDataSource],"Chart Weather",true);
+    var leafletMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource,androidPhoneOrientationDataSource],"Leaflet 2D",true);
+    var cesiumMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource,androidPhoneOrientationDataSource],"Cesium 3D",true);
+    var entityTreeDialog    = new OSH.UI.DialogView(document.body.id,{
+        css: "tree-dialog",
+        name: "Entities",
+        show:true,
+        draggable:true,
+        dockable: false,
+        closeable: false
+    });
+
     // Video 1 View
-    var videoView = new OSH.UI.MjpegView(null, {
+    var videoView = new OSH.UI.MjpegView(videoDialog.popContentDiv.id, {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         entityId : androidEntity.id,
         css: "video",
@@ -88,7 +103,7 @@ function init() {
     });
 
     // Video 2 View
-    var videoView2 = new OSH.UI.MjpegView(null, {
+    var videoView2 = new OSH.UI.MjpegView(videoDialog2.popContentDiv.id, {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         entityId : androidEntity.id,
         css: "video",
@@ -97,7 +112,7 @@ function init() {
     });
 
     // Chart View
-    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(null,
+    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
         [{
             styler: new OSH.UI.Styler.Curve({
                 valuesFunc: {
@@ -120,7 +135,7 @@ function init() {
         }
     );
 
-    var entityTreeView = new OSH.UI.EntityTreeView(null,
+    var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
             [{
                 entity : androidEntity,
                 path: "Sensors/Toulouse",
@@ -169,7 +184,7 @@ function init() {
         }
     });
 
-    var leafletMapView = new OSH.UI.LeafletView(null,
+    var leafletMapView = new OSH.UI.LeafletView(leafletMapDialog.popContentDiv.id,
         [{
             styler :  pointMarker,
             contextMenuId: circularContextMenuId,
@@ -199,7 +214,7 @@ function init() {
             }]
     );
 
-    var cesiumMapView = new OSH.UI.CesiumView(null,
+    var cesiumMapView = new OSH.UI.CesiumView(cesiumMapDialog.popContentDiv.id,
         [{
             styler :  pointMarker,
             contextMenuId: circularContextMenuId,
@@ -263,44 +278,29 @@ function init() {
         dataSourceId : ""
     });*/
 
-    // creates Dialog Views
-    var videoDialog         = createDialog("dialog-main-container",videoView,"Android Video 1",true);
-    var videoDialog2        = createDialog("dialog-main-container",videoView2,"Android Video 2",false);
-    var chartDialog         = createDialog("dialog-main-container",windSpeedChartView,"Chart Weather",true);
-    var leafletMapDialog         = createDialog("dialog-main-container",leafletMapView,"Leaflet 2D",true);
-    var cesiumMapDialog         = createDialog("dialog-main-container",cesiumMapView,"Cesium 3D",true);
-    var entityTreeDialog    = new OSH.UI.DialogView(document.body, entityTreeView,{
-        css: "tree-dialog",
-        name: "Entities",
-        show:true,
-        draggable:true,
-        dockable: false,
-        closeable: false
-    });
-
     //-----------------------------------------------------------//
     //----------------- Creates Contextual Menus------------------//
     //-----------------------------------------------------------//
 
     var menuItems = [{
         name: "Android Video",
-        viewId: videoDialog.getId(),
+        viewId: videoDialog.id,
         css: "fa fa-video-camera"
     },{
         name: "Same Android Video",
-        viewId: videoDialog2.getId(),
+        viewId: videoDialog2.id,
         css: "fa fa-video-camera"
     },{
         name: "Weather chart",
-        viewId: chartDialog.getId(),
+        viewId: chartDialog.id,
         css: "fa fa-bar-chart"
     },{
         name: "Leaflet 2D",
-        viewId: leafletMapDialog.getId(),
+        viewId: leafletMapDialog.id,
         css: "fa fa-map"
     },{
         name: "Cesium 3D",
-        viewId: cesiumMapDialog.getId(),
+        viewId: cesiumMapDialog.id,
         css: "fa fa-globe"
     },{
         name: "Tasking",
@@ -322,12 +322,12 @@ function init() {
     //---------------------------------------------------------------//
 
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 2*1000,
-        synchronizedTime : false
+        bufferingTime : 15*1000,
+        synchronizedTime : true
     });
 
-    dataProviderController.addEntity(androidEntity);
-    dataProviderController.addDataSource(weatherDataSource);
+    dataProviderController.addEntity(androidEntity,true);
+    dataProviderController.addDataSource(weatherDataSource,false);
     //---------------------------------------------------------------//
     //---------------------------- Starts ---------------------------//
     //---------------------------------------------------------------//
@@ -336,15 +336,15 @@ function init() {
     dataProviderController.connectAll();
 }
 
-function createDialog(containerDivId,view, title,defaultShow) {
-    return new OSH.UI.DialogView(containerDivId, view,{
+function createDialog(containerDivId,dataSources,title,defaultShow) {
+    return new OSH.UI.DialogView(containerDivId, {
         draggable: false,
         css: "dialog",
         name: title,
         show:false,
         dockable: true,
         closeable: true,
-        canDisconnect : true,
+        connectionIds : dataSources ,
         swapId: "main-container"
     });
 }
