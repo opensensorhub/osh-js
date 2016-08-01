@@ -79,11 +79,11 @@ function init() {
     //--------------------------------------------------------//
 
     // creates Dialog Views
-    var videoDialog         = createDialog("dialog-main-container",[androidPhoneVideoDataSource],"Android Video 1",true);
-    var videoDialog2        = createDialog("dialog-main-container",[androidPhoneVideoDataSource],"Android Video 2",false);
-    var chartDialog         = createDialog("dialog-main-container",[weatherDataSource],"Chart Weather",true);
-    var leafletMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource,androidPhoneOrientationDataSource],"Leaflet 2D",true);
-    var cesiumMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource,androidPhoneOrientationDataSource],"Cesium 3D",true);
+    var videoDialog         = createDialog("dialog-main-container",[androidPhoneVideoDataSource.id],"Android Video 1",true);
+    var videoDialog2        = createDialog("dialog-main-container",[androidPhoneVideoDataSource.id],"Android Video 2",false);
+    var chartDialog         = createDialog("dialog-main-container",[weatherDataSource.id],"Chart Weather",true);
+    var leafletMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id],"Leaflet 2D",true);
+    var cesiumMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id],"Cesium 3D",true);
     var entityTreeDialog    = new OSH.UI.DialogView(document.body.id,{
         css: "tree-dialog",
         name: "Entities",
