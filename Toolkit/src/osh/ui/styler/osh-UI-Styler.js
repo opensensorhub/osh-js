@@ -4,6 +4,23 @@ OSH.UI.Styler = Class.create({
 		this.id = "styler-" + OSH.Utils.randomUUID();
 
 		this.dataSourceToStylerMap = {};
+
+		this.initEvents();
+	},
+
+	initEvents:function() {
+		OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event){
+			for(var i=0;i < event.dataSourcesId.length;i++) {
+				var currentDS = event.dataSourcesId[i];
+				if(currentDS in this.dataSourceToStylerMap) {
+					this.clear();
+				}
+			}
+		}.bind(this));
+	},
+
+	clear: function() {
+
 	},
 
 	setData : function(dataSourceId, data, view) {

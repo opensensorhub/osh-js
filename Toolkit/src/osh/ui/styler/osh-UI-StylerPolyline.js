@@ -75,5 +75,9 @@ OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 				view.updatePolyline(this);
 			}
 		}
+	},
+
+	clear: function($super) {
+		this.locations = [];
 	}
 });
