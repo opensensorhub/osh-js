@@ -1,15 +1,25 @@
+var observedEvent = {};
+
 OSH.EventManager = function() {}
 
 OSH.EventManager.fire = function(eventName,properties) {
     document.fire("osh:"+eventName, properties);
 }
 
-OSH.EventManager.observe = function(eventName,fnCallback) {
-    document.observe("osh:"+eventName, function (event) {
+OSH.EventManager.observe = function(eventName,fnCallback,id) {
+    var handleEvent = function (event) {
         if(typeof fnCallback != "undefined") {
             fnCallback(event.memo);
         }
-    });
+    };
+    observedEvent[id] = handleEvent;
+    document.observe("osh:"+eventName, handleEvent);
+};
+
+OSH.EventManager.stopObserving = function(eventName,fnCallback,id) {
+    if(typeof id != "undefined") {
+        document.stopObserving(eventName, observedEvent[id]);
+    }
 };
 
 OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {
@@ -30,6 +40,12 @@ OSH.EventManager.EVENT = {
     CONNECT_DATASOURCE : "connectDataSource",
     DISCONNECT_DATASOURCE : "disconnectDataSource",
     DATASOURCE_UPDATE_TIME: "updateDataSourceTime",
-    CURRENT_SYNC_TIME : "currentSyncTime"
+    CURRENT_SYNC_TIME : "currentSyncTime",
+    UAV_TAKEOFF : "uav:takeoff",
+    UAV_GOTO: "uav:goto",
+    UAV_LOOKAT : "uav:lookat",
+    UAV_LAND: "uav:land",
+    UAV_ORBIT: "uav:orbit",
+    LOADING_START: "loading:start",
+    LOADING_STOP: "loading:stop"
 };
-

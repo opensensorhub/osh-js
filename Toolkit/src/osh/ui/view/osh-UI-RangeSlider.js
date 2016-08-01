@@ -4,10 +4,15 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		var slider = document.getElementById(this.divId);
 
 		var startTime = new Date().getTime();
-		var endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
+		this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 		slider.setAttribute('disabled', true);
 
 		this.dataSourcesId = [];
+
+		this.multi = false;
+		// compute a refresh rate
+		this.dataCount = 0;
+		this.refreshRate = 10;
 
 		if(typeof options != "undefined") {
 			if(typeof options.startTime != "undefined") {
@@ -16,23 +21,24 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 			}
 
 			if(typeof options.endTime != "undefined") {
-				endTime = new Date(options.endTime).getTime();
-			}
-
-			if(typeof options.followCursor != "undefined") {
-				followCursor = options.followCursor;
+				this.endTime = new Date(options.endTime).getTime();
 			}
 
 			if(typeof options.dataSourcesId != "undefined") {
 				this.dataSourcesId = options.dataSourcesId;
 			}
+
+			if(typeof options.refreshRate != "undefined") {
+				this.refreshRate = options.refreshRate;
+			}
+
 		}
 
 		noUiSlider.create(slider, {
 			start: [startTime]/*,timestamp("2015-02-16T08:09:00Z")]*/,
 			range: {
 				min: startTime,
-				max: endTime
+				max: this.endTime
 			},
 			//step:  1000* 60* 60,
 			format: wNumb({
@@ -61,22 +67,63 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 			}
 		});
 
-		var eventName = 'end';
-
+		//noUi-handle noUi-handle-lower
 		var self = this;
+		this.isSliding = false;
+
+		this.count = 0;
+
+		// start->update->end
+		slider.noUiSlider.on("start", function (values, handle) {
+			self.startEvent();
+		});
+
+		slider.noUiSlider.on("update", function (values, handle) {
+			self.updateEvent();
+		});
+
 		slider.noUiSlider.on("end", function (values, handle) {
-			OSH.EventManager.fire(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
-				startTime: new Date(parseInt(values[handle])).toISOString(),
-				endTime: new Date(endTime).toISOString(),
-				dataSourcesId: self.dataSourcesId
-			})
+			self.endEvent(values,handle);
 		});
 
 		// listen for DataSourceId
 		for(var i=0;i < this.dataSourcesId.length;i++) {
 			OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+this.dataSourcesId[i], function (event) {
-				slider.noUiSlider.set([event.data.timeStamp]);
+				if(!self.isSliding && self.count != 2 && ((++self.dataCount)%self.refreshRate == 0)) {
+					slider.noUiSlider.set([event.data.timeStamp]);
+					self.dataCount = 0;
+				}
 			});
 		}
+	},
+
+	startEvent: function() {
+		this.isSliding = true;
+		this.count = 1;
+	},
+
+	updateEvent: function() {
+		if(this.count == 1) {
+			this.count++;
+		}
+	},
+
+	endEvent: function(values,handle) {
+		var timeout = 0;
+		var self = this;
+		if(self.count == 2) {
+			OSH.EventManager.fire(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
+				startTime: new Date(parseInt(values[handle])).toISOString(),
+				endTime: new Date(self.endTime).toISOString(),
+				dataSourcesId: self.dataSourcesId
+			});
+			// update slider again after a few time
+			timeout = 3000;
+		}
+
+		window.setTimeout(function(){
+			self.count = 0;
+			self.isSliding = false;
+		},3000);
 	}
 });

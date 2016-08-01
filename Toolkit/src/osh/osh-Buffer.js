@@ -12,10 +12,10 @@ var STATE = {
 OSH.Buffer = Class.create({
   initialize: function() {
     this.startCurrentTime = null;
-	  this.startDataTime = null;
-	  this.endDataTime = null;
-	  this.replayFactor = 1;
-	  this.buffer = new Array();
+	this.startDataTime = null;
+	this.endDataTime = null;
+	this.replayFactor = 1;
+	this.buffer = new Array();
     this.clientTable = {};
     this.observers = new Array();
     this.bufferState = 0;
@@ -130,7 +130,7 @@ OSH.Buffer = Class.create({
         // => (bufferLengthTime + dataTimeStamp  - currentTime)
         waitTime = (((next.timeStamp-this.startDataTime) / this.replayFactor) - currentEllapsedTime);
       }
-      
+      console.log(waitTime);
       // this is not true in case of real time data    
       if(waitTime > 0) {
         //callback the data after waiting for a time equals to the difference between the two timeStamps
@@ -191,7 +191,10 @@ OSH.Buffer = Class.create({
   register:function(id,callback) {
     this.clientTable[id] = callback;
   },
-  
+
+  addDataSource : function(dataSourceId,sync) {
+    this.clientTable[dataSourceId] = new function(){};
+  },
   /**
    * Starts buffering data
    */ 

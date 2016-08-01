@@ -118,9 +118,6 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         if(typeof(this.rootTag) != "undefined" && this.rootTag != null && typeof(this.rootTag.parentNode) != "undefined") {
             this.rootTag.parentNode.removeChild(this.rootTag);
             this.rootTag = null;
-            if(typeof this.observer != "undefined") {
-                this.observer.disconnect();
-            }
         }
     },
 

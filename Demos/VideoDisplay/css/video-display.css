@@ -117,10 +117,10 @@ a.navbar-brand:hover {
 }
 
 .tree-dialog {
+    width:300px;
+    height:190px;
+    margin-bottom:10px;
     position:absolute;
     top:60px;
     left:60px;
-    overflow:hidden;
-    width:250px;
-    height:250px;
 }

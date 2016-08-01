@@ -53,8 +53,10 @@ OSH.UI.View = Class.create({
 
             document.body.appendChild(hiddenDiv);
             hiddenDiv.appendChild(elementDiv);
+            this.container = document.body;
         } else {
             div.appendChild(elementDiv);
+            this.container = div;
         }
 
         this.beforeAddingItems(options);
