@@ -1,5 +1,12 @@
 var INITIAL_BUFFERING_TIME = 3000; // ms time
 
+var BUFFER_STATUS = {
+    CANCEL: 'cancel',
+    START: 'start',
+    STOP: 'stop',
+    NOT_START_YET: 'notStartYet'
+};
+
 OSH.Buffer = Class.create({
     initialize:function(options) {
         this.buffers = {};
@@ -31,6 +38,7 @@ OSH.Buffer = Class.create({
         // defines a status to stop the buffer after stop() calling.
         // If start() method is called, this variable should be set to TRUE
         this.stop = false;
+        this.bufferingState = false;
     },
 
     startObservers : function() {
@@ -52,7 +60,11 @@ OSH.Buffer = Class.create({
     start:function() {
         this.stop = false;
         this.startObservers();
+        this.bufferingState = true;
+        OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START);
         window.setTimeout(function(){
+            OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_STOP);
+            this.bufferingState = false;
             this.startRealTime = new Date().getTime();
             this.processSyncData();
         }.bind(this),this.bufferingTime);
@@ -70,8 +82,26 @@ OSH.Buffer = Class.create({
         this.buffers = {};
     },
 
+    /**
+     * Cancel means to clear the data contained into the buffer and change the status to CANCEL
+     * @param dataSourceId
+     */
+    cancelDataSource: function(dataSourceId) {
+        //this.buffers[dataSourceId] = {buffer:[],sync :  this.buffers[dataSourceId].sync, status: BUFFER_STATUS.CANCEL};
+        this.buffers[dataSourceId].buffer = [];
+        this.buffers[dataSourceId].status = BUFFER_STATUS.CANCEL;
+    },
+
+    /**
+     * Change the status to START
+     * @param dataSourceId
+     */
+    startDataSource: function(dataSourceId) {
+        this.buffers[dataSourceId].status = BUFFER_STATUS.START;
+    },
+
     addDataSource : function(dataSourceId,sync) {
-        this.buffers[dataSourceId] = {buffer:[],sync : sync};
+        this.buffers[dataSourceId] = {buffer:[],sync : sync,status:BUFFER_STATUS.NOT_START_YET};
     },
 
     addEntity : function(entity,sync) {
@@ -93,10 +123,13 @@ OSH.Buffer = Class.create({
         var currentBufferObj = this.buffers[dataSourceId];
 
         // define the time of the first data as relative time
-        if(typeof (currentBufferObj.startRelativeTime) == "undefined") {
+        if(currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) {
             currentBufferObj.startRelativeTime = event.data.timeStamp;
             currentBufferObj.startRelativeRealTime = new Date().getTime();
+            currentBufferObj.name = name;
+            currentBufferObj.status = BUFFER_STATUS.START;
         }
+
         currentBufferObj.buffer.push(event.data);
 
         if(!sync) {
@@ -106,29 +139,39 @@ OSH.Buffer = Class.create({
     },
 
     processSyncData:function() {
-        var minTimeStampBufferObj = null;
-        var minTimeStampDSId = null;
-        var minTimeStamp = MAX_LONG;
-        var currentBufferObj = null;
+        if(!this.bufferingState) {
 
-        for(var dataSourceId in this.buffers) {
-            currentBufferObj = this.buffers[dataSourceId];
-            if(currentBufferObj.sync && currentBufferObj.buffer.length > 0 && currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
-                minTimeStampBufferObj = currentBufferObj;
-                minTimeStampDSId = dataSourceId;
-                minTimeStamp = currentBufferObj.buffer[0].timeStamp;
+            var minTimeStampBufferObj = null;
+            var minTimeStampDSId = null;
+            var minTimeStamp = MAX_LONG;
+            var currentBufferObj = null;
+
+            var mustBuffering = false;
+            var mustBufferingName = '';
+
+            for (var dataSourceId in this.buffers) {
+                currentBufferObj = this.buffers[dataSourceId];
+                if((mustBuffering = (currentBufferObj.buffer.length == 0) && currentBufferObj.status == BUFFER_STATUS.START)){
+                    mustBufferingName = currentBufferObj.name;
+                    break;
+                }
+
+                if (currentBufferObj.status == BUFFER_STATUS.START && currentBufferObj.sync && currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
+                    minTimeStampBufferObj = currentBufferObj;
+                    minTimeStampDSId = dataSourceId;
+                    minTimeStamp = currentBufferObj.buffer[0].timeStamp;
+                }
             }
-        }
 
-        if(minTimeStampBufferObj != null) {
-            this.processData(minTimeStampBufferObj,minTimeStampDSId,function(){
+            // re-buffer because at least one dataSource has no data and its status is START
+            if(mustBuffering|| minTimeStampBufferObj == null) {
+                this.buffering(mustBufferingName);
                 this.processSyncData();
-            }.bind(this));
-        } else  {
-            //TODO: BUFFERING AGAIN?
-            window.setTimeout(function(){
-                this.processSyncData();
-            }.bind(this),this.bufferingTime);
+            } else {
+                this.processData(minTimeStampBufferObj, minTimeStampDSId, function () {
+                    this.processSyncData();
+                }.bind(this));
+            }
         }
     },
 
@@ -161,5 +204,15 @@ OSH.Buffer = Class.create({
     dispatchData:function(dataSourceId,data) {
         OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_SYNC_TIME,{timeStamp : data.timeStamp});
         OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
+    },
+
+    buffering:function(name) {
+        OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START,{name:name});
+        this.bufferingState = true;
+        window.setTimeout(function(){
+            this.bufferingState = false;
+            OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_STOP);
+            this.processSyncData();
+        }.bind(this),this.bufferingTime);
     }
 });

@@ -10,6 +10,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
       for (var i = 0; i < eventDataSourcesIds.length; i++) {
         if(eventDataSourcesIds[i] in this.dataSourcesIdToDataSources) {
           this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].connect();
+          this.buffer.startDataSource(this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].id);
         }
       }
     }.bind(this));
@@ -20,6 +21,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
       for (var i = 0; i < eventDataSourcesIds.length; i++) {
         if(eventDataSourcesIds[i] in this.dataSourcesIdToDataSources) {
           this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].disconnect();
+          this.buffer.cancelDataSource(this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].id);
         }
       }
     }.bind(this));
@@ -91,7 +93,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     //TODO: make frozen variables?
     dataSource.onData = function(data) {
         //this.buffer.push(dataSource.getId(), data.data, data.timeStamp , dataSource.getName());
-        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA,{dataSourceId:dataSource.getId(),dataSourceName:dataSource.getName(),data : data, sync:synchronize});
+        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA,{dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
     }.bind(this);
   },
 
