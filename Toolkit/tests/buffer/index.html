@@ -106,7 +106,7 @@
 
     </style>
 </head>
-<body>
+<body id="body">
 <h2>Issue #6: Improve synchronization buffer</h2>
 <div id="container"></div>
 
@@ -194,8 +194,20 @@
         }
     });
 
+
+    var videoDialog  = new OSH.UI.DialogView(document.body.id, {
+        draggable: true,
+        css: "dialog",
+        name: "Android Phone Video",
+        show:true,
+        dockable: false,
+        closeable: false,
+        connectionIds : [androidPhoneVideoDataSource.getId()],
+        swapId: "container"
+    });
+
     // Video 1 View
-    var videoView = new OSH.UI.MjpegView(null, {
+    var videoView = new OSH.UI.MjpegView(videoDialog.popContentDiv.id, {
         dataSourceId: androidPhoneVideoDataSource.getId(),
         entityId : androidEntity.id,
         css: "video",
@@ -203,16 +215,6 @@
         name: "Android Video"
     });
 
-    var videoDialog         = new OSH.UI.DialogView(document.body, videoView,{
-        draggable: true,
-        css: "dialog",
-        name: "Android Phone Video",
-        show:true,
-        dockable: false,
-        closeable: false,
-        canDisconnect : true,
-        swapId: "container"
-    });
 
     var mapView = new OSH.UI.LeafletView("container",
             [{
@@ -244,7 +246,7 @@
     );
 
     var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 60*1000,
+        bufferingTime : 5*1000,
         replayFactor: replayFactor+""
     });
 
