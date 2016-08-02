@@ -57,14 +57,8 @@ OSH.Buffer = Class.create({
   start:function() {
     this.stop = false;
     this.startObservers();
-    this.bufferingState = true;
-    OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START);
-    window.setTimeout(function(){
-      OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_STOP);
-      this.bufferingState = false;
-      this.startRealTime = new Date().getTime();
-      this.processSyncData();
-    }.bind(this),this.bufferingTime);
+    this.startRealTime = new Date().getTime();
+    this.processSyncData();
   },
 
   stop : function() {
@@ -209,7 +203,7 @@ OSH.Buffer = Class.create({
   },
 
   buffering:function(name) {
-    OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START,{name:name});
+    //OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START,{name:name});
     this.bufferingState = true;
     window.setTimeout(function(){
       this.bufferingState = false;
