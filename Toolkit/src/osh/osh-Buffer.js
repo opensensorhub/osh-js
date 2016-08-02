@@ -87,7 +87,7 @@ OSH.Buffer = Class.create({
   },
 
   addDataSource : function(dataSourceId,options) {
-    this.buffers[dataSourceId] = {buffer:[],sync : false,bufferingTime : INITIAL_BUFFERING_TIME,status:BUFFER_STATUS.NOT_START_YET};
+    this.buffers[dataSourceId] = {buffer:[],sync : false,bufferingTime : INITIAL_BUFFERING_TIME,status:BUFFER_STATUS.NOT_START_YET, name:"undefined"};
 
     if(typeof options != "undefined") {
       if(typeof  options.sync != "undefined") {
@@ -148,22 +148,23 @@ OSH.Buffer = Class.create({
 
       for (var dataSourceId in this.buffers) {
         currentBufferObj = this.buffers[dataSourceId];
-        if((mustBuffering = (currentBufferObj.buffer.length == 0) && currentBufferObj.status == BUFFER_STATUS.START && currentBufferObj.sync)){
-          break;
-        }
-
-        if (currentBufferObj.sync && currentBufferObj.status == BUFFER_STATUS.START && currentBufferObj.sync && currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
-          minTimeStampBufferObj = currentBufferObj;
-          minTimeStampDSId = dataSourceId;
-          minTimeStamp = currentBufferObj.buffer[0].timeStamp;
+        if((currentBufferObj.status == BUFFER_STATUS.START || currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) && currentBufferObj.sync) {
+          mustBuffering = (currentBufferObj.buffer.length == 0);
+          if(mustBuffering) {
+              break;
+          } else if (currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
+              minTimeStampBufferObj = currentBufferObj;
+              minTimeStampDSId = dataSourceId;
+              minTimeStamp = currentBufferObj.buffer[0].timeStamp;
+          }
         }
       }
 
       // re-buffer because at least one dataSource has no data and its status is START
-      if(mustBuffering|| minTimeStampBufferObj == null) {
+      if(mustBuffering) {
         this.buffering(currentBufferObj.name,currentBufferObj.bufferingTime);
         this.processSyncData();
-      } else {
+      } else if(minTimeStampBufferObj != null) {
         this.processData(minTimeStampBufferObj, minTimeStampDSId, function () {
             this.processSyncData();
         }.bind(this));

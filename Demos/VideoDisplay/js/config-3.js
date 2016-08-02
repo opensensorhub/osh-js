@@ -4,6 +4,7 @@ function init() {
     //--------------------- Creates dataSources --------------------//
     //--------------------------------------------------------------//
 
+    var replayFactor = 1;
     //--Android Phone Video
     var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
         protocol: "ws",
@@ -13,7 +14,7 @@ function init() {
         observedProperty: "http://sensorml.com/ont/swe/property/Location",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: "1"
+        replaySpeed: replayFactor+""
     });
 
     var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
@@ -24,7 +25,7 @@ function init() {
         observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: "1"
+        replaySpeed: replayFactor+""
     });
 
     var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
@@ -35,7 +36,7 @@ function init() {
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: "1"
+        replaySpeed: replayFactor+""
     });
 
     var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
@@ -322,14 +323,36 @@ function init() {
     //--------------------- Creates DataProvider --------------------//
     //---------------------------------------------------------------//
 
-    var dataProviderController = new OSH.DataReceiver.DataReceiverController();
-
-    dataProviderController.addEntity(androidEntity,{
-        sync: true,
-        bufferingTime:3*1000
+    var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+        replayFactor : replayFactor
     });
 
-    dataProviderController.addDataSource(weatherDataSource,{sync: false});
+    // We can add a group of dataSources and set the options
+    /*dataProviderController.addEntity(androidEntity,{
+        sync: true,
+        bufferingTime:15*1000
+    });*/
+
+    // or we can add each dataSource separately and define different options such as sync or bufferingTime
+    dataProviderController.addDataSource(androidPhoneGpsDataSource,{
+        sync: true,
+        bufferingTime:5*1000,
+        name:"Android GPS"
+    });
+
+    dataProviderController.addDataSource(androidPhoneOrientationDataSource,{
+        sync: true,
+        bufferingTime:5*1000,
+        name:"Android Orientation"
+    });
+
+    dataProviderController.addDataSource(androidPhoneVideoDataSource,{
+        sync: true,
+        bufferingTime:30*1000,
+        name:"Android Video"
+    });
+
+    dataProviderController.addDataSource(weatherDataSource,{sync: false, name : "Weather"});
     //---------------------------------------------------------------//
     //---------------------------- Starts ---------------------------//
     //---------------------------------------------------------------//
