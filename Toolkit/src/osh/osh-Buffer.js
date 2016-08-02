@@ -203,7 +203,7 @@ OSH.Buffer = Class.create({
   },
 
   buffering:function(name) {
-    //OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START,{name:name});
+    OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START,{name:name});
     this.bufferingState = true;
     window.setTimeout(function(){
       this.bufferingState = false;
