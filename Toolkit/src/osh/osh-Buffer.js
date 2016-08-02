@@ -42,7 +42,7 @@ OSH.Buffer = Class.create({
   },
 
   /**
-   * Starts the buffer after INITIAL_BUFFERING_TIME elapsed.
+   * Starts the buffer.
    */
   start:function() {
     this.stop = false;

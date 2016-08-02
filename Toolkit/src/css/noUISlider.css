@@ -42,3 +42,10 @@
     height:0px !important;
 }
 
+
+.noUi-handle:active {
+    background-color: rgba(5, 107, 166, 0.6);
+    box-shadow:none;
+    border:none;
+}
+
