@@ -5,6 +5,9 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 
 		var cssClass = document.getElementById(this.divId).className;
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
+		
+		this.imageDrapingPrimitive = null;
+		this.frameCount = 0;
 	},
 
 	updateMarker : function(styler,timeStamp,options) {
@@ -39,26 +42,74 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 			selected:((typeof(options.selected) != "undefined")? options.selected : false)
 		});
 	},
+	
+    updateDrapedImage: function(styler,timeStamp,options) {
+		
+    	var llaPos = styler.platformLocation;
+    	var camPos = Cesium.Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
+    	
+    	var DTR = Math.PI/180.;
+    	var attitude = styler.platformOrientation;
+    	var gimbal = styler.gimbalOrientation;
+    	var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, /*roll*DTR*/0.0, (-90.0+attitude.pitch+gimbal.pitch)*DTR);
+    	//var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, (-90.0-42)*DTR);
+        var camRot = Cesium.Matrix3.fromQuaternion(camQuat);
+        
+    	var camProj = styler.cameraModel.camProj;
+    	var camDistR = styler.cameraModel.camDistR;
+    	var camDistT = styler.cameraModel.camDistT;
+    	
+    	var videoElt = styler.imageSrc;
+    	
+    	//if (this.frameCount%60 == 0)
+    	{
+	    	var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Cesium.ImageDrapingPrimitive({
+	            imageSrc: videoElt,
+	            camPos: camPos,
+	            camRot: camRot,
+	            camProj: camProj,
+	            camDistR: camDistR,
+	            camDistT: camDistT,
+	            asynchronous : false
+	        }));
+	    	
+	    	// remove previous primitive
+	    	/*if (this.imageDrapingPrimitive != null) {
+	    		this.viewer.scene.primitives.remove(this.imageDrapingPrimitive);
+	        }
+	    	this.imageDrapingPrimitive = newImageDrapingPrimitive;*/
+    	}
+    	
+    	this.frameCount++;
+	},
 
 	//---------- MAP SETUP --------------//
 	beforeAddingItems: function ($super, options) {
 		this.markers = {};
 	    this.first = true;
 	    
+	    var imageryProviders = Cesium.createDefaultImageryProviderViewModels();
 	    this.viewer = new Cesium.Viewer(this.divId, {
-	    	imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
-	    	    url : 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
-	    	}),
-	    	baseLayerPicker : false,
-	    	timeline : false,
-			homeButton : false,
-			navigationInstructionsInitiallyVisible : false,
-			navigationHelpButton : false,
-			geocoder : true,
-			fullscreenButton : false,
-			showRenderLoopErrors : false,
-			animation:false
+	    	baseLayerPicker: true,
+	    	imageryProviderViewModels: imageryProviders,
+	    	selectedImageryProviderViewModel: imageryProviders[6],
+	    	timeline: false,
+			homeButton: false,
+			navigationInstructionsInitiallyVisible: false,
+			navigationHelpButton: false,
+			geocoder: true,
+			fullscreenButton: false,
+			showRenderLoopErrors: true,
+			animation: false,
+			targetFrameRate: 10
 	    });
+	    
+	    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+	        url : '//assets.agi.com/stk-terrain/world'
+	    });
+	    
+	    this.viewer.scene.copyGlobeDepth = true;
+	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 	    
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
@@ -129,10 +180,9 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	},
 	
 	updateMapMarker: function(id, properties) {
-		// updates position
-        var lon = properties.lon;
+		var lon = properties.lon;
         var lat = properties.lat;
-        var alt = properties.lat;
+        var alt = properties.alt;
         var orient = properties.orientation;
         var imgIcon = properties.icon;
         
@@ -175,7 +225,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
     			 this.viewer.selectedEntity = marker;
     		}
         }
-	},
+	},	
 	
 	getAltitude : function(lat, lon) {
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());

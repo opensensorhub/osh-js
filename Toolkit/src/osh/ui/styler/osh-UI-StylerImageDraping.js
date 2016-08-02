@@ -7,6 +7,7 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 		this.gimbalOrientation = null;
 		this.cameraModel = null;
 		this.imageSrc = null;
+		this.snapshotFunc = null;
 		
 		this.options = {};
 		
@@ -57,6 +58,10 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 			}.bind(this);
 			this.addFn(properties.cameraModelFunc.dataSourceIds,fn);
 		}
+		
+		if (typeof(properties.snapshotFunc) != "undefined") {
+			this.snapshotFunc = properties.snapshotFunc;
+		}
 	},
 
 	init: function($super,view) {
@@ -65,13 +70,18 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 
 	setData: function($super,dataSourceId,rec,view,options) {
 		if ($super(dataSourceId,rec,view,options)) {
-			if (typeof(view) != "undefined" &&
+			
+			var enabled = true;
+			if (this.snapshotFunc != null)
+				enabled = this.snapshotFunc();
+			
+			if (typeof(view) != "undefined" && enabled &&
 				this.platformLocation != null &&
 				this.platformOrientation != null &&
 				this.gimbalOrientation != null &&
 				this.cameraModel != null &&
 				this.imageSrc != null) {
-				view.updateDrapedImage(this,rec.timeStamp,options);
+				    view.updateDrapedImage(this,rec.timeStamp,options);
 			}
 		}
 	}

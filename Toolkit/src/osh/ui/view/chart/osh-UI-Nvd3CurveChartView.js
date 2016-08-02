@@ -139,7 +139,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		}
 
 		this.chart.update();
-		if (this.data.values.length > 20) {
+		if (this.data.values.length > 200) {
 			this.data.values.shift();
 		}
 	},
