@@ -50,7 +50,8 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 				wNumb({
 					decimals: 1,
 					edit:function( value ){
-						return new Date(parseInt(value)).toISOString();
+						var date = new Date(parseInt(value)).toISOString();
+						return date.split("T")[1].split("Z")[0];
 					}
 				})
 			],
