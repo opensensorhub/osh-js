@@ -127,8 +127,13 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 			var v_icon = null;
 
-			if (p_node.icon!=null)
-				v_icon = createImgElement(null,'icon_tree',p_node.icon);
+			if (p_node.icon!=null) {
+				if(p_node.icon != undefined && p_node.icon != "") {
+					v_icon = createImgElement(null, 'icon_tree', p_node.icon);
+				} else {
+					v_icon = createImgElement(null, 'icon_tree', "images/tree/tree/folder.gif");
+				}
+			}
 
 			var v_li = document.createElement('li');
 			p_node.elementLi = v_li;
@@ -252,6 +257,10 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 				if (this.nodeAfterOpenEvent!=undefined)
 					this.nodeAfterOpenEvent(p_node);
+
+				// check for default folden icon
+				var divNode = document.getElementById(p_node.id);
+				divNode.previousElementSibling.src = "images/tree/tree/folderopen.gif";
 			}
 		},
 		///// Collapsing node
@@ -268,6 +277,9 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 				img.src = 'images/tree/expand.png';
 				elem_ul = img.parentElement.getElementsByTagName("ul")[0];
 				elem_ul.style.display = 'none';
+
+				var divNode = document.getElementById(p_node.id);
+				divNode.previousElementSibling.src = "images/tree/tree/folder.gif";
 
 			}
 		},
@@ -463,7 +475,8 @@ function createImgElement(p_id,p_class,p_src) {
 		element.id = p_id;
 	if (p_class!=undefined)
 		element.className = p_class;
-	if (p_src!=undefined)
+	if (p_src !=undefined) {
 		element.src = p_src;
+	}
 	return element;
 }
