@@ -322,13 +322,14 @@ function init() {
     //--------------------- Creates DataProvider --------------------//
     //---------------------------------------------------------------//
 
-    var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-        bufferingTime : 10*1000,
-        synchronizedTime : true
+    var dataProviderController = new OSH.DataReceiver.DataReceiverController();
+
+    dataProviderController.addEntity(androidEntity,{
+        sync: true,
+        bufferingTime:3*1000
     });
 
-    dataProviderController.addEntity(androidEntity,true);
-    dataProviderController.addDataSource(weatherDataSource,false);
+    dataProviderController.addDataSource(weatherDataSource,{sync: false});
     //---------------------------------------------------------------//
     //---------------------------- Starts ---------------------------//
     //---------------------------------------------------------------//
