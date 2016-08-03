@@ -336,13 +336,13 @@ function init() {
     // or we can add each dataSource separately and define different options such as sync or bufferingTime
     dataProviderController.addDataSource(androidPhoneGpsDataSource,{
         sync: true,
-        bufferingTime:5*1000,
+        bufferingTime:10*1000,
         name:"Android GPS"
     });
 
     dataProviderController.addDataSource(androidPhoneOrientationDataSource,{
         sync: true,
-        bufferingTime:5*1000,
+        bufferingTime:10*1000,
         name:"Android Orientation"
     });
 
