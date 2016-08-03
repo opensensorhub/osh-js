@@ -1,6 +1,6 @@
 .loading-container {
     position:absolute;
-    height:150px;
+    height:165px;
     width:100%;
     background-color:#FFF;
     opacity: 0.5;
@@ -11,11 +11,10 @@
 
 .loading-dot-container {
     position: absolute;
-    top: 35%;
+    top: 50%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    height:165px;
 }
 .loading-dot {
     width: 50px;
