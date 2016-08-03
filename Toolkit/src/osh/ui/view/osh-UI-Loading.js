@@ -6,10 +6,11 @@ OSH.UI.Loading = Class.create({
         OSH.EventManager.observe(OSH.EventManager.EVENT.LOADING_START,function(event){
             var htmlVar="";
             htmlVar += "	<div class=\"loading-dot-container\">";
+            htmlVar += "	<div class=\"loading-label\">Buffering<\/div>";
             htmlVar += "	<div class=\"loading-dot\"><\/div>";
             htmlVar += "	<div class=\"loading-dot\"><\/div>";
             htmlVar += "	<div class=\"loading-dot\"><\/div>";
-            htmlVar += "	<div><span class=\"loading-label\">Buffering<\/span><\/div>";
+
             htmlVar += "	<\/div>";
 
             loadingDiv.innerHTML = htmlVar;
