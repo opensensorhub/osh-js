@@ -145,13 +145,15 @@ OSH.Buffer = Class.create({
       var currentBufferObj = null;
 
       var mustBuffering = false;
+      var maxBufferingTime = -1;
 
       for (var dataSourceId in this.buffers) {
         currentBufferObj = this.buffers[dataSourceId];
         if((currentBufferObj.status == BUFFER_STATUS.START || currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) && currentBufferObj.sync) {
-          mustBuffering = (currentBufferObj.buffer.length == 0);
-          if(mustBuffering) {
-              break;
+          if(currentBufferObj.buffer.length == 0){
+            if(maxBufferingTime < currentBufferObj.bufferingTime) {
+              maxBufferingTime = currentBufferObj.bufferingTime;
+            }
           } else if (currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
               minTimeStampBufferObj = currentBufferObj;
               minTimeStampDSId = dataSourceId;
@@ -161,8 +163,8 @@ OSH.Buffer = Class.create({
       }
 
       // re-buffer because at least one dataSource has no data and its status is START
-      if(mustBuffering) {
-        this.buffering(currentBufferObj.name,currentBufferObj.bufferingTime);
+      if(maxBufferingTime > -1) {
+        this.buffering(currentBufferObj.name,maxBufferingTime);
         this.processSyncData();
       } else if(minTimeStampBufferObj != null) {
         this.processData(minTimeStampBufferObj, minTimeStampDSId, function () {
