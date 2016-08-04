@@ -9,19 +9,19 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_GOTO, function (event) {
-            this.connector.sendRequest(this.buildGotoRequest({lat: event.memo.geoLat, lon: event.memo.geoLon}));            
+            this.connector.sendRequest(this.buildGotoRequest({lat: event.geoLat, lon: event.geoLon}));
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_ORBIT, function (event) {
-            this.connector.sendRequest(this.buildOrbitRequest({lat: event.memo.geoLat, lon: event.memo.geoLon, radius: 10}));            
+            this.connector.sendRequest(this.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10}));
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LOOKAT, function (event) {
-            this.connector.sendRequest(this.buildLookAtRequest({lat: event.memo.geoLat, lon: event.memo.geoLon}));            
+            this.connector.sendRequest(this.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon}));
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LAND, function (event) {
-            this.connector.sendRequest(this.buildLandRequest({lat: event.memo.geoLat, lon: event.memo.geoLon}));            
+            this.connector.sendRequest(this.buildLandRequest({lat: event.geoLat, lon: event.geoLon}));
         }.bind(this));
     },
 

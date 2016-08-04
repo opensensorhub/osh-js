@@ -56,3 +56,7 @@ OSH.Utils.getYCursorPosition = function() {
 OSH.Utils.isArrayIntersect = function(a, b) {
   return a.intersect(b).length > 0;
 };
+
+OSH.Utils.isWebWorker = function() {
+  return Modernizr.webworkers;
+};

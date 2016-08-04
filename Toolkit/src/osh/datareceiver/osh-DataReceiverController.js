@@ -64,36 +64,21 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     this.buffer = new OSH.Buffer(this.options);
   },
 
-  addEntity : function(entity,sync) {
+  addEntity : function(entity,options) {
     if(typeof (entity.dataSources) != "undefined") {
-      var synchronize = false;
-      if(typeof sync != "undefined") {
-        synchronize = sync;
-      }
-
       for(var i=0;i < entity.dataSources.length;i++) {
-        this.addDataSource(entity.dataSources[i],synchronize);
+        this.addDataSource(entity.dataSources[i],options);
       }
     }
   },
 
-  addDataSource: function(dataSource,sync) {
+  addDataSource: function(dataSource,options) {
     this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
-   /* this.buffer.register(dataSource.getId(),function(data) {
-      //TODO: make a specific SYNC_DATA event with parameter dataSourceId instead of having it into the eventName
-      OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_SYNC_TIME,{timeStamp : data.timeStamp});
-      OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSource.getId(), {data : data});
-    }.bind(this));*/
+    this.buffer.addDataSource(dataSource.id,options);
 
-    var synchronize = false;
-    if(typeof sync != "undefined") {
-      synchronize = sync;
-    }
-
-    this.buffer.addDataSource(dataSource.id,sync);
     //TODO: make frozen variables?
     dataSource.onData = function(data) {
-        this.buffer.push({dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
+        this.buffer.push({dataSourceId:dataSource.getId(),data : data});
         //OSH.EventManager.fire(OSH.EventManager.EVENT.DATA,{dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
     }.bind(this);
   },

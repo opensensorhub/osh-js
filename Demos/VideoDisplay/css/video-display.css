@@ -8,7 +8,7 @@ html {
 }
 
 .main-view {
-	height: calc(100% - 75px);
+	height: calc(100% - 32px);
 }
 
 header.navbar {
@@ -75,8 +75,8 @@ a.navbar-brand:hover {
 }
 
 .rangeSlider-container {
-	height: 120px;
-    margin: 5 30 0 30;
+	height: 80px;
+    margin: 5px 30px 0px 30px;
     background-color: #fff;
     border: 1px solid #444;
     border-radius: 5px;
@@ -87,7 +87,7 @@ a.navbar-brand:hover {
 }
 
 .rangeSlider {
-    margin-top: 50px;
+    margin-top: 10px;
     margin-left: 20px;
     margin-right: 5px;
 }
