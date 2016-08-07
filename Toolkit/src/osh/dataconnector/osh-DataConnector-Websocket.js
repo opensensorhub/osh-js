@@ -1,8 +1,8 @@
 OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
     connect: function () {
-        if (this.ws == null) {
+        if (!this.init) {
             //creates Web Socket
-            if (OSH.Utils.isWebWorker()) {
+            if (OSH.Utils.isWebWorker()){
                 var url = this.getUrl();
                 var blobURL = URL.createObjectURL(new Blob(['(',
 
@@ -63,17 +63,19 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
                     this.ws.close();
                 }.bind(this);
             }
-
+            this.init = true;
         }
     },
 
     disconnect: function() {
         if (OSH.Utils.isWebWorker() && this.worker != null) {
+            console.log("disconnect");
             this.worker.postMessage("close");
-            this.worker = null;
+            this.worker.terminate();
+            this.init = false;
         } else if (this.ws != null) {
             this.ws.close();
-            this.ws = null;
+            this.init = false;
         }
     },
 
