@@ -119,8 +119,12 @@ OSH.Buffer = Class.create({
     // check if data has to be sync
     // append the data to the existing corresponding buffer
     var currentBufferObj = this.buffers[dataSourceId];
-    var sync = currentBufferObj.syncMasterTime;
 
+    if(currentBufferObj.status == BUFFER_STATUS.CANCEL){
+      return;
+    }
+
+    var sync = currentBufferObj.syncMasterTime;
     // define the time of the first data as relative time
     if(currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) {
       currentBufferObj.startRelativeTime = event.data.timeStamp;

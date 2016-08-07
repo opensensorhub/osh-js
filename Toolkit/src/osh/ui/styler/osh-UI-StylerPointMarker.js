@@ -80,6 +80,9 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 				view.updateMarker(this,rec.timeStamp,options);
 			}
 		}
+	},
+
+	clear:function($super){
 	}
 
 });
