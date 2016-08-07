@@ -1,11 +1,33 @@
 OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 	initialize: function ($super, divId, options) {
 		$super(divId, [], options);
-		var slider = document.getElementById(this.divId);
+
+		this.slider = document.createElement("div");
+		var activateButtonDiv = document.createElement("div");
+		var aTagActivateButton = document.createElement("a");
+		activateButtonDiv.appendChild(aTagActivateButton);
+
+
+		this.slider.setAttribute("class","osh-rangeslider-slider");
+		activateButtonDiv.setAttribute("class","osh-rangeslider-control");
+
+		var self = this;
+
+		activateButtonDiv.addEventListener("click",function(event) {
+			if(activateButtonDiv.className.indexOf("osh-rangeslider-control-select") > -1) {
+				activateButtonDiv.setAttribute("class","osh-rangeslider-control");
+				self.deactivate();
+			} else {
+				activateButtonDiv.setAttribute("class","osh-rangeslider-control-select");
+				self.activate();
+			}
+		});
+		document.getElementById(this.divId).appendChild(this.slider);
+		document.getElementById(this.divId).appendChild(activateButtonDiv);
 
 		var startTime = new Date().getTime();
 		this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
-		slider.setAttribute('disabled', true);
+		this.slider.setAttribute('disabled', true);
 
 		this.dataSourcesId = [];
 
@@ -17,7 +39,7 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		if(typeof options != "undefined") {
 			if(typeof options.startTime != "undefined") {
 				startTime = new Date(options.startTime).getTime();
-				slider.removeAttribute('disabled');
+				//slider.removeAttribute('disabled');
 			}
 
 			if(typeof options.endTime != "undefined") {
@@ -34,19 +56,26 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 
 		}
 
-		noUiSlider.create(slider, {
-			start: [startTime]/*,timestamp("2015-02-16T08:09:00Z")]*/,
+		noUiSlider.create(this.slider, {
+			start: [startTime,this.endTime]/*,timestamp("2015-02-16T08:09:00Z")]*/,
 			range: {
-				min: startTime,
-				max: this.endTime
+				min: startTime-30*1000,
+				max: this.endTime+30*1000
 			},
 			//step:  1000* 60* 60,
 			format: wNumb({
 				decimals: 0
 			}),
-			behaviour: 'tap',
-			connect: 'upper',
+			behaviour: 'drag',
+			connect: true,
 			tooltips: [
+				wNumb({
+					decimals: 1,
+					edit:function( value ){
+						var date = new Date(parseInt(value)).toISOString();
+						return date.split("T")[1].split("Z")[0];
+					}
+				}),
 				wNumb({
 					decimals: 1,
 					edit:function( value ){
@@ -69,59 +98,35 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		});
 
 		//noUi-handle noUi-handle-lower
-		var self = this;
-		this.isSliding = false;
-
-		this.count = 0;
-
 		// start->update->end
-		slider.noUiSlider.on("start", function (values, handle) {
-			self.startEvent();
-		});
-
-		slider.noUiSlider.on("update", function (values, handle) {
-			self.updateEvent();
-		});
-
-		slider.noUiSlider.on("end", function (values, handle) {
-			self.endEvent(values,handle);
+		this.slider.noUiSlider.on("slide", function (values, handle) {
+			self.update = true;
 		});
 
 		// listen for DataSourceId
 		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-			if(!self.isSliding && self.count != 2 && ((++self.dataCount)%self.refreshRate == 0)) {
-				slider.noUiSlider.set([event.timeStamp]);
+			if(!self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
+				self.slider.noUiSlider.set([event.timeStamp]);
 				self.dataCount = 0;
 			}
 		});
 	},
 
-	startEvent: function() {
-		this.isSliding = true;
-		this.count = 1;
-	},
-
-	updateEvent: function() {
-		if(this.count == 1) {
-			this.count++;
-		}
-	},
-
-	endEvent: function(values,handle) {
-		var timeout = 0;
-		var self = this;
-		if(self.count == 2) {
+	deactivate:function() {
+		this.slider.setAttribute('disabled', true);
+		this.lock = false;
+		if(this.update) {
+			var values = this.slider.noUiSlider.get();
 			OSH.EventManager.fire(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
-				startTime: new Date(parseInt(values[handle])).toISOString(),
-				endTime: new Date(self.endTime).toISOString()
+				startTime: new Date(parseInt(values[0])).toISOString(),
+				endTime: new Date(parseInt(values[1])).toISOString()
 			});
-			// update slider again after a few time
-			timeout = 3000;
 		}
+		this.update = false;
+	},
 
-		window.setTimeout(function(){
-			self.count = 0;
-			self.isSliding = false;
-		},3000);
+	activate: function() {
+		this.slider.removeAttribute('disabled');
+		this.lock = true;
 	}
 });

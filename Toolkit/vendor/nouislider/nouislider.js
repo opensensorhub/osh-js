@@ -808,7 +808,8 @@ function closure ( target, options, originalOptions ){
 		scope_Spectrum = options.spectrum,
 		scope_Values = [],
 		scope_Events = {},
-		scope_Self;
+		scope_Self,
+		lock=false;
 
 
 	// Delimit proposed values for handle positions.
@@ -875,6 +876,19 @@ function closure ( target, options, originalOptions ){
 		return event;
 	}
 
+
+	function getLock() {
+		return lock;
+	}
+
+	function setLock() {
+		lock = true;
+	}
+
+	function releaseLock() {
+		lock = false;
+	}
+
 	// Append a handle to the base.
 	function addHandle ( direction, index ) {
 
@@ -892,6 +906,13 @@ function closure ( target, options, originalOptions ){
 		addClass(origin, options.cssClasses.origin);
 		origin.appendChild(handle);
 
+
+		handle.addEventListener('mousedown',function(event) {
+			setLock();
+		});
+		handle.addEventListener('mouseup',function(event) {
+			releaseLock();
+		});
 		return origin;
 	}
 
@@ -1429,7 +1450,6 @@ function closure ( target, options, originalOptions ){
 
 	// Bind move events on document.
 	function start ( event, data ) {
-
 		var d = document.documentElement;
 
 		// Mark the handle as 'active' so it can be styled.
@@ -1584,7 +1604,6 @@ function closure ( target, options, originalOptions ){
 
 		// Attach the tap event to the slider base.
 		if ( behaviour.tap ) {
-
 			attach ( actions.start, scope_Base, tap, {
 				handles: scope_Handles
 			});
@@ -1597,7 +1616,6 @@ function closure ( target, options, originalOptions ){
 
 		// Make the range draggable.
 		if ( behaviour.drag ){
-
 			var drag = [scope_Base.querySelector( '.' + options.cssClasses.connect )];
 			addClass(drag[0], options.cssClasses.draggable);
 
@@ -1616,7 +1634,6 @@ function closure ( target, options, originalOptions ){
 			});
 		}
 	}
-
 
 	// Test suggested values and apply margin, step.
 	function setHandle ( handle, to, noLimitOption ) {
@@ -1922,7 +1939,8 @@ function closure ( target, options, originalOptions ){
 		updateOptions: updateOptions,
 		options: originalOptions, // Issue #600
 		target: scope_Target, // Issue #597
-		pips: pips // Issue #594
+		pips: pips, // Issue #594,
+		lock:getLock
 	};
 
 	// Attach user events.
@@ -1948,6 +1966,8 @@ function closure ( target, options, originalOptions ){
 		slider.set(options.start);
 
 		target.noUiSlider = slider;
+
+		// work around to catch click event even if the values is updating
 		return slider;
 	}
 
@@ -1955,5 +1975,4 @@ function closure ( target, options, originalOptions ){
 	return {
 		create: initialize
 	};
-
 }));

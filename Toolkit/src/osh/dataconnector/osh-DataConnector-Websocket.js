@@ -69,7 +69,6 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
 
     disconnect: function() {
         if (OSH.Utils.isWebWorker() && this.worker != null) {
-            console.log("disconnect");
             this.worker.postMessage("close");
             this.worker.terminate();
             this.init = false;

@@ -42,7 +42,7 @@ function init() {
         endTime: "2015-02-16T08:09:00Z",
         replaySpeed: replayFactor+"",
         syncMasterTime: true,
-        bufferingTime: 5000
+        bufferingTime: 1000
     });
 
     var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
