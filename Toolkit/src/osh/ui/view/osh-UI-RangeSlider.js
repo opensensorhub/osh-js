@@ -88,14 +88,12 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		});
 
 		// listen for DataSourceId
-		for(var i=0;i < this.dataSourcesId.length;i++) {
-			OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+this.dataSourcesId[i], function (event) {
-				if(!self.isSliding && self.count != 2 && ((++self.dataCount)%self.refreshRate == 0)) {
-					slider.noUiSlider.set([event.data.timeStamp]);
-					self.dataCount = 0;
-				}
-			});
-		}
+		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
+			if(!self.isSliding && self.count != 2 && ((++self.dataCount)%self.refreshRate == 0)) {
+				slider.noUiSlider.set([event.timeStamp]);
+				self.dataCount = 0;
+			}
+		});
 	},
 
 	startEvent: function() {
@@ -115,8 +113,7 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		if(self.count == 2) {
 			OSH.EventManager.fire(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
 				startTime: new Date(parseInt(values[handle])).toISOString(),
-				endTime: new Date(self.endTime).toISOString(),
-				dataSourcesId: self.dataSourcesId
+				endTime: new Date(self.endTime).toISOString()
 			});
 			// update slider again after a few time
 			timeout = 3000;

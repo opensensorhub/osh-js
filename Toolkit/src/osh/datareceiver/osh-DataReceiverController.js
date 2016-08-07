@@ -31,7 +31,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
       this.buffer.cancelAll();
       //for now, reconnect every datasources
       for (var id in this.dataSourcesIdToDataSources) {
-        if(event.dataSourcesId.indexOf(id) > -1) {
+        if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
           // disconnect stream
           this.dataSourcesIdToDataSources[id].disconnect();
 
@@ -74,7 +74,11 @@ OSH.DataReceiver.DataReceiverController = Class.create({
 
   addDataSource: function(dataSource,options) {
     this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
-    this.buffer.addDataSource(dataSource.id,options);
+    this.buffer.addDataSource(dataSource.id,{
+      name: dataSource.name,
+      syncMasterTime:dataSource.syncMasterTime,
+      bufferingTime : dataSource.bufferingTime
+    });
 
     //TODO: make frozen variables?
     dataSource.onData = function(data) {

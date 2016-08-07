@@ -5,7 +5,7 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource,{
   
   parseTimeStamp: function($super,data){
     //gets the timeStamp
-    return new DataView(data).getFloat64(0, false); // read double time stamp as big endian
+    return new DataView(data).getFloat64(0, false) +  this.androidShift; // read double time stamp as big endian
   },
   
   parseData: function($super,data){

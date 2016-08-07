@@ -1,10 +1,12 @@
 OSH.DataReceiver.DataSource = Class.create({
   initialize: function(name,properties,options) {
     this.id = "DataSource-"+OSH.Utils.randomUUID();
+    this.name  = this.id;
     this.properties = properties;
     this.options = options;
 
     this.androidShift = 0;
+
     this.initDataSource(name,properties,options);
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE+"-"+this.id,function(event){
@@ -27,6 +29,20 @@ OSH.DataReceiver.DataSource = Class.create({
 
     if(typeof(options) != "undefined"  && options.androidShift) {
       this.androidShift = 16 * 1000;
+    }
+
+    if(typeof properties.syncMasterTime != "undefined") {
+      this.syncMasterTime = properties.syncMasterTime;
+    } else {
+      this.syncMasterTime = false;
+    }
+
+    if(typeof properties.bufferingTime != "undefined") {
+      this.bufferingTime = properties.bufferingTime;
+    }
+
+    if(typeof properties.name != "undefined") {
+      this.name = properties.name;
     }
   },
   /**

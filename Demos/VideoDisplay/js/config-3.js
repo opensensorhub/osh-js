@@ -14,7 +14,9 @@ function init() {
         observedProperty: "http://sensorml.com/ont/swe/property/Location",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: replayFactor+""
+        replaySpeed: replayFactor+"",
+        syncMasterTime: true,
+        bufferingTime: 1000
     });
 
     var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
@@ -25,7 +27,9 @@ function init() {
         observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: replayFactor+""
+        replaySpeed: replayFactor+"",
+        syncMasterTime: true,
+        bufferingTime: 1000
     });
 
     var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
@@ -36,7 +40,9 @@ function init() {
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: replayFactor+""
+        replaySpeed: replayFactor+"",
+        syncMasterTime: true,
+        bufferingTime: 5000
     });
 
     var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
@@ -46,7 +52,9 @@ function init() {
         offeringID: "urn:mysos:offering03",
         observedProperty: "http://sensorml.com/ont/swe/property/Weather",
         startTime: "now",
-        endTime: "2055-01-01Z"
+        endTime: "2055-01-01Z",
+        syncMasterTime: false,
+        bufferingTime: 1000
     });
 
     var taskingVideoDataSource = new OSH.DataSender.Tasking("video-tasking", {
@@ -315,7 +323,6 @@ function init() {
     var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        dataSourcesId:[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id,androidPhoneVideoDataSource.id],
         refreshRate:10
     });
 
@@ -328,31 +335,17 @@ function init() {
     });
 
     // We can add a group of dataSources and set the options
-    /*dataProviderController.addEntity(androidEntity,{
-        sync: true,
-        bufferingTime:15*1000
-    });*/
+    dataProviderController.addEntity(androidEntity);
 
     // or we can add each dataSource separately and define different options such as sync or bufferingTime
-    dataProviderController.addDataSource(androidPhoneGpsDataSource,{
-        sync: true,
-        bufferingTime:10*1000,
-        name:"Android GPS"
-    });
+    dataProviderController.addDataSource(androidPhoneGpsDataSource);
 
-    dataProviderController.addDataSource(androidPhoneOrientationDataSource,{
-        sync: true,
-        bufferingTime:10*1000,
-        name:"Android Orientation"
-    });
+    dataProviderController.addDataSource(androidPhoneOrientationDataSource);
 
-    dataProviderController.addDataSource(androidPhoneVideoDataSource,{
-        sync: true,
-        bufferingTime:30*1000,
-        name:"Android Video"
-    });
+    dataProviderController.addDataSource(androidPhoneVideoDataSource);
 
-    dataProviderController.addDataSource(weatherDataSource,{sync: false, name : "Weather"});
+    dataProviderController.addDataSource(weatherDataSource);
+
     //---------------------------------------------------------------//
     //---------------------------- Starts ---------------------------//
     //---------------------------------------------------------------//

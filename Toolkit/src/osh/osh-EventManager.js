@@ -40,7 +40,7 @@ OSH.EventManager.EVENT = {
     CONNECT_DATASOURCE : "connectDataSource",
     DISCONNECT_DATASOURCE : "disconnectDataSource",
     DATASOURCE_UPDATE_TIME: "updateDataSourceTime",
-    CURRENT_SYNC_TIME : "currentSyncTime",
+    CURRENT_MASTER_TIME : "currentMasterTime",
     UAV_TAKEOFF : "uav:takeoff",
     UAV_GOTO: "uav:goto",
     UAV_LOOKAT : "uav:lookat",

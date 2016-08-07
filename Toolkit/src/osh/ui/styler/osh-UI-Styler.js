@@ -10,9 +10,9 @@ OSH.UI.Styler = Class.create({
 
 	initEvents:function() {
 		OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event){
-			for(var i=0;i < event.dataSourcesId.length;i++) {
-				var currentDS = event.dataSourcesId[i];
-				if(currentDS in this.dataSourceToStylerMap) {
+			for ( var i in this.dataSourceToStylerMap) {
+				var currentDS = this.dataSourceToStylerMap[i];
+				if(currentDS.syncMasterTime) {
 					this.clear();
 				}
 			}

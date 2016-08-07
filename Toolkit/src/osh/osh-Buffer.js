@@ -87,11 +87,11 @@ OSH.Buffer = Class.create({
   },
 
   addDataSource : function(dataSourceId,options) {
-    this.buffers[dataSourceId] = {buffer:[],sync : false,bufferingTime : INITIAL_BUFFERING_TIME,status:BUFFER_STATUS.NOT_START_YET, name:"undefined"};
+    this.buffers[dataSourceId] = {buffer:[],syncMasterTime : false,bufferingTime : INITIAL_BUFFERING_TIME,status:BUFFER_STATUS.NOT_START_YET, name:"undefined"};
 
     if(typeof options != "undefined") {
-      if(typeof  options.sync != "undefined") {
-        this.buffers[dataSourceId].sync = options.sync;
+      if(typeof  options.syncMasterTime != "undefined") {
+        this.buffers[dataSourceId].syncMasterTime = options.syncMasterTime;
       }
 
       if(typeof  options.bufferingTime != "undefined") {
@@ -119,7 +119,7 @@ OSH.Buffer = Class.create({
     // check if data has to be sync
     // append the data to the existing corresponding buffer
     var currentBufferObj = this.buffers[dataSourceId];
-    var sync = currentBufferObj.sync;
+    var sync = currentBufferObj.syncMasterTime;
 
     // define the time of the first data as relative time
     if(currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) {
@@ -149,7 +149,7 @@ OSH.Buffer = Class.create({
 
       for (var dataSourceId in this.buffers) {
         currentBufferObj = this.buffers[dataSourceId];
-        if((currentBufferObj.status == BUFFER_STATUS.START || currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) && currentBufferObj.sync) {
+        if((currentBufferObj.status == BUFFER_STATUS.START || currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) && currentBufferObj.syncMasterTime) {
           if(currentBufferObj.buffer.length == 0){
             if(maxBufferingTime < currentBufferObj.bufferingTime) {
               maxBufferingTime = currentBufferObj.bufferingTime;
@@ -201,7 +201,9 @@ OSH.Buffer = Class.create({
   },
 
   dispatchData:function(dataSourceId,data) {
-    OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_SYNC_TIME,{timeStamp : data.timeStamp});
+    if(this.buffers[dataSourceId].syncMasterTime) {
+      OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, {timeStamp: data.timeStamp});
+    }
     OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
   },
 
