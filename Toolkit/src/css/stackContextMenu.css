@@ -5,11 +5,12 @@
 .stack-menu-container {
     position: absolute;
     width: 150px;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x:hidden;
     box-shadow: 7px 7px 10px 2px #777;
     text-align: center;
     z-index:9999;
+    border-radius: 3px;
 }
 
 .stack-menu {

@@ -351,20 +351,22 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
 					v_tree = this;
 
-					var v_left = p_event.pageX-5;
-					var v_right = p_event.pageY-5;
+					var v_left = p_event.pageX;
+					var v_right = p_event.pageY;
 
 					var divTree = document.getElementById(v_tree.div);
 
+					v_tree.currentContextMenu = p_node.contextMenu;
 					OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+p_node.contextMenu,{
 						//TODO: values have to be provided by properties
 						offsetX: 10,
 						offsetY: 10,
 						action : "show",
-						x:OSH.Utils.getXCursorPosition(),
-						y:OSH.Utils.getYCursorPosition()
-
+						x:v_left,
+						y:v_right
 					});
+
+					console.log(p_node);
 				}
 			}
 		},
@@ -450,8 +452,12 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 	}
 
 	window.onclick = function() {
-		//if (tree.contextMenuDiv!=null)
-		//	tree.contextMenuDiv.style.display = 'none';
+		if(typeof tree.currentContextMenu != "undefined") {
+			OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
+				action : "hide"
+			});
+			tree.currentContextMenu = undefined;
+		}
 	}
 	return tree;
 }

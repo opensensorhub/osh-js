@@ -5,16 +5,12 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
 
     show:function($super,properties) {
         this.removeElement();
-        var closeId = OSH.Utils.randomUUID();
-        var videoId = OSH.Utils.randomUUID();
-
         var htmlVar="";
         htmlVar += "  <div class=\""+this.type+"-menu-circle\">";
         // adds items
         for(var i = 0; i < this.items.length; i++) {
             htmlVar += this.items[i].html;
         }
-        htmlVar += "  <a id=\""+closeId+"\"class=\""+this.type+"-menu-button fa fa-times\" title=\"close\"><\/a>";
         htmlVar += "  <\/div>";
 
         this.rootTag = document.createElement("div");
@@ -22,8 +18,6 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
         this.rootTag.innerHTML = htmlVar;
 
         document.body.appendChild(this.rootTag);
-
-        $(closeId).on("click",this.hide.bind(this));
 
         var offsetX = 0;
         var offsetY = 0;
