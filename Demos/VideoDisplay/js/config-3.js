@@ -142,7 +142,8 @@ function init() {
             yLabel: 'Wind Speed (m/s)',
             xLabel: 'Time',
             css:"chart-view",
-            cssSelected: "video-selected"
+            cssSelected: "video-selected",
+            maxPoints:30
         }
     );
 

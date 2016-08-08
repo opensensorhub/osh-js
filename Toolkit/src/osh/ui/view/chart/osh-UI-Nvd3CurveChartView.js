@@ -13,6 +13,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		var showYAxis = true;
 		var showXAxis = true;
 		var transitionDuration = 1;
+		var maxPoints = 999;
 
 		if (typeof (options) != "undefined") {
 			if (options.xLabel) {
@@ -49,6 +50,9 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 
 			if (options.transitionDuration) {
 				transitionDuration = options.transitionDuration;
+			}
+			if (options.maxPoints) {
+				this.maxPoints = options.maxPoints;
 			}
 		}
 
@@ -139,7 +143,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		}
 
 		this.chart.update();
-		if (this.data.values.length > 200) {
+		if (this.data.values.length > this.maxPoints) {
 			this.data.values.shift();
 		}
 	},
