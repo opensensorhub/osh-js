@@ -12,13 +12,16 @@ OSH.EventManager.observe = function(eventName,fnCallback,id) {
             fnCallback(event.memo);
         }
     };
-    observedEvent[id] = handleEvent;
+    if(typeof  id != "undefined") {
+        observedEvent[id] = handleEvent;
+    }
     document.observe("osh:"+eventName, handleEvent);
 };
 
-OSH.EventManager.stopObserving = function(eventName,fnCallback,id) {
+OSH.EventManager.stopObserving = function(eventName,id) {
     if(typeof id != "undefined") {
         document.stopObserving(eventName, observedEvent[id]);
+        delete observedEvent[id];
     }
 };
 
