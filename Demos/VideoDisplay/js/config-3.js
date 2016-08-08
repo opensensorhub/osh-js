@@ -17,6 +17,8 @@ function init() {
         replaySpeed: replayFactor+"",
         syncMasterTime: true,
         bufferingTime: 1000
+    },{
+        androidShift:true
     });
 
     var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
