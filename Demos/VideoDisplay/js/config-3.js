@@ -325,7 +325,7 @@ function init() {
     var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        refreshRate:10
+        refreshRate:1
     });
 
     //---------------------------------------------------------------//
@@ -338,14 +338,6 @@ function init() {
 
     // We can add a group of dataSources and set the options
     dataProviderController.addEntity(androidEntity);
-
-    // or we can add each dataSource separately and define different options such as sync or bufferingTime
-    dataProviderController.addDataSource(androidPhoneGpsDataSource);
-
-    dataProviderController.addDataSource(androidPhoneOrientationDataSource);
-
-    dataProviderController.addDataSource(androidPhoneVideoDataSource);
-
     dataProviderController.addDataSource(weatherDataSource);
 
     //---------------------------------------------------------------//
