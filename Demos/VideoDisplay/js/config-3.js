@@ -59,13 +59,13 @@ function init() {
         bufferingTime: 1000
     });
 
-    var taskingVideoDataSource = new OSH.DataSender.Tasking("video-tasking", {
+    /*var taskingVideoDataSource = new OSH.DataSender.Tasking("video-tasking", {
         protocol: "http",
         service: "SPS",
         version: "2.0",
         endpointUrl: "ENDPOINT_URL",
         offeringID: "OFFERING_ID"
-    });
+    });*/
 
     //-----------------------------------------------------------//
     //--------------------- Creates menus -----------------------//

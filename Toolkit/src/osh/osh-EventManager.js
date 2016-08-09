@@ -28,7 +28,7 @@ OSH.EventManager.stopObserving = function(eventName,id) {
 OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {
     $(divId).observe(eventName, function(event) {
         if(typeof fnCallback != "undefined") {
-            fnCallback(event.memo);
+            fnCallback(event);
         }
     });
 };

@@ -365,8 +365,6 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 						x:v_left,
 						y:v_right
 					});
-
-					console.log(p_node);
 				}
 			}
 		},

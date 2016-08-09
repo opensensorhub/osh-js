@@ -1,9 +1,9 @@
 .loading-container {
     position:absolute;
-    height:165px;
+    height:52px;
     width:100%;
     background-color:#FFF;
-    opacity: 0.5;
+    opacity: 0.7;
     top:0px;
     z-index: 999999;
     cursor:default;
@@ -15,10 +15,11 @@
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    margin-top:2px;
 }
 .loading-dot {
-    width: 50px;
-    height: 50px;
+    width: 15px;
+    height: 15px;
     border: 2px solid rgba(5, 107, 166, 0.6);
     border-radius: 50%;
     float: left;
@@ -58,9 +59,18 @@
 }
 
 .loading-label {
-    margin-top:10px;
     color: black;
-    font-size: 80px;
-    margin-left:-70px;
+    font-size: 30px;
+    margin-left:-12px;
     color:#292929;
+}
+
+.loading-dot-section-1{
+    float:left;
+}
+
+.loading-dot-section-2{
+    float:left;
+    margin-left: 10px;
+    margin-top: 15px;
 }
