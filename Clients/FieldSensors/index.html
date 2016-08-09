@@ -1,0 +1,114 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>OpenSensorHub - Field Sensors Deployment</title>
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    
+    <!-- Prototype libs -->
+    <script type="text/javascript" src="../../Toolkit/src/common/prototype.min.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/common/modernizr-custom.js"></script>
+    <script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
+
+    <!-- Nvd3 libs -->
+    <link rel="stylesheet" href="../../Toolkit/vendor/nvd3/css/nv.d3.css" />
+    <script src="../../Toolkit/vendor/nvd3/js/d3.v3.min.js"></script>
+    <script src="../../Toolkit/vendor/nvd3/js/nv.d3.min.js"></script>
+
+    <!-- Entity tree libs -->
+    <link rel="stylesheet" href="../../Toolkit/vendor/tree/tree.css" />
+    <script src="../../Toolkit/vendor/tree/tree.js"></script>
+
+    <!-- NoUISlider libs -->
+    <link rel="stylesheet" href="../../Toolkit/vendor/nouislider/nouislider.css" />
+    <script src="../../Toolkit/vendor/nouislider/wNumb.js"></script>
+    <script src="../../Toolkit/vendor/nouislider/nouislider.js"></script>
+    <link rel="stylesheet" href="../../Toolkit/src/css/noUISlider.css" />
+    
+    <!-- Leaflet libs -->
+    <link rel="stylesheet" href="../../Toolkit/vendor/leaflet/leaflet.css"/>
+    <script src="../../Toolkit/vendor/leaflet/leaflet.js"></script>
+    <script src='../../Toolkit/vendor/leaflet/Leaflet.fullscreen.min.js'></script>
+    <link href='../../Toolkit/vendor/leaflet/leaflet.fullscreen.css' rel='stylesheet'/>
+
+    <!--  Cesium libs -->
+    <script src="../../Toolkit/vendor/cesium/Cesium.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/vendor/cesium/Widgets/widgets.css"/>
+    
+    <!-- FFMPEG H264 decoder -->
+    <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/YUVCanvas.js"></script>
+    <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/ffmpeg-h264.js"></script>
+    
+    <!-- OSH libs -->
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/rangeSlider.css">
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/stackContextMenu.css">
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/circularContextMenu.css">
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/tasking.css" />
+    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/tree.css" />
+    <script type="text/javascript" src="../../Toolkit/src/osh/osh-template.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/osh-Utils.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/osh-Buffer.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/osh-EventManager.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-EulerOrientation.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-Chart.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSenderController.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSender-DataSink.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSender-PtzTasking.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerImageDraping.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-DialogView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
+
+    <!-- This client configuration -->
+    <link rel="stylesheet" type="text/css" href="css/client.css">    
+    <script type="text/javascript" src="js/osh-config.js"></script>
+</head>
+
+<body onload="init()" id="body">
+    <nav class="navbar navbar-default navbar-inverse ">
+       <div class="container-fluid">
+          <div class="navbar-header">
+             <a class="navbar-brand" href="http://www.opensensorhub.org/">
+                 <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png"
+                         style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+                 OpenSensorHub</a>
+          </div>
+       </div>
+    </nav>
+    <div id="main-container" class="main-view"></div>
+    <div id="tasking-container" class="tasking-container"></div>
+    <div id="dialog-main-container" class="video-main-container"></div>    
+    <div class="rangeSlider-container">
+       <div id="rangeSlider" class="rangeSlider"></div>
+    </div>
+</body>
+</html>
