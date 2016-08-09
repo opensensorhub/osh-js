@@ -10,10 +10,14 @@
     <script src="../../vendor/nvd3/js/d3.v3.min.js"></script>
     <script src="../../vendor/nvd3/js/nv.d3.min.js"></script>
 
+    <!-- ffmpeg libs -->
+    <script src="../../vendor/ffmpeg/ffmpeg-h264.js"></script>
+    <script src="../../vendor/ffmpeg/YUVCanvas.js"></script>
+
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
     <link rel="stylesheet" type="text/css" href="../../src/css/dialog.css"/>
-    
+
     <!-- OSH libs -->
     <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
     <script type="text/javascript" src="../../src/common/modernizr-custom.js"></script>
@@ -94,6 +98,7 @@
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-H264View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/tasking/osh-UI-TaskingView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
@@ -224,7 +229,8 @@
             strVar += "                <div class=\"select-style\">";
             strVar += "                    <select id=\""+this.typeSelectTagId+"\" required>";
             strVar += "                        <option value=\"\" disabled selected>Select a type<\/option>";
-            strVar += "                        <option value=\"video\">Video<\/option>";
+            strVar += "                        <option value=\"video-H264\">Video (H264)<\/option>";
+            strVar += "                        <option value=\"video-MJPEG\">Video (MJPEG)<\/option>";
             strVar += "                        <option disabled value=\"marker\">Marker<\/option>";
             strVar += "                        <option value=\"chart\">Chart<\/option>";
             strVar += "                    <\/select>";
@@ -322,9 +328,12 @@
             endPointUrl = endPointUrl.replace('http://', '');
 
             var typeTag = document.getElementById(this.typeSelectTagId);
-            if(typeTag.value == "video") {
+            if(typeTag.value == "video-H264") {
                 console.log("video");
-                this.createVideoDialog(name,endPointUrl,offeringID,obsProp,startTime,endTime);
+                this.createH264VideoDialog(name,endPointUrl,offeringID,obsProp,startTime,endTime);
+            } else if(typeTag.value == "video-MJPEG") {
+                console.log("video");
+                this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime);
             }
             return false;
         },
@@ -359,7 +368,7 @@
             }
         },
 
-        createVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime) {
+        createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime) {
             var videoDataSource = new OSH.DataReceiver.VideoMjpeg(name, {
                 protocol: "ws",
                 service: "SOS",
@@ -385,6 +394,53 @@
             });
 
             var videoView = new OSH.UI.MjpegView(dialog.popContentDiv.id, {
+                dataSourceId: videoDataSource.getId(),
+                css: "video",
+                cssSelected: "video-selected",
+                name: "Android Video"
+            });
+
+            var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+                replayFactor : 1
+            });
+
+            // We can add a group of dataSources and set the options
+            dataProviderController.addDataSource(videoDataSource);
+
+            //---------------------------------------------------------------//
+            //---------------------------- Starts ---------------------------//
+            //---------------------------------------------------------------//
+
+            // starts streaming
+            dataProviderController.connectAll();
+        },
+
+        createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime) {
+            var videoDataSource = new OSH.DataReceiver.VideoH264(name, {
+                protocol: "ws",
+                service: "SOS",
+                endpointUrl: endPointUrl,
+                offeringID: offeringID,
+                observedProperty: obsProp,
+                startTime: startTime,
+                endTime: endTime,
+                replaySpeed: 1,
+                syncMasterTime: false,
+                bufferingTime: 1000
+            });
+
+            var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
+                draggable: false,
+                css: "dialog",
+                name: name,
+                show:true,
+                dockable: true,
+                closeable: true,
+                connectionIds : [videoDataSource],
+                swapId: document.body
+            });
+
+            var videoView = new OSH.UI.FFMPEGView(dialog.popContentDiv.id, {
                 dataSourceId: videoDataSource.getId(),
                 css: "video",
                 cssSelected: "video-selected",
