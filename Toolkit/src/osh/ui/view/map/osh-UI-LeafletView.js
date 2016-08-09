@@ -106,6 +106,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
             'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; ' + esriLink + ', ' + esriWholink,
                 maxZoom: maxZoom,
+                maxNativeZoom: 19
             });
 
         var streets = L.tileLayer(mbUrl, {id: 'mapbox.streets', attribution: mbAttr, maxZoom: maxZoom});
