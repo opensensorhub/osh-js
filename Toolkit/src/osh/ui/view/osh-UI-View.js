@@ -129,14 +129,16 @@ OSH.UI.View = Class.create({
             // observes the data come in
             var self = this;
             (function(frozenDataSourceId) { // use a close here to no share the dataSourceId variable
+            	
                 OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + frozenDataSourceId, function (event) {
-                    var selected = false;
-                    // we check only dataSource when the selected entity is not set
-                    if (typeof self.selectedEntity == "undefined") {
-                        selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
+                    // we check selected dataSource only when the selected entity is not set
+                    var selected = false;                	
+                    if (typeof self.selectedEntity != "undefined") {
+                    	selected = (viewItem.entityId == self.selectedEntity);
                     }
-                    selected = selected || ((typeof self.selectedEntity != "undefined") && viewItem.entityId == self.selectedEntity);
-                    // update the whole corresponding datasources list
+                    else {
+                    	selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);                    	
+                    }
 
                     //TODO: maybe done into the styler?
                     styler.setData(frozenDataSourceId, event.data, self, {
@@ -144,6 +146,22 @@ OSH.UI.View = Class.create({
                     });
                     self.lastRec[frozenDataSourceId] = event.data;
                 });
+                
+                OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW, function(event) {
+                	// we check selected dataSource only when the selected entity is not set
+                    var selected = false;                	
+                    if (typeof event.entityId != "undefined") {
+                    	selected = (viewItem.entityId == event.entityId);
+                    }
+                    else {
+                    	selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);                    	
+                    }
+                    
+                	styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
+                        selected: selected
+                    });
+                });
+                
             })(dataSourceId); //passing the variable to freeze, creating a new closure
         }
     },
