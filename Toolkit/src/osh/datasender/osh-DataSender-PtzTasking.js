@@ -1,4 +1,4 @@
-OSH.DataSender.Tasking = Class.create(OSH.DataSender.DataSource,{
+OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
 
     buildRequest: function($super,properties) {
         var xmlSpsRequest = "<sps:Submit ";
@@ -22,10 +22,19 @@ OSH.DataSender.Tasking = Class.create(OSH.DataSender.DataSource,{
         xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
 
         // adds values
-        xmlSpsRequest += "<sps:values>rpan,"+properties.pan+" rzoom,"+properties.zoom+" r tilt,"+properties.tilt+"</sps:values>";
+        xmlSpsRequest += "<sps:values>";
+        
+        if (properties.pan != 0)
+        	xmlSpsRequest += "rpan,"+properties.pan;
+        
+        if (properties.tilt != 0)
+        	xmlSpsRequest += " rtilt,"+properties.tilt;        	
+        
+        if (properties.zoom != 0)
+        	xmlSpsRequest += " rzoom,"+properties.zoom;
 
         // adds endings
-        xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
+        xmlSpsRequest += "</sps:values></sps:ParameterData></sps:taskingParameters></sps:Submit>";
 
         document.fire("osh:log", xmlSpsRequest);
 

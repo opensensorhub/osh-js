@@ -24,7 +24,7 @@ var htmlTaskingComponent =
     "</div>";
 
 
-OSH.UI.TaskingView = Class.create(OSH.UI.View, {
+OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, options) {
         $super(divId);
         var width = "640";
@@ -49,10 +49,6 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
             if (options.cssSelected) {
                 this.cssSelected = options.cssSelected;
             }
-
-            if(options.dataSourceId) {
-                this.dataSourceId = options.dataSourceId;
-            }
         }
 
         // creates video tag element
@@ -72,33 +68,14 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
         this.pan = 0;
         this.tilt = 0;
         this.zoom = 0;
-        this.timerId = 0;
-
-        var interval = 100;
-        this.timerIds = new Array();
-        // inits listeners
-       /* $("button-tilt-up").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(1)}.bind(this),interval))}.bind(this));
-        $("button-tilt-down").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onTiltClick(-1)}.bind(this),interval))}.bind(this));
-        $("button-pan-left").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onPanClick(-1)}.bind(this),interval))}.bind(this));
-        $("button-pan-right").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onPanClick(1)}.bind(this),interval))}.bind(this));
-        $("button-zoom-in").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onZoomClick(1)}.bind(this),interval*5))}.bind(this));
-        $("button-zoom-out").observe('mousedown',  function(){this.timerIds.unshift(setInterval(function(){this.onZoomClick(-1)}.bind(this),interval*5))}.bind(this));
-
-        $("button-tilt-up").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
-        $("button-tilt-down").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
-        $("button-pan-left").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
-        $("button-pan-right").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
-        $("button-zoom-in").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));
-        $("button-zoom-out").observe('mouseup',  function(){this.removeInterval(interval)}.bind(this));*/
-
 
         var increment = 5;
         $("button-tilt-up").observe('click',  function(){this.onTiltClick(increment)}.bind(this));
         $("button-tilt-down").observe('click',  function(){this.onTiltClick(-1*increment)}.bind(this));
-        $("button-pan-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));
         $("button-pan-right").observe('click',  function(){this.onPanClick(increment)}.bind(this));
-        $("button-zoom-in").observe('click',  function(){this.onZoomClick(-1*increment)}.bind(this));
-        $("button-zoom-out").observe('click',  function(){this.onZoomClick(increment)}.bind(this));
+        $("button-pan-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));
+        $("button-zoom-in").observe('click',  function(){this.onZoomClick(increment)}.bind(this));
+        $("button-zoom-out").observe('click',  function(){this.onZoomClick(-1*increment)}.bind(this));
     },
 
     removeInterval: function(interval) {
@@ -110,31 +87,30 @@ OSH.UI.TaskingView = Class.create(OSH.UI.View, {
     onTiltClick: function (value) {
         this.tilt += value;
         document.getElementById("input-tilt").value = this.tilt;
-        this.onChange();
+        this.onChange(0,value,0);
     },
 
     onPanClick: function(value) {
         this.pan += value;
         document.getElementById("input-pan").value = this.pan;
-        this.onChange();
+        this.onChange(value,0,0);
     },
 
     onZoomClick: function(value) {
         this.zoom += value;
         document.getElementById("input-zoom").value = this.zoom;
-        this.onChange();
+        this.onChange(0,0,value);
     },
 
-    onChange: function() {
-        //TODO: get values from INPUT
+    onChange: function(rpan, rtilt, rzoom) {
         var properties = {
-            pan : this.pan,
-            zoom: this.zoom,
-            tilt : this.tilt
+            pan : rpan,
+            zoom: rzoom,
+            tilt : rtilt
         }
 
         for(var i=0;i < this.observers.length;i++) {
-            this.observers[i].sendRequest(this.dataSourceId,properties);
+            this.observers[i].sendRequest(properties);
         }
     },
 
