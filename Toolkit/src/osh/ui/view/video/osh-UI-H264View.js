@@ -4,8 +4,7 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 
 		var width = "640";
 		var height = "480";
-		this.originalCss = document.getElementById(this.divId).className;
-
+		
 		if(typeof options != "undefined") {
 			if (options.width) {
 				width = options.width;
@@ -112,9 +111,10 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 	},
 	
 	selectDataView: function($super,dataSourceIds,entityId) {
-		  document.getElementById(this.divId).setAttribute("class","");
-		  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
-			  document.getElementById(this.divId).setAttribute("class",this.originalCss+" "+this.cssSelected);  
-		  }
-	  }
+	    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
+	      document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
+	    } else {
+	      document.getElementById(this.divId).setAttribute("class",this.css);
+	    }
+	}
 });

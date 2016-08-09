@@ -4,13 +4,13 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource,{
   },
   
   parseTimeStamp: function($super,data){
-    //gets the timeStamp
-    return new DataView(data).getFloat64(0, false)*1000 + this.androidShift; // read double time stamp as big endian
+	// read double time stamp as big endian
+    return new DataView(data).getFloat64(0, false)*1000;
   },
   
   parseData: function($super,data){
     var len = data.byteLength;
-    return new Uint8Array(data, 8, len-8); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
+    return new Uint8Array(data, 12, len-12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
   }
 });
 
