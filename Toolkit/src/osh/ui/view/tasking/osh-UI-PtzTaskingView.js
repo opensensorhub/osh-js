@@ -8,19 +8,19 @@ var htmlTaskingComponent =
             "<div class=\"remote-right\"><input id=\"button-pan-right\" type=\"image\" src=\"images/remote-right.png\" class=\"remote-button\"/></div>"+
             "<div class=\"remote-down\"><input id=\"button-tilt-down\" type=\"image\" src=\"images/remote-down.png\" class=\"remote-button\"/></div>"+
         "</div>"+
-        "<div class=\"ptz flex-item\">" +
-            "<!--div class=\"preset\">" +
+        /*"<div class=\"ptz flex-item\">" +
+            "<div class=\"preset\">" +
                 "<label for=\"preset\">Preset:</label>" +
                 "<select name=\"preset\">"+
                     "<option value=\"value1\">Value 1</option>"+
                     "<option value=\"value2\" selected>Value 2</option>"+
                     "<option value=\"value3\">Value 3</option>"+
                 "</select>" +
-            "</div-->"+
+            "</div>"+
             "<div class=\"pan\"><label for=\"pan\">Pan:</label><input id=\"input-pan\" type=\"text\" name=\"pan\" size=\"2\" value=\"0\" disabled></div>"+
             "<div class=\"tilt\"><label for=\"tilt\">Tilt:</label><input id=\"input-tilt\" type=\"text\" name=\"tilt\" size=\"2\" value=\"0\" disabled></div>"+
             "<div class=\"zoom\"><label for=\"zoom\">Zoom:</label><input id=\"input-zoom\" type=\"text\" name=\"zoom\" size=\"2\" value=\"0\" disabled></div>"+
-        "</div>"+
+        "</div>"+*/
     "</div>";
 
 
@@ -74,8 +74,8 @@ OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
         $("button-tilt-down").observe('click',  function(){this.onTiltClick(-1*increment)}.bind(this));
         $("button-pan-right").observe('click',  function(){this.onPanClick(increment)}.bind(this));
         $("button-pan-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));
-        $("button-zoom-in").observe('click',  function(){this.onZoomClick(increment)}.bind(this));
-        $("button-zoom-out").observe('click',  function(){this.onZoomClick(-1*increment)}.bind(this));
+        $("button-zoom-in").observe('click',  function(){this.onZoomClick(50)}.bind(this));
+        $("button-zoom-out").observe('click',  function(){this.onZoomClick(-50)}.bind(this));
     },
 
     removeInterval: function(interval) {
@@ -86,19 +86,19 @@ OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
 
     onTiltClick: function (value) {
         this.tilt += value;
-        document.getElementById("input-tilt").value = this.tilt;
+        //document.getElementById("input-tilt").value = this.tilt;
         this.onChange(0,value,0);
     },
 
     onPanClick: function(value) {
         this.pan += value;
-        document.getElementById("input-pan").value = this.pan;
+        //document.getElementById("input-pan").value = this.pan;
         this.onChange(value,0,0);
     },
 
     onZoomClick: function(value) {
         this.zoom += value;
-        document.getElementById("input-zoom").value = this.zoom;
+        //document.getElementById("input-zoom").value = this.zoom;
         this.onChange(0,0,value);
     },
 
