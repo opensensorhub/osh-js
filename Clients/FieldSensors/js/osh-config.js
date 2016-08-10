@@ -454,7 +454,7 @@ function init() {
                 },
                 icon : 'images/cameralook.png',
                 iconFunc : {
-                    dataSourceIds: [dahua1Video.getId()],
+                    dataSourceIds: [dahua1Loc.getId()],
                     handler : function(rec,timeStamp,options) {
                         if(options.selected) {
                             return 'images/cameralook-selected.png'
@@ -490,7 +490,7 @@ function init() {
                 },
                 icon : 'images/cameralook.png',
                 iconFunc : {
-                    dataSourceIds: [virb1Video.getId()],
+                    dataSourceIds: [virb1Loc.getId()],
                     handler : function(rec,timeStamp,options) {
                         if(options.selected) {
                             return 'images/cameralook-selected.png'
@@ -526,7 +526,7 @@ function init() {
                 },
                 icon : 'images/cameralook.png',
                 iconFunc : {
-                    dataSourceIds: [virb2Video.getId()],
+                    dataSourceIds: [virb2Loc.getId()],
                     handler : function(rec,timeStamp,options) {
                         if(options.selected) {
                             return 'images/cameralook-selected.png'
@@ -546,8 +546,8 @@ function init() {
     //---------------------- Tasking Widget  -----------------------//
     //--------------------------------------------------------------//
     var taskingView = new OSH.UI.PtzTaskingView("tasking-container",{});
-    //taskingView.register(dahua1Tasking);
-    taskingView.register(axis1Tasking);
+    taskingView.register(dahua1Tasking);
+    //taskingView.register(axis1Tasking);
     
     
     //--------------------------------------------------------------//
@@ -632,9 +632,4 @@ function init() {
     });*/
     
     dataSourceController.connectAll();
-}
-
-var takePicture = false;
-function snapshotClick () {
-	takePicture=true;
 }

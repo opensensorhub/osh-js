@@ -217,7 +217,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
     		
     		// zoom map if first marker update
     		if (this.first) {
-    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 300));
+    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
     			this.first = false;
     		}
     		

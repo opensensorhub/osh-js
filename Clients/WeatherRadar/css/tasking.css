@@ -1,0 +1,117 @@
+.remote-left {
+    margin-top: 70px;
+    position: absolute;
+}
+
+.remote-right {
+    position: absolute;
+    margin-left: 140px;
+    margin-top: 70px;
+}
+
+.remote-up {
+    margin-left: 70px;
+    position: absolute;
+}
+
+.remote-zoomin {
+    margin-left: 70px;
+    position: absolute;
+    margin-top: 68px;
+}
+
+.remote-zoomin .remote-button{
+    border-radius: 200px 200px 0px 0px !important;
+}
+
+.remote-zoomout .remote-button{
+    border-radius: 0px 0px 200px 200px !important;
+}
+
+.remote-zoomout {
+    margin-left: 70px;
+    position: absolute;
+    margin-top: 104px;
+}
+
+.remote-down {
+    margin-left: 70px;
+    position: absolute;
+    margin-top: 141px;
+}
+
+.remote-button:active {
+    box-shadow: 0px 0px 20px 1px #777;
+    border-radius: 200px;
+    outline: none;
+}
+
+.remote-button:focus {
+    outline: none;
+}
+
+/** Display remote & PTZ side by side using CSS 3 and flex display **/
+.flex-container {
+    display:flex;
+    width:100%;
+}
+
+.fixed{
+    width:260px;
+}
+
+.flex-item{
+    /*flex-grow: 1;*/
+    width:150px;
+}
+
+/** End Flex **/
+
+.remote {
+    border-radius: 250px;
+    background-color: rgba(119,119,119,0.3);
+    width: 215px;
+    height: 215px;
+    box-shadow: 0px 0px 20px 1px #777;
+    /* opacity: 0.99; */
+    margin-right: 15px;
+    padding: 5px;
+}
+
+.preset>label {
+    margin-right:10px;
+}
+
+.preset {
+    margin-bottom:55px;
+}
+
+.ptz {
+
+}
+
+.pan {
+    margin-bottom:15px;
+}
+.tilt {
+    margin-bottom:15px;
+}
+.zoom {
+    margin-bottom:15px;
+}
+
+.pan>label {
+    display:block;
+    width:60px;
+    float:left;
+}
+.tilt>label {
+    display:block;
+    width:60px;
+    float:left;
+}
+.zoom>label {
+    display:block;
+    width:60px;
+    float:left;
+}
