@@ -10,6 +10,57 @@ function init() {
     var dataSourceController = new OSH.DataReceiver.DataReceiverController({
         replayFactor: 1.0
     });
+    
+    //--------------------------------------------------------------//
+    //------------------------ Android Phone  ----------------------//
+    //--------------------------------------------------------------//
+	var android1Video = new OSH.DataReceiver.VideoH264("Android Video", {
+        protocol : "ws",
+        service: "SOS",
+        endpointUrl: "localhost:8181/sensorhub/sos",
+        offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+        startTime: startTime,
+        endTime: endTime,
+        replaySpeed: "1",
+        syncMasterTime: false,
+        bufferingTime: 500
+    });
+	
+	var android1Loc = new OSH.DataReceiver.LatLonAlt("Android Location", {
+        protocol : "ws",
+        service: "SOS",
+        endpointUrl: "localhost:8181/sensorhub/sos",
+        offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+        observedProperty: "http://sensorml.com/ont/swe/property/Location",
+        startTime: startTime,
+        endTime: endTime,
+        replaySpeed: "1",
+        syncMasterTime: false,
+        bufferingTime: 500
+    });
+
+    var android1Att = new OSH.DataReceiver.OrientationQuaternion("Android Orientation", {
+        protocol : "ws",
+        service: "SOS",
+        endpointUrl: "localhost:8181/sensorhub/sos",
+        offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+        observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+        startTime: startTime,
+        endTime: endTime,
+        replaySpeed: "1",
+        syncMasterTime: false,
+        bufferingTime: 500
+    });
+	
+	var android1Entity = {
+        id: "android1",
+        name: "Android Phone #1",
+        dataSources: [android1Video, android1Loc, android1Att]
+    };
+	
+	dataSourceController.addEntity(android1Entity);
+	
 			
 	//--------------------------------------------------------------//
     //------------------------ Dahua Camera  -----------------------//
@@ -296,6 +347,11 @@ function init() {
             treeIcon : "images/cameralook.png",
             contextMenuId: camTreeMenuId
         },{
+            entity : android1Entity,
+            path: "Body Cams",
+            treeIcon : "images/cameralook.png",
+            contextMenuId: soloTreeMenuId
+        },{
             entity : virb1Entity,
             path: "Body Cams",
             treeIcon : "images/cameralook.png",
@@ -319,6 +375,28 @@ function init() {
     //--------------------------------------------------------------//
     //------------------------- Video Views  -----------------------//
     //--------------------------------------------------------------//
+    // Android1
+    var android1VideoDialog = new OSH.UI.DialogView("dialog-main-container", {
+        draggable: false,
+        css: "video-dialog",
+        name: "Android Cam #1",
+        show: true,
+        dockable: true,
+        closeable: true,
+        canDisconnect : true,
+        swapId: "main-container",
+        connectionIds: [android1Video.getId()]
+    });
+    
+    var android1VideoView = new OSH.UI.FFMPEGView(android1VideoDialog.popContentDiv.id, {
+        dataSourceId: android1Video.getId(),
+        entityId : android1Entity.id,
+        css: "video",
+        cssSelected: "video-selected",
+        width: 800,
+        height: 600
+    });
+    
     // Dahua1
     var dahua1VideoDialog = new OSH.UI.DialogView("dialog-main-container", {
         draggable: false,
@@ -431,6 +509,41 @@ function init() {
     // leaflet map view
     var mapView = new OSH.UI.LeafletView("main-container",
         [{
+        	name: "Android Phone #1",
+        	entityId : android1Entity.id,
+            styler : new OSH.UI.Styler.PointMarker({
+            	locationFunc : {
+                    dataSourceIds : [android1Loc.getId()],
+                    handler : function(rec) {
+                    	return {
+                            x : rec.lon+4e-5,
+                            y : rec.lat,
+                            z : rec.alt
+                        };
+                    }
+                },
+                orientationFunc : {
+                    dataSourceIds : [android1Att.getId()],
+                    handler : function(rec) {
+                        return {
+                            heading : rec.heading
+                        };
+                    }
+                },
+                icon : 'images/cameralook.png',
+                iconFunc : {
+                    dataSourceIds: [android1Loc.getId()],
+                    handler : function(rec,timeStamp,options) {
+                        if(options.selected) {
+                            return 'images/cameralook-selected.png'
+                        } else {
+                            return 'images/cameralook.png';
+                        }
+                    }
+                }
+            }),
+            contextMenuId: soloMarkerMenuId                     
+        },{
         	name: "Dahua Cam #1",
         	entityId : dahua1Entity.id,
             styler : new OSH.UI.Styler.PointMarker({
