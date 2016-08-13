@@ -21,7 +21,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		// p_parentNode: Reference to the parent node. Set null to create the node on the root;
 		// p_tag: Tag is used to store additional information on the node. All node attributes are visible when programming events and context menu actions;
 		// p_contextmenu: Name of the context menu, which is one of the attributes of the p_contextMenu object created with the tree;
-		createNode: function(p_text,p_expanded, p_icon, p_parentNode,p_tag,p_contextmenu) {
+		createNode: function(p_text, p_expanded, p_icon, p_parentNode, p_tag, p_contextmenu) {
 			v_tree = this;
 			node = {
 				id: 'node_' + OSH.Utils.randomUUID(),
@@ -164,11 +164,11 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 			};
 
 			v_span.onclick = function() {
-				v_tree.selectNode(p_node);
+				v_tree.selectNode(p_node, true);
 			};
 
 			v_span.oncontextmenu = function(e) {
-				v_tree.selectNode(p_node);
+				v_tree.selectNode(p_node, false);
 				v_tree.nodeContextMenu(e,p_node);
 			};
 
@@ -300,12 +300,20 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		},
 		///// Selecting node
 		// p_node: Reference to the node;
-		selectNode: function(p_node) {
+		selectNode: function(p_node, send_event) {
 			var span = p_node.elementLi.getElementsByTagName("span")[0];
 			span.className = 'node_selected';
 			if (this.selectedNode!=null && this.selectedNode!=p_node)
 				this.selectedNode.elementLi.getElementsByTagName("span")[0].className = 'node';
 			this.selectedNode = p_node;
+			
+			// if node is an entity, send selected event
+			if (send_event && typeof(p_node.tag.id) != "undefined") {
+			    OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+			    	dataSourcesIds: ["none"],
+			    	entityId: p_node.tag.id,				    
+			    });
+			}
 		},
 		///// Deleting node
 		// p_node: Reference to the node;
