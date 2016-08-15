@@ -47,12 +47,13 @@ a.navbar-brand:hover {
 
 .video img{
 	width: 100%;
-	height: 100%;
+	height: calc(100%-0px);
 }
 
 .video canvas{
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
+    height: calc(100%-0px);
 }
 
 .video-selected {
@@ -95,9 +96,13 @@ a.navbar-brand:hover {
     background-color: rgba(204, 179, 153, 0.6);
 }
 
+.pop-exchange, .pop-close {
+    color: white;
+}
+
 .video-dialog {
     width:320px;
-    height:210px;
+    height:230px;
     margin-bottom:10px;
 }
 

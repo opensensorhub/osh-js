@@ -1,5 +1,6 @@
 function init() {
 
+	var hostName = "localhost"
 	var startTime = "now";
 	var endTime = "2080-01-01";
 	
@@ -17,7 +18,7 @@ function init() {
 	var android1Video = new OSH.DataReceiver.VideoH264("Android Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
@@ -30,7 +31,7 @@ function init() {
 	var android1Loc = new OSH.DataReceiver.LatLonAlt("Android Location", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
         observedProperty: "http://sensorml.com/ont/swe/property/Location",
         startTime: startTime,
@@ -43,7 +44,7 @@ function init() {
     var android1Att = new OSH.DataReceiver.OrientationQuaternion("Android Orientation", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
         observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
         startTime: startTime,
@@ -68,20 +69,20 @@ function init() {
 	var dahua1Video = new OSH.DataReceiver.VideoH264("Dahua1 Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:dahua1",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
         endTime: endTime,
         replaySpeed: "1",
-        syncMasterTime: false,
+        syncMasterTime: true,
         bufferingTime: 500
     });
 	
 	var dahua1Loc = new OSH.DataReceiver.LatLonAlt("Dahua1 Location", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:dahua1",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
         startTime: startTime,
@@ -91,23 +92,23 @@ function init() {
         bufferingTime: 500
     });
 
-    var dahua1Att = new OSH.DataReceiver.EulerOrientation("Dahua1 Orientation", {
+    /*var dahua1Att = new OSH.DataReceiver.EulerOrientation("Dahua1 Orientation", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:dahua1",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorOrientation",
         startTime: startTime,
         endTime: endTime,
         replaySpeed: "1",
-        syncMasterTime: false,
+        syncMasterTime: true,
         bufferingTime: 500
-    });
+    });*/
 	
 	var dahua1Entity = {
         id: "dahua1",
         name: "Dahua PTZ Cam #1",
-        dataSources: [dahua1Video, dahua1Loc, dahua1Att]
+        dataSources: [dahua1Video, dahua1Loc/*, dahua1Att*/]
     };
 	
 	dataSourceController.addEntity(dahua1Entity);
@@ -116,7 +117,7 @@ function init() {
         protocol: "http",
         service: "SPS",
         version: "2.0",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sps",
+        endpointUrl: hostName + ":8181/sensorhub/sps",
         offeringID: "urn:dahua:cam:1G0215CGAK00046"
     });
 	
@@ -127,33 +128,33 @@ function init() {
 	var virb1Video = new OSH.DataReceiver.VideoH264("Virb1 Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:virb1",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
         endTime: endTime,
         replaySpeed: "1",
-        syncMasterTime: false,
+        syncMasterTime: true,
         bufferingTime: 500
     });
 	
 	var virb1Loc = new OSH.DataReceiver.LatLonAlt("Virb1 Location", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:virb1",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
         startTime: startTime,
         endTime: endTime,
         replaySpeed: "1",
-        syncMasterTime: false,
+        syncMasterTime: true,
         bufferingTime: 500
     });
 
     /*var virb1Att = new OSH.DataReceiver.EulerOrientation("Virb1 Orientation", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:virb1",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorOrientation",
         startTime: startTime,
@@ -178,33 +179,33 @@ function init() {
 	var virb2Video = new OSH.DataReceiver.VideoH264("Virb2 Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:virb2",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
         endTime: endTime,
         replaySpeed: "1",
-        syncMasterTime: false,
+        syncMasterTime: true,
         bufferingTime: 500
     });
 	
 	var virb2Loc = new OSH.DataReceiver.LatLonAlt("Virb1 Location", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:virb2",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
         startTime: startTime,
         endTime: endTime,
         replaySpeed: "1",
-        syncMasterTime: false,
+        syncMasterTime: true,
         bufferingTime: 500
     });
 
     /*var virb2Att = new OSH.DataReceiver.EulerOrientation("Virb1 Orientation", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:virb2",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorOrientation",
         startTime: startTime,
@@ -229,7 +230,7 @@ function init() {
 	var axis1Video = new OSH.DataReceiver.VideoMjpeg("Axis1 Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:axis1",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
@@ -263,7 +264,7 @@ function init() {
 	var soloGPS = new OSH.DataReceiver.LatLonAlt("Solo GPS", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:solo-nav",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformLocation",
         startTime: startTime,
@@ -274,7 +275,7 @@ function init() {
     var soloAttitude = new OSH.DataReceiver.EulerOrientation("Solo Attitude", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:solo-nav",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformOrientation",
         startTime: startTime,
@@ -285,7 +286,7 @@ function init() {
     var soloGimbal = new OSH.DataReceiver.EulerOrientation("Solo Gimbal", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:solo-nav",
         observedProperty: "http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation",
         startTime: startTime,
@@ -296,7 +297,7 @@ function init() {
     var soloVideo = new OSH.DataReceiver.VideoH264("Solo Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostName + ":8181/sensorhub/sos",
         offeringID: "urn:osh:solo-video",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
@@ -380,7 +381,7 @@ function init() {
         draggable: false,
         css: "video-dialog",
         name: "Android Cam #1",
-        show: true,
+        show: false,
         dockable: true,
         closeable: true,
         canDisconnect : true,
@@ -667,8 +668,8 @@ function init() {
     //------------------------ Time Slider  ------------------------//
     //--------------------------------------------------------------//
     var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
-        startTime: "2015-02-16T07:58:00Z",
-        endTime: "2015-02-16T08:09:00Z",
+        startTime: "2016-08-09T17:00:00Z",
+        endTime: "2016-08-14T00:00:00Z",
         refreshRate:1
     });
     
