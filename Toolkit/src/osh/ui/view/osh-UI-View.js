@@ -94,9 +94,6 @@ OSH.UI.View = Class.create({
         return this.divId;
     },
 
-    selectDataView: function (dataSourceIds) {
-    },
-
     setData: function(dataSourceId,data) {},
 
     show: function(properties) {
@@ -129,15 +126,15 @@ OSH.UI.View = Class.create({
             // observes the data come in
             var self = this;
             (function(frozenDataSourceId) { // use a close here to no share the dataSourceId variable
-            	
+
                 OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + frozenDataSourceId, function (event) {
                     // we check selected dataSource only when the selected entity is not set
-                    var selected = false;                	
+                    var selected = false;
                     if (typeof self.selectedEntity != "undefined") {
-                    	selected = (viewItem.entityId == self.selectedEntity);
+                        selected = (viewItem.entityId == self.selectedEntity);
                     }
                     else {
-                    	selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);                    	
+                        selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
                     }
 
                     //TODO: maybe done into the styler?
@@ -146,22 +143,24 @@ OSH.UI.View = Class.create({
                     });
                     self.lastRec[frozenDataSourceId] = event.data;
                 });
-                
+
                 OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW, function(event) {
-                	// we check selected dataSource only when the selected entity is not set
-                    var selected = false;                	
+                    // we check selected dataSource only when the selected entity is not set
+                    var selected = false;
                     if (typeof event.entityId != "undefined") {
-                    	selected = (viewItem.entityId == event.entityId);
+                        selected = (viewItem.entityId == event.entityId);
                     }
                     else {
-                    	selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);                    	
+                        selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
                     }
-                    
-                	styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
-                        selected: selected
-                    });
+
+                    if(frozenDataSourceId in self.lastRec) {
+                        styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
+                            selected: selected
+                        });
+                    }
                 });
-                
+
             })(dataSourceId); //passing the variable to freeze, creating a new closure
         }
     },

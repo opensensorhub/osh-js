@@ -229,7 +229,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         return id;
     },
 
-    updateMarker: function (styler, contextmenu) {
+    updateMarker: function (styler) {
         var markerId = 0;
         if (!(styler.getId() in this.stylerToObj)) {
             // adds a new marker to the leaflet renderer
