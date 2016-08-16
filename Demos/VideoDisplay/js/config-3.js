@@ -196,7 +196,7 @@ function init() {
         }
     });
 
-    var leafletMapView = new OSH.UI.LeafletView(leafletMapDialog.popContentDiv.id,
+    var leafletMapView = new OSH.UI.LeafletView("",
         [{
             styler :  pointMarker,
             contextMenuId: circularContextMenuId,
@@ -226,7 +226,7 @@ function init() {
             }]
     );
 
-    var cesiumMapView = new OSH.UI.CesiumView(cesiumMapDialog.popContentDiv.id,
+    var cesiumMapView = new OSH.UI.CesiumView("",
         [{
             styler :  pointMarker,
             contextMenuId: circularContextMenuId,
@@ -256,36 +256,8 @@ function init() {
             }]
     );
 
-    var mapView = new OSH.UI.LeafletView("main-container",
-        [{
-            styler :  pointMarker,
-            contextMenuId: circularContextMenuId,
-            name : "Android Phone GPS",
-            entityId : androidEntity.id
-        },
-        {
-            styler : new OSH.UI.Styler.Polyline({
-                locationFunc : {
-                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                    handler : function(rec) {
-                        return {
-                            x : rec.lon,
-                            y : rec.lat,
-                            z : rec.alt
-                        };
-                    }
-                },
-                color : 'rgba(0,0,255,0.5)',
-                weight : 10,
-                opacity : .5,
-                smoothFactor : 1,
-                maxPoints : 200
-            }),
-            name : "Android Phone GPS Path",
-            entityId : androidEntity.id
-        }]
-    );
-
+    leafletMapView.attachTo(leafletMapDialog.popContentDiv.id);
+    cesiumMapView.attachTo(cesiumMapDialog.popContentDiv.id);
     /*var taskingView = new OSH.UI.TaskingView("tasking-container",{
         dataSourceId : ""
     });*/
@@ -347,6 +319,96 @@ function init() {
 
     // starts streaming
     dataProviderController.connectAll();
+
+    // use circular nav menu
+    //---------------- Creates circular Nav menu -----------------//
+    cssCircleMenu('.js-menu');
+    var currentIdView = "";
+    var mainDiv = document.getElementById("main-container");
+
+    var leafletMainView = new OSH.UI.LeafletView("",
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }]
+    );
+
+    var cesiumMainMapView = new OSH.UI.CesiumView("",
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }]
+    );
+
+    $("2D-view-button").on("click",function(event) {
+        if(currentIdView != leafletMainView.divId){
+            cesiumMainMapView.hide();
+            leafletMainView.attachTo(mainDiv.id);
+            currentIdView = leafletMainView.divId;
+        }
+    });
+
+    $("3D-view-button").on("click",function(event) {
+        if(currentIdView != cesiumMainMapView.divId){
+            leafletMainView.hide();
+            cesiumMainMapView.attachTo(mainDiv.id);
+            currentIdView = cesiumMainMapView.divId;
+        }
+    });
+
+    $("screenshot-button").on("click",function(event){
+        OSH.Utils.takeScreeshot(mainDiv);
+    });
+    // 2D view is set as default view
+    currentIdView = leafletMainView.divId;
+    leafletMainView.attachTo(mainDiv.id);
+
 }
 
 function createDialog(containerDivId,dataSources,title,defaultShow) {

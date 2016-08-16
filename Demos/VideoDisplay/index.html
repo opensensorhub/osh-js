@@ -113,7 +113,15 @@
     <!------------ VIDEO DISPLAY ------------>
     <link rel="stylesheet" type="text/css" href="css/video-display.css">
     <script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
+    <script type="text/javascript" src="js/html2canvas.js"></script>
     <script type="text/javascript" src="js/config-3.js"></script>
+
+    <!-- Circular Nav Menu -->
+    <link rel="stylesheet" href="css/circularNavMenu/font-awesome.min.css" />
+    <!--link rel="stylesheet" href="css/circularNavMenu/common.min.css" /-->
+    <link rel="stylesheet" href="css/circularNavMenu/circle-menu.css" />
+    <script src="js/circleMenu.min.js"></script>
+
 </head>
 
 <body onload="init()" id="body">
@@ -130,7 +138,35 @@
 <div id="main-container" class="main-view"></div>
 <div id="tasking-container" class="tasking-container"></div>
 <div id="dialog-main-container" class="video-main-container"></div>
-
+<nav class="c-circle-menu js-menu">
+    <button class="c-circle-menu__toggle js-menu-toggle">
+        <span>Toggle</span>
+    </button>
+    <ul class="c-circle-menu__items">
+        <li class="c-circle-menu__item">
+            <a href="#" class="c-circle-menu__link" id="screenshot-button">
+                <img src="images/photo.svg"  alt="">
+            </a>
+        </li>
+        <li class="c-circle-menu__item">
+            <a href="#" class="c-circle-menu__link" id="2D-view-button">
+                <img src="images/2d.svg" alt="">
+            </a>
+        </li>
+        <li class="c-circle-menu__item">
+            <a href="#" class="c-circle-menu__link" id="3D-view-button">
+                <img src="images/3d.svg" alt="">
+            </a>
+        </li>
+        <li class="c-circle-menu__item">
+            <a href="#" class="c-circle-menu__link" id="add-entity-button">
+                <img src="images/add.svg" alt="">
+            </a>
+        </li>
+        <!-- more items here -->
+    </ul>
+    <div class="c-circle-menu__mask js-menu-mask"></div>
+</nav>
 <div class="rangeSlider-container">
     <div id="rangeSlider" class="rangeSlider"></div>
 </div>

@@ -161,3 +161,6 @@ OSH.Utils.isWebWorker = function() {
   return Modernizr.webworkers;
 };
 
+OSH.Utils.takeScreeshot = function(div) {
+};
+

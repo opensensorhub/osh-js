@@ -312,8 +312,17 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
 
             this.polylines[polylineId] = polyline;
         }
-    }
+    },
 
+    attachTo:function($super,divId) {
+        $super(divId);
+        // Fix leaflet bug when resizing the div parent container
+        this.map.invalidateSize();
+    },
+
+    onResize:function($super) {
+        this.map.invalidateSize();
+    },
 });
 
 /***  little hack starts here ***/

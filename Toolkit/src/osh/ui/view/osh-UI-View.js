@@ -40,22 +40,19 @@ OSH.UI.View = Class.create({
     },
 
     init:function(divId,viewItems,options) {
-        var elementDiv = document.createElement("div");
-        elementDiv.setAttribute("id", this.id);
-        elementDiv.setAttribute("class", this.css);
+        this.elementDiv = document.createElement("div");
+        this.elementDiv.setAttribute("id", this.id);
+        this.elementDiv.setAttribute("class", this.css);
 
         this.divId = this.id;
 
         var div = document.getElementById(divId);
-        if (divId == null || div == "undefined" || div == null) {
-            var hiddenDiv = document.createElement("div");
-            hiddenDiv.style.display = "none";
-
-            document.body.appendChild(hiddenDiv);
-            hiddenDiv.appendChild(elementDiv);
+        if (divId == null || div == "undefined" || div == null || divId == "") {
+            document.body.appendChild(this.elementDiv);
+            this.hide();
             this.container = document.body;
         } else {
-            div.appendChild(elementDiv);
+            div.appendChild(this.elementDiv);
             this.container = div;
         }
 
@@ -79,6 +76,37 @@ OSH.UI.View = Class.create({
             OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+options.dataSourceId, function (event) {
                 this.setData(options.dataSourceId, event.data);
             }.bind(this));
+        }
+
+        var self = this;
+        var observer = new MutationObserver( function( mutations ){
+            mutations.forEach( function( mutation ){
+                // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
+                if( mutation.attributeName === 'style') {
+                    self.onResize();
+                }
+            } );
+        } );
+
+        // Attach the mutation observer to blocker, and only when attribute values change
+        observer.observe( this.elementDiv, { attributes: true } );
+    },
+
+    hide: function() {
+        this.elementDiv.style.display = "none";
+    },
+
+    onResize:function() {
+    },
+
+    attachTo : function(divId) {
+        if(typeof this.elementDiv.parentNode != "undefined") {
+            // detach from its parent
+            this.elementDiv.parentNode.removeChild(this.elementDiv);
+        }
+        document.getElementById(divId).appendChild(this.elementDiv);
+        if(this.elementDiv.style.display == "none") {
+            this.elementDiv.style.display = "block";
         }
     },
 
