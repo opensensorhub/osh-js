@@ -218,7 +218,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.rootTag.parentNode.removeChild(this.rootTag);
             document.body.appendChild(this.rootTag);
             this.rootTag.style.top = offsetTop;
-            this.rootTag.style.left = offsetLeft - 350;
+            this.rootTag.style.left = offsetLeft;
             this.rootTag.style.position = "absolute";
             this.draggable = true;
 
