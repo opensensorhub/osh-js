@@ -320,8 +320,10 @@ function init() {
     // starts streaming
     dataProviderController.connectAll();
 
-    // use circular nav menu
+    //-------------------------------------------------------------//
     //---------------- Creates circular Nav menu -----------------//
+    //-----------------------------------------------------------//
+
     cssCircleMenu('.js-menu');
     var currentIdView = "";
     var mainDiv = document.getElementById("main-container");
@@ -386,6 +388,22 @@ function init() {
             }]
     );
 
+    var discoveryDialog    = new OSH.UI.DialogView(document.body.id,{
+        css: "discovery-dialog",
+        name: "Discovery",
+        show:false,
+        draggable:true,
+        dockable: false,
+        closeable: true
+    });
+
+    var discoveryView = new OSH.UI.DiscoveryView("",{
+        services: ["http://sensiasoft.net:8181/"],
+        css: "discovery-view"
+    });
+
+    discoveryView.attachTo(discoveryDialog.popContentDiv.id);
+
     $("2D-view-button").on("click",function(event) {
         if(currentIdView != leafletMainView.divId){
             cesiumMainMapView.hide();
@@ -405,6 +423,13 @@ function init() {
     $("screenshot-button").on("click",function(event){
         OSH.Utils.takeScreeshot(mainDiv);
     });
+
+    $("add-entity-button").on("click",function(event){
+        discoveryDialog.show({
+            viewId : discoveryDialog.id
+        });
+    });
+
     // 2D view is set as default view
     currentIdView = leafletMainView.divId;
     leafletMainView.attachTo(mainDiv.id);

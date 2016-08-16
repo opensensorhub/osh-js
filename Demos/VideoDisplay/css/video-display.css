@@ -124,3 +124,17 @@ a.navbar-brand:hover {
     top:60px;
     left:60px;
 }
+
+.discovery-dialog {
+    width:415px;
+    height:520px;
+    margin-bottom:10px;
+    position:absolute;
+    opacity: 1;
+    top:60px;
+    left:60px;
+}
+
+.discovery-view {
+    background-color:#FFF;
+}
