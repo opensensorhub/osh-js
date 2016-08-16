@@ -1,0 +1,304 @@
+OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
+    initialize: function ($super, divId, properties) {
+        $super(divId,[],properties);
+
+        this.formTagId = "form-"+OSH.Utils.randomUUID();
+        this.serviceSelectTagId = "service-"+OSH.Utils.randomUUID();
+        this.offeringSelectTagId = "offering-"+OSH.Utils.randomUUID();
+        this.observablePropertyTagId = "obsProperty-"+OSH.Utils.randomUUID();
+        this.startTimeTagId = "startTime-"+OSH.Utils.randomUUID();
+        this.endTimeTagId = "endTime-"+OSH.Utils.randomUUID();
+        this.typeSelectTagId = "type-"+OSH.Utils.randomUUID();
+        this.formButtonId = "submit-"+OSH.Utils.randomUUID();
+
+        // add template
+        var discoveryForm = document.createElement("form");
+        discoveryForm.setAttribute("action","#");
+        discoveryForm.setAttribute("id",this.formTagId);
+        discoveryForm.setAttribute("class",'discovery-form');
+
+        document.getElementById(this.divId).appendChild(discoveryForm);
+
+        var strVar="";
+        strVar += "<ul>";
+        strVar += "            <li>";
+        strVar += "                <h2>Discovery<\/h2>";
+        strVar += "                <span class=\"required_notification\">* Denotes Required Field<\/span>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label>Service:<\/label>";
+        strVar += "                <div class=\"select-style\">";
+        strVar += "                     <select id=\""+this.serviceSelectTagId+"\" required pattern=\"^(?!Select a service$).*\">";
+        strVar += "                         <option value=\"\" disabled selected>Select a service<\/option>";
+        strVar += "                     <\/select>";
+        strVar += "                <\/div>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label>Offering:<\/label>";
+        strVar += "                <div class=\"select-style\">";
+        strVar += "                    <select id=\""+this.offeringSelectTagId+"\" required>";
+        strVar += "                        <option value=\"\" disabled selected>Select an offering<\/option>";
+        strVar += "                    <\/select>";
+        strVar += "                <\/div>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label>Observable Property:<\/label>";
+        strVar += "                <div class=\"select-style\">";
+        strVar += "                     <select id=\""+this.observablePropertyTagId+"\" required>";
+        strVar += "                         <option value=\"\" disabled selected>Select a property<\/option>";
+        strVar += "                     <\/select>";
+        strVar += "                <\/div>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label for=\"startTime\">Start time:<\/label>";
+        //strVar += "                <input type=\"text\" name=\"startTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
+        strVar += "                <input id=\""+this.startTimeTagId+"\" type=\"text\" name=\"startTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required/>";
+        strVar += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label for=\"endTime\">End time:<\/label>";
+        //strVar += "                <input type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
+        strVar += "                <input id=\""+this.endTimeTagId+"\" type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required/>";
+        strVar += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label>Type:<\/label>";
+        strVar += "                <div class=\"select-style\">";
+        strVar += "                    <select id=\""+this.typeSelectTagId+"\" required>";
+        strVar += "                        <option value=\"\" disabled selected>Select a type<\/option>";
+        strVar += "                        <option value=\"video-H264\">Video (H264)<\/option>";
+        strVar += "                        <option value=\"video-MJPEG\">Video (MJPEG)<\/option>";
+        strVar += "                        <option disabled value=\"marker\">Marker<\/option>";
+        strVar += "                        <option value=\"chart\">Chart<\/option>";
+        strVar += "                    <\/select>";
+        strVar += "                <\/div>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <button id=\""+this.formButtonId+"\" class=\"submit\" type=\"submit\">Add<\/button>";
+        strVar += "            <\/li>";
+        strVar += "        <\/ul>";
+
+        discoveryForm.innerHTML = strVar;
+
+        // fill service from urls
+        if(typeof properties != "undefined") {
+            if(typeof properties.services != "undefined"){
+                this.addValuesToSelect(this.serviceSelectTagId,properties.services);
+            }
+        }
+
+        // add listeners
+        OSH.EventManager.observeDiv(this.serviceSelectTagId,"change",this.onSelectedService.bind(this));
+        OSH.EventManager.observeDiv(this.offeringSelectTagId,"change",this.onSelectedOffering.bind(this));
+        OSH.EventManager.observeDiv(this.formTagId,"submit",this.onFormSubmit.bind(this));
+    },
+
+    onSelectedService : function(event) {
+        var serverTag = document.getElementById(this.serviceSelectTagId);
+        var option = serverTag.options[serverTag.selectedIndex];
+
+        // connect to server and get the list of offering
+        var oshServer = new OSH.Server(option.value);
+
+        var onSuccessGetCapabilities = function(event) {
+            this.sensors = oshServer.sensors;
+            // remove existing
+            this.removeAllFromSelect(this.offeringSelectTagId);
+            var startTimeInputTag = document.getElementById(this.startTimeTagId);
+            var endTimeInputTag = document.getElementById(this.endTimeTagId);
+
+            // add the new ones
+            for(var i = 0;i < this.sensors.length;i++) {
+                this.addValueToSelect(this.offeringSelectTagId,this.sensors[i].identifier,this.sensors[i]);
+            }
+        }.bind(this);
+
+        var onErrorGetCapabilities = function(event) {
+        };
+
+        oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
+    },
+
+    onSelectedOffering : function(event) {
+        var e = document.getElementById(this.offeringSelectTagId);
+        var option = e.options[e.selectedIndex];
+        this.removeAllFromSelect(this.observablePropertyTagId);
+
+        var startTimeInputTag = document.getElementById(this.startTimeTagId);
+        var endTimeInputTag = document.getElementById(this.endTimeTagId);
+
+        // feed observable properties
+        for(var i = 0; i  < option.parent.observableProperties.length;i++) {
+            this.addValueToSelect(this.observablePropertyTagId,option.parent.observableProperties[i]);
+            // set times
+            startTimeInputTag.value = option.parent.timeRangeStart;
+            endTimeInputTag.value = option.parent.timeRangeEnd;
+        }
+    },
+
+    onFormSubmit : function(event) {
+        event.preventDefault();
+        // service
+        var serviceTag = document.getElementById(this.serviceSelectTagId)
+        var serviceTagSelectedOption = serviceTag.options[serviceTag.selectedIndex];
+
+        // offering
+        var offeringTag = document.getElementById(this.offeringSelectTagId)
+        var offeringTagSelectedOption = offeringTag.options[offeringTag.selectedIndex];
+
+        // obs property
+        var observablePropertyTag = document.getElementById(this.observablePropertyTagId);
+        var observablePropertyTagSelectedOption = observablePropertyTag.options[observablePropertyTag.selectedIndex];
+
+        var startTimeInputTag = document.getElementById(this.startTimeTagId);
+        var endTimeInputTag = document.getElementById(this.endTimeTagId);
+
+        // get values
+        var name=offeringTagSelectedOption.parent.name;
+        var endPointUrl=serviceTagSelectedOption.value+"sensorhub/sos";
+        var offeringID=offeringTagSelectedOption.value;
+        var obsProp=observablePropertyTagSelectedOption.value;
+        var startTime=startTimeInputTag.value;
+        var endTime=endTimeInputTag.value;
+
+        endPointUrl = endPointUrl.replace('http://', '');
+
+        var typeTag = document.getElementById(this.typeSelectTagId);
+        if(typeTag.value == "video-H264") {
+            console.log("video");
+            this.createH264VideoDialog(name,endPointUrl,offeringID,obsProp,startTime,endTime);
+        } else if(typeTag.value == "video-MJPEG") {
+            console.log("video");
+            this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime);
+        }
+        return false;
+    },
+
+    addValuesToSelect:function(tagId,valuesArr) {
+        var selectTag = document.getElementById(tagId);
+        for(var i=0;i < valuesArr.length;i++) {
+            var value = valuesArr[i];
+            var option = document.createElement("option");
+            option.text = value;
+            option.value = value;
+            selectTag.add(option);
+        }
+    },
+
+    addValueToSelect:function(tagId,value,parent) {
+        var selectTag = document.getElementById(tagId);
+        var option = document.createElement("option");
+        option.text = value;
+        option.value = value;
+        if(typeof parent != "undefined") {
+            option.parent = parent;
+        }
+        selectTag.add(option);
+    },
+
+    removeAllFromSelect:function(tagId) {
+        var i;
+        var selectTag = document.getElementById(tagId);
+        for (i = selectTag.options.length - 1; i > 0; i--) {
+            selectTag.remove(i);
+        }
+    },
+
+    createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime) {
+        var videoDataSource = new OSH.DataReceiver.VideoMjpeg(name, {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: endPointUrl,
+            offeringID: offeringID,
+            observedProperty: obsProp,
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: 1,
+            syncMasterTime: false,
+            bufferingTime: 1000
+        });
+
+        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "dialog",
+            name: name,
+            show:true,
+            dockable: true,
+            closeable: true,
+            connectionIds : [videoDataSource],
+            swapId: document.body
+        });
+
+        var videoView = new OSH.UI.MjpegView(dialog.popContentDiv.id, {
+            dataSourceId: videoDataSource.getId(),
+            css: "video",
+            cssSelected: "video-selected",
+            name: "Android Video"
+        });
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : 1
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(videoDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+    },
+
+    createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime) {
+        var videoDataSource = new OSH.DataReceiver.VideoH264(name, {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: endPointUrl,
+            offeringID: offeringID,
+            observedProperty: obsProp,
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: 1,
+            syncMasterTime: false,
+            bufferingTime: 1000
+        });
+
+        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "dialog",
+            name: name,
+            show:true,
+            dockable: true,
+            closeable: true,
+            connectionIds : [videoDataSource],
+            swapId: document.body
+        });
+
+        var videoView = new OSH.UI.FFMPEGView(dialog.popContentDiv.id, {
+            dataSourceId: videoDataSource.getId(),
+            css: "video",
+            cssSelected: "video-selected",
+            name: "Android Video"
+        });
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : 1
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(videoDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+    },
+
+    createChartDialog:function() {
+
+    }
+});
