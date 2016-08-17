@@ -252,12 +252,12 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         switch(viewTagOption.object.type) {
             case OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG:
             {
-                this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime);
+                this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
                 break;
             }
             case OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264:
             {
-                this.createH264VideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime);
+                this.createH264VideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
                 break;
             }
             case OSH.UI.DiscoveryView.Type.MARKER_GPS:
@@ -372,7 +372,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem,viewId:viewId})
     },
 
-    createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime) {
+    createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var videoDataSource = new OSH.DataReceiver.VideoMjpeg(name, {
             protocol: "ws",
             service: "SOS",
@@ -401,7 +401,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             dataSourceId: videoDataSource.id,
             css: "video",
             cssSelected: "video-selected",
-            name: "Android Video"
+            name: "Android Video",
+            entityId : entityId
         });
 
         // We can add a group of dataSources and set the options
@@ -415,7 +416,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         videoDataSource.connect();
     },
 
-    createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime) {
+    createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var videoDataSource = new OSH.DataReceiver.VideoH264(name, {
             protocol: "ws",
             service: "SOS",
@@ -444,7 +445,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             dataSourceId: videoDataSource.getId(),
             css: "video",
             cssSelected: "video-selected",
-            name: "Android Video"
+            name: "Android Video",
+            entityId : entityId
         });
 
         // We can add a group of dataSources and set the options
