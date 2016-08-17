@@ -174,6 +174,11 @@ OSH.Buffer = Class.create({
         this.processData(minTimeStampBufferObj, minTimeStampDSId, function () {
             this.processSyncData();
         }.bind(this));
+      } else {
+        // loop to wait new data
+        window.setTimeout(function(){
+          this.processSyncData();
+        }.bind(this),1000);
       }
     }
   },
