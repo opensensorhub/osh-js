@@ -265,6 +265,11 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
                 this.createGPSMarker(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,viewTagOption.object.viewId,entityId);
                 break;
             }
+            case OSH.UI.DiscoveryView.Type.DIALOG_CHART:
+            {
+                this.createChartDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
+                break;
+            }
             default : break;
         }
         return false;
@@ -460,14 +465,73 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         videoDataSource.connect();
     },
 
-    createChartDialog:function() {
 
+
+    createChartDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
+        var chartDataSource = new OSH.DataReceiver.Chart(name, {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: endPointUrl,
+            offeringID: offeringID,
+            observedProperty: obsProp,
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: 1,
+            syncMasterTime: syncMasterTime,
+            bufferingTime: 1000
+        });
+
+        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "dialog",
+            name: name,
+            show:true,
+            dockable: true,
+            closeable: true,
+            connectionIds : [chartDataSource.id],
+            swapId: this.swapId
+        });
+
+        // Chart View
+        var chartView = new OSH.UI.Nvd3CurveChartView(dialog.popContentDiv.id,
+            [{
+                styler: new OSH.UI.Styler.Curve({
+                    valuesFunc: {
+                        dataSourceIds: [chartDataSource.getId()],
+                        handler: function (rec, timeStamp) {
+                            return {
+                                x: timeStamp,
+                                y: parseFloat(rec[2])
+                            };
+                        }
+                    }
+                })
+            }],
+            {
+                name: name,
+                yLabel: '',
+                xLabel: '',
+                css:"chart-view",
+                cssSelected: "video-selected",
+                maxPoints:30
+            }
+        );
+
+        // We can add a group of dataSources and set the options
+        this.dataReceiverController.addDataSource(chartDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        chartDataSource.connect();
     }
 });
 
 OSH.UI.DiscoveryView.Type = {
     MARKER_GPS : "Marker(GPS)",
-    DIALOG_VIDEO_H264 : "Dialog video(H264)",
-    DIALOG_VIDEO_MJPEG: "Dialog video(MJPEG)",
-    DIALOG_CHART : "Dialog chart"
+    DIALOG_VIDEO_H264 : "Video Dialog(H264)",
+    DIALOG_VIDEO_MJPEG: "Video Dialog(MJPEG)",
+    DIALOG_CHART : "Chart Dialog"
 };
