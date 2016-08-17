@@ -8,65 +8,77 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
       var eventDataSourcesIds = event.dataSourcesId;
       for (var i = 0; i < eventDataSourcesIds.length; i++) {
-        if(eventDataSourcesIds[i] in this.dataSourcesIdToDataSources) {
-          this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].connect();
-          this.buffer.startDataSource(this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].id);
-        }
+          var id = eventDataSourcesIds[i];          
+          if(id in this.dataSourcesIdToDataSources) {
+              // if sync to master to time, request data starting at current time
+              if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
+                  this.updateDataSourceTime(id, new Date(this.buffer.currentTime).toISOString());
+              }          
+              this.dataSourcesIdToDataSources[id].connect();
+              this.buffer.startDataSource(id);
+          }
       }
     }.bind(this));
 
-    // observe disconnect event and disconnect dataSources consequently
+    // observe DISCONNECT event and disconnect dataSources consequently
     OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
       var eventDataSourcesIds = event.dataSourcesId;
       for (var i = 0; i < eventDataSourcesIds.length; i++) {
-        if(eventDataSourcesIds[i] in this.dataSourcesIdToDataSources) {
-          this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].disconnect();
-          this.buffer.cancelDataSource(this.dataSourcesIdToDataSources[eventDataSourcesIds[i]].id);
-        }
+          var id = eventDataSourcesIds[i];          
+          if(id in this.dataSourcesIdToDataSources) {
+              this.dataSourcesIdToDataSources[id].disconnect();
+              this.buffer.cancelDataSource(id);
+          }
       }
     }.bind(this));
 
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event) {
       
-      // disconnect all datasources
-      for (var id in this.dataSourcesIdToDataSources) {
-         if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
-            // disconnect stream
-            this.dataSourcesIdToDataSources[id].disconnect();
-         }
-      }
-           
-      // reset synchronization buffer
-      this.buffer.cancelAll();
+      var dataSourcesToReconnect = [];
       
-      // reconnect all datasources with new time parameters
+      // disconnect all synchronized datasources
       for (var id in this.dataSourcesIdToDataSources) {
-        if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
-          
-          // get current parameters
-          var props = this.dataSourcesIdToDataSources[id].properties;
-          var name = this.dataSourcesIdToDataSources[id].name;
-          var options = this.dataSourcesIdToDataSources[id].options;
-
-          // update start/end time
-          if (typeof event.startTime != "undefined") {
-            props.startTime = event.startTime;
+          var dataSrc = this.dataSourcesIdToDataSources[id];
+          if(dataSrc.syncMasterTime && dataSrc.connected) {
+              dataSrc.disconnect();
+              this.buffer.cancelDataSource(id);
+              dataSourcesToReconnect.push(id);
           }
-
-          if (typeof event.endTime != "undefined") {
-            props.endTime = event.endTime;
-          }
-
-          // reset parameters
-          this.dataSourcesIdToDataSources[id].initDataSource(name, props, options);
-
-          // reconnect the stream with new parameters
-          this.dataSourcesIdToDataSources[id].connect();
-        }
       }
-      this.buffer.startAll();
+      
+      // reset buffer current time
+      this.buffer.currentTime = Date.parse(event.startTime);
+      
+      // reconnect all synchronized datasources with new time parameters
+      for (var i=0; i<dataSourcesToReconnect.length; i++) {
+          var id = dataSourcesToReconnect[i];
+          var dataSrc = this.dataSourcesIdToDataSources[id];
+          this.updateDataSourceTime(id, event.startTime, event.endTime);
+          dataSrc.connect();
+          this.buffer.startDataSource(id);
+      }
+      
     }.bind(this));
+  },
+  
+  updateDataSourceTime: function(id, startTime, endTime) {
+      // get current parameters
+      var dataSource = this.dataSourcesIdToDataSources[id];
+      var props = dataSource.properties;
+      var options = dataSource.options;
+
+      // update start/end time
+      if (typeof startTime != "undefined") {
+        props.startTime = startTime;
+      }
+
+      if (typeof endTime != "undefined") {
+        props.endTime = endTime;
+      }
+
+      // reset parameters
+      dataSource.initDataSource(props, options);
   },
 
   initBuffer: function() {
@@ -85,8 +97,9 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
     this.buffer.addDataSource(dataSource.id,{
       name: dataSource.name,
-      syncMasterTime:dataSource.syncMasterTime,
-      bufferingTime : dataSource.bufferingTime
+      syncMasterTime: dataSource.syncMasterTime,
+      bufferingTime : dataSource.bufferingTime,
+      timeOut: dataSource.timeOut
     });
 
     //TODO: make frozen variables?

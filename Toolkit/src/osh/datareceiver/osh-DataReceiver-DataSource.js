@@ -5,16 +5,9 @@ OSH.DataReceiver.DataSource = Class.create({
     this.properties = properties;
     this.options = options;
     this.timeShift = 0;
+    this.connected = false;
 
     this.initDataSource(properties,options);
-
-    OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE+"-"+this.id,function(event){
-      this.connect();
-    }.bind(this));
-
-    OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE+"-"+this.id,function(event){
-      this.disconnect();
-    }.bind(this));
   },
 
   initDataSource: function(properties,options) {
@@ -36,6 +29,10 @@ OSH.DataReceiver.DataSource = Class.create({
     if(typeof properties.bufferingTime != "undefined") {
       this.bufferingTime = properties.bufferingTime;
     }
+
+    if(typeof properties.timeOut != "undefined") {
+      this.timeOut = properties.timeOut;
+    }
     
     // checks if type is WebSocket
     if(properties.protocol == "ws") {
@@ -49,6 +46,7 @@ OSH.DataReceiver.DataSource = Class.create({
    */
   disconnect : function() {
     this.connector.disconnect();
+    this.connected = false;
     
     // send data reset event
     OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+this.id,{
@@ -59,6 +57,7 @@ OSH.DataReceiver.DataSource = Class.create({
 
   connect: function() {
     this.connector.connect();
+    this.connected = true;
   },
   
   onMessage: function(data) {

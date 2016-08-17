@@ -67,17 +67,13 @@ OSH.Buffer = Class.create({
    * @param dataSourceId
    */
   cancelDataSource: function(dataSourceId) {
-    //this.buffers[dataSourceId] = {buffer:[],sync :  this.buffers[dataSourceId].sync, status: BUFFER_STATUS.CANCEL};
     this.buffers[dataSourceId].buffer = [];
     this.buffers[dataSourceId].status = BUFFER_STATUS.CANCEL;
   },
 
-  /**
-   * Change the status to START
-   * @param dataSourceId
-   */
   startDataSource: function(dataSourceId) {
     this.buffers[dataSourceId].status = BUFFER_STATUS.NOT_START_YET;
+    this.buffers[dataSourceId].lastRecordTime = Date.now();
   },
 
   startAll: function() {
@@ -87,7 +83,15 @@ OSH.Buffer = Class.create({
   },
 
   addDataSource : function(dataSourceId,options) {
-    this.buffers[dataSourceId] = {buffer:[],syncMasterTime : false,bufferingTime : INITIAL_BUFFERING_TIME,status:BUFFER_STATUS.NOT_START_YET, name:"undefined"};
+    this.buffers[dataSourceId] = {
+        buffer: [],
+        syncMasterTime: false,
+        bufferingTime: INITIAL_BUFFERING_TIME,
+        timeOut: 1000,
+        lastRecordTime: Date.now(),
+        status: BUFFER_STATUS.NOT_START_YET,
+        name: "undefined"
+    };
 
     if(typeof options != "undefined") {
       if(typeof  options.syncMasterTime != "undefined") {
@@ -97,6 +101,10 @@ OSH.Buffer = Class.create({
       if(typeof  options.bufferingTime != "undefined") {
         this.buffers[dataSourceId].bufferingTime = options.bufferingTime;
       }
+      
+      if(typeof  options.timeOut != "undefined") {
+          this.buffers[dataSourceId].timeOut = options.timeOut;
+        }
 
       if(typeof  options.name != "undefined") {
         this.buffers[dataSourceId].name = options.name;
@@ -115,6 +123,10 @@ OSH.Buffer = Class.create({
 
   push:function(event) {
     var dataSourceId = event.dataSourceId;
+    
+    // discard data if it is too late
+    if (event.data.timeStamp < this.currentTime)
+        return;
 
     // check if data has to be sync
     // append the data to the existing corresponding buffer
@@ -133,6 +145,7 @@ OSH.Buffer = Class.create({
     }
 
     currentBufferObj.buffer.push(event.data);
+    currentBufferObj.lastRecordTime = Date.now();
 
     if(!sync) {
       this.processData(currentBufferObj,dataSourceId)
@@ -155,8 +168,17 @@ OSH.Buffer = Class.create({
         currentBufferObj = this.buffers[dataSourceId];
         if((currentBufferObj.status == BUFFER_STATUS.START || currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) && currentBufferObj.syncMasterTime) {
           if(currentBufferObj.buffer.length == 0){
-            if(maxBufferingTime < currentBufferObj.bufferingTime) {
+            /*if(maxBufferingTime < currentBufferObj.bufferingTime) {
               maxBufferingTime = currentBufferObj.bufferingTime;
+            }*/
+            var waitTime = currentBufferObj.timeOut - (Date.now() - currentBufferObj.lastRecordTime);
+            if (waitTime > 0) {
+                window.setTimeout(function () {
+                   this.processSyncData();
+                }.bind(this), waitTime/10.0);
+                return;
+            } else {
+                //console.log("Timeout of data source " + dataSourceId);
             }
           } else if (currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
               minTimeStampBufferObj = currentBufferObj;
@@ -169,11 +191,15 @@ OSH.Buffer = Class.create({
       // re-buffer because at least one dataSource has no data and its status is START
       if(maxBufferingTime > -1) {
         this.buffering(currentBufferObj.name,maxBufferingTime);
-        this.processSyncData();
       } else if(minTimeStampBufferObj != null) {
+        this.currentTime = minTimeStamp;
         this.processData(minTimeStampBufferObj, minTimeStampDSId, function () {
             this.processSyncData();
         }.bind(this));
+      } else {
+          window.setTimeout(function () {
+              this.processSyncData();
+          }.bind(this), 1000);
       }
     }
   },
