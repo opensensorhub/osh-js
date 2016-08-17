@@ -305,8 +305,6 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     },
 
     createGPSMarker: function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,viewId,entityId) {
-        console.log(viewId);
-
         var gpsDataSource = new OSH.DataReceiver.LatLonAlt(name, {
             protocol: "ws",
             service: "SOS",
@@ -323,7 +321,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // create viewItem
         var pointMarker = new OSH.UI.Styler.PointMarker({
             locationFunc : {
-                dataSourceIds : [gpsDataSource.getId()],
+                dataSourceIds : [gpsDataSource.id],
                 handler : function(rec) {
                     return {
                         x : rec.lon,
@@ -360,7 +358,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             viewItem['entityId'] = entityId;
         }
 
-        OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem})
+        OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem,viewId:viewId})
     },
 
     createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime) {

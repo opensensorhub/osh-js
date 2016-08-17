@@ -205,7 +205,9 @@ OSH.UI.View = Class.create({
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.ADD_VIEW_ITEM,function(event){
-            this.addViewItem(event.viewItem);
+            if(typeof event.viewId != "undefined" && event.viewId == this.id) {
+                this.addViewItem(event.viewItem);
+            }
         }.bind(this));
     },
 
