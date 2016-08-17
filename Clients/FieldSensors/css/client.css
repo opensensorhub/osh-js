@@ -48,6 +48,7 @@ a.navbar-brand:hover {
 .video img{
 	width: 100%;
 	height: calc(100%-0px);
+	background-color: #008800;
 }
 
 .video canvas{
@@ -106,9 +107,9 @@ a.navbar-brand:hover {
     margin-bottom:10px;
 }
 
-.android-video-dialog {
+.video-dialog-43 {
     width:320px;
-    height:260px;
+    height:290px;
     margin-bottom:10px;
 }
 
