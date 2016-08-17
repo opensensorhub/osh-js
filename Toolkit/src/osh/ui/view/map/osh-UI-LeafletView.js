@@ -138,7 +138,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         var marker = null;
         if (properties.icon != null) {
             var markerIcon = L.icon({
-                iconAnchor: [16, 16],
+                iconAnchor: properties.iconAnchor,
                 iconUrl: properties.icon
             });
 
@@ -239,6 +239,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
                 orientation: styler.orientation.heading,
                 color: styler.color,
                 icon: styler.icon,
+                iconAnchor: styler.iconAnchor,
                 name: this.names[styler.getId()]
             });
             this.stylerToObj[styler.getId()] = markerId;

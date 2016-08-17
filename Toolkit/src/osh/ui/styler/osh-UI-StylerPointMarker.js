@@ -5,6 +5,7 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		this.location = null;
 		this.orientation = {heading:0};
 		this.icon = null;
+		this.iconAnchor = [16,16];
 		this.label = null;
 		this.color = "#000000";
 		
@@ -21,6 +22,10 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		if(typeof(properties.icon) != "undefined"){
 			this.icon = properties.icon;
 		}
+		
+		if(typeof(properties.iconAnchor) != "undefined"){
+            this.iconAnchor = properties.iconAnchor;
+        }
 		
 		if(typeof(properties.label) != "undefined"){
 			this.label = properties.label;
