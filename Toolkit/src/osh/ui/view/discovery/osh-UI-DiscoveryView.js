@@ -2,6 +2,22 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, properties) {
         $super(divId,[],properties);
 
+        this.swapId = "";
+        if(typeof properties != "undefined") {
+            if(typeof properties.dataReceiverController != "undefined") {
+                this.dataReceiverController = properties.dataReceiverController;
+            } else {
+                this.dataReceiverController = new OSH.DataReceiver.DataReceiverController({
+                    replayFactor : 1
+                });
+                this.dataReceiverController.connectAll();
+            }
+
+            if(typeof properties.swapId != "undefined") {
+                this.swapId = properties.swapId;
+            }
+        }
+
         this.formTagId = "form-"+OSH.Utils.randomUUID();
         this.serviceSelectTagId = "service-"+OSH.Utils.randomUUID();
         this.offeringSelectTagId = "offering-"+OSH.Utils.randomUUID();
@@ -10,6 +26,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         this.endTimeTagId = "endTime-"+OSH.Utils.randomUUID();
         this.typeSelectTagId = "type-"+OSH.Utils.randomUUID();
         this.formButtonId = "submit-"+OSH.Utils.randomUUID();
+        this.syncMasterTimeId = "syncMasterTime-"+OSH.Utils.randomUUID();
 
         // add template
         var discoveryForm = document.createElement("form");
@@ -52,14 +69,18 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         strVar += "            <li>";
         strVar += "                <label for=\"startTime\">Start time:<\/label>";
         //strVar += "                <input type=\"text\" name=\"startTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
-        strVar += "                <input id=\""+this.startTimeTagId+"\" type=\"text\" name=\"startTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required/>";
+        strVar += "                <input id=\""+this.startTimeTagId+"\" type=\"text\" name=\"startTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required/>";
         strVar += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
         strVar += "            <\/li>";
         strVar += "            <li>";
         strVar += "                <label for=\"endTime\">End time:<\/label>";
         //strVar += "                <input type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
-        strVar += "                <input id=\""+this.endTimeTagId+"\" type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required/>";
+        strVar += "                <input id=\""+this.endTimeTagId+"\" type=\"text\" name=\"endTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required/>";
         strVar += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
+        strVar += "            <\/li>";
+        strVar += "            <li>";
+        strVar += "                <label for=\"syncMasterTime\">Sync master time:<\/label>";
+        strVar += "                <input id=\""+this.syncMasterTimeId+"\"  class=\"input-checkbox\" type=\"checkbox\" name=\syncMasterTime\" />";
         strVar += "            <\/li>";
         strVar += "            <li>";
         strVar += "                <label>Type:<\/label>";
@@ -165,10 +186,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
 
         var typeTag = document.getElementById(this.typeSelectTagId);
         if(typeTag.value == "video-H264") {
-            console.log("video");
             this.createH264VideoDialog(name,endPointUrl,offeringID,obsProp,startTime,endTime);
         } else if(typeTag.value == "video-MJPEG") {
-            console.log("video");
             this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime);
         }
         return false;
@@ -214,7 +233,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: 1,
-            syncMasterTime: false,
+            syncMasterTime: true,
             bufferingTime: 1000
         });
 
@@ -225,30 +244,26 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             show:true,
             dockable: true,
             closeable: true,
-            connectionIds : [videoDataSource],
-            swapId: document.body
+            connectionIds : [videoDataSource.id],
+            swapId: this.swapId
         });
 
         var videoView = new OSH.UI.MjpegView(dialog.popContentDiv.id, {
-            dataSourceId: videoDataSource.getId(),
+            dataSourceId: videoDataSource.id,
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video"
         });
 
-        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-            replayFactor : 1
-        });
-
         // We can add a group of dataSources and set the options
-        dataProviderController.addDataSource(videoDataSource);
+        this.dataReceiverController.addDataSource(videoDataSource);
 
         //---------------------------------------------------------------//
         //---------------------------- Starts ---------------------------//
         //---------------------------------------------------------------//
 
         // starts streaming
-        dataProviderController.connectAll();
+        videoDataSource.connect();
     },
 
     createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime) {
@@ -272,8 +287,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             show:true,
             dockable: true,
             closeable: true,
-            connectionIds : [videoDataSource],
-            swapId: document.body
+            connectionIds : [videoDataSource.id],
+            swapId: this.swapId
         });
 
         var videoView = new OSH.UI.FFMPEGView(dialog.popContentDiv.id, {
@@ -283,19 +298,15 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             name: "Android Video"
         });
 
-        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-            replayFactor : 1
-        });
-
         // We can add a group of dataSources and set the options
-        dataProviderController.addDataSource(videoDataSource);
+        this.dataReceiverController.addDataSource(videoDataSource);
 
         //---------------------------------------------------------------//
         //---------------------------- Starts ---------------------------//
         //---------------------------------------------------------------//
 
         // starts streaming
-        dataProviderController.connectAll();
+        videoDataSource.connect();
     },
 
     createChartDialog:function() {
