@@ -216,10 +216,21 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         var observablePropertyTag = document.getElementById(this.observablePropertyTagId);
         var observablePropertyTagSelectedOption = observablePropertyTag.options[observablePropertyTag.selectedIndex];
 
+        // time
         var startTimeInputTag = document.getElementById(this.startTimeTagId);
         var endTimeInputTag = document.getElementById(this.endTimeTagId);
 
+        // sync master time
         var syncMasterTimeTag = document.getElementById(this.syncMasterTimeId);
+
+        // type & view
+        var typeTag = document.getElementById(this.typeSelectTagId);
+        var viewTag = document.getElementById(this.viewSelectTagId);
+        var viewTagOption = viewTag.options[viewTag.selectedIndex];
+
+        // entity
+        var entityTag = document.getElementById(this.entitiesSelectTagId);
+        var entityTagTagOption = entityTag.options[entityTag.selectedIndex];
 
         // get values
         var name=offeringTagSelectedOption.parent.name;
@@ -228,17 +239,16 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         var obsProp=observablePropertyTagSelectedOption.value;
         var startTime=startTimeInputTag.value;
         var endTime=endTimeInputTag.value;
+        var viewId = viewTagOption.object.viewId;
+        var entityId = undefined;
+        if(typeof entityTagTagOption.object != "undefined"){
+            entityId = entityTagTagOption.object.id;
+        }
 
         endPointUrl = endPointUrl.replace('http://', '');
         var syncMasterTime = syncMasterTimeTag.checked;
 
-        var typeTag = document.getElementById(this.typeSelectTagId);
-        var viewTag = document.getElementById(this.viewSelectTagId);
-        var viewTagOption = viewTag.options[viewTag.selectedIndex];
 
-        var viewId = viewTagOption.object;
-
-        var entityId = undefined;
         switch(viewTagOption.object.type) {
             case OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG:
             {
@@ -266,7 +276,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             var object = objectsArr[i];
             var option = document.createElement("option");
             option.text = object.name;
-            option.value = object;
+            option.value = object.name;
+            option.object = object;
             selectTag.add(option);
         }
     },
