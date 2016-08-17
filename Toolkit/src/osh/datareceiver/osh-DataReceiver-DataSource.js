@@ -1,12 +1,12 @@
 OSH.DataReceiver.DataSource = Class.create({
   initialize: function(name,properties,options) {
     this.id = "DataSource-"+OSH.Utils.randomUUID();
-    this.name  = this.id;
+    this.name = name;
     this.properties = properties;
     this.options = options;
     this.timeShift = 0;
 
-    this.initDataSource(name,properties,options);
+    this.initDataSource(properties,options);
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE+"-"+this.id,function(event){
       this.connect();
@@ -17,7 +17,7 @@ OSH.DataReceiver.DataSource = Class.create({
     }.bind(this));
   },
 
-  initDataSource: function(name,properties,options) {
+  initDataSource: function(properties,options) {
     
     if(typeof(options) != "undefined"  && options.androidShift) {
       this.timeShift = -16 * 1000;
@@ -36,17 +36,12 @@ OSH.DataReceiver.DataSource = Class.create({
     if(typeof properties.bufferingTime != "undefined") {
       this.bufferingTime = properties.bufferingTime;
     }
-
-    if(typeof properties.name != "undefined") {
-      this.name = properties.name;
-    }
     
     // checks if type is WebSocket
     if(properties.protocol == "ws") {
       this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
       // connects the callback
       this.connector.onMessage = this.onMessage.bind(this);
-      this.name = name;
     }
   },
   /**
