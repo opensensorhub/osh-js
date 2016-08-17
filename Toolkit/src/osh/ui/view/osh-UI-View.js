@@ -203,6 +203,10 @@ OSH.UI.View = Class.create({
         OSH.EventManager.observe(OSH.EventManager.EVENT.SHOW_VIEW,function(event){
             this.show(event);
         }.bind(this));
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.ADD_VIEW_ITEM,function(event){
+            this.addViewItem(event.viewItem);
+        }.bind(this));
     },
 
     /**

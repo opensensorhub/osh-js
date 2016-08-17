@@ -203,27 +203,27 @@ function init() {
             name : "Android Phone GPS",
             entityId : androidEntity.id
         },
-            {
-                styler : new OSH.UI.Styler.Polyline({
-                    locationFunc : {
-                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                        handler : function(rec) {
-                            return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
-                            };
-                        }
-                    },
-                    color : 'rgba(0,0,255,0.5)',
-                    weight : 10,
-                    opacity : .5,
-                    smoothFactor : 1,
-                    maxPoints : 200
-                }),
-                name : "Android Phone GPS Path",
-                entityId : androidEntity.id
-            }]
+        {
+            styler : new OSH.UI.Styler.Polyline({
+                locationFunc : {
+                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                    handler : function(rec) {
+                        return {
+                            x : rec.lon,
+                            y : rec.lat,
+                            z : rec.alt
+                        };
+                    }
+                },
+                color : 'rgba(0,0,255,0.5)',
+                weight : 10,
+                opacity : .5,
+                smoothFactor : 1,
+                maxPoints : 200
+            }),
+            name : "Android Phone GPS Path",
+            entityId : androidEntity.id
+        }]
     );
 
     var cesiumMapView = new OSH.UI.CesiumView("",
@@ -399,7 +399,29 @@ function init() {
 
     var discoveryView = new OSH.UI.DiscoveryView("",{
         services: ["http://sensiasoft.net:8181/"],
-        css: "discovery-view"
+        css: "discovery-view",
+        dataReceiverController:dataProviderController,
+        swapId: "main-container",
+        entities: [androidEntity],
+        views: [{
+            name: 'Leaflet 2D Map',
+            viewId: leafletMainView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        }, {
+            name: 'Cesium 3D Globe',
+            viewId: cesiumMainMapView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        },{
+            name: 'Video dialog(H264)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+        },{
+            name: 'Video dialog(MJPEG)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+        },{
+            name: 'Chart dialog',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+        }
+        ]
     });
 
     discoveryView.attachTo(discoveryDialog.popContentDiv.id);

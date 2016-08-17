@@ -50,5 +50,6 @@ OSH.EventManager.EVENT = {
     UAV_LAND: "uav:land",
     UAV_ORBIT: "uav:orbit",
     LOADING_START: "loading:start",
-    LOADING_STOP: "loading:stop"
+    LOADING_STOP: "loading:stop",
+    ADD_VIEW_ITEM: "addViewItem"
 };
