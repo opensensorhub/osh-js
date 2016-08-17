@@ -31,6 +31,10 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
     } else {
       document.getElementById(this.divId).setAttribute("class",this.css);
     }
+  },  
+  
+  reset: function() {
+      this.imgTag.src = "";
   }
 });
 

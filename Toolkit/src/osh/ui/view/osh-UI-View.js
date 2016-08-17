@@ -77,7 +77,10 @@ OSH.UI.View = Class.create({
         // observes the event associated to the dataSourceId
         if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
             OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+options.dataSourceId, function (event) {
-                this.setData(options.dataSourceId, event.data);
+                if (event.reset)
+                    this.reset(); // on data stream reset
+                else
+                    this.setData(options.dataSourceId, event.data);
             }.bind(this));
         }
     },
@@ -131,6 +134,11 @@ OSH.UI.View = Class.create({
             (function(frozenDataSourceId) { // use a close here to no share the dataSourceId variable
             	
                 OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + frozenDataSourceId, function (event) {
+                    
+                    // skip data reset events for now
+                    if (event.reset)
+                        return;
+                    
                     // we check selected dataSource only when the selected entity is not set
                     var selected = false;                	
                     if (typeof self.selectedEntity != "undefined") {
@@ -212,5 +220,9 @@ OSH.UI.View = Class.create({
         }
 
         return res;
+    },
+    
+    
+    reset: function() {
     }
 });

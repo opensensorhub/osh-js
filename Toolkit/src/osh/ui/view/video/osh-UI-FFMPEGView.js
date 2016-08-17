@@ -120,5 +120,24 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
 	    } else {
 	      document.getElementById(this.divId).setAttribute("class",this.css);
 	    }
+	},
+	
+	
+	reset: function() {
+	    _avcodec_flush_buffers(this.av_ctx);
+	    
+	    // clear canvas
+	    var nodata = new Uint8Array(1);
+	    this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
 	}
 });
