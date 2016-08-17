@@ -28,13 +28,22 @@ OSH.DataReceiver.DataReceiverController = Class.create({
 
 
     OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event) {
+      
+      // disconnect all datasources
+      for (var id in this.dataSourcesIdToDataSources) {
+         if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
+            // disconnect stream
+            this.dataSourcesIdToDataSources[id].disconnect();
+         }
+      }
+           
+      // reset synchronization buffer
       this.buffer.cancelAll();
-      //for now, reconnect every datasources
+      
+      // reconnect all datasources with new time parameters
       for (var id in this.dataSourcesIdToDataSources) {
         if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
-          // disconnect stream
-          this.dataSourcesIdToDataSources[id].disconnect();
-
+          
           // get current parameters
           var props = this.dataSourcesIdToDataSources[id].properties;
           var name = this.dataSourcesIdToDataSources[id].name;
@@ -83,7 +92,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
     //TODO: make frozen variables?
     dataSource.onData = function(data) {
         this.buffer.push({dataSourceId:dataSource.getId(),data : data});
-        //OSH.EventManager.fire(OSH.EventManager.EVENT.DATA,{dataSourceId:dataSource.getId(),name:dataSource.getName(),data : data, sync:synchronize});
+        
     }.bind(this);
   },
 

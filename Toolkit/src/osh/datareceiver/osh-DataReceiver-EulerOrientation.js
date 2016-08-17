@@ -4,7 +4,7 @@ OSH.DataReceiver.EulerOrientation = Class.create(OSH.DataReceiver.DataSource,{
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var t =  new Date(tokens[0]).getTime();
-    return t - this.androidShift;
+    return t;
   },
   
   parseData: function($super,data){

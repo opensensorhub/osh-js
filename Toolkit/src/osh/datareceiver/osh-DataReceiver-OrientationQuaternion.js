@@ -3,7 +3,7 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
   parseTimeStamp: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
-    return new Date(tokens[0]).getTime() - this.androidShift;
+    return new Date(tokens[0]).getTime();
   },
   
   parseData: function($super,data){

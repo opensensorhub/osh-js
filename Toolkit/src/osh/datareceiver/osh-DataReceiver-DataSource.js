@@ -4,8 +4,7 @@ OSH.DataReceiver.DataSource = Class.create({
     this.name  = this.id;
     this.properties = properties;
     this.options = options;
-
-    this.androidShift = 0;
+    this.timeShift = 0;
 
     this.initDataSource(name,properties,options);
 
@@ -19,16 +18,13 @@ OSH.DataReceiver.DataSource = Class.create({
   },
 
   initDataSource: function(name,properties,options) {
-    // checks if type is WebSocket
-    if(properties.protocol == "ws") {
-      this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
-      // connects the callback
-      this.connector.onMessage = this.onMessage.bind(this);
-      this.name = name;
-    }
-
+    
     if(typeof(options) != "undefined"  && options.androidShift) {
-      this.androidShift = 16 * 1000;
+      this.timeShift = -16 * 1000;
+    }
+    
+    if(typeof(properties.timeShift) != "undefined") {
+        this.timeShift = properties.timeShift;
     }
 
     if(typeof properties.syncMasterTime != "undefined") {
@@ -44,12 +40,26 @@ OSH.DataReceiver.DataSource = Class.create({
     if(typeof properties.name != "undefined") {
       this.name = properties.name;
     }
+    
+    // checks if type is WebSocket
+    if(properties.protocol == "ws") {
+      this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
+      // connects the callback
+      this.connector.onMessage = this.onMessage.bind(this);
+      this.name = name;
+    }
   },
   /**
    * Disconnect the dataSource then the connector will be closed as well.
    */
   disconnect : function() {
     this.connector.disconnect();
+    
+    // send data reset event
+    OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+this.id,{
+        dataSourceId: this.id,
+        reset: true
+    });
   },
 
   connect: function() {
@@ -58,7 +68,7 @@ OSH.DataReceiver.DataSource = Class.create({
   
   onMessage: function(data) {
     var data = {
-      timeStamp: this.parseTimeStamp(data),
+      timeStamp: this.parseTimeStamp(data) + this.timeShift,
       data: this.parseData(data)
     };
     this.onData(data);
@@ -114,7 +124,14 @@ OSH.DataReceiver.DataSource = Class.create({
 	  url += "observedProperty="+properties.observedProperty+"&";
 	  
 	  // adds temporalFilter
-	  url += "temporalFilter=phenomenonTime,"+properties.startTime+"/"+properties.endTime+"&";
+	  var startTime = properties.startTime;
+	  var endTime = properties.endTime;
+	  if (startTime !== "now" && this.timeShift != 0) {
+	      // apply time shift
+	      startTime = new Date(Date.parse(startTime) - this.timeShift).toISOString();
+	      endTime = new Date(Date.parse(endTime) - this.timeShift).toISOString();
+	  }
+	  url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&";
 	  
 	  if(properties.replaySpeed) {
 		  // adds replaySpeed

@@ -17,7 +17,7 @@ OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource,{
         this.absoluteTime = infos.absoluteTime;
         this.timeScale = infos.timeScale;
         
-        return this.absoluteTime +  this.androidShift;
+        return this.absoluteTime;
     } else {
         // for debug only --> MVDH has already been calculated 
         // got the first box
@@ -27,7 +27,7 @@ OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource,{
         //console.log("duration : "+infos.duration);
         //console.log("rate : "+infos.rate);
         // end debug
-        return ((infos.pts*1000)*this.timeScale)+this.absoluteTime +  this.androidShift; // FPS to FPMS
+        return ((infos.pts*1000)*this.timeScale)+this.absoluteTime; // FPS to FPMS
     }
   }
 });

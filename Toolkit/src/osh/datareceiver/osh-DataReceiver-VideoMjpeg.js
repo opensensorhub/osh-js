@@ -4,7 +4,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
   },
   
   parseTimeStamp: function($super,data){
-    return new DataView(data).getFloat64(0, false) * 1000 +  this.androidShift; // read double time stamp as big endian
+    return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
   },
   
   parseData: function($super,data){
