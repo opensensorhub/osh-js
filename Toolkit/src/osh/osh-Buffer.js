@@ -87,7 +87,7 @@ OSH.Buffer = Class.create({
         buffer: [],
         syncMasterTime: false,
         bufferingTime: INITIAL_BUFFERING_TIME,
-        timeOut: 1000,
+        timeOut: 3000,
         lastRecordTime: Date.now(),
         status: BUFFER_STATUS.NOT_START_YET,
         name: "undefined"
@@ -124,19 +124,18 @@ OSH.Buffer = Class.create({
   push:function(event) {
     var dataSourceId = event.dataSourceId;
     
-    // discard data if it is too late
-    if (event.data.timeStamp < this.currentTime)
-        return;
-
-    // check if data has to be sync
     // append the data to the existing corresponding buffer
     var currentBufferObj = this.buffers[dataSourceId];
-
-    if(currentBufferObj.status == BUFFER_STATUS.CANCEL){
-      return;
-    }
-
+    
+    // discard data if it should be synchronized by was too late
     var sync = currentBufferObj.syncMasterTime;
+    if (sync && event.data.timeStamp < this.currentTime)
+        return;
+    
+    // also discard if streamwas canceled
+    if (currentBufferObj.status == BUFFER_STATUS.CANCEL)
+      return;    
+
     // define the time of the first data as relative time
     if(currentBufferObj.status == BUFFER_STATUS.NOT_START_YET) {
       currentBufferObj.startRelativeTime = event.data.timeStamp;
