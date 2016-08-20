@@ -10,6 +10,7 @@
     
     <!-- Prototype libs -->
     <script type="text/javascript" src="../../Toolkit/src/common/prototype.min.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/common/modernizr-custom.js"></script>
     <script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
 
     <!-- Nvd3 libs -->
@@ -37,10 +38,14 @@
     <script src="../../Toolkit/vendor/cesium/Cesium.js"></script>
     <link rel="stylesheet" type="text/css" href="../../Toolkit/vendor/cesium/Widgets/widgets.css"/>
     
-    <!-- Broadway H264 decoder -->
+    <!-- Broadway H264 decoder 
     <script type="text/javascript" src="../../Toolkit/vendor/broadway/YUVCanvas.js"></script>
     <script type="text/javascript" src="../../Toolkit/vendor/broadway/Decoder.js"></script>
-    <script type="text/javascript" src="../../Toolkit/vendor/broadway/Player.js"></script>
+    <script type="text/javascript" src="../../Toolkit/vendor/broadway/Player.js"></script>-->
+    
+    <!-- FFMPEG H264 decoder -->
+    <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/YUVCanvas.js"></script>
+    <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/ffmpeg-h264.js"></script>    
     
     <!-- OSH libs -->
     <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/dialog.css"/>
@@ -66,8 +71,7 @@
     <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-Chart.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSenderController.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSender-DataSource.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSender-Tasking.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSender-DataSink.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/datasender/osh-DataSender-UavMapTasking.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
@@ -86,8 +90,8 @@
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-H264View.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/tasking/osh-UI-TaskingView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
 
