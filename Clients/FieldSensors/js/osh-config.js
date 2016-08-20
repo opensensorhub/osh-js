@@ -29,10 +29,9 @@ function init() {
     //--------------------------------------------------------------//
     //-------------------------  Map View  -------------------------//
     //--------------------------------------------------------------//
-    var mapView = new OSH.UI.LeafletView("main-container", [],
+    var leafletMapView = new OSH.UI.LeafletView("main-container", [],
         {autoZoomOnFirstMarker: true}
     );
-    
     
     //--------------------------------------------------------------//
     //-------------------- Video Camera Entities -------------------//
@@ -92,10 +91,58 @@ function init() {
     });
     
     
-    dataSourceController.connectAll();
+    //--------------------------------------------------------------//
+    //------------------ Discovery Dialog and Menu -----------------//
+    //--------------------------------------------------------------//
+    cssCircleMenu('.js-menu');
+    
+    var discoveryDialog    = new OSH.UI.DialogView(document.body.id,{
+        css: "discovery-dialog",
+        name: "Discovery",
+        show:false,
+        draggable:true,
+        dockable: false,
+        closeable: true
+    });
+
+    var discoveryView = new OSH.UI.DiscoveryView("",{
+        services: ["http://" + hostName + ":8181/"],
+        css: "discovery-view",
+        dataReceiverController: dataSourceController,
+        swapId: "main-container",
+        entities: [],
+        views: [{
+            name: 'Leaflet 2D Map',
+            viewId: leafletMapView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        },{
+            name: 'Video dialog(H264)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+        },{
+            name: 'Video dialog(MJPEG)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+        },{
+            name: 'Chart dialog',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+        }]
+    });
+
+    discoveryView.attachTo(discoveryDialog.popContentDiv.id);
+
+    $("add-entity-button").on("click",function(event){
+        discoveryDialog.show({
+            viewId : discoveryDialog.id
+        });
+    });
+    
+    
+    dataSourceController.connectAll();   
     
     
     
+    //--------------------------------------------------------------//
+    //------ Helper methods to add specific types of sensors -------//
+    //--------------------------------------------------------------//
     
     function addAndroidPhone(entityID, entityName, offeringID, flirOfferingID) {
         
@@ -180,7 +227,7 @@ function init() {
         })
         
         // add marker to map
-        mapView.addViewItem({
+        leafletMapView.addViewItem({
             name: entityName,
             entityId : entity.id,
             styler : new OSH.UI.Styler.PointMarker({
@@ -352,7 +399,7 @@ function init() {
         })
         
         // add marker to map
-        mapView.addViewItem({
+        leafletMapView.addViewItem({
             name: entityName,
             entityId : entity.id,
             styler : new OSH.UI.Styler.PointMarker({
@@ -474,7 +521,7 @@ function init() {
         })
         
         // add marker to map
-        mapView.addViewItem({
+        leafletMapView.addViewItem({
             name: entityName,
             entityId : entity.id,
             styler : new OSH.UI.Styler.PointMarker({
@@ -591,7 +638,7 @@ function init() {
         })
         
         // add marker to map
-        mapView.addViewItem({
+        leafletMapView.addViewItem({
             name: entityName,
             entityId : entity.id,
             styler : new OSH.UI.Styler.PointMarker({
@@ -732,7 +779,7 @@ function init() {
         })
         
         // add marker to map
-        mapView.addViewItem({
+        leafletMapView.addViewItem({
             name: entityName,
             entityId : entity.id,
             styler : new OSH.UI.Styler.PointMarker({
