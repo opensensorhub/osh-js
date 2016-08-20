@@ -10,11 +10,7 @@ OSH.DataReceiver.DataSource = Class.create({
     this.initDataSource(properties,options);
   },
 
-  initDataSource: function(properties,options) {
-    
-    if(typeof(options) != "undefined"  && options.androidShift) {
-      this.timeShift = -16 * 1000;
-    }
+  initDataSource: function(properties) {
     
     if(typeof(properties.timeShift) != "undefined") {
         this.timeShift = properties.timeShift;
@@ -120,10 +116,13 @@ OSH.DataReceiver.DataSource = Class.create({
 	  // adds temporalFilter
 	  var startTime = properties.startTime;
 	  var endTime = properties.endTime;
-	  if (startTime !== "now" && this.timeShift != 0) {
-	      // apply time shift
-	      startTime = new Date(Date.parse(startTime) - this.timeShift).toISOString();
-	      endTime = new Date(Date.parse(endTime) - this.timeShift).toISOString();
+	  if (startTime !== "now" && this.timeShift != 0) {	      
+	      // HACK: don't do it for old Android dataset that is indexed differently
+	      if (properties.offeringID !== "urn:android:device:060693280a28e015-sos") {
+	         // apply time shift
+	         startTime = new Date(Date.parse(startTime) - this.timeShift).toISOString();
+	         endTime = new Date(Date.parse(endTime) - this.timeShift).toISOString();
+	      }
 	  }
 	  url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&";
 	  
