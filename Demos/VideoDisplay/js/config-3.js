@@ -196,67 +196,7 @@ function init() {
         }
     });
 
-    var leafletMapView = new OSH.UI.LeafletView(leafletMapDialog.popContentDiv.id,
-        [{
-            styler :  pointMarker,
-            contextMenuId: circularContextMenuId,
-            name : "Android Phone GPS",
-            entityId : androidEntity.id
-        },
-            {
-                styler : new OSH.UI.Styler.Polyline({
-                    locationFunc : {
-                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                        handler : function(rec) {
-                            return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
-                            };
-                        }
-                    },
-                    color : 'rgba(0,0,255,0.5)',
-                    weight : 10,
-                    opacity : .5,
-                    smoothFactor : 1,
-                    maxPoints : 200
-                }),
-                name : "Android Phone GPS Path",
-                entityId : androidEntity.id
-            }]
-    );
-
-    var cesiumMapView = new OSH.UI.CesiumView(cesiumMapDialog.popContentDiv.id,
-        [{
-            styler :  pointMarker,
-            contextMenuId: circularContextMenuId,
-            name : "Android Phone GPS",
-            entityId : androidEntity.id
-        },
-            {
-                styler : new OSH.UI.Styler.Polyline({
-                    locationFunc : {
-                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                        handler : function(rec) {
-                            return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
-                            };
-                        }
-                    },
-                    color : 'rgba(0,0,255,0.5)',
-                    weight : 10,
-                    opacity : .5,
-                    smoothFactor : 1,
-                    maxPoints : 200
-                }),
-                name : "Android Phone GPS Path",
-                entityId : androidEntity.id
-            }]
-    );
-
-    var mapView = new OSH.UI.LeafletView("main-container",
+    var leafletMapView = new OSH.UI.LeafletView("",
         [{
             styler :  pointMarker,
             contextMenuId: circularContextMenuId,
@@ -286,6 +226,38 @@ function init() {
         }]
     );
 
+    var cesiumMapView = new OSH.UI.CesiumView("",
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }]
+    );
+
+    leafletMapView.attachTo(leafletMapDialog.popContentDiv.id);
+    cesiumMapView.attachTo(cesiumMapDialog.popContentDiv.id);
     /*var taskingView = new OSH.UI.TaskingView("tasking-container",{
         dataSourceId : ""
     });*/
@@ -347,6 +319,143 @@ function init() {
 
     // starts streaming
     dataProviderController.connectAll();
+
+    //-------------------------------------------------------------//
+    //---------------- Creates circular Nav menu -----------------//
+    //-----------------------------------------------------------//
+
+    cssCircleMenu('.js-menu');
+    var currentIdView = "";
+    var mainDiv = document.getElementById("main-container");
+
+    var leafletMainView = new OSH.UI.LeafletView("",
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }]
+    );
+
+    var cesiumMainMapView = new OSH.UI.CesiumView("",
+        [{
+            styler :  pointMarker,
+            contextMenuId: circularContextMenuId,
+            name : "Android Phone GPS",
+            entityId : androidEntity.id
+        },
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.lon,
+                                y : rec.lat,
+                                z : rec.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }]
+    );
+
+    var discoveryDialog    = new OSH.UI.DialogView(document.body.id,{
+        css: "discovery-dialog",
+        name: "Discovery",
+        show:false,
+        draggable:true,
+        dockable: false,
+        closeable: true
+    });
+
+    var discoveryView = new OSH.UI.DiscoveryView("",{
+        services: ["http://sensiasoft.net:8181/"],
+        css: "discovery-view",
+        dataReceiverController:dataProviderController,
+        swapId: "main-container",
+        entities: [androidEntity],
+        views: [{
+            name: 'Leaflet 2D Map',
+            viewId: leafletMainView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        }, {
+            name: 'Cesium 3D Globe',
+            viewId: cesiumMainMapView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        },{
+            name: 'Video dialog(H264)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+        },{
+            name: 'Video dialog(MJPEG)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+        },{
+            name: 'Chart dialog',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+        }
+        ]
+    });
+
+    discoveryView.attachTo(discoveryDialog.popContentDiv.id);
+
+    $("2D-view-button").on("click",function(event) {
+        if(currentIdView != leafletMainView.divId){
+            cesiumMainMapView.hide();
+            leafletMainView.attachTo(mainDiv.id);
+            currentIdView = leafletMainView.divId;
+        }
+    });
+
+    $("3D-view-button").on("click",function(event) {
+        if(currentIdView != cesiumMainMapView.divId){
+            leafletMainView.hide();
+            cesiumMainMapView.attachTo(mainDiv.id);
+            currentIdView = cesiumMainMapView.divId;
+        }
+    });
+
+    $("screenshot-button").on("click",function(event){
+        OSH.Utils.takeScreeshot(mainDiv);
+    });
+
+    $("add-entity-button").on("click",function(event){
+        discoveryDialog.show({
+            viewId : discoveryDialog.id
+        });
+    });
+
+    // 2D view is set as default view
+    currentIdView = leafletMainView.divId;
+    leafletMainView.attachTo(mainDiv.id);
+
 }
 
 function createDialog(containerDivId,dataSources,title,defaultShow) {

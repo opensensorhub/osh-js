@@ -53,7 +53,7 @@
 .pop-pin {
     position: absolute;
     top: 7px;
-    right: 24px;
+    right: 25px;
     padding: 4px 4px 0 0;
     text-align: center;
     width: 16px;
@@ -63,20 +63,20 @@
     text-decoration: none;
     font-weight: bold;
     background: transparent;
-    background-image: url("../images/pin.png");
+    background-image: url("../images/pin-2.png");
     cursor: default;
 }
 
 .pop-pin:hover {
-    top : 2px !important;
+    background-image: url("../images/unpin-2.png");
 }
 
 .pop-pin-drag {
-    top : 2px !important;
+    background-image: url("../images/unpin-2.png");
 }
 
 .pop-pin-drag:hover {
-    top:7px !important;
+    background-image: url("../images/pin-2.png");
 }
 
 .pop-connect {

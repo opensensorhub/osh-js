@@ -40,22 +40,19 @@ OSH.UI.View = Class.create({
     },
 
     init:function(divId,viewItems,options) {
-        var elementDiv = document.createElement("div");
-        elementDiv.setAttribute("id", this.id);
-        elementDiv.setAttribute("class", this.css);
+        this.elementDiv = document.createElement("div");
+        this.elementDiv.setAttribute("id", this.id);
+        this.elementDiv.setAttribute("class", this.css);
 
         this.divId = this.id;
 
         var div = document.getElementById(divId);
-        if (divId == null || div == "undefined" || div == null) {
-            var hiddenDiv = document.createElement("div");
-            hiddenDiv.style.display = "none";
-
-            document.body.appendChild(hiddenDiv);
-            hiddenDiv.appendChild(elementDiv);
+        if (divId == null || div == "undefined" || div == null || divId == "") {
+            document.body.appendChild(this.elementDiv);
+            this.hide();
             this.container = document.body;
         } else {
-            div.appendChild(elementDiv);
+            div.appendChild(this.elementDiv);
             this.container = div;
         }
 
@@ -83,6 +80,37 @@ OSH.UI.View = Class.create({
                     this.setData(options.dataSourceId, event.data);
             }.bind(this));
         }
+
+        var self = this;
+        var observer = new MutationObserver( function( mutations ){
+            mutations.forEach( function( mutation ){
+                // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
+                if( mutation.attributeName === 'style') {
+                    self.onResize();
+                }
+            } );
+        } );
+
+        // Attach the mutation observer to blocker, and only when attribute values change
+        observer.observe( this.elementDiv, { attributes: true } );
+    },
+
+    hide: function() {
+        this.elementDiv.style.display = "none";
+    },
+
+    onResize:function() {
+    },
+
+    attachTo : function(divId) {
+        if(typeof this.elementDiv.parentNode != "undefined") {
+            // detach from its parent
+            this.elementDiv.parentNode.removeChild(this.elementDiv);
+        }
+        document.getElementById(divId).appendChild(this.elementDiv);
+        if(this.elementDiv.style.display == "none") {
+            this.elementDiv.style.display = "block";
+        }
     },
 
     beforeAddingItems: function (options) {
@@ -95,9 +123,6 @@ OSH.UI.View = Class.create({
 
     getDivId: function () {
         return this.divId;
-    },
-
-    selectDataView: function (dataSourceIds) {
     },
 
     setData: function(dataSourceId,data) {},
@@ -132,7 +157,7 @@ OSH.UI.View = Class.create({
             // observes the data come in
             var self = this;
             (function(frozenDataSourceId) { // use a close here to no share the dataSourceId variable
-            	
+
                 OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + frozenDataSourceId, function (event) {
                     
                     // skip data reset events for now
@@ -140,12 +165,12 @@ OSH.UI.View = Class.create({
                         return;
                     
                     // we check selected dataSource only when the selected entity is not set
-                    var selected = false;                	
+                    var selected = false;
                     if (typeof self.selectedEntity != "undefined") {
-                    	selected = (viewItem.entityId == self.selectedEntity);
+                        selected = (viewItem.entityId == self.selectedEntity);
                     }
                     else {
-                    	selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);                    	
+                        selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
                     }
 
                     //TODO: maybe done into the styler?
@@ -154,22 +179,24 @@ OSH.UI.View = Class.create({
                     });
                     self.lastRec[frozenDataSourceId] = event.data;
                 });
-                
+
                 OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW, function(event) {
-                	// we check selected dataSource only when the selected entity is not set
-                    var selected = false;                	
+                    // we check selected dataSource only when the selected entity is not set
+                    var selected = false;
                     if (typeof event.entityId != "undefined") {
-                    	selected = (viewItem.entityId == event.entityId);
+                        selected = (viewItem.entityId == event.entityId);
                     }
                     else {
-                    	selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);                    	
+                        selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
                     }
-                    
-                	styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
-                        selected: selected
-                    });
+
+                    if(frozenDataSourceId in self.lastRec) {
+                        styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
+                            selected: selected
+                        });
+                    }
                 });
-                
+
             })(dataSourceId); //passing the variable to freeze, creating a new closure
         }
     },
@@ -183,6 +210,12 @@ OSH.UI.View = Class.create({
         // observes the SHOW event
         OSH.EventManager.observe(OSH.EventManager.EVENT.SHOW_VIEW,function(event){
             this.show(event);
+        }.bind(this));
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.ADD_VIEW_ITEM,function(event){
+            if(typeof event.viewId != "undefined" && event.viewId == this.id) {
+                this.addViewItem(event.viewItem);
+            }
         }.bind(this));
     },
 

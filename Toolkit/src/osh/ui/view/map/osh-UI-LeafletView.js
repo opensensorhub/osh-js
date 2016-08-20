@@ -229,7 +229,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         return id;
     },
 
-    updateMarker: function (styler, contextmenu) {
+    updateMarker: function (styler) {
         var markerId = 0;
         if (!(styler.getId() in this.stylerToObj)) {
             // adds a new marker to the leaflet renderer
@@ -313,8 +313,17 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
 
             this.polylines[polylineId] = polyline;
         }
-    }
+    },
 
+    attachTo:function($super,divId) {
+        $super(divId);
+        // Fix leaflet bug when resizing the div parent container
+        this.map.invalidateSize();
+    },
+
+    onResize:function($super) {
+        this.map.invalidateSize();
+    },
 });
 
 /***  little hack starts here ***/

@@ -189,9 +189,9 @@ OSH.Buffer = Class.create({
       }
 
       // re-buffer because at least one dataSource has no data and its status is START
-      if(maxBufferingTime > -1) {
+      /*if(maxBufferingTime > -1) {
         this.buffering(currentBufferObj.name,maxBufferingTime);
-      } else if(minTimeStampBufferObj != null) {
+      } else*/ if(minTimeStampBufferObj != null) {
         this.currentTime = minTimeStamp;
         this.processData(minTimeStampBufferObj, minTimeStampDSId, function () {
             this.processSyncData();
