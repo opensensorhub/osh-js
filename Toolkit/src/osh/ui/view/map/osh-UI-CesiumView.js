@@ -51,8 +51,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
     	var DTR = Math.PI/180.;
     	var attitude = styler.platformOrientation;
     	var gimbal = styler.gimbalOrientation;
-    	var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, /*roll*DTR*/0.0, (-90.0+attitude.pitch+gimbal.pitch)*DTR);
-    	//var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, (-90.0-42)*DTR);
+    	var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, (-90.0+attitude.pitch+gimbal.pitch+5)*DTR);
         var camRot = Cesium.Matrix3.fromQuaternion(camQuat);
         
     	var camProj = styler.cameraModel.camProj;
@@ -165,7 +164,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
 				billboard : {
 					image : imgIcon,
-					rotation : Cesium.Math.toRadians(-90),
+					rotation : Cesium.Math.toRadians(0),
 					horizontalOrigin : Cesium.HorizontalOrigin.CENTER
 				}
 			};

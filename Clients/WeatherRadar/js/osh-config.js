@@ -13,12 +13,13 @@ function init() {
 			
 	
 	//--------------------------------------------------------------//
-    //----------------------- Axis Camera #1 -----------------------//
+    //--------------------- KHTX Doppler Radar ---------------------//
     //--------------------------------------------------------------//
-	var nexradData = new OSH.DataReceiver.Nexrad("Axis1 Video", {
+	var nexradData = new OSH.DataReceiver.Nexrad("KHTX Radar", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "54.243.185.44:8282/sensorhub/sos",
+        //endpointUrl: "54.243.185.44:8282/sensorhub/sos",
+        endpointUrl: "localhost:8282/sensorhub/sos",
         offeringID: "urn:mysos:nexrad",
         observedProperty: "http://sensorml.com/ont/swe/propertyx/NexradRadial",
         startTime: startTime,

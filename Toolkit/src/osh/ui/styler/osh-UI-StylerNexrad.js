@@ -53,7 +53,10 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 			Cesium.Color.fromBytes(248,   0, 253),
 			Cesium.Color.fromBytes(152,  84, 198),
 			Cesium.Color.fromBytes(253, 253, 253)
-		]
+		];
+		
+		this.pointCollection = new Cesium.PointPrimitiveCollection();
+		this.radialCount = 0;
 	},
 
 	init: function($super,view) {
@@ -90,13 +93,20 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 				   Cesium.Matrix3.multiplyByVector(rotM, gatePos, gatePos);
 				   
 				   // apply color map and add point to collection
-				   points.add({
+				   this.pointCollection.add({
 					  position : Cesium.Cartesian3.add(radarLoc, gatePos, gatePos),
 					  color : this.getReflectivityColor(val),
 					  pixelSize : 3
 				   });
 				}
-				view.viewer.scene.primitives.add(points);
+				
+				this.radialCount++;
+				if (this.radialCount == 100)
+			    {
+					view.viewer.scene.primitives.add(this.pointCollection);
+					this.pointCollection = new Cesium.PointPrimitiveCollection();
+					this.radialCount = 0;
+			    }
 			}
 		}
 	},
