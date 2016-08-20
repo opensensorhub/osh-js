@@ -362,9 +362,6 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // We can add a group of dataSources and set the options
         this.dataReceiverController.addDataSource(gpsDataSource);
 
-        // starts streaming
-        gpsDataSource.connect();
-
         var viewItem = {
             styler :  pointMarker,
             name : name
@@ -374,7 +371,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             viewItem['entityId'] = entityId;
         }
 
-        OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem,viewId:viewId})
+        OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem,viewId:viewId});
+        OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[gpsDataSource.id]});
     },
 
     createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
@@ -413,12 +411,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // We can add a group of dataSources and set the options
         this.dataReceiverController.addDataSource(videoDataSource);
 
-        //---------------------------------------------------------------//
-        //---------------------------- Starts ---------------------------//
-        //---------------------------------------------------------------//
-
         // starts streaming
-        videoDataSource.connect();
+        OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[videoDataSource.id]});
     },
 
     createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
@@ -457,12 +451,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // We can add a group of dataSources and set the options
         this.dataReceiverController.addDataSource(videoDataSource);
 
-        //---------------------------------------------------------------//
-        //---------------------------- Starts ---------------------------//
-        //---------------------------------------------------------------//
-
         // starts streaming
-        videoDataSource.connect();
+        OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[videoDataSource.id]});
     },
 
 
@@ -520,12 +510,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // We can add a group of dataSources and set the options
         this.dataReceiverController.addDataSource(chartDataSource);
 
-        //---------------------------------------------------------------//
-        //---------------------------- Starts ---------------------------//
-        //---------------------------------------------------------------//
-
         // starts streaming
-        chartDataSource.connect();
+        OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[chartDataSource.id]});
     }
 });
 
