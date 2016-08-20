@@ -4,7 +4,7 @@ function init() {
     //--------------------- Creates dataSources --------------------//
     //--------------------------------------------------------------//
 
-    var replayFactor = 1;
+    var replayFactor = 3;
     //--Android Phone Video
     var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
         protocol: "ws",
@@ -16,9 +16,8 @@ function init() {
         endTime: "2015-02-16T08:09:00Z",
         replaySpeed: replayFactor+"",
         syncMasterTime: true,
-        bufferingTime: 1000
-    },{
-        androidShift:true
+        bufferingTime: 1000,
+        timeShift: -16000
     });
 
     var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
@@ -123,7 +122,7 @@ function init() {
     });
 
     // Chart View
-    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
+    /*var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
         [{
             styler: new OSH.UI.Styler.Curve({
                 valuesFunc: {
@@ -145,7 +144,7 @@ function init() {
             cssSelected: "video-selected",
             maxPoints:30
         }
-    );
+    );*/
 
     var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
             [{
