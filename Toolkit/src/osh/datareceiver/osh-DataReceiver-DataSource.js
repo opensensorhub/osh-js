@@ -1,13 +1,12 @@
 OSH.DataReceiver.DataSource = Class.create({
-  initialize: function(name,properties,options) {
+  initialize: function(name,properties) {
     this.id = "DataSource-"+OSH.Utils.randomUUID();
     this.name = name;
     this.properties = properties;
-    this.options = options;
     this.timeShift = 0;
     this.connected = false;
 
-    this.initDataSource(properties,options);
+    this.initDataSource(properties);
   },
 
   initDataSource: function(properties) {
