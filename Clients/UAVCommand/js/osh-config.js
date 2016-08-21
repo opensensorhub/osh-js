@@ -1,140 +1,10 @@
 function init() {
-
-	//--------------------------------------------------------------//
-    //------------------- Real-Time Data Sources -------------------//
-    //--------------------------------------------------------------//
-    /*var soloGPS = new OSH.DataReceiver.LatLonAlt("Solo GPS", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-nav",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformLocation",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });
-
-    var soloAttitude = new OSH.DataReceiver.EulerOrientation("Solo Attitude", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-nav",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformOrientation",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });
     
-    var soloGimbal = new OSH.DataReceiver.EulerOrientation("Solo Gimbal", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-nav",
-        observedProperty: "http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });
+    var hostname = "bottsgeo.simple-url.com:8181";
 
-    var soloVideo = new OSH.DataReceiver.VideoH264("Solo Video", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-video",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });*/
-	
-    /*var soloGPS = new OSH.DataReceiver.LatLonAlt("Solo GPS", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-nav",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformLocation",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });
-
-    var soloAttitude = new OSH.DataReceiver.EulerOrientation("Solo Attitude", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-nav",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformOrientation",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });
-    
-    var soloGimbal = new OSH.DataReceiver.EulerOrientation("Solo Gimbal", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-nav",
-        observedProperty: "http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });
-
-    var soloVideo = new OSH.DataReceiver.VideoH264("Solo Video", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
-        offeringID: "urn:osh:solo-video",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: "now",
-        endTime: "2080-01-01"
-    });*/
-	
-	
-	//--------------------------------------------------------------//
-    //------------------- Historical Data Sources ------------------//
-    //--------------------------------------------------------------//
-	
-	/*var soloGPS = new OSH.DataReceiver.LatLonAlt("Solo GPS", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:mysos:solo:nav3",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformLocation",
-        startTime: "2015-12-18T14:19:11Z",
-        endTime: "2015-12-18T14:30:00Z",
-        replaySpeed: "1"
-    });
-	soloGPS.id = "gps";
-
-    var soloAttitude = new OSH.DataReceiver.EulerOrientation("Solo Attitude", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:mysos:solo:nav3",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformOrientation",
-        startTime: "2015-12-18T14:19:11Z",
-        endTime: "2015-12-18T14:30:00Z",
-        replaySpeed: "1"
-    });
-    soloAttitude.id = "att";
-    
-    var soloGimbal = new OSH.DataReceiver.EulerOrientation("Solo Gimbal", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:mysos:solo:nav3",
-        observedProperty: "http://www.opengis.net/def/property/OGC/0/GimbalOrientation__",
-        startTime: "2015-12-18T14:19:11Z",
-        endTime: "2015-12-18T14:30:00Z",
-        replaySpeed: "1"
-    });
-    soloGimbal.id = "gim";
-
-    var soloVideo = new OSH.DataReceiver.VideoH264("Solo Video", {
-        protocol : "ws",
-        service: "SOS",
-        endpointUrl: "localhost:8181/sensorhub/sos",
-        offeringID: "urn:mysos:solo:video3",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: "2015-12-18T14:19:11Z",
-        endTime: "2015-12-18T14:30:00Z",
-        replaySpeed: "1"
-    });
-    soloVideo.id = "vid";*/
+	// Real-Time
+    //var startTime = "now";
+    //var endTime = "2080-01-01T00:00:00Z";
     
 	// Madison - Wide
 	//var startTime = "2016-08-02T22:06:50Z";
@@ -145,59 +15,60 @@ function init() {
 	//var endTime = "2016-08-03T00:27:40Z";
 	
 	// Airport Road - Medium
-	var startTime = "2016-08-03T18:02:00Z";
-	var endTime = "2016-08-03T18:30:00Z"; //"2016-08-02T22:37:00Z";
+	//var startTime = "2016-08-03T18:02:00Z";
+	//var endTime = "2016-08-03T18:30:00Z"; //"2016-08-02T22:37:00Z";
+	
+	// Madison, Field Sensors Run
+	var startTime = "2016-08-15T22:29:28.557Z";
+	var endTime = "2016-08-15T22:34:56.644Z";
+    var replaySpeed = "1";
 	
 	var soloGPS = new OSH.DataReceiver.LatLonAlt("Solo GPS", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostname + "/sensorhub/sos",
         offeringID: "urn:osh:solo-nav",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformLocation",
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: "1",
-        syncMasterTime: false,
-        bufferingTime: 500
+        replaySpeed: replaySpeed,
+        syncMasterTime: true
     });
 
     var soloAttitude = new OSH.DataReceiver.EulerOrientation("Solo Attitude", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostname + "/sensorhub/sos",
         offeringID: "urn:osh:solo-nav",
         observedProperty: "http://www.opengis.net/def/property/OGC/0/PlatformOrientation",
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: "1",
-        syncMasterTime: false,
-        bufferingTime: 500
+        replaySpeed: replaySpeed,
+        syncMasterTime: true
     });
     
     var soloGimbal = new OSH.DataReceiver.EulerOrientation("Solo Gimbal", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostname + "/sensorhub/sos",
         offeringID: "urn:osh:solo-nav",
         observedProperty: "http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation",
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: "1",
-        syncMasterTime: false,
-        bufferingTime: 500
+        replaySpeed: replaySpeed,
+        syncMasterTime: true
     });
 
     var soloVideo = new OSH.DataReceiver.VideoH264("Solo Video", {
         protocol : "ws",
         service: "SOS",
-        endpointUrl: "bottsgeo.simple-url.com:8181/sensorhub/sos",
+        endpointUrl: hostname + "/sensorhub/sos",
         offeringID: "urn:osh:solo-video",
         observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: "1",
-        syncMasterTime: false,
-        bufferingTime: 500
+        replaySpeed: replaySpeed,
+        syncMasterTime: true
     });
     
     
@@ -229,8 +100,8 @@ function init() {
     
     // MSL to Ellipsoid correction
     //var mslToWgs84 = 53.5; // Toulouse
-    var mslToWgs84 = -29.5+5; // Huntsville Airport Road
-    //var mslToWgs84 = -29+5; // Madison
+    //var mslToWgs84 = -29.5+5; // Huntsville Airport Road
+    var mslToWgs84 = -29+5; // Madison
     
     // menu ids
     var soloTreeMenuId = "solo-tree-menu";
@@ -290,7 +161,7 @@ function init() {
         swapId: "main-container"
     });
     
-    /*var count = 0;
+    var count = 0;
     var altChartView = new OSH.UI.Nvd3CurveChartView(altChartDialog.popContentDiv.id,
     [{
         styler: new OSH.UI.Styler.Curve({
@@ -312,7 +183,7 @@ function init() {
         xLabel: 'Time',
         css:"chart-view",
         cssSelected: "video-selected"
-    });*/
+    });
 
     
     
@@ -430,11 +301,11 @@ function init() {
     
     
     // time slider view
-    /*var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
-        startTime: soloGPS.options.startTime,
-        endTime: soloGPS.options.endTime,
+    var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
+        startTime: soloGPS.properties.startTime,
+        endTime: soloGPS.properties.endTime,
         dataSourcesId: [soloGPS.id]
-    });*/
+    });
     
     
     //--------------------------------------------------------------//
@@ -517,7 +388,7 @@ function init() {
         replayFactor: 1.0
     });
 
-    dataSourceController.addEntity(soloEntity, true);
+    dataSourceController.addEntity(soloEntity);
     dataSourceController.connectAll();
 }
 
