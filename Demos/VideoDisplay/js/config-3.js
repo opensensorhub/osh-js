@@ -122,7 +122,7 @@ function init() {
     });
 
     // Chart View
-    /*var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
+    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
         [{
             styler: new OSH.UI.Styler.Curve({
                 valuesFunc: {
@@ -144,7 +144,7 @@ function init() {
             cssSelected: "video-selected",
             maxPoints:30
         }
-    );*/
+    );
 
     var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
             [{

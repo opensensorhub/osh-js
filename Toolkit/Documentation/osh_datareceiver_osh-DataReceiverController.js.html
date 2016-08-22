@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: osh/datareceiver/osh-DataReceiverController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: osh/datareceiver/osh-DataReceiverController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>OSH.DataReceiver.DataReceiverController = Class.create({
+  initialize: function(options) {
+    this.options = options;
+    this.initBuffer();
+    this.dataSourcesIdToDataSources = {};
+
+    // observe CONNECT event and connect dataSources consequently
+    OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
+      var eventDataSourcesIds = event.dataSourcesId;
+      for (var i = 0; i &lt; eventDataSourcesIds.length; i++) {
+          var id = eventDataSourcesIds[i];          
+          if(id in this.dataSourcesIdToDataSources) {
+              // if sync to master to time, request data starting at current time
+              if(this.dataSourcesIdToDataSources[id].syncMasterTime) {
+                  this.updateDataSourceTime(id, new Date(this.buffer.currentTime).toISOString());
+              }          
+              this.dataSourcesIdToDataSources[id].connect();
+              this.buffer.startDataSource(id);
+          }
+      }
+    }.bind(this));
+
+    // observe DISCONNECT event and disconnect dataSources consequently
+    OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
+      var eventDataSourcesIds = event.dataSourcesId;
+      for (var i = 0; i &lt; eventDataSourcesIds.length; i++) {
+          var id = eventDataSourcesIds[i];          
+          if(id in this.dataSourcesIdToDataSources) {
+              this.dataSourcesIdToDataSources[id].disconnect();
+              this.buffer.cancelDataSource(id);
+          }
+      }
+    }.bind(this));
+
+
+    OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event) {
+      
+      var dataSourcesToReconnect = [];
+      
+      // disconnect all synchronized datasources
+      for (var id in this.dataSourcesIdToDataSources) {
+          var dataSrc = this.dataSourcesIdToDataSources[id];
+          if(dataSrc.syncMasterTime &amp;&amp; dataSrc.connected) {
+              dataSrc.disconnect();
+              this.buffer.cancelDataSource(id);
+              dataSourcesToReconnect.push(id);
+          }
+      }
+      
+      // reset buffer current time
+      this.buffer.currentTime = Date.parse(event.startTime);
+      
+      // reconnect all synchronized datasources with new time parameters
+      for (var i=0; i&lt;dataSourcesToReconnect.length; i++) {
+          var id = dataSourcesToReconnect[i];
+          var dataSrc = this.dataSourcesIdToDataSources[id];
+          this.updateDataSourceTime(id, event.startTime, event.endTime);
+          dataSrc.connect();
+          this.buffer.startDataSource(id);
+      }
+      
+    }.bind(this));
+  },
+  
+  updateDataSourceTime: function(id, startTime, endTime) {
+      // get current parameters
+      var dataSource = this.dataSourcesIdToDataSources[id];
+      var props = dataSource.properties;
+      var options = dataSource.options;
+
+      // update start/end time
+      if (typeof startTime != "undefined") {
+        props.startTime = startTime;
+      }
+
+      if (typeof endTime != "undefined") {
+        props.endTime = endTime;
+      }
+
+      // reset parameters
+      dataSource.initDataSource(props, options);
+  },
+
+  initBuffer: function() {
+    this.buffer = new OSH.Buffer(this.options);
+  },
+
+  addEntity : function(entity,options) {
+    if(typeof (entity.dataSources) != "undefined") {
+      for(var i=0;i &lt; entity.dataSources.length;i++) {
+        this.addDataSource(entity.dataSources[i],options);
+      }
+    }
+  },
+
+  addDataSource: function(dataSource,options) {
+    this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
+    this.buffer.addDataSource(dataSource.id,{
+      name: dataSource.name,
+      syncMasterTime: dataSource.syncMasterTime,
+      bufferingTime : dataSource.bufferingTime,
+      timeOut: dataSource.timeOut
+    });
+
+    //TODO: make frozen variables?
+    dataSource.onData = function(data) {
+        this.buffer.push({dataSourceId:dataSource.getId(),data : data});
+        
+    }.bind(this);
+  },
+
+  /**
+   * Connects each connector
+   */ 
+  connectAll: function() {
+    this.buffer.start();
+    for (var id in this.dataSourcesIdToDataSources) {
+      this.dataSourcesIdToDataSources[id].connect();
+    }
+  }
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.UI.View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addViewItem">addViewItem</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#cancelDataSource">cancelDataSource</a></li><li><a href="global.html#connectAll">connectAll</a></li><li><a href="global.html#disconnect">disconnect</a></li><li><a href="global.html#onData">onData</a></li><li><a href="global.html#selectDataView">selectDataView</a></li><li><a href="global.html#sendRequest">sendRequest</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#swapClick">swapClick</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Mon Aug 22 2016 18:19:11 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

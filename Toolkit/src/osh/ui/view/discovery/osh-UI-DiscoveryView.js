@@ -331,7 +331,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             endTime: endTime,
             replaySpeed: 1,
             syncMasterTime: syncMasterTime,
-            bufferingTime: 1000
+            bufferingTime: 1000,
+            timeShift: -16000
         });
 
         // create viewItem

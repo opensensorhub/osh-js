@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: osh/ui/view/osh-UI-View.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: osh/ui/view/osh-UI-View.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * The abstract object to represent a view.
  * @constructor
  * @param {string} divId - The id to attach/or create the view.
@@ -23,22 +51,22 @@ OSH.UI.View = Class.create({
 
         this.dataSourceId = -1;
         // sets dataSourceId
-        if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
+        if(typeof(options) != "undefined" &amp;&amp; typeof(options.dataSourceId) != "undefined") {
             this.dataSourceId = options.dataSourceId;
         }
 
-        if(typeof(options) != "undefined" && typeof(options.entityId) != "undefined") {
+        if(typeof(options) != "undefined" &amp;&amp; typeof(options.entityId) != "undefined") {
             this.entityId = options.entityId;
         }
         this.css = "";
 
         this.cssSelected = "";
 
-        if(typeof(options) != "undefined" && typeof(options.css) != "undefined") {
+        if(typeof(options) != "undefined" &amp;&amp; typeof(options.css) != "undefined") {
             this.css = options.css;
         }
 
-        if(typeof(options) != "undefined" && typeof(options.cssSelected) != "undefined") {
+        if(typeof(options) != "undefined" &amp;&amp; typeof(options.cssSelected) != "undefined") {
             this.cssSelected = options.cssSelected;
         }
 
@@ -73,7 +101,7 @@ OSH.UI.View = Class.create({
         this.beforeAddingItems(options);
 
         if (typeof (viewItems) != "undefined") {
-            for (var i =0;i < viewItems.length;i++) {
+            for (var i =0;i &lt; viewItems.length;i++) {
                 this.addViewItem(viewItems[i]);
             }
         }
@@ -86,7 +114,7 @@ OSH.UI.View = Class.create({
         this.handleEvents();
 
         // observes the event associated to the dataSourceId
-        if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
+        if(typeof(options) != "undefined" &amp;&amp; typeof(options.dataSourceId) != "undefined") {
             OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+options.dataSourceId, function (event) {
                 if (event.reset)
                     this.reset(); // on data stream reset
@@ -167,7 +195,7 @@ OSH.UI.View = Class.create({
         }
         //for(var dataSourceId in styler.dataSourceToStylerMap) {
         var ds = styler.getDataSourcesIds();
-        for(var i =0; i < ds.length;i++) {
+        for(var i =0; i &lt; ds.length;i++) {
             var dataSourceId = ds[i];
             // observes the data come in
             var self = this;
@@ -228,7 +256,7 @@ OSH.UI.View = Class.create({
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.ADD_VIEW_ITEM,function(event){
-            if(typeof event.viewId != "undefined" && event.viewId == this.id) {
+            if(typeof event.viewId != "undefined" &amp;&amp; event.viewId == this.id) {
                 this.addViewItem(event.viewItem);
             }
         }.bind(this));
@@ -246,7 +274,7 @@ OSH.UI.View = Class.create({
             // set the selected entity even if it is undefined
             // this is handled by the setData function
             this.selectedEntity = entityId;
-            for (var j = 0; j < this.dataSources.length; j++) {
+            for (var j = 0; j &lt; this.dataSources.length; j++) {
                 this.setData(this.dataSources[j], this.lastRec[this.dataSources[j]]);
             }
         }
@@ -259,7 +287,7 @@ OSH.UI.View = Class.create({
         }
 
         // check for stylers
-        for(var i = 0; i < this.viewItems.length;i++) {
+        for(var i = 0; i &lt; this.viewItems.length;i++) {
             var viewItem = this.viewItems[i];
             if (viewItem.hasOwnProperty("styler")) {
                 var styler = viewItem.styler;
@@ -281,4 +309,26 @@ OSH.UI.View = Class.create({
  */
 OSH.UI.View.prototype.test = function(test) {
 
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.UI.View.html">View</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addViewItem">addViewItem</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#cancelDataSource">cancelDataSource</a></li><li><a href="global.html#connectAll">connectAll</a></li><li><a href="global.html#disconnect">disconnect</a></li><li><a href="global.html#onData">onData</a></li><li><a href="global.html#selectDataView">selectDataView</a></li><li><a href="global.html#sendRequest">sendRequest</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#swapClick">swapClick</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Mon Aug 22 2016 18:19:11 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
