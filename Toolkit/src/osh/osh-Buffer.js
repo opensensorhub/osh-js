@@ -222,7 +222,7 @@ OSH.Buffer = Class.create({
     if(waitTime > 0) {
       //callback the data after waiting for a time equals to the difference between the two timeStamps
       window.setTimeout(function () {
-        //TODO: check if BUFFER TASK is not CANCEL
+        //TODO: check if BUFFER TASK isw
         this.dispatchData(dataSourceId,data);
         if(typeof fnEndTimeout != "undefined") {
           fnEndTimeout();

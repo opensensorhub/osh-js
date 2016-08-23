@@ -163,7 +163,18 @@
 
 <script type="text/javascript">
     var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
-        services: ["http://sensiasoft.net:8181/"]
+        services: ["http://sensiasoft.net:8181/"],
+        views: [{
+            name: 'Video dialog(H264)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+        },{
+            name: 'Video dialog(MJPEG)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+        },{
+            name: 'Chart dialog',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+        }
+        ]
     });
 
 </script>
