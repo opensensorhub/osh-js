@@ -197,12 +197,12 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                         //self.postMessage(decodedFrame,[decodedFrame.frameYData,decodedFrame.frameUData,decodedFrame.frameVData]);
                         //self.postMessage(ret,[ret.buffers[0],ret.buffers[1],ret.buffers[2]]);
                         if(typeof decodedFrame != "undefined") {
-                           // self.postMessage(decodedFrame, [
-                            //    decodedFrame.frameYData.buffer/*,
-                             //    decodedFrame.frameUData.buffer,
-                              //   decodedFrame.frameVData.buffer,*/
-                            //]);
-                            self.postMessage(decodedFrame);
+                            self.postMessage(decodedFrame, [
+                                decodedFrame.frameYData.buffer/*,
+                                 decodedFrame.frameUData.buffer,
+                                 decodedFrame.frameVData.buffer,*/
+                            ]);
+                            //self.postMessage(decodedFrame);
                         }
 
                     }
