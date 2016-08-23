@@ -198,9 +198,9 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                         //self.postMessage(ret,[ret.buffers[0],ret.buffers[1],ret.buffers[2]]);
                         if(typeof decodedFrame != "undefined") {
                             self.postMessage(decodedFrame, [
-                                decodedFrame.frameYData.buffer/*,
+                                decodedFrame.frameYData.buffer,
                                  decodedFrame.frameUData.buffer,
-                                 decodedFrame.frameVData.buffer,*/
+                                 decodedFrame.frameVData.buffer,
                             ]);
                             //self.postMessage(decodedFrame);
                         }
@@ -235,18 +235,15 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                         var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
 
 
-                        /*var fY = new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height);
-                        var fU =  new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2);
-                        var fV = new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2);*/
                         return {
                             frame_width: frame_width,
                             frame_height: frame_height,
                             frameYDataPtr: frameYDataPtr,
                             frameUDataPtr: frameUDataPtr,
                             frameVDataPtr: frameVDataPtr,
-                            frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
-                            frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
-                            frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
+                            frameYData: new Uint8Array(Module.HEAPU8.buffer.slice(frameYDataPtr,frameYDataPtr+frame_width * frame_height)),
+                            frameUData: new Uint8Array(Module.HEAPU8.buffer.slice(frameUDataPtr,frameUDataPtr+frame_width / 2 * frame_height / 2)),
+                            frameVData: new Uint8Array(Module.HEAPU8.buffer.slice(frameVDataPtr,frameVDataPtr+frame_width / 2 * frame_height / 2))
                         };
                     }
                 }.toString(), ')()'],
@@ -257,6 +254,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         var self = this;
         this.worker.onmessage = function (e) {
             var decodedFrame = e.data;
+
             self.yuvCanvas.drawNextOuptutPictureGL({
                 yData: decodedFrame.frameYData,
                 yDataPerRow: decodedFrame.frame_width,
