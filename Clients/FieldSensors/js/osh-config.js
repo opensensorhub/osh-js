@@ -40,16 +40,16 @@ function init() {
     var treeItems = [];
     
     // urn:android:device:a0e0eac2fea3f614-sos = Alex Nexus5
-    addAndroidPhone("android1", "Android Phone #1", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos");
+    addAndroidPhone("android1", "Botts - Android", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos");
     //addAndroidPhone("android2", "Android Phone #2", "urn:android:device:8b65f9d7048a345a-sos", null);
     
-    addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos");
-    addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos");
+    addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos", 180);
+    addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos", 60);
     //addGeoCam("geocam103", "Geocam #103", "urn:osh:system:geocam:0103-sos");
     //addGeoCam("geocam105", "Geocam #105", "urn:osh:system:geocam:0105-sos");
     
-    addVirbCam("virb1", "Virb Cam #1", "urn:osh:virb1", 0);
-    addVirbCam("virb2", "Virb Cam #2", "urn:osh:virb2", 0);
+    addVirbCam("virb1", "Drop Cam - Virb #1", "urn:osh:virb1", 0, true);
+    addVirbCam("virb2", "Butler - Virb #2", "urn:osh:virb2", 0, false);
     
     addSoloUav("solo1", "3DR Solo", "urn:osh:solo-nav", "urn:osh:solo-video")
     
@@ -264,7 +264,7 @@ function init() {
             contextMenuId: mapMenuId+entityID                     
         });
         
-        // create video views
+        // video view
         var videoDialog = new OSH.UI.DialogView("dialog-main-container", {
             draggable: false,
             css: "video-dialog-43",
@@ -335,7 +335,7 @@ function init() {
     }
     
     
-    function addGeoCam(entityID, entityName, offeringID) {
+    function addGeoCam(entityID, entityName, offeringID, headingOffset) {
         
         // create data sources
         var videoData = new OSH.DataReceiver.VideoMjpeg("Video", {
@@ -417,7 +417,7 @@ function init() {
                     dataSourceIds : [attitudeData.getId()],
                     handler : function(rec) {
                         return {
-                            heading : rec.heading
+                            heading : rec.heading + headingOffset
                         };
                     }
                 },
@@ -436,7 +436,7 @@ function init() {
             contextMenuId: mapMenuId+entityID
         });
         
-        // create video views
+        // video view
         var videoDialog = new OSH.UI.DialogView("dialog-main-container", {
             draggable: false,
             css: "video-dialog-43",
@@ -473,7 +473,7 @@ function init() {
     }
 
     
-    function addVirbCam(entityID, entityName, offeringID, heading) {
+    function addVirbCam(entityID, entityName, offeringID, heading, hasHeartRate) {
         
         // create data sources
         var videoData = new OSH.DataReceiver.VideoH264("Video", {
@@ -504,12 +504,33 @@ function init() {
             timeOut: dataStreamTimeOut
         });
         
+        // heart rate
+        if (hasHeartRate) {
+            var heartRateData = new OSH.DataReceiver.Chart("Heart Rate", {
+                protocol : "ws",
+                service: "SOS",
+                endpointUrl: hostName + ":8181/sensorhub/sos",
+                offeringID: offeringID,
+                observedProperty: "http://sensorml.com/ont/swe/property/heartRate",
+                startTime: startTime,
+                endTime: endTime,
+                replaySpeed: "1",
+                syncMasterTime: sync,
+                bufferingTime: 500,
+                timeOut: dataStreamTimeOut
+            });
+        }
+        
         // create entity
         var entity = {
             id: entityID,
             name: entityName,
             dataSources: [videoData, locationData]
         };
+        
+        if (hasHeartRate)
+            entity.dataSources.push(heartRateData);
+        
         dataSourceController.addEntity(entity);
         
         // add item to tree
@@ -553,7 +574,7 @@ function init() {
             contextMenuId: mapMenuId+entityID
         });
         
-        // create video views
+        // video view
         var videoDialog = new OSH.UI.DialogView("dialog-main-container", {
             draggable: false,
             css: "video-dialog",
@@ -575,6 +596,42 @@ function init() {
             height: 720
         });
         
+        // chart view
+        if (hasHeartRate) {
+            var heartRateDialog = new OSH.UI.DialogView("dialog-main-container", {
+                draggable: false,
+                css: "dialog",
+                name: "Heart Rate - " + entityName,
+                show: false,
+                dockable: true,
+                closeable: true,
+                canDisconnect : true,
+                swapId: "main-container"
+            });
+            
+            var count = 0;
+            var heartRateView = new OSH.UI.Nvd3CurveChartView(heartRateDialog.popContentDiv.id,
+            [{
+                styler: new OSH.UI.Styler.Curve({
+                    valuesFunc: {
+                        dataSourceIds: [heartRateData.getId()],
+                        handler: function (rec, timeStamp) {
+                            return {
+                                x: timeStamp,
+                                y: rec[0]
+                            };
+                        }
+                    }
+                })
+            }],
+            {
+                yLabel: 'Heart Rate (BPM)',
+                xLabel: 'Time',
+                css:"chart-view",
+                cssSelected: "video-selected"
+            });
+        }
+        
         // add tree and map context menus
         var menuItems = [{
             name: "Show Video",
@@ -582,6 +639,15 @@ function init() {
             css: "fa fa-video-camera",
             action: "show"
         }];
+        
+        if (heartRateDialog != null) {
+            menuItems.push({
+                name: "Show Heart Rate",
+                viewId: heartRateDialog.getId(),
+                css: "fa fa-video-camera",
+                action: "show"
+            });
+        }
     
         var markerMenu = new OSH.UI.ContextMenu.CircularMenu({id:mapMenuId+entityID, groupId: menuGroupId, items: menuItems});
         var treeMenu = new OSH.UI.ContextMenu.StackMenu({id: treeMenuId+entityID, groupId: menuGroupId, items: menuItems});   
@@ -670,7 +736,7 @@ function init() {
             contextMenuId: mapMenuId+entityID
         });
         
-        // create video views
+        // video view
         var videoDialog = new OSH.UI.DialogView("dialog-main-container", {
             draggable: false,
             css: "video-dialog",
@@ -817,7 +883,7 @@ function init() {
             contextMenuId: mapMenuId+entityID
         });
         
-        // create video views
+        // video view
         var videoDialog = new OSH.UI.DialogView("dialog-main-container", {
             draggable: false,
             css: "video-dialog",
