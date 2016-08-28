@@ -275,7 +275,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         var transferableData = {
             pktSize: pktSize,
             pktData: pktData.buffer,
-            byteOffset:12
+            byteOffset:pktData.byteOffset
         }
         this.worker.postMessage(transferableData, [transferableData.pktData]);
     },
