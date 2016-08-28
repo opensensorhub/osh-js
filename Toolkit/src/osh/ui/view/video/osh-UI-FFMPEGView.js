@@ -190,22 +190,18 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                     // init decode frame function
                     self.got_frame = Module._malloc(4);
 
-
                     self.onmessage = function (e) {
                         var data = e.data;
-                        var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData,data.pktData.length));
-                        //self.postMessage(decodedFrame,[decodedFrame.frameYData,decodedFrame.frameUData,decodedFrame.frameVData]);
-                        //self.postMessage(ret,[ret.buffers[0],ret.buffers[1],ret.buffers[2]]);
-                        if(typeof decodedFrame != "undefined") {
+                        var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, 12,data.pktData.byteLength-12));
+                        if (typeof decodedFrame != "undefined") {
                             self.postMessage(decodedFrame, [
                                 decodedFrame.frameYData.buffer,
-                                 decodedFrame.frameUData.buffer,
-                                 decodedFrame.frameVData.buffer,
+                                decodedFrame.frameUData.buffer,
+                                decodedFrame.frameVData.buffer,
                             ]);
-                            //self.postMessage(decodedFrame);
                         }
-
                     }
+
 
                     function innerWorkerDecode(pktSize, pktData) {
                         // prepare packet
@@ -241,9 +237,9 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                             frameYDataPtr: frameYDataPtr,
                             frameUDataPtr: frameUDataPtr,
                             frameVDataPtr: frameVDataPtr,
-                            frameYData: new Uint8Array(Module.HEAPU8.buffer.slice(frameYDataPtr,frameYDataPtr+frame_width * frame_height)),
-                            frameUData: new Uint8Array(Module.HEAPU8.buffer.slice(frameUDataPtr,frameUDataPtr+frame_width / 2 * frame_height / 2)),
-                            frameVData: new Uint8Array(Module.HEAPU8.buffer.slice(frameVDataPtr,frameVDataPtr+frame_width / 2 * frame_height / 2))
+                            frameYData: new Uint8Array(Module.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
+                            frameUData: new Uint8Array(Module.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
+                            frameVData: new Uint8Array(Module.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2))
                         };
                     }
                 }.toString(), ')()'],
@@ -323,6 +319,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
 
         // init decode frame function
         this.got_frame = Module._malloc(4);
+
     },
 
     decode: function (pktSize, pktData) {
