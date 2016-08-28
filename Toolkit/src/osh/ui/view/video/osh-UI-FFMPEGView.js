@@ -192,7 +192,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
 
                     self.onmessage = function (e) {
                         var data = e.data;
-                        var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, 12,data.pktData.byteLength-12));
+                        var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset,data.pktSize));
                         if (typeof decodedFrame != "undefined") {
                             self.postMessage(decodedFrame, [
                                 decodedFrame.frameYData.buffer,
@@ -274,7 +274,8 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
     decodeWorker: function (pktSize, pktData) {
         var transferableData = {
             pktSize: pktSize,
-            pktData: pktData.buffer
+            pktData: pktData.buffer,
+            byteOffset:12
         }
         this.worker.postMessage(transferableData, [transferableData.pktData]);
     },
