@@ -8,7 +8,7 @@ html {
 }
 
 .main-view {
-	height: calc(100% - 75px);
+	height: calc(100% - 142px);
 }
 
 header.navbar {
@@ -68,7 +68,7 @@ a.navbar-brand:hover {
 }
 
 .rangeSlider-container {
-	height: 120px;
+	height: 80px;
     margin: 5 30 0 30;
     background-color: #fff;
     border: 1px solid #444;
@@ -80,7 +80,7 @@ a.navbar-brand:hover {
 }
 
 .rangeSlider {
-    margin-top: 50px;
+    margin-top: 10px;
     margin-left: 20px;
     margin-right: 5px;
 }
@@ -93,6 +93,10 @@ a.navbar-brand:hover {
 
 .pop-over {
     background-color: rgba(204, 179, 153, 0.6);
+}
+
+.pop-exchange, .pop-close {
+    color: white;
 }
 
 .video-dialog {

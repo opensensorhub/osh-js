@@ -59,8 +59,8 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		noUiSlider.create(this.slider, {
 			start: [startTime,this.endTime]/*,timestamp("2015-02-16T08:09:00Z")]*/,
 			range: {
-				min: startTime-30*1000,
-				max: this.endTime+30*1000
+				min: startTime,
+				max: this.endTime
 			},
 			//step:  1000* 60* 60,
 			format: wNumb({
