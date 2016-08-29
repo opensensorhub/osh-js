@@ -1,4 +1,16 @@
+/**
+ * @type {OSH.DataConnector.DataConnector}
+ * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
+ * @class
+ * @augments OSH.DataConnector.DataConnector
+ */
 OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
+    /**
+     * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
+     * the main thread.
+     * @instance
+     * @memberof OSH.DataConnector.WebSocketDataConnector
+     */
     connect: function () {
         if (!this.init) {
             //creates Web Socket
@@ -67,6 +79,11 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
         }
     },
 
+    /**
+     * Disconnects the websocket.
+     * @instance
+     * @memberof OSH.DataConnector.WebSocketDataConnector
+     */
     disconnect: function() {
         if (OSH.Utils.isWebWorker() && this.worker != null) {
             this.worker.postMessage("close");
@@ -78,9 +95,16 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
         }
     },
 
+    /**
+     * The onMessage method used by the websocket to callback the data
+     * @param data the callback data
+     */
     onMessage: function (data) {
     },
 
+    /**
+     * Closes the webSocket.
+     */
     close: function() {
         this.disconnect();
     }

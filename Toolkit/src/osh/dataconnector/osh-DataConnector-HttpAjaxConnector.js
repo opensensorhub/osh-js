@@ -1,11 +1,16 @@
 /**
- * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @type {OSH.DataConnector.DataConnector}
+ * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
+ * @class
+ * @augments OSH.DataConnector.DataConnector
  */
 OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, {
+
     /**
      * Sends the request to the defined server.
-     * @param properties
+     * @param request The Http request (as a String format)
+     * @memberof OSH.DataConnector.AjaxConnector
+     * @instance
      */
     sendRequest: function (request) {
         var self = this;
@@ -30,10 +35,22 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
         }.bind(this);
     },
 
+    /**
+     * This is the callback method in case of getting error connection.
+     * @param event The error details
+     * @memberof OSH.DataConnector.AjaxConnector
+     * @instance
+     */
     onError:function(event){
 
     },
 
+    /**
+     * This is the callback method in case of getting success connection.
+     * @param event
+     * @memberof OSH.DataConnector.AjaxConnector
+     * @instance
+     */
     onSuccess:function(event) {
 
     }

@@ -1,3 +1,15 @@
+/**
+ * @classdesc The DataConnector is the abstract class used to create different connectors.
+ * @constructor
+ * @abstract
+ * @param {string} name the datasource name
+ * @param {Object} properties the datasource properties
+ * @param {boolean} properties.timeShift fix some problem with some android devices with some timestamp shift to 16 sec
+ * @param {boolean} properties.syncMasterTime defines if the datasource is synchronize with the others one
+ * @param {number} properties.bufferingTime defines the time during the data has to be buffered
+ * @param {number} properties.timeOut defines the limit time before data has to be skipped
+ * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
+ */
 OSH.DataReceiver.DataSource = Class.create({
   initialize: function(name,properties) {
     this.id = "DataSource-"+OSH.Utils.randomUUID();
@@ -9,6 +21,12 @@ OSH.DataReceiver.DataSource = Class.create({
     this.initDataSource(properties);
   },
 
+  /**
+   * Inits the datasource with the constructor properties.
+   * @param properties
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   */
   initDataSource: function(properties) {
     
     if(typeof(properties.timeShift) != "undefined") {

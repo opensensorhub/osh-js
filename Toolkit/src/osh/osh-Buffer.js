@@ -1,5 +1,15 @@
+/** @constant
+    @type {number}
+    @default
+ */
 var INITIAL_BUFFERING_TIME = 3000; // ms time
 
+/**
+ * This enumeration contains the whole list of available status for a job.
+ * @enum
+ * @readonly
+ * @type {{CANCEL: string, START: string, STOP: string, NOT_START_YET: string}}
+ */
 var BUFFER_STATUS = {
   CANCEL: 'cancel',
   START: 'start',
@@ -8,10 +18,10 @@ var BUFFER_STATUS = {
 };
 
 /**
- * Represents the buffer element which is in charge of synchronizing data.
+ * @classdesc Represents the buffer element which is in charge of synchronizing data.
  * @constructor
- * @param {Object} options - The options object allows to define the following parameters:
- * - replayFactor: defines the replay speed of the buffer in order to synchronize data
+ * @param {Object} options The options object
+ * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
  *
  */
 OSH.Buffer = Class.create({
