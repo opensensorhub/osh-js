@@ -1,15 +1,22 @@
 function init() {
 
-	var hostName = "bottsgeo.simple-url.com"
+	var hostName = "bottsgeo.simple-url.com";
 	
 	// global time settings    
 	var startTime = "now";
 	var endTime = "2080-01-01";
 	
-	startTime = "2016-08-15T22:30:00Z";
-    endTime = "2016-08-15T22:51:06Z";
+	// 1st field test Madison
+	//startTime = "2016-08-15T22:30:00Z";
+    //endTime = "2016-08-15T22:51:06Z";
+	
+	// 2nd field test Madison
+	//startTime = "2016-08-29T23:40:30.119Z";
+	//endTime = "2016-08-29T23:56:48.634Z";
+	
     var sync = true;
     var dataStreamTimeOut = 2000;
+    var useFFmpegWorkers = true;
 	
     // menu ids
     var treeMenuId = "tree-menu-";
@@ -40,8 +47,8 @@ function init() {
     var treeItems = [];
     
     // urn:android:device:a0e0eac2fea3f614-sos = Alex Nexus5
-    addAndroidPhone("android1", "Botts - Android", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos");
-    //addAndroidPhone("android2", "Android Phone #2", "urn:android:device:8b65f9d7048a345a-sos", null);
+    addAndroidPhone("android1", "Botts - Nexus5", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos");
+    addAndroidPhone("android2", "Botts - Nexus9", "urn:android:device:8b65f9d7048a345a-sos", null);
     
     addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos", 180);
     addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos", 60);
@@ -50,6 +57,9 @@ function init() {
     
     addVirbCam("virb1", "Drop Cam - Virb #1", "urn:osh:virb1", 0, true);
     addVirbCam("virb2", "Butler - Virb #2", "urn:osh:virb2", 0, false);
+    
+    //addDahuaCam("dahua1", "Dahua PTZ", "urn:osh:dahua1", 0);
+    addAxisCam("axis1", "Axis PTZ", "urn:osh:axis1", 0);
     
     addSoloUav("solo1", "3DR Solo", "urn:osh:solo-nav", "urn:osh:solo-video")
     
@@ -76,9 +86,26 @@ function init() {
     //--------------------------------------------------------------//
     //---------------------- Tasking Widget  -----------------------//
     //--------------------------------------------------------------//
-    /*var taskingView = new OSH.UI.PtzTaskingView("tasking-container",{});
-    taskingView.register(dahua1Tasking);
-    //taskingView.register(axis1Tasking);*/
+    
+    var axis1Tasking = new OSH.DataSender.PtzTasking("video-tasking", {
+        protocol: "http",
+        service: "SPS",
+        version: "2.0",
+        endpointUrl: hostName + ":8181/sensorhub/sps",
+        offeringID: "urn:axis:cam:00408CB95A55"
+    });
+    
+    /*var dahua1Tasking = new OSH.DataSender.PtzTasking("video-tasking", {
+        protocol: "http",
+        service: "SPS",
+        version: "2.0",
+        endpointUrl: hostName + ":8181/sensorhub/sps",
+        offeringID: "urn:dahua:cam:1G0215CGAK00046"
+    });*/
+    
+    var taskingView = new OSH.UI.PtzTaskingView("tasking-container",{});
+    //taskingView.register(dahua1Tasking);
+    taskingView.register(axis1Tasking);
     
     
     //--------------------------------------------------------------//
@@ -147,7 +174,7 @@ function init() {
     function addAndroidPhone(entityID, entityName, offeringID, flirOfferingID) {
         
         // create data sources
-        var videoData = new OSH.DataReceiver.VideoMjpeg("Video", {
+        var videoData = new OSH.DataReceiver.VideoH264("Video", {
             protocol : "ws",
             service: "SOS",
             endpointUrl: hostName + ":8181/sensorhub/sos",
@@ -277,11 +304,12 @@ function init() {
             connectionIds: [videoData.getId()]
         });
         
-        var videoView = new OSH.UI.MjpegView(videoDialog.popContentDiv.id, {
+        var videoView = new OSH.UI.FFMPEGView(videoDialog.popContentDiv.id, {
             dataSourceId: videoData.getId(),
             entityId : entity.id,
             css: "video",
             cssSelected: "video-selected",
+            useWorker: useFFmpegWorkers,
             width: 800,
             height: 600
         });
@@ -592,6 +620,7 @@ function init() {
             entityId : entity.id,
             css: "video",
             cssSelected: "video-selected",
+            useWorker: useFFmpegWorkers,
             width: 1280,
             height: 720
         });
@@ -754,6 +783,7 @@ function init() {
             entityId : entity.id,
             css: "video",
             cssSelected: "video-selected",
+            useWorker: useFFmpegWorkers,
             width: 1280,
             height: 720
         });
@@ -778,6 +808,124 @@ function init() {
             offeringID: "urn:dahua:cam:1G0215CGAK00046"
             //offeringID: "urn:axis:cam:00408CB95A55" // for axis
         });
+        
+        return entity;
+    }
+    
+    
+    function addAxisCam(entityID, entityName, offeringID, heading) {
+        
+        // create data sources
+        var videoData = new OSH.DataReceiver.VideoH264("Video", {
+            protocol : "ws",
+            service: "SOS",
+            endpointUrl: hostName + ":8181/sensorhub/sos",
+            offeringID: offeringID,
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: "1",
+            syncMasterTime: sync,
+            bufferingTime: 500,
+            timeOut: dataStreamTimeOut
+        });
+        
+        var locationData = new OSH.DataReceiver.LatLonAlt("Location", {
+            protocol : "ws",
+            service: "SOS",
+            endpointUrl: hostName + ":8181/sensorhub/sos",
+            offeringID: offeringID,
+            observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: "1",
+            syncMasterTime: sync,
+            bufferingTime: 500,
+            timeOut: dataStreamTimeOut
+        });
+        
+        // create entity
+        var entity = {
+            id: entityID,
+            name: entityName,
+            dataSources: [videoData, locationData]
+        };
+        dataSourceController.addEntity(entity);
+        
+        // add item to tree
+        treeItems.push({
+            entity : entity,
+            path: "PTZ Cams",
+            treeIcon : "images/cameralook.png",
+            contextMenuId: treeMenuId + entity.id
+        })
+        
+        // add marker to map
+        leafletMapView.addViewItem({
+            name: entityName,
+            entityId : entity.id,
+            styler : new OSH.UI.Styler.PointMarker({
+                locationFunc : {
+                    dataSourceIds : [locationData.getId()],
+                    handler : function(rec) {
+                        return {
+                            x : rec.lon,
+                            y : rec.lat,
+                            z : rec.alt
+                        };
+                    }
+                },
+                orientation : {
+                    heading : heading
+                },
+                icon : 'images/cameralook.png',
+                iconFunc : {
+                    dataSourceIds: [locationData.getId()],
+                    handler : function(rec,timeStamp,options) {
+                        if(options.selected) {
+                            return 'images/cameralook-selected.png'
+                        } else {
+                            return 'images/cameralook.png';
+                        }
+                    }
+                }
+            }),
+            contextMenuId: mapMenuId+entityID
+        });
+        
+        // video view
+        var videoDialog = new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "video-dialog",
+            name: entityName,
+            show: true,
+            dockable: true,
+            closeable: true,
+            canDisconnect : true,
+            swapId: "main-container",
+            connectionIds: [videoData.getId()]
+        });
+        
+        var videoView = new OSH.UI.FFMPEGView(videoDialog.popContentDiv.id, {
+            dataSourceId: videoData.getId(),
+            entityId : entity.id,
+            css: "video",
+            cssSelected: "video-selected",
+            useWorker: useFFmpegWorkers,
+            width: 1280,
+            height: 720
+        });
+        
+        // add tree and map context menus
+        var menuItems = [{
+            name: "Show Video",
+            viewId: videoDialog.getId(),
+            css: "fa fa-video-camera",
+            action: "show"
+        }];
+    
+        var markerMenu = new OSH.UI.ContextMenu.CircularMenu({id:mapMenuId+entityID, groupId: menuGroupId, items: menuItems});
+        var treeMenu = new OSH.UI.ContextMenu.StackMenu({id: treeMenuId+entityID, groupId: menuGroupId, items: menuItems});   
         
         return entity;
     }
@@ -901,6 +1049,7 @@ function init() {
             entityId : entity.id,
             css: "video",
             cssSelected: "video-selected",
+            useWorker: useFFmpegWorkers,
             width: 1280,
             height: 720
         });

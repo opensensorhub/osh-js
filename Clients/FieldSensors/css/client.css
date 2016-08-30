@@ -154,3 +154,8 @@ a.navbar-brand:hover {
 .discovery-view {
     background-color:#FFF;
 }
+
+.c-circle-menu {
+    bottom: 95px;
+    left: 220px;
+}
