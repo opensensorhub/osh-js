@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 	initialize: function ($super, divId, options) {
 		$super(divId, [], options);
@@ -112,6 +117,10 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		});
 	},
 
+	/**
+	 * @instance
+	 * @memberof OSH.UI.RangeSlider
+	 */
 	deactivate:function() {
 		this.slider.setAttribute('disabled', true);
 		this.lock = false;
@@ -125,6 +134,10 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		this.update = false;
 	},
 
+	/**
+	 * @instance
+	 * @memberof OSH.UI.RangeSlider
+	 */
 	activate: function() {
 		this.slider.removeAttribute('disabled');
 		this.lock = true;

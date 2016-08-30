@@ -1,3 +1,8 @@
+/**
+ * @class
+ * @classdesc
+ * @type {OSH.UI.View}
+ */
 OSH.UI.H264View = Class.create(OSH.UI.View, {
 	initialize : function($super, divId, options) {
 		$super(divId,[],options);
@@ -46,10 +51,23 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 		});
 	},
 
+	/**
+	 *
+	 * @param fullNal
+	 * @instance
+	 * @memberof OSH.UI.H264View
+	 */
 	decode : function(fullNal) {
 		this.avcWs.decode(fullNal);
 	},
 
+	/**
+	 *
+	 * @param dataSourceId
+	 * @param data
+	 * @instance
+	 * @memberof OSH.UI.H264View
+	 */
 	setData : function(dataSourceId, data) {
 		this.computeFullNalFromRaw(data.data, function(nal) {
 			var nalType = nal[0] & 0x1F;
@@ -68,6 +86,13 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 		}.bind(this));
 	},
 
+	/**
+	 *
+	 * @param data
+	 * @param callback
+	 * @instance
+	 * @memberof OSH.UI.H264View
+	 */
 	computeFullNalFromRaw : function(data, callback) {
 		if (!(data && data.length)) {
 			return;
@@ -109,7 +134,15 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 			}
 		}
 	},
-	
+
+	/**
+	 *
+	 * @param $super
+	 * @param dataSourceIds
+	 * @param entityId
+	 * @instance
+	 * @memberof OSH.UI.H264View
+	 */
 	selectDataView: function($super,dataSourceIds,entityId) {
 	    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 	      document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);

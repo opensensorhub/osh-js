@@ -1,3 +1,7 @@
+/**
+ * @classdesc
+ * @class
+ */
 OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     initialize: function($super, name, properties) {
@@ -26,31 +30,86 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
     },
 
 
+    /**
+     * Builds the take off SPS request.
+     * @override
+     * @inheritdoc
+     * @param {string} props
+     * @returns {string} the take off sps request
+     * @memberof OSH.DataReceiver.UavMapTasking
+     * @instance
+     */
     buildTakeOffRequest: function(props) {
         return this.buildRequest("navCommands,TAKEOFF,10");
     },
 
 
+
+    /**
+     * Builds the got to SPS request.
+     * @override
+     * @inheritdoc
+     * @param {string} props
+     * @returns {string} the goto SPS request
+     * @memberof OSH.DataReceiver.UavMapTasking
+     * @instance
+     */
     buildGotoRequest: function(props) {
         return this.buildRequest("navCommands,GOTO_LLA,"+props.lat+","+props.lon+",0,0");
     },
 
 
+    /**
+     * Builds the orbit SPS request.
+     * @override
+     * @inheritdoc
+     * @returns {string} the orbit SPS request
+     * @memberof OSH.DataReceiver.UavMapTasking
+     * @param {string} props
+     * @instance
+     */
     buildOrbitRequest: function(props) {
         return this.buildRequest("navCommands,ORBIT,"+props.lat+","+props.lon+",0,"+props.radius);
     },
 
 
+    /**
+     * Builds the lookat SPS request.
+     * @override
+     * @inheritdoc
+     * @returns {string} the lookat SPS request
+     * @memberof OSH.DataReceiver.UavMapTasking
+     * @param {string} props
+     * @instance
+     */
     buildLookAtRequest: function(props) {
         return this.buildRequest("camCommands,MOUNT_TARGET,"+props.lat+","+props.lon+",0");
     },
 
 
+    /**
+     * Builds the land SPS request.
+     * @override
+     * @inheritdoc
+     * @returns {string} the land SPS request
+     * @memberof OSH.DataReceiver.UavMapTasking
+     * @param {string} props
+     * @instance
+     */
     buildLandRequest: function(props) {
         return this.buildRequest("navCommands,LAND,"+props.lat+","+props.lon);
     },
 
 
+    /**
+     * Builds the request based on sps standard.
+     * @override
+     * @inheritdoc
+     * @param {string} the command data
+     * @returns {string} the sps request
+     * @memberof OSH.DataReceiver.UavMapTasking
+     * @instance
+     */
     buildRequest: function(cmdData) {
         var xmlSpsRequest = "<sps:Submit ";
 

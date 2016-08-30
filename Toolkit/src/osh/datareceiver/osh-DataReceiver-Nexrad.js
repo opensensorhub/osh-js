@@ -1,11 +1,36 @@
+/**
+ * @classdesc This datasource provides parsing to Nexrad.
+ * @class OSH.DataReceiver.Nexrad
+ * @inheritdoc
+ */
 OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
 
+  /**
+   * Extracts timestamp from the message. The timestamp is the first token got from split(',')
+   * @override
+   * @inheritdoc
+   * @param {function} $super the parseTimeStamp super method
+   * @param {string} data the data to parse
+   * @returns {number} the extracted timestamp
+   * @memberof OSH.DataReceiver.Nexrad
+   * @instance
+   */
   parseTimeStamp: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
   },
-  
+
+  /**
+   * Extract data from the message.
+   * @override
+   * @inheritdoc
+   * @param {function} $super the parseData super method
+   * @param {Object} data the data to parse
+   * @returns {Object} the parsed data
+   * @memberof OSH.DataReceiver.Nexrad
+   * @instance
+   */
   parseData: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");

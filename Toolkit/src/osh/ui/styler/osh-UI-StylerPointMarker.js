@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class OSH.UI.Styler.PointMarker
+ * @type {OSH.UI.Styler}
+ */
 OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {
 		$super(properties);
@@ -71,6 +76,13 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		}
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @param view
+	 * @memberof OSH.UI.Styler.PointMarker
+	 * @instance
+	 */
 	init: function($super,view) {
 		$super(view);
 		if(typeof(view) != "undefined" && this.location != null) {
@@ -78,6 +90,16 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		}
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @param dataSourceId
+	 * @param rec
+	 * @param view
+	 * @param options
+	 * @memberof OSH.UI.Styler.PointMarker
+	 * @instance
+	 */
 	setData: function($super,dataSourceId,rec,view,options) {
 		if($super(dataSourceId,rec,view,options)) {
 			if (typeof(view) != "undefined" && this.location != null) {
@@ -86,6 +108,12 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 		}
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @memberof OSH.UI.Styler.PointMarker
+	 * @instance
+	 */
 	clear:function($super){
 	}
 

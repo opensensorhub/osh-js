@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @classdesc
+ */
 OSH.Server = Class.create({
   initialize: function (url) {
     this.url = url;
@@ -6,14 +10,33 @@ OSH.Server = Class.create({
     this.sensors = [];
   },
 
+  /**
+   *
+   * @returns {string|*}
+   * @instance
+   * @memberof OSH.Server
+   */
   getId: function () {
     return this.id;
   },
 
+  /**
+   *
+   * @returns {*}
+   * @instance
+   * @memberof OSH.Server
+   */
   getUrl: function () {
     return this.url;
   },
 
+  /**
+   *
+   * @param successCallback
+   * @param errorCallback
+   * @instance
+   * @memberof OSH.Server
+   */
   getCapabilities: function (successCallback, errorCallback) {
     var req = this.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities';
     var xhr = new XMLHttpRequest();
@@ -36,6 +59,13 @@ OSH.Server = Class.create({
     xhr.send();
   },
 
+  /**
+   *
+   * @param id
+   * @returns {*}
+   * @instance
+   * @memberof OSH.Server
+   */
   getSensorById: function (id) {
     for (var i = 0; i < this.sensors.length; i++) {
       if (this.sensors[i].identifier == id)

@@ -1,3 +1,8 @@
+/**
+ * @class
+ * @classdesc A css context menu allowing to create various context menu using only css.
+ * @type {OSH.UI.ContextMenu}
+ */
 OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
     initialize:function($super,properties,type) {
         $super(properties);
@@ -44,7 +49,15 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
             }
         }
     },
-
+    /**
+     *
+     * @param $super
+     * @param {Object} properties
+     * @param {number} properties.offsetX - the x offset to shift the menu
+     * @param {number} properties.offsetY - the y offset to shift the menu
+     * @instance
+     * @memberof OSH.UI.ContextMenu.CssMenu
+     */
     show:function($super,properties) {
         this.removeElement();
         var closeId = OSH.Utils.randomUUID();
@@ -109,11 +122,22 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         }
     },
 
+    /**
+     * Hides the menu
+     * @inheritdoc
+     * @param $super
+     * @instance
+     * @memberof OSH.UI.ContextMenu.CssMenu
+     */
     hide:function($super){
         document.querySelector('.'+this.type+'-menu-circle').classList.toggle('open');
         this.removeElement();
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.ContextMenu.CssMenu
+     */
     removeElement: function() {
         if(typeof(this.rootTag) != "undefined" && this.rootTag != null && typeof(this.rootTag.parentNode) != "undefined") {
             this.rootTag.parentNode.removeChild(this.rootTag);
@@ -121,6 +145,10 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
         }
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.ContextMenu.CssMenu
+     */
     getTransform: function(el) {
         var transform = el.style.transform;
         if(!transform || 0 === transform.length) {

@@ -1,3 +1,8 @@
+/**
+ * @class OSH.UI.Styler.Polyline
+ * @classdesc
+ * @type {OSH.UI.Styler}
+ */
 OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {
 		$super(properties);
@@ -68,7 +73,17 @@ OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 			this.addFn(properties.smoothFactorFunc.dataSourceIds,fn);
 		}
 	},
-	
+
+	/**
+	 *
+	 * @param $super
+	 * @param dataSourceId
+	 * @param rec
+	 * @param view
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.Styler.Polyline
+	 */
 	setData: function($super,dataSourceId,rec,view,options) {
 		if($super(dataSourceId,rec,view,options)) {
 			if(typeof(view) != "undefined" && typeof view.updatePolyline === 'function'){
@@ -77,6 +92,12 @@ OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 		}
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @instance
+	 * @memberof OSH.UI.Styler.Polyline
+	 */
 	clear: function($super) {
 		this.locations = [];
 	}

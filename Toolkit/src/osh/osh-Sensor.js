@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @classdesc
+ */
 OSH.Sensor = Class.create({
   initialize: function (jsonix_offering) {
     this.server = null;
@@ -38,7 +42,11 @@ OSH.Sensor = Class.create({
     }
   },
 
-  //describe sensor retrieves data about a sensor's observable properties and metadata
+  /**
+   * describe sensor retrieves data about a sensor's observable properties and metadata
+   * @instance
+   * @memberof OSH.Sensor
+   */
   describeSensor: function () {
     var req = this.server.url + 'sensorhub/sos?service=SOS&version=2.0&request=DescribeSensor&procedure=' + this.procedure;
     var xhr = new XMLHttpRequest();
@@ -53,7 +61,12 @@ OSH.Sensor = Class.create({
     xhr.send();
   },
 
-  //get result template for single observable prop
+  /**
+   * get result template for single observable prop
+   * @param observabeProp
+   * @instance
+   * @memberof OSH.Sensor
+   */
   getResultTemplate: function (observabeProp) {
     if (this.hasObservableProperty(observabeProp)) {
       var req = this.server.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetResultTemplate&offering=' + this.identifier + '&observedProperty=' + observabeProp;
@@ -115,6 +128,13 @@ OSH.Sensor = Class.create({
     }
   },
 
+  /**
+   *
+   * @param fieldStruct
+   * @param fieldEncoding
+   * @instance
+   * @memberof OSH.Sensor
+   */
   setFieldEncoding: function(fieldStruct, fieldEncoding) {
     var path = fieldEncoding.name;
     var pathToks = path.split('/');
@@ -137,6 +157,13 @@ OSH.Sensor = Class.create({
     }
   },
 
+  /**
+   *
+   * @param field
+   * @param resultStruct
+   * @instance
+   * @memberof OSH.Sensor
+   */
   buildDataFields: function(field, resultStruct) {
     var dataComp = field.abstractDataComponent;
     if(typeof dataComp != 'undefined' && dataComp != null) {
@@ -184,14 +211,29 @@ OSH.Sensor = Class.create({
     }
   },
 
-  //get result template for all properties
+  /**
+   * get result template for all properties
+   * @instance
+   * @memberof OSH.Sensor
+   */
   getResultTemplateAll: function () {
     for (var i = 0; i < this.observableProperties.length; i++) {
       this.getResultTemplate(this.observableProperties[i]);
     }
   },
 
-  //creates a data connector based on specified parameters
+  /**
+   * creates a data connector based on specified parameters
+   * @param observableProp
+   * @param featureOfInterest
+   * @param spatialFilter
+   * @param startTime
+   * @param endTime
+   * @param playbackSpeed
+   * @returns {*}
+   * @instance
+   * @memberof OSH.Sensor
+   */
   createDataConnector: function (observableProp, featureOfInterest = null, spatialFilter=null, startTime=this.timeRangeStart, endTime=this.timeRangeEnd, playbackSpeed=1) {
     if (observableProp == null || typeof observableProp == 'undefined' || !this.hasObservableProperty(observableProp)) {
       console.log('Could not create data connector! Property: ' + observableProp + ' does not exist.');
@@ -230,7 +272,17 @@ OSH.Sensor = Class.create({
     return conn;
   },
 
-  //creates a data connection for each observable property with the following params
+  /**
+   * creates a data connection for each observable property with the following params
+   * @param featureOfInterest
+   * @param spatialFilter
+   * @param startTime
+   * @param endTime
+   * @param playbackSpeed
+   * @returns {Array}
+   * @instance
+   * @memberof OSH.Sensor
+   */
   createDataConnectorAll: function (featureOfInterest=null, spatialFilter=null, startTime=this.timeRangeStart, endTime=this.timeRangeEnd, playbackSpeed=1) {
     var conns = [];
     for (var i = 0; i < this.observableProperties.length; i++) {
@@ -239,7 +291,13 @@ OSH.Sensor = Class.create({
     return conns;
   },
 
-  //checks if observable property exists for this sensor
+  /**
+   * checks if observable property exists for this sensor
+   * @param prop
+   * @returns {boolean}
+   * @instance
+   * @memberof OSH.Sensor
+   */
   hasObservableProperty: function (prop) {
     for (var i = 0; i < this.observableProperties.length; i++) {
       if (this.observableProperties[i] == prop)
@@ -248,7 +306,13 @@ OSH.Sensor = Class.create({
     return false;
   },
 
-  //checks if feature of interest exists for this sensor
+  /**
+   * checks if feature of interest exists for this sensor
+   * @param foi
+   * @returns {boolean}
+   * @instance
+   * @memberof OSH.Sensor
+   */
   hasFeatureOfInterest: function (foi) {
     for (var i = 0; i < this.featuresOfInterest.length; i++) {
       if (this.featuresOfInterest[i] == foi)
@@ -257,7 +321,13 @@ OSH.Sensor = Class.create({
     return false;
   },
 
-  //checks if the time is within range defined for this sensor
+  /**
+   * checks if the time is within range defined for this sensor
+   * @param timeStr
+   * @returns {boolean}
+   * @instance
+   * @memberof OSH.Sensor
+   */
   isValidTime: function (timeStr) {
     var d;
     if (timeStr == 'now')
@@ -280,11 +350,24 @@ OSH.Sensor = Class.create({
     return (d >= start && d <= end);
   },
 
-  //callback for checking when a sensor description has returned
+  /**
+   * callback for checking when a sensor description has returned
+   * @param data
+   * @instance
+   * @memberof OSH.Sensor
+   */
   onDescribeSensor: function (data) {
 
   },
 
+  /**
+   *
+   * @param obsProperty
+   * @param resultStruct
+   * @param resultEncoding
+   * @instance
+   * @memberof OSH.Sensor
+   */
   onGetResultTemplate: function (obsProperty, resultStruct, resultEncoding) {
 
   }

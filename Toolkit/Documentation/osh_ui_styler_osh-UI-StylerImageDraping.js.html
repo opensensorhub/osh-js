@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: osh/ui/styler/osh-UI-StylerImageDraping.js</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html"></a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="OSH">
+            <span class="title">
+                <a href="OSH.html">OSH</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataConnector">
+            <span class="title">
+                <a href="OSH.DataConnector.html">OSH.DataConnector</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver">
+            <span class="title">
+                <a href="OSH.DataReceiver.html">OSH.DataReceiver</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataSender">
+            <span class="title">
+                <a href="OSH.DataSender.html">OSH.DataSender</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI">
+            <span class="title">
+                <a href="OSH.UI.html">OSH.UI</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.ContextMenu">
+            <span class="title">
+                <a href="OSH.UI.ContextMenu.html">OSH.UI.ContextMenu</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.ContextMenu#handleEvents"><a href="OSH.UI.ContextMenu.html#handleEvents">handleEvents</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu#hide"><a href="OSH.UI.ContextMenu.html#hide">hide</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu#show"><a href="OSH.UI.ContextMenu.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler">
+            <span class="title">
+                <a href="OSH.UI.Styler.html">OSH.UI.Styler</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler#addFn"><a href="OSH.UI.Styler.html#addFn">addFn</a></li>
+            
+                <li data-name="OSH.UI.Styler#clear"><a href="OSH.UI.Styler.html#clear">clear</a></li>
+            
+                <li data-name="OSH.UI.Styler#getDataSourcesIds"><a href="OSH.UI.Styler.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="OSH.UI.Styler#getId"><a href="OSH.UI.Styler.html#getId">getId</a></li>
+            
+                <li data-name="OSH.UI.Styler#init"><a href="OSH.UI.Styler.html#init">init</a></li>
+            
+                <li data-name="OSH.UI.Styler#initEvents"><a href="OSH.UI.Styler.html#initEvents">initEvents</a></li>
+            
+                <li data-name="OSH.UI.Styler#select"><a href="OSH.UI.Styler.html#select">select</a></li>
+            
+                <li data-name="OSH.UI.Styler#setData"><a href="OSH.UI.Styler.html#setData">setData</a></li>
+            
+                <li data-name="OSH.UI.Styler#setData"><a href="OSH.UI.Styler.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.View">
+            <span class="title">
+                <a href="OSH.UI.View.html">OSH.UI.View</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.View.init"><a href="OSH.UI.View.html#.init">init</a></li>
+            
+                <li data-name="OSH.UI.View#addViewItem"><a href="OSH.UI.View.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="OSH.UI.View#attachTo"><a href="OSH.UI.View.html#attachTo">attachTo</a></li>
+            
+                <li data-name="OSH.UI.View#beforeAddingItems"><a href="OSH.UI.View.html#beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="OSH.UI.View#getDataSourcesId"><a href="OSH.UI.View.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="OSH.UI.View#getDivId"><a href="OSH.UI.View.html#getDivId">getDivId</a></li>
+            
+                <li data-name="OSH.UI.View#getId"><a href="OSH.UI.View.html#getId">getId</a></li>
+            
+                <li data-name="OSH.UI.View#handleEvents"><a href="OSH.UI.View.html#handleEvents">handleEvents</a></li>
+            
+                <li data-name="OSH.UI.View#hide"><a href="OSH.UI.View.html#hide">hide</a></li>
+            
+                <li data-name="OSH.UI.View#onResize"><a href="OSH.UI.View.html#onResize">onResize</a></li>
+            
+                <li data-name="OSH.UI.View#reset"><a href="OSH.UI.View.html#reset">reset</a></li>
+            
+                <li data-name="OSH.UI.View#selectDataView"><a href="OSH.UI.View.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.View#setData"><a href="OSH.UI.View.html#setData">setData</a></li>
+            
+                <li data-name="OSH.UI.View#show"><a href="OSH.UI.View.html#show">show</a></li>
+            
+                <li data-name="OSH.UI.View#shows"><a href="OSH.UI.View.html#shows">shows</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Utils">
+            <span class="title">
+                <a href="OSH.Utils.html">OSH.Utils</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.Utils.GetResultObject"><a href="OSH.Utils.html#.GetResultObject">GetResultObject</a></li>
+            
+                <li data-name="OSH.Utils.getXCursorPosition"><a href="OSH.Utils.html#.getXCursorPosition">getXCursorPosition</a></li>
+            
+                <li data-name="OSH.Utils.getYCursorPosition"><a href="OSH.Utils.html#.getYCursorPosition">getYCursorPosition</a></li>
+            
+                <li data-name="OSH.Utils.isArrayIntersect"><a href="OSH.Utils.html#.isArrayIntersect">isArrayIntersect</a></li>
+            
+                <li data-name="OSH.Utils.isBlink"><a href="OSH.Utils.html#.isBlink">isBlink</a></li>
+            
+                <li data-name="OSH.Utils.isChrome"><a href="OSH.Utils.html#.isChrome">isChrome</a></li>
+            
+                <li data-name="OSH.Utils.isFirefox"><a href="OSH.Utils.html#.isFirefox">isFirefox</a></li>
+            
+                <li data-name="OSH.Utils.isIE"><a href="OSH.Utils.html#.isIE">isIE</a></li>
+            
+                <li data-name="OSH.Utils.isOpera"><a href="OSH.Utils.html#.isOpera">isOpera</a></li>
+            
+                <li data-name="OSH.Utils.isSafari"><a href="OSH.Utils.html#.isSafari">isSafari</a></li>
+            
+                <li data-name="OSH.Utils.isWebWorker"><a href="OSH.Utils.html#.isWebWorker">isWebWorker</a></li>
+            
+                <li data-name="OSH.Utils.jsonix_XML2JSON"><a href="OSH.Utils.html#.jsonix_XML2JSON">jsonix_XML2JSON</a></li>
+            
+                <li data-name="OSH.Utils.ParseBytes"><a href="OSH.Utils.html#.ParseBytes">ParseBytes</a></li>
+            
+                <li data-name="OSH.Utils.randomUUID"><a href="OSH.Utils.html#.randomUUID">randomUUID</a></li>
+            
+                <li data-name="OSH.Utils.ReadData"><a href="OSH.Utils.html#.ReadData">ReadData</a></li>
+            
+                <li data-name="OSH.Utils.takeScreeshot"><a href="OSH.Utils.html#.takeScreeshot">takeScreeshot</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Video">
+            <span class="title">
+                <a href="OSH.Video.html">OSH.Video</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Buffer">
+            <span class="title">
+                <a href="OSH.Buffer.html">OSH.Buffer</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.Buffer#addDataSource"><a href="OSH.Buffer.html#addDataSource">addDataSource</a></li>
+            
+                <li data-name="OSH.Buffer#addEntity"><a href="OSH.Buffer.html#addEntity">addEntity</a></li>
+            
+                <li data-name="OSH.Buffer#buffering"><a href="OSH.Buffer.html#buffering">buffering</a></li>
+            
+                <li data-name="OSH.Buffer#cancelAll"><a href="OSH.Buffer.html#cancelAll">cancelAll</a></li>
+            
+                <li data-name="OSH.Buffer#cancelDataSource"><a href="OSH.Buffer.html#cancelDataSource">cancelDataSource</a></li>
+            
+                <li data-name="OSH.Buffer#dispatchData"><a href="OSH.Buffer.html#dispatchData">dispatchData</a></li>
+            
+                <li data-name="OSH.Buffer#processData"><a href="OSH.Buffer.html#processData">processData</a></li>
+            
+                <li data-name="OSH.Buffer#processSyncData"><a href="OSH.Buffer.html#processSyncData">processSyncData</a></li>
+            
+                <li data-name="OSH.Buffer#push"><a href="OSH.Buffer.html#push">push</a></li>
+            
+                <li data-name="OSH.Buffer#start"><a href="OSH.Buffer.html#start">start</a></li>
+            
+                <li data-name="OSH.Buffer#startAll"><a href="OSH.Buffer.html#startAll">startAll</a></li>
+            
+                <li data-name="OSH.Buffer#startDataSource"><a href="OSH.Buffer.html#startDataSource">startDataSource</a></li>
+            
+                <li data-name="OSH.Buffer#startObservers"><a href="OSH.Buffer.html#startObservers">startObservers</a></li>
+            
+                <li data-name="OSH.Buffer#stop"><a href="OSH.Buffer.html#stop">stop</a></li>
+            
+                <li data-name="OSH.Buffer#stopObservers"><a href="OSH.Buffer.html#stopObservers">stopObservers</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataConnector.AjaxConnector">
+            <span class="title">
+                <a href="OSH.DataConnector.AjaxConnector.html">OSH.DataConnector.AjaxConnector</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataConnector.AjaxConnector#getId"><a href="OSH.DataConnector.AjaxConnector.html#getId">getId</a></li>
+            
+                <li data-name="OSH.DataConnector.AjaxConnector#getUrl"><a href="OSH.DataConnector.AjaxConnector.html#getUrl">getUrl</a></li>
+            
+                <li data-name="OSH.DataConnector.AjaxConnector#onError"><a href="OSH.DataConnector.AjaxConnector.html#onError">onError</a></li>
+            
+                <li data-name="OSH.DataConnector.AjaxConnector#onSuccess"><a href="OSH.DataConnector.AjaxConnector.html#onSuccess">onSuccess</a></li>
+            
+                <li data-name="OSH.DataConnector.AjaxConnector#sendRequest"><a href="OSH.DataConnector.AjaxConnector.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataConnector.DataConnector">
+            <span class="title">
+                <a href="OSH.DataConnector.DataConnector.html">OSH.DataConnector.DataConnector</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataConnector.DataConnector#getId"><a href="OSH.DataConnector.DataConnector.html#getId">getId</a></li>
+            
+                <li data-name="OSH.DataConnector.DataConnector#getUrl"><a href="OSH.DataConnector.DataConnector.html#getUrl">getUrl</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataConnector.WebSocketDataConnector">
+            <span class="title">
+                <a href="OSH.DataConnector.WebSocketDataConnector.html">OSH.DataConnector.WebSocketDataConnector</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataConnector.WebSocketDataConnector#close"><a href="OSH.DataConnector.WebSocketDataConnector.html#close">close</a></li>
+            
+                <li data-name="OSH.DataConnector.WebSocketDataConnector#connect"><a href="OSH.DataConnector.WebSocketDataConnector.html#connect">connect</a></li>
+            
+                <li data-name="OSH.DataConnector.WebSocketDataConnector#disconnect"><a href="OSH.DataConnector.WebSocketDataConnector.html#disconnect">disconnect</a></li>
+            
+                <li data-name="OSH.DataConnector.WebSocketDataConnector#getId"><a href="OSH.DataConnector.WebSocketDataConnector.html#getId">getId</a></li>
+            
+                <li data-name="OSH.DataConnector.WebSocketDataConnector#getUrl"><a href="OSH.DataConnector.WebSocketDataConnector.html#getUrl">getUrl</a></li>
+            
+                <li data-name="OSH.DataConnector.WebSocketDataConnector#onMessage"><a href="OSH.DataConnector.WebSocketDataConnector.html#onMessage">onMessage</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.Chart">
+            <span class="title">
+                <a href="OSH.DataReceiver.Chart.html">OSH.DataReceiver.Chart</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.Chart#parseData"><a href="OSH.DataReceiver.Chart.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.Chart#parseTimeStamp"><a href="OSH.DataReceiver.Chart.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.DataReceiverController">
+            <span class="title">
+                <a href="OSH.DataReceiver.DataReceiverController.html">OSH.DataReceiver.DataReceiverController</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.DataReceiverController#addDataSource"><a href="OSH.DataReceiver.DataReceiverController.html#addDataSource">addDataSource</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataReceiverController#addEntity"><a href="OSH.DataReceiver.DataReceiverController.html#addEntity">addEntity</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataReceiverController#connectAll"><a href="OSH.DataReceiver.DataReceiverController.html#connectAll">connectAll</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataReceiverController#initBuffer"><a href="OSH.DataReceiver.DataReceiverController.html#initBuffer">initBuffer</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataReceiverController#updateDataSourceTime"><a href="OSH.DataReceiver.DataReceiverController.html#updateDataSourceTime">updateDataSourceTime</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.DataSource">
+            <span class="title">
+                <a href="OSH.DataReceiver.DataSource.html">OSH.DataReceiver.DataSource</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            <span class="subtitle">Typedefs</span>
+            
+                <li data-name="OSH.DataReceiver.DataSource#onMessage"><a href="OSH.DataReceiver.DataSource.html#onMessage">onMessage</a></li>
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.DataSource#buildUrl"><a href="OSH.DataReceiver.DataSource.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#connect"><a href="OSH.DataReceiver.DataSource.html#connect">connect</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#disconnect"><a href="OSH.DataReceiver.DataSource.html#disconnect">disconnect</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#getId"><a href="OSH.DataReceiver.DataSource.html#getId">getId</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#getName"><a href="OSH.DataReceiver.DataSource.html#getName">getName</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#initDataSource"><a href="OSH.DataReceiver.DataSource.html#initDataSource">initDataSource</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#onData"><a href="OSH.DataReceiver.DataSource.html#onData">onData</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#parseData"><a href="OSH.DataReceiver.DataSource.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.DataSource#parseTimeStamp"><a href="OSH.DataReceiver.DataSource.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.EulerOrientation">
+            <span class="title">
+                <a href="OSH.DataReceiver.EulerOrientation.html">OSH.DataReceiver.EulerOrientation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.EulerOrientation#parseData"><a href="OSH.DataReceiver.EulerOrientation.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.EulerOrientation#parseTimeStamp"><a href="OSH.DataReceiver.EulerOrientation.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.LatLonAlt">
+            <span class="title">
+                <a href="OSH.DataReceiver.LatLonAlt.html">OSH.DataReceiver.LatLonAlt</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.LatLonAlt#parseData"><a href="OSH.DataReceiver.LatLonAlt.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.LatLonAlt#parseTimeStamp"><a href="OSH.DataReceiver.LatLonAlt.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.Nexrad">
+            <span class="title">
+                <a href="OSH.DataReceiver.Nexrad.html">OSH.DataReceiver.Nexrad</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.Nexrad#parseData"><a href="OSH.DataReceiver.Nexrad.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.Nexrad#parseTimeStamp"><a href="OSH.DataReceiver.Nexrad.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.OrientationQuaternion">
+            <span class="title">
+                <a href="OSH.DataReceiver.OrientationQuaternion.html">OSH.DataReceiver.OrientationQuaternion</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.OrientationQuaternion#parseData"><a href="OSH.DataReceiver.OrientationQuaternion.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.OrientationQuaternion#parseTimeStamp"><a href="OSH.DataReceiver.OrientationQuaternion.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.VideoH264">
+            <span class="title">
+                <a href="OSH.DataReceiver.VideoH264.html">OSH.DataReceiver.VideoH264</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.VideoH264#parseData"><a href="OSH.DataReceiver.VideoH264.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.VideoH264#parseTimeStamp"><a href="OSH.DataReceiver.VideoH264.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.VideoMjpeg">
+            <span class="title">
+                <a href="OSH.DataReceiver.VideoMjpeg.html">OSH.DataReceiver.VideoMjpeg</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.VideoMjpeg#parseData"><a href="OSH.DataReceiver.VideoMjpeg.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.VideoMjpeg#parseTimeStamp"><a href="OSH.DataReceiver.VideoMjpeg.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.VideoMp4">
+            <span class="title">
+                <a href="OSH.DataReceiver.VideoMp4.html">OSH.DataReceiver.VideoMp4</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.VideoMp4#parseTimeStamp"><a href="OSH.DataReceiver.VideoMp4.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataSender.DataSenderController">
+            <span class="title">
+                <a href="OSH.DataSender.DataSenderController.html">OSH.DataSender.DataSenderController</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataSender.DataSenderController#addDataSource"><a href="OSH.DataSender.DataSenderController.html#addDataSource">addDataSource</a></li>
+            
+                <li data-name="OSH.DataSender.DataSenderController#sendRequest"><a href="OSH.DataSender.DataSenderController.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataSender.DataSink">
+            <span class="title">
+                <a href="OSH.DataSender.DataSink.html">OSH.DataSender.DataSink</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataSender.DataSink#buildRequest"><a href="OSH.DataSender.DataSink.html#buildRequest">buildRequest</a></li>
+            
+                <li data-name="OSH.DataSender.DataSink#buildUrl"><a href="OSH.DataSender.DataSink.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="OSH.DataSender.DataSink#onCatchError"><a href="OSH.DataSender.DataSink.html#onCatchError">onCatchError</a></li>
+            
+                <li data-name="OSH.DataSender.DataSink#onCatchSuccess"><a href="OSH.DataSender.DataSink.html#onCatchSuccess">onCatchSuccess</a></li>
+            
+                <li data-name="OSH.DataSender.DataSink#onError"><a href="OSH.DataSender.DataSink.html#onError">onError</a></li>
+            
+                <li data-name="OSH.DataSender.DataSink#onSuccess"><a href="OSH.DataSender.DataSink.html#onSuccess">onSuccess</a></li>
+            
+                <li data-name="OSH.DataSender.DataSink#sendRequest"><a href="OSH.DataSender.DataSink.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataSender.PtzTasking">
+            <span class="title">
+                <a href="OSH.DataSender.PtzTasking.html">OSH.DataSender.PtzTasking</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataSender.UavMapTasking">
+            <span class="title">
+                <a href="OSH.DataSender.UavMapTasking.html">OSH.DataSender.UavMapTasking</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.EventManager">
+            <span class="title">
+                <a href="OSH.EventManager.html">OSH.EventManager</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="OSH.EventManager.EVENT"><a href="OSH.EventManager.html#.EVENT">EVENT</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.EventManager.fire"><a href="OSH.EventManager.html#.fire">fire</a></li>
+            
+                <li data-name="OSH.EventManager.observe"><a href="OSH.EventManager.html#.observe">observe</a></li>
+            
+                <li data-name="OSH.EventManager.observeDiv"><a href="OSH.EventManager.html#.observeDiv">observeDiv</a></li>
+            
+                <li data-name="OSH.EventManager.stopObserving"><a href="OSH.EventManager.html#.stopObserving">stopObserving</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Log">
+            <span class="title">
+                <a href="OSH.Log.html">OSH.Log</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Sensor">
+            <span class="title">
+                <a href="OSH.Sensor.html">OSH.Sensor</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.Sensor#buildDataFields"><a href="OSH.Sensor.html#buildDataFields">buildDataFields</a></li>
+            
+                <li data-name="OSH.Sensor#createDataConnector"><a href="OSH.Sensor.html#createDataConnector">createDataConnector</a></li>
+            
+                <li data-name="OSH.Sensor#createDataConnectorAll"><a href="OSH.Sensor.html#createDataConnectorAll">createDataConnectorAll</a></li>
+            
+                <li data-name="OSH.Sensor#describeSensor"><a href="OSH.Sensor.html#describeSensor">describeSensor</a></li>
+            
+                <li data-name="OSH.Sensor#getResultTemplate"><a href="OSH.Sensor.html#getResultTemplate">getResultTemplate</a></li>
+            
+                <li data-name="OSH.Sensor#getResultTemplateAll"><a href="OSH.Sensor.html#getResultTemplateAll">getResultTemplateAll</a></li>
+            
+                <li data-name="OSH.Sensor#hasFeatureOfInterest"><a href="OSH.Sensor.html#hasFeatureOfInterest">hasFeatureOfInterest</a></li>
+            
+                <li data-name="OSH.Sensor#hasObservableProperty"><a href="OSH.Sensor.html#hasObservableProperty">hasObservableProperty</a></li>
+            
+                <li data-name="OSH.Sensor#isValidTime"><a href="OSH.Sensor.html#isValidTime">isValidTime</a></li>
+            
+                <li data-name="OSH.Sensor#onDescribeSensor"><a href="OSH.Sensor.html#onDescribeSensor">onDescribeSensor</a></li>
+            
+                <li data-name="OSH.Sensor#onGetResultTemplate"><a href="OSH.Sensor.html#onGetResultTemplate">onGetResultTemplate</a></li>
+            
+                <li data-name="OSH.Sensor#setFieldEncoding"><a href="OSH.Sensor.html#setFieldEncoding">setFieldEncoding</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Server">
+            <span class="title">
+                <a href="OSH.Server.html">OSH.Server</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.Server#getCapabilities"><a href="OSH.Server.html#getCapabilities">getCapabilities</a></li>
+            
+                <li data-name="OSH.Server#getId"><a href="OSH.Server.html#getId">getId</a></li>
+            
+                <li data-name="OSH.Server#getSensorById"><a href="OSH.Server.html#getSensorById">getSensorById</a></li>
+            
+                <li data-name="OSH.Server#getUrl"><a href="OSH.Server.html#getUrl">getUrl</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.CesiumView">
+            <span class="title">
+                <a href="OSH.UI.CesiumView.html">OSH.UI.CesiumView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.CesiumView#addMarker"><a href="OSH.UI.CesiumView.html#addMarker">addMarker</a></li>
+            
+                <li data-name="OSH.UI.CesiumView#beforeAddingItems"><a href="OSH.UI.CesiumView.html#beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="OSH.UI.CesiumView#getAltitude"><a href="OSH.UI.CesiumView.html#getAltitude">getAltitude</a></li>
+            
+                <li data-name="OSH.UI.CesiumView#updateDrapedImage"><a href="OSH.UI.CesiumView.html#updateDrapedImage">updateDrapedImage</a></li>
+            
+                <li data-name="OSH.UI.CesiumView#updateMapMarker"><a href="OSH.UI.CesiumView.html#updateMapMarker">updateMapMarker</a></li>
+            
+                <li data-name="OSH.UI.CesiumView#updateMarker"><a href="OSH.UI.CesiumView.html#updateMarker">updateMarker</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.ContextMenu">
+            <span class="title">
+                <a href="OSH.UI.ContextMenu.html">OSH.UI.ContextMenu</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.ContextMenu#handleEvents"><a href="OSH.UI.ContextMenu.html#handleEvents">handleEvents</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu#hide"><a href="OSH.UI.ContextMenu.html#hide">hide</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu#show"><a href="OSH.UI.ContextMenu.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.ContextMenu.CircularMenu">
+            <span class="title">
+                <a href="OSH.UI.ContextMenu.CircularMenu.html">OSH.UI.ContextMenu.CircularMenu</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.ContextMenu.CssMenu">
+            <span class="title">
+                <a href="OSH.UI.ContextMenu.CssMenu.html">OSH.UI.ContextMenu.CssMenu</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.ContextMenu.CssMenu#getTransform"><a href="OSH.UI.ContextMenu.CssMenu.html#getTransform">getTransform</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu.CssMenu#hide"><a href="OSH.UI.ContextMenu.CssMenu.html#hide">hide</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu.CssMenu#removeElement"><a href="OSH.UI.ContextMenu.CssMenu.html#removeElement">removeElement</a></li>
+            
+                <li data-name="OSH.UI.ContextMenu.CssMenu#show"><a href="OSH.UI.ContextMenu.CssMenu.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.ContextMenu.StackMenu">
+            <span class="title">
+                <a href="OSH.UI.ContextMenu.StackMenu.html">OSH.UI.ContextMenu.StackMenu</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.ContextMenu.StackMenu#show"><a href="OSH.UI.ContextMenu.StackMenu.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.DialogView">
+            <span class="title">
+                <a href="OSH.UI.DialogView.html">OSH.UI.DialogView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.DialogView#close"><a href="OSH.UI.DialogView.html#close">close</a></li>
+            
+                <li data-name="OSH.UI.DialogView#connect"><a href="OSH.UI.DialogView.html#connect">connect</a></li>
+            
+                <li data-name="OSH.UI.DialogView#drag_over"><a href="OSH.UI.DialogView.html#drag_over">drag_over</a></li>
+            
+                <li data-name="OSH.UI.DialogView#drag_start"><a href="OSH.UI.DialogView.html#drag_start">drag_start</a></li>
+            
+                <li data-name="OSH.UI.DialogView#drop"><a href="OSH.UI.DialogView.html#drop">drop</a></li>
+            
+                <li data-name="OSH.UI.DialogView#onClose"><a href="OSH.UI.DialogView.html#onClose">onClose</a></li>
+            
+                <li data-name="OSH.UI.DialogView#show"><a href="OSH.UI.DialogView.html#show">show</a></li>
+            
+                <li data-name="OSH.UI.DialogView#swap"><a href="OSH.UI.DialogView.html#swap">swap</a></li>
+            
+                <li data-name="OSH.UI.DialogView#swapClick"><a href="OSH.UI.DialogView.html#swapClick">swapClick</a></li>
+            
+                <li data-name="OSH.UI.DialogView#unpin"><a href="OSH.UI.DialogView.html#unpin">unpin</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.DiscoveryView">
+            <span class="title">
+                <a href="OSH.UI.DiscoveryView.html">OSH.UI.DiscoveryView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="OSH.UI.DiscoveryView.Type"><a href="OSH.UI.DiscoveryView.html#.Type">Type</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.DiscoveryView#addObjectsToSelect"><a href="OSH.UI.DiscoveryView.html#addObjectsToSelect">addObjectsToSelect</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#addValuesToSelect"><a href="OSH.UI.DiscoveryView.html#addValuesToSelect">addValuesToSelect</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#addValueToSelect"><a href="OSH.UI.DiscoveryView.html#addValueToSelect">addValueToSelect</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#createChartDialog"><a href="OSH.UI.DiscoveryView.html#createChartDialog">createChartDialog</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#createGPSMarker"><a href="OSH.UI.DiscoveryView.html#createGPSMarker">createGPSMarker</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#createH264VideoDialog"><a href="OSH.UI.DiscoveryView.html#createH264VideoDialog">createH264VideoDialog</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#createMJPEGVideoDialog"><a href="OSH.UI.DiscoveryView.html#createMJPEGVideoDialog">createMJPEGVideoDialog</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#onFormSubmit"><a href="OSH.UI.DiscoveryView.html#onFormSubmit">onFormSubmit</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#onSelectedService"><a href="OSH.UI.DiscoveryView.html#onSelectedService">onSelectedService</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#onSelectedType"><a href="OSH.UI.DiscoveryView.html#onSelectedType">onSelectedType</a></li>
+            
+                <li data-name="OSH.UI.DiscoveryView#removeAllFromSelect"><a href="OSH.UI.DiscoveryView.html#removeAllFromSelect">removeAllFromSelect</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.EntityTreeView">
+            <span class="title">
+                <a href="OSH.UI.EntityTreeView.html">OSH.UI.EntityTreeView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.EntityTreeView#initTree"><a href="OSH.UI.EntityTreeView.html#initTree">initTree</a></li>
+            
+                <li data-name="OSH.UI.EntityTreeView#selectDataView"><a href="OSH.UI.EntityTreeView.html#selectDataView">selectDataView</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.FFMPEGView">
+            <span class="title">
+                <a href="OSH.UI.FFMPEGView.html">OSH.UI.FFMPEGView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.FFMPEGView#decode"><a href="OSH.UI.FFMPEGView.html#decode">decode</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#decodeWorker"><a href="OSH.UI.FFMPEGView.html#decodeWorker">decodeWorker</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#initFFMEG_DECODER"><a href="OSH.UI.FFMPEGView.html#initFFMEG_DECODER">initFFMEG_DECODER</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#initFFMPEG_DECODER_WORKER"><a href="OSH.UI.FFMPEGView.html#initFFMPEG_DECODER_WORKER">initFFMPEG_DECODER_WORKER</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#onAfterDecoded"><a href="OSH.UI.FFMPEGView.html#onAfterDecoded">onAfterDecoded</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#reset"><a href="OSH.UI.FFMPEGView.html#reset">reset</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#selectDataView"><a href="OSH.UI.FFMPEGView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#setData"><a href="OSH.UI.FFMPEGView.html#setData">setData</a></li>
+            
+                <li data-name="OSH.UI.FFMPEGView#updateStatistics"><a href="OSH.UI.FFMPEGView.html#updateStatistics">updateStatistics</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.H264View">
+            <span class="title">
+                <a href="OSH.UI.H264View.html">OSH.UI.H264View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.H264View#computeFullNalFromRaw"><a href="OSH.UI.H264View.html#computeFullNalFromRaw">computeFullNalFromRaw</a></li>
+            
+                <li data-name="OSH.UI.H264View#decode"><a href="OSH.UI.H264View.html#decode">decode</a></li>
+            
+                <li data-name="OSH.UI.H264View#selectDataView"><a href="OSH.UI.H264View.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.H264View#setData"><a href="OSH.UI.H264View.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.LeafletView">
+            <span class="title">
+                <a href="OSH.UI.LeafletView.html">OSH.UI.LeafletView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.LeafletView#addPolyline"><a href="OSH.UI.LeafletView.html#addPolyline">addPolyline</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#attachTo"><a href="OSH.UI.LeafletView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#beforeAddingItems"><a href="OSH.UI.LeafletView.html#beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#getDefaultBaseLayers"><a href="OSH.UI.LeafletView.html#getDefaultBaseLayers">getDefaultBaseLayers</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#initEvents"><a href="OSH.UI.LeafletView.html#initEvents">initEvents</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#initLayers"><a href="OSH.UI.LeafletView.html#initLayers">initLayers</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#initMap"><a href="OSH.UI.LeafletView.html#initMap">initMap</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#onResize"><a href="OSH.UI.LeafletView.html#onResize">onResize</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#updateMarker"><a href="OSH.UI.LeafletView.html#updateMarker">updateMarker</a></li>
+            
+                <li data-name="OSH.UI.LeafletView#updatePolyline"><a href="OSH.UI.LeafletView.html#updatePolyline">updatePolyline</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Loading">
+            <span class="title">
+                <a href="OSH.UI.Loading.html">OSH.UI.Loading</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.MjpegView">
+            <span class="title">
+                <a href="OSH.UI.MjpegView.html">OSH.UI.MjpegView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.MjpegView#reset"><a href="OSH.UI.MjpegView.html#reset">reset</a></li>
+            
+                <li data-name="OSH.UI.MjpegView#selectDataView"><a href="OSH.UI.MjpegView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.MjpegView#setData"><a href="OSH.UI.MjpegView.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Mp4View">
+            <span class="title">
+                <a href="OSH.UI.Mp4View.html">OSH.UI.Mp4View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Mp4View#selectDataView"><a href="OSH.UI.Mp4View.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.Mp4View#setData"><a href="OSH.UI.Mp4View.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Nvd3CurveChartView">
+            <span class="title">
+                <a href="OSH.UI.Nvd3CurveChartView.html">OSH.UI.Nvd3CurveChartView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Nvd3CurveChartView#selectDataView"><a href="OSH.UI.Nvd3CurveChartView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.Nvd3CurveChartView#updateCurve"><a href="OSH.UI.Nvd3CurveChartView.html#updateCurve">updateCurve</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.OpenLayerView">
+            <span class="title">
+                <a href="OSH.UI.OpenLayerView.html">OSH.UI.OpenLayerView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.OpenLayerView#addMarker"><a href="OSH.UI.OpenLayerView.html#addMarker">addMarker</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#addPolyline"><a href="OSH.UI.OpenLayerView.html#addPolyline">addPolyline</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#beforeAddingItems"><a href="OSH.UI.OpenLayerView.html#beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#getDefaultBaseLayers"><a href="OSH.UI.OpenLayerView.html#getDefaultBaseLayers">getDefaultBaseLayers</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#getDefaultLayers"><a href="OSH.UI.OpenLayerView.html#getDefaultLayers">getDefaultLayers</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#initEvents"><a href="OSH.UI.OpenLayerView.html#initEvents">initEvents</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#initMap"><a href="OSH.UI.OpenLayerView.html#initMap">initMap</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#updateMarker"><a href="OSH.UI.OpenLayerView.html#updateMarker">updateMarker</a></li>
+            
+                <li data-name="OSH.UI.OpenLayerView#updatePolyline"><a href="OSH.UI.OpenLayerView.html#updatePolyline">updatePolyline</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.PtzTaskingView">
+            <span class="title">
+                <a href="OSH.UI.PtzTaskingView.html">OSH.UI.PtzTaskingView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.PtzTaskingView#onChange"><a href="OSH.UI.PtzTaskingView.html#onChange">onChange</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#onPanClick"><a href="OSH.UI.PtzTaskingView.html#onPanClick">onPanClick</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#onTiltClick"><a href="OSH.UI.PtzTaskingView.html#onTiltClick">onTiltClick</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#onZoomClick"><a href="OSH.UI.PtzTaskingView.html#onZoomClick">onZoomClick</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#register"><a href="OSH.UI.PtzTaskingView.html#register">register</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#removeInterval"><a href="OSH.UI.PtzTaskingView.html#removeInterval">removeInterval</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.RangeSlider">
+            <span class="title">
+                <a href="OSH.UI.RangeSlider.html">OSH.UI.RangeSlider</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.RangeSlider#activate"><a href="OSH.UI.RangeSlider.html#activate">activate</a></li>
+            
+                <li data-name="OSH.UI.RangeSlider#deactivate"><a href="OSH.UI.RangeSlider.html#deactivate">deactivate</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler">
+            <span class="title">
+                <a href="OSH.UI.Styler.html">OSH.UI.Styler</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler#addFn"><a href="OSH.UI.Styler.html#addFn">addFn</a></li>
+            
+                <li data-name="OSH.UI.Styler#clear"><a href="OSH.UI.Styler.html#clear">clear</a></li>
+            
+                <li data-name="OSH.UI.Styler#getDataSourcesIds"><a href="OSH.UI.Styler.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="OSH.UI.Styler#getId"><a href="OSH.UI.Styler.html#getId">getId</a></li>
+            
+                <li data-name="OSH.UI.Styler#init"><a href="OSH.UI.Styler.html#init">init</a></li>
+            
+                <li data-name="OSH.UI.Styler#initEvents"><a href="OSH.UI.Styler.html#initEvents">initEvents</a></li>
+            
+                <li data-name="OSH.UI.Styler#select"><a href="OSH.UI.Styler.html#select">select</a></li>
+            
+                <li data-name="OSH.UI.Styler#setData"><a href="OSH.UI.Styler.html#setData">setData</a></li>
+            
+                <li data-name="OSH.UI.Styler#setData"><a href="OSH.UI.Styler.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler.Curve">
+            <span class="title">
+                <a href="OSH.UI.Styler.Curve.html">OSH.UI.Styler.Curve</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler.Curve#setData"><a href="OSH.UI.Styler.Curve.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler.ImageDraping">
+            <span class="title">
+                <a href="OSH.UI.Styler.ImageDraping.html">OSH.UI.Styler.ImageDraping</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler.ImageDraping#init"><a href="OSH.UI.Styler.ImageDraping.html#init">init</a></li>
+            
+                <li data-name="OSH.UI.Styler.ImageDraping#setData"><a href="OSH.UI.Styler.ImageDraping.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler.Nexrad">
+            <span class="title">
+                <a href="OSH.UI.Styler.Nexrad.html">OSH.UI.Styler.Nexrad</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler.Nexrad#getReflectivityColor"><a href="OSH.UI.Styler.Nexrad.html#getReflectivityColor">getReflectivityColor</a></li>
+            
+                <li data-name="OSH.UI.Styler.Nexrad#init"><a href="OSH.UI.Styler.Nexrad.html#init">init</a></li>
+            
+                <li data-name="OSH.UI.Styler.Nexrad#setData"><a href="OSH.UI.Styler.Nexrad.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler.PointMarker">
+            <span class="title">
+                <a href="OSH.UI.Styler.PointMarker.html">OSH.UI.Styler.PointMarker</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler.PointMarker#clear"><a href="OSH.UI.Styler.PointMarker.html#clear">clear</a></li>
+            
+                <li data-name="OSH.UI.Styler.PointMarker#init"><a href="OSH.UI.Styler.PointMarker.html#init">init</a></li>
+            
+                <li data-name="OSH.UI.Styler.PointMarker#setData"><a href="OSH.UI.Styler.PointMarker.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.Styler.Polyline">
+            <span class="title">
+                <a href="OSH.UI.Styler.Polyline.html">OSH.UI.Styler.Polyline</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.Styler.Polyline#clear"><a href="OSH.UI.Styler.Polyline.html#clear">clear</a></li>
+            
+                <li data-name="OSH.UI.Styler.Polyline#setData"><a href="OSH.UI.Styler.Polyline.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.UI.View">
+            <span class="title">
+                <a href="OSH.UI.View.html">OSH.UI.View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.View.init"><a href="OSH.UI.View.html#.init">init</a></li>
+            
+                <li data-name="OSH.UI.View#addViewItem"><a href="OSH.UI.View.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="OSH.UI.View#attachTo"><a href="OSH.UI.View.html#attachTo">attachTo</a></li>
+            
+                <li data-name="OSH.UI.View#beforeAddingItems"><a href="OSH.UI.View.html#beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="OSH.UI.View#getDataSourcesId"><a href="OSH.UI.View.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="OSH.UI.View#getDivId"><a href="OSH.UI.View.html#getDivId">getDivId</a></li>
+            
+                <li data-name="OSH.UI.View#getId"><a href="OSH.UI.View.html#getId">getId</a></li>
+            
+                <li data-name="OSH.UI.View#handleEvents"><a href="OSH.UI.View.html#handleEvents">handleEvents</a></li>
+            
+                <li data-name="OSH.UI.View#hide"><a href="OSH.UI.View.html#hide">hide</a></li>
+            
+                <li data-name="OSH.UI.View#onResize"><a href="OSH.UI.View.html#onResize">onResize</a></li>
+            
+                <li data-name="OSH.UI.View#reset"><a href="OSH.UI.View.html#reset">reset</a></li>
+            
+                <li data-name="OSH.UI.View#selectDataView"><a href="OSH.UI.View.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OSH.UI.View#setData"><a href="OSH.UI.View.html#setData">setData</a></li>
+            
+                <li data-name="OSH.UI.View#show"><a href="OSH.UI.View.html#show">show</a></li>
+            
+                <li data-name="OSH.UI.View#shows"><a href="OSH.UI.View.html#shows">shows</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.Utils">
+            <span class="title">
+                <a href="OSH.Utils.html">OSH.Utils</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.Utils.GetResultObject"><a href="OSH.Utils.html#.GetResultObject">GetResultObject</a></li>
+            
+                <li data-name="OSH.Utils.getXCursorPosition"><a href="OSH.Utils.html#.getXCursorPosition">getXCursorPosition</a></li>
+            
+                <li data-name="OSH.Utils.getYCursorPosition"><a href="OSH.Utils.html#.getYCursorPosition">getYCursorPosition</a></li>
+            
+                <li data-name="OSH.Utils.isArrayIntersect"><a href="OSH.Utils.html#.isArrayIntersect">isArrayIntersect</a></li>
+            
+                <li data-name="OSH.Utils.isBlink"><a href="OSH.Utils.html#.isBlink">isBlink</a></li>
+            
+                <li data-name="OSH.Utils.isChrome"><a href="OSH.Utils.html#.isChrome">isChrome</a></li>
+            
+                <li data-name="OSH.Utils.isFirefox"><a href="OSH.Utils.html#.isFirefox">isFirefox</a></li>
+            
+                <li data-name="OSH.Utils.isIE"><a href="OSH.Utils.html#.isIE">isIE</a></li>
+            
+                <li data-name="OSH.Utils.isOpera"><a href="OSH.Utils.html#.isOpera">isOpera</a></li>
+            
+                <li data-name="OSH.Utils.isSafari"><a href="OSH.Utils.html#.isSafari">isSafari</a></li>
+            
+                <li data-name="OSH.Utils.isWebWorker"><a href="OSH.Utils.html#.isWebWorker">isWebWorker</a></li>
+            
+                <li data-name="OSH.Utils.jsonix_XML2JSON"><a href="OSH.Utils.html#.jsonix_XML2JSON">jsonix_XML2JSON</a></li>
+            
+                <li data-name="OSH.Utils.ParseBytes"><a href="OSH.Utils.html#.ParseBytes">ParseBytes</a></li>
+            
+                <li data-name="OSH.Utils.randomUUID"><a href="OSH.Utils.html#.randomUUID">randomUUID</a></li>
+            
+                <li data-name="OSH.Utils.ReadData"><a href="OSH.Utils.html#.ReadData">ReadData</a></li>
+            
+                <li data-name="OSH.Utils.takeScreeshot"><a href="OSH.Utils.html#.takeScreeshot">takeScreeshot</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="osh_ui_styler_osh-UI-StylerImageDraping.js.html">Source: osh/ui/styler/osh-UI-StylerImageDraping.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>/**
+ * @classdesc
+ * @class OSH.UI.Styler.ImageDraping
+ * @type {OSH.UI.Styler}
+ */
+OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
+	initialize : function($super, properties) {
+		$super(properties);
+		this.properties = properties;
+		this.platformLocation = null;
+		this.platformOrientation = null;
+		this.gimbalOrientation = null;
+		this.cameraModel = null;
+		this.imageSrc = null;
+		this.snapshotFunc = null;
+		
+		this.options = {};
+		
+		if (typeof(properties.platformLocation) != "undefined"){
+			this.platformLocation = properties.platformLocation;
+		} 
+		
+		if (typeof(properties.platformOrientation) != "undefined"){
+			this.platformOrientation = properties.platformOrientation;
+		} 
+		
+		if (typeof(properties.gimbalOrientation) != "undefined"){
+			this.gimbalOrientation = properties.gimbalOrientation;
+		} 
+		
+		if (typeof(properties.cameraModel) != "undefined"){
+			this.cameraModel = properties.cameraModel;
+		}
+		
+		if (typeof(properties.imageSrc) != "undefined"){
+			this.imageSrc = properties.imageSrc;
+		} 
+		
+		if (typeof(properties.platformLocationFunc) != "undefined") {
+			var fn = function(rec,timeStamp,options) {
+				this.platformLocation = properties.platformLocationFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.platformLocationFunc.dataSourceIds,fn);
+		}
+		
+		if (typeof(properties.platformOrientationFunc) != "undefined") {
+			var fn = function(rec,timeStamp,options) {
+				this.platformOrientation = properties.platformOrientationFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.platformOrientationFunc.dataSourceIds,fn);
+		}
+		
+		if (typeof(properties.gimbalOrientationFunc) != "undefined") {
+			var fn = function(rec,timeStamp,options) {
+				this.gimbalOrientation = properties.gimbalOrientationFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.gimbalOrientationFunc.dataSourceIds,fn);
+		}
+		
+		if (typeof(properties.cameraModelFunc) != "undefined") {
+			var fn = function(rec,timeStamp,options) {
+				this.cameraModel = properties.cameraModelFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.cameraModelFunc.dataSourceIds,fn);
+		}
+		
+		if (typeof(properties.snapshotFunc) != "undefined") {
+			this.snapshotFunc = properties.snapshotFunc;
+		}
+	},
+
+	/**
+	 *
+	 * @param $super
+	 * @param view
+	 * @memberof  OSH.UI.Styler.ImageDraping
+	 * @instance
+	 */
+	init: function($super,view) {
+		$super(view);
+	},
+
+	/**
+	 *
+	 * @param $super
+	 * @param dataSourceId
+	 * @param rec
+	 * @param view
+	 * @param options
+	 * @memberof  OSH.UI.Styler.ImageDraping
+	 * @instance
+	 */
+	setData: function($super,dataSourceId,rec,view,options) {
+		if ($super(dataSourceId,rec,view,options)) {
+			
+			var enabled = true;
+			if (this.snapshotFunc != null)
+				enabled = this.snapshotFunc();
+			
+			if (typeof(view) != "undefined" &amp;&amp; enabled &amp;&amp;
+				this.platformLocation != null &amp;&amp;
+				this.platformOrientation != null &amp;&amp;
+				this.gimbalOrientation != null &amp;&amp;
+				this.cameraModel != null &amp;&amp;
+				this.imageSrc != null) {
+				    view.updateDrapedImage(this,rec.timeStamp,options);
+			}
+		}
+	}
+
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Tue Aug 30 2016 16:29:24 GMT+0200 (CEST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

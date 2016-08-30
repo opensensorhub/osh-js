@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class OSH.UI.Styler.Nexrad
+ * @type {OSH.UI.Styler}
+ */
 OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {
 		$super(properties);
@@ -59,10 +64,27 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 		this.radialCount = 0;
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @param view
+	 * @instance
+	 * @memberof OSH.UI.Styler.Nexrad
+	 */
 	init: function($super,view) {
 		$super(view);
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @param dataSourceId
+	 * @param rec
+	 * @param view
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.Styler.Nexrad
+	 */
 	setData: function($super,dataSourceId,rec,view,options) {
 		if ($super(dataSourceId,rec,view,options)) {
 			if (typeof(view) != "undefined") {
@@ -110,7 +132,14 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 			}
 		}
 	},
-	
+
+	/**
+	 *
+	 * @param val
+	 * @returns {*}
+	 * @instance
+	 * @memberof OSH.UI.Styler.Nexrad
+	 */
 	getReflectivityColor: function(val)
 	{
 		var index = Math.floor((val + 30) / 5) + 1;

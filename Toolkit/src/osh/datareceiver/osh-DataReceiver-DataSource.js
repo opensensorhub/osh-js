@@ -1,6 +1,6 @@
 /**
- * @classdesc The DataConnector is the abstract class used to create different connectors.
- * @constructor
+ * @classdesc The DataSource is the abstract class used to create different datasources.
+ * @class
  * @abstract
  * @param {string} name the datasource name
  * @param {Object} properties the datasource properties
@@ -9,6 +9,7 @@
  * @param {number} properties.bufferingTime defines the time during the data has to be buffered
  * @param {number} properties.timeOut defines the limit time before data has to be skipped
  * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
+ *
  */
 OSH.DataReceiver.DataSource = Class.create({
   initialize: function(name,properties) {
@@ -56,6 +57,8 @@ OSH.DataReceiver.DataSource = Class.create({
   },
   /**
    * Disconnect the dataSource then the connector will be closed as well.
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
    */
   disconnect : function() {
     this.connector.disconnect();
@@ -68,11 +71,23 @@ OSH.DataReceiver.DataSource = Class.create({
     });
   },
 
+  /**
+   * Connect the dataSource then the connector will be opened as well.
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   */
   connect: function() {
     this.connector.connect();
     this.connected = true;
   },
-  
+
+  /**
+   * The callback which receives data.
+   * @callback
+   * @param data
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   */
   onMessage: function(data) {
     var data = {
       timeStamp: this.parseTimeStamp(data) + this.timeShift,
@@ -80,16 +95,34 @@ OSH.DataReceiver.DataSource = Class.create({
     };
     this.onData(data);
   },
-  
+
+  /**
+   * The default timestamp parser
+   * @param data the full data message returned by the connector
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   * @returns {number} the formatted timestamp
+   */
   parseTimeStamp: function(data){
     return new Date().getTime();
   },
-  
+
+  /**
+   * The default timestamp parser
+   * @param data the full data message returned by the connector
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   * @returns {String|Object|number|ArrayBuffer|*} data the formatted data
+   */
   parseData: function(data){
     return data;
   },
   
   /**
+   * @param {Object} data the data object
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   * @example
    * data is represented as 
    * data = { 
    *    timeStamp: timeStamp // number
@@ -97,15 +130,43 @@ OSH.DataReceiver.DataSource = Class.create({
    * };
    */ 
   onData:function(data) {},
-  
+
+  /**
+   * Gets the datasource id.
+   * @returns {string} the datasource id
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   */
   getId: function() {
     return this.id;
   },
-  
+
+  /**
+   * Gets the datasource name.
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   * @returns {*}
+   */
   getName: function() {
     return this.name;
   },
-  
+
+  /**
+   * Builds the full url.
+   * @param {object} properties
+   * @param {string} properties.protocol the connector protocol
+   * @param {string} properties.endpointUrl the endpoint url
+   * @param {string} properties.service the service
+   * @param {string} properties.offeringID the offeringID
+   * @param {string} properties.observedProperty the observed property
+   * @param {string} properties.startTime the start time (ISO format)
+   * @param {string} properties.endTime the end time (ISO format)
+   * @param {number} properties.replaySpeed the replay factor
+   * @param {number} properties.responseFormat the response format (e.g video/mp4)
+   * @instance
+   * @memberof OSH.DataReceiver.DataSource
+   * @returns {string} the full url
+   */
   buildUrl: function(properties) {
 	  var url = "";
 	  

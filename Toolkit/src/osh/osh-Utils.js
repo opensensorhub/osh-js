@@ -1,7 +1,17 @@
 var MAX_LONG = Math.pow(2, 53) + 1;
 
+/**
+ *
+ * @constructor
+ */
 OSH.Utils = function() {}
 
+/**
+ *
+ * @returns {string}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.randomUUID = function() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -9,6 +19,13 @@ OSH.Utils.randomUUID = function() {
   });
 };
 
+/**
+ *
+ * @param xmlStr
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.jsonix_XML2JSON = function (xmlStr) {
   var module = SOS_2_0_Module_Factory();
   var context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
@@ -20,6 +37,15 @@ OSH.Utils.jsonix_XML2JSON = function (xmlStr) {
 //buffer is an ArrayBuffer object, the offset if specified in bytes, and the type is a string
 //corresponding to an OGC data type.
 //See http://def.seegrid.csiro.au/sissvoc/ogc-def/resource?uri=http://www.opengis.net/def/dataType/OGC/0/
+/**
+ *
+ * @param buffer
+ * @param offset
+ * @param type
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.ParseBytes = function (buffer, offset, type) {
   var view = new DataView(buffer);
 
@@ -61,6 +87,15 @@ OSH.Utils.ParseBytes = function (buffer, offset, type) {
 
 //This function recursivley iterates over the resultStructure to fill in
 //values read from data which should be an ArrayBuffer containing the payload from a websocket
+/**
+ *
+ * @param struct
+ * @param data
+ * @param offsetBytes
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.ReadData = function(struct, data, offsetBytes) {
   var offset = offsetBytes;
   for(var i = 0 ; i < struct.fields.length; i++) {
@@ -89,6 +124,13 @@ OSH.Utils.ReadData = function(struct, data, offsetBytes) {
   return offset;
 }
 
+/**
+ *
+ * @param resultStructure
+ * @returns {{}}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.GetResultObject = function(resultStructure) {
   //TODO: handle cases for nested arrays / matrix data types
   var result = {};
@@ -109,26 +151,62 @@ OSH.Utils.GetResultObject = function(resultStructure) {
   return result;
 };
 
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isOpera = function () {
   return (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 };
 
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isFirefox = function() {
   return typeof InstallTrigger !== 'undefined';
 };
 
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isSafari = function() {
   return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
 };
 
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isIE = function() {
   return /*@cc_on!@*/false || !!document.documentMode;
 };
 
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isChrome = function() {
   return !!window.chrome && !!window.chrome.webstore;
 };
 
+/**
+ *
+ * @returns {*|boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isBlink = function() {
   return (isChrome || isOpera) && !!window.CSS;
 };
@@ -145,22 +223,54 @@ function onMouseUpdate(e) {
   absoluteYposition = e.pageY;
 }
 
+/**
+ *
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.getXCursorPosition = function() {
   return absoluteXposition;
 };
 
+/**
+ *
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.getYCursorPosition = function() {
   return absoluteYposition;
 };
 
+/**
+ *
+ * @param a
+ * @param b
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isArrayIntersect = function(a, b) {
   return a.intersect(b).length > 0;
 };
 
+/**
+ *
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.isWebWorker = function() {
   return Modernizr.webworkers;
 };
 
+/**
+ *
+ * @param div
+ * @instance
+ * @memberof OSH.Utils
+ */
 OSH.Utils.takeScreeshot = function(div) {
 };
 

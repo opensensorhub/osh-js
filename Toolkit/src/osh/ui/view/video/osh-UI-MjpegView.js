@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId,[],options);
@@ -19,20 +24,40 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
     });
   },
 
+  /**
+   *
+   * @param $super
+   * @param dataSourceId
+   * @param data
+   * @instance
+   * @memberof OSH.UI.MjpegView
+   */
   setData: function($super,dataSourceId,data) {
       var oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
       window.URL.revokeObjectURL(oldBlobURL);
   },
 
+  /**
+   *
+   * @param $super
+   * @param dataSourceIds
+   * @param entityId
+   * @instance
+   * @memberof OSH.UI.MjpegView
+   */
   selectDataView: function($super,dataSourceIds,entityId) {
     if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {
       document.getElementById(this.divId).setAttribute("class",this.css);
     }
-  },  
-  
+  },
+
+  /**
+   * @instance
+   * @memberof OSH.UI.MjpegView
+   */
   reset: function() {
       this.imgTag.src = "";
   }

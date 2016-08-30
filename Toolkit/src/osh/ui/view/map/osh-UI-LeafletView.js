@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.LeafletView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, viewItems, options) {
         $super(divId, viewItems, options);
@@ -6,12 +11,23 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
     },
 
+    /**
+     *
+     * @param $super
+     * @param options
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     beforeAddingItems: function ($super, options) {
         // inits the map
         this.initMap(options);
         this.initEvents();
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     initEvents: function () {
         // removes default right click
         document.getElementById(this.divId).oncontextmenu = function (e) {
@@ -24,6 +40,12 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
     },
 
     //---------- MAP SETUP --------------//
+    /**
+     *
+     * @param options
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     initMap: function (options) {
 
         var initialView = {
@@ -83,6 +105,12 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         this.polylines = {};
     },
 
+    /**
+     *
+     * @returns {{}}
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     getDefaultBaseLayers: function () {
         return {};
     },
@@ -120,6 +148,10 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         }];
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     initLayers: function () {
         // create the tile layer with correct attribution
         var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -208,6 +240,13 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         return id;
     },
 
+    /**
+     *
+     * @param properties
+     * @returns {string}
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     addPolyline: function (properties) {
         var polylinePoints = [];
 
@@ -229,6 +268,12 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         return id;
     },
 
+    /**
+     *
+     * @param styler
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     updateMarker: function (styler) {
         var markerId = 0;
         if (!(styler.getId() in this.stylerToObj)) {
@@ -273,6 +318,12 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param styler
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     updatePolyline: function (styler) {
         var polylineId = 0;
 
@@ -315,12 +366,25 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param $super
+     * @param divId
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     attachTo:function($super,divId) {
         $super(divId);
         // Fix leaflet bug when resizing the div parent container
         this.map.invalidateSize();
     },
 
+    /**
+     *
+     * @param $super
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
     onResize:function($super) {
         this.map.invalidateSize();
     },

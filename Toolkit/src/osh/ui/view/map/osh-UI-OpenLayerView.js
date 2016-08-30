@@ -1,14 +1,30 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, viewItems, options) {
         $super(divId, viewItems, options);
     },
 
+    /**
+     *
+     * @param $super
+     * @param options
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     beforeAddingItems: function ($super, options) {
         // inits the map
         this.initMap(options);
         this.initEvents();
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     initEvents: function () {
         // removes default right click
         document.getElementById(this.divId).oncontextmenu = function (e) {
@@ -67,6 +83,12 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         });
     },
 
+    /**
+     *
+     * @param styler
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     updateMarker: function (styler) {
         var markerId = 0;
 
@@ -110,6 +132,12 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param styler
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     updatePolyline: function (styler) {
         var polylineId = 0;
 
@@ -144,6 +172,12 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
     },
 
     //---------- MAP SETUP --------------//
+    /**
+     *
+     * @param options
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     initMap: function (options) {
 
         var initialView = null;
@@ -260,11 +294,23 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         this.polylines = {};
     },
 
+    /**
+     *
+     * @returns {Object}
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     getDefaultBaseLayers: function () {
         return {};
     },
 
 
+    /**
+     *
+     * @returns {Array}
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     getDefaultLayers: function () {
         var osm = new ol.layer.Tile({
             title: 'OSM',
@@ -275,6 +321,13 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         return [osm];
     },
 
+    /**
+     *
+     * @param properties
+     * @returns {string}
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     addMarker: function (properties) {
         //create marker
         var marker = new ol.geom.Point(ol.proj.transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
@@ -320,6 +373,13 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
         return id;
     },
 
+    /**
+     *
+     * @param properties
+     * @returns {string}
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
     addPolyline: function (properties) {
         var polylinePoints = [];
 
