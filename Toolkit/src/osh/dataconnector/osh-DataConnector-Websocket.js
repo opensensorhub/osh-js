@@ -3,6 +3,19 @@
  * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @class
  * @augments OSH.DataConnector.DataConnector
+ * @example
+ * var url = ...;
+ * var connector = new OSH.DataConnector.WebSocketDataConnector(url);
+ *
+ * // connect
+ * connector.connect();
+ *
+ * // disconnect
+ * connector.disconnect();
+ *
+ * // close
+ * connector.close();
+ *
  */
 OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
     /**

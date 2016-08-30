@@ -2,7 +2,7 @@
  * @classdesc This datasource provides parsing to fragmented mp4 raw data. The data is encapsulated into mp4 fragment.
  * Data: ArrayBuffer
  * @class OSH.DataReceiver.VideoMp4
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
  */
 OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
     initialize: function ($super, name, properties, options) {
@@ -12,8 +12,6 @@ OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
 
     /**
      * Extracts timestamp from the message. The timestamp is located at the 60th bytes and is 8 bytes length.
-     * @override
-     * @inheritdoc
      * @param {function} $super the parseTimeStamp super method
      * @param {ArrayBuffer} data the data to parse
      * @returns {number} the extracted timestamp

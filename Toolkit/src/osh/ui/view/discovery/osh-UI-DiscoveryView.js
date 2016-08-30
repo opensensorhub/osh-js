@@ -2,6 +2,7 @@
  * @classdesc
  * @class OSH.UI.DiscoveryView
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
  */
 OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, properties) {
@@ -184,7 +185,12 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
     },
 
-
+    /**
+     *
+     * @param event
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     onSelectedOffering : function(event) {
         var e = document.getElementById(this.offeringSelectTagId);
         var option = e.options[e.selectedIndex];

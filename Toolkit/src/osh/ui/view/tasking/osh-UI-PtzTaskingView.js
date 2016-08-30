@@ -28,6 +28,7 @@ var htmlTaskingComponent =
  * @class
  * @classdesc
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
  *
  */
 OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {

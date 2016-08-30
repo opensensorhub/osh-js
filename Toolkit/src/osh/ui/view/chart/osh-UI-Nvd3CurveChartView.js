@@ -2,6 +2,7 @@
  * @classdesc
  * @class OSH.UI.Nvd3CurveChartView
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
  */
 OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	initialize : function($super,divId,viewItems, options) {

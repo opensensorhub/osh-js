@@ -2,6 +2,7 @@
  * @class OSH.UI.Styler.Polyline
  * @classdesc
  * @type {OSH.UI.Styler}
+ * @augments OSH.UI.Styler
  */
 OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {

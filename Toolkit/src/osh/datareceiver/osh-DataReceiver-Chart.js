@@ -2,14 +2,12 @@
  * @classdesc This datasource provides parsing to chart data.
  * Data has to be under the format : ISODATE,X,Y,
  * @class
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
  */
 OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the data. The timestamp is the first token got from split(',')
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseTimeStamp super method
    * @param {string} data the data to parse
    * @returns {number} the extracted timestamp
@@ -25,8 +23,6 @@ OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extract data from the message. This split over ",".
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseData super method
    * @param {Object} data the data to parse
    * @returns {Array} the parsed data as an array of tokens

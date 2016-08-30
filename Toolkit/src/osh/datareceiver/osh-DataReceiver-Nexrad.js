@@ -1,14 +1,12 @@
 /**
  * @classdesc This datasource provides parsing to Nexrad.
  * @class OSH.DataReceiver.Nexrad
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
  */
 OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseTimeStamp super method
    * @param {string} data the data to parse
    * @returns {number} the extracted timestamp
@@ -23,8 +21,6 @@ OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extract data from the message.
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseData super method
    * @param {Object} data the data to parse
    * @returns {Object} the parsed data

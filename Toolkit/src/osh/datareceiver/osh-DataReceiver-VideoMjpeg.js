@@ -2,7 +2,7 @@
  * @classdesc This datasource provides parsing to MJPEG raw data.
  * Data: ArrayBuffer
  * @class OSH.DataReceiver.VideoMjpeg
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
  */
 OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
   initialize: function($super,name,properties,options) {
@@ -11,8 +11,6 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the message. The timestamp is corresponding to the first 64 bits of the binary message.
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseTimeStamp super method
    * @param {ArrayBuffer} data the data to parse
    * @returns {number} the extracted timestamp
@@ -25,8 +23,6 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extract data from the message. Creates a Blob object starting at byte 12. (after the 64 bits of the timestamp).
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseData super method
    * @param {ArrayBuffer} data the data to parse
    * @returns {Blob} the parsed data

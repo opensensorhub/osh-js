@@ -2,6 +2,7 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
  */
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {

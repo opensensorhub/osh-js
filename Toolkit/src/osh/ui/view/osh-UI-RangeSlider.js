@@ -2,6 +2,7 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
  */
 OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 	initialize: function ($super, divId, options) {

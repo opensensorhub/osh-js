@@ -1,13 +1,12 @@
 /**
  * @classdesc
  * @class
+ * @augments OSH.DataSender.DataSink
  */
 OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
 
     /**
      * Builds the request based on sps standard.
-     * @override
-     * @inheritdoc
      * @returns {string} the sps request
      * @memberof OSH.DataReceiver.PtzTasking
      * @instance

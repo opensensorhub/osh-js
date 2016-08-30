@@ -2,6 +2,7 @@
  * @classdesc
  * @class OSH.UI.Styler.PointMarker
  * @type {OSH.UI.Styler}
+ * @augments OSH.UI.Styler
  */
 OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {

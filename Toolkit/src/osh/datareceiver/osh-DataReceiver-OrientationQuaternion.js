@@ -2,14 +2,12 @@
  * @classdesc This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
  * @class OSH.DataReceiver.OrientationQuaternion
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
  */
 OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseTimeStamp super method
    * @param {string} data the data to parse
    * @returns {number} the extracted timestamp
@@ -24,8 +22,6 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
 
   /**
    * Extract data from the message. The data are got such as:<p><ul><li>qx: tokens[1]</li><li>qy: tokens [2]</li><li>qz: tokens[3]</li><li>qw: tokens[4]</li></ul></p>.
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseData super method
    * @param {Object} data the data to parse
    * @returns {Object} the parsed data

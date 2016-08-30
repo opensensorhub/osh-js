@@ -2,6 +2,7 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
  */
 OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	

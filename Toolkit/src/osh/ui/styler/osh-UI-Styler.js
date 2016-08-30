@@ -1,6 +1,7 @@
 /**
  * @classdesc
  * @class OSH.UI.Styler
+ * @abstract
  */
 OSH.UI.Styler = Class.create({
 	initialize : function(jsonProperties) {
