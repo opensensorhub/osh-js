@@ -58,8 +58,8 @@ function init() {
     addVirbCam("virb1", "Drop Cam - Virb #1", "urn:osh:virb1", 0, true);
     addVirbCam("virb2", "Butler - Virb #2", "urn:osh:virb2", 0, false);
     
-    //addDahuaCam("dahua1", "Dahua PTZ", "urn:osh:dahua1", 0);
-    addAxisCam("axis1", "Axis PTZ", "urn:osh:axis1", 0);
+    addDahuaCam("dahua1", "Dahua PTZ", "urn:osh:dahua1", 0);
+    //addAxisCam("axis1", "Axis PTZ", "urn:osh:axis1", 0);
     
     addSoloUav("solo1", "3DR Solo", "urn:osh:solo-nav", "urn:osh:solo-video")
     
@@ -87,25 +87,25 @@ function init() {
     //---------------------- Tasking Widget  -----------------------//
     //--------------------------------------------------------------//
     
-    var axis1Tasking = new OSH.DataSender.PtzTasking("video-tasking", {
+    /*var axis1Tasking = new OSH.DataSender.PtzTasking("video-tasking", {
         protocol: "http",
         service: "SPS",
         version: "2.0",
         endpointUrl: hostName + ":8181/sensorhub/sps",
         offeringID: "urn:axis:cam:00408CB95A55"
-    });
+    });*/
     
-    /*var dahua1Tasking = new OSH.DataSender.PtzTasking("video-tasking", {
+    var dahua1Tasking = new OSH.DataSender.PtzTasking("video-tasking", {
         protocol: "http",
         service: "SPS",
         version: "2.0",
         endpointUrl: hostName + ":8181/sensorhub/sps",
         offeringID: "urn:dahua:cam:1G0215CGAK00046"
-    });*/
+    });
     
     var taskingView = new OSH.UI.PtzTaskingView("tasking-container",{});
-    //taskingView.register(dahua1Tasking);
-    taskingView.register(axis1Tasking);
+    taskingView.register(dahua1Tasking);
+    //taskingView.register(axis1Tasking);
     
     
     //--------------------------------------------------------------//
@@ -816,7 +816,7 @@ function init() {
     function addAxisCam(entityID, entityName, offeringID, heading) {
         
         // create data sources
-        var videoData = new OSH.DataReceiver.VideoH264("Video", {
+        var videoData = new OSH.DataReceiver.VideoMjpeg("Video", {
             protocol : "ws",
             service: "SOS",
             endpointUrl: hostName + ":8181/sensorhub/sos",
@@ -906,7 +906,7 @@ function init() {
             connectionIds: [videoData.getId()]
         });
         
-        var videoView = new OSH.UI.FFMPEGView(videoDialog.popContentDiv.id, {
+        var videoView = new OSH.UI.MjpegView(videoDialog.popContentDiv.id, {
             dataSourceId: videoData.getId(),
             entityId : entity.id,
             css: "video",
