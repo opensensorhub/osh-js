@@ -3,6 +3,20 @@
  * Data: ISODATE,LAT,LON,ALT
  * @class OSH.DataReceiver.LatLonAlt
  * @augments OSH.DataReceiver.DataSource
+ * @example
+ * var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
+    protocol: "ws",
+    service: "SOS",
+    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    offeringID: "urn:android:device:060693280a28e015-sos",
+    observedProperty: "http://sensorml.com/ont/swe/property/Location",
+    startTime: "2015-02-16T07:58:00Z",
+    endTime: "2015-02-16T08:09:00Z",
+    replaySpeed: replayFactor+"",
+    syncMasterTime: true,
+    bufferingTime: 1000,
+    timeShift: -16000
+  });
  */
 OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
 

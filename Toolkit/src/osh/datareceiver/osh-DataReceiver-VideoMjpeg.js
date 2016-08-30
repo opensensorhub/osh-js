@@ -3,6 +3,19 @@
  * Data: ArrayBuffer
  * @class OSH.DataReceiver.VideoMjpeg
  * @augments OSH.DataReceiver.DataSource
+ * @example
+  var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
+    protocol: "ws",
+    service: "SOS",
+    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    offeringID: "urn:android:device:060693280a28e015-sos",
+    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+    startTime: "2015-02-16T07:58:00Z",
+    endTime: "2015-02-16T08:09:00Z",
+    replaySpeed: 1,
+    syncMasterTime: true,
+    bufferingTime: 1000
+  });
  */
 OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
   initialize: function($super,name,properties,options) {
