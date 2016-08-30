@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @classdesc
+ */
 OSH.UI.Loading = Class.create({
     initialize: function () {
         var loadingDiv = document.createElement("div");

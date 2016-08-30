@@ -1,6 +1,6 @@
 /**
- * The abstract object to represent a view.
- * @constructor
+ * @classdesc The abstract object to represent a view.
+ * @class
  * @param {string} divId - The id to attach/or create the view.
  * @param {string} viewItems - The list of view items
  * @param {string} options - The options
@@ -109,13 +109,27 @@ OSH.UI.View = Class.create({
         observer.observe( this.elementDiv, { attributes: true } );
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.View
+     */
     hide: function() {
         this.elementDiv.style.display = "none";
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.View
+     */
     onResize:function() {
     },
 
+    /**
+     *
+     * @param divId
+     * @instance
+     * @memberof OSH.UI.View
+     */
     attachTo : function(divId) {
         if(typeof this.elementDiv.parentNode != "undefined") {
             // detach from its parent
@@ -127,28 +141,68 @@ OSH.UI.View = Class.create({
         }
     },
 
+    /**
+     *
+     * @param options
+     * @instance
+     * @memberof OSH.UI.View
+     */
     beforeAddingItems: function (options) {
 
     },
 
+    /**
+     *
+     * @returns {string|*}
+     * @instance
+     * @memberof OSH.UI.View
+     */
     getId: function () {
         return this.id;
     },
 
+    /**
+     *
+     * @returns {string|*}
+     * @instance
+     * @memberof OSH.UI.View
+     */
     getDivId: function () {
         return this.divId;
     },
 
+    /**
+     *
+     * @param dataSourceId
+     * @param data
+     * @instance
+     * @memberof OSH.UI.View
+     */
     setData: function(dataSourceId,data) {},
 
+    /**
+     *
+     * @param properties
+     * @instance
+     * @memberof OSH.UI.View
+     */
     show: function(properties) {
     },
 
+    /**
+     *
+     * @param properties
+     * @instance
+     * @memberof OSH.UI.View
+     */
     shows: function(properties) {
     },
 
     /**
      * Add viewItem to the view
+     * @param viewItem
+     * @instance
+     * @memberof OSH.UI.View
      */
     addViewItem: function (viewItem) {
         this.viewItems.push(viewItem);
@@ -216,6 +270,10 @@ OSH.UI.View = Class.create({
         }
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.View
+     */
     handleEvents: function() {
         // observes the selected event
         OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW,function(event){
@@ -239,6 +297,8 @@ OSH.UI.View = Class.create({
      * @param $super
      * @param dataSourcesIds
      * @param entitiesIds
+     * @instance
+     * @memberof OSH.UI.View
      */
     selectDataView: function (dataSourcesIds,entityId) {
         if(typeof this.dataSources != "undefined") {
@@ -252,6 +312,12 @@ OSH.UI.View = Class.create({
         }
     },
 
+    /**
+     *
+     * @returns {Array}
+     * @instance
+     * @memberof OSH.UI.View
+     */
     getDataSourcesId: function() {
         var res = [];
         if(this.dataSourceId != -1) {
@@ -269,16 +335,11 @@ OSH.UI.View = Class.create({
 
         return res;
     },
-    
-    
+
+    /**
+     * @instance
+     * @memberof OSH.UI.View
+     */
     reset: function() {
     }
 });
-
-/**
- * Test h
- * @param test
- */
-OSH.UI.View.prototype.test = function(test) {
-
-}

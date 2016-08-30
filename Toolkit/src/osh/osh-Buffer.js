@@ -19,7 +19,7 @@ var BUFFER_STATUS = {
 
 /**
  * @classdesc Represents the buffer element which is in charge of synchronizing data.
- * @constructor
+ * @class
  * @param {Object} options The options object
  * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
  *

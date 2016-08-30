@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {
         $super(divId,[],options);
@@ -141,12 +146,18 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
     /**
      * Swap the current div with the div given as parameter
+     * @instance
+     * @memberof OSH.UI.DialogView
      */
     swapClick: function() {
         OSH.EventManager.fire("swap-restore",{exclude: this.id});
         this.swap();
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     swap:function() {
         // swap the child of the popContentDiv with the child contained in the the containerDiv
         var containerDivToSwap = document.getElementById(this.divIdToSwap);
@@ -188,6 +199,13 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         }
     },
 
+    /**
+     *
+     * @param $super
+     * @param properties
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     show: function($super,properties) {
         if(properties.viewId.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
@@ -197,6 +215,10 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         }
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     connect: function() {
         if(!this.swapped) {
             if (!this.connected) {
@@ -207,6 +229,10 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         }
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     unpin: function() {
         if (!this.draggable) {
             var bodyRect = document.body.getBoundingClientRect(),
@@ -236,10 +262,20 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
     },
 
 
+    /**
+     *
+     * @param callback
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     onClose: function (callback) {
         this.onClose = callback;
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     close: function () {
        // this.rootTag.parentNode.removeChild(this.rootTag);
         this.rootTag.style.display = "none";
@@ -248,6 +284,12 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         }
     },
 
+    /**
+     *
+     * @param event
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     drag_start: function (event) {
         event.stopPropagation();
         // Grab all computed styles of the dragged object
@@ -259,12 +301,26 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
     },
 
+    /**
+     *
+     * @param event
+     * @returns {boolean}
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     drag_over: function (event) {
         event.stopPropagation();
         event.preventDefault();
         return false;
     },
 
+    /**
+     *
+     * @param event
+     * @returns {boolean}
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
     drop: function (event) {
         event.stopPropagation();
         // Set array of x and y values from the transfer data

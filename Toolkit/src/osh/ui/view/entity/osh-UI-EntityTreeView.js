@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
     initialize:function($super,divId,entityItems,options) {
         $super(divId,[],options);
@@ -6,6 +11,12 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
         this.initTree(options);
     },
 
+    /**
+     *
+     * @param options
+     * @instance
+     * @memberof OSH.UI.EntityTreeView
+     */
     initTree:function(options) {
         this.tree = createTree(this.divId,'white',null);
 
@@ -65,8 +76,14 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
         //Rendering the tree
         this.tree.drawTree();
     },
-    
-    
+
+    /**
+     *
+     * @param dataSourcesIds
+     * @param entityId
+     * @instance
+     * @memberof OSH.UI.EntityTreeView
+     */
     selectDataView: function (dataSourcesIds, entityId) {
         
         // when an entity is selected we find the corresponding node in the tree

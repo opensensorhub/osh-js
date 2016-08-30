@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, options) {
         $super(divId, [], options);
@@ -52,6 +57,13 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param dataSourceId
+     * @param data
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     setData: function (dataSourceId, data) {
         var pktData = data.data;
         var pktSize = pktData.length;
@@ -80,6 +92,14 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
     },
 
 
+    /**
+     *
+     * @param $super
+     * @param dataSourceIds
+     * @param entityId
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     selectDataView: function ($super, dataSourceIds, entityId) {
         if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
             document.getElementById(this.divId).setAttribute("class", this.css + " " + this.cssSelected);
@@ -89,6 +109,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
     },
 
 
+    /**
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     reset: function () {
         _avcodec_flush_buffers(this.av_ctx);
 
@@ -107,6 +131,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         });
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     updateStatistics: function () {
         var s = this.statistics;
         s.videoPictureCounter += 1;
@@ -139,6 +167,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         s.fpsSinceStart = fps;
     },
 
+    /**
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     onAfterDecoded: function () {
     },
 
@@ -148,6 +180,11 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
     //---------- Web worker --------------------------------//
     //-----------------------------------------------------//
 
+    /**
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     * @param callback
+     */
     initFFMPEG_DECODER_WORKER: function (callback) {
         console.log("init FFMPEG worker");
         var blobURL = URL.createObjectURL(new Blob(['(',
@@ -271,6 +308,13 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         URL.revokeObjectURL(blobURL);
     },
 
+    /**
+     *
+     * @param pktSize
+     * @param pktData
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     decodeWorker: function (pktSize, pktData) {
         var transferableData = {
             pktSize: pktSize,
@@ -284,6 +328,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
     //---------- No Web worker -----------------------------//
     //-----------------------------------------------------//
 
+    /**
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     initFFMEG_DECODER: function () {
         // register all compiled codecs
         Module.ccall('avcodec_register_all');
@@ -323,6 +371,14 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
 
     },
 
+    /**
+     *
+     * @param pktSize
+     * @param pktData
+     * @returns {{frame_width: *, frame_height: *, frameYDataPtr: *, frameUDataPtr: *, frameVDataPtr: *, frameYData: Uint8Array, frameUData: Uint8Array, frameVData: Uint8Array}}
+     * @instance
+     * @memberof OSH.UI.FFMPEGView
+     */
     decode: function (pktSize, pktData) {
         // prepare packet
         Module.setValue(this.av_pkt + 28, pktSize, 'i32');

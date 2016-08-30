@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class OSH.UI.DiscoveryView
+ * @type {OSH.UI.View}
+ */
 OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, properties) {
         $super(divId,[],properties);
@@ -147,6 +152,12 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         OSH.EventManager.observeDiv(this.formTagId,"submit",this.onFormSubmit.bind(this));
     },
 
+    /**
+     *
+     * @param event
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     onSelectedService : function(event) {
         var serverTag = document.getElementById(this.serviceSelectTagId);
         var option = serverTag.options[serverTag.selectedIndex];
@@ -173,6 +184,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
     },
 
+
     onSelectedOffering : function(event) {
         var e = document.getElementById(this.offeringSelectTagId);
         var option = e.options[e.selectedIndex];
@@ -190,6 +202,12 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param event
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     onSelectedType : function(event) {
         var typeTag = document.getElementById(this.typeSelectTagId);
         var tagValue = typeTag.value;
@@ -202,6 +220,13 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param event
+     * @returns {boolean}
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     onFormSubmit : function(event) {
         event.preventDefault();
         // service
@@ -275,6 +300,13 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         return false;
     },
 
+    /**
+     *
+     * @param tagId
+     * @param objectsArr
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     addObjectsToSelect:function(tagId,objectsArr) {
         var selectTag = document.getElementById(tagId);
         for(var i=0;i < objectsArr.length;i++) {
@@ -287,6 +319,13 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param tagId
+     * @param valuesArr
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     addValuesToSelect:function(tagId,valuesArr) {
         var selectTag = document.getElementById(tagId);
         for(var i=0;i < valuesArr.length;i++) {
@@ -298,6 +337,15 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param tagId
+     * @param value
+     * @param parent
+     * @param object
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     addValueToSelect:function(tagId,value,parent,object) {
         var selectTag = document.getElementById(tagId);
         var option = document.createElement("option");
@@ -312,6 +360,12 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         selectTag.add(option);
     },
 
+    /**
+     *
+     * @param tagId
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     removeAllFromSelect:function(tagId) {
         var i;
         var selectTag = document.getElementById(tagId);
@@ -320,6 +374,20 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param name
+     * @param endPointUrl
+     * @param offeringID
+     * @param obsProp
+     * @param startTime
+     * @param endTime
+     * @param syncMasterTime
+     * @param viewId
+     * @param entityId
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     createGPSMarker: function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,viewId,entityId) {
         var gpsDataSource = new OSH.DataReceiver.LatLonAlt(name, {
             protocol: "ws",
@@ -376,6 +444,19 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[gpsDataSource.id]});
     },
 
+    /**
+     *
+     * @param name
+     * @param endPointUrl
+     * @param offeringID
+     * @param obsProp
+     * @param startTime
+     * @param endTime
+     * @param syncMasterTime
+     * @param entityId
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     createMJPEGVideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var videoDataSource = new OSH.DataReceiver.VideoMjpeg(name, {
             protocol: "ws",
@@ -416,6 +497,19 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[videoDataSource.id]});
     },
 
+    /**
+     *
+     * @param name
+     * @param endPointUrl
+     * @param offeringID
+     * @param obsProp
+     * @param startTime
+     * @param endTime
+     * @param syncMasterTime
+     * @param entityId
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var videoDataSource = new OSH.DataReceiver.VideoH264(name, {
             protocol: "ws",
@@ -457,7 +551,19 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     },
 
 
-
+    /**
+     *
+     * @param name
+     * @param endPointUrl
+     * @param offeringID
+     * @param obsProp
+     * @param startTime
+     * @param endTime
+     * @param syncMasterTime
+     * @param entityId
+     * @memberof OSH.UI.DiscoveryView
+     * @instance
+     */
     createChartDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var chartDataSource = new OSH.DataReceiver.Chart(name, {
             protocol: "ws",
@@ -516,6 +622,10 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     }
 });
 
+/**
+ * The different type of discovery.
+ * @type {{MARKER_GPS: string, DIALOG_VIDEO_H264: string, DIALOG_VIDEO_MJPEG: string, DIALOG_CHART: string}}
+ */
 OSH.UI.DiscoveryView.Type = {
     MARKER_GPS : "Marker(GPS)",
     DIALOG_VIDEO_H264 : "Video Dialog(H264)",

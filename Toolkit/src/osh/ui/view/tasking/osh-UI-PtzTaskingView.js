@@ -24,6 +24,12 @@ var htmlTaskingComponent =
     "</div>";
 
 
+/**
+ * @class
+ * @classdesc
+ * @type {OSH.UI.View}
+ *
+ */
 OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, options) {
         $super(divId);
@@ -78,30 +84,62 @@ OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
         $("button-zoom-out").observe('click',  function(){this.onZoomClick(-50)}.bind(this));
     },
 
+    /**
+     *
+     * @param interval
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
     removeInterval: function(interval) {
         if(this.timerIds.length > 0) {
             setTimeout(clearInterval(this.timerIds.pop()),interval+50);
         }
     },
 
+    /**
+     *
+     * @param value
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
     onTiltClick: function (value) {
         this.tilt += value;
         //document.getElementById("input-tilt").value = this.tilt;
         this.onChange(0,value,0);
     },
 
+    /**
+     *
+     * @param value
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
     onPanClick: function(value) {
         this.pan += value;
         //document.getElementById("input-pan").value = this.pan;
         this.onChange(value,0,0);
     },
 
+    /**
+     *
+     * @param value
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
     onZoomClick: function(value) {
         this.zoom += value;
         //document.getElementById("input-zoom").value = this.zoom;
         this.onChange(0,0,value);
     },
 
+    /**
+     *
+     * @param rpan
+     * @param rtilt
+     * @param rzoom
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
     onChange: function(rpan, rtilt, rzoom) {
         var properties = {
             pan : rpan,
@@ -114,6 +152,12 @@ OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
         }
     },
 
+    /**
+     *
+     * @param observer
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
     register: function(observer) {
         this.observers.push(observer);
     }

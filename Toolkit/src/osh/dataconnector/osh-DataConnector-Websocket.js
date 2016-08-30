@@ -98,12 +98,16 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
     /**
      * The onMessage method used by the websocket to callback the data
      * @param data the callback data
+     * @instance
+     * @memberof OSH.DataConnector.WebSocketDataConnector
      */
     onMessage: function (data) {
     },
 
     /**
      * Closes the webSocket.
+     * @instance
+     * @memberof OSH.DataConnector.WebSocketDataConnector
      */
     close: function() {
         this.disconnect();

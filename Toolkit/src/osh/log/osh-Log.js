@@ -1,3 +1,9 @@
+/**
+ * @classdesc This class creates a log view. It catches "osh:log" events and display them into a internal dialog.
+ * This view creates a dialog view
+ * @class
+ * @deprecated
+ */
 OSH.Log = Class.create({
     initialize:function(){
         this.logDiv = document.createElement("TEXTAREA");

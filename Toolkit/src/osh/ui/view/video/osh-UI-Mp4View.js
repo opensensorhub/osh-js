@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {
     $super(divId,[],options);
@@ -78,7 +83,14 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
     this.mediaSource.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
     
   },
-  
+
+  /**
+   *
+   * @param dataSourceId
+   * @param data
+   * @instance
+   * @memberof OSH.UI.Mp4View
+   */
   setData: function(dataSourceId,data) {
       if (this.buffer.updating || this.queue.length > 0) {
         this.queue.push(data.data);
@@ -86,7 +98,15 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
         this.buffer.appendBuffer(data.data);
       }
   },
-  
+
+  /**
+   *
+   * @param $super
+   * @param dataSourceIds
+   * @param entityId
+   * @instance
+   * @memberof OSH.UI.Mp4View
+   */
   selectDataView: function($super,dataSourceIds, entityId) {
 	  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 		  document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);

@@ -12,7 +12,7 @@ OSH.DataConnector.DataConnector = Class.create({
 
   /**
    * The data connector default id.
-   * @returns {string|*}
+   * @returns {string}
    * @memberof OSH.DataConnector.DataConnector
    * @instance
    */
@@ -22,7 +22,7 @@ OSH.DataConnector.DataConnector = Class.create({
 
   /**
    * The stream url.
-   * @returns {*}
+   * @returns {string}
    * @memberof OSH.DataConnector.DataConnector
    * @instance
    */

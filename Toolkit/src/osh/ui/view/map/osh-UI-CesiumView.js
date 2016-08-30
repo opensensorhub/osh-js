@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ */
 OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	
 	initialize : function($super, divId,viewItems, properties) {
@@ -10,6 +15,14 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 		this.frameCount = 0;
 	},
 
+	/**
+	 *
+	 * @param styler
+	 * @param timeStamp
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.CesiumView
+	 */
 	updateMarker : function(styler,timeStamp,options) {
 		var markerId = 0;
 
@@ -42,7 +55,16 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 			selected:((typeof(options.selected) != "undefined")? options.selected : false)
 		});
 	},
-	
+
+	/**
+	 *
+	 * @param styler
+	 * @param timeStamp
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.CesiumView
+	 *
+	 */
     updateDrapedImage: function(styler,timeStamp,options) {
 		
     	var llaPos = styler.platformLocation;
@@ -83,6 +105,13 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	},
 
 	//---------- MAP SETUP --------------//
+	/**
+	 *
+	 * @param $super
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.CesiumView
+	 */
 	beforeAddingItems: function ($super, options) {
 		this.markers = {};
 	    this.first = true;
@@ -134,7 +163,14 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	        }
 	    }.bind(this));
 	},
-	
+
+	/**
+	 *
+	 * @param properties
+	 * @returns {string}
+	 * @instance
+	 * @memberof OSH.UI.CesiumView
+	 */
 	addMarker : function(properties) {
 		
 		var imgIcon = 'images/cameralook.png';
@@ -177,7 +213,14 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 		
 		return id;
 	},
-	
+
+	/**
+	 *
+	 * @param id
+	 * @param properties
+	 * @instance
+	 * @memberof OSH.UI.CesiumView
+	 */
 	updateMapMarker: function(id, properties) {
 		var lon = properties.lon;
         var lat = properties.lat;
@@ -224,8 +267,16 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
     			 this.viewer.selectedEntity = marker;
     		}
         }
-	},	
-	
+	},
+
+	/**
+	 *
+	 * @param lat
+	 * @param lon
+	 * @returns {Number|undefined}
+	 * @instance
+	 * @memberof OSH.UI.CesiumView
+	 */
 	getAltitude : function(lat, lon) {
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
 		var altitude = this.viewer.scene.globe.getHeight(Cesium.Ellipsoid.WGS84.cartesianToCartographic(position));

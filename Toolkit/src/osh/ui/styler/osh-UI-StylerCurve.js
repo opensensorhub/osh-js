@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class OSH.UI.Styler.Curve
+ * @type {OSH.UI.Style}
+ */
 OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {
 		$super(properties);
@@ -47,7 +52,17 @@ OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 			this.addFn(properties.valuesFunc.dataSourceIds,fn);
 		}
 	},
-	
+
+	/**
+	 * @override
+	 * @param $super
+	 * @param dataSourceId
+	 * @param rec
+	 * @param view
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.Styler.Curve
+	 */
 	setData: function($super,dataSourceId,rec,view,options) {
 		if($super(dataSourceId,rec,view,options)) {
 			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){

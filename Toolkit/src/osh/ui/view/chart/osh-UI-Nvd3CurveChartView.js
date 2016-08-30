@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * @class OSH.UI.Nvd3CurveChartView
+ * @type {OSH.UI.View}
+ */
 OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	initialize : function($super,divId,viewItems, options) {
 		$super(divId,viewItems,options);
@@ -114,6 +119,14 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 
 	},
 
+	/**
+	 *
+	 * @param styler
+	 * @param timestamp
+	 * @param options
+	 * @instance
+	 * @memberof OSH.UI.Nvd3CurveChartView
+	 */
 	updateCurve : function(styler, timestamp, options) {
 		if (typeof (this.data) == "undefined") {
 			this.d3Data = [];	
@@ -148,6 +161,13 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		}
 	},
 
+	/**
+	 *
+	 * @param $super
+	 * @param dataSourceIds
+	 * @instance
+	 * @memberof OSH.UI.Nvd3CurveChartView
+	 */
 	selectDataView: function($super,dataSourceIds) {
 		var currentDataSources= this.getDataSourcesId();
 		if(OSH.Utils.isArrayIntersect(dataSourceIds,currentDataSources)) {
