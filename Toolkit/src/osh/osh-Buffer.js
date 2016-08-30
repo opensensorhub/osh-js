@@ -22,7 +22,10 @@ var BUFFER_STATUS = {
  * @class
  * @param {Object} options The options object
  * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
- *
+ * @example
+ var buffer = new OSH.Buffer({
+    replayFactor: 1
+ });
  */
 OSH.Buffer = Class.create({
   initialize:function(options) {

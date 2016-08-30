@@ -18,6 +18,34 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
     }
     ]
 });
+
+//------ More complex example
+ var discoveryView = new OSH.UI.DiscoveryView("",{
+        services: ["http://sensiasoft.net:8181/"], // server list
+        css: "discovery-view",
+        dataReceiverController:dataProviderController, // add custom dataProviderController
+        swapId: "main-container", // add a divId to swap data for inner dialog
+        entities: [androidEntity], // add entities
+        views: [{
+            name: 'Leaflet 2D Map',
+            viewId: leafletMainView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        }, {
+            name: 'Cesium 3D Globe',
+            viewId: cesiumMainMapView.id,
+            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
+        },{
+            name: 'Video dialog(H264)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+        },{
+            name: 'Video dialog(MJPEG)',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+        },{
+            name: 'Chart dialog',
+            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+        }
+        ]
+    });
  */
 OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, properties) {

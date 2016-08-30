@@ -3,6 +3,17 @@
  * @class
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
+ * @example
+ var dialogView new OSH.UI.DialogView(containerDivId, {
+        draggable: false,
+        css: "dialog",
+        name: title,
+        show:false,
+        dockable: true,
+        closeable: true,
+        connectionIds : dataSources ,
+        swapId: "main-container"
+    });
  */
 OSH.UI.DialogView = Class.create(OSH.UI.View,{
     initialize: function ($super,divId, options) {
