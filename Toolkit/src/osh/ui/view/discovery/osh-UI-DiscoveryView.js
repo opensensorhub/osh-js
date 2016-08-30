@@ -3,6 +3,21 @@
  * @class OSH.UI.DiscoveryView
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
+ * @example
+var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
+    services: ["http://sensiasoft.net:8181/"],
+    views: [{
+        name: 'Video dialog(H264)',
+        type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+    },{
+        name: 'Video dialog(MJPEG)',
+        type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+    },{
+        name: 'Chart dialog',
+        type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+    }
+    ]
+});
  */
 OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, properties) {
