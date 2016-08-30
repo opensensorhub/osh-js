@@ -2461,6 +2461,15 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>var discoveryView = new OSH.UI.DiscoveryView(&quot;discovery-container&quot;,{<br>    services: [&quot;http://sensiasoft.net:8181/&quot;],<br>    views: [{<br>        name: 'Video dialog(H264)',<br>        type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264<br>    },{<br>        name: 'Video dialog(MJPEG)',<br>        type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG<br>    },{<br>        name: 'Chart dialog',<br>        type : OSH.UI.DiscoveryView.Type.DIALOG_CHART<br>    }<br>    ]<br>});</p>
+<p>//------ More complex example<br> var discoveryView = new OSH.UI.DiscoveryView(&quot;&quot;,{<br>        services: [&quot;http://sensiasoft.net:8181/&quot;], // server list<br>        css: &quot;discovery-view&quot;,<br>        dataReceiverController:dataProviderController, // add custom dataProviderController<br>        swapId: &quot;main-container&quot;, // add a divId to swap data for inner dialog<br>        entities: [androidEntity], // add entities<br>        views: [{<br>            name: 'Leaflet 2D Map',<br>            viewId: leafletMainView.id,<br>            type : OSH.UI.DiscoveryView.Type.MARKER_GPS<br>        }, {<br>            name: 'Cesium 3D Globe',<br>            viewId: cesiumMainMapView.id,<br>            type : OSH.UI.DiscoveryView.Type.MARKER_GPS<br>        },{<br>            name: 'Video dialog(H264)',<br>            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264<br>        },{<br>            name: 'Video dialog(MJPEG)',<br>            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG<br>        },{<br>            name: 'Chart dialog',<br>            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART<br>        }<br>        ]<br>    });</p></code></pre>
+    
+
+    
 </dd>
 
     
@@ -2547,7 +2556,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line316">line 316</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line359">line 359</a>
         </div>
         
     </div>
@@ -2672,7 +2681,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line335">line 335</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line378">line 378</a>
         </div>
         
     </div>
@@ -2797,7 +2806,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line355">line 355</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line398">line 398</a>
         </div>
         
     </div>
@@ -3289,7 +3298,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line573">line 573</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line616">line 616</a>
         </div>
         
     </div>
@@ -3522,7 +3531,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line397">line 397</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line440">line 440</a>
         </div>
         
     </div>
@@ -3773,7 +3782,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line519">line 519</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line562">line 562</a>
         </div>
         
     </div>
@@ -4006,7 +4015,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line466">line 466</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line509">line 509</a>
         </div>
         
     </div>
@@ -4677,7 +4686,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line236">line 236</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line279">line 279</a>
         </div>
         
     </div>
@@ -4882,7 +4891,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line194">line 194</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line237">line 237</a>
         </div>
         
     </div>
@@ -4989,7 +4998,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line162">line 162</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line205">line 205</a>
         </div>
         
     </div>
@@ -5096,7 +5105,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line217">line 217</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line260">line 260</a>
         </div>
         
     </div>
@@ -5203,7 +5212,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line375">line 375</a>
+            <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html">osh/ui/view/discovery/osh-UI-DiscoveryView.js</a>, <a href="osh_ui_view_discovery_osh-UI-DiscoveryView.js.html#line418">line 418</a>
         </div>
         
     </div>
@@ -5879,7 +5888,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Tue Aug 30 2016 20:10:38 GMT+0200 (CEST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Tue Aug 30 2016 21:11:02 GMT+0200 (CEST)
         </footer>
     </div>
 </div>
