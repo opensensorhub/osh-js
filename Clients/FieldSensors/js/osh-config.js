@@ -3,19 +3,19 @@ function init() {
 	var hostName = "bottsgeo.simple-url.com";
 	
 	// global time settings    
-	var startTime = "now";
-	var endTime = "2080-01-01";
+	//var startTime = "now";
+	//var endTime = "2080-01-01";
 	
 	// 1st field test Madison
-	//startTime = "2016-08-15T22:30:00Z";
-    //endTime = "2016-08-15T22:51:06Z";
+	//var startTime = "2016-08-15T22:30:00Z";
+    //var endTime = "2016-08-15T22:51:06Z";
 	
 	// 2nd field test Madison
-	//startTime = "2016-08-29T23:40:30.119Z";
-	//endTime = "2016-08-29T23:56:48.634Z";
+	var startTime = "2016-08-30T18:21:20Z";
+	var endTime = "2016-08-30T19:21:09Z";
 	
     var sync = true;
-    var dataStreamTimeOut = 2000;
+    var dataStreamTimeOut = 4000;
     var useFFmpegWorkers = true;
 	
     // menu ids
@@ -48,10 +48,10 @@ function init() {
     
     // urn:android:device:a0e0eac2fea3f614-sos = Alex Nexus5
     addAndroidPhone("android1", "Botts - Nexus5", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos");
-    addAndroidPhone("android2", "Botts - Nexus9", "urn:android:device:8b65f9d7048a345a-sos", null);
+    //addAndroidPhone("android2", "Botts - Nexus9", "urn:android:device:8b65f9d7048a345a-sos", null);
     
-    addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos", 180);
-    addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos", 60);
+    addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos", 3600*24*15, 3600*24*15+43*60+23, 180);
+    addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos", 3600*24*14, 3600*24*14+26*60+22, 60);
     //addGeoCam("geocam103", "Geocam #103", "urn:osh:system:geocam:0103-sos");
     //addGeoCam("geocam105", "Geocam #105", "urn:osh:system:geocam:0105-sos");
     
@@ -112,8 +112,8 @@ function init() {
     //------------------------ Time Slider  ------------------------//
     //--------------------------------------------------------------//
     var rangeSlider = new OSH.UI.RangeSlider("rangeSlider",{
-        startTime: "2016-08-15T22:00:00Z",
-        endTime: "2016-08-15T22:51:00Z",
+        startTime: "2016-08-30T18:20:00Z",
+        endTime: "2016-08-30T19:22:00Z",
         refreshRate:1
     });
     
@@ -363,7 +363,7 @@ function init() {
     }
     
     
-    function addGeoCam(entityID, entityName, offeringID, headingOffset) {
+    function addGeoCam(entityID, entityName, offeringID, gpsTimeOffset, sysTimeOffset, headingOffset) {
         
         // create data sources
         var videoData = new OSH.DataReceiver.VideoMjpeg("Video", {
@@ -375,7 +375,7 @@ function init() {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: "1",
-            timeShift: 5*3600*1000, // 5h shift to get to UTC
+            timeShift: sysTimeOffset*1000, // 5h shift to get to UTC
             syncMasterTime: sync,
             bufferingTime: 500,
             timeOut: dataStreamTimeOut
@@ -390,6 +390,7 @@ function init() {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: "1",
+            timeShift: gpsTimeOffset*1000,
             syncMasterTime: sync,
             bufferingTime: 500,
             timeOut: dataStreamTimeOut
@@ -404,7 +405,7 @@ function init() {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: "1",
-            timeShift: 5*3600*1000, // 5h shift to get to UTC
+            timeShift: sysTimeOffset*1000, // 5h shift to get to UTC
             syncMasterTime: sync,
             bufferingTime: 500,
             timeOut: dataStreamTimeOut
