@@ -98,12 +98,12 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 			],
 			pips: {
 				mode: 'positions',
-				values: [5,25,50,75,90],
+				values: [5,25,50,75],
 				density: 1,
 				//stepped: true,
 				format: wNumb({
 					edit:function( value ){
-						return new Date(parseInt(value)).toISOString();
+						return new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
 					}
 				})
 			}
