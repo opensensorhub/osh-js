@@ -11,13 +11,14 @@ function init() {
     //var endTime = "2016-08-15T22:51:06Z";
 	
 	// 2nd field test Madison
-	var startTime = "2016-08-30T18:21:20Z";
+	var startTime = "2016-08-30T18:42:20Z";
 	var endTime = "2016-08-30T19:21:09Z";
 	
     var sync = true;
     var dataStreamTimeOut = 4000;
     var useFFmpegWorkers = true;
-	
+    var mslToWgs84 = -29+5; // Madison
+    
     // menu ids
     var treeMenuId = "tree-menu-";
     var mapMenuId = "map-menu-";
@@ -47,18 +48,18 @@ function init() {
     var treeItems = [];
     
     // urn:android:device:a0e0eac2fea3f614-sos = Alex Nexus5
-    addAndroidPhone("android1", "Botts - Nexus5", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos");
+    addAndroidPhone("android1", "Botts - Nexus5", "urn:android:device:89845ed469b7edc7-sos", "urn:flir:cam:flirone:android:89845ed469b7edc7-sos", 110/*45*/);
     //addAndroidPhone("android2", "Botts - Nexus9", "urn:android:device:8b65f9d7048a345a-sos", null);
     
-    addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos", 3600*24*15, 3600*24*15+43*60+23, 180);
-    addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos", 3600*24*14, 3600*24*14+26*60+22, 60);
+    addGeoCam("geocam101", "Geocam #101", "urn:osh:system:geocam:0101-sos", 3600*24*15, 3600*24*15+43*60+23, 90);
+    addGeoCam("geocam102", "Geocam #102", "urn:osh:system:geocam:0102-sos", 3600*24*14, 3600*24*14+25*60-15, 160);
     //addGeoCam("geocam103", "Geocam #103", "urn:osh:system:geocam:0103-sos");
     //addGeoCam("geocam105", "Geocam #105", "urn:osh:system:geocam:0105-sos");
     
     addVirbCam("virb1", "Drop Cam - Virb #1", "urn:osh:virb1", 0, true);
-    addVirbCam("virb2", "Butler - Virb #2", "urn:osh:virb2", 0, false);
+    addVirbCam("virb2", "Butler - Virb #2", "urn:osh:virb2", NaN, false);
     
-    addDahuaCam("dahua1", "Dahua PTZ", "urn:osh:dahua1", 0);
+    //addDahuaCam("dahua1", "Dahua PTZ", "urn:osh:dahua1", 0);
     //addAxisCam("axis1", "Axis PTZ", "urn:osh:axis1", 0);
     
     addSoloUav("solo1", "3DR Solo", "urn:osh:solo-nav", "urn:osh:solo-video")
@@ -171,7 +172,7 @@ function init() {
     //------ Helper methods to add specific types of sensors -------//
     //--------------------------------------------------------------//
     
-    function addAndroidPhone(entityID, entityName, offeringID, flirOfferingID) {
+    function addAndroidPhone(entityID, entityName, offeringID, flirOfferingID, headingOffset) {
         
         // create data sources
         var videoData = new OSH.DataReceiver.VideoH264("Video", {
@@ -272,7 +273,7 @@ function init() {
                     dataSourceIds : [attitudeData.getId()],
                     handler : function(rec) {
                         return {
-                            heading : rec.heading
+                            heading : rec.heading + headingOffset
                         };
                     }
                 },
@@ -319,7 +320,7 @@ function init() {
             flirVideoDialog = new OSH.UI.DialogView("dialog-main-container", {
                 draggable: false,
                 css: "video-dialog",
-                name: "FLIR Cam #1",
+                name: entityName + " - FLIR Cam",
                 show: false,
                 dockable: true,
                 closeable: true,
@@ -593,9 +594,15 @@ function init() {
                     dataSourceIds: [locationData.getId()],
                     handler : function(rec,timeStamp,options) {
                         if(options.selected) {
-                            return 'images/cameralook-selected.png'
+                            if (isNaN(heading))
+                                return 'images/camera-selected.png';
+                            else
+                                return 'images/cameralook-selected.png';
                         } else {
-                            return 'images/cameralook.png';
+                            if (isNaN(heading))
+                                return 'images/camera.png';
+                            else
+                                return 'images/cameralook.png';
                         }
                     }
                 }
@@ -1037,7 +1044,7 @@ function init() {
             draggable: false,
             css: "video-dialog",
             name: entityName,
-            show: true,
+            show: false,
             dockable: true,
             closeable: true,
             canDisconnect : true,
@@ -1055,11 +1062,53 @@ function init() {
             height: 720
         });
         
+        // altitude chart view        
+        var altChartDialog = new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "video-dialog",
+            name: entityName + " - Altitude",
+            show: false,
+            dockable: true,
+            closeable: true,
+            canDisconnect : true,
+            swapId: "main-container",
+            connectionIds: [locationData.getId()]
+        });
+        
+        var count = 0;
+        var altChartView = new OSH.UI.Nvd3CurveChartView(altChartDialog.popContentDiv.id,
+        [{
+            styler: new OSH.UI.Styler.Curve({
+                valuesFunc: {
+                    dataSourceIds: [locationData.getId()],
+                    handler: function (rec, timeStamp) {
+                        if (rec.alt < 1)
+                            rec.alt *= 1e4; // *10^4 due to bug in Toulouse dataset
+                        return {
+                            x: timeStamp,
+                            y: rec.alt+mslToWgs84
+                        };
+                    }
+                }
+            })
+        }],
+        {
+            yLabel: 'Altitude (m)',
+            xLabel: 'Time',
+            css:"chart-view",
+            cssSelected: "video-selected"
+        });
+        
         // add tree and map context menus
         var menuItems = [{
             name: "Show Video",
             viewId: videoDialog.getId(),
             css: "fa fa-video-camera",
+            action: "show"
+        },{
+            name: "Show Altitude",
+            viewId: altChartDialog.getId(),
+            css: "fa fa-bar-chart",
             action: "show"
         }];
     
