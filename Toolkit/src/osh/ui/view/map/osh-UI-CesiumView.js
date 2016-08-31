@@ -2,6 +2,37 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @example
+ var cesiumMapView = new OSH.UI.CesiumView("",
+ [{
+	styler :  pointMarker,
+	contextMenuId: circularContextMenuId,
+	name : "Android Phone GPS",
+	entityId : androidEntity.id
+ },
+ {
+    styler : new OSH.UI.Styler.Polyline({
+        locationFunc : {
+            dataSourceIds : [androidPhoneGpsDataSource.getId()],
+            handler : function(rec) {
+                return {
+                    x : rec.lon,
+                    y : rec.lat,
+                    z : rec.alt
+                };
+            }
+        },
+        color : 'rgba(0,0,255,0.5)',
+        weight : 10,
+        opacity : .5,
+        smoothFactor : 1,
+        maxPoints : 200
+    }),
+    name : "Android Phone GPS Path",
+    entityId : androidEntity.id
+ }]
+ );
  */
 OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	

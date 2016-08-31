@@ -2,6 +2,13 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @example
+ var rangeSlider = new OSH.UI.RangeSlider("rangeSlider-container",{
+        startTime: "2015-02-16T07:58:00Z",
+        endTime: "2015-02-16T08:09:00Z",
+        refreshRate:1
+ });
  */
 OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 	initialize: function ($super, divId, options) {

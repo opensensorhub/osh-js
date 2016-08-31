@@ -2,6 +2,15 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @example
+var videoView = new OSH.UI.MjpegView("containerId", {
+    dataSourceId: datasource.id,
+    entityId : entity.id,
+    css: "video",
+    cssSelected: "video-selected",
+    name: "Video"
+});
  */
 OSH.UI.MjpegView = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {

@@ -2,6 +2,14 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @example
+ var videoView = new OSH.UI.Mp4View("videoContainer-id", {
+    dataSourceId: videoDataSource.id,
+    css: "video",
+    cssSelected: "video-selected",
+    name: "Video"
+ });
  */
 OSH.UI.Mp4View = Class.create(OSH.UI.View,{
   initialize: function($super,divId,options) {

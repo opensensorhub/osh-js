@@ -1,6 +1,7 @@
 /**
  * @class
  * @classdesc
+ *
  */
 OSH.Sensor = Class.create({
   initialize: function (jsonix_offering) {

@@ -1,6 +1,7 @@
 /**
  * @classdesc
  * @class
+ * @augments OSH.DataSender.DataSource
  */
 OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
@@ -32,8 +33,6 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     /**
      * Builds the take off SPS request.
-     * @override
-     * @inheritdoc
      * @param {string} props
      * @returns {string} the take off sps request
      * @memberof OSH.DataReceiver.UavMapTasking
@@ -47,8 +46,6 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     /**
      * Builds the got to SPS request.
-     * @override
-     * @inheritdoc
      * @param {string} props
      * @returns {string} the goto SPS request
      * @memberof OSH.DataReceiver.UavMapTasking
@@ -61,8 +58,6 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     /**
      * Builds the orbit SPS request.
-     * @override
-     * @inheritdoc
      * @returns {string} the orbit SPS request
      * @memberof OSH.DataReceiver.UavMapTasking
      * @param {string} props
@@ -75,8 +70,6 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     /**
      * Builds the lookat SPS request.
-     * @override
-     * @inheritdoc
      * @returns {string} the lookat SPS request
      * @memberof OSH.DataReceiver.UavMapTasking
      * @param {string} props
@@ -89,8 +82,6 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     /**
      * Builds the land SPS request.
-     * @override
-     * @inheritdoc
      * @returns {string} the land SPS request
      * @memberof OSH.DataReceiver.UavMapTasking
      * @param {string} props
@@ -103,8 +94,6 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
 
     /**
      * Builds the request based on sps standard.
-     * @override
-     * @inheritdoc
      * @param {string} the command data
      * @returns {string} the sps request
      * @memberof OSH.DataReceiver.UavMapTasking

@@ -2,6 +2,29 @@
  * @classdesc
  * @class OSH.UI.Nvd3CurveChartView
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @example
+// Chart View
+var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id, [{
+    styler: new OSH.UI.Styler.Curve({
+        valuesFunc: {
+            dataSourceIds: [weatherDataSource.getId()],
+            handler: function(rec, timeStamp) {
+                return {
+                    x: timeStamp,
+                    y: parseFloat(rec[2])
+                };
+            }
+        }
+    })
+}], {
+    name: "WindSpeed chart",
+    yLabel: 'Wind Speed (m/s)',
+    xLabel: 'Time',
+    css: "chart-view",
+    cssSelected: "video-selected",
+    maxPoints: 30
+});
  */
 OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	initialize : function($super,divId,viewItems, options) {

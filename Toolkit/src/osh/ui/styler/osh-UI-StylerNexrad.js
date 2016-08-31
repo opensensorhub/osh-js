@@ -2,6 +2,7 @@
  * @classdesc
  * @class OSH.UI.Styler.Nexrad
  * @type {OSH.UI.Styler}
+ * @augments OSH.UI.Styler
  */
 OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {

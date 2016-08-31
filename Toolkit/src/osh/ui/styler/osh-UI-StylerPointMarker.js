@@ -2,6 +2,44 @@
  * @classdesc
  * @class OSH.UI.Styler.PointMarker
  * @type {OSH.UI.Styler}
+ * @augments OSH.UI.Styler
+ * @example
+ * var pointMarker = new OSH.UI.Styler.PointMarker({
+        location : {
+            x : 1.42376557,
+            y : 43.61758626,
+            z : 100
+        },
+        locationFunc : {
+            dataSourceIds : [androidPhoneGpsDataSource.getId()],
+            handler : function(rec) {
+                return {
+                    x : rec.lon,
+                    y : rec.lat,
+                    z : rec.alt
+                };
+            }
+        },
+        orientationFunc : {
+            dataSourceIds : [androidPhoneOrientationDataSource.getId()],
+            handler : function(rec) {
+                return {
+                    heading : rec.heading
+                };
+            }
+        },
+        icon : 'images/cameralook.png',
+        iconFunc : {
+            dataSourceIds: [androidPhoneGpsDataSource.getId()],
+            handler : function(rec,timeStamp,options) {
+                if(options.selected) {
+                    return 'images/cameralook-selected.png'
+                } else {
+                    return 'images/cameralook.png';
+                };
+            }
+        }
+    });
  */
 OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {

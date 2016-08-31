@@ -4,6 +4,7 @@
  * @param {string} divId - The id to attach/or create the view.
  * @param {string} viewItems - The list of view items
  * @param {string} options - The options
+ * @abstract
  */
 OSH.UI.View = Class.create({
     initialize: function (divId, viewItems,options) {

@@ -2,14 +2,25 @@
  * @classdesc This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
  * @class OSH.DataReceiver.OrientationQuaternion
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
+ * @example
+ * var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
+        protocol: "ws",
+        service: "SOS",
+        endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+        offeringID: "urn:android:device:060693280a28e015-sos",
+        observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+        startTime: "2015-02-16T07:58:00Z",
+        endTime: "2015-02-16T08:09:00Z",
+        replaySpeed: replayFactor+"",
+        syncMasterTime: true,
+        bufferingTime: 1000
+    });
  */
 OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseTimeStamp super method
    * @param {string} data the data to parse
    * @returns {number} the extracted timestamp
@@ -24,8 +35,6 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
 
   /**
    * Extract data from the message. The data are got such as:<p><ul><li>qx: tokens[1]</li><li>qy: tokens [2]</li><li>qz: tokens[3]</li><li>qw: tokens[4]</li></ul></p>.
-   * @override
-   * @inheritdoc
    * @param {function} $super the parseData super method
    * @param {Object} data the data to parse
    * @returns {Object} the parsed data

@@ -1,6 +1,18 @@
 /**
  * @class
  * @classdesc
+ * @example
+ * var oshServer = new OSH.Server(option.value);
+ * 
+ * var onSuccessGetCapabilities = function(event) {
+      this.sensors = oshServer.sensors;
+   };
+
+   var onErrorGetCapabilities = function(event) {
+    // does something
+   };
+
+   oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
  */
 OSH.Server = Class.create({
   initialize: function (url) {

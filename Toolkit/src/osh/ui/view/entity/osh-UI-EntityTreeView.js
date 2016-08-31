@@ -2,6 +2,22 @@
  * @classdesc
  * @class
  * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @param {string} divId The divId to attach the view
+ * @param {Array} entityItems The entity items array
+ * @param {Object} options the {@link OSH.View} options
+ * @example
+ var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
+     [{
+        entity : androidEntity,
+        path: "Sensors/Toulouse",
+        treeIcon : "images/android_icon.png",
+        contextMenuId: stackContextMenuId
+     }],
+     {
+         css: "tree-container"
+     }
+ );
  */
 OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
     initialize:function($super,divId,entityItems,options) {

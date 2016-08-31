@@ -2,6 +2,25 @@
  * @class OSH.UI.Styler.Polyline
  * @classdesc
  * @type {OSH.UI.Styler}
+ * @augments OSH.UI.Styler
+ * @example
+ * var polylineStyler = new OSH.UI.Styler.Polyline({
+		locationFunc : {
+			dataSourceIds : [datasource.getId()],
+			handler : function(rec) {
+				return {
+					x : rec.lon,
+					y : rec.lat,
+					z : rec.alt
+				};
+			}
+		},
+		color : 'rgba(0,0,255,0.5)',
+		weight : 10,
+		opacity : .5,
+		smoothFactor : 1,
+		maxPoints : 200
+	});
  */
 OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {

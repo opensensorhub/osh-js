@@ -2,6 +2,7 @@
  * @classdesc
  * @class OSH.UI.Styler.Curve
  * @type {OSH.UI.Style}
+ * @augments OSH.UI.Styler
  */
 OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 	initialize : function($super, properties) {
@@ -54,7 +55,6 @@ OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 	},
 
 	/**
-	 * @override
 	 * @param $super
 	 * @param dataSourceId
 	 * @param rec

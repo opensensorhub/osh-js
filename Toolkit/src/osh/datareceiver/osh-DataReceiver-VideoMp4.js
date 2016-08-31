@@ -2,7 +2,21 @@
  * @classdesc This datasource provides parsing to fragmented mp4 raw data. The data is encapsulated into mp4 fragment.
  * Data: ArrayBuffer
  * @class OSH.DataReceiver.VideoMp4
- * @inheritdoc
+ * @augments OSH.DataReceiver.DataSource
+ * @example
+ * var videoDataSource = new OSH.DataReceiver.VideoMp4("MP4 video ", {
+        protocol: "ws",
+        service: "SOS",
+        endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+        offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+        startTime: "2016-08-11T20:17:30.402Z",
+        endTime: "2016-08-11T20:18:05.451Z",
+        replaySpeed: 1,
+        syncMasterTime: false,
+        bufferingTime: 1000,
+        responseFormat: "video/mp4
+  });
  */
 OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
     initialize: function ($super, name, properties, options) {
@@ -12,8 +26,6 @@ OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
 
     /**
      * Extracts timestamp from the message. The timestamp is located at the 60th bytes and is 8 bytes length.
-     * @override
-     * @inheritdoc
      * @param {function} $super the parseTimeStamp super method
      * @param {ArrayBuffer} data the data to parse
      * @returns {number} the extracted timestamp

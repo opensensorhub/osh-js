@@ -4,6 +4,27 @@
  * @listens {@link OSH.EventManager.EVENT.CONNECT_DATASOURCE}
  * @listens {@link OSH.EventManager.EVENT.DISCONNECT_DATASOURCE}
  * @listens {@link OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME}
+ * @example
+ *
+ * var datasource = new OSH.DataReceiver... // creates OSH.DataReceiver.<>
+ *
+ * // creates controller
+ * var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+ *   replayFactor : replayFactor
+ * });
+ *
+ * // adds datasource to controller
+ * dataProviderController.addDataSource(weatherDataSource);
+ *
+ * // and/or adds entity to controller
+ * var entity = {
+ *       id : "entity-"+OSH.Utils.randomUUID(),
+ *       name: "Some entity",
+ *       dataSources: [datasource]
+ * };
+ *
+ * dataProviderController.addEntity(entity);
+ *
  */
 OSH.DataReceiver.DataReceiverController = Class.create({
     initialize: function (options) {

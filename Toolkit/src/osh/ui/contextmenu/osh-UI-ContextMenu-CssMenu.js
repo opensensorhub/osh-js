@@ -2,6 +2,7 @@
  * @class
  * @classdesc A css context menu allowing to create various context menu using only css.
  * @type {OSH.UI.ContextMenu}
+ * @augments OSH.UI.ContextMenu
  */
 OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
     initialize:function($super,properties,type) {
@@ -124,7 +125,6 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
 
     /**
      * Hides the menu
-     * @inheritdoc
      * @param $super
      * @instance
      * @memberof OSH.UI.ContextMenu.CssMenu
