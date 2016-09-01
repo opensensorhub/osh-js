@@ -32,6 +32,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         };
 
         this.useWorker = false;
+        this.resetCalled = true;
 
         if (typeof options != "undefined") {
             if (options.width) {
@@ -78,6 +79,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         var pktSize = pktData.length;
 
         if (this.useWorker) {
+            this.resetCalled = false;
             this.decodeWorker(pktSize, pktData);
         } else {
            var decodedFrame = this.decode(pktSize, pktData);
@@ -126,6 +128,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         _avcodec_flush_buffers(this.av_ctx);
 
         // clear canvas
+        this.resetCalled = true;
         var nodata = new Uint8Array(1);
         this.yuvCanvas.drawNextOuptutPictureGL({
             yData: nodata,
@@ -297,20 +300,22 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         this.worker.onmessage = function (e) {
             var decodedFrame = e.data;
 
-            self.yuvCanvas.drawNextOuptutPictureGL({
-                yData: decodedFrame.frameYData,
-                yDataPerRow: decodedFrame.frame_width,
-                yRowCnt: decodedFrame.frame_height,
-                uData: decodedFrame.frameUData,
-                uDataPerRow: decodedFrame.frame_width / 2,
-                uRowCnt: decodedFrame.frame_height / 2,
-                vData: decodedFrame.frameVData,
-                vDataPerRow: decodedFrame.frame_width / 2,
-                vRowCnt: decodedFrame.frame_height / 2
-            });
-
-            self.updateStatistics();
-            self.onAfterDecoded();
+            if (!this.resetCalled) {
+                self.yuvCanvas.drawNextOuptutPictureGL({
+                    yData: decodedFrame.frameYData,
+                    yDataPerRow: decodedFrame.frame_width,
+                    yRowCnt: decodedFrame.frame_height,
+                    uData: decodedFrame.frameUData,
+                    uDataPerRow: decodedFrame.frame_width / 2,
+                    uRowCnt: decodedFrame.frame_height / 2,
+                    vData: decodedFrame.frameVData,
+                    vDataPerRow: decodedFrame.frame_width / 2,
+                    vRowCnt: decodedFrame.frame_height / 2
+                });
+    
+                self.updateStatistics();
+                self.onAfterDecoded();
+            }
         }.bind(this);
 
         // Won't be needing this anymore

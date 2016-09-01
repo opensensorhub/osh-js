@@ -198,6 +198,14 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 		} else {
 			this.div.setAttribute("class",this.css);
 		}
-	}
-
+	},
+	
+	/**
+     * @instance
+     * @memberof OSH.UI.Nvd3CurveChartView
+     */
+    reset: function () {
+        this.data.values = [];
+        this.chart.update();
+    }
 });
