@@ -102,7 +102,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 
 		this.chart.xAxis //Chart x-axis settings
 		.axisLabel(xLabel).tickFormat(function(d) {
-			return d3.time.format('%H:%M:%S ')(new Date(d))
+			return d3.time.format.utc('%H:%M:%SZ')(new Date(d))
 		});
 
 		this.chart.yAxis //Chart y-axis settings
