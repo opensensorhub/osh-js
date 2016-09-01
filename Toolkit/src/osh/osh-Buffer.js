@@ -333,10 +333,13 @@ OSH.Buffer = Class.create({
    * @instance
    */
   dispatchData:function(dataSourceId,data) {
-    if(this.buffers[dataSourceId].syncMasterTime) {
-      OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, {timeStamp: data.timeStamp});
+    var bufObj = this.buffers[dataSourceId];
+    if (bufObj.status != BUFFER_STATUS.CANCEL) {
+        if(bufObj.syncMasterTime) {
+          OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, {timeStamp: data.timeStamp});
+        }
+        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
     }
-    OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
   },
 
   /**
