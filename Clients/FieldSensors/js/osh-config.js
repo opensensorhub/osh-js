@@ -579,6 +579,8 @@ function init() {
                 locationFunc : {
                     dataSourceIds : [locationData.getId()],
                     handler : function(rec) {
+                        if (rec.lon == 0.0 && rec.lat == 0.0)
+                            return null;
                         return {
                             x : rec.lon,
                             y : rec.lat,
