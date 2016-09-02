@@ -19,8 +19,10 @@ function init() {
 	//var endTime = "2016-08-03T18:30:00Z"; //"2016-08-02T22:37:00Z";
 	
 	// Madison, Field Sensors Run
-	var startTime = "2016-08-15T22:29:28.557Z";
-	var endTime = "2016-08-15T22:34:56.644Z";
+	//var startTime = "2016-08-15T22:29:28.557Z";
+	//var endTime = "2016-08-15T22:34:56.644Z";
+    var startTime = "2016-08-30T19:00:40Z";
+    var endTime = "2016-08-30T19:22:00Z";
     var replaySpeed = "1";
 	
 	var soloGPS = new OSH.DataReceiver.LatLonAlt("Solo GPS", {
@@ -68,6 +70,7 @@ function init() {
         startTime: startTime,
         endTime: endTime,
         replaySpeed: replaySpeed,
+        timeShift: -100,
         syncMasterTime: true
     });
     
@@ -101,7 +104,7 @@ function init() {
     // MSL to Ellipsoid correction
     //var mslToWgs84 = 53.5; // Toulouse
     //var mslToWgs84 = -29.5+5; // Huntsville Airport Road
-    var mslToWgs84 = -29+5; // Madison
+    var mslToWgs84 = -29-4; // Madison
     
     // menu ids
     var soloTreeMenuId = "solo-tree-menu";
@@ -146,7 +149,10 @@ function init() {
         dataSourceId: soloVideo.getId(),
         entityId : soloEntity.id,
         css: "video",
-        cssSelected: "video-selected"
+        cssSelected: "video-selected",
+        useWorker: true,
+        width: 1280,
+        height: 720
     });
     
     // chart view
@@ -179,8 +185,10 @@ function init() {
         })
     }],
     {
+        dataSourceId: soloGPS.getId(),
         yLabel: 'Altitude (m)',
         xLabel: 'Time',
+        maxPoints: 100,
         css:"chart-view",
         cssSelected: "video-selected"
     });
@@ -198,7 +206,7 @@ function init() {
                 return {
                     x : rec.lon,
                     y : rec.lat,
-                    z : rec.alt+mslToWgs84-10. // model offset
+                    z : rec.alt+mslToWgs84-5. // model offset
                 };
             }
         },
@@ -268,11 +276,11 @@ function init() {
 	                    };
 	                }
 	            },
-	            snapshotFunc: function() {
+	            /*snapshotFunc: function() {
                     var enabled = takePicture;
                     takePicture = false;
                     return enabled;
-	            },
+	            },*/
 	            /*GoPro Alex*/
 	            /*cameraModel: {
 	            	camProj: new Cesium.Matrix3(435.48/752.,     0.0,      370.20/752.,
