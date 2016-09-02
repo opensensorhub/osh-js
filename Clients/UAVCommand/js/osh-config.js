@@ -261,8 +261,8 @@ function init() {
 	                handler: function(rec) {
 	                    return {
 	                        heading: rec.heading,
-	                        pitch: rec.pitch,
-	                        roll: rec.roll
+	                        pitch: 0,//rec.pitch,
+	                        roll: 0,//rec.roll
 	                    };
 	                }
 	            },
@@ -271,8 +271,8 @@ function init() {
 	                handler: function(rec) {
 	                    return {
 	                        heading: rec.heading,
-	                        pitch: rec.pitch,
-	                        roll: rec.roll
+	                        pitch: -92,//rec.pitch,
+	                        roll: 0,//rec.roll
 	                    };
 	                }
 	            },
