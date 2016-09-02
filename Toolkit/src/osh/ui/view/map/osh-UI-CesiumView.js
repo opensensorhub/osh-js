@@ -104,14 +104,36 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
     	var DTR = Math.PI/180.;
     	var attitude = styler.platformOrientation;
     	var gimbal = styler.gimbalOrientation;
-    	var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, (-90.0+attitude.pitch+gimbal.pitch+5)*DTR);
-    	//var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, -182*DTR);
-        var camRot = Cesium.Matrix3.fromQuaternion(camQuat);
+    	
+    	///////////////////////////////////////////////////////////////////////////////////
+    	// compute rotation matrix to transform lookrays from camera frame to ECEF frame //
+    	///////////////////////////////////////////////////////////////////////////////////
+    	var nedTransform = Cesium.Transforms.northEastDownToFixedFrame(camPos);
+    	var camRot = new Cesium.Matrix3();
+    	Cesium.Matrix4.getRotation(nedTransform, camRot);    	
+    	var rotM = new Cesium.Matrix3();
+    	
+        // UAV heading, pitch, roll (given in NED frame)
+    	var uavHeading = Cesium.Matrix3.fromRotationZ(attitude.heading*DTR, rotM);
+    	Cesium.Matrix3.multiply(camRot, uavHeading, camRot);    	
+        var uavPitch = Cesium.Matrix3.fromRotationY(attitude.pitch*DTR, rotM);
+        Cesium.Matrix3.multiply(camRot, uavPitch, camRot);
+        var uavRoll = Cesium.Matrix3.fromRotationX(attitude.roll*DTR, rotM);
+        Cesium.Matrix3.multiply(camRot, uavRoll, camRot);
         
-        // now apply gimbal pitch and roll
-        //var yawM = Cesium.Matrix3.fromRotationZ(gimbal.heading);
-        //var rollM = Cesium.Matrix3.fromRotationX(gimbal.roll);
-        //var pitchM = Cesium.Matrix3.fromRotationY(gimbal.pitch);
+        // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
+        var gimbalYaw = Cesium.Matrix3.fromRotationZ(gimbal.heading*DTR, rotM);
+        Cesium.Matrix3.multiply(camRot, gimbalYaw, camRot);
+        var gimbalRoll = Cesium.Matrix3.fromRotationX(gimbal.roll*DTR, rotM);
+        Cesium.Matrix3.multiply(camRot, gimbalRoll, camRot);
+        var gimbalPitch = Cesium.Matrix3.fromRotationY((90+gimbal.pitch)*DTR, rotM);
+        Cesium.Matrix3.multiply(camRot, gimbalPitch, camRot);
+        
+        // transform to camera frame
+        var img2cam = Cesium.Matrix3.fromRotationZ(90*DTR, rotM);
+        Cesium.Matrix3.multiply(camRot, img2cam, camRot);
+
+        ////////////////////////////////////////////////////////////////////////////////////
         
     	var camProj = styler.cameraModel.camProj;
     	var camDistR = styler.cameraModel.camDistR;
