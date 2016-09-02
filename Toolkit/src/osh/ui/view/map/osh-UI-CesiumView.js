@@ -105,7 +105,13 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
     	var attitude = styler.platformOrientation;
     	var gimbal = styler.gimbalOrientation;
     	var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, (-90.0+attitude.pitch+gimbal.pitch+5)*DTR);
+    	//var camQuat = Cesium.Transforms.headingPitchRollQuaternion(camPos, (attitude.heading+gimbal.heading)*DTR, 0.0, -182*DTR);
         var camRot = Cesium.Matrix3.fromQuaternion(camQuat);
+        
+        // now apply gimbal pitch and roll
+        //var yawM = Cesium.Matrix3.fromRotationZ(gimbal.heading);
+        //var rollM = Cesium.Matrix3.fromRotationX(gimbal.roll);
+        //var pitchM = Cesium.Matrix3.fromRotationY(gimbal.pitch);
         
     	var camProj = styler.cameraModel.camProj;
     	var camDistR = styler.cameraModel.camDistR;
@@ -126,10 +132,12 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	        }));
 	    	
 	    	// remove previous primitive
-	    	/*if (this.imageDrapingPrimitive != null) {
-	    		this.viewer.scene.primitives.remove(this.imageDrapingPrimitive);
-	        }
-	    	this.imageDrapingPrimitive = newImageDrapingPrimitive;*/
+	    	if (styler.snapshotFunc == null) {
+	    	    if (this.imageDrapingPrimitive != null) {
+	    		    this.viewer.scene.primitives.remove(this.imageDrapingPrimitive);
+	            }
+	    	    this.imageDrapingPrimitive = newImageDrapingPrimitive;
+    	    }
     	}
     	
     	this.frameCount++;
