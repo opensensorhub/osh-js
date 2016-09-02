@@ -47,7 +47,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
         }
 
         // create webGL canvas
-        this.yuvCanvas = new YUVCanvas({width: width, height: height});
+        this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
         var domNode = document.getElementById(this.divId);
         domNode.appendChild(this.yuvCanvas.canvasElement);
 
@@ -301,6 +301,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
             var decodedFrame = e.data;
 
             if (!this.resetCalled) {
+                self.yuvCanvas.canvasElement.drawing = true;
                 self.yuvCanvas.drawNextOuptutPictureGL({
                     yData: decodedFrame.frameYData,
                     yDataPerRow: decodedFrame.frame_width,
@@ -312,7 +313,8 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                     vDataPerRow: decodedFrame.frame_width / 2,
                     vRowCnt: decodedFrame.frame_height / 2
                 });
-    
+                self.yuvCanvas.canvasElement.drawing = false;
+                
                 self.updateStatistics();
                 self.onAfterDecoded();
             }
