@@ -67,9 +67,9 @@ OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {
     });
 };
 
-// This part defines the events used INTO the API
 /**
- *
+ * This part defines the events used INTO the API
+ * @const
  * @type {{DATA: string, SYNC_DATA: string, SELECT_VIEW: string, CONTEXT_MENU: string, SHOW_VIEW: string, CONNECT_DATASOURCE: string, DISCONNECT_DATASOURCE: string, DATASOURCE_UPDATE_TIME: string, CURRENT_MASTER_TIME: string, UAV_TAKEOFF: string, UAV_GOTO: string, UAV_LOOKAT: string, UAV_LAND: string, UAV_ORBIT: string, LOADING_START: string, LOADING_STOP: string, ADD_VIEW_ITEM: string}}
  */
 OSH.EventManager.EVENT = {
