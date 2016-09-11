@@ -180,5 +180,5 @@ gulp.task('copy-vendor', function () {
 //clean
 gulp.task('clean', function () {
     return gulp.src('Toolkit/dist', {read: false})
-        .pipe(plugins.clean());
+        .pipe(plugins.clean({read:false}));
 });
