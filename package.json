@@ -1,46 +1,44 @@
 {
-  "name": "osh",
-  "version": "1.24.0",
-  "description": "Javascript for Toolkit for OSH",
-  "homepage": "http://www.opensensorhub.org/",
-  "license": "Apache-2.0",
-  "author": {
-    "name": "Analytical Graphics, Inc.",
-    "url": "http://www.agi.com"
+  "name": "osh-js",
+  "version": "1.0.0",
+  "description": "OSH javascript Toolkit",
+  "main": "osh.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "contributors": {
-    "name": "Cesium community",
-    "url": "https://github.com/AnalyticalGraphicsInc/cesium/blob/master/CONTRIBUTORS.md"
-  },
-  "keywords": [
-    "3D",
-    "webgl",
-    "geospatial",
-    "map",
-    "globe",
-    "osh",
-    "toolkit"
-  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/opensensorhub/osh-js.git"
+    "url": "git+https://github.com/opensensorhub/osh-js.git"
   },
+  "keywords": [
+    "OSH",
+    "Sensors",
+    "Toolkit",
+    "Javascript",
+    "GIS",
+    "Spatial",
+    "OGC",
+    "SensorML"
+  ],
+  "author": "OSH community",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/opensensorhub/osh-js/issues",
-    "email": ""
+    "url": "https://github.com/opensensorhub/osh-js/issues"
   },
-  "dependencies": {
-  },
+  "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "devDependencies": {
-    "gulp": "3.9.1",
-    "gulp-insert": "0.5.0",
-    "gulp-jshint": "2.0.1",
-    "gulp-rename": "1.2.2",
-    "gulp-replace": "0.5.4",
-    "gulp-zip": "3.0.2",
-    "jsdoc": "3.5.0"
-  },
-  "scripts": {
-    "generateDocumentation": "gulp generateDocumentation"
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-minify": "0.0.14",
+    "gulp-order": "^1.1.1",
+    "gulp-sort": "^2.0.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.3",
+    "uglify-js": "^2.7.3"
   }
 }

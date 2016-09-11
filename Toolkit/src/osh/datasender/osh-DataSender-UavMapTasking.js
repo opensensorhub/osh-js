@@ -3,7 +3,7 @@
  * @class
  * @augments OSH.DataSender.DataSource
  */
-OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSource,{
+OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSink,{
 
     initialize: function($super, name, properties) {
 

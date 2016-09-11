@@ -12,13 +12,13 @@ OSH.Log = Class.create({
         this.first = true;
         // appends <div> tag to <body>
         document.observe("dom:loaded", function() {
-            var dialog = new OSH.UI.Dialog({
+            var dialog = new OSH.UI.DialogView({
                 title: "Logging console"
             });
-            dialog.appendContent(this.logDiv);
+            /*dialog.appendContent(this.logDiv);
             dialog.setContentSize("300px","400px");
 
-            this.logDiv.value = "[osh-log]> \n";
+            this.logDiv.value = "[osh-log]> \n";*/
         }.bind(this));
 
         document.observe("osh:log", function(event) {
@@ -32,4 +32,4 @@ OSH.Log = Class.create({
     }
 });
 
-var log = new OSH.Log();
+//var log = new OSH.Log();
