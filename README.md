@@ -7,7 +7,7 @@ Install dependencies using NPM:
 Build a full version using gulp:
 ``$ gulp build ``
 
-Build a fulle minified version:
+Build a full minified version:
 ``$ gulp build-minify ``
 
 Clean:
