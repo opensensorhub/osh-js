@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+         xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+         xmlns:gml="http://www.opengis.net/gml"
+         xmlns:swe="http://www.opengis.net/swe/1.0.1"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:sch="http://www.ascc.net/xml/schematron"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1"/>
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="../../sml/sensorML.rng">
+      <start>
+         <ref name="wst.Anemometer" />
+      </start>
+   </include>
+   <!-- -->
+   <define name="wst.Anemometer">
+      <element name="sml:Component">
+         <element name="sml:identification">
+            <element name="sml:IdentifierList">
+               <element name="sml:identifier">
+                  <attribute name="name">
+                     <value>Model Number</value>
+                  </attribute>
+                  <element name="sml:Term">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/ModelNumber</value>
+                     </attribute>
+                     <element name="sml:value">
+                        <value>7912</value>
+                     </element>
+                  </element>
+               </element>
+               <element name="sml:identifier">
+                  <attribute name="name">
+                     <value>Serial Number</value>
+                  </attribute>
+                  <element name="sml:Term">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/ModelNumber</value>
+                     </attribute>
+                     <ref name="sml.termValue" />
+                  </element>
+               </element>
+               <element name="sml:identifier">
+                  <attribute name="name">
+                     <value>Sensor Type</value>
+                  </attribute>
+                  <element name="sml:Term">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/SensorType</value>
+                     </attribute>
+                     <ref name="sml.termValue" />
+                  </element>
+               </element>
+               <zeroOrMore>
+                  <ref name="sml.identifier" />
+               </zeroOrMore>
+            </element>
+         </element>
+         <optional>
+            <ref name="sml.classification" />
+         </optional>
+         <optional>
+            <ref name="sml.validTime" />
+         </optional>
+         <optional>
+            <ref name="sml.securityConstraint" />
+         </optional>
+      </element>
+   </define>
+</grammar>

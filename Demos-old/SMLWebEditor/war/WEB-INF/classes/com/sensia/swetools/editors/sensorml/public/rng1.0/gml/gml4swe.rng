@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <start>
+      <element name="gml:GML">
+         <ref name="gml.GmlObjectGroup"/>
+      </element>
+   </start>
+   <!-- -->
+   <define name="gml.GmlObjectGroup">
+      <optional>
+         <ref name="gml.id"/>
+      </optional>
+      <optional>
+         <ref name="gml.description"/>
+      </optional>
+      <zeroOrMore>
+         <ref name="gml.name"/>
+      </zeroOrMore>
+   </define>
+   <!-- -->
+   <define name="gml.id">
+      <attribute name="gml:id">
+         <data type="ID"/>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="gml.description">
+      <element name="gml:description">
+         <data type="string">
+            <param name="minLength">1</param>
+         </data>
+      </element>
+   </define>
+   <!-- -->
+   <define name="gml.name">
+      <element name="gml:name">
+         <a:documentation>Name to be used as a nice readable label for display</a:documentation>
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </element>
+   </define>
+   <!-- -->
+   <define name="gml.boundedBy">
+      <element name="gml:boundedBy">
+         <empty/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="xlink.href">
+      <attribute name="xlink:href">
+         <data type="anyURI">
+            <param name="minLength">1</param>
+         </data>
+      </attribute>
+   </define>
+   <!-- -->
+   <define name="xlink.roles">
+      <a:documentation>Association Role</a:documentation>
+      <choice>
+         <attribute name="xlink:arcrole">
+            <data type="anyURI">
+               <param name="minLength">1</param>
+            </data>
+         </attribute>
+         <attribute name="xlink:role">
+            <data type="anyURI">
+               <param name="minLength">1</param>
+            </data>
+         </attribute>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="gml.TimeGroup">
+      <choice>
+         <ref name="gml.TimeInstant"/>
+         <ref name="gml.TimePeriod"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="gml.TimeInstant">
+      <element name="gml:TimeInstant">
+         <ref name="gml.TimeContents"/>
+         <element name="gml:timePosition">
+            <ref name="gml.timePosition"/>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="gml.TimePeriod">
+      <element name="gml:TimePeriod">
+         <ref name="gml.TimeContents"/>
+         <element name="gml:beginPosition">
+            <ref name="gml.timePosition"/>
+         </element>
+         <element name="gml:endPosition">
+            <ref name="gml.timePosition"/>
+         </element>
+         <optional>
+            <ref name="gml.timeLength"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="gml.SimpleTimePeriod">
+      <element name="gml:TimePeriod">
+         <element name="gml:beginPosition">
+            <ref name="gml.simpleTimePosition"/>
+         </element>
+         <element name="gml:endPosition">
+            <ref name="gml.simpleTimePosition"/>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="gml.timeLength">
+      <choice>
+         <element name="gml:duration">
+            <data type="duration"/>
+         </element>
+         <element name="gml:timeInterval">
+            <attribute name="unit">
+               <choice>
+                  <value>year</value>
+                  <value>day</value>
+                  <value>hour</value>
+                  <value>minute</value>
+                  <value>second</value>
+               </choice>
+            </attribute>
+            <optional>
+               <attribute name="radix">
+                  <data type="positiveInteger"/>
+               </attribute>
+            </optional>
+            <optional>
+               <attribute name="factor">
+                  <data type="integer"/>
+               </attribute>
+            </optional>
+            <data type="decimal"/>
+         </element>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="gml.simpleTimePosition">
+      <choice>
+         <group>
+            <a:documentation>Now</a:documentation>
+            <attribute name="indeterminatePosition">
+               <value>now</value>
+            </attribute>
+         </group>
+         <data type="dateTime"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="gml.timePosition">
+      <choice>
+         <attribute name="indeterminatePosition">
+            <ref name="gml.timeIndeterminateValueType"/>
+         </attribute>
+         <group>
+            <a:documentation>ISO 8601 time</a:documentation>
+            <optional>
+               <attribute name="frame">
+                  <data type="anyURI"/>
+               </attribute>
+            </optional>
+            <optional>
+               <attribute name="calendarEraName">
+                  <data type="string"/>
+               </attribute>
+            </optional>
+            <choice>
+               <data type="dateTime">
+                  <a:documentation>Date &amp; Time</a:documentation>
+               </data>
+               <data type="time">
+                  <a:documentation>Time only</a:documentation>
+               </data>
+            </choice>
+         </group>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="gml.timeIndeterminateValueType">
+      <choice>
+         <value>now</value>
+         <value>before</value>
+         <value>after</value>
+         <value>unknown</value>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="gml.TimeContents">
+      <optional>
+         <ref name="gml.id"/>
+      </optional>
+      <optional>
+         <a:documentation>Time Frame</a:documentation>         
+         <attribute name="frame">
+            <data type="anyURI"/>
+         </attribute>
+      </optional>
+   </define>
+   <!-- Abstract CS definition -->
+   <define name="gml.AbstractCS">
+      <attribute name="gml:csID"/>
+      <element name="gml:csName">
+         <data type="string"/>
+      </element>
+      <optional>
+         <element name="csID">
+            <data type="ID"/>
+         </element>                        
+      </optional>
+      <optional>
+         <element name="gml:remarks">
+            <data type="string"/>
+         </element>
+      </optional>
+      <oneOrMore>
+         <element name="usesAxis">
+            <choice>
+               <ref name="xlink.href"/>
+               <element name="gml:CoordinateSystemAxis">
+                  <ref name="gml.name"/>
+                  <optional>
+                     <element name="gml:axisID">
+                        <data type="ID"/>
+                     </element>                                 
+                  </optional>
+                  <optional>
+                     <element name="gml:remarks">
+                        <data type="string"/>
+                     </element>                                 
+                  </optional>
+                  <element name="gml:axisAbbrev">
+                     <data type="string"/>
+                  </element>
+               </element>
+            </choice>
+         </element>
+      </oneOrMore>   
+   </define>
+   <!-- Abstract Datum definition -->
+   <define name="gml.AbstractDatum">
+      <choice>
+         <ref name="xlink.href"/>
+         <element name="gml:EngineeringDatum">
+            <attribute name="gml:id"/>
+            <element name="gml:datumName">
+               <data type="string"/>
+            </element>
+            <oneOrMore>
+               <element name="gml:datumID">
+                  <data type="ID"/>
+               </element> 
+            </oneOrMore>
+            <optional>
+               <element name="gml:remarks">
+                  <data type="string"/>
+               </element>                     
+            </optional>
+            <optional>
+               <element name="gml:anchorPoint">
+                  <data type="string"/>
+               </element>                  
+            </optional>                 
+         </element>
+      </choice>      
+   </define>
+   <!-- Spatial Reference Frame -->
+   <define name="gml.spatialFrame">
+      <element name="gml:EngineeringCRS">
+         <attribute name="gml:srsID"/>
+         <zeroOrMore>
+            <element name="gml:remarks">
+               <data type="string"/>
+            </element>
+         </zeroOrMore>
+         <zeroOrMore>
+            <ref name="gml.name"/>
+         </zeroOrMore>
+         <element name="gml:usesCS">
+            <choice>
+               <ref name="xlink.href"/>
+               <element name="gml:CartesianCS">
+                  <ref name="gml.AbstractCS"/>
+               </element>   
+            </choice>
+         </element>
+         <element name="gml:usesEngineeringDatum">
+            <choice>
+               <ref name="xlink.href"/>
+               <element name="EngineeringDatum">
+                  <ref name="gml.AbstractDatum"/>                                 
+               </element>
+            </choice>
+         </element>
+      </element>
+   </define>  
+   <!-- <define name="gml.temporalFrame"/> -->
+   <!-- Temporal Reference Frame -->
+   <define name="gml.temporalFrame">
+      <element name="gml:TemporalCRS">
+         <attribute name="gml:srsID"/>
+         <zeroOrMore>
+            <element name="gml:remarks">
+               <data type="string"/>
+            </element>
+         </zeroOrMore>
+         <zeroOrMore>
+            <ref name="gml.name"/>
+         </zeroOrMore>
+         <element name="gml:usesTemporalCS">
+            <choice>
+               <ref name="xlink.href"/>
+               <element name="gml:TemporalCS">
+                  <ref name="gml.AbstractCS"/>
+               </element>   
+            </choice>
+         </element>
+         <element name="gml:usesTemporalDatum">
+            <choice>
+               <ref name="xlink.href"/>
+               <element name="TemporalDatum">
+                  <ref name="gml.AbstractDatum"/>                                 
+               </element>
+            </choice>
+         </element>
+      </element>
+   </define>
+   
+   <!-- TODO: ADD LOCATION -->
+   <!-- <define name="gml.location"/> -->
+</grammar>

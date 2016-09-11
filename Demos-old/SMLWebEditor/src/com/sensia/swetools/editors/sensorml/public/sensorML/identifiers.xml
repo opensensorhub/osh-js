@@ -1,0 +1,58 @@
+<!-- ======================================= -->
+<!--               Identifiers               -->
+<!-- ======================================= -->
+<sml:identification>
+    <sml:IdentifierList>
+        <sml:identifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/LongName">
+                <sml:label>Long Name</sml:label>
+                <sml:value>Health Physics Instruments 2070 Gamma Detector</sml:value>
+            </sml:Term>
+        </sml:identifier>
+        <sml:identifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/ShortName">
+                <sml:label>Short Name</sml:label>
+                <sml:value>2070 Gamma Detector</sml:value>
+            </sml:Term>
+        </sml:identifier>
+        <sml:identifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/ModelNumber">
+                <sml:label>Model Number</sml:label>
+                <sml:value>2070</sml:value>
+            </sml:Term>
+        </sml:identifier>
+        <sml:identifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/Manufacturer">
+                <sml:label>Manufacturer</sml:label>
+                <sml:value>Health Physics Instruments</sml:value>
+            </sml:Term>
+        </sml:identifier>
+    </sml:IdentifierList>
+</sml:identification>
+ 
+<!-- ======================================= -->
+<!--               Classifiers               -->
+<!-- ======================================= -->
+<sml:classification>
+    <sml:ClassifierList>
+        <sml:classifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/IntendedApplication">
+                <sml:label>Intended Application</sml:label>
+                <sml:value>CBRNE</sml:value>
+            </sml:Term>
+        </sml:classifier>
+        <sml:classifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/IntendedApplication">
+                <sml:label>Intended Application</sml:label>
+                <sml:value>radiation detection</sml:value>
+            </sml:Term>
+        </sml:classifier>
+        <sml:classifier>
+            <sml:Term definition="http://sensorml.com/ont/swe/property/SensorType">
+                <sml:label>Sensor Type</sml:label>
+                <sml:codeSpace xlink:href="urn:x-ceos:def:GCMD:sensors"/>
+                <sml:value>gamma detector</sml:value>
+            </sml:Term>
+        </sml:classifier>
+    </sml:ClassifierList>
+</sml:classification>

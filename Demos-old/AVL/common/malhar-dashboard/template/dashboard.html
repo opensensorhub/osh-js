@@ -1,0 +1,11 @@
+<div>
+        
+    <div ui-sortable="sortableOptions" ng-model="widgets" class="dashboard-widget-area" >
+        <div id="widget-container" ng-repeat="widget in widgets" ng-style="widget.containerStyle" class="widget-container" widget>
+            <div class="widget panel panel-default">
+                <div class="panel-body widget-content" ng-show="!isCollapsed" ng-style="widget.contentStyle"></div>
+                <!--div style="position: absolute;height: 5px;width: 100%;bottom: -7px;left: 0;cursor: ns-resize;" ng-mousedown="grabResizerY($event)"></div-->
+            </div>
+        </div>
+    </div>
+</div>
