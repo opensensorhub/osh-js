@@ -118,5 +118,5 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
                     
             }
         }
-    },
+    }
 });
