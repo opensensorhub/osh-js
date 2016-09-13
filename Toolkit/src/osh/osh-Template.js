@@ -60,3 +60,8 @@ window.OSH.Utils = {};
  * @memberof OSH
  */
 window.OSH.DataSender = {};
+
+// HELPER FUNCTION
+function isUndefined(object) {
+	return typeof(object) == "undefined";
+}
