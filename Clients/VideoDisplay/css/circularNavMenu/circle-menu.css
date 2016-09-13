@@ -1,0 +1,385 @@
+/* -----------------------------------------------------------------------------
+
+  Circle Menu Component
+
+----------------------------------------------------------------------------- */
+/**
+ * This is the actual menu component. It consists of a menu element with an
+ * unordered list inside, and also a button to toggle the actual menu.
+ * It's fixed to the bottom-right of the screen, and each of the items are
+ * positioned absolutely inside the parent menu tag. The default set up above is
+ * 5 menu items. Because all the transforms and such are calculated wrt
+ * this number, you'll need to edit it accordingly depending on how many items
+ * you decide to put in the markup.
+ *
+ * Example markup:
+ *
+ * <menu class="c-circle-menu">
+ *   <ul class="c-circle-menu__items">
+ *     <li class="c-circle-menu__item">
+ *       <a class="c-circle-menu__link"></a>
+ *     </li>
+ *     <li class="c-circle-menu__item">
+ *       <a class="c-circle-menu__link"></a>
+ *     </li>
+ *     ...
+ *   </ul>
+ * </menu>
+ */
+.c-circle-menu {
+  position: fixed;
+  bottom: 92px;
+  left: 12px;
+  z-index: 1000;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu {
+    width: 96px;
+    height: 96px;
+    border-radius: 48px;
+  }
+}
+
+.c-circle-menu__items {
+  display: block;
+  list-style: none;
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+}
+
+.c-circle-menu__item {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  opacity: 0;
+  -webkit-transition: opacity, -webkit-transform;
+  transition: opacity, -webkit-transform;
+  transition: transform, opacity;
+  transition: transform, opacity, -webkit-transform;
+  -webkit-transition-duration: 0.3s, 0.3s;
+          transition-duration: 0.3s, 0.3s;
+  -webkit-transition-timing-function: cubic-bezier(0.35, -0.59, 0.47, 0.97);
+          transition-timing-function: cubic-bezier(0.35, -0.59, 0.47, 0.97);
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__item {
+    width: 96px;
+    height: 96px;
+    border-radius: 48px;
+  }
+}
+
+/**
+ * Transisition delays at the default state.
+ */
+.c-circle-menu__item:nth-child(1) {
+  -webkit-transition-delay: 0.3s;
+          transition-delay: 0.3s;
+}
+
+.c-circle-menu__item:nth-child(2) {
+  -webkit-transition-delay: 0.2s;
+          transition-delay: 0.2s;
+}
+
+.c-circle-menu__item:nth-child(3) {
+  -webkit-transition-delay: 0.1s;
+          transition-delay: 0.1s;
+}
+
+.c-circle-menu__item:nth-child(4) {
+  -webkit-transition-delay: 0s;
+          transition-delay: 0s;
+}
+
+/**
+ * We're using the .is-active class, which is added to the menu via JavaScript.
+ * Once the menu is active, the items inherit the properties below. We will
+ * manually write out the transform properties for first and last items, as we
+ * already know their position. For all items in between though, we'll use some
+ * polar-to-cartesian math and some Sass functions to get the positioning.
+ */
+.c-circle-menu.is-active .c-circle-menu__item {
+  -webkit-transition-timing-function: cubic-bezier(0.35, 0.03, 0.47, 1.59);
+          transition-timing-function: cubic-bezier(0.35, 0.03, 0.47, 1.59);
+}
+
+.c-circle-menu.is-active .c-circle-menu__item:nth-child(1) {
+  -webkit-transition-delay: 0s;
+          transition-delay: 0s;
+  -webkit-transform: translate(110px, 0);
+          transform: translate(110px, 0);
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu.is-active .c-circle-menu__item:nth-child(1) {
+    -webkit-transform: translate(220px, 0);
+            transform: translate(220px, 0);
+  }
+}
+
+.c-circle-menu.is-active .c-circle-menu__item:nth-child(2) {
+  -webkit-transition-delay: 0.1s;
+          transition-delay: 0.1s;
+  -webkit-transform: translate(95px, -56px);
+          transform: translate(95px, -56px);
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu.is-active .c-circle-menu__item:nth-child(2) {
+    -webkit-transform: translate(190px, -111px);
+            transform: translate(190px, -111px);
+  }
+}
+
+.c-circle-menu.is-active .c-circle-menu__item:nth-child(3) {
+  -webkit-transition-delay: 0.2s;
+          transition-delay: 0.2s;
+  -webkit-transform: translate(54px, -96px);
+          transform: translate(54px, -96px);
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu.is-active .c-circle-menu__item:nth-child(3) {
+    -webkit-transform: translate(109px, -191px);
+            transform: translate(109px, -191px);
+  }
+}
+
+.c-circle-menu.is-active .c-circle-menu__item:nth-child(4) {
+  -webkit-transition-delay: 0.3s;
+          transition-delay: 0.3s;
+  -webkit-transform: translate(0, -110px);
+          transform: translate(0, -110px);
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu.is-active .c-circle-menu__item:nth-child(4) {
+    -webkit-transform: translate(0, -220px);
+            transform: translate(0, -220px);
+  }
+}
+
+/**
+ * Apart from the transform properties, we'll also make sure the items get
+ * the correct opacity.
+ */
+.c-circle-menu.is-active .c-circle-menu__item {
+  opacity: 1;
+}
+
+/**
+ * Let's style the links now. This is just boilerplate stuff, and of course,
+ * you'll probably want to change up the icons to match your needs. In any case,
+ * we'll do it here for the sake of completion.
+ */
+.c-circle-menu__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 2px #fff;
+  background-color: rgba(5, 107, 166, 0.6);
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__link {
+    border-radius: 48px;
+  }
+}
+
+.c-circle-menu__link img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.c-circle-menu__link:hover {
+  box-shadow: inset 0 0 0 2px rgba(5, 107, 166, 0.6);
+}
+
+/* -----------------------------------------------------------------------------
+
+  The Toggle Component
+
+----------------------------------------------------------------------------- */
+/**
+ * The toggle is a button element, and as such requires some resets that are
+ * unique to buttons. This button also inherits some funky stuff from my
+ * CSS animating hamburger menu icons demo, which can be found at this url:
+ * https://github.com/callmenick/Animating-Hamburger-Icons
+ */
+.c-circle-menu__toggle {
+  display: block;
+  position: absolute;
+  z-index: 100;
+  margin: 0;
+  padding: 0;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(5, 107, 166, 0.6);
+  font: inherit;
+  font-size: 0;
+  text-indent: -9999px;
+  border-radius: 24px;
+  -webkit-transition: background 0.3s;
+  transition: background 0.3s;
+  /* reset some browser defaults */
+  cursor: pointer;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: none;
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__toggle {
+    width: 96px;
+    height: 96px;
+    border-radius: 48px;
+  }
+}
+
+.c-circle-menu__toggle:hover,
+.c-circle-menu__toggle:focus,
+.c-circle-menu__toggle.is-active {
+  outline: none;
+  background-color: #777;
+  opacity:0.6;
+}
+
+.c-circle-menu__toggle span,
+.c-circle-menu__toggle span::before,
+.c-circle-menu__toggle span::after {
+  display: block;
+  position: absolute;
+  height: 4px;
+  background: #fff;
+  border-radius: 1px;
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__toggle span,
+  .c-circle-menu__toggle span::before,
+  .c-circle-menu__toggle span::after {
+    height: 8px;
+    border-radius: 2px;
+  }
+}
+
+.c-circle-menu__toggle span {
+  top: 22px;
+  left: 10px;
+  right: 10px;
+  -webkit-transition: background 0.3s;
+  transition: background 0.3s;
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__toggle span {
+    top: 44px;
+    left: 20px;
+    right: 20px;
+  }
+}
+
+.c-circle-menu__toggle span::before,
+.c-circle-menu__toggle span::after {
+  left: 0;
+  width: 100%;
+  content: "";
+  -webkit-transition-duration: 0.3s, 0.3s;
+          transition-duration: 0.3s, 0.3s;
+  -webkit-transition-delay: 0.3s, 0s;
+          transition-delay: 0.3s, 0s;
+}
+
+.c-circle-menu__toggle span::before {
+  top: -8px;
+  -webkit-transition-property: top, -webkit-transform;
+  transition-property: top, -webkit-transform;
+  transition-property: top, transform;
+  transition-property: top, transform, -webkit-transform;
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__toggle span::before {
+    top: -16px;
+  }
+}
+
+.c-circle-menu__toggle span::after {
+  bottom: -8px;
+  -webkit-transition-property: bottom, -webkit-transform;
+  transition-property: bottom, -webkit-transform;
+  transition-property: bottom, transform;
+  transition-property: bottom, transform, -webkit-transform;
+}
+
+@media (min-width: 99999px) and (min-height: 99999px) {
+  .c-circle-menu__toggle span::after {
+    bottom: -16px;
+  }
+}
+
+/* button active state */
+.c-circle-menu__toggle.is-active span {
+  background: none;
+}
+
+.c-circle-menu__toggle.is-active span::before {
+  top: 0;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+  -webkit-transition-delay: 0s, 0.3s;
+          transition-delay: 0s, 0.3s;
+}
+
+.c-circle-menu__toggle.is-active span::after {
+  bottom: 0;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  -webkit-transition-delay: 0s, 0.3s;
+          transition-delay: 0s, 0.3s;
+}
+
+/* -----------------------------------------------------------------------------
+
+  The Mask Component
+
+----------------------------------------------------------------------------- */
+/**
+ * Here's the mask component, which actually gets created and inserted to the
+ * DOM via JavaScript. It simply acts as an overlay to draw attention to the
+ * menu when it is active. It also uses the .is-acvite state class.
+ */
+.c-circle-menu__mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  -webkit-transition: opacity 0.3s, visibility 0.3s;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.c-circle-menu__mask.is-active {
+  /*opacity: 1;
+  visibility: visible;*/
+}
