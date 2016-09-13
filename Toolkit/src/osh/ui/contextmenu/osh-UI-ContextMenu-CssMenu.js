@@ -121,6 +121,12 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
                 });
             }.bind(this));
         }
+
+        // this causes preventing any closing event
+        this.rootTag.onmousedown = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     },
 
     /**
