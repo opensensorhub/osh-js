@@ -102,8 +102,9 @@ OSH.UI.View = Class.create({
                 // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
                 if( mutation.attributeName === 'style') {
                     self.onResize();
+
                 }
-            } );
+            });
         } );
 
         // Attach the mutation observer to blocker, and only when attribute values change
