@@ -22,6 +22,7 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
     },
 
     /**
+     * Shows the context menu.
      * @param $super
      * @param properties
      * @instance
@@ -41,7 +42,11 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
         this.rootTag.setAttribute("class",""+this.type+"-menu-container");
         this.rootTag.innerHTML = htmlVar;
 
-        document.body.appendChild(this.rootTag);
+        if(typeof properties.div != "undefined") {
+            properties.div.appendChild(this.rootTag);
+        } else {
+            document.body.appendChild(this.rootTag);
+        }
 
         var offsetX = 0;
         var offsetY = 0;
