@@ -457,6 +457,15 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 		}
 	}
 
+	window.onmousedown = function() {
+		if(typeof tree.currentContextMenu != "undefined") {
+			OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
+				action : "hide"
+			});
+			tree.currentContextMenu = undefined;
+		}
+	}
+
 	window.onclick = function() {
 		if(typeof tree.currentContextMenu != "undefined") {
 			OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
