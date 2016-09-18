@@ -218,7 +218,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
 
             // add the new ones
             for(var i = 0;i < this.sensors.length;i++) {
-                this.addValueToSelect(this.offeringSelectTagId,this.sensors[i].identifier,this.sensors[i]);
+                this.addValueToSelect(this.offeringSelectTagId,this.sensors[i].name,this.sensors[i],this.sensors[i]);
             }
         }.bind(this);
 
@@ -309,7 +309,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // get values
         var name=offeringTagSelectedOption.parent.name;
         var endPointUrl=serviceTagSelectedOption.value+"sensorhub/sos";
-        var offeringID=offeringTagSelectedOption.value;
+        var offeringID=offeringTagSelectedOption.parent.identifier;
         var obsProp=observablePropertyTagSelectedOption.value;
         var startTime=startTimeInputTag.value;
         var endTime=endTimeInputTag.value;
