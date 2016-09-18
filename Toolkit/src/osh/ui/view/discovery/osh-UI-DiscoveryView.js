@@ -209,10 +209,10 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // connect to server and get the list of offering
         var oshServer = new OSH.Server(option.value);
 
+        this.removeAllFromSelect(this.offeringSelectTagId);
         var onSuccessGetCapabilities = function(event) {
             this.sensors = oshServer.sensors;
             // remove existing
-            this.removeAllFromSelect(this.offeringSelectTagId);
             var startTimeInputTag = document.getElementById(this.startTimeTagId);
             var endTimeInputTag = document.getElementById(this.endTimeTagId);
 
