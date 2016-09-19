@@ -92,7 +92,7 @@ a.navbar-brand:hover {
     margin-right: 5px;
 }
 
-.dialog {
+.dialog .pop-content {
     width:300px;
     height:190px;
     margin-bottom:10px;

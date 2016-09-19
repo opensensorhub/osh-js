@@ -33,7 +33,7 @@ var htmlTaskingComponent =
  */
 OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, options) {
-        $super(divId);
+        $super(divId,[],options);
         var width = "640";
         var height = "480";
         this.css = "";

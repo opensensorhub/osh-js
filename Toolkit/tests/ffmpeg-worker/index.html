@@ -5,41 +5,35 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <title>OSH Discovery test</title>
 
+    <script type="text/javascript" src="../../vendor/prototype/prototype.min.js"></script>
+    <script type="text/javascript" src="../../vendor/modernizr/modernizr-custom.js"></script>
+
     <!-- ffmpeg libs -->
     <script src="../../vendor/ffmpeg/ffmpeg-h264.js"></script>
     <script src="../../vendor/ffmpeg/YUVCanvas.js"></script>
 
-    <!-- OSH libs -->
-    <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
-    <script type="text/javascript" src="../../src/common/modernizr-custom.js"></script>
 
     <!-- OSH Core -->
-    <script type="text/javascript" src="../../src/osh/osh-template.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
     <!-- OSH buffer sync lib -->
     <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
 
     <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
     <!-- OSH controller lib -->
     <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
-
-    <!-- OSH Video component parser -->
     <script type="text/javascript"
+            src="../../src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
-    <script type="text/javascript"
-            src="../../src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoMp4.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+    <script type="text/javascript" src="../../src/osh/datasender/osh-DataSenderController.js"></script>
 
-    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-DialogView.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-H264View.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/osh-UI-View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
 
     <style>
@@ -64,8 +58,8 @@
         }
 
         .video{
-            width: 400px;
-            height: 275px;
+            width: 100%;
+            height: 100%;
             border:solid 1px #000;
             margin-right:10px;
             margin-bottom:10px;
@@ -115,14 +109,13 @@
         var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video "+videoIdCount, {
             protocol: "ws",
             service: "SOS",
-            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-            offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+            endpointUrl: "localhost:8181/sensorhub/sos",
+            offeringID: "urn:mysos:foscamr2",
             observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-            startTime: "2016-08-11T20:17:30.402Z",
-            endTime: "2016-08-11T20:18:05.451Z",
-            replaySpeed: 1,
+            startTime: "now",
+            endTime: "2055-08-11T20:18:05.451Z",
             syncMasterTime: false,
-            bufferingTime: 1000
+            bufferingTime: 0
         });
 
         var videoView = new OSH.UI.FFMPEGView(videoContainerEl.id, {
@@ -130,7 +123,9 @@
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            useWorker:useWebWorker
+            useWorker:useWebWorker,
+            width:"1920",
+            height:"1080"
         });
 
         dataReceiverController.addDataSource(videoDataSource);

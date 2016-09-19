@@ -65,3 +65,7 @@ window.OSH.DataSender = {};
 function isUndefined(object) {
 	return typeof(object) == "undefined";
 }
+
+function isUndefinedOrNull(object) {
+	return typeof(object) === "undefined" || object === null;
+}

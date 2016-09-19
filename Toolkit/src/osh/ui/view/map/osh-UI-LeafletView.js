@@ -261,11 +261,14 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
                         offsetY: -70,
                         action : "show",
                         x:OSH.Utils.getXCursorPosition(),
-                        y:OSH.Utils.getYCursorPosition()
+                        y:OSH.Utils.getYCursorPosition(),
+                        drawLineTo:id
                     });
                     break;
                 }
             }
+
+
         }.bind(this);
 
         return id;

@@ -9,6 +9,8 @@
     border-radius: 6px;
     box-shadow: 0 0 7px #000000;
     z-index: 9999;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
 
 .pop-over-selected {
@@ -30,7 +32,8 @@
 .pop-content {
     position: static;
     margin-top:8px;
-    height:calc(100% - 45px) !important
+    /*height:calc(100% - 45px) !important;*/
+    margin-bottom:45px;
 }
 
 .pop-close {
@@ -141,4 +144,33 @@
 .resizable {
     resize: both;   /* Options: horizontal, vertical, both */
     overflow: auto; /* fix for Safari */
+}
+
+
+/** HANDLE extra div **/
+
+.pop-extra {
+    position: static;
+    margin-top:8px;
+    margin-bottom:5px;
+    border: dotted 1px #999;
+}
+
+.pop-extra-el {
+    margin-left:5px;
+}
+
+.pop-extra-el>i {
+    cursor: pointer;
+    width:100%;
+    padding-top:2px;
+}
+
+.pop-extra-collapse + div {
+    display:none !important;
+}
+
+.pop-extra-show + div {
+    display:block !important;
+    margin-top:5px;
 }

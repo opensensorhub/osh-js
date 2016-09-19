@@ -183,7 +183,7 @@ OSH.UI.View = Class.create({
     setData: function(dataSourceId,data) {},
 
     /**
-     *
+     * Show the view by removing display:none style if any.
      * @param properties
      * @instance
      * @memberof OSH.UI.View
