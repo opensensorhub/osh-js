@@ -13,7 +13,7 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
         this.popExtraDiv.setAttribute("class","pop-extra");
         this.popExtraDiv.setAttribute("id","pop-extra-id-"+OSH.Utils.randomUUID());
 
-        this.rootTag.appendChild(this.popExtraDiv);
+        this.flexDiv.appendChild(this.popExtraDiv);
     },
 
     /**

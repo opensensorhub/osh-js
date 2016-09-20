@@ -53,12 +53,12 @@ a.navbar-brand:hover {
 
 .video img{
 	width: 100%;
-	height: 100%;
+	/*height: 100%;*/ /* keep ratio and allows flex container*/
 }
 
 .video canvas{
     width: 100%;
-    height: 100%;
+   /* height: 100%;*/
 }
 
 .video-selected {
@@ -92,9 +92,9 @@ a.navbar-brand:hover {
     margin-right: 5px;
 }
 
-.dialog .pop-content {
+.dialog{
     width:300px;
-    height:190px;
+    min-height: 190px;
     margin-bottom:10px;
 }
 

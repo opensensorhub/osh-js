@@ -82,12 +82,16 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
             this.rootTag.setAttribute("class",this.rootTag.className+" "+options.css);
         }
 
+        this.flexDiv = document.createElement("div");
+        this.flexDiv.setAttribute("class","pop-inner");
+
         this.popContentDiv = document.createElement("div");
         this.popContentDiv.setAttribute("class","pop-content");
         this.popContentDiv.setAttribute("id","pop-content-id-"+OSH.Utils.randomUUID());
 
+        this.flexDiv.appendChild(this.popContentDiv);
         // plugs it into the new draggable dialog
-        this.rootTag.appendChild(this.popContentDiv);
+        this.rootTag.appendChild(this.flexDiv);
 
         if(typeof (options) != "undefined") {
             if(typeof (options.show) != "undefined" && !options.show) {

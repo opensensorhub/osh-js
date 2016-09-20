@@ -29,11 +29,17 @@
     cursor: default;
 }
 
+.pop-inner{
+    display: flex;
+    flex-direction: column;
+}
+
 .pop-content {
     position: static;
     margin-top:8px;
-    /*height:calc(100% - 45px) !important;*/
-    margin-bottom:45px;
+    height:calc(100% - 45px) !important;
+    margin-bottom:5px;
+    flex:1;
 }
 
 .pop-close {
@@ -148,16 +154,17 @@
 
 
 /** HANDLE extra div **/
-
 .pop-extra {
     position: static;
     margin-top:8px;
     margin-bottom:5px;
     border: dotted 1px #999;
+    flex: 2;
 }
 
 .pop-extra-el {
     margin-left:5px;
+    flex: 3;
 }
 
 .pop-extra-el>i {
