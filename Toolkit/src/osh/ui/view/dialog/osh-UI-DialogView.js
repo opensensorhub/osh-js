@@ -252,6 +252,23 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                     OSH.Utils.removeCss(containerDivToSwap,"keep-ratio-h");
                 }
             }
+
+            // send resize event to the view
+            var everyChild = document.getElementById(this.divIdToSwap).querySelectorAll("div");
+            for (var i = 0; i<everyChild.length; i++) {
+                var id = everyChild[i].id;
+                if(id.startsWith("view-")) {
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.RESIZE+"-"+id);
+                }
+            }
+
+            var everyChild = this.popContentDiv.querySelectorAll("div");
+            for (var i = 0; i<everyChild.length; i++) {
+                var id = everyChild[i].id;
+                if(id.startsWith("view-")) {
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.RESIZE+"-"+id);
+                }
+            }
         }
     },
 

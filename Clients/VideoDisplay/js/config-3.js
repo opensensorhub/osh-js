@@ -257,9 +257,6 @@ function init() {
 
     leafletMapView.attachTo(leafletMapDialog.popContentDiv.id);
     cesiumMapView.attachTo(cesiumMapDialog.popContentDiv.id);
-    /*var taskingView = new OSH.UI.TaskingView("tasking-container",{
-     dataSourceId : ""
-     });*/
 
     //-----------------------------------------------------------//
     //----------------- Creates Contextual Menus------------------//

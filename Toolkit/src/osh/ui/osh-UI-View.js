@@ -292,6 +292,10 @@ OSH.UI.View = Class.create({
                 this.addViewItem(event.viewItem);
             }
         }.bind(this));
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.RESIZE+"-"+this.divId,function(event){
+            this.onResize();
+        }.bind(this));
     },
 
     /**

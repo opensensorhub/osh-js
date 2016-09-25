@@ -420,6 +420,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.LeafletView
      */
     onResize:function($super) {
+        $super();
         this.map.invalidateSize();
     },
 });
