@@ -3,14 +3,16 @@
 .pop-over {
     position: relative;
     background-color: rgba(5, 107, 166, 0.6);
-    min-height: 100px;
+    min-height: 190px;
     min-width: 100px;
     border: 1px solid #bbbbbb;
     border-radius: 6px;
     box-shadow: 0 0 7px #000000;
     z-index: 9999;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    overflow:hidden;
+    /*height:auto !important;*/
+    width:100%;
+    text-align: left;
 }
 
 .pop-over-selected {
@@ -32,14 +34,19 @@
 .pop-inner{
     display: flex;
     flex-direction: column;
+    width:100%;
 }
 
 .pop-content {
+    width:inherit;
     position: static;
     margin-top:8px;
-    height:calc(100% - 45px) !important;
     margin-bottom:5px;
     flex:1;
+}
+
+.pop-footer {
+    height:45px;
 }
 
 .pop-close {
@@ -180,4 +187,17 @@
 .pop-extra-show + div {
     display:block !important;
     margin-top:5px;
+}
+
+.no-keep-ratio {
+    height: calc(100% - 45px);
+}
+
+.keep-ratio-w {
+    height:auto !important;
+    width:100%;
+}
+
+.keep-ratio-h {
+    width:auto !important;
 }

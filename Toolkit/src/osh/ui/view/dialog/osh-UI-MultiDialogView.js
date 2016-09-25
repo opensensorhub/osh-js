@@ -27,13 +27,6 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
         //remove from parent
         var divToAdd = document.getElementById(divId);
 
-        /*var htmlExtra = "<ul><li><input type=\"checkbox\"/></li></ul>";
-         htmlExtra += this.divToAdd.innerHTML;
-
-         var extraDiv = document.createElement("div");
-         extraDiv.innerHTML = htmlExtra;
-         this.popExtraDiv.appendChild(extraDiv);*/
-
         // check the visibility of the div
         if(divToAdd.style.display === "none") {
             divToAdd.style.display = "block";
@@ -57,6 +50,18 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
         extraDiv.appendChild(divToAdd);
         this.popExtraDiv.appendChild(extraDiv);
 
+    },
+
+    swap:function($super) {
+        var currentSwapValue = this.swapped;
+        $super();
+
+        // hide extra stuff
+        if(!currentSwapValue) {
+            this.popExtraDiv.style.display = "none";
+        } else {
+            this.popExtraDiv.style.display = "block";
+        }
     },
 
     show: function($super,properties) {

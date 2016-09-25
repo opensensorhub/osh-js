@@ -274,3 +274,28 @@ OSH.Utils.isWebWorker = function() {
 OSH.Utils.takeScreeshot = function(div) {
 };
 
+/**
+ * Remove a css class from a the div given as argument.
+ * @param div the div to remove the class from
+ * @param css the css class to remove
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.removeCss = function(div,css) {
+  var divCss = div.className;
+  css = divCss.replace(css,"");
+  div.className = css;
+}
+
+
+/**
+ * Add a css class to a the div given as argument.
+ * @param div the div to add the class to
+ * @param css the css class to add
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.addCss = function(div,css) {
+  div.setAttribute("class",div.className+" "+css);
+}
+

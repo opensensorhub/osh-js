@@ -7,8 +7,18 @@ html {
   height: 100%;
 }
 
+.center-view {
+    height: 100%;
+    overflow:auto;
+    text-align:center;
+    background-color:#000000;
+}
+
 .main-view {
 	height: calc(100% - 32px);
+    overflow:auto;
+    text-align:center;
+    background-color:#000000;
 }
 
 header.navbar {
@@ -50,15 +60,19 @@ a.navbar-brand:hover {
 	height: 200px;
 }
 
+.video {
+    width: inherit;
+    height:inherit;
+}
 
 .video img{
-	width: 100%;
-	/*height: 100%;*/ /* keep ratio and allows flex container*/
+	width: inherit;
+    height:inherit;
 }
 
 .video canvas{
-    width: 100%;
-   /* height: 100%;*/
+    width: inherit;
+    height:inherit;
 }
 
 .video-selected {
@@ -94,7 +108,7 @@ a.navbar-brand:hover {
 
 .dialog{
     width:300px;
-    min-height: 190px;
+    height: 215px;
     margin-bottom:10px;
 }
 
@@ -118,7 +132,7 @@ a.navbar-brand:hover {
 
 .tree-dialog {
     width:300px;
-    height:190px;
+    min-height:190px !important;
     margin-bottom:10px;
     position:absolute;
     top:60px;

@@ -325,7 +325,7 @@ function init() {
 
     cssCircleMenu('.js-menu');
     var currentIdView = "";
-    var mainDiv = document.getElementById("main-container");
+    var mainDiv = document.getElementById("center-container");
 
     var leafletMainView = new OSH.UI.LeafletView("",
         [{
@@ -400,7 +400,7 @@ function init() {
         services: ["http://localhost:8181/","http://sensiasoft.net:8181/"],
         css: "discovery-view",
         dataReceiverController:dataProviderController,
-        swapId: "main-container",
+        swapId: "center-container",
         entities: [androidEntity],
         views: [{
             name: 'Leaflet 2D Map',
@@ -466,13 +466,14 @@ function createPtzDialog(containerDivId,dataSources,title,defaultShow) {
         dockable: true,
         closeable: true,
         connectionIds : dataSources ,
-        swapId: "main-container"
+        swapId: "center-container",
+        keepRatio:true
     });
 
     var ptzView = new OSH.UI.PtzTaskingView();
 
     // by default the view is hidden because no div id has been defined
-    ptzDialog.appendView(ptzView.divId);
+   // ptzDialog.appendView(ptzView.divId);
 
     return ptzDialog;
 
@@ -487,6 +488,6 @@ function createDialog(containerDivId,dataSources,title,defaultShow) {
         dockable: true,
         closeable: true,
         connectionIds : dataSources ,
-        swapId: "main-container"
+        swapId: "center-container"
     });
 }

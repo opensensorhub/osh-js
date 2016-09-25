@@ -35,7 +35,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.connectionIds = [];
         this.draggable = false;
 
-        if(typeof(options) != "undefined"){
+        if(!isUndefined(options)){
             if( typeof (options.swapId) != "undefined" && options.swapId != "") {
                 this.swapDivId = "dialog-exchange-" + OSH.Utils.randomUUID();
                 htmlVar += "<a id=\"" + this.swapDivId + "\"class=\"pop-exchange fa fa-exchange\" title=\"swap\"><\/a>";
@@ -78,8 +78,19 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.rootTag.setAttribute("class", "pop-over resizable");
         this.rootTag.setAttribute("draggable", this.draggable);
 
-        if(options.css) {
-            this.rootTag.setAttribute("class",this.rootTag.className+" "+options.css);
+        this.keepRatio = false;
+
+        if(!isUndefined(options)) {
+            var css = this.rootTag.className;
+            if (options.css) {
+                css += " " + options.css;
+            }
+            if(options.keepRatio){
+                css += " keep-ratio-w";
+                this.keepRatio = true;
+            }
+
+            this.rootTag.setAttribute("class", css);
         }
 
         this.flexDiv = document.createElement("div");
@@ -88,6 +99,10 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
         this.popContentDiv = document.createElement("div");
         this.popContentDiv.setAttribute("class","pop-content");
         this.popContentDiv.setAttribute("id","pop-content-id-"+OSH.Utils.randomUUID());
+
+        if(!this.keepRatio) {
+            OSH.Utils.addCss(this.popContentDiv,"no-keep-ratio");
+        }
 
         this.flexDiv.appendChild(this.popContentDiv);
         // plugs it into the new draggable dialog
@@ -158,6 +173,14 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                 self.swapped = false;
             }
         });
+
+        var p = this.rootTag.parentNode;
+
+        var testDiv = document.createElement("div");
+        testDiv.setAttribute("class","outer-dialog");
+        testDiv.appendChild(this.rootTag);
+
+        p.appendChild(testDiv);
     },
 
     /**
@@ -195,6 +218,15 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
 
                 // update title
                 document.getElementById(this.titleId).innerText = "- Swapped -";
+
+                // if keep ratio
+                if(this.keepRatio) {
+                    // remove css class from dialog
+                    OSH.Utils.removeCss(this.rootTag,"keep-ratio-w");
+                    // does not keep ratio for the new content
+                    OSH.Utils.addCss(this.popContentDiv,"no-keep-ratio");
+                    OSH.Utils.addCss(containerDivToSwap,"keep-ratio-h");
+                }
             } else {
                 // get
                 var popContent = this.popContentDiv.firstChild;
@@ -211,6 +243,14 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
                 // update title
                 document.getElementById(this.titleId).innerText = this.name;
                 this.swapped = false;
+
+                // if keep ratio
+                if(this.keepRatio) {
+                    // remove css class from dialog
+                    OSH.Utils.addCss(this.rootTag,"keep-ratio-w");
+                    OSH.Utils.removeCss(this.popContentDiv,"no-keep-ratio");
+                    OSH.Utils.removeCss(containerDivToSwap,"keep-ratio-h");
+                }
             }
         }
     },

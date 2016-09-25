@@ -131,6 +131,7 @@
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-H264View.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
     <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
@@ -167,38 +168,40 @@
         </div>
     </div>
 </nav>
-<div id="main-container" class="main-view"></div>
-<div id="tasking-container" class="tasking-container"></div>
-<div id="dialog-main-container" class="video-main-container"></div>
-<nav class="c-circle-menu js-menu">
-    <button class="c-circle-menu__toggle js-menu-toggle">
-        <span>Toggle</span>
-    </button>
-    <ul class="c-circle-menu__items">
-        <li class="c-circle-menu__item">
-            <a href="#" class="c-circle-menu__link" id="screenshot-button">
-                <img src="images/photo.svg"  alt="">
-            </a>
-        </li>
-        <li class="c-circle-menu__item">
-            <a href="#" class="c-circle-menu__link" id="2D-view-button">
-                <img src="images/2d.svg" alt="">
-            </a>
-        </li>
-        <li class="c-circle-menu__item">
-            <a href="#" class="c-circle-menu__link" id="3D-view-button">
-                <img src="images/3d.svg" alt="">
-            </a>
-        </li>
-        <li class="c-circle-menu__item">
-            <a href="#" class="c-circle-menu__link" id="add-entity-button">
-                <img src="images/add.svg" alt="">
-            </a>
-        </li>
-        <!-- more items here -->
-    </ul>
-    <div class="c-circle-menu__mask js-menu-mask"></div>
-</nav>
+<div id="main-container" class="main-view">
+    <div id="center-container" class="center-view"></div>
+    <div id="tasking-container" class="tasking-container"></div>
+    <div id="dialog-main-container" class="video-main-container"></div>
+    <nav class="c-circle-menu js-menu">
+        <button class="c-circle-menu__toggle js-menu-toggle">
+            <span>Toggle</span>
+        </button>
+        <ul class="c-circle-menu__items">
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="screenshot-button">
+                    <img src="images/photo.svg"  alt="">
+                </a>
+            </li>
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="2D-view-button">
+                    <img src="images/2d.svg" alt="">
+                </a>
+            </li>
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="3D-view-button">
+                    <img src="images/3d.svg" alt="">
+                </a>
+            </li>
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="add-entity-button">
+                    <img src="images/add.svg" alt="">
+                </a>
+            </li>
+            <!-- more items here -->
+        </ul>
+        <div class="c-circle-menu__mask js-menu-mask"></div>
+    </nav>
+</div>
 <div class="rangeSlider-container">
     <div id="rangeSlider" class="rangeSlider"></div>
 </div>
