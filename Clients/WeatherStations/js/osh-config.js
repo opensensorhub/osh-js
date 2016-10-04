@@ -111,7 +111,7 @@ function init() {
 
     function addWeatherStation(entityID, entityName, offeringID, lat, lon, alt) {
         console.log("Adding Weather Station", entityName);
-        var weatherData = new OSH.DataReceiver.UAHWeather("Weather", {
+        var weatherData = new OSH.DataReceiver.DataSourceUAHWeather("Weather", {
             protocol : "ws",
             service: "SOS",
             endpointUrl: hostName + ":8181/sensorhub/sos",
@@ -125,7 +125,7 @@ function init() {
             timeOut: 60000
         });
 
-        /*var weatherData = new OSH.DataReceiver.UAHWeather("Weather", {
+        /*var weatherData = new OSH.DataReceiver.DataSourceUAHWeather("Weather", {
             protocol : "ws",
             service: "SOS",
             endpointUrl: hostName + ":8181/sensorhub/sos",
