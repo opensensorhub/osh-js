@@ -168,7 +168,7 @@ function init() {
                 icon : 'images/tornado.png',
                 iconFunc : {
                     dataSourceIds: [weatherData.getId()],
-                    handler : function(options) {
+                    handler : function(rec,timeStamp,options) {
                         if(options.selected) {
                             return 'images/tornado-selected.png'
                         } else {
