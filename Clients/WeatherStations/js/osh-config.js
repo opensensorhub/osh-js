@@ -210,7 +210,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 100,
+            maxPoints: 250,
             yLabel: 'Pressure (mbar)',
         });
 
@@ -244,7 +244,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 100,
+            maxPoints: 250,
             yLabel: 'Temperature (' + String.fromCharCode(176) + 'C)'
         });
 
@@ -278,8 +278,42 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 100,
+            maxPoints: 250,
             yLabel: 'Relative Humidity (%)'
+        });
+
+        // rain accum chart view        
+        var rainChartDialog = new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "video-dialog",
+            name: entityName + " - Rain",
+            show: true,
+            dockable: true,
+            closeable: true,
+            canDisconnect : true,
+            swapId: "main-container",
+            connectionIds: [weatherData.getId()]
+        });
+
+        var rainChartView = new OSH.UI.Nvd3CurveChartView(rainChartDialog.popContentDiv.id,
+        [{
+            styler: new OSH.UI.Styler.Curve({
+                valuesFunc: {
+                    dataSourceIds: [weatherData.getId()],
+                    handler: function (rec, timeStamp) {
+                        return {
+                            x : timeStamp,
+                            y : rec.rainCnt
+                        };
+                    }
+                }
+            })
+        }],
+        {
+            css: "chart-view",
+            cssSelected: "video-selected",
+            maxPoints: 250,
+            yLabel: 'Rain Accumulation (tips)'
         });
 
         // wind speed chart view        
@@ -312,7 +346,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 100,
+            maxPoints: 250,
             yLabel: 'Wind Speed (m/s)'
         });
 
@@ -346,79 +380,45 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 100,
+            maxPoints: 250,
             yLabel: 'Wind Direction (deg)'
-        });
-
-        // rain accum chart view        
-        var rainChartDialog = new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
-            css: "video-dialog",
-            name: entityName + " - Rain",
-            show: true,
-            dockable: true,
-            closeable: true,
-            canDisconnect : true,
-            swapId: "main-container",
-            connectionIds: [weatherData.getId()]
-        });
-
-        var rainChartView = new OSH.UI.Nvd3CurveChartView(rainChartDialog.popContentDiv.id,
-        [{
-            styler: new OSH.UI.Styler.Curve({
-                valuesFunc: {
-                    dataSourceIds: [weatherData.getId()],
-                    handler: function (rec, timeStamp) {
-                        return {
-                            x : timeStamp,
-                            y : rec.rainCnt
-                        };
-                    }
-                }
-            })
-        }],
-        {
-            css: "chart-view",
-            cssSelected: "video-selected",
-            maxPoints: 100,
-            yLabel: 'Rain Accumulation (mm)'
         });
 
         // add tree and map context menus
         var menuItems = [{
             name: "Show Pressure",
             viewId: pressureChartDialog.getId(),
-            css: "fa fa-bar-chart",
+            css: "fa fa-compress",
             action: "show"
         },
         {
             name: "Show Temperature",
             viewId: tempChartDialog.getId(),
-            css: "fa fa-bar-chart",
+            css: "fa fa-fire",
             action: "show"
         },
         {
             name: "Show Humidity",
             viewId: humidChartDialog.getId(),
-            css: "fa fa-bar-chart",
-            action: "show"
-        },
-        {
-            name: "Show Wind Speed",
-            viewId: windSpeedChartDialog.getId(),
-            css: "fa fa-bar-chart",
-            action: "show"
-        },
-        {
-            name: "Show Wind Direction",
-            viewId: windDirChartDialog.getId(),
-            css: "fa fa-bar-chart",
+            css: "fa fa-percent",
             action: "show"
         },
         {
             name: "Show Rain Accumulation",
             viewId: rainChartDialog.getId(),
-            css: "fa fa-bar-chart",
+            css: "fa fa-tint",
+            action: "show"
+        },
+        {
+            name: "Show Wind Speed",
+            viewId: windSpeedChartDialog.getId(),
+            css: "fa fa-fighter-jet",
+            action: "show"
+        },
+        {
+            name: "Show Wind Direction",
+            viewId: windDirChartDialog.getId(),
+            css: "fa fa-compass",
             action: "show"
         }];
     
