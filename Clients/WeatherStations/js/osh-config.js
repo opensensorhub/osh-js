@@ -210,7 +210,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 250,
+            maxPoints: 100,
             yLabel: 'Pressure (mbar)',
         });
 
@@ -244,7 +244,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 250,
+            maxPoints: 100,
             yLabel: 'Temperature (' + String.fromCharCode(176) + 'C)'
         });
 
@@ -278,7 +278,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 250,
+            maxPoints: 100,
             yLabel: 'Relative Humidity (%)'
         });
 
@@ -312,7 +312,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 250,
+            maxPoints: 100,
             yLabel: 'Rain Accumulation (tips)'
         });
 
@@ -346,7 +346,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 250,
+            maxPoints: 100,
             yLabel: 'Wind Speed (m/s)'
         });
 
@@ -380,7 +380,7 @@ function init() {
         {
             css: "chart-view",
             cssSelected: "video-selected",
-            maxPoints: 250,
+            maxPoints: 100,
             yLabel: 'Wind Direction (deg)'
         });
 
