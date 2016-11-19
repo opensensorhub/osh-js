@@ -225,9 +225,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                         return;
                     }
 
+
                     // allocate packet
                     self.av_pkt = Module._malloc(96);
-                    self.av_pktData = Module._malloc(1024*150);
+                    self.av_pktData = Module._malloc(1024*3000);
                     _av_init_packet(self.av_pkt);
                     Module.setValue(self.av_pkt+24, self.av_pktData, '*');
 
@@ -246,10 +247,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                             self.postMessage(decodedFrame, [
                                 decodedFrame.frameYData.buffer,
                                 decodedFrame.frameUData.buffer,
-                                decodedFrame.frameVData.buffer,
+                                decodedFrame.frameVData.buffer
                             ]);
                         }
-                    }
+                    };
 
 
                     function innerWorkerDecode(pktSize, pktData) {
@@ -314,7 +315,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                     vRowCnt: decodedFrame.frame_height / 2
                 });
                 self.yuvCanvas.canvasElement.drawing = false;
-                
+
                 self.updateStatistics();
                 self.onAfterDecoded();
             }
@@ -336,7 +337,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
             pktSize: pktSize,
             pktData: pktData.buffer,
             byteOffset:pktData.byteOffset
-        }
+        };
         this.worker.postMessage(transferableData, [transferableData.pktData]);
     },
 
@@ -384,6 +385,8 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
 
         // init decode frame function
         this.got_frame = Module._malloc(4);
+        this.maxPktSize = 1024 * 50;
+
 
     },
 
@@ -396,6 +399,13 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.FFMPEGView
      */
     decode: function (pktSize, pktData) {
+        if(pktSize > this.maxPktSize) {
+            this.av_pkt = Module._malloc(96);
+            this.av_pktData = Module._malloc(pktSize);
+            _av_init_packet(this.av_pkt);
+            Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
+            this.maxPktSize = pktSize;
+        }
         // prepare packet
         Module.setValue(this.av_pkt + 28, pktSize, 'i32');
         Module.writeArrayToMemory(pktData, this.av_pktData);
