@@ -262,7 +262,10 @@ OSH.Utils.isArrayIntersect = function(a, b) {
  * @memberof OSH.Utils
  */
 OSH.Utils.isWebWorker = function() {
-  return Modernizr.webworkers;
+  if (typeof(Worker) !== "undefined") {
+      return true;
+  }
+  return false;
 };
 
 /**

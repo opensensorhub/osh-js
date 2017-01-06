@@ -60,6 +60,15 @@ window.OSH.Utils = {};
  * @memberof OSH
  */
 window.OSH.DataSender = {};
+
+// HELPER FUNCTION
+function isUndefined(object) {
+	return typeof(object) == "undefined";
+}
+
+function isUndefinedOrNull(object) {
+	return typeof(object) === "undefined" || object === null;
+}
 var MAX_LONG = Math.pow(2, 53) + 1;
 
 /**
@@ -324,7 +333,10 @@ OSH.Utils.isArrayIntersect = function(a, b) {
  * @memberof OSH.Utils
  */
 OSH.Utils.isWebWorker = function() {
-  return Modernizr.webworkers;
+  if (typeof(Worker) !== "undefined") {
+      return true;
+  }
+  return false;
 };
 
 /**
@@ -335,6 +347,31 @@ OSH.Utils.isWebWorker = function() {
  */
 OSH.Utils.takeScreeshot = function(div) {
 };
+
+/**
+ * Remove a css class from a the div given as argument.
+ * @param div the div to remove the class from
+ * @param css the css class to remove
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.removeCss = function(div,css) {
+  var divCss = div.className;
+  css = divCss.replace(css,"");
+  div.className = css;
+}
+
+
+/**
+ * Add a css class to a the div given as argument.
+ * @param div the div to add the class to
+ * @param css the css class to add
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.addCss = function(div,css) {
+  div.setAttribute("class",div.className+" "+css);
+}
 
 
 var observedEvent = {};
@@ -428,7 +465,8 @@ OSH.EventManager.EVENT = {
     UAV_ORBIT: "uav:orbit",
     LOADING_START: "loading:start",
     LOADING_STOP: "loading:stop",
-    ADD_VIEW_ITEM: "addViewItem"
+    ADD_VIEW_ITEM: "addViewItem",
+    RESIZE:"resize"
 };
 
 /** @constant
@@ -792,38 +830,94 @@ OSH.Buffer = Class.create({
     }.bind(this),bufferingTime);
   }
 });
+OSH.DataConnector.DataConnector = function(url) {
+    this.url = url;
+    this.id = "DataConnector-"+OSH.Utils.randomUUID();
+}
+
+OSH.DataConnector.DataConnector.prototype.getId = function() {
+    return this.id;
+}
+
+OSH.DataConnector.DataConnector.prototype.getUrl = function() {
+    return this.url;
+}
+
+
 /**
  * @classdesc The DataConnector is the abstract class used to create different connectors.
  * @constructor
  * @abstract
  * @param {string} url The full url used to connect to the data stream
- */
+ *//*
+
 OSH.DataConnector.DataConnector = Class.create({
   initialize: function(url) {
     this.url = url;
     this.id = "DataConnector-"+OSH.Utils.randomUUID();
   },
 
-  /**
+  */
+/**
    * The data connector default id.
    * @returns {string}
    * @memberof OSH.DataConnector.DataConnector
    * @instance
-   */
+   *//*
+
   getId: function() {
     return this.id;
   },
 
-  /**
+  */
+/**
    * The stream url.
    * @returns {string}
    * @memberof OSH.DataConnector.DataConnector
    * @instance
-   */
+   *//*
+
   getUrl: function() {
     return this.url;
   }
 });
+*/
+
+OSH.DataConnector.AjaxConnector = function(url) {
+    OSH.DataConnector.AjaxConnector.parent.constructor.apply(this, arguments);
+}
+
+osh_extend(OSH.DataConnector.AjaxConnector, OSH.DataConnector.DataConnector);
+
+OSH.DataConnector.AjaxConnector.prototype.sendRequest = function(request) {
+    var self = this;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", this.getUrl(), true);
+    xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+    xmlhttp.send(request);
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            console.log("ici");
+        }
+        /*if (xhr.readyState < 4) {
+            // while waiting response from server
+        }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.
+            if (xhr.status == 200 && xhr.status < 300) { // http status between 200 to 299 are all successful
+                this.onSuccess(xhr.responseText);
+            } else {
+                this.onError("");
+            }
+        }*/
+    }.bind(this);
+}
+
+OSH.DataConnector.AjaxConnector.prototype.onError = function(event) {
+}
+
+
+OSH.DataConnector.AjaxConnector.prototype.onSuccess = function(event) {
+}
 
 /**
  * @type {OSH.DataConnector.DataConnector}
@@ -847,14 +941,17 @@ OSH.DataConnector.DataConnector = Class.create({
  * connector.sendRequest(request);
  *
  */
+/*
 OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, {
 
-    /**
+    */
+/**
      * Sends the request to the defined server.
      * @param request The Http request (as a String format)
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
-     */
+     *//*
+
     sendRequest: function (request) {
         var self = this;
         var xmlhttp = new XMLHttpRequest();
@@ -866,7 +963,8 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 console.log("ici");
             }
-            /*if (xhr.readyState < 4) {
+            */
+/*if (xhr.readyState < 4) {
                 // while waiting response from server
             }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.
                 if (xhr.status == 200 && xhr.status < 300) { // http status between 200 to 299 are all successful
@@ -874,30 +972,129 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
                 } else {
                     this.onError("");
                 }
-            }*/
+            }*//*
+
         }.bind(this);
     },
 
-    /**
+    */
+/**
      * This is the callback method in case of getting error connection.
      * @param event The error details
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
-     */
+     *//*
+
     onError:function(event){
 
     },
 
-    /**
+    */
+/**
      * This is the callback method in case of getting success connection.
      * @param event
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
-     */
+     *//*
+
     onSuccess:function(event) {
 
     }
-});
+});*/
+
+OSH.DataConnector.WebSocketDataConnector = function(url) {
+    OSH.DataConnector.WebSocketDataConnector.parent.constructor.apply(this, arguments);
+}
+
+osh_extend(OSH.DataConnector.WebSocketDataConnector, OSH.DataConnector.DataConnector);
+
+OSH.DataConnector.WebSocketDataConnector.prototype.connect = function(request) {
+    if (!this.init) {
+        //creates Web Socket
+        if (OSH.Utils.isWebWorker()){
+            var url = this.getUrl();
+            var blobURL = URL.createObjectURL(new Blob(['(',
+
+                    function () {
+                        var ws = null;
+                        self.onmessage = function (e) {
+                            if(e.data == "close") {
+                                close();
+                            } else {
+                                // is URL
+                                init(e.data);
+                            }
+                        }
+
+                        function init(url) {
+                            ws = new WebSocket(url);
+                            ws.binaryType = 'arraybuffer';
+                            ws.onmessage = function (event) {
+                                //callback data on message received
+                                if (event.data.byteLength > 0) {
+                                    //this.onMessage(event.data);
+                                    self.postMessage(event.data);
+                                }
+                            }
+
+                            ws.onerror = function(event) {
+                                ws.close();
+                            }
+                        }
+
+                        function close() {
+                            ws.close();
+                        }
+                    }.toString(), ')()'],
+                {type: 'application/javascript'}));
+
+            this.worker = new Worker(blobURL);
+
+            this.worker.postMessage(url);
+            this.worker.onmessage = function (e) {
+                this.onMessage(e.data);
+            }.bind(this);
+
+            // Won't be needing this anymore
+            URL.revokeObjectURL(blobURL);
+        } else {
+            this.ws = new WebSocket(this.getUrl());
+            this.ws.binaryType = 'arraybuffer';
+            this.ws.onmessage = function (event) {
+                //callback data on message received
+                if (event.data.byteLength > 0) {
+                    this.onMessage(event.data);
+                }
+            }.bind(this);
+
+            // closes socket if any errors occur
+            this.ws.onerror = function(event) {
+                this.ws.close();
+            }.bind(this);
+        }
+        this.init = true;
+    }
+}
+
+OSH.DataConnector.WebSocketDataConnector.prototype.disconnect = function() {
+    if (OSH.Utils.isWebWorker() && this.worker != null) {
+        this.worker.postMessage("close");
+        this.worker.terminate();
+        this.init = false;
+    } else if (this.ws != null) {
+        this.ws.close();
+        this.init = false;
+    }
+}
+
+
+OSH.DataConnector.WebSocketDataConnector.prototype.onMessage = function(data) {
+}
+
+OSH.DataConnector.WebSocketDataConnector.prototype.close = function() {
+    this.disconnect();
+}
+
 /**
  * @type {OSH.DataConnector.DataConnector}
  * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
@@ -917,13 +1114,13 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
  * connector.close();
  *
  */
-OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
-    /**
+/*OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
+    *//**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     */
+     *//*
     connect: function () {
         if (!this.init) {
             //creates Web Socket
@@ -992,11 +1189,11 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
         }
     },
 
-    /**
+    *//**
      * Disconnects the websocket.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     */
+     *//*
     disconnect: function() {
         if (OSH.Utils.isWebWorker() && this.worker != null) {
             this.worker.postMessage("close");
@@ -1008,24 +1205,24 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
         }
     },
 
-    /**
+    *//**
      * The onMessage method used by the websocket to callback the data
      * @param data the callback data
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     */
+     *//*
     onMessage: function (data) {
     },
 
-    /**
+    *//**
      * Closes the webSocket.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     */
+     *//*
     close: function() {
         this.disconnect();
     }
-});
+});*/
 
 
 /**
@@ -2950,8 +3147,9 @@ OSH.UI.View = Class.create({
                 // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
                 if( mutation.attributeName === 'style') {
                     self.onResize();
+
                 }
-            } );
+            });
         } );
 
         // Attach the mutation observer to blocker, and only when attribute values change
@@ -3030,7 +3228,7 @@ OSH.UI.View = Class.create({
     setData: function(dataSourceId,data) {},
 
     /**
-     *
+     * Show the view by removing display:none style if any.
      * @param properties
      * @instance
      * @memberof OSH.UI.View
@@ -3138,6 +3336,10 @@ OSH.UI.View = Class.create({
             if(typeof event.viewId != "undefined" && event.viewId == this.id) {
                 this.addViewItem(event.viewItem);
             }
+        }.bind(this));
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.RESIZE+"-"+this.divId,function(event){
+            this.onResize();
         }.bind(this));
     },
 
@@ -3368,6 +3570,12 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
                 });
             }.bind(this));
         }
+
+        // this causes preventing any closing event
+        this.rootTag.onmousedown = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     },
 
     /**
@@ -3454,6 +3662,7 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
     },
 
     /**
+     * Shows the context menu.
      * @param $super
      * @param properties
      * @instance
@@ -3473,7 +3682,11 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
         this.rootTag.setAttribute("class",""+this.type+"-menu-container");
         this.rootTag.innerHTML = htmlVar;
 
-        document.body.appendChild(this.rootTag);
+        if(typeof properties.div != "undefined") {
+            properties.div.appendChild(this.rootTag);
+        } else {
+            document.body.appendChild(this.rootTag);
+        }
 
         var offsetX = 0;
         var offsetY = 0;
@@ -3505,6 +3718,12 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
                     viewId: this.bindEvents[event.target.id]
                 });
             }.bind(this));
+        }
+
+        // this causes preventing any closing event
+        this.rootTag.onmousedown = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
         }
     }
 });
@@ -4668,16 +4887,16 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // connect to server and get the list of offering
         var oshServer = new OSH.Server(option.value);
 
+        this.removeAllFromSelect(this.offeringSelectTagId);
         var onSuccessGetCapabilities = function(event) {
             this.sensors = oshServer.sensors;
             // remove existing
-            this.removeAllFromSelect(this.offeringSelectTagId);
             var startTimeInputTag = document.getElementById(this.startTimeTagId);
             var endTimeInputTag = document.getElementById(this.endTimeTagId);
 
             // add the new ones
             for(var i = 0;i < this.sensors.length;i++) {
-                this.addValueToSelect(this.offeringSelectTagId,this.sensors[i].identifier,this.sensors[i]);
+                this.addValueToSelect(this.offeringSelectTagId,this.sensors[i].name,this.sensors[i],this.sensors[i]);
             }
         }.bind(this);
 
@@ -4768,7 +4987,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
         // get values
         var name=offeringTagSelectedOption.parent.name;
         var endPointUrl=serviceTagSelectedOption.value+"sensorhub/sos";
-        var offeringID=offeringTagSelectedOption.value;
+        var offeringID=offeringTagSelectedOption.parent.identifier;
         var obsProp=observablePropertyTagSelectedOption.value;
         var startTime=startTimeInputTag.value;
         var endTime=endTimeInputTag.value;
@@ -5260,7 +5479,7 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
                     
             }
         }
-    },
+    }
 });
 /**
  * @classdesc
@@ -5874,11 +6093,14 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
                         offsetY: -70,
                         action : "show",
                         x:OSH.Utils.getXCursorPosition(),
-                        y:OSH.Utils.getYCursorPosition()
+                        y:OSH.Utils.getYCursorPosition(),
+                        drawLineTo:id
                     });
                     break;
                 }
             }
+
+
         }.bind(this);
 
         return id;
@@ -6030,11 +6252,13 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.LeafletView
      */
     onResize:function($super) {
+        $super();
         this.map.invalidateSize();
     },
 });
 
 /***  little hack starts here ***/
+/*
 L.Map = L.Map.extend({
     openPopup: function (popup) {
         this._popup = popup;
@@ -6095,6 +6319,7 @@ L.Map = L.Map.extend({
         }
     });
 })();
+*/
 
 /***  end of hack ***/
 
@@ -6520,351 +6745,6 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
     }
 });
 /**
- * @classdesc
- * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
- * @example
- var dialogView new OSH.UI.DialogView(containerDivId, {
-        draggable: false,
-        css: "dialog",
-        name: title,
-        show:false,
-        dockable: true,
-        closeable: true,
-        connectionIds : dataSources ,
-        swapId: "main-container"
-    });
- */
-OSH.UI.DialogView = Class.create(OSH.UI.View,{
-    initialize: function ($super,divId, options) {
-        $super(divId,[],options);
-        // creates HTML eflement
-        this.dialogId = "dialog-" + OSH.Utils.randomUUID();
-        this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
-        var closeDivId = "dialog-close-" + OSH.Utils.randomUUID();
-        this.connectDivId = "dialog-connect-" + OSH.Utils.randomUUID();
-        this.name = "Untitled";
-
-        var htmlVar = "";
-        htmlVar += "<div>";
-
-        this.dockable = false;
-        this.closeable = false;
-        this.connected = false;
-        this.swapped = false;
-        this.connectionIds = [];
-        this.draggable = false;
-
-        if(typeof(options) != "undefined"){
-            if( typeof (options.swapId) != "undefined" && options.swapId != "") {
-                this.swapDivId = "dialog-exchange-" + OSH.Utils.randomUUID();
-                htmlVar += "<a id=\"" + this.swapDivId + "\"class=\"pop-exchange fa fa-exchange\" title=\"swap\"><\/a>";
-                this.divIdToSwap  = options.swapId;
-            }
-
-            if( typeof (options.connectionIds) != "undefined" && typeof options.connectionIds != "undefined" && options.connectionIds.length > 0) {
-                // add connected icon to disconnect/connect datasource
-                htmlVar += "<a id=\"" + this.connectDivId + "\"class=\"pop-connect\"><\/a>";
-                this.connected = true;
-                this.connectionIds = options.connectionIds;
-            }
-
-            if( typeof (options.dockable) != "undefined" && options.dockable) {
-                htmlVar +=  "<a id=\""+this.pinDivId+"\"class=\"pop-pin\"><\/a>";
-                this.dockable = options.dockable;
-            }
-
-            if(typeof (options.closeable) != "undefined" && options.closeable) {
-                htmlVar += "<a id=\""+closeDivId+"\"class=\"pop-close\" title=\"close\">x<\/a>";
-                this.closeable = options.closeable;
-            }
-
-            if(typeof (options.draggable) != "undefined" && options.draggable) {
-                this.draggable = options.draggable;
-            }
-
-            if(typeof (options.name) != "undefined") {
-                this.name = options.name;
-            }
-
-        }
-
-        this.titleId = "dialog-title-"+OSH.Utils.randomUUID();
-        htmlVar += "<h3 id=\""+this.titleId+"\">"+this.name+"<\/h3></div>";
-
-        this.rootTag = document.getElementById(this.divId);
-        this.rootTag.innerHTML = htmlVar;
-
-        this.rootTag.setAttribute("class", "pop-over resizable");
-        this.rootTag.setAttribute("draggable", this.draggable);
-
-        if(options.css) {
-            this.rootTag.setAttribute("class",this.rootTag.className+" "+options.css);
-        }
-
-        this.popContentDiv = document.createElement("div");
-        this.popContentDiv.setAttribute("class","pop-content");
-        this.popContentDiv.setAttribute("id","pop-content-id-"+OSH.Utils.randomUUID());
-
-        // plugs it into the new draggable dialog
-        this.rootTag.appendChild(this.popContentDiv);
-
-        if(typeof (options) != "undefined") {
-            if(typeof (options.show) != "undefined" && !options.show) {
-                this.rootTag.style.display = "none";
-            } else {
-                this.initialWidth = this.rootTag.offsetWidth;
-            }
-        }
-
-        // adds listener
-        this.rootTag.addEventListener('dragstart', this.drag_start.bind(this), false);
-        document.addEventListener('dragover', this.drag_over.bind(this), false);
-        document.addEventListener('drop', this.drop.bind(this), false);
-
-        if(this.closeable) {
-            document.getElementById(closeDivId).onclick = this.close.bind(this);
-        }
-
-        if(this.dockable) {
-            document.getElementById(this.pinDivId).onclick = this.unpin.bind(this);
-        }
-
-        if(this.connectionIds.length > 0) {
-            document.getElementById(this.connectDivId).onclick = this.connect.bind(this);
-        }
-
-        if(typeof  this.swapDivId != "undefined") {
-            document.getElementById(this.swapDivId).onclick = this.swapClick.bind(this);
-        }
-
-        // calls super handleEvents
-        this.handleEvents();
-
-        var self = this;
-
-        // observe events to update the dialog after disconnect/connect events handling
-        OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
-            var dataSources = event.dataSourcesId;
-            if(dataSources.length == self.connectionIds.length) {
-                if(dataSources.filter(function(n) {
-                        return self.connectionIds.indexOf(n) != -1;
-                    }).length == self.connectionIds.length) {
-                    document.getElementById(self.connectDivId).setAttribute("class", "pop-connect");
-                    self.connected = true;
-                }
-            }
-        });
-
-        OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
-            var dataSources = event.dataSourcesId;
-            if(dataSources.length == self.connectionIds.length) {
-                if(dataSources.filter(function(n) {
-                        return self.connectionIds.indexOf(n) != -1;
-                    }).length == self.connectionIds.length) {
-                    document.getElementById(self.connectDivId).setAttribute("class", "pop-disconnect");
-                    self.connected = false;
-                }
-            }
-        });
-
-        OSH.EventManager.observe("swap-restore",function(event) {
-            if(self.swapped && event.exclude != self.id) {
-                self.swap();
-                self.swapped = false;
-            }
-        });
-    },
-
-    /**
-     * Swap the current div with the div given as parameter
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    swapClick: function() {
-        OSH.EventManager.fire("swap-restore",{exclude: this.id});
-        this.swap();
-    },
-
-    /**
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    swap:function() {
-        // swap the child of the popContentDiv with the child contained in the the containerDiv
-        var containerDivToSwap = document.getElementById(this.divIdToSwap);
-        if(containerDivToSwap != "undefined" && containerDivToSwap != null) {
-            if(!this.swapped) {
-                // get
-                var popContent = this.popContentDiv.firstChild;
-                this.contentViewId = popContent.id;
-                var swapContainerContent = containerDivToSwap.firstChild;
-
-                // remove
-                containerDivToSwap.removeChild(swapContainerContent);
-                this.popContentDiv.removeChild(popContent);
-
-                // append
-                containerDivToSwap.appendChild(popContent);
-                this.popContentDiv.appendChild(swapContainerContent);
-                this.swapped = true;
-
-                // update title
-                document.getElementById(this.titleId).innerText = "- Swapped -";
-            } else {
-                // get
-                var popContent = this.popContentDiv.firstChild;
-                var swapContainerContent = document.getElementById(this.contentViewId);
-
-                // remove
-                containerDivToSwap.removeChild(swapContainerContent);
-                this.popContentDiv.removeChild(popContent);
-
-                // append
-                containerDivToSwap.appendChild(popContent);
-                this.popContentDiv.appendChild(swapContainerContent);
-
-                // update title
-                document.getElementById(this.titleId).innerText = this.name;
-                this.swapped = false;
-            }
-        }
-    },
-
-    /**
-     *
-     * @param $super
-     * @param properties
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    show: function($super,properties) {
-        if(properties.viewId.indexOf(this.getId()) > -1) {
-            this.rootTag.style.display = "block";
-            if(typeof(this.initialWidth) == "undefined" ) {
-                this.initialWidth = this.rootTag.offsetWidth;
-            }
-        }
-    },
-
-    /**
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    connect: function() {
-        if(!this.swapped) {
-            if (!this.connected) {
-                OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId: this.connectionIds});
-            } else {
-                OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE, {dataSourcesId: this.connectionIds});
-            }
-        }
-    },
-
-    /**
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    unpin: function() {
-        if (!this.draggable) {
-            var bodyRect = document.body.getBoundingClientRect(),
-                elemRect = this.rootTag.getBoundingClientRect(),
-                offsetTop = elemRect.top - bodyRect.top,
-                offsetLeft = elemRect.left - bodyRect.left;
-
-            this.rootTag.setAttribute("draggable", true);
-            this.rootTag.parentNode.removeChild(this.rootTag);
-            document.body.appendChild(this.rootTag);
-            this.rootTag.style.top = offsetTop;
-            this.rootTag.style.left = offsetLeft;
-            this.rootTag.style.position = "absolute";
-            this.draggable = true;
-
-            document.getElementById(this.pinDivId).setAttribute("class", "pop-pin pop-pin-drag");
-        } else {
-            this.rootTag.style.top = 0;
-            this.rootTag.style.left = 0 - (this.rootTag.offsetWidth - this.initialWidth);
-            this.rootTag.style.position = "relative";
-            this.rootTag.setAttribute("draggable", false);
-            document.body.removeChild(this.rootTag);
-            this.container.appendChild(this.rootTag);
-            this.draggable = false;
-            document.getElementById(this.pinDivId).setAttribute("class", "pop-pin");
-        }
-    },
-
-
-    /**
-     *
-     * @param callback
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    onClose: function (callback) {
-        this.onClose = callback;
-    },
-
-    /**
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    close: function () {
-       // this.rootTag.parentNode.removeChild(this.rootTag);
-        this.rootTag.style.display = "none";
-        if (this.onClose) {
-            this.onClose();
-        }
-    },
-
-    /**
-     *
-     * @param event
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    drag_start: function (event) {
-        event.stopPropagation();
-        // Grab all computed styles of the dragged object
-        var style = window.getComputedStyle(event.target, null);
-        // dataTransfer sets data that is being dragged. In this case, the current X and Y values (ex. "1257,104")
-        event.dataTransfer.effectAllowed = 'all';
-        event.dataTransfer.setData("text-" + this.rootTag.id,
-            (parseInt(style.getPropertyValue("left"), 10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
-
-    },
-
-    /**
-     *
-     * @param event
-     * @returns {boolean}
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    drag_over: function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        return false;
-    },
-
-    /**
-     *
-     * @param event
-     * @returns {boolean}
-     * @instance
-     * @memberof OSH.UI.DialogView
-     */
-    drop: function (event) {
-        event.stopPropagation();
-        // Set array of x and y values from the transfer data
-        var offset = event.dataTransfer.getData("text-" + this.rootTag.id).split(',');
-        this.rootTag.style.left = ((event.clientX + parseInt(offset[0], 10)) * 100) / window.innerWidth + "%";
-        this.rootTag.style.top = (event.clientY + parseInt(offset[1], 10)) + 'px';
-        event.preventDefault();
-        return false;
-    }
-});
-/**
  * @class
  * @classdesc
  */
@@ -7047,30 +6927,30 @@ OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
 		this.lock = true;
 	}
 });
-var htmlTaskingComponent =
-    "<div class=\"flex-container\">"+
-        "<div class=\"remote fixed\">" +
-            "<div class=\"remote-left\"><input id=\"button-pan-left\" type=\"image\" src=\"images/remote-left.png\" class=\"remote-button\"/></div>" +
-            "<div class=\"remote-up\"><input id=\"button-tilt-up\" type=\"image\" src=\"images/remote-up.png\" class=\"remote-button\"/></div>" +
-            "<div class=\"remote-zoomin\"><input id=\"button-zoom-in\" type=\"image\" src=\"images/remote-zoomin.png\" class=\"remote-button\"/></div>" +
-            "<div class=\"remote-zoomout\"><input id=\"button-zoom-out\" type=\"image\" src=\"images/remote-zoomout.png\" class=\"remote-button\"/></div>" +
-            "<div class=\"remote-right\"><input id=\"button-pan-right\" type=\"image\" src=\"images/remote-right.png\" class=\"remote-button\"/></div>"+
-            "<div class=\"remote-down\"><input id=\"button-tilt-down\" type=\"image\" src=\"images/remote-down.png\" class=\"remote-button\"/></div>"+
-        "</div>"+
-        /*"<div class=\"ptz flex-item\">" +
-            "<div class=\"preset\">" +
-                "<label for=\"preset\">Preset:</label>" +
-                "<select name=\"preset\">"+
-                    "<option value=\"value1\">Value 1</option>"+
-                    "<option value=\"value2\" selected>Value 2</option>"+
-                    "<option value=\"value3\">Value 3</option>"+
-                "</select>" +
-            "</div>"+
-            "<div class=\"pan\"><label for=\"pan\">Pan:</label><input id=\"input-pan\" type=\"text\" name=\"pan\" size=\"2\" value=\"0\" disabled></div>"+
-            "<div class=\"tilt\"><label for=\"tilt\">Tilt:</label><input id=\"input-tilt\" type=\"text\" name=\"tilt\" size=\"2\" value=\"0\" disabled></div>"+
-            "<div class=\"zoom\"><label for=\"zoom\">Zoom:</label><input id=\"input-zoom\" type=\"text\" name=\"zoom\" size=\"2\" value=\"0\" disabled></div>"+
-        "</div>"+*/
-    "</div>";
+var htmlTaskingComponent="";
+htmlTaskingComponent += "<svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" viewBox=\"-2 -2 504 504\" id=\"menu\" style=\"transform-origin: 50% 50% 0px; transform: translate3d(0px, 0px, 0px); touch-action: none; -webkit-user-select: none;\">";
+htmlTaskingComponent += "<g id=\"symbolsContainer\">    <symbol class=\"icon icon-\" id=\"icon-1\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">1<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-2\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">2<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-3\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">3<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-4\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">4<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-5\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">5<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-6\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">6<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-7\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">7<\/text><\/symbol>";
+htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-8\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">8<\/text><\/symbol>";
+htmlTaskingComponent += "<\/g>";
+htmlTaskingComponent += "<g id=\"itemsContainer\">        <a class=\"item\" id=\"item-1\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(1,0,0,1,0,0)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-1\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-2\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0.7071,-0.7071,0.7071,0.7071,-103.55339059327378,249.99999999999997)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-2\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-3\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0,-1,1,0,0,500)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-3\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-4\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(-0.7071,-0.7071,0.7071,-0.7071,249.99999999999997,603.5533905932738)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-4\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-5\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(-1,0,0,-1,500,500)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-5\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-6\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(-0.7071,0.7071,-0.7071,-0.7071,603.5533905932738,250.00000000000006)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-6\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-7\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0,1,-1,0,500.00000000000006,0)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-7\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "        <a class=\"item\" id=\"item-8\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,250.00000000000009,-103.55339059327378)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-8\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
+htmlTaskingComponent += "<\/g>";
+htmlTaskingComponent += "<g id=\"trigger\" class=\"trigger menu-trigger\" role=\"button\">";
+htmlTaskingComponent += "<circle cx=\"250\" cy=\"250\" r=\"60\"><\/circle>";
+htmlTaskingComponent += "<\/g>";
+htmlTaskingComponent += "<\/svg>";
 
 
 /**
@@ -7082,7 +6962,7 @@ var htmlTaskingComponent =
  */
 OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
     initialize: function ($super, divId, options) {
-        $super(divId);
+        $super(divId,[],options);
         var width = "640";
         var height = "480";
         this.css = "";
@@ -7126,12 +7006,12 @@ OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
         this.zoom = 0;
 
         var increment = 5;
-        $("button-tilt-up").observe('click',  function(){this.onTiltClick(increment)}.bind(this));
+       /* $("button-tilt-up").observe('click',  function(){this.onTiltClick(increment)}.bind(this));
         $("button-tilt-down").observe('click',  function(){this.onTiltClick(-1*increment)}.bind(this));
         $("button-pan-right").observe('click',  function(){this.onPanClick(increment)}.bind(this));
         $("button-pan-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));
         $("button-zoom-in").observe('click',  function(){this.onZoomClick(50)}.bind(this));
-        $("button-zoom-out").observe('click',  function(){this.onZoomClick(-50)}.bind(this));
+        $("button-zoom-out").observe('click',  function(){this.onZoomClick(-50)}.bind(this));*/
     },
 
     /**
@@ -7441,9 +7321,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                         return;
                     }
 
+
                     // allocate packet
                     self.av_pkt = Module._malloc(96);
-                    self.av_pktData = Module._malloc(1024*150);
+                    self.av_pktData = Module._malloc(1024*3000);
                     _av_init_packet(self.av_pkt);
                     Module.setValue(self.av_pkt+24, self.av_pktData, '*');
 
@@ -7462,10 +7343,10 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                             self.postMessage(decodedFrame, [
                                 decodedFrame.frameYData.buffer,
                                 decodedFrame.frameUData.buffer,
-                                decodedFrame.frameVData.buffer,
+                                decodedFrame.frameVData.buffer
                             ]);
                         }
-                    }
+                    };
 
 
                     function innerWorkerDecode(pktSize, pktData) {
@@ -7530,7 +7411,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
                     vRowCnt: decodedFrame.frame_height / 2
                 });
                 self.yuvCanvas.canvasElement.drawing = false;
-                
+
                 self.updateStatistics();
                 self.onAfterDecoded();
             }
@@ -7552,7 +7433,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
             pktSize: pktSize,
             pktData: pktData.buffer,
             byteOffset:pktData.byteOffset
-        }
+        };
         this.worker.postMessage(transferableData, [transferableData.pktData]);
     },
 
@@ -7600,6 +7481,8 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
 
         // init decode frame function
         this.got_frame = Module._malloc(4);
+        this.maxPktSize = 1024 * 50;
+
 
     },
 
@@ -7612,6 +7495,13 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.FFMPEGView
      */
     decode: function (pktSize, pktData) {
+        if(pktSize > this.maxPktSize) {
+            this.av_pkt = Module._malloc(96);
+            this.av_pktData = Module._malloc(pktSize);
+            _av_init_packet(this.av_pkt);
+            Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
+            this.maxPktSize = pktSize;
+        }
         // prepare packet
         Module.setValue(this.av_pkt + 28, pktSize, 'i32');
         Module.writeArrayToMemory(pktData, this.av_pktData);
@@ -8003,4 +7893,545 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
           document.getElementById(this.divId).setAttribute("class",this.css);
 	  }
   }
+});
+/**
+ * @classdesc This datasource provides parsing to UAH Weather Station.
+ * @class OSH.DataReceiver.UAHWeather
+ * @augments OSH.DataReceiver.DataSource
+ */
+OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource,{
+
+  /**
+   * Extracts timestamp from the message. The timestamp is the first token got from split(',')
+   * @param {function} $super the parseTimeStamp super method
+   * @param {string} data the data to parse
+   * @returns {number} the extracted timestamp
+   * @memberof OSH.DataReceiver.DataSourceUAHWeather
+   * @instance
+   */
+  parseTimeStamp: function($super,data){
+    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
+    var tokens = rec.trim().split(",");
+    return new Date(tokens[0]).getTime();
+  },
+
+  /**
+   * Extract data from the message.
+   * @param {function} $super the parseData super method
+   * @param {Object} data the data to parse
+   * @returns {Object} the parsed data
+   * @memberof OSH.DataReceiver.DataSourceUAHWeather
+   * @instance
+   */
+  parseData: function($super,data){
+    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
+    var tokens = rec.trim().split(",");
+    var airPres = parseFloat(tokens[1]);
+    var airTemp = parseFloat(tokens[2]);
+    var humidity = parseFloat(tokens[3]);
+    var windSpeed = parseFloat(tokens[4]);
+    var windDir = parseFloat(tokens[5]);
+    var rainCnt = parseFloat(tokens[6]);
+    
+    return {
+      airPres : airPres,
+      airTemp : airTemp,
+      humidity : humidity,
+      windSpeed: windSpeed,
+      windDir: windDir,
+      rainCnt: rainCnt
+    };
+  } 
+});
+
+function osh_extend(child, parent) {
+  child.prototype = osh_inherit(parent.prototype);
+  child.prototype.constructor = child;
+  child.parent = parent.prototype;
+};
+
+function osh_inherit(proto) {
+  function f() {}
+  f.prototype = proto;
+  return new f();
+};
+
+/**
+ * @classdesc
+ * @class
+ * @type {OSH.UI.View}
+ * @augments OSH.UI.View
+ * @example
+ var dialogView new OSH.UI.DialogView(containerDivId, {
+        draggable: false,
+        css: "dialog",
+        name: title,
+        show:false,
+        dockable: true,
+        closeable: true,
+        connectionIds : dataSources ,
+        swapId: "main-container"
+    });
+ */
+OSH.UI.DialogView = Class.create(OSH.UI.View,{
+    initialize: function ($super,divId, options) {
+        $super(divId,[],options);
+        // creates HTML eflement
+        this.dialogId = "dialog-" + OSH.Utils.randomUUID();
+        this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
+        var closeDivId = "dialog-close-" + OSH.Utils.randomUUID();
+        this.connectDivId = "dialog-connect-" + OSH.Utils.randomUUID();
+        this.name = "Untitled";
+
+        var htmlVar = "";
+        htmlVar += "<div>";
+
+        this.dockable = false;
+        this.closeable = false;
+        this.connected = false;
+        this.swapped = false;
+        this.connectionIds = [];
+        this.draggable = false;
+
+        if(!isUndefined(options)){
+            if( typeof (options.swapId) != "undefined" && options.swapId != "") {
+                this.swapDivId = "dialog-exchange-" + OSH.Utils.randomUUID();
+                htmlVar += "<a id=\"" + this.swapDivId + "\"class=\"pop-exchange fa fa-exchange\" title=\"swap\"><\/a>";
+                this.divIdToSwap  = options.swapId;
+            }
+
+            if( typeof (options.connectionIds) != "undefined" && typeof options.connectionIds != "undefined" && options.connectionIds.length > 0) {
+                // add connected icon to disconnect/connect datasource
+                htmlVar += "<a id=\"" + this.connectDivId + "\"class=\"pop-connect\"><\/a>";
+                this.connected = true;
+                this.connectionIds = options.connectionIds;
+            }
+
+            if( typeof (options.dockable) != "undefined" && options.dockable) {
+                htmlVar +=  "<a id=\""+this.pinDivId+"\"class=\"pop-pin\"><\/a>";
+                this.dockable = options.dockable;
+            }
+
+            if(typeof (options.closeable) != "undefined" && options.closeable) {
+                htmlVar += "<a id=\""+closeDivId+"\"class=\"pop-close\" title=\"close\">x<\/a>";
+                this.closeable = options.closeable;
+            }
+
+            if(typeof (options.draggable) != "undefined" && options.draggable) {
+                this.draggable = options.draggable;
+            }
+
+            if(typeof (options.name) != "undefined") {
+                this.name = options.name;
+            }
+
+        }
+
+        this.titleId = "dialog-title-"+OSH.Utils.randomUUID();
+        htmlVar += "<h3 id=\""+this.titleId+"\">"+this.name+"<\/h3></div>";
+
+        this.rootTag = document.getElementById(this.divId);
+        this.rootTag.innerHTML = htmlVar;
+
+        this.rootTag.setAttribute("class", "pop-over resizable");
+        this.rootTag.setAttribute("draggable", this.draggable);
+
+        this.keepRatio = false;
+
+        if(!isUndefined(options)) {
+            var css = this.rootTag.className;
+            if (options.css) {
+                css += " " + options.css;
+            }
+            if(options.keepRatio){
+                css += " keep-ratio-w";
+                this.keepRatio = true;
+            }
+
+            this.rootTag.setAttribute("class", css);
+        }
+
+        this.flexDiv = document.createElement("div");
+        this.flexDiv.setAttribute("class","pop-inner");
+
+        this.popContentDiv = document.createElement("div");
+        this.popContentDiv.setAttribute("class","pop-content");
+        this.popContentDiv.setAttribute("id","pop-content-id-"+OSH.Utils.randomUUID());
+
+        if(!this.keepRatio) {
+            OSH.Utils.addCss(this.popContentDiv,"no-keep-ratio");
+        }
+
+        this.flexDiv.appendChild(this.popContentDiv);
+        // plugs it into the new draggable dialog
+        this.rootTag.appendChild(this.flexDiv);
+
+        if(typeof (options) != "undefined") {
+            if(typeof (options.show) != "undefined" && !options.show) {
+                this.rootTag.style.display = "none";
+            } else {
+                this.initialWidth = this.rootTag.offsetWidth;
+            }
+        }
+
+        // adds listener
+        this.rootTag.addEventListener('dragstart', this.drag_start.bind(this), false);
+        document.addEventListener('dragover', this.drag_over.bind(this), false);
+        document.addEventListener('drop', this.drop.bind(this), false);
+
+        if(this.closeable) {
+            document.getElementById(closeDivId).onclick = this.close.bind(this);
+        }
+
+        if(this.dockable) {
+            document.getElementById(this.pinDivId).onclick = this.unpin.bind(this);
+        }
+
+        if(this.connectionIds.length > 0) {
+            document.getElementById(this.connectDivId).onclick = this.connect.bind(this);
+        }
+
+        if(typeof  this.swapDivId != "undefined") {
+            document.getElementById(this.swapDivId).onclick = this.swapClick.bind(this);
+        }
+
+        // calls super handleEvents
+        this.handleEvents();
+
+        var self = this;
+
+        // observe events to update the dialog after disconnect/connect events handling
+        OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
+            var dataSources = event.dataSourcesId;
+            if(dataSources.length == self.connectionIds.length) {
+                if(dataSources.filter(function(n) {
+                        return self.connectionIds.indexOf(n) != -1;
+                    }).length == self.connectionIds.length) {
+                    document.getElementById(self.connectDivId).setAttribute("class", "pop-connect");
+                    self.connected = true;
+                }
+            }
+        });
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
+            var dataSources = event.dataSourcesId;
+            if(dataSources.length == self.connectionIds.length) {
+                if(dataSources.filter(function(n) {
+                        return self.connectionIds.indexOf(n) != -1;
+                    }).length == self.connectionIds.length) {
+                    document.getElementById(self.connectDivId).setAttribute("class", "pop-disconnect");
+                    self.connected = false;
+                }
+            }
+        });
+
+        OSH.EventManager.observe("swap-restore",function(event) {
+            if(self.swapped && event.exclude != self.id) {
+                self.swap();
+                self.swapped = false;
+            }
+        });
+
+        var p = this.rootTag.parentNode;
+
+        var testDiv = document.createElement("div");
+        testDiv.setAttribute("class","outer-dialog");
+        testDiv.appendChild(this.rootTag);
+
+        p.appendChild(testDiv);
+    },
+
+    /**
+     * Swap the current div with the div given as parameter
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    swapClick: function() {
+        OSH.EventManager.fire("swap-restore",{exclude: this.id});
+        this.swap();
+    },
+
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    swap:function() {
+        // swap the child of the popContentDiv with the child contained in the the containerDiv
+        var containerDivToSwap = document.getElementById(this.divIdToSwap);
+        if(containerDivToSwap != "undefined" && containerDivToSwap != null) {
+            if(!this.swapped) {
+                // get
+                var popContent = this.popContentDiv.firstChild;
+                this.contentViewId = popContent.id;
+                var swapContainerContent = containerDivToSwap.firstChild;
+
+                // remove
+                containerDivToSwap.removeChild(swapContainerContent);
+                this.popContentDiv.removeChild(popContent);
+
+                // append
+                containerDivToSwap.appendChild(popContent);
+                this.popContentDiv.appendChild(swapContainerContent);
+                this.swapped = true;
+
+                // update title
+                document.getElementById(this.titleId).innerText = "- Swapped -";
+
+                // if keep ratio
+                if(this.keepRatio) {
+                    // remove css class from dialog
+                    OSH.Utils.removeCss(this.rootTag,"keep-ratio-w");
+                    // does not keep ratio for the new content
+                    OSH.Utils.addCss(this.popContentDiv,"no-keep-ratio");
+                    OSH.Utils.addCss(containerDivToSwap,"keep-ratio-h");
+                }
+            } else {
+                // get
+                var popContent = this.popContentDiv.firstChild;
+                var swapContainerContent = document.getElementById(this.contentViewId);
+
+                // remove
+                containerDivToSwap.removeChild(swapContainerContent);
+                this.popContentDiv.removeChild(popContent);
+
+                // append
+                containerDivToSwap.appendChild(popContent);
+                this.popContentDiv.appendChild(swapContainerContent);
+
+                // update title
+                document.getElementById(this.titleId).innerText = this.name;
+                this.swapped = false;
+
+                // if keep ratio
+                if(this.keepRatio) {
+                    // remove css class from dialog
+                    OSH.Utils.addCss(this.rootTag,"keep-ratio-w");
+                    OSH.Utils.removeCss(this.popContentDiv,"no-keep-ratio");
+                    OSH.Utils.removeCss(containerDivToSwap,"keep-ratio-h");
+                }
+            }
+
+            // send resize event to the view
+            var everyChild = document.getElementById(this.divIdToSwap).querySelectorAll("div");
+            for (var i = 0; i<everyChild.length; i++) {
+                var id = everyChild[i].id;
+                if(id.startsWith("view-")) {
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.RESIZE+"-"+id);
+                }
+            }
+
+            var everyChild = this.popContentDiv.querySelectorAll("div");
+            for (var i = 0; i<everyChild.length; i++) {
+                var id = everyChild[i].id;
+                if(id.startsWith("view-")) {
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.RESIZE+"-"+id);
+                }
+            }
+        }
+    },
+
+    /**
+     *
+     * @param $super
+     * @param properties
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    show: function($super,properties) {
+        if(properties.viewId.indexOf(this.getId()) > -1) {
+            this.rootTag.style.display = "block";
+            if(typeof(this.initialWidth) == "undefined" ) {
+                this.initialWidth = this.rootTag.offsetWidth;
+            }
+        }
+    },
+
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    connect: function() {
+        if(!this.swapped) {
+            if (!this.connected) {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId: this.connectionIds});
+            } else {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE, {dataSourcesId: this.connectionIds});
+            }
+        }
+    },
+
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    unpin: function() {
+        if (!this.draggable) {
+            var bodyRect = document.body.getBoundingClientRect(),
+                elemRect = this.rootTag.getBoundingClientRect(),
+                offsetTop = elemRect.top - bodyRect.top,
+                offsetLeft = elemRect.left - bodyRect.left;
+
+            this.rootTag.setAttribute("draggable", true);
+            this.rootTag.parentNode.removeChild(this.rootTag);
+            document.body.appendChild(this.rootTag);
+            this.rootTag.style.top = offsetTop;
+            this.rootTag.style.left = offsetLeft;
+            this.rootTag.style.position = "absolute";
+            this.draggable = true;
+
+            document.getElementById(this.pinDivId).setAttribute("class", "pop-pin pop-pin-drag");
+        } else {
+            this.rootTag.style.top = 0;
+            this.rootTag.style.left = 0 - (this.rootTag.offsetWidth - this.initialWidth);
+            this.rootTag.style.position = "relative";
+            this.rootTag.setAttribute("draggable", false);
+            document.body.removeChild(this.rootTag);
+            this.container.appendChild(this.rootTag);
+            this.draggable = false;
+            document.getElementById(this.pinDivId).setAttribute("class", "pop-pin");
+        }
+    },
+
+
+    /**
+     *
+     * @param callback
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    onClose: function (callback) {
+        this.onClose = callback;
+    },
+
+    /**
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    close: function () {
+       // this.rootTag.parentNode.removeChild(this.rootTag);
+        this.rootTag.style.display = "none";
+        if (this.onClose) {
+            this.onClose();
+        }
+    },
+
+    /**
+     *
+     * @param event
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    drag_start: function (event) {
+        event.stopPropagation();
+        // Grab all computed styles of the dragged object
+        var style = window.getComputedStyle(event.target, null);
+        // dataTransfer sets data that is being dragged. In this case, the current X and Y values (ex. "1257,104")
+        event.dataTransfer.effectAllowed = 'all';
+        event.dataTransfer.setData("text-" + this.rootTag.id,
+            (parseInt(style.getPropertyValue("left"), 10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
+
+    },
+
+    /**
+     *
+     * @param event
+     * @returns {boolean}
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    drag_over: function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        return false;
+    },
+
+    /**
+     *
+     * @param event
+     * @returns {boolean}
+     * @instance
+     * @memberof OSH.UI.DialogView
+     */
+    drop: function (event) {
+        event.stopPropagation();
+        // Set array of x and y values from the transfer data
+        var offset = event.dataTransfer.getData("text-" + this.rootTag.id).split(',');
+        this.rootTag.style.left = ((event.clientX + parseInt(offset[0], 10)) * 100) / window.innerWidth + "%";
+        this.rootTag.style.top = (event.clientY + parseInt(offset[1], 10)) + 'px';
+        event.preventDefault();
+        return false;
+    }
+});
+/**
+ * @classdesc Display a dialog with multiple view attach to it.
+ * @class
+ * @type {OSH.UI.Dialog}
+ * @augments OSH.UI.Dialog
+ */
+OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
+
+    initialize:function($super,divId, options) {
+        $super(divId,options);
+        // add extra part
+        this.popExtraDiv = document.createElement("div");
+        this.popExtraDiv.setAttribute("class","pop-extra");
+        this.popExtraDiv.setAttribute("id","pop-extra-id-"+OSH.Utils.randomUUID());
+
+        this.flexDiv.appendChild(this.popExtraDiv);
+    },
+
+    /**
+     * Appends a new view to the existing dialog.
+     * @param divId
+     * @instance
+     * @memberof OSH.UI.MultiDialogView
+     */
+    appendView:function(divId,properties) {
+        //console.log(this.popContentDiv);
+        //remove from parent
+        var divToAdd = document.getElementById(divId);
+
+        // check the visibility of the div
+        if(divToAdd.style.display === "none") {
+            divToAdd.style.display = "block";
+        }
+
+
+        var extraDiv = document.createElement("div");
+        extraDiv.setAttribute("class","pop-extra-el");
+
+        var i = document.createElement("i");
+        i.setAttribute("class","fa fa-caret-right pop-extra-collapse");
+
+        i.onclick = function() {
+            if(i.className.indexOf("fa-caret-down") == -1){
+                i.className = "fa fa-caret-down pop-extra-show";
+            } else {
+                i.className = "fa fa-caret-right pop-extra-collapse";
+            }
+        };
+        extraDiv.appendChild(i);
+        extraDiv.appendChild(divToAdd);
+        this.popExtraDiv.appendChild(extraDiv);
+
+    },
+
+    swap:function($super) {
+        var currentSwapValue = this.swapped;
+        $super();
+
+        // hide extra stuff
+        if(!currentSwapValue) {
+            this.popExtraDiv.style.display = "none";
+        } else {
+            this.popExtraDiv.style.display = "block";
+        }
+    },
+
+    show: function($super,properties) {
+        $super(properties);
+        //if(!isUndefinedOrNull(this.divToAdd) && this.divToAdd.style.display === "none") {
+        //   this.divToAdd.style.display = "block";
+        //  }
+    }
 });

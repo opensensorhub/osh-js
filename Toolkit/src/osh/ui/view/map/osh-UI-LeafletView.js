@@ -426,6 +426,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
 });
 
 /***  little hack starts here ***/
+/*
 L.Map = L.Map.extend({
     openPopup: function (popup) {
         this._popup = popup;
@@ -486,5 +487,6 @@ L.Map = L.Map.extend({
         }
     });
 })();
+*/
 
 /***  end of hack ***/
