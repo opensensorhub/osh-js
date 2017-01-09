@@ -11,7 +11,7 @@
  * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
  *
  */
-OSH.DataReceiver.DataSource = Class.create({
+OSH.DataReceiver.DataSource = BaseClass.extend({
   initialize: function(name,properties) {
     this.id = "DataSource-"+OSH.Utils.randomUUID();
     this.name = name;

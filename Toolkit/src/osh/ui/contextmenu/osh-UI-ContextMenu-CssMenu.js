@@ -4,9 +4,9 @@
  * @type {OSH.UI.ContextMenu}
  * @augments OSH.UI.ContextMenu
  */
-OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
-    initialize:function($super,properties,type) {
-        $super(properties);
+OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
+    initialize:function(properties,type) {
+        this._super(properties);
 
         this.items = [];
         if(typeof(type) != "undefined") {
@@ -59,7 +59,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
      * @instance
      * @memberof OSH.UI.ContextMenu.CssMenu
      */
-    show:function($super,properties) {
+    show:function(properties) {
         this.removeElement();
         var closeId = OSH.Utils.randomUUID();
         var videoId = OSH.Utils.randomUUID();

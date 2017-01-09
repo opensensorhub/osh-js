@@ -12,9 +12,9 @@ var videoView = new OSH.UI.MjpegView("containerId", {
     name: "Video"
 });
  */
-OSH.UI.MjpegView = Class.create(OSH.UI.View,{
-  initialize: function($super,divId,options) {
-    $super(divId,[],options);
+OSH.UI.MjpegView = OSH.UI.View.extend({
+  initialize: function(divId,options) {
+    this._super(divId,[],options);
 
     // creates video tag element
     this.imgTag = document.createElement("img");
@@ -41,7 +41,7 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  setData: function($super,dataSourceId,data) {
+  setData: function(dataSourceId,data) {
       var oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
       window.URL.revokeObjectURL(oldBlobURL);
@@ -55,7 +55,7 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  selectDataView: function($super,dataSourceIds,entityId) {
+  selectDataView: function(dataSourceIds,entityId) {
     if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {

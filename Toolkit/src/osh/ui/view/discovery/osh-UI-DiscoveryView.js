@@ -47,9 +47,9 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
         ]
     });
  */
-OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, properties) {
-        $super(divId,[],properties);
+OSH.UI.DiscoveryView = OSH.UI.View.extend({
+    initialize: function (divId, properties) {
+        this._super(divId,[],properties);
 
         this.swapId = "";
         if(typeof properties != "undefined") {

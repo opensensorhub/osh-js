@@ -2,7 +2,7 @@
  * @class
  * @classdesc
  */
-OSH.UI.Loading = Class.create({
+OSH.UI.Loading = BaseClass.extend({
     initialize: function () {
         var loadingDiv = document.createElement("div");
         loadingDiv.setAttribute("class",'loading-container');

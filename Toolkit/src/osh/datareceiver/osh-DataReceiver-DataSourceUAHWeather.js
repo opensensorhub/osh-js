@@ -3,7 +3,7 @@
  * @class OSH.DataReceiver.UAHWeather
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.DataSourceUAHWeather = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -13,7 +13,7 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
    * @memberof OSH.DataReceiver.DataSourceUAHWeather
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -27,7 +27,7 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
    * @memberof OSH.DataReceiver.DataSourceUAHWeather
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var airPres = parseFloat(tokens[1]);

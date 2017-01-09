@@ -19,9 +19,9 @@
      }
  );
  */
-OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
-    initialize:function($super,divId,entityItems,options) {
-        $super(divId,[],options);
+OSH.UI.EntityTreeView = OSH.UI.View.extend({
+    initialize:function(divId,entityItems,options) {
+        this._super(divId,[],options);
 
         this.entityItems = entityItems;
         this.initTree(options);

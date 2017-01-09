@@ -19,6 +19,7 @@ gulp.task('js-normal', function () {
         .pipe(plugins.jshint())
         //.pipe(plugins.jshint.reporter('default'))
         .pipe(order([
+            'osh-BaseClass.js',
             'osh-Template.js',
             'osh-Utils.js',
             'osh-EventManager.js',
@@ -78,6 +79,7 @@ gulp.task('js-minify', function() {
     .pipe(jshint())
     //.pipe(jshint.reporter('default')) //display error on stdout
     .pipe(order([
+            'osh-BaseClass.js',
             'osh-Template.js',
             'osh-Utils.js',
             'osh-EventManager.js',

@@ -1,3 +1,69 @@
+/* Simple JavaScript Inheritance
+* By John Resig http://ejohn.org/
+* MIT Licensed.
+*/
+// Inspired by base2 and Prototype
+(function(){
+    var initializing = false;
+    var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+
+    // The base BaseClass implementation (does nothing)
+    this.BaseClass = function(){};
+
+    // Create a new BaseClass that inherits from this class
+    BaseClass.extend = function(prop) {
+        var _super = this.prototype;
+
+        // Instantiate a base class (but only create the instance,
+        // don’t run the init constructor)
+        initializing = true;
+        var prototype = new this();
+        initializing = false;
+
+        // Copy the properties over onto the new prototype
+        for (var name in prop) {
+            // Check if we’re overwriting an existing function
+            if(typeof prop[name] == 'function' && typeof _super[name] == 'function' && fnTest.test(prop[name])) {
+                prototype[name] = (function(name, fn){
+                                      return function() {
+                                          var tmp = this._super;
+
+                                          // Add a new ._super() method that is the same method
+                                          // but on the super-class
+                                          this._super = _super[name];
+
+                                          // The method only need to be bound temporarily, so we
+                                          // remove it when we’re done executing
+                                          var ret = fn.apply(this, arguments);
+                                          this._super = tmp;
+
+                                          return ret;
+                                      };
+                                  })(name, prop[name]);
+            } else {
+               prototype[name] = prop[name];
+            }
+        }
+
+        // The dummy class constructor
+        function BaseClass() {
+            // All construction is actually done in the initialize method
+            if ( !initializing && this.initialize )
+                this.initialize.apply(this, arguments);
+        }
+
+        // Populate our constructed prototype object
+        BaseClass.prototype = prototype;
+
+        // Enforce the constructor to be what we expect
+        BaseClass.prototype.constructor = BaseClass;
+
+        // And make this class extendable
+        BaseClass.extend = arguments.callee;
+
+        return BaseClass;
+    };
+})();
 /**
  * @namespace {object} OSH
  */
@@ -498,7 +564,7 @@ var BUFFER_STATUS = {
     replayFactor: 1
  });
  */
-OSH.Buffer = Class.create({
+OSH.Buffer = BaseClass.extend({
   initialize:function(options) {
     this.buffers = {};
 
@@ -830,95 +896,38 @@ OSH.Buffer = Class.create({
     }.bind(this),bufferingTime);
   }
 });
-OSH.DataConnector.DataConnector = function(url) {
-    this.url = url;
-    this.id = "DataConnector-"+OSH.Utils.randomUUID();
-}
-
-OSH.DataConnector.DataConnector.prototype.getId = function() {
-    return this.id;
-}
-
-OSH.DataConnector.DataConnector.prototype.getUrl = function() {
-    return this.url;
-}
-
-
 /**
  * @classdesc The DataConnector is the abstract class used to create different connectors.
  * @constructor
  * @abstract
  * @param {string} url The full url used to connect to the data stream
- *//*
-
-OSH.DataConnector.DataConnector = Class.create({
+ */
+OSH.DataConnector.DataConnector = BaseClass.extend({
   initialize: function(url) {
     this.url = url;
     this.id = "DataConnector-"+OSH.Utils.randomUUID();
   },
 
-  */
-/**
+  /**
    * The data connector default id.
    * @returns {string}
    * @memberof OSH.DataConnector.DataConnector
    * @instance
-   *//*
-
+   */
   getId: function() {
     return this.id;
   },
 
-  */
-/**
+  /**
    * The stream url.
    * @returns {string}
    * @memberof OSH.DataConnector.DataConnector
    * @instance
-   *//*
-
+   */
   getUrl: function() {
     return this.url;
   }
 });
-*/
-
-OSH.DataConnector.AjaxConnector = function(url) {
-    OSH.DataConnector.AjaxConnector.parent.constructor.apply(this, arguments);
-}
-
-osh_extend(OSH.DataConnector.AjaxConnector, OSH.DataConnector.DataConnector);
-
-OSH.DataConnector.AjaxConnector.prototype.sendRequest = function(request) {
-    var self = this;
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", this.getUrl(), true);
-    xmlhttp.setRequestHeader('Content-Type', 'text/xml');
-    xmlhttp.send(request);
-
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            console.log("ici");
-        }
-        /*if (xhr.readyState < 4) {
-            // while waiting response from server
-        }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.
-            if (xhr.status == 200 && xhr.status < 300) { // http status between 200 to 299 are all successful
-                this.onSuccess(xhr.responseText);
-            } else {
-                this.onError("");
-            }
-        }*/
-    }.bind(this);
-}
-
-OSH.DataConnector.AjaxConnector.prototype.onError = function(event) {
-}
-
-
-OSH.DataConnector.AjaxConnector.prototype.onSuccess = function(event) {
-}
-
 /**
  * @type {OSH.DataConnector.DataConnector}
  * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
@@ -941,17 +950,14 @@ OSH.DataConnector.AjaxConnector.prototype.onSuccess = function(event) {
  * connector.sendRequest(request);
  *
  */
-/*
-OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, {
+OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
 
-    */
-/**
+    /**
      * Sends the request to the defined server.
      * @param request The Http request (as a String format)
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
-     *//*
-
+     */
     sendRequest: function (request) {
         var self = this;
         var xmlhttp = new XMLHttpRequest();
@@ -963,8 +969,7 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 console.log("ici");
             }
-            */
-/*if (xhr.readyState < 4) {
+            /*if (xhr.readyState < 4) {
                 // while waiting response from server
             }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.
                 if (xhr.status == 200 && xhr.status < 300) { // http status between 200 to 299 are all successful
@@ -972,129 +977,30 @@ OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, 
                 } else {
                     this.onError("");
                 }
-            }*//*
-
+            }*/
         }.bind(this);
     },
 
-    */
-/**
+    /**
      * This is the callback method in case of getting error connection.
      * @param event The error details
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
-     *//*
-
+     */
     onError:function(event){
 
     },
 
-    */
-/**
+    /**
      * This is the callback method in case of getting success connection.
      * @param event
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
-     *//*
-
+     */
     onSuccess:function(event) {
 
     }
-});*/
-
-OSH.DataConnector.WebSocketDataConnector = function(url) {
-    OSH.DataConnector.WebSocketDataConnector.parent.constructor.apply(this, arguments);
-}
-
-osh_extend(OSH.DataConnector.WebSocketDataConnector, OSH.DataConnector.DataConnector);
-
-OSH.DataConnector.WebSocketDataConnector.prototype.connect = function(request) {
-    if (!this.init) {
-        //creates Web Socket
-        if (OSH.Utils.isWebWorker()){
-            var url = this.getUrl();
-            var blobURL = URL.createObjectURL(new Blob(['(',
-
-                    function () {
-                        var ws = null;
-                        self.onmessage = function (e) {
-                            if(e.data == "close") {
-                                close();
-                            } else {
-                                // is URL
-                                init(e.data);
-                            }
-                        }
-
-                        function init(url) {
-                            ws = new WebSocket(url);
-                            ws.binaryType = 'arraybuffer';
-                            ws.onmessage = function (event) {
-                                //callback data on message received
-                                if (event.data.byteLength > 0) {
-                                    //this.onMessage(event.data);
-                                    self.postMessage(event.data);
-                                }
-                            }
-
-                            ws.onerror = function(event) {
-                                ws.close();
-                            }
-                        }
-
-                        function close() {
-                            ws.close();
-                        }
-                    }.toString(), ')()'],
-                {type: 'application/javascript'}));
-
-            this.worker = new Worker(blobURL);
-
-            this.worker.postMessage(url);
-            this.worker.onmessage = function (e) {
-                this.onMessage(e.data);
-            }.bind(this);
-
-            // Won't be needing this anymore
-            URL.revokeObjectURL(blobURL);
-        } else {
-            this.ws = new WebSocket(this.getUrl());
-            this.ws.binaryType = 'arraybuffer';
-            this.ws.onmessage = function (event) {
-                //callback data on message received
-                if (event.data.byteLength > 0) {
-                    this.onMessage(event.data);
-                }
-            }.bind(this);
-
-            // closes socket if any errors occur
-            this.ws.onerror = function(event) {
-                this.ws.close();
-            }.bind(this);
-        }
-        this.init = true;
-    }
-}
-
-OSH.DataConnector.WebSocketDataConnector.prototype.disconnect = function() {
-    if (OSH.Utils.isWebWorker() && this.worker != null) {
-        this.worker.postMessage("close");
-        this.worker.terminate();
-        this.init = false;
-    } else if (this.ws != null) {
-        this.ws.close();
-        this.init = false;
-    }
-}
-
-
-OSH.DataConnector.WebSocketDataConnector.prototype.onMessage = function(data) {
-}
-
-OSH.DataConnector.WebSocketDataConnector.prototype.close = function() {
-    this.disconnect();
-}
-
+});
 /**
  * @type {OSH.DataConnector.DataConnector}
  * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
@@ -1114,13 +1020,13 @@ OSH.DataConnector.WebSocketDataConnector.prototype.close = function() {
  * connector.close();
  *
  */
-/*OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
-    *//**
+OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.extend({
+    /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     *//*
+     */
     connect: function () {
         if (!this.init) {
             //creates Web Socket
@@ -1189,11 +1095,11 @@ OSH.DataConnector.WebSocketDataConnector.prototype.close = function() {
         }
     },
 
-    *//**
+    /**
      * Disconnects the websocket.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     *//*
+     */
     disconnect: function() {
         if (OSH.Utils.isWebWorker() && this.worker != null) {
             this.worker.postMessage("close");
@@ -1205,25 +1111,24 @@ OSH.DataConnector.WebSocketDataConnector.prototype.close = function() {
         }
     },
 
-    *//**
+    /**
      * The onMessage method used by the websocket to callback the data
      * @param data the callback data
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     *//*
+     */
     onMessage: function (data) {
     },
 
-    *//**
+    /**
      * Closes the webSocket.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
-     *//*
+     */
     close: function() {
         this.disconnect();
     }
-});*/
-
+});
 
 /**
  * @classdesc The DataSource is the abstract class used to create different datasources.
@@ -1238,7 +1143,7 @@ OSH.DataConnector.WebSocketDataConnector.prototype.close = function() {
  * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
  *
  */
-OSH.DataReceiver.DataSource = Class.create({
+OSH.DataReceiver.DataSource = BaseClass.extend({
   initialize: function(name,properties) {
     this.id = "DataSource-"+OSH.Utils.randomUUID();
     this.name = name;
@@ -1451,7 +1356,7 @@ OSH.DataReceiver.DataSource = Class.create({
  * @class OSH.DataReceiver.EulerOrientation
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.EulerOrientation = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.EulerOrientation = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -1461,7 +1366,7 @@ OSH.DataReceiver.EulerOrientation = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.EulerOrientation
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var t =  new Date(tokens[0]).getTime();
@@ -1482,7 +1387,7 @@ OSH.DataReceiver.EulerOrientation = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.EulerOrientation
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var yaw = parseFloat(tokens[1]);    
@@ -1517,7 +1422,7 @@ OSH.DataReceiver.EulerOrientation = Class.create(OSH.DataReceiver.DataSource,{
     timeShift: -16000
   });
  */
-OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.LatLonAlt = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -1527,7 +1432,7 @@ OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.LatLonAlt
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var t =  new Date(tokens[0]).getTime();
@@ -1548,7 +1453,7 @@ OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.LatLonAlt
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var lat = parseFloat(tokens[1]);
@@ -1568,7 +1473,7 @@ OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
  * @class OSH.DataReceiver.Nexrad
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.Nexrad = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -1578,7 +1483,7 @@ OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.Nexrad
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -1592,7 +1497,7 @@ OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.Nexrad
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var el = parseFloat(tokens[2]);
@@ -1659,7 +1564,7 @@ OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
         bufferingTime: 1000
     });
  */
-OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.OrientationQuaternion = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -1669,7 +1574,7 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
    * @memberof OSH.DataReceiver.OrientationQuaternion
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -1689,7 +1594,7 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
    * @memberof OSH.DataReceiver.OrientationQuaternion
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var qx = parseFloat(tokens[1]);
@@ -1743,9 +1648,9 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
         bufferingTime: 1000
   });
  */
-OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
-    initialize: function ($super, name, properties, options) {
-        $super(name, properties, options);
+OSH.DataReceiver.VideoH264 = OSH.DataReceiver.DataSource.extend({
+    initialize: function (name, properties, options) {
+        this._super(name, properties, options);
     },
 
     /**
@@ -1756,7 +1661,7 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.VideoH264
      * @instance
      */
-    parseTimeStamp: function ($super, data) {
+    parseTimeStamp: function (data) {
         // read double time stamp as big endian
         return new DataView(data).getFloat64(0, false) * 1000;
     },
@@ -1769,7 +1674,7 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.VideoH264
      * @instance
      */
-    parseData: function ($super, data) {
+    parseData: function (data) {
         var len = data.byteLength;
         return new Uint8Array(data, 12, len - 12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
     }
@@ -1795,9 +1700,9 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
     bufferingTime: 1000
   });
  */
-OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
-  initialize: function($super,name,properties,options) {
-    $super(name,properties,options);
+OSH.DataReceiver.VideoMjpeg = OSH.DataReceiver.DataSource.extend({
+  initialize: function(name,properties,options) {
+    this._super(name,properties,options);
   },
 
   /**
@@ -1808,7 +1713,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.VideoMjpeg
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
   },
 
@@ -1820,7 +1725,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.VideoMjpeg
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var imgBlob = new Blob([data]);
     var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
     return blobURL;
@@ -1847,9 +1752,9 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
         responseFormat: "video/mp4
   });
  */
-OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
-    initialize: function ($super, name, properties, options) {
-        $super(name, properties, options);
+OSH.DataReceiver.VideoMp4 = OSH.DataReceiver.DataSource.extend({
+    initialize: function (name, properties, options) {
+        this._super(name, properties, options);
         this.absoluteTime = -1;
     },
 
@@ -1861,7 +1766,7 @@ OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.VideoMp4
      * @instance
      */
-    parseTimeStamp: function ($super, data) {
+    parseTimeStamp: function (data) {
         // got the first box => MVDH
         if (this.absoluteTime == -1) {
             var infos = readMP4Info(data);
@@ -1951,7 +1856,7 @@ function readNCC(bytes, n) {
       bufferingTime: 1000
   });
  */
-OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
+OSH.DataReceiver.Chart = OSH.DataReceiver.DataSource.extend({
 
     /**
      * Extracts timestamp from the data. The timestamp is the first token got from split(',')
@@ -1961,7 +1866,7 @@ OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.Chart
      * @instance
      */
-    parseTimeStamp: function ($super, data) {
+    parseTimeStamp: function (data) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(data));
         var tokens = rec.trim().split(",");
         var t = new Date(tokens[0]).getTime();
@@ -1976,7 +1881,7 @@ OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.Chart
      * @instance
      */
-    parseData: function ($super, data) {
+    parseData: function (data) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(data));
         var tokens = rec.trim().split(",");
         //skip time
@@ -2013,7 +1918,7 @@ OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
  * dataProviderController.addEntity(entity);
  *
  */
-OSH.DataReceiver.DataReceiverController = Class.create({
+OSH.DataReceiver.DataReceiverController = BaseClass.extend({
     initialize: function (options) {
         this.options = options;
         this.initBuffer();
@@ -2189,7 +2094,7 @@ OSH.DataReceiver.DataReceiverController = Class.create({
  * @classdesc
  * @class
  */
-OSH.DataSender.DataSink = Class.create({
+OSH.DataSender.DataSink = BaseClass.extend({
     initialize: function (name, properties, options) {
         if (properties.protocol == "http") {
             this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
@@ -2297,7 +2202,7 @@ OSH.DataSender.DataSink = Class.create({
  * @class
  * @augments OSH.DataSender.DataSink
  */
-OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
+OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
 
     /**
      * Builds the request based on sps standard.
@@ -2305,7 +2210,7 @@ OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
      * @memberof OSH.DataReceiver.PtzTasking
      * @instance
      */
-    buildRequest: function($super,properties) {
+    buildRequest: function(properties) {
         var xmlSpsRequest = "<sps:Submit ";
 
         // adds service
@@ -2351,11 +2256,11 @@ OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
  * @class
  * @augments OSH.DataSender.DataSource
  */
-OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSink,{
+OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
 
-    initialize: function($super, name, properties) {
+    initialize: function(name, properties) {
 
-        $super(name, properties);
+        this._super(name, properties);
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_TAKEOFF, function (event) {
             this.connector.sendRequest(this.buildTakeOffRequest());            
@@ -2487,7 +2392,7 @@ OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSink,{
  * @class
  * @param {Object} options
  */
-OSH.DataSender.DataSenderController = Class.create({
+OSH.DataSender.DataSenderController = BaseClass.extend({
     initialize: function (options) {
         this.dataSources = {};
     },
@@ -2535,7 +2440,7 @@ OSH.DataSender.DataSenderController = Class.create({
  * @classdesc
  *
  */
-OSH.Sensor = Class.create({
+OSH.Sensor = BaseClass.extend({
   initialize: function (jsonix_offering) {
     this.server = null;
     this.identifier = jsonix_offering.identifier;
@@ -2935,7 +2840,7 @@ OSH.Sensor = Class.create({
 
    oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
  */
-OSH.Server = Class.create({
+OSH.Server = BaseClass.extend({
   initialize: function (url) {
     this.url = url;
     this.id = "Server-" + OSH.Utils.randomUUID();
@@ -3014,7 +2919,7 @@ OSH.Server = Class.create({
  * @class
  * @deprecated
  */
-OSH.Log = Class.create({
+OSH.Log = BaseClass.extend({
     initialize:function(){
         this.logDiv = document.createElement("TEXTAREA");
         this.logDiv.setAttribute("class", "osh-log popup-content");
@@ -3051,7 +2956,7 @@ OSH.Log = Class.create({
  * @param {string} options - The options
  * @abstract
  */
-OSH.UI.View = Class.create({
+OSH.UI.View = BaseClass.extend({
     initialize: function (divId, viewItems,options) {
         // list of stylers
         this.stylers = [];
@@ -3402,7 +3307,7 @@ OSH.UI.View = Class.create({
  * @param {Object} properties the properties object
  * @param {string} properties.id the context menu id
  */
-OSH.UI.ContextMenu = Class.create({
+OSH.UI.ContextMenu = BaseClass.extend({
 	initialize : function(properties) {
 		if(typeof  properties != "undefined" && typeof  properties.id != "undefined") {
 			this.id = properties.id;
@@ -3453,9 +3358,9 @@ OSH.UI.ContextMenu = Class.create({
  * @type {OSH.UI.ContextMenu}
  * @augments OSH.UI.ContextMenu
  */
-OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
-    initialize:function($super,properties,type) {
-        $super(properties);
+OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
+    initialize:function(properties,type) {
+        this._super(properties);
 
         this.items = [];
         if(typeof(type) != "undefined") {
@@ -3508,7 +3413,7 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
      * @instance
      * @memberof OSH.UI.ContextMenu.CssMenu
      */
-    show:function($super,properties) {
+    show:function(properties) {
         this.removeElement();
         var closeId = OSH.Utils.randomUUID();
         var videoId = OSH.Utils.randomUUID();
@@ -3633,9 +3538,9 @@ OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
 
   var contextCircularMenu = new OSH.UI.ContextMenu.CircularMenu({id : randomId,groupId: randomGroupId,items : menuItems});
  */
-OSH.UI.ContextMenu.CircularMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
-    initialize:function($super,properties) {
-        $super(properties,"circular");
+OSH.UI.ContextMenu.CircularMenu = OSH.UI.ContextMenu.CssMenu.extend({
+    initialize:function(properties) {
+        this._super(properties,"circular");
     }
 });
 /**
@@ -3656,9 +3561,9 @@ OSH.UI.ContextMenu.CircularMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
 
    var contextStackMenu = new OSH.UI.ContextMenu.StackMenu({id : randomId,groupId: randomGroupId,items : menuItems});
  */
-OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
-    initialize:function($super,properties) {
-        $super(properties,"stack");
+OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
+    initialize:function(properties) {
+        this._super(properties,"stack");
     },
 
     /**
@@ -3668,7 +3573,7 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
      * @instance
      * @memberof OSH.UI.ContextMenu.StackMenu
      */
-    show:function($super,properties) {
+    show:function(properties) {
         this.removeElement();
         var htmlVar="";
         htmlVar += "  <div class=\""+this.type+"-menu-circle\">";
@@ -3732,7 +3637,7 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
  * @class OSH.UI.Styler
  * @abstract
  */
-OSH.UI.Styler = Class.create({
+OSH.UI.Styler = BaseClass.extend({
 	initialize : function(jsonProperties) {
 		this.properties = jsonProperties;
 		this.id = "styler-" + OSH.Utils.randomUUID();
@@ -3854,9 +3759,9 @@ OSH.UI.Styler = Class.create({
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.ImageDraping = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.platformLocation = null;
 		this.platformOrientation = null;
@@ -3927,8 +3832,8 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 	 * @memberof  OSH.UI.Styler.ImageDraping
 	 * @instance
 	 */
-	init: function($super,view) {
-		$super(view);
+	init: function(view) {
+		this._super(view);
 	},
 
 	/**
@@ -3941,8 +3846,8 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 	 * @memberof  OSH.UI.Styler.ImageDraping
 	 * @instance
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if ($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if (this._super(dataSourceId,rec,view,options)) {
 			
 			var enabled = true;
 			if (this.snapshotFunc != null)
@@ -3966,9 +3871,9 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
  * @type {OSH.UI.Style}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.Curve = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.xLabel = "";
 		this.yLabel = "";
 		this.color = "#000000";
@@ -4025,8 +3930,8 @@ OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Curve
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if(this._super(dataSourceId,rec,view,options)) {
 			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
 			if(typeof(view) != "undefined") {
 				view.updateCurve(this,rec.timeStamp,options);
@@ -4040,9 +3945,9 @@ OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.location = null;
 		this.radialData = null;
@@ -4108,8 +4013,8 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Nexrad
 	 */
-	init: function($super,view) {
-		$super(view);
+	init: function(view) {
+		this._super(view);
 	},
 
 	/**
@@ -4122,8 +4027,8 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Nexrad
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if ($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if (this._super(dataSourceId,rec,view,options)) {
 			if (typeof(view) != "undefined") {
 				
 				var DTR = Math.PI/180;
@@ -4208,9 +4113,9 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 		maxPoints : 200
 	});
  */
-OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.Polyline = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.locations = [];
      	this.color = 'red';
@@ -4289,8 +4194,8 @@ OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Polyline
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if(this._super(dataSourceId,rec,view,options)) {
 			if(typeof(view) != "undefined" && typeof view.updatePolyline === 'function'){
 				view.updatePolyline(this);
 			}
@@ -4350,9 +4255,9 @@ OSH.UI.Styler.Polyline = Class.create(OSH.UI.Styler, {
         }
     });
  */
-OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.location = null;
 		this.orientation = {heading:0};
@@ -4430,8 +4335,8 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	 * @memberof OSH.UI.Styler.PointMarker
 	 * @instance
 	 */
-	init: function($super,view) {
-		$super(view);
+	init: function(view) {
+		this._super(view);
 		if(typeof(view) != "undefined" && this.location != null) {
 			view.updateMarker(this,0,{});
 		}
@@ -4447,8 +4352,8 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	 * @memberof OSH.UI.Styler.PointMarker
 	 * @instance
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if(this._super(dataSourceId,rec,view,options)) {
 			if (typeof(view) != "undefined" && this.location != null) {
 				view.updateMarker(this, rec.timeStamp, options);
 			}
@@ -4493,9 +4398,9 @@ var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv
     maxPoints: 30
 });
  */
-OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
-	initialize : function($super,divId,viewItems, options) {
-		$super(divId,viewItems,options);
+OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
+	initialize : function(divId,viewItems, options) {
+		this._super(divId,viewItems,options);
 
 		this.entityId = options.entityId;
 		var xLabel = 'Time';
@@ -4658,7 +4563,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	 * @instance
 	 * @memberof OSH.UI.Nvd3CurveChartView
 	 */
-	selectDataView: function($super,dataSourceIds) {
+	selectDataView: function(dataSourceIds) {
 		var currentDataSources= this.getDataSourcesId();
 		if(OSH.Utils.isArrayIntersect(dataSourceIds,currentDataSources)) {
 			this.div.setAttribute("class",this.css+" "+this.cssSelected);
@@ -4725,9 +4630,9 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
         ]
     });
  */
-OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, properties) {
-        $super(divId,[],properties);
+OSH.UI.DiscoveryView = OSH.UI.View.extend({
+    initialize: function (divId, properties) {
+        this._super(divId,[],properties);
 
         this.swapId = "";
         if(typeof properties != "undefined") {
@@ -5380,9 +5285,9 @@ OSH.UI.DiscoveryView.Type = {
      }
  );
  */
-OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
-    initialize:function($super,divId,entityItems,options) {
-        $super(divId,[],options);
+OSH.UI.EntityTreeView = OSH.UI.View.extend({
+    initialize:function(divId,entityItems,options) {
+        this._super(divId,[],options);
 
         this.entityItems = entityItems;
         this.initTree(options);
@@ -5517,10 +5422,10 @@ OSH.UI.EntityTreeView = Class.create(OSH.UI.View,{
  }]
  );
  */
-OSH.UI.CesiumView = Class.create(OSH.UI.View, {
+OSH.UI.CesiumView = OSH.UI.View.extend({
 	
-	initialize : function($super, divId,viewItems, properties) {
-		$super(divId,viewItems,properties);
+	initialize : function(divId,viewItems, properties) {
+		this._super(divId,viewItems,properties);
 
 		var cssClass = document.getElementById(this.divId).className;
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -5656,7 +5561,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	beforeAddingItems: function ($super, options) {
+	beforeAddingItems: function (options) {
 		this.markers = {};
 	    this.first = true;
 	    
@@ -5866,9 +5771,9 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
  }]
  );
  */
-OSH.UI.LeafletView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, viewItems, options) {
-        $super(divId, viewItems, options);
+OSH.UI.LeafletView = OSH.UI.View.extend({
+    initialize: function (divId, viewItems, options) {
+        this._super(divId, viewItems, options);
 
         var cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -5881,7 +5786,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    beforeAddingItems: function ($super, options) {
+    beforeAddingItems: function (options) {
         // inits the map
         this.initMap(options);
         this.initEvents();
@@ -6239,8 +6144,8 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    attachTo:function($super,divId) {
-        $super(divId);
+    attachTo:function(divId) {
+        this._super(divId);
         // Fix leaflet bug when resizing the div parent container
         this.map.invalidateSize();
     },
@@ -6252,7 +6157,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.LeafletView
      */
     onResize:function($super) {
-        $super();
+        this._super();
         this.map.invalidateSize();
     },
 });
@@ -6329,9 +6234,9 @@ L.Map = L.Map.extend({
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  */
-OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, viewItems, options) {
-        $super(divId, viewItems, options);
+OSH.UI.OpenLayerView = OSH.UI.View.extend({
+    initialize: function (divId, viewItems, options) {
+        this._super(divId, viewItems, options);
     },
 
     /**
@@ -6341,7 +6246,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    beforeAddingItems: function ($super, options) {
+    beforeAddingItems: function (options) {
         // inits the map
         this.initMap(options);
         this.initEvents();
@@ -6748,7 +6653,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
  * @class
  * @classdesc
  */
-OSH.UI.Loading = Class.create({
+OSH.UI.Loading = BaseClass.extend({
     initialize: function () {
         var loadingDiv = document.createElement("div");
         loadingDiv.setAttribute("class",'loading-container');
@@ -6787,9 +6692,9 @@ new OSH.UI.Loading();
         refreshRate:1
  });
  */
-OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
-	initialize: function ($super, divId, options) {
-		$super(divId, [], options);
+OSH.UI.RangeSlider = OSH.UI.View.extend({
+	initialize: function (divId, options) {
+		this._super(divId, [], options);
 
 		this.slider = document.createElement("div");
 		var activateButtonDiv = document.createElement("div");
@@ -6960,9 +6865,9 @@ htmlTaskingComponent += "<\/svg>";
  * @augments OSH.UI.View
  *
  */
-OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, options) {
-        $super(divId,[],options);
+OSH.UI.PtzTaskingView = OSH.UI.View.extend({
+    initialize: function (divId, options) {
+        this._super(divId,[],options);
         var width = "640";
         var height = "480";
         this.css = "";
@@ -7108,9 +7013,9 @@ var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
     useWorker:true
 });
  */
-OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, options) {
-        $super(divId, [], options);
+OSH.UI.FFMPEGView = OSH.UI.View.extend({
+    initialize: function (divId, options) {
+        this._super(divId, [], options);
 
         this.fps = 0;
         var width = "640";
@@ -7207,7 +7112,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.FFMPEGView
      */
-    selectDataView: function ($super, dataSourceIds, entityId) {
+    selectDataView: function (dataSourceIds, entityId) {
         if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
             document.getElementById(this.divId).setAttribute("class", this.css + " " + this.cssSelected);
         } else {
@@ -7546,9 +7451,9 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  */
-OSH.UI.H264View = Class.create(OSH.UI.View, {
-	initialize : function($super, divId, options) {
-		$super(divId,[],options);
+OSH.UI.H264View = OSH.UI.View.extend({
+	initialize : function(divId, options) {
+		this._super(divId,[],options);
 
 		var width = "640";
 		var height = "480";
@@ -7686,7 +7591,7 @@ OSH.UI.H264View = Class.create(OSH.UI.View, {
 	 * @instance
 	 * @memberof OSH.UI.H264View
 	 */
-	selectDataView: function($super,dataSourceIds,entityId) {
+	selectDataView: function(dataSourceIds,entityId) {
 	    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 	      document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
 	    } else {
@@ -7708,9 +7613,9 @@ var videoView = new OSH.UI.MjpegView("containerId", {
     name: "Video"
 });
  */
-OSH.UI.MjpegView = Class.create(OSH.UI.View,{
-  initialize: function($super,divId,options) {
-    $super(divId,[],options);
+OSH.UI.MjpegView = OSH.UI.View.extend({
+  initialize: function(divId,options) {
+    this._super(divId,[],options);
 
     // creates video tag element
     this.imgTag = document.createElement("img");
@@ -7737,7 +7642,7 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  setData: function($super,dataSourceId,data) {
+  setData: function(dataSourceId,data) {
       var oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
       window.URL.revokeObjectURL(oldBlobURL);
@@ -7751,7 +7656,7 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  selectDataView: function($super,dataSourceIds,entityId) {
+  selectDataView: function(dataSourceIds,entityId) {
     if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {
@@ -7782,9 +7687,9 @@ OSH.UI.MjpegView = Class.create(OSH.UI.View,{
     name: "Video"
  });
  */
-OSH.UI.Mp4View = Class.create(OSH.UI.View,{
-  initialize: function($super,divId,options) {
-    $super(divId,[],options);
+OSH.UI.Mp4View = OSH.UI.View.extend({
+  initialize: function(divId,options) {
+    this._super(divId,[],options);
     
     var width = "640";
     var height = "480";
@@ -7886,7 +7791,7 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
    * @instance
    * @memberof OSH.UI.Mp4View
    */
-  selectDataView: function($super,dataSourceIds, entityId) {
+  selectDataView: function(dataSourceIds, entityId) {
 	  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 		  document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
 	  } else {
@@ -7899,7 +7804,7 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
  * @class OSH.DataReceiver.UAHWeather
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.DataSourceUAHWeather = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -7909,7 +7814,7 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
    * @memberof OSH.DataReceiver.DataSourceUAHWeather
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -7923,7 +7828,7 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
    * @memberof OSH.DataReceiver.DataSourceUAHWeather
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var airPres = parseFloat(tokens[1]);
@@ -7944,18 +7849,6 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
   } 
 });
 
-function osh_extend(child, parent) {
-  child.prototype = osh_inherit(parent.prototype);
-  child.prototype.constructor = child;
-  child.parent = parent.prototype;
-};
-
-function osh_inherit(proto) {
-  function f() {}
-  f.prototype = proto;
-  return new f();
-};
-
 /**
  * @classdesc
  * @class
@@ -7973,9 +7866,9 @@ function osh_inherit(proto) {
         swapId: "main-container"
     });
  */
-OSH.UI.DialogView = Class.create(OSH.UI.View,{
-    initialize: function ($super,divId, options) {
-        $super(divId,[],options);
+OSH.UI.DialogView = OSH.UI.View.extend({
+    initialize: function (divId, options) {
+        this._super(divId,[],options);
         // creates HTML eflement
         this.dialogId = "dialog-" + OSH.Utils.randomUUID();
         this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
@@ -8237,7 +8130,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
      * @instance
      * @memberof OSH.UI.DialogView
      */
-    show: function($super,properties) {
+    show: function(properties) {
         if(properties.viewId.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
             if(typeof(this.initialWidth) == "undefined" ) {
@@ -8368,10 +8261,10 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
  * @type {OSH.UI.Dialog}
  * @augments OSH.UI.Dialog
  */
-OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
+OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
 
-    initialize:function($super,divId, options) {
-        $super(divId,options);
+    initialize:function(divId, options) {
+        this._super(divId,options);
         // add extra part
         this.popExtraDiv = document.createElement("div");
         this.popExtraDiv.setAttribute("class","pop-extra");
@@ -8416,9 +8309,9 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
 
     },
 
-    swap:function($super) {
+    swap:function() {
         var currentSwapValue = this.swapped;
-        $super();
+        this._super();
 
         // hide extra stuff
         if(!currentSwapValue) {
@@ -8428,8 +8321,8 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
         }
     },
 
-    show: function($super,properties) {
-        $super(properties);
+    show: function(properties) {
+        this._super(properties);
         //if(!isUndefinedOrNull(this.divToAdd) && this.divToAdd.style.display === "none") {
         //   this.divToAdd.style.display = "block";
         //  }

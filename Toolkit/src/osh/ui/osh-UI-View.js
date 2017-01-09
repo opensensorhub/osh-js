@@ -6,7 +6,7 @@
  * @param {string} options - The options
  * @abstract
  */
-OSH.UI.View = Class.create({
+OSH.UI.View = BaseClass.extend({
     initialize: function (divId, viewItems,options) {
         // list of stylers
         this.stylers = [];

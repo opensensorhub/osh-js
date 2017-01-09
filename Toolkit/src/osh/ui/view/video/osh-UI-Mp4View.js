@@ -11,9 +11,9 @@
     name: "Video"
  });
  */
-OSH.UI.Mp4View = Class.create(OSH.UI.View,{
-  initialize: function($super,divId,options) {
-    $super(divId,[],options);
+OSH.UI.Mp4View = OSH.UI.View.extend({
+  initialize: function(divId,options) {
+    this._super(divId,[],options);
     
     var width = "640";
     var height = "480";
@@ -115,7 +115,7 @@ OSH.UI.Mp4View = Class.create(OSH.UI.View,{
    * @instance
    * @memberof OSH.UI.Mp4View
    */
-  selectDataView: function($super,dataSourceIds, entityId) {
+  selectDataView: function(dataSourceIds, entityId) {
 	  if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
 		  document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
 	  } else {

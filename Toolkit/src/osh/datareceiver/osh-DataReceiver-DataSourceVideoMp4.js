@@ -18,9 +18,9 @@
         responseFormat: "video/mp4
   });
  */
-OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
-    initialize: function ($super, name, properties, options) {
-        $super(name, properties, options);
+OSH.DataReceiver.VideoMp4 = OSH.DataReceiver.DataSource.extend({
+    initialize: function (name, properties, options) {
+        this._super(name, properties, options);
         this.absoluteTime = -1;
     },
 
@@ -32,7 +32,7 @@ OSH.DataReceiver.VideoMp4 = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.VideoMp4
      * @instance
      */
-    parseTimeStamp: function ($super, data) {
+    parseTimeStamp: function (data) {
         // got the first box => MVDH
         if (this.absoluteTime == -1) {
             var infos = readMP4Info(data);

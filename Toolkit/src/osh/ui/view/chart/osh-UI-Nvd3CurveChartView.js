@@ -26,9 +26,9 @@ var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv
     maxPoints: 30
 });
  */
-OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
-	initialize : function($super,divId,viewItems, options) {
-		$super(divId,viewItems,options);
+OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
+	initialize : function(divId,viewItems, options) {
+		this._super(divId,viewItems,options);
 
 		this.entityId = options.entityId;
 		var xLabel = 'Time';
@@ -191,7 +191,7 @@ OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
 	 * @instance
 	 * @memberof OSH.UI.Nvd3CurveChartView
 	 */
-	selectDataView: function($super,dataSourceIds) {
+	selectDataView: function(dataSourceIds) {
 		var currentDataSources= this.getDataSourcesId();
 		if(OSH.Utils.isArrayIntersect(dataSourceIds,currentDataSources)) {
 			this.div.setAttribute("class",this.css+" "+this.cssSelected);

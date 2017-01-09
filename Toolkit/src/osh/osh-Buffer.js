@@ -27,7 +27,7 @@ var BUFFER_STATUS = {
     replayFactor: 1
  });
  */
-OSH.Buffer = Class.create({
+OSH.Buffer = BaseClass.extend({
   initialize:function(options) {
     this.buffers = {};
 

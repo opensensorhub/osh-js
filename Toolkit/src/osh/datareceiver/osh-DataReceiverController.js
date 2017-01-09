@@ -26,7 +26,7 @@
  * dataProviderController.addEntity(entity);
  *
  */
-OSH.DataReceiver.DataReceiverController = Class.create({
+OSH.DataReceiver.DataReceiverController = BaseClass.extend({
     initialize: function (options) {
         this.options = options;
         this.initBuffer();

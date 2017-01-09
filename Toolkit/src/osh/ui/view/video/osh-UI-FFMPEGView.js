@@ -12,9 +12,9 @@ var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
     useWorker:true
 });
  */
-OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, options) {
-        $super(divId, [], options);
+OSH.UI.FFMPEGView = OSH.UI.View.extend({
+    initialize: function (divId, options) {
+        this._super(divId, [], options);
 
         this.fps = 0;
         var width = "640";
@@ -111,7 +111,7 @@ OSH.UI.FFMPEGView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.FFMPEGView
      */
-    selectDataView: function ($super, dataSourceIds, entityId) {
+    selectDataView: function (dataSourceIds, entityId) {
         if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
             document.getElementById(this.divId).setAttribute("class", this.css + " " + this.cssSelected);
         } else {

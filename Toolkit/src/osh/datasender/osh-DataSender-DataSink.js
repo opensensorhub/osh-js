@@ -2,7 +2,7 @@
  * @classdesc
  * @class
  */
-OSH.DataSender.DataSink = Class.create({
+OSH.DataSender.DataSink = BaseClass.extend({
     initialize: function (name, properties, options) {
         if (properties.protocol == "http") {
             this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));

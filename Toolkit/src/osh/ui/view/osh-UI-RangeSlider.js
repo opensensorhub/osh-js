@@ -10,9 +10,9 @@
         refreshRate:1
  });
  */
-OSH.UI.RangeSlider = Class.create(OSH.UI.View, {
-	initialize: function ($super, divId, options) {
-		$super(divId, [], options);
+OSH.UI.RangeSlider = OSH.UI.View.extend({
+	initialize: function (divId, options) {
+		this._super(divId, [], options);
 
 		this.slider = document.createElement("div");
 		var activateButtonDiv = document.createElement("div");

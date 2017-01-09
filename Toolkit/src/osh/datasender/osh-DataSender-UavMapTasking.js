@@ -3,11 +3,11 @@
  * @class
  * @augments OSH.DataSender.DataSource
  */
-OSH.DataSender.UavMapTasking = Class.create(OSH.DataSender.DataSink,{
+OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
 
-    initialize: function($super, name, properties) {
+    initialize: function(name, properties) {
 
-        $super(name, properties);
+        this._super(name, properties);
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_TAKEOFF, function (event) {
             this.connector.sendRequest(this.buildTakeOffRequest());            
