@@ -6,6 +6,11 @@ var observedEvent = {};
  */
 OSH.EventManager = function() {};
 
+/**
+ *
+ * The following are internal methods used by the Event Manager itself
+ * primarily to deal with cross platform issues when firing an event
+ */
 OSH.EventManager.getFireTarget = function(element) {
     if (element !== document)
         return element;
@@ -16,11 +21,8 @@ OSH.EventManager.getFireTarget = function(element) {
 
 OSH.EventManager.fireEvent_STD = function(element, eventName, memo, bubble) {
     var event = document.createEvent('HTMLEvents');
-    event.initEvent('dataavailable', bubble, true);
-
-    event.eventName = eventName;
+    event.initEvent(eventName, bubble, true);
     event.memo = memo;
-
     element.dispatchEvent(event);
     return event;
 };
@@ -28,22 +30,18 @@ OSH.EventManager.fireEvent_STD = function(element, eventName, memo, bubble) {
 
 OSH.EventManager.fireEvent_IE = function(element, eventName, memo, bubble) {
     var event = document.createEventObject();
-    event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
-
-    event.eventName = eventName;
+    event.eventType = eventName;
+    event.cancelBubble = !bubble;
     event.memo = memo;
-
     element.fireEvent(event.eventType, event);
     return event;
 };
 
 OSH.EventManager.fireEvent = function(element, eventName, properties, bubble) {
-    if(OSH.Utils.isElement(element))
-        element = OSH.EventManager.getFireTarget(element);
-    else if(typeof element == 'string')
+    if(typeof element == 'string')
         element = OSH.EventManager.getFireTarget(document.getElementById(element));
     else
-        return;
+        element = OSH.EventManager.getFireTarget(element);
 
     if (typeof(bubble) == 'undefined')
         bubble = true;
