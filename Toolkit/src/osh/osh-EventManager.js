@@ -6,6 +6,56 @@ var observedEvent = {};
  */
 OSH.EventManager = function() {};
 
+OSH.EventManager.getFireTarget = function(element) {
+    if (element !== document)
+        return element;
+    if (document.createEvent && !element.dispatchEvent)
+      return document.documentElement;
+    return element;
+};
+
+OSH.EventManager.fireEvent_STD = function(element, eventName, memo, bubble) {
+    var event = document.createEvent('HTMLEvents');
+    event.initEvent('dataavailable', bubble, true);
+
+    event.eventName = eventName;
+    event.memo = memo;
+
+    element.dispatchEvent(event);
+    return event;
+};
+
+
+OSH.EventManager.fireEvent_IE = function(element, eventName, memo, bubble) {
+    var event = document.createEventObject();
+    event.eventType = bubble ? 'ondataavailable' : 'onlosecapture';
+
+    event.eventName = eventName;
+    event.memo = memo;
+
+    element.fireEvent(event.eventType, event);
+    return event;
+};
+
+OSH.EventManager.fireEvent = function(element, eventName, properties, bubble) {
+    if(OSH.Utils.isElement(element))
+        element = OSH.EventManager.getFireTarget(element);
+    else if(typeof element == 'string')
+        element = OSH.EventManager.getFireTarget(document.getElementById(element));
+    else
+        return;
+
+    if (typeof(bubble) == 'undefined')
+        bubble = true;
+    properties = properties || {};
+
+    if(document.createEvent)
+        return OSH.EventManager.fireEvent_STD(element, eventName, properties, bubble);
+    else
+        return OSH.EventManager.fireEvent_IE(element, eventName, properties, bubble);
+};
+
+
 /**
  *
  * @param eventName
@@ -13,8 +63,8 @@ OSH.EventManager = function() {};
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.fire = function(eventName,properties) {
-    document.fire("osh:"+eventName, properties);
+OSH.EventManager.fire = function(eventName, properties) {
+    OSH.EventManager.fireEvent(document, "osh:"+eventName, properties);
 };
 
 /**
@@ -25,7 +75,7 @@ OSH.EventManager.fire = function(eventName,properties) {
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.observe = function(eventName,fnCallback,id) {
+OSH.EventManager.observe = function(eventName, fnCallback, id) {
     var handleEvent = function (event) {
         if(typeof fnCallback != "undefined") {
             fnCallback(event.memo);
@@ -34,7 +84,7 @@ OSH.EventManager.observe = function(eventName,fnCallback,id) {
     if(typeof  id != "undefined") {
         observedEvent[id] = handleEvent;
     }
-    document.observe("osh:"+eventName, handleEvent);
+    OSH.DomEvent.on(document, "osh:"+eventName, handleEvent);
 };
 
 /**
@@ -44,9 +94,9 @@ OSH.EventManager.observe = function(eventName,fnCallback,id) {
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.stopObserving = function(eventName,id) {
+OSH.EventManager.stopObserving = function(eventName, id) {
     if(typeof id != "undefined") {
-        document.stopObserving(eventName, observedEvent[id]);
+        OSH.DomEvent.off(document, eventName, observedEvent[id]);
         delete observedEvent[id];
     }
 };
@@ -59,8 +109,9 @@ OSH.EventManager.stopObserving = function(eventName,id) {
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {
-    $(divId).observe(eventName, function(event) {
+OSH.EventManager.observeDiv = function(divId, eventName, fnCallback) {
+    elem = document.getElementById(divId);
+    OSH.DomEvent.on(elem, eventName, function(event) {
         if(typeof fnCallback != "undefined") {
             fnCallback(event);
         }
