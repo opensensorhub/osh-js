@@ -37,6 +37,7 @@
     "gulp-order": "^1.1.1",
     "gulp-sort": "^2.0.0",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-src-ordered-globs": "^1.0.3",
     "gulp-uglify": "^2.0.0",
     "jshint": "^2.9.3",
     "uglify-js": "^2.7.3"

@@ -8,9 +8,12 @@ var minify = require('gulp-minify');
 var uglify = require('gulp-uglify');
 var sort = require('gulp-sort');
 var order = require('gulp-order');
+var gulpSrcOrdered = require('gulp-src-ordered-globs');
 
 gulp.task('build', ['css', "js-normal", 'images',"copy-vendor"]);
 gulp.task('build-minify', ['css-min',"js-minify", 'images',"copy-vendor"]);
+
+//var exludedVendorPaths = 'Toolkit/vendor/{ogc-schemas/citygml, ogc-schemas/eop,  }'
 
 //--------- JS -------------//
 gulp.task('js-normal', function () {
@@ -178,8 +181,39 @@ gulp.task('images', function () {
 //---------- VENDORS --------//
 
 gulp.task('copy-vendor', function () {
-    return gulp.src('Toolkit/vendor/**/*')
-        .pipe(gulp.dest('Toolkit/dist/vendor'));
+    gulpSrcOrdered([ 'Toolkit/vendor/**/*',
+                     '!Toolkit/vendor/ogc-schemas/**',
+                     '!Toolkit/vendor/cesium.js/**',
+                     '!Toolkit/vendor/jsonix/**',
+                     '!Toolkit/vendor/leaflet/**',
+                     '!Toolkit/vendor/nouislider/**',
+                     '!Toolkit/vendor/nvd3/**'])
+            .pipe(gulp.dest('Toolkit/dist/vendor'));
+
+    //specific copying can go here
+    //OGC schemas for JSONIX
+    gulp.src([ 'Toolkit/vendor/ogc-schemas/scripts/lib/*'])
+        .pipe(gulp.dest('Toolkit/dist/vendor/ogc-schemas'));
+
+    //Cesium dist only
+    gulp.src([ 'Toolkit/vendor/cesium.js/dist/**/*'])
+        .pipe(gulp.dest('Toolkit/dist/vendor/cesium.js'));
+
+    //jsonix dist only
+    gulp.src([ 'Toolkit/vendor/jsonix/dist/**/*'])
+        .pipe(gulp.dest('Toolkit/dist/vendor/jsonix'));
+
+    //Leaflet dist only
+    gulp.src([ 'Toolkit/vendor/leaflet/dist/**/*'])
+        .pipe(gulp.dest('Toolkit/dist/vendor/leaflet'));
+
+    //nouislider dist only
+    gulp.src([ 'Toolkit/vendor/nouislider/distribute/**/*'])
+        .pipe(gulp.dest('Toolkit/dist/vendor/nouislider'));
+
+    //nvd3 dist only
+    gulp.src([ 'Toolkit/vendor/nvd3/build/**/*'])
+        .pipe(gulp.dest('Toolkit/dist/vendor/nvd3'));
 });
 
 //------- TOOLS -------//

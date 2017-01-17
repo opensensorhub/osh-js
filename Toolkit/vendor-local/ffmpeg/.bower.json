@@ -1,0 +1,7 @@
+{
+  "name": "ffmpeg-h264",
+  "main": "ffmpeg-h264.js",
+  "_source": "/Users/richard.becker/Dev/osh-js/Toolkit/vendor-local/ffmpeg",
+  "_target": "*",
+  "_originalSource": "./Toolkit/vendor-local/ffmpeg"
+}
