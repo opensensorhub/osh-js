@@ -13,7 +13,6 @@ var gulpSrcOrdered = require('gulp-src-ordered-globs');
 gulp.task('build', ['css', "js-normal", 'images',"copy-vendor"]);
 gulp.task('build-minify', ['css-min',"js-minify", 'images',"copy-vendor"]);
 
-//var exludedVendorPaths = 'Toolkit/vendor/{ogc-schemas/citygml, ogc-schemas/eop,  }'
 
 //--------- JS -------------//
 gulp.task('js-normal', function () {
