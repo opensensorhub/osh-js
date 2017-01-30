@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "devDependencies": {
+    "bower": "^1.8.0"
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^2.0.12",
