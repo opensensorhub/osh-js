@@ -37,6 +37,7 @@
     "ogc-schemas": "^2.6.1",
     "broadway": "./vendor-local/broadway",
     "ffmpeg": "./vendor-local/ffmpeg",
-    "tree": "./vendor-local/tree"
+    "tree": "./vendor-local/tree",
+    "Leaflet.fullscreen": "https://github.com/Leaflet/Leaflet.fullscreen.git#^1.0.2"
   }
 }

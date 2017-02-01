@@ -81,8 +81,12 @@ gulp.task('minify', false, ['images'],function(){
     if(argv.leaflet) {
         jsSources.push('vendor/leaflet/dist/leaflet.js');
         cssSources.push('vendor/leaflet/dist/leaflet.css');
+
+        jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
+        cssSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.css');
         // copy leaflet resources
         gulp.src('vendor/leaflet/dist/images/*').pipe(gulp.dest('dist/images'));
+        gulp.src('vendor/Leaflet.fullscreen/dist/*.png').pipe(gulp.dest('dist/'));
     }
     if(argv.tree) {
         jsSources.push('vendor-local/tree/tree.js');
@@ -215,6 +219,8 @@ gulp.task('normal', false, ['css', 'images'],function() {
     if(argv.leaflet) {
         gulp.src([ 'vendor/leaflet/dist/**/*'])
             .pipe(gulp.dest('dist/vendor/leaflet'));
+        gulp.src([ 'vendor/Leaflet.fullscreen/dist/**'])
+            .pipe(gulp.dest('dist/vendor/Leaflet.fullscreen'));
     }
     if(argv.tree) {
         gulp.src([ 'vendor-local/tree/**/*'])
