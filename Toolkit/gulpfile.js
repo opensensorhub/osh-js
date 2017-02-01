@@ -59,8 +59,8 @@ gulp.task('vendor-js-src',false,function(){
     var jsSources = new Array();
 
     if(argv.ffmpeg) {
-        jsSources.push('vendor-local/ffmpeg/ffmpeg-h264.js');
-        jsSources.push('vendor-local/ffmpeg/YUVCanvas.js');
+        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
+        jsSources.push('vendor/ffmpeg/YUVCanvas.js');
     }
 
     if(argv.d3) {
@@ -72,10 +72,10 @@ gulp.task('vendor-js-src',false,function(){
     }
 
     if(argv.broadway) {
-        jsSources.push('vendor-local/broadway/broadway-all.min.js');
-        jsSources.push('vendor-local/broadway/YUVCanvas.js');
-        jsSources.push('vendor-local/broadway/Decoder.js');
-        jsSources.push('vendor-local/broadway/Player.js');
+        jsSources.push('vendor/broadway/broadway-all.min.js');
+        jsSources.push('vendor/broadway/YUVCanvas.js');
+        jsSources.push('vendor/broadway/Decoder.js');
+        jsSources.push('vendor/broadway/Player.js');
     }
 
     if(argv.nouislider) {
@@ -95,7 +95,7 @@ gulp.task('vendor-js-src',false,function(){
         jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
     }
     if(argv.tree) {
-        jsSources.push('vendor-local/tree/tree.js');
+        jsSources.push('vendor/tree/tree.js');
     }
     if(argv.jsonix) {
         jsSources.push('vendor/jsonix/dist/*.js');
@@ -132,9 +132,9 @@ gulp.task('vendor-css-src',false,function(){
         gulp.src('vendor/Leaflet.fullscreen/dist/*.png').pipe(gulp.dest('dist/'));
     }
     if(argv.tree) {
-        cssSources.push('vendor-local/tree/tree.css');
+        cssSources.push('vendor/tree/tree.css');
         // copy tree resources
-        gulp.src('vendor-local/tree/images/*').pipe(gulp.dest('dist/images'));
+        gulp.src('vendor/tree/images/*').pipe(gulp.dest('dist/images'));
     }
     if(argv.jsonix) {
         cssSources.push('vendor/jsonix/dist/*.css');
