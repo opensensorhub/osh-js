@@ -5,7 +5,8 @@ Install dependencies using NPM:
 ``Toolkit $ npm update ``
 
 Display Gulp help:
-``Tookit $ gulp help
+```
+Tookit $ gulp help
 Usage
   gulp [TASK] [OPTIONS...]
 
@@ -36,7 +37,7 @@ https://github.com/leongersen/noUiSlider
 
   clean           Clean the dist directory
   help            Display this help text.
-``
+```
 
 Build a full version using gulp:
 ``Toolkit $ gulp build ``
