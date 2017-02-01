@@ -64,12 +64,13 @@ gulp.task('vendor-js-src',false,function(){
         jsSources.push('vendor-local/ffmpeg/ffmpeg-h264.js');
         jsSources.push('vendor-local/ffmpeg/YUVCanvas.js');
     }
-    if(argv.nvd3) {
-        jsSources.push('vendor/nvd3/build/nv.d3.min.js');
-    }
 
     if(argv.d3) {
         jsSources.push('vendor/d3/d3.min.js');
+    }
+    
+    if(argv.nvd3) {
+        jsSources.push('vendor/nvd3/build/nv.d3.min.js');
     }
 
     if(argv.broadway) {
