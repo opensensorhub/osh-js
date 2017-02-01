@@ -16,8 +16,6 @@ gulp.task('build','build a distributable osh-js instance',['clean'],function () 
     } else {
         gulp.start("normal");
     }
-
-
 }, {
     options: {
         'minify': 'Minified the libraries. All the dependencies vendor librairies are included in a all-in-one file\n',
@@ -68,7 +66,7 @@ gulp.task('vendor-js-src',false,function(){
     if(argv.d3) {
         jsSources.push('vendor/d3/d3.min.js');
     }
-    
+
     if(argv.nvd3) {
         jsSources.push('vendor/nvd3/build/nv.d3.min.js');
     }
@@ -82,6 +80,7 @@ gulp.task('vendor-js-src',false,function(){
 
     if(argv.nouislider) {
         jsSources.push('vendor/nouislider/distribute/nouislider.min.js');
+        jsSources.push('vendor/wnumb/wNumb.js');
     }
 
     if(argv.cesium) {
@@ -89,10 +88,10 @@ gulp.task('vendor-js-src',false,function(){
     }
     if(argv.ol3) {
         jsSources.push('vendor/ol3/ol.js');
+        jsSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
     }
     if(argv.leaflet) {
         jsSources.push('vendor/leaflet/dist/leaflet.js');
-
         jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
     }
     if(argv.tree) {
@@ -123,6 +122,7 @@ gulp.task('vendor-css-src',false,function(){
     }
     if(argv.ol3) {
         cssSources.push('vendor/ol3/ol.css');
+        cssSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css');
     }
     if(argv.leaflet) {
         cssSources.push('vendor/leaflet/dist/leaflet.css');
