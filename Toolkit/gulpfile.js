@@ -39,9 +39,26 @@ gulp.task('build','build a distributable osh-js instance',['clean'],function () 
     }
 });
 
-gulp.task('minify', false, ['images'],function(){
+gulp.task('minify', false, ['vendor-js-src','osh-js-src','vendor-css-src','osh-css-src','images'],function(){
+   var vendorJs = gulp.src("dist/vendor.js");
+   var oshJs = gulp.src("dist/osh.js").pipe(uglify({mangle:false}));
+
+    // merge js files
+    merge(vendorJs, oshJs)
+        .pipe(concat('osh-all.min.js'))
+        .pipe(gulp.dest('dist'));
+
+    var vendorCss = gulp.src("dist/vendor.css");
+    var oshCss = gulp.src("dist/osh.css").pipe(cleanCSS({compatibility: '*'}));
+
+    // merge css files
+    merge(vendorCss, oshCss)
+        .pipe(concat('osh-all.min.css'))
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('vendor-js-src',false,function(){
     var jsSources = new Array();
-    var cssSources = new Array();
 
     if(argv.ffmpeg) {
         jsSources.push('vendor-local/ffmpeg/ffmpeg-h264.js');
@@ -49,7 +66,6 @@ gulp.task('minify', false, ['images'],function(){
     }
     if(argv.nvd3) {
         jsSources.push('vendor/nvd3/build/nv.d3.min.js');
-        cssSources.push('vendor/nvd3/build/nv.d3.min.css');
     }
 
     if(argv.d3) {
@@ -65,44 +81,69 @@ gulp.task('minify', false, ['images'],function(){
 
     if(argv.nouislider) {
         jsSources.push('vendor/nouislider/distribute/nouislider.min.js');
-        cssSources.push('vendor/nouislider/distribute/nouislider.min.css');
     }
 
     if(argv.cesium) {
         jsSources.push('vendor/cesium.js/dist/Cesium.js');
+    }
+    if(argv.ol3) {
+        jsSources.push('vendor/ol3/ol.js');
+    }
+    if(argv.leaflet) {
+        jsSources.push('vendor/leaflet/dist/leaflet.js');
+
+        jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
+    }
+    if(argv.tree) {
+        jsSources.push('vendor-local/tree/tree.js');
+    }
+    if(argv.jsonix) {
+        jsSources.push('vendor/jsonix/dist/*.js');
+    }
+
+    return gulp.src(jsSources).pipe(concat('vendor.js')).pipe(gulp.dest("dist"));
+});
+
+gulp.task('vendor-css-src',false,function(){
+    var cssSources = new Array();
+
+    if(argv.nvd3) {
+        cssSources.push('vendor/nvd3/build/nv.d3.min.css');
+    }
+
+    if(argv.nouislider) {
+        cssSources.push('vendor/nouislider/distribute/nouislider.min.css');
+    }
+
+    if(argv.cesium) {
         // copy cesium resources
         gulp.src(['vendor/cesium.js/dist/**','!vendor/cesium.js/dist/Cesium.js'])
             .pipe(gulp.dest('dist/'));
     }
     if(argv.ol3) {
-        jsSources.push('vendor/ol3/ol.js');
         cssSources.push('vendor/ol3/ol.css');
     }
     if(argv.leaflet) {
-        jsSources.push('vendor/leaflet/dist/leaflet.js');
         cssSources.push('vendor/leaflet/dist/leaflet.css');
-
-        jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
         cssSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.css');
         // copy leaflet resources
         gulp.src('vendor/leaflet/dist/images/*').pipe(gulp.dest('dist/images'));
         gulp.src('vendor/Leaflet.fullscreen/dist/*.png').pipe(gulp.dest('dist/'));
     }
     if(argv.tree) {
-        jsSources.push('vendor-local/tree/tree.js');
         cssSources.push('vendor-local/tree/tree.css');
         // copy tree resources
         gulp.src('vendor-local/tree/images/*').pipe(gulp.dest('dist/images'));
     }
     if(argv.jsonix) {
-        jsSources.push('vendor/jsonix/dist/*.js');
         cssSources.push('vendor/jsonix/dist/*.css');
     }
 
-    var vendorJsSrc = gulp.src(jsSources)
-        .pipe(concat('vendor.min.js'));
+    return gulp.src(cssSources).pipe(concat('vendor.css')).pipe(gulp.dest("dist"));;
+});
 
-    var oshJsSrc = gulp.src('src/osh/**/*.js')
+gulp.task('osh-js-src',false,function(){
+    return gulp.src('src/osh/**/*.js')
         .pipe(jshint())
         //.pipe(jshint.reporter('default')) //display error on stdout
         .pipe(order([
@@ -159,161 +200,20 @@ gulp.task('minify', false, ['images'],function(){
             'ui/view/video/osh-UI-MjpegView.js',
             'ui/view/video/osh-UI-Mp4View.js',
         ], { base: './src/osh' }))
-        .pipe(concat('osh-src.min.js'))
-        .pipe(uglify({mangle:false}));
-
-    var vendorCss = gulp.src(cssSources)
-        .pipe(concat('vendor.min.css'));
-
-    var oshCss = gulp.src('src/css/*.css')
-        .pipe(concat('osh.min.css'))
-        .pipe(cleanCSS({compatibility: '*'}));
-
-    // merge js files
-    merge(vendorJsSrc, oshJsSrc)
-        .pipe(concat('osh-all.min.js'))
-        .pipe(gulp.dest('dist'));
-
-    // merge css files
-    merge(vendorCss, oshCss)
-        .pipe(concat('osh-all.min.css'))
-        .pipe(gulp.dest('dist'));
+        .pipe(concat('osh.js')).pipe(gulp.dest("dist"));
 });
 
+gulp.task('osh-css-src',false,['copy-fonts'],function(){
+    return gulp.src('src/css/*.css')
+        .pipe(concat('osh.css')).pipe(gulp.dest("dist"));
+});
 //----------- NORMAL ------------------//
 
-gulp.task('normal', false, ['css', 'images'],function() {
-    // Vendor part
-    if(argv.ffmpeg) {
-        gulp.src([ 'vendor-local/ffmpeg/**/*'])
-            .pipe(gulp.dest('dist/vendor-local/ffmpeg'));
-    }
-    if(argv.nvd3) {
-        gulp.src([ 'vendor/nvd3/build/**/*'])
-            .pipe(gulp.dest('dist/vendor/nvd3'));
-    }
-
-    if(argv.d3) {
-        gulp.src([ 'vendor/d3/**/*'])
-            .pipe(gulp.dest('dist/vendor/d3'));
-    }
-
-    if(argv.broadway) {
-        gulp.src([ 'vendor-local/ffmpeg/**/*'])
-            .pipe(gulp.dest('dist/vendor-local/ffmpeg'));
-    }
-
-    if(argv.nouislider) {
-        gulp.src([ 'vendor/nouislider/distribute/**/*'])
-            .pipe(gulp.dest('dist/vendor/nouislider'));
-    }
-
-    if(argv.cesium) {
-        gulp.src([ 'vendor/cesium.js/dist/**/*'])
-            .pipe(gulp.dest('dist/vendor/cesium.js'));
-    }
-    if(argv.ol3) {
-        gulp.src([ 'vendor/ol3/**/*'])
-            .pipe(gulp.dest('dist/vendor/ol3'));
-    }
-    if(argv.leaflet) {
-        gulp.src([ 'vendor/leaflet/dist/**/*'])
-            .pipe(gulp.dest('dist/vendor/leaflet'));
-        gulp.src([ 'vendor/Leaflet.fullscreen/dist/**'])
-            .pipe(gulp.dest('dist/vendor/Leaflet.fullscreen'));
-    }
-    if(argv.tree) {
-        gulp.src([ 'vendor-local/tree/**/*'])
-            .pipe(gulp.dest('dist/vendor-local/tree'));
-    }
-    if(argv.jsonix) {
-        gulp.src([ 'vendor/ogc-schemas/scripts/lib/*'])
-            .pipe(gulp.dest('dist/vendor/ogc-schemas'));
-    }
-
-    // OSH Part
-    gulp.src('src/**/*.js')
-        .pipe(sort())
-        .pipe(jshint())
-        //.pipe(plugins.jshint.reporter('default'))
-        .pipe(order([
-            'osh-BaseClass.js',
-            'osh-Template.js',
-            'osh-Utils.js',
-            'osh-Browser.js',
-            'osh-DomEvent.js',
-            'osh-EventManager.js',
-            'osh-Buffer.js',
-            'dataconnector/osh-DataConnector.js',
-            'dataconnector/osh-DataConnector-HttpAjaxConnector.js',
-            'dataconnector/osh-DataConnector-Websocket.js',
-            'datareceiver/osh-DataReceiver-DataSource.js',
-            'datareceiver/osh-DataReceiver-DataSourceEulerOrientation.js',
-            'datareceiver/osh-DataReceiver-DataSourceLatLonAlt.js',
-            'datareceiver/osh-DataReceiver-DataSourceNexrad.js',
-            'datareceiver/osh-DataReceiver-DataSourceOrientationQuaternion.js',
-            'datareceiver/osh-DataReceiver-DataSourceVideoH264.js',
-            'datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js',
-            'datareceiver/osh-DataReceiver-DataSourceVideoMp4.js',
-            'datareceiver/osh-DataReceiver-DataSourceChart.js',
-            'datareceiver/osh-DataReceiverController.js',
-            'datasender/osh-DataSender-DataSink.js',
-            'datasender/osh-DataSender-PtzTasking.js',
-            'datasender/osh-DataSender-UavMapTasking.js',
-            'datasender/osh-DataSenderController.js',
-            'discovery/osh-Sensor.js',
-            'discovery/osh-Server.js',
-            'log/osh-Log.js',
-            'ui/osh-UI-View.js',
-            'ui/contextmenu/osh-UI-ContextMenu.js',
-            'ui/contextmenu/osh-UI-ContextMenu-CssMenu.js',
-            'ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js',
-            'ui/contextmenu/osh-UI-ContextMenu-StackMenu.js',
-            'ui/styler/osh-UI-Styler.js',
-            'ui/styler/osh-UI-StylerImageDraping.js',
-            'ui/styler/osh-UI-StylerCurve.js',
-            'ui/styler/osh-UI-StylerNexrad.js',
-            'ui/styler/osh-UI-StylerPolyline.js',
-            'ui/styler/osh-UI-StylerPointMarker.js',
-            'ui/view/chart/osh-UI-Nvd3CurveChartView.js',
-            'ui/view/discovery/osh-UI-DiscoveryView.js',
-            'ui/view/entity/osh-UI-EntityTreeView.js',
-            'ui/view/map/osh-UI-CesiumView.js',
-            'ui/view/map/osh-UI-LeafletView.js',
-            'ui/view/map/osh-UI-OpenLayerView.js',
-            'ui/view/osh-UI-DialogView.js',
-            'ui/view/osh-UI-Loading.js',
-            'ui/view/osh-UI-RangeSlider.js',
-            'ui/view/tasking/osh-UI-PtzTaskingView.js',
-            'ui/view/video/osh-UI-FFMPEGView.js',
-            'ui/view/video/osh-UI-H264View.js',
-            'ui/view/video/osh-UI-MjpegView.js',
-            'ui/view/video/osh-UI-Mp4View.js',
-        ], { base: './src/osh' }))
-        .pipe(concat('osh.js'))
-        .pipe(gulp.dest('dist/js'));
-});
-
-//------- CSS -------------//
-gulp.task('css',false, ["css-normal","copy-fonts"]);
-gulp.task('css-min',false, ["css-minify","copy-fonts"]);
-
-gulp.task('css-normal',false, function () {
-    return gulp.src('src/css/*.css')
-        .pipe(concat('osh.css'))
-        .pipe(gulp.dest('dist/css'));
-});
-
-gulp.task('css-minify',false, function() {
-    return gulp.src('src/css/*.css')
-        .pipe(concat('osh.min.css'))
-        .pipe(cleanCSS({compatibility: '*'}))
-        .pipe(gulp.dest('dist/css'));
-});
+gulp.task('normal', false, ['vendor-js-src','vendor-css-src','osh-js-src','osh-css-src', 'images']);
 
 gulp.task('copy-fonts',false, function () {
     return gulp.src('src/css/font-awesome-4.6.3/**/*')
-        .pipe(gulp.dest('dist/css/font-awesome-4.6.3'));
+        .pipe(gulp.dest('dist/font-awesome-4.6.3'));
 });
 
 //--------- IMAGES -----------//
