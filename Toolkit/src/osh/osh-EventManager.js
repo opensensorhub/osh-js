@@ -13,7 +13,7 @@ var mapEvent = new OSH.MapEvent();
  * @memberof OSH.EventManager
  */
 OSH.EventManager.fire = function(eventName, properties) {
-    mapEvent.fire(eventName,properties);
+    mapEvent.fire('osh:'+eventName,properties);
 };
 
 /**
@@ -25,7 +25,7 @@ OSH.EventManager.fire = function(eventName, properties) {
  * @memberof OSH.EventManager
  */
 OSH.EventManager.observe = function(eventName, fnCallback) {
-    mapEvent.observe(eventName,fnCallback);
+    mapEvent.observe('osh:'+eventName,fnCallback);
 };
 
 /**

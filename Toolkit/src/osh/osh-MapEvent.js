@@ -5,7 +5,7 @@ OSH.MapEvent = BaseClass.extend({
     },
 
     observe:function(eventName, fnCallback) {
-        if(typeof(eventName) == "undefined" || typeof(fnCallback) != "undefined") {
+        if(typeof(eventName) == "undefined" || typeof(fnCallback) == "undefined") {
             return;
         }
         if(!(eventName in this.mapEvents)) {
@@ -20,7 +20,7 @@ OSH.MapEvent = BaseClass.extend({
         }
         if(eventName in this.mapEvents) {
             var fnCallbackArr = this.mapEvents[eventName];
-            for(var i = 0; fnCallbackArr.length;i++){
+            for(var i = 0; i < fnCallbackArr.length;i++){
                 // callback the properties to the current callback
                 fnCallbackArr[i](properties);
             }
