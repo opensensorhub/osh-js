@@ -8,6 +8,7 @@ var sort = require('gulp-sort');
 var order = require('gulp-order');
 var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
+var gulpif = require('gulp-if');
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -35,7 +36,7 @@ gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all
     // Minify OSH js min
     gulp.src("dist/js/osh.js")
         .pipe(uglify({mangle:false}))
-        .pipe(concat('osh.min.css'))
+        .pipe(concat('osh.min.js'))
         .pipe(gulp.dest('dist/js'));
 
     // Minify OSH css min
@@ -133,64 +134,86 @@ gulp.task('vendor-css-src-all',false,function(){
 });
 
 gulp.task('osh-js-src',false,function(){
-    return gulp.src('src/osh/**/*.js')
-        .pipe(jshint())
-        //.pipe(jshint.reporter('default')) //display error on stdout
-        .pipe(order([
-            'osh-BaseClass.js',
-            'osh-Template.js',
-            'osh-Utils.js',
-            'osh-Browser.js',
-            'osh-DomEvent.js',
-            'osh-EventManager.js',
-            'osh-Buffer.js',
-            'dataconnector/osh-DataConnector.js',
-            'dataconnector/osh-DataConnector-HttpAjaxConnector.js',
-            'dataconnector/osh-DataConnector-Websocket.js',
-            'datareceiver/osh-DataReceiver-DataSource.js',
-            'datareceiver/osh-DataReceiver-DataSourceEulerOrientation.js',
-            'datareceiver/osh-DataReceiver-DataSourceLatLonAlt.js',
-            'datareceiver/osh-DataReceiver-DataSourceNexrad.js',
-            'datareceiver/osh-DataReceiver-DataSourceOrientationQuaternion.js',
-            'datareceiver/osh-DataReceiver-DataSourceVideoH264.js',
-            'datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js',
-            'datareceiver/osh-DataReceiver-DataSourceVideoMp4.js',
-            'datareceiver/osh-DataReceiver-DataSourceChart.js',
-            'datareceiver/osh-DataReceiverController.js',
-            'datasender/osh-DataSender-DataSink.js',
-            'datasender/osh-DataSender-PtzTasking.js',
-            'datasender/osh-DataSender-UavMapTasking.js',
-            'datasender/osh-DataSenderController.js',
-            'discovery/osh-Sensor.js',
-            'discovery/osh-Server.js',
-            'log/osh-Log.js',
-            'ui/osh-UI-View.js',
-            'ui/contextmenu/osh-UI-ContextMenu.js',
-            'ui/contextmenu/osh-UI-ContextMenu-CssMenu.js',
-            'ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js',
-            'ui/contextmenu/osh-UI-ContextMenu-StackMenu.js',
-            'ui/styler/osh-UI-Styler.js',
-            'ui/styler/osh-UI-StylerImageDraping.js',
-            'ui/styler/osh-UI-StylerCurve.js',
-            'ui/styler/osh-UI-StylerNexrad.js',
-            'ui/styler/osh-UI-StylerPolyline.js',
-            'ui/styler/osh-UI-StylerPointMarker.js',
-            'ui/view/chart/osh-UI-Nvd3CurveChartView.js',
-            'ui/view/discovery/osh-UI-DiscoveryView.js',
-            'ui/view/entity/osh-UI-EntityTreeView.js',
-            'ui/view/map/osh-UI-CesiumView.js',
-            'ui/view/map/osh-UI-LeafletView.js',
-            'ui/view/map/osh-UI-OpenLayerView.js',
-            'ui/view/osh-UI-DialogView.js',
-            'ui/view/osh-UI-Loading.js',
-            'ui/view/osh-UI-RangeSlider.js',
-            'ui/view/tasking/osh-UI-PtzTaskingView.js',
-            'ui/view/video/osh-UI-FFMPEGView.js',
-            'ui/view/video/osh-UI-H264View.js',
-            'ui/view/video/osh-UI-MjpegView.js',
-            'ui/view/video/osh-UI-Mp4View.js',
-        ], { base: './src/osh' }))
-        .pipe(concat('osh.js')).pipe(gulp.dest("dist/js"));
+    var src = [];
+
+    src.push('./src/osh/osh-BaseClass.js');
+    src.push('./src/osh/osh-Template.js');
+    src.push('./src/osh/osh-Browser.js');
+    src.push('./src/osh/osh-Utils.js');
+    src.push('./src/osh/osh-Browser.js');
+    src.push('./src/osh/osh-DomEvent.js');
+    src.push('./src/osh/osh-MapEvent.js');
+    src.push('./src/osh/osh-EventManager.js');
+    src.push('./src/osh/osh-Buffer.js');
+    src.push('./src/osh/dataconnector/osh-DataConnector.js');
+    src.push('./src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js');
+    src.push('./src/osh/dataconnector/osh-DataConnector-Websocket.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSource.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceEulerOrientation.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceLatLonAlt.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceNexrad.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceUAHWeather.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceOrientationQuaternion.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiverController.js');
+    src.push('./src/osh/datasender/osh-DataSender-DataSink.js');
+    src.push('./src/osh/datasender/osh-DataSender-PtzTasking.js');
+    src.push('./src/osh/datasender/osh-DataSender-UavMapTasking.js');
+    src.push('./src/osh/datasender/osh-DataSenderController.js');
+    src.push('./src/osh/discovery/osh-Sensor.js');
+    src.push('./src/osh/discovery/osh-Server.js');
+    src.push('./src/osh/log/osh-Log.js');
+    src.push('./src/osh/ui/view/osh-UI-View.js');
+    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu.js');
+    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js');
+    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js');
+    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js');
+    src.push('./src/osh/ui/styler/osh-UI-Styler.js');
+    src.push('./src/osh/ui/styler/osh-UI-StylerImageDraping.js');
+    src.push('./src/osh/ui/styler/osh-UI-StylerCurve.js');
+    if(argv.cesium) {
+        src.push('./src/osh/ui/styler/osh-UI-StylerNexrad.js');
+    }
+    src.push('./src/osh/ui/styler/osh-UI-StylerPolyline.js');
+    src.push('./src/osh/ui/styler/osh-UI-StylerPointMarker.js');
+    if(argv.nvd3) {
+        src.push('./src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js');
+    }
+    src.push('./src/osh/ui/view/discovery/osh-UI-DiscoveryView.js');
+    if(argv.tree) {
+        src.push('./src/osh/ui/view/entity/osh-UI-EntityTreeView.js');
+    }
+    if(argv.cesium) {
+        src.push('./src/osh/ui/view/map/osh-UI-CesiumView.js');
+    }
+    if(argv.leaflet) {
+        src.push('./src/osh/ui/view/map/osh-UI-LeafletView.js');
+    }
+    if(argv.ol3) {
+        src.push('./src/osh/ui/view/map/osh-UI-OpenLayerView.js');
+    }
+    src.push('./src/osh/ui/view/dialog/osh-UI-DialogView.js');
+    src.push('./src/osh/ui/view/dialog/osh-UI-MultiDialogView.js');
+    src.push('./src/osh/ui/view/osh-UI-Loading.js');
+    if(argv.nouislider) {
+        src.push('./src/osh/ui/view/osh-UI-RangeSlider.js');
+    }
+    src.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js');
+    if(argv.ffmpeg) {
+        src.push('./src/osh/ui/view/video/osh-UI-FFMPEGView.js');
+    }
+    if(argv.broadway) {
+        src.push('./src/osh/ui/view/video/osh-UI-H264View.js');
+    }
+    src.push('./src/osh/ui/view/video/osh-UI-MjpegView.js');
+    src.push('./src/osh/ui/view/video/osh-UI-Mp4View.js');
+
+    return gulp.src(src)
+        .pipe(concat('osh.js'))
+        .pipe(gulp.dest("dist/js"));
 });
 
 gulp.task('osh-css-src',false,['copy-fonts'],function(){
