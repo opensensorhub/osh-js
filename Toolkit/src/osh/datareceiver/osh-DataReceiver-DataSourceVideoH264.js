@@ -17,9 +17,9 @@
         bufferingTime: 1000
   });
  */
-OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
-    initialize: function ($super, name, properties, options) {
-        $super(name, properties, options);
+OSH.DataReceiver.VideoH264 = OSH.DataReceiver.DataSource.extend({
+    initialize: function (name, properties, options) {
+        this._super(name, properties, options);
     },
 
     /**
@@ -30,7 +30,7 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.VideoH264
      * @instance
      */
-    parseTimeStamp: function ($super, data) {
+    parseTimeStamp: function (data) {
         // read double time stamp as big endian
         return new DataView(data).getFloat64(0, false) * 1000;
     },
@@ -43,7 +43,7 @@ OSH.DataReceiver.VideoH264 = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.VideoH264
      * @instance
      */
-    parseData: function ($super, data) {
+    parseData: function (data) {
         var len = data.byteLength;
         return new Uint8Array(data, 12, len - 12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
     }

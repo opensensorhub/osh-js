@@ -20,7 +20,7 @@
  * connector.sendRequest(request);
  *
  */
-OSH.DataConnector.AjaxConnector = Class.create(OSH.DataConnector.DataConnector, {
+OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
 
     /**
      * Sends the request to the defined server.

@@ -3,7 +3,7 @@
  * @class
  * @augments OSH.DataSender.DataSink
  */
-OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
+OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
 
     /**
      * Builds the request based on sps standard.
@@ -11,7 +11,7 @@ OSH.DataSender.PtzTasking = Class.create(OSH.DataSender.DataSink,{
      * @memberof OSH.DataReceiver.PtzTasking
      * @instance
      */
-    buildRequest: function($super,properties) {
+    buildRequest: function(properties) {
         var xmlSpsRequest = "<sps:Submit ";
 
         // adds service

@@ -4,9 +4,9 @@
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  */
-OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, viewItems, options) {
-        $super(divId, viewItems, options);
+OSH.UI.OpenLayerView = OSH.UI.View.extend({
+    initialize: function (divId, viewItems, options) {
+        this._super(divId, viewItems, options);
     },
 
     /**
@@ -16,7 +16,7 @@ OSH.UI.OpenLayerView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    beforeAddingItems: function ($super, options) {
+    beforeAddingItems: function (options) {
         // inits the map
         this.initMap(options);
         this.initEvents();

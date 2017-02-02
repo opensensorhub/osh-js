@@ -16,7 +16,7 @@
       bufferingTime: 1000
   });
  */
-OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
+OSH.DataReceiver.Chart = OSH.DataReceiver.DataSource.extend({
 
     /**
      * Extracts timestamp from the data. The timestamp is the first token got from split(',')
@@ -26,7 +26,7 @@ OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.Chart
      * @instance
      */
-    parseTimeStamp: function ($super, data) {
+    parseTimeStamp: function (data) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(data));
         var tokens = rec.trim().split(",");
         var t = new Date(tokens[0]).getTime();
@@ -41,7 +41,7 @@ OSH.DataReceiver.Chart = Class.create(OSH.DataReceiver.DataSource, {
      * @memberof OSH.DataReceiver.Chart
      * @instance
      */
-    parseData: function ($super, data) {
+    parseData: function (data) {
         var rec = String.fromCharCode.apply(null, new Uint8Array(data));
         var tokens = rec.trim().split(",");
         //skip time

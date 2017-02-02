@@ -18,7 +18,7 @@
     timeShift: -16000
   });
  */
-OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.LatLonAlt = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -28,7 +28,7 @@ OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.LatLonAlt
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var t =  new Date(tokens[0]).getTime();
@@ -49,7 +49,7 @@ OSH.DataReceiver.LatLonAlt = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.LatLonAlt
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var lat = parseFloat(tokens[1]);

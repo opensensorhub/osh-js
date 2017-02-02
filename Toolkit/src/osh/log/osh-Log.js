@@ -4,7 +4,7 @@
  * @class
  * @deprecated
  */
-OSH.Log = Class.create({
+OSH.Log = BaseClass.extend({
     initialize:function(){
         this.logDiv = document.createElement("TEXTAREA");
         this.logDiv.setAttribute("class", "osh-log popup-content");

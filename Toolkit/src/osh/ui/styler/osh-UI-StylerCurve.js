@@ -4,9 +4,9 @@
  * @type {OSH.UI.Style}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.Curve = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.xLabel = "";
 		this.yLabel = "";
 		this.color = "#000000";
@@ -63,8 +63,8 @@ OSH.UI.Styler.Curve = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Curve
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if(this._super(dataSourceId,rec,view,options)) {
 			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
 			if(typeof(view) != "undefined") {
 				view.updateCurve(this,rec.timeStamp,options);

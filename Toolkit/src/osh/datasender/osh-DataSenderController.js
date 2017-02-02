@@ -3,7 +3,7 @@
  * @class
  * @param {Object} options
  */
-OSH.DataSender.DataSenderController = Class.create({
+OSH.DataSender.DataSenderController = BaseClass.extend({
     initialize: function (options) {
         this.dataSources = {};
     },

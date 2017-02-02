@@ -4,9 +4,9 @@
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.ImageDraping = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.platformLocation = null;
 		this.platformOrientation = null;
@@ -77,8 +77,8 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 	 * @memberof  OSH.UI.Styler.ImageDraping
 	 * @instance
 	 */
-	init: function($super,view) {
-		$super(view);
+	init: function(view) {
+		this._super(view);
 	},
 
 	/**
@@ -91,8 +91,8 @@ OSH.UI.Styler.ImageDraping = Class.create(OSH.UI.Styler, {
 	 * @memberof  OSH.UI.Styler.ImageDraping
 	 * @instance
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if ($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if (this._super(dataSourceId,rec,view,options)) {
 			
 			var enabled = true;
 			if (this.snapshotFunc != null)

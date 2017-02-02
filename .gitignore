@@ -1,2 +1,3 @@
-node_modules
-.idea
+Toolkit/node_modules
+Toolkit/.idea
+Toolkit/dist

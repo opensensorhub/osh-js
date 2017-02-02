@@ -309,12 +309,7 @@ function init() {
     dataProviderController.addEntity(androidEntity);
     dataProviderController.addDataSource(weatherDataSource);
 
-    //---------------------------------------------------------------//
-    //---------------------------- Starts ---------------------------//
-    //---------------------------------------------------------------//
 
-    // starts streaming
-    dataProviderController.connectAll();
 
     //-------------------------------------------------------------//
     //---------------- Creates circular Nav menu -----------------//
@@ -422,35 +417,42 @@ function init() {
 
     discoveryView.attachTo(discoveryDialog.popContentDiv.id);
 
-    $("2D-view-button").on("click",function(event) {
+    document.getElementById("2D-view-button").onclick = function(event) {
         if(currentIdView != leafletMainView.divId){
             cesiumMainMapView.hide();
             leafletMainView.attachTo(mainDiv.id);
             currentIdView = leafletMainView.divId;
         }
-    });
+    };
 
-    $("3D-view-button").on("click",function(event) {
+    document.getElementById("3D-view-button").onclick = function(event) {
         if(currentIdView != cesiumMainMapView.divId){
             leafletMainView.hide();
             cesiumMainMapView.attachTo(mainDiv.id);
             currentIdView = cesiumMainMapView.divId;
         }
-    });
+    };
 
-    $("screenshot-button").on("click",function(event){
+    document.getElementById("screenshot-button").onclick = function(event){
         OSH.Utils.takeScreeshot(mainDiv);
-    });
+    };
 
-    $("add-entity-button").on("click",function(event){
+    document.getElementById("add-entity-button").onclick = function(event){
         discoveryDialog.show({
             viewId : discoveryDialog.id
         });
-    });
+    };
 
     // 2D view is set as default view
     currentIdView = leafletMainView.divId;
     leafletMainView.attachTo(mainDiv.id);
+
+    //---------------------------------------------------------------//
+    //---------------------------- Starts ---------------------------//
+    //---------------------------------------------------------------//
+
+    // starts streaming
+    dataProviderController.connectAll();
 
 }
 

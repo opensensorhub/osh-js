@@ -1,11 +1,10 @@
-var observedEvent = {};
-
 /**
  *
  * @constructor
  */
 OSH.EventManager = function() {};
 
+var mapEvent = new OSH.MapEvent();
 /**
  *
  * @param eventName
@@ -13,8 +12,8 @@ OSH.EventManager = function() {};
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.fire = function(eventName,properties) {
-    document.fire("osh:"+eventName, properties);
+OSH.EventManager.fire = function(eventName, properties) {
+    mapEvent.fire(eventName,properties);
 };
 
 /**
@@ -25,30 +24,8 @@ OSH.EventManager.fire = function(eventName,properties) {
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.observe = function(eventName,fnCallback,id) {
-    var handleEvent = function (event) {
-        if(typeof fnCallback != "undefined") {
-            fnCallback(event.memo);
-        }
-    };
-    if(typeof  id != "undefined") {
-        observedEvent[id] = handleEvent;
-    }
-    document.observe("osh:"+eventName, handleEvent);
-};
-
-/**
- *
- * @param eventName
- * @param id
- * @instance
- * @memberof OSH.EventManager
- */
-OSH.EventManager.stopObserving = function(eventName,id) {
-    if(typeof id != "undefined") {
-        document.stopObserving(eventName, observedEvent[id]);
-        delete observedEvent[id];
-    }
+OSH.EventManager.observe = function(eventName, fnCallback) {
+    mapEvent.observe(eventName,fnCallback);
 };
 
 /**
@@ -59,12 +36,10 @@ OSH.EventManager.stopObserving = function(eventName,id) {
  * @instance
  * @memberof OSH.EventManager
  */
-OSH.EventManager.observeDiv = function(divId,eventName,fnCallback) {
-    $(divId).observe(eventName, function(event) {
-        if(typeof fnCallback != "undefined") {
-            fnCallback(event);
-        }
-    });
+OSH.EventManager.observeDiv = function(divId, eventName, fnCallback) {
+    elem = document.getElementById(divId);
+    // use native dom event listener
+    elem.addEventListener(eventName,fnCallback);
 };
 
 /**

@@ -15,9 +15,9 @@
         swapId: "main-container"
     });
  */
-OSH.UI.DialogView = Class.create(OSH.UI.View,{
-    initialize: function ($super,divId, options) {
-        $super(divId,[],options);
+OSH.UI.DialogView = OSH.UI.View.extend({
+    initialize: function (divId, options) {
+        this._super(divId,[],options);
         // creates HTML eflement
         this.dialogId = "dialog-" + OSH.Utils.randomUUID();
         this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();
@@ -279,7 +279,7 @@ OSH.UI.DialogView = Class.create(OSH.UI.View,{
      * @instance
      * @memberof OSH.UI.DialogView
      */
-    show: function($super,properties) {
+    show: function(properties) {
         if(properties.viewId.indexOf(this.getId()) > -1) {
             this.rootTag.style.display = "block";
             if(typeof(this.initialWidth) == "undefined" ) {

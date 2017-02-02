@@ -41,9 +41,9 @@
         }
     });
  */
-OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.location = null;
 		this.orientation = {heading:0};
@@ -121,8 +121,8 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	 * @memberof OSH.UI.Styler.PointMarker
 	 * @instance
 	 */
-	init: function($super,view) {
-		$super(view);
+	init: function(view) {
+		this._super(view);
 		if(typeof(view) != "undefined" && this.location != null) {
 			view.updateMarker(this,0,{});
 		}
@@ -138,8 +138,8 @@ OSH.UI.Styler.PointMarker = Class.create(OSH.UI.Styler, {
 	 * @memberof OSH.UI.Styler.PointMarker
 	 * @instance
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if(this._super(dataSourceId,rec,view,options)) {
 			if (typeof(view) != "undefined" && this.location != null) {
 				view.updateMarker(this, rec.timeStamp, options);
 			}

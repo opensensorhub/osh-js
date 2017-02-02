@@ -1,0 +1,7 @@
+{
+  "name": "ffmpeg-h264",
+  "main": "ffmpeg-h264.js",
+  "_source": "/mnt/DATA/home/nevro/progs/workspace-osh-js/Toolkit/vendor-local/ffmpeg",
+  "_target": "*",
+  "_originalSource": "./vendor-local/ffmpeg"
+}

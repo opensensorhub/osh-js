@@ -17,7 +17,7 @@
  * connector.close();
  *
  */
-OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataConnector, {
+OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.extend({
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
@@ -126,4 +126,3 @@ OSH.DataConnector.WebSocketDataConnector = Class.create(OSH.DataConnector.DataCo
         this.disconnect();
     }
 });
-

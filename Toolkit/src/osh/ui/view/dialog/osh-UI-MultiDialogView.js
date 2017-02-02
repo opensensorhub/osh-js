@@ -4,10 +4,10 @@
  * @type {OSH.UI.Dialog}
  * @augments OSH.UI.Dialog
  */
-OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
+OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
 
-    initialize:function($super,divId, options) {
-        $super(divId,options);
+    initialize:function(divId, options) {
+        this._super(divId,options);
         // add extra part
         this.popExtraDiv = document.createElement("div");
         this.popExtraDiv.setAttribute("class","pop-extra");
@@ -52,9 +52,9 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
 
     },
 
-    swap:function($super) {
+    swap:function() {
         var currentSwapValue = this.swapped;
-        $super();
+        this._super();
 
         // hide extra stuff
         if(!currentSwapValue) {
@@ -64,8 +64,8 @@ OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
         }
     },
 
-    show: function($super,properties) {
-        $super(properties);
+    show: function(properties) {
+        this._super(properties);
         //if(!isUndefinedOrNull(this.divToAdd) && this.divToAdd.style.display === "none") {
         //   this.divToAdd.style.display = "block";
         //  }

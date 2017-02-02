@@ -14,7 +14,7 @@
 
    oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
  */
-OSH.Server = Class.create({
+OSH.Server = BaseClass.extend({
   initialize: function (url) {
     this.url = url;
     this.id = "Server-" + OSH.Utils.randomUUID();

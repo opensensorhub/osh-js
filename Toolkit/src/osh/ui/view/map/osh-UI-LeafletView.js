@@ -34,9 +34,9 @@
  }]
  );
  */
-OSH.UI.LeafletView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, viewItems, options) {
-        $super(divId, viewItems, options);
+OSH.UI.LeafletView = OSH.UI.View.extend({
+    initialize: function (divId, viewItems, options) {
+        this._super(divId, viewItems, options);
 
         var cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -49,7 +49,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    beforeAddingItems: function ($super, options) {
+    beforeAddingItems: function (options) {
         // inits the map
         this.initMap(options);
         this.initEvents();
@@ -244,7 +244,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
             }
         });
 
-        $(id).oncontextmenu = function (e) {
+        document.getElementById(id).oncontextmenu = function (e) {
             var evt = new Object({keyCode: 93});
 
             if (e.preventDefault != undefined)
@@ -407,8 +407,8 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    attachTo:function($super,divId) {
-        $super(divId);
+    attachTo:function(divId) {
+        this._super(divId);
         // Fix leaflet bug when resizing the div parent container
         this.map.invalidateSize();
     },
@@ -420,12 +420,13 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.LeafletView
      */
     onResize:function($super) {
-        $super();
+        this._super();
         this.map.invalidateSize();
     },
 });
 
 /***  little hack starts here ***/
+
 L.Map = L.Map.extend({
     openPopup: function (popup) {
         this._popup = popup;
@@ -486,5 +487,6 @@ L.Map = L.Map.extend({
         }
     });
 })();
+
 
 /***  end of hack ***/

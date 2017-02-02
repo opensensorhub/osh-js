@@ -16,8 +16,8 @@
 
   var contextCircularMenu = new OSH.UI.ContextMenu.CircularMenu({id : randomId,groupId: randomGroupId,items : menuItems});
  */
-OSH.UI.ContextMenu.CircularMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
-    initialize:function($super,properties) {
-        $super(properties,"circular");
+OSH.UI.ContextMenu.CircularMenu = OSH.UI.ContextMenu.CssMenu.extend({
+    initialize:function(properties) {
+        this._super(properties,"circular");
     }
 });

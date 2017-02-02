@@ -34,10 +34,10 @@
  }]
  );
  */
-OSH.UI.CesiumView = Class.create(OSH.UI.View, {
+OSH.UI.CesiumView = OSH.UI.View.extend({
 	
-	initialize : function($super, divId,viewItems, properties) {
-		$super(divId,viewItems,properties);
+	initialize : function(divId,viewItems, properties) {
+		this._super(divId,viewItems,properties);
 
 		var cssClass = document.getElementById(this.divId).className;
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -173,7 +173,7 @@ OSH.UI.CesiumView = Class.create(OSH.UI.View, {
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	beforeAddingItems: function ($super, options) {
+	beforeAddingItems: function (options) {
 		this.markers = {};
 	    this.first = true;
 	    

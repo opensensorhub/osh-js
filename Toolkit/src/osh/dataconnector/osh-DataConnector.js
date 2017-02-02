@@ -4,7 +4,7 @@
  * @abstract
  * @param {string} url The full url used to connect to the data stream
  */
-OSH.DataConnector.DataConnector = Class.create({
+OSH.DataConnector.DataConnector = BaseClass.extend({
   initialize: function(url) {
     this.url = url;
     this.id = "DataConnector-"+OSH.Utils.randomUUID();

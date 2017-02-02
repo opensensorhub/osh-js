@@ -20,6 +20,17 @@ OSH.Utils.randomUUID = function() {
 };
 
 /**
+ * This function stamps/embeds a UUID into an object and returns the UUID generated for it
+ * @returns {string}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.stampUUID = function(obj) {
+  obj._osh_id = obj._osh_id || OSH.Utils.randomUUID();
+  return obj._osh_id;
+};
+
+/**
  *
  * @param xmlStr
  * @returns {*}
@@ -255,6 +266,21 @@ OSH.Utils.isArrayIntersect = function(a, b) {
   return a.intersect(b).length > 0;
 };
 
+
+/**
+ *
+ * @param o
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isElement = function isElement(o) {
+    return (
+        typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+        o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+    );
+};
+
 /**
  *
  * @returns {*}
@@ -262,7 +288,10 @@ OSH.Utils.isArrayIntersect = function(a, b) {
  * @memberof OSH.Utils
  */
 OSH.Utils.isWebWorker = function() {
-  return Modernizr.webworkers;
+  if (typeof(Worker) !== "undefined") {
+      return true;
+  }
+  return false;
 };
 
 /**
@@ -285,7 +314,7 @@ OSH.Utils.removeCss = function(div,css) {
   var divCss = div.className;
   css = divCss.replace(css,"");
   div.className = css;
-}
+};
 
 
 /**
@@ -297,5 +326,5 @@ OSH.Utils.removeCss = function(div,css) {
  */
 OSH.Utils.addCss = function(div,css) {
   div.setAttribute("class",div.className+" "+css);
-}
+};
 

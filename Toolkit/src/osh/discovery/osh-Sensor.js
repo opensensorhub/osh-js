@@ -3,7 +3,7 @@
  * @classdesc
  *
  */
-OSH.Sensor = Class.create({
+OSH.Sensor = BaseClass.extend({
   initialize: function (jsonix_offering) {
     this.server = null;
     this.identifier = jsonix_offering.identifier;

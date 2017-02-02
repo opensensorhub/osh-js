@@ -3,7 +3,7 @@
  * @class OSH.UI.Styler
  * @abstract
  */
-OSH.UI.Styler = Class.create({
+OSH.UI.Styler = BaseClass.extend({
 	initialize : function(jsonProperties) {
 		this.properties = jsonProperties;
 		this.id = "styler-" + OSH.Utils.randomUUID();

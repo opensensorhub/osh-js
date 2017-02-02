@@ -6,7 +6,7 @@
  * @param {Object} properties the properties object
  * @param {string} properties.id the context menu id
  */
-OSH.UI.ContextMenu = Class.create({
+OSH.UI.ContextMenu = BaseClass.extend({
 	initialize : function(properties) {
 		if(typeof  properties != "undefined" && typeof  properties.id != "undefined") {
 			this.id = properties.id;

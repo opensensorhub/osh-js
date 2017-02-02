@@ -17,9 +17,9 @@
     bufferingTime: 1000
   });
  */
-OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
-  initialize: function($super,name,properties,options) {
-    $super(name,properties,options);
+OSH.DataReceiver.VideoMjpeg = OSH.DataReceiver.DataSource.extend({
+  initialize: function(name,properties,options) {
+    this._super(name,properties,options);
   },
 
   /**
@@ -30,7 +30,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.VideoMjpeg
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
   },
 
@@ -42,7 +42,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.VideoMjpeg
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var imgBlob = new Blob([data]);
     var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
     return blobURL;

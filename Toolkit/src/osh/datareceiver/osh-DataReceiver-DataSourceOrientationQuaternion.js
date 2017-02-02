@@ -17,7 +17,7 @@
         bufferingTime: 1000
     });
  */
-OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.OrientationQuaternion = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -27,7 +27,7 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
    * @memberof OSH.DataReceiver.OrientationQuaternion
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -47,7 +47,7 @@ OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSourc
    * @memberof OSH.DataReceiver.OrientationQuaternion
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var qx = parseFloat(tokens[1]);

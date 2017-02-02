@@ -4,9 +4,9 @@
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
-	initialize : function($super, properties) {
-		$super(properties);
+OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
+	initialize : function(properties) {
+		this._super(properties);
 		this.properties = properties;
 		this.location = null;
 		this.radialData = null;
@@ -72,8 +72,8 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Nexrad
 	 */
-	init: function($super,view) {
-		$super(view);
+	init: function(view) {
+		this._super(view);
 	},
 
 	/**
@@ -86,8 +86,8 @@ OSH.UI.Styler.Nexrad = Class.create(OSH.UI.Styler, {
 	 * @instance
 	 * @memberof OSH.UI.Styler.Nexrad
 	 */
-	setData: function($super,dataSourceId,rec,view,options) {
-		if ($super(dataSourceId,rec,view,options)) {
+	setData: function(dataSourceId,rec,view,options) {
+		if (this._super(dataSourceId,rec,view,options)) {
 			if (typeof(view) != "undefined") {
 				
 				var DTR = Math.PI/180;

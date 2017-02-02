@@ -16,9 +16,9 @@
 
    var contextStackMenu = new OSH.UI.ContextMenu.StackMenu({id : randomId,groupId: randomGroupId,items : menuItems});
  */
-OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
-    initialize:function($super,properties) {
-        $super(properties,"stack");
+OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
+    initialize:function(properties) {
+        this._super(properties,"stack");
     },
 
     /**
@@ -28,7 +28,7 @@ OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
      * @instance
      * @memberof OSH.UI.ContextMenu.StackMenu
      */
-    show:function($super,properties) {
+    show:function(properties) {
         this.removeElement();
         var htmlVar="";
         htmlVar += "  <div class=\""+this.type+"-menu-circle\">";
