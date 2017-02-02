@@ -244,7 +244,7 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
             }
         });
 
-        $(id).oncontextmenu = function (e) {
+        document.getElementById(id).oncontextmenu = function (e) {
             var evt = new Object({keyCode: 93});
 
             if (e.preventDefault != undefined)
@@ -426,7 +426,7 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
 });
 
 /***  little hack starts here ***/
-/*
+
 L.Map = L.Map.extend({
     openPopup: function (popup) {
         this._popup = popup;
@@ -487,6 +487,6 @@ L.Map = L.Map.extend({
         }
     });
 })();
-*/
+
 
 /***  end of hack ***/

@@ -2,8 +2,427 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d30d3b62-0fab-43b9-8ce3-d8602865216b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/bower.json" afterPath="$PROJECT_DIR$/Toolkit/bower.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/0/0/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/0/1/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/0/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/1/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/2/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/3/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/0/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/1/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/2/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/3/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/4/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/5/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/6/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/7/0.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/0/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/1/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/2/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/1/3/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/0/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/1/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/2/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/3/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/4/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/5/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/6/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/7/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/0/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/1/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/2/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/3/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/4/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/5/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/6/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/7/2.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/0/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/1/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/2/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/3/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/4/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/5/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/6/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/2/7/3.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/TerrainProviders/Ellipsoid.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/TerrainProviders/STK.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/TimelineIcons.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/add1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/add1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/aimarajs.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/aimarajs.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/aimarajs2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/aimarajs2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/airfield.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/airport.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/alcohol-shop.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/america-football.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/art-gallery.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/bakery.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/bank.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/bar.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/base.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/baseball.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/basketball.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/beer.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/bicycle.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/bingAerial.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/bingAerialLabels.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/bingRoads.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/blackMarble.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/blue_key.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/blue_key.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/building.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/bus.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/cafe.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/camera.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/campsite.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/car.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/cd.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/cemetery.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/cesium.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/chemist.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/cinema.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/circle-stroked.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/circle.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/city.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/clothing-store.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/collapse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/collapse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/college.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/commercial.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/cricket.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/cross.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/dam.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/danger.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/disability.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/dog-park.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/embassy.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/emergency-telephone.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/empty.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/entrance.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/esriNationalGeographic.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/esriWorldImagery.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/esriWorldStreetMap.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/expand.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/expand.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/farm.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/fast-food.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/ferry.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/file.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/file.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/fire-station.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/folder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/folder.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/folder.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/folderopen.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/fuel.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/fullscreen.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/fullscreen@2x.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/garden.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/gift.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/globe.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/golf.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/grocery.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/hairdresser.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/harbor.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/heart.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/heliport.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/hospital.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/ice-cream.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/img_transparent.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/img_transparent.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/imgfolder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/industrial.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/info-loading.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/join.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/joinbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/key_green.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/key_green.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/land-use.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/lastnode.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/lastnode.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/laundry.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/layers-2x.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/images/layers-2x.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/layers.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/images/layers.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/leaf.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/leaf.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/library.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/lighthouse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/line.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/lodging.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/logging.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/london-underground.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/magic_ball.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/magic_ball.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/mapQuestOpenStreetMap.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/mapboxSatellite.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/mapboxStreets.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/mapboxTerrain.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/marker-icon-2x.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/images/marker-icon-2x.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/marker-icon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/images/marker-icon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/marker-shadow.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/images/marker-shadow.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/marker-stroked.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/marker.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/minefield.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/minus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/minusbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/mobilephone.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/monitor.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/monitor.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/monument.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/moonSmall.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/museum.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/music.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/musicfolder.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/naturalEarthII.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/node.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/node.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/nolines_minus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/nolines_plus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/oil-well.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/openStreetMap.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/page.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/park.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/park2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/parking-garage.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/parking.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/pharmacy.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/pitch.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/place-of-worship.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/playground.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/plus.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/plusbottom.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/police.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/polling-place.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/post.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/prison.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/question.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/rail-above.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/rail-light.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/rail-metro.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/rail-underground.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/rail.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/religious-christian.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/religious-jewish.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/religious-muslim.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/restaurant.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/right.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/right.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/roadblock.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/rocket.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/school.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/scooter.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/shop.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/skiing.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/slaughterhouse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/soccer.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/square-stroked.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/square.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/stamenToner.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/ImageryProviders/stamenWatercolor.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/star-stroked.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/star.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/star.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/star.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/suitcase.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/swimming.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/telephone.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/tennis.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/theatre.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/toilets.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/town-hall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/town.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree/trash.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/tree.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/tree.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/triangle-stroked.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/triangle.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/SkyBox/tycho2t3_80_mx.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/SkyBox/tycho2t3_80_my.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/SkyBox/tycho2t3_80_mz.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/SkyBox/tycho2t3_80_px.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/SkyBox/tycho2t3_80_py.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/SkyBox/tycho2t3_80_pz.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/village.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/images/vline.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/images/vline.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/warehouse.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/waste-basket.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/water.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/waterNormals.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/waterNormalsSmall.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/wetland.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/maki/zoo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Animation/Animation.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/BaseLayerPicker/BaseLayerPicker.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Cesium.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/CesiumInspector/CesiumInspector.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/CesiumWidget/CesiumWidget.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/FullscreenButton/FullscreenButton.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Geocoder/Geocoder.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_0.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_1.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_10.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_11.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_12.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_13.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_14.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_15.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_16.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_17.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_18.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_19.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_2.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_20.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_21.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_22.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_23.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_24.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_25.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_26.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_27.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_3.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_4.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_5.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_6.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_7.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_8.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/IAU2006_XYS/IAU2006_XYS_9.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/InfoBox/InfoBox.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/InfoBox/InfoBoxDescription.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/jsonix/Jsonix-all.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/jsonix/Jsonix-min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/Leaflet.fullscreen.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/Leaflet.fullscreen.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/Mouse.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/MouseLeft.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/MouseMiddle.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/MouseRight.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/NavigationHelpButton/NavigationHelpButton.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/PerformanceWatchdog/PerformanceWatchdog.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/SceneModePicker/SceneModePicker.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/SelectionIndicator/SelectionIndicator.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Timeline/Timeline.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/Touch.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/TouchDrag.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/TouchRotate.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/TouchTilt.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Images/NavigationHelp/TouchZoom.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/VRButton/VRButton.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Viewer/Viewer.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ffmpeg/YUVCanvas.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/approximateTerrainHeights.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/cesiumWorkerBootstrapper.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/combineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createBoxGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createBoxOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createCircleGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createCircleOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createCorridorGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createCorridorOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createCylinderGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createCylinderOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createEllipseGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createEllipseOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createEllipsoidGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createEllipsoidOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createPointGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createPolygonGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createPolygonOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createPolylineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createPolylineVolumeGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createPolylineVolumeOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createRectangleGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createRectangleOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createSimplePolylineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createSphereGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createSphereOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createVerticesFromHeightmap.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createVerticesFromQuantizedTerrainMesh.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createWallGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/createWallOutlineGeometry.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/d3/d3.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/ThirdParty/Workers/deflate.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ffmpeg/ffmpeg-h264.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/ThirdParty/Workers/inflate.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/leaflet-src.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/leaflet-src.map" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/leaflet.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/leaflet.fullscreen.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/leaflet/leaflet.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Animation/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/BaseLayerPicker/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/CesiumWidget/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Geocoder/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/NavigationHelpButton/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/Timeline/lighter.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/lighterShared.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/nouislider/nouislider.min.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/nouislider/nouislider.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/nvd3/nv.d3.min.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/nvd3/nv.d3.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3/ol.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3/ol.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3/ol3-layerswitcher.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3/ol3-layerswitcher.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/pin.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/shared.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Assets/Textures/NaturalEarthII/tilemapresource.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/transferTypedArrayTest.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/tree.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/tree/tree.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Workers/upsampleQuantizedTerrainMesh.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/nouislider/wNumb.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/vendor/cesium/Widgets/widgets.css" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/circularNavMenu/circle-menu.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/circularNavMenu/circle-menu.min.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/circularNavMenu/common.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/circularNavMenu/common.min.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/circularNavMenu/font-awesome.min.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/font-awesome/FontAwesome.otf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/font-awesome/fontawesome-webfont.eot" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/font-awesome/fontawesome-webfont.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/font-awesome/fontawesome-webfont.ttf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/font-awesome/fontawesome-webfont.woff" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/font-awesome/fontawesome-webfont.woff2" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-300.eot" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-300.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-300.ttf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-300.woff" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-300.woff2" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-700.eot" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-700.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-700.ttf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-700.woff" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-700.woff2" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-regular.eot" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-regular.svg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-regular.ttf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-regular.woff" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/fonts/oxygen/oxygen-v5-latin-regular.woff2" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/stylesheet.min.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/tasking.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/index-local.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/js/patch-prototype-bootstrap.js" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/osh-UI-View.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/osh-UI-View.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/js/config-3.js" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/js/config-3.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/gulpfile.js" afterPath="$PROJECT_DIR$/Toolkit/gulpfile.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Demos/VideoDisplay/index-local.html" afterPath="$PROJECT_DIR$/Demos/VideoDisplay/index-local.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/index.html" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/tests/ffmpeg-worker/index.html" afterPath="$PROJECT_DIR$/Toolkit/tests/ffmpeg-worker/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js" afterPath="$PROJECT_DIR$/Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Clients/VideoDisplay/css/video-display.css" afterPath="$PROJECT_DIR$/Clients/VideoDisplay/css/video-display.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="osh-js.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,107 +443,47 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/package.json">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.148149">
-              <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.6145374">
+              <caret line="124" column="55" selection-start-line="124" selection-start-column="55" selection-end-line="124" selection-end-column="55" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="osh-MapEvent.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-MapEvent.js">
+      <file leaf-file-name="wNumb.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/vendor/nouislider/wNumb.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="13" column="51" selection-start-line="13" selection-start-column="51" selection-end-line="13" selection-end-column="51" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index-local.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Demos/VideoDisplay/index-local.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.09434">
-              <caret line="15" column="50" selection-start-line="15" selection-start-column="50" selection-end-line="15" selection-end-column="50" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".project" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/.project">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bower.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/bower.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.481482">
-              <caret line="37" column="42" selection-start-line="37" selection-start-column="42" selection-end-line="37" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="gulpfile.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="gulpfile.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Toolkit/gulpfile.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.59621453">
-              <caret line="222" column="59" selection-start-line="222" selection-start-column="59" selection-end-line="222" selection-end-column="59" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="leaflet.fullscreen.css" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="16" column="23" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".bowerrc" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/.bowerrc">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.0">
-              <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="conf.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Toolkit/conf.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="9.518518">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Demos/VideoDisplay/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.6666665">
-              <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="112" />
-              <folding />
+              <caret line="245" column="68" selection-start-line="245" selection-start-column="68" selection-end-line="245" selection-end-column="68" />
+              <folding>
+                <element signature="e#2663#4066#0" expanded="false" />
+                <element signature="e#5389#8301#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -139,9 +498,16 @@
         <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-MapEvent.js" />
         <option value="$PROJECT_DIR$/Toolkit/src/osh/osh-EventManager.js" />
         <option value="$PROJECT_DIR$/Toolkit/.bowerrc" />
-        <option value="$PROJECT_DIR$/Demos/VideoDisplay/index-local.html" />
         <option value="$PROJECT_DIR$/Toolkit/bower.json" />
+        <option value="$PROJECT_DIR$/Demos/VideoDisplay/index-local.html" />
+        <option value="$PROJECT_DIR$/Clients/VideoDisplay/css/osh.css" />
+        <option value="$PROJECT_DIR$/Clients/VideoDisplay/index-local.html" />
+        <option value="$PROJECT_DIR$/Clients/VideoDisplay/js/vendor.js" />
+        <option value="$PROJECT_DIR$/Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js" />
+        <option value="$PROJECT_DIR$/Clients/VideoDisplay/js/config-3.js" />
         <option value="$PROJECT_DIR$/Toolkit/gulpfile.js" />
+        <option value="$PROJECT_DIR$/Clients/VideoDisplay/css/video-display.css" />
+        <option value="$PROJECT_DIR$/Clients/VideoDisplay/index.html" />
       </list>
     </option>
   </component>
@@ -165,7 +531,7 @@
     <OptionsSetting value="true" id="Update" />
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
-    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="2" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
@@ -182,6 +548,7 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -268,7 +635,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Leaflet.fullscreen" />
+              <option name="myItemId" value="ol3-layerswitcher" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -290,25 +657,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Leaflet.fullscreen" />
+              <option name="myItemId" value="ol3-layerswitcher" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="dist" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="workspace-osh-js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="workspace-osh-js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Demos" />
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -322,7 +675,65 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Demos" />
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vendor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ol3" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Toolkit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vendor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nouislider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Clients" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Clients" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -330,9 +741,30 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace-osh-js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Clients" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="VideoDisplay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="css" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -358,14 +790,18 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Toolkit/tests" />
-      <recent name="$PROJECT_DIR$/Toolkit" />
-      <recent name="$PROJECT_DIR$/Toolkit/vendor-local/ffmpeg" />
-      <recent name="$PROJECT_DIR$/Toolkit/tests/ffmpeg-worker/releases/v1.0/vendor" />
-      <recent name="$PROJECT_DIR$/Toolkit/tests/ffmpeg-worker" />
+      <recent name="$PROJECT_DIR$/Clients/VideoDisplay/vendor" />
+      <recent name="$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3" />
+      <recent name="$PROJECT_DIR$/Clients/VideoDisplay/css" />
+      <recent name="$PROJECT_DIR$/Toolkit/dist/vendor/ol3" />
+      <recent name="$PROJECT_DIR$/Clients/VideoDisplay/js" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Toolkit/src/osh/ui/view" />
     </key>
   </component>
   <component name="RunManager">
@@ -423,26 +859,26 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="31" width="1932" height="1055" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24114583" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18697916" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3128898" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32912722" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gulp" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24428274" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -458,124 +894,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="135" column="25" selection-start-line="135" selection-start-column="25" selection-end-line="135" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="37" selection-start-line="63" selection-start-column="37" selection-end-line="63" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/ui/osh-UI-View.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-MapEvent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/dataconnector/osh-DataConnector.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="34" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-DomEvent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="16" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Buffer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiverController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/gulpfile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="73" column="69" selection-start-line="73" selection-start-column="69" selection-end-line="73" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/bower.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="15" selection-start-line="39" selection-start-column="15" selection-end-line="39" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/conf.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-EventManager.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-DomEvent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Buffer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -664,13 +987,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Demos/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.06020067">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-Browser.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -711,9 +1027,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="16" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -749,14 +1062,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/ui/osh-UI-View.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/osh-EventManager.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -777,7 +1082,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -785,7 +1089,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="9.518518">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -793,29 +1096,72 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-13.148149">
           <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.14826499">
+          <caret line="16" column="23" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/ui/view/osh-UI-View.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Demos/VideoDisplay/index.html">
+    <entry file="file://$PROJECT_DIR$/Demos/VideoDisplay/js/config-3.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.6666665">
-          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="112" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceLatLonAlt.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Demos/VideoDisplay/index-local.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.09434">
-          <caret line="15" column="50" selection-start-line="15" selection-start-column="50" selection-end-line="15" selection-end-column="50" />
+        <state vertical-scroll-proportion="-3.7358491">
+          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/vendor/wnumb/wNumb.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.2342857">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/vendor-local/ffmpeg/ffmpeg-h264.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/vendor-local/ffmpeg/YUVCanvas.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Toolkit/.bowerrc">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.0">
+        <state vertical-scroll-proportion="0.0">
           <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
           <folding />
         </state>
@@ -823,24 +1169,123 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Toolkit/bower.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.481482">
-          <caret line="37" column="42" selection-start-line="37" selection-start-column="42" selection-end-line="37" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Toolkit/vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css">
+    <entry file="file://$PROJECT_DIR$/Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="23" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
+          <caret line="421" column="31" selection-start-line="421" selection-start-column="31" selection-end-line="421" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/js/config-3.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15294118">
+          <caret line="454" column="40" selection-start-line="454" selection-start-column="40" selection-end-line="454" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/vendor/nvd3/nv.d3.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/dist/vendor/ol3/ol.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Toolkit/dist/vendor/ol3/ol3-layerswitcher.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Demos/VideoDisplay/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.039647575">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Demos/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Toolkit/gulpfile.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.59621453">
-          <caret line="222" column="59" selection-start-line="222" selection-start-column="59" selection-end-line="222" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="245" column="68" selection-start-line="245" selection-start-column="68" selection-end-line="245" selection-end-column="68" />
+          <folding>
+            <element signature="e#2663#4066#0" expanded="false" />
+            <element signature="e#5389#8301#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/css/bootstrap.min.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3/ol.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/vendor/ol3/ol3-layerswitcher.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/css/video-display.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.13368984">
+          <caret line="110" column="18" selection-start-line="110" selection-start-column="18" selection-end-line="110" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/vendor/nouislider/wNumb.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Clients/VideoDisplay/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6145374">
+          <caret line="124" column="55" selection-start-line="124" selection-start-column="55" selection-end-line="124" selection-end-column="55" />
           <folding />
         </state>
       </provider>
