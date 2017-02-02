@@ -24,8 +24,6 @@ https://github.com/highsource/jsonix
  
    --leaflet      An open-source JavaScript library for mobile-friendly interactive maps: http://leafletjs.com/
  
-   --minify       Minify the libraries. All the dependencies vendor librairies are included in a all-in-one file
- 
    --nouislider   This library is responsible for displaying the RangeSlider bar.It is lightweight JavaScript range slider, originally developed to be a jQuery UI alternative: 
 https://github.com/leongersen/noUiSlider
  
