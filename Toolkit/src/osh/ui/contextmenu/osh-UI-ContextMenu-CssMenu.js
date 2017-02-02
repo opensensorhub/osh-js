@@ -88,7 +88,7 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
             items[i].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
         }
 
-        $(closeId).on("click",this.hide.bind(this));
+        document.getElementById(closeId).onclick = this.hide.bind(this);
 
         var offsetX = 0;
         var offsetY = 0;
@@ -115,11 +115,11 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
         for(var i = 0; i < this.items.length; i++) {
             var item =  this.items[i];
             this.bindEvents[item.id] = item.viewId;
-            $(item.id).on("click",function(event){
+            document.getElementById(item.id).onclick = function(event) {
                 OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
                     viewId: this.bindEvents[event.target.id]
                 });
-            }.bind(this));
+            }.bind(this);
         }
 
         // this causes preventing any closing event

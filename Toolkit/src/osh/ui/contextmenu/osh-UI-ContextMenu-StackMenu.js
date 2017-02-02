@@ -73,11 +73,11 @@ OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
         for(var i = 0; i < this.items.length; i++) {
             var item =  this.items[i];
             this.bindEvents[item.id] = item.viewId;
-            $(item.id).on("click",function(event){
+            document.getElementById(item.id).onclick = function(event){
                 OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
                     viewId: this.bindEvents[event.target.id]
                 });
-            }.bind(this));
+            }.bind(this);
         }
 
         // this causes preventing any closing event
