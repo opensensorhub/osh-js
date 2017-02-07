@@ -9,6 +9,7 @@ var order = require('gulp-order');
 var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
 var gulpif = require('gulp-if');
+var karmaServer = require('karma').Server;
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -305,4 +306,16 @@ gulp.task('images', false,function () {
 gulp.task('clean', "Clean the dist directory",function () {
     return gulp.src('dist/', {read: false})
         .pipe(clean({force:true}));
+});
+
+
+
+/**
+ * Run test once and exit
+ */
+gulp.task('test', function (done) {
+  new karmaServer({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
 });
