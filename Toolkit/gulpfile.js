@@ -42,7 +42,7 @@ gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all
 
     // Minify OSH css min
     gulp.src("dist/css/osh.css")
-        .pipe(cleanCSS({compatibility: '*'}))
+        //.pipe(cleanCSS({compatibility: '*'}))
         .pipe(concat('osh.min.css'))
         .pipe(gulp.dest('dist/css'));
 });
@@ -218,7 +218,7 @@ gulp.task('osh-js-src',false,function(){
 });
 
 gulp.task('osh-css-src',false,['copy-fonts'],function(){
-    return gulp.src('src/css/**')
+    return gulp.src('src/css/*.css')
         .pipe(concat('osh.css')).pipe(gulp.dest("dist/css"));
 });
 //----------- NORMAL ------------------//
