@@ -42,7 +42,7 @@ gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all
 
     // Minify OSH css min
     gulp.src("dist/css/osh.css")
-        .pipe(cleanCSS({inline: ['all'], compatibility: '*'}))
+        //.pipe(cleanCSS({inline: ['all'], compatibility: '*'}))
         .pipe(concat('osh.min.css'))
         .pipe(gulp.dest('dist/css'));
 });
