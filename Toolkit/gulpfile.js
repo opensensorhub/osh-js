@@ -10,6 +10,7 @@ var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
 var gulpif = require('gulp-if');
 var karmaServer = require('karma').Server;
+var path = require('path');
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -42,7 +43,7 @@ gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all
 
     // Minify OSH css min
     gulp.src("dist/css/osh.css")
-        //.pipe(cleanCSS({compatibility: '*'}))
+        .pipe(cleanCSS({relativeTo: path.join(__dirname, 'dist/css'), compatibility: '*'}))
         .pipe(concat('osh.min.css'))
         .pipe(gulp.dest('dist/css'));
 });
