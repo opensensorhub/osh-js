@@ -20,8 +20,21 @@ OSH.UI.MjpegView = OSH.UI.View.extend({
     this.imgTag = document.createElement("img");
     this.imgTag.setAttribute("id", "dataview-"+OSH.Utils.randomUUID());
 
-    // appends <img> tag to <div>
-    document.getElementById(this.divId).appendChild(this.imgTag);
+    // rotation option
+    this.rotation = 0;
+    if (typeof(options) != "undefined" && typeof(options.rotation) != "undefined") {
+        this.rotation = options.rotation*Math.PI/180;
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = 640;
+        this.canvas.height = 480;
+        var ctx = this.canvas.getContext('2d');
+        ctx.translate(0, 480) ;
+        ctx.rotate(this.rotation);
+        document.getElementById(this.divId).appendChild(this.canvas);
+    } else {
+        // appends <img> tag to <div>
+        document.getElementById(this.divId).appendChild(this.imgTag);
+    }
 
     // adds listener
     var self = this;
