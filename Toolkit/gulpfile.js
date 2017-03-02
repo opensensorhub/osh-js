@@ -231,12 +231,9 @@ gulp.task('copy-vendor',false, function () {
             .pipe(gulp.dest('dist/vendor/ffmpeg'));
     }
 
-    if(argv.d3) {
-        gulp.src('vendor/d3/d3.min.js')
-            .pipe(gulp.dest('dist/vendor/d3'));
-    }
-
     if(argv.nvd3) {
+        gulp.src('vendor/d3/d3.min.js')
+            .pipe(gulp.dest('dist/vendor/nvd3'));
         gulp.src('vendor/nvd3/build/nv.d3.min.js')
             .pipe(gulp.dest('dist/vendor/nvd3'));
         gulp.src('vendor/nvd3/build/nv.d3.min.css')
