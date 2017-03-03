@@ -37,6 +37,7 @@
     "gulp-if": "^2.0.2",
     "gulp-jshint": "^2.0.1",
     "gulp-minify": "0.0.14",
+    "gulp-noop": "^1.0.0",
     "gulp-order": "^1.1.1",
     "gulp-sort": "^2.0.0",
     "gulp-src-ordered-globs": "^1.0.3",
