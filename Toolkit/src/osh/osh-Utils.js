@@ -279,7 +279,9 @@ OSH.Utils.getYCursorPosition = function() {
  * @memberof OSH.Utils
  */
 OSH.Utils.isArrayIntersect = function(a, b) {
-  return a.intersect(b).length > 0;
+  return a.filter(function(element){
+        return b.indexOf(element) > -1;
+       }).length > 0;
 };
 
 
