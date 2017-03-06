@@ -32,7 +32,7 @@
     "leaflet": "^1.0.2",
     "nvd3": "^1.8.5",
     "jsonix": "^2.4.1",
-    "cesium.js": "latest",
+    "cesium.js": "1.23",
     "nouislider": "^9.2.0",
     "ogc-schemas": "^2.6.1",
     "broadway": "./vendor-local/broadway",
