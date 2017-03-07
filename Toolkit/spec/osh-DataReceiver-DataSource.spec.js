@@ -1,7 +1,7 @@
 define(['dist/js/osh'], function() {
     var dataRcv;
     var wsUrl = 'ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:060693280a28e015-sos&observedProperty=http://sensorml.com/ont/swe/property/Location&temporalFilter=phenomenonTime,2015-02-16T07:58:00Z/2015-02-16T08:09:00Z&replaySpeed=3';
-    describe('Test suite for OSH.DataReceiver.DataSource', function() {
+    describe('OSH.DataReceiver.DataSource', function() {
         beforeEach(function() {
             dataRcv = new OSH.DataReceiver.DataSource('TestSource', {
                 protocol: 'ws',
@@ -16,7 +16,6 @@ define(['dist/js/osh'], function() {
                 bufferingTime: 1000,
                 timeShift: -16000
             });
-
         });
 
         describe('constructor()', function() {
@@ -72,6 +71,25 @@ define(['dist/js/osh'], function() {
             it('should publish a data reset event', function() {
                 expect(OSH.EventManager.fire).toHaveBeenCalled();
                 expect(OSH.EventManager.fire).toHaveBeenCalledWith(OSH.EventManager.EVENT.DATA+"-"+dataRcv.id, { dataSourceId: dataRcv.id, reset: true });
+            });
+        });
+
+        describe('onMessage()', function() {
+             var data = 'fff';
+             beforeEach(function() {
+                spyOn(dataRcv, 'parseTimeStamp').and.callFake(function() {});
+                spyOn(dataRcv, 'parseData').and.callFake(function() {});
+                spyOn(dataRcv, 'onData').and.callFake(function() {});
+                dataRcv.onMessage(data);
+            });
+
+            it('should generate a data object via parseTimeStamp() and parseData()', function() {
+                expect(dataRcv.parseTimeStamp).toHaveBeenCalledWith(data);
+                expect(dataRcv.parseData).toHaveBeenCalledWith(data);
+            });
+
+            it('should call onData()', function() {
+                expect(dataRcv.onData).toHaveBeenCalled();
             });
         });
     });
