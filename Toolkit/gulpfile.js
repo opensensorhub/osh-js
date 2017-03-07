@@ -53,21 +53,18 @@ gulp.task('vendor-js-src-all',false,function(){
     var jsSources = new Array();
 
     if(argv.ffmpeg) {
-        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
         jsSources.push('vendor/ffmpeg/YUVCanvas.js');
-    }
-
-    if(argv.d3) {
-        jsSources.push('vendor/d3/d3.min.js');
+        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
     }
 
     if(argv.nvd3) {
+        jsSources.push('vendor/d3/d3.min.js');
         jsSources.push('vendor/nvd3/build/nv.d3.min.js');
     }
 
     if(argv.broadway) {
-        jsSources.push('vendor/broadway/broadway-all.min.js');
         jsSources.push('vendor/broadway/YUVCanvas.js');
+        jsSources.push('vendor/broadway/broadway-all.min.js');
         jsSources.push('vendor/broadway/Decoder.js');
         jsSources.push('vendor/broadway/Player.js');
     }
