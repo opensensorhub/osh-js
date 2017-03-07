@@ -170,7 +170,7 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
         // copyrights
         var mbAttr = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
             mbUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        
+
         var esriLink = '<a href="http://www.esri.com/">Esri</a>';
         var esriWholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 
@@ -185,7 +185,7 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
         var streets = L.tileLayer(mbUrl, {id: 'mapbox.streets', attribution: mbAttr, maxZoom: maxZoom});
 
         return [{
-            name: "MapBox Streets",
+            name: "OSM Streets",
             layer: streets
         }, {
             name: "Esri Satellite",
