@@ -1,8 +1,11 @@
 # OSH Javascript Toolkit
 
 # Build
-Install dependencies using NPM:
-``Toolkit $ npm update ``
+Install plugins dependencies using NPM:
+``Toolkit $ npm install ``
+
+Install vendor dependencies using bower:
+``Toolkit $ bower install ``
 
 Display Gulp help:
 ```
