@@ -1,4 +1,4 @@
-define(['vendor/leaflet/dist/leaflet','dist/js/osh'], function() {
+define(['dist/js/osh'], function() {
     describe("Test suite for OSH.DataReceiver.LatLonAlt", function() {
         it("should have a constructor that correctly initializes a valid object", function() {
             var latLondataSource = new OSH.DataReceiver.LatLonAlt('android-GPS', {
