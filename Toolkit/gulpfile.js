@@ -107,6 +107,11 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
         cssSources.push('vendor/nouislider/distribute/nouislider.min.css');
     }
 
+    if(argv.leaflet) {
+        cssSources.push('vendor/leaflet/dist/leaflet.css');
+        cssSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.css');
+    }
+
     if(argv.ol3) {
         cssSources.push('vendor/ol3/ol.css');
         cssSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css');
