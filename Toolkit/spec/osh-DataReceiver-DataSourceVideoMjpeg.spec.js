@@ -1,9 +1,9 @@
 define(['dist/js/osh'], function() {
     var dataRcv;
     var buf;
-    describe('OSH.DataReceiver.VideoH264', function() {
+    describe('OSH.DataReceiver.VideoMjpeg', function() {
         beforeEach(function() {
-            dataRcv = new OSH.DataReceiver.VideoH264('TestSource', {});
+            dataRcv = new OSH.DataReceiver.VideoMjpeg('TestSource', {});
             buf = new ArrayBuffer(16);
             var dv = new DataView(buf);
             dv.setFloat64(0, 3.14, false /* bigEndian */);
@@ -16,12 +16,10 @@ define(['dist/js/osh'], function() {
         });
 
         describe('parseData()', function() {
-            it('should parse and return video frame data from the data array buffer (offset by 12 bytes)', function() {
-                 var data = dataRcv.parseData(buf);
-                 expect(data[0]).toBe(1);
-                 expect(data[1]).toBe(2);
-                 expect(data[2]).toBe(3);
-                 expect(data[3]).toBe(4);
+            it('should parse and create blob from data buffer and return an object url', function() {
+                spyOn(window.URL, 'createObjectURL').and.callThrough();
+                var url = dataRcv.parseData(buf);
+                expect(url.indexOf('http')).not.toBe(-1);
             });
         });
 

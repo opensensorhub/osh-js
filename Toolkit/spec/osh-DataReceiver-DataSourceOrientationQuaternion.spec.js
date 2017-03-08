@@ -15,7 +15,7 @@ define(['dist/js/osh'], function() {
         });
 
         describe('parseData()', function() {
-            it('parse and return data (heading,pitch,roll) from the data array buffer', function() {
+            it('should parse and return data (heading,pitch,roll) from the data array buffer', function() {
                 var data = dataRcv.parseData(buf);
                 expect(data.heading).toBe(90);
 
@@ -26,7 +26,7 @@ define(['dist/js/osh'], function() {
         });
 
         describe('parseTimeStamp()', function() {
-            it('parse and return timestamp from the data array buffer', function() {
+            it('should parse and return timestamp from the data array buffer', function() {
                 var data = dataRcv.parseTimeStamp(buf);
                 var d = new Date('2015-02-16T07:58:00Z');
                 expect(data).toBe(d.getTime());
