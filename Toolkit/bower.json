@@ -37,11 +37,11 @@
     "ogc-schemas": "^2.6.1",
     "broadway": "./vendor-local/broadway",
     "cesium-video-draping": "./vendor-local/cesium-video-draping",
-    "ffmpeg-src":"https://github.com/sensiasoft/ffmpeg.js.git#8d3aff280907cc711f52ff4f3237554eed66f122",
-    "ffmpeg": "./vendor-local/ffmpeg",
+    "ffmpeg":"https://github.com/sensiasoft/ffmpeg.js.git#8d3aff280907cc711f52ff4f3237554eed66f122",
     "tree": "./vendor-local/tree",
     "Leaflet.fullscreen": "https://github.com/Leaflet/Leaflet.fullscreen.git#^1.0.2",
     "wnumb": "https://github.com/leongersen/wnumb.git#^1.0.4",
-    "ol3-layerswitcher": "https://github.com/walkermatt/ol3-layerswitcher.git#^1.1.0"
+    "ol3-layerswitcher": "https://github.com/walkermatt/ol3-layerswitcher.git#^1.1.0",
+    "yuvcanvas":"./vendor-local/yuvcanvas"
   }
 }
