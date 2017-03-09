@@ -5,11 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <title>OSH Discovery test</title>
 
-    <script type="text/javascript" src="../../vendor/prototype/prototype.min.js"></script>
-    <script type="text/javascript" src="../../vendor/modernizr/modernizr-custom.js"></script>
-
     <!-- ffmpeg libs -->
-    <script src="../../vendor/ffmpeg/ffmpeg-h264.js"></script>
+    <script src="../../vendor/ffmpeg/ffmpeg-h264-lib.js"></script>
     <script src="../../vendor/ffmpeg/YUVCanvas.js"></script>
 
 
@@ -106,16 +103,17 @@
         document.body.appendChild(fpsVideoDiv);
 
         // OSH connect
-        var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video "+videoIdCount, {
+        var videoDataSource = new OSH.DataReceiver.VideoH264("Foscam H264 video ES", {
             protocol: "ws",
             service: "SOS",
             endpointUrl: "localhost:8181/sensorhub/sos",
-            offeringID: "urn:android:device:caf661b4881b902c-sos",
+            offeringID: "urn:mysos:offering:foscam:es",
             observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-            startTime: "now",
-            endTime: "2055-08-11T20:18:05.451Z",
+            startTime: "2017-03-04T13:01:51.199Z",
+            endTime: "2017-03-04T13:04:48.109Z",
             syncMasterTime: false,
-            bufferingTime: 0
+            bufferingTime: 0,
+            replaySpeed: 1,
         });
 
         var videoView = new OSH.UI.FFMPEGView(videoContainerEl.id, {
