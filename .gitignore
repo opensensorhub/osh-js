@@ -1,6 +1,7 @@
-Toolkit/node_modules
-Toolkit/.idea
-Toolkit/dist
-.idea
 **/.project
 **/.settings
+**/.externalToolBuilders
+**/.idea
+Toolkit/node_modules
+Toolkit/dist
+Toolkit/vendor

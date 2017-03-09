@@ -106,8 +106,8 @@
 
         var tTop = 0;
         var tLeft = 0;
-        var tBottom = height / yRowCnt;
-        var tRight = width / yDataPerRow;
+        var tBottom = 1.0;//height / yRowCnt;
+        var tRight = 1.0;//width / yDataPerRow;
         var texturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
@@ -117,8 +117,8 @@
           tBottom = height / uRowCnt;
           tRight = width / uDataPerRow;
         }else{
-          tBottom = (height / 2) / uRowCnt;
-          tRight = (width / 2) / uDataPerRow;
+          tBottom = 1.0;//(height / 2) / uRowCnt;
+          tRight = 1.0;//(width / 2) / uDataPerRow;
         };
         var uTexturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
 
@@ -130,8 +130,8 @@
           tBottom = height / vRowCnt;
           tRight = width / vDataPerRow;
         }else{
-          tBottom = (height / 2) / vRowCnt;
-          tRight = (width / 2) / vDataPerRow;
+          tBottom = 1.0;//(height / 2) / vRowCnt;
+          tRight = 1.0;//(width / 2) / vDataPerRow;
         };
         var vTexturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
 
