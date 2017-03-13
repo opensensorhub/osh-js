@@ -8,9 +8,9 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2017 Sensia Software LLC. All Rights Reserved.
 
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+ Author: Alex Robin <alex.robin@sensiasoft.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
@@ -111,8 +111,9 @@ OSH.UI.Styler.ImageDraping = OSH.UI.Styler.extend({
 		if (this._super(dataSourceId,rec,view,options)) {
 			
 			var enabled = true;
+			var snapshot = false;
 			if (this.snapshotFunc != null)
-				enabled = this.snapshotFunc();
+			    snapshot = this.snapshotFunc();
 			
 			if (typeof(view) != "undefined" && enabled &&
 				this.platformLocation != null &&
@@ -120,7 +121,7 @@ OSH.UI.Styler.ImageDraping = OSH.UI.Styler.extend({
 				this.gimbalOrientation != null &&
 				this.cameraModel != null &&
 				this.imageSrc != null) {
-				    view.updateDrapedImage(this,rec.timeStamp,options);
+				    view.updateDrapedImage(this,rec.timeStamp,options,snapshot);
 			}
 		}
 	}

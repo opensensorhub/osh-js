@@ -8,9 +8,10 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2017 Sensia Software LLC. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+ Author: Alex Robin <alex.robin@sensiasoft.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
@@ -59,7 +60,12 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 		
 		this.imageDrapingPrimitive = null;
+		this.imageDrapingPrimitiveReady = false;		
 		this.frameCount = 0;
+		
+		this.captureCanvas = document.createElement('canvas');
+		this.captureCanvas.width = 640;
+		this.captureCanvas.height = 480;
 	},
 
 	/**
@@ -112,7 +118,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @memberof OSH.UI.CesiumView
 	 *
 	 */
-    updateDrapedImage: function(styler,timeStamp,options) {
+    updateDrapedImage: function(styler,timeStamp,options,snapshot) {
 		
     	var llaPos = styler.platformLocation;
     	var camPos = Cesium.Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
@@ -155,26 +161,94 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     	var camDistR = styler.cameraModel.camDistR;
     	var camDistT = styler.cameraModel.camDistT;
     	
-    	var videoElt = styler.imageSrc;
+    	var imgSrc = styler.imageSrc;
     	
     	//if (this.frameCount%60 == 0)
     	{
-	    	var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Cesium.ImageDrapingPrimitive({
+	    	/*var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Cesium.ImageDrapingPrimitive({
 	            imageSrc: videoElt,
 	            camPos: camPos,
 	            camRot: camRot,
 	            camProj: camProj,
 	            camDistR: camDistR,
 	            camDistT: camDistT,
-	            asynchronous : false
+	            asynchronous : true
 	        }));
-	    	
-	    	// remove previous primitive
-	    	if (styler.snapshotFunc == null) {
-	    	    if (this.imageDrapingPrimitive != null) {
-	    		    this.viewer.scene.primitives.remove(this.imageDrapingPrimitive);
-	            }
-	    	    this.imageDrapingPrimitive = newImageDrapingPrimitive;
+	        
+	        // remove previous primitive
+            if (styler.snapshotFunc == null) {
+                if (this.imageDrapingPrimitive != null) {
+                    this.viewer.scene.primitives.remove(this.imageDrapingPrimitive);
+                }
+                this.imageDrapingPrimitive = newImageDrapingPrimitive;
+            }*/
+    	    
+    	    // snapshot
+            if (snapshot) {
+                var ctx = this.captureCanvas.getContext('2d');
+                ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
+                imgSrc = this.captureCanvas;                
+            }
+    	    
+    	    var encCamPos = Cesium.EncodedCartesian3.fromCartesian(camPos);
+    	    var appearance = new Cesium.MaterialAppearance({
+                material : new Cesium.Material({
+                    fabric : {
+                        type : 'Image',
+                        uniforms : {
+                            image : imgSrc,
+                            camPosHigh : encCamPos.high,
+                            camPosLow : encCamPos.low,
+                            camAtt: Cesium.Matrix3.toArray(Cesium.Matrix3.transpose(camRot, new Cesium.Matrix3())),
+                            camProj: Cesium.Matrix3.toArray(camProj),
+                            camDistR: camDistR,
+                            camDistT: camDistT
+                        }
+                    }
+                }),
+                vertexShaderSource: Cesium._shaders.ImageDrapingVS,
+                fragmentShaderSource: Cesium._shaders.ImageDrapingFS
+            });
+    	    
+    	    /*appearance = new Cesium.MaterialAppearance({
+                material : new Cesium.Material({
+                    fabric : {
+                        type: 'Color',
+                        uniforms : {
+                            color : new Cesium.Color(1.0, 0.0, 0.0, 0.5)
+                        }
+                    }
+                })
+            });*/
+    	    
+    	    if (this.imageDrapingPrimitive == null || snapshot) {    	        
+    	        if (this.imageDrapingPrimitive == null)
+    	            this.imageDrapingPrimitive = {};
+    	        
+    	        var promise = Cesium.sampleTerrain(this.viewer.terrainProvider, 11, [Cesium.Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+    	        var that = this;
+                Cesium.when(promise, function(updatedPositions) {
+                    //console.log(updatedPositions[0]);
+                    var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Cesium.Primitive({
+                        geometryInstances: new Cesium.GeometryInstance({
+                            geometry: new Cesium.RectangleGeometry({
+                                rectangle: Cesium.Rectangle.fromDegrees(llaPos.x-0.1, llaPos.y-0.1, llaPos.x+0.1, llaPos.y+0.1),
+                                height: updatedPositions[0].height-100,
+                                extrudedHeight: llaPos.z-1
+                            })
+                        }), 
+                        appearance: appearance
+                    }));
+                    
+                    if (!snapshot)
+                        that.imageDrapingPrimitive = newImageDrapingPrimitive;
+                    
+                    that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
+                    that.imageDrapingPrimitiveReady = true;
+                });                
+    	        
+    	    } else if (this.imageDrapingPrimitiveReady) {
+    	        this.imageDrapingPrimitive.appearance = appearance;
     	    }
     	}
     	
@@ -327,7 +401,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     			var heading = orient.heading;
 	    		var pitch = 0.0;
 	    		var roll = 0.0;
-    			var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, heading*DTR, /*roll*DTR*/0.0, pitch*DTR); // inverse roll and pitch to go from NED to ENU
+	    		var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
 	    		marker.orientation = quat;
     	    }
     		
