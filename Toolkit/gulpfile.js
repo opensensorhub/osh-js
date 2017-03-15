@@ -53,7 +53,7 @@ gulp.task('vendor-js-src-all',false,function(){
     var jsSources = new Array();
 
     if(argv.ffmpeg) {
-        jsSources.push('vendor/ffmpeg/YUVCanvas.js');
+        jsSources.push('vendor/yuvcanvas/YUVCanvas.js');
         jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
     }
 
@@ -243,8 +243,13 @@ gulp.task('clean', "Clean the dist directory",function () {
 
 
 //------------- VENDOR COPY ------------//
-gulp.task('copy-vendor-ffmpeg',false, function () {
-    return gulp.src('vendor/ffmpeg/*.js')
+gulp.task('copy-vendor-ffmpeg',false, ['copy-vendor-yuvcanvas'],function () {
+    return gulp.src('vendor/ffmpeg/ffmpeg-h264.js')
+        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop());
+});
+
+gulp.task('copy-vendor-yuvcanvas',false, function () {
+    return gulp.src('vendor/yuvcanvas/*.js')
         .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop());
 });
 
@@ -273,7 +278,7 @@ gulp.task('copy-vendor-nouislider',false, function () {
 });
 
 gulp.task('copy-vendor-cesium',false, function () {
-    return gulp.src("vendor/cesium.js/dist/**")
+    return gulp.src("vendor-local/cesiumjs-contrib/Build/Cesium/**")
         .pipe(argv.cesium ? gulp.dest('dist/vendor/cesium') : noop());
 });
 
@@ -310,10 +315,9 @@ gulp.task('copy-vendor-jsonix',false, function () {
     return gulp.src(src)
         .pipe(argv.jsonix ? gulp.dest('dist/vendor/jsonix') : noop());
 });
-
 //----------- VENDOR CSS ALL ---------------//
 gulp.task('vendor-css-all-copy-cesium',false,function(){
-    return gulp.src(['vendor/cesium.js/dist/**','!vendor/cesium.js/dist/Cesium.js'])
+    return gulp.src(['vendor-local/cesiumjs-contrib/Build/Cesium/**','!vendor/cesium.js/dist/Cesium.js'])
         .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 
