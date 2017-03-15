@@ -128,7 +128,7 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
     return gulp.src(cssSources).pipe(concat('vendor.css')).pipe(gulp.dest("dist/vendor/all-in-one"));;
 });
 
-gulp.task('osh-js-src',false,function(){
+gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     var src = [];
 
     src.push('./src/osh/osh-BaseClass.js');
@@ -211,6 +211,16 @@ gulp.task('osh-js-src',false,function(){
         .pipe(gulp.dest("dist/js"));
 });
 
+gulp.task('osh-js-src-ffmpeg',false,function(){
+    if(argv.ffmpeg) {
+        return gulp.src('./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js')
+            .pipe(gulp.dest("dist/js/workers"));
+    } else {
+        return noop();
+    }
+});
+
+
 gulp.task('osh-css-src',false,['copy-fonts'],function(){
     return gulp.src('src/css/*.css')
         .pipe(concat('osh.css')).pipe(gulp.dest("dist/css"));
@@ -245,7 +255,8 @@ gulp.task('clean', "Clean the dist directory",function () {
 //------------- VENDOR COPY ------------//
 gulp.task('copy-vendor-ffmpeg',false, ['copy-vendor-yuvcanvas'],function () {
     return gulp.src('vendor/ffmpeg/ffmpeg-h264.js')
-        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop());
+        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop())
+        .pipe(argv.ffmpeg? gulp.dest('dist/js/workers') : noop());
 });
 
 gulp.task('copy-vendor-yuvcanvas',false, function () {
