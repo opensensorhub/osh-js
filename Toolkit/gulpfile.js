@@ -211,13 +211,9 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
         .pipe(gulp.dest("dist/js"));
 });
 
-gulp.task('osh-js-src-ffmpeg',false,function(){
-    if(argv.ffmpeg) {
-        return gulp.src('./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js')
-            .pipe(gulp.dest("dist/js/workers"));
-    } else {
-        return noop();
-    }
+gulp.task('osh-js-src-ffmpeg',false,function() {
+    return gulp.src("./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js")
+        .pipe(argv.ffmpeg ? gulp.dest("dist/js/workers") : noop());
 });
 
 
