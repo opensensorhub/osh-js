@@ -152,6 +152,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js');
     src.push('./src/osh/datareceiver/osh-DataReceiverController.js');
     src.push('./src/osh/datasender/osh-DataSender-DataSink.js');
