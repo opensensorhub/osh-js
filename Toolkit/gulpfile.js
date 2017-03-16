@@ -285,7 +285,7 @@ gulp.task('copy-vendor-nouislider',false, function () {
 });
 
 gulp.task('copy-vendor-cesium',false, function () {
-    return gulp.src("vendor-local/cesiumjs-contrib/Build/Cesium/**")
+    return gulp.src("vendor/cesium/Build/Cesium/**")
         .pipe(argv.cesium ? gulp.dest('dist/vendor/cesium') : noop());
 });
 
@@ -324,7 +324,7 @@ gulp.task('copy-vendor-jsonix',false, function () {
 });
 //----------- VENDOR CSS ALL ---------------//
 gulp.task('vendor-css-all-copy-cesium',false,function(){
-    return gulp.src(['vendor-local/cesiumjs-contrib/Build/Cesium/**','!vendor/cesium.js/dist/Cesium.js'])
+    return gulp.src(['vendor/cesium/Build/Cesium/**','!vendor/cesium.js/dist/Cesium.js'])
         .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 
