@@ -109,7 +109,7 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
 
     if(argv.leaflet) {
         cssSources.push('vendor/leaflet/dist/leaflet.css');
-        cssSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.css');
+        cssSources.push('vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css');
     }
 
     if(argv.ol3) {
