@@ -21,6 +21,15 @@
 
     <!-- ANGULAR CODE MIRROR -->
     <script src="common/js/angular-code-mirror/angular-code-mirror.min.js"></script>
+
+
+    <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+    <script src="vendor/all-in-one/vendor.js"></script>
+
+    <link rel="stylesheet" href="css/osh.css"/>
+    <script src="js/osh.js"></script>
+
+
     <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
 </head>
@@ -43,11 +52,35 @@
 
     var properties = [
         {
-            name: "LeafletView & GPS location data receiver",
-            url: "viewers/Leaflet/leaflet.html",
+            name: "LeafletView & JSON data receiver(location)",
+            url: "viewers/Leaflet-location/leaflet.html",
             renderDivId: "leafletViewerId",
             defaultWidget: true
+        },
+        {
+            name: "CesiumView & JSON data receiver(location)",
+            url: "viewers/Cesium/cesium.html",
+            renderDivId: "cesiumViewerId",
+            defaultWidget: true
+        },
+        {
+            name: "OpenLayerView & JSON data receiver(location)",
+            url: "viewers/OpenLayer/ol.html",
+            renderDivId: "olViewerId",
+            defaultWidget: true
+        },
+        {
+            name: "LeafletView & JSON data receiver(orientation)",
+            url: "viewers/Leaflet-orient/leaflet-orient.html",
+            renderDivId: "leafletOrientViewerId",
+            defaultWidget: true
         }
+        /*{
+            name: "NVD3 chart View & JSON data receiver ",
+            url: "viewers/CurveChart/curveChart.html",
+            renderDivId: "curveChartViewId",
+            defaultWidget: true
+        }*/
     ];
 
     addWidgets(properties);
