@@ -54,7 +54,7 @@ gulp.task('vendor-js-src-all',false,function(){
 
     if(argv.ffmpeg) {
         jsSources.push('vendor/yuvcanvas/YUVCanvas.js');
-        jsSources.push('vendor/ffmpeg/ffmpeg-h264-lib.js');
+        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
     }
 
     if(argv.nvd3) {
@@ -109,7 +109,7 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
 
     if(argv.leaflet) {
         cssSources.push('vendor/leaflet/dist/leaflet.css');
-        cssSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.css');
+        cssSources.push('vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css');
     }
 
     if(argv.ol3) {
@@ -128,7 +128,7 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
     return gulp.src(cssSources).pipe(concat('vendor.css')).pipe(gulp.dest("dist/vendor/all-in-one"));;
 });
 
-gulp.task('osh-js-src',false,function(){
+gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     var src = [];
 
     src.push('./src/osh/osh-BaseClass.js');
@@ -152,6 +152,7 @@ gulp.task('osh-js-src',false,function(){
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js');
     src.push('./src/osh/datareceiver/osh-DataReceiverController.js');
     src.push('./src/osh/datasender/osh-DataSender-DataSink.js');
@@ -211,6 +212,12 @@ gulp.task('osh-js-src',false,function(){
         .pipe(gulp.dest("dist/js"));
 });
 
+gulp.task('osh-js-src-ffmpeg',false,function() {
+    return gulp.src("./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js")
+        .pipe(argv.ffmpeg ? gulp.dest("dist/js/workers") : noop());
+});
+
+
 gulp.task('osh-css-src',false,['copy-fonts'],function(){
     return gulp.src('src/css/*.css')
         .pipe(concat('osh.css')).pipe(gulp.dest("dist/css"));
@@ -244,8 +251,9 @@ gulp.task('clean', "Clean the dist directory",function () {
 
 //------------- VENDOR COPY ------------//
 gulp.task('copy-vendor-ffmpeg',false, ['copy-vendor-yuvcanvas'],function () {
-    return gulp.src('vendor/ffmpeg/ffmpeg-h264-lib.js')
-        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop());
+    return gulp.src('vendor/ffmpeg/ffmpeg-h264.js')
+        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop())
+        .pipe(argv.ffmpeg? gulp.dest('dist/js/workers') : noop());
 });
 
 gulp.task('copy-vendor-yuvcanvas',false, function () {
@@ -278,7 +286,7 @@ gulp.task('copy-vendor-nouislider',false, function () {
 });
 
 gulp.task('copy-vendor-cesium',false, function () {
-    return gulp.src("vendor-local/cesiumjs-contrib/Build/Cesium/**")
+    return gulp.src("vendor/cesium/Build/Cesium/**")
         .pipe(argv.cesium ? gulp.dest('dist/vendor/cesium') : noop());
 });
 
@@ -315,10 +323,9 @@ gulp.task('copy-vendor-jsonix',false, function () {
     return gulp.src(src)
         .pipe(argv.jsonix ? gulp.dest('dist/vendor/jsonix') : noop());
 });
-
 //----------- VENDOR CSS ALL ---------------//
 gulp.task('vendor-css-all-copy-cesium',false,function(){
-    return gulp.src(['vendor-local/cesiumjs-contrib/Build/Cesium/**','!vendor/cesium.js/dist/Cesium.js'])
+    return gulp.src(['vendor/cesium/Build/Cesium/**','!vendor/cesium.js/dist/Cesium.js'])
         .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 

@@ -1,0 +1,88 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>OSH-js Showcase</title>
+    <link href="common/css/showcase.css" rel="stylesheet">
+
+    <!-- ANGULAR CODE MIRROR -->
+    <link rel="stylesheet" href="common/js/angular-code-mirror/angular-code-mirror.css"/>
+
+    <!-- ANGULAR -->
+    <link rel="stylesheet" href="common/malhar-dashboard/stylesheet.min.css">
+
+    <script type="text/javascript" src="common/js/angular/all-in-one.min.js"></script>
+
+    <script type="text/javascript" src="common/malhar-dashboard/ui-dashboard-module.js"></script>
+    <script type="text/javascript" src="common/js/angular/jquery-watcher.js"></script>
+
+    <!-- ANGULAR CODE MIRROR -->
+    <script src="common/js/angular-code-mirror/angular-code-mirror.min.js"></script>
+
+
+    <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+    <script src="vendor/all-in-one/vendor.js"></script>
+
+    <link rel="stylesheet" href="css/osh.css"/>
+    <script src="js/osh.js"></script>
+
+
+    <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
+
+</head>
+
+<body ng-app="app">
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://www.opensensorhub.org/">
+                <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png"
+                     style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+                OpenSensorHub</a>
+        </div>
+    </div>
+</nav>
+<div ng-view=""></div>
+</body>
+<script>
+
+    var properties = [
+        {
+            name: "LeafletView & JSON data receiver(location)",
+            url: "viewers/Leaflet-location/leaflet.html",
+            renderDivId: "leafletViewerId",
+            defaultWidget: true
+        },
+        {
+            name: "CesiumView & JSON data receiver(location)",
+            url: "viewers/Cesium/cesium.html",
+            renderDivId: "cesiumViewerId",
+            defaultWidget: true
+        },
+        {
+            name: "OpenLayerView & JSON data receiver(location)",
+            url: "viewers/OpenLayer/ol.html",
+            renderDivId: "olViewerId",
+            defaultWidget: true
+        },
+        {
+            name: "LeafletView & JSON data receiver(orientation)",
+            url: "viewers/Leaflet-orient/leaflet-orient.html",
+            renderDivId: "leafletOrientViewerId",
+            defaultWidget: true
+        }
+        /*{
+            name: "NVD3 chart View & JSON data receiver ",
+            url: "viewers/CurveChart/curveChart.html",
+            renderDivId: "curveChartViewId",
+            defaultWidget: true
+        }*/
+    ];
+
+    addWidgets(properties);
+</script>
+</html>

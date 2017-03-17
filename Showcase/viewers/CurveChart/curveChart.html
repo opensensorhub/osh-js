@@ -1,0 +1,39 @@
+<div id="curveChartViewerId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
+
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="curve-container" style="height:100%;width:100%"></div>
+    <style>
+    </style>
+    <script>
+
+
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : replayFactor
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(androidPhoneGpsDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+    </script>
+</div>
