@@ -136,6 +136,8 @@
 .circular-menu-label {
     display:none;
 }
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
+
 .pop-over {
     position: relative;
     background-color: rgba(5, 107, 166, 0.6);
@@ -337,6 +339,8 @@
 .keep-ratio-h {
     width:auto !important;
 }
+
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
 
 /** Discovery Select box **/
 .discovery-form .select-style {
@@ -685,6 +689,8 @@ body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", san
   background-color: #DDD;
 }
 /* Demo by http://creative-punch.net */
+
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
 
 .stack-menu-container {
     position: absolute;
