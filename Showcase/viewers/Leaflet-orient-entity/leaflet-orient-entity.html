@@ -1,4 +1,4 @@
-<div id="leafletOrientViewerId">
+<div id="leafletOrientEntityViewerId">
     <!-- Vendor all-in-one was built with:
 
         gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
@@ -11,7 +11,7 @@
         <script src="js/osh.js"></script>
      -->
 
-    <div id="leafletOrientMap" style="height:100%;width:100%"></div>
+    <div id="leafletOrientEntityMap" style="height:100%;width:100%"></div>
     <style>
         .leaflet-container {
             height: 100%;
@@ -49,6 +49,12 @@
             bufferingTime: 1000,
             timeShift: -16000
         });
+
+        var androidEntity = {
+            id : "entity-"+OSH.Utils.randomUUID(),
+            name: "Android Phone",
+            dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource]
+        };
 
         //------------- STYLER ---------//
         var pointMarker = new OSH.UI.Styler.PointMarker({
@@ -113,9 +119,10 @@
         });
 
         //------------ VIEW -----------------//
-        var leafletMapView = new OSH.UI.LeafletView("leafletOrientMap",
+        var leafletMapView = new OSH.UI.LeafletView("leafletOrientEntityMap",
                 [{
                     styler: pointMarker,
+                    entityId : androidEntity.id,
                     name: "Android Phone GPS"
                 }]
         );
@@ -129,8 +136,7 @@
         });
 
         // We can add a group of dataSources and set the options
-        dataProviderController.addDataSource(androidPhoneOrientationDataSource);
-        dataProviderController.addDataSource(androidPhoneGpsDataSource);
+        dataProviderController.addEntity(androidEntity);
 
 
         //---------------------------------------------------------------//
