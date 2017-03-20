@@ -8,6 +8,8 @@ var order = require('gulp-order');
 var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
 var noop = require("gulp-noop");
+var file = require('gulp-file');
+var gap = require('gulp-append-prepend');
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -31,7 +33,15 @@ gulp.task('build','build a distributable osh-js instance',['normal','minify'],fu
     }
 });
 
-gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all','osh-css-src','copy-vendor','images','osh-js-src-minify','osh-css-src-minify']);
+gulp.task('minify', false, ['init-css-vendor-file','vendor-js-src-all','osh-js-src','vendor-css-src-all','osh-css-src','copy-vendor','images','osh-js-src-minify','osh-css-src-minify']);
+
+gulp.task('init-css-vendor-file', function () {
+    var str = '/*Concataned css file*/';
+
+    return file('vendor.css', str, { src: true })
+        .pipe(gulp.dest('dist/vendor/all-in-one/'));
+});
+
 
 gulp.task('osh-js-src-minify', false,function() {
     // Minify OSH js min
@@ -51,6 +61,10 @@ gulp.task('osh-css-src-minify', false, function() {
 
 gulp.task('vendor-js-src-all',false,function(){
     var jsSources = new Array();
+
+    if(argv.cesium) {
+        jsSources.push('vendor/cesium/Build/Cesium/Cesium.js');
+    }
 
     if(argv.ffmpeg) {
         jsSources.push('vendor/yuvcanvas/YUVCanvas.js');
@@ -74,9 +88,6 @@ gulp.task('vendor-js-src-all',false,function(){
         jsSources.push('vendor/wnumb/wNumb.js');
     }
 
-    if(argv.cesium) {
-        jsSources.push('vendor/cesium.js/dist/Cesium.js');
-    }
     if(argv.ol3) {
         jsSources.push('vendor/ol3/ol.js');
         jsSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
@@ -122,10 +133,14 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
     }
 
     if(argv.jsonix) {
-        cssSources.push('vendor/jsonix/dist/*.css');
+        //cssSources.push('vendor/jsonix/dist/*.css');
     }
 
-    return gulp.src(cssSources).pipe(concat('vendor.css')).pipe(gulp.dest("dist/vendor/all-in-one"));;
+    return gulp.src("dist/vendor/all-in-one/vendor.css")
+        .pipe(argv.cesium ?  gap.prependText('@import "Widgets/widgets.css";') : noop())
+        .pipe(gap.appendFile(cssSources))
+        .pipe(gulp.dest("dist/vendor/all-in-one"));
+
 });
 
 gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
@@ -224,7 +239,7 @@ gulp.task('osh-css-src',false,['copy-fonts'],function(){
 });
 //----------- NORMAL ------------------//
 
-gulp.task('normal', false, ['vendor-js-src-all','vendor-css-src-all','osh-js-src','osh-css-src', 'copy-vendor','images']);
+gulp.task('normal', false, ['init-css-vendor-file','vendor-js-src-all','vendor-css-src-all','osh-js-src','osh-css-src', 'copy-vendor','images']);
 
 //---------- COPY VENDORS ------//
 gulp.task('copy-vendor',false, ['copy-vendor-ffmpeg','copy-vendor-nvd3','copy-vendor-broadway',
@@ -325,7 +340,7 @@ gulp.task('copy-vendor-jsonix',false, function () {
 });
 //----------- VENDOR CSS ALL ---------------//
 gulp.task('vendor-css-all-copy-cesium',false,function(){
-    return gulp.src(['vendor/cesium/Build/Cesium/**','!vendor/cesium.js/dist/Cesium.js'])
+    return gulp.src(['vendor/cesium/Build/Cesium/**','!vendor/cesium/Build/Cesium/Cesium.js'])
         .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 
