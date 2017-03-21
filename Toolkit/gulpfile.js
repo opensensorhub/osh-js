@@ -101,7 +101,7 @@ gulp.task('vendor-js-src-all',false,function(){
     }
     if(argv.jsonix) {
         jsSources.push('vendor/jsonix/dist/*.js');
-        jsSources.push('vendor-local/jsonix/dist/**/.js');
+        jsSources.push('vendor-local/jsonix/modules/*.js');
     }
 
     return gulp.src(jsSources).pipe(concat('vendor.js')).pipe(gulp.dest("dist/vendor/all-in-one"));
