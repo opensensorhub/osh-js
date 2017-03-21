@@ -282,40 +282,6 @@ function init() {
             yLabel: 'Relative Humidity (%)'
         });
 
-        // rain accum chart view        
-        var rainChartDialog = new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
-            css: "video-dialog",
-            name: entityName + " - Rain",
-            show: true,
-            dockable: true,
-            closeable: true,
-            canDisconnect : true,
-            swapId: "main-container",
-            connectionIds: [weatherData.getId()]
-        });
-
-        var rainChartView = new OSH.UI.Nvd3CurveChartView(rainChartDialog.popContentDiv.id,
-        [{
-            styler: new OSH.UI.Styler.Curve({
-                valuesFunc: {
-                    dataSourceIds: [weatherData.getId()],
-                    handler: function (rec, timeStamp) {
-                        return {
-                            x : timeStamp,
-                            y : rec.rainCnt
-                        };
-                    }
-                }
-            })
-        }],
-        {
-            css: "chart-view",
-            cssSelected: "video-selected",
-            maxPoints: 100,
-            yLabel: 'Rain Accumulation (tips)'
-        });
-
         // wind speed chart view        
         var windSpeedChartDialog = new OSH.UI.DialogView("dialog-main-container", {
             draggable: false,
@@ -384,41 +350,75 @@ function init() {
             yLabel: 'Wind Direction (deg)'
         });
 
+        // rain accum chart view        
+        var rainChartDialog = new OSH.UI.DialogView("dialog-main-container", {
+            draggable: false,
+            css: "video-dialog",
+            name: entityName + " - Rain",
+            show: true,
+            dockable: true,
+            closeable: true,
+            canDisconnect : true,
+            swapId: "main-container",
+            connectionIds: [weatherData.getId()]
+        });
+
+        var rainChartView = new OSH.UI.Nvd3CurveChartView(rainChartDialog.popContentDiv.id,
+        [{
+            styler: new OSH.UI.Styler.Curve({
+                valuesFunc: {
+                    dataSourceIds: [weatherData.getId()],
+                    handler: function (rec, timeStamp) {
+                        return {
+                            x : timeStamp,
+                            y : rec.rainCnt
+                        };
+                    }
+                }
+            })
+        }],
+        {
+            css: "chart-view",
+            cssSelected: "video-selected",
+            maxPoints: 100,
+            yLabel: 'Rain Accumulation (mm)'
+        });
+
         // add tree and map context menus
         var menuItems = [{
             name: "Show Pressure",
             viewId: pressureChartDialog.getId(),
-            css: "fa fa-compress",
+            css: "fa fa-bar-chart",
             action: "show"
         },
         {
             name: "Show Temperature",
             viewId: tempChartDialog.getId(),
-            css: "fa fa-fire",
+            css: "fa fa-bar-chart",
             action: "show"
         },
         {
             name: "Show Humidity",
             viewId: humidChartDialog.getId(),
-            css: "fa fa-percent",
-            action: "show"
-        },
-        {
-            name: "Show Rain Accumulation",
-            viewId: rainChartDialog.getId(),
-            css: "fa fa-tint",
+            css: "fa fa-bar-chart",
             action: "show"
         },
         {
             name: "Show Wind Speed",
             viewId: windSpeedChartDialog.getId(),
-            css: "fa fa-fighter-jet",
+            css: "fa fa-bar-chart",
             action: "show"
         },
         {
             name: "Show Wind Direction",
             viewId: windDirChartDialog.getId(),
-            css: "fa fa-compass",
+            css: "fa fa-bar-chart",
+            action: "show"
+        },
+        {
+            name: "Show Rain Accumulation",
+            viewId: rainChartDialog.getId(),
+            css: "fa fa-bar-chart",
             action: "show"
         }];
     

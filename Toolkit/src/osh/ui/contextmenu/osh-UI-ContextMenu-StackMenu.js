@@ -1,19 +1,3 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @classdesc A stack context menu
  * @class
@@ -32,9 +16,9 @@
 
    var contextStackMenu = new OSH.UI.ContextMenu.StackMenu({id : randomId,groupId: randomGroupId,items : menuItems});
  */
-OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
-    initialize:function(properties) {
-        this._super(properties,"stack");
+OSH.UI.ContextMenu.StackMenu = Class.create(OSH.UI.ContextMenu.CssMenu, {
+    initialize:function($super,properties) {
+        $super(properties,"stack");
     },
 
     /**
@@ -44,7 +28,7 @@ OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
      * @instance
      * @memberof OSH.UI.ContextMenu.StackMenu
      */
-    show:function(properties) {
+    show:function($super,properties) {
         this.removeElement();
         var htmlVar="";
         htmlVar += "  <div class=\""+this.type+"-menu-circle\">";
@@ -89,11 +73,11 @@ OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
         for(var i = 0; i < this.items.length; i++) {
             var item =  this.items[i];
             this.bindEvents[item.id] = item.viewId;
-            document.getElementById(item.id).onclick = function(event){
+            $(item.id).on("click",function(event){
                 OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
                     viewId: this.bindEvents[event.target.id]
                 });
-            }.bind(this);
+            }.bind(this));
         }
 
         // this causes preventing any closing event

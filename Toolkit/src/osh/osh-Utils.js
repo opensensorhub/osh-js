@@ -1,19 +1,3 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 var MAX_LONG = Math.pow(2, 53) + 1;
 
 /**
@@ -33,17 +17,6 @@ OSH.Utils.randomUUID = function() {
     var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
     return v.toString(16);
   });
-};
-
-/**
- * This function stamps/embeds a UUID into an object and returns the UUID generated for it
- * @returns {string}
- * @instance
- * @memberof OSH.Utils
- */
-OSH.Utils.stampUUID = function(obj) {
-  obj._osh_id = obj._osh_id || OSH.Utils.randomUUID();
-  return obj._osh_id;
 };
 
 /**
@@ -279,24 +252,7 @@ OSH.Utils.getYCursorPosition = function() {
  * @memberof OSH.Utils
  */
 OSH.Utils.isArrayIntersect = function(a, b) {
-  return a.filter(function(element){
-        return b.indexOf(element) > -1;
-       }).length > 0;
-};
-
-
-/**
- *
- * @param o
- * @returns {boolean}
- * @instance
- * @memberof OSH.Utils
- */
-OSH.Utils.isElement = function isElement(o) {
-    return (
-        typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-        o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
-    );
+  return a.intersect(b).length > 0;
 };
 
 /**
@@ -306,10 +262,7 @@ OSH.Utils.isElement = function isElement(o) {
  * @memberof OSH.Utils
  */
 OSH.Utils.isWebWorker = function() {
-  if (typeof(Worker) !== "undefined") {
-      return true;
-  }
-  return false;
+  return Modernizr.webworkers;
 };
 
 /**
@@ -332,7 +285,7 @@ OSH.Utils.removeCss = function(div,css) {
   var divCss = div.className;
   css = divCss.replace(css,"");
   div.className = css;
-};
+}
 
 
 /**
@@ -344,5 +297,5 @@ OSH.Utils.removeCss = function(div,css) {
  */
 OSH.Utils.addCss = function(div,css) {
   div.setAttribute("class",div.className+" "+css);
-};
+}
 

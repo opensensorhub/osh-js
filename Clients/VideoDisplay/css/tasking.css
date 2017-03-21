@@ -1,0 +1,32 @@
+#menu {
+    display: block;
+    margin: 0 auto;
+}
+
+a {
+    cursor: pointer;
+    outline: none;
+}
+
+.item .sector {
+    transition: all .1s linear;
+    fill: #fff;
+    stroke: #111;
+}
+
+.item:hover .sector, .item:focus .sector {
+    fill: #eee;
+}
+
+.menu-trigger {
+    fill: #777;
+    pointer-events: auto;
+}
+
+.menu-trigger:hover, .menu-trigger:focus {
+    cursor: pointer;
+}
+
+symbol {
+    overflow: visible;
+}

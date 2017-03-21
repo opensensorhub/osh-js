@@ -1,25 +1,9 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
-
- Author: Alex Robin <alex.robin@sensiasoftware.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @classdesc This datasource provides parsing to Nexrad.
  * @class OSH.DataReceiver.Nexrad
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.Nexrad = OSH.DataReceiver.DataSource.extend({
+OSH.DataReceiver.Nexrad = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -29,7 +13,7 @@ OSH.DataReceiver.Nexrad = OSH.DataReceiver.DataSource.extend({
    * @memberof OSH.DataReceiver.Nexrad
    * @instance
    */
-  parseTimeStamp: function(data){
+  parseTimeStamp: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -43,7 +27,7 @@ OSH.DataReceiver.Nexrad = OSH.DataReceiver.DataSource.extend({
    * @memberof OSH.DataReceiver.Nexrad
    * @instance
    */
-  parseData: function(data){
+  parseData: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var el = parseFloat(tokens[2]);

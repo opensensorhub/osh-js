@@ -1,19 +1,3 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @classdesc
  * @class OSH.UI.Nvd3CurveChartView
@@ -42,9 +26,9 @@ var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv
     maxPoints: 30
 });
  */
-OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
-	initialize : function(divId,viewItems, options) {
-		this._super(divId,viewItems,options);
+OSH.UI.Nvd3CurveChartView = Class.create(OSH.UI.View, {
+	initialize : function($super,divId,viewItems, options) {
+		$super(divId,viewItems,options);
 
 		this.entityId = options.entityId;
 		var xLabel = 'Time';
@@ -53,7 +37,7 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 
 		var yTickFormat = d3.format('.02f');
 		var useInteractiveGuideline = true;
-		var showLegend = true;
+		var showLegend = false;
 		var showYAxis = true;
 		var showXAxis = true;
 		var transitionDuration = 1;
@@ -207,7 +191,7 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 	 * @instance
 	 * @memberof OSH.UI.Nvd3CurveChartView
 	 */
-	selectDataView: function(dataSourceIds) {
+	selectDataView: function($super,dataSourceIds) {
 		var currentDataSources= this.getDataSourcesId();
 		if(OSH.Utils.isArrayIntersect(dataSourceIds,currentDataSources)) {
 			this.div.setAttribute("class",this.css+" "+this.cssSelected);

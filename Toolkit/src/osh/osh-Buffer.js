@@ -1,19 +1,3 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /** @constant
     @type {number}
     @default
@@ -43,7 +27,7 @@ var BUFFER_STATUS = {
     replayFactor: 1
  });
  */
-OSH.Buffer = BaseClass.extend({
+OSH.Buffer = Class.create({
   initialize:function(options) {
     this.buffers = {};
 
@@ -69,7 +53,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  startObservers: function() {
+  startObservers : function() {
     this.observeId = OSH.Utils.randomUUID();
     this.boundHandlerMethod = this.push.bind(this);
     OSH.EventManager.observe(OSH.EventManager.EVENT.DATA,this.boundHandlerMethod,this.observeId);
@@ -92,7 +76,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  start: function() {
+  start:function() {
     this.stop = false;
     this.startObservers();
     this.startRealTime = new Date().getTime();
@@ -104,7 +88,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  stop: function() {
+  stop : function() {
     this.stopObservers();
     this.stop = true;
   },
@@ -162,7 +146,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  addDataSource: function(dataSourceId,options) {
+  addDataSource : function(dataSourceId,options) {
     this.buffers[dataSourceId] = {
         buffer: [],
         syncMasterTime: false,
@@ -200,7 +184,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  addEntity: function(entity,options) {
+  addEntity : function(entity,options) {
     // get dataSources from entity and add them to buffers
     if(typeof  entity.dataSources != "undefined") {
       for(var i =0;i < entity.dataSources.length;i++) {
@@ -221,7 +205,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  push: function(event) {
+  push:function(event) {
     var dataSourceId = event.dataSourceId;
     
     // append the data to the existing corresponding buffer
@@ -257,7 +241,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  processSyncData: function() {
+  processSyncData:function() {
     if(!this.bufferingState) {
 
       var minTimeStampBufferObj = null;
@@ -348,7 +332,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  dispatchData: function(dataSourceId,data) {
+  dispatchData:function(dataSourceId,data) {
     var bufObj = this.buffers[dataSourceId];
     if (bufObj.status != BUFFER_STATUS.CANCEL) {
         if(bufObj.syncMasterTime) {
@@ -365,7 +349,7 @@ OSH.Buffer = BaseClass.extend({
    * @memberof OSH.Buffer
    * @instance
    */
-  buffering: function(name,bufferingTime) {
+  buffering:function(name,bufferingTime) {
     OSH.EventManager.fire(OSH.EventManager.EVENT.LOADING_START,{name:name});
     this.bufferingState = true;
     window.setTimeout(function(){

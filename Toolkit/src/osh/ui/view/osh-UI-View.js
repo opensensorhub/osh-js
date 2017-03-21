@@ -1,19 +1,3 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @classdesc The abstract object to represent a view.
  * @class
@@ -22,7 +6,7 @@
  * @param {string} options - The options
  * @abstract
  */
-OSH.UI.View = BaseClass.extend({
+OSH.UI.View = Class.create({
     initialize: function (divId, viewItems,options) {
         // list of stylers
         this.stylers = [];
@@ -118,9 +102,8 @@ OSH.UI.View = BaseClass.extend({
                 // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
                 if( mutation.attributeName === 'style') {
                     self.onResize();
-
                 }
-            });
+            } );
         } );
 
         // Attach the mutation observer to blocker, and only when attribute values change
@@ -199,7 +182,7 @@ OSH.UI.View = BaseClass.extend({
     setData: function(dataSourceId,data) {},
 
     /**
-     * Show the view by removing display:none style if any.
+     *
      * @param properties
      * @instance
      * @memberof OSH.UI.View
@@ -307,10 +290,6 @@ OSH.UI.View = BaseClass.extend({
             if(typeof event.viewId != "undefined" && event.viewId == this.id) {
                 this.addViewItem(event.viewItem);
             }
-        }.bind(this));
-
-        OSH.EventManager.observe(OSH.EventManager.EVENT.RESIZE+"-"+this.divId,function(event){
-            this.onResize();
         }.bind(this));
     },
 

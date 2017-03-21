@@ -1,28 +1,12 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @class
  * @classdesc A css context menu allowing to create various context menu using only css.
  * @type {OSH.UI.ContextMenu}
  * @augments OSH.UI.ContextMenu
  */
-OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
-    initialize:function(properties,type) {
-        this._super(properties);
+OSH.UI.ContextMenu.CssMenu = Class.create(OSH.UI.ContextMenu, {
+    initialize:function($super,properties,type) {
+        $super(properties);
 
         this.items = [];
         if(typeof(type) != "undefined") {
@@ -75,7 +59,7 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
      * @instance
      * @memberof OSH.UI.ContextMenu.CssMenu
      */
-    show:function(properties) {
+    show:function($super,properties) {
         this.removeElement();
         var closeId = OSH.Utils.randomUUID();
         var videoId = OSH.Utils.randomUUID();
@@ -104,7 +88,7 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
             items[i].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
         }
 
-        document.getElementById(closeId).onclick = this.hide.bind(this);
+        $(closeId).on("click",this.hide.bind(this));
 
         var offsetX = 0;
         var offsetY = 0;
@@ -131,11 +115,11 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
         for(var i = 0; i < this.items.length; i++) {
             var item =  this.items[i];
             this.bindEvents[item.id] = item.viewId;
-            document.getElementById(item.id).onclick = function(event) {
+            $(item.id).on("click",function(event){
                 OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
                     viewId: this.bindEvents[event.target.id]
                 });
-            }.bind(this);
+            }.bind(this));
         }
 
         // this causes preventing any closing event

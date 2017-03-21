@@ -1,29 +1,13 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @classdesc Display a dialog with multiple view attach to it.
  * @class
  * @type {OSH.UI.Dialog}
  * @augments OSH.UI.Dialog
  */
-OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
+OSH.UI.MultiDialogView = Class.create(OSH.UI.DialogView,{
 
-    initialize:function(divId, options) {
-        this._super(divId,options);
+    initialize:function($super,divId, options) {
+        $super(divId,options);
         // add extra part
         this.popExtraDiv = document.createElement("div");
         this.popExtraDiv.setAttribute("class","pop-extra");
@@ -68,9 +52,9 @@ OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
 
     },
 
-    swap:function() {
+    swap:function($super) {
         var currentSwapValue = this.swapped;
-        this._super();
+        $super();
 
         // hide extra stuff
         if(!currentSwapValue) {
@@ -80,8 +64,8 @@ OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
         }
     },
 
-    show: function(properties) {
-        this._super(properties);
+    show: function($super,properties) {
+        $super(properties);
         //if(!isUndefinedOrNull(this.divToAdd) && this.divToAdd.style.display === "none") {
         //   this.divToAdd.style.display = "block";
         //  }

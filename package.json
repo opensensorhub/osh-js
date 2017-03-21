@@ -1,0 +1,44 @@
+{
+  "name": "osh-js",
+  "version": "1.0.0",
+  "description": "OSH javascript Toolkit",
+  "main": "osh.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opensensorhub/osh-js.git"
+  },
+  "keywords": [
+    "OSH",
+    "Sensors",
+    "Toolkit",
+    "Javascript",
+    "GIS",
+    "Spatial",
+    "OGC",
+    "SensorML"
+  ],
+  "author": "OSH community",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/opensensorhub/osh-js/issues"
+  },
+  "homepage": "https://github.com/opensensorhub/osh-js#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-minify": "0.0.14",
+    "gulp-order": "^1.1.1",
+    "gulp-sort": "^2.0.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.3",
+    "uglify-js": "^2.7.3"
+  }
+}

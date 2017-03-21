@@ -5,8 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <title>OSH Discovery test</title>
 
+    <script type="text/javascript" src="../../vendor/prototype/prototype.min.js"></script>
+    <script type="text/javascript" src="../../vendor/modernizr/modernizr-custom.js"></script>
+
     <!-- ffmpeg libs -->
-    <script src="../../vendor/ffmpeg/ffmpeg-h264-lib.js"></script>
+    <script src="../../vendor/ffmpeg/ffmpeg-h264.js"></script>
     <script src="../../vendor/ffmpeg/YUVCanvas.js"></script>
 
 
@@ -30,7 +33,7 @@
     <script type="text/javascript" src="../../src/osh/datasender/osh-DataSenderController.js"></script>
 
 
-    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/osh-UI-View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
 
     <style>
@@ -103,17 +106,16 @@
         document.body.appendChild(fpsVideoDiv);
 
         // OSH connect
-        var videoDataSource = new OSH.DataReceiver.VideoH264("Foscam H264 video ES", {
+        var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video "+videoIdCount, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: "localhost:8181/sensorhub/sos",
-            offeringID: "urn:mysos:offering:foscam:es",
+            offeringID: "urn:mysos:foscamr2",
             observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-            startTime: "2017-03-04T13:01:51.199Z",
-            endTime: "2017-03-04T13:04:48.109Z",
+            startTime: "now",
+            endTime: "2055-08-11T20:18:05.451Z",
             syncMasterTime: false,
-            bufferingTime: 0,
-            replaySpeed: 1,
+            bufferingTime: 0
         });
 
         var videoView = new OSH.UI.FFMPEGView(videoContainerEl.id, {
@@ -121,7 +123,7 @@
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            useWorker:true,
+            useWorker:useWebWorker,
             width:"1920",
             height:"1080"
         });

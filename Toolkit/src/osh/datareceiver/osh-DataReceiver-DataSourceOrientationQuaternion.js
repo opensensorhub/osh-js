@@ -1,19 +1,3 @@
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
 /**
  * @classdesc This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
@@ -33,7 +17,7 @@
         bufferingTime: 1000
     });
  */
-OSH.DataReceiver.OrientationQuaternion = OSH.DataReceiver.DataSource.extend({
+OSH.DataReceiver.OrientationQuaternion = Class.create(OSH.DataReceiver.DataSource,{
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -43,7 +27,7 @@ OSH.DataReceiver.OrientationQuaternion = OSH.DataReceiver.DataSource.extend({
    * @memberof OSH.DataReceiver.OrientationQuaternion
    * @instance
    */
-  parseTimeStamp: function(data){
+  parseTimeStamp: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -63,7 +47,7 @@ OSH.DataReceiver.OrientationQuaternion = OSH.DataReceiver.DataSource.extend({
    * @memberof OSH.DataReceiver.OrientationQuaternion
    * @instance
    */
-  parseData: function(data){
+  parseData: function($super,data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var qx = parseFloat(tokens[1]);
