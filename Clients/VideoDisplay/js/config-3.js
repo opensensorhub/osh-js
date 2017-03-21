@@ -4,6 +4,9 @@ function init() {
     //--------------------- Creates dataSources --------------------//
     //--------------------------------------------------------------//
 
+    //TODO: to fix
+    window.CESIUM_BASE_URL = 'vendor/all-in-one';
+
     var replayFactor = 3;
     //--Android Phone Video
     var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
