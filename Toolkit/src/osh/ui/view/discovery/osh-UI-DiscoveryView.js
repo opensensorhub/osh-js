@@ -605,7 +605,8 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            entityId : entityId
+            entityId : entityId,
+            useWorker:true
         });
 
         // We can add a group of dataSources and set the options
