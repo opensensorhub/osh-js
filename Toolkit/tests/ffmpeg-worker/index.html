@@ -5,33 +5,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <title>OSH Discovery test</title>
 
-    <!-- ffmpeg libs -->
-    <script src="../../vendor/ffmpeg/ffmpeg-h264-lib.js"></script>
-    <script src="../../vendor/ffmpeg/YUVCanvas.js"></script>
+    <!-- VENDOR -->
+    <script type="text/javascript" src="vendor/YUVCanvas.js"></script>
 
+    <script type="text/javascript" src="vendor/broadway-all.min.js"></script>
+    <script type="text/javascript" src="vendor/Decoder.js"></script>
+    <script type="text/javascript" src="vendor/Player.js"></script>
+
+    <script type="text/javascript" src="vendor/ffmpeg-h264.js"></script>
 
     <!-- OSH Core -->
     <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
     <!-- OSH buffer sync lib -->
     <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
 
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
     <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
     <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-MapEvent.js"></script>
     <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
-
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript"
-            src="../../src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+
+    <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript"
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
-    <script type="text/javascript" src="../../src/osh/datasender/osh-DataSenderController.js"></script>
 
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
 
     <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-H264View.js"></script>
 
     <style>
 
@@ -55,8 +65,8 @@
         }
 
         .video{
-            width: 100%;
-            height: 100%;
+            width: 1024px;
+            height: 768px;
             border:solid 1px #000;
             margin-right:10px;
             margin-bottom:10px;
@@ -102,34 +112,62 @@
 
         document.body.appendChild(fpsVideoDiv);
 
-        // OSH connect
-        var videoDataSource = new OSH.DataReceiver.VideoH264("Foscam H264 video ES", {
+        var videoDataSource = new OSH.DataReceiver.VideoH264("FFMPEG h264 ", {
             protocol: "ws",
             service: "SOS",
-            endpointUrl: "localhost:8181/sensorhub/sos",
-            offeringID: "urn:mysos:offering:foscam:es",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
             observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-            startTime: "2017-03-04T13:01:51.199Z",
-            endTime: "2017-03-04T13:04:48.109Z",
+            startTime: "2016-08-11T20:17:30.402Z",
+            endTime: "2016-08-11T20:18:05.451Z",
             syncMasterTime: false,
             bufferingTime: 0,
-            replaySpeed: 1,
+            replaySpeed:1
         });
 
-        var videoView = new OSH.UI.FFMPEGView(videoContainerEl.id, {
+       /* var videoDataSource = new OSH.DataReceiver.VideoH264("FFMPEG h264 ", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "localhost:8182/sensorhub/sos",
+            offeringID: "urn:mysos:offering:foscam",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "2017-03-14T23:32:11.919Z",
+            endTime: "2017-03-14T23:33:21.425Z",
+            syncMasterTime: false,
+            bufferingTime: 0,
+            replaySpeed:1
+        });
+        */
+        //------------ VIEW -----------------//
+
+        // Video 1 View
+        var videoView = new OSH.UI.H264View(videoContainerEl.id, {
             dataSourceId: videoDataSource.id,
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            useWorker:true,
-            width:"1920",
-            height:"1080"
+            useWorker:useWebWorker,
+            width:1024,
+            height:768
         });
 
-        dataReceiverController.addDataSource(videoDataSource);
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : 1
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(videoDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
 
         // starts streaming
-        OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[videoDataSource.id]});
+        dataProviderController.connectAll();
 
         videoIdCount++;
 
