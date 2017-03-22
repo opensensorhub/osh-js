@@ -78,7 +78,6 @@ body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", san
 
 .discovery-form .required_notification {
     color: #d45252;
-    margin: 25px 0 0 0;
     display: inline;
     float: right;
 }

@@ -1,3 +1,19 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
 var htmlTaskingComponent="";
 htmlTaskingComponent += "<svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" viewBox=\"-2 -2 504 504\" id=\"menu\" style=\"transform-origin: 50% 50% 0px; transform: translate3d(0px, 0px, 0px); touch-action: none; -webkit-user-select: none;\">";
 htmlTaskingComponent += "<g id=\"symbolsContainer\">    <symbol class=\"icon icon-\" id=\"icon-1\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">1<\/text><\/symbol>";
@@ -31,9 +47,9 @@ htmlTaskingComponent += "<\/svg>";
  * @augments OSH.UI.View
  *
  */
-OSH.UI.PtzTaskingView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, options) {
-        $super(divId,[],options);
+OSH.UI.PtzTaskingView = OSH.UI.View.extend({
+    initialize: function (divId, options) {
+        this._super(divId,[],options);
         var width = "640";
         var height = "480";
         this.css = "";

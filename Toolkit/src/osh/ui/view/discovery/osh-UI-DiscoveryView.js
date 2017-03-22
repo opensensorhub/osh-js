@@ -1,3 +1,19 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
 /**
  * @classdesc
  * @class OSH.UI.DiscoveryView
@@ -47,9 +63,9 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
         ]
     });
  */
-OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, properties) {
-        $super(divId,[],properties);
+OSH.UI.DiscoveryView = OSH.UI.View.extend({
+    initialize: function (divId, properties) {
+        this._super(divId,[],properties);
 
         this.swapId = "";
         if(typeof properties != "undefined") {
@@ -589,7 +605,8 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            entityId : entityId
+            entityId : entityId,
+            useWorker:true
         });
 
         // We can add a group of dataSources and set the options

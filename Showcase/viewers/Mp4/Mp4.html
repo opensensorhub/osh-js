@@ -1,0 +1,99 @@
+<div id="Mp4ViewerId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
+
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="Mp4Container" style="height:100%;width:100%"></div>
+    <style>
+        .video {
+            width: inherit;
+            height:inherit;
+        }
+
+        .video img{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video canvas{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video-selected {
+            border-radius: 3px;
+            box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+        }
+    </style>
+    <script>
+        var replayFactor = 3;
+
+        //---------- DATASOURCE ------------//
+
+       var videoDataSource = new OSH.DataReceiver.VideoMp4("Mp4 H264", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "2016-08-11T20:17:30.402Z",
+            endTime: "2016-08-11T20:18:05.451Z",
+            syncMasterTime: false,
+            bufferingTime: 0,
+            replaySpeed:1,
+            responseFormat:"video/mp4"
+        });
+
+        /*var videoDataSource = new OSH.DataReceiver.VideoMp4("Mp4 H264", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "localhost:8182/sensorhub/sos",
+            offeringID: "urn:mysos:offering:foscam",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "2017-03-14T23:32:11.919Z",
+            endTime: "2017-03-14T23:33:21.425Z",
+            syncMasterTime: false,
+            bufferingTime: 0,
+            replaySpeed:1,
+            responseFormat:"video/mp4"
+        });*/
+        //------------ VIEW -----------------//
+
+        // Video 1 View
+        var videoView = new OSH.UI.Mp4View("Mp4Container", {
+            dataSourceId: videoDataSource.id,
+            css: "video",
+            cssSelected: "video-selected",
+            name: "Android Video",
+            useWorker:true,
+            width:1920,
+            height:1080
+        });
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : 1
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(videoDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+    </script>
+</div>

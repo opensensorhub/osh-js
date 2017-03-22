@@ -5,100 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <title>OSH Discovery test</title>
 
-    <!-- Nvd3 libs -->
-    <link rel="stylesheet" href="../../vendor/nvd3/css/nv.d3.css" />
-    <script src="../../vendor/nvd3/js/d3.v3.min.js"></script>
-    <script src="../../vendor/nvd3/js/nv.d3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
 
-    <!-- ffmpeg libs -->
-    <script src="../../vendor/ffmpeg/ffmpeg-h264.js"></script>
-    <script src="../../vendor/ffmpeg/YUVCanvas.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
     <link rel="stylesheet" type="text/css" href="../../src/css/dialog.css"/>
 
-    <!-- OSH libs -->
-    <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
-    <script type="text/javascript" src="../../src/common/modernizr-custom.js"></script>
-
-    <!-- JSONIX -->
-    <script type="text/javascript" src= "../../src/common/jsonix/Jsonix-min.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/Filter_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/GML_3_1_1.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/GML_3_2_1.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/IC_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/ISO19139_GCO_20070417.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/ISO19139_GMD_20070417.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/ISO19139_GSR_20070417.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/ISO19139_GSS_20070417.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/ISO19139_GTS_20070417.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/OM_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/OWS_1_1_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SensorML_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SMIL_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SMIL_2_0_Language.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SOS_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SWE_1_0_1.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SWE_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/SWES_2_0.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/WS_Addr_1_0_Core.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/WS_Addr_1_0_Core.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/WSN_T_1.js"></script>
-    <script type="text/javascript" src= "../../src/common/jsonix/modules/XLink_1_0.js"></script>
-
     <!-- OSH Core -->
-    <script type="text/javascript" src="../../src/osh/osh-template.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
     <!-- OSH buffer sync lib -->
     <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
 
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
     <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
     <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-MapEvent.js"></script>
     <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
-    <script type="text/javascript" src="../../src/osh/osh-Sensor.js"></script>
-    <script type="text/javascript" src="../../src/osh/osh-Server.js"></script>
+    <script type="text/javascript" src="../../src/osh/discovery/osh-Sensor.js"></script>
+    <script type="text/javascript" src="../../src/osh/discovery/osh-Server.js"></script>
 
     <!-- OSH Video component parser -->
-    <script type="text/javascript"
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js"></script>
     <script type="text/javascript"
-            src="../../src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoH264.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoMjpeg.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-VideoMp4.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-Video.js"></script>
-    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-Chart.js"></script>
-    <script type="text/javascript" src="../../src/osh/datasender/osh-DataSenderController.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js"></script>
 
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
 
-    <script type="text/javascript" src="../../src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js"></script>
-    <script type="text/javascript"
-            src="../../src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js"></script>
-    <script type="text/javascript"
-            src="../../src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
-
     <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-DialogView.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-H264View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-RangeSlider.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-Loading.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/discovery/osh-UI-DiscoveryView.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../../src/css/discovery.css"/>

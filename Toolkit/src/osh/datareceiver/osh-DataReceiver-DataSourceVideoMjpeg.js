@@ -1,3 +1,19 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
 /**
  * @classdesc This datasource provides parsing to MJPEG raw data.
  * Data: ArrayBuffer
@@ -17,9 +33,9 @@
     bufferingTime: 1000
   });
  */
-OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
-  initialize: function($super,name,properties,options) {
-    $super(name,properties,options);
+OSH.DataReceiver.VideoMjpeg = OSH.DataReceiver.DataSource.extend({
+  initialize: function(name,properties,options) {
+    this._super(name,properties,options);
   },
 
   /**
@@ -30,7 +46,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.VideoMjpeg
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
   },
 
@@ -42,7 +58,7 @@ OSH.DataReceiver.VideoMjpeg = Class.create(OSH.DataReceiver.DataSource,{
    * @memberof OSH.DataReceiver.VideoMjpeg
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var imgBlob = new Blob([data]);
     var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
     return blobURL;

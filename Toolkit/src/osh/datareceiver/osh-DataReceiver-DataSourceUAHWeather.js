@@ -1,9 +1,25 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
+
+ Author: Alex Robin <alex.robin@sensiasoftware.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
 /**
  * @classdesc This datasource provides parsing to UAH Weather Station.
  * @class OSH.DataReceiver.UAHWeather
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource,{
+OSH.DataReceiver.DataSourceUAHWeather = OSH.DataReceiver.DataSource.extend({
 
   /**
    * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -13,7 +29,7 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
    * @memberof OSH.DataReceiver.DataSourceUAHWeather
    * @instance
    */
-  parseTimeStamp: function($super,data){
+  parseTimeStamp: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     return new Date(tokens[0]).getTime();
@@ -27,7 +43,7 @@ OSH.DataReceiver.DataSourceUAHWeather = Class.create(OSH.DataReceiver.DataSource
    * @memberof OSH.DataReceiver.DataSourceUAHWeather
    * @instance
    */
-  parseData: function($super,data){
+  parseData: function(data){
     var rec = String.fromCharCode.apply(null, new Uint8Array(data));
     var tokens = rec.trim().split(",");
     var airPres = parseFloat(tokens[1]);

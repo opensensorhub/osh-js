@@ -1,3 +1,19 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
 /**
  * @classdesc
  * @class
@@ -34,9 +50,9 @@
  }]
  );
  */
-OSH.UI.LeafletView = Class.create(OSH.UI.View, {
-    initialize: function ($super, divId, viewItems, options) {
-        $super(divId, viewItems, options);
+OSH.UI.LeafletView = OSH.UI.View.extend({
+    initialize: function (divId, viewItems, options) {
+        this._super(divId, viewItems, options);
 
         var cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -49,7 +65,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    beforeAddingItems: function ($super, options) {
+    beforeAddingItems: function (options) {
         // inits the map
         this.initMap(options);
         this.initEvents();
@@ -152,10 +168,8 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
             maxZoom = options.maxZoom;
         }
         // copyrights
-        var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw';
+        var mbAttr = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            mbUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
         var esriLink = '<a href="http://www.esri.com/">Esri</a>';
         var esriWholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
@@ -171,7 +185,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
         var streets = L.tileLayer(mbUrl, {id: 'mapbox.streets', attribution: mbAttr, maxZoom: maxZoom});
 
         return [{
-            name: "MapBox Streets",
+            name: "OSM Streets",
             layer: streets
         }, {
             name: "Esri Satellite",
@@ -244,7 +258,7 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
             }
         });
 
-        $(id).oncontextmenu = function (e) {
+        document.getElementById(id).oncontextmenu = function (e) {
             var evt = new Object({keyCode: 93});
 
             if (e.preventDefault != undefined)
@@ -407,8 +421,8 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    attachTo:function($super,divId) {
-        $super(divId);
+    attachTo:function(divId) {
+        this._super(divId);
         // Fix leaflet bug when resizing the div parent container
         this.map.invalidateSize();
     },
@@ -420,12 +434,13 @@ OSH.UI.LeafletView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.LeafletView
      */
     onResize:function($super) {
-        $super();
+        this._super();
         this.map.invalidateSize();
     },
 });
 
 /***  little hack starts here ***/
+
 L.Map = L.Map.extend({
     openPopup: function (popup) {
         this._popup = popup;
@@ -486,5 +501,6 @@ L.Map = L.Map.extend({
         }
     });
 })();
+
 
 /***  end of hack ***/
