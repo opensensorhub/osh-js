@@ -100,6 +100,16 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         } else {
            var decodedFrame = this.decode(pktSize, pktData);
             if(typeof decodedFrame != "undefined") {
+                // adjust canvas size to fit to the decoded frame
+                if(decodedFrame.frame_width < this.yuvCanvas.width) {
+                    this.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
+                    this.yuvCanvas.width = decodedFrame.frame_width;
+                }
+                if(decodedFrame.frame_height < this.yuvCanvas.height) {
+                    this.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
+                    this.yuvCanvas.height = decodedFrame.frame_height;
+                }
+
                 this.yuvCanvas.drawNextOuptutPictureGL({
                     yData: decodedFrame.frameYData,
                     yDataPerRow: decodedFrame.frame_width,
@@ -223,6 +233,16 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
             if (!this.resetCalled) {
                 self.yuvCanvas.canvasElement.drawing = true;
+                // adjust canvas size to fit to the decoded frame
+                if(decodedFrame.frame_width < self.yuvCanvas.width) {
+                    self.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
+                    self.yuvCanvas.width = decodedFrame.frame_width;
+                }
+                if(decodedFrame.frame_height < self.yuvCanvas.height) {
+                    self.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
+                    self.yuvCanvas.height = decodedFrame.frame_height;
+                }
+
                 self.yuvCanvas.drawNextOuptutPictureGL({
                     yData: decodedFrame.frameYData,
                     yDataPerRow: decodedFrame.frame_width,
