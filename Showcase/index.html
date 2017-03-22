@@ -53,6 +53,7 @@
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js"></script>
 
     <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
@@ -167,6 +168,18 @@
             name: "FFmpegView & H264",
             url: "viewers/Ffmpeg/Ffmpeg.html",
             renderDivId: "FfmpegViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Mp4View & H264",
+            url: "viewers/Mp4/Mp4.html",
+            renderDivId: "Mp4ViewerId",
             style: {
                 desktop:{
                     width:"450px",

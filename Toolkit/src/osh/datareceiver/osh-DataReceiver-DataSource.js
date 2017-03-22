@@ -229,7 +229,8 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
 	  if(properties.responseFormat) {
 		  url += "&responseFormat="+properties.responseFormat;
 	  }
-	  
+
+	  console.log(url);
 	  return url;
   }
 });

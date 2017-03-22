@@ -38,9 +38,10 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
     var height = "480";
 
     this.codecs = "avc1.64001E";
+    //this.codecs="avc1.42401F";
+    //this.codecs = 'avc1.42E01E';
 
-
-    if(typeof options != "undefined" ) {
+      if(typeof options != "undefined" ) {
       if (options.css) {
         this.css = options.css;
       }
@@ -78,7 +79,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.mediaSource.duration = 10000000;
       this.video.play();
 
-      this.buffer = this.mediaSource.addSourceBuffer('video/mp4; codecs="'+this.codecs+'"');
+      this.buffer = this.mediaSource.addSourceBuffer('video/mp4; codecs="avc1.640029"; profiles="isom,iso2,avc1,iso6,mp41"');
       
       var mediaSource = this.mediaSource;
       
@@ -92,7 +93,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.buffer.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
       this.buffer.addEventListener('abort', function(e) { /*console.log('abort: ' + mediaSource.readyState);*/ });
 
-      this.buffer.addEventListener('update', function() { // Note: Have tried 'updateend'
+      this.buffer.addEventListener('updateend', function() { // Note: Have tried 'updateend'
         if(this.queue.length > 0 && !this.buffer.updating) {
           this.buffer.appendBuffer(this.queue.shift());
         }
@@ -105,7 +106,14 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
     this.mediaSource.addEventListener('sourceended', function(e) { /*console.log('sourceended: ' + mediaSource.readyState);*/ });
     this.mediaSource.addEventListener('sourceclose', function(e) { /*console.log('sourceclose: ' + mediaSource.readyState);*/ });
     this.mediaSource.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
-    
+
+    OSH.EventManager.observeDiv(this.divId, "click", function (event) {
+        OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+            dataSourcesIds: [self.dataSourceId],
+            entityId: self.entityId
+        });
+    });
+
   },
 
   /**
@@ -116,6 +124,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
    * @memberof OSH.UI.Mp4View
    */
   setData: function(dataSourceId,data) {
+    console.log("mp4 setData");
       if (this.buffer.updating || this.queue.length > 0) {
         this.queue.push(data.data);
       } else {
