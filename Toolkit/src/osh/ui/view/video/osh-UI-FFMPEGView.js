@@ -47,7 +47,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             fpsSinceStart: 0
         };
 
-        this.useWorker = false;
+        this.useWorker = OSH.Utils.isWebWorker();
         this.resetCalled = true;
 
         if (typeof options != "undefined") {
