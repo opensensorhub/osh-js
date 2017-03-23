@@ -60,7 +60,18 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             }
 
             this.useWorker = (typeof options.useWorker != "undefined") && (options.useWorker) && (OSH.Utils.isWebWorker());
+
+            if(options.adjust) {
+                var divElt = document.getElementById(this.divId);
+                if(divElt.offsetWidth < width) {
+                    width = divElt.offsetWidth;
+                }
+                if(divElt.offsetHeight < height) {
+                    height = divElt.offsetHeight;
+                }
+            }
         }
+
 
         // create webGL canvas
         this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
