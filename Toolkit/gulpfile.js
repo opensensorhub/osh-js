@@ -1,15 +1,21 @@
 var gulp = require('gulp-help')(require('gulp'),{hideDepsMessage:true});
 var argv = require('yargs').argv;
 var clean = require('gulp-clean');
+var merge = require('merge-stream');
 var jshint= require("gulp-jshint");
 var uglify = require('gulp-uglify');
 var sort = require('gulp-sort');
 var order = require('gulp-order');
 var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
+var gulpif = require('gulp-if');
+var karmaServer = require('karma').Server;
+var path = require('path');
+
 var noop = require("gulp-noop");
 var file = require('gulp-file');
 var gap = require('gulp-append-prepend');
+
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -264,97 +270,13 @@ gulp.task('clean', "Clean the dist directory",function () {
 });
 
 
-//------------- VENDOR COPY ------------//
-gulp.task('copy-vendor-ffmpeg',false, ['copy-vendor-yuvcanvas'],function () {
-    return gulp.src('vendor/ffmpeg/ffmpeg-h264.js')
-        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop())
-        .pipe(argv.ffmpeg? gulp.dest('dist/js/workers') : noop());
-});
 
-gulp.task('copy-vendor-yuvcanvas',false, function () {
-    return gulp.src('vendor/yuvcanvas/*.js')
-        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop());
-});
-
-gulp.task('copy-vendor-nvd3',false, function () {
-    var src = new Array();
-    src.push('vendor/d3/d3.min.js');
-    src.push('vendor/nvd3/build/nv.d3.min.js');
-    src.push('vendor/nvd3/build/nv.d3.min.css');
-
-    return gulp.src(src)
-        .pipe(argv.nvd3 ? gulp.dest('dist/vendor/nvd3') : noop());
-});
-
-gulp.task('copy-vendor-broadway',false, function () {
-    return gulp.src('vendor/broadway/*.js')
-        .pipe(argv.broadway ? gulp.dest('dist/vendor/broadway') : noop());
-});
-
-gulp.task('copy-vendor-nouislider',false, function () {
-    var src = new Array();
-    src.push('vendor/nouislider/distribute/*.min.*');
-    src.push('vendor/wnumb/wNumb.js');
-
-    return gulp.src(src)
-        .pipe(argv.nouislider ? gulp.dest('dist/vendor/nouislider') : noop());
-});
-
-gulp.task('copy-vendor-cesium',false, function () {
-    return gulp.src("vendor/cesium/Build/Cesium/**")
-        .pipe(argv.cesium ? gulp.dest('dist/vendor/cesium') : noop());
-});
-
-gulp.task('copy-vendor-ol3',false, function () {
-    var src = new Array();
-    src.push('vendor/ol3/ol.js');
-    src.push('vendor/ol3/ol.css');
-    src.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
-    src.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css');
-
-    return gulp.src(src)
-        .pipe(argv.ol3 ? gulp.dest('dist/vendor/ol3') : noop());
-});
-
-gulp.task('copy-vendor-leaflet',false, function () {
-    var src = new Array();
-    src.push('vendor/leaflet/dist/**/*');
-    src.push('vendor/Leaflet.fullscreen/dist/**');
-
-    return gulp.src(src)
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/leaflet') : noop());
-});
-
-gulp.task('copy-vendor-tree',false, function () {
-    return gulp.src('vendor/tree/**')
-        .pipe(argv.tree ? gulp.dest('dist/vendor/tree') : noop());
-});
-
-gulp.task('copy-vendor-jsonix',false, function () {
-    var src = new Array();
-    src.push('vendor/jsonix/dist/**');
-    src.push('vendor-local/jsonix/**');
-
-    return gulp.src(src)
-        .pipe(argv.jsonix ? gulp.dest('dist/vendor/jsonix') : noop());
-});
-//----------- VENDOR CSS ALL ---------------//
-gulp.task('vendor-css-all-copy-cesium',false,function(){
-    return gulp.src(['vendor/cesium/Build/Cesium/**','!vendor/cesium/Build/Cesium/Cesium.js'])
-        .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
-});
-
-gulp.task('vendor-css-all-copy-leaflet',false,['vendor-css-all-copy-leaflet-fs'], function(){
-    return gulp.src('vendor/leaflet/dist/images/*')
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/images') : noop());
-});
-
-gulp.task('vendor-css-all-copy-leaflet-fs',false,function(){
-    return gulp.src('vendor/Leaflet.fullscreen/dist/*.png')
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/') : noop());
-});
-
-gulp.task('vendor-css-all-copy-tree',false, function(){
-    return gulp.src('vendor/tree/images/*')
-        .pipe(argv.tree ? gulp.dest('dist/vendor/all-in-one/images') : noop());
+/**
+ * Run test once and exit
+ */
+gulp.task('test', function (done) {
+  new karmaServer({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
 });

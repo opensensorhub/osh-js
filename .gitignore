@@ -3,6 +3,8 @@
 **/.externalToolBuilders
 **/.idea
 Toolkit/node_modules
+Toolkit/vendor
+Toolkit/.idea
 Toolkit/dist
 Toolkit/vendor
 npm-debug.log
