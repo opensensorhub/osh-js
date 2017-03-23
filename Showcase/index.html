@@ -74,9 +74,15 @@
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Sensor.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Server.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/discovery.css"/>
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/stackContextMenu.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tree.css"/>
 
     <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
@@ -214,6 +220,18 @@
             style: {
                 desktop:{
                     width:"900px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Entity tree + stack menu",
+            url: "viewers/Tree/tree.html",
+            renderDivId: "treeViewId",
+            style: {
+                desktop:{
+                    width:"450px",
                     height:"350px"
                 }
             },
