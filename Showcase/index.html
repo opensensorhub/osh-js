@@ -70,6 +70,13 @@
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/discovery/osh-UI-DiscoveryView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Sensor.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Server.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/discovery.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css"/>
 
     <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
@@ -195,6 +202,18 @@
             style: {
                 desktop:{
                     width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Discovery",
+            url: "viewers/Discovery/discovery.html",
+            renderDivId: "discoveryViewId",
+            style: {
+                desktop:{
+                    width:"800px",
                     height:"350px"
                 }
             },
