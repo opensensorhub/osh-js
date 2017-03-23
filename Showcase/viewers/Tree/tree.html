@@ -11,9 +11,13 @@
         <script src="js/osh.js"></script>
      -->
 
-    <div id="tree-container" style="height:100%;width:100%"></div>
+    <div id="tree-container" style="height:100%;width:210px;float:left"></div>
     <div id="tree-inner"></div>
     <style>
+        .dialog-from-tree {
+            width: 215px !important;
+            height: 150px !important;
+        }
     </style>
     <script>
 
@@ -69,6 +73,16 @@
             dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource]
         };
 
+        var dialog    =  new OSH.UI.DialogView("tree-inner", {
+            draggable: true,
+            css: "dialog-from-tree",
+            name: "Dialog from tree",
+            show:false,
+            dockable: false,
+            closeable: true,
+            connectionIds : [androidPhoneGpsDataSource.id]
+        });
+
         //-----------------------------------------------------------//
         //--------------------- Creates menu ------------------------//
         //-----------------------------------------------------------//
@@ -77,7 +91,7 @@
 
         var menuItems = [{
             name: "Android Video",
-            viewId: "tree-inner",
+            viewId: dialog.id,
             css: "fa fa-video-camera"
         }];
 
