@@ -60,22 +60,29 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
         var mediaSource = new MediaSource();
         this.video.src = window.URL.createObjectURL(mediaSource);
 
-
-        this.sourceBuffer = null;
-
         mediaSource.addEventListener('sourceopen', function () {
-            this.sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.640029"');
+            if (!window.MediaSource || !MediaSource.isTypeSupported('video/mp4; codecs="avc1.640029"; profiles="isom,iso2,avc1,iso6,mp41"')) {
+                console.error("Your browser is not supported");
+                return;
+            }
+            this.sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.640029"; profiles="isom,iso2,avc1,iso6,mp41"');
             this.sourceBuffer.mode = 'sequence';
-            this.video.play();
 
             this.sourceBuffer.addEventListener('error', function (e) {
-                console.log("Error: " + e);
+                console.error("Error: " + e);
             });
             this.sourceBuffer.addEventListener('updateend', function(e) { console.log(e);});
-            this.sourceBuffer.addEventListener('error', function(e) {console.log("Error: " + e);});
-            this.sourceBuffer.addEventListener('abort', function(e) { console.log("Error: " + e); });
+            this.sourceBuffer.addEventListener('update', function(e) { console.log(e);});
+            this.sourceBuffer.addEventListener('abort', function(e) { console.error("Error: " + e); });
+            this.video.play();
 
         }.bind(this));
+
+        mediaSource.addEventListener('sourceopen', function(e) { console.log('sourceopen: ' + mediaSource.readyState); });
+        mediaSource.addEventListener('sourceended', function(e) { console.log('sourceended: ' + mediaSource.readyState); });
+        mediaSource.addEventListener('sourceclose', function(e) { console.log('sourceclose: ' + mediaSource.readyState); });
+        mediaSource.addEventListener('error', function(e) { console.log('error: ' + mediaSource.readyState); });
+
         // appends <video> tag to <div>
         document.getElementById(this.divId).appendChild(this.video);
 
@@ -93,7 +100,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
      */
     setData: function (dataSourceId, data) {
         if (!this.sourceBuffer.updating){
-            this.sourceBuffer.appendBuffer(data.data);
+            this.sourceBuffer.appendBuffer(new Uint8Array(data.data));
         }
     },
 
