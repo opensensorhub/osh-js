@@ -1,5 +1,10 @@
+**/.project
+**/.settings
+**/.externalToolBuilders
+**/.idea
 Toolkit/node_modules
 Toolkit/vendor
 Toolkit/.idea
 Toolkit/dist
-.idea
+Toolkit/vendor
+npm-debug.log

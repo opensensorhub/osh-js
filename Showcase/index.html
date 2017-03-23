@@ -1,0 +1,201 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>OSH-js Showcase</title>
+    <link href="common/css/showcase.css" rel="stylesheet">
+
+    <!-- ANGULAR CODE MIRROR -->
+    <link rel="stylesheet" href="common/js/angular-code-mirror/angular-code-mirror.css"/>
+
+    <!-- ANGULAR -->
+    <link rel="stylesheet" href="common/malhar-dashboard/stylesheet.min.css">
+
+    <script type="text/javascript" src="common/js/angular/all-in-one.min.js"></script>
+
+    <script type="text/javascript" src="common/malhar-dashboard/ui-dashboard-module.js"></script>
+    <script type="text/javascript" src="common/js/angular/jquery-watcher.js"></script>
+
+    <!-- ANGULAR CODE MIRROR -->
+    <script src="common/js/angular-code-mirror/angular-code-mirror.min.js"></script>
+
+
+    <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+    <script src="vendor/all-in-one/vendor.js"></script>
+
+
+    <!---link rel="stylesheet" href="css/osh.css"/>
+    <script src="js/osh.js"></script-->
+
+    <!-- Live code test -->
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-MapEvent.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-EventManager.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-H264View.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
+
+    <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
+
+</head>
+
+<body ng-app="app">
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://www.opensensorhub.org/">
+                <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png"
+                     style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+                OpenSensorHub</a>
+        </div>
+    </div>
+</nav>
+<div ng-view=""></div>
+</body>
+<script>
+
+    var properties = [
+        {
+            name: "LeafletView & JSON data receiver (location)",
+            url: "viewers/Leaflet-location/leaflet.html",
+            renderDivId: "leafletViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "CesiumView & JSON data receiver (location)",
+            url: "viewers/Cesium/cesium.html",
+            renderDivId: "cesiumViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "OpenLayerView & JSON data receiver (location)",
+            url: "viewers/OpenLayer/ol.html",
+            renderDivId: "olViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "LeafletView & JSON data receiver (location + orientation)",
+            url: "viewers/Leaflet-orient/leaflet-orient.html",
+            renderDivId: "leafletOrientViewerId",
+            style: {
+                desktop:{
+                    width:"500px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "LeafletView & JSON data receiver & Entity (location + orientation)",
+            url: "viewers/Leaflet-orient-entity/leaflet-orient-entity.html",
+            renderDivId: "leafletOrientEntityViewerId",
+            style: {
+                desktop:{
+                    width:"560px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "MjpegView",
+            url: "viewers/Mjpeg/Mjpeg.html",
+            renderDivId: "MjpegViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "FFmpegView & H264",
+            url: "viewers/Ffmpeg/Ffmpeg.html",
+            renderDivId: "FfmpegViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Mp4View & H264",
+            url: "viewers/Mp4/Mp4.html",
+            renderDivId: "Mp4ViewerId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        }
+        /*{
+            name: "NVD3 chart View & JSON data receiver ",
+            url: "viewers/CurveChart/curveChart.html",
+            renderDivId: "curveChartViewId",
+            defaultWidget: true
+        }*/
+    ];
+
+    addWidgets(properties);
+</script>
+</html>

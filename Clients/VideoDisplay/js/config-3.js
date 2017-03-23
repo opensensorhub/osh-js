@@ -4,9 +4,12 @@ function init() {
     //--------------------- Creates dataSources --------------------//
     //--------------------------------------------------------------//
 
+    //TODO: to fix
+    window.CESIUM_BASE_URL = 'vendor/all-in-one';
+
     var replayFactor = 3;
     //--Android Phone Video
-    var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
+    var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -20,7 +23,7 @@ function init() {
         timeShift: -16000
     });
 
-    var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
+    var androidPhoneOrientationDataSource = new OSH.DataReceiver.JSON("android-Orientation", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -46,7 +49,7 @@ function init() {
         bufferingTime: 1000
     });
 
-    var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
+    var weatherDataSource = new OSH.DataReceiver.JSON("weather", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -168,9 +171,9 @@ function init() {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
                 return {
-                    x : rec.lon,
-                    y : rec.lat,
-                    z : rec.alt
+                    x : rec.location.lon,
+                    y : rec.location.lat,
+                    z : rec.location.alt
                 };
             }
         },
@@ -178,7 +181,7 @@ function init() {
             dataSourceIds : [androidPhoneOrientationDataSource.getId()],
             handler : function(rec) {
                 return {
-                    heading : rec.heading
+                    heading : rec.orient.heading
                 };
             }
         },
@@ -208,9 +211,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },
@@ -238,9 +241,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },
@@ -307,7 +310,7 @@ function init() {
 
     // We can add a group of dataSources and set the options
     dataProviderController.addEntity(androidEntity);
-    dataProviderController.addDataSource(weatherDataSource);
+    //dataProviderController.addDataSource(weatherDataSource);
 
 
 
@@ -332,9 +335,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },
@@ -362,9 +365,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },

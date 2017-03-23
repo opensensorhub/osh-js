@@ -12,6 +12,11 @@ var gulpif = require('gulp-if');
 var karmaServer = require('karma').Server;
 var path = require('path');
 
+var noop = require("gulp-noop");
+var file = require('gulp-file');
+var gap = require('gulp-append-prepend');
+
+
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
 }, {
@@ -34,15 +39,27 @@ gulp.task('build','build a distributable osh-js instance',['normal','minify'],fu
     }
 });
 
-gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all','osh-css-src','copy-vendor','images'],function(){
+gulp.task('minify', false, ['init-css-vendor-file','vendor-js-src-all','osh-js-src','vendor-css-src-all','osh-css-src','copy-vendor','images','osh-js-src-minify','osh-css-src-minify']);
+
+gulp.task('init-css-vendor-file', function () {
+    var str = '/*Concataned css file*/';
+
+    return file('vendor.css', str, { src: true })
+        .pipe(gulp.dest('dist/vendor/all-in-one/'));
+});
+
+
+gulp.task('osh-js-src-minify', false,function() {
     // Minify OSH js min
-    gulp.src("dist/js/osh.js")
+    return gulp.src("dist/js/osh.js")
         .pipe(uglify({mangle:false}))
         .pipe(concat('osh.min.js'))
         .pipe(gulp.dest('dist/js'));
+});
 
+gulp.task('osh-css-src-minify', false, function() {
     // Minify OSH css min
-    gulp.src("dist/css/osh.css")
+    return gulp.src("dist/css/osh.css")
         .pipe(cleanCSS({compatibility: '*'}))
         .pipe(concat('osh.min.css'))
         .pipe(gulp.dest('dist/css'));
@@ -51,22 +68,23 @@ gulp.task('minify', false, ['vendor-js-src-all','osh-js-src','vendor-css-src-all
 gulp.task('vendor-js-src-all',false,function(){
     var jsSources = new Array();
 
-    if(argv.ffmpeg) {
-        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
-        jsSources.push('vendor/ffmpeg/YUVCanvas.js');
+    if(argv.cesium) {
+        jsSources.push('vendor/cesium/Build/Cesium/Cesium.js');
     }
 
-    if(argv.d3) {
-        jsSources.push('vendor/d3/d3.min.js');
+    if(argv.ffmpeg) {
+        jsSources.push('vendor/yuvcanvas/YUVCanvas.js');
+        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
     }
 
     if(argv.nvd3) {
+        jsSources.push('vendor/d3/d3.min.js');
         jsSources.push('vendor/nvd3/build/nv.d3.min.js');
     }
 
     if(argv.broadway) {
-        jsSources.push('vendor/broadway/broadway-all.min.js');
         jsSources.push('vendor/broadway/YUVCanvas.js');
+        jsSources.push('vendor/broadway/broadway-all.min.js');
         jsSources.push('vendor/broadway/Decoder.js');
         jsSources.push('vendor/broadway/Player.js');
     }
@@ -76,9 +94,6 @@ gulp.task('vendor-js-src-all',false,function(){
         jsSources.push('vendor/wnumb/wNumb.js');
     }
 
-    if(argv.cesium) {
-        jsSources.push('vendor/cesium.js/dist/Cesium.js');
-    }
     if(argv.ol3) {
         jsSources.push('vendor/ol3/ol.js');
         jsSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
@@ -92,13 +107,13 @@ gulp.task('vendor-js-src-all',false,function(){
     }
     if(argv.jsonix) {
         jsSources.push('vendor/jsonix/dist/*.js');
-        jsSources.push('vendor-local/jsonix/dist/**/.js');
+        jsSources.push('vendor-local/jsonix/modules/*.js');
     }
 
     return gulp.src(jsSources).pipe(concat('vendor.js')).pipe(gulp.dest("dist/vendor/all-in-one"));
 });
 
-gulp.task('vendor-css-src-all',false,function(){
+gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-all-copy-leaflet','vendor-css-all-copy-tree'],function(){
     var cssSources = new Array();
 
     if(argv.nvd3) {
@@ -109,33 +124,32 @@ gulp.task('vendor-css-src-all',false,function(){
         cssSources.push('vendor/nouislider/distribute/nouislider.min.css');
     }
 
-    if(argv.cesium) {
-        // copy cesium resources
-        gulp.src(['vendor/cesium.js/dist/**','!vendor/cesium.js/dist/Cesium.js'])
-            .pipe(gulp.dest('dist/vendor/all-in-one/'));
+    if(argv.leaflet) {
+        cssSources.push('vendor/leaflet/dist/leaflet.css');
+        cssSources.push('vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css');
     }
+
     if(argv.ol3) {
         cssSources.push('vendor/ol3/ol.css');
         cssSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css');
     }
-    if(argv.leaflet) {
-        // copy leaflet resources
-        gulp.src('vendor/leaflet/dist/images/*').pipe(gulp.dest('dist/vendor/all-in-one/images'));
-        gulp.src('vendor/Leaflet.fullscreen/dist/*.png').pipe(gulp.dest('dist/vendor/all-in-one/'));
-    }
+
     if(argv.tree) {
         cssSources.push('vendor/tree/tree.css');
-        // copy tree resources
-        gulp.src('vendor/tree/images/*').pipe(gulp.dest('dist/vendor/all-in-one/images'));
-    }
-    if(argv.jsonix) {
-        cssSources.push('vendor/jsonix/dist/*.css');
     }
 
-    return gulp.src(cssSources).pipe(concat('vendor.css')).pipe(gulp.dest("dist/vendor/all-in-one"));;
+    if(argv.jsonix) {
+        //cssSources.push('vendor/jsonix/dist/*.css');
+    }
+
+    return gulp.src("dist/vendor/all-in-one/vendor.css")
+        .pipe(argv.cesium ?  gap.prependText('@import "Widgets/widgets.css";') : noop())
+        .pipe(gap.appendFile(cssSources))
+        .pipe(gulp.dest("dist/vendor/all-in-one"));
+
 });
 
-gulp.task('osh-js-src',false,function(){
+gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     var src = [];
 
     src.push('./src/osh/osh-BaseClass.js');
@@ -159,6 +173,7 @@ gulp.task('osh-js-src',false,function(){
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js');
+    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js');
     src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js');
     src.push('./src/osh/datareceiver/osh-DataReceiverController.js');
     src.push('./src/osh/datasender/osh-DataSender-DataSink.js');
@@ -218,78 +233,23 @@ gulp.task('osh-js-src',false,function(){
         .pipe(gulp.dest("dist/js"));
 });
 
+gulp.task('osh-js-src-ffmpeg',false,function() {
+    return gulp.src("./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js")
+        .pipe(argv.ffmpeg ? gulp.dest("dist/js/workers") : noop());
+});
+
+
 gulp.task('osh-css-src',false,['copy-fonts'],function(){
     return gulp.src('src/css/*.css')
         .pipe(concat('osh.css')).pipe(gulp.dest("dist/css"));
 });
 //----------- NORMAL ------------------//
 
-gulp.task('normal', false, ['vendor-js-src-all','vendor-css-src-all','osh-js-src','osh-css-src', 'copy-vendor','images']);
+gulp.task('normal', false, ['init-css-vendor-file','vendor-js-src-all','vendor-css-src-all','osh-js-src','osh-css-src', 'copy-vendor','images']);
 
 //---------- COPY VENDORS ------//
-gulp.task('copy-vendor',false, function () {
-    if(argv.ffmpeg) {
-        gulp.src('vendor/ffmpeg/*.js')
-            .pipe(gulp.dest('dist/vendor/ffmpeg'));
-    }
-
-    if(argv.d3) {
-        gulp.src('vendor/d3/d3.min.js')
-            .pipe(gulp.dest('dist/vendor/d3'));
-    }
-
-    if(argv.nvd3) {
-        gulp.src('vendor/nvd3/build/nv.d3.min.js')
-            .pipe(gulp.dest('dist/vendor/nvd3'));
-        gulp.src('vendor/nvd3/build/nv.d3.min.css')
-            .pipe(gulp.dest('dist/vendor/nvd3'));
-    }
-
-    if(argv.broadway) {
-        gulp.src('vendor/broadway/*.js')
-            .pipe(gulp.dest('dist/vendor/broadway'));
-    }
-
-    if(argv.nouislider) {
-        gulp.src('vendor/nouislider/distribute/*.min.*')
-            .pipe(gulp.dest('dist/vendor/nouislider'));
-        gulp.src('vendor/wnumb/wNumb.js')
-            .pipe(gulp.dest('dist/vendor/nouislider'));
-    }
-
-    if(argv.cesium) {
-        gulp.src('vendor/cesium.js/dist/**/*')
-            .pipe(gulp.dest('dist/vendor/cesium'));
-    }
-
-    if(argv.ol3) {
-        gulp.src('vendor/ol3/ol.js')
-            .pipe(gulp.dest('dist/vendor/ol3'));
-        gulp.src('vendor/ol3/ol.css')
-            .pipe(gulp.dest('dist/vendor/ol3'));
-        gulp.src('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js')
-            .pipe(gulp.dest('dist/vendor/ol3'));
-        gulp.src('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css')
-            .pipe(gulp.dest('dist/vendor/ol3'));
-    }
-
-    if(argv.leaflet) {
-        gulp.src('vendor/leaflet/dist/**/*')
-            .pipe(gulp.dest('dist/vendor/leaflet'));
-        gulp.src('vendor/Leaflet.fullscreen/dist/**')
-            .pipe(gulp.dest('dist/vendor/leaflet'));
-    }
-    if(argv.tree) {
-        gulp.src('vendor/tree/**')
-            .pipe(gulp.dest('dist/vendor/tree'));
-    }
-    if(argv.jsonix) {
-        gulp.src('vendor/jsonix/dist/**')
-            .pipe(gulp.dest('dist/vendor/jsonix'));
-        gulp.src('vendor-local/jsonix/**')
-            .pipe(gulp.dest('dist/vendor/jsonix'));
-    }
-});
+gulp.task('copy-vendor',false, ['copy-vendor-ffmpeg','copy-vendor-nvd3','copy-vendor-broadway',
+    'copy-vendor-nouislider','copy-vendor-cesium','copy-vendor-ol3','copy-vendor-leaflet','copy-vendor-tree','copy-vendor-jsonix']);
 
 gulp.task('copy-fonts',false, function () {
     return gulp.src('src/css/font-awesome-4.6.3/**/*')
