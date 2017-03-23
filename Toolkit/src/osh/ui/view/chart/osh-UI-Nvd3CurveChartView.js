@@ -167,7 +167,7 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 	 * @memberof OSH.UI.Nvd3CurveChartView
 	 */
 	updateCurve : function(styler, timestamp, options) {
-		if (typeof (this.data) == "undefined") {
+		if (typeof (this.data) === "undefined") {
 			this.d3Data = [];	
 			var name = options.name;
 
