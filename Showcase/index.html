@@ -70,6 +70,19 @@
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/discovery/osh-UI-DiscoveryView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Sensor.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Server.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/discovery.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/stackContextMenu.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tree.css"/>
 
     <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
@@ -93,7 +106,7 @@
 
     var properties = [
         {
-            name: "LeafletView & JSON data receiver (location)",
+            name: "Leaflet JSON Location",
             url: "viewers/Leaflet-location/leaflet.html",
             renderDivId: "leafletViewerId",
             style: {
@@ -105,7 +118,7 @@
             defaultWidget: true
         },
         {
-            name: "CesiumView & JSON data receiver (location)",
+            name: "Cesium JSON Location",
             url: "viewers/Cesium/cesium.html",
             renderDivId: "cesiumViewerId",
             style: {
@@ -117,7 +130,7 @@
             defaultWidget: true
         },
         {
-            name: "OpenLayerView & JSON data receiver (location)",
+            name: "OL JSON location",
             url: "viewers/OpenLayer/ol.html",
             renderDivId: "olViewerId",
             style: {
@@ -129,31 +142,31 @@
             defaultWidget: true
         },
         {
-            name: "LeafletView & JSON data receiver (location + orientation)",
+            name: "Leaflet JSON Location + orientation",
             url: "viewers/Leaflet-orient/leaflet-orient.html",
             renderDivId: "leafletOrientViewerId",
             style: {
                 desktop:{
-                    width:"500px",
+                    width:"450px",
                     height:"350px"
                 }
             },
             defaultWidget: true
         },
         {
-            name: "LeafletView & JSON data receiver & Entity (location + orientation)",
+            name: "Leaflet JSON Entity Location + orientation",
             url: "viewers/Leaflet-orient-entity/leaflet-orient-entity.html",
             renderDivId: "leafletOrientEntityViewerId",
             style: {
                 desktop:{
-                    width:"560px",
+                    width:"450px",
                     height:"350px"
                 }
             },
             defaultWidget: true
         },
         {
-            name: "MjpegView",
+            name: "MJPEG",
             url: "viewers/Mjpeg/Mjpeg.html",
             renderDivId: "MjpegViewerId",
             style: {
@@ -165,7 +178,7 @@
             defaultWidget: true
         },
         {
-            name: "FFmpegView & H264",
+            name: "FFMPEG H264",
             url: "viewers/Ffmpeg/Ffmpeg.html",
             renderDivId: "FfmpegViewerId",
             style: {
@@ -177,7 +190,7 @@
             defaultWidget: true
         },
         {
-            name: "Mp4View & H264",
+            name: "Mp4 H264",
             url: "viewers/Mp4/Mp4.html",
             renderDivId: "Mp4ViewerId",
             style: {
@@ -187,13 +200,43 @@
                 }
             },
             defaultWidget: true
-        }
-        /*{
-            name: "NVD3 chart View & JSON data receiver ",
+        },
+        {
+            name: "NVD3 JSON Windspeed",
             url: "viewers/CurveChart/curveChart.html",
             renderDivId: "curveChartViewId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
             defaultWidget: true
-        }*/
+        },
+        {
+            name: "Entity tree + stack menu",
+            url: "viewers/Tree/tree.html",
+            renderDivId: "treeViewId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Discovery",
+            url: "viewers/Discovery/discovery.html",
+            renderDivId: "discoveryViewId",
+            style: {
+                desktop:{
+                    width:"900px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        }
     ];
 
     addWidgets(properties);

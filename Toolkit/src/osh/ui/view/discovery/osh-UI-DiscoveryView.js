@@ -67,9 +67,10 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
     initialize: function (divId, properties) {
         this._super(divId,[],properties);
 
+        this.dialogContainer = document.body.id;
         this.swapId = "";
-        if(typeof properties != "undefined") {
-            if(typeof properties.dataReceiverController != "undefined") {
+        if(typeof properties !== "undefined") {
+            if(typeof properties.dataReceiverController !== "undefined") {
                 this.dataReceiverController = properties.dataReceiverController;
             } else {
                 this.dataReceiverController = new OSH.DataReceiver.DataReceiverController({
@@ -78,8 +79,12 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
                 this.dataReceiverController.connectAll();
             }
 
-            if(typeof properties.swapId != "undefined") {
+            if(typeof properties.swapId !== "undefined") {
                 this.swapId = properties.swapId;
+            }
+
+            if(typeof properties.dialogContainer !== "undefined") {
+                this.dialogContainer = properties.dialogContainer;
             }
         }
 
@@ -501,7 +506,7 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             name : name
         };
 
-        if(typeof entityId != "undefined") {
+        if(typeof entityId !== "undefined") {
             viewItem['entityId'] = entityId;
         }
 
@@ -536,12 +541,12 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             bufferingTime: 1000
         });
 
-        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
+        var dialog    =  new OSH.UI.DialogView(this.dialogContainer, {
+            draggable: true,
             css: "dialog",
             name: name,
             show:true,
-            dockable: true,
+            dockable: false,
             closeable: true,
             connectionIds : [videoDataSource.id],
             swapId: this.swapId
@@ -552,7 +557,8 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            entityId : entityId
+            entityId : entityId,
+            keepRatio:true
         });
 
         // We can add a group of dataSources and set the options
@@ -589,15 +595,16 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             bufferingTime: 1000
         });
 
-        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
+        var dialog    =  new OSH.UI.DialogView(this.dialogContainer, {
+            draggable: true,
             css: "dialog",
             name: name,
             show:true,
-            dockable: true,
+            dockable: false,
             closeable: true,
             connectionIds : [videoDataSource.id],
-            swapId: this.swapId
+            swapId: this.swapId,
+            keepRatio:true
         });
 
         var videoView = new OSH.UI.FFMPEGView(dialog.popContentDiv.id, {
@@ -644,12 +651,12 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             bufferingTime: 1000
         });
 
-        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
+        var dialog    =  new OSH.UI.DialogView(this.dialogContainer, {
+            draggable: true,
             css: "dialog",
             name: name,
             show:true,
-            dockable: true,
+            dockable: false,
             closeable: true,
             connectionIds : [chartDataSource.id],
             swapId: this.swapId

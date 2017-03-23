@@ -124,7 +124,6 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
    * @memberof OSH.UI.Mp4View
    */
   setData: function(dataSourceId,data) {
-    console.log("mp4 setData");
       if (this.buffer.updating || this.queue.length > 0) {
         this.queue.push(data.data);
       } else {

@@ -10,6 +10,7 @@ var cleanCSS = require('gulp-clean-css');
 var noop = require("gulp-noop");
 var file = require('gulp-file');
 var gap = require('gulp-append-prepend');
+var karmaServer = require('karma').Server;
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -357,4 +358,14 @@ gulp.task('vendor-css-all-copy-leaflet-fs',false,function(){
 gulp.task('vendor-css-all-copy-tree',false, function(){
     return gulp.src('vendor/tree/images/*')
         .pipe(argv.tree ? gulp.dest('dist/vendor/all-in-one/images') : noop());
+});
+
+/**
+ * Run test once and exit
+ */
+gulp.task('test', function (done) {
+    new karmaServer({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done).start();
 });

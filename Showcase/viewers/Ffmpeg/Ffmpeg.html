@@ -13,17 +13,17 @@
 
     <div id="FfmpegContainer" style="height:100%;width:100%"></div>
     <style>
-        .video {
+        .video-ffmpeg {
             width: inherit;
             height:inherit;
         }
 
-        .video img{
+        .video-ffmpeg img{
             width: inherit;
             height:inherit;
         }
 
-        .video canvas{
+        .video-ffmpeg canvas{
             width: inherit;
             height:inherit;
         }
@@ -56,7 +56,7 @@
         // Video 1 View
         var videoView = new OSH.UI.FFMPEGView("FfmpegContainer", {
             dataSourceId: videoDataSource.id,
-            css: "video",
+            css: "video-ffmpeg",
             cssSelected: "video-selected",
             name: "Android Video",
             useWorker:true,

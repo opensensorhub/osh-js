@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Test x264 Video decoding</title>
+</head>
+<body onload="load()">
+
+This is a test video for x264 decoding
+
+<script type="text/javascript">
+    function load() {
+        loadStream();
+    }
+
+    function loadStream() {
+
+        var mediaSource = new MediaSource();
+        var buffer;
+        var queue = [];
+
+        var video = document.querySelector('video');
+        video.src = window.URL.createObjectURL(mediaSource);
+
+        mediaSource.addEventListener('sourceopen', function(e) {
+            mediaSource.duration = 10000000;
+            video.play();
+
+            buffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.64001E"');
+
+            buffer.addEventListener('updatestart', function(e) { /*console.log('updatestart: ' + mediaSource.readyState); */});
+            buffer.addEventListener('update', function(e) { /*console.log('update: ' + mediaSource.readyState); */});
+            buffer.addEventListener('updateend', function(e) { /*console.log('updateend: ' + mediaSource.readyState); */});
+            buffer.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState); */});
+            buffer.addEventListener('abort', function(e) { /*console.log('abort: ' + mediaSource.readyState); */});
+
+            buffer.addEventListener('update', function() { // Note: Have tried 'updateend'
+                while (queue.length > 0 && !buffer.updating) {
+                    buffer.appendBuffer(queue.shift());
+                }
+            });
+        }, false);
+
+        mediaSource.addEventListener('sourceopen', function(e) { console.log('sourceopen: ' + mediaSource.readyState); });
+        mediaSource.addEventListener('sourceended', function(e) { console.log('sourceended: ' + mediaSource.readyState); });
+        mediaSource.addEventListener('sourceclose', function(e) { console.log('sourceclose: ' + mediaSource.readyState); });
+        mediaSource.addEventListener('error', function(e) { console.log('error: ' + mediaSource.readyState); });
+
+        var ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:a0e0eac2fea3f614-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2016-08-11T20:17:30.402Z/2016-08-11T20:18:05.451Z&replaySpeed=1&responseFormat=video/mp4");
+        ws.binaryType = 'arraybuffer';
+        ws.onmessage = function(event) {
+            //var data = new Uint8Array(event.data);
+            if (buffer.updating || queue.length > 0) {
+                queue.push(event.data);
+            } else {
+                buffer.appendBuffer(event.data);
+            }
+        }
+
+        function byteToHexString(uint8arr) {
+            if (!uint8arr) {
+                return '';
+            }
+
+            var hexStr = '';
+            for (var i = 0; i < uint8arr.length; i++) {
+                var hex = (uint8arr[i] & 0xff).toString(16);
+                hex = (hex.length === 1) ? '0' + hex : hex;
+                hexStr += hex+ ' ';
+            }
+
+            return hexStr.toUpperCase();
+        }
+
+        function readU32(bytes,offset) {
+            return (bytes[offset + 0] << 24 | bytes[offset + 1] << 16 | bytes[offset + 2] << 8 | bytes[offset + 3]) >>> 0;
+        }
+
+        function read4CC(bytes) {
+            var res = "";
+            for (var i = 0; i < 4; i++) {
+                res += String.fromCharCode(bytes[i]);
+            }
+            return res;
+        }
+
+        function readNCC(bytes,n) {
+            var res = "";
+            for (var i = 0; i < n; i++) {
+                res += String.fromCharCode(bytes[i]);
+            }
+            return res;
+        }
+    }
+
+
+</script>
+<div class="container-vertical">
+    <div id="timeStamp">TimeStamp:</div>
+    <video id="video" width="1024" height="780" controls></video>
+</div>
+
+</body>
+</html>

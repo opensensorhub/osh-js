@@ -13,17 +13,17 @@
 
     <div id="MjpegContainer" style="height:100%;width:100%"></div>
     <style>
-        .video {
+        .video-mjpeg {
             width: inherit;
             height:inherit;
         }
 
-        .video img{
+        .video-mjpeg img{
             width: inherit;
             height:inherit;
         }
 
-        .video canvas{
+        .video-mjpeg canvas{
             width: inherit;
             height:inherit;
         }
@@ -55,7 +55,7 @@
         // Video 1 View
         var videoView = new OSH.UI.MjpegView("MjpegContainer", {
             dataSourceId: androidPhoneVideoDataSource.id,
-            css: "video",
+            css: "video-mjpeg",
             cssSelected: "video-selected",
             name: "Android Video",
             keepRatio: true
