@@ -1,4 +1,4 @@
-<div id="curveChartViewerId">
+<div id="curveChartViewId">
     <!-- Vendor all-in-one was built with:
 
         gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
@@ -16,18 +16,53 @@
     </style>
     <script>
 
+        var weatherDataSource = new OSH.DataReceiver.JSON("weather", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:mysos:offering03",
+            observedProperty: "http://sensorml.com/ont/swe/property/Weather",
+            startTime: "now",
+            endTime: "2055-01-01Z",
+            syncMasterTime: false,
+            bufferingTime: 1000
+        });
 
+
+        var windSpeedChartView = new OSH.UI.Nvd3CurveChartView("curve-container",
+            [{
+                styler: new OSH.UI.Styler.Curve({
+                    valuesFunc: {
+                        dataSourceIds: [weatherDataSource.id],
+                        handler: function (rec, timeStamp) {
+                            return {
+                                x: timeStamp,
+                                y: rec.windSpeed
+                            };
+                        }
+                    }
+                })
+            }],
+            {
+                name: "WindSpeed chart",
+                yLabel: 'Wind Speed (m/s)',
+                xLabel: 'Time',
+                css: "chart-view",
+                cssSelected: "video-selected",
+                maxPoints: 30
+            }
+        );
 
         //---------------------------------------------------------------//
         //--------------------- Creates DataProvider --------------------//
         //---------------------------------------------------------------//
 
         var dataProviderController = new OSH.DataReceiver.DataReceiverController({
-            replayFactor : replayFactor
+            replayFactor: 1
         });
 
         // We can add a group of dataSources and set the options
-        dataProviderController.addDataSource(androidPhoneGpsDataSource);
+        dataProviderController.addDataSource(weatherDataSource);
 
         //---------------------------------------------------------------//
         //---------------------------- Starts ---------------------------//
