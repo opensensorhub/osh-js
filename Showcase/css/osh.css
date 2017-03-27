@@ -217,20 +217,20 @@
     text-decoration: none;
     font-weight: bold;
     background: transparent;
-    background-image: url("../images/pin-2.png");
+    background-image: url("images/pin-2.png");
     cursor: default;
 }
 
 .pop-pin:hover {
-    background-image: url("../images/unpin-2.png");
+    background-image: url("images/unpin-2.png");
 }
 
 .pop-pin-drag {
-    background-image: url("../images/unpin-2.png");
+    background-image: url("images/unpin-2.png");
 }
 
 .pop-pin-drag:hover {
-    background-image: url("../images/pin-2.png");
+    background-image: url("images/pin-2.png");
 }
 
 .pop-connect {
@@ -246,16 +246,16 @@
     text-decoration: none;
     font-weight: bold;
     background: transparent;
-    background-image: url("../images/connected.png");
+    background-image: url("images/connected.png");
     cursor: default;
 }
 
 .pop-connect:hover {
-    background-image: url("../images/disconnected.png");
+    background-image: url("images/disconnected.png");
 }
 
 .pop-disconnect:hover {
-    background-image: url("../images/connected.png");
+    background-image: url("images/connected.png");
 }
 
 .pop-disconnect {
@@ -271,7 +271,7 @@
     text-decoration: none;
     font-weight: bold;
     background: transparent;
-    background-image: url("../images/disconnected.png");
+    background-image: url("images/disconnected.png");
 }
 
 .pop-exchange {
@@ -420,7 +420,6 @@ body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", san
 
 .discovery-form .required_notification {
     color: #d45252;
-    margin: 25px 0 0 0;
     display: inline;
     float: right;
 }

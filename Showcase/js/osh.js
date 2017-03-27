@@ -2028,7 +2028,7 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
 	  if(properties.responseFormat) {
 		  url += "&responseFormat="+properties.responseFormat;
 	  }
-	  
+
 	  return url;
   }
 });
@@ -5867,7 +5867,7 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 	 * @memberof OSH.UI.Nvd3CurveChartView
 	 */
 	updateCurve : function(styler, timestamp, options) {
-		if (typeof (this.data) == "undefined") {
+		if (typeof (this.data) === "undefined") {
 			this.d3Data = [];	
 			var name = options.name;
 
@@ -5994,9 +5994,10 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
     initialize: function (divId, properties) {
         this._super(divId,[],properties);
 
+        this.dialogContainer = document.body.id;
         this.swapId = "";
-        if(typeof properties != "undefined") {
-            if(typeof properties.dataReceiverController != "undefined") {
+        if(typeof properties !== "undefined") {
+            if(typeof properties.dataReceiverController !== "undefined") {
                 this.dataReceiverController = properties.dataReceiverController;
             } else {
                 this.dataReceiverController = new OSH.DataReceiver.DataReceiverController({
@@ -6005,8 +6006,12 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
                 this.dataReceiverController.connectAll();
             }
 
-            if(typeof properties.swapId != "undefined") {
+            if(typeof properties.swapId !== "undefined") {
                 this.swapId = properties.swapId;
+            }
+
+            if(typeof properties.dialogContainer !== "undefined") {
+                this.dialogContainer = properties.dialogContainer;
             }
         }
 
@@ -6428,7 +6433,7 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             name : name
         };
 
-        if(typeof entityId != "undefined") {
+        if(typeof entityId !== "undefined") {
             viewItem['entityId'] = entityId;
         }
 
@@ -6463,12 +6468,12 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             bufferingTime: 1000
         });
 
-        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
+        var dialog    =  new OSH.UI.DialogView(this.dialogContainer, {
+            draggable: true,
             css: "dialog",
             name: name,
             show:true,
-            dockable: true,
+            dockable: false,
             closeable: true,
             connectionIds : [videoDataSource.id],
             swapId: this.swapId
@@ -6479,7 +6484,8 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            entityId : entityId
+            entityId : entityId,
+            keepRatio:true
         });
 
         // We can add a group of dataSources and set the options
@@ -6516,15 +6522,16 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             bufferingTime: 1000
         });
 
-        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
+        var dialog    =  new OSH.UI.DialogView(this.dialogContainer, {
+            draggable: true,
             css: "dialog",
             name: name,
             show:true,
-            dockable: true,
+            dockable: false,
             closeable: true,
             connectionIds : [videoDataSource.id],
-            swapId: this.swapId
+            swapId: this.swapId,
+            keepRatio:true
         });
 
         var videoView = new OSH.UI.FFMPEGView(dialog.popContentDiv.id, {
@@ -6532,7 +6539,8 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             css: "video",
             cssSelected: "video-selected",
             name: "Android Video",
-            entityId : entityId
+            entityId : entityId,
+            useWorker:true
         });
 
         // We can add a group of dataSources and set the options
@@ -6570,12 +6578,12 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             bufferingTime: 1000
         });
 
-        var dialog    =  new OSH.UI.DialogView("dialog-main-container", {
-            draggable: false,
+        var dialog    =  new OSH.UI.DialogView(this.dialogContainer, {
+            draggable: true,
             css: "dialog",
             name: name,
             show:true,
-            dockable: true,
+            dockable: false,
             closeable: true,
             connectionIds : [chartDataSource.id],
             swapId: this.swapId
@@ -9103,7 +9111,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             fpsSinceStart: 0
         };
 
-        this.useWorker = false;
+        this.useWorker = OSH.Utils.isWebWorker();
         this.resetCalled = true;
 
         if (typeof options != "undefined") {
@@ -9116,7 +9124,18 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             }
 
             this.useWorker = (typeof options.useWorker != "undefined") && (options.useWorker) && (OSH.Utils.isWebWorker());
+
+            if(options.adjust) {
+                var divElt = document.getElementById(this.divId);
+                if(divElt.offsetWidth < width) {
+                    width = divElt.offsetWidth;
+                }
+                if(divElt.offsetHeight < height) {
+                    height = divElt.offsetHeight;
+                }
+            }
         }
+
 
         // create webGL canvas
         this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
@@ -9156,6 +9175,16 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         } else {
            var decodedFrame = this.decode(pktSize, pktData);
             if(typeof decodedFrame != "undefined") {
+                // adjust canvas size to fit to the decoded frame
+                if(decodedFrame.frame_width < this.yuvCanvas.width) {
+                    this.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
+                    this.yuvCanvas.width = decodedFrame.frame_width;
+                }
+                if(decodedFrame.frame_height < this.yuvCanvas.height) {
+                    this.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
+                    this.yuvCanvas.height = decodedFrame.frame_height;
+                }
+
                 this.yuvCanvas.drawNextOuptutPictureGL({
                     yData: decodedFrame.frameYData,
                     yDataPerRow: decodedFrame.frame_width,
@@ -9279,6 +9308,16 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
             if (!this.resetCalled) {
                 self.yuvCanvas.canvasElement.drawing = true;
+                // adjust canvas size to fit to the decoded frame
+                if(decodedFrame.frame_width < self.yuvCanvas.width) {
+                    self.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
+                    self.yuvCanvas.width = decodedFrame.frame_width;
+                }
+                if(decodedFrame.frame_height < self.yuvCanvas.height) {
+                    self.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
+                    self.yuvCanvas.height = decodedFrame.frame_height;
+                }
+
                 self.yuvCanvas.drawNextOuptutPictureGL({
                     yData: decodedFrame.frameYData,
                     yDataPerRow: decodedFrame.frame_width,
@@ -9731,9 +9770,10 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
     var height = "480";
 
     this.codecs = "avc1.64001E";
+    //this.codecs="avc1.42401F";
+    //this.codecs = 'avc1.42E01E';
 
-
-    if(typeof options != "undefined" ) {
+      if(typeof options != "undefined" ) {
       if (options.css) {
         this.css = options.css;
       }
@@ -9771,7 +9811,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.mediaSource.duration = 10000000;
       this.video.play();
 
-      this.buffer = this.mediaSource.addSourceBuffer('video/mp4; codecs="'+this.codecs+'"');
+      this.buffer = this.mediaSource.addSourceBuffer('video/mp4; codecs="avc1.640029"; profiles="isom,iso2,avc1,iso6,mp41"');
       
       var mediaSource = this.mediaSource;
       
@@ -9785,7 +9825,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.buffer.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
       this.buffer.addEventListener('abort', function(e) { /*console.log('abort: ' + mediaSource.readyState);*/ });
 
-      this.buffer.addEventListener('update', function() { // Note: Have tried 'updateend'
+      this.buffer.addEventListener('updateend', function() { // Note: Have tried 'updateend'
         if(this.queue.length > 0 && !this.buffer.updating) {
           this.buffer.appendBuffer(this.queue.shift());
         }
@@ -9798,7 +9838,14 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
     this.mediaSource.addEventListener('sourceended', function(e) { /*console.log('sourceended: ' + mediaSource.readyState);*/ });
     this.mediaSource.addEventListener('sourceclose', function(e) { /*console.log('sourceclose: ' + mediaSource.readyState);*/ });
     this.mediaSource.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
-    
+
+    OSH.EventManager.observeDiv(this.divId, "click", function (event) {
+        OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+            dataSourcesIds: [self.dataSourceId],
+            entityId: self.entityId
+        });
+    });
+
   },
 
   /**
