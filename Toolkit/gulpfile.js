@@ -247,14 +247,14 @@ gulp.task('copy-vendor',false, ['copy-vendor-ffmpeg','copy-vendor-nvd3','copy-ve
     'copy-vendor-nouislider','copy-vendor-cesium','copy-vendor-ol3','copy-vendor-leaflet','copy-vendor-tree','copy-vendor-jsonix']);
 
 gulp.task('copy-fonts',false, function () {
-    return gulp.src('src/css/font-awesome-4.6.3/**/*')
+    return gulp.src('src/css/font-awesome-4.6.3/**')
         .pipe(gulp.dest('dist/css/font-awesome-4.6.3'));
 });
 
 //--------- IMAGES -----------//
 gulp.task('images', false,function () {
-    return gulp.src('src/images/**/*')
-        .pipe(gulp.dest('dist/css/images'));
+    return gulp.src('src/images/**')
+        .pipe(gulp.dest('dist/images'));
 });
 
 //------- TOOLS -------//
@@ -319,7 +319,7 @@ gulp.task('copy-vendor-ol3',false, function () {
 
 gulp.task('copy-vendor-leaflet',false, function () {
     var src = new Array();
-    src.push('vendor/leaflet/dist/**/*');
+    src.push('vendor/leaflet/dist/**');
     src.push('vendor/Leaflet.fullscreen/dist/**');
 
     return gulp.src(src)
@@ -355,9 +355,14 @@ gulp.task('vendor-css-all-copy-leaflet-fs',false,function(){
         .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 
-gulp.task('vendor-css-all-copy-tree',false, function(){
-    return gulp.src('vendor/tree/images/*')
+gulp.task('vendor-css-all-copy-tree',false,['vendor-css-all-copy-tree-global'], function(){
+    return gulp.src('vendor/tree/images/**')
         .pipe(argv.tree ? gulp.dest('dist/vendor/all-in-one/images') : noop());
+});
+
+gulp.task('vendor-css-all-copy-tree-global',false, function(){
+    return gulp.src('vendor/tree/images/**')
+        .pipe(argv.tree ? gulp.dest('dist/images') : noop());
 });
 
 /**
