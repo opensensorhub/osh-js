@@ -355,9 +355,14 @@ gulp.task('vendor-css-all-copy-leaflet-fs',false,function(){
         .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 
-gulp.task('vendor-css-all-copy-tree',false, function(){
+gulp.task('vendor-css-all-copy-tree',false,['vendor-css-all-copy-tree-global'], function(){
     return gulp.src('vendor/tree/images/**')
         .pipe(argv.tree ? gulp.dest('dist/vendor/all-in-one/images') : noop());
+});
+
+gulp.task('vendor-css-all-copy-tree-global',false, function(){
+    return gulp.src('vendor/tree/images/**')
+        .pipe(argv.tree ? gulp.dest('dist/images') : noop());
 });
 
 /**
