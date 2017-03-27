@@ -173,7 +173,7 @@ body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", san
 }
 
 .discovery-form .input-text:required {
-    background: #fff url(../images/red_asterisk.png) no-repeat 98% center;
+    background: #fff url(images/red_asterisk.png) no-repeat 98% center;
 }
 
 ::-webkit-validation-bubble-message {
@@ -181,7 +181,7 @@ body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", san
 }
 
 .discovery-form input:focus:invalid{ /* when a field is considered invalid by the browser */
-    background: #fff url(../images/invalid.png) no-repeat 98% center;
+    background: #fff url(images/invalid.png) no-repeat 98% center;
     box-shadow: 0 0 5px #d45252;
     border-color: #b03535
 }
