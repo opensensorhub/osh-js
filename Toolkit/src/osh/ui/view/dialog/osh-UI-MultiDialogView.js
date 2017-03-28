@@ -53,13 +53,13 @@ OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
         extraDiv.setAttribute("class","pop-extra-el");
 
         var i = document.createElement("i");
-        i.setAttribute("class","fa fa-caret-right pop-extra-collapse");
+        i.setAttribute("class","fa fa-caret-right pop-extra-collapse fa-2x");
 
         i.onclick = function() {
             if(i.className.indexOf("fa-caret-down") == -1){
-                i.className = "fa fa-caret-down pop-extra-show";
+                i.className = "fa fa-caret-down pop-extra-show fa-2x";
             } else {
-                i.className = "fa fa-caret-right pop-extra-collapse";
+                i.className = "fa fa-caret-right pop-extra-collapse fa-2x";
             }
         };
         extraDiv.appendChild(i);
