@@ -18,6 +18,21 @@
             width: 215px !important;
             height: 150px !important;
         }
+        .video {
+            width: inherit;
+            height: 150px;;
+        }
+
+
+        .video-selected {
+            border-radius: 3px;
+            box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+        }
+
+        .dialog {
+            width:350px !important;
+            height:200px !important;
+        }
     </style>
     <script>
 
@@ -73,15 +88,26 @@
             dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource]
         };
 
-        var dialog    =  new OSH.UI.DialogView("tree-inner", {
+        var mapDialog    =  new OSH.UI.DialogView("tree-inner", {
             draggable: true,
             css: "dialog-from-tree",
             name: "Dialog from tree",
             show:false,
             dockable: false,
             closeable: true,
-            connectionIds : [androidPhoneGpsDataSource.id]
+            connectionIds : [androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id]
         });
+
+        var videoDialog    =  new OSH.UI.DialogView("tree-inner", {
+            draggable: true,
+            css: "dialog-from-tree",
+            name: "Dialog from tree",
+            show:false,
+            dockable: false,
+            closeable: true,
+            connectionIds : [androidPhoneVideoDataSource.id]
+        });
+
 
         //-----------------------------------------------------------//
         //--------------------- Creates menu ------------------------//
@@ -90,8 +116,13 @@
         var stackContextMenuId = "menu-"+OSH.Utils.randomUUID();
 
         var menuItems = [{
-            name: "Android Video",
-            viewId: dialog.id,
+            name: "Show Map",
+            viewId: mapDialog.id,
+            css: "fa fa-video-camera"
+        },
+        {
+            name: "Show Video",
+            viewId: videoDialog.id,
             css: "fa fa-video-camera"
         }];
 
@@ -100,6 +131,108 @@
         //-----------------------------------------------------------//
         //--------------------- Creates View ------------------------//
         //-----------------------------------------------------------//
+
+        //------------- STYLER ---------//
+        var pointMarker = new OSH.UI.Styler.PointMarker({
+            location: {
+                x: 1.42376557,
+                y: 43.61758626,
+                z: 100
+            },
+            locationFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec) {
+                    return {
+                        x: rec.location.lon,
+                        y: rec.location.lat,
+                        z: rec.location.alt
+                    };
+                }
+            },
+            orientationFunc : {
+                dataSourceIds : [androidPhoneOrientationDataSource.id],
+                    handler : function(rec) {
+                    var qx = rec.orient.qx;
+                    var qy = rec.orient.qy;
+                    var qz = rec.orient.qz;
+                    var qw = rec.orient.q0;
+
+                    // look dir vector
+                    var x = 0;
+                    var y = 0;
+                    var z = -1;
+
+                    // calculate quat * vector
+                    var ix =  qw * x + qy * z - qz * y;
+                    var iy =  qw * y + qz * x - qx * z;
+                    var iz =  qw * z + qx * y - qy * x;
+                    var iw = - qx * x - qy * y - qz * z;
+
+                    // calculate result * inverse quat
+                    xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
+                    yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
+                    zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+
+                    var yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
+
+                    return {
+                        heading : yaw
+                    };
+                }
+            },
+            icon: 'images/cameralook.png',
+            iconFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec, timeStamp, options) {
+                    if (options.selected) {
+                        return 'images/cameralook-selected.png'
+                    } else {
+                        return 'images/cameralook.png';
+                    }
+                    ;
+                }
+            }
+        });
+
+        //------------ VIEW -----------------//
+        var leafletMapView = new OSH.UI.LeafletView("",
+            [{
+                styler: pointMarker,
+                name: "Android Phone GPS"
+            },
+                {
+                    styler: new OSH.UI.Styler.Polyline({
+                        locationFunc: {
+                            dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                            handler: function (rec) {
+                                return {
+                                    x: rec.location.lon,
+                                    y: rec.location.lat,
+                                    z: rec.location.alt
+                                };
+                            }
+                        },
+                        color: 'rgba(0,0,255,0.5)',
+                        weight: 10,
+                        opacity: .5,
+                        smoothFactor: 1,
+                        maxPoints: 200
+                    }),
+                    name: "Android Phone GPS Path"
+                }]
+        );
+
+        leafletMapView.attachTo(mapDialog.popContentDiv.id);
+
+        var videoView = new OSH.UI.MjpegView("", {
+            dataSourceId: androidPhoneVideoDataSource.id,
+            css: "video",
+            cssSelected: "video-selected",
+            name: "Android Video",
+            keepRatio: true
+        });
+
+        videoView.attachTo(videoDialog.popContentDiv.id);
 
         var entityTreeView = new OSH.UI.EntityTreeView("tree-container",
             [{
@@ -112,5 +245,23 @@
                 css: "tree-container"
             }
         );
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : 1
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addEntity(androidEntity);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
     </script>
 </div>
