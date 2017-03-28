@@ -72,6 +72,8 @@
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/discovery/osh-UI-DiscoveryView.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-MultiDialogView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/tasking/osh-UI-PtzTaskingView-New.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Sensor.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/discovery/osh-Server.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
@@ -83,6 +85,7 @@
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/stackContextMenu.css"/>
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tasking.css"/>
 
     <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
@@ -229,6 +232,30 @@
             name: "Discovery",
             url: "viewers/Discovery/discovery.html",
             renderDivId: "discoveryViewId",
+            style: {
+                desktop:{
+                    width:"900px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Multi dialog + tasking",
+            url: "viewers/Multidialog/Multidialog.html",
+            renderDivId: "multiDialogId",
+            style: {
+                desktop:{
+                    width:"450px",
+                    height:"350px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "Time control RangeSlider",
+            url: "viewers/RangeSlider/RangeSlider.html",
+            renderDivId: "rangeSliderId",
             style: {
                 desktop:{
                     width:"900px",

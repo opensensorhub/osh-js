@@ -23,7 +23,8 @@
  var rangeSlider = new OSH.UI.RangeSlider("rangeSlider-container",{
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        refreshRate:1
+        refreshRate:1, // rate of data received
+        dataSourcesId: [someDataSource.id],
  });
  */
 OSH.UI.RangeSlider = OSH.UI.View.extend({
@@ -77,7 +78,6 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 			if(typeof options.dataSourcesId != "undefined") {
 				this.dataSourcesId = options.dataSourcesId;
 			}
-
 			if(typeof options.refreshRate != "undefined") {
 				this.refreshRate = options.refreshRate;
 			}
@@ -133,7 +133,15 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 
 		// listen for DataSourceId
 		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-			if(!self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
+			var filterOk = true;
+
+			if(self.dataSourcesId.length > 0) {
+				if(self.dataSourcesId.indexOf(event.dataSourceId) < 0) {
+					filterOk = false;
+				}
+            }
+
+			if(filterOk && !self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
 				self.slider.noUiSlider.set([event.timeStamp]);
 				self.dataCount = 0;
 			}

@@ -36,3 +36,7 @@ pre code {
     background-color: #428bca !important;
     border-color: #357ebd !important;
 }
+
+.modal {
+    z-index:9050 !important;
+}

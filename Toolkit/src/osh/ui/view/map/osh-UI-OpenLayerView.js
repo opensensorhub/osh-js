@@ -290,18 +290,18 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         var self = this;
         select_interaction.getFeatures().on("add", function (e) {
             var feature = e.element; //the feature selected
-            var memo = [];
-            for (var styler in self.stylerToObj) {
-                if (self.stylerToObj[styler] == feature.getId()) {
-                    for (var i = 0; i < self.stylers.length; i++) {
-                        if (self.stylers[i].getId() == styler) {
-                            memo = memo.concat(self.stylers[i].getDataSourcesIds());
-                            break;
-                        }
-                    }
+            var dataSourcesIds = [];
+            var entityId;
+            for (var stylerId in self.stylerToObj) {
+                if (self.stylerToObj[stylerId] == feature.getId()) {
+                    var styler = self.stylerIdToStyler[stylerId];
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
+                        entityId : styler.viewItem.entityId
+                    });
+                    break;
                 }
             }
-            $(self.divId).fire("osh:select", memo);
         });
 
         this.map.addInteraction(select_interaction);

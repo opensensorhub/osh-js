@@ -1,0 +1,231 @@
+<div id="rangeSliderId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
+
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="rangeSliderContainer" style="height:100%;width:100%">
+        <div id="rangeslider-map"></div>
+        <div id="rangeslider-slider"></div>
+    </div>
+    <style>
+        #rangeSliderContainer .leaflet-container {
+            height: calc(100% - 80px);
+        }
+
+        #rangeslider-slider {
+            padding: 25px 8px 5px 15px;
+        }
+
+        .noUi-tooltip {
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px 0px #777;
+            background-color: #777;
+            filter: alpha(opacity=80);
+            -moz-opacity: 0.8;
+            opacity: 0.8;
+            border: none;
+            color: #FFF;
+            width: 100px;
+            height: 23px;
+            padding: 2px 2px 2px 2px;
+        }
+        .noUi-horizontal .noUi-handle-lower .noUi-tooltip {
+            top: 35px;
+        }
+
+        .noUi-horizontal .noUi-handle-upper .noUi-tooltip {
+            top: 35px;
+        }
+
+        .noUi-connect {
+            background-color: rgba(5, 107, 166, 0.6);
+        }
+
+        .noUi-tooltip:after {
+            bottom: -14px;
+            margin-left: -10px;
+            border-top: 10px solid #fff;
+        }
+
+        .noUi-tooltip:after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            margin-left: -9px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: none;
+            border-bottom: 10px solid #777;
+        }
+
+        .noUi-pips-horizontal {
+            height:0px !important;
+        }
+
+
+        .noUi-handle:active {
+            background-color: rgba(5, 107, 166, 0.6);
+            box-shadow:none;
+            border:none;
+        }
+
+
+        .noUi-horizontal {
+            width: calc(100% - 50px);
+        }
+
+        /** put range and control button side by side **/
+
+        .osh-rangeslider-slider{
+            float:left;
+        }
+
+        .osh-rangeslider-control {
+            float: left;
+            width: 30px;
+            margin-left: 20px;
+        }
+
+        .osh-rangeslider-control-select {
+            float: left;
+            width: 30px;
+            margin-left: 20px;
+        }
+
+        .osh-rangeslider-control a{
+            text-decoration: none;
+        }
+
+        .osh-rangeslider-control-select a{
+            text-decoration: none;
+        }
+
+        .osh-rangeslider-control a:after {
+            font-family: FontAwesome;
+            content: "\f044";
+            vertical-align: middle;
+            font-size:30px;
+        }
+
+        .osh-rangeslider-control-select a:after{
+            font-family: FontAwesome;
+            content: "\f046";
+            vertical-align: middle;
+            font-size:30px;
+        }
+    </style>
+    <script>
+        //---------- DATASOURCE ------------//
+        var replayFactor = 3;
+        //--Android Phone Video
+        var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:060693280a28e015-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/Location",
+            startTime: "2015-02-16T07:58:00Z",
+            endTime: "2015-02-16T08:09:00Z",
+            replaySpeed: replayFactor + "",
+            syncMasterTime: true,
+            bufferingTime: 1000,
+            timeShift: -16000
+        });
+
+        //------------- STYLER ---------//
+        var pointMarker = new OSH.UI.Styler.PointMarker({
+            location: {
+                x: 1.42376557,
+                y: 43.61758626,
+                z: 100
+            },
+            locationFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec) {
+                    return {
+                        x: rec.location.lon,
+                        y: rec.location.lat,
+                        z: rec.location.alt
+                    };
+                }
+            },
+            icon: 'images/cameralook.png',
+            iconFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec, timeStamp, options) {
+                    if (options.selected) {
+                        return 'images/cameralook-selected.png'
+                    } else {
+                        return 'images/cameralook.png';
+                    }
+                    ;
+                }
+            }
+        });
+
+        //------------ VIEW -----------------//
+        var leafletMapView = new OSH.UI.LeafletView("rangeslider-map",
+            [{
+                styler: pointMarker,
+                name: "Android Phone GPS"
+            },
+                {
+                    styler: new OSH.UI.Styler.Polyline({
+                        locationFunc: {
+                            dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                            handler: function (rec) {
+                                return {
+                                    x: rec.location.lon,
+                                    y: rec.location.lat,
+                                    z: rec.location.alt
+                                };
+                            }
+                        },
+                        color: 'rgba(0,0,255,0.5)',
+                        weight: 10,
+                        opacity: .5,
+                        smoothFactor: 1,
+                        maxPoints: 200
+                    }),
+                    name: "Android Phone GPS Path"
+                }]
+        );
+
+        var rangeSlider = new OSH.UI.RangeSlider("rangeslider-slider",{
+            startTime: "2015-02-16T07:58:00Z",
+            endTime: "2015-02-16T08:09:00Z",
+            dataSourcesId: [androidPhoneGpsDataSource.id],
+            refreshRate:1
+        });
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderControllerRangeSlider = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : replayFactor
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderControllerRangeSlider.addDataSource(androidPhoneGpsDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderControllerRangeSlider.connectAll();
+
+    </script>
+</div>
