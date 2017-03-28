@@ -308,7 +308,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
             this.selectedNode = p_node;
 
             // if node is an entity, send selected event
-            if (send_event && typeof(p_node.tag.id) != "undefined") {
+            if (send_event && p_node.tag !== null && typeof(p_node.tag.id) != "undefined") {
                 OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
                     dataSourcesIds: ["none"],
                     entityId: p_node.tag.id,
