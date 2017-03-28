@@ -352,7 +352,11 @@ OSH.Buffer = BaseClass.extend({
     var bufObj = this.buffers[dataSourceId];
     if (bufObj.status != BUFFER_STATUS.CANCEL) {
         if(bufObj.syncMasterTime) {
-          OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, {timeStamp: data.timeStamp});
+          OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME,
+              {
+                timeStamp: data.timeStamp,
+                dataSourceId: dataSourceId
+              });
         }
         OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
     }

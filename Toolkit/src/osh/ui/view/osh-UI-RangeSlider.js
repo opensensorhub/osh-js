@@ -77,7 +77,6 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 			if(typeof options.dataSourcesId != "undefined") {
 				this.dataSourcesId = options.dataSourcesId;
 			}
-
 			if(typeof options.refreshRate != "undefined") {
 				this.refreshRate = options.refreshRate;
 			}
@@ -133,7 +132,15 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 
 		// listen for DataSourceId
 		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-			if(!self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
+			var filterOk = true;
+
+			if(self.dataSourcesId.length > 0) {
+				if(self.dataSourcesId.indexOf(event.dataSourceId) < 0) {
+					filterOk = false;
+				}
+            }
+
+			if(filterOk && !self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
 				self.slider.noUiSlider.set([event.timeStamp]);
 				self.dataCount = 0;
 			}
