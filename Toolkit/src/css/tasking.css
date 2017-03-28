@@ -1,117 +1,164 @@
-.remote-left {
-    margin-top: 70px;
-    position: absolute;
-}
-
-.remote-right {
-    position: absolute;
-    margin-left: 140px;
-    margin-top: 70px;
-}
-
-.remote-up {
-    margin-left: 70px;
-    position: absolute;
-}
-
-.remote-zoomin {
-    margin-left: 70px;
-    position: absolute;
-    margin-top: 68px;
-}
-
-.remote-zoomin .remote-button{
-    border-radius: 200px 200px 0px 0px !important;
-}
-
-.remote-zoomout .remote-button{
-    border-radius: 0px 0px 200px 200px !important;
-}
-
-.remote-zoomout {
-    margin-left: 70px;
-    position: absolute;
-    margin-top: 104px;
-}
-
-.remote-down {
-    margin-left: 70px;
-    position: absolute;
-    margin-top: 141px;
-}
-
-.remote-button:active {
-    box-shadow: 0px 0px 20px 1px #777;
-    border-radius: 200px;
-    outline: none;
-}
-
-.remote-button:focus {
-    outline: none;
-}
-
-/** Display remote & PTZ side by side using CSS 3 and flex display **/
-.flex-container {
-    display:flex;
-    width:100%;
-}
-
-.fixed{
-    width:260px;
-}
-
-.flex-item{
-    /*flex-grow: 1;*/
-    width:150px;
-}
-
-/** End Flex **/
-
-.remote {
-    border-radius: 250px;
-    background-color: rgba(119,119,119,0.3);
-    width: 215px;
-    height: 215px;
-    box-shadow: 0px 0px 20px 1px #777;
-    /* opacity: 0.99; */
-    margin-right: 15px;
-    padding: 5px;
-}
-
-.preset>label {
-    margin-right:10px;
-}
-
-.preset {
-    margin-bottom:55px;
-}
-
 .ptz {
-    margin-top:100px;
+    height: 164px;
+    width: 164px;
+    overflow: hidden;
+    background: url(../images/tasking/yt.png) no-repeat;
+    position: relative;
 }
 
-.pan {
-    margin-bottom:15px;
-}
-.tilt {
-    margin-bottom:15px;
-}
-.zoom {
-    margin-bottom:15px;
+.ptz .moveUp {
+    width: 22px;
+    height: 12px;
+    position: absolute;
+    left: 70px;
+    top: 23px;
+    cursor: pointer;
+    background: url(../images/tasking/fxp_r2_c5a.gif) 0px no-repeat;
 }
 
-.pan>label {
-    display:block;
-    width:60px;
-    float:left;
+.ptz .moveTopLeft {
+    width: 13px;
+    height: 12px;
+    position: absolute;
+    left: 42px;
+    top: 42px;
+    cursor: pointer;
+    background: url(../images/tasking/fxp_r3_c3.gif) 0px no-repeat;
 }
-.tilt>label {
-    display:block;
-    width:60px;
-    float:left;
+
+.ptz .moveTopRight {
+    background: url(../images/tasking/fxp_r3_c7.gif) no-repeat;
+    width: 13px;
+    height: 12px;
+    position: absolute;
+    left: 110px;
+    top: 42px;
 }
-.zoom>label {
-    display:block;
-    width:60px;
-    float:left;
+
+.ptz .moveLeft {
+    background: url(../images/tasking/fxp_r5_c2.gif) no-repeat;
+    width: 12px;
+    height: 22px;
+    position: absolute;
+    left: 23px;
+    top: 70px;
+}
+
+.ptz .reset {
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    left: 54px;
+    top: 55px;
+    cursor: pointer;
+    background: url(../images/tasking/fxp_r5_c5.png) 0px no-repeat;
+}
+
+.ptz .moveRight {
+    width: 12px;
+    height: 22px;
+    position: absolute;
+    left: 128px;
+    top: 70px;
+    cursor: pointer;
+    background: url(../images/tasking/fxp_r5_c8.gif) 0px no-repeat;
+}
+
+.ptz .moveBottomLeft {
+    width: 12px;
+    height: 13px;
+    position: absolute;
+    left: 42px;
+    top: 110px;
+    cursor: pointer;
+    background: url(../images/tasking/fxp_r7_c3.gif) 0px no-repeat;
+}
+
+.ptz .moveBottomRight {
+    background: url(../images/tasking/fxp_r7_c7.gif) -24px no-repeat;
+    width: 13px;
+    height: 12px;
+    position: absolute;
+    left: 110px;
+    top: 110px;
+}
+
+.ptz .moveDown {
+    background: url(../images/tasking/fxp_r8_c5.gif) no-repeat;
+    width: 22px;
+    height: 12px;
+    position: absolute;
+    left: 70px;
+    top: 129px;
+}
+
+/** HOVER  + active PART **/
+.ptz .moveUp:hover {
+    background: url(../images/tasking/fxp_r2_c5a.gif) -22px no-repeat;
+}
+.ptz .moveUp:active {
+    background: url(../images/tasking/fxp_r2_c5a.gif) -44px no-repeat;
+}
+
+.ptz .moveDown:hover {
+    background: url(../images/tasking/fxp_r8_c5.gif) -22px no-repeat;
+}
+
+.ptz .moveDown:active {
+    background: url(../images/tasking/fxp_r8_c5.gif) -44px no-repeat;
+}
+
+.ptz .moveRight:hover {
+    background: url(../images/tasking/fxp_r5_c8.gif) -11px no-repeat;
+}
+
+.ptz .moveRight:active {
+    background: url(../images/tasking/fxp_r5_c8.gif) -23px no-repeat;
+}
+
+.ptz .moveLeft:hover {
+    background: url(../images/tasking/fxp_r5_c2.gif) -12px no-repeat;
+}
+
+.ptz .moveLeft:active {
+    background: url(../images/tasking/fxp_r5_c2.gif) -24px no-repeat;
+}
+
+.ptz .moveTopLeft:hover {
+    background: url(../images/tasking/fxp_r3_c3.gif) -13px no-repeat;
+}
+
+.ptz .moveTopLeft:active {
+    background: url(../images/tasking/fxp_r3_c3.gif) -26px no-repeat;
+}
+
+.ptz .moveTopRight:hover {
+    background: url(../images/tasking/fxp_r3_c7.gif) -13px no-repeat;
+}
+
+.ptz .moveTopRight:active {
+    background: url(../images/tasking/fxp_r3_c7.gif) -26px no-repeat;
+}
+
+.ptz .moveBottomLeft:hover {
+    background: url(../images/tasking/fxp_r7_c3.gif) -11px no-repeat;
+}
+
+.ptz .moveBottomLeft:active {
+    background: url(../images/tasking/fxp_r7_c3.gif) -24px no-repeat;
+}
+
+.ptz .moveBottomRight:hover {
+    background: url(../images/tasking/fxp_r7_c7.gif) -12px no-repeat;
+}
+
+.ptz .moveBottomRight:active {
+    background: url(../images/tasking/fxp_r7_c7.gif) -0px no-repeat;
+}
+
+.ptz .reset:hover {
+    background: url(../images/tasking/fxp_r5_c5.png) -54px no-repeat;
+}
+.ptz .reset:active {
+    background: url(../images/tasking/fxp_r5_c5.png) -109px no-repeat;
 }
