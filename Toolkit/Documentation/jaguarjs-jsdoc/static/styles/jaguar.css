@@ -44,8 +44,9 @@ li {
 }
 .navigation .search input {
   background-color: #fcfcfc;
-  color: #fff;
+  color: rgb(139, 138, 138);
   border-color: #2472a4;
+  font-weight: bold;
 }
 .navigation .list {
   padding: 10px 15px 0 15px;
