@@ -34,6 +34,9 @@
 			"lenient": true,
 			"destination": "./docs",
 			"template": "./node_modules/jaguarjs-jsdoc"
+		},
+		"default": {
+			"outputSourceFiles": true
 		}
 	},
 	"markdown": {
