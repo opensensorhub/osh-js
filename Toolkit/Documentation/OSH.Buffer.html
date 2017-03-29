@@ -10,7 +10,7 @@
     
     <meta property="og:title" content=""/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content=""/>
+    <meta property="og:image" content="http://docs.opensensorhub.org/img/logo-light.png"/>
     
     <meta property="og:url" content=""/>
     
@@ -26,7 +26,7 @@
     
     
     <script>
-    var config = {"monospaceLinks":true,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"OSH Toolkit","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"","description":"","keyword":""},"linenums":false};
+    var config = {"monospaceLinks":false,"cleverLinks":false,"applicationName":"OpenSensorHub Toolkit","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"http://docs.opensensorhub.org/img/logo-light.png","site_name":"","url":""},"meta":{"title":"","description":"","keyword":""},"linenums":true,"source":{"include":["./src/"],"includePattern":".+\\.js(doc)?$","excludePattern":"(^|\\/|\\\\)_"},"opts":{"encoding":"utf8","recurse":true,"private":false,"lenient":true,"destination":"./docs","template":"./node_modules/jaguarjs-jsdoc"},"default":{"outputSourceFiles":true}};
     </script>
     
 
@@ -36,7 +36,7 @@
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
-    <h3 class="applicationName"><a href="index.html">OSH Toolkit</a></h3>
+    <h3 class="applicationName"><a href="index.html">OpenSensorHub Toolkit</a></h3>
 
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
@@ -288,6 +288,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="OSH.Utils.addCss"><a href="OSH.Utils.html#.addCss">addCss</a></li>
+            
                 <li data-name="OSH.Utils.GetResultObject"><a href="OSH.Utils.html#.GetResultObject">GetResultObject</a></li>
             
                 <li data-name="OSH.Utils.getXCursorPosition"><a href="OSH.Utils.html#.getXCursorPosition">getXCursorPosition</a></li>
@@ -299,6 +301,8 @@
                 <li data-name="OSH.Utils.isBlink"><a href="OSH.Utils.html#.isBlink">isBlink</a></li>
             
                 <li data-name="OSH.Utils.isChrome"><a href="OSH.Utils.html#.isChrome">isChrome</a></li>
+            
+                <li data-name="OSH.Utils.isElement"><a href="OSH.Utils.html#.isElement">isElement</a></li>
             
                 <li data-name="OSH.Utils.isFirefox"><a href="OSH.Utils.html#.isFirefox">isFirefox</a></li>
             
@@ -317,6 +321,10 @@
                 <li data-name="OSH.Utils.randomUUID"><a href="OSH.Utils.html#.randomUUID">randomUUID</a></li>
             
                 <li data-name="OSH.Utils.ReadData"><a href="OSH.Utils.html#.ReadData">ReadData</a></li>
+            
+                <li data-name="OSH.Utils.removeCss"><a href="OSH.Utils.html#.removeCss">removeCss</a></li>
+            
+                <li data-name="OSH.Utils.stampUUID"><a href="OSH.Utils.html#.stampUUID">stampUUID</a></li>
             
                 <li data-name="OSH.Utils.takeScreeshot"><a href="OSH.Utils.html#.takeScreeshot">takeScreeshot</a></li>
             
@@ -340,6 +348,55 @@
             
             </ul>
             <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="htmlTaskingComponent">
+            <span class="title">
+                <a href="htmlTaskingComponent.html">htmlTaskingComponent</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="htmlTaskingComponent#addViewItem"><a href="htmlTaskingComponent.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="htmlTaskingComponent#attachTo"><a href="htmlTaskingComponent.html#attachTo">attachTo</a></li>
+            
+                <li data-name="htmlTaskingComponent#beforeAddingItems"><a href="htmlTaskingComponent.html#beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="htmlTaskingComponent#getDataSourcesId"><a href="htmlTaskingComponent.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="htmlTaskingComponent#getDivId"><a href="htmlTaskingComponent.html#getDivId">getDivId</a></li>
+            
+                <li data-name="htmlTaskingComponent#getId"><a href="htmlTaskingComponent.html#getId">getId</a></li>
+            
+                <li data-name="htmlTaskingComponent#handleEvents"><a href="htmlTaskingComponent.html#handleEvents">handleEvents</a></li>
+            
+                <li data-name="htmlTaskingComponent#hide"><a href="htmlTaskingComponent.html#hide">hide</a></li>
+            
+                <li data-name="htmlTaskingComponent#onResize"><a href="htmlTaskingComponent.html#onResize">onResize</a></li>
+            
+                <li data-name="htmlTaskingComponent#reset"><a href="htmlTaskingComponent.html#reset">reset</a></li>
+            
+                <li data-name="htmlTaskingComponent#selectDataView"><a href="htmlTaskingComponent.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="htmlTaskingComponent#setData"><a href="htmlTaskingComponent.html#setData">setData</a></li>
+            
+                <li data-name="htmlTaskingComponent#show"><a href="htmlTaskingComponent.html#show">show</a></li>
+            
+                <li data-name="htmlTaskingComponent#shows"><a href="htmlTaskingComponent.html#shows">shows</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -582,6 +639,8 @@
             
                 <li data-name="OSH.DataReceiver.DataSource#buildUrl"><a href="OSH.DataReceiver.DataSource.html#buildUrl">buildUrl</a></li>
             
+                <li data-name="OSH.DataReceiver.DataSource#buildUrl"><a href="OSH.DataReceiver.DataSource.html#buildUrl">buildUrl</a></li>
+            
                 <li data-name="OSH.DataReceiver.DataSource#connect"><a href="OSH.DataReceiver.DataSource.html#connect">connect</a></li>
             
                 <li data-name="OSH.DataReceiver.DataSource#disconnect"><a href="OSH.DataReceiver.DataSource.html#disconnect">disconnect</a></li>
@@ -640,6 +699,49 @@
                 <li data-name="OSH.DataReceiver.EulerOrientation#parseData"><a href="OSH.DataReceiver.EulerOrientation.html#parseData">parseData</a></li>
             
                 <li data-name="OSH.DataReceiver.EulerOrientation#parseTimeStamp"><a href="OSH.DataReceiver.EulerOrientation.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.JSON">
+            <span class="title">
+                <a href="OSH.DataReceiver.JSON.html">OSH.DataReceiver.JSON</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            <span class="subtitle">Typedefs</span>
+            
+                <li data-name="OSH.DataReceiver.JSON#onMessage"><a href="OSH.DataReceiver.JSON.html#onMessage">onMessage</a></li>
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.JSON#buildUrl"><a href="OSH.DataReceiver.JSON.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#connect"><a href="OSH.DataReceiver.JSON.html#connect">connect</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#disconnect"><a href="OSH.DataReceiver.JSON.html#disconnect">disconnect</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#getId"><a href="OSH.DataReceiver.JSON.html#getId">getId</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#getName"><a href="OSH.DataReceiver.JSON.html#getName">getName</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#initDataSource"><a href="OSH.DataReceiver.JSON.html#initDataSource">initDataSource</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#onData"><a href="OSH.DataReceiver.JSON.html#onData">onData</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#parseData"><a href="OSH.DataReceiver.JSON.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.JSON#parseTimeStamp"><a href="OSH.DataReceiver.JSON.html#parseTimeStamp">parseTimeStamp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -769,6 +871,49 @@
                 <li data-name="OSH.DataReceiver.OrientationQuaternion#parseData"><a href="OSH.DataReceiver.OrientationQuaternion.html#parseData">parseData</a></li>
             
                 <li data-name="OSH.DataReceiver.OrientationQuaternion#parseTimeStamp"><a href="OSH.DataReceiver.OrientationQuaternion.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OSH.DataReceiver.UAHWeather">
+            <span class="title">
+                <a href="OSH.DataReceiver.UAHWeather.html">OSH.DataReceiver.UAHWeather</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            <span class="subtitle">Typedefs</span>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#onMessage"><a href="OSH.DataReceiver.UAHWeather.html#onMessage">onMessage</a></li>
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#buildUrl"><a href="OSH.DataReceiver.UAHWeather.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#connect"><a href="OSH.DataReceiver.UAHWeather.html#connect">connect</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#disconnect"><a href="OSH.DataReceiver.UAHWeather.html#disconnect">disconnect</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#getId"><a href="OSH.DataReceiver.UAHWeather.html#getId">getId</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#getName"><a href="OSH.DataReceiver.UAHWeather.html#getName">getName</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#initDataSource"><a href="OSH.DataReceiver.UAHWeather.html#initDataSource">initDataSource</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#onData"><a href="OSH.DataReceiver.UAHWeather.html#onData">onData</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#parseData"><a href="OSH.DataReceiver.UAHWeather.html#parseData">parseData</a></li>
+            
+                <li data-name="OSH.DataReceiver.UAHWeather#parseTimeStamp"><a href="OSH.DataReceiver.UAHWeather.html#parseTimeStamp">parseTimeStamp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1043,8 +1188,6 @@
                 <li data-name="OSH.EventManager.observe"><a href="OSH.EventManager.html#.observe">observe</a></li>
             
                 <li data-name="OSH.EventManager.observeDiv"><a href="OSH.EventManager.html#.observeDiv">observeDiv</a></li>
-            
-                <li data-name="OSH.EventManager.stopObserving"><a href="OSH.EventManager.html#.stopObserving">stopObserving</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1813,6 +1956,29 @@
             </ul>
         </li>
     
+        <li class="item" data-name="OSH.UI.MultiDialogView">
+            <span class="title">
+                <a href="OSH.UI.MultiDialogView.html">OSH.UI.MultiDialogView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OSH.UI.MultiDialogView#appendView"><a href="OSH.UI.MultiDialogView.html#appendView">appendView</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="OSH.UI.Nvd3CurveChartView">
             <span class="title">
                 <a href="OSH.UI.Nvd3CurveChartView.html">OSH.UI.Nvd3CurveChartView</a>
@@ -1962,15 +2128,25 @@
             
                 <li data-name="OSH.UI.PtzTaskingView#onChange"><a href="OSH.UI.PtzTaskingView.html#onChange">onChange</a></li>
             
+                <li data-name="OSH.UI.PtzTaskingView#onChange"><a href="OSH.UI.PtzTaskingView.html#onChange">onChange</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#onPanClick"><a href="OSH.UI.PtzTaskingView.html#onPanClick">onPanClick</a></li>
+            
                 <li data-name="OSH.UI.PtzTaskingView#onPanClick"><a href="OSH.UI.PtzTaskingView.html#onPanClick">onPanClick</a></li>
             
                 <li data-name="OSH.UI.PtzTaskingView#onResize"><a href="OSH.UI.PtzTaskingView.html#onResize">onResize</a></li>
             
                 <li data-name="OSH.UI.PtzTaskingView#onTiltClick"><a href="OSH.UI.PtzTaskingView.html#onTiltClick">onTiltClick</a></li>
             
+                <li data-name="OSH.UI.PtzTaskingView#onTiltClick"><a href="OSH.UI.PtzTaskingView.html#onTiltClick">onTiltClick</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#onZoomClick"><a href="OSH.UI.PtzTaskingView.html#onZoomClick">onZoomClick</a></li>
+            
                 <li data-name="OSH.UI.PtzTaskingView#onZoomClick"><a href="OSH.UI.PtzTaskingView.html#onZoomClick">onZoomClick</a></li>
             
                 <li data-name="OSH.UI.PtzTaskingView#register"><a href="OSH.UI.PtzTaskingView.html#register">register</a></li>
+            
+                <li data-name="OSH.UI.PtzTaskingView#removeInterval"><a href="OSH.UI.PtzTaskingView.html#removeInterval">removeInterval</a></li>
             
                 <li data-name="OSH.UI.PtzTaskingView#removeInterval"><a href="OSH.UI.PtzTaskingView.html#removeInterval">removeInterval</a></li>
             
@@ -2335,6 +2511,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="OSH.Utils.addCss"><a href="OSH.Utils.html#.addCss">addCss</a></li>
+            
                 <li data-name="OSH.Utils.GetResultObject"><a href="OSH.Utils.html#.GetResultObject">GetResultObject</a></li>
             
                 <li data-name="OSH.Utils.getXCursorPosition"><a href="OSH.Utils.html#.getXCursorPosition">getXCursorPosition</a></li>
@@ -2346,6 +2524,8 @@
                 <li data-name="OSH.Utils.isBlink"><a href="OSH.Utils.html#.isBlink">isBlink</a></li>
             
                 <li data-name="OSH.Utils.isChrome"><a href="OSH.Utils.html#.isChrome">isChrome</a></li>
+            
+                <li data-name="OSH.Utils.isElement"><a href="OSH.Utils.html#.isElement">isElement</a></li>
             
                 <li data-name="OSH.Utils.isFirefox"><a href="OSH.Utils.html#.isFirefox">isFirefox</a></li>
             
@@ -2364,6 +2544,10 @@
                 <li data-name="OSH.Utils.randomUUID"><a href="OSH.Utils.html#.randomUUID">randomUUID</a></li>
             
                 <li data-name="OSH.Utils.ReadData"><a href="OSH.Utils.html#.ReadData">ReadData</a></li>
+            
+                <li data-name="OSH.Utils.removeCss"><a href="OSH.Utils.html#.removeCss">removeCss</a></li>
+            
+                <li data-name="OSH.Utils.stampUUID"><a href="OSH.Utils.html#.stampUUID">stampUUID</a></li>
             
                 <li data-name="OSH.Utils.takeScreeshot"><a href="OSH.Utils.html#.takeScreeshot">takeScreeshot</a></li>
             
@@ -2409,7 +2593,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line30">line 30</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line46">line 46</a>
         </div>
         
     </div>
@@ -2592,7 +2776,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line149">line 149</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line165">line 165</a>
         </div>
         
     </div>
@@ -2721,7 +2905,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line187">line 187</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line203">line 203</a>
         </div>
         
     </div>
@@ -2732,7 +2916,7 @@
     
     
     <div class="description">
-        <p>Adds an entity which contains one or more dataSources.<br>The dataSources are then added to the buffer using <code>OSH.Buffer.addDataSource</code></p>
+        <p>Adds an entity which contains one or more dataSources.<br>The dataSources are then added to the buffer using OSH.Buffer.addDataSource</p>
     </div>
     
 
@@ -2792,7 +2976,7 @@
             
             <td class="description last">
                 
-                <p>The options object passed to the <code>OSH.Buffer.addDataSource</code></p></td>
+                <p>The options object passed to the OSH.Buffer.addDataSource</p></td>
         </tr>
 	
 	
@@ -2850,7 +3034,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line349">line 349</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line372">line 372</a>
         </div>
         
     </div>
@@ -2979,7 +3163,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line102">line 102</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line118">line 118</a>
         </div>
         
     </div>
@@ -3050,7 +3234,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line114">line 114</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line130">line 130</a>
         </div>
         
     </div>
@@ -3161,7 +3345,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line335">line 335</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line351">line 351</a>
         </div>
         
     </div>
@@ -3172,7 +3356,7 @@
     
     
     <div class="description">
-        <p>Dispatches the data through the EventManager. If the data to process is synchronized, it will launch a <code>OSH.EventManager.EVENT.CURRENT_MASTER_TIME</code> event<br>with {timeStamp:xxx} as parameter. In all case, it launches a <code>OSH.EventManager.EVENT.DATA</code>-dataSourceId event with {data:data} as parameter.</p>
+        <p>Dispatches the data through the EventManager. If the data to process is synchronized, it will launch a OSH.EventManager.EVENT.CURRENT_MASTER_TIME event<br>with {timeStamp:xxx} as parameter. In all case, it launches a OSH.EventManager.EVENT.DATA-dataSourceId event with {data:data} as parameter.</p>
     </div>
     
 
@@ -3290,7 +3474,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line300">line 300</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line316">line 316</a>
         </div>
         
     </div>
@@ -3361,7 +3545,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line244">line 244</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line260">line 260</a>
         </div>
         
     </div>
@@ -3432,7 +3616,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line208">line 208</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line224">line 224</a>
         </div>
         
     </div>
@@ -3443,7 +3627,7 @@
     
     
     <div class="description">
-        <p>Pushes a data into the buffer. This method is used as internal method by the <code>OSH.Buffer.startObservers</code>.<br>The event contains the necessary elements to process the data.</p>
+        <p>Pushes a data into the buffer. This method is used as internal method by the OSH.Buffer.startObservers.<br>The event contains the necessary elements to process the data.</p>
     </div>
     
 
@@ -3659,7 +3843,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line79">line 79</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line95">line 95</a>
         </div>
         
     </div>
@@ -3730,7 +3914,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line136">line 136</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line152">line 152</a>
         </div>
         
     </div>
@@ -3741,7 +3925,7 @@
     
     
     <div class="description">
-        <p>Starts all dataSources. The method loops over all datasources and<br>calls the <code>OSH.Buffer.startDataSource</code>.</p>
+        <p>Starts all dataSources. The method loops over all datasources and<br>calls the OSH.Buffer.startDataSource.</p>
     </div>
     
 
@@ -3801,7 +3985,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line125">line 125</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line141">line 141</a>
         </div>
         
     </div>
@@ -3912,7 +4096,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line56">line 56</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line72">line 72</a>
         </div>
         
     </div>
@@ -3983,7 +4167,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line91">line 91</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line107">line 107</a>
         </div>
         
     </div>
@@ -4054,7 +4238,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_osh-Buffer.js.html">osh/osh-Buffer.js</a>, <a href="osh_osh-Buffer.js.html#line67">line 67</a>
+            <a href="osh-Buffer.js.html">osh-Buffer.js</a>, <a href="osh-Buffer.js.html#line83">line 83</a>
         </div>
         
     </div>
@@ -4131,7 +4315,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Tue Aug 30 2016 21:11:02 GMT+0200 (CEST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Wed Mar 29 2017 14:39:48 GMT+0200 (CEST)
         </footer>
     </div>
 </div>
