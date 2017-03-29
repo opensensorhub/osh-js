@@ -27,7 +27,7 @@ li {
   float: left;
   width: 250px;
   height: 100%;
-  background-color: #1a1a1a;
+  background-color: #343131;
 }
 .navigation .applicationName {
   margin: 0;
@@ -43,9 +43,9 @@ li {
   padding: 10px 15px;
 }
 .navigation .search input {
-  background-color: #333;
+  background-color: #fcfcfc;
   color: #fff;
-  border-color: #555;
+  border-color: #2472a4;
 }
 .navigation .list {
   padding: 10px 15px 0 15px;
@@ -71,7 +71,7 @@ li {
   font-size: 1.0em;
 }
 .navigation li.item .title a {
-  color: #e1e1e1;
+  color: #b3b3b3;
 }
 .navigation li.item .title a:hover {
   color: #fff;
@@ -79,7 +79,7 @@ li {
 .navigation li.item .title .static {
   display: block;
   border-radius: 3px;
-  background-color: #779c34;
+  background-color: #ed9a16;
   color: #000;
   font-size: 0.7em;
   padding: 2px 4px;
@@ -89,7 +89,7 @@ li {
   margin-top: 10px;
   /*font: bold 0.65em Helvetica;*/
   font: bold Helvetica;
-  color: #779c34;
+  color: #ed9a16;
   display: block;
 }
 .navigation li.item ul > li {
@@ -158,7 +158,7 @@ li {
 .main span.static {
   display: inline-block;
   border-radius: 3px;
-  background-color: #779c34 !important;
+  background-color: #ed9a16 !important;
   color: #fff;
   font-size: 0.7em;
   padding: 2px 4px;
@@ -182,7 +182,7 @@ li {
 .main .subsection-title {
   font-size: 14px;
   margin-top: 30px;
-  color: #779c34;
+  color: #ed9a16;
 }
 .main .description {
   margin-top: 10px;

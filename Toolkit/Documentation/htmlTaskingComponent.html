@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Class: AjaxConnector</title>
+    <title>Class: htmlTaskingComponent</title>
     
     
     
@@ -2560,7 +2560,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="OSH.DataConnector.AjaxConnector.html">Class: AjaxConnector</h1>
+        <h1 class="page-title" data-filename="htmlTaskingComponent.html">Class: htmlTaskingComponent</h1>
         
 
 
@@ -2569,12 +2569,8 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="OSH.html">OSH</a><a href="OSH.DataConnector.html">.DataConnector</a>.</span>
-    
-    AjaxConnector
+    htmlTaskingComponent
     </h2>
-    
-        <div class="class-description"><p>Defines the AjaxConnector to connect to a remote server by making AjaxRequest.</p></div>
     
 </header>  
 
@@ -2586,14 +2582,14 @@
         
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="AjaxConnector">
+        <h4 class="name" id="htmlTaskingComponent">
             
-            new OSH.DataConnector.AjaxConnector<span class="signature">()</span>
+            new htmlTaskingComponent<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 39
+            ui/view/tasking/osh-UI-PtzTaskingView-New.js, line 25
         </div>
         
     </div>
@@ -2647,17 +2643,6 @@
     
     
     
-        <h5>Example</h5>
-        
-
-    
-    <pre class="prettyprint"><code><p>var request = ...;<br>var connector = new OSH.DataConnector.AjaxConnector(url);</p>
-<p>// handle onSuccess<br>connector.onSuccess = function(event) {<br> // does something<br>}</p>
-<p>connector.onError = function(event) {<br> // does something<br>}</p>
-<p>// send request<br>connector.sendRequest(request);</p></code></pre>
-    
-
-    
 </dd>
 
     
@@ -2667,7 +2652,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="OSH.DataConnector.DataConnector.html">OSH.DataConnector.DataConnector</a></li>
+            <li><a href="OSH.UI.View.html">OSH.UI.View</a></li>
         </ul>
     
     
@@ -2688,16 +2673,16 @@
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="getId">
+        <h4 class="name" id="addViewItem">
             
-                <span class="inherited"><a href="OSH.DataConnector.DataConnector.html#getId">inherited</a></span>
+                <span class="inherited"><a href="OSH.UI.View.html#addViewItem">inherited</a></span>
             
-            getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string}</span>
+            addViewItem<span class="signature">(viewItem)</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector.js, line 35
+            ui/view/osh-UI-View.js, line 225
         </div>
         
     </div>
@@ -2708,209 +2693,7 @@
     
     
     <div class="description">
-        <p>The data connector default id.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        string
-                        
-                    
-            </td>
-            <td class="description last"></td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
-        <h4 class="name" id="getUrl">
-            
-                <span class="inherited"><a href="OSH.DataConnector.DataConnector.html#getUrl">inherited</a></span>
-            
-            getUrl<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            dataconnector/osh-DataConnector.js, line 45
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>The stream url.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        string
-                        
-                    
-            </td>
-            <td class="description last"></td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="onError">
-            
-            onError<span class="signature">(event)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 76
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>This is the callback method in case of getting error connection.</p>
+        <p>Add viewItem to the view</p>
     </div>
     
 
@@ -2941,118 +2724,7 @@
 	
         <tr>
             
-                <td class="name"><code>event</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>The error details</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="onSuccess">
-            
-            onSuccess<span class="signature">(event)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 86
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>This is the callback method in case of getting success connection.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>event</code></td>
+                <td class="name"><code>viewItem</code></td>
             
             
             <td class="type">
@@ -3113,15 +2785,811 @@
         
             
 <dt>
-    <div class="nameContainer">
-        <h4 class="name" id="sendRequest">
+    <div class="nameContainer inherited">
+        <h4 class="name" id="attachTo">
             
-            sendRequest<span class="signature">(request)</span>
+                <span class="inherited"><a href="OSH.UI.View.html#attachTo">inherited</a></span>
+            
+            attachTo<span class="signature">(divId)</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 47
+            ui/view/osh-UI-View.js, line 151
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>divId</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="beforeAddingItems">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#beforeAddingItems">inherited</a></span>
+            
+            beforeAddingItems<span class="signature">(options)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 168
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getDataSourcesId">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#getDataSourcesId">inherited</a></span>
+            
+            getDataSourcesId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 343
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Array
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getDivId">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#getDivId">inherited</a></span>
+            
+            getDivId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string|*}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 188
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        string
+                         | 
+                    
+                        *
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getId">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#getId">inherited</a></span>
+            
+            getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string|*}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 178
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        string
+                         | 
+                    
+                        *
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="handleEvents">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#handleEvents">inherited</a></span>
+            
+            handleEvents<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 295
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="hide">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#hide">inherited</a></span>
+            
+            hide<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 134
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="onResize">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#onResize">inherited</a></span>
+            
+            onResize<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 142
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="reset">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#reset">inherited</a></span>
+            
+            reset<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 365
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="selectDataView">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#selectDataView">inherited</a></span>
+            
+            selectDataView<span class="signature">($super, dataSourcesIds, entitiesIds)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 325
         </div>
         
     </div>
@@ -3132,7 +3600,7 @@
     
     
     <div class="description">
-        <p>Sends the request to the defined server.</p>
+        <p>Should be called after receiving osh:SELECT_VIEW event</p>
     </div>
     
 
@@ -3163,7 +3631,7 @@
 	
         <tr>
             
-                <td class="name"><code>request</code></td>
+                <td class="name"><code>$super</code></td>
             
             
             <td class="type">
@@ -3174,7 +3642,392 @@
             
             <td class="description last">
                 
-                <p>The Http request (as a String format)</p></td>
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>dataSourcesIds</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>entitiesIds</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="setData">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#setData">inherited</a></span>
+            
+            setData<span class="signature">(dataSourceId, data)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 199
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>dataSourceId</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="show">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#show">inherited</a></span>
+            
+            show<span class="signature">(properties)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 207
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Show the view by removing display:none style if any.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="shows">
+            
+                <span class="inherited"><a href="OSH.UI.View.html#shows">inherited</a></span>
+            
+            shows<span class="signature">(properties)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            ui/view/osh-UI-View.js, line 216
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
         </tr>
 	
 	

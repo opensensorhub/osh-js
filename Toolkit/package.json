@@ -46,6 +46,7 @@
     "gulp-sort": "^2.0.0",
     "gulp-src-ordered-globs": "^1.0.3",
     "gulp-uglify": "^2.0.0",
+    "jaguarjs-jsdoc": "^1.0.2",
     "jasmine": "^2.5.3",
     "jshint": "^2.9.3",
     "karma": "^0.13",

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Class: AjaxConnector</title>
+    <title>Class: UAHWeather</title>
     
     
     
@@ -2560,7 +2560,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="OSH.DataConnector.AjaxConnector.html">Class: AjaxConnector</h1>
+        <h1 class="page-title" data-filename="OSH.DataReceiver.UAHWeather.html">Class: UAHWeather</h1>
         
 
 
@@ -2569,12 +2569,12 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="OSH.html">OSH</a><a href="OSH.DataConnector.html">.DataConnector</a>.</span>
+        <span class="ancestors"><a href="OSH.html">OSH</a><a href="OSH.DataReceiver.html">.DataReceiver</a>.</span>
     
-    AjaxConnector
+    UAHWeather
     </h2>
     
-        <div class="class-description"><p>Defines the AjaxConnector to connect to a remote server by making AjaxRequest.</p></div>
+        <div class="class-description"><p>This datasource provides parsing to UAH Weather Station.</p></div>
     
 </header>  
 
@@ -2586,14 +2586,14 @@
         
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="AjaxConnector">
+        <h4 class="name" id="UAHWeather">
             
-            new OSH.DataConnector.AjaxConnector<span class="signature">()</span>
+            new OSH.DataReceiver.UAHWeather<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 39
+            datareceiver/osh-DataReceiver-DataSourceUAHWeather.js, line 17
         </div>
         
     </div>
@@ -2647,17 +2647,6 @@
     
     
     
-        <h5>Example</h5>
-        
-
-    
-    <pre class="prettyprint"><code><p>var request = ...;<br>var connector = new OSH.DataConnector.AjaxConnector(url);</p>
-<p>// handle onSuccess<br>connector.onSuccess = function(event) {<br> // does something<br>}</p>
-<p>connector.onError = function(event) {<br> // does something<br>}</p>
-<p>// send request<br>connector.sendRequest(request);</p></code></pre>
-    
-
-    
 </dd>
 
     
@@ -2667,7 +2656,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li><a href="OSH.DataConnector.DataConnector.html">OSH.DataConnector.DataConnector</a></li>
+            <li><a href="OSH.DataReceiver.DataSource.html">OSH.DataReceiver.DataSource</a></li>
         </ul>
     
     
@@ -2688,16 +2677,16 @@
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="getId">
+        <h4 class="name" id="buildUrl">
             
-                <span class="inherited"><a href="OSH.DataConnector.DataConnector.html#getId">inherited</a></span>
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#buildUrl">inherited</a></span>
             
-            getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string}</span>
+            buildUrl<span class="signature">(properties)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string}</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector.js, line 35
+            datareceiver/osh-DataReceiver-DataSource.js, line 186
         </div>
         
     </div>
@@ -2708,209 +2697,7 @@
     
     
     <div class="description">
-        <p>The data connector default id.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        string
-                        
-                    
-            </td>
-            <td class="description last"></td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
-        <h4 class="name" id="getUrl">
-            
-                <span class="inherited"><a href="OSH.DataConnector.DataConnector.html#getUrl">inherited</a></span>
-            
-            getUrl<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            dataconnector/osh-DataConnector.js, line 45
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>The stream url.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        string
-                        
-                    
-            </td>
-            <td class="description last"></td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="onError">
-            
-            onError<span class="signature">(event)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 76
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>This is the callback method in case of getting error connection.</p>
+        <p>Builds the full url.</p>
     </div>
     
 
@@ -2941,10 +2728,15 @@
 	
         <tr>
             
-                <td class="name"><code>event</code></td>
+                <td class="name"><code>properties</code></td>
             
             
             <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
             
             </td>
             
@@ -2952,7 +2744,236 @@
             
             <td class="description last">
                 
-                <p>The error details</p></td>
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>protocol</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the connector protocol</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the endpoint url</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>service</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the service</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>offeringID</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the offeringID</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>observedProperty</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the observed property</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>startTime</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the start time (ISO format)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>endTime</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the end time (ISO format)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>replaySpeed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the replay factor</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>responseFormat</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the response format (e.g video/mp4)</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -2995,6 +3016,35 @@
     
     
     
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        string
+                        
+                    
+            </td>
+            <td class="description last">the full url</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
     
     
 </dd>
@@ -3002,15 +3052,17 @@
         
             
 <dt>
-    <div class="nameContainer">
-        <h4 class="name" id="onSuccess">
+    <div class="nameContainer inherited">
+        <h4 class="name" id="connect">
             
-            onSuccess<span class="signature">(event)</span>
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#connect">inherited</a></span>
+            
+            connect<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 86
+            datareceiver/osh-DataReceiver-DataSource.js, line 95
         </div>
         
     </div>
@@ -3021,7 +3073,357 @@
     
     
     <div class="description">
-        <p>This is the callback method in case of getting success connection.</p>
+        <p>Connect the dataSource then the connector will be opened as well.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="disconnect">
+            
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#disconnect">inherited</a></span>
+            
+            disconnect<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            datareceiver/osh-DataReceiver-DataSource.js, line 79
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Disconnect the dataSource then the connector will be closed as well.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getId">
+            
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#getId">inherited</a></span>
+            
+            getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{string}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            datareceiver/osh-DataReceiver-DataSource.js, line 156
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Gets the datasource id.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        string
+                        
+                    
+            </td>
+            <td class="description last">the datasource id</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getName">
+            
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#getName">inherited</a></span>
+            
+            getName<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{*}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            datareceiver/osh-DataReceiver-DataSource.js, line 166
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Gets the datasource name.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        *
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="initDataSource">
+            
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#initDataSource">inherited</a></span>
+            
+            initDataSource<span class="signature">(properties)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            datareceiver/osh-DataReceiver-DataSource.js, line 47
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Inits the datasource with the constructor properties.</p>
     </div>
     
 
@@ -3052,7 +3454,7 @@
 	
         <tr>
             
-                <td class="name"><code>event</code></td>
+                <td class="name"><code>properties</code></td>
             
             
             <td class="type">
@@ -3113,15 +3515,17 @@
         
             
 <dt>
-    <div class="nameContainer">
-        <h4 class="name" id="sendRequest">
+    <div class="nameContainer inherited">
+        <h4 class="name" id="onData">
             
-            sendRequest<span class="signature">(request)</span>
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#onData">inherited</a></span>
+            
+            onData<span class="signature">(data)</span>
         </h4>
     
         
         <div class="tag-source">
-            dataconnector/osh-DataConnector-HttpAjaxConnector.js, line 47
+            datareceiver/osh-DataReceiver-DataSource.js, line 148
         </div>
         
     </div>
@@ -3130,10 +3534,6 @@
 </dt>
 <dd>
     
-    
-    <div class="description">
-        <p>Sends the request to the defined server.</p>
-    </div>
     
 
     
@@ -3163,10 +3563,15 @@
 	
         <tr>
             
-                <td class="name"><code>request</code></td>
+                <td class="name"><code>data</code></td>
             
             
             <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
             
             </td>
             
@@ -3174,7 +3579,7 @@
             
             <td class="description last">
                 
-                <p>The Http request (as a String format)</p></td>
+                <p>the data object</p></td>
         </tr>
 	
 	
@@ -3219,11 +3624,364 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>data is represented as<br>data = {<br>   timeStamp: timeStamp // number<br>   data: data // data to render<br>};</p></code></pre>
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="parseData">
+            
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#parseData">inherited</a></span>
+            
+            parseData<span class="signature">(data)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String|Object|number|ArrayBuffer|*}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            datareceiver/osh-DataReceiver-DataSource.js, line 133
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The default timestamp parser</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the full data message returned by the connector</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                         | 
+                    
+                        Object
+                         | 
+                    
+                        number
+                         | 
+                    
+                        ArrayBuffer
+                         | 
+                    
+                        *
+                        
+                    
+            </td>
+            <td class="description last">data the formatted data</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="parseTimeStamp">
+            
+                <span class="inherited"><a href="OSH.DataReceiver.DataSource.html#parseTimeStamp">inherited</a></span>
+            
+            parseTimeStamp<span class="signature">(data)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            datareceiver/osh-DataReceiver-DataSource.js, line 122
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The default timestamp parser</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the full data message returned by the connector</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        number
+                        
+                    
+            </td>
+            <td class="description last">the formatted timestamp</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
 </dd>
 
         </dl>
     
     
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+        
+        <dl>
+                
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="onMessage">onMessage</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The callback which receives data.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+            </dl>
     
     
     

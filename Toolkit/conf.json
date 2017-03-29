@@ -4,18 +4,13 @@
 	},
 	"plugins": ["plugins/markdown"],
 	"templates": {
-		"cleverLinks": true,
-		"monospaceLinks": true,
-		"default": {
-			"outputSourceFiles" : true
-		},
-		"applicationName": "Demo",
+		"applicationName": "OpenSensorHub Toolkit",
 		"disqus": "",
 		"googleAnalytics": "",
 		"openGraph": {
 			"title": "",
 			"type": "website",
-			"image": "",
+			"image": "http://docs.opensensorhub.org/img/logo-light.png",
 			"site_name": "",
 			"url": ""
 		},
@@ -24,7 +19,14 @@
 			"description": "",
 			"keyword": ""
 		},
-		"linenums": false,
+		"linenums": true,
+		"source": {
+			"include": [
+				"./src/"
+			],
+			"includePattern": ".+\\.js(doc)?$",
+			"excludePattern": "(^|\\/|\\\\)_"
+		},
 		"opts": {
 			"encoding": "utf8",
 			"recurse": true,
