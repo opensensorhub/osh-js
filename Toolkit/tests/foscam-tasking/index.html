@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Foscam tasking test</title>
+
+    <!-- VENDOR -->
+    <script type="text/javascript" src="vendor/YUVCanvas.js"></script>
+
+    <script type="text/javascript" src="vendor/broadway-all.min.js"></script>
+    <script type="text/javascript" src="vendor/Decoder.js"></script>
+    <script type="text/javascript" src="vendor/Player.js"></script>
+
+    <script type="text/javascript" src="vendor/ffmpeg-h264.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-MapEvent.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript"
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/datasender/osh-DataSender-DataSink.js"></script>
+    <script type="text/javascript" src="../../src/osh/datasender/osh-DataSender-PtzTasking.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/tasking/osh-UI-FoscamPtzTaskingView.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../src/css/tasking.css"/>
+    <style>
+
+        .video {
+            width: inherit;
+            height:inherit;
+        }
+
+        .video img{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video canvas{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video-selected {
+            border-radius: 3px;
+            box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+        }
+
+        #video-container{
+            float:left;
+            width:960px;
+            height:540px;
+        }
+
+    </style>
+</head>
+<body id="body">
+<h2>Foscam tasking test</h2>
+<div id="video-container"></div>
+<div id="ptz"></div>
+<script type="text/javascript">
+    var videoIdCount = 0;
+
+    // We can add a group of dataSources and set the options
+    var dataReceiverController = new OSH.DataReceiver.DataReceiverController({
+        replayFactor : 1
+    });
+
+    var ptzTasking = new OSH.DataSender.PtzTasking("Ptz",{
+        protocol: "http",
+        service: "SPS",
+        version: "2.0",
+        endpointUrl: "localhost:8182/sensorhub/sps",
+        offeringID: "urn:uuid:61807149-5d9e-4602-ab10-f872276e7fd3"
+    });
+
+    var taskingView = new OSH.UI.FoscamPtzTaskingView("ptz",{
+        dataSenderId:ptzTasking.id
+    });
+
+
+    // OSH connect
+    var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video "+videoIdCount, {
+        protocol: "ws",
+        service: "SOS",
+        endpointUrl: "localhost:8182/sensorhub/sos",
+        offeringID: "urn:mysos:offering:foscam-r2",
+        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+        startTime: "now",
+        endTime: "2055-08-11T20:18:05.451Z",
+        syncMasterTime: false,
+        bufferingTime: 0
+    });
+
+    var videoView = new OSH.UI.FFMPEGView("video-container", {
+        dataSourceId: videoDataSource.id,
+        css: "video",
+        cssSelected: "video-selected",
+        name: "Android Video",
+        useWorker:true,
+        width:1920,
+        height:1080
+    });
+
+    dataReceiverController.addDataSource(videoDataSource);
+    dataReceiverController.connectAll();
+</script>
+
+</body>
+</html>
