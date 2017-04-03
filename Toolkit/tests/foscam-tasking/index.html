@@ -39,11 +39,11 @@
 
     <script type="text/javascript" src="../../src/osh/datasender/osh-DataSender-DataSink.js"></script>
     <script type="text/javascript" src="../../src/osh/datasender/osh-DataSender-PtzTasking.js"></script>
+    <script type="text/javascript" src="../../src/osh/datasender/osh-DataSender-FoscamPtzTasking.js"></script>
 
     <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js"></script>
-    <script type="text/javascript" src="../../src/osh/ui/view/tasking/osh-UI-FoscamPtzTaskingView.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../../src/css/tasking.css"/>
     <style>
@@ -88,7 +88,7 @@
         replayFactor : 1
     });
 
-    var ptzTasking = new OSH.DataSender.PtzTasking("Ptz",{
+    var ptzTasking = new OSH.DataSender.FoscamPtzTasking("Ptz",{
         protocol: "http",
         service: "SPS",
         version: "2.0",
@@ -96,7 +96,7 @@
         offeringID: "urn:uuid:61807149-5d9e-4602-ab10-f872276e7fd3"
     });
 
-    var taskingView = new OSH.UI.FoscamPtzTaskingView("ptz",{
+    var taskingView = new OSH.UI.PtzTaskingView("ptz",{
         dataSenderId:ptzTasking.id
     });
 
