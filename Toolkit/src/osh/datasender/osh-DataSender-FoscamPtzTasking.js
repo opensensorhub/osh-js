@@ -19,54 +19,29 @@
  * @class
  * @augments OSH.DataSender.DataSink
  */
-OSH.DataSender.PtzTasking = OSH.DataSender.PtzTasking.extend({
+OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
 
-    initialize: function(name, properties) {
-        this._super(name, properties);
-    },
+    getCommandData: function (values) {
+        var cmdData = "";
 
-    /**
-     * Builds the request based on sps standard.
-     * @returns {string} the sps request
-     * @memberof OSH.DataReceiver.PtzTasking
-     * @instance
-     */
-    buildRequest: function(properties) {
-        var xmlSpsRequest = "<sps:Submit ";
+        if (values.rpan !== null) {
+            cmdData += "relMove,";
+            if (values.rpan < 0) {
+                cmdData += "Left";
+            } else {
+                cmdData += "Right";
+            }
+            cmdData += " "; //block separator
+        }
 
-        // adds service
-        xmlSpsRequest += "service=\""+this.properties.service+"\" ";
-
-        // adds version
-        xmlSpsRequest += "version=\""+this.properties.version+"\" ";
-
-        // adds ns
-        xmlSpsRequest += "xmlns:sps=\"http://www.opengis.net/sps/2.0\" xmlns:swe=\"http://www.opengis.net/swe/2.0\"> ";
-
-        // adds procedure
-        xmlSpsRequest += "<sps:procedure>"+this.properties.offeringID+"</sps:procedure>";
-
-        // adds taskingParameters
-        xmlSpsRequest += "<sps:taskingParameters><sps:ParameterData>";
-
-        // adds encoding
-        xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
-
-        // adds values
-        xmlSpsRequest += "<sps:values>";
-        
-        if (properties.pan != 0)
-        	xmlSpsRequest += "rpan,"+properties.pan;
-        
-        if (properties.tilt != 0)
-        	xmlSpsRequest += " rtilt,"+properties.tilt;        	
-        
-        if (properties.zoom != 0)
-        	xmlSpsRequest += " rzoom,"+properties.zoom;
-
-        // adds endings
-        xmlSpsRequest += "</sps:values></sps:ParameterData></sps:taskingParameters></sps:Submit>";
-
-        return xmlSpsRequest;
+        if (values.rtilt !== null) {
+            cmdData += "relMove,";
+            if (values.rtilt < 0) {
+                cmdData += "Down";
+            } else {
+                cmdData += "Up";
+            }
+        }
+        return cmdData;
     }
 });
