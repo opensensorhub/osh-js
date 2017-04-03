@@ -18,28 +18,64 @@
  * @classdesc
  * @class
  * @augments OSH.DataSender.DataSink
+ * From describe tasking:
+ * swe:item name="relMove">
+ <swe:Text definition="http://sensorml.com/ont/swe/property/CameraRelativeMovementName">
+ <swe:label>Camera Relative Movements</swe:label>
+ <swe:constraint>
+ <swe:AllowedTokens>
+ <swe:value>Down</swe:value>
+ <swe:value>Up</swe:value>
+ <swe:value>Left</swe:value>
+ <swe:value>Right</swe:value>
+ <swe:value>TopLeft</swe:value>
+ <swe:value>TopRight</swe:value>
+ <swe:value>BottomLeft</swe:value>
+ <swe:value>BottomRight</swe:value>
+ </swe:AllowedTokens>
+ </swe:constraint>
+ </swe:Text>
+ </swe:item>
  */
 OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
 
     getCommandData: function (values) {
         var cmdData = "";
 
-        if (values.rpan !== null) {
+        if(values.rpan != null && values.rtilt != null) {
             cmdData += "relMove,";
+
+            if (values.rtilt !== null) {
+                if (values.rtilt < 0) {
+                    cmdData += "Bottom";
+                } else {
+                    cmdData += "Top";
+                }
+            }
+
             if (values.rpan < 0) {
                 cmdData += "Left";
             } else {
                 cmdData += "Right";
             }
-            cmdData += " "; //block separator
-        }
+        } else {
+            if (values.rpan !== null) {
+                cmdData += "relMove,";
+                if (values.rpan < 0) {
+                    cmdData += "Left";
+                } else {
+                    cmdData += "Right";
+                }
+                cmdData += " "; //block separator
+            }
 
-        if (values.rtilt !== null) {
-            cmdData += "relMove,";
-            if (values.rtilt < 0) {
-                cmdData += "Down";
-            } else {
-                cmdData += "Up";
+            if (values.rtilt !== null) {
+                cmdData += "relMove,";
+                if (values.rtilt < 0) {
+                    cmdData += "Down";
+                } else {
+                    cmdData += "Up";
+                }
             }
         }
         return cmdData;
