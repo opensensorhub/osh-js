@@ -19,15 +19,12 @@
  * @class
  * @augments OSH.DataSender.DataSink
  */
-OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
+OSH.DataSender.PtzTasking = OSH.DataSender.PtzTasking.extend({
 
     initialize: function(name, properties) {
         this._super(name, properties);
-
-        OSH.EventManager.observe(OSH.EventManager.EVENT.SEND_REQUEST+"-"+this.id, function (event) {
-            this.connector.sendRequest(this.buildRequest(event.values));
-        }.bind(this));
     },
+
     /**
      * Builds the request based on sps standard.
      * @returns {string} the sps request

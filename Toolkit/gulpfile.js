@@ -212,7 +212,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     if(argv.nouislider) {
         src.push('./src/osh/ui/view/osh-UI-RangeSlider.js');
     }
-    src.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js');
+    src.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView-New.js');
     if(argv.ffmpeg) {
         src.push('./src/osh/ui/view/video/osh-UI-FFMPEGView.js');
     }

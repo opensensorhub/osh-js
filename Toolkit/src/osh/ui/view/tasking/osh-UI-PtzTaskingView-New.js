@@ -60,6 +60,10 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
             if (options.cssSelected) {
                 this.cssSelected = options.cssSelected;
             }
+
+            if(options.dataSenderId) {
+                this.dataSenderId = options.dataSenderId;
+            }
         }
 
         // creates video tag element
@@ -79,12 +83,15 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
         this.zoom = 0;
 
         var increment = 5;
-       /* $("ptz-move-up").observe('click',  function(){this.onTiltClick(increment)}.bind(this));
-        $("ptz-move-down").observe('click',  function(){this.onTiltClick(-1*increment)}.bind(this));
-        $("ptz-move-right").observe('click',  function(){this.onPanClick(increment)}.bind(this));
-        $("ptz-move-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));*/
-        /*$("button-zoom-in").observe('click',  function(){this.onZoomClick(50)}.bind(this));
-         $("button-zoom-out").observe('click',  function(){this.onZoomClick(-50)}.bind(this));*/
+
+        this.observers = [];
+
+        document.getElementById("ptz-move-up").onclick = function(){this.onTiltClick(increment)}.bind(this);
+        document.getElementById("ptz-move-down").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
+        document.getElementById("ptz-move-right").onclick =  function(){this.onPanClick(increment)}.bind(this);
+        document.getElementById("ptz-move-left").onclick =  function(){this.onPanClick(-1*increment)}.bind(this);
+        //document.getElementById("button-zoom-in").onclick =  function(){this.onZoomClick(50)}.bind(this);
+        //document.getElementById("button-zoom-out").onclick =  function(){this.onZoomClick(-50)}.bind(this);
     },
 
     /**
@@ -145,14 +152,23 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
             pan : rpan,
             zoom: rzoom,
             tilt : rtilt
-        }
+        };
 
-        OSH.EventManager.fire(OSH.EventManager.EVENT.SEND_REQUEST,{
-            dataSourceId:this.dataSourceId,
+        OSH.EventManager.fire(OSH.EventManager.EVENT.SEND_REQUEST+"-"+this.dataSenderId,{
             values:properties,
             onSuccess:function(event){console.log("Failed to send request: "+event);},
             onError:function(event){console.log("Request sent successfully: "+event);}
         });
+    },
+
+    /**
+     *
+     * @param observer
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
+    register: function(observer) {
+        //this.observers.push(observer);
     }
 });
 
