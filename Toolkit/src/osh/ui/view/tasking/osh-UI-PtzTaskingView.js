@@ -24,9 +24,9 @@
  */
 var htmlTaskingComponent="";
 htmlTaskingComponent += "<div id=\"zoomptz\" class=\"ptz-zoom\">";
-htmlTaskingComponent += "<div class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<div id=\"ptz-zoom-in\" class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
 htmlTaskingComponent += "<div class=\"ptz-zoom-bar\"></div>";
-htmlTaskingComponent += "<div class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<div id=\"ptz-zoom-out\" class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
 htmlTaskingComponent += "<\/div>";
 htmlTaskingComponent += "<div id=\"leftptz\" class=\"ptz\">";
 htmlTaskingComponent += "   <div id=\"ptz-move-up\" tag=\"0\" class='moveUp' name=\"\"><\/div>";
@@ -111,8 +111,8 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
         document.getElementById("ptz-move-down").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
         document.getElementById("ptz-move-bottom-left").onclick = function(){this.onTiltPanClick(-1*increment,-1*increment)}.bind(this);
         document.getElementById("ptz-move-bottom-right").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
-        //document.getElementById("button-zoom-in").onclick =  function(){this.onZoomClick(50)}.bind(this);
-        //document.getElementById("button-zoom-out").onclick =  function(){this.onZoomClick(-50)}.bind(this);
+        document.getElementById("ptz-zoom-in").onclick =  function(){this.onZoomClick(increment)}.bind(this);
+        document.getElementById("ptz-zoom-out").onclick =  function(){this.onZoomClick(-1*increment)}.bind(this);
 
         // add presets if any
         if(typeof (options) !== "undefined" && (options.presets)) {

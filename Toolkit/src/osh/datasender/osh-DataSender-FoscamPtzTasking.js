@@ -57,8 +57,15 @@ OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
     getCommandData: function (values) {
         var cmdData = "";
 
-        if(values.preset != null) {
-            cmdData = "preset,"+values.preset;
+        if (values.preset !== null) {
+            cmdData = "preset," + values.preset;
+        }else if(values.rzoom !== null) {
+            cmdData = "zoom,";
+            if (values.rzoom < 0) {
+                cmdData += "out";
+            } else {
+                cmdData += "in";
+            }
         } else {
             if (values.rpan != null && values.rtilt != null) {
                 cmdData += "relMove,";
