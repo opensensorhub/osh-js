@@ -172,6 +172,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     src.push('./src/osh/datareceiver/osh-DataReceiverController.js');
     src.push('./src/osh/datasender/osh-DataSender-DataSink.js');
     src.push('./src/osh/datasender/osh-DataSender-PtzTasking.js');
+    src.push('./src/osh/datasender/osh-DataSender-FoscamPtzTasking.js');
     src.push('./src/osh/datasender/osh-DataSender-UavMapTasking.js');
     src.push('./src/osh/datasender/osh-DataSenderController.js');
     src.push('./src/osh/discovery/osh-Sensor.js');
@@ -212,7 +213,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     if(argv.nouislider) {
         src.push('./src/osh/ui/view/osh-UI-RangeSlider.js');
     }
-    src.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView-New.js');
+    src.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js');
     if(argv.ffmpeg) {
         src.push('./src/osh/ui/view/video/osh-UI-FFMPEGView.js');
     }
