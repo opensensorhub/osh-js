@@ -188,8 +188,8 @@
 }
 
 .pop-extra-show + div {
-    display:block !important;
-    margin-top:5px;
+    display: block !important;
+    margin-left: 25px;
 }
 
 .no-keep-ratio {
