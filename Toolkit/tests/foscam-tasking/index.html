@@ -8,10 +8,6 @@
     <!-- VENDOR -->
     <script type="text/javascript" src="vendor/YUVCanvas.js"></script>
 
-    <script type="text/javascript" src="vendor/broadway-all.min.js"></script>
-    <script type="text/javascript" src="vendor/Decoder.js"></script>
-    <script type="text/javascript" src="vendor/Player.js"></script>
-
     <script type="text/javascript" src="vendor/ffmpeg-h264.js"></script>
 
     <!-- OSH Core -->
@@ -44,8 +40,11 @@
     <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
     <script type="text/javascript" src="../../src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/dialog/osh-UI-MultiDialogView.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../../src/css/tasking.css"/>
+    <link rel="stylesheet" type="text/css" href="../../src/css/dialog.css"/>
     <style>
 
         .video {
@@ -68,17 +67,14 @@
             box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
         }
 
-        #video-container{
-            float:left;
-            width:960px;
-            height:540px;
+        .dialog-multidialog {
+            width: 540px;
+            height:350px;
         }
-
     </style>
 </head>
 <body id="body">
 <h2>Foscam tasking test</h2>
-<div id="video-container"></div>
 <div id="ptz"></div>
 <script type="text/javascript">
     var videoIdCount = 0;
@@ -97,7 +93,8 @@
     });
 
     var taskingView = new OSH.UI.PtzTaskingView("ptz",{
-        dataSenderId:ptzTasking.id
+        dataSenderId:ptzTasking.id,
+        presets:["Reset","TopMost","BottomMost","LeftMost","RightMost"]
     });
 
 
@@ -120,9 +117,26 @@
         cssSelected: "video-selected",
         name: "Android Video",
         useWorker:true,
-        width:1920,
-        height:1080
+        width:1280,
+        height:720
     });
+
+    var videoDialog    =  new OSH.UI.MultiDialogView(document.body.id, {
+        draggable: true,
+        css: "dialog-multidialog",
+        name: "Multi dialog",
+        show:true,
+        dockable: false,
+        closeable: false,
+        keepRatio:true,
+        connectionIds : [videoDataSource.id]
+    });
+
+    // attach the leaflet view to the dialog
+    videoView.attachTo(videoDialog.popContentDiv.id);
+
+    // append tasking view to dialog
+    videoDialog.appendView(taskingView.divId);
 
     dataReceiverController.addDataSource(videoDataSource);
     dataReceiverController.connectAll();

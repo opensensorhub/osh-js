@@ -36,45 +36,64 @@
  </swe:constraint>
  </swe:Text>
  </swe:item>
+
+ <swe:item name="preset">
+ <swe:Text definition="http://sensorml.com/ont/swe/property/CameraPresetPositionName">
+ <swe:label>Preset Camera Position</swe:label>
+ <swe:constraint>
+ <swe:AllowedTokens>
+ <swe:value>Reset</swe:value>
+ <swe:value>TopMost</swe:value>
+ <swe:value>BottomMost</swe:value>
+ <swe:value>LeftMost</swe:value>
+ <swe:value>RightMost</swe:value>
+ </swe:AllowedTokens>
+ </swe:constraint>
+ </swe:Text>
+ </swe:item>
  */
 OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
 
     getCommandData: function (values) {
         var cmdData = "";
 
-        if(values.rpan != null && values.rtilt != null) {
-            cmdData += "relMove,";
-
-            if (values.rtilt !== null) {
-                if (values.rtilt < 0) {
-                    cmdData += "Bottom";
-                } else {
-                    cmdData += "Top";
-                }
-            }
-
-            if (values.rpan < 0) {
-                cmdData += "Left";
-            } else {
-                cmdData += "Right";
-            }
+        if(values.preset != null) {
+            cmdData = "preset,"+values.preset;
         } else {
-            if (values.rpan !== null) {
+            if (values.rpan != null && values.rtilt != null) {
                 cmdData += "relMove,";
+
+                if (values.rtilt !== null) {
+                    if (values.rtilt < 0) {
+                        cmdData += "Bottom";
+                    } else {
+                        cmdData += "Top";
+                    }
+                }
+
                 if (values.rpan < 0) {
                     cmdData += "Left";
                 } else {
                     cmdData += "Right";
                 }
-                cmdData += " "; //block separator
-            }
+            } else {
+                if (values.rpan !== null) {
+                    cmdData += "relMove,";
+                    if (values.rpan < 0) {
+                        cmdData += "Left";
+                    } else {
+                        cmdData += "Right";
+                    }
+                    cmdData += " "; //block separator
+                }
 
-            if (values.rtilt !== null) {
-                cmdData += "relMove,";
-                if (values.rtilt < 0) {
-                    cmdData += "Down";
-                } else {
-                    cmdData += "Up";
+                if (values.rtilt !== null) {
+                    cmdData += "relMove,";
+                    if (values.rtilt < 0) {
+                        cmdData += "Down";
+                    } else {
+                        cmdData += "Up";
+                    }
                 }
             }
         }

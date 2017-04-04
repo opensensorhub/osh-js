@@ -34,6 +34,18 @@ htmlTaskingComponent += "   <div id=\"ptz-move-bottom-left\" tag=\"93\" class=\"
 htmlTaskingComponent += "   <div id=\"ptz-move-bottom-right\" tag=\"92\" class=\"moveBottomRight\" name=\"\"><\/div>";
 htmlTaskingComponent += "   <div id=\"ptz-move-down\" tag=\"2\" class=\"moveDown\" name=\"\"><\/div>";
 htmlTaskingComponent += "<\/div>";
+htmlTaskingComponent += "<div id=\"rightptz\" class=\"ptz-right\">";
+htmlTaskingComponent += "<ul>";
+htmlTaskingComponent += "            <li>";
+htmlTaskingComponent += "                <label>Presets:<\/label>";
+htmlTaskingComponent += "                <div class=\"select-style\">";
+htmlTaskingComponent += "                     <select id=\"ptz-presets\" required pattern=\"^(?!Select a Preset).*\">";
+htmlTaskingComponent += "                         <option value=\"\" disabled selected>Select a Preset<\/option>";
+htmlTaskingComponent += "                     <\/select>";
+htmlTaskingComponent += "                <\/div>";
+htmlTaskingComponent += "            <\/li>";
+htmlTaskingComponent += "</ul>";
+htmlTaskingComponent += "<\/div>";
 
 OSH.UI.PtzTaskingView = OSH.UI.View.extend({
     initialize: function (divId, options) {
@@ -96,6 +108,43 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
         document.getElementById("ptz-move-bottom-right").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
         //document.getElementById("button-zoom-in").onclick =  function(){this.onZoomClick(50)}.bind(this);
         //document.getElementById("button-zoom-out").onclick =  function(){this.onZoomClick(-50)}.bind(this);
+
+        // add presets if any
+        if(typeof (options) !== "undefined" && (options.presets)) {
+            this.addPresets(options.presets);
+
+            // add listeners
+            OSH.EventManager.observeDiv("ptz-presets","change",this.onSelectedPresets.bind(this));
+        }
+    },
+
+    /**
+     *
+     * @param presets array
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
+    addPresets:function(presetsArr) {
+        var selectTag = document.getElementById("ptz-presets");
+
+        for(var i in presetsArr) {
+            var option = document.createElement("option");
+            option.text = presetsArr[i];
+            option.value = presetsArr[i];
+            selectTag.add(option);
+        }
+    },
+
+    /**
+     *
+     * @param event
+     * @memberof OSH.UI.PtzTaskingView
+     * @instance
+     */
+    onSelectedPresets : function(event) {
+        var serverTag = document.getElementById("ptz-presets");
+        var option = serverTag.options[serverTag.selectedIndex];
+        this.onChange(null,null,null,option.value);
     },
 
     /**
@@ -118,7 +167,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onTiltClick: function (value) {
         this.tilt += value;
-        this.onChange(null,value,null);
+        this.onChange(null,value,null,null);
     },
 
     /**
@@ -132,7 +181,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
         this.tilt += tiltValue;
         this.pan += panValue;
 
-        this.onChange(tiltValue,panValue,null);
+        this.onChange(tiltValue,panValue,null,null);
     },
 
     /**
@@ -143,7 +192,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onPanClick: function(value) {
         this.pan += value;
-        this.onChange(value,null,null);
+        this.onChange(value,null,null,null);
     },
 
     /**
@@ -154,7 +203,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onZoomClick: function(value) {
         this.zoom += value;
-        this.onChange(null,null,value);
+        this.onChange(null,null,value,null);
     },
 
     /**
@@ -165,9 +214,9 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.PtzTaskingView
      */
-    onChange: function(rpan, rtilt, rzoom) {
+    onChange: function(rpan, rtilt, rzoom,preset) {
         OSH.EventManager.fire(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.dataSenderId,{
-            cmdData : {rpan,rtilt,rzoom},
+            cmdData : {rpan,rtilt,rzoom,preset},
             onSuccess:function(event){console.log("Failed to send request: "+event);},
             onError:function(event){console.log("Request sent successfully: "+event);}
         });
