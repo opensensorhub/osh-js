@@ -23,6 +23,11 @@
  *
  */
 var htmlTaskingComponent="";
+htmlTaskingComponent += "<div id=\"zoomptz\" class=\"ptz-zoom\">";
+htmlTaskingComponent += "<div class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<div class=\"ptz-zoom-bar\"></div>";
+htmlTaskingComponent += "<div class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<\/div>";
 htmlTaskingComponent += "<div id=\"leftptz\" class=\"ptz\">";
 htmlTaskingComponent += "   <div id=\"ptz-move-up\" tag=\"0\" class='moveUp' name=\"\"><\/div>";
 htmlTaskingComponent += "   <div id=\"ptz-move-top-left\" tag=\"91\" class='moveTopLeft' name=\"\"><\/div>";
