@@ -167,6 +167,7 @@
     width:165px;
     height:165px;
     float:left;
+    margin-bottom: 20px;
 }
 
 .ptz-right {
@@ -309,5 +310,5 @@
     height: 60px;
     width: 4px;
     border-radius: 20px;
-    margin: 0px 0px 0px 13px;
+    margin: 0px 0px 0px 12px;
 }
