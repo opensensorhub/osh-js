@@ -21,13 +21,39 @@
  */
 OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
 
+    initialize: function(name, properties) {
+        this._super(name, properties);
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.id, function (event) {
+            this.connector.sendRequest(this.buildRequest(this.getCommandData(event.cmdData)));
+        }.bind(this));
+    },
+
+    // to override by specific vendor dataSender
+    getCommandData:function(values) {
+        var cmdData = "";
+
+        if(values.rtilt != null) {
+            cmdData += "rtilt,"+values.rtilt+" ";
+        }
+
+        if(values.rpan != null) {
+            cmdData += "rpan,"+values.rpan+" ";
+        }
+
+        if(values.rzoom != null) {
+            cmdData += "rzoom,"+values.rzoom+" ";
+        }
+        return cmdData;
+    },
+
     /**
      * Builds the request based on sps standard.
      * @returns {string} the sps request
      * @memberof OSH.DataReceiver.PtzTasking
      * @instance
      */
-    buildRequest: function(properties) {
+    buildRequest: function(cmdData) {
         var xmlSpsRequest = "<sps:Submit ";
 
         // adds service
@@ -49,21 +75,10 @@ OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
         xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
 
         // adds values
-        xmlSpsRequest += "<sps:values>";
-        
-        if (properties.pan != 0)
-        	xmlSpsRequest += "rpan,"+properties.pan;
-        
-        if (properties.tilt != 0)
-        	xmlSpsRequest += " rtilt,"+properties.tilt;        	
-        
-        if (properties.zoom != 0)
-        	xmlSpsRequest += " rzoom,"+properties.zoom;
+        xmlSpsRequest += "<sps:values>"+cmdData+"</sps:values>";
 
         // adds endings
-        xmlSpsRequest += "</sps:values></sps:ParameterData></sps:taskingParameters></sps:Submit>";
-
-        document.fire("osh:log", xmlSpsRequest);
+        xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
 
         return xmlSpsRequest;
     }

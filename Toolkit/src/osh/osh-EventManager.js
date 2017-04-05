@@ -81,5 +81,6 @@ OSH.EventManager.EVENT = {
     LOADING_START: "loading:start",
     LOADING_STOP: "loading:stop",
     ADD_VIEW_ITEM: "addViewItem",
-    RESIZE:"resize"
+    RESIZE:"resize",
+    PTZ_SEND_REQUEST:"ptzSendRequest"
 };

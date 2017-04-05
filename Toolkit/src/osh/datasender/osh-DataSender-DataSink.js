@@ -18,14 +18,14 @@
  * @classdesc
  * @class
  */
-OSH.DataSender.DataSink = BaseClass.extend({
+OSH.DataSender.DataSink =  BaseClass.extend({
     initialize: function (name, properties, options) {
         if (properties.protocol == "http") {
             this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
             this.connector.onError = this.onCatchError.bind(this);
             this.connector.onSuccess = this.onCatchSuccess.bind(this);
         }
-        this.id = "DataSource-" + OSH.Utils.randomUUID();
+        this.id = "DataSender-" + OSH.Utils.randomUUID();
         this.name = name;
         this.properties = properties;
     },

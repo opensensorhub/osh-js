@@ -690,333 +690,6 @@ OSH.Utils.addCss = function(div,css) {
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Richard Becker. All Rights Reserved.
-
- Author: Richard Becker <beckerr@prominentedge.com>
-
- ******************************* END LICENSE BLOCK ***************************/
-
-/*
- * @namespace DomEvent
- * Borrowed from Leaflet
- * Utility functions to work with the [DOM events](https://developer.mozilla.org/docs/Web/API/Event), used by OSH internally.
- */
-
-// Inspired by John Resig, Dean Edwards and YUI addEvent implementations.
-
-
-
-var eventsKey = '_osh_events';
-
-OSH.DomEvent = {
-
-	// @function on(el: HTMLElement, types: String, fn: Function, context?: Object): this
-	// Adds a listener function (`fn`) to a particular DOM event type of the
-	// element `el`. You can optionally specify the context of the listener
-	// (object the `this` keyword will point to). You can also pass several
-	// space-separated types (e.g. `'click dblclick'`).
-
-	// @alternative
-	// @function on(el: HTMLElement, eventMap: Object, context?: Object): this
-	// Adds a set of type/listener pairs, e.g. `{click: onClick, mousemove: onMouseMove}`
-	on: function (obj, types, fn, context) {
-
-		if (typeof types === 'object') {
-			for (var type in types) {
-				this._on(obj, type, types[type], fn);
-			}
-		} else {
-			types = types.trim().split(/\s+/);
-
-			for (var i = 0, len = types.length; i < len; i++) {
-				this._on(obj, types[i], fn, context);
-			}
-		}
-
-		return this;
-	},
-
-	// @function off(el: HTMLElement, types: String, fn: Function, context?: Object): this
-	// Removes a previously added listener function. If no function is specified,
-	// it will remove all the listeners of that particular DOM event from the element.
-	// Note that if you passed a custom context to on, you must pass the same
-	// context to `off` in order to remove the listener.
-
-	// @alternative
-	// @function off(el: HTMLElement, eventMap: Object, context?: Object): this
-	// Removes a set of type/listener pairs, e.g. `{click: onClick, mousemove: onMouseMove}`
-	off: function (obj, types, fn, context) {
-
-		if (typeof types === 'object') {
-			for (var type in types) {
-				this._off(obj, type, types[type], fn);
-			}
-		} else {
-			types = types.trim().split(/\s+/);
-
-			for (var i = 0, len = types.length; i < len; i++) {
-				this._off(obj, types[i], fn, context);
-			}
-		}
-
-		return this;
-	},
-
-	_on: function (obj, type, fn, context) {
-		var id = type + OSH.Utils.stampUUID(fn) + (context ? '_' + OSH.Utils.stampUUID(context) : '');
-
-		if (obj[eventsKey] && obj[eventsKey][id]) { return this; }
-
-		var handler = function (e) {
-			return fn.call(context || obj, e || window.event);
-		};
-
-		var originalHandler = handler;
-
-		if (OSH.Browser.pointer && type.indexOf('touch') === 0) {
-			this.addPointerListener(obj, type, handler, id);
-
-		} else if (OSH.Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
-			this.addDoubleTapListener(obj, handler, id);
-
-		} else if ('addEventListener' in obj) {
-
-			if (type === 'mousewheel') {
-				obj.addEventListener('onwheel' in obj ? 'wheel' : 'mousewheel', handler, false);
-
-			} else if ((type === 'mouseenter') || (type === 'mouseleave')) {
-				handler = function (e) {
-					e = e || window.event;
-					if (OSH.DomEvent._isExternalTarget(obj, e)) {
-						originalHandler(e);
-					}
-				};
-				obj.addEventListener(type === 'mouseenter' ? 'mouseover' : 'mouseout', handler, false);
-
-			} else {
-				if (type === 'click' && OSH.Browser.android) {
-					handler = function (e) {
-						return OSH.DomEvent._filterClick(e, originalHandler);
-					};
-				}
-				obj.addEventListener(type, handler, false);
-			}
-
-		} else if ('attachEvent' in obj) {
-			obj.attachEvent('on' + type, handler);
-		}
-
-		obj[eventsKey] = obj[eventsKey] || {};
-		obj[eventsKey][id] = handler;
-
-		return this;
-	},
-
-	_off: function (obj, type, fn, context) {
-
-		var id = type + OSH.Utils.stampUUID(fn) + (context ? '_' + OSH.Utils.stampUUID(context) : ''),
-		    handler = obj[eventsKey] && obj[eventsKey][id];
-
-		if (!handler) { return this; }
-
-		if (OSH.Browser.pointer && type.indexOf('touch') === 0) {
-			this.removePointerListener(obj, type, id);
-
-		} else if (OSH.Browser.touch && (type === 'dblclick') && this.removeDoubleTapListener) {
-			this.removeDoubleTapListener(obj, id);
-
-		} else if ('removeEventListener' in obj) {
-
-			if (type === 'mousewheel') {
-				obj.removeEventListener('onwheel' in obj ? 'wheel' : 'mousewheel', handler, false);
-
-			} else {
-				obj.removeEventListener(
-					type === 'mouseenter' ? 'mouseover' :
-					type === 'mouseleave' ? 'mouseout' : type, handler, false);
-			}
-
-		} else if ('detachEvent' in obj) {
-			obj.detachEvent('on' + type, handler);
-		}
-
-		obj[eventsKey][id] = null;
-
-		return this;
-	},
-
-	// @function stopPropagation(ev: DOMEvent): this
-	// Stop the given event from propagation to parent elements. Used inside the listener functions:
-	// ```js
-	// OSH.DomEvent.on(div, 'click', function (ev) {
-	// 	OSH.DomEvent.stopPropagation(ev);
-	// });
-	// ```
-	stopPropagation: function (e) {
-
-		if (e.stopPropagation) {
-			e.stopPropagation();
-		} else if (e.originalEvent) {  // In case of Leaflet event.
-			e.originalEvent._stopped = true;
-		} else {
-			e.cancelBubble = true;
-		}
-		OSH.DomEvent._skipped(e);
-
-		return this;
-	},
-
-	// @function disableScrollPropagation(el: HTMLElement): this
-	// Adds `stopPropagation` to the element's `'mousewheel'` events (plus browser variants).
-	disableScrollPropagation: function (el) {
-		return OSH.DomEvent.on(el, 'mousewheel', OSH.DomEvent.stopPropagation);
-	},
-
-	// @function disableClickPropagation(el: HTMLElement): this
-	// Adds `stopPropagation` to the element's `'click'`, `'doubleclick'`,
-	// `'mousedown'` and `'touchstart'` events (plus browser variants).
-	disableClickPropagation: function (el) {
-		var stop = OSH.DomEvent.stopPropagation;
-
-        var start_txt = OSH.Browser.touch ? ['touchstart', 'mousedown'] : ['mousedown']
-		OSH.DomEvent.on(el, start_txt.join(' '), stop);
-
-		return OSH.DomEvent.on(el, {
-			click: OSH.DomEvent._fakeStop,
-			dblclick: stop
-		});
-	},
-
-	// @function preventDefault(ev: DOMEvent): this
-	// Prevents the default action of the DOM Event `ev` from happening (such as
-	// following a link in the href of the a element, or doing a POST request
-	// with page reload when a `<form>` is submitted).
-	// Use it inside listener functions.
-	preventDefault: function (e) {
-
-		if (e.preventDefault) {
-			e.preventDefault();
-		} else {
-			e.returnValue = false;
-		}
-		return this;
-	},
-
-	// @function stop(ev): this
-	// Does `stopPropagation` and `preventDefault` at the same time.
-	stop: function (e) {
-		return OSH.DomEvent
-			.preventDefault(e)
-			.stopPropagation(e);
-	},
-
-	// @function getMousePosition(ev: DOMEvent, container?: HTMLElement): Point
-	// Gets normalized mouse position from a DOM event relative to the
-	// `container` or to the whole page if not specified.
-	getMousePosition: function (e, container) {
-		if (!container) {
-		    var ptContainer = { x: e.clientX,
-		                        y: e.clientY };
-			return ptContainer;
-		}
-
-		var rect = container.getBoundingClientRect();
-        var ptPage = { x: e.clientX - rect.left - container.clientLeft,
-                       y: e.clientY - rect.top - container.clientTop };
-		return ptPage;
-	},
-
-	// Chrome on Win scrolls double the pixels as in other platforms (see #4538),
-	// and Firefox scrolls device pixels, not CSS pixels
-	_wheelPxFactor: (OSH.Browser.win && OSH.Browser.chrome) ? 2 :
-	                OSH.Browser.gecko ? window.devicePixelRatio :
-	                1,
-
-	// @function getWheelDelta(ev: DOMEvent): Number
-	// Gets normalized wheel delta from a mousewheel DOM event, in vertical
-	// pixels scrolled (negative if scrolling down).
-	// Events from pointing devices without precise scrolling are mapped to
-	// a best guess of 60 pixels.
-	getWheelDelta: function (e) {
-		return (OSH.Browser.edge) ? e.wheelDeltaY / 2 : // Don't trust window-geometry-based delta
-		       (e.deltaY && e.deltaMode === 0) ? -e.deltaY / OSH.DomEvent._wheelPxFactor : // Pixels
-		       (e.deltaY && e.deltaMode === 1) ? -e.deltaY * 20 : // Lines
-		       (e.deltaY && e.deltaMode === 2) ? -e.deltaY * 60 : // Pages
-		       (e.deltaX || e.deltaZ) ? 0 :	// Skip horizontal/depth wheel events
-		       e.wheelDelta ? (e.wheelDeltaY || e.wheelDelta) / 2 : // Legacy IE pixels
-		       (e.detail && Math.abs(e.detail) < 32765) ? -e.detail * 20 : // Legacy Moz lines
-		       e.detail ? e.detail / -32765 * 60 : // Legacy Moz pages
-		       0;
-	},
-
-	_skipEvents: {},
-
-	_fakeStop: function (e) {
-		// fakes stopPropagation by setting a special event flag, checked/reset with OSH.DomEvent._skipped(e)
-		OSH.DomEvent._skipEvents[e.type] = true;
-	},
-
-	_skipped: function (e) {
-		var skipped = this._skipEvents[e.type];
-		// reset when checking, as it's only used in map container and propagates outside of the map
-		this._skipEvents[e.type] = false;
-		return skipped;
-	},
-
-	// check if element really left/entered the event target (for mouseenter/mouseleave)
-	_isExternalTarget: function (el, e) {
-
-		var related = e.relatedTarget;
-
-		if (!related) { return true; }
-
-		try {
-			while (related && (related !== el)) {
-				related = related.parentNode;
-			}
-		} catch (err) {
-			return false;
-		}
-		return (related !== el);
-	},
-
-	// this is a horrible workaround for a bug in Android where a single touch triggers two click events
-	_filterClick: function (e, handler) {
-		var timeStamp = (e.timeStamp || (e.originalEvent && e.originalEvent.timeStamp)),
-		    elapsed = OSH.DomEvent._lastClick && (timeStamp - OSH.DomEvent._lastClick);
-
-		// are they closer together than 500ms yet more than 100ms?
-		// Android typically triggers them ~300ms apart while multiple listeners
-		// on the same event should be triggered far faster;
-		// or check if click is simulated on the element, and if it is, reject any non-simulated events
-
-		if ((elapsed && elapsed > 100 && elapsed < 500) || (e.target._simulatedClick && !e._simulated)) {
-			OSH.DomEvent.stop(e);
-			return;
-		}
-		OSH.DomEvent._lastClick = timeStamp;
-
-		handler(e);
-	}
-};
-
-// @function addListener(…): this
-// Alias to [`OSH.DomEvent.on`](#domevent-on)
-OSH.DomEvent.addListener = OSH.DomEvent.on;
-
-// @function removeListener(…): this
-// Alias to [`OSH.DomEvent.off`](#domevent-off)
-OSH.DomEvent.removeListener = OSH.DomEvent.off;
-/***************************** BEGIN LICENSE BLOCK ***************************
-
- The contents of this file are subject to the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one
- at http://mozilla.org/MPL/2.0/.
-
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the License.
-
  Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
@@ -1135,7 +808,8 @@ OSH.EventManager.EVENT = {
     LOADING_START: "loading:start",
     LOADING_STOP: "loading:stop",
     ADD_VIEW_ITEM: "addViewItem",
-    RESIZE:"resize"
+    RESIZE:"resize",
+    PTZ_SEND_REQUEST:"ptzSendRequest"
 };
 
 /***************************** BEGIN LICENSE BLOCK ***************************
@@ -1492,7 +1166,11 @@ OSH.Buffer = BaseClass.extend({
     var bufObj = this.buffers[dataSourceId];
     if (bufObj.status != BUFFER_STATUS.CANCEL) {
         if(bufObj.syncMasterTime) {
-          OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, {timeStamp: data.timeStamp});
+          OSH.EventManager.fire(OSH.EventManager.EVENT.CURRENT_MASTER_TIME,
+              {
+                timeStamp: data.timeStamp,
+                dataSourceId: dataSourceId
+              });
         }
         OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
     }
@@ -1617,18 +1295,15 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
         xmlhttp.send(request);
 
         xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                console.log("ici");
-            }
-            /*if (xhr.readyState < 4) {
+            if (xmlhttp.readyState < 4) {
                 // while waiting response from server
-            }  else if (xhr.readyState === 4) {                // 4 = Response from server has been completely loaded.
-                if (xhr.status == 200 && xhr.status < 300) { // http status between 200 to 299 are all successful
-                    this.onSuccess(xhr.responseText);
+            }  else if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+                if (xmlhttp.status == 200 && xmlhttp.status < 300) { // http status between 200 to 299 are all successful
+                    this.onSuccess(xmlhttp.responseText);
                 } else {
                     this.onError("");
                 }
-            }*/
+            }
         }.bind(this);
     },
 
@@ -3149,14 +2824,14 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
  * @classdesc
  * @class
  */
-OSH.DataSender.DataSink = BaseClass.extend({
+OSH.DataSender.DataSink =  BaseClass.extend({
     initialize: function (name, properties, options) {
         if (properties.protocol == "http") {
             this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
             this.connector.onError = this.onCatchError.bind(this);
             this.connector.onSuccess = this.onCatchSuccess.bind(this);
         }
-        this.id = "DataSource-" + OSH.Utils.randomUUID();
+        this.id = "DataSender-" + OSH.Utils.randomUUID();
         this.name = name;
         this.properties = properties;
     },
@@ -3275,13 +2950,39 @@ OSH.DataSender.DataSink = BaseClass.extend({
  */
 OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
 
+    initialize: function(name, properties) {
+        this._super(name, properties);
+
+        OSH.EventManager.observe(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.id, function (event) {
+            this.connector.sendRequest(this.buildRequest(this.getCommandData(event.cmdData)));
+        }.bind(this));
+    },
+
+    // to override by specific vendor dataSender
+    getCommandData:function(values) {
+        var cmdData = "";
+
+        if(values.rtilt != null) {
+            cmdData += "rtilt,"+values.rtilt+" ";
+        }
+
+        if(values.rpan != null) {
+            cmdData += "rpan,"+values.rpan+" ";
+        }
+
+        if(values.rzoom != null) {
+            cmdData += "rzoom,"+values.rzoom+" ";
+        }
+        return cmdData;
+    },
+
     /**
      * Builds the request based on sps standard.
      * @returns {string} the sps request
      * @memberof OSH.DataReceiver.PtzTasking
      * @instance
      */
-    buildRequest: function(properties) {
+    buildRequest: function(cmdData) {
         var xmlSpsRequest = "<sps:Submit ";
 
         // adds service
@@ -3303,23 +3004,121 @@ OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
         xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
 
         // adds values
-        xmlSpsRequest += "<sps:values>";
-        
-        if (properties.pan != 0)
-        	xmlSpsRequest += "rpan,"+properties.pan;
-        
-        if (properties.tilt != 0)
-        	xmlSpsRequest += " rtilt,"+properties.tilt;        	
-        
-        if (properties.zoom != 0)
-        	xmlSpsRequest += " rzoom,"+properties.zoom;
+        xmlSpsRequest += "<sps:values>"+cmdData+"</sps:values>";
 
         // adds endings
-        xmlSpsRequest += "</sps:values></sps:ParameterData></sps:taskingParameters></sps:Submit>";
-
-        document.fire("osh:log", xmlSpsRequest);
+        xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
 
         return xmlSpsRequest;
+    }
+});
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+/**
+ * @classdesc
+ * @class
+ * @augments OSH.DataSender.DataSink
+ * From describe tasking:
+ * swe:item name="relMove">
+ <swe:Text definition="http://sensorml.com/ont/swe/property/CameraRelativeMovementName">
+ <swe:label>Camera Relative Movements</swe:label>
+ <swe:constraint>
+ <swe:AllowedTokens>
+ <swe:value>Down</swe:value>
+ <swe:value>Up</swe:value>
+ <swe:value>Left</swe:value>
+ <swe:value>Right</swe:value>
+ <swe:value>TopLeft</swe:value>
+ <swe:value>TopRight</swe:value>
+ <swe:value>BottomLeft</swe:value>
+ <swe:value>BottomRight</swe:value>
+ </swe:AllowedTokens>
+ </swe:constraint>
+ </swe:Text>
+ </swe:item>
+
+ <swe:item name="preset">
+ <swe:Text definition="http://sensorml.com/ont/swe/property/CameraPresetPositionName">
+ <swe:label>Preset Camera Position</swe:label>
+ <swe:constraint>
+ <swe:AllowedTokens>
+ <swe:value>Reset</swe:value>
+ <swe:value>TopMost</swe:value>
+ <swe:value>BottomMost</swe:value>
+ <swe:value>LeftMost</swe:value>
+ <swe:value>RightMost</swe:value>
+ </swe:AllowedTokens>
+ </swe:constraint>
+ </swe:Text>
+ </swe:item>
+ */
+OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
+
+    getCommandData: function (values) {
+        var cmdData = "";
+
+        if (values.preset !== null) {
+            cmdData = "preset," + values.preset;
+        }else if(values.rzoom !== null) {
+            cmdData = "zoom,";
+            if (values.rzoom < 0) {
+                cmdData += "out";
+            } else {
+                cmdData += "in";
+            }
+        } else {
+            if (values.rpan != null && values.rtilt != null) {
+                cmdData += "relMove,";
+
+                if (values.rtilt !== null) {
+                    if (values.rtilt < 0) {
+                        cmdData += "Bottom";
+                    } else {
+                        cmdData += "Top";
+                    }
+                }
+
+                if (values.rpan < 0) {
+                    cmdData += "Left";
+                } else {
+                    cmdData += "Right";
+                }
+            } else {
+                if (values.rpan !== null) {
+                    cmdData += "relMove,";
+                    if (values.rpan < 0) {
+                        cmdData += "Left";
+                    } else {
+                        cmdData += "Right";
+                    }
+                    cmdData += " "; //block separator
+                }
+
+                if (values.rtilt !== null) {
+                    cmdData += "relMove,";
+                    if (values.rtilt < 0) {
+                        cmdData += "Down";
+                    } else {
+                        cmdData += "Up";
+                    }
+                }
+            }
+        }
+        return cmdData;
     }
 });
 /***************************** BEGIN LICENSE BLOCK ***************************
@@ -8008,18 +7807,18 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         var self = this;
         select_interaction.getFeatures().on("add", function (e) {
             var feature = e.element; //the feature selected
-            var memo = [];
-            for (var styler in self.stylerToObj) {
-                if (self.stylerToObj[styler] == feature.getId()) {
-                    for (var i = 0; i < self.stylers.length; i++) {
-                        if (self.stylers[i].getId() == styler) {
-                            memo = memo.concat(self.stylers[i].getDataSourcesIds());
-                            break;
-                        }
-                    }
+            var dataSourcesIds = [];
+            var entityId;
+            for (var stylerId in self.stylerToObj) {
+                if (self.stylerToObj[stylerId] == feature.getId()) {
+                    var styler = self.stylerIdToStyler[stylerId];
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
+                        entityId : styler.viewItem.entityId
+                    });
+                    break;
                 }
             }
-            $(self.divId).fire("osh:select", memo);
         });
 
         this.map.addInteraction(select_interaction);
@@ -8630,13 +8429,13 @@ OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
         extraDiv.setAttribute("class","pop-extra-el");
 
         var i = document.createElement("i");
-        i.setAttribute("class","fa fa-caret-right pop-extra-collapse");
+        i.setAttribute("class","fa fa-caret-right pop-extra-collapse fa-2x");
 
         i.onclick = function() {
             if(i.className.indexOf("fa-caret-down") == -1){
-                i.className = "fa fa-caret-down pop-extra-show";
+                i.className = "fa fa-caret-down pop-extra-show fa-2x";
             } else {
-                i.className = "fa fa-caret-right pop-extra-collapse";
+                i.className = "fa fa-caret-right pop-extra-collapse fa-2x";
             }
         };
         extraDiv.appendChild(i);
@@ -8736,7 +8535,8 @@ new OSH.UI.Loading();
  var rangeSlider = new OSH.UI.RangeSlider("rangeSlider-container",{
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        refreshRate:1
+        refreshRate:1, // rate of data received
+        dataSourcesId: [someDataSource.id],
  });
  */
 OSH.UI.RangeSlider = OSH.UI.View.extend({
@@ -8790,7 +8590,6 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 			if(typeof options.dataSourcesId != "undefined") {
 				this.dataSourcesId = options.dataSourcesId;
 			}
-
 			if(typeof options.refreshRate != "undefined") {
 				this.refreshRate = options.refreshRate;
 			}
@@ -8846,7 +8645,15 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 
 		// listen for DataSourceId
 		OSH.EventManager.observe(OSH.EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-			if(!self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
+			var filterOk = true;
+
+			if(self.dataSourcesId.length > 0) {
+				if(self.dataSourcesId.indexOf(event.dataSourceId) < 0) {
+					filterOk = false;
+				}
+            }
+
+			if(filterOk && !self.lock && ((++self.dataCount)%self.refreshRate == 0)) {
 				self.slider.noUiSlider.set([event.timeStamp]);
 				self.dataCount = 0;
 			}
@@ -8895,49 +8702,54 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
 
  ******************************* END LICENSE BLOCK ***************************/
 
-var htmlTaskingComponent="";
-htmlTaskingComponent += "<svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" viewBox=\"-2 -2 504 504\" id=\"menu\" style=\"transform-origin: 50% 50% 0px; transform: translate3d(0px, 0px, 0px); touch-action: none; -webkit-user-select: none;\">";
-htmlTaskingComponent += "<g id=\"symbolsContainer\">    <symbol class=\"icon icon-\" id=\"icon-1\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">1<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-2\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">2<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-3\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">3<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-4\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">4<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-5\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">5<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-6\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">6<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-7\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">7<\/text><\/symbol>";
-htmlTaskingComponent += "    <symbol class=\"icon icon-\" id=\"icon-8\" viewBox=\"0 0 59 59\"><!--Replace the contents of this symbol with the content of your icon--><rect fill=\"none\" stroke=\"#111\" stroke-width=\"1\" width=\"100%\" height=\"100%\"><\/rect><text fill=\"#222\" x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" font-size=\"1.2em\">8<\/text><\/symbol>";
-htmlTaskingComponent += "<\/g>";
-htmlTaskingComponent += "<g id=\"itemsContainer\">        <a class=\"item\" id=\"item-1\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(1,0,0,1,0,0)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-1\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-2\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0.7071,-0.7071,0.7071,0.7071,-103.55339059327378,249.99999999999997)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-2\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-3\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0,-1,1,0,0,500)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-3\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-4\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(-0.7071,-0.7071,0.7071,-0.7071,249.99999999999997,603.5533905932738)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-4\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-5\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(-1,0,0,-1,500,500)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-5\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-6\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(-0.7071,0.7071,-0.7071,-0.7071,603.5533905932738,250.00000000000006)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-6\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-7\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0,1,-1,0,500.00000000000006,0)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-7\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "        <a class=\"item\" id=\"item-8\" role=\"link\" tabindex=\"0\" xlink:href=\" \" xlink:title=\" \" transform=\"matrix(0.7071,0.7071,-0.7071,0.7071,250.00000000000009,-103.55339059327378)\" data-svg-origin=\"250 250\" style=\"\"><path fill=\"none\" stroke=\"#111\" d=\"M380,250 l120,0 A250,250 0 0,0 426.7766952966369,73.22330470336314 l-84.8528137423857,84.85281374238568 A130,130 0 0,1 380,250\" class=\"sector\"><\/path><use xlink:href=\"#icon-8\" width=\"59\" height=\"59\" x=\"392.3415832519531\" y=\"149.3208770751953\" transform=\"rotate(67.5 421.8415832519531 178.8208770751953)\"><\/use><\/a>";
-htmlTaskingComponent += "<\/g>";
-htmlTaskingComponent += "<g id=\"trigger\" class=\"trigger menu-trigger\" role=\"button\">";
-htmlTaskingComponent += "<circle cx=\"250\" cy=\"250\" r=\"60\"><\/circle>";
-htmlTaskingComponent += "<\/g>";
-htmlTaskingComponent += "<\/svg>";
-
-
 /**
+ *
  * @class
  * @classdesc
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  *
  */
+var htmlTaskingComponent="";
+htmlTaskingComponent += "<div id=\"zoomptz\" class=\"ptz-zoom\">";
+htmlTaskingComponent += "<div id=\"ptz-zoom-in\" class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<div class=\"ptz-zoom-bar\"></div>";
+htmlTaskingComponent += "<div id=\"ptz-zoom-out\" class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<\/div>";
+htmlTaskingComponent += "<div id=\"leftptz\" class=\"ptz\">";
+htmlTaskingComponent += "   <div id=\"ptz-move-up\" tag=\"0\" class='moveUp' name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-top-left\" tag=\"91\" class='moveTopLeft' name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-top-right\" tag=\"90\" class=\"moveTopRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-left\" tag=\"6\" class=\"moveLeft\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-home\" cmd=\"ptzReset\" class=\"reset\" title=\"Center\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-right\" tag=\"4\" class=\"moveRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-bottom-left\" tag=\"93\" class=\"moveBottomLeft\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-bottom-right\" tag=\"92\" class=\"moveBottomRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div id=\"ptz-move-down\" tag=\"2\" class=\"moveDown\" name=\"\"><\/div>";
+htmlTaskingComponent += "<\/div>";
+htmlTaskingComponent += "<div id=\"rightptz\" class=\"ptz-right\">";
+htmlTaskingComponent += "<ul>";
+htmlTaskingComponent += "            <li>";
+htmlTaskingComponent += "                <label>Presets:<\/label>";
+htmlTaskingComponent += "                <div class=\"select-style\">";
+htmlTaskingComponent += "                     <select id=\"ptz-presets\" required pattern=\"^(?!Select a Preset).*\">";
+htmlTaskingComponent += "                         <option value=\"\" disabled selected>Select a Preset<\/option>";
+htmlTaskingComponent += "                     <\/select>";
+htmlTaskingComponent += "                <\/div>";
+htmlTaskingComponent += "            <\/li>";
+htmlTaskingComponent += "</ul>";
+htmlTaskingComponent += "<\/div>";
+
 OSH.UI.PtzTaskingView = OSH.UI.View.extend({
     initialize: function (divId, options) {
         this._super(divId,[],options);
         var width = "640";
         var height = "480";
-        this.css = "";
+        this.css = "tasking";
 
         this.cssSelected = "";
 
-        if(typeof (options) != "undefined") {
+        if(typeof (options) !== "undefined") {
             if (options.width) {
                 width = options.width;
             }
@@ -8947,11 +8759,15 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
             }
 
             if (options.css) {
-                this.css = options.css;
+                this.css += options.css;
             }
 
             if (options.cssSelected) {
                 this.cssSelected = options.cssSelected;
+            }
+
+            if(options.dataSenderId) {
+                this.dataSenderId = options.dataSenderId;
             }
         }
 
@@ -8967,19 +8783,61 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
 
         this.rootTag.innerHTML = htmlTaskingComponent;
 
-        this.observers = [];
-
         this.pan = 0;
         this.tilt = 0;
         this.zoom = 0;
 
         var increment = 5;
-       /* $("button-tilt-up").observe('click',  function(){this.onTiltClick(increment)}.bind(this));
-        $("button-tilt-down").observe('click',  function(){this.onTiltClick(-1*increment)}.bind(this));
-        $("button-pan-right").observe('click',  function(){this.onPanClick(increment)}.bind(this));
-        $("button-pan-left").observe('click',  function(){this.onPanClick(-1*increment)}.bind(this));
-        $("button-zoom-in").observe('click',  function(){this.onZoomClick(50)}.bind(this));
-        $("button-zoom-out").observe('click',  function(){this.onZoomClick(-50)}.bind(this));*/
+
+        this.observers = [];
+
+        document.getElementById("ptz-move-up").onclick = function(){this.onTiltClick(increment)}.bind(this);
+        document.getElementById("ptz-move-top-left").onclick = function(){this.onTiltPanClick(-1*increment,increment)}.bind(this);
+        document.getElementById("ptz-move-top-right").onclick =  function(){this.onTiltPanClick(increment,increment)}.bind(this);
+        document.getElementById("ptz-move-right").onclick =  function(){this.onPanClick(increment)}.bind(this);
+        document.getElementById("ptz-move-left").onclick =  function(){this.onPanClick(-1*increment)}.bind(this);
+        document.getElementById("ptz-move-down").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
+        document.getElementById("ptz-move-bottom-left").onclick = function(){this.onTiltPanClick(-1*increment,-1*increment)}.bind(this);
+        document.getElementById("ptz-move-bottom-right").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
+        document.getElementById("ptz-zoom-in").onclick =  function(){this.onZoomClick(increment)}.bind(this);
+        document.getElementById("ptz-zoom-out").onclick =  function(){this.onZoomClick(-1*increment)}.bind(this);
+
+        // add presets if any
+        if(typeof (options) !== "undefined" && (options.presets)) {
+            this.addPresets(options.presets);
+
+            // add listeners
+            OSH.EventManager.observeDiv("ptz-presets","change",this.onSelectedPresets.bind(this));
+        }
+    },
+
+    /**
+     *
+     * @param presets array
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
+    addPresets:function(presetsArr) {
+        var selectTag = document.getElementById("ptz-presets");
+
+        for(var i in presetsArr) {
+            var option = document.createElement("option");
+            option.text = presetsArr[i];
+            option.value = presetsArr[i];
+            selectTag.add(option);
+        }
+    },
+
+    /**
+     *
+     * @param event
+     * @memberof OSH.UI.PtzTaskingView
+     * @instance
+     */
+    onSelectedPresets : function(event) {
+        var serverTag = document.getElementById("ptz-presets");
+        var option = serverTag.options[serverTag.selectedIndex];
+        this.onChange(null,null,null,option.value);
     },
 
     /**
@@ -9002,8 +8860,21 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onTiltClick: function (value) {
         this.tilt += value;
-        //document.getElementById("input-tilt").value = this.tilt;
-        this.onChange(0,value,0);
+        this.onChange(null,value,null,null);
+    },
+
+    /**
+     *
+     * @param tiltValue the titl value
+     * @param panValue the panValue value
+     * @instance
+     * @memberof OSH.UI.PtzTaskingView
+     */
+    onTiltPanClick:function(tiltValue,panValue) {
+        this.tilt += tiltValue;
+        this.pan += panValue;
+
+        this.onChange(tiltValue,panValue,null,null);
     },
 
     /**
@@ -9014,8 +8885,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onPanClick: function(value) {
         this.pan += value;
-        //document.getElementById("input-pan").value = this.pan;
-        this.onChange(value,0,0);
+        this.onChange(value,null,null,null);
     },
 
     /**
@@ -9026,8 +8896,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onZoomClick: function(value) {
         this.zoom += value;
-        //document.getElementById("input-zoom").value = this.zoom;
-        this.onChange(0,0,value);
+        this.onChange(null,null,value,null);
     },
 
     /**
@@ -9038,26 +8907,12 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.PtzTaskingView
      */
-    onChange: function(rpan, rtilt, rzoom) {
-        var properties = {
-            pan : rpan,
-            zoom: rzoom,
-            tilt : rtilt
-        }
-
-        for(var i=0;i < this.observers.length;i++) {
-            this.observers[i].sendRequest(properties);
-        }
-    },
-
-    /**
-     *
-     * @param observer
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
-     */
-    register: function(observer) {
-        this.observers.push(observer);
+    onChange: function(rpan, rtilt, rzoom,preset) {
+        OSH.EventManager.fire(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.dataSenderId,{
+            cmdData : {rpan,rtilt,rzoom,preset},
+            onSuccess:function(event){console.log("Failed to send request: "+event);},
+            onError:function(event){console.log("Request sent successfully: "+event);}
+        });
     }
 });
 
@@ -9176,11 +9031,11 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
            var decodedFrame = this.decode(pktSize, pktData);
             if(typeof decodedFrame != "undefined") {
                 // adjust canvas size to fit to the decoded frame
-                if(decodedFrame.frame_width < this.yuvCanvas.width) {
+                if(decodedFrame.frame_width != this.yuvCanvas.width) {
                     this.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
                     this.yuvCanvas.width = decodedFrame.frame_width;
                 }
-                if(decodedFrame.frame_height < this.yuvCanvas.height) {
+                if(decodedFrame.frame_height != this.yuvCanvas.height) {
                     this.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
                     this.yuvCanvas.height = decodedFrame.frame_height;
                 }
@@ -9309,11 +9164,11 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             if (!this.resetCalled) {
                 self.yuvCanvas.canvasElement.drawing = true;
                 // adjust canvas size to fit to the decoded frame
-                if(decodedFrame.frame_width < self.yuvCanvas.width) {
+                if(decodedFrame.frame_width != self.yuvCanvas.width) {
                     self.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
                     self.yuvCanvas.width = decodedFrame.frame_width;
                 }
-                if(decodedFrame.frame_height < self.yuvCanvas.height) {
+                if(decodedFrame.frame_height != self.yuvCanvas.height) {
                     self.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
                     self.yuvCanvas.height = decodedFrame.frame_height;
                 }
