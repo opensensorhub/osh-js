@@ -1,4 +1,4 @@
-<div id="multiDialogId">
+<div id="liveTaskingId">
     <!-- Vendor all-in-one was built with:
 
         gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
@@ -11,36 +11,30 @@
         <script src="js/osh.js"></script>
      -->
 
-    <div id="multiDialogContainer" style="height:100%;width:100%"></div>
+    <div id="liveTaskingContainer" style="height:100%;width:100%"></div>
     <style>
-        #multiDialogContainer {
+        #liveTaskingContainer {
             padding:15px;
             background:radial-gradient(rgba(161, 222, 240, 0.75), rgba(64, 129, 147, 0.75)), url(http://i.imgur.com/3JZchqt.png), url(http://i.imgur.com/9kxBTzr.jpg);
         }
 
-
-        .video-multidialog img{
+        .video-livetasking {
             width: inherit;
             height:inherit;
         }
 
-        .video-multidialog canvas{
+        .video-livetasking img{
             width: inherit;
             height:inherit;
         }
 
-        .video-selected {
-            border-radius: 3px;
-            box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+        .video-livetasking canvas{
+            width: inherit;
+            height:inherit;
         }
 
-        .dialog-multidialog {
-            width: 350px !important;
-            height: 255px !important;
-        }
-        .video-multidialog  {
-            width: inherit;
-            height: 175px;;
+        .outer-dialog {
+            width:485px;
         }
 
     </style>
@@ -66,16 +60,17 @@
         // Video 1 View
         var videoView = new OSH.UI.MjpegView("", {
             dataSourceId: androidPhoneVideoDataSource.id,
-            css: "video-multidialog",
+            css: "video-livetasking",
             cssSelected: "video-selected",
             name: "Android Video",
             keepRatio: true
         });
 
 
-        var videoDialog    =  new OSH.UI.MultiDialogView("multiDialogContainer", {
+        var videoDialog    =  new OSH.UI.MultiDialogView("liveTaskingContainer", {
             draggable: true,
-            css: "dialog-multidialog",
+            css: "dialog-livetasking",
+            keepRatio:true,
             name: "Multi dialog",
             show:true,
             dockable: false,
