@@ -23,28 +23,28 @@
  *
  */
 var htmlTaskingComponent="";
-htmlTaskingComponent += "<div id=\"zoomptz\" class=\"ptz-zoom\">";
-htmlTaskingComponent += "<div id=\"ptz-zoom-in\" class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
-htmlTaskingComponent += "<div class=\"ptz-zoom-bar\"></div>";
-htmlTaskingComponent += "<div id=\"ptz-zoom-out\" class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<div class=\"ptz-zoom\">";
+htmlTaskingComponent += "   <div class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "   <div class=\"ptz-zoom-bar\"></div>";
+htmlTaskingComponent += "   <div class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
 htmlTaskingComponent += "<\/div>";
-htmlTaskingComponent += "<div id=\"leftptz\" class=\"ptz\">";
-htmlTaskingComponent += "   <div id=\"ptz-move-up\" tag=\"0\" class='moveUp' name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-top-left\" tag=\"91\" class='moveTopLeft' name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-top-right\" tag=\"90\" class=\"moveTopRight\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-left\" tag=\"6\" class=\"moveLeft\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-home\" cmd=\"ptzReset\" class=\"reset\" title=\"Center\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-right\" tag=\"4\" class=\"moveRight\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-bottom-left\" tag=\"93\" class=\"moveBottomLeft\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-bottom-right\" tag=\"92\" class=\"moveBottomRight\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-down\" tag=\"2\" class=\"moveDown\" name=\"\"><\/div>";
+htmlTaskingComponent += "<div class=\"ptz\">";
+htmlTaskingComponent += "   <div tag=\"0\" class='moveUp' name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"91\" class='moveTopLeft' name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"90\" class=\"moveTopRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"6\" class=\"moveLeft\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div cmd=\"ptzReset\" class=\"reset\" title=\"Center\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"4\" class=\"moveRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"93\" class=\"moveBottomLeft\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"92\" class=\"moveBottomRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"2\" class=\"moveDown\" name=\"\"><\/div>";
 htmlTaskingComponent += "<\/div>";
-htmlTaskingComponent += "<div id=\"rightptz\" class=\"ptz-right\">";
+htmlTaskingComponent += "<div class=\"ptz-right\">";
 htmlTaskingComponent += "<ul>";
 htmlTaskingComponent += "            <li>";
 htmlTaskingComponent += "                <label>Presets:<\/label>";
-htmlTaskingComponent += "                <div class=\"select-style\">";
-htmlTaskingComponent += "                     <select id=\"ptz-presets\" required pattern=\"^(?!Select a Preset).*\">";
+htmlTaskingComponent += "                <div class=\"ptz-select-style\">";
+htmlTaskingComponent += "                     <select class=\"ptz-presets\" required pattern=\"^(?!Select a Preset).*\">";
 htmlTaskingComponent += "                         <option value=\"\" disabled selected>Select a Preset<\/option>";
 htmlTaskingComponent += "                     <\/select>";
 htmlTaskingComponent += "                <\/div>";
@@ -103,23 +103,23 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
 
         this.observers = [];
 
-        document.getElementById("ptz-move-up").onclick = function(){this.onTiltClick(increment)}.bind(this);
-        document.getElementById("ptz-move-top-left").onclick = function(){this.onTiltPanClick(-1*increment,increment)}.bind(this);
-        document.getElementById("ptz-move-top-right").onclick =  function(){this.onTiltPanClick(increment,increment)}.bind(this);
-        document.getElementById("ptz-move-right").onclick =  function(){this.onPanClick(increment)}.bind(this);
-        document.getElementById("ptz-move-left").onclick =  function(){this.onPanClick(-1*increment)}.bind(this);
-        document.getElementById("ptz-move-down").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
-        document.getElementById("ptz-move-bottom-left").onclick = function(){this.onTiltPanClick(-1*increment,-1*increment)}.bind(this);
-        document.getElementById("ptz-move-bottom-right").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
-        document.getElementById("ptz-zoom-in").onclick =  function(){this.onZoomClick(increment)}.bind(this);
-        document.getElementById("ptz-zoom-out").onclick =  function(){this.onZoomClick(-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveUp").onclick = function(){this.onTiltClick(increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveTopLeft").onclick = function(){this.onTiltPanClick(-1*increment,increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveTopRight").onclick =  function(){this.onTiltPanClick(increment,increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveRight").onclick =  function(){this.onPanClick(increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveLeft").onclick =  function(){this.onPanClick(-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveDown").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveBottomLeft").onclick = function(){this.onTiltPanClick(-1*increment,-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveBottomRight").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz-zoom > .ptz-zoom-in").onclick =  function(){this.onZoomClick(increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz-zoom > .ptz-zoom-out").onclick =  function(){this.onZoomClick(-1*increment)}.bind(this);
 
         // add presets if any
         if(typeof (options) !== "undefined" && (options.presets)) {
             this.addPresets(options.presets);
 
             // add listeners
-            OSH.EventManager.observeDiv("ptz-presets","change",this.onSelectedPresets.bind(this));
+            document.querySelector('#'+this.rootTag.id+ "  .ptz-right  .ptz-select-style  .ptz-presets").onchange = this.onSelectedPresets.bind(this);
         }
     },
 
@@ -130,8 +130,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      * @memberof OSH.UI.PtzTaskingView
      */
     addPresets:function(presetsArr) {
-        var selectTag = document.getElementById("ptz-presets");
-
+        var selectTag = document.querySelector('#'+this.rootTag.id+ "  .ptz-right  .ptz-select-style  .ptz-presets");
         for(var i in presetsArr) {
             var option = document.createElement("option");
             option.text = presetsArr[i];
@@ -147,7 +146,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      * @instance
      */
     onSelectedPresets : function(event) {
-        var serverTag = document.getElementById("ptz-presets");
+        var serverTag = document.querySelector('#'+this.rootTag.id+ "  .ptz-right  .ptz-select-style  .ptz-presets");
         var option = serverTag.options[serverTag.selectedIndex];
         this.onChange(null,null,null,option.value);
     },

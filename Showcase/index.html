@@ -45,7 +45,7 @@
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
 
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
@@ -93,6 +93,11 @@
 
     <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
 
+    <style>
+        .container-fluid {
+            z-index:9999;
+        }
+    </style>
 </head>
 
 <body ng-app="app">
@@ -245,25 +250,37 @@
             defaultWidget: true
         },
         {
+            name: "Time control RangeSlider",
+            url: "viewers/RangeSlider/RangeSlider.html",
+            renderDivId: "rangeSliderId",
+            style: {
+                desktop:{
+                    width:"1350px",
+                    height:"400px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
             name: "Multi dialog + tasking",
             url: "viewers/Multidialog/Multidialog.html",
             renderDivId: "multiDialogId",
             style: {
                 desktop:{
                     width:"450px",
-                    height:"350px"
+                    height:"400px"
                 }
             },
             defaultWidget: true
         },
         {
-            name: "Time control RangeSlider",
-            url: "viewers/RangeSlider/RangeSlider.html",
-            renderDivId: "rangeSliderId",
+            name: "Foscam live tasking",
+            url: "viewers/LiveTasking/LiveTasking.html",
+            renderDivId: "liveTaskingId",
             style: {
                 desktop:{
-                    width:"900px",
-                    height:"350px"
+                    width:"1350px",
+                    height:"720px"
                 }
             },
             defaultWidget: true

@@ -1,0 +1,301 @@
+<div id="liveTaskingId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --jsonix --leaflet --nouislider --nvd3 --ol3 --tree
+
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="liveTasking-form-container" class="liveTasking-form-container">
+        <form id="liveTasking-form-id">
+            <ul>
+                <li>
+                    <label for="sosEndpoint">SOS Endpoint:</label>
+                    <input id="liveTasking-sosEndpointId" type="text" name="sosEndpoint" class="input-text" value="localhost:8182/sensorhub/sos" required/>
+                </li>
+                <li>
+                    <label for="sosOff">SOS offering:</label>
+                    <input id="liveTasking-sosOffId" type="text" name="sosOff" class="input-text" placeholder="<SOS offering>" value="urn:mysos:offering:foscam-r2" required/>
+                </li>
+                <li>
+                    <label for="sosObsOff">SOS observable property:</label>
+                    <input id="liveTasking-sosObsOffId" type="text" name="sosObsOff" class="input-text" value="http://sensorml.com/ont/swe/property/VideoFrame" required/>
+                </li>
+                <li>
+                    <label for="spsEndpoint">SPS Endpoint:</label>
+                    <input id="liveTasking-spsEndpointId" type="text" name="spsEndpoint" class="input-text" value="localhost:8182/sensorhub/sps" required/>
+                </li>
+                <li>
+                    <label for="spsOff">SPS offering:</label>
+                    <input id="liveTasking-spsOffId" type="text" name="spsOff" class="input-text" placeholder="<SPS offering>" value="urn:uuid:61807149-5d9e-4602-ab10-f872276e7fd3" required/>
+                </li>
+                <li>
+                    <label for="startTime">Start Time:</label>
+                    <input id="liveTasking-startTimeId" type="text" name="startTime" class="input-text" value="now" required/>
+                </li>
+                <li>
+                    <label for="endTime">End Time:</label>
+                    <input id="liveTasking-endTimeId" type="text" name="endTime" class="input-text" value="2055-08-11T20:18:05.451Z" required/>
+                </li>
+                <li>
+                    <button id="liveTaskingFormButtonSubmitId" class="submit" type="submit">Test</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+    <div id="separator"></div>
+    <div id="liveTasking-container"></div>
+    <style>
+        #liveTasking-container {
+            padding:15px;
+            height:100%;
+            overflow:auto;
+            width:780px;
+        }
+
+        #separator {
+            float: left;
+            width:1px;
+            height:100%;
+            border-radius: 5px;
+            border: solid 1px #777;
+        }
+        #liveTasking-form-container {
+            height:100%;
+            width:550px;
+            overflow: auto;
+            float: left;
+            padding-top:10px;
+        }
+        #liveTaskingId {
+            background:radial-gradient(rgba(161, 222, 240, 0.75), rgba(64, 129, 147, 0.75)), url(http://i.imgur.com/3JZchqt.png), url(http://i.imgur.com/9kxBTzr.jpg);
+        }
+
+        .video-livetasking {
+            width: inherit;
+            height:inherit;
+        }
+
+        .video-livetasking img{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video-livetasking canvas{
+            width: inherit;
+            height:inherit;
+        }
+
+        .pop-over {
+            width:700px;
+        }
+
+        /** Form **/
+        .liveTasking-form-container:-moz-placeholder {
+            color: #777;
+        }
+
+        .liveTasking-form-container::-webkit-input-placeholder {
+            color: #777;
+        }
+
+        .liveTasking-form-container*:focus {outline: none;}
+
+        .liveTasking-form-container h2, .liveTasking-form-container label {font-family:Georgia, Times, "Times New Roman", serif;}
+
+        .liveTasking-form-container ul {
+            list-style-type:none;
+            list-style-position:outside;
+            margin:0px;
+            padding:0px;
+        }
+        .liveTasking-form-container li{
+            padding:12px;
+            border-bottom:1px solid #eee;
+            position:relative;
+        }
+
+        .liveTasking-form-container li:first-child, .liveTasking-form-container li:last-child {
+            border-bottom:1px solid #777;
+        }
+
+        .liveTasking-form-container h2 {
+            margin:0;
+            display: inline;
+        }
+
+        .liveTasking-form-container .required_notification {
+            color: #d45252;
+            display: inline;
+            float: right;
+        }
+
+        .liveTasking-form-container label {
+            width:175px;
+            margin-top: 3px;
+            display:inline-block;
+            float:left;
+            padding:3px;
+        }
+
+        .liveTasking-form-container .input-text {
+            padding: 2px 8px;
+            width: 335px;
+        }
+
+        .liveTasking-form-container button {margin-left:156px;}
+
+        .liveTasking-form-container .input-text, .liveTasking-form-container select {
+            border:1px solid #aaa;
+            box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
+            border-radius:2px;
+        }
+        .liveTasking-form-container .input-text:focus, .liveTasking-form-container select:focus {
+            background: #fff;
+            border:1px solid #555;
+            box-shadow: 0 0 3px #aaa;
+        }
+        /* Button Style */
+        .liveTasking-form-container button.submit {
+            background-color: #056BA6;
+            background: -webkit-gradient(linear, left top, left bottom, from(#056BA6), to(#055690));
+            background: -webkit-linear-gradient(top, #056BA6, #055690);
+            background: -moz-linear-gradient(top, #056BA6, #055690);
+            background: -ms-linear-gradient(top, #056BA6, #055690);
+            background: -o-linear-gradient(top, #056BA6, #055690);
+            background: linear-gradient(top, #056BA6, #055690);
+            border: 1px solid #056BA6;
+            border-bottom: 1px solid #056BA6;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            box-shadow: inset 0 1px 0 0 #056BA6;
+            -webkit-box-shadow: 0 1px 0 0 #056BA6 inset ;
+            -moz-box-shadow: 0 1px 0 0 #056BA6 inset;
+            -ms-box-shadow: 0 1px 0 0 #056BA6 inset;
+            -o-box-shadow: 0 1px 0 0 #056BA6 inset;
+            color: white;
+            font-weight: bold;
+            padding: 6px 20px;
+            text-align: center;
+            text-shadow: 0 -1px 0 #056BA6;
+            display:table;
+            margin:0px auto 0px auto;
+        }
+        .liveTasking-form-container button.submit:hover {
+            opacity:.85;
+            cursor: pointer;
+        }
+        .liveTasking-form-container button.submit:active {
+            border: 1px solid #056BA6;
+            box-shadow: 0 0 10px 5px #056BA6 inset;
+            -webkit-box-shadow:0 0 10px 5px #056BA6 inset ;
+            -moz-box-shadow: 0 0 10px 5px #056BA6 inset;
+            -ms-box-shadow: 0 0 10px 5px #056BA6 inset;
+            -o-box-shadow: 0 0 10px 5px #056BA6 inset;
+
+        }
+
+        .liveTasking-form-container .input-text:focus { /* add this to the already existing style */
+            padding-right:10px;
+        }
+
+        .liveTasking-form-container .input-text, .liveTasking-form-container select { /* add this to the already existing style */
+            -moz-transition: padding .25s;
+            -webkit-transition: padding .25s;
+            -o-transition: padding .25s;
+            transition: padding .25s;
+        }
+
+        .liveTasking-form-container .input-text {
+            padding-right: 5px;
+        }
+    </style>
+    <script>
+        OSH.EventManager.observeDiv("liveTasking-form-id","submit",onFormSubmit);
+
+        function onFormSubmit() {
+            var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video ", {
+                protocol: "ws",
+                service: "SOS",
+                endpointUrl: document.getElementById("liveTasking-sosEndpointId").value,
+                offeringID: document.getElementById("liveTasking-sosOffId").value,
+                observedProperty: document.getElementById("liveTasking-sosObsOffId").value,
+                startTime: document.getElementById("liveTasking-startTimeId").value,
+                endTime: document.getElementById("liveTasking-endTimeId").value,
+                syncMasterTime: false,
+                bufferingTime: 0
+            });
+
+            // Video 1 View
+            var videoView = new OSH.UI.FFMPEGView("", {
+                dataSourceId: videoDataSource.id,
+                css: "video-livetasking",
+                cssSelected: "",
+                name: "Live tasking",
+                useWorker:true,
+                width:1920,
+                height:1080
+            });
+
+
+            var videoDialog    =  new OSH.UI.MultiDialogView("liveTasking-container", {
+                draggable: true,
+                css: "dialog-livetasking",
+                keepRatio:true,
+                name: "Foscam live tasking",
+                show:true,
+                dockable: false,
+                closeable: false,
+                connectionIds : [videoDataSource.id]
+            });
+
+            // attach the leaflet view to the dialog
+            videoView.attachTo(videoDialog.popContentDiv.id);
+
+            //--------------------- SPS ------------------------------------//
+            var ptzTasking = new OSH.DataSender.FoscamPtzTasking("Ptz",{
+                protocol: "http",
+                service: "SPS",
+                version: "2.0",
+                endpointUrl: document.getElementById("liveTasking-spsEndpointId").value,
+                offeringID: document.getElementById("liveTasking-spsOffId").value
+            });
+
+            console.log(document.getElementById("liveTasking-spsEndpointId").value);
+            console.log(document.getElementById("liveTasking-spsOffId").value);
+
+            var ptzView  = new OSH.UI.PtzTaskingView("",{
+                dataSenderId:ptzTasking.id,
+                presets:["Reset","TopMost","BottomMost","LeftMost","RightMost"]
+            });
+
+            videoDialog.appendView(ptzView.divId); // extra append
+
+            //---------------------------------------------------------------//
+            //--------------------- Creates DataProvider --------------------//
+            //---------------------------------------------------------------//
+
+            var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+                replayFactor : 1
+            });
+
+            // We can add a group of dataSources and set the options
+            dataProviderController.addDataSource(videoDataSource);
+
+            //---------------------------------------------------------------//
+            //---------------------------- Starts ---------------------------//
+            //---------------------------------------------------------------//
+
+            // starts streaming
+            OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[videoDataSource.id]});
+        }
+    </script>
+</div>

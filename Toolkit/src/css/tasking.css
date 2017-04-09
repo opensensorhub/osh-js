@@ -177,7 +177,7 @@
     float:left;
 }
 
-.ptz-right .select-style {
+.ptz-right .ptz-select-style {
     padding: 0;
     margin: 0;
     border: 1px solid #ccc;
@@ -187,7 +187,7 @@
     position: relative;
 }
 
-.ptz-right .select-style:before {
+.ptz-right .ptz-select-style:before {
     font-family: FontAwesome;
     content: "\f0d7";
     font-size: 25px;
@@ -199,7 +199,7 @@
     top:0px;
 }
 
-.ptz-right .select-style select {
+.ptz-right .ptz-select-style select {
     padding: 4px 8px;
     width: 100%;
     background-color: transparent;
@@ -212,7 +212,7 @@
     border-radius: 2px;
 }
 
-.ptz-right .select-style select:focus {
+.ptz-right .ptz-select-style select:focus {
     outline: none;
 }
 
