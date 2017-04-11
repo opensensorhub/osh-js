@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: osh/osh-Utils.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: osh/osh-Utils.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var MAX_LONG = Math.pow(2, 53) + 1;
+
+/**
+ *
+ * @constructor
+ */
+OSH.Utils = function() {}
+
+/**
+ *
+ * @returns {string}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.randomUUID = function() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&amp;0x3|0x8);
+    return v.toString(16);
+  });
+};
+
+/**
+ *
+ * @param xmlStr
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.jsonix_XML2JSON = function (xmlStr) {
+  var module = SOS_2_0_Module_Factory();
+  var context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
+  var unmarshaller = context.createUnmarshaller();
+  var jsonData = unmarshaller.unmarshalString(xmlStr);
+  return jsonData;
+};
+
+//buffer is an ArrayBuffer object, the offset if specified in bytes, and the type is a string
+//corresponding to an OGC data type.
+//See http://def.seegrid.csiro.au/sissvoc/ogc-def/resource?uri=http://www.opengis.net/def/dataType/OGC/0/
+/**
+ *
+ * @param buffer
+ * @param offset
+ * @param type
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.ParseBytes = function (buffer, offset, type) {
+  var view = new DataView(buffer);
+
+  //Note: There exist types not listed in the map below that have OGC definitions, but no appropriate
+  //methods or corresponding types available for parsing in javascript. They are float128, float16, signedLong,
+  //and unsignedLong
+  var typeMap = {
+    double: function (offset) {
+      return {val: view.getFloat64(offset), bytes: 8};
+    },
+    float64: function (offset) {
+      return {val: view.getFloat64(offset), bytes: 8};
+    },
+    float32: function (offset) {
+      return {val: view.getFloat32(offset), bytes: 4};
+    },
+    signedByte: function (offset) {
+      return {val: view.getInt8(offset), bytes: 1};
+    },
+    signedInt: function (offset) {
+      return {val: view.getInt32(offset), bytes: 4};
+    },
+    signedShort: function (offset) {
+      return {val: view.getInt16(offset), bytes: 2};
+    },
+    unsignedByte: function (offset) {
+      return {val: view.getUint8(offset), bytes: 1};
+    },
+    unsignedInt: function (offset) {
+      return {val: view.getUint32(offset), bytes: 4};
+    },
+    unsignedShort: function (offset) {
+      return {val: view.getUint16(offset), bytes: 2};
+    },
+    //TODO: string-utf-8:
+  };
+  return typeMap[type](offset);
+};
+
+//This function recursivley iterates over the resultStructure to fill in
+//values read from data which should be an ArrayBuffer containing the payload from a websocket
+/**
+ *
+ * @param struct
+ * @param data
+ * @param offsetBytes
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.ReadData = function(struct, data, offsetBytes) {
+  var offset = offsetBytes;
+  for(var i = 0 ; i &lt; struct.fields.length; i++) {
+    var currFieldStruct = struct.fields[i];
+    if(typeof currFieldStruct.type != 'undefined' &amp;&amp; currFieldStruct.type != null) {
+      var ret = OSH.Utils.ParseBytes(data, offset, currFieldStruct.type);
+      currFieldStruct.val = ret.val;
+      offset += ret.bytes;
+    } else if(typeof currFieldStruct.count != 'undefined' &amp;&amp; currFieldStruct.count != null) {
+      //check if count is a reference to another variable
+      if(isNaN(currFieldStruct.count))
+      {
+        var id = currFieldStruct.count;
+        var fieldName = struct.id2FieldMap[id];
+        currFieldStruct.count = struct.findFieldByName(fieldName).val;
+      }
+      for(var c = 0; c &lt; currFieldStruct.count; c++) {
+        for(var j = 0 ; j &lt; currFieldStruct.fields.length; j++) {
+          var field = JSON.parse(JSON.stringify(currFieldStruct.fields[j]));
+          offset = OSH.Utils.ReadData(field, data, offset);
+          currFieldStruct.val.push(field);
+        }
+      }
+    }
+  }
+  return offset;
+}
+
+/**
+ *
+ * @param resultStructure
+ * @returns {{}}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.GetResultObject = function(resultStructure) {
+  //TODO: handle cases for nested arrays / matrix data types
+  var result = {};
+  for(var i = 0; i &lt; resultStructure.fields.length; i++) {
+    if(typeof resultStructure.fields[i].count != 'undefined') {
+      result[resultStructure.fields[i].name] = [];
+      for(var c = 0; c &lt; resultStructure.fields[i].count; c++) {
+        var item = {};
+        for(var k = 0; k &lt; resultStructure.fields[i].val[c].fields.length; k++) {
+          item[resultStructure.fields[i].val[c].fields[k].name] = resultStructure.fields[i].val[c].fields[k].val;
+        }
+        result[resultStructure.fields[i].name].push(item);
+      }
+    } else {
+      result[resultStructure.fields[i].name] = resultStructure.fields[i].val;
+    }
+  }
+  return result;
+};
+
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isOpera = function () {
+  return (!!window.opr &amp;&amp; !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+};
+
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isFirefox = function() {
+  return typeof InstallTrigger !== 'undefined';
+};
+
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isSafari = function() {
+  return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+};
+
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isIE = function() {
+  return /*@cc_on!@*/false || !!document.documentMode;
+};
+
+/**
+ *
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isChrome = function() {
+  return !!window.chrome &amp;&amp; !!window.chrome.webstore;
+};
+
+/**
+ *
+ * @returns {*|boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isBlink = function() {
+  return (isChrome || isOpera) &amp;&amp; !!window.CSS;
+};
+
+//------- GET X,Y absolute cursor position ---//
+var absoluteXposition = null;
+var absoluteYposition = null;
+
+document.addEventListener('mousemove', onMouseUpdate, false);
+document.addEventListener('mouseenter', onMouseUpdate, false);
+
+function onMouseUpdate(e) {
+  absoluteXposition = e.pageX;
+  absoluteYposition = e.pageY;
+}
+
+/**
+ *
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.getXCursorPosition = function() {
+  return absoluteXposition;
+};
+
+/**
+ *
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.getYCursorPosition = function() {
+  return absoluteYposition;
+};
+
+/**
+ *
+ * @param a
+ * @param b
+ * @returns {boolean}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isArrayIntersect = function(a, b) {
+  return a.intersect(b).length > 0;
+};
+
+/**
+ *
+ * @returns {*}
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.isWebWorker = function() {
+  return Modernizr.webworkers;
+};
+
+/**
+ *
+ * @param div
+ * @instance
+ * @memberof OSH.Utils
+ */
+OSH.Utils.takeScreeshot = function(div) {
+};
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.DataConnector.AjaxConnector.html">AjaxConnector</a></li><li><a href="OSH.DataConnector.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataConnector.WebSocketDataConnector.html">WebSocketDataConnector</a></li><li><a href="OSH.DataReceiver.Chart.html">Chart</a></li><li><a href="OSH.DataReceiver.DataReceiverController.html">DataReceiverController</a></li><li><a href="OSH.DataReceiver.DataSource.html">DataSource</a></li><li><a href="OSH.DataReceiver.EulerOrientation.html">EulerOrientation</a></li><li><a href="OSH.DataReceiver.LatLonAlt.html">LatLonAlt</a></li><li><a href="OSH.DataReceiver.Nexrad.html">Nexrad</a></li><li><a href="OSH.DataReceiver.OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="OSH.DataReceiver.VideoH264.html">VideoH264</a></li><li><a href="OSH.DataReceiver.VideoMjpeg.html">VideoMjpeg</a></li><li><a href="OSH.DataReceiver.VideoMp4.html">VideoMp4</a></li><li><a href="OSH.DataSender.DataSenderController.html">DataSenderController</a></li><li><a href="OSH.DataSender.DataSink.html">DataSink</a></li><li><a href="OSH.DataSender.PtzTasking.html">PtzTasking</a></li><li><a href="OSH.DataSender.UavMapTasking.html">UavMapTasking</a></li><li><a href="OSH.EventManager.html">EventManager</a></li><li><a href="OSH.Log.html">Log</a></li><li><a href="OSH.Sensor.html">Sensor</a></li><li><a href="OSH.Server.html">Server</a></li><li><a href="OSH.UI.CesiumView.html">CesiumView</a></li><li><a href="OSH.UI.ContextMenu.html">ContextMenu</a></li><li><a href="OSH.UI.ContextMenu.CircularMenu.html">CircularMenu</a></li><li><a href="OSH.UI.ContextMenu.CssMenu.html">CssMenu</a></li><li><a href="OSH.UI.ContextMenu.StackMenu.html">StackMenu</a></li><li><a href="OSH.UI.DialogView.html">DialogView</a></li><li><a href="OSH.UI.DiscoveryView.html">DiscoveryView</a></li><li><a href="OSH.UI.EntityTreeView.html">EntityTreeView</a></li><li><a href="OSH.UI.FFMPEGView.html">FFMPEGView</a></li><li><a href="OSH.UI.H264View.html">H264View</a></li><li><a href="OSH.UI.LeafletView.html">LeafletView</a></li><li><a href="OSH.UI.Loading.html">Loading</a></li><li><a href="OSH.UI.MjpegView.html">MjpegView</a></li><li><a href="OSH.UI.Mp4View.html">Mp4View</a></li><li><a href="OSH.UI.Nvd3CurveChartView.html">Nvd3CurveChartView</a></li><li><a href="OSH.UI.OpenLayerView.html">OpenLayerView</a></li><li><a href="OSH.UI.PtzTaskingView.html">PtzTaskingView</a></li><li><a href="OSH.UI.RangeSlider.html">RangeSlider</a></li><li><a href="OSH.UI.Styler.html">Styler</a></li><li><a href="OSH.UI.Styler.Curve.html">Curve</a></li><li><a href="OSH.UI.Styler.ImageDraping.html">ImageDraping</a></li><li><a href="OSH.UI.Styler.Nexrad.html">Nexrad</a></li><li><a href="OSH.UI.Styler.PointMarker.html">PointMarker</a></li><li><a href="OSH.UI.Styler.Polyline.html">Polyline</a></li><li><a href="OSH.UI.View.html">View</a></li><li><a href="OSH.Utils.html">Utils</a></li></ul><h3>Namespaces</h3><ul><li><a href="OSH.html">OSH</a></li><li><a href="OSH.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataReceiver.html">DataReceiver</a></li><li><a href="OSH.DataSender.html">DataSender</a></li><li><a href="OSH.UI.html">UI</a></li><li><a href="OSH.Video.html">Video</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUFFER_STATUS">BUFFER_STATUS</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#INITIAL_BUFFERING_TIME">INITIAL_BUFFERING_TIME</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.0-dev</a> on Tue Aug 30 2016 16:07:27 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

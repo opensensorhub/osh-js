@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Issue #4: Add OpenLayerView</title>
+    
+    <!-- OpenLayers libs -->
+    <link rel="stylesheet" href="../../vendor/openLayer/css/ol.css" />	
+    <link rel="stylesheet" href="../../vendor/openLayer/css/ol3-layerswitcher.css" />	
+    <script src="../../vendor/openLayer/js/ol.js"></script>
+    <script src="../../vendor/openLayer/js/ol3-layerswitcher.js"></script>
+	
+    <!-- OSH libs -->
+    <!-- Hashtable -->
+    <script type="text/javascript" src= "../../src/common/prototype.min.js"></script>
+    
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-LatLonAlt.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-OrientationQuaternion.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
+    
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
+    
+    <style>
+    
+	    body {
+	  	margin: 0;
+	  	height: 100%;
+		}
+		
+		html {
+		  height: 100%;
+		}
+		
+		#container {
+			width:100%;
+			height:calc(100% - 75px);
+		}
+</style>
+</head>
+    <body>
+     <h2>Issue #4: Add OpenLayerView</h2>
+     <div id="container"></div>
+
+	<script type="text/javascript">
+		var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+			bufferingTime : 0*1000, // 2 seconds
+			synchronizedTime : false // true to sync the data
+		});
+	
+		// creates datasource
+
+		//--Android Phone Video
+		var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
+		  protocol : "ws",
+		  service: "SOS",
+		  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+		  offeringID: "urn:android:device:060693280a28e015-sos",
+		  observedProperty: "http://sensorml.com/ont/swe/property/Location",
+		  startTime: "2015-02-16T07:58:00Z",
+		  endTime: "2015-02-16T08:09:00Z",
+		  replaySpeed: "1"
+		});
+	
+		var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
+			  protocol : "ws",
+			  service: "SOS",
+			  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+			  offeringID: "urn:android:device:060693280a28e015-sos",
+			  observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+			  startTime: "2015-02-16T07:58:00Z",
+			  endTime: "2015-02-16T08:09:00Z",
+			  replaySpeed: "1"
+			});
+		
+		var androidEntity = {
+                name: "Android Phone",
+				dataSources: [androidPhoneGpsDataSource.getId(), androidPhoneOrientationDataSource.getId()]
+			}
+		
+		 // creates ol layers
+	    var osm =  new ol.layer.Tile({
+            title: 'OSM',
+            type: 'base',
+            visible: true,
+            source: new ol.source.OSM()
+        });
+	    // creates OSH View
+		var olView = new OSH.UI.OpenLayerView("container",{
+			baseLayers: [],
+			overlayLayers: [osm],
+			defaultLayer : osm,
+			initialView: {lon: 1.42376557, lat: 43.61758626, zoom: 17},
+			autoZoomOnFirstMarker: true,
+			maxZoom : 22
+		});
+		
+		// creates stylers
+		var androidMarkerStyler = new OSH.UI.Styler.PointMarker({
+			location : {
+				x : 1.42376557,
+				y : 43.61758626,
+				z : 100
+			},
+			locationFunc : {
+				dataSourceIds : [androidPhoneGpsDataSource.getId()],
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			orientationFunc : {
+				dataSourceIds : [androidPhoneOrientationDataSource.getId()],
+				handler : function(rec) {
+					return {
+						heading : rec.heading
+					};
+				}
+			},
+			icon : 'images/cameralook.png',
+			iconFunc : {
+				dataSourceIds: [androidPhoneGpsDataSource.getId()],
+				handler : function(rec,timeStamp,options) {
+					if(options.selected) {
+						return 'images/cameralook-selected.png'
+					} else {
+						return 'images/cameralook.png';
+					};
+				}
+			}
+		});
+		
+		var polylineStyler = new OSH.UI.Styler.Polyline({
+			locationFunc : {
+				dataSourceIds : [androidPhoneGpsDataSource.getId()],
+				handler : function(rec) {
+					return {
+						x : rec.lon,
+						y : rec.lat,
+						z : rec.alt
+					};
+				}
+			},
+			color : 'rgba(0,0,255,0.5)',
+			weight : 10,
+			opacity : .5,
+			smoothFactor : 1,
+			maxPoints : 200
+		});
+		
+		// adds view item to the view
+		olView.addViewItem({
+			styler : androidMarkerStyler,
+			name : "Android Phone GPS"
+		});
+		
+		olView.addViewItem({
+			styler : polylineStyler,
+			name : "Android Phone GPS path"
+		});
+		
+		// adds datasources to dataProviderController
+		dataProviderController.addDataSource(androidPhoneGpsDataSource);
+		dataProviderController.addDataSource(androidPhoneOrientationDataSource);
+		
+		// registers the view into the data provider
+		dataProviderController.registerObserver(olView);
+		
+		// adds controller to interact between views
+		var controller = new OSH.EventManager();
+		controller.addView(olView);
+		
+		// adds entities to controller
+		controller.addEntity(androidEntity);
+		
+		// starts streaming
+		dataProviderController.connectAll();
+	</script>
+
+</body>
+</html>

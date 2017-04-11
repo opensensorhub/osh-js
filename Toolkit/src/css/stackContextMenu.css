@@ -1,0 +1,134 @@
+/* Demo by http://creative-punch.net */
+
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
+
+.stack-menu-container {
+    position: absolute;
+    width: 150px;
+    overflow-y: hidden;
+    overflow-x:hidden;
+    box-shadow: 7px 7px 10px 2px #777;
+    text-align: center;
+    z-index:9999;
+    border-radius: 3px;
+}
+
+.stack-menu {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.open.stack-menu {
+    box-shadow: 0px 0px 20px 1px #777;
+    background-color: #777;
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.8;
+    opacity: 0.8;
+    height: 100%;
+    cursor: pointer;
+}
+
+.close.stack-menu-container {
+    display:none;
+}
+
+.close.stack-menu {
+    display:none;
+}
+
+.stack-menu-circle {
+    height: 100%;
+    opacity: 0;
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.open.stack-menu-circle {
+    padding-left: 10px;
+    padding-top: 10px;
+    background-color: #777;
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.8;
+    opacity: 0.8;
+}
+
+.stack-menu-circle a {
+    color: white;
+    line-height: 15px;
+    width: 100%;
+    margin-bottom: 15px;
+    text-align:left;
+}
+
+.stack-menu-circle a:hover {
+    color: #eef;
+    text-decoration: none;
+}
+
+.open.stack-menu-button {
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.close.stack-menu-button {
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+}
+
+.open.stack-menu-container{
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+    display:block;
+}
+
+.close.stack-menu-container{
+    -webkit-transition: all 0.4s ease-out;
+    -moz-transition: all 0.4s ease-out;
+    transition: all 0.4s ease-out;
+    display:none;
+}
+
+.stack-menu-button {
+    text-decoration: none;
+    text-align: center;
+    color: #f5f5f5 !important;
+    text-decoration: none;
+    scale: 0.5;
+    text-align: center !important;
+    padding-top: 7px !important;
+    padding-right: 5px !important;
+    border-top: solid 1px;
+    margin-left: -10px !important;
+    margin-top:2px;
+}
+
+.stack-menu a {
+    text-decoration: none;
+}
+
+.stack-menu-button:hover {
+    color: #0078A8 !important;
+    margin-left:-10px !important;
+    -webkit-transform: none;
+    -moz-transform: none;
+    transform:none;
+}
+
+.stack-menu-circle a:hover {
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    transform: scale(1.2);
+    margin-left:15px;
+    cursor:default;
+}
+
+.stack-menu-label {
+    margin-left:10px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}

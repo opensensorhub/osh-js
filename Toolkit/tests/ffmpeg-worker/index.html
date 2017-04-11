@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>OSH Discovery test</title>
+
+    <!-- VENDOR -->
+    <script type="text/javascript" src="vendor/YUVCanvas.js"></script>
+
+    <script type="text/javascript" src="vendor/broadway-all.min.js"></script>
+    <script type="text/javascript" src="vendor/Decoder.js"></script>
+    <script type="text/javascript" src="vendor/Player.js"></script>
+
+    <script type="text/javascript" src="vendor/ffmpeg-h264.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-MapEvent.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript"
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/video/osh-UI-H264View.js"></script>
+
+    <style>
+
+        body {
+            margin: 0;
+            height: 100%;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .video canvas{
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-selected {
+            border-radius: 3px;
+            box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+        }
+
+        .video{
+            width: 1024px;
+            height: 768px;
+            border:solid 1px #000;
+            margin-right:10px;
+            margin-bottom:10px;
+        }
+
+        .fps-video{
+            float:left;
+        }
+
+        .control {
+            margin-bottom: 20px;;
+        }
+    </style>
+</head>
+<body id="body">
+<h2>FFMPEG Web worker test</h2>
+<div class="control">
+    <button onclick="addVideo(false)">Add Video (no WebWorker)</button>
+    <button onclick="addVideo(true)">Add Video (WebWorker)</button>
+</div>
+<script type="text/javascript">
+    var videoIdCount = 0;
+
+    // We can add a group of dataSources and set the options
+    var dataReceiverController = new OSH.DataReceiver.DataReceiverController({
+        replayFactor : 1
+    });
+
+    function addVideo(useWebWorker){
+        // create div element
+        var fpsVideoDiv = document.createElement("div");
+        fpsVideoDiv.setAttribute("class","fps-video");
+
+        var spanFpsEl = document.createElement("span");
+        spanFpsEl.innerHTML= "WebWorker: "+useWebWorker+", Fps: 0, Avg: 0";
+
+        var videoContainerEl = document.createElement("div");
+        videoContainerEl.setAttribute("id","video-container-"+(videoIdCount));
+        videoContainerEl.setAttribute("class","video");
+
+        fpsVideoDiv.appendChild(spanFpsEl);
+        fpsVideoDiv.appendChild(videoContainerEl);
+
+        document.body.appendChild(fpsVideoDiv);
+
+        var videoDataSource = new OSH.DataReceiver.VideoH264("FFMPEG h264 ", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:a0e0eac2fea3f614-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "2016-08-11T20:17:30.402Z",
+            endTime: "2016-08-11T20:18:05.451Z",
+            syncMasterTime: false,
+            bufferingTime: 0,
+            replaySpeed:1
+        });
+
+        //------------ VIEW -----------------//
+
+        // Video 1 View
+        var videoView = new OSH.UI.H264View(videoContainerEl.id, {
+            dataSourceId: videoDataSource.id,
+            css: "video",
+            cssSelected: "video-selected",
+            name: "Android Video",
+            useWorker:useWebWorker,
+            width:1024,
+            height:768
+        });
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : 1
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(videoDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+
+        videoIdCount++;
+
+        // display FPS
+        videoView.onAfterDecoded = function() {
+            spanFpsEl.innerHTML= "WebWorker: "+useWebWorker+", Fps: "+this.statistics.fps.toFixed(2)+", Avg: "+this.statistics.fpsSinceStart.toFixed(2);
+        };
+    }
+</script>
+
+</body>
+</html>
