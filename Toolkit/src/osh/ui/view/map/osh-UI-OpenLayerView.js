@@ -23,6 +23,7 @@
 OSH.UI.OpenLayerView = OSH.UI.View.extend({
     initialize: function (divId, viewItems, options) {
         this._super(divId, viewItems, options);
+        this.onResize();
     },
 
     /**
@@ -433,5 +434,16 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         this.polylines[id] = pathGeometry;
 
         return id;
-    }
+    },
+
+    /**
+     *
+     * @param $super
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
+    onResize:function($super) {
+        this._super();
+        this.map.updateSize();
+    },
 });
