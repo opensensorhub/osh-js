@@ -157,6 +157,8 @@ OSH.UI.View = BaseClass.extend({
         if(this.elementDiv.style.display == "none") {
             this.elementDiv.style.display = "block";
         }
+
+        this.onResize();
     },
 
     /**
