@@ -25,8 +25,18 @@ var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
     css: "video",
     cssSelected: "video-selected",
     name: "Video",
-    useWorker:true
+    useWorker:true,
+    useWebWorkerTransferableData: false // this is because you can speed up the data transfert between main script and web worker
+                                            by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
+                                            See the not below for more details(*).
 });
+
+ (*)The transferableData actually transfers the ownership of the object to or from the web worker.
+    It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
+    is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
+    you cannot use the data for anything else (like another viewer).
+
+    The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 OSH.UI.FFMPEGView = OSH.UI.View.extend({
     initialize: function (divId, options) {
@@ -57,6 +67,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
         this.useWorker = OSH.Utils.isWebWorker();
         this.resetCalled = true;
+        this.useTransferableData = false;
 
         if (typeof options != "undefined") {
             if (options.width) {
@@ -77,6 +88,10 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
                 if(divElt.offsetHeight < height) {
                     height = divElt.offsetHeight;
                 }
+            }
+
+            if(options.useWebWorkerTransferableData) {
+                this.useWebWorkerTransferableData = options.useWebWorkerTransferableData;
             }
         }
 
@@ -299,12 +314,29 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     decodeWorker: function (pktSize, pktData) {
-        var transferableData = {
-            pktSize: pktSize,
-            pktData: pktData.buffer,
-            byteOffset:pktData.byteOffset
-        };
-        this.worker.postMessage(transferableData, [transferableData.pktData]);
+        // the transferableData actually transfer the ownership of the object to or from the web worker.
+        // It's like passing by reference where a copy isn't made.
+        // The difference between it and the normal pass-by-reference is that the side that transferred the data can no longer access it.
+
+        if(this.useWebWorkerTransferableData) {
+            var transferableData = {
+                pktSize: pktSize,
+                pktData: pktData.buffer,
+                byteOffset:pktData.byteOffset
+            };
+            this.worker.postMessage(transferableData, [transferableData.pktData]);
+        } else {
+            // no transferable data
+            // a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
+
+            var noTransferableObjData = {
+                pktSize: pktSize,
+                pktData: pktData,
+                byteOffset: pktData.byteOffset
+            };
+
+            this.worker.postMessage(noTransferableObjData);
+        }
     },
 
     //-------------------------------------------------------//
