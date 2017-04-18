@@ -20,7 +20,7 @@
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  * @example
-var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
+ var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
     dataSourceId: videoDataSource.id,
     css: "video",
     cssSelected: "video-selected",
@@ -32,11 +32,11 @@ var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
 });
 
  (*)The transferableData actually transfers the ownership of the object to or from the web worker.
-    It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
-    is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
-    you cannot use the data for anything else (like another viewer).
+ It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
+ is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
+ you cannot use the data for anything else (like another viewer).
 
-    The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
+ The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 OSH.UI.FFMPEGView = OSH.UI.View.extend({
     initialize: function (divId, options) {
@@ -48,9 +48,9 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
         this.nbFrames = 0;
         /*
-        for 1920 x 1080 @ 25 fps = 7 MB/s
-        1 frame = 0.28MB
-        178 frames = 50MB
+         for 1920 x 1080 @ 25 fps = 7 MB/s
+         1 frame = 0.28MB
+         178 frames = 50MB
          */
         this.FLUSH_LIMIT  = 200;
 
@@ -128,37 +128,12 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var pktData = data.data;
         var pktSize = pktData.length;
 
+        this.resetCalled = false;
         if (this.useWorker) {
-            this.resetCalled = false;
             this.decodeWorker(pktSize, pktData);
         } else {
-           var decodedFrame = this.decode(pktSize, pktData);
-            if(typeof decodedFrame != "undefined") {
-                // adjust canvas size to fit to the decoded frame
-                if(decodedFrame.frame_width != this.yuvCanvas.width) {
-                    this.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
-                    this.yuvCanvas.width = decodedFrame.frame_width;
-                }
-                if(decodedFrame.frame_height != this.yuvCanvas.height) {
-                    this.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
-                    this.yuvCanvas.height = decodedFrame.frame_height;
-                }
-
-                this.yuvCanvas.drawNextOuptutPictureGL({
-                    yData: decodedFrame.frameYData,
-                    yDataPerRow: decodedFrame.frame_width,
-                    yRowCnt: decodedFrame.frame_height,
-                    uData: decodedFrame.frameUData,
-                    uDataPerRow: decodedFrame.frame_width / 2,
-                    uRowCnt: decodedFrame.frame_height / 2,
-                    vData: decodedFrame.frameVData,
-                    vDataPerRow: decodedFrame.frame_width / 2,
-                    vRowCnt: decodedFrame.frame_height / 2
-                });
-
-                this.updateStatistics();
-                this.onAfterDecoded();
-            }
+            var decodedFrame = this.decode(pktSize, pktData);
+            this.displayFrame(decodedFrame);
         }
 
         this.nbFrames++;
@@ -168,7 +143,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
 
     checkFlush: function() {
-        if(this.nbFrames >= this.FLUSH_LIMIT) {
+        if(!this.useWorker && this.nbFrames >= this.FLUSH_LIMIT) {
             this.nbFrames = 0;
             _avcodec_flush_buffers(this.av_ctx);
         }
@@ -274,36 +249,42 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var self = this;
         this.worker.onmessage = function (e) {
             var decodedFrame = e.data;
-
-            if (!this.resetCalled) {
-                self.yuvCanvas.canvasElement.drawing = true;
-                // adjust canvas size to fit to the decoded frame
-                if(decodedFrame.frame_width != self.yuvCanvas.width) {
-                    self.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
-                    self.yuvCanvas.width = decodedFrame.frame_width;
-                }
-                if(decodedFrame.frame_height != self.yuvCanvas.height) {
-                    self.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
-                    self.yuvCanvas.height = decodedFrame.frame_height;
-                }
-
-                self.yuvCanvas.drawNextOuptutPictureGL({
-                    yData: decodedFrame.frameYData,
-                    yDataPerRow: decodedFrame.frame_width,
-                    yRowCnt: decodedFrame.frame_height,
-                    uData: decodedFrame.frameUData,
-                    uDataPerRow: decodedFrame.frame_width / 2,
-                    uRowCnt: decodedFrame.frame_height / 2,
-                    vData: decodedFrame.frameVData,
-                    vDataPerRow: decodedFrame.frame_width / 2,
-                    vRowCnt: decodedFrame.frame_height / 2
-                });
-                self.yuvCanvas.canvasElement.drawing = false;
-
-                self.updateStatistics();
-                self.onAfterDecoded();
-            }
+            this.displayFrame(decodedFrame);
         }.bind(this);
+    },
+
+    displayFrame:function(decodedFrame) {
+        if (!this.resetCalled && decodedFrame !== undefined) {
+            this.yuvCanvas.canvasElement.drawing = true;
+            // adjust canvas size to fit to the decoded frame
+            if(decodedFrame.frame_width != this.yuvCanvas.width) {
+                this.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
+                this.yuvCanvas.width = decodedFrame.frame_width;
+            }
+            if(decodedFrame.frame_height != this.yuvCanvas.height) {
+                this.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
+                this.yuvCanvas.height = decodedFrame.frame_height;
+            }
+
+            this.yuvCanvas.drawNextOuptutPictureGL({
+                yData: decodedFrame.frameYData,
+                yDataPerRow: decodedFrame.frame_width,
+                yRowCnt: decodedFrame.frame_height,
+                uData: decodedFrame.frameUData,
+                uDataPerRow: decodedFrame.frame_width / 2,
+                uRowCnt: decodedFrame.frame_height / 2,
+                vData: decodedFrame.frameVData,
+                vDataPerRow: decodedFrame.frame_width / 2,
+                vRowCnt: decodedFrame.frame_height / 2
+            });
+            this.yuvCanvas.canvasElement.drawing = false;
+
+            this.updateStatistics();
+            this.onAfterDecoded();
+            delete decodedFrame.frameYData;
+            delete decodedFrame.frameUData;
+            delete decodedFrame.frameVData;
+        }
     },
 
     /**
@@ -398,29 +379,68 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      */
     decode: function (pktSize, pktData) {
         if(pktSize > this.maxPktSize) {
-            this.av_pkt = Module._malloc(96);
+            // dealloc old allocation
+            Module._free(this.av_pktData);
             this.av_pktData = Module._malloc(pktSize);
-            _av_init_packet(this.av_pkt);
             Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
             this.maxPktSize = pktSize;
         }
+
+        /*// prepare packet
+         Module.setValue(this.av_pkt + 28, pktSize, 'i32');
+         Module.writeArrayToMemory(pktData, this.av_pktData);
+
+         // decode next frame
+         var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
+         if (len < 0) {
+         console.log("Error while decoding frame");
+         return;
+         }
+
+         if (Module.getValue(this.got_frame, 'i8') == 0) {
+         //console.log("No frame");
+         return;
+         }
+
+         var decoded_frame = this.av_frame;
+         var frame_width = Module.getValue(decoded_frame + 68, 'i32');
+         var frame_height = Module.getValue(decoded_frame + 72, 'i32');
+         //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
+
+         // copy Y channel to canvas
+         var frameYDataPtr = Module.getValue(decoded_frame, '*');
+         var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
+         var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
+
+         return {
+         frame_width: frame_width,
+         frame_height: frame_height,
+         frameYDataPtr: frameYDataPtr,
+         frameUDataPtr: frameUDataPtr,
+         frameVDataPtr: frameVDataPtr,
+         frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
+         frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
+         frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
+         };*/
+        var self = this;
         // prepare packet
-        Module.setValue(this.av_pkt + 28, pktSize, 'i32');
-        Module.writeArrayToMemory(pktData, this.av_pktData);
+        Module.setValue(self.av_pkt + 28, pktSize, 'i32');
+
+        Module.writeArrayToMemory(pktData, self.av_pktData);
 
         // decode next frame
-        var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
+        var len = _avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt);
         if (len < 0) {
             console.log("Error while decoding frame");
             return;
         }
 
-        if (Module.getValue(this.got_frame, 'i8') == 0) {
+        if (Module.getValue(self.got_frame, 'i8') == 0) {
             //console.log("No frame");
             return;
         }
 
-        var decoded_frame = this.av_frame;
+        var decoded_frame = self.av_frame;
         var frame_width = Module.getValue(decoded_frame + 68, 'i32');
         var frame_height = Module.getValue(decoded_frame + 72, 'i32');
         //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
@@ -430,15 +450,25 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
         var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
 
-        return {
-            frame_width: frame_width,
-            frame_height: frame_height,
-            frameYDataPtr: frameYDataPtr,
-            frameUDataPtr: frameUDataPtr,
-            frameVDataPtr: frameVDataPtr,
-            frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
-            frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
-            frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
-        };
+
+        try {
+            var arrY = new Uint8Array(Module.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height));
+            var arrU = new Uint8Array(Module.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2));
+            var arrV = new Uint8Array(Module.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2));
+
+            return {
+                frame_width: frame_width,
+                frame_height: frame_height,
+                frameYDataPtr: frameYDataPtr,
+                frameUDataPtr: frameUDataPtr,
+                frameVDataPtr: frameVDataPtr,
+                frameYData: arrY,
+                frameUData: arrU,
+                frameVData: arrV
+            };
+        } catch(e) {
+            console.error(e);
+            return undefined;
+        }
     },
 });
