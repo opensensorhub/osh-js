@@ -11,9 +11,19 @@
         <script src="js/osh.js"></script>
      -->
 
+    <
     <div id="liveTasking-form-container" class="liveTasking-form-container">
         <form id="liveTasking-form-id">
             <ul>
+                <li>
+                    <label>Camera type:</label>
+                    <div class="select-style">
+                        <select id="camera-type">
+                            <option value="Rpan,rtilt generic model" selected>Rpan, Rtilt generic</option>
+                            <option value="foscam">Foscam</option>
+                         </select>
+                    </div>
+                </li>
                 <li>
                     <label for="sosEndpoint">SOS Endpoint:</label>
                     <input id="liveTasking-sosEndpointId" type="text" name="sosEndpoint" class="input-text" value="localhost:8181/sensorhub/sos" required/>
@@ -217,6 +227,47 @@
         .liveTasking-form-container .input-text {
             padding-right: 5px;
         }
+
+        /** Discovery Select box **/
+        .liveTasking-form-container .select-style {
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            overflow: hidden;
+            background-color: #fff;
+            position: relative;
+            width: 335px;
+        }
+
+        .liveTasking-form-container .select-style:before {
+            font-family: FontAwesome;
+            content: "\f0d7";
+            font-size: 25px;
+            display: inline-block;
+            position: absolute;
+            pointer-events: none;
+            right: 5px;
+            color: #777;
+            top:4px;
+        }
+
+        .liveTasking-form-container .select-style select {
+            padding: 2px 8px;
+            width: 335px;
+            background-color: transparent;
+            background-image: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: 1px solid #aaa;
+            box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
+            border-radius: 2px;
+        }
+
+        .liveTasking-form-container .select-style select:focus {
+            outline: none;
+        }
     </style>
     <script>
         OSH.EventManager.observeDiv("liveTasking-form-id","submit",onFormSubmit);
@@ -253,7 +304,7 @@
                 name: "Foscam live tasking",
                 show:true,
                 dockable: false,
-                closeable: false,
+                closeable: true,
                 connectionIds : [videoDataSource.id]
             });
 
@@ -261,16 +312,28 @@
             videoView.attachTo(videoDialog.popContentDiv.id);
 
             //--------------------- SPS ------------------------------------//
-            var ptzTasking = new OSH.DataSender.FoscamPtzTasking("Ptz",{
-                protocol: "http",
-                service: "SPS",
-                version: "2.0",
-                endpointUrl: document.getElementById("liveTasking-spsEndpointId").value,
-                offeringID: document.getElementById("liveTasking-spsOffId").value
-            });
+            var ptzTasking;
 
-            console.log(document.getElementById("liveTasking-spsEndpointId").value);
-            console.log(document.getElementById("liveTasking-spsOffId").value);
+            var selectCamType = document.getElementById("camera-type");
+            var camType = selectCamType.options[selectCamType.selectedIndex].value;
+            if(camType === "foscam") {
+                ptzTasking = new OSH.DataSender.FoscamPtzTasking("Ptz", {
+                    protocol: "http",
+                    service: "SPS",
+                    version: "2.0",
+                    endpointUrl: document.getElementById("liveTasking-spsEndpointId").value,
+                    offeringID: document.getElementById("liveTasking-spsOffId").value
+                });
+            } else {
+                ptzTasking = new OSH.DataSender.PtzTasking("Ptz", {
+                    protocol: "http",
+                    service: "SPS",
+                    version: "2.0",
+                    endpointUrl: document.getElementById("liveTasking-spsEndpointId").value,
+                    offeringID: document.getElementById("liveTasking-spsOffId").value
+                });
+            }
+
 
             var ptzView  = new OSH.UI.PtzTaskingView("",{
                 dataSenderId:ptzTasking.id,

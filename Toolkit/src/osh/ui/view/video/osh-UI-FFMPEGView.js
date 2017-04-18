@@ -36,6 +36,14 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var width = "640";
         var height = "480";
 
+        this.nbFrames = 0;
+        /*
+        for 1920 x 1080 @ 25 fps = 7 MB/s
+        1 frame = 0.28MB
+        178 frames = 50MB
+         */
+        this.FLUSH_LIMIT  = 200;
+
         this.statistics = {
             videoStartTime: 0,
             videoPictureCounter: 0,
@@ -137,9 +145,19 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
                 this.onAfterDecoded();
             }
         }
+
+        this.nbFrames++;
+        //check for flush
+        this.checkFlush();
     },
 
 
+    checkFlush: function() {
+        if(this.nbFrames >= this.FLUSH_LIMIT) {
+            this.nbFrames = 0;
+            _avcodec_flush_buffers(this.av_ctx);
+        }
+    },
     /**
      *
      * @param $super

@@ -220,7 +220,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onChange: function(rpan, rtilt, rzoom,preset) {
         OSH.EventManager.fire(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.dataSenderId,{
-            cmdData : {rpan,rtilt,rzoom,preset},
+            cmdData : {rpan:rpan,rtilt:rtilt,rzoom:rzoom,preset:preset},
             onSuccess:function(event){console.log("Failed to send request: "+event);},
             onError:function(event){console.log("Request sent successfully: "+event);}
         });
