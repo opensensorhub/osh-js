@@ -8,7 +8,7 @@
     <!-- VENDOR -->
     <script type="text/javascript" src="vendor/YUVCanvas.js"></script>
 
-    <script type="text/javascript" src="js/workers/ffmpeg-h264.js"></script>
+    <!--script type="text/javascript" src="js/workers/ffmpeg-h264.js"></script-->
 
     <!-- OSH Core -->
     <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
@@ -24,6 +24,7 @@
     <!-- OSH Video component parser -->
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
     <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
 
     <!-- OSH Video component parser -->
@@ -38,8 +39,9 @@
     <style>
 
         .video {
-            width: inherit;
-            height:inherit;
+            width: 612px;
+            height:338px;
+            border:solid 1px lightgrey;
         }
 
         .video img{
@@ -57,94 +59,65 @@
             box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
         }
 
-        .dialog-multidialog {
-            width: 540px;
-            height:350px;
+        .videoElement {
+            float:left;
+            padding: 5px 5px 5px 5px;
+            background:radial-gradient(rgba(161, 222, 240, 0.75), rgba(64, 129, 147, 0.75)), url(http://i.imgur.com/3JZchqt.png), url(http://i.imgur.com/9kxBTzr.jpg);
         }
     </style>
 </head>
 <body id="body">
 <h2>Foscam tasking test</h2>
-<div id="video_1"></div>
-<div id="video_2"></div>
-<div id="video_3"></div>
+<div><input type="button" value="Add" id="add-button" /></div>
+<div id="video-container"></div>
 <script type="text/javascript">
+
     // We can add a group of dataSources and set the options
     var dataReceiverController = new OSH.DataReceiver.DataReceiverController({
         replayFactor : 1
     });
 
-    // OSH connect
-    var videoDataSource_1 = new OSH.DataReceiver.VideoH264("H264 video ", {
-        protocol: "ws",
-        service: "SOS",
-        endpointUrl: "192.168.2.146:8182/sensorhub/sos",
-        offeringID: "urn:mysos:offering:foscam-r2",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: "now",
-        endTime: "2055-08-11T20:18:05.451Z",
-        syncMasterTime: false,
-        bufferingTime: 0
-    });
+    //var NUM_VIEWS = 6;
+    var USE_WEB_WORKERS = true;
 
-    var videoDataSource_2 = new OSH.DataReceiver.VideoH264("H264 video ", {
-        protocol: "ws",
-        service: "SOS",
-        endpointUrl: "192.168.2.146:8182/sensorhub/sos",
-        offeringID: "urn:mysos:offering:foscam-r2",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: "now",
-        endTime: "2055-08-11T20:18:05.451Z",
-        syncMasterTime: false,
-        bufferingTime: 0
-    });
+    var videoContainer = document.getElementById("video-container");
+   // for(var i = 0;i < NUM_VIEWS; i++) {
 
-    var videoDataSource_3 = new OSH.DataReceiver.VideoH264("H264 video ", {
-        protocol: "ws",
-        service: "SOS",
-        endpointUrl: "192.168.2.146:8182/sensorhub/sos",
-        offeringID: "urn:mysos:offering:foscam-r2",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: "now",
-        endTime: "2055-08-11T20:18:05.451Z",
-        syncMasterTime: false,
-        bufferingTime: 0
-    });
+    var i = 0;
+    document.getElementById("add-button").onclick = function() {
+        var videoElt = document.createElement("div");
+        videoElt.className = "videoElement";
 
-    var videoView_1 = new OSH.UI.FFMPEGView("video_1", {
-        dataSourceId: videoDataSource_1.id,
-        css: "video",
-        cssSelected: "video-selected",
-        name: "Android Video",
-        useWorker:true,
-        width:1280,
-        height:720
-    });
+        videoElt.id = "video_" + (++i);
+        videoContainer.appendChild(videoElt);
 
-    var videoView_2 = new OSH.UI.FFMPEGView("video_2", {
-        dataSourceId: videoDataSource_2.id,
-        css: "video",
-        cssSelected: "video-selected",
-        name: "Android Video",
-        useWorker:true,
-        width:1280,
-        height:720
-    });
+        var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video " + i, {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "localhost:8182/sensorhub/sos",
+            offeringID: "urn:mysos:offering:foscam-r2",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "now",
+            endTime: "2055-08-11T20:18:05.451Z",
+            syncMasterTime: false,
+            bufferingTime: 0
+        });
 
-    var videoView_3 = new OSH.UI.FFMPEGView("video_3", {
-        dataSourceId: videoDataSource_3.id,
-        css: "video",
-        cssSelected: "video-selected",
-        name: "Android Video",
-        useWorker:true,
-        width:1280,
-        height:720
-    });
 
-    dataReceiverController.addDataSource(videoDataSource_1);
-    dataReceiverController.addDataSource(videoDataSource_2);
-    dataReceiverController.addDataSource(videoDataSource_3);
-   dataReceiverController.connectAll();
+        var videoView_1 = new OSH.UI.FFMPEGView(videoElt.id, {
+            dataSourceId: videoDataSource.id,
+            css: "video",
+            cssSelected: "video-selected",
+            name: "Android Video",
+            useWorker: USE_WEB_WORKERS,
+            useWebWorkerTransferableData: true,
+            width: 1920,
+            height: 1080
+        });
+        dataReceiverController.addDataSource(videoDataSource);
+        OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE,{dataSourcesId:[videoDataSource.id]});
+    };
+    //}
 </script>
 
 </body>

@@ -94,9 +94,9 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.buffer.addEventListener('abort', function(e) { /*console.log('abort: ' + mediaSource.readyState);*/ });
 
       this.buffer.addEventListener('updateend', function() { // Note: Have tried 'updateend'
-        if(this.queue.length > 0 && !this.buffer.updating) {
+        /*if(this.queue.length > 0 && !this.buffer.updating) {
           this.buffer.appendBuffer(this.queue.shift());
-        }
+        }*/
       }.bind(this));
     }.bind(this), false);
 
@@ -124,10 +124,13 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
    * @memberof OSH.UI.Mp4View
    */
   setData: function(dataSourceId,data) {
-      if (this.buffer.updating || this.queue.length > 0) {
+      /*if (this.buffer.updating || this.queue.length > 0) {
         this.queue.push(data.data);
       } else {
         this.buffer.appendBuffer(data.data);
+      }*/
+      if(!this.buffer.updating) {
+          this.buffer.appendBuffer(data.data);
       }
   },
 
