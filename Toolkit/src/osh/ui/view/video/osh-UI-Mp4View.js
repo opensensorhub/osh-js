@@ -79,7 +79,12 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.mediaSource.duration = 10000000;
       this.video.play();
 
-      this.buffer = this.mediaSource.addSourceBuffer('video/mp4; codecs="avc1.640029"; profiles="isom,iso2,avc1,iso6,mp41"');
+        /**
+         * avc1.42E01E: H.264 Constrained Baseline Profile Level 3
+           avc1.4D401E: H.264 Main Profile Level 3
+           avc1.64001E: H.264 High Profile Level 3
+         */
+      this.buffer = this.mediaSource.addSourceBuffer('	video/mp4; codecs="avc1.64001E"; profiles="isom,iso2,avc1,iso6,mp41"');
       
       var mediaSource = this.mediaSource;
       
@@ -89,12 +94,11 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
           this.buffer.appendBuffer(this.queue.shift());
         }
       }.bind(this));
-      this.buffer.addEventListener('updateend', function(e) { /*console.log('updateend: ' + mediaSource.readyState);*/ });
       this.buffer.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
       this.buffer.addEventListener('abort', function(e) { /*console.log('abort: ' + mediaSource.readyState);*/ });
 
       this.buffer.addEventListener('updateend', function() { // Note: Have tried 'updateend'
-        if(this.queue.length > 0 && !this.buffer.updating) {
+        if(this.queue.length > 0) {
           this.buffer.appendBuffer(this.queue.shift());
         }
       }.bind(this));
@@ -129,6 +133,9 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       } else {
         this.buffer.appendBuffer(data.data);
       }
+      /*if(!this.buffer.updating) {
+          this.buffer.appendBuffer(data.data);
+      }*/
   },
 
   /**

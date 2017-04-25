@@ -64,14 +64,13 @@ OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.exten
                                 ws.onmessage = function (event) {
                                     //callback data on message received
                                     if (event.data.byteLength > 0) {
-                                        //this.onMessage(event.data);
-                                        self.postMessage(event.data);
+                                       self.postMessage(event.data,[event.data]);
                                     }
                                 }
 
                                 ws.onerror = function(event) {
                                     ws.close();
-                                }
+                                };
                             }
 
                             function close() {
