@@ -145,6 +145,35 @@ OSH.Sensor = BaseClass.extend({
     }
   },
 
+  getFeatureOfInterest:function() {
+      var req = this.server.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + this.procedure;
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+              console.log(xhr.responseText);
+              var foisResp = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
+
+              console.log(foisResp.value.featureMember);
+              if(typeof foisResp == "undefined") {
+                  foisResp = [];
+              }
+              this.onGetFeatureOfInterest(foisResp);
+          }
+      }.bind(this);
+      xhr.open('GET', req, true);
+      xhr.send();
+  },
+
+    /**
+     *
+     * @param resultStruct
+     * @param resultEncoding
+     * @instance
+     * @memberof OSH.Sensor
+     */
+    onGetFeatureOfInterest: function (resultStruct, resultEncoding) {
+
+    },
   /**
    *
    * @param fieldStruct
