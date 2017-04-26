@@ -394,6 +394,15 @@ OSH.Utils.jsonix_XML2JSON = function (xmlStr) {
   return jsonData;
 };
 
+
+OSH.Utils.jsonix_JSON2XML = function (jsonStr) {
+    var module = SOS_2_0_Module_Factory();
+    var context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
+    var marshaller = context.createMarshaller();
+    var xmlData = marshaller.marshalString(jsonStr);
+    return xmlData;
+};
+
 //buffer is an ArrayBuffer object, the offset if specified in bytes, and the type is a string
 //corresponding to an OGC data type.
 //See http://def.seegrid.csiro.au/sissvoc/ogc-def/resource?uri=http://www.opengis.net/def/dataType/OGC/0/
@@ -1290,21 +1299,42 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
     sendRequest: function (request) {
         var self = this;
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST", this.getUrl(), true);
-        xmlhttp.setRequestHeader('Content-Type', 'text/xml');
-        xmlhttp.send(request);
-
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState < 4) {
-                // while waiting response from server
-            }  else if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
-                if (xmlhttp.status == 200 && xmlhttp.status < 300) { // http status between 200 to 299 are all successful
-                    this.onSuccess(xmlhttp.responseText);
-                } else {
-                    this.onError("");
+        xmlhttp.timeout = 60000;
+        if(request == null) {
+            console.log(this.getUrl());
+            xmlhttp.open("GET", this.getUrl(), true);
+            xmlhttp.responseType = "arraybuffer";
+            xmlhttp.onload = function (oEvent) {
+                console.log("ici");
+                var arrayBuffer = xmlhttp.response; // Note: not oReq.responseText
+                if (arrayBuffer) {
+                    this.onMessage(arrayBuffer);
                 }
-            }
-        }.bind(this);
+            };
+            xmlhttp.ontimeout = function (e) {
+                console.log("Timeout");
+            };
+
+            xmlhttp.send(null);
+        } else {
+            xmlhttp.open("POST", this.getUrl(), true);
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+            xmlhttp.send(request);
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState < 4) {
+                    // while waiting response from server
+                }  else if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+                    if (xmlhttp.status == 200 && xmlhttp.status < 300) { // http status between 200 to 299 are all successful
+                        this.onSuccess(xmlhttp.responseText);
+                    } else {
+                        this.onError("");
+                    }
+                }
+            }.bind(this);
+        }
+
+
     },
 
     /**
@@ -1325,6 +1355,10 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
      */
     onSuccess:function(event) {
 
+    },
+
+    connect:function(){
+        this.sendRequest(null);
     }
 });
 /***************************** BEGIN LICENSE BLOCK ***************************
@@ -1393,14 +1427,13 @@ OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.exten
                                 ws.onmessage = function (event) {
                                     //callback data on message received
                                     if (event.data.byteLength > 0) {
-                                        //this.onMessage(event.data);
-                                        self.postMessage(event.data);
+                                       self.postMessage(event.data,[event.data]);
                                     }
                                 }
 
                                 ws.onerror = function(event) {
                                     ws.close();
-                                }
+                                };
                             }
 
                             function close() {
@@ -1543,6 +1576,11 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
       this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
       // connects the callback
       this.connector.onMessage = this.onMessage.bind(this);
+    } else if(properties.protocol == "http") {
+        this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
+        this.connector.responseType = "arraybuffer";
+        // connects the callback
+        this.connector.onMessage = this.onMessage.bind(this);
     }
   },
   /**
@@ -1579,11 +1617,10 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
    * @memberof OSH.DataReceiver.DataSource
    */
   onMessage: function(data) {
-    var data = {
-      timeStamp: this.parseTimeStamp(data) + this.timeShift,
-      data: this.parseData(data)
-    };
-    this.onData(data);
+    this.onData({
+        timeStamp: this.parseTimeStamp(data) + this.timeShift,
+        data: this.parseData(data)
+    });
   },
 
   /**
@@ -2179,8 +2216,7 @@ OSH.DataReceiver.VideoH264 = OSH.DataReceiver.DataSource.extend({
      * @instance
      */
     parseData: function (data) {
-        var len = data.byteLength;
-        return new Uint8Array(data, 12, len - 12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
+        return new Uint8Array(data, 12, data.byteLength - 12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
     }
 });
 
@@ -3484,6 +3520,33 @@ OSH.Sensor = BaseClass.extend({
     }
   },
 
+  getFeatureOfInterest:function() {
+      var req = this.server.url + 'sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + this.procedure;
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+              var foisResp = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
+
+              if(typeof foisResp == "undefined") {
+                  foisResp = [];
+              }
+              this.onGetFeatureOfInterest(foisResp);
+          }
+      }.bind(this);
+      xhr.open('GET', req, true);
+      xhr.send();
+  },
+
+    /**
+     *
+     * @param resultStruct
+     * @param resultEncoding
+     * @instance
+     * @memberof OSH.Sensor
+     */
+    onGetFeatureOfInterest: function (resultStruct, resultEncoding) {
+
+    },
   /**
    *
    * @param fieldStruct
@@ -4057,6 +4120,8 @@ OSH.UI.View = BaseClass.extend({
         if(this.elementDiv.style.display == "none") {
             this.elementDiv.style.display = "block";
         }
+
+        this.onResize();
     },
 
     /**
@@ -7540,6 +7605,7 @@ L.Map = L.Map.extend({
 OSH.UI.OpenLayerView = OSH.UI.View.extend({
     initialize: function (divId, viewItems, options) {
         this._super(divId, viewItems, options);
+        this.onResize();
     },
 
     /**
@@ -7950,7 +8016,18 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         this.polylines[id] = pathGeometry;
 
         return id;
-    }
+    },
+
+    /**
+     *
+     * @param $super
+     * @instance
+     * @memberof OSH.UI.LeafletView
+     */
+    onResize:function($super) {
+        this._super();
+        this.map.updateSize();
+    },
 });
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -8711,28 +8788,28 @@ OSH.UI.RangeSlider = OSH.UI.View.extend({
  *
  */
 var htmlTaskingComponent="";
-htmlTaskingComponent += "<div id=\"zoomptz\" class=\"ptz-zoom\">";
-htmlTaskingComponent += "<div id=\"ptz-zoom-in\" class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
-htmlTaskingComponent += "<div class=\"ptz-zoom-bar\"></div>";
-htmlTaskingComponent += "<div id=\"ptz-zoom-out\" class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "<div class=\"ptz-zoom\">";
+htmlTaskingComponent += "   <div class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>";
+htmlTaskingComponent += "   <div class=\"ptz-zoom-bar\"></div>";
+htmlTaskingComponent += "   <div class=\"ptz-zoom-out\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></div>";
 htmlTaskingComponent += "<\/div>";
-htmlTaskingComponent += "<div id=\"leftptz\" class=\"ptz\">";
-htmlTaskingComponent += "   <div id=\"ptz-move-up\" tag=\"0\" class='moveUp' name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-top-left\" tag=\"91\" class='moveTopLeft' name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-top-right\" tag=\"90\" class=\"moveTopRight\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-left\" tag=\"6\" class=\"moveLeft\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-home\" cmd=\"ptzReset\" class=\"reset\" title=\"Center\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-right\" tag=\"4\" class=\"moveRight\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-bottom-left\" tag=\"93\" class=\"moveBottomLeft\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-bottom-right\" tag=\"92\" class=\"moveBottomRight\" name=\"\"><\/div>";
-htmlTaskingComponent += "   <div id=\"ptz-move-down\" tag=\"2\" class=\"moveDown\" name=\"\"><\/div>";
+htmlTaskingComponent += "<div class=\"ptz\">";
+htmlTaskingComponent += "   <div tag=\"0\" class='moveUp' name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"91\" class='moveTopLeft' name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"90\" class=\"moveTopRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"6\" class=\"moveLeft\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div cmd=\"ptzReset\" class=\"reset\" title=\"Center\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"4\" class=\"moveRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"93\" class=\"moveBottomLeft\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"92\" class=\"moveBottomRight\" name=\"\"><\/div>";
+htmlTaskingComponent += "   <div tag=\"2\" class=\"moveDown\" name=\"\"><\/div>";
 htmlTaskingComponent += "<\/div>";
-htmlTaskingComponent += "<div id=\"rightptz\" class=\"ptz-right\">";
+htmlTaskingComponent += "<div class=\"ptz-right\">";
 htmlTaskingComponent += "<ul>";
 htmlTaskingComponent += "            <li>";
 htmlTaskingComponent += "                <label>Presets:<\/label>";
-htmlTaskingComponent += "                <div class=\"select-style\">";
-htmlTaskingComponent += "                     <select id=\"ptz-presets\" required pattern=\"^(?!Select a Preset).*\">";
+htmlTaskingComponent += "                <div class=\"ptz-select-style\">";
+htmlTaskingComponent += "                     <select class=\"ptz-presets\" required pattern=\"^(?!Select a Preset).*\">";
 htmlTaskingComponent += "                         <option value=\"\" disabled selected>Select a Preset<\/option>";
 htmlTaskingComponent += "                     <\/select>";
 htmlTaskingComponent += "                <\/div>";
@@ -8791,23 +8868,23 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
 
         this.observers = [];
 
-        document.getElementById("ptz-move-up").onclick = function(){this.onTiltClick(increment)}.bind(this);
-        document.getElementById("ptz-move-top-left").onclick = function(){this.onTiltPanClick(-1*increment,increment)}.bind(this);
-        document.getElementById("ptz-move-top-right").onclick =  function(){this.onTiltPanClick(increment,increment)}.bind(this);
-        document.getElementById("ptz-move-right").onclick =  function(){this.onPanClick(increment)}.bind(this);
-        document.getElementById("ptz-move-left").onclick =  function(){this.onPanClick(-1*increment)}.bind(this);
-        document.getElementById("ptz-move-down").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
-        document.getElementById("ptz-move-bottom-left").onclick = function(){this.onTiltPanClick(-1*increment,-1*increment)}.bind(this);
-        document.getElementById("ptz-move-bottom-right").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
-        document.getElementById("ptz-zoom-in").onclick =  function(){this.onZoomClick(increment)}.bind(this);
-        document.getElementById("ptz-zoom-out").onclick =  function(){this.onZoomClick(-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveUp").onclick = function(){this.onTiltClick(increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveTopLeft").onclick = function(){this.onTiltPanClick(-1*increment,increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveTopRight").onclick =  function(){this.onTiltPanClick(increment,increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveRight").onclick =  function(){this.onPanClick(increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveLeft").onclick =  function(){this.onPanClick(-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveDown").onclick =  function(){this.onTiltClick(-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveBottomLeft").onclick = function(){this.onTiltPanClick(-1*increment,-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz > .moveBottomRight").onclick =  function(){this.onTiltPanClick(increment,-1*increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz-zoom > .ptz-zoom-in").onclick =  function(){this.onZoomClick(increment)}.bind(this);
+        document.querySelector('#'+this.rootTag.id+ " >  .ptz-zoom > .ptz-zoom-out").onclick =  function(){this.onZoomClick(-1*increment)}.bind(this);
 
         // add presets if any
         if(typeof (options) !== "undefined" && (options.presets)) {
             this.addPresets(options.presets);
 
             // add listeners
-            OSH.EventManager.observeDiv("ptz-presets","change",this.onSelectedPresets.bind(this));
+            document.querySelector('#'+this.rootTag.id+ "  .ptz-right  .ptz-select-style  .ptz-presets").onchange = this.onSelectedPresets.bind(this);
         }
     },
 
@@ -8818,8 +8895,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      * @memberof OSH.UI.PtzTaskingView
      */
     addPresets:function(presetsArr) {
-        var selectTag = document.getElementById("ptz-presets");
-
+        var selectTag = document.querySelector('#'+this.rootTag.id+ "  .ptz-right  .ptz-select-style  .ptz-presets");
         for(var i in presetsArr) {
             var option = document.createElement("option");
             option.text = presetsArr[i];
@@ -8835,7 +8911,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      * @instance
      */
     onSelectedPresets : function(event) {
-        var serverTag = document.getElementById("ptz-presets");
+        var serverTag = document.querySelector('#'+this.rootTag.id+ "  .ptz-right  .ptz-select-style  .ptz-presets");
         var option = serverTag.options[serverTag.selectedIndex];
         this.onChange(null,null,null,option.value);
     },
@@ -8909,7 +8985,7 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
      */
     onChange: function(rpan, rtilt, rzoom,preset) {
         OSH.EventManager.fire(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.dataSenderId,{
-            cmdData : {rpan,rtilt,rzoom,preset},
+            cmdData : {rpan:rpan,rtilt:rtilt,rzoom:rzoom,preset:preset},
             onSuccess:function(event){console.log("Failed to send request: "+event);},
             onError:function(event){console.log("Request sent successfully: "+event);}
         });
@@ -8939,13 +9015,23 @@ OSH.UI.PtzTaskingView = OSH.UI.View.extend({
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  * @example
-var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
+ var videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
     dataSourceId: videoDataSource.id,
     css: "video",
     cssSelected: "video-selected",
     name: "Video",
-    useWorker:true
+    useWorker:true,
+    useWebWorkerTransferableData: false // this is because you can speed up the data transfert between main script and web worker
+                                            by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
+                                            See the not below for more details(*).
 });
+
+ (*)The transferableData actually transfers the ownership of the object to or from the web worker.
+ It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
+ is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
+ you cannot use the data for anything else (like another viewer).
+
+ The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 OSH.UI.FFMPEGView = OSH.UI.View.extend({
     initialize: function (divId, options) {
@@ -8954,6 +9040,14 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         this.fps = 0;
         var width = "640";
         var height = "480";
+
+        this.nbFrames = 0;
+        /*
+         for 1920 x 1080 @ 25 fps = 7 MB/s
+         1 frame = 0.28MB
+         178 frames = 50MB
+         */
+        this.FLUSH_LIMIT  = 200;
 
         this.statistics = {
             videoStartTime: 0,
@@ -8968,6 +9062,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
         this.useWorker = OSH.Utils.isWebWorker();
         this.resetCalled = true;
+        this.useTransferableData = false;
 
         if (typeof options != "undefined") {
             if (options.width) {
@@ -8988,6 +9083,10 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
                 if(divElt.offsetHeight < height) {
                     height = divElt.offsetHeight;
                 }
+            }
+
+            if(options.useWebWorkerTransferableData) {
+                this.useWebWorkerTransferableData = options.useWebWorkerTransferableData;
             }
         }
 
@@ -9024,41 +9123,27 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var pktData = data.data;
         var pktSize = pktData.length;
 
+        this.resetCalled = false;
+
         if (this.useWorker) {
-            this.resetCalled = false;
             this.decodeWorker(pktSize, pktData);
         } else {
-           var decodedFrame = this.decode(pktSize, pktData);
-            if(typeof decodedFrame != "undefined") {
-                // adjust canvas size to fit to the decoded frame
-                if(decodedFrame.frame_width != this.yuvCanvas.width) {
-                    this.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
-                    this.yuvCanvas.width = decodedFrame.frame_width;
-                }
-                if(decodedFrame.frame_height != this.yuvCanvas.height) {
-                    this.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
-                    this.yuvCanvas.height = decodedFrame.frame_height;
-                }
-
-                this.yuvCanvas.drawNextOuptutPictureGL({
-                    yData: decodedFrame.frameYData,
-                    yDataPerRow: decodedFrame.frame_width,
-                    yRowCnt: decodedFrame.frame_height,
-                    uData: decodedFrame.frameUData,
-                    uDataPerRow: decodedFrame.frame_width / 2,
-                    uRowCnt: decodedFrame.frame_height / 2,
-                    vData: decodedFrame.frameVData,
-                    vDataPerRow: decodedFrame.frame_width / 2,
-                    vRowCnt: decodedFrame.frame_height / 2
-                });
-
-                this.updateStatistics();
-                this.onAfterDecoded();
-            }
+            var decodedFrame = this.decode(pktSize, pktData);
+            this.displayFrame(decodedFrame);
+            this.update = false;
         }
+        this.nbFrames++;
+        //check for flush
+        this.checkFlush();
     },
 
 
+    checkFlush: function() {
+        if(!this.useWorker && this.nbFrames >= this.FLUSH_LIMIT) {
+            this.nbFrames = 0;
+            _avcodec_flush_buffers(this.av_ctx);
+        }
+    },
     /**
      *
      * @param $super
@@ -9158,38 +9243,61 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         this.worker = new Worker('js/workers/osh-UI-FFMPEGViewWorker.js');
 
         var self = this;
+        var decodedFrame;
+
+        function release(decodedFrame) {
+            self.worker.postMessage({
+                data: decodedFrame,
+                release:true
+            }, [
+                decodedFrame.y.buffer,
+                decodedFrame.u.buffer,
+                decodedFrame.v.buffer
+            ]);
+        }
+
         this.worker.onmessage = function (e) {
-            var decodedFrame = e.data;
+            if(e.data !== null) {
+                decodedFrame = e.data.data;
+                this.displayFrame(e.data.width,e.data.height,decodedFrame);
 
-            if (!this.resetCalled) {
-                self.yuvCanvas.canvasElement.drawing = true;
-                // adjust canvas size to fit to the decoded frame
-                if(decodedFrame.frame_width != self.yuvCanvas.width) {
-                    self.yuvCanvas.canvasElement.width = decodedFrame.frame_width;
-                    self.yuvCanvas.width = decodedFrame.frame_width;
-                }
-                if(decodedFrame.frame_height != self.yuvCanvas.height) {
-                    self.yuvCanvas.canvasElement.height = decodedFrame.frame_height;
-                    self.yuvCanvas.height = decodedFrame.frame_height;
-                }
-
-                self.yuvCanvas.drawNextOuptutPictureGL({
-                    yData: decodedFrame.frameYData,
-                    yDataPerRow: decodedFrame.frame_width,
-                    yRowCnt: decodedFrame.frame_height,
-                    uData: decodedFrame.frameUData,
-                    uDataPerRow: decodedFrame.frame_width / 2,
-                    uRowCnt: decodedFrame.frame_height / 2,
-                    vData: decodedFrame.frameVData,
-                    vDataPerRow: decodedFrame.frame_width / 2,
-                    vRowCnt: decodedFrame.frame_height / 2
-                });
-                self.yuvCanvas.canvasElement.drawing = false;
-
-                self.updateStatistics();
-                self.onAfterDecoded();
+                release(decodedFrame);
             }
         }.bind(this);
+        this.worker.onerror = function (e) {
+          console.error(e);
+        };
+    },
+
+    displayFrame:function(width,height,decodedFrame) {
+        if (!this.resetCalled) {
+            this.yuvCanvas.canvasElement.drawing = true;
+            // adjust canvas size to fit to the decoded frame
+            if(width != this.yuvCanvas.width) {
+                this.yuvCanvas.canvasElement.width = width;
+                this.yuvCanvas.width = width;
+            }
+            if(height != this.yuvCanvas.height) {
+                this.yuvCanvas.canvasElement.height = height;
+                this.yuvCanvas.height = height;
+            }
+
+            this.yuvCanvas.drawNextOuptutPictureGL({
+                yData: decodedFrame.y,
+                yDataPerRow: width,
+                yRowCnt: height,
+                uData: decodedFrame.u,
+                uDataPerRow: width / 2,
+                uRowCnt: height / 2,
+                vData: decodedFrame.v,
+                vDataPerRow: width / 2,
+                vRowCnt: height / 2
+            });
+            this.yuvCanvas.canvasElement.drawing = false;
+
+            this.updateStatistics();
+            this.onAfterDecoded();
+        }
     },
 
     /**
@@ -9200,12 +9308,25 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     decodeWorker: function (pktSize, pktData) {
-        var transferableData = {
-            pktSize: pktSize,
-            pktData: pktData.buffer,
-            byteOffset:pktData.byteOffset
-        };
-        this.worker.postMessage(transferableData, [transferableData.pktData]);
+        // the transferableData actually transfer the ownership of the object to or from the web worker.
+        // It's like passing by reference where a copy isn't made.
+        // The difference between it and the normal pass-by-reference is that the side that transferred the data can no longer access it.
+
+        if (this.useWebWorkerTransferableData) {
+            this.worker.postMessage({data:pktData,release:false}, [pktData.buffer]);
+        } else {
+            // no transferable data
+            // a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
+
+            var noTransferableObjData = {
+                pktSize: pktSize,
+                pktData: pktData,
+                byteOffset: pktData.byteOffset
+            };
+
+            this.worker.postMessage(noTransferableObjData);
+        }
+
     },
 
     //-------------------------------------------------------//
@@ -9253,8 +9374,6 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         // init decode frame function
         this.got_frame = Module._malloc(4);
         this.maxPktSize = 1024 * 50;
-
-
     },
 
     /**
@@ -9266,49 +9385,101 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     decode: function (pktSize, pktData) {
-        if(pktSize > this.maxPktSize) {
-            this.av_pkt = Module._malloc(96);
-            this.av_pktData = Module._malloc(pktSize);
-            _av_init_packet(this.av_pkt);
-            Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
-            this.maxPktSize = pktSize;
+        if(!this.update) {
+            this.update = true;
+            if (pktSize > this.maxPktSize) {
+                // dealloc old allocation
+                Module._free(this.av_pktData);
+                this.av_pktData = Module._malloc(pktSize);
+                Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
+                this.maxPktSize = pktSize;
+            }
+
+            /*// prepare packet
+             Module.setValue(this.av_pkt + 28, pktSize, 'i32');
+             Module.writeArrayToMemory(pktData, this.av_pktData);
+
+             // decode next frame
+             var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
+             if (len < 0) {
+             console.log("Error while decoding frame");
+             return;
+             }
+
+             if (Module.getValue(this.got_frame, 'i8') == 0) {
+             //console.log("No frame");
+             return;
+             }
+
+             var decoded_frame = this.av_frame;
+             var frame_width = Module.getValue(decoded_frame + 68, 'i32');
+             var frame_height = Module.getValue(decoded_frame + 72, 'i32');
+             //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
+
+             // copy Y channel to canvas
+             var frameYDataPtr = Module.getValue(decoded_frame, '*');
+             var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
+             var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
+
+             return {
+             frame_width: frame_width,
+             frame_height: frame_height,
+             frameYDataPtr: frameYDataPtr,
+             frameUDataPtr: frameUDataPtr,
+             frameVDataPtr: frameVDataPtr,
+             frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
+             frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
+             frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
+             };*/
+            var self = this;
+            // prepare packet
+            Module.setValue(self.av_pkt + 28, pktSize, 'i32');
+
+            Module.writeArrayToMemory(pktData, self.av_pktData);
+
+            // decode next frame
+            var len = _avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt);
+            if (len < 0) {
+                console.log("Error while decoding frame");
+                return null;
+            }
+
+            if (Module.getValue(self.got_frame, 'i8') == 0) {
+                //console.log("No frame");
+                return null;
+            }
+
+            var decoded_frame = self.av_frame;
+            var frame_width = Module.getValue(decoded_frame + 68, 'i32');
+            var frame_height = Module.getValue(decoded_frame + 72, 'i32');
+            //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
+
+            // copy Y channel to canvas
+            var frameYDataPtr = Module.getValue(decoded_frame, '*');
+            var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
+            var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
+
+
+            try {
+                var arrY = new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height);
+                var arrU = new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2);
+                var arrV = new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2);
+
+                return {
+                    frame_width: frame_width,
+                    frame_height: frame_height,
+                    frameYDataPtr: frameYDataPtr,
+                    frameUDataPtr: frameUDataPtr,
+                    frameVDataPtr: frameVDataPtr,
+                    frameYData: arrY,
+                    frameUData: arrU,
+                    frameVData: arrV
+                };
+            } catch (e) {
+                console.error(e);
+                return null;
+            }
         }
-        // prepare packet
-        Module.setValue(this.av_pkt + 28, pktSize, 'i32');
-        Module.writeArrayToMemory(pktData, this.av_pktData);
-
-        // decode next frame
-        var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
-        if (len < 0) {
-            console.log("Error while decoding frame");
-            return;
-        }
-
-        if (Module.getValue(this.got_frame, 'i8') == 0) {
-            //console.log("No frame");
-            return;
-        }
-
-        var decoded_frame = this.av_frame;
-        var frame_width = Module.getValue(decoded_frame + 68, 'i32');
-        var frame_height = Module.getValue(decoded_frame + 72, 'i32');
-        //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
-
-        // copy Y channel to canvas
-        var frameYDataPtr = Module.getValue(decoded_frame, '*');
-        var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
-        var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
-
-        return {
-            frame_width: frame_width,
-            frame_height: frame_height,
-            frameYDataPtr: frameYDataPtr,
-            frameUDataPtr: frameUDataPtr,
-            frameVDataPtr: frameVDataPtr,
-            frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
-            frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
-            frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
-        };
     },
 });
 /***************************** BEGIN LICENSE BLOCK ***************************
@@ -9666,7 +9837,12 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       this.mediaSource.duration = 10000000;
       this.video.play();
 
-      this.buffer = this.mediaSource.addSourceBuffer('video/mp4; codecs="avc1.640029"; profiles="isom,iso2,avc1,iso6,mp41"');
+        /**
+         * avc1.42E01E: H.264 Constrained Baseline Profile Level 3
+           avc1.4D401E: H.264 Main Profile Level 3
+           avc1.64001E: H.264 High Profile Level 3
+         */
+      this.buffer = this.mediaSource.addSourceBuffer('	video/mp4; codecs="avc1.64001E"; profiles="isom,iso2,avc1,iso6,mp41"');
       
       var mediaSource = this.mediaSource;
       
@@ -9676,12 +9852,11 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
           this.buffer.appendBuffer(this.queue.shift());
         }
       }.bind(this));
-      this.buffer.addEventListener('updateend', function(e) { /*console.log('updateend: ' + mediaSource.readyState);*/ });
       this.buffer.addEventListener('error', function(e) { /*console.log('error: ' + mediaSource.readyState);*/ });
       this.buffer.addEventListener('abort', function(e) { /*console.log('abort: ' + mediaSource.readyState);*/ });
 
       this.buffer.addEventListener('updateend', function() { // Note: Have tried 'updateend'
-        if(this.queue.length > 0 && !this.buffer.updating) {
+        if(this.queue.length > 0) {
           this.buffer.appendBuffer(this.queue.shift());
         }
       }.bind(this));
@@ -9716,6 +9891,9 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
       } else {
         this.buffer.appendBuffer(data.data);
       }
+      /*if(!this.buffer.updating) {
+          this.buffer.appendBuffer(data.data);
+      }*/
   },
 
   /**
