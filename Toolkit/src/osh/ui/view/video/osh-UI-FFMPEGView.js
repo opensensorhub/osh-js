@@ -137,7 +137,6 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             this.displayFrame(decodedFrame);
             this.update = false;
         }
-        this.nbFrames++;
         //check for flush
         this.checkFlush();
     },
