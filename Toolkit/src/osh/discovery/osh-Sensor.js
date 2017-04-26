@@ -150,10 +150,8 @@ OSH.Sensor = BaseClass.extend({
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function () {
           if (xhr.readyState == 4 && xhr.status == 200) {
-              console.log(xhr.responseText);
               var foisResp = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
 
-              console.log(foisResp.value.featureMember);
               if(typeof foisResp == "undefined") {
                   foisResp = [];
               }
