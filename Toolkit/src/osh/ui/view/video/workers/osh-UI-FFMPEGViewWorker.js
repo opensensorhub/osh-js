@@ -1,4 +1,6 @@
 importScripts("ffmpeg-h264.js");
+
+console.log("init worker");
 // register all compiled codecs
 Module.ccall('avcodec_register_all');
 
@@ -17,10 +19,10 @@ if (ret < 0) {
     console.error("Could not initialize codec");
 }
 
-
+var AV_PKDATA_DEFAULT = 1024 * 50;
 // allocate packet
 self.av_pkt = Module._malloc(96);
-self.av_pktData = Module._malloc(1024 * 3000);
+self.av_pktData = Module._malloc(AV_PKDATA_DEFAULT);
 _av_init_packet(self.av_pkt);
 Module.setValue(self.av_pkt + 24, self.av_pktData, '*');
 
@@ -31,55 +33,170 @@ if (!self.av_frame)
 
 // init decode frame function
 self.got_frame = Module._malloc(4);
+self.maxPktSize = AV_PKDATA_DEFAULT;
+
+self.bufferCounters = 0;
+
+// init static buffers
+self.init = false;
+self.signed = 0;
+self.width = 0;
+self.height = 0;
+
+self.MAX_INPUT_BUFFER_SIZE = 25;
+self.inputBuffers = new Array();
+self.outputBuffer = null;
+self.id = Math.floor((Math.random() * 10000) + 1);
 
 self.onmessage = function (e) {
-    var data = e.data;
-    var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize));
-    if (typeof decodedFrame != "undefined") {
-        self.postMessage(decodedFrame, [
-            decodedFrame.frameYData.buffer,
-            decodedFrame.frameUData.buffer,
-            decodedFrame.frameVData.buffer
-        ]);
+    // release from main thread
+    if(e.data.release) {
+        self.outputBuffer = e.data.data;
+        self.outputBuffer.inUse = false;
+        if(self.inputBuffers.length > 0 && !self.consumeLock) {
+            consume();
+        }
+    } else {
+        if(!self.init) {
+            if(computeSize(e.data.data.byteLength, e.data.data)) {
+                initBuffers();
+                self.init = true;
+                produce(e.data.data.byteLength, e.data.data);
+            }
+        } else {
+            // incoming data from main thread
+            produce(e.data.data.byteLength, e.data.data);
+            if(!self.outputBuffer.inUse && !self.consumeLock) {
+                consume();
+            }
+
+        }
     }
 };
 
-function innerWorkerDecode(pktSize, pktData) {
+function initBuffers() {
+    self.outputBuffer = {
+        signed: self.signed,
+        y: new Uint8Array(new ArrayBuffer(self.width * self.height)),
+        u: new Uint8Array(new ArrayBuffer((self.width * self.height) / 4)),
+        v: new Uint8Array(new ArrayBuffer((self.width * self.height) / 4)),
+        inUse:false
+    };
+}
+
+function computeSize(pktSize,pktData) {
+    if (pktSize > self.maxPktSize) {
+        // dealloc old allocation
+        Module._free(this.av_pktData);
+        self.av_pktData = Module._malloc(pktSize);
+        Module.setValue(self.av_pkt + 24, self.av_pktData, '*');
+        self.maxPktSize = pktSize;
+    }
     // prepare packet
     Module.setValue(self.av_pkt + 28, pktSize, 'i32');
     Module.writeArrayToMemory(pktData, self.av_pktData);
 
     // decode next frame
+    if (_avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt) < 0) {
+        //console.log("Error while decoding frame");
+        return false;
+    }
+
+    if (Module.getValue(self.got_frame, 'i8') == 0) {
+        return false;
+    }
+
+    var decoded_frame = self.av_frame;
+    var frame_width = Module.getValue(decoded_frame + 68, 'i32');
+    var frame_height = Module.getValue(decoded_frame + 72, 'i32');
+    self.width = frame_width;
+    self.height = frame_height;
+    return true;
+}
+
+// decode frame and store into buffer
+function produce(pktSize,pktData) {
+    if(self.inputBuffers.length < self.MAX_INPUT_BUFFER_SIZE) {
+        self.inputBuffers.push({pktSize:pktSize,pktData:pktData});
+    }
+    // otherwise skip frame
+}
+
+function consume() {
+    self.consumeLock = true;
+    // compute frame
+
+    var inputBuffer = self.inputBuffers.shift();
+    if (inputBuffer.pktSize > self.maxPktSize) {
+        // dealloc old allocation
+        Module._free(this.av_pktData);
+        self.av_pktData = Module._malloc(inputBuffer.pktSize);
+        Module.setValue(self.av_pkt + 24, self.av_pktData, '*');
+        self.maxPktSize = inputBuffer.pktSize;
+    }
+
+    // prepare packet
+    Module.setValue(self.av_pkt + 28, inputBuffer.pktSize, 'i32');
+    Module.writeArrayToMemory(inputBuffer.pktData, self.av_pktData);
+
+    // decode next frame
     var len = _avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt);
     if (len < 0) {
-        console.log("Error while decoding frame");
+        //console.log("Error while decoding frame");
+        self.consumeLock = false;
         return;
     }
 
     if (Module.getValue(self.got_frame, 'i8') == 0) {
-        //console.log("No frame");
+        self.consumeLock = false;
         return;
     }
 
     var decoded_frame = self.av_frame;
     var frame_width = Module.getValue(decoded_frame + 68, 'i32');
     var frame_height = Module.getValue(decoded_frame + 72, 'i32');
-    //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
 
-    // copy Y channel to canvas
-    var frameYDataPtr = Module.getValue(decoded_frame, '*');
-    var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
-    var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
+    if (self.width != frame_width || self.height != frame_height) {
+        self.width = frame_width;
+        self.height = frame_height;
+    }
 
+    try {
+        // copy Y channel to canvas
+        var frameYDataPtr = Module.getValue(decoded_frame, '*');
+        var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
+        var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
 
-    return {
-        frame_width: frame_width,
-        frame_height: frame_height,
-        frameYDataPtr: frameYDataPtr,
-        frameUDataPtr: frameUDataPtr,
-        frameVDataPtr: frameVDataPtr,
-        frameYData: new Uint8Array(Module.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-        frameUData: new Uint8Array(Module.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-        frameVData: new Uint8Array(Module.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2))
-    };
+        var tmpY = new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height);
+        var tmpU = new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, (frame_width * frame_height) / 4);
+        var tmpV = new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, (frame_width * frame_height) / 4);
+
+        self.outputBuffer.y.set(tmpY);
+        self.outputBuffer.u.set(tmpU);
+        self.outputBuffer.v.set(tmpV);
+
+        tmpY = null;
+        tmpU = null;
+        tmpV = null;
+
+        frameYDataPtr = null;
+        frameUDataPtr = null;
+        frameVDataPtr = null;
+
+        self.outputBuffer.inUse = true;
+        self.postMessage({
+                data: self.outputBuffer,
+                width: self.width,
+                height:self.height
+            },
+            [
+                self.outputBuffer.y.buffer,
+                self.outputBuffer.u.buffer,
+                self.outputBuffer.v.buffer
+            ]);
+    } catch (e) {
+        console.error(e);
+        self.consumeLock = false;
+    }
+    self.consumeLock = false;
 }

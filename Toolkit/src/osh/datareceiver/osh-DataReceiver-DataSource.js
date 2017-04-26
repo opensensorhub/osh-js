@@ -69,6 +69,11 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
       this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
       // connects the callback
       this.connector.onMessage = this.onMessage.bind(this);
+    } else if(properties.protocol == "http") {
+        this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
+        this.connector.responseType = "arraybuffer";
+        // connects the callback
+        this.connector.onMessage = this.onMessage.bind(this);
     }
   },
   /**
@@ -105,11 +110,10 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
    * @memberof OSH.DataReceiver.DataSource
    */
   onMessage: function(data) {
-    var data = {
-      timeStamp: this.parseTimeStamp(data) + this.timeShift,
-      data: this.parseData(data)
-    };
-    this.onData(data);
+    this.onData({
+        timeStamp: this.parseTimeStamp(data) + this.timeShift,
+        data: this.parseData(data)
+    });
   },
 
   /**

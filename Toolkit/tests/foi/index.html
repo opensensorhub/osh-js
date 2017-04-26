@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Features of interest</title>
+
+    <!-- VENDOR -->
+    <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
+
+    <script type="text/javascript" src="js/vkbeautify.0.99.00.beta.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-MapEvent.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript"
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/discovery/osh-Server.js"></script>
+    <script type="text/javascript" src="../../src/osh/discovery/osh-Sensor.js"></script>
+
+</head>
+<body id="body">
+<h2>Test Get feature of interest</h2>
+<textarea id="xmlDetails"></textarea>
+<div id="leafletMap" style="height:100%;width:100%"></div>
+<style>
+    .leaflet-container {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        height: calc(100% - 70px);
+    }
+
+    html {
+        height: 100%;
+    }
+
+    #xmlDetails {
+        float:left;
+        width:50%;
+        height:100%
+    }
+</style>
+<script type="text/javascript">
+    //------------ VIEW -----------------//
+    var leafletMapView = new OSH.UI.LeafletView("leafletMap", []);
+
+    var oshServer = new OSH.Server("http://sensiasoft.net:8181/");
+
+    var mapXml = {};
+
+    var onSuccessGetCapabilities = function(event) {
+        this.sensors = oshServer.sensors;
+
+        for(var i = 0;i < this.sensors.length;i++) {
+            this.sensors[i].onGetFeatureOfInterest = function(foi) {
+                var featureMembers = foi.value.featureMember;
+                if(typeof  featureMembers != "undefined") {
+                    for (var j = 0; j < featureMembers.length; j++) {
+                        var abstractFeature = featureMembers[j].abstractFeature;
+                        mapXml[abstractFeature.value.id] = OSH.Utils.jsonix_JSON2XML(abstractFeature);
+
+                        leafletMapView.addViewItem({
+                            styler: new OSH.UI.Styler.PointMarker({
+                                location: {
+                                    y: 34.7563332,
+                                    x: -86.6778298+j*0.0001,
+                                    z: 15
+                                },
+                                icon: 'images/cameralook.png'
+                            }),
+                            name: "<b>Id</b>:"+abstractFeature.value.id+"<br><b>Name:</b>"+abstractFeature.value.name[0].value+"<br>" +
+                                "</b><b>Description</b>:"+abstractFeature.value.description.value+
+                                "<br/><b>Identifier</b>:"+abstractFeature.value.identifier.value+"<br><br>"+
+                                '<input value="XML" name="XML" type="button" onClick="displayDialog(\''+abstractFeature.value.id+'\')"/>'
+                        });
+                    }
+                }
+            };
+            this.sensors[i].getFeatureOfInterest();
+        }
+    };
+
+    var onErrorGetCapabilities = function(event) {
+        // does something
+    };
+
+
+
+    oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
+
+    function displayDialog(id) {
+        var xmlDiv = document.getElementById("xmlDetails");
+        xmlDiv.value = ""+vkbeautify.xml(mapXml[id]);
+    }
+</script>
+
+</body>
+</html>
