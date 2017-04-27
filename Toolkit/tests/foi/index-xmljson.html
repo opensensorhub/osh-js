@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Features of interest</title>
+
+    <!-- VENDOR -->
+    <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
+
+    <script type="text/javascript" src="js/vkbeautify.0.99.00.beta.js"></script>
+
+    <script type="text/javascript" src="../../vendor-local/xml2json/xmlToJSON.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-MapEvent.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+
+    <!-- OSH Video component parser -->
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript"
+    <script type="text/javascript" src="../../src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/discovery/osh-Server.js"></script>
+    <script type="text/javascript" src="../../src/osh/discovery/osh-Sensor.js"></script>
+
+</head>
+<body id="body">
+<h2>Test Get feature of interest</h2>
+<textarea id="xmlDetails"></textarea>
+<div id="leafletMap" style="height:100%;width:100%"></div>
+<style>
+    .leaflet-container {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        height: calc(100% - 70px);
+    }
+
+    html {
+        height: 100%;
+    }
+
+    #xmlDetails {
+        float:left;
+        width:50%;
+        height:100%
+    }
+</style>
+<script type="text/javascript">
+   var xmlInput =  '   <sos:GetFeatureOfInterestResponse xmlns:sos="http://www.opengis.net/sos/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:sf="http://www.opengis.net/sampling/2.0">  '  +
+       '   <sos:featureMember>  '  +
+       '   <sams:SF_SpatialSamplingFeature gml:id="FOI_WEATHER_STATION_0123456879">  '  +
+       '   <gml:description>Sampling point for Simulated Weather Sensor</gml:description>  '  +
+       '   <gml:identifier codeSpace="uid">urn:osh:sensor:simweather:0123456879-foi</gml:identifier>  '  +
+       '   <gml:name>Simulated Weather Sensor</gml:name>  '  +
+       '   <sf:type xlink:href="http://www.opengis.net/def/samplingFeatureType/OGC-OM/2.0/SF_SamplingPoint"/>  '  +
+       '   <sams:hostedProcedure xlink:href="urn:osh:sensor:simweather:0123456879"/>  '  +
+       '   <sams:shape>  '  +
+       '   <gml:Point gml:id="G1" srsName="http://www.opengis.net/def/crs/EPSG/0/4979" srsDimension="3">  '  +
+       '   <gml:pos>34.8038 -86.7228 0.0</gml:pos>  '  +
+       '   </gml:Point>  '  +
+       '   </sams:shape>  '  +
+       '   </sams:SF_SpatialSamplingFeature>  '  +
+       '   </sos:featureMember>  '  +
+       '  </sos:GetFeatureOfInterestResponse>  ' ;
+
+   var options = {
+       mergeCDATA: true,	// extract cdata and merge with text nodes
+       grokAttr: true,		// convert truthy attributes to boolean, etc
+       grokText: true,		// convert truthy text/attr to boolean, etc
+       normalize: true,	// collapse multiple spaces to single space
+       xmlns: false, 		// include namespaces as attributes in output
+       textKey: 'text', 	// tag name for text nodes
+       valueKey: 'value', 	// tag name for attribute values
+       attrKey: 'attr', 	// tag for attr groups
+       cdataKey: 'cdata',	// tag for cdata nodes (ignored if mergeCDATA is true)
+       attrsAsObject: false, 	// if false, key is used as prefix to name, set prefix to '' to merge children and attrs.
+       stripAttrPrefix: true, 	// remove namespace prefixes from attributes
+       stripElemPrefix: false, 	// for elements of same name in diff namespaces, you can enable namespaces and access the nskey property
+       childrenAsArray: false, 	// force children into arrays
+       attrs: false,
+       localName:true
+   };
+
+   var result = xmlToJSON.parseString(xmlInput,options);
+   console.log(result);
+</script>
+
+</body>
+</html>
