@@ -202,7 +202,7 @@
 				return true;
 		}	
 	
-		function parseDOMChildren( node, path ) {
+		function parseDOMChildren( node, path,pos,parentResult ) {
 			if(node.nodeType == DOMNodeTypes.DOCUMENT_NODE) {
 				var result = new Object;
 				var nodeChildren = node.childNodes;
@@ -211,15 +211,21 @@
 					var child = nodeChildren.item(cidx);
 					if(child.nodeType == DOMNodeTypes.ELEMENT_NODE) {
 						var childName = getNodeLocalName(child);
-						result[childName] = parseDOMChildren(child, childName);
+						result[childName] = parseDOMChildren(child, childName,0);
 					}
 				}
 				return result;
 			}
 			else
 			if(node.nodeType == DOMNodeTypes.ELEMENT_NODE) {
-				var result = new Object;
-				result.__cnt=0;
+				var result = null;
+                if(typeof parentResult != "undefined" && parentResult != null) {
+                    result = parentResult;
+                } else {
+                    result = new Object;
+                    result.__cnt=0;
+				}
+
 				
 				var nodeChildren = node.childNodes;
 
@@ -235,27 +241,35 @@
                     }
                 }
 
+                var i = 0;
+
+                if(typeof pos != "undefined") {
+                	i = pos;
+				}
 				// Children nodes
-				for(var cidx=0; cidx <nodeChildren.length; cidx++) {
+				for(var cidx=i; cidx <nodeChildren.length; cidx++) {
 					var child = nodeChildren.item(cidx); // nodeChildren[cidx];
 					var childName = getNodeLocalName(child);
-					
-					if(child.nodeType!= DOMNodeTypes.COMMENT_NODE) {
+
+					if(childName.length > 0 && childName.isFirstCharUpper()) {
+                       result['type'] = childName;
+                       parseDOMChildren(child, path,0,result);
+                    } else 	if(child.nodeType!= DOMNodeTypes.COMMENT_NODE) {
 						var childPath = path+"."+childName;
+
 						if (checkXmlElementsFilter(result,child.nodeType,childName,childPath)) {
 							result.__cnt++;
 							if(result[childName] == null) {
-								result[childName] = parseDOMChildren(child, childPath);
-								toArrayAccessForm(result, childName, childPath);					
-							}
-							else {
+								result[childName] = parseDOMChildren(child, childPath,0);
+								toArrayAccessForm(result, childName, childPath);
+							} else {
 								if(result[childName] != null) {
 									if( !(result[childName] instanceof Array)) {
 										result[childName] = [result[childName]];
 										toArrayAccessForm(result, childName, childPath);
 									}
 								}
-								(result[childName])[result[childName].length] = parseDOMChildren(child, childPath);
+								(result[childName])[result[childName].length] = parseDOMChildren(child, childPath,0);
 							}
 						}
 					}								
@@ -268,7 +282,7 @@
 					result.__prefix=nodePrefix;
 				}
 				
-				if(result["#text"]!=null) {				
+				if(result["#text"]!=null) {
 					result.__text = result["#text"];
 					if(result.__text instanceof Array) {
 						result.__text = result.__text.join("\n");
@@ -281,6 +295,9 @@
 					if(config.arrayAccessForm=="property")
 						delete result["#text_asArray"];
 					result.__text = checkFromXmlDateTimePaths(result.__text, childName, path+"."+childName);
+                    if(result.__text.length == 0) {
+                    	delete  result.__text;
+					}
 				}
 				if(result["#cdata-section"]!=null) {
 					result.__cdata = result["#cdata-section"];
@@ -424,7 +441,7 @@
 			
 			return result;
 		}
-		
+
 		function getJsonPropertyPath(jsonObjPath, jsonPropName) {
 			if (jsonObjPath==="") {
 				return jsonPropName;
@@ -595,4 +612,12 @@
 			return VERSION;
 		};	
 	}
-}))
+}));
+
+String.prototype.isFirstCharUpper = function(){
+    "use strict";
+
+    var str = this, re = new RegExp('[^A-Z]');
+    return !str.charAt(0).match(re);
+
+};
