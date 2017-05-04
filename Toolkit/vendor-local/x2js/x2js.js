@@ -76,6 +76,13 @@
                 config.removeAttrPrefix = false;
             }
 
+            if(config.xmlns === undefined) {
+                config.xmlns = true;
+            }
+
+            if(config.skip === undefined) {
+                config.skip = [];
+            }
         }
 
         var DOMNodeTypes = {
@@ -250,8 +257,10 @@
                 // Attributes
                 for(var aidx=0; aidx <node.attributes.length; aidx++) {
                     var attr = node.attributes.item(aidx); // [aidx];
+                    if(!config.xmlns && attr.prefix == "xmlns") {
+                        continue;
+                    }
                     result.__cnt++;
-
                     if(config.removeAttrPrefix && typeof attr.localName != "undefined") {
                         result[config.attributePrefix+attr.localName]=attr.value;
                     } else {
@@ -269,13 +278,16 @@
                     var child = nodeChildren.item(cidx); // nodeChildren[cidx];
                     var childName = getNodeLocalName(child);
 
+                    if(config.skip && config.skip.indexOf(childName) > -1){
+                        continue; // skip element
+                    }
                     // check if the element has to be inlined
 
                     if((childName.length > 0 && (childName.isFirstCharUpper()))) {
                         result['type'] = childName;
                         parseDOMChildren(child, path,0,result);
 
-                    } else 	if(child.nodeType!= DOMNodeTypes.COMMENT_NODE) {
+                    } else 	if(child.nodeType != DOMNodeTypes.COMMENT_NODE) {
                         var childPath = path+"."+childName;
 
                         if (checkXmlElementsFilter(result,child.nodeType,childName,childPath)) {
@@ -304,24 +316,24 @@
                 }
 
                 if(result["#text"]!=null) {
-                    result.__text = result["#text"];
-                    if(result.__text instanceof Array) {
-                        result.__text = result.__text.join("\n");
+                    result.value = result["#text"];
+                    if(result.value instanceof Array) {
+                        result.value = result.value.join("\n");
                     }
                     //if(config.escapeMode)
-                    //	result.__text = unescapeXmlChars(result.__text);
+                    //	result.value = unescapeXmlChars(result.value);
                     if(config.stripWhitespaces)
-                        result.__text = result.__text.trim();
+                        result.value = result.value.trim();
                     delete result["#text"];
                     if(config.arrayAccessForm=="property")
                         delete result["#text_asArray"];
-                    result.__text = checkFromXmlDateTimePaths(result.__text, childName, path+"."+childName);
-                    if(result.__text.length == 0) {
-                        delete  result.__text;
+                    result.value = checkFromXmlDateTimePaths(result.value, childName, path+"."+childName);
+                    if(result.value.length == 0) {
+                        delete  result.value;
                     }
 
                     if(checkAsNumericalValue(getNodeLocalName(node),path)){
-                        result.__text = parseFloat(result.__text);
+                        result.value = parseFloat(result.value);
                     }
                 }
                 if(result["#cdata-section"]!=null) {
@@ -335,24 +347,24 @@
                     result = '';
                 }
                 else
-                if( result.__cnt == 1 && result.__text!=null  ) {
-                    result = result.__text;
+                if( result.__cnt == 1 && result.value!=null  ) {
+                    result = result.value;
                 }
                 else
                 if( result.__cnt == 1 && result.__cdata!=null && !config.keepCData  ) {
                     result = result.__cdata;
                 }
                 else
-                if ( result.__cnt > 1 && result.__text!=null && config.skipEmptyTextNodesForObj) {
-                    if( (config.stripWhitespaces && result.__text=="") || (result.__text.trim()=="")) {
-                        delete result.__text;
+                if ( result.__cnt > 1 && result.value!=null && config.skipEmptyTextNodesForObj) {
+                    if( (config.stripWhitespaces && result.value=="") || (result.value.trim()=="")) {
+                        delete result.value;
                     }
                 }
                 delete result.__cnt;
 
-                if( config.enableToStringFunc && (result.__text!=null || result.__cdata!=null )) {
+                if( config.enableToStringFunc && (result.value!=null || result.__cdata!=null )) {
                     result.toString = function() {
-                        return (this.__text!=null? this.__text:'')+( this.__cdata!=null ? this.__cdata:'');
+                        return (this.value!=null? this.value:'')+( this.__cdata!=null ? this.__cdata:'');
                     };
                 }
 
@@ -441,11 +453,11 @@
                 result+="<![CDATA["+jsonTxtObj.__cdata+"]]>";
             }
 
-            if(jsonTxtObj.__text!=null) {
+            if(jsonTxtObj.value!=null) {
                 if(config.escapeMode)
-                    result+=escapeXmlChars(jsonTxtObj.__text);
+                    result+=escapeXmlChars(jsonTxtObj.value);
                 else
-                    result+=jsonTxtObj.__text;
+                    result+=jsonTxtObj.value;
             }
             return result;
         }
@@ -521,7 +533,7 @@
                         }
                         else {
                             var subObjElementsCnt = jsonXmlElemCount ( subObj );
-                            if(subObjElementsCnt > 0 || subObj.__text!=null || subObj.__cdata!=null) {
+                            if(subObjElementsCnt > 0 || subObj.value!=null || subObj.__cdata!=null) {
                                 result+=startTag(subObj, it, attrList, false);
                                 result+=parseJSONObject(subObj, getJsonPropertyPath(jsonObjPath,it));
                                 result+=endTag(subObj,it);

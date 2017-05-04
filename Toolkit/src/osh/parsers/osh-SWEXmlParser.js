@@ -7,13 +7,13 @@
  * @classdesc
  *
  */
-OSH.SWEJSonWriter = BaseClass.extend({
+OSH.SWEXmlParser = BaseClass.extend({
 
     initialize:function(xml) {
         this.originalXml = xml;
 
         var x2jsOptions = {
-            xmlns: true, // does not keep xmlns
+            xmlns: false, // does not keep xmlns
             attributePrefix:"",
             prefix: false,
             removeAttrPrefix:true,
@@ -26,19 +26,32 @@ OSH.SWEJSonWriter = BaseClass.extend({
                 /.*.constraint\.value$/,
                 /.*.constraint\.interval$/
             ],
-            numericalAccessFormPaths: ["value", "nilValue", "paddingBytes-after", "paddingBytes-before",
-                "byteLength", "significantBits", "bitLength","Count/value","Quantity/value","Time/value"]
+            numericalAccessFormPaths: [
+                "value",
+                "nilValue",
+                "paddingBytes-after",
+                "paddingBytes-before",
+                "byteLength",
+                "significantBits",
+                "bitLength",
+                /.*.Time\.value/,
+                /.*.Quantity\.value/,
+                /.*.Count\.value/
+            ],
+            skip: [
+                "type"
+            ]
 
         };
 
         this.x2jsParser = new X2JS(x2jsOptions);
     },
 
-    getXml:function() {
+    toXml:function() {
         return this.originalXml;
     },
 
-    getJson:function() {
+    toJson:function() {
         return this.x2jsParser.xml_str2json(this.originalXml);
 
     }

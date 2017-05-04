@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-    <title>Features of interest</title>
+    <title>JSON parser</title>
 
     <!-- VENDOR -->
     <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
@@ -11,7 +11,7 @@
 
     <script type="text/javascript" src="js/vkbeautify.0.99.00.beta.js"></script>
 
-    <script type="text/javascript" src="../../vendor-local/x2js/xml2json.js"></script>
+    <script type="text/javascript" src="../../vendor-local/x2js/x2js.js"></script>
 
     <!-- OSH Core -->
     <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
@@ -44,12 +44,28 @@
 
     <script type="text/javascript" src="../../src/osh/discovery/osh-Server.js"></script>
     <script type="text/javascript" src="../../src/osh/discovery/osh-Sensor.js"></script>
+    <script type="text/javascript" src="../../src/osh/parsers/osh-SWEXmlParser.js"></script>
+    <script type="text/javascript" src="../../src/osh/parsers/osh-SWEJsonParser.js"></script>
 
 </head>
 <body id="body">
-<h2>Test Get feature of interest</h2>
-<textarea id="xmlDetails"></textarea>
-<div id="leafletMap" style="height:100%;width:100%"></div>
+<h2>Test Parse GetResultTemplate</h2>
+<div>
+    <input type="button" id="parse-json" value="XML << JSON" style="margin-bottom:20px;margin-left:calc(50% - 50px);"/>
+</div>
+<div>
+    <input type="button" id="parse-xml" value="XML >> JSON" style="margin-bottom:25px;float:clear;margin-left:calc(50% - 50px);"/>
+</div>
+<div style="width:calc(50% - 15px);height:100%;float:left;margin-bottom:50px;">
+    <label for="xmlDetails">XML</label>
+    <br/>
+    <textarea name="xmlDetails" id="xmlDetails" style="width:100%;height:90%;margin-bottom:50px;"></textarea>
+</div>
+<div style="width:calc(50% - 15px);height:100%;float:left;">
+    <label for="jsonDetails">JSON</label>
+    <br/>
+    <textarea name="jsonDetails" id="jsonDetails" style="width:100%;height:90%;"></textarea>
+</div>
 <style>
     .leaflet-container {
         height: 100%;
@@ -93,12 +109,7 @@
        '   <swe:Quantity axisID="Lat">  '  +
        '   <swe:label>Geodetic Latitude</swe:label>  '  +
        '   <swe:uom code="deg"/>  '  +
-       '   </swe:Quantity>  '  +
-       '   </swe:coordinate>  '  +
-       '   <swe:coordinate name="lon">  '  +
-       '   <swe:Quantity axisID="Long">  '  +
-       '   <swe:label>Longitude</swe:label>  '  +
-       '   <swe:uom code="deg"/>  '  +
+       '   <swe:value>10</swe:value> '  +
        '   </swe:Quantity>  '  +
        '   </swe:coordinate>  '  +
        '   </swe:Vector>  '  +
@@ -110,17 +121,20 @@
        '   </sos:resultEncoding>  '  +
        '  </sos:GetResultTemplateResponse>  ' ;
 
-   var options = {
-       xmlns: false, // does not keep xmlns
-       attributePrefix:"",
-       prefix: false,
-       removeAttrPrefix:true
+   document.getElementById("parse-xml").onclick = function() {
+       var xmlInput = document.getElementById("xmlDetails");
+       var sweXmlParser = new OSH.SWEXmlParser(xmlInput.value);
+       var jsonObj = sweXmlParser.toJson();
+       document.getElementById("jsonDetails").value = vkbeautify.json(JSON.stringify(jsonObj));
    };
 
-   var x2js = new X2JS(options);
-
-   var jsonObj = x2js.xml_str2json( xmlInput);
-   console.log(vkbeautify.json(JSON.stringify(jsonObj.GetResultTemplateResponse.resultStructure)));
+   document.getElementById("parse-json").onclick = function() {
+       var jsonInput = document.getElementById("jsonDetails");
+       var sweJsonParser = new OSH.SWEJsonParser(JSON.parse(jsonInput.value));
+       var xmlStr = sweJsonParser.toXml();
+        console.log(xmlStr);
+       document.getElementById("xmlDetails").value = vkbeautify.xml(xmlStr);
+   };
 </script>
 
 </body>
