@@ -1,0 +1,36 @@
+[submodule "build/libvpx"]
+	path = build/libvpx
+	url = https://chromium.googlesource.com/webm/libvpx
+	ignore = dirty
+[submodule "build/opus"]
+	path = build/opus
+	url = https://github.com/xiph/opus.git
+	ignore = dirty
+[submodule "build/libass"]
+	path = build/libass
+	url = https://github.com/libass/libass.git
+	ignore = dirty
+[submodule "build/fribidi"]
+	path = build/fribidi
+	url = https://github.com/behdad/fribidi.git
+	ignore = dirty
+[submodule "build/ffmpeg-webm"]
+	path = build/ffmpeg-webm
+	url = git://source.ffmpeg.org/ffmpeg.git
+	ignore = dirty
+[submodule "build/lame"]
+	path = build/lame
+	url = https://github.com/rbrito/lame.git
+	ignore = dirty
+[submodule "build/x264"]
+	path = build/x264
+	url = git://git.videolan.org/x264.git
+	ignore = dirty
+[submodule "build/ffmpeg-mp4"]
+	path = build/ffmpeg-mp4
+	url = git://source.ffmpeg.org/ffmpeg.git
+	ignore = dirty
+[submodule "build/freetype"]
+	path = build/freetype
+	url = git://git.sv.gnu.org/freetype/freetype2.git
+	ignore = dirty

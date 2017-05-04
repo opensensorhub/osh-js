@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <script src="../ffmpeg-h264.js"></script>
+   <script src="YUVCanvas.js"></script>
+</head>
+<body>
+  <script>
+var ws = null;
+function startDecode() {
+    Module.ccall('avcodec_register_all');
+
+    // find h264 decoder
+    var codec = Module.ccall('avcodec_find_decoder_by_name', 'number', ['string'], ["h264"]);
+    if (codec == 0)
+        alert("Could not find H264 codec");
+
+    // init codec and conversion context
+    //var ctx = Module.ccall('avcodec_alloc_context3', 'number', ['number'], [codec]);
+    var ctx = _avcodec_alloc_context3(codec);
+    
+    // open codec
+    //var ret = Module.ccall('avcodec_open2', 'number', ['number', 'number', 'number'], [ctx, codec, 0]);
+    var ret = _avcodec_open2(ctx, codec, 0);
+    if (ret < 0)
+        alert("Could not open codec");
+
+    // allocate packet
+    var pkt = Module._malloc(96);
+    //Module.ccall('av_init_packet', 'null', ['number'], [pkt]);
+    _av_init_packet(pkt);
+    var pktData = Module._malloc(1024*150);
+    Module.setValue(pkt+24, pktData, '*');
+
+    // allocate video frame
+    //var frame = Module.ccall('avcodec_alloc_frame', 'number');
+    var frame = _avcodec_alloc_frame();
+    if (!frame)
+        alert("Could not allocate video frame");
+
+    // init decode frame function
+    //var new_packet = Module.cwrap('av_packet_from_data', 'number', ['number', 'number', 'number']);
+    //var decode_frame = Module.cwrap('avcodec_decode_video2', 'number', ['number', 'number', 'number', 'number']);
+    var got_frame = Module._malloc(4);    
+    var hasSEI = false;
+
+    // get info divs
+    var timeStampDiv = document.getElementById("timeStamp");
+    var pktSizeDiv = document.getElementById("pktSize");
+    var canvas = document.getElementById("canvas");
+    //var canvas_ctx = canvas.getContext('2d');
+    var yuvCanvas = new YUVCanvas({canvas: canvas, width: canvas.width, height: canvas.height});
+
+    // connect to WS H264 stream
+    var url = document.getElementById('url').value;
+    if (ws != null)
+       ws.close();
+    ws = new WebSocket(url);
+    ws.binaryType = 'arraybuffer';
+    
+    // on receiving data. The buffer has to be a COMPLETE NAL UNIT, otherwise the buffer could not be decoded
+    ws.onmessage = function(event)
+    {
+       var buffer = new Uint8Array(event.data);
+       var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
+       var dataSize = new DataView(event.data).getInt32(8, false);
+
+       // update div content to display frame info
+       timeStampDiv.innerHTML = "TimeStamp: " + new Date(timeStamp*1000).toISOString();
+       pktSizeDiv.innerHTML = "NAL Unit Size: " + dataSize;
+
+       // get actual NAL unit data
+       var len = event.data.byteLength;
+       var buffer = new Uint8Array(event.data, 12, len-12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
+       
+       // detect NAL units
+       /*if (!hasSEI)
+       {
+          var nalType = buffer[4] & 0x1F;
+          console.log("NAL = " + nalType);
+          //if (nalType != 7 && nalType != 8 && nalType != 1 && nalType != 5)
+          //   return;
+          if (nalType == 7)
+             hasSEI = true;
+       }*/
+       hasSEI = true;
+
+       if (hasSEI)
+       {
+          // prepare packet
+          Module.setValue(pkt+28, dataSize, 'i32');
+          Module.writeArrayToMemory(buffer, pktData);
+          //var ret = new_packet(pkt, pktData, dataSize);
+	  
+          // decode next frame
+          //var len = decode_frame(ctx, frame, got_frame, pkt);
+          var len = _avcodec_decode_video2(ctx, frame, got_frame, pkt);
+          if (len < 0)
+          {
+             console.log("Error while decoding frame");
+             return;
+          }
+
+          if (Module.getValue(got_frame, 'i8') == 0)
+             console.log("No frame");
+          else
+          {
+	     var frame_width = Module.getValue(frame+68, 'i32');
+	     var frame_height = Module.getValue(frame+72, 'i32'); 
+	     console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
+
+	     // copy Y channel to canvas
+	     var frameYDataPtr = Module.getValue(frame, '*');
+	     var frameUDataPtr = Module.getValue(frame+4, '*');
+	     var frameVDataPtr = Module.getValue(frame+8, '*');          
+	     var frameYData = new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width*frame_height);
+	     var frameUData = new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width/2*frame_height/2);
+	     var frameVData = new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width/2*frame_height/2);
+
+	     yuvCanvas.drawNextOuptutPictureGL({
+	       yData: frameYData,
+               yDataPerRow: frame_width,
+               yRowCnt: frame_height,
+	       uData: frameUData,
+               uDataPerRow: frame_width/2,
+               uRowCnt: frame_height/2,
+	       vData: frameVData,
+               vDataPerRow: frame_width/2,
+               vRowCnt: frame_height/2
+	     });
+          }
+       }
+    }
+
+  
+    function getFullNalFromRaw(data, callback)
+    {
+      if (!(data && data.length))
+      {
+         return;
+      }
+      else
+      {
+        var endIndex   = -1;
+        var firstIndex = -1;
+
+        //if (data[4] == 9 && data[5] == 16)
+        //       console.log("SPS+PPS");
+
+        // find first NAL separator
+        var nalSeparator = false;
+        while((firstIndex = data.indexOf(1,firstIndex+1)) != -1)
+        {
+	  nalSeparator = data[firstIndex-1] == 0;
+	  nalSeparator &= data[firstIndex-2] == 0;
+	  nalSeparator &= data[firstIndex-3] == 0;
+	  if (nalSeparator)
+	     break;
+        }
+	  
+        //if found a NAL separator
+        if (nalSeparator)
+        {
+	  endIndex = firstIndex;
+	  //gets the data until the next separator
+	  while((endIndex = data.indexOf(1,endIndex+1)) != -1)
+          {
+	    nalSeparator = data[endIndex-1] == 0;
+	    nalSeparator &= data[endIndex-2] == 0;
+	    nalSeparator &= data[endIndex-3] == 0;
+	
+	    //end separator found, callback full NAL unit
+	    if(nalSeparator) {
+	        callback(data.subarray(firstIndex+1,endIndex-3));
+	        firstIndex = endIndex;
+	    }
+          }
+      
+          if(endIndex == -1)
+          {
+	    //otherwise = end of buffer       
+	    callback(data.subarray(firstIndex+1,data.length)); 
+	    firstIndex = endIndex;        
+          }
+        }
+
+        return;
+      }
+    }
+}
+  </script>
+
+  Video Source: <select id="url" size="1">
+     <option value="ws://localhost:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenTime,2015-12-19T20:29:17.660Z/2015-12-19T20:31:07.541Z&replaySpeed=1">Solo-GoPro@localhost</option>
+     <option value="ws://localhost:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenTime,2015-12-19T20:29:17.660Z/2015-12-19T20:31:07.541Z&replaySpeed=2">Solo-GoPro@localhost x2</option>
+     <option value="ws://bottsgeo.simple-url.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:osh:dahua1&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenTime,now/2080-01-01&replaySpeed=1">Dahua@botts-house</option>
+     <option value="ws://bottsgeo.simple-url.com:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:osh:virb1&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenTime,now/2080-01-01">Virb@botts-house</option>
+  </select> 
+  <button type="button" onclick='startDecode()'>Play</button>
+  <div id="pktSize">Packet Size: </div>
+  <div id="timeStamp">TimeStamp: </div>
+  <div style="width: 640px; height: 360px; overflow: auto; resize: both; border:1px solid black;">
+    <canvas id="canvas" width="1280" height="720" style="width: 100%; height: calc(100%-0px);"/>
+  </div>
+</body>
+</html>
