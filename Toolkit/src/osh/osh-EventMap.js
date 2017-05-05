@@ -14,28 +14,28 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-OSH.MapEvent = BaseClass.extend({
+OSH.EventMap = BaseClass.extend({
 
     initialize:function() {
-        this.mapEvents = {};
+        this.eventMap = {};
     },
 
     observe:function(eventName, fnCallback) {
         if(typeof(eventName) == "undefined" || typeof(fnCallback) == "undefined") {
             return;
         }
-        if(!(eventName in this.mapEvents)) {
-            this.mapEvents[eventName] = [];
+        if(!(eventName in this.eventMap)) {
+            this.eventMap[eventName] = [];
         }
-        this.mapEvents[eventName].push(fnCallback);
+        this.eventMap[eventName].push(fnCallback);
     },
 
     fire: function(eventName, properties) {
         if(typeof(eventName) == "undefined") {
             return;
         }
-        if(eventName in this.mapEvents) {
-            var fnCallbackArr = this.mapEvents[eventName];
+        if(eventName in this.eventMap) {
+            var fnCallbackArr = this.eventMap[eventName];
             for(var i = 0; i < fnCallbackArr.length;i++){
                 // callback the properties to the current callback
                 fnCallbackArr[i](properties);
