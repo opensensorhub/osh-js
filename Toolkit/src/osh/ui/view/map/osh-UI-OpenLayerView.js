@@ -36,8 +36,13 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
     beforeAddingItems: function (options) {
         // inits the map
         this.initMap(options);
-        this.initEvents();
+
+        //events will NOT automatically be added to the map, if one is provided by the user
+        if(!options.map)
+            this.initEvents();
+
     },
+
 
     /**
      * @instance
@@ -202,11 +207,20 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         this.first = true;
         var overlays = [];
         var defaultLayer = null;
+        this.markers = {};
+        this.polylines = {};
 
         var baseLayers = this.getDefaultLayers();
 
         if (typeof(options) != "undefined") {
             var maxZoom = 19;
+
+            //if the user passed in a map then use that one, don't make a new one
+            if(options.map) {
+                this.map = options.map;
+                return;
+            }
+
             if (options.maxZoom) {
                 maxZoom = options.maxZoom;
             }
@@ -306,10 +320,6 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         });
 
         this.map.addInteraction(select_interaction);
-
-        //this.initLayers();
-        this.markers = {};
-        this.polylines = {};
     },
 
     /**
@@ -390,6 +400,56 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
 
         return id;
     },
+
+    /**
+     *
+     * @param styler
+     * @returns {string} the id of the newly created marker, or the id of the marker if it already exists from the current styler
+     * @instance
+     * @memberof OSH.UI.OpenLayerView
+     */
+    createMarkerFromStyler: function (styler) {
+        //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
+        //to the view or map to give the user more control
+        if (!(styler.getId() in this.stylerToObj)) {
+
+            var properties = {
+                lat: styler.location.y,
+                lon: styler.location.x,
+                orientation: styler.orientation.heading,
+                color: styler.color,
+                icon: styler.icon,
+                name: this.names[styler.getId()]
+            }
+
+            //create marker
+            var marker = new ol.geom.Point(ol.proj.transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            var markerFeature = new ol.Feature({
+                geometry: marker,
+                name: 'Marker' //TODO
+            });
+
+            if (properties.icon != null) {
+                var iconStyle = new ol.style.Style({
+                    image: new ol.style.Icon({
+                        opacity: 0.75,
+                        src: properties.icon,
+                        rotation: properties.orientation * Math.PI / 180
+                    })
+                });
+                markerFeature.setStyle(iconStyle);
+            }
+            var id = "view-marker-" + OSH.Utils.randomUUID();
+            markerFeature.setId(id);
+            this.markers[id] = markerFeature;
+            this.stylerToObj[styler.getId()] = id;
+            return id;
+
+        } else {
+            return this.stylerToObj[styler.getId()];
+        }
+    },
+
 
     /**
      *
