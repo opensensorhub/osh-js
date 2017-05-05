@@ -29,6 +29,7 @@ var mapEvent = new OSH.MapEvent();
  * @memberof OSH.EventManager
  */
 OSH.EventManager.fire = function(eventName, properties) {
+    properties.name = eventName;
     mapEvent.fire('osh:'+eventName,properties);
 };
 
