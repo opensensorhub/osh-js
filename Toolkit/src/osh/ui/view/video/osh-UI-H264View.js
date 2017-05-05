@@ -21,8 +21,8 @@
  * @augments OSH.UI.View
  */
 OSH.UI.H264View = OSH.UI.View.extend({
-	initialize : function(divId, options) {
-		this._super(divId,[],options);
+	initialize : function(parentElement, options) {
+		this._super(parentElement,[],options);
 
 		var width = "640";
 		var height = "480";

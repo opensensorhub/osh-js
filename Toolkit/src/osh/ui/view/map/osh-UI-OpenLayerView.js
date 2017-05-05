@@ -21,8 +21,8 @@
  * @augments OSH.UI.View
  */
 OSH.UI.OpenLayerView = OSH.UI.View.extend({
-    initialize: function (divId, viewItems, options) {
-        this._super(divId, viewItems, options);
+    initialize: function (parentElement, viewItems, options) {
+        this._super(parentElement, viewItems, options);
         this.onResize();
     },
 
