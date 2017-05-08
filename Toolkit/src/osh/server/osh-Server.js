@@ -29,8 +29,8 @@
 OSH.Server = BaseClass.extend({
     initialize: function (properties) {
         this.url = properties.url;
-        this.sos = properties.sos;
-        this.sps = properties.sps;
+        this.sos = (typeof properties.sos !== undefined) ?  this.properties.sos : 'sos';
+        this.sps = (typeof properties.sps !== undefined) ?  this.properties.sps : 'sps';
         this.baseUrl = properties.baseUrl;
         this.id = "Server-" + OSH.Utils.randomUUID();
     },
