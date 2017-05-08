@@ -31,7 +31,7 @@
     "ol3": "ol3-bower#^3.18.2",
     "leaflet": "^1.0.2",
     "nvd3": "^1.8.5",
-    "jsonix": "^2.4.1",
+    "x2js": "./vendor-local/x2js",
     "nouislider": "^9.2.0",
     "ogc-schemas": "^2.6.1",
     "broadway": "./vendor-local/broadway",
