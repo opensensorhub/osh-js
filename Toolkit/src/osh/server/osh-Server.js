@@ -29,8 +29,8 @@
 OSH.Server = BaseClass.extend({
     initialize: function (properties) {
         this.url = properties.url;
-        this.sos = (typeof properties.sos !== undefined) ?  this.properties.sos : 'sos';
-        this.sps = (typeof properties.sps !== undefined) ?  this.properties.sps : 'sps';
+        this.sos = (typeof properties.sos !== undefined) ?  properties.sos : 'sos';
+        this.sps = (typeof properties.sps !== undefined) ?  properties.sps : 'sps';
         this.baseUrl = properties.baseUrl;
         this.id = "Server-" + OSH.Utils.randomUUID();
     },
@@ -72,6 +72,10 @@ OSH.Server = BaseClass.extend({
         this.executeGetRequest(request, successCallback, errorCallback);
     },
 
+    getDescribeSensor:function(procedure, successCallback, errorCallback) {
+        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure;
+        this.executeGetRequest(request, successCallback, errorCallback);
+    },
     /**
      *
      * @param request
