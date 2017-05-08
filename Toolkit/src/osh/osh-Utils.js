@@ -355,3 +355,11 @@ OSH.Utils.addCss = function(div,css) {
   div.setAttribute("class",div.className+" "+css);
 };
 
+OSH.Utils.removeLastCharIfExist = function(value,char) {
+  if(typeof value === undefined || value === null || value.length === 0 || !value.endsWith("/")) {
+    return value;
+  }
+
+  return value.substring(0,value.length-1);
+};
+

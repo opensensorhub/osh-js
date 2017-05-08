@@ -25,7 +25,8 @@ OSH.SWEXmlParser = BaseClass.extend({
                 /.*.member$/,
                 /.*.constraint\.value$/,
                 /.*.constraint\.interval$/,
-                /.*.offering/
+                /.*.offering$/,
+                /.*.observableProperty/
             ],
             numericalAccessFormPaths: [
                 "value",
