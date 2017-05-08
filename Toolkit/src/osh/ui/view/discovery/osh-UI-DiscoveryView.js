@@ -651,7 +651,7 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             name: "Android Video",
             entityId : entityId,
             useWorker:true,
-            useWebWorkerTransferableData:false
+            useWebWorkerTransferableData:true
         });
 
         // We can add a group of dataSources and set the options
