@@ -53,8 +53,8 @@
  */
 OSH.UI.CesiumView = OSH.UI.View.extend({
 	
-	initialize : function(divId,viewItems, properties) {
-		this._super(divId,viewItems,properties);
+	initialize : function(parentElement,viewItems, properties) {
+		this._super(parentElement,viewItems,properties);
 
 		var cssClass = document.getElementById(this.divId).className;
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);

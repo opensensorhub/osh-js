@@ -21,9 +21,7 @@ gulp.task('build','build a distributable osh-js instance',['normal','minify'],fu
         'from Kagami/ffmpeg.js: https://github.com/sensiasoft/ffmpeg.js\n',
         'nvd3': 'Include NVD3 library: http://nvd3.org/\n',
         'broadway': 'Include broadway JS library. Broadway JS is a JavaScript H.264 decoder: https://github.com/mbebenita/Broadway\n',
-        'jsonix': 'Include jsonix library. sonix (JSON interfaces for XML) is a JavaScript library ' +
-        'which allows you to convert between XML and JSON structures: ' +
-        ' https://github.com/highsource/jsonix\n',
+        'x2js': 'Include x2js library. It is useful to use discovery and server services\n',
         'cesium':'An open-source JavaScript library for world-class 3D globes and maps: https://cesiumjs.org/\n',
         'leaflet':'An open-source JavaScript library for mobile-friendly interactive maps: http://leafletjs.com/\n',
         'ol3':'OpenLayer 3 makes it easy to put a dynamic map in any web page. It can display map tiles, ' +
@@ -100,9 +98,8 @@ gulp.task('vendor-js-src-all',false,function(){
     if(argv.tree) {
         jsSources.push('vendor/tree/tree.js');
     }
-    if(argv.jsonix) {
-        jsSources.push('vendor/jsonix/dist/*.js');
-        jsSources.push('vendor-local/jsonix/modules/*.js');
+    if(argv.x2js) {
+        jsSources.push('vendor/x2js/x2js.js');
     }
 
     return gulp.src(jsSources).pipe(concat('vendor.js')).pipe(gulp.dest("dist/vendor/all-in-one"));
@@ -133,10 +130,6 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
         cssSources.push('vendor/tree/tree.css');
     }
 
-    if(argv.jsonix) {
-        //cssSources.push('vendor/jsonix/dist/*.css');
-    }
-
     return gulp.src("dist/vendor/all-in-one/vendor.css")
         .pipe(argv.cesium ?  gap.prependText('@import "Widgets/widgets.css";') : noop())
         .pipe(gap.appendFile(cssSources))
@@ -152,7 +145,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     src.push('./src/osh/osh-Browser.js');
     src.push('./src/osh/osh-Utils.js');
     src.push('./src/osh/osh-Browser.js');
-    src.push('./src/osh/osh-MapEvent.js');
+    src.push('./src/osh/osh-EventMap.js');
     src.push('./src/osh/osh-EventManager.js');
     src.push('./src/osh/osh-Buffer.js');
     src.push('./src/osh/dataconnector/osh-DataConnector.js');
@@ -175,8 +168,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     src.push('./src/osh/datasender/osh-DataSender-FoscamPtzTasking.js');
     src.push('./src/osh/datasender/osh-DataSender-UavMapTasking.js');
     src.push('./src/osh/datasender/osh-DataSenderController.js');
-    src.push('./src/osh/discovery/osh-Sensor.js');
-    src.push('./src/osh/discovery/osh-Server.js');
+    src.push('./src/osh/server/osh-Server.js');
     src.push('./src/osh/log/osh-Log.js');
     src.push('./src/osh/ui/view/osh-UI-View.js');
     src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu.js');
@@ -244,7 +236,7 @@ gulp.task('normal', false, ['init-css-vendor-file','vendor-js-src-all','vendor-c
 
 //---------- COPY VENDORS ------//
 gulp.task('copy-vendor',false, ['copy-vendor-ffmpeg','copy-vendor-nvd3','copy-vendor-broadway',
-    'copy-vendor-nouislider','copy-vendor-cesium','copy-vendor-ol3','copy-vendor-leaflet','copy-vendor-tree','copy-vendor-jsonix']);
+    'copy-vendor-nouislider','copy-vendor-cesium','copy-vendor-ol3','copy-vendor-leaflet','copy-vendor-tree','copy-vendor-x2js']);
 
 gulp.task('copy-fonts',false, function () {
     return gulp.src('src/css/font-awesome-4.6.3/**')
@@ -331,13 +323,12 @@ gulp.task('copy-vendor-tree',false, function () {
         .pipe(argv.tree ? gulp.dest('dist/vendor/tree') : noop());
 });
 
-gulp.task('copy-vendor-jsonix',false, function () {
+gulp.task('copy-vendor-x2js',false, function () {
     var src = new Array();
-    src.push('vendor/jsonix/dist/**');
-    src.push('vendor-local/jsonix/**');
+    src.push('vendor/x2js/x2js.js');
 
     return gulp.src(src)
-        .pipe(argv.jsonix ? gulp.dest('dist/vendor/jsonix') : noop());
+        .pipe(argv.x2js ? gulp.dest('dist/vendor/x2js') : noop());
 });
 //----------- VENDOR CSS ALL ---------------//
 gulp.task('vendor-css-all-copy-cesium',false,function(){

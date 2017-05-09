@@ -64,8 +64,8 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
     });
  */
 OSH.UI.DiscoveryView = OSH.UI.View.extend({
-    initialize: function (divId, properties) {
-        this._super(divId,[],properties);
+    initialize: function (parentElement, properties) {
+        this._super(parentElement,[],properties);
 
         this.dialogContainer = document.body.id;
         this.swapId = "";
@@ -228,10 +228,10 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
         var option = serverTag.options[serverTag.selectedIndex];
 
         // connect to server and get the list of offering
-        var oshServer = new OSH.Server(option.value);
+        //var oshServer = new OSH.Server(option.value);
 
         this.removeAllFromSelect(this.offeringSelectTagId);
-        var onSuccessGetCapabilities = function(event) {
+       /* var onSuccessGetCapabilities = function(event) {
             this.sensors = oshServer.sensors;
             // remove existing
             var startTimeInputTag = document.getElementById(this.startTimeTagId);
@@ -246,7 +246,32 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
         var onErrorGetCapabilities = function(event) {
         };
 
-        oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
+        oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);*/
+
+       //option.value
+        this.oshServer = new OSH.Server({
+            sos:'sos', // TODO: allow to customize that value
+            sps:'sps', // TODO: allow to customize that value
+            url: OSH.Utils.removeLastCharIfExist(option.value,"/"),
+            baseUrl: 'sensorhub' // TODO: allow to customize that value
+        });
+
+        var onSuccessGetCapabilities = function(jsonObj) {
+            var startTimeInputTag = document.getElementById(this.startTimeTagId);
+            var endTimeInputTag = document.getElementById(this.endTimeTagId);
+
+            var offering=null;
+
+            for(var i=0;i < jsonObj.Capabilities.contents.offering.length;i++) {
+                offering = jsonObj.Capabilities.contents.offering[i];
+                this.addValueToSelect(this.offeringSelectTagId,offering.name,offering);
+            }
+        }.bind(this);
+
+        var onErrorGetCapabilities = function(event) {
+        };
+
+        this.oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);
     },
 
     /**
@@ -258,17 +283,26 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
     onSelectedOffering : function(event) {
         var e = document.getElementById(this.offeringSelectTagId);
         var option = e.options[e.selectedIndex];
+        var offering = option.parent;
         this.removeAllFromSelect(this.observablePropertyTagId);
 
         var startTimeInputTag = document.getElementById(this.startTimeTagId);
         var endTimeInputTag = document.getElementById(this.endTimeTagId);
 
+        // set times
+        startTimeInputTag.value = offering.phenomenonTime.beginPosition;
+
+        if(typeof offering.phenomenonTime.endPosition.indeterminatePosition !== "undefined") {
+            var d = new Date();
+            d.setUTCFullYear(2055);
+            endTimeInputTag.value = d.toISOString();
+        } else {
+            endTimeInputTag.value = offering.phenomenonTime.endPosition;
+        }
+
         // feed observable properties
-        for(var i = 0; i  < option.parent.observableProperties.length;i++) {
-            this.addValueToSelect(this.observablePropertyTagId,option.parent.observableProperties[i]);
-            // set times
-            startTimeInputTag.value = option.parent.timeRangeStart;
-            endTimeInputTag.value = option.parent.timeRangeEnd;
+        for(var i = 0; i  < offering.observableProperty.length;i++) {
+            this.addValueToSelect(this.observablePropertyTagId,offering.observableProperty[i],offering);
         }
     },
 
@@ -421,11 +455,14 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
         var option = document.createElement("option");
         option.text = value;
         option.value = value;
-        if(typeof parent != "undefined") {
-            option.parent = parent;
-        }
+        option.parent = parent;
+
         if(typeof object != "undefined") {
             option.object = object;
+        }
+
+        if(typeof parent != "undefined") {
+            option.parent = parent;
         }
         selectTag.add(option);
     },
@@ -613,7 +650,8 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             cssSelected: "video-selected",
             name: "Android Video",
             entityId : entityId,
-            useWorker:true
+            useWorker:true,
+            useWebWorkerTransferableData:true
         });
 
         // We can add a group of dataSources and set the options

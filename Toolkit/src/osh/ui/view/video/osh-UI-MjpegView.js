@@ -29,8 +29,8 @@ var videoView = new OSH.UI.MjpegView("containerId", {
 });
  */
 OSH.UI.MjpegView = OSH.UI.View.extend({
-  initialize: function(divId,options) {
-    this._super(divId,[],options);
+  initialize: function(parentElement,options) {
+    this._super(parentElement,[],options);
 
     // creates video tag element
     this.imgTag = document.createElement("img");

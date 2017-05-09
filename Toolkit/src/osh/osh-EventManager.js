@@ -20,7 +20,7 @@
  */
 OSH.EventManager = function() {};
 
-var mapEvent = new OSH.MapEvent();
+var eventMap = new OSH.EventMap();
 /**
  *
  * @param eventName
@@ -29,7 +29,8 @@ var mapEvent = new OSH.MapEvent();
  * @memberof OSH.EventManager
  */
 OSH.EventManager.fire = function(eventName, properties) {
-    mapEvent.fire('osh:'+eventName,properties);
+    properties.name = eventName;
+    eventMap.fire('osh:'+eventName,properties);
 };
 
 /**
@@ -41,7 +42,7 @@ OSH.EventManager.fire = function(eventName, properties) {
  * @memberof OSH.EventManager
  */
 OSH.EventManager.observe = function(eventName, fnCallback) {
-    mapEvent.observe('osh:'+eventName,fnCallback);
+    eventMap.observe('osh:'+eventName,fnCallback);
 };
 
 /**
