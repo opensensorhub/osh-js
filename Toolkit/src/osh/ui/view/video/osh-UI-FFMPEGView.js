@@ -67,7 +67,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
 
         this.useWorker = OSH.Utils.isWebWorker();
         this.resetCalled = true;
-        this.useTransferableData = false;
+        this.useTransferableData = true;
 
         if (typeof options != "undefined") {
             if (options.width) {
@@ -323,9 +323,9 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             // a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
 
             var noTransferableObjData = {
-                pktSize: pktSize,
-                pktData: pktData,
-                byteOffset: pktData.byteOffset
+                data: pktData,
+                byteOffset: pktData.byteOffset,
+                release:false
             };
 
             this.worker.postMessage(noTransferableObjData);
