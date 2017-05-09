@@ -237,7 +237,10 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
         var id = "view-marker-" + OSH.Utils.randomUUID();
         this.markers[id] = marker;
 
-        this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
+        if (this.first === true) {
+          this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
+          this.first = false;
+        }
         var self = this;
 
         marker._icon.id = id;
