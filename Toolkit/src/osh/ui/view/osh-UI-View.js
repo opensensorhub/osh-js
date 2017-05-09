@@ -17,13 +17,13 @@
 /**
  * @classdesc The abstract object to represent a view.
  * @class
- * @param {string} divId - The id to attach/or create the view.
+ * @param {Object} parentElement - The parent html element object to attach/or create the view.
  * @param {string} viewItems - The list of view items
  * @param {string} options - The options
  * @abstract
  */
 OSH.UI.View = BaseClass.extend({
-    initialize: function (divId, viewItems,options) {
+    initialize: function (parentElement, viewItems,options) {
         // list of stylers
         this.stylers = [];
         this.contextMenus = [];
@@ -60,25 +60,24 @@ OSH.UI.View = BaseClass.extend({
         }
 
         // inits the view before adding the viewItem
-        this.init(divId,viewItems,options);
+        this.init(parentElement,viewItems,options);
     },
 
     /**
      * Inits the view component.
-     * @param divId The divId to attach/create the view
+     * @param parentElement The parent html element object to attach/create the view
      * @param viewItems the list of items to add
      * @param options [TODO]
      * @memberof OSH.UI.View
      */
-    init:function(divId,viewItems,options) {
+    init:function(parentElement,viewItems,options) {
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
         this.elementDiv.setAttribute("class", this.css);
-
         this.divId = this.id;
 
-        var div = document.getElementById(divId);
-        if (divId == null || div == "undefined" || div == null || divId == "") {
+        var div = parentElement;
+        if (typeof(div) == "undefined" || div == null) {
             document.body.appendChild(this.elementDiv);
             this.hide();
             this.container = document.body;

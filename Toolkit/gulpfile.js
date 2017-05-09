@@ -145,7 +145,7 @@ gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
     src.push('./src/osh/osh-Browser.js');
     src.push('./src/osh/osh-Utils.js');
     src.push('./src/osh/osh-Browser.js');
-    src.push('./src/osh/osh-MapEvent.js');
+    src.push('./src/osh/osh-EventMap.js');
     src.push('./src/osh/osh-EventManager.js');
     src.push('./src/osh/osh-Buffer.js');
     src.push('./src/osh/dataconnector/osh-DataConnector.js');
