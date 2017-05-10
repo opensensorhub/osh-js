@@ -1,6 +1,3 @@
-# OSH Javascript Toolkit
-
-# Build
 Install plugins dependencies using NPM:
 ``Toolkit $ npm install ``
 
@@ -22,8 +19,7 @@ Available tasks
    --ffmpeg       Include FFMPEG library. This library provides FFmpeg builds ported to JavaScript using Emscripten project. Builds are optimized for in-browser use: minimal size for 
 faster loading, asm.js, performance tunings, etc. This is a fork from Kagami/ffmpeg.js: https://github.com/sensiasoft/ffmpeg.js
  
-   --jsonix       Include jsonix library. sonix (JSON interfaces for XML) is a JavaScript library which allows you to convert between XML and JSON structures:  
-https://github.com/highsource/jsonix
+   --x2js       Include x2js library. This is used to map XML data into JSON object
  
    --leaflet      An open-source JavaScript library for mobile-friendly interactive maps: http://leafletjs.com/
  
@@ -52,13 +48,5 @@ As described in the gulp help command, you can also include some libraries:
 and get a minified version using --minify argument
 ``Toolkit $ gulp build --minify --ffmpeg --leaflet --cesium``
 
-A dist directory is created containing the new files.
+A dist directory will be created containing the new files.
 
-Clean:
-``Toolkit $ gulp clean ``
-
-
-# Documentation
-
-The documentation has been generated using jsdoc. It can be found at: 
-[Documentation](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/index.html)
