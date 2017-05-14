@@ -22,8 +22,8 @@
  */
 OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
 
-    initialize:function(parentElement, options) {
-        this._super(parentElement,options);
+    initialize:function(parentElementDivId, options) {
+        this._super(parentElementDivId,options);
         // add extra part
         this.popExtraDiv = document.createElement("div");
         this.popExtraDiv.setAttribute("class","pop-extra");

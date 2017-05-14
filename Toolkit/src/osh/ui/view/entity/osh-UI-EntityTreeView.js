@@ -36,8 +36,8 @@
  );
  */
 OSH.UI.EntityTreeView = OSH.UI.View.extend({
-    initialize:function(parentElement,entityItems,options) {
-        this._super(parentElement,[],options);
+    initialize:function(parentElementDivId,entityItems,options) {
+        this._super(parentElementDivId,[],options);
 
         this.entityItems = entityItems;
         this.initTree(options);

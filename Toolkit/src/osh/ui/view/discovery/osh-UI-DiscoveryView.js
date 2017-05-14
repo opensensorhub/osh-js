@@ -64,8 +64,8 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
     });
  */
 OSH.UI.DiscoveryView = OSH.UI.View.extend({
-    initialize: function (parentElement, properties) {
-        this._super(parentElement,[],properties);
+    initialize: function (parentElementDivId, properties) {
+        this._super(parentElementDivId,[],properties);
 
         this.dialogContainer = document.body.id;
         this.swapId = "";
@@ -736,6 +736,8 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
 /**
  * The different type of discovery.
  * @type {{MARKER_GPS: string, DIALOG_VIDEO_H264: string, DIALOG_VIDEO_MJPEG: string, DIALOG_CHART: string}}
+ * @memberof OSH.UI.DiscoveryView
+ * @instance
  */
 OSH.UI.DiscoveryView.Type = {
     MARKER_GPS : "Marker(GPS)",
