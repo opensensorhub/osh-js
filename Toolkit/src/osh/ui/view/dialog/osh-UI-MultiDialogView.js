@@ -41,7 +41,7 @@ OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
     appendView:function(parentElement,properties) {
         //console.log(this.popContentDiv);
         //remove from parent
-        var divToAdd = parentElement;
+        var divToAdd = document.getElementById(parentElement);
 
         // check the visibility of the div
         if(divToAdd.style.display === "none") {
