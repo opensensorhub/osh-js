@@ -8,3 +8,4 @@ Toolkit/.idea
 Toolkit/dist
 Toolkit/vendor
 npm-debug.log
+.DS_Store
