@@ -3,7 +3,7 @@ Make your own data receiver
 
 # GetCapabitlities
 
-Let's suppose the following information:
+Let's suppose we have the following information:
 
  * offeringId: `fake-offering`
  
