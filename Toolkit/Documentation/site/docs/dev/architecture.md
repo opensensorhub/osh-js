@@ -3,11 +3,11 @@ Architecture
 
 ### Global architecture
 
-The toolkit can be splitted into five parts:
+The toolkit can be split into five parts:
 
  1) The Event manager: a global bus to communicate between components
  
- 2) The data sources (data providers): they are connected to the server to get the data. They are represented under many types such as binary, text etc.
+ 2) The data sources (data providers): they are connected to the server to get the data. They are represented by many types such as binary, text etc.
  
  3) The buffer: every data got from the data sources are handled by the buffer. It allows data synchronization and buffering
  
@@ -38,7 +38,7 @@ It contains Event enumeration such as:
   
 ### Data connector
 
-The Toolkit use the data connector Abstract class to get/send the data. This is the link between the client and
+The Toolkit uses the data connector Abstract class to get/send the data. This is the link between the client and
 the OSH server. It does not contain any logic and gets only the data through two ways:
 
  * WebSocket API: connects to the server using the WebSocket Javascript API. The connector is encapsulated into
@@ -53,7 +53,7 @@ the OSH server. It does not contain any logic and gets only the data through two
  
 A Data Receiver/Sender is used to parse the data got from the SOS server. The data contains a timestamp 
 and the raw data. The timestamp has to be separated to be used into the buffer to process synchronization.
-It is also in charge to build the final url given:
+It also builds the final url given:
 
 * protocol: specify the protocol (data connector) to use
 
@@ -82,8 +82,8 @@ As part of the data receiver package, some have already been implemented:
 ![Data receiver](../images/global_archi_data_source_receiver.svg) 
 
 A generic data receiver has been implemented to handle textual data got from SOS server [See OSH.DataReceiver.JSON](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html).
-To implement your own data receiver, you have only to extend [OSH.DataReceiver.DataSource](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.DataSource.html) and implement
-the `parseData()` as well as the `parseTimeStamp()` which are in charge of separate the timestamp and the raw data from the SOS stream.
+To implement your own data receiver, you only need to extend [OSH.DataReceiver.DataSource](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.DataSource.html) and implement
+the `parseData()` as well as the `parseTimeStamp()` which separate the timestamp and the raw data from the SOS stream.
 
 #### Data Sender - SPS
 
@@ -96,10 +96,10 @@ Like the Data Receiver, an abstract class has to be inherited and provides neces
 ### Buffer
 
 Every data got from the SOS stream are sent to the buffer (using the EventManager). It can synchronize the data and handle playback/real-time. 
-Once the data are processed by the buffer, they are send back to the bus through the EventManager to be processed by the other components (Views, Stylers etc..).
+Once the data are processed by the buffer, they are sent back to the bus through the EventManager to be processed by the other components (Views, Stylers etc..).
 The buffer can be used as a standalone component as well as into the [OSH.DataReceiver.DataReceiverController](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.DataReceiverController.html).
 
-The DataReceiver is a helper class to wrap and abstract some logic. It uses a single buffer instance and callback the result to the EventManager.
+The DataReceiver is a helper class to wrap and abstract some logic. It uses a single buffer instance and calls back the result to the EventManager.
 
 ![Data source controller](../images/Data_source_controller.svg) 
 
@@ -115,7 +115,7 @@ An entity is a set of data R/S. It makes the link between several Data R/S defin
   
 ### The views
 
-A view represent one or more data. It gets the data from the EventManager. A view is defined by one or more ViewItems. A viewItem is composed of:
+A view represents one or more data. It gets the data from the EventManager. A view is defined by one or more ViewItems. A viewItem is composed of:
 
  * a styler
  
@@ -133,14 +133,14 @@ Some views don't need view items such as:
  
  * Dialog
  
- They kind of views don't represent the data, they do not have direct link with a data receiver.
+ Their kind of views don't represent the data, they do not have direct link with a data receiver.
  
 ![Views](../images/views__1_.svg) 
 
 ### Stylers
 
 The stylers allow one to style the data. They are generic and use functions to filter the input data. Once the data has been processed by the styler, the result is sent back to the view 
-and displayed. Many kind of stylers are available:
+and displayed. Many kinds of stylers are available:
 
  * text
  
@@ -156,7 +156,7 @@ and displayed. Many kind of stylers are available:
  
 ### <a id="archi-context-menus"></a> Context menus
  
-They are a set of abstract class to represent a menu. They can have manu representations such as circular, stack etc. They are built from `menuItems` owning:
+They are sets of abstract classes used to represent a menu. They can have different representations such as circular, stack etc. They are built from `menuItems` owning:
  
  * name: the name of the menu
  

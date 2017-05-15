@@ -4,10 +4,10 @@ Technical
 ## EventManager
 
 The EventManager is handled by the [OSH.EventManager](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.EventManager.html) class.
-It is used through the entire Toolkit. For example, the data are sent from the data receiver to the buffer using callback function, and the 
-buffer sends forward the events after processing into the EventManager.
+It is used through the entire Toolkit. For example, the data are sent from the data receiver to the buffer using the callback function, and the
+buffer forwards the events after processing them into the EventManager.
 
-There are then many ways to use the OSH.EventManager. As it used through the entire Toolkit, you can send/receive on events
+There are then many ways to use the OSH.EventManager. As it is used through the entire Toolkit, you can send/receive on events
 directly by using the OSH.EventManager class.
 
 Most of the events are defined by `OSH.EventManager.EVENT` :
@@ -36,7 +36,7 @@ OSH.EventManager.EVENT = {
 };
 ```
 
-In some situation, the events are postfix by an id. For example, in the case of sending data from data receivers, 
+In some situations, the events are postfixed by an id. For example, in the case of sending data from data receivers,
 the data is sent as a JSON object with an event `DATA-<id>`. 
  
 ### DATA
@@ -48,7 +48,7 @@ dataSource.onData = function (data) {
       this.buffer.push({dataSourceId: dataSource.getId(), data: data});
 
 }.bind(this);
-```
+```install
 
 We don't use message passing here to not overload Event manager. Then the buffer processes the data and sent them back to EventManager:
 
@@ -57,9 +57,9 @@ We don't use message passing here to not overload Event manager. Then the buffer
 OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+dataSourceId, {data : data});
 ...
 ```
-Every data is post-fixed with its datasource id. This is to optmize the observe process.
+Every data is postfixed with its datasource id. This is to optmize the observation process.
 
-If one is interesting to get the data, it can observe the corresponding data by listening on the EventManager:
+If one is interested in getting the data, it can observe the corresponding data by listening to the EventManager:
 ```javascript
 ...
 OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + <datasourceId>, function (event) {
@@ -87,9 +87,9 @@ you have to send this event with the data source ids concerned.
 
 ### CONTEXT_MENU
 
-The Toolkit offers the ability to create and display different kind of menus. See the [Context menus](architecture/#archi-context-menus). The event 
+The Toolkit offers the ability to create and display different types of menus. See the [Context menus](architecture/#archi-context-menus). The event
 manager provides the `EVENT.CONTEXT_MENU` event to send/receive messages.
-The event is post-fixed with the `contextMenuId` like:
+The event is postfixed with the `contextMenuId` like:
 
 ```javascript
 OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+<contextMenuId>,{
@@ -147,7 +147,7 @@ There are two ways to add a view item to your view:
  
  * send an event through the EventManager
  
- Add a view item using the EventManager is quite simple and can be resume to:
+ Adding a view item using the EventManager is quite simple and can be summarized as follows:
  
 ```javascript
 ...
@@ -155,7 +155,7 @@ OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem,vi
 ...
 ```
 
-You have to pass as property of your freshly created viewItem and the viewId of the target view.
+You have to pass as a property of your freshly created viewItem and the viewId of the target view.
 
 If you have created a new view, the abstract `OSH.UI.View` already observe this event.
 
@@ -171,7 +171,7 @@ The generic `OSH.UI.PtzTaskingView` already fire this event. If you want to use 
     onError:function(event){console.log("Request sent successfully: "+event);}
 });
 ```
-This is a fast way to communicate between your tasking view and the HttpConnector without taking care about internal processes.
+This is a fast way to communicate between your tasking view and the HttpConnector without taking into consideration internal processes.
 
 ## Requests
 
@@ -315,7 +315,7 @@ When you click onto the disconnect button, the list of data source contains in t
 
 * swapId: you can swap the content of the dialog with another div (body for example)
 
-To set put a view into a dialog, either you specify the div id of the dialog as argument div view Id such as:
+To set a view into a dialog, you can specify the div id of the dialog as argument div view Id such as:
 
 ```javascript
 var someDialog    = new OSH.UI.DialogView(<dialog layout div id>,{
@@ -332,7 +332,7 @@ var someDialog    = new OSH.UI.DialogView(<dialog layout div id>,{
 var someView = new OSH.UI.SomeView(someDialog.popContentDiv.id, [{...}],{...});
 ```
 
-Thus the view will be automatically attached to the popContentDiv which is the dialog content, but the best way to do that is to use the `attachTo()` function:
+Thus the view will be automatically attached to the popContentDiv which is the dialog content. The best way to do that is to use the `attachTo()` function:
 
 ```javascript
 var someDialog    = new OSH.UI.DialogView(<dialog layout div id>,{
@@ -350,7 +350,7 @@ var someView = new OSH.UI.SomeView("", [{...}],{...}); // it's important here to
 someView.attachTo(someDialog.popContentDiv.id);
 ```
 
-This will automatically the view into the dialog. Note that it's very important in that case to let the view divId empty because we don't want to attach it to something.
+This will automatically set the view into the dialog. Note that it is very important in that case to let the view divId empty because we don't want to attach it to something.
 
 
 ### MultiDialogView
