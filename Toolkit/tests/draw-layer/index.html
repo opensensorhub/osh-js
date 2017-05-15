@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Draw layer</title>
+
+
+    <link rel="stylesheet" type="text/css" href="vendor/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-EventMap.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
+
+</head>
+<body id="body">
+<h2>Test Leaflet draw layer</h2>
+<div id="map"></div>
+<style>
+    .leaflet-container {
+        height: 100%;
+    }
+    body {
+        margin: 0;
+        height: calc(100% - 67px);
+    }
+
+    html {
+        height: 100%;
+    }
+
+    #map {
+        height:100%;
+    }
+</style>
+<script type="text/javascript">
+
+    //------------ VIEW -----------------//
+    var leafletMapView = new OSH.UI.LeafletView("map", []);
+
+  /*  var editableLayers = new L.FeatureGroup();
+    leafletMapView.map.addLayer(editableLayers);
+
+    var options = {
+        position: 'topright',
+        draw: {
+            polyline: {
+                shapeOptions: {
+                    color: '#f357a1',
+                    weight: 5
+                }
+            },
+            polygon: {
+                allowIntersection: false, // Restricts shapes to simple polygons
+                drawError: {
+                    color: '#e1e100', // Color the shape will turn when intersects
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                },
+                shapeOptions: {
+                    color: '#bada55'
+                }
+            },
+            circle: true, // Turns off this drawing tool
+            rectangle: {
+                shapeOptions: {
+                    clickable: true
+                }
+            }
+        },
+        edit: {
+            featureGroup: editableLayers, //REQUIRED!!
+            remove: true
+        }
+    };
+
+    var drawControl = new L.Control.Draw(options);
+    leafletMapView.map.addControl(drawControl);
+
+    leafletMapView.map.on(L.Draw.Event.CREATED, function (e) {
+        var type = e.layerType,
+            layer = e.layer;
+
+        if (type === 'marker') {
+            layer.bindPopup('A popup!');
+        }
+
+        editableLayers.addLayer(layer);
+    });*/
+    var editableLayers = new L.FeatureGroup();
+    leafletMapView.map.addLayer(editableLayers);
+
+    leafletMapView.map.addControl(new L.Control.Draw({
+        edit: {
+            featureGroup: editableLayers,
+            poly: {
+                allowIntersection: false
+            }
+        },
+        draw: {
+            polygon: {
+                allowIntersection: false,
+                showArea: true
+            }
+        }
+    }));
+
+    leafletMapView.map.on(L.Draw.Event.CREATED, function (event) {
+        var layer = event.layer;
+
+        editableLayers.addLayer(layer);
+    });
+  </script>
+
+</body>
+</html>
