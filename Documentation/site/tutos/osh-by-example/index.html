@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>OSH by example - OpenSensorHub Toolkit</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "OSH by example";
+    var mkdocs_page_input_path = "tutos/osh-by-example.md";
+    var mkdocs_page_url = "/tutos/osh-by-example/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-36723568-3', 'opensensorhub.org');
+      ga('send', 'pageview');
+  </script>
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <img src="../../img/logo-light.png"/>
+        <a href="../.." class="icon"> OpenSensorHub Toolkit</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Introduction</a>
+        
+    </li>
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Getting started</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../download/">Download</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../install/">How to use</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Developer Documentation</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/dev-guide/">Developer's Guide</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/architecture/">Architecture</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/technical/">Technical</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/jsdoc/">JSdoc</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Tutorials</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">OSH by example</a>
+        
+            <ul>
+            
+                
+                    <li><a class="toctree-l4" href="#1-get-information-reading-getcapabilities">1) Get information reading GetCapabilities</a></li>
+                
+                    <li><a class="toctree-l4" href="#2-use-the-right-javascript-mappers">2) Use the right Javascript mappers</a></li>
+                
+                    <li><a class="toctree-l4" href="#3-define-your-html-layout">3) Define your HTML layout</a></li>
+                
+                    <li><a class="toctree-l4" href="#4-create-your-js-code-datareceivers">4) Create your JS code - DataReceivers</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../osh-by-example-2/">Make your own data receiver</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../osh-by-example-3/">Use the discovery view</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../license/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">OpenSensorHub Toolkit</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Tutorials &raquo;</li>
+        
+      
+    
+    <li>OSH by example</li>
+    <li class="wy-breadcrumbs-aside">
+      <!--
+        
+          <a href="https://github.com/opensensorhub/" class="icon icon-github"> Edit on GitHub</a>
+        
+      -->
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="create-the-client-drone-real-time-video-draping-onto-terrain">Create the client "Drone Real-time Video Draping onto Terrain"</h1>
+<h2 id="1-get-information-reading-getcapabilities">1) Get information reading GetCapabilities</h2>
+<p>The first thing you have to do is to gather all the necessary information about your connection. The OSH server allows
+one to get information through SOS, SOS-T etc. </p>
+<p>What we need is:</p>
+<p>1) Offering id</p>
+<p>2) ObservedProperty</p>
+<p>3) The time: can be a time range or real-time. A specific notation is used for real-time data</p>
+<p>This <a href="http://docs.opensensorhub.org/user/sos/intro/">link</a> will provide you more details about SOS.</p>
+<p>Let's say the endpoint is <code>localhost:8181</code> and the sos server <code>sensorhub/sos</code>.</p>
+<p>A getCapabitilies request would be</p>
+<p><code>http://localhost.net:8181/sensorhub/sos?service=SOS&amp;version=2.0&amp;request=GetCapabilities</code></p>
+<p>The next step is to extract the offeringId corresponding to our sensor:</p>
+<pre><code class="xml"> &lt;swes:offering&gt;
+    &lt;sos:ObservationOffering&gt;
+        &lt;swes:description&gt;Archive data from Solo Nav DataStore&lt;/swes:description&gt;
+        &lt;swes:identifier&gt;urn:osh:solo-nav&lt;/swes:identifier&gt;
+        &lt;swes:name&gt;Solo Nav DataStore&lt;/swes:name&gt;
+        &lt;swes:procedure&gt;urn:osh:sensor:mavlink:solo:S115A5800419&lt;/swes:procedure&gt;
+        &lt;swes:observableProperty&gt;http://www.opengis.net/def/property/OGC/0/PlatformOrientation&lt;/swes:observableProperty&gt;
+        &lt;swes:observableProperty&gt;http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation&lt;/swes:observableProperty&gt;
+        &lt;swes:observableProperty&gt;http://www.opengis.net/def/property/OGC/0/PlatformLocation&lt;/swes:observableProperty&gt;
+        &lt;sos:phenomenonTime&gt;
+            &lt;gml:TimePeriod gml:id=&quot;T4&quot;&gt;
+                &lt;gml:beginPosition&gt;2016-08-30T18:58:46.180Z&lt;/gml:beginPosition&gt;
+                &lt;gml:endPosition&gt;2016-08-30T19:20:17.002Z&lt;/gml:endPosition&gt;
+            &lt;/gml:TimePeriod&gt;
+        &lt;/sos:phenomenonTime&gt;
+        ...
+&lt;/swes:offering&gt;
+ ```
+
+and
+
+```xml
+&lt;swes:offering&gt;
+    &lt;sos:ObservationOffering&gt;
+        &lt;swes:description&gt;Archive data from Solo Video DataStore&lt;/swes:description&gt;
+        &lt;swes:identifier&gt;urn:osh:solo-video&lt;/swes:identifier&gt;
+        &lt;swes:name&gt;Solo Video DataStore&lt;/swes:name&gt;
+        &lt;swes:procedure&gt;urn:osh:sensor:rtpcam:solo:S115A5800419&lt;/swes:procedure&gt;
+        &lt;swes:observableProperty&gt;http://sensorml.com/ont/swe/property/VideoFrame&lt;/swes:observableProperty&gt;
+        &lt;swes:observableProperty&gt;http://sensorml.com/ont/swe/property/Image&lt;/swes:observableProperty&gt;
+        &lt;sos:phenomenonTime&gt;
+            &lt;gml:TimePeriod gml:id=&quot;T5&quot;&gt;
+                &lt;gml:beginPosition&gt;2016-08-30T18:59:03.009Z&lt;/gml:beginPosition&gt;
+                &lt;gml:endPosition&gt;2016-08-30T19:20:16.402Z&lt;/gml:endPosition&gt;
+            &lt;/gml:TimePeriod&gt;
+        &lt;/sos:phenomenonTime&gt;
+        ...
+&lt;/swes:offering&gt;
+</code></pre>
+
+<p>Then the relevant information is:</p>
+<ul>
+<li>
+<p>OfferingId: <code>urn:osh:solo-nav</code></p>
+</li>
+<li>
+<p>ObservedProperty:</p>
+<ul>
+<li>
+<p><code>http://www.opengis.net/def/property/OGC/0/PlatformOrientation</code></p>
+</li>
+<li>
+<p><code>http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation</code></p>
+</li>
+<li>
+<p><code>http://www.opengis.net/def/property/OGC/0/PlatformLocation</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Time range: from <code>2016-08-30T18:58:46.180Z</code> to <code>2016-08-30T19:20:17.002Z</code></p>
+</li>
+</ul>
+<p>For the second sensor:</p>
+<ul>
+<li>
+<p>OfferingId: <code>urn:osh:solo-video</code></p>
+</li>
+<li>
+<p>ObservedProperty:</p>
+<ul>
+<li>
+<p><code>http://sensorml.com/ont/swe/property/VideoFrame</code></p>
+</li>
+<li>
+<p><code>http://sensorml.com/ont/swe/property/Image</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Time range: from <code>2016-08-30T18:59:03.009Z</code> to <code>2016-08-30T19:20:16.402Z</code></p>
+</li>
+</ul>
+<h2 id="2-use-the-right-javascript-mappers">2) Use the right Javascript mappers</h2>
+<p>Once you have got the information, you have to use the Toolkit to build your client.
+You have to choose the corresponding data receivers and the corresponding views:</p>
+<h3 id="datareceivers">DataReceivers</h3>
+<ul>
+<li>
+<p>PlatformLocation =&gt; LatLon =&gt; textual including timestamp =&gt; <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html">OSH.DataReceiver.JSON</a>. The generic
+  JSON parser is able to parse any textual data and separate the timestamp from the others</p>
+</li>
+<li>
+<p>GimbalOrientation =&gt; EulerOrientation =&gt; textual including timestamp =&gt; <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html">OSH.DataReceiver.JSON</a></p>
+</li>
+<li>
+<p>Video (H264) =&gt; VideoH264 =&gt; binary data =&gt; <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.VideoH264.html">OSH.DataReceiver. VideoH264</a></p>
+</li>
+</ul>
+<h3 id="views">Views</h3>
+<p>To represent the data, we will choose in this example:</p>
+<ul>
+<li>
+<p>CesiumView =&gt; 3D map </p>
+</li>
+<li>
+<p>DialogView =&gt; encapsulates video + chart viewers</p>
+</li>
+<li>
+<p>RangeSlider =&gt; control time</p>
+</li>
+<li>
+<p>Nvd3CurveChartView =&gt; Chart</p>
+</li>
+<li>
+<p>FFMPEGView =&gt; Display Video using FFMPEG JS</p>
+</li>
+<li>
+<p>EntityTreeView =&gt; display entities</p>
+</li>
+<li>
+<p>StackMenu =&gt; for Tree</p>
+</li>
+</ul>
+<p>The views are not dependent of the data sources, many views can be used to represent the same data using a data receiver.
+Obvioulsy, some views are more appropriate such as the FFmpegView which is only used to display H264 encoded frames.</p>
+<h2 id="3-define-your-html-layout">3) Define your HTML layout</h2>
+<p>We need three containers to render the views:</p>
+<pre><code class="html">&lt;body&gt;
+ &lt;div id=&quot;videoViewDivId&quot; class=&quot;mini-view&quot;&gt;&lt;/div&gt; &lt;!-- Video View --&gt;
+ &lt;div id=&quot;chartViewDivId&quot; class=&quot;mini-view&quot;&gt;&lt;/div&gt; &lt;!-- Chart View --&gt;
+ &lt;div id=&quot;cesiumViewId&quot; class=&quot;mini-view&quot;&gt;&lt;/div&gt; &lt;!-- Cesium View --&gt;
+&lt;/body&gt;
+</code></pre>
+
+<h2 id="4-create-your-js-code-datareceivers">4) Create your JS code - DataReceivers</h2>
+<pre><code class="javascript">// DEFINE TIME
+var startTime = &quot;2016-08-30T19:00:40Z&quot;;
+var endTime = &quot;2016-08-30T19:22:00Z&quot;;
+var replaySpeed = &quot;1&quot;;
+
+// LatLon DataReceiver  
+var soloGPS = new OSH.DataReceiver.JSON(&quot;Solo GPS&quot;, {
+    protocol : &quot;ws&quot;,
+    service: &quot;SOS&quot;,
+    endpointUrl: hostname + &quot;/sensorhub/sos&quot;,
+    offeringID: &quot;urn:osh:solo-nav&quot;,
+    observedProperty: &quot;http://www.opengis.net/def/property/OGC/0/PlatformLocation&quot;,
+    startTime: startTime,
+    endTime: endTime,
+    replaySpeed: replaySpeed,
+    syncMasterTime: true // This specify to synchronize the data
+});
+
+// Orientation DataReceiver
+var soloAttitude = new OSH.DataReceiver.JSON(&quot;Solo Attitude&quot;, {
+    protocol : &quot;ws&quot;,
+    service: &quot;SOS&quot;,
+    endpointUrl: hostname + &quot;/sensorhub/sos&quot;,
+    offeringID: &quot;urn:osh:solo-nav&quot;,
+    observedProperty: &quot;http://www.opengis.net/def/property/OGC/0/PlatformOrientation&quot;,
+    startTime: startTime,
+    endTime: endTime,
+    replaySpeed: replaySpeed,
+    syncMasterTime: true
+});
+
+// Gimbal orientation DataReceiver
+var soloGimbal = new OSH.DataReceiver.JSON(&quot;Solo Gimbal&quot;, {
+    protocol : &quot;ws&quot;,
+    service: &quot;SOS&quot;,
+    endpointUrl: hostname + &quot;/sensorhub/sos&quot;,
+    offeringID: &quot;urn:osh:solo-nav&quot;,
+    observedProperty: &quot;http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation&quot;,
+    startTime: startTime,
+    endTime: endTime,
+    replaySpeed: replaySpeed,
+    syncMasterTime: true
+});
+
+
+
+// Video H264 DataReceiver
+var soloVideo = new OSH.DataReceiver.VideoH264(&quot;Solo Video&quot;, {
+    protocol : &quot;ws&quot;,
+    service: &quot;SOS&quot;,
+    endpointUrl: hostname + &quot;/sensorhub/sos&quot;,
+    offeringID: &quot;urn:osh:solo-video&quot;,
+    observedProperty: &quot;http://sensorml.com/ont/swe/property/VideoFrame&quot;,
+    startTime: startTime,
+    endTime: endTime,
+    replaySpeed: replaySpeed,
+    timeShift: -100,
+    syncMasterTime: true
+});
+</code></pre>
+
+<p>We define here a time range corresponding to the GetCapabilities information. As described above, we instantiate 
+three JSON generic data receiver and one binary.</p>
+<p>The <code>syncMasterTime</code> is an advanced tool provided by the Toolkit which allows to synchronize the data sources between them.
+That means for every data received, the timestamp will be checked and ordered to be sure that for a given time <code>t</code>, the data 
+is synchronized. In the case of the H264 binary data, the timeStamp is extracted from the first bytes of the stream, the raw data is then
+extracted by shifting the bytes of the timeStamp length.</p>
+<p>The <code>offering</code>, <code>observedProperty</code> and <code>endpoint</code> are the ones extracted from the GetCap request.</p>
+<h3 id="entity">Entity</h3>
+<p>Another useful tool is the entity. You can associate sensors between them. For example, if you know that 
+sensors are from the same hardware, it can be useful to associate one sensor to each other.
+The entity is a simple way to do that:</p>
+<pre><code class="javascript">//--------------------------------------------------------------//
+//-------------------------- Entities --------------------------//
+//--------------------------------------------------------------//
+var soloEntity = {
+    id: &quot;solo1&quot;,
+    name: &quot;3DR Solo&quot;,
+    dataSources: [soloGPS, soloAttitude, soloGimbal, soloVideo]
+};
+</code></pre>
+
+<p>The data sources are associated together.</p>
+<h3 id="video-view-ffmpeg-third-party-library">Video view (--ffmpeg third party library)</h3>
+<p>To display the Video, you can use the FFMpeg view which has been specially created for displaying H264
+encoded frames.</p>
+<pre><code class="javascript">//--------------------------------------------------------------//
+//--------------------------- Views  ---------------------------//
+//--------------------------------------------------------------//
+
+
+var soloVideoView = new OSH.UI.FFMPEGView(&quot;videoViewDivId&quot;, {
+    dataSourceId: soloVideo.getId(),
+    entityId : soloEntity.id,
+    css: &quot;video&quot;,
+    cssSelected: &quot;video-selected&quot;,
+    useWorker: true,
+    width: 1280,
+    height: 720
+});
+</code></pre>
+
+<p>The view is then associated to a data source and an entity. It will create a div into the <code>videoViewDivId</code>.
+The css passed as argument will be used by the inner hidden created div of the view. The <code>cssSelected</code> properties
+correspond to a css which is applied when you click onto your view. For example, you can decide to highlight the border 
+of your div with large width.</p>
+<p>This view has a special property <code>useWorker</code> which allows multithreading. The frame decoding will be processed 
+into a separate thread (using a WebWorker).</p>
+<h3 id="chart-view-nvd3-third-party-library">Chart view (--nvd3 third party library)</h3>
+<p>To display the altitude of the drone, you can use the simple chart view. By default, the toolkit provide a NDV3 view allowing 
+to display curve chart:</p>
+<pre><code class="javascript">//--------------------------------------------------------------//
+//--------------------------- Views  ---------------------------//
+//--------------------------------------------------------------//
+
+
+var altChartView = new OSH.UI.Nvd3CurveChartView(&quot;chartViewDivId&quot;,
+[{
+    styler: new OSH.UI.Styler.Curve({
+        valuesFunc: {
+            dataSourceIds: [soloGPS.getId()],
+            handler: function (rec, timeStamp) {
+                if (rec.alt &lt; 1)
+                    rec.alt *= 1e4; // *10^4 due to bug in Toulouse dataset
+                return {
+                    x: timeStamp,
+                    y: rec.alt+mslToWgs84
+                };
+            }
+        }
+    })
+}],
+{
+    dataSourceId: soloGPS.getId(),
+    yLabel: 'Altitude (m)',
+    xLabel: 'Time',
+    maxPoints: 100,
+    css:&quot;chart-view&quot;,
+    cssSelected: &quot;video-selected&quot;
+});
+</code></pre>
+
+<p>In this example, there are two interesting parts:</p>
+<p>1) the styler which is used to apply an altitude rectification</p>
+<p>2) the graph view properties (provided by the view itself)</p>
+<p>The styler is fed directly by the OSH.EventManager. It is built from a dataSourceId array. When the
+data have processed by the buffer, the <code>OSH.EventManager</code> will fire an event. The view will get
+this event (if the data source id matches) and forward the data to the styler if it exists.
+Then the style acts like a filter, in this example, it is useful to rectify the data before displaying into the chart.</p>
+<p>The <code>valuesFunc</code> means <code>for each data..do</code>. Each styler has a different way to handle data and has a different function 
+signature. Check the documentation for more details about them. You can use pre-existed styler or create yours.
+(<a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.UI.Styler.html">Styler documentation</a>)</p>
+<h3 id="other-stylers">Other stylers</h3>
+<p>Now you can define point marker styler to style Lat,Lon, Alt textual data:</p>
+<pre><code class="javascript">//--------------------------------------------------------------//
+//--------------------------- Views  ---------------------------//
+//--------------------------------------------------------------//
+
+// common point marker
+var pointMarker = new OSH.UI.Styler.PointMarker({
+    label: &quot;3DR Solo&quot;,
+    locationFunc : {
+        dataSourceIds : [soloGPS.getId()],
+        handler : function(rec) {
+            if (rec.alt &lt; 1)
+                rec.alt *= 1e4; // *10^4 due to bug in Toulouse dataset
+            return {
+                x : rec.lon,
+                y : rec.lat,
+                z : rec.alt+mslToWgs84-5. // model offset
+            };
+        }
+    },
+    orientationFunc : {
+        dataSourceIds : [soloAttitude.getId()],
+        handler : function(rec) {
+            return {
+                heading : rec.heading
+            };
+        }
+    },
+    icon: &quot;./models/Drone+06B.glb&quot;
+});
+</code></pre>
+
+<p>This styler contains two functions, one for location and another one for orientation. Two different
+data sources are needed to get this information.
+the <code>locationFunc</code> add MSL to LatLon data whereas the <code>orientationFunc</code> extracts heading from altitude.</p>
+<p>Depending on the <code>observeProperty</code>, the data can be provided in various ways. For example, let's suppose
+the <code>http://sensorml.com/ont/swe/property/OrientationQuaternion</code> instead, this would have as result:</p>
+<pre><code class="javascript">var pointMarker = new OSH.UI.Styler.PointMarker({
+    label: &quot;3DR Solo&quot;,
+    locationFunc : {
+        dataSourceIds : [soloGPS.getId()],
+        handler : function(rec) {
+            if (rec.alt &lt; 1)
+                rec.alt *= 1e4; // *10^4 due to bug in Toulouse dataset
+            return {
+                x : rec.lon,
+                y : rec.lat,
+                z : rec.alt+mslToWgs84-5. // model offset
+            };
+        }
+    },
+    orientationFunc : {
+        dataSourceIds : [soloAttitude.getId()],
+        handler : function(rec) {
+            var qx = rec.orient.qx;
+            var qy = rec.orient.qy;
+            var qz = rec.orient.qz;
+            var qw = rec.orient.q0;
+
+            // look dir vector
+            var x = 0;
+            var y = 0;
+            var z = -1;
+
+            // calculate quat * vector
+            var ix =  qw * x + qy * z - qz * y;
+            var iy =  qw * y + qz * x - qx * z;
+            var iz =  qw * z + qx * y - qy * x;
+            var iw = - qx * x - qy * y - qz * z;
+
+            // calculate result * inverse quat
+            xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
+            yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
+            zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+
+            var yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
+
+            return {
+                heading : yaw
+            };
+        }
+    },
+    icon: &quot;./models/Drone+06B.glb&quot;
+});
+</code></pre>
+
+<p>The <code>ImageDraping</code> styler looks like:</p>
+<pre><code class="javascript">var imageDrapingStyler = new OSH.UI.Styler.ImageDraping({
+    platformLocationFunc: {
+        dataSourceIds: [soloGPS.getId()],
+        handler: function(rec) {
+            if (rec.alt &lt; 1)
+                rec.alt *= 1e4; // *10^4 due to bug in Toulouse dataset
+            return {
+                x: rec.lon,
+                y: rec.lat,
+                z: rec.alt + mslToWgs84
+            };
+        }
+    },
+    platformOrientationFunc: {
+        dataSourceIds: [soloAttitude.getId()],
+        handler: function(rec) {
+            return {
+                heading: rec.heading,
+                pitch: 0, //rec.pitch,
+                roll: 0, //rec.roll
+            };
+        }
+    },
+    gimbalOrientationFunc: {
+        dataSourceIds: [soloGimbal.getId()],
+        handler: function(rec) {
+            return {
+                heading: rec.heading,
+                pitch: -92, //rec.pitch,
+                roll: 0, //rec.roll
+            };
+        }
+    },
+    /*GoPro*/
+    cameraModel: {
+        camProj: new Cesium.Matrix3(747.963 / 1280., 0.0, 650.66 / 1280.,
+            0.0, 769.576 / 738., 373.206 / 738.,
+            0.0, 0.0, 1.0),
+        camDistR: new Cesium.Cartesian3(-2.644e-01, 8.4e-02, 0.0),
+        camDistT: new Cesium.Cartesian2(-8.688e-04, 6.123e-04)
+    },
+    imageSrc: $$('#' + soloVideoView.getId() + ' canvas')[0]
+});
+</code></pre>
+
+<h3 id="cesium-view-cesium-third-party-library">Cesium view (--cesium third party library)</h3>
+<p>Now you have setup the 3D view:</p>
+<pre><code class="javascript"> var mapView = new OSH.UI.CesiumView(&quot;cesiumViewId&quot;, [
+{
+     name: &quot;3DR Solo&quot;,
+     entityId: soloEntity.id,
+     styler: pointMarkerStyler
+ }, {
+     name: &quot;Geolocated Imagery&quot;,
+     entityId: soloEntity.id,
+     styler: imageDrapingStyler
+ }]);
+</code></pre>
+
+<p>Most of the views are composed from <code>ViewItems</code>. They are passed as array argument to the view.
+A <code>viewItem</code> contains a <code>name</code>,<code>entityId</code> and a  <code>styler</code>.</p>
+<h3 id="data-receiver-controller">Data receiver controller</h3>
+<p>As described above, you can use a data receiver controller to wrap and abstract some logic. The data source
+can be connected/disconnected directly by calling the <code>connect</code>/<code>disconnect</code> function as well.</p>
+<pre><code class="javascript">var dataSourceController = new OSH.DataReceiver.DataReceiverController({
+        replayFactor: 1.0
+});
+
+dataSourceController.addEntity(soloEntity);
+dataSourceController.connectAll();
+// or fire an event
+//OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId:[videoDataSource.id]});
+</code></pre>
+
+<h3 id="extras-features">Extras features</h3>
+<p>The Toolkit provides a set of extra features that help you to simplify the way to develop your Application such as:</p>
+<ul>
+<li>
+<p>Decorate container using floating dialog windows</p>
+</li>
+<li>
+<p>Add contextual menu</p>
+</li>
+<li>
+<p>Add entity tree viewer</p>
+</li>
+<li>
+<p>Add range slider</p>
+</li>
+</ul>
+<h4 id="dialog-window">Dialog Window</h4>
+<p>The Dialog window can decorate any div. It's a floating window with useful actions:</p>
+<ul>
+<li>
+<p>dock: can dock the window</p>
+</li>
+<li>
+<p>drag: can drag the window</p>
+</li>
+<li>
+<p>close: can close the window</p>
+</li>
+<li>
+<p>swap: swap the inner content with another div (background for example)</p>
+</li>
+<li>
+<p>show/hide</p>
+</li>
+<li>
+<p>connect/disconnect: can disconnect/disconnect associated data source</p>
+</li>
+</ul>
+<p>For that, you need a HTML layout:</p>
+<pre><code class="html">&lt;div id=&quot;main-container&quot; class=&quot;main-view&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;dialog-main-container&quot; class=&quot;video-main-container&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<p>If you want to decorate a view, you have to put the viewId into the dialog:</p>
+<pre><code class="javascript">// video view    
+var soloVideoDialog = new OSH.UI.DialogView(&quot;dialog-main-container&quot;, { // put the dialog to the main container
+    draggable: false,
+    css: &quot;video-dialog&quot;,
+    name: &quot;UAV Video&quot;,
+    show: true,
+    dockable: true,
+    closeable: true,
+    canDisconnect : false,
+    swapId: &quot;main-container&quot;
+});
+
+var soloVideoView = new OSH.UI.FFMPEGView(soloVideoDialog.popContentDiv.id, { // put the view into the dialog
+    dataSourceId: soloVideo.getId(),
+    entityId : soloEntity.id,
+    css: &quot;video&quot;,
+    cssSelected: &quot;video-selected&quot;,
+    useWorker: true,
+    width: 1280,
+    height: 720
+});
+
+// chart view
+var altChartDialog = new OSH.UI.DialogView(&quot;dialog-main-container&quot;, {
+    draggable: false,
+    css: &quot;dialog&quot;,
+    name: &quot;Solo Altitude&quot;,
+    show: false,
+    dockable: true,
+    closeable: true,
+    canDisconnect : false,
+    swapId: &quot;main-container&quot;
+});
+
+var altChartView = new OSH.UI.Nvd3CurveChartView(altChartDialog.popContentDiv.id, ...);
+
+// Cesium view is plugged as background 
+var mapView = new OSH.UI.CesiumView(&quot;main-container&quot;,...)
+</code></pre>
+
+<h4 id="context-menu"><a id="osh-by-example-context-menu"></a>Context Menu</h4>
+<p>Another useful is the context menu. They add a contextual menu onto some views and can be associated with actions.
+They receive and send events using the EventManager. They are built from <code>menuItem</code> and can be grouped by a <code>groupId</code>.</p>
+<p>The <code>viewItem</code> of a view has a property to associate a context menu,for example:</p>
+<pre><code class="javascript">// menu ids
+var soloTreeMenuId = &quot;solo-tree-menu&quot;;
+var soloMarkerMenuId = &quot;solo-marker-menu&quot;;
+var menuGroupId = &quot;allmenus&quot;;
+
+// cesium map view
+var mapView = new OSH.UI.CesiumView(&quot;main-container&quot;, [{
+  name: &quot;3DR Solo&quot;,
+  entityId: soloEntity.id,
+  styler: pointMarker,
+  contextMenuId: soloMarkerMenuId // adds context menu to cesiumView
+}
+[...]
+</code></pre>
+
+<p>Now you have to define your <code>menuItem</code>:</p>
+<pre><code class="javascript">var menuItems = [{
+    name: &quot;Show Video&quot;,
+    viewId: soloVideoDialog.getId(),
+    css: &quot;fa fa-video-camera&quot;,
+    action: &quot;show&quot; //Can also use EventManager: OSH.EventManager.EVENT.SHOW_VIEW
+}, {
+    name: &quot;Show Altitude Chart&quot;,
+    viewId: altChartDialog.getId(),
+    css: &quot;fa fa-bar-chart&quot;,
+    action: &quot;show&quot;
+}, {
+    name: &quot;TakeOff&quot;,
+    viewId: &quot;&quot;,
+    css: &quot;fa fa-upload&quot;,
+    action: &quot;uav:takeoff&quot;
+}, {
+    name: &quot;Land&quot;,
+    viewId: &quot;&quot;,
+    css: &quot;fa fa-download&quot;,
+    action: &quot;uav:land&quot;
+}];
+
+var markerMenu = new OSH.UI.ContextMenu.CircularMenu({
+    id: soloMarkerMenuId,
+    groupId: menuGroupId,
+    items: menuItems
+});
+</code></pre>
+
+<p>In this example, we use an existing CircularMenu displaying a circle with some actions.</p>
+<h4 id="entity-tree-viewer-tree-third-party-library">Entity Tree viewer (--tree third party library)</h4>
+<p>The Entity Tree viewer (provided by the external <code>tree</code> library) shows the whole list of entities and their 
+associated data receivers. It has a stack menu to perform actions and inherit from the <code>OSH.UI.View</code>.
+Moreover, you can render the tree into a Dialog:</p>
+<pre><code class="javascript"> // tree view
+var entityTreeDialog = new OSH.UI.DialogView(document.body.id, {
+    css: &quot;tree-dialog&quot;,
+    name: &quot;Entities&quot;,
+    show: true,
+    draggable: true,
+    dockable: false,
+    closeable: true
+});
+
+var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
+    [{
+        entity : soloEntity,
+        path: &quot;Sensors/Solo&quot;,
+        treeIcon : &quot;images/drone.png&quot;,
+        contextMenuId: soloTreeMenuId
+    }],
+    {
+        css: &quot;tree-container&quot;
+    }
+);    
+</code></pre>
+
+<h4 id="range-slider-nouislider-third-party-library">Range Slider (--nouislider third party library)</h4>
+<p>The range slider allows one to control change the time period. It sends events to change dynamically DataReceiver request  and
+also use the EventManager to listen to data.</p>
+<p>It supports playback data as well as real-time data (time period cannot be changed in that mode).</p>
+<p>Let's take an example:</p>
+<p>Html Layout:</p>
+<pre><code class="html">&lt;div class=&quot;rangeSlider-container&quot;&gt;
+    &lt;div id=&quot;rangeSlider&quot; class=&quot;rangeSlider&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Since it uses EventManager to communicate, you have only to instantiate a new Object</p>
+<pre><code class="javascript"> var rangeSlider = new OSH.UI.RangeSlider(&quot;rangeSlider&quot;,{
+    startTime: &quot;2015-02-16T07:58:00Z&quot;,
+    endTime: &quot;2015-02-16T08:09:00Z&quot;,
+    refreshRate:1
+});
+</code></pre>
+
+<p>For real-time we would set:</p>
+<pre><code class="javascript"> var rangeSlider = new OSH.UI.RangeSlider(&quot;rangeSlider&quot;);
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../osh-by-example-2/" class="btn btn-neutral float-right" title="Make your own data receiver"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../../dev/jsdoc/" class="btn btn-neutral" title="JSdoc"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>The content of this site is licensed under a Creative Commons Zero v1.0 Universal License</p>
+    
+  </div>
+
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/opensensorhub/" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../../dev/jsdoc/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../osh-by-example-2/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
