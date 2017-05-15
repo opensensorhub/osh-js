@@ -32,8 +32,8 @@
     });
  */
 OSH.UI.DialogView = OSH.UI.View.extend({
-    initialize: function (divId, options) {
-        this._super(divId,[],options);
+    initialize: function (parentElementDivId, options) {
+        this._super(parentElementDivId,[],options);
         // creates HTML eflement
         this.dialogId = "dialog-" + OSH.Utils.randomUUID();
         this.pinDivId = "dialog-pin-" + OSH.Utils.randomUUID();

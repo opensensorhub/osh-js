@@ -1,0 +1,13 @@
+{
+  "name": "cesium",
+  "homepage": "https://github.com/sensiasoft/cesium",
+  "_release": "56a820f238",
+  "_resolution": {
+    "type": "branch",
+    "branch": "video-draping-1.31",
+    "commit": "56a820f23889001357016765a6304726e61c7e66"
+  },
+  "_source": "https://github.com/sensiasoft/cesium.git",
+  "_target": "video-draping-1.31",
+  "_originalSource": "https://github.com/sensiasoft/cesium.git"
+}

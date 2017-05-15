@@ -51,8 +51,8 @@
  );
  */
 OSH.UI.LeafletView = OSH.UI.View.extend({
-    initialize: function (divId, viewItems, options) {
-        this._super(divId, viewItems, options);
+    initialize: function (parentElementDivId, viewItems, options) {
+        this._super(parentElementDivId, viewItems, options);
 
         var cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -237,7 +237,10 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
         var id = "view-marker-" + OSH.Utils.randomUUID();
         this.markers[id] = marker;
 
-        this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
+        if (this.first === true) {
+          this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
+          this.first = false;
+        }
         var self = this;
 
         marker._icon.id = id;
@@ -417,12 +420,12 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
     /**
      *
      * @param $super
-     * @param divId
+     * @param parentElement
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    attachTo:function(divId) {
-        this._super(divId);
+    attachTo:function(parentElement) {
+        this._super(parentElement);
         // Fix leaflet bug when resizing the div parent container
         this.map.invalidateSize();
     },

@@ -19,7 +19,7 @@
  * @class
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
- * @param {string} divId The divId to attach the view
+ * @param {Object} parentElement The parent html element to attach the view
  * @param {Array} entityItems The entity items array
  * @param {Object} options the {@link OSH.View} options
  * @example
@@ -36,8 +36,8 @@
  );
  */
 OSH.UI.EntityTreeView = OSH.UI.View.extend({
-    initialize:function(divId,entityItems,options) {
-        this._super(divId,[],options);
+    initialize:function(parentElementDivId,entityItems,options) {
+        this._super(parentElementDivId,[],options);
 
         this.entityItems = entityItems;
         this.initTree(options);

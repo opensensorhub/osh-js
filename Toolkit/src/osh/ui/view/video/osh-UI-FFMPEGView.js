@@ -39,8 +39,8 @@
  The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 OSH.UI.FFMPEGView = OSH.UI.View.extend({
-    initialize: function (divId, options) {
-        this._super(divId, [], options);
+    initialize: function (parentElementDivId, options) {
+        this._super(parentElementDivId, [], options);
 
         this.fps = 0;
         var width = "640";

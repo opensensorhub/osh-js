@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Draping Test</title>
+    <script data-main="draping2" src="../../ThirdParty/requirejs-2.1.20/require.js"></script>
+    <style>
+        @import url(../../Source/Widgets/widgets.css);
+    
+        #cesiumContainer {
+            width: 1024px;
+            height: 1024px;
+            margin: auto;
+            padding: 0;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        body {
+            font-family: Arial
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <div style="position: absolute; top: 8px; left: 1040px">
+        <video id="vid" width="800" height="450" autoplay controls>
+            <source src="airport_road_2_cut.mp4" type="video/mp4">
+        </video>
+        <div id="coords"></div>
+    </div>
+</body>
+</html>

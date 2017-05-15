@@ -214,14 +214,6 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
 	  // adds temporalFilter
 	  var startTime = properties.startTime;
 	  var endTime = properties.endTime;
-	  if (startTime !== "now" && this.timeShift != 0) {	      
-	      // HACK: don't do it for old Android dataset that is indexed differently
-	      if (properties.offeringID !== "urn:android:device:060693280a28e015-sos") {
-	         // apply time shift
-	         startTime = new Date(Date.parse(startTime) - this.timeShift).toISOString();
-	         endTime = new Date(Date.parse(endTime) - this.timeShift).toISOString();
-	      }
-	  }
 	  url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&";
 	  
 	  if(properties.replaySpeed) {

@@ -41,6 +41,7 @@
     "Leaflet.fullscreen": "https://github.com/Leaflet/Leaflet.fullscreen.git#^1.0.2",
     "wnumb": "https://github.com/leongersen/wnumb.git#^1.0.4",
     "ol3-layerswitcher": "https://github.com/walkermatt/ol3-layerswitcher.git#^1.1.0",
-    "yuvcanvas":"./vendor-local/yuvcanvas"
+    "yuvcanvas":"./vendor-local/yuvcanvas",
+    "Leaflet.draw":"^0.4.9"
   }
 }

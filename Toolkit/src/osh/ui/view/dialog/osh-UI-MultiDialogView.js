@@ -22,8 +22,8 @@
  */
 OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
 
-    initialize:function(divId, options) {
-        this._super(divId,options);
+    initialize:function(parentElementDivId, options) {
+        this._super(parentElementDivId,options);
         // add extra part
         this.popExtraDiv = document.createElement("div");
         this.popExtraDiv.setAttribute("class","pop-extra");
@@ -34,14 +34,14 @@ OSH.UI.MultiDialogView = OSH.UI.DialogView.extend({
 
     /**
      * Appends a new view to the existing dialog.
-     * @param divId
+     * @param parentElement
      * @instance
      * @memberof OSH.UI.MultiDialogView
      */
-    appendView:function(divId,properties) {
+    appendView:function(parentElement,properties) {
         //console.log(this.popContentDiv);
         //remove from parent
-        var divToAdd = document.getElementById(divId);
+        var divToAdd = document.getElementById(parentElement);
 
         // check the visibility of the div
         if(divToAdd.style.display === "none") {

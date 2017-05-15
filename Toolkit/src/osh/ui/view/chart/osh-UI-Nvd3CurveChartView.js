@@ -43,8 +43,8 @@ var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv
 });
  */
 OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
-	initialize : function(divId,viewItems, options) {
-		this._super(divId,viewItems,options);
+	initialize : function(parentElementDivId,viewItems, options) {
+		this._super(parentElementDivId,viewItems,options);
 
 		this.entityId = options.entityId;
 		var xLabel = 'Time';

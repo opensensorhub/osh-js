@@ -28,9 +28,9 @@
  });
  */
 OSH.UI.Mp4View = OSH.UI.View.extend({
-  initialize: function(divId,options) {
-    this._super(divId,[],options);
-    
+  initialize: function(parentElementDivId,options) {
+    this._super(parentElementDivId,[],options);
+
     var width = "640";
     var height = "480";
 
@@ -52,13 +52,13 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
         this.codecs = options.codecs;
       }
     }
-    
+
     // creates video tag element
     this.video = document.createElement("video");
     this.video.setAttribute("control", '');
     // appends <video> tag to <div>
     document.getElementById(this.divId).appendChild(this.video);
-    
+
     // adds listener
     var self = this;
     OSH.EventManager.observeDiv(this.divId,"click",function(event){
@@ -67,14 +67,14 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
         entityId : self.entityId
       });
     });
-    
+
     // creates MediaSource object
     this.mediaSource = new MediaSource();
     this.buffer = null;
     this.queue = [];
-    
+
     this.video.src = window.URL.createObjectURL(this.mediaSource);
-    
+
     this.mediaSource.addEventListener('sourceopen', function(e) {
       this.mediaSource.duration = 10000000;
       this.video.play();
@@ -85,11 +85,11 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
            avc1.64001E: H.264 High Profile Level 3
          */
       this.buffer = this.mediaSource.addSourceBuffer('	video/mp4; codecs="avc1.64001E"; profiles="isom,iso2,avc1,iso6,mp41"');
-      
+
       var mediaSource = this.mediaSource;
-      
-      this.buffer.addEventListener('updatestart', function(e) { 
-        /*console.log('updatestart: ' + mediaSource.readyState);*/ 
+
+      this.buffer.addEventListener('updatestart', function(e) {
+        /*console.log('updatestart: ' + mediaSource.readyState);*/
         if(this.queue.length > 0 && !this.buffer.updating) {
           this.buffer.appendBuffer(this.queue.shift());
         }
@@ -105,7 +105,7 @@ OSH.UI.Mp4View = OSH.UI.View.extend({
     }.bind(this), false);
 
      var mediaSource = this.mediaSource;
-      
+
     this.mediaSource.addEventListener('sourceopen', function(e) { /*console.log('sourceopen: ' + mediaSource.readyState);*/ });
     this.mediaSource.addEventListener('sourceended', function(e) { /*console.log('sourceended: ' + mediaSource.readyState);*/ });
     this.mediaSource.addEventListener('sourceclose', function(e) { /*console.log('sourceclose: ' + mediaSource.readyState);*/ });
