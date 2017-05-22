@@ -28,6 +28,10 @@
     <script src="vendor/all-in-one/vendor.js"></script>
 
 
+    <!-- cesium draw helper -->
+    <link rel="stylesheet" href="../Toolkit/vendor-local/cesium-draw-helper/DrawHelper.css"/>
+    <script type="text/javascript" src="../Toolkit/vendor-local/cesium-draw-helper/DrawHelper.js"></script>
+
     <!---link rel="stylesheet" href="css/osh.css"/>
     <script src="js/osh.js"></script-->
 
@@ -289,6 +293,18 @@
             name: "Live camera tasking",
             url: "viewers/LiveTasking/LiveTasking.html",
             renderDivId: "liveTaskingId",
+            style: {
+                desktop:{
+                    width:"1350px",
+                    height:"720px"
+                }
+            },
+            defaultWidget: true
+        },
+        {
+            name: "WFS-T / Cesium example",
+            url: "viewers/wfst/wfst.html",
+            renderDivId: "wftsId",
             style: {
                 desktop:{
                     width:"1350px",

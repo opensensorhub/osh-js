@@ -280,7 +280,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			fullscreenButton: false,
 			showRenderLoopErrors: true,
 			animation: false,
-			targetFrameRate: 10
+			targetFrameRate: 10,
+        	scene3DOnly: true // for draw layer
 	    });
 	    
 	    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({

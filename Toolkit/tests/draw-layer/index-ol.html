@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Draw layer</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" type="text/css" href="vendor2/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor2/all-in-one/vendor.js"></script>
+
+    <!-- OL cesium -->
+    <script type="text/javascript" src="js/olcesium-debug.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-EventMap.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
+
+    <!-- DEV -->
+    <script type="text/javascript" src="js/osh-Wfs-t.js"></script>
+
+</head>
+<body id="body">
+<h2>Test Ol draw layer</h2>
+<div id="map" class="map"></div>
+<button id="btnArea" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+    <i class="material-icons">signal_cellular_null</i>
+</button>
+<button id="btnDelete" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+    <i class="material-icons">delete</i>
+</button>
+<style>
+    html,
+    body {
+        height: calc(100% - 34px);
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+
+    .map {
+        height: 100%;
+        width: 100%;
+    }
+
+    #btnArea {
+        position: absolute;
+        top: 70px;
+        left: 10px;
+    }
+
+    #btnDelete {
+        position: absolute;
+        top: 70px;
+        left: 80px;
+    }
+
+    .btn-active {
+        background-color: #0d47a1 !important;
+    }
+
+</style>
+<script type="text/javascript">
+    var xs = new XMLSerializer();
+    var funkyColorArray = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#cddc39', '#ff9800', '#ff5722', '#ffff00', '#76ff03']
+
+    var formatWFS = new ol.format.WFS();
+
+    var sourceWFS = new ol.source.Vector({
+        loader: function(extent) {
+            var httpConnector = new OSH.DataConnector.AjaxConnector('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows',{
+                method: 'GET',
+                responseType:"text"
+            });
+
+            httpConnector.onMessage = function(response) {
+                sourceWFS.addFeatures(formatWFS.readFeatures(response));
+            };
+
+            httpConnector.onError = function(error) {
+                console.log(error);
+            };
+            var bounds = "-20026376.39%2C-20048966.10%2C20026376.39%2C20048966.10";
+            var request = "service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox="+bounds+"%2CEPSG%3A3857";
+
+            httpConnector.sendRequest(null,request);
+
+        },
+        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+        strategy: ol.loadingstrategy.bbox,
+        projection: 'EPSG:3857'
+    });
+
+    var layerWFS = new ol.layer.Vector({
+        source: sourceWFS,
+        style: function(feature) {
+            return [
+                new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: feature.get('color')
+                    })
+                })
+            ]
+        }
+    });
+
+    var interaction;
+
+    var map = new ol.Map({
+        target: 'map',
+        controls: [],
+        interactions: [
+            new ol.interaction.MouseWheelZoom(),
+            new ol.interaction.DragPan()
+        ],
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM({
+                    url: 'https://cartodb-basemaps-{a-d}.global.ssl.fastly.net/dark_nolabels/{z}/{x}/{y}.png',
+                    opaque: false,
+                    attributions: []
+                })
+            }),
+            layerWFS
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-1.7, 53.2]),
+            zoom: 6
+        })
+    });
+
+    var oshWfst = new OSH.Services.WFST({
+        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+        featureType: 'wfs_color',
+        srsName: 'EPSG:3857'
+    });
+
+    //wfs-t
+    var transactWFS = function(mode, f) {
+        var node;
+
+        switch (mode) {
+            case 'insert':
+                node = oshWfst.writeTransaction([f],null,null);
+                break;
+            case 'update':
+                node = oshWfst.writeTransaction(null, [f], null);
+                break;
+            case 'delete':
+                node = oshWfst.writeTransaction(null, null, [f]);
+                break;
+        }
+        var payload = xs.serializeToString(node);
+        var httpConnector = new OSH.DataConnector.AjaxConnector('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows',{
+            method: 'POST',
+            responseType:"text"
+        });
+        httpConnector.onSuccess = function(resp) {
+            sourceWFS.clear();
+        };
+
+        httpConnector.sendRequest(payload);
+    };
+
+    document.getElementById("btnArea").addEventListener('click',function() {
+        map.removeInteraction(interaction);
+        interaction = new ol.interaction.Draw({
+            type: 'Polygon',
+            source: layerWFS.getSource()
+        });
+        interaction.on('drawend', function(e) {
+            var f = e.feature;
+            f.setProperties({
+                color: funkyColorArray[Math.floor(Math.random() * 9)]
+            })
+            transactWFS('insert', f);
+        });
+        map.addInteraction(interaction);
+    },false);
+
+    document.getElementById("btnDelete").addEventListener('click',function() {
+        map.removeInteraction(interaction);
+        interaction = new ol.interaction.Select();
+        interaction.getFeatures().on('add', function(e) {
+            transactWFS('delete', e.target.item(0));
+            interaction.getFeatures().clear();
+        });
+        map.addInteraction(interaction);
+    },false);
+
+
+    /*var formatWFS = new ol.format.WFS();
+
+    var formatGML = new ol.format.GML({
+        featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+        featureType: 'wfs_color',
+        srsName: 'EPSG:3857'
+    });
+
+    var xs = new XMLSerializer();
+
+    var funkyColorArray = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#cddc39', '#ff9800', '#ff5722', '#ffff00', '#76ff03']
+
+    var sourceWFS = new ol.source.Vector({
+        loader: function(extent) {
+            $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+                type: 'GET',
+                data: {
+                    service: 'WFS',
+                    version: '1.1.0',
+                    request: 'GetFeature',
+                    typename: 'wfs_color',
+                    srsname: 'EPSG:3857',
+                    bbox: extent.join(',') + ',EPSG:3857'
+                }
+            }).done(function(response) {
+                sourceWFS.addFeatures(formatWFS.readFeatures(response));
+            });
+        },
+        //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
+        strategy: ol.loadingstrategy.bbox,
+        projection: 'EPSG:3857'
+    });
+
+    var layerWFS = new ol.layer.Vector({
+        source: sourceWFS,
+        style: function(feature) {
+            return [
+                new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: feature.get('color')
+                    })
+                })
+            ]
+        }
+    });
+
+    var interaction;
+
+    var map = new ol.Map({
+        target: 'map',
+        controls: [],
+        interactions: [
+            new ol.interaction.MouseWheelZoom(),
+            new ol.interaction.DragPan()
+        ],
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM({
+                    url: 'https://cartodb-basemaps-{a-d}.global.ssl.fastly.net/dark_nolabels/{z}/{x}/{y}.png',
+                    opaque: false,
+                    attributions: []
+                })
+            }),
+            layerWFS
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-1.7, 53.2]),
+            zoom: 6
+        })
+    });
+
+    //wfs-t
+    var transactWFS = function(mode, f) {
+        var node;
+        switch (mode) {
+            case 'insert':
+                node = formatWFS.writeTransaction([f], null, null, formatGML);
+                break;
+            case 'update':
+                node = formatWFS.writeTransaction(null, [f], null, formatGML);
+                break;
+            case 'delete':
+                node = formatWFS.writeTransaction(null, null, [f], formatGML);
+                break;
+        }
+        var payload = xs.serializeToString(node);
+        $.ajax('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows', {
+            type: 'POST',
+            dataType: 'xml',
+            processData: false,
+            contentType: 'text/xml',
+            data: payload
+        }).done(function() {
+            sourceWFS.clear();
+        });
+    };
+
+    $('button').click(function() {
+        $(this).siblings().removeClass('btn-active');
+        $(this).addClass('btn-active');
+        map.removeInteraction(interaction);
+
+        switch ($(this).attr('id')) {
+
+            case 'btnArea':
+                interaction = new ol.interaction.Draw({
+                    type: 'Polygon',
+                    source: layerWFS.getSource()
+                });
+                interaction.on('drawend', function(e) {
+                    var f = e.feature;
+                    f.setProperties({
+                        color: funkyColorArray[Math.floor(Math.random() * 9)]
+                    })
+                    transactWFS('insert', f);
+                });
+                map.addInteraction(interaction);
+                break;
+
+            case 'btnDelete':
+                interaction = new ol.interaction.Select();
+                interaction.getFeatures().on('add', function(e) {
+                    transactWFS('delete', e.target.item(0));
+                    interaction.getFeatures().clear();
+                });
+                map.addInteraction(interaction);
+                break;
+
+            default:
+                break;
+        }
+    });*/
+  </script>
+
+</body>
+</html>

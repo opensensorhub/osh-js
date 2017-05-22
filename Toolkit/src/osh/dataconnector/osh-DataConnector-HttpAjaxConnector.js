@@ -38,25 +38,42 @@
  */
 OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
 
+    initialize: function(url,properties) {
+        this._super(url);
+
+        this.method = "POST";
+        this.responseType = "arraybuffer";
+
+        if(typeof(properties) !== "undefined") {
+            if(properties.method) {
+                this.method = properties.method;
+            }
+
+            if(properties.responseType) {
+                this.responseType = properties.responseType;
+            }
+        }
+    },
     /**
      * Sends the request to the defined server.
      * @param request The Http request (as a String format)
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
      */
-    sendRequest: function (request) {
+    sendRequest: function (request,extraUrl) {
         var self = this;
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.timeout = 60000;
-        if(request == null) {
-            console.log(this.getUrl());
-            xmlhttp.open("GET", this.getUrl(), true);
-            xmlhttp.responseType = "arraybuffer";
+        if(request === null) {
+            if(typeof (extraUrl) !== "undefined") {
+                xmlhttp.open("GET", this.getUrl()+"?"+extraUrl, true);
+            } else {
+                xmlhttp.open("GET", this.getUrl(), true);
+            }
+            xmlhttp.responseType = this.responseType;
             xmlhttp.onload = function (oEvent) {
-                console.log("ici");
-                var arrayBuffer = xmlhttp.response; // Note: not oReq.responseText
-                if (arrayBuffer) {
-                    this.onMessage(arrayBuffer);
+                if (xmlhttp.response) {
+                    self.onMessage(xmlhttp.response);
                 }
             };
             xmlhttp.ontimeout = function (e) {
@@ -67,6 +84,7 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
         } else {
             xmlhttp.open("POST", this.getUrl(), true);
             xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+
             xmlhttp.send(request);
 
             xmlhttp.onreadystatechange = function() {

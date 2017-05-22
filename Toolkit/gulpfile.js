@@ -88,13 +88,15 @@ gulp.task('vendor-js-src-all',false,function(){
     }
 
     if(argv.ol3) {
-        jsSources.push('vendor/ol3/ol.js');
+        jsSources.push('vendor/ol3/ol-debug.js');
         jsSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
     }
     if(argv.leaflet) {
         jsSources.push('vendor/leaflet/dist/leaflet.js');
         jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
+        jsSources.push('vendor/Leaflet.draw/dist/leaflet.draw.js');
     }
+
     if(argv.tree) {
         jsSources.push('vendor/tree/tree.js');
     }
@@ -119,6 +121,7 @@ gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-a
     if(argv.leaflet) {
         cssSources.push('vendor/leaflet/dist/leaflet.css');
         cssSources.push('vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css');
+        cssSources.push('vendor/Leaflet.draw/dist/leaflet.draw.css');
     }
 
     if(argv.ol3) {
@@ -313,6 +316,7 @@ gulp.task('copy-vendor-leaflet',false, function () {
     var src = new Array();
     src.push('vendor/leaflet/dist/**');
     src.push('vendor/Leaflet.fullscreen/dist/**');
+    src.push('vendor/Leaflet.draw/dist/leaflet.draw.js');
 
     return gulp.src(src)
         .pipe(argv.leaflet ? gulp.dest('dist/vendor/leaflet') : noop());
@@ -336,7 +340,7 @@ gulp.task('vendor-css-all-copy-cesium',false,function(){
         .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
 });
 
-gulp.task('vendor-css-all-copy-leaflet',false,['vendor-css-all-copy-leaflet-fs'], function(){
+gulp.task('vendor-css-all-copy-leaflet',false,['vendor-css-all-copy-leaflet-fs','vendor-css-all-copy-leaflet-draw'], function(){
     return gulp.src('vendor/leaflet/dist/images/*')
         .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/images') : noop());
 });
@@ -344,6 +348,11 @@ gulp.task('vendor-css-all-copy-leaflet',false,['vendor-css-all-copy-leaflet-fs']
 gulp.task('vendor-css-all-copy-leaflet-fs',false,function(){
     return gulp.src('vendor/Leaflet.fullscreen/dist/*.png')
         .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/') : noop());
+});
+
+gulp.task('vendor-css-all-copy-leaflet-draw',false,function(){
+    return gulp.src('vendor/Leaflet.draw/dist/images/**')
+        .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/images/') : noop());
 });
 
 gulp.task('vendor-css-all-copy-tree',false,['vendor-css-all-copy-tree-global'], function(){
