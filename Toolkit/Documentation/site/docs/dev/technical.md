@@ -436,3 +436,82 @@ window.CESIUM_BASE_URL = 'vendor/all-in-one';
 ```
 
 Since Cesium will try to load by default the Cesium library from the *js* folder, if this one is located into another folder, you have to specify the *CESIUM_BASE_URL* to get it work. 
+
+## FFMPEG (--ffmpeg third party library)
+
+The FFMPEG library is a pure native Javascript library. It is used decode video frame in native javascript code.
+ 
+*"The original ffmpeg.js project provides FFmpeg builds ported to JavaScript using Emscripten project. Builds are optimized for in-browser use: minimal size for faster loading, asm.js, performance tunings, etc. Though they work in Node as well."*
+
+[Source](https://github.com/sensiasoft/ffmpeg.js)
+
+By using this library, one can decode H264 video frame in the browser without using any additional plugins.
+A wrapper has been implemented within the Toolkit and provides some useful functionnalities such as:
+
+- Define canvas size
+- use webworker
+- increase performance by using transferable objects
+
+One can use the [OSH.UI.FFMPEGView](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/OSH.UI.FFMPEGView.html) and build the library using --ffmpeg argument to Gulp such as:
+
+```bash
+$ gulp build --ffmpeg
+```
+
+There are the default options of the View:
+
+``` 
+dataSourceId: videoDataSource.id,
+css: "<your css>",
+cssSelected: "<you css after selecting the view>",
+name: "<view name>",
+useWorker:<true|false>,
+useWebWorkerTransferableData: <true|false> // this is because you can speed up the data transfert between main script and web worker
+                                            by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
+                                            See the not below for more details(*).
+```
+
+One can use the WebWorker which increases performance significantly since the decoding part is executed into a separated thread. It is very useful if several FFmpeg View are declared at the same time.
+
+Another tip is to use the *useWebWorkerTransferableData* which allows to use transferable object directly between the main thread and the WebWorker.
+
+This property can cause trouble if you share the same data into different view because the pointer is transferred to the webworker and becomes then unavailable in the main thread.
+
+Without transferable object:
+
+Data --> VIEW (data copied into)--> WebWorker
+
+With transferable object:
+
+Data --> VIEW (pointer transferred to)--> WebWorker
+
+To not copy the data increases the performance since transfert is much more faster.
+
+If the data is only associated to one view, you should enable this parameter.
+
+
+__External resources:__ 
+
+- [https://developer.mozilla.org/en-US/docs/Web/API/Transferable](https://developer.mozilla.org/en-US/docs/Web/API/Transferable)
+- [https://developer.mozilla.org/en/docs/Web/API/Worker/postMessage](https://developer.mozilla.org/en/docs/Web/API/Worker/postMessage)
+
+If the webworker property is enabled, the view will also spawn a WebWorker. Since the WebWorker has to load the FFmpeg.js library separately, the worker library is placed in the *workers*
+folder built by the *Gulp build* command such as:
+
+```bash
+... 
+
+├── js
+│   ├── osh.js
+│   └── workers
+│       ├── ffmpeg-h264.js
+│       └── osh-UI-FFMPEGViewWorker.js
+
+...       
+```
+Using the WebWorker is meaning you have to keep this structure to get it work. The *workers* folder has to be right next to the *osh.js* file. The worker and the library are located at the same place.
+The worker is loaded from the view as:
+
+```javascript
+js/workers/osh-UI-FFMPEGViewWorker.js
+```
