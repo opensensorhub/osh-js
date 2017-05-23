@@ -3,7 +3,7 @@ Create the client "Drone Real-time Video Draping onto Terrain"
 
 ## 1) Get information reading GetCapabilities
  
-The first thing you have to do is to gather necessary information about your connection. The OSH server allows 
+The first thing you have to do is to gather all the necessary information about your connection. The OSH server allows
 one to get information through SOS, SOS-T etc. 
 
 What we need is:
@@ -67,7 +67,7 @@ and
 </swes:offering>
 ```
 
-Then the relevant information are:
+Then the relevant information is:
 
  * OfferingId: `urn:osh:solo-nav`
 
@@ -97,7 +97,7 @@ Then the relevant information are:
 ## 2) Use the right Javascript mappers
  
 Once you have got the information, you have to use the Toolkit to build your client.
-You have to choose the corresponding data receivers et the corresponding views:
+You have to choose the corresponding data receivers and the corresponding views:
 
 ### DataReceivers
 
@@ -128,7 +128,7 @@ You have to choose the corresponding data receivers et the corresponding views:
 
 
 The views are not dependent of the data sources, many views can be used to represent the same data using a data receiver.
-Obvioulsy, some views are more appropriate such as the FFmpegView which is only use to display H264 encoded frames.
+Obvioulsy, some views are more appropriate such as the FFmpegView which is only used to display H264 encoded frames.
 
 ## 3) Define your HTML layout
 
@@ -211,7 +211,7 @@ three JSON generic data receiver and one binary.
 
 The `syncMasterTime` is an advanced tool provided by the Toolkit which allows to synchronize the data sources between them.
 That means for every data received, the timestamp will be checked and ordered to be sure that for a given time `t`, the data 
-is synchronized. In case of the H264 binary data, the timeStamp is extracted from the first bytes of the stream, the raw data is then 
+is synchronized. In the case of the H264 binary data, the timeStamp is extracted from the first bytes of the stream, the raw data is then
 extracted by shifting the bytes of the timeStamp length.
 
 The `offering`, `observedProperty` and `endpoint` are the ones extracted from the GetCap request.
@@ -219,7 +219,7 @@ The `offering`, `observedProperty` and `endpoint` are the ones extracted from th
 ### Entity
 
 Another useful tool is the entity. You can associate sensors between them. For example, if you know that 
-sensors are from the same hardware, it can be useful to associate the sensors each others. 
+sensors are from the same hardware, it can be useful to associate one sensor to each other.
 The entity is a simple way to do that:
 
 ```javascript
@@ -236,7 +236,7 @@ The data sources are associated together.
 
 ### Video view (--ffmpeg third party library)
 
-To display the Video, you can use the FFMpeg view which has been created specially for displaying H264 
+To display the Video, you can use the FFMpeg view which has been specially created for displaying H264
 encoded frames.
 
 ```javascript
@@ -257,7 +257,7 @@ var soloVideoView = new OSH.UI.FFMPEGView("videoViewDivId", {
 ```
 
 The view is then associated to a data source and an entity. It will create a div into the `videoViewDivId`.
-The css passed as argument will be use by the inner hidden created div of the view. The `cssSelected` properties
+The css passed as argument will be used by the inner hidden created div of the view. The `cssSelected` properties
 correspond to a css which is applied when you click onto your view. For example, you can decide to highlight the border 
 of your div with large width.
 
@@ -307,7 +307,7 @@ In this example, there are two interesting parts:
  2) the graph view properties (provided by the view itself)
  
 
-The styler is feed directly by the OSH.EventManager. It is built from a dataSourceId array. When the 
+The styler is fed directly by the OSH.EventManager. It is built from a dataSourceId array. When the
 data have processed by the buffer, the `OSH.EventManager` will fire an event. The view will get
 this event (if the data source id matches) and forward the data to the styler if it exists.
 Then the style acts like a filter, in this example, it is useful to rectify the data before displaying into the chart.
@@ -352,11 +352,11 @@ var pointMarker = new OSH.UI.Styler.PointMarker({
 });
 ```
 
-This styler contains two functions, one for location and another one for orientation. Two differents 
-data sources are needed to get these information.
+This styler contains two functions, one for location and another one for orientation. Two different
+data sources are needed to get this information.
 the `locationFunc` add MSL to LatLon data whereas the `orientationFunc` extracts heading from altitude.
 
-Depending on the `observeProperty`, the data can be provided in a various way. For example, let's suppose 
+Depending on the `observeProperty`, the data can be provided in various ways. For example, let's suppose
 the `http://sensorml.com/ont/swe/property/OrientationQuaternion` instead, this would have as result:
 
 ```javascript
@@ -480,8 +480,8 @@ A `viewItem` contains a `name`,`entityId` and a  `styler`.
 
 ### Data receiver controller
 
-As describe above, you can use a data receiver controller to wrap and abstract some logic. The data source 
-can be connect/disconnected directly by calling `connect`/`disconnect` function as well.
+As described above, you can use a data receiver controller to wrap and abstract some logic. The data source
+can be connected/disconnected directly by calling the `connect`/`disconnect` function as well.
 
 ```javascript
 var dataSourceController = new OSH.DataReceiver.DataReceiverController({
@@ -496,7 +496,7 @@ dataSourceController.connectAll();
 
 ### Extras features
 
-The Toolkit provides a set of extras features helping you to simplify the way to develop your Application such as:
+The Toolkit provides a set of extra features that help you to simplify the way to develop your Application such as:
 
  * Decorate container using floating dialog windows
 
@@ -661,7 +661,7 @@ var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id
 #### Range Slider (--nouislider third party library)
 
 The range slider allows one to control change the time period. It sends events to change dynamically DataReceiver request  and
-also use the EventManager to listen for data.
+also use the EventManager to listen to data.
 
 It supports playback data as well as real-time data (time period cannot be changed in that mode).
 

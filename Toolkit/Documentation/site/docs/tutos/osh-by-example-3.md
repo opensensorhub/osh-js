@@ -4,7 +4,7 @@ Use the discovery view
 ## What is it for?
 
 The discovery view is a service allowing one to automatically discover SOS stream provided by an OSH server.
-It simplify the action of reading GetCapabilities, creating/instantiating the DataReceiver as well as the View.
+It simplifies the action of reading GetCapabilities, creating/instantiating the DataReceiver as well as the View.
 For now, the discovery service is able to:
 
  * Select a service
@@ -55,13 +55,13 @@ The view allows you to extend the basic functionnality to fit as much as possibl
         ]
     });
 ```
-The `services` property is the endpoint url of the different server you want to discovery the services.
+The `services` property is the endpoint url of the different servers you want to discover the services.
 Like the other views, the discovery view can be styled using the `css` property. You can specify 
 an existing `dataReceiverController` if you have one, otherwise, the data source will be independently connected.
 Once the offering and observedProperty discovered, the final data receiver can be attached to an existing entity using
 the `entities` property.
 
-The `views` array provides a way to create automatically a view linked to your data source. For now, only a few views are available 
+The `views` array provides a way to create automatically a view linked to your data source. For the moment, only a few views are available
 but you can extend the discovery view to add more.
 
 The `viewId` is the div id to attach your view, you can select an existing one (the one from your application, an existing dialog etc.) 

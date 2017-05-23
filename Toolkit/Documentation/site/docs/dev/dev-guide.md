@@ -4,7 +4,7 @@ Developer's Guide
 This guide is meant to help you setup a development environment so that you can extend OpenSensorHub (OSH for short) 
 with your own datasources, views or modules.
 
-Don't forget to send us a Pull Request if you want to contribute your work back to this project. Other users may be interested by your modules and bug fixes! 
+Don't forget to send us a Pull Request if you want to contribute to this project with your work. Other users may be interested in your modules and bug fixes!
 
 Of course, contributing new modules to the community is optional as our license does not prevent proprietary and commercial derived work. However, keep in mind that **if you modify the source files we provide, you must make it available publicly in source form**. 
 
@@ -34,7 +34,7 @@ $ git clone --recursive https://github.com/opensensorhub/osh-js.git
 
 ### Technologies & frameworks
 
-The Toolkit is pure Javascript and uses CSS3 for styling. Some external extra libraries adds extra functionnalities:
+The Toolkit is pure Javascript and uses CSS3 for styling. Some external extra libraries add extra functionnalities:
   
   * Cesium: pure js 3D globe
   
@@ -57,7 +57,7 @@ The Toolkit is pure Javascript and uses CSS3 for styling. Some external extra li
 
 #### Pre-requisites
 
-The building use NPM, Bower and Gulp. Be sure you have install them before continuing.
+The building uses NPM, Bower and Gulp. Be sure you have installed them before continuing.
 
  * NPM: This is a package manager for Javascript [Get NPM](https://www.npmjs.com/get-npm)
  
