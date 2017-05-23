@@ -48,7 +48,7 @@ dataSource.onData = function (data) {
       this.buffer.push({dataSourceId: dataSource.getId(), data: data});
 
 }.bind(this);
-```install
+```
 
 We don't use message passing here to not overload Event manager. Then the buffer processes the data and sent them back to EventManager:
 
