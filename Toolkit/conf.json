@@ -32,12 +32,20 @@
 			"recurse": true,
 			"private": false,
 			"lenient": true,
-			"destination": "./docs",
+			"destination": "./Documentation/jsdoc",
 			"template": "./node_modules/jaguarjs-jsdoc"
 		},
 		"default": {
 			"outputSourceFiles": true
 		}
+	},
+	"opts": {
+		"encoding": "utf8",
+		"recurse": true,
+		"private": false,
+		"lenient": true,
+		"destination": "./Documentation/jsdoc",
+		"template": "./node_modules/jaguarjs-jsdoc"
 	},
 	"markdown": {
 		"parser": "gfm",

@@ -11,6 +11,7 @@ var noop = require("gulp-noop");
 var file = require('gulp-file');
 var gap = require('gulp-append-prepend');
 var karmaServer = require('karma').Server;
+var jsdoc = require('gulp-jsdoc3');
 
 gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
     // ...
@@ -373,4 +374,10 @@ gulp.task('test', function (done) {
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
     }, done).start();
+});
+
+gulp.task('doc', "Generate JSDoc",function (cb) {
+    var config = require('./conf.json');
+    gulp.src(['README.md', './src/**/*.js'], {read: false})
+        .pipe(jsdoc(config, cb));
 });
