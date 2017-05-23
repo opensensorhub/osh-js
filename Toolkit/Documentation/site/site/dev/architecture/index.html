@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Architecture - OpenSensorHub Toolkit</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Architecture";
+    var mkdocs_page_input_path = "dev/architecture.md";
+    var mkdocs_page_url = "/dev/architecture/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-36723568-3', 'opensensorhub.org');
+      ga('send', 'pageview');
+  </script>
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <img src="../../img/logo-light.png"/>
+        <a href="../.." class="icon"> OpenSensorHub Toolkit</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Introduction</a>
+        
+    </li>
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Getting started</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../download/">Download</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../install/">How to use</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Developer Documentation</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../dev-guide/">Developer's Guide</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Architecture</a>
+        
+            <ul>
+            
+                
+                    <li><a class="toctree-l4" href="#global-architecture">Global architecture</a></li>
+                
+                    <li><a class="toctree-l4" href="#event-manager">Event Manager</a></li>
+                
+                    <li><a class="toctree-l4" href="#data-connector">Data connector</a></li>
+                
+                    <li><a class="toctree-l4" href="#data-receiver-data-sender">Data Receiver &amp; Data Sender</a></li>
+                
+                    <li><a class="toctree-l4" href="#buffer">Buffer</a></li>
+                
+                    <li><a class="toctree-l4" href="#data-receiversenderrs-vs-entity">Data receiver/sender(R/S) VS entity</a></li>
+                
+                    <li><a class="toctree-l4" href="#the-views">The views</a></li>
+                
+                    <li><a class="toctree-l4" href="#stylers">Stylers</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../technical/">Technical</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../jsdoc/">JSdoc</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Tutorials</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../tutos/osh-by-example/">OSH by example</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../tutos/osh-by-example-2/">Make your own data receiver</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../tutos/osh-by-example-3/">Use the discovery view</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../license/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">OpenSensorHub Toolkit</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Developer Documentation &raquo;</li>
+        
+      
+    
+    <li>Architecture</li>
+    <li class="wy-breadcrumbs-aside">
+      <!--
+        
+          <a href="https://github.com/opensensorhub/" class="icon icon-github"> Edit on GitHub</a>
+        
+      -->
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="architecture">Architecture</h1>
+<h3 id="global-architecture">Global architecture</h3>
+<p>The toolkit can be split into five parts:</p>
+<p>1) The Event manager: a global bus to communicate between components</p>
+<p>2) The data sources (data providers): they are connected to the server to get the data. They are represented by many types such as binary, text etc.</p>
+<p>3) The buffer: every data got from the data sources are handled by the buffer. It allows data synchronization and buffering</p>
+<p>4) The stylers: map the json data to graphic properties</p>
+<p>5) The views: rendering divs and general rendering options</p>
+<p><img alt="" src="../../images/OSH_Client_Archi.png" /></p>
+<h3 id="event-manager">Event Manager</h3>
+<p><img alt="" src="../../images/global_archi_event_manager.svg" /></p>
+<p>It acts as an Event bus, it connects the data sources, views and buffer.</p>
+<p>It contains Event enumeration such as:</p>
+<ul>
+<li>
+<p>DATA-&lt;id&gt;: gets the specific data after the buffering process</p>
+</li>
+<li>
+<p>CONNECT_DATASOURCE-&lt;id&gt;: sends an event to connect a specific data source</p>
+</li>
+<li>
+<p>PTZ_SEND_REQUEST-&lt;id&gt;: handles request to send (such as SPS)</p>
+</li>
+<li>
+<p>...</p>
+</li>
+</ul>
+<p>If the event concerned a data, it is often postfix with the id of the concerned data sources.</p>
+<h3 id="data-connector">Data connector</h3>
+<p>The Toolkit uses the data connector Abstract class to get/send the data. This is the link between the client and
+the OSH server. It does not contain any logic and gets only the data through two ways:</p>
+<ul>
+<li>
+<p>WebSocket API: connects to the server using the WebSocket Javascript API. The connector is encapsulated into
+ a WebWorker if it is supported by the browser</p>
+</li>
+<li>
+<p>Http API: connects to the server using the XmlHttpRequest API</p>
+</li>
+</ul>
+<p><img alt="Abstract data connector" src="../../images/global_archi_data_conenctor.svg" /></p>
+<h3 id="data-receiver-data-sender">Data Receiver &amp; Data Sender</h3>
+<p>A Data Receiver/Sender is used to parse the data got from the SOS server. The data contains a timestamp 
+and the raw data. The timestamp has to be separated to be used into the buffer to process synchronization.
+It also builds the final url given:</p>
+<ul>
+<li>
+<p>protocol: specify the protocol (data connector) to use</p>
+</li>
+<li>
+<p>endpoint: the sos endpoint url</p>
+</li>
+<li>
+<p>offering: the specific offering id</p>
+</li>
+<li>
+<p>observedProperty: the specific observed property</p>
+</li>
+<li>
+<p>start time: the begin position</p>
+</li>
+<li>
+<p>end time: the end position</p>
+</li>
+<li>
+<p>replay speed: because the Toolkit allows synchronization, you can use real-time data as well as playback data. 
+The replay speed allows one to accelerate the time for the playback one.</p>
+</li>
+<li>
+<p>(See technical details)[#technical-data-receiver]</p>
+</li>
+</ul>
+<h4 id="data-receiver-sos">Data Receiver - SOS</h4>
+<p>By default, the data receiver uses the WebSocket API. The WebSocket is used inside a non-blocking Web Worker.
+Using WebWorkers allows the Application to get multiple data into different threads and does not block the 
+main Thread (the rendering divs).
+As part of the data receiver package, some have already been implemented:</p>
+<p><img alt="Data receiver" src="../../images/global_archi_data_source_receiver.svg" /> </p>
+<p>A generic data receiver has been implemented to handle textual data got from SOS server <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html">See OSH.DataReceiver.JSON</a>.
+To implement your own data receiver, you only need to extend <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.DataSource.html">OSH.DataReceiver.DataSource</a> and implement
+the <code>parseData()</code> as well as the <code>parseTimeStamp()</code> which separate the timestamp and the raw data from the SOS stream.</p>
+<h4 id="data-sender-sps">Data Sender - SPS</h4>
+<p>The data sender allows one to send requests to the server. Usually it is used to send SPS requests (for example in case of PTZ tasking).</p>
+<p>Like the Data Receiver, an abstract class has to be inherited and provides necessary functions to simplify the request building chain. </p>
+<p><img alt="Data receiver" src="../../images/global_archi_data_source_sender_review.svg" /> </p>
+<h3 id="buffer">Buffer</h3>
+<p>Every data got from the SOS stream are sent to the buffer (using the EventManager). It can synchronize the data and handle playback/real-time. 
+Once the data are processed by the buffer, they are sent back to the bus through the EventManager to be processed by the other components (Views, Stylers etc..).
+The buffer can be used as a standalone component as well as into the <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.DataReceiverController.html">OSH.DataReceiver.DataReceiverController</a>.</p>
+<p>The DataReceiver is a helper class to wrap and abstract some logic. It uses a single buffer instance and calls back the result to the EventManager.</p>
+<p><img alt="Data source controller" src="../../images/Data_source_controller.svg" /> </p>
+<h3 id="data-receiversenderrs-vs-entity">Data receiver/sender(R/S) VS entity</h3>
+<p>An entity is a set of data R/S. It makes the link between several Data R/S defined by different views:</p>
+<ul>
+<li>
+<p>one click onto a view representing a data can highlight another view representing another data contained in the same entity</p>
+</li>
+<li>
+<p>it allows firing group events such as show, hide, highlight</p>
+</li>
+</ul>
+<h3 id="the-views">The views</h3>
+<p>A view represents one or more data. It gets the data from the EventManager. A view is defined by one or more ViewItems. A viewItem is composed of:</p>
+<ul>
+<li>
+<p>a styler</p>
+</li>
+<li>
+<p>a contextual menu</p>
+</li>
+<li>
+<p>an array of entity ids</p>
+</li>
+<li>
+<p>an array of data receivers</p>
+</li>
+</ul>
+<p>Some views don't need view items such as:</p>
+<ul>
+<li>
+<p>Range slider</p>
+</li>
+<li>
+<p>Discovery</p>
+</li>
+<li>
+<p>Dialog</p>
+</li>
+</ul>
+<p>Their kind of views don't represent the data, they do not have direct link with a data receiver.</p>
+<p><img alt="Views" src="../../images/views__1_.svg" /> </p>
+<h3 id="stylers">Stylers</h3>
+<p>The stylers allow one to style the data. They are generic and use functions to filter the input data. Once the data has been processed by the styler, the result is sent back to the view 
+and displayed. Many kinds of stylers are available:</p>
+<ul>
+<li>
+<p>text</p>
+</li>
+<li>
+<p>icon </p>
+</li>
+<li>
+<p>line</p>
+</li>
+<li>
+<p>map point</p>
+</li>
+<li>
+<p>...</p>
+</li>
+</ul>
+<p>They are not mandatory.</p>
+<h3 id="context-menus"><a id="archi-context-menus"></a> Context menus</h3>
+<p>They are sets of abstract classes used to represent a menu. They can have different representations such as circular, stack etc. They are built from <code>menuItems</code> owning:</p>
+<ul>
+<li>
+<p>name: the name of the menu</p>
+</li>
+<li>
+<p>viewId: a link to the view</p>
+</li>
+<li>
+<p>css classes: to style the menu</p>
+</li>
+</ul>
+<p>A <code>menuItem</code> makes the link between the view and the context menu (through event messages).</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../technical/" class="btn btn-neutral float-right" title="Technical"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../dev-guide/" class="btn btn-neutral" title="Developer's Guide"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>The content of this site is licensed under a Creative Commons Zero v1.0 Universal License</p>
+    
+  </div>
+
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/opensensorhub/" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../dev-guide/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../technical/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

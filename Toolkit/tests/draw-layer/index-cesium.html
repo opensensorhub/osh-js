@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>Draw layer</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" type="text/css" href="vendor/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
+
+    <!-- draw helper -->
+    <link rel="stylesheet" type="text/css" href="css/DrawHelper.css"/>
+    <script type="text/javascript" src="js/DrawHelper.js"></script>
+
+    <!-- OSH Core -->
+    <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
+    <!-- OSH buffer sync lib -->
+    <script type="text/javascript" src="../../src/osh/osh-Utils.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-BaseClass.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/osh-Buffer.js"></script>
+    <!-- OSH controller lib -->
+    <script type="text/javascript" src="../../src/osh/osh-EventMap.js"></script>
+    <script type="text/javascript" src="../../src/osh/osh-EventManager.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../../src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+
+    <script type="text/javascript" src="../../src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
+
+    <!-- DEV -->
+    <script type="text/javascript" src="js/osh-Services-WFS.js"></script>
+
+</head>
+<body id="body">
+<h2>Test Cesium draw layer</h2>
+<div id="cesium-container"></div>
+<div id="toolbar">
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        #toolbar {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            display: inline;
+            margin: 10px;
+            padding: 0px;
+            background: white;
+        }
+
+    </style>
+    <script type="text/javascript">
+        window.CESIUM_BASE_URL = 'vendor/all-in-one';
+
+        const WFS_PROJECTION = "EPSG:3857";
+
+        var wfsService = new OSH.Services.WFS({
+            featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
+            featureType: 'wfs_color',
+            srsName: WFS_PROJECTION,
+            url:"https://gsx.geolytix.net/geoserver/geolytix_wfs/ows"
+        });
+
+        wfsService.onError = function(response) {
+            console.log("Error: cannot read WFS stream: "+response);
+        };
+
+        //------------ VIEW -----------------//
+        var cesiumView = new OSH.UI.CesiumView("cesium-container", []);
+
+        // start the draw helper to enable shape creation and editing
+        var drawHelper = new DrawHelper(cesiumView.viewer);
+
+        var toolbar = drawHelper.addToolbar(document.getElementById("toolbar"), {
+            buttons: ['marker', 'polyline', 'polygon']
+        });
+
+        // add draw helper listener
+        toolbar.addListener('markerCreated', drawHelperMarkerCreatedListener);
+        toolbar.addListener('polylineCreated', drawHelperPolylineCreatedListener);
+        toolbar.addListener('polygonCreated', drawHelperPolygonCreatedListener);
+
+        var i = 0;
+        // read features from WFS
+        var onSuccessRead = function(geometryArray) {
+            for(let i=0;i < geometryArray.length;i++) {
+                var primitive = geometryArray[i];
+
+                if(primitive.isPolygon || primitive.isPolyline) {
+                    cesiumView.viewer._cesiumWidget.scene.primitives.add(primitive);
+                }
+                //--- IF EDITABLE -- DISABLED
+
+               /* if(primitive.isPolygon) {
+                    cesiumView.viewer._cesiumWidget.scene.primitives.add(primitive);
+                    (function (id) { // use a close here to no share the dataSourceId variable
+                        primitive.addListener('onEdited', function (event) {
+                            var updatedCesium = null;
+
+                            var type = "";
+                            if (primitive.isPolygon) {
+                                updatedCesium = new DrawHelper.PolygonPrimitive({
+                                    positions: event.positions
+                                    //material : Cesium.Material.fromType('Checkerboard')
+                                });
+                                type = "polygon";
+                                updatedCesium._id = id;
+                            }
+
+                            wfsService.writeTransactionAsCesiumPrimitives(null, updatedCesium, null, type, onSuccessWrite);
+                            refresh();
+                        });
+                    })(primitive._id); //passing the variable to freeze, creating a new closure*/
+                else if(primitive.isPoint) {
+                    var b = new Cesium.BillboardCollection();
+                    cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
+                    var billboard = b.add(primitive);
+                    //billboard.setEditable();
+                }
+            }
+        };
+
+        var onSuccessWrite = function(message) {
+            refresh();
+        };
+
+        var bounds = "-20026376.39%2C-20048966.10%2C20026376.39%2C20048966.10";
+        var request = "service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox="+bounds+"%2CEPSG%3A3857";
+
+        wfsService.readAsCesiumPrimitives(request,onSuccessRead);
+
+        //-------- CESIUM DRAW HELPER LISTENERS ---------------//
+
+        function drawHelperMarkerCreatedListener(event) {
+            // create one common billboard collection for all billboards
+            //cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
+            //billboard.setEditable();
+
+            var point = {
+                show : true,
+                position : event.position,
+                pixelOffset : new Cesium.Cartesian2(0, 0),
+                eyeOffset : new Cesium.Cartesian3(0.0, 0.0, 0.0),
+                horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin : Cesium.VerticalOrigin.CENTER,
+                scale : 1.0,
+                image: './img/glyphicons_242_google_maps.png',
+                color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
+                isPoint:true
+            };
+
+            wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"Point",onSuccessWrite);
+        }
+
+        function drawHelperPolylineCreatedListener(event) {
+            var polyline = new DrawHelper.PolylinePrimitive({
+                positions: event.positions,
+                width: 5,
+                geodesic: true
+            });
+            wfsService.writeTransactionAsCesiumPrimitives(polyline,null,null,"polyline",onSuccessWrite);
+        }
+
+        function drawHelperPolygonCreatedListener(event) {
+            var cesiumPolygon = new DrawHelper.PolygonPrimitive({
+                positions: event.positions
+                //material : Cesium.Material.fromType('Checkerboard')
+            });
+
+            wfsService.writeTransactionAsCesiumPrimitives(cesiumPolygon,null,null,"polygon",onSuccessWrite);
+        }
+
+        function refresh() {
+            cesiumView.viewer._cesiumWidget.scene.primitives.removeAll();
+            wfsService.readAsCesiumPrimitives(request,onSuccessRead);
+        }
+    </script>
+
+</body>
+</html>

@@ -88,7 +88,7 @@ gulp.task('vendor-js-src-all',false,function(){
     }
 
     if(argv.ol3) {
-        jsSources.push('vendor/ol3/ol.js');
+        jsSources.push('vendor/ol3/ol-debug.js');
         jsSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
     }
     if(argv.leaflet) {
