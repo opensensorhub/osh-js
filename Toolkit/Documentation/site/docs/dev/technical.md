@@ -426,3 +426,13 @@ multiDialog.appendView(someView3.divId);
 ```
 
 The someView 2 & 3 will be appended to the dialog. See the [Multi dialog + tasking example](http://opensensorhub.github.io/osh-js/Showcase/) of the Showcase
+
+## Cesium (--cesium third party library)
+
+As we have seen, one can directly built Cesium in osh vendor using Gulp. One specific one has to take care is the Cesium global property:
+
+```javascript
+window.CESIUM_BASE_URL = 'vendor/all-in-one';
+```
+
+Since Cesium will try to load by default the Cesium library from the *js* folder, if this one is located into another folder, you have to specify the *CESIUM_BASE_URL* to get it work. 
