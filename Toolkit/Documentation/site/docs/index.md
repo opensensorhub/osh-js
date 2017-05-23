@@ -1,7 +1,7 @@
-OpenSensorHub Toolkit Documentation
+OpenSensorHub Web Client Toolkit Documentation
 ===
 
-OpenSensorHub toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors.
+OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors.
 It is pure javascript framework and does not require third party libraries. A set of external libraries is also available to easily build some part of your views such as
 Leaflet, OpenLayer, Cesium, NVD3 etc..
 
