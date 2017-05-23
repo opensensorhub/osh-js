@@ -7,8 +7,8 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-    <link rel="stylesheet" type="text/css" href="vendor/all-in-one/vendor.css"/>
-    <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor2/all-in-one/vendor.css"/>
+    <script type="text/javascript" src="vendor2/all-in-one/vendor.js"></script>
 
     <!-- OL cesium -->
     <script type="text/javascript" src="js/olcesium-debug.js"></script>
@@ -96,8 +96,10 @@
             httpConnector.onError = function(error) {
                 console.log(error);
             };
+            var bounds = "-20026376.39%2C-20048966.10%2C20026376.39%2C20048966.10";
+            var request = "service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox="+bounds+"%2CEPSG%3A3857";
 
-            httpConnector.sendRequest(null,"service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox=-1999271.9641415388%2C5687016.759348623%2C1620785.6954444088%2C8353140.305935571%2CEPSG%3A3857");
+            httpConnector.sendRequest(null,request);
 
         },
         //strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ()),
@@ -165,7 +167,6 @@
                 break;
         }
         var payload = xs.serializeToString(node);
-        console.log(payload);
         var httpConnector = new OSH.DataConnector.AjaxConnector('https://gsx.geolytix.net/geoserver/geolytix_wfs/ows',{
             method: 'POST',
             responseType:"text"

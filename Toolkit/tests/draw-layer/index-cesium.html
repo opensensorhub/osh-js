@@ -92,18 +92,52 @@
         toolbar.addListener('polylineCreated', drawHelperPolylineCreatedListener);
         toolbar.addListener('polygonCreated', drawHelperPolygonCreatedListener);
 
+        var i = 0;
         // read features from WFS
         var onSuccessRead = function(geometryArray) {
             for(let i=0;i < geometryArray.length;i++) {
-                cesiumView.viewer._cesiumWidget.scene.primitives.add(geometryArray[i]);
+                var primitive = geometryArray[i];
+
+                if(primitive.isPolygon || primitive.isPolyline) {
+                    cesiumView.viewer._cesiumWidget.scene.primitives.add(primitive);
+                }
+                //--- IF EDITABLE -- DISABLED
+
+               /* if(primitive.isPolygon) {
+                    cesiumView.viewer._cesiumWidget.scene.primitives.add(primitive);
+                    (function (id) { // use a close here to no share the dataSourceId variable
+                        primitive.addListener('onEdited', function (event) {
+                            var updatedCesium = null;
+
+                            var type = "";
+                            if (primitive.isPolygon) {
+                                updatedCesium = new DrawHelper.PolygonPrimitive({
+                                    positions: event.positions
+                                    //material : Cesium.Material.fromType('Checkerboard')
+                                });
+                                type = "polygon";
+                                updatedCesium._id = id;
+                            }
+
+                            wfsService.writeTransactionAsCesiumPrimitives(null, updatedCesium, null, type, onSuccessWrite);
+                            refresh();
+                        });
+                    })(primitive._id); //passing the variable to freeze, creating a new closure*/
+                else if(primitive.isPoint) {
+                    var b = new Cesium.BillboardCollection();
+                    cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
+                    var billboard = b.add(primitive);
+                    //billboard.setEditable();
+                }
             }
         };
 
         var onSuccessWrite = function(message) {
-            console.log(message);
+            refresh();
         };
 
-        var request = "service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox=-1999271.9641415388%2C5687016.759348623%2C1620785.6954444088%2C8353140.305935571%2CEPSG%3A3857";
+        var bounds = "-20026376.39%2C-20048966.10%2C20026376.39%2C20048966.10";
+        var request = "service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox="+bounds+"%2CEPSG%3A3857";
 
         wfsService.readAsCesiumPrimitives(request,onSuccessRead);
 
@@ -111,9 +145,10 @@
 
         function drawHelperMarkerCreatedListener(event) {
             // create one common billboard collection for all billboards
-            var b = new Cesium.BillboardCollection();
-            cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
-            var billboard = b.add({
+            //cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
+            //billboard.setEditable();
+
+            var point = {
                 show : true,
                 position : event.position,
                 pixelOffset : new Cesium.Cartesian2(0, 0),
@@ -122,9 +157,11 @@
                 verticalOrigin : Cesium.VerticalOrigin.CENTER,
                 scale : 1.0,
                 image: './img/glyphicons_242_google_maps.png',
-                color : new Cesium.Color(1.0, 1.0, 1.0, 1.0)
-            });
-            billboard.setEditable();
+                color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
+                isPoint:true
+            };
+
+            wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"Point",onSuccessWrite);
         }
 
         function drawHelperPolylineCreatedListener(event) {
@@ -133,24 +170,21 @@
                 width: 5,
                 geodesic: true
             });
-            cesiumView.viewer._cesiumWidget.scene.primitives.add(polyline);
-            polyline.setEditable();
-            polyline.addListener('onEdited', function(event) {
-            });
+            wfsService.writeTransactionAsCesiumPrimitives(polyline,null,null,"polyline",onSuccessWrite);
         }
 
         function drawHelperPolygonCreatedListener(event) {
             var cesiumPolygon = new DrawHelper.PolygonPrimitive({
                 positions: event.positions
                 //material : Cesium.Material.fromType('Checkerboard')
-             });
-             cesiumView.viewer._cesiumWidget.scene.primitives.add(cesiumPolygon);
-             cesiumPolygon.setEditable();
-             cesiumPolygon.addListener('onEdited', function(event) {
-                 // do something
-             });
+            });
 
             wfsService.writeTransactionAsCesiumPrimitives(cesiumPolygon,null,null,"polygon",onSuccessWrite);
+        }
+
+        function refresh() {
+            cesiumView.viewer._cesiumWidget.scene.primitives.removeAll();
+            wfsService.readAsCesiumPrimitives(request,onSuccessRead);
         }
     </script>
 

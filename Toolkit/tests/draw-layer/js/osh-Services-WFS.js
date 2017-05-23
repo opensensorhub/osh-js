@@ -49,6 +49,8 @@ OSH.Services.WFS = BaseClass.extend({
                            // 1 = Cesium
 
         this.xs = new XMLSerializer();
+
+
     },
 
     readAsOlFeatures:function(request,callback) {
@@ -90,12 +92,38 @@ OSH.Services.WFS = BaseClass.extend({
             for(let i=0;i < features.length;i++) {
                 var feature = features[i];
 
+                console.log(feature.getGeometry().getType());
                 if(feature.getGeometry().getType() === "Polygon") {
                     // ol polygon to cesium primitive
                     this.geometryArray.push(this.olPolygonToCesium(feature));
+                } else  if(feature.getGeometry().getType() === "Point") {
+                    this.geometryArray.push(this.olMarkerToCesium(feature));
+                } else if(feature.getGeometry().getType() === "LineString") {
+                    this.geometryArray.push(this.olPolylineToCesium(feature));
                 }
             }
         }
+    },
+
+    olMarkerToCesium:function(feature) {
+        let  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+
+        var coordinates = olGeometry.getCoordinates();
+
+         var point = {
+            show : true,
+            position : Cesium.Cartesian3.fromDegrees(coordinates[0],coordinates[1],0),
+            pixelOffset : new Cesium.Cartesian2(0, 0),
+            eyeOffset : new Cesium.Cartesian3(0.0, 0.0, 0.0),
+            horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+            verticalOrigin : Cesium.VerticalOrigin.CENTER,
+            scale : 1.0,
+            image: './img/glyphicons_242_google_maps.png',
+            color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
+            isPoint:true
+        };
+
+        return point;
     },
 
     olPolygonToCesium:function(feature) {
@@ -134,9 +162,127 @@ OSH.Services.WFS = BaseClass.extend({
             positions: hierarchy.positions
             // material : Cesium.Material.fromType('Checkerboard')
         });
-        polygon.setEditable();
+       // polygon.setEditable();
+
+        // save the id for update/delete
+        polygon._id = feature.getId();
 
         return polygon;
+    },
+
+
+    olPolylineToCesium:function(feature) {
+        let  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+
+        var coordinates = olGeometry.getCoordinates();
+
+        let positions = [];
+
+        for (let i = 0; i < coordinates.length; ++i) {
+            const olPos = coordinates[i];
+            positions.push(Cesium.Cartesian3.fromDegrees(olPos[0],olPos[1],olPos[2]));
+        }
+
+        var polyline = new DrawHelper.PolylinePrimitive({
+            positions: positions,
+            width: 5,
+            geodesic: true
+        });
+
+        polyline.isPolyline = true;
+        return polyline;
+    },
+
+    cesiumMarkerToOl: function (cesiumMarker) {
+        var cartesian = new Cesium.Cartesian3(cesiumMarker.position.x, cesiumMarker.position.y, cesiumMarker.position.z);
+        var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+
+        var projCoordinates = ol.proj.fromLonLat(
+            [
+                Cesium.Math.toDegrees(cartographic.longitude),
+                Cesium.Math.toDegrees(cartographic.latitude),
+                Cesium.Math.toDegrees(cartographic.height)
+            ],
+            WFS_PROJECTION
+        );
+
+        var iconFeature = new ol.Feature({
+            geometry: new ol.geom.Point([projCoordinates[0], projCoordinates[1],projCoordinates[2]]),
+            name: 'Marker',
+            color: "#e91e63"
+        });
+
+        return iconFeature;
+    },
+
+    cesiumPolylineToOl: function (cesiumPolyline) {
+        var lineString = new ol.geom.LineString(null);
+
+        // support only outer ring
+        var flatCoordinates = [];
+
+        for (let i = 0; i < cesiumPolyline.positions.length; i++) {
+            var cartesian = new Cesium.Cartesian3(cesiumPolyline.positions[i].x, cesiumPolyline.positions[i].y, cesiumPolyline.positions[i].z);
+            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+
+            var projCoordinates = ol.proj.fromLonLat(
+                [Cesium.Math.toDegrees(cartographic.longitude),
+                    Cesium.Math.toDegrees(cartographic.latitude),
+                    0
+                ],
+                WFS_PROJECTION
+            );
+
+            flatCoordinates.push(projCoordinates[0], projCoordinates[1], 0);
+        }
+
+        lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
+
+        var feature = new ol.Feature({
+            geometry: lineString,
+            color: "#e91e63"
+        });
+
+        return feature;
+    },
+
+    cesiumPolygonToOl: function (cesiumPolygon) {
+        var polygon = new ol.geom.Polygon(null);
+
+        // support only outer ring
+        var flatCoordinates = [];
+
+        for (let i = 0; i < cesiumPolygon.positions.length - 2; i++) {
+            var cartesian = new Cesium.Cartesian3(cesiumPolygon.positions[i].x, cesiumPolygon.positions[i].y, cesiumPolygon.positions[i].z);
+            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+
+            var projCoordinates = ol.proj.fromLonLat(
+                [Cesium.Math.toDegrees(cartographic.longitude),
+                    Cesium.Math.toDegrees(cartographic.latitude),
+                    0
+                ],
+                WFS_PROJECTION
+            );
+
+            flatCoordinates.push(projCoordinates[0], projCoordinates[1], 0);
+        }
+
+        flatCoordinates.push(flatCoordinates[0], flatCoordinates[1], flatCoordinates[2]);
+
+        var ends = [];
+        ends.push(flatCoordinates.length);
+
+        polygon.setFlatCoordinates(
+            ol.geom.GeometryLayout.XYZ, flatCoordinates, ends);
+
+
+        var feature = new ol.Feature({
+            geometry: polygon,
+            color: "#e91e63"
+        });
+
+        feature.setId(cesiumPolygon._id);
+        return feature;
     },
 
     olGeometryCloneTo4326:function (geometry, projection) {
@@ -156,20 +302,20 @@ OSH.Services.WFS = BaseClass.extend({
         if(inserts !== null) {
             if(type === "polygon"){
                 this.transactWFS("insert",this.cesiumPolygonToOl(inserts),callback);
-            } else if(type === "marker") {
-                //TODO:
+            } else if(type === "Point") {
+                this.transactWFS("insert",this.cesiumMarkerToOl(inserts),callback);
             } else if(type === "polyline") {
-                //TODO:
+                this.transactWFS("insert",this.cesiumPolylineToOl(inserts),callback);
             }
         }
 
         if(updates !== null) {
             if(type === "polygon") {
-                //TODO:
+                this.transactWFS("update",this.cesiumPolygonToOl(updates),callback);
             } else if(type === "marker") {
-                //TODO:
+                this.transactWFS("update",this.cesiumMarkerToOl(updates),callback);
             } else if(type === "polyline") {
-                //TODO:
+                this.transactWFS("insert",this.cesiumPolylineToOl(inserts),callback);
             }
         }
 
@@ -264,48 +410,11 @@ OSH.Services.WFS = BaseClass.extend({
         }
         var payload = this.xs.serializeToString(node);
         this.httpConnector.method = "POST";
+        console.log(payload);
         this.httpConnector.sendRequest(payload);
-
         this.httpConnector.onSuccess = function(message) {
+            console.log(message);
             callback(message);
         };
-    },
-
-    cesiumPolygonToOl:function(cesiumPolygon) {
-        var polygon = new ol.geom.Polygon(null);
-
-        // support only outer ring
-        var flatCoordinates = [];
-
-        for(let i=0;i < cesiumPolygon.positions.length-2;i++){
-            var cartesian = new Cesium.Cartesian3(cesiumPolygon.positions[i].x, cesiumPolygon.positions[i].y, cesiumPolygon.positions[i].z);
-            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
-
-            var projCoordinates = ol.proj.fromLonLat(
-                [   Cesium.Math.toDegrees(cartographic.longitude),
-                    Cesium.Math.toDegrees(cartographic.latitude),
-                    0
-                ],
-                WFS_PROJECTION
-            );
-
-            flatCoordinates.push(projCoordinates[0], projCoordinates[1], 0);
-        }
-
-        flatCoordinates.push(flatCoordinates[0],flatCoordinates[1],flatCoordinates[2]);
-
-        var ends = [];
-        ends.push(flatCoordinates.length);
-
-        polygon.setFlatCoordinates(
-            ol.geom.GeometryLayout.XYZ, flatCoordinates, ends);
-
-
-        var feature = new ol.Feature({
-            geometry: polygon,
-            color: "#e91e63"
-        });
-
-        return feature;
     }
 });
