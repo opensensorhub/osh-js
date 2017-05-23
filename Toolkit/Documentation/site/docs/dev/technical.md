@@ -173,6 +173,51 @@ The generic `OSH.UI.PtzTaskingView` already fire this event. If you want to use 
 ```
 This is a fast way to communicate between your tasking view and the HttpConnector without taking into consideration internal processes.
 
+## DataReceiver
+
+In theory we have to create a different data receiver for every different streams we can use. OSH provides some generic re-usable data receiver which can be used with your existing data.
+
+### DataReceiver JSON
+
+Most of the time, one can use the Generic DataReceiver described above to support text-encoded data streams. In cases where the data is not textual (such as binary, audio etc..), one may need to create a custom data receiver. The way to do this is described below.
+
+The [OSH.DataReceiver. JSON](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/OSH.DataReceiver.JSON.html) is a generic JSON datareceiver to parse JSON response. It connects to a JSON stream and 
+parses the *"data"* and *"time"* properties.
+
+For example, for the following GetResult request:
+
+```html
+http://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:offering03&observedProperty=http://sensorml.com/ont/swe/property/Weather&temporalFilter=phenomenonTime,now&responseFormat=application/json
+```
+
+*Note: the request contains "&responseFormat=application/json" to get a json response*
+
+the response would be:
+```json
+[
+  {"time": "2017-05-23T08:37:30.893Z", "temperature": 22.919639646486733, "pressure": 1012.3488597792292, "windSpeed": 2.4516089709735143, "windDirection": 318.18582382006787}
+]
+```
+
+As described in the architecture part, the data receiver has to parse the time and the data. 
+
+The JSON one will also take the "time" property and create a new object containing the others fields *temperature*, *pressure*, *windSpeed*, *windDirection*.
+The result after parsing is then:
+
+```json
+{
+  "timeStamp": "2017-05-23T08:37:30.893Z",
+  "data": {
+    "temperature" : 22.919639646486733,
+    "pressure": 1012.3488597792292, 
+    "windSpeed": 2.4516089709735143, 
+    "windDirection": 318.18582382006787
+  }
+}
+```
+
+The timeStamp property is then used to synchronize the data and the data part contains all the data values.
+
 ## Requests
 
 ### SOS (--x2js third party library)
