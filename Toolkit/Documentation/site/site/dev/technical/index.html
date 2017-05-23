@@ -131,9 +131,15 @@
                 
                     <li><a class="toctree-l4" href="#eventmanager">EventManager</a></li>
                 
+                    <li><a class="toctree-l4" href="#datareceiver">DataReceiver</a></li>
+                
                     <li><a class="toctree-l4" href="#requests">Requests</a></li>
                 
                     <li><a class="toctree-l4" href="#dialog">Dialog</a></li>
+                
+                    <li><a class="toctree-l4" href="#cesium-cesium-third-party-library">Cesium (--cesium third party library)</a></li>
+                
+                    <li><a class="toctree-l4" href="#ffmpeg-ffmpeg-third-party-library">FFMPEG (--ffmpeg third party library)</a></li>
                 
             
             </ul>
@@ -277,12 +283,10 @@ the data is sent as a JSON object with an event <code>DATA-&lt;id&gt;</code>. </
       this.buffer.push({dataSourceId: dataSource.getId(), data: data});
 
 }.bind(this);
-```install
+</code></pre>
 
-We don't use message passing here to not overload Event manager. Then the buffer processes the data and sent them back to EventManager:
-
-```javascript
-...
+<p>We don't use message passing here to not overload Event manager. Then the buffer processes the data and sent them back to EventManager:</p>
+<pre><code class="javascript">...
 OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+&quot;-&quot;+dataSourceId, {data : data});
 ...
 </code></pre>
@@ -381,6 +385,38 @@ The generic <code>OSH.UI.PtzTaskingView</code> already fire this event. If you w
 </code></pre>
 
 <p>This is a fast way to communicate between your tasking view and the HttpConnector without taking into consideration internal processes.</p>
+<h2 id="datareceiver">DataReceiver</h2>
+<p>In theory we have to create a different data receiver for every different streams we can use. OSH provides some generic re-usable data receiver which can be used with your existing data.</p>
+<h3 id="datareceiver-json">DataReceiver JSON</h3>
+<p>Most of the time, one can use the Generic DataReceiver described above to support text-encoded data streams. In cases where the data is not textual (such as binary, audio etc..), one may need to create a custom data receiver. The way to do this is described below.</p>
+<p>The <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/OSH.DataReceiver.JSON.html">OSH.DataReceiver. JSON</a> is a generic JSON datareceiver to parse JSON response. It connects to a JSON stream and 
+parses the <em>"data"</em> and <em>"time"</em> properties.</p>
+<p>For example, for the following GetResult request:</p>
+<pre><code class="html">http://sensiasoft.net:8181/sensorhub/sos?service=SOS&amp;version=2.0&amp;request=GetResult&amp;offering=urn:mysos:offering03&amp;observedProperty=http://sensorml.com/ont/swe/property/Weather&amp;temporalFilter=phenomenonTime,now&amp;responseFormat=application/json
+</code></pre>
+
+<p><em>Note: the request contains "&amp;responseFormat=application/json" to get a json response</em></p>
+<p>the response would be:</p>
+<pre><code class="json">[
+  {&quot;time&quot;: &quot;2017-05-23T08:37:30.893Z&quot;, &quot;temperature&quot;: 22.919639646486733, &quot;pressure&quot;: 1012.3488597792292, &quot;windSpeed&quot;: 2.4516089709735143, &quot;windDirection&quot;: 318.18582382006787}
+]
+</code></pre>
+
+<p>As described in the architecture part, the data receiver has to parse the time and the data. </p>
+<p>The JSON one will also take the "time" property and create a new object containing the others fields <em>temperature</em>, <em>pressure</em>, <em>windSpeed</em>, <em>windDirection</em>.
+The result after parsing is then:</p>
+<pre><code class="json">{
+  &quot;timeStamp&quot;: &quot;2017-05-23T08:37:30.893Z&quot;,
+  &quot;data&quot;: {
+    &quot;temperature&quot; : 22.919639646486733,
+    &quot;pressure&quot;: 1012.3488597792292, 
+    &quot;windSpeed&quot;: 2.4516089709735143, 
+    &quot;windDirection&quot;: 318.18582382006787
+  }
+}
+</code></pre>
+
+<p>The timeStamp property is then used to synchronize the data and the data part contains all the data values.</p>
 <h2 id="requests">Requests</h2>
 <h3 id="sos-x2js-third-party-library">SOS (--x2js third party library)</h3>
 <p>The Toolkit provides tools to get information about your OSH server:</p>
@@ -579,6 +615,69 @@ multiDialog.appendView(someView3.divId);
 </code></pre>
 
 <p>The someView 2 &amp; 3 will be appended to the dialog. See the <a href="http://opensensorhub.github.io/osh-js/Showcase/">Multi dialog + tasking example</a> of the Showcase</p>
+<h2 id="cesium-cesium-third-party-library">Cesium (--cesium third party library)</h2>
+<p>As we have seen, one can directly built Cesium in osh vendor using Gulp. One specific one has to take care is the Cesium global property:</p>
+<pre><code class="javascript">window.CESIUM_BASE_URL = 'vendor/all-in-one';
+</code></pre>
+
+<p>Since Cesium will try to load by default the Cesium library from the <em>js</em> folder, if this one is located into another folder, you have to specify the <em>CESIUM_BASE_URL</em> to get it work. </p>
+<h2 id="ffmpeg-ffmpeg-third-party-library">FFMPEG (--ffmpeg third party library)</h2>
+<p>The FFMPEG library is a pure native Javascript library. It is used decode video frame in native javascript code.</p>
+<p><em>"The original ffmpeg.js project provides FFmpeg builds ported to JavaScript using Emscripten project. Builds are optimized for in-browser use: minimal size for faster loading, asm.js, performance tunings, etc. Though they work in Node as well."</em></p>
+<p><a href="https://github.com/sensiasoft/ffmpeg.js">Source</a></p>
+<p>By using this library, one can decode H264 video frame in the browser without using any additional plugins.
+A wrapper has been implemented within the Toolkit and provides some useful functionnalities such as:</p>
+<ul>
+<li>Define canvas size</li>
+<li>use webworker</li>
+<li>increase performance by using transferable objects</li>
+</ul>
+<p>One can use the <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/OSH.UI.FFMPEGView.html">OSH.UI.FFMPEGView</a> and build the library using --ffmpeg argument to Gulp such as:</p>
+<pre><code class="bash">$ gulp build --ffmpeg
+</code></pre>
+
+<p>There are the default options of the View:</p>
+<pre><code>dataSourceId: videoDataSource.id,
+css: &quot;&lt;your css&gt;&quot;,
+cssSelected: &quot;&lt;you css after selecting the view&gt;&quot;,
+name: &quot;&lt;view name&gt;&quot;,
+useWorker:&lt;true|false&gt;,
+useWebWorkerTransferableData: &lt;true|false&gt; // this is because you can speed up the data transfert between main script and web worker
+                                            by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
+                                            See the not below for more details(*).
+</code></pre>
+
+<p>One can use the WebWorker which increases performance significantly since the decoding part is executed into a separated thread. It is very useful if several FFmpeg View are declared at the same time.</p>
+<p>Another tip is to use the <em>useWebWorkerTransferableData</em> which allows to use transferable object directly between the main thread and the WebWorker.</p>
+<p>This property can cause trouble if you share the same data into different view because the pointer is transferred to the webworker and becomes then unavailable in the main thread.</p>
+<p>Without transferable object:</p>
+<p>Data --&gt; VIEW (data copied into)--&gt; WebWorker</p>
+<p>With transferable object:</p>
+<p>Data --&gt; VIEW (pointer transferred to)--&gt; WebWorker</p>
+<p>Not to copy the data increases the performance since transfert is much more faster.</p>
+<p>If the data is only associated to one view, you should enable this parameter.</p>
+<p><strong>External resources:</strong> </p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Transferable">https://developer.mozilla.org/en-US/docs/Web/API/Transferable</a></li>
+<li><a href="https://developer.mozilla.org/en/docs/Web/API/Worker/postMessage">https://developer.mozilla.org/en/docs/Web/API/Worker/postMessage</a></li>
+</ul>
+<p>If the webworker property is enabled, the view will also spawn a WebWorker. Since the WebWorker has to load the FFmpeg.js library separately, the worker library is placed in the <em>workers</em>
+folder built by the <em>Gulp build</em> command such as:</p>
+<pre><code class="bash">... 
+
+├── js
+│   ├── osh.js
+│   └── workers
+│       ├── ffmpeg-h264.js
+│       └── osh-UI-FFMPEGViewWorker.js
+
+...       
+</code></pre>
+
+<p>Using the WebWorker is meaning you have to keep this structure to get it work. The <em>workers</em> folder has to be right next to the <em>osh.js</em> file. The worker and the library are located at the same place.
+The worker is loaded from the view as:</p>
+<pre><code class="javascript">js/workers/osh-UI-FFMPEGViewWorker.js
+</code></pre>
               
             </div>
           </div>

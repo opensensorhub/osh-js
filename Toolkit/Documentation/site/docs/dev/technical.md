@@ -485,7 +485,7 @@ With transferable object:
 
 Data --> VIEW (pointer transferred to)--> WebWorker
 
-To not copy the data increases the performance since transfert is much more faster.
+Not to copy the data increases the performance since transfert is much more faster.
 
 If the data is only associated to one view, you should enable this parameter.
 
