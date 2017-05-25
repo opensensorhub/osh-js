@@ -5,7 +5,7 @@ function init() {
     //--------------------------------------------------------------//
 
     //TODO: to fix
-    window.CESIUM_BASE_URL = 'vendor/all-in-one';
+    window.CESIUM_BASE_URL = 'vendor/';
 
     var replayFactor = 3;
     //--Android Phone Video
