@@ -12,8 +12,280 @@ var file = require('gulp-file');
 var gap = require('gulp-append-prepend');
 var karmaServer = require('karma').Server;
 var jsdoc = require('gulp-jsdoc3');
+var copydir = require('copy-dir');
+var mkdirp = require('mkdirp');
 
-gulp.task('build','build a distributable osh-js instance',['normal','minify'],function () {
+// out directory
+var OUT_DIR = "./dist";
+
+// out workers directory
+var WORKERS_OUT_DIR = OUT_DIR+"/js/workers";
+
+//--- VENDOR SRC ---//
+
+
+// CESIUM
+
+var CESIUM_SRC = ["vendor/cesium/Build/Cesium/Cesium.js"];
+var CESIUM_SRC_DEBUG = ["vendor/cesium/Build/CesiumUnminified/Cesium.js"];
+var CESIUM_CSS = [];
+var CESIUM_RESOURCES_DIR = {};
+var CESIUM_RESOURCES_FILES = ["vendor/cesium/Build/Cesium/**","!vendor/cesium/Build/Cesium/Cesium.js"];
+
+// END CESIUM
+
+//--- FFMPEG
+
+var FFMPEG_SRC = ["vendor/yuvcanvas/YUVCanvas.js","vendor/ffmpeg/ffmpeg-h264.js"];
+var FFMPEG_SRC_DEBUG = FFMPEG_SRC;
+var FFMPEG_CSS = [];
+var FFMPEG_RESOURCES_DIR = {};
+var FFMPEG_RESOURCES_FILES = [];
+
+//--- END FFMPEG
+
+// NVD3
+
+var NVD3_SRC = ["vendor/d3/d3.min.js","vendor/nvd3/build/nv.d3.min.js"];
+var NVD3_SRC_DEBUG = ["vendor/d3/d3.js","vendor/nvd3/build/nv.d3.js"];
+var NVD3_CSS = ["vendor/nvd3/build/nv.d3.css"];
+var NVD3_RESOURCES_DIR = {};
+var NVD3_RESOURCES_FILES = [];
+
+//--- END NVD3
+
+
+// NOUISLIDER
+
+var NOUISLIDER_SRC = ["vendor/nouislider/distribute/nouislider.min.js","vendor/wnumb/wNumb.js"];
+var NOUISLIDER_SRC_DEBUG = ["vendor/nouislider/distribute/nouislider.js","vendor/wnumb/wNumb.js"];
+var NOUISLIDER_CSS = ["vendor/nouislider/distribute/nouislider.css"];
+var NOUISLIDER_RESOURCES_DIR = {};
+var NOUISLIDER_RESOURCES_FILES = {};
+
+//--- END NOUISLIDER
+
+// OL3
+
+var OL3_SRC = ["vendor/ol3/ol.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
+var OL3_SRC_DEBUG = ["vendor/ol3/ol-debug.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
+var OL3_CSS = ["vendor/ol3/ol.css","vendor/ol3-layerswitcher/src/ol3-layerswitcher.css"];
+var OL3_RESOURCES_DIR = {};
+var OL3_RESOURCES_FILES = [];
+
+//--- END OL3
+
+
+// LEAFLET
+
+var LEAFLET_SRC = [
+    "vendor/leaflet/dist/leaflet.js", // leaflet core
+    "vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.js", // leaflet fullscreen plugin
+    "vendor/Leaflet.draw/dist/leaflet.draw.js" // leaflet draw layer plugin
+];
+var LEAFLET_SRC_DEBUG = [
+    "vendor/leaflet/dist/leaflet-src.js", // leaflet core
+    "vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.js", // leaflet fullscreen plugin
+    "vendor/Leaflet.draw/dist/leaflet.draw-src.js" // leaflet draw layer plugin
+];
+
+var LEAFLET_CSS = ["vendor/leaflet/dist/leaflet.css","vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css","vendor/Leaflet.draw/dist/leaflet.draw.css"];
+var LEAFLET_RESOURCES_DIR = {
+    "./vendor/leaflet/dist/images" : "images",
+    "./vendor/Leaflet.draw/dist/images" : "images"
+};
+var LEAFLET_RESOURCES_FILES = ["vendor/Leaflet.fullscreen/dist/*.png"];
+
+// END LEAFLET
+
+// TREE
+
+var TREE_SRC = ["vendor/tree/tree.js"];
+var TREE_SRC_DEBUG = TREE_SRC;
+var TREE_CSS = ["vendor/tree/tree.css"];
+var TREE_RESOURCES_DIR = {"./vendor/tree/images" : "images"};
+var TREE_RESOURCES_FILES = [];
+
+// END TREE
+
+// X2JS
+
+var X2JS_SRC = ["vendor/x2js/x2js.js"];
+var X2JS_SRC_DEBUG = X2JS_SRC;
+var X2JS_CSS = [];
+var X2JS_RESOURCES_DIR = {};
+var X2JS_RESOURCES_FILES = [];
+
+// END X2JS
+
+
+Array.prototype.pushAll=function(array) {
+    for(var i=0;i < array.length;i++) {
+        this.push(array[i]);
+    }
+}
+
+var ALL_VENDOR_SRC = [];
+var ALL_VENDOR_DEBUG = [];
+var ALL_VENDOR_CSS = [];
+var ALL_VENDOR_RESOURCES_DIR = [];
+var ALL_VENDOR_RESOURCES_FILES = [];
+var VENDOR_CSS_EXTRA_PARAMS = "/*EXTRA CSS PARAMS\n*/";
+var WORKERS_FILES = [];
+
+if(argv.cesium) {
+    ALL_VENDOR_SRC.pushAll(CESIUM_SRC);
+    ALL_VENDOR_DEBUG.pushAll(CESIUM_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(CESIUM_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(CESIUM_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(CESIUM_RESOURCES_FILES);
+    VENDOR_CSS_EXTRA_PARAMS += '@import "Widgets/widgets.css";';
+}
+
+if(argv.ffmpeg) {
+    ALL_VENDOR_SRC.pushAll(FFMPEG_SRC);
+    ALL_VENDOR_DEBUG.pushAll(FFMPEG_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(FFMPEG_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(FFMPEG_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(FFMPEG_RESOURCES_FILES);
+    WORKERS_FILES.pushAll(["./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js","vendor/ffmpeg/ffmpeg-h264.js"]);
+}
+
+if(argv.nvd3) {
+    ALL_VENDOR_SRC.pushAll(NVD3_SRC);
+    ALL_VENDOR_DEBUG.pushAll(NVD3_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(NVD3_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(NVD3_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(NVD3_RESOURCES_FILES);
+}
+
+if(argv.nouislider) {
+    ALL_VENDOR_SRC.pushAll(NOUISLIDER_SRC);
+    ALL_VENDOR_DEBUG.pushAll(NOUISLIDER_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(NOUISLIDER_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(NOUISLIDER_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(NOUISLIDER_RESOURCES_FILES);}
+
+if(argv.ol3) {
+    ALL_VENDOR_SRC.pushAll(OL3_SRC);
+    ALL_VENDOR_DEBUG.pushAll(OL3_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(OL3_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(OL3_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(OL3_RESOURCES_FILES);}
+if(argv.leaflet) {
+    ALL_VENDOR_SRC.pushAll(LEAFLET_SRC);
+    ALL_VENDOR_DEBUG.pushAll(LEAFLET_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(LEAFLET_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(LEAFLET_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(LEAFLET_RESOURCES_FILES);}
+
+if(argv.tree) {
+    ALL_VENDOR_SRC.pushAll(TREE_SRC);
+    ALL_VENDOR_DEBUG.pushAll(TREE_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(TREE_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(TREE_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(TREE_RESOURCES_FILES);}
+
+if(argv.x2js) {
+    ALL_VENDOR_SRC.pushAll(X2JS_SRC);
+    ALL_VENDOR_DEBUG.pushAll(X2JS_SRC_DEBUG);
+    ALL_VENDOR_CSS.pushAll(X2JS_CSS);
+    ALL_VENDOR_RESOURCES_DIR.push(X2JS_RESOURCES_DIR);
+    ALL_VENDOR_RESOURCES_FILES.pushAll(X2JS_RESOURCES_FILES);}
+
+//--- END VENDOR SRC ---//
+
+//--- OSH SRC ---//
+var OSH_SRC = [];
+
+OSH_SRC.push('./src/osh/osh-BaseClass.js');
+OSH_SRC.push('./src/osh/osh-Template.js');
+OSH_SRC.push('./src/osh/osh-Browser.js');
+OSH_SRC.push('./src/osh/osh-Utils.js');
+OSH_SRC.push('./src/osh/osh-Browser.js');
+OSH_SRC.push('./src/osh/osh-MapEvent.js');
+OSH_SRC.push('./src/osh/osh-EventManager.js');
+OSH_SRC.push('./src/osh/osh-Buffer.js');
+OSH_SRC.push('./src/osh/dataconnector/osh-DataConnector.js');
+OSH_SRC.push('./src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js');
+OSH_SRC.push('./src/osh/dataconnector/osh-DataConnector-Websocket.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSource.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceEulerOrientation.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceLatLonAlt.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceNexrad.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceUAHWeather.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceOrientationQuaternion.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js');
+OSH_SRC.push('./src/osh/datareceiver/osh-DataReceiverController.js');
+OSH_SRC.push('./src/osh/datasender/osh-DataSender-DataSink.js');
+OSH_SRC.push('./src/osh/datasender/osh-DataSender-PtzTasking.js');
+OSH_SRC.push('./src/osh/datasender/osh-DataSender-FoscamPtzTasking.js');
+OSH_SRC.push('./src/osh/datasender/osh-DataSender-UavMapTasking.js');
+OSH_SRC.push('./src/osh/datasender/osh-DataSenderController.js');
+OSH_SRC.push('./src/osh/discovery/osh-Sensor.js');
+OSH_SRC.push('./src/osh/discovery/osh-Server.js');
+OSH_SRC.push('./src/osh/log/osh-Log.js');
+OSH_SRC.push('./src/osh/ui/view/osh-UI-View.js');
+OSH_SRC.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu.js');
+OSH_SRC.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js');
+OSH_SRC.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js');
+OSH_SRC.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js');
+OSH_SRC.push('./src/osh/ui/styler/osh-UI-Styler.js');
+OSH_SRC.push('./src/osh/ui/styler/osh-UI-StylerImageDraping.js');
+OSH_SRC.push('./src/osh/ui/styler/osh-UI-StylerCurve.js');
+
+if(argv.cesium) {
+    OSH_SRC.push('./src/osh/ui/styler/osh-UI-StylerNexrad.js');
+}
+OSH_SRC.push('./src/osh/ui/styler/osh-UI-StylerPolyline.js');
+OSH_SRC.push('./src/osh/ui/styler/osh-UI-StylerPointMarker.js');
+if(argv.nvd3) {
+    OSH_SRC.push('./src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js');
+}
+OSH_SRC.push('./src/osh/ui/view/discovery/osh-UI-DiscoveryView.js');
+if(argv.tree) {
+    OSH_SRC.push('./src/osh/ui/view/entity/osh-UI-EntityTreeView.js');
+}
+if(argv.cesium) {
+    OSH_SRC.push('./src/osh/ui/view/map/osh-UI-CesiumView.js');
+}
+if(argv.leaflet) {
+    OSH_SRC.push('./src/osh/ui/view/map/osh-UI-LeafletView.js');
+}
+if(argv.ol3) {
+    OSH_SRC.push('./src/osh/ui/view/map/osh-UI-OpenLayerView.js');
+}
+OSH_SRC.push('./src/osh/ui/view/dialog/osh-UI-DialogView.js');
+OSH_SRC.push('./src/osh/ui/view/dialog/osh-UI-MultiDialogView.js');
+OSH_SRC.push('./src/osh/ui/view/osh-UI-Loading.js');
+if(argv.nouislider) {
+    OSH_SRC.push('./src/osh/ui/view/osh-UI-RangeSlider.js');
+}
+OSH_SRC.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js');
+if(argv.ffmpeg) {
+    OSH_SRC.push('./src/osh/ui/view/video/osh-UI-FFMPEGView.js');
+}
+if(argv.broadway) {
+    OSH_SRC.push('./src/osh/ui/view/video/osh-UI-H264View.js');
+}
+OSH_SRC.push('./src/osh/ui/view/video/osh-UI-MjpegView.js');
+OSH_SRC.push('./src/osh/ui/view/video/osh-UI-Mp4View.js');
+
+//--- END OSH SRC ---//
+
+var OSH_CSS = ["src/css/*.css"];
+var OSH_RESOURCES_DIR = {
+        "./src/css/font-awesome-4.6.3/" : "css/font-awesome-4.6.3/",
+        "./src/images/" : "images"
+};
+
+var OSH_RESOURCES_FILES = [];
+
+gulp.task('build','build a distributable osh-js instance',['debug','minify'],function () {
     // ...
 }, {
     options: {
@@ -21,7 +293,6 @@ gulp.task('build','build a distributable osh-js instance',['normal','minify'],fu
         'Builds are optimized for in-browser use: minimal size for faster loading, asm.js, performance tunings, etc. This is a fork ' +
         'from Kagami/ffmpeg.js: https://github.com/sensiasoft/ffmpeg.js\n',
         'nvd3': 'Include NVD3 library: http://nvd3.org/\n',
-        'broadway': 'Include broadway JS library. Broadway JS is a JavaScript H.264 decoder: https://github.com/mbebenita/Broadway\n',
         'x2js': 'Include x2js library. It is useful to use discovery and server services\n',
         'cesium':'An open-source JavaScript library for world-class 3D globes and maps: https://cesiumjs.org/\n',
         'leaflet':'An open-source JavaScript library for mobile-friendly interactive maps: http://leafletjs.com/\n',
@@ -33,339 +304,132 @@ gulp.task('build','build a distributable osh-js instance',['normal','minify'],fu
     }
 });
 
-gulp.task('minify', false, ['init-css-vendor-file','vendor-js-src-all','osh-js-src','vendor-css-src-all','osh-css-src','copy-vendor','images','osh-js-src-minify','osh-css-src-minify']);
 
-gulp.task('init-css-vendor-file', function () {
-    var str = '/*Concataned css file*/';
+//-------------------------------------------------------
+//-------------------------------------------------------
+//------------------- INIT ---------------------//
+// META TASK
+gulp.task('init', false,["init-vendor-css-file","init-vendor-css-min-file"]);
 
-    return file('vendor.css', str, { src: true })
-        .pipe(gulp.dest('dist/vendor/all-in-one/'));
+gulp.task('init-vendor-css-file', false,function () {
+    return file('vendor-debug.css', '/*Concataned css file*/', { src: true })
+        .pipe(gulp.dest(OUT_DIR+'/vendor/'));
+
 });
 
+gulp.task('init-vendor-css-min-file', false,function () {
+    return file('vendor.min.css', '/*Concataned css file*/', { src: true })
+        .pipe(gulp.dest(OUT_DIR+'/vendor/'));
+});
 
-gulp.task('osh-js-src-minify', false,function() {
-    // Minify OSH js min
-    return gulp.src("dist/js/osh.js")
+//-------------------------------------------------------
+//-------------------------------------------------------
+//------------------- NORMAL ---------------------//
+// META TASK
+gulp.task('debug', false,["debug-osh-js","debug-osh-css","debug-vendor-js","debug-vendor-css","copy-osh-resources","copy-vendor-resources","copy-workers"]);
+
+gulp.task('debug-osh-js', false,function() {
+    return gulp.src(OSH_SRC)
+        .pipe(concat('osh-debug.js'))
+        .pipe(gulp.dest(OUT_DIR+"/js"));
+});
+
+gulp.task('debug-osh-css', false,function() {
+    return gulp.src(OSH_CSS)
+        .pipe(concat('osh-debug.css'))
+        .pipe(gulp.dest(OUT_DIR+"/css"));
+});
+
+gulp.task('debug-vendor-js', false,function() {
+    // makes all in one file
+    return gulp.src(ALL_VENDOR_DEBUG)
+            .pipe(concat('vendor-debug.js'))
+            .pipe(gulp.dest(OUT_DIR+"/vendor/"));
+});
+
+gulp.task('debug-vendor-css', false,["init-vendor-css-file"],function() {
+    // makes all in one file
+    return gulp.src(OUT_DIR+"/vendor/vendor-debug.css")
+        .pipe(gap.prependText(VENDOR_CSS_EXTRA_PARAMS))
+        .pipe(gap.appendFile(ALL_VENDOR_CSS))
+        .pipe(gulp.dest(OUT_DIR+"/vendor/"));
+});
+
+//-------------------------------------------------------
+//-------------------------------------------------------
+//------------------- MINIFIED ---------------------//
+// META TASK
+gulp.task('minify', false,["minify-osh-js","minify-osh-css","minify-vendor-js","minify-vendor-css","copy-osh-resources","copy-vendor-resources","copy-workers"]);
+
+gulp.task('minify-osh-js', false,function() {
+    return gulp.src(OSH_SRC)
         .pipe(uglify({mangle:false}))
         .pipe(concat('osh.min.js'))
-        .pipe(gulp.dest('dist/js'));
+        .pipe(gulp.dest(OUT_DIR+"/js"));
 });
 
-gulp.task('osh-css-src-minify', false, function() {
-    // Minify OSH css min
-    return gulp.src("dist/css/osh.css")
+gulp.task('minify-osh-css', false,function() {
+    return gulp.src(OSH_CSS)
         .pipe(cleanCSS({compatibility: '*'}))
         .pipe(concat('osh.min.css'))
-        .pipe(gulp.dest('dist/css'));
+        .pipe(gulp.dest(OUT_DIR+"/css"));
 });
 
-gulp.task('vendor-js-src-all',false,function(){
-    var jsSources = new Array();
-
-    if(argv.cesium) {
-        jsSources.push('vendor/cesium/Build/Cesium/Cesium.js');
-    }
-
-    if(argv.ffmpeg) {
-        jsSources.push('vendor/yuvcanvas/YUVCanvas.js');
-        jsSources.push('vendor/ffmpeg/ffmpeg-h264.js');
-    }
-
-    if(argv.nvd3) {
-        jsSources.push('vendor/d3/d3.min.js');
-        jsSources.push('vendor/nvd3/build/nv.d3.min.js');
-    }
-
-    if(argv.broadway) {
-        jsSources.push('vendor/broadway/YUVCanvas.js');
-        jsSources.push('vendor/broadway/broadway-all.min.js');
-        jsSources.push('vendor/broadway/Decoder.js');
-        jsSources.push('vendor/broadway/Player.js');
-    }
-
-    if(argv.nouislider) {
-        jsSources.push('vendor/nouislider/distribute/nouislider.min.js');
-        jsSources.push('vendor/wnumb/wNumb.js');
-    }
-
-    if(argv.ol3) {
-        jsSources.push('vendor/ol3/ol-debug.js');
-        jsSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
-    }
-    if(argv.leaflet) {
-        jsSources.push('vendor/leaflet/dist/leaflet.js');
-        jsSources.push('vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js');
-        jsSources.push('vendor/Leaflet.draw/dist/leaflet.draw.js');
-    }
-
-    if(argv.tree) {
-        jsSources.push('vendor/tree/tree.js');
-    }
-    if(argv.x2js) {
-        jsSources.push('vendor/x2js/x2js.js');
-    }
-
-    return gulp.src(jsSources).pipe(concat('vendor.js')).pipe(gulp.dest("dist/vendor/all-in-one"));
+gulp.task('minify-vendor-js', false,function() {
+    // makes all in one file
+    return gulp.src(ALL_VENDOR_SRC)
+        .pipe(concat('vendor.min.js'))
+        .pipe(gulp.dest(OUT_DIR+"/vendor/"));
 });
 
-gulp.task('vendor-css-src-all',false,['vendor-css-all-copy-cesium','vendor-css-all-copy-leaflet','vendor-css-all-copy-tree'],function(){
-    var cssSources = new Array();
-
-    if(argv.nvd3) {
-        cssSources.push('vendor/nvd3/build/nv.d3.min.css');
-    }
-
-    if(argv.nouislider) {
-        cssSources.push('vendor/nouislider/distribute/nouislider.min.css');
-    }
-
-    if(argv.leaflet) {
-        cssSources.push('vendor/leaflet/dist/leaflet.css');
-        cssSources.push('vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css');
-        cssSources.push('vendor/Leaflet.draw/dist/leaflet.draw.css');
-    }
-
-    if(argv.ol3) {
-        cssSources.push('vendor/ol3/ol.css');
-        cssSources.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css');
-    }
-
-    if(argv.tree) {
-        cssSources.push('vendor/tree/tree.css');
-    }
-
-    return gulp.src("dist/vendor/all-in-one/vendor.css")
-        .pipe(argv.cesium ?  gap.prependText('@import "Widgets/widgets.css";') : noop())
-        .pipe(gap.appendFile(cssSources))
-        .pipe(gulp.dest("dist/vendor/all-in-one"));
-
+gulp.task('minify-vendor-css', false,["init-vendor-css-min-file"],function() {
+    // makes all in one file
+    return gulp.src(OUT_DIR+"/vendor/vendor.min.css")
+        .pipe(gap.appendFile(ALL_VENDOR_CSS))
+        .pipe(cleanCSS({compatibility: '*'}))
+        .pipe(gap.prependText(VENDOR_CSS_EXTRA_PARAMS))
+        .pipe(gulp.dest(OUT_DIR+"/vendor/"));
 });
 
-gulp.task('osh-js-src',false,['osh-js-src-ffmpeg'],function(){
-    var src = [];
+//-------------------------------------------------------
+//-------------------------------------------------------
+//------------------- COMMON ---------------------//
+gulp.task('copy-osh-resources', false,function() {
+    for(var key in OSH_RESOURCES_DIR) {
+        copydir.sync(key,OUT_DIR+"/"+OSH_RESOURCES_DIR[key]);
+    }
 
-    src.push('./src/osh/osh-BaseClass.js');
-    src.push('./src/osh/osh-Template.js');
-    src.push('./src/osh/osh-Browser.js');
-    src.push('./src/osh/osh-Utils.js');
-    src.push('./src/osh/osh-Browser.js');
-    src.push('./src/osh/osh-EventMap.js');
-    src.push('./src/osh/osh-EventManager.js');
-    src.push('./src/osh/osh-Buffer.js');
-    src.push('./src/osh/dataconnector/osh-DataConnector.js');
-    src.push('./src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js');
-    src.push('./src/osh/dataconnector/osh-DataConnector-Websocket.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSource.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceEulerOrientation.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceLatLonAlt.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceNexrad.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceUAHWeather.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceOrientationQuaternion.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js');
-    src.push('./src/osh/datareceiver/osh-DataReceiverController.js');
-    src.push('./src/osh/datasender/osh-DataSender-DataSink.js');
-    src.push('./src/osh/datasender/osh-DataSender-PtzTasking.js');
-    src.push('./src/osh/datasender/osh-DataSender-FoscamPtzTasking.js');
-    src.push('./src/osh/datasender/osh-DataSender-UavMapTasking.js');
-    src.push('./src/osh/datasender/osh-DataSenderController.js');
-    src.push('./src/osh/server/osh-Server.js');
-    src.push('./src/osh/log/osh-Log.js');
-    src.push('./src/osh/ui/view/osh-UI-View.js');
-    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu.js');
-    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js');
-    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js');
-    src.push('./src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js');
-    src.push('./src/osh/ui/styler/osh-UI-Styler.js');
-    src.push('./src/osh/ui/styler/osh-UI-StylerImageDraping.js');
-    src.push('./src/osh/ui/styler/osh-UI-StylerCurve.js');
-    if(argv.cesium) {
-        src.push('./src/osh/ui/styler/osh-UI-StylerNexrad.js');
-    }
-    src.push('./src/osh/ui/styler/osh-UI-StylerPolyline.js');
-    src.push('./src/osh/ui/styler/osh-UI-StylerPointMarker.js');
-    if(argv.nvd3) {
-        src.push('./src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js');
-    }
-    src.push('./src/osh/ui/view/discovery/osh-UI-DiscoveryView.js');
-    if(argv.tree) {
-        src.push('./src/osh/ui/view/entity/osh-UI-EntityTreeView.js');
-    }
-    if(argv.cesium) {
-        src.push('./src/osh/ui/view/map/osh-UI-CesiumView.js');
-    }
-    if(argv.leaflet) {
-        src.push('./src/osh/ui/view/map/osh-UI-LeafletView.js');
-    }
-    if(argv.ol3) {
-        src.push('./src/osh/ui/view/map/osh-UI-OpenLayerView.js');
-    }
-    src.push('./src/osh/ui/view/dialog/osh-UI-DialogView.js');
-    src.push('./src/osh/ui/view/dialog/osh-UI-MultiDialogView.js');
-    src.push('./src/osh/ui/view/osh-UI-Loading.js');
-    if(argv.nouislider) {
-        src.push('./src/osh/ui/view/osh-UI-RangeSlider.js');
-    }
-    src.push('./src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js');
-    if(argv.ffmpeg) {
-        src.push('./src/osh/ui/view/video/osh-UI-FFMPEGView.js');
-    }
-    if(argv.broadway) {
-        src.push('./src/osh/ui/view/video/osh-UI-H264View.js');
-    }
-    src.push('./src/osh/ui/view/video/osh-UI-MjpegView.js');
-    src.push('./src/osh/ui/view/video/osh-UI-Mp4View.js');
-
-    return gulp.src(src)
-        .pipe(concat('osh.js'))
-        .pipe(gulp.dest("dist/js"));
+    return gulp.src(OSH_RESOURCES_FILES)
+          .pipe(gulp.dest(OUT_DIR));
 });
 
-gulp.task('osh-js-src-ffmpeg',false,function() {
-    return gulp.src("./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js")
-        .pipe(argv.ffmpeg ? gulp.dest("dist/js/workers") : noop());
+gulp.task('copy-vendor-resources', false,function() {
+    for(var currentVendorIdx = 0;currentVendorIdx < ALL_VENDOR_RESOURCES_DIR.length;currentVendorIdx++) {
+        var currentVendor = ALL_VENDOR_RESOURCES_DIR[currentVendorIdx];
+        for(var key in currentVendor) {
+            var dir = OUT_DIR + "/vendor/" + currentVendor[key];
+            mkdirp.sync(dir, function (err) {
+                if (err){
+                    console.error("Cannot create directory structure: "+dir);
+                }
+            });
+            copydir.sync(key, OUT_DIR + "/vendor/" + currentVendor[key]);
+        }
+    }
+
+    return gulp.src(ALL_VENDOR_RESOURCES_FILES)
+        .pipe(gulp.dest(OUT_DIR+"/vendor"));
 });
 
-
-gulp.task('osh-css-src',false,['copy-fonts'],function(){
-    return gulp.src('src/css/*.css')
-        .pipe(concat('osh.css')).pipe(gulp.dest("dist/css"));
-});
-//----------- NORMAL ------------------//
-
-gulp.task('normal', false, ['init-css-vendor-file','vendor-js-src-all','vendor-css-src-all','osh-js-src','osh-css-src', 'copy-vendor','images']);
-
-//---------- COPY VENDORS ------//
-gulp.task('copy-vendor',false, ['copy-vendor-ffmpeg','copy-vendor-nvd3','copy-vendor-broadway',
-    'copy-vendor-nouislider','copy-vendor-cesium','copy-vendor-ol3','copy-vendor-leaflet','copy-vendor-tree','copy-vendor-x2js']);
-
-gulp.task('copy-fonts',false, function () {
-    return gulp.src('src/css/font-awesome-4.6.3/**')
-        .pipe(gulp.dest('dist/css/font-awesome-4.6.3'));
+gulp.task('copy-workers', false,function() {
+    return gulp.src(WORKERS_FILES)
+        .pipe(gulp.dest(WORKERS_OUT_DIR));
 });
 
-//--------- IMAGES -----------//
-gulp.task('images', false,function () {
-    return gulp.src('src/images/**')
-        .pipe(gulp.dest('dist/images'));
-});
-
-//------- TOOLS -------//
+//-------------------------------------------------------
+//-------------------------------------------------------
+//------------------- OTHERS ---------------------//
 //clean
-gulp.task('clean', "Clean the dist directory",function () {
-    return gulp.src('dist/', {read: false})
-        .pipe(clean({force:true}));
-});
-
-
-//------------- VENDOR COPY ------------//
-gulp.task('copy-vendor-ffmpeg',false, ['copy-vendor-yuvcanvas'],function () {
-    return gulp.src('vendor/ffmpeg/ffmpeg-h264.js')
-        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop())
-        .pipe(argv.ffmpeg? gulp.dest('dist/js/workers') : noop());
-});
-
-gulp.task('copy-vendor-yuvcanvas',false, function () {
-    return gulp.src('vendor/yuvcanvas/*.js')
-        .pipe(argv.ffmpeg? gulp.dest('dist/vendor/ffmpeg') : noop());
-});
-
-gulp.task('copy-vendor-nvd3',false, function () {
-    var src = new Array();
-    src.push('vendor/d3/d3.min.js');
-    src.push('vendor/nvd3/build/nv.d3.min.js');
-    src.push('vendor/nvd3/build/nv.d3.min.css');
-
-    return gulp.src(src)
-        .pipe(argv.nvd3 ? gulp.dest('dist/vendor/nvd3') : noop());
-});
-
-gulp.task('copy-vendor-broadway',false, function () {
-    return gulp.src('vendor/broadway/*.js')
-        .pipe(argv.broadway ? gulp.dest('dist/vendor/broadway') : noop());
-});
-
-gulp.task('copy-vendor-nouislider',false, function () {
-    var src = new Array();
-    src.push('vendor/nouislider/distribute/*.min.*');
-    src.push('vendor/wnumb/wNumb.js');
-
-    return gulp.src(src)
-        .pipe(argv.nouislider ? gulp.dest('dist/vendor/nouislider') : noop());
-});
-
-gulp.task('copy-vendor-cesium',false, function () {
-    return gulp.src("vendor/cesium/Build/Cesium/**")
-        .pipe(argv.cesium ? gulp.dest('dist/vendor/cesium') : noop());
-});
-
-gulp.task('copy-vendor-ol3',false, function () {
-    var src = new Array();
-    src.push('vendor/ol3/ol.js');
-    src.push('vendor/ol3/ol.css');
-    src.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.js');
-    src.push('vendor/ol3-layerswitcher/src/ol3-layerswitcher.css');
-
-    return gulp.src(src)
-        .pipe(argv.ol3 ? gulp.dest('dist/vendor/ol3') : noop());
-});
-
-gulp.task('copy-vendor-leaflet',false, function () {
-    var src = new Array();
-    src.push('vendor/leaflet/dist/**');
-    src.push('vendor/Leaflet.fullscreen/dist/**');
-    src.push('vendor/Leaflet.draw/dist/leaflet.draw.js');
-
-    return gulp.src(src)
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/leaflet') : noop());
-});
-
-gulp.task('copy-vendor-tree',false, function () {
-    return gulp.src('vendor/tree/**')
-        .pipe(argv.tree ? gulp.dest('dist/vendor/tree') : noop());
-});
-
-gulp.task('copy-vendor-x2js',false, function () {
-    var src = new Array();
-    src.push('vendor/x2js/x2js.js');
-
-    return gulp.src(src)
-        .pipe(argv.x2js ? gulp.dest('dist/vendor/x2js') : noop());
-});
-//----------- VENDOR CSS ALL ---------------//
-gulp.task('vendor-css-all-copy-cesium',false,function(){
-    return gulp.src(['vendor/cesium/Build/Cesium/**','!vendor/cesium/Build/Cesium/Cesium.js'])
-        .pipe(argv.cesium ? gulp.dest('dist/vendor/all-in-one/') : noop());
-});
-
-gulp.task('vendor-css-all-copy-leaflet',false,['vendor-css-all-copy-leaflet-fs','vendor-css-all-copy-leaflet-draw'], function(){
-    return gulp.src('vendor/leaflet/dist/images/*')
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/images') : noop());
-});
-
-gulp.task('vendor-css-all-copy-leaflet-fs',false,function(){
-    return gulp.src('vendor/Leaflet.fullscreen/dist/*.png')
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/') : noop());
-});
-
-gulp.task('vendor-css-all-copy-leaflet-draw',false,function(){
-    return gulp.src('vendor/Leaflet.draw/dist/images/**')
-        .pipe(argv.leaflet ? gulp.dest('dist/vendor/all-in-one/images/') : noop());
-});
-
-gulp.task('vendor-css-all-copy-tree',false,['vendor-css-all-copy-tree-global'], function(){
-    return gulp.src('vendor/tree/images/**')
-        .pipe(argv.tree ? gulp.dest('dist/vendor/all-in-one/images') : noop());
-});
-
-gulp.task('vendor-css-all-copy-tree-global',false, function(){
-    return gulp.src('vendor/tree/images/**')
-        .pipe(argv.tree ? gulp.dest('dist/images') : noop());
-});
-
 /**
  * Run test once and exit
  */
@@ -380,4 +444,9 @@ gulp.task('doc', "Generate JSDoc",function (cb) {
     var config = require('./conf.json');
     gulp.src(['README.md', './src/**/*.js'], {read: false})
         .pipe(jsdoc(config, cb));
+});
+
+gulp.task('clean', "Clean the dist directory",function () {
+    return gulp.src('dist/', {read: false})
+        .pipe(clean({force:true}));
 });
