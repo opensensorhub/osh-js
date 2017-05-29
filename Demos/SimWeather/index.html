@@ -4,13 +4,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>Simulated Weather</title>
+    <title>OpenSensorHub - Field Sensors Deployment</title>
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     
     <!-- Prototype libs -->
-    <script type="text/javascript" src="../../Toolkit/releases/v1.0/vendor/prototype/prototype.min.js"></script>
-    <script type="text/javascript" src="../../Toolkit/releases/v1.0/vendor/modernizr/modernizr-custom.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/common/prototype.min.js"></script>
+    <script type="text/javascript" src="../../Toolkit/src/common/modernizr-custom.js"></script>
     <script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
 
     <!-- Nvd3 libs -->
@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="../../Toolkit/vendor/nouislider/nouislider.css" />
     <script src="../../Toolkit/vendor/nouislider/wNumb.js"></script>
     <script src="../../Toolkit/vendor/nouislider/nouislider.js"></script>
-    <link rel="stylesheet" href="../../Toolkit/src/css/noUISlider.css" />
+    <link rel="stylesheet" href="../../Clients/VideoDisplay/css/noUISlider.css" />
     
     <!-- Leaflet libs -->
     <link rel="stylesheet" href="../../Toolkit/vendor/leaflet/leaflet.css"/>
@@ -43,29 +43,29 @@
     <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/ffmpeg-h264.js"></script>
     
     <!-- JSONIX (Discovery) -->
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/Jsonix-min.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/Filter_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/GML_3_1_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/GML_3_2_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/IC_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/ISO19139_GCO_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/ISO19139_GMD_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/ISO19139_GSR_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/ISO19139_GSS_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/ISO19139_GTS_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/OM_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/OWS_1_1_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SensorML_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SMIL_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SMIL_2_0_Language.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SOS_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SWE_1_0_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SWE_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/SWES_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/WS_Addr_1_0_Core.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/WS_Addr_1_0_Core.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/WSN_T_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/releases/v1.0/vendor/jsonix/modules/XLink_1_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/Jsonix-min.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/Filter_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/GML_3_1_1.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/GML_3_2_1.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/IC_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GCO_20070417.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GMD_20070417.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GSR_20070417.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GSS_20070417.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GTS_20070417.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/OM_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/OWS_1_1_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SensorML_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SMIL_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SMIL_2_0_Language.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SOS_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SWE_1_0_1.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SWE_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SWES_2_0.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/WS_Addr_1_0_Core.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/WS_Addr_1_0_Core.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/WSN_T_1.js"></script>
+    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/XLink_1_0.js"></script>
     
     <!-- OSH libs -->
     <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/dialog.css"/>

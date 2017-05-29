@@ -1,23 +1,33 @@
 body {
-  margin: 0;
-  height: calc(100% - 110px);
+    margin: 0;
+    height: calc(100% - 110px);
 }
 
 html {
-  height: 100%;
+    height: 100%;
+}
+
+.center-view {
+    height: 100%;
+    overflow:auto;
+    text-align:center;
+    background-color:#000000;
 }
 
 .main-view {
-	height: calc(100% - 32px);
+    height: calc(100% - 32px);
+    overflow:auto;
+    text-align:center;
+    background-color:#000000;
 }
 
 header.navbar {
-  margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 .navbar-brand {
-  padding:0;
-  font-size: 18px;
+    padding:0;
+    font-size: 18px;
 }
 
 a.navbar-brand:hover {
@@ -45,37 +55,41 @@ a.navbar-brand:hover {
 }
 
 .video-box {
-	margin-bottom:-10px;
-	width: 300px;
-	height: 200px;
+    margin-bottom:-10px;
+    width: 300px;
+    height: 200px;
 }
 
+.video {
+    width: inherit;
+    height:inherit;
+}
 
 .video img{
-	width: 100%;
-	height: 100%;
+    width: inherit;
+    height:inherit;
 }
 
 .video canvas{
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height:inherit;
 }
 
 .video-selected {
-  border-radius: 3px;
-  box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+    border-radius: 3px;
+    box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
 }
 
 .video-main-container {
-	position:absolute;
-	top:100px;
-	right:15px;
+    position:absolute;
+    top:100px;
+    right:15px;
     width:300px;
     height:calc(100% - 190px);
 }
 
 .rangeSlider-container {
-	height: 80px;
+    height: 80px;
     margin: 5px 30px 0px 30px;
     background-color: #fff;
     border: 1px solid #444;
@@ -92,9 +106,9 @@ a.navbar-brand:hover {
     margin-right: 5px;
 }
 
-.dialog {
+.dialog{
     width:300px;
-    height:190px;
+    height: 215px;
     margin-bottom:10px;
 }
 
@@ -118,7 +132,7 @@ a.navbar-brand:hover {
 
 .tree-dialog {
     width:300px;
-    height:190px;
+    min-height:190px !important;
     margin-bottom:10px;
     position:absolute;
     top:60px;
