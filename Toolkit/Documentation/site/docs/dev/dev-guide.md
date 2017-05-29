@@ -83,8 +83,6 @@ Usage
 
 Available tasks
   build           build a distributable osh-js instance 
-   --broadway     Include broadway JS library. Broadway JS is a JavaScript H.264 decoder: https://github.com/mbebenita/Broadway
- 
    --cesium       An open-source JavaScript library for world-class 3D globes and maps: https://cesiumjs.org/
  
    --ffmpeg       Include FFMPEG library. This library provides FFmpeg builds ported to JavaScript using Emscripten project. Builds are optimized for in-browser use: minimal size for 
@@ -104,22 +102,62 @@ https://github.com/leongersen/noUiSlider
    --tree         This library is responsible for displaying the Entity Tree View. It is a pure Javascript TreeView Component: https://github.com/rafaelthca/aimaraJS
 
   clean           Clean the dist directory
+  
   help            Display this help text.
 ```
 
 Build a full version using gulp:
 ``Toolkit $ gulp build ``
-or
-``Toolkit $ gulp build --minify``
 
 As described in the gulp help command, you can also include some libraries:
 
-``Toolkit $ gulp build --ffmpeg --leaflet --cesium``
+``Toolkit $ gulp build --ffmpeg --leaflet``
 
-and get a minified version using --minify argument
-``Toolkit $ gulp build --minify --ffmpeg --leaflet --cesium``
+A dist directory will be created containing the new files, for this example:
 
-A dist directory will be created containing the new files.
+```bash
+dist/
+├── css
+│   ├── font-awesome-4.6.3
+.   .
+.   .    ...
+│   ├── osh-debug.css
+│   └── osh.min.css
+├── images
+.   .
+.   .   ...
+├── js
+│   ├── osh-debug.js
+│   ├── osh.min.js
+│   └── workers
+│       ├── ffmpeg-h264.js
+│       └── osh-UI-FFMPEGViewWorker.js
+└── vendor
+    ├── fullscreen@2x.png
+    ├── fullscreen.png
+    ├── images
+    │   ├── layers-2x.png
+    │   ├── layers.png
+    │   ├── marker-icon-2x.png
+    │   ├── marker-icon.png
+    │   ├── marker-shadow.png
+    │   ├── spritesheet-2x.png
+    │   ├── spritesheet.png
+    │   └── spritesheet.svg
+    ├── vendor-debug.css
+    ├── vendor-debug.js
+    ├── vendor.min.css
+    └── vendor.min.js
+```
 
+The result is a set of files that you can load to use the Toolkit. An *osh-debug* and *osh.min" files are produced to get a minified or debug version of the toolkit as well as the 
+stylesheet files.
+ALl the vendor files are produced into the *dist/vendor* directory. Like the *osh* files, there are a debug and minified version. All the directories located into the vendor folder 
+are relative to the javascript/stylesheet files. Keep this structure as it is produced to get a working version of the vendor file.
 
+The *js* directory contains:
+
+- osh-debug.js: the debug version of the Toolkit
+- osh.min.js: the minified version of the Toolkit
+- workers directory: the workers directory. To use workers, you have to set the workers directory structure as: "BASE_PROJECT_ROOT"/js/workers. Otherwise the workers could not be used. 
 
