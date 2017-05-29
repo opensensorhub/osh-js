@@ -642,53 +642,107 @@ body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", san
     background-color:#000;
     color: #ffffff;
 }
-@media (min-width: $screen-xs) and (max-width: $screen-sm) {
-  .rangeSlider{
-      width:200px;
-      float:right;
-      margin-top:-30px;
-    }
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
+
+.noUi-tooltip {
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px 0px #777;
+    background-color: #777;
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.8;
+    opacity: 0.8;
+    border: none;
+    color: #FFF;
+    width: 100px;
+    height: 23px;
+    padding: 2px 2px 2px 2px;
+}
+.noUi-horizontal .noUi-handle-lower .noUi-tooltip {
+    top: 35px;
 }
 
-@media (min-width: $screen-md) and (max-width: $screen-lg) {
-  .rangeSlider{
-      width:400px;
-      float:right;
-      margin-top:-30px;
-    }
+.noUi-horizontal .noUi-handle-upper .noUi-tooltip {
+    top: 35px;
 }
 
-.adapt-size {
-  width:85%;
-  margin-top:30px;
-  float:left;
+.noUi-connect {
+    background-color: rgba(5, 107, 166, 0.6);
 }
-@media (min-width: 768px) {
-  .adapt-size {
-    width:94%;
-    margin-top:30px;
+
+.noUi-tooltip:after {
+    bottom: -14px;
+    margin-left: -10px;
+    border-top: 10px solid #fff;
+}
+
+.noUi-tooltip:after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    margin-left: -9px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: none;
+    border-bottom: 10px solid #777;
+}
+
+.noUi-pips-horizontal {
+    height:0px !important;
+}
+
+
+.noUi-handle:active {
+    background-color: rgba(5, 107, 166, 0.6);
+    box-shadow:none;
+    border:none;
+}
+
+
+.noUi-horizontal {
+    width: calc(100% - 50px);
+}
+
+/** put range and control button side by side **/
+
+.osh-rangeslider-slider{
     float:left;
-  }
 }
 
-.glyphicon-custom-color {
-  color : red;
+.osh-rangeslider-control {
+    float: left;
+    width: 30px;
+    margin-left: 20px;
 }
 
-.ui-rangeSlider .ui-rangeSlider-innerBar {
-  height: 20px !important;
-  background: #DDD !important;
-  margin: 0px 6px 3px 6px !important;
+.osh-rangeslider-control-select {
+    float: left;
+    width: 30px;
+    margin-left: 20px;
 }
 
-.sliderCustomLabel {
-  border-left: 1px solid #f8f8f8;
-  height: 20px;
+.osh-rangeslider-control a{
+    text-decoration: none;
 }
 
-.ui-ruler-tick-label {
-  margin: 0 0 0 -2px;
-  background-color: #DDD;
+.osh-rangeslider-control-select a{
+    text-decoration: none;
+}
+
+.osh-rangeslider-control a:after {
+    font-family: FontAwesome;
+    content: "\f044";
+    vertical-align: middle;
+    font-size:30px;
+}
+
+.osh-rangeslider-control-select a:after{
+    font-family: FontAwesome;
+    content: "\f046";
+    vertical-align: middle;
+    font-size:30px;
 }
 /* Demo by http://creative-punch.net */
 

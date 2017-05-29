@@ -4,9 +4,12 @@ function init() {
     //--------------------- Creates dataSources --------------------//
     //--------------------------------------------------------------//
 
+    //TODO: to fix
+    window.CESIUM_BASE_URL = '../../Toolkit/releases/v1.1/vendor';
+
     var replayFactor = 3;
     //--Android Phone Video
-    var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
+    var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -20,7 +23,7 @@ function init() {
         timeShift: -16000
     });
 
-    var androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
+    var androidPhoneOrientationDataSource = new OSH.DataReceiver.JSON("android-Orientation", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -46,7 +49,7 @@ function init() {
         bufferingTime: 1000
     });
 
-    var weatherDataSource = new OSH.DataReceiver.Chart("weather", {
+    var weatherDataSource = new OSH.DataReceiver.JSON("weather", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -59,12 +62,12 @@ function init() {
     });
 
     /*var taskingVideoDataSource = new OSH.DataSender.Tasking("video-tasking", {
-        protocol: "http",
-        service: "SPS",
-        version: "2.0",
-        endpointUrl: "ENDPOINT_URL",
-        offeringID: "OFFERING_ID"
-    });*/
+     protocol: "http",
+     service: "SPS",
+     version: "2.0",
+     endpointUrl: "ENDPOINT_URL",
+     offeringID: "OFFERING_ID"
+     });*/
 
     //-----------------------------------------------------------//
     //--------------------- Creates menus -----------------------//
@@ -81,7 +84,7 @@ function init() {
     var androidEntity = {
         id : "entity-"+OSH.Utils.randomUUID(),
         name: "Android Phone",
-        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource,weatherDataSource]
+        dataSources: [androidPhoneGpsDataSource, androidPhoneOrientationDataSource,androidPhoneVideoDataSource/*,weatherDataSource*/]
     };
 
     //--------------------------------------------------------//
@@ -89,9 +92,9 @@ function init() {
     //--------------------------------------------------------//
 
     // creates Dialog Views
-    var videoDialog         = createDialog("dialog-main-container",[androidPhoneVideoDataSource.id],"Android Video 1",true);
-    var videoDialog2        = createDialog("dialog-main-container",[androidPhoneVideoDataSource.id],"Android Video 2",false);
-    var chartDialog         = createDialog("dialog-main-container",[weatherDataSource.id],"Chart Weather",true);
+    var videoDialog         = createPtzDialog("dialog-main-container",[androidPhoneVideoDataSource.id],"Android Video 1",true);
+    var videoDialog2        = createPtzDialog("dialog-main-container",[androidPhoneVideoDataSource.id],"Android Video 2",false);
+    // var chartDialog         = createDialog("dialog-main-container",[weatherDataSource.id],"Chart Weather",true);
     var leafletMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id],"Leaflet 2D",true);
     var cesiumMapDialog         = createDialog("dialog-main-container",[androidPhoneGpsDataSource.id,androidPhoneOrientationDataSource.id],"Cesium 3D",true);
     var entityTreeDialog    = new OSH.UI.DialogView(document.body.id,{
@@ -122,37 +125,37 @@ function init() {
     });
 
     // Chart View
-    var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
-        [{
-            styler: new OSH.UI.Styler.Curve({
-                valuesFunc: {
-                    dataSourceIds: [weatherDataSource.getId()],
-                    handler: function (rec, timeStamp) {
-                        return {
-                            x: timeStamp,
-                            y: parseFloat(rec[2])
-                        };
-                    }
-                }
-            })
-        }],
-        {
-            name: "WindSpeed chart",
-            yLabel: 'Wind Speed (m/s)',
-            xLabel: 'Time',
-            css:"chart-view",
-            cssSelected: "video-selected",
-            maxPoints:30
-        }
-    );
+    /*var windSpeedChartView = new OSH.UI.Nvd3CurveChartView(chartDialog.popContentDiv.id,
+     [{
+     styler: new OSH.UI.Styler.Curve({
+     valuesFunc: {
+     dataSourceIds: [weatherDataSource.getId()],
+     handler: function (rec, timeStamp) {
+     return {
+     x: timeStamp,
+     y: parseFloat(rec[2])
+     };
+     }
+     }
+     })
+     }],
+     {
+     name: "WindSpeed chart",
+     yLabel: 'Wind Speed (m/s)',
+     xLabel: 'Time',
+     css:"chart-view",
+     cssSelected: "video-selected",
+     maxPoints:30
+     }
+     );*/
 
     var entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
-            [{
-                entity : androidEntity,
-                path: "Sensors/Toulouse",
-                treeIcon : "images/android_icon.png",
-                contextMenuId: stackContextMenuId
-            }],
+        [{
+            entity : androidEntity,
+            path: "Sensors/Toulouse",
+            treeIcon : "images/android_icon.png",
+            contextMenuId: stackContextMenuId
+        }],
         {
             css: "tree-container"
         }
@@ -168,9 +171,9 @@ function init() {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
                 return {
-                    x : rec.lon,
-                    y : rec.lat,
-                    z : rec.alt
+                    x : rec.location.lon,
+                    y : rec.location.lat,
+                    z : rec.location.alt
                 };
             }
         },
@@ -178,7 +181,7 @@ function init() {
             dataSourceIds : [androidPhoneOrientationDataSource.getId()],
             handler : function(rec) {
                 return {
-                    heading : rec.heading
+                    heading : rec.orient.heading
                 };
             }
         },
@@ -202,27 +205,27 @@ function init() {
             name : "Android Phone GPS",
             entityId : androidEntity.id
         },
-        {
-            styler : new OSH.UI.Styler.Polyline({
-                locationFunc : {
-                    dataSourceIds : [androidPhoneGpsDataSource.getId()],
-                    handler : function(rec) {
-                        return {
-                            x : rec.lon,
-                            y : rec.lat,
-                            z : rec.alt
-                        };
-                    }
-                },
-                color : 'rgba(0,0,255,0.5)',
-                weight : 10,
-                opacity : .5,
-                smoothFactor : 1,
-                maxPoints : 200
-            }),
-            name : "Android Phone GPS Path",
-            entityId : androidEntity.id
-        }]
+            {
+                styler : new OSH.UI.Styler.Polyline({
+                    locationFunc : {
+                        dataSourceIds : [androidPhoneGpsDataSource.getId()],
+                        handler : function(rec) {
+                            return {
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
+                            };
+                        }
+                    },
+                    color : 'rgba(0,0,255,0.5)',
+                    weight : 10,
+                    opacity : .5,
+                    smoothFactor : 1,
+                    maxPoints : 200
+                }),
+                name : "Android Phone GPS Path",
+                entityId : androidEntity.id
+            }]
     );
 
     var cesiumMapView = new OSH.UI.CesiumView("",
@@ -238,9 +241,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },
@@ -257,9 +260,6 @@ function init() {
 
     leafletMapView.attachTo(leafletMapDialog.popContentDiv.id);
     cesiumMapView.attachTo(cesiumMapDialog.popContentDiv.id);
-    /*var taskingView = new OSH.UI.TaskingView("tasking-container",{
-        dataSourceId : ""
-    });*/
 
     //-----------------------------------------------------------//
     //----------------- Creates Contextual Menus------------------//
@@ -273,11 +273,11 @@ function init() {
         name: "Same Android Video",
         viewId: videoDialog2.id,
         css: "fa fa-video-camera"
-    },{
-        name: "Weather chart",
-        viewId: chartDialog.id,
-        css: "fa fa-bar-chart"
-    },{
+    }/*,{
+     name: "Weather chart",
+     viewId: chartDialog.id,
+     css: "fa fa-bar-chart"
+     }*/,{
         name: "Leaflet 2D",
         viewId: leafletMapDialog.id,
         css: "fa fa-map"
@@ -310,14 +310,9 @@ function init() {
 
     // We can add a group of dataSources and set the options
     dataProviderController.addEntity(androidEntity);
-    dataProviderController.addDataSource(weatherDataSource);
+    //dataProviderController.addDataSource(weatherDataSource);
 
-    //---------------------------------------------------------------//
-    //---------------------------- Starts ---------------------------//
-    //---------------------------------------------------------------//
 
-    // starts streaming
-    dataProviderController.connectAll();
 
     //-------------------------------------------------------------//
     //---------------- Creates circular Nav menu -----------------//
@@ -325,7 +320,7 @@ function init() {
 
     cssCircleMenu('.js-menu');
     var currentIdView = "";
-    var mainDiv = document.getElementById("main-container");
+    var mainDiv = document.getElementById("center-container");
 
     var leafletMainView = new OSH.UI.LeafletView("",
         [{
@@ -340,9 +335,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },
@@ -370,9 +365,9 @@ function init() {
                         dataSourceIds : [androidPhoneGpsDataSource.getId()],
                         handler : function(rec) {
                             return {
-                                x : rec.lon,
-                                y : rec.lat,
-                                z : rec.alt
+                                x : rec.location.lon,
+                                y : rec.location.lat,
+                                z : rec.location.alt
                             };
                         }
                     },
@@ -397,10 +392,10 @@ function init() {
     });
 
     var discoveryView = new OSH.UI.DiscoveryView("",{
-        services: ["http://sensiasoft.net:8181/"],
+        services: ["http://localhost:8181/","http://sensiasoft.net:8181/"],
         css: "discovery-view",
         dataReceiverController:dataProviderController,
-        swapId: "main-container",
+        swapId: "center-container",
         entities: [androidEntity],
         views: [{
             name: 'Leaflet 2D Map',
@@ -425,35 +420,64 @@ function init() {
 
     discoveryView.attachTo(discoveryDialog.popContentDiv.id);
 
-    $("2D-view-button").on("click",function(event) {
+    document.getElementById("2D-view-button").onclick = function(event) {
         if(currentIdView != leafletMainView.divId){
             cesiumMainMapView.hide();
             leafletMainView.attachTo(mainDiv.id);
             currentIdView = leafletMainView.divId;
         }
-    });
+    };
 
-    $("3D-view-button").on("click",function(event) {
+    document.getElementById("3D-view-button").onclick = function(event) {
         if(currentIdView != cesiumMainMapView.divId){
             leafletMainView.hide();
             cesiumMainMapView.attachTo(mainDiv.id);
             currentIdView = cesiumMainMapView.divId;
         }
-    });
+    };
 
-    $("screenshot-button").on("click",function(event){
+    document.getElementById("screenshot-button").onclick = function(event){
         OSH.Utils.takeScreeshot(mainDiv);
-    });
+    };
 
-    $("add-entity-button").on("click",function(event){
+    document.getElementById("add-entity-button").onclick = function(event){
         discoveryDialog.show({
             viewId : discoveryDialog.id
         });
-    });
+    };
 
     // 2D view is set as default view
     currentIdView = leafletMainView.divId;
     leafletMainView.attachTo(mainDiv.id);
+
+    //---------------------------------------------------------------//
+    //---------------------------- Starts ---------------------------//
+    //---------------------------------------------------------------//
+
+    // starts streaming
+    dataProviderController.connectAll();
+
+}
+
+function createPtzDialog(containerDivId,dataSources,title,defaultShow) {
+    var ptzDialog = new OSH.UI.MultiDialogView(containerDivId, {
+        draggable: false,
+        css: "dialog",
+        name: title,
+        show:false,
+        dockable: true,
+        closeable: true,
+        connectionIds : dataSources ,
+        swapId: "center-container",
+        keepRatio:true
+    });
+
+    var ptzView = new OSH.UI.PtzTaskingView();
+
+    // by default the view is hidden because no div id has been defined
+    // ptzDialog.appendView(ptzView.divId);
+
+    return ptzDialog;
 
 }
 
@@ -466,6 +490,6 @@ function createDialog(containerDivId,dataSources,title,defaultShow) {
         dockable: true,
         closeable: true,
         connectionIds : dataSources ,
-        swapId: "main-container"
+        swapId: "center-container"
     });
 }
