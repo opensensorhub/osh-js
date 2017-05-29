@@ -203,7 +203,7 @@ OSH_SRC.push('./src/osh/osh-Template.js');
 OSH_SRC.push('./src/osh/osh-Browser.js');
 OSH_SRC.push('./src/osh/osh-Utils.js');
 OSH_SRC.push('./src/osh/osh-Browser.js');
-OSH_SRC.push('./src/osh/osh-MapEvent.js');
+OSH_SRC.push('./src/osh/osh-EventMap.js');
 OSH_SRC.push('./src/osh/osh-EventManager.js');
 OSH_SRC.push('./src/osh/osh-Buffer.js');
 OSH_SRC.push('./src/osh/dataconnector/osh-DataConnector.js');
