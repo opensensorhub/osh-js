@@ -1,52 +1,52 @@
-Install plugins dependencies using NPM:
-``Toolkit $ npm install ``
+OpenSensorHub Web Client Toolkit Documentation
+===
 
-Install vendor dependencies using bower:
-``Toolkit $ bower install ``
+OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors.
+It is pure javascript framework and does not require third party libraries. A set of external libraries is also available to easily build some part of your views such as
+Leaflet, OpenLayer, Cesium, NVD3 etc..
 
-Display Gulp help:
+It's an event based architecture suitable for real-time or playback. It allows one to make temporal synchronization or multiple data stream. It provides a styling overlay using 
+configurable stylers as well as an advanced support for video (H264/MJPEG). It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.
+
+Moreover, it offers support for SOS & SPS services, discovery function, uses the HTTP or WebSocket API.
+Several modules already exist to allow one to setup quickly an application such as Orientation, Chart, Video, Map etc..
+ 
+Please report all problems related to the SensorHub software including documentation errors via the [GitHub Issue Tracker](https://github.com/opensensorhub) 
+of the [osh-js](https://github.com/opensensorhub/osh-js) repository.
+
+How To Download
+===
+
+
+### Releases
+
+Binary and Source distributions archives can be downloaded directly from the [Releases Section](https://github.com/opensensorhub/osh-js/releases) of our GitHub account.
+
+The release contains a vendor directory (needed for some pre-coded views), the minified osh-js library and its corresponding stylesheet.
+You can use both the all-in-one vendor minified script(vendor.js & vendor.css) or the separate ones. 
+
+See the [Install Section](install.md) for instructions on how to set it up on your device.
+
+
+How To Use
+===
+
+All you need to use the toolkit is to include the vendor dist file (the all-in-one or the separate ones) and the minified osh javascript and stylesheet:
+```javascript
+<!-- VENDOR -->
+<link rel="stylesheet" href="vendor/vendor.min.css"/>
+<script type="text/javascript" src="vendor/vendor.min.js"></script>
+
+<!-- OSH Toolkit -->
+<link rel="stylesheet" href="css/osh.min.css"/>
+<script src="js/osh.min.js"></script>
 ```
-Tookit $ gulp help
-Usage
-  gulp [TASK] [OPTIONS...]
 
-Available tasks
-  build           build a distributable osh-js instance 
-   --broadway     Include broadway JS library. Broadway JS is a JavaScript H.264 decoder: https://github.com/mbebenita/Broadway
- 
-   --cesium       An open-source JavaScript library for world-class 3D globes and maps: https://cesiumjs.org/
- 
-   --ffmpeg       Include FFMPEG library. This library provides FFmpeg builds ported to JavaScript using Emscripten project. Builds are optimized for in-browser use: minimal size for 
-faster loading, asm.js, performance tunings, etc. This is a fork from Kagami/ffmpeg.js: https://github.com/sensiasoft/ffmpeg.js
- 
-   --x2js       Include x2js library. This is used to map XML data into JSON object
- 
-   --leaflet      An open-source JavaScript library for mobile-friendly interactive maps: http://leafletjs.com/
- 
-   --nouislider   This library is responsible for displaying the RangeSlider bar.It is lightweight JavaScript range slider, originally developed to be a jQuery UI alternative: 
-https://github.com/leongersen/noUiSlider
- 
-   --nvd3         Include NVD3 library: http://nvd3.org/
- 
-   --ol3          OpenLayer 3 makes it easy to put a dynamic map in any web page. It can display map tiles, vector data and markers loaded from any source: https://openlayers.org/
- 
-   --tree         This library is responsible for displaying the Entity Tree View. It is a pure Javascript TreeView Component: https://github.com/rafaelthca/aimaraJS
+Don't forget to include the {css,images,js} directories.
 
-  clean           Clean the dist directory
-  help            Display this help text.
-```
+Resources
+===
 
-Build a full version using gulp:
-``Toolkit $ gulp build ``
-or
-``Toolkit $ gulp build --minify``
+The documentation can be found [here](http://opensensorhub.github.io/osh-js/Documentation/index.html).
 
-As described in the gulp help command, you can also include some libraries:
-
-``Toolkit $ gulp build --ffmpeg --leaflet --cesium``
-
-and get a minified version using --minify argument
-``Toolkit $ gulp build --minify --ffmpeg --leaflet --cesium``
-
-A dist directory will be created containing the new files.
-
+The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/)

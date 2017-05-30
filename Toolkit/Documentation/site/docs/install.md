@@ -5,7 +5,7 @@ All you need to use the toolkit is to include the vendor dist file (the all-in-o
 ```javascript
 <!-- VENDOR -->
 <link rel="stylesheet" href="vendor/vendor.min.css"/>
-<script type="text/javascript" src="vendor/all-in-one/vendor.min.js"></script>
+<script type="text/javascript" src="vendor/vendor.min.js"></script>
 
 <!-- OSH Toolkit -->
 <link rel="stylesheet" href="css/osh.min.css"/>
