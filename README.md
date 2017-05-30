@@ -49,4 +49,4 @@ The documentation can be found [here](http://opensensorhub.github.io/osh-js/Docu
 
 The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/)
 
-Some demos are available [here](http://opensensorhub.github.io/osh-js/Demos/)
+Some demos are available [here](http://opensensorhub.github.io/osh-js/Demos/) and [here](http://opensensorhub.github.io/osh-js/Demos-old/)
