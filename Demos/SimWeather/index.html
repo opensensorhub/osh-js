@@ -7,106 +7,14 @@
     <title>OpenSensorHub - Field Sensors Deployment</title>
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    
-    <!-- Prototype libs -->
-    <script type="text/javascript" src="../../Toolkit/src/common/prototype.min.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/common/modernizr-custom.js"></script>
-    <script type="text/javascript" src="js/patch-prototype-bootstrap.js"></script>
 
-    <!-- Nvd3 libs -->
-    <link rel="stylesheet" href="../../Toolkit/vendor/nvd3/css/nv.d3.css" />
-    <script src="../../Toolkit/vendor/nvd3/js/d3.v3.min.js"></script>
-    <script src="../../Toolkit/vendor/nvd3/js/nv.d3.min.js"></script>
+    <!-- vendors -->
+    <link rel="stylesheet" href="../../Toolkit/releases/v1.1/vendor/vendor.min.css"/>
+    <script type="text/javascript" src="../../Toolkit/releases/v1.1/vendor/vendor.min.js"></script>
 
-    <!-- Entity tree libs -->
-    <link rel="stylesheet" href="../../Toolkit/vendor/tree/tree.css" />
-    <script src="../../Toolkit/vendor/tree/tree.js"></script>
-
-    <!-- NoUISlider libs -->
-    <link rel="stylesheet" href="../../Toolkit/vendor/nouislider/nouislider.css" />
-    <script src="../../Toolkit/vendor/nouislider/wNumb.js"></script>
-    <script src="../../Toolkit/vendor/nouislider/nouislider.js"></script>
-    <link rel="stylesheet" href="../../Clients/VideoDisplay/css/noUISlider.css" />
-    
-    <!-- Leaflet libs -->
-    <link rel="stylesheet" href="../../Toolkit/vendor/leaflet/leaflet.css"/>
-    <script src="../../Toolkit/vendor/leaflet/leaflet.js"></script>
-    <script src='../../Toolkit/vendor/leaflet/Leaflet.fullscreen.min.js'></script>
-    <link href='../../Toolkit/vendor/leaflet/leaflet.fullscreen.css' rel='stylesheet'/>
-
-    <!--  Cesium libs -->
-    <script src="../../Toolkit/vendor/cesium/Cesium.js"></script>
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/vendor/cesium/Widgets/widgets.css"/>
-    
-    <!-- FFMPEG H264 decoder -->
-    <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/YUVCanvas.js"></script>
-    <script type="text/javascript" src="../../Toolkit/vendor/ffmpeg/ffmpeg-h264.js"></script>
-    
-    <!-- JSONIX (Discovery) -->
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/Jsonix-min.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/Filter_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/GML_3_1_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/GML_3_2_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/IC_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GCO_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GMD_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GSR_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GSS_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/ISO19139_GTS_20070417.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/OM_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/OWS_1_1_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SensorML_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SMIL_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SMIL_2_0_Language.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SOS_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SWE_1_0_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SWE_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/SWES_2_0.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/WS_Addr_1_0_Core.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/WS_Addr_1_0_Core.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/WSN_T_1.js"></script>
-    <script type="text/javascript" src= "../../Toolkit/src/common/jsonix/modules/XLink_1_0.js"></script>
-    
     <!-- OSH libs -->
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/dialog.css"/>
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/rangeSlider.css">
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/stackContextMenu.css">
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/circularContextMenu.css">
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/tasking.css" />
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/tree.css" />
-    <link rel="stylesheet" type="text/css" href="../../Toolkit/src/css/discovery.css">
-    <script type="text/javascript" src="../../Toolkit/src/osh/osh-template.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/osh-Utils.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/osh-Buffer.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/osh-EventManager.js"></script>    
-    <script type="text/javascript" src="../../Toolkit/src/osh/osh-Sensor.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/osh-Server.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-Chart.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceSimWeather.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CircularMenu.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-View.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-DialogView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/discovery/osh-UI-DiscoveryView.js"></script>
-    <script type="text/javascript" src="../../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
+    <link rel="stylesheet" href="../../Toolkit/releases/v1.1/css/osh.min.css"/>
+    <script type="text/javascript" src="../../Toolkit/releases/v1.1/js/osh.min.js"></script>
 
     <!-- Circular Nav Menu -->
     <link rel="stylesheet" href="css/circularNavMenu/font-awesome.min.css" />

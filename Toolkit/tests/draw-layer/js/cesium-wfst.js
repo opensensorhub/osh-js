@@ -10,14 +10,14 @@
         module.exports = factory();
     } else {
         // Browser globals (root is window)
-        root.CesiumWFS = factory();
+        root.CesiumWFST = factory();
     }
 }(this, function () {
     'use strict';
 
     var VERSION = "1.0.0";
 
-    function CesiumWFS(properties) {
+    function CesiumWFST(properties) {
 
         properties = properties || {};
 
@@ -63,17 +63,17 @@
         this.xs = new XMLSerializer();
     }
 
-    CesiumWFS.prototype.readAsOlFeatures = function(request,callback) {
+    CesiumWFST.prototype.readAsOlFeatures = function(request,callback) {
         this.geomType = 0;
         this.read(request,callback);
     };
 
-    CesiumWFS.prototype.readAsCesiumPrimitives = function(request,callback) {
+    CesiumWFST.prototype.readAsCesiumPrimitives = function(request,callback) {
         this.geomType = 1;
         this.read(request,callback);
     };
 
-    CesiumWFS.prototype.read  = function(request,callback) {
+    CesiumWFST.prototype.read  = function(request,callback) {
         var httpConnector = new XMLHttpRequest();
         httpConnector.timeout = 60000;
         httpConnector.responseType = "text";
@@ -97,9 +97,9 @@
         httpConnector.send(null);
     };
 
-    CesiumWFS.prototype.onError = function(response) {};
+    CesiumWFST.prototype.onError = function(response) {};
 
-    CesiumWFS.prototype.handleWFSReadResponse = function(response) {
+    CesiumWFST.prototype.handleWFSReadResponse = function(response) {
         var formatWFS = new ol.format.WFS();
         var features = formatWFS.readFeatures(response);
 
@@ -125,7 +125,7 @@
         }
     };
 
-    CesiumWFS.prototype.olMarkerToCesium = function(feature) {
+    CesiumWFST.prototype.olMarkerToCesium = function(feature) {
         var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
 
         var coordinates = olGeometry.getCoordinates();
@@ -144,7 +144,7 @@
         };
     };
 
-    CesiumWFS.prototype.olPolygonToCesium = function(feature) {
+    CesiumWFST.prototype.olPolygonToCesium = function(feature) {
         var fillGeometry, outlineGeometry,olGeometry;
 
         olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
@@ -189,7 +189,7 @@
         return polygon;
     };
 
-    CesiumWFS.prototype.olPolylineToCesium = function(feature) {
+    CesiumWFST.prototype.olPolylineToCesium = function(feature) {
         var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
 
         var coordinates = olGeometry.getCoordinates();
@@ -211,7 +211,7 @@
         return polyline;
     };
 
-    CesiumWFS.prototype.cesiumMarkerToOl = function (cesiumMarker) {
+    CesiumWFST.prototype.cesiumMarkerToOl = function (cesiumMarker) {
         var cartesian = new Cesium.Cartesian3(cesiumMarker.position.x, cesiumMarker.position.y, cesiumMarker.position.z);
         var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
 
@@ -231,7 +231,7 @@
         });
     };
 
-    CesiumWFS.prototype.cesiumPolylineToOl = function (cesiumPolyline) {
+    CesiumWFST.prototype.cesiumPolylineToOl = function (cesiumPolyline) {
         var lineString = new ol.geom.LineString(null);
 
         // support only outer ring
@@ -262,7 +262,7 @@
         return feature;
     };
 
-    CesiumWFS.prototype.cesiumPolygonToOl = function (cesiumPolygon) {
+    CesiumWFST.prototype.cesiumPolygonToOl = function (cesiumPolygon) {
         var polygon = new ol.geom.Polygon(null);
 
         // support only outer ring
@@ -301,7 +301,7 @@
         return feature;
     };
 
-    CesiumWFS.prototype.olGeometryCloneTo4326 = function (geometry, projection) {
+    CesiumWFST.prototype.olGeometryCloneTo4326 = function (geometry, projection) {
         var proj4326 = ol.proj.get('EPSG:4326');
         var proj = ol.proj.get(projection);
         if (proj !== proj4326) {
@@ -313,7 +313,7 @@
         return geometry;
     };
 
-    CesiumWFS.prototype.writeTransactionAsCesiumPrimitives = function(inserts,updates,deletes,type,callback) {
+    CesiumWFST.prototype.writeTransactionAsCesiumPrimitives = function(inserts,updates,deletes,type,callback) {
 
         if(inserts !== null) {
             if(type === "polygon"){
@@ -347,7 +347,7 @@
     };
 
     //--------- WRITE PART ------------//
-    CesiumWFS.prototype.writeTransaction = function(inserts,updates,deletes) {
+    CesiumWFST.prototype.writeTransaction = function(inserts,updates,deletes) {
         var node = this.DOCUMENT.createElementNS('http://www.opengis.net/wfs', 'Transaction');
         node.setAttribute('service', 'WFS');
         node.setAttribute('version', '1.1.0');
@@ -390,7 +390,7 @@
         return node;
     };
 
-    CesiumWFS.prototype.assign = function(target,src) {
+    CesiumWFST.prototype.assign = function(target,src) {
         if (target === undefined || target === null) {
             throw new TypeError('Cannot convert undefined or null to object');
         }
@@ -409,7 +409,7 @@
         return output;
     };
 
-    CesiumWFS.prototype.transactWFS = function(mode,f,callback) {
+    CesiumWFST.prototype.transactWFS = function(mode,f,callback) {
         var node;
 
         switch (mode) {
@@ -449,5 +449,5 @@
         }.bind(this);
     };
 
-    return CesiumWFS;
+    return CesiumWFST;
 }));

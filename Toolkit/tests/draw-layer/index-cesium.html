@@ -33,11 +33,10 @@
     <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
 
     <!-- DEV -->
-    <script type="text/javascript" src="js/osh-Services-WFS.js"></script>
+    <script type="text/javascript" src="js/cesium-wfst.js"></script>
 
 </head>
 <body id="body">
-<h2>Test Cesium draw layer</h2>
 <div id="cesium-container"></div>
 <div id="toolbar">
     <style>
@@ -66,7 +65,7 @@
 
         const WFS_PROJECTION = "EPSG:3857";
 
-        var wfsService = new OSH.Services.WFS({
+        var wfsService = new CesiumWFST({
             featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
             featureType: 'wfs_color',
             srsName: WFS_PROJECTION,

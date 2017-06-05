@@ -822,14 +822,6 @@ var DrawHelper = (function() {
 
         mouseHandler.setInputAction(function(movement) {
             var position = movement.endPosition;
-            if(position != null) {
-                var cartesian = scene.camera.pickEllipsoid(position, ellipsoid);
-                if (cartesian) {
-                    tooltip.showAt(position, "<p>Click to add your marker. Position is: </p>" + getDisplayLatLngString(ellipsoid.cartesianToCartographic(cartesian)));
-                } else {
-                    tooltip.showAt(position, "<p>Click on the globe to add your marker.</p>");
-                }
-            }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
     }
@@ -901,9 +893,7 @@ var DrawHelper = (function() {
         mouseHandler.setInputAction(function(movement) {
             var position = movement.endPosition;
             if(position != null) {
-                if(positions.length == 0) {
-                    tooltip.showAt(position, "<p>Click to add first point</p>");
-                } else {
+                if(positions.length > 0) {
                     var cartesian = scene.camera.pickEllipsoid(position, ellipsoid);
                     if (cartesian) {
                         positions.pop();
@@ -916,8 +906,6 @@ var DrawHelper = (function() {
                         }
                         // update marker
                         markers.getBillboard(positions.length - 1).position = cartesian;
-                        // show tooltip
-                        tooltip.showAt(position, "<p>Click to add new point (" + positions.length + ")</p>" + (positions.length > minPoints ? "<p>Double click to finish drawing</p>" : ""));
                     }
                 }
             }
@@ -1015,9 +1003,7 @@ var DrawHelper = (function() {
         mouseHandler.setInputAction(function(movement) {
             var position = movement.endPosition;
             if(position != null) {
-                if(extent == null) {
-                    tooltip.showAt(position, "<p>Click to start drawing rectangle</p>");
-                } else {
+                if(extent != null) {
                     var cartesian = scene.camera.pickEllipsoid(position, ellipsoid);
                     if (cartesian) {
                         var value = getExtent(firstPoint, ellipsoid.cartesianToCartographic(cartesian));
@@ -1881,4 +1867,3 @@ var DrawHelper = (function() {
 
     return _;
 })();
-
