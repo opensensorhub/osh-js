@@ -4,7 +4,7 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,13 +13,13 @@
         
     <url>
      <loc>None/download/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/install/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -29,25 +29,25 @@
         
     <url>
      <loc>None/dev/dev-guide/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/dev/architecture/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/dev/technical/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/dev/jsdoc/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -57,19 +57,19 @@
         
     <url>
      <loc>None/tutos/osh-by-example/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/tutos/osh-by-example-2/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/tutos/osh-by-example-3/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -78,7 +78,7 @@
     
     <url>
      <loc>None/license/</loc>
-     <lastmod>2017-05-25</lastmod>
+     <lastmod>2017-06-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
     

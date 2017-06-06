@@ -397,6 +397,17 @@ someView.attachTo(someDialog.popContentDiv.id);
 
 This will automatically set the view into the dialog. Note that it is very important in that case to let the view divId empty because we don't want to attach it to something.
 
+## Workers
+
+The workers are pushed into a default location while they are compiled using Gulp. The default location is "js/workers".
+
+This location can be overriden using the `window.OSH.BASE_WORKER_URL` variable:
+
+```javascript
+window.OSH.BASE_WORKER_URL = "a/b/c/d/workers";
+```
+
+Thus you have to put the workers files into the `a/b/c/d/workers` directories.
 
 ### MultiDialogView
 
@@ -432,7 +443,7 @@ The someView 2 & 3 will be appended to the dialog. See the [Multi dialog + taski
 As we have seen, one can directly built Cesium in osh vendor using Gulp. One specific one has to take care is the Cesium global property:
 
 ```javascript
-window.CESIUM_BASE_URL = 'vendor/all-in-one';
+window.CESIUM_BASE_URL = 'vendor/';
 ```
 
 Since Cesium will try to load by default the Cesium library from the *js* folder, if this one is located into another folder, you have to specify the *CESIUM_BASE_URL* to get it work. 
