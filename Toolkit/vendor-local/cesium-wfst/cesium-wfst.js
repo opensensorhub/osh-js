@@ -140,7 +140,8 @@
             scale : 1.0,
             image: './img/glyphicons_242_google_maps.png',
             color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
-            isPoint:true
+            isPoint:true,
+            name : feature.name
         };
     };
 
@@ -185,6 +186,7 @@
 
         // save the id for update/delete
         polygon._id = feature.getId();
+        polygon.name = feature.name;
 
         return polygon;
     };
@@ -208,6 +210,8 @@
         });
 
         polyline.isPolyline = true;
+        polyline.name = feature.name;
+
         return polyline;
     };
 
@@ -224,9 +228,11 @@
             this.srsName
         );
 
+        var name = (typeof cesiumMarker.name !== "undefined") ? cesiumMarker.name : 'Marker';
+
         return new ol.Feature({
             geometry: new ol.geom.Point([projCoordinates[0], projCoordinates[1],projCoordinates[2]]),
-            name: 'Marker',
+            name: name,
             color: "#e91e63"
         });
     };
@@ -254,12 +260,13 @@
 
         lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
 
-        var feature = new ol.Feature({
-            geometry: lineString,
-            color: "#e91e63"
-        });
+        var name = (typeof cesiumPolyline.name !== "undefined") ? cesiumPolyline.name : 'PolyLine';
 
-        return feature;
+        return new ol.Feature({
+            geometry: lineString,
+            color: "#e91e63",
+            name : name
+        });
     };
 
     CesiumWFST.prototype.cesiumPolygonToOl = function (cesiumPolygon) {
@@ -292,9 +299,12 @@
             ol.geom.GeometryLayout.XYZ, flatCoordinates, ends);
 
 
+        var name = (typeof cesiumPolygon.name !== "undefined") ? cesiumPolygon.name : 'Polygon';
+
         var feature = new ol.Feature({
             geometry: polygon,
-            color: "#e91e63"
+            color: "#e91e63",
+            name : name
         });
 
         feature.setId(cesiumPolygon._id);
