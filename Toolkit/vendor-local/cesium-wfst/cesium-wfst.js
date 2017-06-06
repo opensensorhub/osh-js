@@ -126,7 +126,7 @@
     };
 
     CesiumWFST.prototype.olMarkerToCesium = function(feature) {
-        var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+        var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: this.srsName}));
 
         var coordinates = olGeometry.getCoordinates();
 
@@ -147,7 +147,7 @@
     CesiumWFST.prototype.olPolygonToCesium = function(feature) {
         var fillGeometry, outlineGeometry,olGeometry;
 
-        olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+        olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: this.srsName}));
 
         var rings = olGeometry.getLinearRings();
         // always update Cesium externs before adding a property
@@ -190,7 +190,7 @@
     };
 
     CesiumWFST.prototype.olPolylineToCesium = function(feature) {
-        var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+        var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: this.srsName}));
 
         var coordinates = olGeometry.getCoordinates();
 
@@ -221,7 +221,7 @@
                 Cesium.Math.toDegrees(cartographic.latitude),
                 Cesium.Math.toDegrees(cartographic.height)
             ],
-            WFS_PROJECTION
+            this.srsName
         );
 
         return new ol.Feature({
@@ -246,7 +246,7 @@
                     Cesium.Math.toDegrees(cartographic.latitude),
                     0
                 ],
-                WFS_PROJECTION
+                this.srsName
             );
 
             flatCoordinates.push(projCoordinates[0], projCoordinates[1], 0);
@@ -277,7 +277,7 @@
                     Cesium.Math.toDegrees(cartographic.latitude),
                     0
                 ],
-                WFS_PROJECTION
+                this.srsName
             );
 
             flatCoordinates.push(projCoordinates[0], projCoordinates[1], 0);
