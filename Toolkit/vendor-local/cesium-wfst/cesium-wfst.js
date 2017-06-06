@@ -331,7 +331,7 @@
             } else if(type === "marker") {
                 this.transactWFS("update",this.cesiumMarkerToOl(updates),callback);
             } else if(type === "polyline") {
-                this.transactWFS("insert",this.cesiumPolylineToOl(inserts),callback);
+                this.transactWFS("update",this.cesiumPolylineToOl(updates),callback);
             }
         }
 
