@@ -244,7 +244,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @param callback
      */
     initFFMPEG_DECODER_WORKER: function (callback) {
-        this.worker = new Worker('js/workers/osh-UI-FFMPEGViewWorker.js');
+        this.worker = new Worker(window.OSH.BASE_WORKER_URL+'/osh-UI-FFMPEGViewWorker.js');
 
         var self = this;
         var decodedFrame;

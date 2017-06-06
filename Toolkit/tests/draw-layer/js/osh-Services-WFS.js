@@ -1,7 +1,25 @@
-window.OSH.Services = {};
+// universal module definition
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.CesiumWFS = factory();
+    }
+}(this, function () {
+    'use strict';
 
-OSH.Services.WFS = BaseClass.extend({
-    initialize: function (properties) {
+    var VERSION = "1.0.0";
+
+    function CesiumWFS(properties) {
+
+        properties = properties || {};
 
         this.options = {};
 
@@ -38,47 +56,50 @@ OSH.Services.WFS = BaseClass.extend({
         this.geometryArray = [];
 
         // load feature from WFS and create cesium geometry
-        this.httpConnector = new OSH.DataConnector.AjaxConnector(this.url,{
-            method: 'GET',
-            responseType:"text"
-        });
-
-        this.httpConnector.onError = this.onError;
 
         this.geomType = 0; // 0 = OpenLayer
                            // 1 = Cesium
 
         this.xs = new XMLSerializer();
+    }
 
-
-    },
-
-    readAsOlFeatures:function(request,callback) {
+    CesiumWFS.prototype.readAsOlFeatures = function(request,callback) {
         this.geomType = 0;
         this.read(request,callback);
-    },
+    };
 
-    readAsCesiumPrimitives:function(request,callback) {
+    CesiumWFS.prototype.readAsCesiumPrimitives = function(request,callback) {
         this.geomType = 1;
         this.read(request,callback);
-    },
+    };
 
-    read:function(request,callback) {
-        this.httpConnector.method = "GET";
+    CesiumWFS.prototype.read  = function(request,callback) {
+        var httpConnector = new XMLHttpRequest();
+        httpConnector.timeout = 60000;
+        httpConnector.responseType = "text";
 
-        // default projection : 3857
-        this.httpConnector.onMessage = function(response) {
-            this.handleWFSReadResponse(response);
-            callback(this.geometryArray);
-        }.bind(this);
+        httpConnector.onerror = this.onError;
 
-        // sends request
-        this.httpConnector.sendRequest(null,request);
-    },
+        httpConnector.open("GET", this.url+"?"+request, true);
+        var self = this;
 
-    onError:function(response) {},
+        httpConnector.onload = function (oEvent) {
+            if (httpConnector.response) {
+                self.handleWFSReadResponse(httpConnector.response);
+                callback(self.geometryArray);
+            }
+        };
 
-    handleWFSReadResponse:function(response) {
+        httpConnector.ontimeout = function (e) {
+            console.log("Timeout");
+        };
+
+        httpConnector.send(null);
+    };
+
+    CesiumWFS.prototype.onError = function(response) {};
+
+    CesiumWFS.prototype.handleWFSReadResponse = function(response) {
         var formatWFS = new ol.format.WFS();
         var features = formatWFS.readFeatures(response);
 
@@ -87,12 +108,11 @@ OSH.Services.WFS = BaseClass.extend({
         if(this.geomType === 0) {
             this.geometryArray = features;
         } else if(this.geomType === 1) {
-            let cesiumPrimitive;
+            var cesiumPrimitive;
 
-            for(let i=0;i < features.length;i++) {
+            for(var i=0;i < features.length;i++) {
                 var feature = features[i];
 
-                console.log(feature.getGeometry().getType());
                 if(feature.getGeometry().getType() === "Polygon") {
                     // ol polygon to cesium primitive
                     this.geometryArray.push(this.olPolygonToCesium(feature));
@@ -103,14 +123,14 @@ OSH.Services.WFS = BaseClass.extend({
                 }
             }
         }
-    },
+    };
 
-    olMarkerToCesium:function(feature) {
-        let  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+    CesiumWFS.prototype.olMarkerToCesium = function(feature) {
+        var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
 
         var coordinates = olGeometry.getCoordinates();
 
-         var point = {
+        return {
             show : true,
             position : Cesium.Cartesian3.fromDegrees(coordinates[0],coordinates[1],0),
             pixelOffset : new Cesium.Cartesian2(0, 0),
@@ -122,26 +142,24 @@ OSH.Services.WFS = BaseClass.extend({
             color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
             isPoint:true
         };
+    };
 
-        return point;
-    },
-
-    olPolygonToCesium:function(feature) {
-        let fillGeometry, outlineGeometry,olGeometry;
+    CesiumWFS.prototype.olPolygonToCesium = function(feature) {
+        var fillGeometry, outlineGeometry,olGeometry;
 
         olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
 
-        const rings = olGeometry.getLinearRings();
+        var rings = olGeometry.getLinearRings();
         // always update Cesium externs before adding a property
-        const hierarchy = {};
-        const polygonHierarchy = hierarchy;
+        var hierarchy = {};
+        var polygonHierarchy = hierarchy;
 
-        for (let i = 0; i < rings.length; ++i) {
-            const olPos = rings[i].getCoordinates();
+        for (var i = 0; i < rings.length; ++i) {
+            var olPos = rings[i].getCoordinates();
 
-            let positions = [];
-            for(let k=0;k < olPos.length;k++) {
-                let cProjPos = olPos[k];
+            var positions = [];
+            for(var k=0;k < olPos.length;k++) {
+                var cProjPos = olPos[k];
 
                 // project 4326 into cartesian
                 positions.push(Cesium.Cartesian3.fromDegrees(cProjPos[0],cProjPos[1],cProjPos[2]));
@@ -152,8 +170,9 @@ OSH.Services.WFS = BaseClass.extend({
                 if (!hierarchy.holes) {
                     hierarchy.holes = [];
                 }
+
                 hierarchy.holes.push({
-                    positions
+                    positions:positions
                 });
             }
         }
@@ -162,24 +181,23 @@ OSH.Services.WFS = BaseClass.extend({
             positions: hierarchy.positions
             // material : Cesium.Material.fromType('Checkerboard')
         });
-       // polygon.setEditable();
+        // polygon.setEditable();
 
         // save the id for update/delete
         polygon._id = feature.getId();
 
         return polygon;
-    },
+    };
 
-
-    olPolylineToCesium:function(feature) {
-        let  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
+    CesiumWFS.prototype.olPolylineToCesium = function(feature) {
+        var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: WFS_PROJECTION}));
 
         var coordinates = olGeometry.getCoordinates();
 
-        let positions = [];
+        var positions = [];
 
-        for (let i = 0; i < coordinates.length; ++i) {
-            const olPos = coordinates[i];
+        for (var i = 0; i < coordinates.length; ++i) {
+            var olPos = coordinates[i];
             positions.push(Cesium.Cartesian3.fromDegrees(olPos[0],olPos[1],olPos[2]));
         }
 
@@ -191,9 +209,9 @@ OSH.Services.WFS = BaseClass.extend({
 
         polyline.isPolyline = true;
         return polyline;
-    },
+    };
 
-    cesiumMarkerToOl: function (cesiumMarker) {
+    CesiumWFS.prototype.cesiumMarkerToOl = function (cesiumMarker) {
         var cartesian = new Cesium.Cartesian3(cesiumMarker.position.x, cesiumMarker.position.y, cesiumMarker.position.z);
         var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
 
@@ -206,22 +224,20 @@ OSH.Services.WFS = BaseClass.extend({
             WFS_PROJECTION
         );
 
-        var iconFeature = new ol.Feature({
+        return new ol.Feature({
             geometry: new ol.geom.Point([projCoordinates[0], projCoordinates[1],projCoordinates[2]]),
             name: 'Marker',
             color: "#e91e63"
         });
+    };
 
-        return iconFeature;
-    },
-
-    cesiumPolylineToOl: function (cesiumPolyline) {
+    CesiumWFS.prototype.cesiumPolylineToOl = function (cesiumPolyline) {
         var lineString = new ol.geom.LineString(null);
 
         // support only outer ring
         var flatCoordinates = [];
 
-        for (let i = 0; i < cesiumPolyline.positions.length; i++) {
+        for (var i = 0; i < cesiumPolyline.positions.length; i++) {
             var cartesian = new Cesium.Cartesian3(cesiumPolyline.positions[i].x, cesiumPolyline.positions[i].y, cesiumPolyline.positions[i].z);
             var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
 
@@ -244,15 +260,15 @@ OSH.Services.WFS = BaseClass.extend({
         });
 
         return feature;
-    },
+    };
 
-    cesiumPolygonToOl: function (cesiumPolygon) {
+    CesiumWFS.prototype.cesiumPolygonToOl = function (cesiumPolygon) {
         var polygon = new ol.geom.Polygon(null);
 
         // support only outer ring
         var flatCoordinates = [];
 
-        for (let i = 0; i < cesiumPolygon.positions.length - 2; i++) {
+        for (var i = 0; i < cesiumPolygon.positions.length - 2; i++) {
             var cartesian = new Cesium.Cartesian3(cesiumPolygon.positions[i].x, cesiumPolygon.positions[i].y, cesiumPolygon.positions[i].z);
             var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
 
@@ -283,21 +299,21 @@ OSH.Services.WFS = BaseClass.extend({
 
         feature.setId(cesiumPolygon._id);
         return feature;
-    },
+    };
 
-    olGeometryCloneTo4326:function (geometry, projection) {
-        const proj4326 = ol.proj.get('EPSG:4326');
-        const proj = ol.proj.get(projection);
+    CesiumWFS.prototype.olGeometryCloneTo4326 = function (geometry, projection) {
+        var proj4326 = ol.proj.get('EPSG:4326');
+        var proj = ol.proj.get(projection);
         if (proj !== proj4326) {
-            const properties = geometry.getProperties();
+            var properties = geometry.getProperties();
             geometry = geometry.clone();
             geometry.transform(proj, proj4326);
             geometry.setProperties(properties);
         }
         return geometry;
-    },
+    };
 
-    writeTransactionAsCesiumPrimitives:function(inserts,updates,deletes,type,callback) {
+    CesiumWFS.prototype.writeTransactionAsCesiumPrimitives = function(inserts,updates,deletes,type,callback) {
 
         if(inserts !== null) {
             if(type === "polygon"){
@@ -328,10 +344,10 @@ OSH.Services.WFS = BaseClass.extend({
                 //TODO:
             }
         }
-    },
+    };
 
     //--------- WRITE PART ------------//
-    writeTransaction:function(inserts,updates,deletes) {
+    CesiumWFS.prototype.writeTransaction = function(inserts,updates,deletes) {
         var node = this.DOCUMENT.createElementNS('http://www.opengis.net/wfs', 'Transaction');
         node.setAttribute('service', 'WFS');
         node.setAttribute('version', '1.1.0');
@@ -372,10 +388,9 @@ OSH.Services.WFS = BaseClass.extend({
         }
 
         return node;
-    },
+    };
 
-    //TODO: should be move into OSH.Utils
-    assign:function(target,src) {
+    CesiumWFS.prototype.assign = function(target,src) {
         if (target === undefined || target === null) {
             throw new TypeError('Cannot convert undefined or null to object');
         }
@@ -392,9 +407,9 @@ OSH.Services.WFS = BaseClass.extend({
             }
         }
         return output;
-    },
+    };
 
-    transactWFS:function(mode,f,callback) {
+    CesiumWFS.prototype.transactWFS = function(mode,f,callback) {
         var node;
 
         switch (mode) {
@@ -409,12 +424,30 @@ OSH.Services.WFS = BaseClass.extend({
                 break;
         }
         var payload = this.xs.serializeToString(node);
-        this.httpConnector.method = "POST";
-        console.log(payload);
-        this.httpConnector.sendRequest(payload);
-        this.httpConnector.onSuccess = function(message) {
-            console.log(message);
-            callback(message);
-        };
-    }
-});
+
+        var httpConnector = new XMLHttpRequest();
+        httpConnector.timeout = 60000;
+        httpConnector.responseType = "text";
+
+        httpConnector.onerror = this.onError;
+
+        httpConnector.open("POST", this.url, true);
+        httpConnector.setRequestHeader('Content-Type', 'text/xml');
+
+        httpConnector.send(payload);
+
+        httpConnector.onreadystatechange = function() {
+            if (httpConnector.readyState < 4) {
+                // while waiting response from server
+            }  else if (httpConnector.readyState === 4) {                // 4 = Response from server has been completely loaded.
+                if (httpConnector.status === 200 && httpConnector.status < 300) { // http status between 200 to 299 are all successful
+                    callback(httpConnector.responseText);
+                } else {
+                    this.onError("");
+                }
+            }
+        }.bind(this);
+    };
+
+    return CesiumWFS;
+}));

@@ -11,8 +11,8 @@
     <script type="text/javascript" src="vendor/all-in-one/vendor.js"></script>
 
     <!-- draw helper -->
-    <link rel="stylesheet" type="text/css" href="css/DrawHelper.css"/>
-    <script type="text/javascript" src="js/DrawHelper.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../vendor-local/cesium-draw-helper/DrawHelper.css"/>
+    <script type="text/javascript" src="../../vendor-local/cesium-draw-helper/DrawHelper.js"></script>
 
     <!-- OSH Core -->
     <script type="text/javascript" src="../../src/osh/osh-Template.js"></script>
@@ -33,11 +33,10 @@
     <script type="text/javascript" src="../../src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
 
     <!-- DEV -->
-    <script type="text/javascript" src="js/osh-Services-WFS.js"></script>
+    <script type="text/javascript" src="../../vendor-local/cesium-wfst/cesium-wfst.js"></script>
 
 </head>
 <body id="body">
-<h2>Test Cesium draw layer</h2>
 <div id="cesium-container"></div>
 <div id="toolbar">
     <style>
@@ -64,9 +63,9 @@
     <script type="text/javascript">
         window.CESIUM_BASE_URL = 'vendor/all-in-one';
 
-        const WFS_PROJECTION = "EPSG:3857";
+        var WFS_PROJECTION = "EPSG:3857";
 
-        var wfsService = new OSH.Services.WFS({
+        var wfsService = new CesiumWFST({
             featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
             featureType: 'wfs_color',
             srsName: WFS_PROJECTION,
@@ -147,7 +146,6 @@
             // create one common billboard collection for all billboards
             //cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
             //billboard.setEditable();
-
             var point = {
                 show : true,
                 position : event.position,
@@ -158,7 +156,8 @@
                 scale : 1.0,
                 image: './img/glyphicons_242_google_maps.png',
                 color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
-                isPoint:true
+                isPoint:true,
+                name: prompt("Please enter a name for the feature", "")
             };
 
             wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"Point",onSuccessWrite);
@@ -170,6 +169,8 @@
                 width: 5,
                 geodesic: true
             });
+            polyline.name = prompt("Please enter a name for the feature", "");
+
             wfsService.writeTransactionAsCesiumPrimitives(polyline,null,null,"polyline",onSuccessWrite);
         }
 
@@ -178,6 +179,8 @@
                 positions: event.positions
                 //material : Cesium.Material.fromType('Checkerboard')
             });
+
+            cesiumPolygon.name = prompt("Please enter a name for the feature", "");
 
             wfsService.writeTransactionAsCesiumPrimitives(cesiumPolygon,null,null,"polygon",onSuccessWrite);
         }

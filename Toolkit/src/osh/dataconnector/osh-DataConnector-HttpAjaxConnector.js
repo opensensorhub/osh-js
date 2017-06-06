@@ -90,7 +90,7 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState < 4) {
                     // while waiting response from server
-                }  else if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+                }  else if (xmlhttp.readyState == 4) {                // 4 = Response from server has been completely loaded.
                     if (xmlhttp.status == 200 && xmlhttp.status < 300) { // http status between 200 to 299 are all successful
                         this.onSuccess(xmlhttp.responseText);
                     } else {

@@ -137,6 +137,8 @@
                 
                     <li><a class="toctree-l4" href="#dialog">Dialog</a></li>
                 
+                    <li><a class="toctree-l4" href="#workers">Workers</a></li>
+                
                     <li><a class="toctree-l4" href="#cesium-cesium-third-party-library">Cesium (--cesium third party library)</a></li>
                 
                     <li><a class="toctree-l4" href="#ffmpeg-ffmpeg-third-party-library">FFMPEG (--ffmpeg third party library)</a></li>
@@ -590,6 +592,13 @@ someView.attachTo(someDialog.popContentDiv.id);
 </code></pre>
 
 <p>This will automatically set the view into the dialog. Note that it is very important in that case to let the view divId empty because we don't want to attach it to something.</p>
+<h2 id="workers">Workers</h2>
+<p>The workers are pushed into a default location while they are compiled using Gulp. The default location is "js/workers".</p>
+<p>This location can be overriden using the <code>window.OSH.BASE_WORKER_URL</code> variable:</p>
+<pre><code class="javascript">window.OSH.BASE_WORKER_URL = &quot;a/b/c/d/workers&quot;;
+</code></pre>
+
+<p>Thus you have to put the workers files into the <code>a/b/c/d/workers</code> directories.</p>
 <h3 id="multidialogview">MultiDialogView</h3>
 <p>The multi dialog view is an extension of the Dialog view. It allows one to append div to an existing dialog:</p>
 <pre><code class="javascript">var multiDialog    =  new OSH.UI.MultiDialogView(&quot;&lt;some container&gt;&quot;, {
@@ -617,7 +626,7 @@ multiDialog.appendView(someView3.divId);
 <p>The someView 2 &amp; 3 will be appended to the dialog. See the <a href="http://opensensorhub.github.io/osh-js/Showcase/">Multi dialog + tasking example</a> of the Showcase</p>
 <h2 id="cesium-cesium-third-party-library">Cesium (--cesium third party library)</h2>
 <p>As we have seen, one can directly built Cesium in osh vendor using Gulp. One specific one has to take care is the Cesium global property:</p>
-<pre><code class="javascript">window.CESIUM_BASE_URL = 'vendor/all-in-one';
+<pre><code class="javascript">window.CESIUM_BASE_URL = 'vendor/';
 </code></pre>
 
 <p>Since Cesium will try to load by default the Cesium library from the <em>js</em> folder, if this one is located into another folder, you have to specify the <em>CESIUM_BASE_URL</em> to get it work. </p>
