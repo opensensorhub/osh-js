@@ -77,6 +77,8 @@ window.OSH.Utils = {};
  */
 window.OSH.DataSender = {};
 
+window.OSH.BASE_WORKER_URL = "js/workers";
+
 // HELPER FUNCTION
 function isUndefined(object) {
 	return typeof(object) == "undefined";
