@@ -620,19 +620,19 @@ var DrawHelper = (function() {
     })();
 
     var defaultBillboard = {
-        iconUrl: "./img/dragIcon.png",
+        iconUrl: "./images/drawhelper/dragIcon.png",
         shiftX: 0,
         shiftY: 0
     }
 
     var dragBillboard = {
-        iconUrl: "./img/dragIcon.png",
+        iconUrl: "./images/drawhelper/dragIcon.png",
         shiftX: 0,
         shiftY: 0
     }
 
     var dragHalfBillboard = {
-        iconUrl: "./img/dragIconLight.png",
+        iconUrl: "./images/drawhelper/dragIconLight.png",
         shiftX: 0,
         shiftY: 0
     }
@@ -1627,12 +1627,12 @@ var DrawHelper = (function() {
             }
 
             var drawOptions = {
-                markerIcon: "./img/glyphicons_242_google_maps.png",
-                polylineIcon: "./img/glyphicons_097_vector_path_line.png",
-                polygonIcon: "./img/glyphicons_096_vector_path_polygon.png",
-                circleIcon: "./img/glyphicons_095_vector_path_circle.png",
-                extentIcon: "./img/glyphicons_094_vector_path_square.png",
-                clearIcon: "./img/glyphicons_067_cleaning.png",
+                markerIcon: "./images/drawhelper/glyphicons_242_google_maps.png",
+                polylineIcon: "./images/drawhelper/glyphicons_097_vector_path_line.png",
+                polygonIcon: "./images/drawhelper/glyphicons_096_vector_path_polygon.png",
+                circleIcon: "./images/drawhelper/glyphicons_095_vector_path_circle.png",
+                extentIcon: "./images/drawhelper/glyphicons_094_vector_path_square.png",
+                clearIcon: "./images/drawhelper/glyphicons_067_cleaning.png",
                 polylineDrawingOptions: defaultPolylineOptions,
                 polygonDrawingOptions: defaultPolygonOptions,
                 extentDrawingOptions: defaultExtentOptions,

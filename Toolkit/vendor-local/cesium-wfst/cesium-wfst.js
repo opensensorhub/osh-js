@@ -138,7 +138,7 @@
             horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
             verticalOrigin : Cesium.VerticalOrigin.CENTER,
             scale : 1.0,
-            image: './img/glyphicons_242_google_maps.png',
+            image: './images/cesium-wfst/glyphicons_242_google_maps.png',
             color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
             isPoint:true,
             name : feature.name
