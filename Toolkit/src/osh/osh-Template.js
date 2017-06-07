@@ -18,7 +18,7 @@
  * @namespace {object} OSH
  */
 var OSH = {
-	version: '1.2'
+	version: '1.3'
 };
 
 window.OSH = OSH;
