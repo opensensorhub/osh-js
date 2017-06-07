@@ -71,7 +71,8 @@ var NOUISLIDER_RESOURCES_FILES = {};
 
 // OL3
 
-var OL3_SRC = ["vendor/ol3/ol.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
+//var OL3_SRC = ["vendor/ol3/ol.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
+var OL3_SRC = ["vendor/ol3/ol-debug.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
 var OL3_SRC_DEBUG = ["vendor/ol3/ol-debug.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
 var OL3_CSS = ["vendor/ol3/ol.css","vendor/ol3-layerswitcher/src/ol3-layerswitcher.css"];
 var OL3_RESOURCES_DIR = {};
@@ -176,6 +177,7 @@ if(argv.ol3) {
     ALL_VENDOR_CSS.pushAll(OL3_CSS);
     ALL_VENDOR_RESOURCES_DIR.push(OL3_RESOURCES_DIR);
     ALL_VENDOR_RESOURCES_FILES.pushAll(OL3_RESOURCES_FILES);}
+
 if(argv.leaflet) {
     ALL_VENDOR_SRC.pushAll(LEAFLET_SRC);
     ALL_VENDOR_DEBUG.pushAll(LEAFLET_SRC_DEBUG);
