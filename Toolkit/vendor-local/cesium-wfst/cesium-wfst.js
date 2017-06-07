@@ -217,7 +217,10 @@
 
     CesiumWFST.prototype.cesiumMarkerToOl = function (cesiumMarker) {
         var cartesian = new Cesium.Cartesian3(cesiumMarker.position.x, cesiumMarker.position.y, cesiumMarker.position.z);
-        var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+        //var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+
+        //TODO: should pass more properties into constructor?
+        var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
 
         var projCoordinates = ol.proj.fromLonLat(
             [
@@ -245,7 +248,9 @@
 
         for (var i = 0; i < cesiumPolyline.positions.length; i++) {
             var cartesian = new Cesium.Cartesian3(cesiumPolyline.positions[i].x, cesiumPolyline.positions[i].y, cesiumPolyline.positions[i].z);
-            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //TODO: should pass more properties into constructor?
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
 
             var projCoordinates = ol.proj.fromLonLat(
                 [Cesium.Math.toDegrees(cartographic.longitude),
@@ -277,7 +282,9 @@
 
         for (var i = 0; i < cesiumPolygon.positions.length - 2; i++) {
             var cartesian = new Cesium.Cartesian3(cesiumPolygon.positions[i].x, cesiumPolygon.positions[i].y, cesiumPolygon.positions[i].z);
-            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //TODO: should pass more properties into constructor?
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
 
             var projCoordinates = ol.proj.fromLonLat(
                 [Cesium.Math.toDegrees(cartographic.longitude),
