@@ -1085,6 +1085,51 @@ var DrawHelper = (function() {
 
     }
 
+    _.prototype.startRemovePrimitive = function(options) {
+        var _self = this;
+        var scene = this._scene;
+        var primitives = this._scene.primitives;
+
+        var mouseHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+
+        // Now wait for start
+        mouseHandler.setInputAction(function(click) {
+            var pickedObject = scene.pick(click.position);
+            if (Cesium.defined(pickedObject)) {
+                if(typeof pickedObject.collection !== "undefined") {
+                    scene.primitives.remove(pickedObject.collection);
+                    pickedObject.primitive.isPoint = true;
+                } else {
+                    scene.primitives.remove(pickedObject.primitive);
+                }
+                options.callback(pickedObject.primitive);
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        /*mouseHandler.setInputAction(function(click) {
+            for(var i=click.startPosition.x;i < click.endPosition.x;i++) {
+                for(var j=click.startPosition.y;j < click.endPosition.y;j++) {
+                    var pickedObject = scene.pick(new Cesium.Cartesian2(i,j));
+                    console.log("pick:"+pickedObject);
+                    if (Cesium.defined(pickedObject)) {
+                        if(typeof pickedObject.collection !== "undefined") {
+                            scene.primitives.remove(pickedObject.collection);
+                        } else {
+                            scene.primitives.remove(pickedObject.primitive);
+                        }
+                        options.callback(pickedObject.primitive);
+                    }
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+        scene.screenSpaceCameraController.enableRotate = false;
+        scene.screenSpaceCameraController.enableTranslate = false;
+        scene.screenSpaceCameraController.enableZoom = false;
+        scene.screenSpaceCameraController.enableTilt = false;
+        scene.screenSpaceCameraController.enableLook = false;*/
+    }
+
     _.prototype.enhancePrimitives = function() {
 
         var drawHelper = this;
@@ -1712,12 +1757,18 @@ var DrawHelper = (function() {
             }
             // add a clear button at the end
             // add a divider first
+            // add a clear button at the end
+            // add a divider first
             if(options.buttons.indexOf("delete") > -1) {
                 var div = document.createElement('DIV');
                 div.className = 'divider';
                 toolbar.appendChild(div);
-                addIcon('clear', options.clearIcon, 'Remove all primitives', function () {
-                    scene.primitives.removeAll();
+                addIcon('clear', options.clearIcon, 'Remove primitives', function () {
+                    drawHelper.startRemovePrimitive({
+                        callback: function (primitive) {
+                            _self.executeListeners({name: 'primitiveDeleted', primitive:primitive});
+                        }
+                    });
                 });
             }
 
