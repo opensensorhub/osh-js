@@ -89,7 +89,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				icon : styler.icon,
 				label : styler.label,
 				timeStamp: timeStamp,
-				selected: ((typeof(options.selected) != "undefined")? options.selected : false)
+				selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
 			});
 
 			this.stylerToObj[styler.getId()] = markerId;
@@ -105,7 +105,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			color : styler.color,
 			icon : styler.icon,
 			timeStamp: timeStamp,
-			selected:((typeof(options.selected) != "undefined")? options.selected : false)
+			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
 		});
 	},
 
@@ -221,8 +221,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                 })
             });*/
     	    
-    	    if (this.imageDrapingPrimitive == null || snapshot) {    	        
-    	        if (this.imageDrapingPrimitive == null)
+    	    if (this.imageDrapingPrimitive === null || snapshot) {
+    	        if (this.imageDrapingPrimitive === null)
     	            this.imageDrapingPrimitive = {};
     	        
     	        var promise = Cesium.sampleTerrain(this.viewer.terrainProvider, 11, [Cesium.Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
@@ -294,13 +294,13 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 	        //change icon
-	        if (Cesium.defined(entity)) {
+            if (Cesium.defined(entity)) {
 	        	var dataSrcIds = [];
 	        	var entityId;
 		    	for (var stylerId in self.stylerToObj) {
-		    		if(self.stylerToObj[stylerId] == entity._dsid) {
+		    		if(self.stylerToObj[stylerId] === entity._dsid) {
 		    			for(var i=0;i < self.stylers.length;i++) {
-			    			if(self.stylers[i].getId() == stylerId) {
+			    			if(self.stylers[i].getId() === stylerId) {
 			    				dataSrcIds = dataSrcIds.concat(self.stylers[i].getDataSourcesIds());
 			    				entityId = self.stylers[i].viewItem.entityId;
 				    			break;
@@ -308,11 +308,17 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		    			}
 		    		}
 		    	}
-		    	OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+
+                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
                     dataSourcesIds: dataSrcIds,
-                    entityId : entityId
+                    entityId: entityId
                 });
-	        }
+            } else {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+                    dataSourcesIds: [],
+                    entityId: null
+                });
+            }
 	    }.bind(this));
 	},
 
@@ -326,7 +332,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	addMarker : function(properties) {
 		
 		var imgIcon = 'images/cameralook.png';
-		if(properties.icon != null) {
+		if(properties.icon !== null) {
 			imgIcon = properties.icon;
 		}
 		var isModel = imgIcon.endsWith(".glb");
@@ -384,7 +390,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	var marker =  this.markers[id];
         	
         	// get ground altitude if non specified
-        	if (typeof(alt) == "undefined" || isNaN(alt))
+        	if (typeof(alt) === "undefined" || isNaN(alt))
         	{
 	    		alt = this.getAltitude(lat, lon);
 	    		if (alt > 1)
@@ -393,10 +399,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 
     		// update position
         	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-    		marker.position = pos
+    		marker.position = pos;
     		    		
     		// update orientation
-    		if (typeof(orient) != "undefined")
+    		if (typeof(orient) !== "undefined")
     	    {
     			var DTR = Math.PI/180.;
     			var heading = orient.heading;
@@ -407,7 +413,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     	    }
     		
     		// update icon or models
-    		//marker.billboard.image = imgIcon;
+    		marker.billboard.image = imgIcon;
     		
     		// zoom map if first marker update
     		if (this.first) {
@@ -433,8 +439,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
 		var altitude = this.viewer.scene.globe.getHeight(Cesium.Ellipsoid.WGS84.cartesianToCartographic(position));
 
-		if (altitude == 'undefined' || altitude <= 0)
+		if (altitude === 'undefined' || altitude <= 0)
 			altitude = 0.1;
 		return altitude;
-	},
+	}
 });

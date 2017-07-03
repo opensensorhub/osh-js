@@ -29,7 +29,11 @@ var WORKERS_OUT_DIR = OUT_DIR+"/js/workers";
 var CESIUM_SRC = ["vendor/cesium/Build/Cesium/Cesium.js","vendor/cesium-draw-helper/DrawHelper.js","vendor/cesium-wfst/cesium-wfst.js"];
 var CESIUM_SRC_DEBUG = ["vendor/cesium/Build/CesiumUnminified/Cesium.js","vendor/cesium-draw-helper/DrawHelper.js","vendor/cesium-wfst/cesium-wfst.js"];
 var CESIUM_CSS = ["vendor/cesium-draw-helper/DrawHelper.css"];
-var CESIUM_RESOURCES_DIR = {};
+var CESIUM_RESOURCES_DIR = {
+    "vendor/cesium-draw-helper/images" : "images",
+    "vendor/cesium-wfst/images" : "images",
+};
+
 var CESIUM_RESOURCES_FILES = ["vendor/cesium/Build/Cesium/**","!vendor/cesium/Build/Cesium/Cesium.js"];
 
 // END CESIUM
@@ -67,7 +71,8 @@ var NOUISLIDER_RESOURCES_FILES = {};
 
 // OL3
 
-var OL3_SRC = ["vendor/ol3/ol.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
+//var OL3_SRC = ["vendor/ol3/ol.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
+var OL3_SRC = ["vendor/ol3/ol-debug.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
 var OL3_SRC_DEBUG = ["vendor/ol3/ol-debug.js","vendor/ol3-layerswitcher/src/ol3-layerswitcher.js"];
 var OL3_CSS = ["vendor/ol3/ol.css","vendor/ol3-layerswitcher/src/ol3-layerswitcher.css"];
 var OL3_RESOURCES_DIR = {};
@@ -172,6 +177,7 @@ if(argv.ol3) {
     ALL_VENDOR_CSS.pushAll(OL3_CSS);
     ALL_VENDOR_RESOURCES_DIR.push(OL3_RESOURCES_DIR);
     ALL_VENDOR_RESOURCES_FILES.pushAll(OL3_RESOURCES_FILES);}
+
 if(argv.leaflet) {
     ALL_VENDOR_SRC.pushAll(LEAFLET_SRC);
     ALL_VENDOR_DEBUG.pushAll(LEAFLET_SRC_DEBUG);

@@ -138,10 +138,11 @@
             horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
             verticalOrigin : Cesium.VerticalOrigin.CENTER,
             scale : 1.0,
-            image: './img/glyphicons_242_google_maps.png',
+            image: './images/cesium-wfst/glyphicons_242_google_maps.png',
             color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
             isPoint:true,
-            name : feature.name
+            name : feature.name,
+            id : feature.getId()
         };
     };
 
@@ -185,7 +186,7 @@
         // polygon.setEditable();
 
         // save the id for update/delete
-        polygon._id = feature.getId();
+        polygon.id = feature.getId();
         polygon.name = feature.name;
 
         return polygon;
@@ -210,6 +211,7 @@
         });
 
         polyline.isPolyline = true;
+        polyline.id = feature.getId();
         polyline.name = feature.name;
 
         return polyline;
@@ -217,7 +219,10 @@
 
     CesiumWFST.prototype.cesiumMarkerToOl = function (cesiumMarker) {
         var cartesian = new Cesium.Cartesian3(cesiumMarker.position.x, cesiumMarker.position.y, cesiumMarker.position.z);
-        var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+        //var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+
+        //TODO: should pass more properties into constructor?
+        var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
 
         var projCoordinates = ol.proj.fromLonLat(
             [
@@ -230,11 +235,14 @@
 
         var name = (typeof cesiumMarker.name !== "undefined") ? cesiumMarker.name : 'Marker';
 
-        return new ol.Feature({
+        var feature =  new ol.Feature({
             geometry: new ol.geom.Point([projCoordinates[0], projCoordinates[1],projCoordinates[2]]),
             name: name,
             color: "#e91e63"
         });
+
+        feature.setId(cesiumMarker.id);
+        return feature;
     };
 
     CesiumWFST.prototype.cesiumPolylineToOl = function (cesiumPolyline) {
@@ -245,7 +253,9 @@
 
         for (var i = 0; i < cesiumPolyline.positions.length; i++) {
             var cartesian = new Cesium.Cartesian3(cesiumPolyline.positions[i].x, cesiumPolyline.positions[i].y, cesiumPolyline.positions[i].z);
-            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //TODO: should pass more properties into constructor?
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
 
             var projCoordinates = ol.proj.fromLonLat(
                 [Cesium.Math.toDegrees(cartographic.longitude),
@@ -262,11 +272,15 @@
 
         var name = (typeof cesiumPolyline.name !== "undefined") ? cesiumPolyline.name : 'PolyLine';
 
-        return new ol.Feature({
+        var feature =  new ol.Feature({
             geometry: lineString,
             color: "#e91e63",
             name : name
         });
+
+        feature.setId(cesiumPolyline.id);
+        return feature;
+
     };
 
     CesiumWFST.prototype.cesiumPolygonToOl = function (cesiumPolygon) {
@@ -277,7 +291,9 @@
 
         for (var i = 0; i < cesiumPolygon.positions.length - 2; i++) {
             var cartesian = new Cesium.Cartesian3(cesiumPolygon.positions[i].x, cesiumPolygon.positions[i].y, cesiumPolygon.positions[i].z);
-            var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //var cartographic = cesiumView.viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian);
+            //TODO: should pass more properties into constructor?
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
 
             var projCoordinates = ol.proj.fromLonLat(
                 [Cesium.Math.toDegrees(cartographic.longitude),
@@ -307,7 +323,7 @@
             name : name
         });
 
-        feature.setId(cesiumPolygon._id);
+        feature.setId(cesiumPolygon.id);
         return feature;
     };
 
@@ -328,7 +344,7 @@
         if(inserts !== null) {
             if(type === "polygon"){
                 this.transactWFS("insert",this.cesiumPolygonToOl(inserts),callback);
-            } else if(type === "Point") {
+            } else if(type === "marker") {
                 this.transactWFS("insert",this.cesiumMarkerToOl(inserts),callback);
             } else if(type === "polyline") {
                 this.transactWFS("insert",this.cesiumPolylineToOl(inserts),callback);
@@ -347,11 +363,11 @@
 
         if(deletes !== null) {
             if(type === "polygon") {
-                //TODO:
+                this.transactWFS("delete",this.cesiumPolygonToOl(deletes),callback);
             } else if(type === "marker") {
-                //TODO:
+                this.transactWFS("delete",this.cesiumMarkerToOl(deletes),callback);
             } else if(type === "polyline") {
-                //TODO:
+                this.transactWFS("delete",this.cesiumPolylineToOl(deletes),callback);
             }
         }
     };
@@ -444,6 +460,7 @@
         httpConnector.open("POST", this.url, true);
         httpConnector.setRequestHeader('Content-Type', 'text/xml');
 
+        console.log(payload);
         httpConnector.send(payload);
 
         httpConnector.onreadystatechange = function() {

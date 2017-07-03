@@ -620,19 +620,19 @@ var DrawHelper = (function() {
     })();
 
     var defaultBillboard = {
-        iconUrl: "./img/dragIcon.png",
+        iconUrl: "./images/drawhelper/dragIcon.png",
         shiftX: 0,
         shiftY: 0
     }
 
     var dragBillboard = {
-        iconUrl: "./img/dragIcon.png",
+        iconUrl: "./images/drawhelper/dragIcon.png",
         shiftX: 0,
         shiftY: 0
     }
 
     var dragHalfBillboard = {
-        iconUrl: "./img/dragIconLight.png",
+        iconUrl: "./images/drawhelper/dragIconLight.png",
         shiftX: 0,
         shiftY: 0
     }
@@ -1083,6 +1083,51 @@ var DrawHelper = (function() {
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
+    }
+
+    _.prototype.startRemovePrimitive = function(options) {
+        var _self = this;
+        var scene = this._scene;
+        var primitives = this._scene.primitives;
+
+        var mouseHandler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+
+        // Now wait for start
+        mouseHandler.setInputAction(function(click) {
+            var pickedObject = scene.pick(click.position);
+            if (Cesium.defined(pickedObject)) {
+                if(typeof pickedObject.collection !== "undefined") {
+                    scene.primitives.remove(pickedObject.collection);
+                    pickedObject.primitive.isPoint = true;
+                } else {
+                    scene.primitives.remove(pickedObject.primitive);
+                }
+                options.callback(pickedObject.primitive);
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        /*mouseHandler.setInputAction(function(click) {
+            for(var i=click.startPosition.x;i < click.endPosition.x;i++) {
+                for(var j=click.startPosition.y;j < click.endPosition.y;j++) {
+                    var pickedObject = scene.pick(new Cesium.Cartesian2(i,j));
+                    console.log("pick:"+pickedObject);
+                    if (Cesium.defined(pickedObject)) {
+                        if(typeof pickedObject.collection !== "undefined") {
+                            scene.primitives.remove(pickedObject.collection);
+                        } else {
+                            scene.primitives.remove(pickedObject.primitive);
+                        }
+                        options.callback(pickedObject.primitive);
+                    }
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+        scene.screenSpaceCameraController.enableRotate = false;
+        scene.screenSpaceCameraController.enableTranslate = false;
+        scene.screenSpaceCameraController.enableZoom = false;
+        scene.screenSpaceCameraController.enableTilt = false;
+        scene.screenSpaceCameraController.enableLook = false;*/
     }
 
     _.prototype.enhancePrimitives = function() {
@@ -1627,12 +1672,12 @@ var DrawHelper = (function() {
             }
 
             var drawOptions = {
-                markerIcon: "./img/glyphicons_242_google_maps.png",
-                polylineIcon: "./img/glyphicons_097_vector_path_line.png",
-                polygonIcon: "./img/glyphicons_096_vector_path_polygon.png",
-                circleIcon: "./img/glyphicons_095_vector_path_circle.png",
-                extentIcon: "./img/glyphicons_094_vector_path_square.png",
-                clearIcon: "./img/glyphicons_067_cleaning.png",
+                markerIcon: "./images/drawhelper/glyphicons_242_google_maps.png",
+                polylineIcon: "./images/drawhelper/glyphicons_097_vector_path_line.png",
+                polygonIcon: "./images/drawhelper/glyphicons_096_vector_path_polygon.png",
+                circleIcon: "./images/drawhelper/glyphicons_095_vector_path_circle.png",
+                extentIcon: "./images/drawhelper/glyphicons_094_vector_path_square.png",
+                clearIcon: "./images/drawhelper/glyphicons_067_cleaning.png",
                 polylineDrawingOptions: defaultPolylineOptions,
                 polygonDrawingOptions: defaultPolygonOptions,
                 extentDrawingOptions: defaultExtentOptions,
@@ -1712,12 +1757,18 @@ var DrawHelper = (function() {
             }
             // add a clear button at the end
             // add a divider first
+            // add a clear button at the end
+            // add a divider first
             if(options.buttons.indexOf("delete") > -1) {
                 var div = document.createElement('DIV');
                 div.className = 'divider';
                 toolbar.appendChild(div);
-                addIcon('clear', options.clearIcon, 'Remove all primitives', function () {
-                    scene.primitives.removeAll();
+                addIcon('clear', options.clearIcon, 'Remove primitives', function () {
+                    drawHelper.startRemovePrimitive({
+                        callback: function (primitive) {
+                            _self.executeListeners({name: 'primitiveDeleted', primitive:primitive});
+                        }
+                    });
                 });
             }
 

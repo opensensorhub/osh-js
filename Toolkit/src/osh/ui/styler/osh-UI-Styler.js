@@ -48,16 +48,6 @@ OSH.UI.Styler = BaseClass.extend({
 	},
 
 	/**
-	 * @param {string} dataSourceId the datasource id
-	 * @param {Object} data the data
-	 * @param {OSH.View} view the osh.view
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	setData : function(dataSourceId, data, view) {
-	},
-
-	/**
 	 * Gets the styler id.
 	 * @returns {string} the styler id
 	 * @memberof OSH.UI.Styler
@@ -86,7 +76,7 @@ OSH.UI.Styler = BaseClass.extend({
 	addFn : function(dataSourceIds, fn) {
 		for (var i = 0; i < dataSourceIds.length; i++) {
 			var dataSourceId = dataSourceIds[i];
-			if (typeof (this.dataSourceToStylerMap[dataSourceId]) == "undefined") {
+			if (typeof (this.dataSourceToStylerMap[dataSourceId]) === "undefined") {
 				this.dataSourceToStylerMap[dataSourceId] = [];
 			}
 			this.dataSourceToStylerMap[dataSourceId].push(fn);

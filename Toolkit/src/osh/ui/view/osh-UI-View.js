@@ -40,22 +40,22 @@ OSH.UI.View = BaseClass.extend({
 
         this.dataSourceId = -1;
         // sets dataSourceId
-        if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
+        if(typeof(options) !== "undefined" && typeof(options.dataSourceId) !== "undefined") {
             this.dataSourceId = options.dataSourceId;
         }
 
-        if(typeof(options) != "undefined" && typeof(options.entityId) != "undefined") {
+        if(typeof(options) !== "undefined" && typeof(options.entityId) !== "undefined") {
             this.entityId = options.entityId;
         }
         this.css = "";
 
         this.cssSelected = "";
 
-        if(typeof(options) != "undefined" && typeof(options.css) != "undefined") {
+        if(typeof(options) !== "undefined" && typeof(options.css) !== "undefined") {
             this.css = options.css;
         }
 
-        if(typeof(options) != "undefined" && typeof(options.cssSelected) != "undefined") {
+        if(typeof(options) !== "undefined" && typeof(options.cssSelected) !== "undefined") {
             this.cssSelected = options.cssSelected;
         }
 
@@ -65,7 +65,7 @@ OSH.UI.View = BaseClass.extend({
 
     /**
      * Inits the view component.
-     * @param parentElement The parent html element object to attach/create the view
+     * @param parentElementDivId The parent html element object to attach/create the view
      * @param viewItems the list of items to add
      * @param options [TODO]
      * @memberof OSH.UI.View
@@ -78,7 +78,7 @@ OSH.UI.View = BaseClass.extend({
 
         var div = document.getElementById(parentElementDivId);
 
-        if (typeof(div) == "undefined" || div == null) {
+        if (typeof(div) === "undefined" || div === null) {
             document.body.appendChild(this.elementDiv);
             this.hide();
             this.container = document.body;
@@ -89,21 +89,21 @@ OSH.UI.View = BaseClass.extend({
 
         this.beforeAddingItems(options);
 
-        if (typeof (viewItems) != "undefined") {
+        if (typeof (viewItems) !== "undefined") {
             for (var i =0;i < viewItems.length;i++) {
                 this.addViewItem(viewItems[i]);
             }
         }
 
-        if(typeof (options) != "undefined") {
-            if(typeof (options.show) != "undefined") {
+        if(typeof (options) !== "undefined") {
+            if(typeof (options.show) !== "undefined") {
                 document.getElementById(this.divId).style.display = (options.show)? "block": "none";
             }
         }
         this.handleEvents();
 
         // observes the event associated to the dataSourceId
-        if(typeof(options) != "undefined" && typeof(options.dataSourceId) != "undefined") {
+        if(typeof(options) !== "undefined" && typeof(options.dataSourceId) !== "undefined") {
             OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+options.dataSourceId, function (event) {
                 if (event.reset)
                     this.reset(); // on data stream reset
@@ -149,12 +149,12 @@ OSH.UI.View = BaseClass.extend({
      * @memberof OSH.UI.View
      */
     attachTo : function(divId) {
-        if(typeof this.elementDiv.parentNode != "undefined") {
+        if(typeof this.elementDiv.parentNode !== "undefined") {
             // detach from its parent
             this.elementDiv.parentNode.removeChild(this.elementDiv);
         }
         document.getElementById(divId).appendChild(this.elementDiv);
-        if(this.elementDiv.style.display == "none") {
+        if(this.elementDiv.style.display === "none") {
             this.elementDiv.style.display = "block";
         }
 
@@ -255,8 +255,8 @@ OSH.UI.View = BaseClass.extend({
                     
                     // we check selected dataSource only when the selected entity is not set
                     var selected = false;
-                    if (typeof self.selectedEntity != "undefined") {
-                        selected = (viewItem.entityId == self.selectedEntity);
+                    if (typeof self.selectedEntity !== "undefined") {
+                        selected = (viewItem.entityId === self.selectedEntity);
                     }
                     else {
                         selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
@@ -272,8 +272,8 @@ OSH.UI.View = BaseClass.extend({
                 OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW, function(event) {
                     // we check selected dataSource only when the selected entity is not set
                     var selected = false;
-                    if (typeof event.entityId != "undefined") {
-                        selected = (viewItem.entityId == event.entityId);
+                    if (typeof event.entityId !== "undefined") {
+                        selected = (viewItem.entityId === event.entityId);
                     }
                     else {
                         selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
@@ -306,7 +306,7 @@ OSH.UI.View = BaseClass.extend({
         }.bind(this));
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.ADD_VIEW_ITEM,function(event){
-            if(typeof event.viewId != "undefined" && event.viewId == this.id) {
+            if(typeof event.viewId !== "undefined" && event.viewId === this.id) {
                 this.addViewItem(event.viewItem);
             }
         }.bind(this));
@@ -325,7 +325,7 @@ OSH.UI.View = BaseClass.extend({
      * @memberof OSH.UI.View
      */
     selectDataView: function (dataSourcesIds,entityId) {
-        if(typeof this.dataSources != "undefined") {
+        if(typeof this.dataSources !== "undefined") {
             this.selectedDataSources = dataSourcesIds;
             // set the selected entity even if it is undefined
             // this is handled by the setData function
@@ -344,7 +344,7 @@ OSH.UI.View = BaseClass.extend({
      */
     getDataSourcesId: function() {
         var res = [];
-        if(this.dataSourceId != -1) {
+        if(this.dataSourceId !== -1) {
             res.push(this.dataSourceId);
         }
 
