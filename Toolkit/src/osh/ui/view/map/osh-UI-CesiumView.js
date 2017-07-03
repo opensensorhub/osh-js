@@ -294,7 +294,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 	        //change icon
-	        if (Cesium.defined(entity)) {
+            if (Cesium.defined(entity)) {
 	        	var dataSrcIds = [];
 	        	var entityId;
 		    	for (var stylerId in self.stylerToObj) {
@@ -308,11 +308,17 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		    			}
 		    		}
 		    	}
-		    	OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+
+                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
                     dataSourcesIds: dataSrcIds,
-                    entityId : entityId
+                    entityId: entityId
                 });
-	        }
+            } else {
+                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+                    dataSourcesIds: [],
+                    entityId: null
+                });
+            }
 	    }.bind(this));
 	},
 
