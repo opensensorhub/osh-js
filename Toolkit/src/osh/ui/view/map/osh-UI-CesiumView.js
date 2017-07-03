@@ -407,7 +407,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     	    }
     		
     		// update icon or models
-    		//marker.billboard.image = imgIcon;
+    		marker.billboard.image = imgIcon;
     		
     		// zoom map if first marker update
     		if (this.first) {
