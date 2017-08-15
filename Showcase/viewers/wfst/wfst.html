@@ -102,12 +102,13 @@
                 horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
                 verticalOrigin : Cesium.VerticalOrigin.CENTER,
                 scale : 1.0,
-                image: './images/drawhelper/glyphicons_242_google_maps.png',
+                image: './img/glyphicons_242_google_maps.png',
                 color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
-                isPoint:true
+                isPoint:true,
+                name: prompt("Please enter a name for the feature", "")
             };
 
-            wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"Point",onSuccessWrite);
+            wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"marker",onSuccessWrite);
         }
 
         function drawHelperPolylineCreatedListener(event) {
@@ -116,6 +117,8 @@
                 width: 5,
                 geodesic: true
             });
+            polyline.name = prompt("Please enter a name for the feature", "");
+
             wfsService.writeTransactionAsCesiumPrimitives(polyline,null,null,"polyline",onSuccessWrite);
         }
 
@@ -124,6 +127,8 @@
                 positions: event.positions
                 //material : Cesium.Material.fromType('Checkerboard')
             });
+
+            cesiumPolygon.name = prompt("Please enter a name for the feature", "");
 
             wfsService.writeTransactionAsCesiumPrimitives(cesiumPolygon,null,null,"polygon",onSuccessWrite);
         }
