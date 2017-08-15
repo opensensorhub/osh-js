@@ -462,7 +462,6 @@
         httpConnector.open("POST", this.url, true);
         httpConnector.setRequestHeader('Content-Type', 'text/xml');
 
-        console.log(payload);
         httpConnector.send(payload);
 
         httpConnector.onreadystatechange = function() {
