@@ -105,6 +105,26 @@ var DrawHelper = (function() {
         });
     }
 
+    // register event handling to show name
+    // shape should implement setHighlighted
+    _.prototype.registerShowNameShape = function(surface) {
+        var _self = this;
+
+        // handlers for interactions
+        // highlight polygon when mouse is entering
+        setListener(surface, 'mouseMove', function(position) {
+            surface.setHighlighted(true);
+            if(!surface._editMode) {
+                _self._tooltip.showAt(position, surface.name+"");
+            }
+        });
+        // hide the highlighting when mouse is leaving the polygon
+        setListener(surface, 'mouseOut', function(position) {
+            surface.setHighlighted(false);
+            _self._tooltip.setVisible(false);
+        });
+    }
+
     _.prototype.startDrawing = function(cleanUp) {
         // undo any current edit of shapes
         this.disableAllEditMode();
@@ -1134,6 +1154,33 @@ var DrawHelper = (function() {
 
         var drawHelper = this;
 
+        Cesium.Billboard.prototype.setShowName = function() {
+            var billboard = this;
+
+            var _self = this;
+
+            drawHelper.registerShowNameShape(billboard);
+
+
+            billboard.setHighlighted = function(highlighted) {
+                // disable if already in edit mode
+                if(this._editMode === true) {
+                    return;
+                }
+                if(highlighted) {
+                    billboard.image = "./images/drawhelper/glyphicons_242_google_maps_green.png";
+                } else {
+                    billboard.image = "./images/drawhelper/glyphicons_242_google_maps.png";
+                }
+            }
+
+            billboard.getExtent = function() {
+                return Cesium.Extent.fromCartographicArray(ellipsoid.cartesianArrayToCartographicArray(this.positions));
+            }
+
+            enhanceWithListeners(billboard);
+        }
+
         Cesium.Billboard.prototype.setEditable = function() {
 
             if(this._editable) {
@@ -1348,6 +1395,38 @@ var DrawHelper = (function() {
 
         }
 
+        DrawHelper.PolylinePrimitive.prototype.setShowName = function() {
+            var polyline = this;
+            polyline.isPolygon = false;
+            polyline.asynchronous = false;
+
+            var scene = drawHelper._scene;
+
+            drawHelper.registerShowNameShape(polyline);
+
+            var originalWidth = this.width;
+
+            polyline.setHighlighted = function(highlighted) {
+                // disable if already in edit mode
+                if(this._editMode === true) {
+                    return;
+                }
+                if(highlighted) {
+                    drawHelper.setHighlighted(this);
+                    this.setWidth(originalWidth * 2);
+                } else {
+                    this.setWidth(originalWidth);
+                }
+            }
+
+            polyline.getExtent = function() {
+                return Cesium.Extent.fromCartographicArray(ellipsoid.cartesianArrayToCartographicArray(this.positions));
+            }
+
+            enhanceWithListeners(polyline);
+
+        }
+
         DrawHelper.PolylinePrimitive.prototype.setEditable = function() {
 
             if(this.setEditMode) {
@@ -1385,6 +1464,19 @@ var DrawHelper = (function() {
 
             polyline.setEditMode(false);
 
+        }
+
+        DrawHelper.PolygonPrimitive.prototype.setShowName = function() {
+            var polygon = this;
+            polygon.asynchronous = false;
+
+            var scene = drawHelper._scene;
+
+            drawHelper.registerShowNameShape(polygon);
+
+            polygon.setHighlighted = setHighlighted;
+
+            enhanceWithListeners(polygon);
         }
 
         DrawHelper.PolygonPrimitive.prototype.setEditable = function() {

@@ -112,6 +112,7 @@
 
             for(var i=0;i < features.length;i++) {
                 var feature = features[i];
+                feature.name = feature.values_.color;
 
                 if(feature.getGeometry().getType() === "Polygon") {
                     // ol polygon to cesium primitive
@@ -127,7 +128,6 @@
 
     CesiumWFST.prototype.olMarkerToCesium = function(feature) {
         var  olGeometry = this.olGeometryCloneTo4326(feature.getGeometry(), new ol.proj.Projection({code: this.srsName}));
-
         var coordinates = olGeometry.getCoordinates();
 
         return {
@@ -142,7 +142,8 @@
             color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
             isPoint:true,
             name : feature.name,
-            id : feature.getId()
+            id : feature.getId(),
+            extra:feature.values_
         };
     };
 
@@ -238,10 +239,11 @@
         var feature =  new ol.Feature({
             geometry: new ol.geom.Point([projCoordinates[0], projCoordinates[1],projCoordinates[2]]),
             name: name,
-            color: "#e91e63"
+            color: name
         });
 
         feature.setId(cesiumMarker.id);
+
         return feature;
     };
 
@@ -274,7 +276,7 @@
 
         var feature =  new ol.Feature({
             geometry: lineString,
-            color: "#e91e63",
+            color: name,
             name : name
         });
 
@@ -319,7 +321,7 @@
 
         var feature = new ol.Feature({
             geometry: polygon,
-            color: "#e91e63",
+            color: name,
             name : name
         });
 
@@ -460,7 +462,6 @@
         httpConnector.open("POST", this.url, true);
         httpConnector.setRequestHeader('Content-Type', 'text/xml');
 
-        console.log(payload);
         httpConnector.send(payload);
 
         httpConnector.onreadystatechange = function() {
