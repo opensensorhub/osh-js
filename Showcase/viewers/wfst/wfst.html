@@ -27,12 +27,12 @@
 
     <script>
         window.CESIUM_BASE_URL = 'vendor/';
-        var WFS_PROJECTION = "EPSG:3857";
+        var WFS_PROJECTION_CODE = "3857";
 
         var wfsService = new CesiumWFST({
             featureNS: 'https://gsx.geolytix.net/geoserver/geolytix_wfs',
             featureType: 'wfs_color',
-            srsName: WFS_PROJECTION,
+            srsName: "EPSG:"+WFS_PROJECTION_CODE,
             url:"https://gsx.geolytix.net/geoserver/geolytix_wfs/ows"
         });
 
@@ -63,12 +63,19 @@
 
                 if(primitive.isPolygon || primitive.isPolyline) {
                     cesiumView.viewer._cesiumWidget.scene.primitives.add(primitive);
+                    primitive.setShowName();
                 }
 
                 else if(primitive.isPoint) {
                     var b = new Cesium.BillboardCollection();
                     cesiumView.viewer._cesiumWidget.scene.primitives.add(b);
                     var billboard = b.add(primitive);
+
+                    // for test server only, should map the real name from the name field
+                    billboard.name = primitive.extra.color;
+                    //billboard.name = primitive.name
+
+                    billboard.setShowName();
                 }
             }
         };
@@ -78,7 +85,7 @@
         };
 
         var bounds = "-20026376.39%2C-20048966.10%2C20026376.39%2C20048966.10";
-        var request = "service=WFS&version=1.1.0&request=GetFeature&typename=wfs_color&srsname=EPSG%3A3857&bbox="+bounds+"%2CEPSG%3A3857";
+        var request = "service=WFS&version=1.1.0&request=GetFeature&typename="+wfsService.featureType+"&srsname=EPSG%3A"+WFS_PROJECTION_CODE+"&bbox="+bounds+"%2CEPSG%3A3857";
 
         wfsService.readAsCesiumPrimitives(request,onSuccessRead);
 
@@ -95,12 +102,13 @@
                 horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
                 verticalOrigin : Cesium.VerticalOrigin.CENTER,
                 scale : 1.0,
-                image: './images/drawhelper/glyphicons_242_google_maps.png',
+                image: './img/glyphicons_242_google_maps.png',
                 color : new Cesium.Color(1.0, 1.0, 1.0, 1.0),
-                isPoint:true
+                isPoint:true,
+                name: prompt("Please enter a name for the feature", "")
             };
 
-            wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"Point",onSuccessWrite);
+            wfsService.writeTransactionAsCesiumPrimitives(point,null,null,"marker",onSuccessWrite);
         }
 
         function drawHelperPolylineCreatedListener(event) {
@@ -109,6 +117,8 @@
                 width: 5,
                 geodesic: true
             });
+            polyline.name = prompt("Please enter a name for the feature", "");
+
             wfsService.writeTransactionAsCesiumPrimitives(polyline,null,null,"polyline",onSuccessWrite);
         }
 
@@ -117,6 +127,8 @@
                 positions: event.positions
                 //material : Cesium.Material.fromType('Checkerboard')
             });
+
+            cesiumPolygon.name = prompt("Please enter a name for the feature", "");
 
             wfsService.writeTransactionAsCesiumPrimitives(cesiumPolygon,null,null,"polygon",onSuccessWrite);
         }
