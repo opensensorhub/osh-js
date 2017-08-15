@@ -336,7 +336,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			imgIcon = properties.icon;
 		}
 		var isModel = imgIcon.endsWith(".glb");
-		var name = properties.label;
+        var name = "";
+        if(properties.label) {
+            name = properties.label;
+        }
 		var geom;
 		
 		if (isModel)
