@@ -336,10 +336,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			imgIcon = properties.icon;
 		}
 		var isModel = imgIcon.endsWith(".glb");
-        var name = "";
-        if(properties.label) {
-            name = properties.label;
-        }
+		var name = properties.label ? properties.label : "Selected Marker";
 		var geom;
 		
 		if (isModel)
@@ -356,12 +353,16 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		}
 		else
 		{
+			var rot = 0;
+			if (properties.orientation != 'undefined')
+				rot = properties.orientation.heading;
 			geom = {
-				//name: properties.label,
+				name: name,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
 				billboard : {
 					image : imgIcon,
-					rotation : Cesium.Math.toRadians(0),
+					alignedAxis : Cesium.Cartesian3.UNIT_Z,
+					rotation : Cesium.Math.toRadians(rot),
 					horizontalOrigin : Cesium.HorizontalOrigin.CENTER
 				}
 			};
