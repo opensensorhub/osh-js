@@ -221,7 +221,9 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
      * @memberof OSH.UI.Nvd3CurveChartView
      */
     reset: function () {
-        this.data.values = [];
-        this.chart.update();
+        if (typeof (this.data) !== "undefined") {
+        	this.data.values = [];
+        	this.chart.update();
+        }
     }
 });
