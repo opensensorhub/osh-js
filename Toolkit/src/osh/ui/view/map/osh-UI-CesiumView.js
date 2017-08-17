@@ -361,9 +361,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
 				billboard : {
 					image : imgIcon,
-					alignedAxis : Cesium.Cartesian3.UNIT_Z,
+					alignedAxis : Cesium.Cartesian3.UNIT_Z, // axis is in ENU frame, Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
-					horizontalOrigin : Cesium.HorizontalOrigin.CENTER
+					horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
+                                        eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
 				}
 			};
 		}
