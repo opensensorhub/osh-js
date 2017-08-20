@@ -209,7 +209,9 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
     connectAll: function () {
         this.buffer.start();
         for (var id in this.dataSourcesIdToDataSources) {
-            this.dataSourcesIdToDataSources[id].connect();
+            var ds = this.dataSourcesIdToDataSources[id];
+            if (ds.properties.connect)
+                ds.connect();
         }
     }
 });

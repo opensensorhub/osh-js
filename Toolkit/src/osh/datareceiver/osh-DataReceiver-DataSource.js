@@ -63,6 +63,10 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
     if(typeof properties.timeOut != "undefined") {
       this.timeOut = properties.timeOut;
     }
+
+    if(typeof(properties.connect) == "undefined") {
+      properties.connect = true;
+    }
     
     // checks if type is WebSocket
     if(properties.protocol == "ws") {
