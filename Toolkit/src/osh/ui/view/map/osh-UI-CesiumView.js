@@ -395,8 +395,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	var marker =  this.markers[id];
         	
         	// get ground altitude if non specified
-        	if (typeof(alt) === "undefined" || isNaN(alt))
-        	{
+        	if (typeof(alt) === "undefined" || isNaN(alt)) {
 	    		alt = this.getAltitude(lat, lon);
 	    		if (alt > 1)
 	    			alt += 0.3;
@@ -407,18 +406,22 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     		marker.position = pos;
     		    		
     		// update orientation
-    		if (typeof(orient) !== "undefined")
-    	    {
+    		if (typeof(orient) !== "undefined") {
     			var DTR = Math.PI/180.;
     			var heading = orient.heading;
 	    		var pitch = 0.0;
 	    		var roll = 0.0;
 	    		var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
 	    		marker.orientation = quat;
-    	    }
+                        if (marker.billboard)
+				marker.billboard.rotation = Cesium.Math.toRadians(heading);
+    	    	}
     		
-    		// update icon or models
-    		marker.billboard.image = imgIcon;
+    		// update icon or model
+    		if (marker.billboard)
+			marker.billboard.image = imgIcon;
+		else if (marker.model)
+			marker.model.uri = imgIcon; 
     		
     		// zoom map if first marker update
     		if (this.first) {
