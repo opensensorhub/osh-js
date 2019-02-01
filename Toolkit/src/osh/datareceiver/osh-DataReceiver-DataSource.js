@@ -69,15 +69,15 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
     }
     
     // checks if type is WebSocket
-    if(properties.protocol == "ws") {
+    if (properties.protocol.startsWith('ws')){
       this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
       // connects the callback
       this.connector.onMessage = this.onMessage.bind(this);
-    } else if(properties.protocol == "http") {
-        this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
-        this.connector.responseType = "arraybuffer";
-        // connects the callback
-        this.connector.onMessage = this.onMessage.bind(this);
+    } else if(properties.protocol.startsWith('http')) {
+      this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
+      this.connector.responseType = 'arraybuffer';
+      // connects the callback
+      this.connector.onMessage = this.onMessage.bind(this);
     }
   },
   /**
