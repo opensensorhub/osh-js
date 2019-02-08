@@ -123,7 +123,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     	var llaPos = styler.platformLocation;
     	var camPos = Cesium.Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
     	
-    	var DTR = Math.PI/180.;
+    	var DTR = Math.PI/180;
     	var attitude = styler.platformOrientation;
     	var gimbal = styler.gimbalOrientation;
     	
