@@ -60,6 +60,18 @@ OSH.Server = BaseClass.extend({
     },
 
     /**
+     * @param procId ID of procedure from which to retrieve features of interest
+     * @param successCallback callback the corresponding JSON object
+     * @param errorCallback callback the corresponding error
+     * @instance
+     * @memberof OSH.Server
+     */
+    getFeatureOfInterest: function (procId, successCallback, errorCallback) {
+        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
+        this.executeGetRequest(request, successCallback, errorCallback);
+    },
+
+    /**
      *
      * @param successCallback callback the corresponding JSON object
      * @param errorCallback callback the corresponding error
