@@ -60,6 +60,18 @@ OSH.Server = BaseClass.extend({
     },
 
     /**
+     * @param procId ID of procedure from which to retrieve features of interest
+     * @param successCallback callback the corresponding JSON object
+     * @param errorCallback callback the corresponding error
+     * @instance
+     * @memberof OSH.Server
+     */
+    getFeatureOfInterest: function (procId, successCallback, errorCallback) {
+        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
+        this.executeGetRequest(request, successCallback, errorCallback);
+    },
+
+    /**
      *
      * @param successCallback callback the corresponding JSON object
      * @param errorCallback callback the corresponding error
@@ -85,14 +97,17 @@ OSH.Server = BaseClass.extend({
     executeGetRequest: function (request, successCallback, errorCallback) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var s = successCallback.bind(this);
-                var sweXmlParser = new OSH.SWEXmlParser(xhr.responseText);
-                s(sweXmlParser.toJson());
-            } else {
-                errorCallback(xhr.responseText);
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var s = successCallback.bind(this);
+                    var sweXmlParser = new OSH.SWEXmlParser(xhr.responseText);
+                    s(sweXmlParser.toJson());
+                } else {
+                    errorCallback(xhr.responseText);
+                }
             }
         }.bind(this);
+        xhr.withCredentials = true;
         xhr.open('GET', request, true);
         xhr.send();
     }
