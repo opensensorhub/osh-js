@@ -75,11 +75,13 @@ OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
             offsetY = properties.offsetY;
         }
 
-        if(typeof properties.x != "undefined") {
-            this.rootTag.style.left = properties.x + offsetX;
+        if(typeof properties.x !== 'undefined') {
+            var locX = properties.x + offsetX;
+            this.rootTag.style.left = locX + 'px';
         }
-        if(typeof properties.y != "undefined") {
-            this.rootTag.style.top = properties.y + offsetY;
+        if(typeof properties.y !== 'undefined') {
+            var locY = properties.y + offsetY;
+            this.rootTag.style.top = locY + 'px';
         }
 
         document.querySelector('.'+this.type+'-menu-circle').classList.toggle('open');
