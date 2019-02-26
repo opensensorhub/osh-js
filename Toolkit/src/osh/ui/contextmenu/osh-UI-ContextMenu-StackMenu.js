@@ -90,12 +90,19 @@ OSH.UI.ContextMenu.StackMenu = OSH.UI.ContextMenu.CssMenu.extend({
         this.bindEvents = {};
         for(var i = 0; i < this.items.length; i++) {
             var item =  this.items[i];
+            // console.log(item);
             this.bindEvents[item.id] = item.viewId;
-            document.getElementById(item.id).onclick = function(event){
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
-                    viewId: this.bindEvents[event.target.id]
-                });
-            }.bind(this);
+            // TODO: add to osh-js source if effective
+            if(item.clickOverride !== undefined){
+                document.getElementById(item.id).onclick = item.clickOverride.bind(this);
+            }
+            else {
+                document.getElementById(item.id).onclick = function (event) {
+                    OSH.EventManager.fire(OSH.EventManager.EVENT.SHOW_VIEW, {
+                        viewId: this.bindEvents[event.target.id]
+                    });
+                }.bind(this);
+            }
         }
 
         // this causes preventing any closing event

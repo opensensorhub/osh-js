@@ -56,6 +56,18 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
                     if(typeof (properties.items[i].viewId) != "undefined") {
                         viewId = properties.items[i].viewId;
                     }
+
+                    // NYS-POC addition, check for issues since using let instead of var (plan to update rest to ES6)
+                    let clickOverride;
+                    let locationDatasource;
+                    if(properties.items[i].hasOwnProperty('clickOverride') && properties.items[i].hasOwnProperty('locationDatasource')){
+                        clickOverride = properties.items[i].clickOverride;
+                        locationDatasource = properties.items[i].locationDatasource;
+                    }
+                    else if(properties.items[i].hasOwnProperty('clickOverride')){
+                        clickOverride = properties.items[i].clickOverride;
+                    }
+
                     this.items.push({
                         html : htmlVar,
                         id : elId,
