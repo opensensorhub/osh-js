@@ -130,6 +130,7 @@ OSH.UI.EntityTreeView = OSH.UI.View.extend({
                         this.tree.expandNode(node);
                         node = node.parent;
                     }
+                    currentItem.node.elementLi.scrollIntoViewIfNeeded(true);
                 }
                     
             }
