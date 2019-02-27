@@ -50,8 +50,8 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 		var xLabel = 'Time';
 		var yLabel = 'yLabel';
 		var xTickFormat = function(d) {
-+                   return d3.time.format.utc('%H:%M:%SZ')(new Date(d));
-+               };
+                   return d3.time.format.utc('%H:%M:%SZ')(new Date(d));
+                };
 
 		var yTickFormat = d3.format('.02f');
 		var useInteractiveGuideline = true;
