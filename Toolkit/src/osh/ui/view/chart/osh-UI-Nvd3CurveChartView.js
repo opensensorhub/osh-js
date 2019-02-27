@@ -49,7 +49,9 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 		this.entityId = options.entityId;
 		var xLabel = 'Time';
 		var yLabel = 'yLabel';
-		var xTickFormat = null;
+		var xTickFormat = function(d) {
+                   return d3.time.format.utc('%H:%M:%SZ')(new Date(d));
+                };
 
 		var yTickFormat = d3.format('.02f');
 		var useInteractiveGuideline = true;
@@ -60,42 +62,42 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 		var maxPoints = 999;
 
 		if (typeof (options) != "undefined") {
-			if (options.xLabel) {
+			if (options.hasOwnProperty('xLabel')) {
 				var xLabel = options.xLabel;
 			}
 
-			if (options.yLabel) {
+			if (options.hasOwnProperty('yLabel')) {
 				var yLabel = options.yLabel;
 			}
 
-			if (options.xTickFormat) {
+			if (options.hasOwnProperty('xTickFormat')) {
 				xTickFormat = options.xTickFormat;
 			}
 
-			if (options.yTickFormat) {
+			if (options.hasOwnProperty('yTickFormat')) {
 				yTickFormat = options.yTickFormat;
 			}
 
-			if (options.showLegend) {
+			if (options.hasOwnProperty('showLegend')) {
 				showLegend = options.showLegend;
 			}
 
-			if (options.showXAxis) {
+			if (options.hasOwnProperty('showXAxis')) {
 				showXAxis = options.showXAxis;
 			}
 
-			if (options.showYAxis) {
+			if (options.hasOwnProperty('showYAxis')) {
 				showYAxis = options.showYAxis;
 			}
 
-			if (options.useInteractiveGuideline) {
+			if (options.hasOwnProperty('useInteractiveGuideline')) {
 				useInteractiveGuideline = options.useInteractiveGuideline;
 			}
 
-			if (options.transitionDuration) {
+			if (options.hasOwnProperty('transitionDuration')) {
 				transitionDuration = options.transitionDuration;
 			}
-			if (options.maxPoints) {
+			if (options.hasOwnProperty('maxPoints')) {
 				this.maxPoints = options.maxPoints;
 			}
 		}
@@ -117,12 +119,10 @@ OSH.UI.Nvd3CurveChartView = OSH.UI.View.extend({
 		;
 
 		this.chart.xAxis //Chart x-axis settings
-		.axisLabel(xLabel).tickFormat(function(d) {
-			return d3.time.format.utc('%H:%M:%SZ')(new Date(d))
-		});
+		.axisLabel(xLabel).tickFormat(xTickFormat);
 
 		this.chart.yAxis //Chart y-axis settings
-		.axisLabel(yLabel).tickFormat(d3.format('.02f'))
+		.axisLabel(yLabel).tickFormat(yTickFormat)
 		.axisLabelDistance(15);
 
 		this.css = document.getElementById(this.divId).className;
