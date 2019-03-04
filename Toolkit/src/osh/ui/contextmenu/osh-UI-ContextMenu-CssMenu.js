@@ -57,7 +57,6 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
                         viewId = properties.items[i].viewId;
                     }
 
-                    // NYS-POC addition, check for issues since using let instead of var (plan to update rest to ES6)
                     var clickOverride;
                     var locationDatasource;
                     if(properties.items[i].hasOwnProperty('clickOverride') && properties.items[i].hasOwnProperty('locationDatasource')){
@@ -72,7 +71,9 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
                         html : htmlVar,
                         id : elId,
                         action : action,
-                        viewId : viewId
+                        viewId : viewId,
+                        clickOverride: clickOverride,
+                        locationDatasource: locationDatasource
                     })
                 }
             }
