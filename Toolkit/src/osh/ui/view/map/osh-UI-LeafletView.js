@@ -362,7 +362,7 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
         if (styler.icon != null && marker._icon.iconUrl != styler.icon) {
             // updates icon
             var markerIcon = L.icon({
-                iconAnchor: [16, 16],
+                iconAnchor: styler.iconAnchor,
                 iconUrl: styler.icon
             });
             marker.setIcon(markerIcon);

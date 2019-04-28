@@ -153,7 +153,9 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
    *    data: data // data to render
    * };
    */ 
-  onData:function(data) {},
+  onData:function(data) {
+    OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+this.id, {data : data});
+  },
 
   /**
    * Gets the datasource id.
