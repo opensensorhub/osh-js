@@ -361,7 +361,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
 				billboard : {
 					image : imgIcon,
-					alignedAxis : Cesium.Cartesian3.UNIT_Z, // axis is in ENU frame, Z means rotation is from north
+					alignedAxis : Cesium.Cartesian3.UNIT_Z, // Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
 					horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
                                         eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
@@ -421,7 +421,13 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     		if (marker.billboard)
 			marker.billboard.image = imgIcon;
 		else if (marker.model)
-			marker.model.uri = imgIcon; 
+			marker.model.uri = imgIcon;
+
+                // update billboard aligned axis depending on camera angle
+    		if (this.viewer.camera.pitch < -Math.PI/4)                
+    		    marker.billboard.alignedAxis = Cesium.Cartesian3.UNIT_Z;
+    		else
+    		    marker.billboard.alignedAxis = Cesium.Cartesian3.ZERO;
     		
     		// zoom map if first marker update
     		if (this.first) {
