@@ -28,7 +28,7 @@ OSH.UI.H264View = OSH.UI.View.extend({
 		var height = "480";
 		
 		if(typeof options != "undefined") {
-			if (options.width) {
+		if (options.width) {
 				width = options.width;
 			}
 
@@ -52,6 +52,15 @@ OSH.UI.H264View = OSH.UI.View.extend({
 			}
 		});
 
+		// create timestamp slot
+		this.timeStamp = null;
+		if (typeof(options.showTime) != "undefined" && options.showTime) { 
+			this.timeStamp = document.createElement("div");
+			this.timeStamp.setAttribute("class", "video-time");
+			document.getElementById(this.divId).appendChild(this.timeStamp);
+		}
+
+                // create video canvas
 		this.video = this.avcWs.canvas
 		this.video.setAttribute("width", width);
 		this.video.setAttribute("height", height);
@@ -86,6 +95,8 @@ OSH.UI.H264View = OSH.UI.View.extend({
 	 * @memberof OSH.UI.H264View
 	 */
 	setData : function(dataSourceId, data) {
+		if (this.timeStamp != null)
+			this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString();
 		this.computeFullNalFromRaw(data.data, function(nal) {
 			var nalType = nal[0] & 0x1F;
 			//7 => PPS

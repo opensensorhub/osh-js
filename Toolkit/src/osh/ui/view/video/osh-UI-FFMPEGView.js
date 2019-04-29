@@ -95,6 +95,13 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             }
         }
 
+        // create timestamp slot
+        this.timeStamp = null;
+        if (typeof(options.showTime) != "undefined" && options.showTime) { 
+            this.timeStamp = document.createElement("div");
+            this.timeStamp.setAttribute("class", "video-time");
+            document.getElementById(this.divId).appendChild(this.timeStamp);
+        }
 
         // create webGL canvas
         this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
@@ -125,6 +132,9 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     setData: function (dataSourceId, data) {
+        if (this.timeStamp != null)
+            this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString();
+
         var pktData = data.data;
         var pktSize = pktData.length;
 
