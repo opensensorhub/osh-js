@@ -32,9 +32,17 @@ OSH.UI.MjpegView = OSH.UI.View.extend({
   initialize: function(parentElementDivId,options) {
     this._super(parentElementDivId,[],options);
 
+    // create timestamp slot
+    this.timeStamp = null;
+    if (typeof(options.showTime) != "undefined" && options.showTime) { 
+        this.timeStamp = document.createElement("div");
+        this.timeStamp.setAttribute("class", "video-time");
+        document.getElementById(this.divId).appendChild(this.timeStamp);
+    }
+
     // creates video tag element
     this.imgTag = document.createElement("img");
-    this.imgTag.setAttribute("id", "dataview-"+OSH.Utils.randomUUID());
+    this.imgTag.setAttribute("class", "video-mjpeg");
 
     // rotation option
     this.rotation = 0;
@@ -73,6 +81,8 @@ OSH.UI.MjpegView = OSH.UI.View.extend({
   setData: function(dataSourceId,data) {
       var oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
+      if (this.timeStamp != null)
+          this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString(); 
       window.URL.revokeObjectURL(oldBlobURL);
   },
 

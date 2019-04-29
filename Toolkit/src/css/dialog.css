@@ -204,3 +204,8 @@
 .keep-ratio-h {
     width:auto !important;
 }
+
+.video-time {
+    position: absolute;
+    background-color: white;
+}
