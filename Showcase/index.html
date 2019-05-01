@@ -3,59 +3,41 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
     <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title>OSH-js Showcase</title>
-    <link href="common/css/showcase.css" rel="stylesheet">
 
-    <!-- ANGULAR CODE MIRROR -->
-    <link rel="stylesheet" href="common/js/angular-code-mirror/angular-code-mirror.css"/>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-    <!-- ANGULAR -->
-    <link rel="stylesheet" href="common/malhar-dashboard/stylesheet.min.css">
+    <!-- Prettify -->
+    <script src="prettify.js"></script>
+    <link rel="stylesheet" href="prettify.css"></script>
 
-    <script type="text/javascript" src="common/js/angular/all-in-one.min.js"></script>
-
-    <script type="text/javascript" src="common/malhar-dashboard/ui-dashboard-module.js"></script>
-    <script type="text/javascript" src="common/js/angular/jquery-watcher.js"></script>
-
-    <!-- ANGULAR CODE MIRROR -->
-    <script src="common/js/angular-code-mirror/angular-code-mirror.min.js"></script>
-
-    <script src="js/vkbeautify.0.99.00.beta.js"></script>
-
+    <!-- OSH vendor libs -->
     <link rel="stylesheet" href="vendor/vendor-debug.css"/>
     <script src="vendor/vendor-debug.js"></script>
-
-    <!-- cesium draw helper -->
     <link rel="stylesheet" href="../Toolkit/vendor-local/cesium-draw-helper/DrawHelper.css"/>
     <script type="text/javascript" src="../Toolkit/vendor-local/cesium-draw-helper/DrawHelper.js"></script>
 
-    <!---link rel="stylesheet" href="css/osh.css"/>
-    <script src="js/osh.js"></script-->
-
-    <!-- Live code test -->
-    <!-- OSH Core -->
+    <!-- OSH toolkit -->
     <script type="text/javascript" src="../Toolkit/src/osh/osh-Template.js"></script>
-    <!-- OSH buffer sync lib -->
     <script type="text/javascript" src="../Toolkit/src/osh/osh-Utils.js"></script>
-
     <script type="text/javascript" src="../Toolkit/src/osh/osh-BaseClass.js"></script>
-
     <script type="text/javascript" src="../Toolkit/src/osh/osh-Buffer.js"></script>
-    <!-- OSH controller lib -->
     <script type="text/javascript" src="../Toolkit/src/osh/osh-EventMap.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/osh-EventManager.js"></script>
-    <!-- OSH Video component parser -->
+
     <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
 
-    <!-- OSH Video component parser -->
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js"></script>
     <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js"></script>
 
@@ -95,229 +77,193 @@
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tree.css"/>
     <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tasking.css"/>
 
-    <script type="text/javascript" src="common/js/OpenSensorHubClient.js"></script>
-
     <style>
-        .container-fluid {
-            z-index:9999;
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+	}
+        table {
+            width: 100%;
+            height: 100%;
+	}
+        td {
+            vertical-align: top;
+	}
+        #logo {
+            width: 100%;
+            margin-bottom: 20px;
         }
-
-        .dashboard-widget-area {
-            margin: 55px 0 30px !important;
+        #sample-list {
+            padding: 10px;
+            border-right: 1px solid gray;
+            height: 100%;
+        }
+        #sample-list .item {
+            cursor: pointer;
+            padding: 5px;            
+        }
+        #sample-list .item:hover {
+            background-color: #e5e5e5;            
+        }
+        #sample-area {            
+            width: 100%;
+            height: 100%;
+        }
+        #src-button {
+            position: fixed;
+            top: 20px;
+            right: 80px;
+            z-index: 999;
+            cursor: pointer;
+            /*padding: 5px;
+            background-color: #cccccc;*/
+        }
+        .ui-front {
+            z-index: 2000;
+        }
+        .prettyprint {
+            overflow: auto;
+            -webkit-overflow-scrolling: auto;
         }
     </style>
 </head>
 
-<body ng-app="app">
-<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <a class="navbar-brand" href="http://www.opensensorhub.org/">
-                <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png"
-                     style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
-                OpenSensorHub</a>
-        </div>
-    </div>
-</nav>
-<div ng-view=""></div>
-</body>
-<script>
+<body>
 
-    var properties = [
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td width="15%">
+    <div id="sample-list">
+        <a href="http://www.opensensorhub.org/">
+            <img id="logo" src="https://opensensorhub.files.wordpress.com/2017/08/opensensorhub-logo2.png">
+        </a>
+    </div>
+</td>
+<td>
+    <div id="sample-area"></div>
+</td>
+</tr>
+</table>
+
+<div id="src-button">View Source Code</div>
+<div id="src-dialog" title="Source Code">
+<?prettify lang=html linenums=true?>
+<pre class="prettyprint" id="src-code">
+</div>
+
+</body>
+
+<script>
+    var samples = [
         {
-            name: "Leaflet JSON Location",
-            url: "viewers/Leaflet-location/leaflet.html",
-            renderDivId: "leafletViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            name: "Leaflet: Location Marker",
+            url: "samples/leaflet-location.html"
         },
         {
-            name: "Cesium JSON Location",
-            url: "viewers/Cesium/cesium.html",
-            renderDivId: "cesiumViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            name: "Leaflet: Location + Heading",
+            url: "samples/leaflet-location+heading.html"
         },
         {
-            name: "OL JSON location",
-            url: "viewers/OpenLayer/ol.html",
-            renderDivId: "olViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            name: "Leaflet: Location + Path",
+            url: "samples/leaflet-location+path.html"
         },
         {
-            name: "Leaflet JSON Location + orientation",
-            url: "viewers/Leaflet-orient/leaflet-orient.html",
-            renderDivId: "leafletOrientViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            name: "Cesium: Location",
+            url: "samples/cesium-location.html"
+        },
+        {
+            name: "OpenLayers: location",
+            url: "samples/openlayers-location.html"
+        },
+        {
+            name: "MJPEG Video",
+            url: "samples/video-mjpeg.html"
+        },
+        {
+            name: "H264 Video",
+            url: "samples/video-h264.html"
         },
         {
             name: "Leaflet JSON Entity Location + orientation",
-            url: "viewers/Leaflet-orient-entity/leaflet-orient-entity.html",
-            renderDivId: "leafletOrientEntityViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
-        },
-        {
-            name: "MJPEG",
-            url: "viewers/Mjpeg/Mjpeg.html",
-            renderDivId: "MjpegViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
-        },
-        {
-            name: "FFMPEG H264",
-            url: "viewers/Ffmpeg/Ffmpeg.html",
-            renderDivId: "FfmpegViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
-        },
-        {
-            name: "Mp4 H264",
-            url: "viewers/Mp4/Mp4.html",
-            renderDivId: "Mp4ViewerId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/Leaflet-orient-entity/leaflet-orient-entity.html"
         },
         {
             name: "NVD3 JSON Windspeed",
-            url: "viewers/CurveChart/curveChart.html",
-            renderDivId: "curveChartViewId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/CurveChart/curveChart.html"
         },
         {
             name: "Entity tree + stack menu",
-            url: "viewers/Tree/tree.html",
-            renderDivId: "treeViewId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/Tree/tree.html"
         },
         {
             name: "Discovery",
-            url: "viewers/Discovery/discovery.html",
-            renderDivId: "discoveryViewId",
-            style: {
-                desktop:{
-                    width:"900px",
-                    height:"350px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/Discovery/discovery.html"
         },
         {
             name: "Time control RangeSlider",
-            url: "viewers/RangeSlider/RangeSlider.html",
-            renderDivId: "rangeSliderId",
-            style: {
-                desktop:{
-                    width:"1350px",
-                    height:"400px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/RangeSlider/RangeSlider.html"
         },
         {
             name: "Multi dialog + tasking",
-            url: "viewers/Multidialog/Multidialog.html",
-            renderDivId: "multiDialogId",
-            style: {
-                desktop:{
-                    width:"450px",
-                    height:"400px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/Multidialog/Multidialog.html"
         },{
             name: "Server",
-            url: "viewers/Server/server.html",
-            renderDivId: "serverViewId",
-            style: {
-                desktop:{
-                    width:"900px",
-                    height:"400px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/Server/server.html"
         },
         {
             name: "Live camera tasking",
-            url: "viewers/LiveTasking/LiveTasking.html",
-            renderDivId: "liveTaskingId",
-            style: {
-                desktop:{
-                    width:"1350px",
-                    height:"720px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/LiveTasking/LiveTasking.html"
         },
         {
             name: "WFS-T / Cesium example",
-            url: "viewers/wfst/wfst.html",
-            renderDivId: "wftsId",
-            style: {
-                desktop:{
-                    width:"1350px",
-                    height:"720px"
-                }
-            },
-            defaultWidget: true
+            url: "viewers/wfst/wfst.html"
         }
     ];
 
-    addWidgets(properties);
+    // setup handler to load sample in viewing area
+    var currentSample;
+    samples.forEach(s => {
+        var $newElt = $("<div class='item'>" + s.name + "</div>");
+        $newElt.on("click", e => { 
+            // cleanup previously opened connections
+            for (v in window) {
+                if (window[v] != null && typeof(window[v].disconnect) === "function") {
+                    console.log("Disconnecting " + window[v].name);
+                    window[v].disconnect();
+                    delete window[v];
+                }
+            }
+            // load selected sample
+            currentSample=s;
+            $("#sample-area").load(s.url);
+        });
+        $("#sample-list").append($newElt);
+    });
+
+    // setup handler to show code in popup
+    function htmlEscape(s) {
+        return s
+           .replace(/&/g, '&amp;')
+           .replace(/</g, '&lt;')
+           .replace(/>/g, '&gt;');
+    }
+
+    $("#src-button").button().on("click", e => { 
+        var stringData = $.ajax({
+                    url: currentSample.url,
+                    async: false
+                 }).responseText;
+        $("#src-code").empty();
+        $("#src-code").append(htmlEscape(stringData));
+        $("#src-code").removeClass("prettyprinted");
+        PR.prettyPrint();
+        $("#src-dialog").dialog({width: 800, height: 800}); 
+    });
+
+    // redefine workers folder
+    window.OSH.BASE_WORKER_URL = "../Toolkit/dist/js/workers";    
+
 </script>
 </html>
