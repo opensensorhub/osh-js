@@ -355,9 +355,11 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
  				label: {
  					text: label,
-					font: '14px sans-serif',
+					font: '16px sans-serif',
 					horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
-					verticalOrigin: Cesium.VerticalOrigin.TOP
+					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					pixelOffset : new Cesium.Cartesian2(3, 3),
+                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1, 1e6, 0.0)
 				}, 
 				model : {
 					uri: imgIcon,
@@ -381,19 +383,21 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
  				label: {
  					text: label,
-					font: '14px sans-serif',
+					font: '16px sans-serif',
 					horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
 					verticalOrigin: Cesium.VerticalOrigin.TOP,
-					pixelOffset : new Cesium.Cartesian2(5, 5),
-                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1.5, 1e6, 0.0)
+					pixelOffset : new Cesium.Cartesian2(3, 3),
+                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1, 1e6, 0.0)
 				}, 
 				billboard : {
 					image : imgIcon,
+                                        scaleByDistance: new Cesium.NearFarScalar(1000, 1, 10e6, 0.0),
 					alignedAxis : Cesium.Cartesian3.UNIT_Z, // Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
 					horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
 					verticalOrigin: Cesium.VerticalOrigin.TOP,
 					pixelOffset : offset,
+                                        pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
                                         eyeOffset : new Cesium.Cartesian3(0, 0, -1) // make sure icon always displays in front
 				}
 			};
