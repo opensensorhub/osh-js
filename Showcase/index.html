@@ -202,9 +202,12 @@
             description: "Display an H264 video in a simple DIV using FFMPEG-JS decoder",
             url: "samples/video-h264.html"
         },
+        {
+            name: "Simple Chart (NVD3)",
+            url: "samples/curveChart.html"
+        }
 
-
-
+/*
         {
             name: "NVD3 JSON Windspeed",
             url: "viewers/CurveChart/curveChart.html"
@@ -236,6 +239,7 @@
             name: "WFS-T / Cesium example",
             url: "viewers/wfst/wfst.html"
         }
+*/
     ];
 
     // setup handler to load sample in viewing area
@@ -244,6 +248,7 @@
         var $newElt = $("<div class='item' title='" + s.description + "'>" + s.name + "</div>");
         $newElt.on("click", e => { 
             // cleanup previously opened connections
+            eventMap = new OSH.EventMap();
             for (v in window) {
                 if (window[v] != null && typeof(window[v].disconnect) === "function") {
                     console.log("Disconnecting " + window[v].name);
