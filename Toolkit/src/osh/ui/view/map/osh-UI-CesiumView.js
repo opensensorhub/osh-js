@@ -85,10 +85,12 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				lon : styler.location.x,
 				alt : styler.location.z,
 				orientation : styler.orientation,
-				color : styler.color,
 				icon : styler.icon,
 				iconAnchor : styler.iconAnchor,
 				label : styler.label,
+				labelColor : styler.labelColor,
+				labelSize : styler.labelSize,
+				labelOffset : styler.labelOffset,
 				name : styler.viewItem.name,
 				description : styler.viewItem.description,
 				timeStamp: timeStamp,
@@ -105,9 +107,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			lon : styler.location.x,
 			alt : styler.location.z,
 			orientation : styler.orientation,
-			color : styler.color,
 			icon : styler.icon,
 			label : styler.label,
+			labelColor : styler.labelColor,
+			labelSize : styler.labelSize,
 			timeStamp: timeStamp,
 			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
 		});
@@ -342,6 +345,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		var isModel = imgIcon.endsWith(".glb");
 
                 var label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
+		var fillColor = properties.labelColor;
+		var labelSize = properties.labelSize;
+		var labelOffset = properties.labelOffset;
+
 		var name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
 		           label != null ? label : "Selected Marker";
 		var desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
@@ -355,10 +362,12 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
  				label: {
  					text: label,
-					font: '16px sans-serif',
-					horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+					font: labelSize + 'px sans-serif',
+					scaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0),
+					fillColor: Cesium.Color.fromCssColorString(fillColor),
+					horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
 					verticalOrigin: Cesium.VerticalOrigin.TOP,
-					pixelOffset : new Cesium.Cartesian2(3, 3),
+					pixelOffset : labelOffset,
                                         scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1, 1e6, 0.0)
 				}, 
 				model : {
@@ -370,12 +379,9 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		}
 		else
 		{
-			var rot = 0;
-			if (properties.orientation != 'undefined')
-				rot = properties.orientation.heading;
-			var offset = Cesium.Cartesian2.ZERO;
-			if (properties.iconAnchor != null)
-				offset = new Cesium.Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+			var rot = properties.orientation.heading;
+			var iconOffset = new Cesium.Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+			var labelOffset = new Cesium.Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
 			geom = {
 				name: name,
@@ -383,22 +389,24 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
  				label: {
  					text: label,
-					font: '16px sans-serif',
-					horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+					font: labelSize + 'px sans-serif',
+					scaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0),
+					fillColor: Cesium.Color.fromCssColorString(fillColor),
+					horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
 					verticalOrigin: Cesium.VerticalOrigin.TOP,
-					pixelOffset : new Cesium.Cartesian2(3, 3),
-                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1, 1e6, 0.0)
+					pixelOffset : labelOffset,
+					pixelOffsetScaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0)
 				}, 
 				billboard : {
 					image : imgIcon,
-                                        scaleByDistance: new Cesium.NearFarScalar(1000, 1, 10e6, 0.0),
+					scaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
 					alignedAxis : Cesium.Cartesian3.UNIT_Z, // Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
 					horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
 					verticalOrigin: Cesium.VerticalOrigin.TOP,
-					pixelOffset : offset,
-                                        pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
-                                        eyeOffset : new Cesium.Cartesian3(0, 0, -1) // make sure icon always displays in front
+					pixelOffset : iconOffset,
+					pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
+					eyeOffset : new Cesium.Cartesian3(0, 0, -1) // make sure icon always displays in front
 				}
 			};
 		}
@@ -424,6 +432,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         var alt = properties.alt;
         var orient = properties.orientation;
         var imgIcon = properties.icon;
+        var label = properties.label;
         
         if (!isNaN(lon) && !isNaN(lat)) {
         	var marker =  this.markers[id];
@@ -456,6 +465,11 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			marker.billboard.image = imgIcon;
 		else if (marker.model)
 			marker.model.uri = imgIcon;
+
+		// update label                
+		//marker.label = properties.label;
+		//if (properties.labelColor != null)
+		//	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
 
                 // update billboard aligned axis depending on camera angle
     		if (this.viewer.camera.pitch < -Math.PI/4)                

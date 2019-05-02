@@ -66,7 +66,9 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		this.icon = null;
 		this.iconAnchor = [16,16];
 		this.label = null;
-		this.color = "#000000";
+		this.labelColor = "#000000";
+		this.labelSize = 16;
+		this.labelOffset = [0,0];
 		
 		this.options = {};
 		
@@ -83,16 +85,24 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		}
 		
 		if(typeof(properties.iconAnchor) != "undefined"){
-            this.iconAnchor = properties.iconAnchor;
-        }
+			this.iconAnchor = properties.iconAnchor;
+		}
 		
 		if(typeof(properties.label) != "undefined"){
 			this.label = properties.label;
 		}
 		
-		if(typeof(properties.color) != "undefined"){
-			this.color = properties.color;
-		} 
+		if(typeof(properties.labelColor) != "undefined"){
+			this.labelColor = properties.labelColor;
+		}
+		
+		if(typeof(properties.labelSize) != "undefined"){
+			this.labelSize = properties.labelSize;
+		}
+		
+		if(typeof(properties.labelOffset) != "undefined"){
+			this.labelOffset = properties.labelOffset;
+		}
 		
 		if(typeof(properties.locationFunc) != "undefined") {
 			var fn = function(rec,timeStamp,options) {
@@ -122,11 +132,18 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 			this.addFn(properties.labelFunc.dataSourceIds,fn);
 		}
 		
-		if(typeof(properties.colorFunc) != "undefined") {
+		if(typeof(properties.labelColorFunc) != "undefined") {
 			var fn = function(rec,timeStamp,options) {
-				this.color = properties.colorFunc.handler(rec,timeStamp,options);
+				this.labelColor = properties.labelColorFunc.handler(rec,timeStamp,options);
 			}.bind(this);
-			this.addFn(properties.colorFunc.dataSourceIds,fn);
+			this.addFn(properties.labelColorFunc.dataSourceIds,fn);
+		}
+		
+		if(typeof(properties.labelSizeFunc) != "undefined") {
+			var fn = function(rec,timeStamp,options) {
+				this.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
 		}
 	},
 

@@ -226,10 +226,14 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
             marker = L.marker([properties.lat, properties.lon]);
         }
 
+        if (properties.label != null) {
+            marker.bindTooltip(properties.label, {
+                permanent: true,
+                direction: 'center',
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
+            });  
+	}
         marker.bindPopup(properties.name);
-
-        //TODO:for selected marker event
-        //this.marker.on('click',this.onClick.bind(this));
 
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
@@ -336,6 +340,10 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
                 color: styler.color,
                 icon: styler.icon,
                 iconAnchor: styler.iconAnchor,
+                label : styler.label,
+                labelColor : styler.labelColor,
+                labelSize : styler.labelSize,
+                labelOffset : styler.labelOffset,
                 name: this.names[styler.getId()]
             });
             this.stylerToObj[styler.getId()] = markerId;
