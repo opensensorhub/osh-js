@@ -16,37 +16,140 @@
 
 var MAX_LONG = Math.pow(2, 53) + 1;
 
-/**
-Global helper method to check if a variable or object attribute is defined
-*/
-function isDefined(v) {
-  return typeof(v) != 'undefined';
-}
-
-/**
-Global helper method to check if a variable or object attribute has a value,
-that is it is defined and non null
-*/
-function hasValue(v) {
-  return isDefined(v) && v != null;
-}
-
-/**
-Assert that a variable or object attribute is defined and non-null
-**/
-function assertHasValue(v, varName) {
-  if (!isDefined(v))
-    throw varName + " is not defined";
-  if (!hasValue(v))
-    throw varName + " is null";
-  return v;
-}
 
 /**
  *
  * @constructor
  */
 OSH.Utils = function() {};
+
+
+/**
+Global helper method to test if a variable or object attribute is defined
+*/
+OSH.Utils.isDefined = function(v) {
+  return typeof(v) != 'undefined';
+}
+
+/**
+Global helper method to test if a variable or object attribute has a value,
+that is it is defined and non null
+*/
+OSH.Utils.hasValue = function(v) {
+  return this.isDefined(v) && v != null;
+}
+
+/**
+Global helper method to test if a variable or object attribute is of a particular type
+*/
+OSH.Utils.hasType = function(v, expectedType) {
+  var hasVal = this.hasValue(v);
+  return hasVal && typeof(v) == expectedType;
+}
+
+/**
+Global helper method to test if a variable or object attribute is an object
+*/
+OSH.Utils.isObject = function(v, varName) {
+  return this.hasType(v, 'object', varName);
+}
+
+/**
+Global helper method to test if a variable or object attribute is an array
+*/
+OSH.Utils.isArray = function(v, varName) {
+  return this.isDefined(v) && Array.isArray(v);
+}
+
+/**
+Global helper method to test if a variable or object attribute is a function
+*/
+OSH.Utils.isFunction = function(v, varName) {
+  return this.hasType(v, 'function', varName);
+}
+
+/**
+Assert that a variable or object attribute is defined
+**/
+OSH.Utils.assertDefined = function(v, varName='variable') {
+  if (!this.isDefined(v))
+    throw varName + " must be defined";
+  return v;
+}
+
+/**
+Assert that a variable or object attribute is defined and non-null
+**/
+OSH.Utils.assertType = function(v, expectedType, varName='variable') {
+  this.assertDefined(v, varName);
+  if (typeof(v) != expectedType)
+    throw varName + " must be of type " + expectedType;
+  return v;
+}
+
+/**
+Assert that a variable or object attribute is a string
+**/
+OSH.Utils.assertBoolean = function(v, varName) {
+  return this.assertType(v, 'boolean', varName);
+}
+
+/**
+Assert that a variable or object attribute is a string
+**/
+OSH.Utils.assertString = function(v, varName) {
+  return this.assertType(v, 'string', varName);
+}
+
+/**
+Assert that a variable or object attribute is a number
+**/
+OSH.Utils.assertNumber = function(v, varName) {
+  return this.assertType(v, 'number', varName);
+}
+
+/**
+Assert that a variable or object attribute is a number
+**/
+OSH.Utils.assertPositive = function(v, varName) {
+  this.assertNumber(v, varName);
+  if (v <= 0)
+    throw varName + " must be a positive number";
+}
+
+/**
+Assert that a variable or object attribute is an object
+**/
+OSH.Utils.assertObject = function(v, varName) {
+  return this.assertType(v, 'object', varName);
+}
+
+/**
+Assert that a variable or object attribute is an object
+**/
+OSH.Utils.assertArray = function(v, varName='variable') {
+  this.assertDefined(v, varName);
+  if (!Array.isArray(v))
+    throw varName + " must be an array";
+  return v;
+}
+
+/**
+Assert that a variable or object attribute is a function
+**/
+OSH.Utils.assertFunction = function(v, varName) {
+  return this.assertType(v, 'function', varName);
+}
+
+/**
+Assert that a variable or object attribute is defined and non-null
+**/
+OSH.Utils.assertHasValue = function(v, varName='variable') {
+  this.assertDefined(v, varName);
+  if (!this.hasValue(v))
+    throw varName + " must not be null";
+  return v;
+}
 
 /**
  *
