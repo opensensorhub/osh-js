@@ -87,7 +87,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				orientation : styler.orientation,
 				color : styler.color,
 				icon : styler.icon,
+				iconAnchor : styler.iconAnchor,
 				label : styler.label,
+				name : styler.viewItem.name,
+				description : styler.viewItem.description,
 				timeStamp: timeStamp,
 				selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
 			});
@@ -104,6 +107,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			orientation : styler.orientation,
 			color : styler.color,
 			icon : styler.icon,
+			label : styler.label,
 			timeStamp: timeStamp,
 			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
 		});
@@ -331,19 +335,30 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 */
 	addMarker : function(properties) {
 		
-		var imgIcon = 'images/cameralook.png';
-		if(properties.icon !== null) {
+		var imgIcon = 'images/pin.png';
+		if (properties.icon !== null) {
 			imgIcon = properties.icon;
 		}
 		var isModel = imgIcon.endsWith(".glb");
-		var name = properties.label ? properties.label : "Selected Marker";
-		var geom;
-		
+
+                var label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
+		var name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
+		           label != null ? label : "Selected Marker";
+		var desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
+
+		var geom;	
 		if (isModel)
 		{
 			geom = {
 				name: name,
+                                description: desc,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
+ 				label: {
+ 					text: label,
+					font: '14px sans-serif',
+					horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+					verticalOrigin: Cesium.VerticalOrigin.TOP
+				}, 
 				model : {
 					uri: imgIcon,
 					scale: 4,
@@ -356,15 +371,30 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			var rot = 0;
 			if (properties.orientation != 'undefined')
 				rot = properties.orientation.heading;
+			var offset = Cesium.Cartesian2.ZERO;
+			if (properties.iconAnchor != null)
+				offset = new Cesium.Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+
 			geom = {
 				name: name,
+                                description: desc,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
+ 				label: {
+ 					text: label,
+					font: '14px sans-serif',
+					horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					pixelOffset : new Cesium.Cartesian2(5, 5),
+                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1.5, 1e6, 0.0)
+				}, 
 				billboard : {
 					image : imgIcon,
 					alignedAxis : Cesium.Cartesian3.UNIT_Z, // Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
-					horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
-                                        eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
+					horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					pixelOffset : offset,
+                                        eyeOffset : new Cesium.Cartesian3(0, 0, -1) // make sure icon always displays in front
 				}
 			};
 		}
