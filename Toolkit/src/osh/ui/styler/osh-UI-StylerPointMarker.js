@@ -72,74 +72,82 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		
 		this.options = {};
 		
-		if(typeof(properties.location) != "undefined"){
+		if (OSH.Utils.hasValue(properties.location)) {
+			OSH.Utils.assertObject(properties.location, "location");
 			this.location = properties.location;
 		} 
 		
-		if(typeof(properties.orientation) != "undefined"){
+		if (OSH.Utils.hasValue(properties.orientation)) {
+			OSH.Utils.assertObject(properties.orientation, "orientation");
 			this.orientation = properties.orientation;
 		} 
 		
-		if(typeof(properties.icon) != "undefined"){
+		if (OSH.Utils.hasValue(properties.icon)) {
+			OSH.Utils.assertString(properties.icon, "icon");
 			this.icon = properties.icon;
 		}
 		
-		if(typeof(properties.iconAnchor) != "undefined"){
+		if (OSH.Utils.hasValue(properties.iconAnchor)) {
+			OSH.Utils.assertArray(properties.iconAnchor, "iconAnchor");
 			this.iconAnchor = properties.iconAnchor;
 		}
 		
-		if(typeof(properties.label) != "undefined"){
+		if (OSH.Utils.hasValue(properties.label)) {
+			OSH.Utils.assertString(properties.label, "label");
 			this.label = properties.label;
 		}
 		
-		if(typeof(properties.labelColor) != "undefined"){
+		if (OSH.Utils.hasValue(properties.labelColor)) {
+			OSH.Utils.assertString(properties.labelColor, "labelColor");
 			this.labelColor = properties.labelColor;
 		}
 		
-		if(typeof(properties.labelSize) != "undefined"){
+		if (OSH.Utils.hasValue(properties.labelSize)) {
+			OSH.Utils.assertPositive(properties.labelSize, "labelSize");
 			this.labelSize = properties.labelSize;
 		}
 		
-		if(typeof(properties.labelOffset) != "undefined"){
+		if (OSH.Utils.hasValue(properties.labelOffset)) {
+			OSH.Utils.assertArray(properties.labelOffset, "labelOffset");
 			this.labelOffset = properties.labelOffset;
 		}
 		
-		if(typeof(properties.locationFunc) != "undefined") {
+		if (this.checkFn("locationFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.location = properties.locationFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.locationFunc.dataSourceIds,fn);
 		}
 		
-		if(typeof(properties.orientationFunc) != "undefined") {
+		if (this.checkFn("orientationFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.orientation = properties.orientationFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.orientationFunc.dataSourceIds,fn);
 		}
 		
-		if(typeof(properties.iconFunc) != "undefined") {
+		if (this.checkFn("iconFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.icon = properties.iconFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.iconFunc.dataSourceIds,fn);
 		}
 		
-		if(typeof(properties.labelFunc) != "undefined") {
+		if (this.checkFn("labelFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.label = properties.labelFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.labelFunc.dataSourceIds,fn);
 		}
 		
-		if(typeof(properties.labelColorFunc) != "undefined") {
+		if (this.checkFn("labelColorFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.labelColor = properties.labelColorFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.labelColorFunc.dataSourceIds,fn);
 		}
 		
-		if(typeof(properties.labelSizeFunc) != "undefined") {
+		if (this.checkFn("labelSizeFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
 			}.bind(this);
@@ -156,7 +164,7 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 	 */
 	init: function(view) {
 		this._super(view);
-		if(typeof(view) != "undefined" && this.location != null) {
+		if (OSH.Utils.isDefined(view) && this.location != null) {
 			view.updateMarker(this,0,{});
 		}
 	},
@@ -172,8 +180,8 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 	 * @instance
 	 */
 	setData: function(dataSourceId,rec,view,options) {
-		if(this._super(dataSourceId,rec,view,options)) {
-			if (typeof(view) != "undefined" && this.location != null) {
+		if (this._super(dataSourceId,rec,view,options)) {
+			if (OSH.Utils.isDefined(view) && this.location != null) {
 				view.updateMarker(this, rec.timeStamp, options);
 			}
 		}

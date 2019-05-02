@@ -23,17 +23,25 @@ OSH.UI.Styler = BaseClass.extend({
 	initialize : function(jsonProperties) {
 		this.properties = jsonProperties;
 		this.id = "styler-" + OSH.Utils.randomUUID();
-
 		this.dataSourceToStylerMap = {};
-
 		this.initEvents();
+	},
+
+	checkFn : function(funcName) {
+		var func = this.properties[funcName];
+		var isSet = OSH.Utils.hasValue(func);
+		if (isSet) {
+			OSH.Utils.assertArray(func.dataSourceIds, funcName + ".dataSourceIds");
+			OSH.Utils.assertFunction(func.handler, funcName + ".handler");
+		}
+		return isSet;	
 	},
 
 	/**
 	 * @memberof OSH.UI.Styler
 	 * @instance
 	 */
-	initEvents:function() {
+	initEvents : function() {
 		OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event){
 			this.clear();
 		}.bind(this));
@@ -43,7 +51,7 @@ OSH.UI.Styler = BaseClass.extend({
 	 * @memberof OSH.UI.Styler
 	 * @instance
 	 */
-	clear: function() {
+	clear : function() {
 
 	},
 
@@ -76,7 +84,7 @@ OSH.UI.Styler = BaseClass.extend({
 	addFn : function(dataSourceIds, fn) {
 		for (var i = 0; i < dataSourceIds.length; i++) {
 			var dataSourceId = dataSourceIds[i];
-			if (typeof (this.dataSourceToStylerMap[dataSourceId]) === "undefined") {
+			if (!OSH.Utils.isDefined(this.dataSourceToStylerMap[dataSourceId])) {
 				this.dataSourceToStylerMap[dataSourceId] = [];
 			}
 			this.dataSourceToStylerMap[dataSourceId].push(fn);
