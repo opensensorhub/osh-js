@@ -1,0 +1,51 @@
+<div>
+    <div id="leafletMap" ></div>
+    <style>
+        .leaflet-container {
+            height: 100%;
+        }
+    </style>
+    <script type="text/javascript">
+        //@ sourceURL=leaflet-fois.html.js
+
+        var server = new OSH.Server({
+            url:"https://nys.georobotix.com",
+            sos: "sos",
+            baseUrl: "sensorhub"
+        });
+
+        // create Leaflet view
+        var leafletMapView = new OSH.UI.LeafletView("leafletMap", []);
+        leafletMapView.first = false; // don't zoom on first item added
+        leafletMapView.map.setView(new L.LatLng(42.8, -76), 8);
+
+        // retrieve list of features of interest from server (async call)
+        server.getFeatureOfInterest("urn:osh:sensor:nysmesonet", function(resp) {
+
+            // render each feature with a marker
+            resp.GetFeatureOfInterestResponse.featureMember.forEach(function(f) {
+
+                // parse location from GML
+                var pos = f.location.pos.split(" ");
+                var pointMarker = new OSH.UI.Styler.PointMarker({
+                    location: {
+                           x: parseFloat(pos[1]),
+                           y: parseFloat(pos[0])
+                    },
+                    icon: 'images/marker-icon.png',
+                    iconAnchor: [12, 41],
+                    label: f.name,
+                    labelOffset: [0, -14]
+                });
+ 
+                // add marker to Leaflet map
+                leafletMapView.addViewItem({
+                    name: f.name + " (" + pos[1] + "," + pos[0] + ")",
+                    description: f.description,
+                    styler: pointMarker
+                });
+            });
+        });
+
+    </script>
+</div>

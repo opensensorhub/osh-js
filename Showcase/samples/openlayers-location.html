@@ -1,13 +1,8 @@
 <div>
-    <div id="leafletMap" ></div>
-    <style>
-        .leaflet-container {
-            height: 100%;
-        }
-    </style>
-    <script>
-        //@ sourceURL=leaflet-location.html.js
+    <div id="ol-map" style="height:100%; width:100%"></div>
 
+    <script>
+        
         // create data source for Android phone GPS
         var gpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
             protocol: "ws",
@@ -27,17 +22,19 @@
                 handler: function (rec) {
                     return {
                         x: rec.location.lon,
-                        y: rec.location.lat,
-                        z: rec.location.alt
+                        y: rec.location.lat
                     };
                 }
+            },
+            orientation: {
+                heading: 0
             },
             icon: 'images/car-location.png',
             iconAnchor: [16, 40]
         });
 
-        // create Leaflet view
-        var leafletMapView = new OSH.UI.LeafletView("leafletMap",
+        // create Cesium view
+        var olView = new OSH.UI.OpenLayerView("ol-map",
             [{
                 styler: pointMarker,
                 name: "Android Phone GPS"

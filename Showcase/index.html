@@ -93,7 +93,7 @@
 	}
         #logo {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         #sample-list {
             padding: 10px;
@@ -134,7 +134,7 @@
 
 <table cellspacing="0" cellpadding="0">
 <tr>
-<td width="15%">
+<td width="17%">
     <div id="sample-list">
         <a href="http://www.opensensorhub.org/">
             <img id="logo" src="https://opensensorhub.files.wordpress.com/2017/08/opensensorhub-logo2.png">
@@ -158,37 +158,53 @@
 <script>
     var samples = [
         {
-            name: "Leaflet: Location Marker",
+            name: "Moving Location (Leaflet)",
+            description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle",
             url: "samples/leaflet-location.html"
         },
         {
-            name: "Leaflet: Location + Heading",
-            url: "samples/leaflet-location+heading.html"
-        },
-        {
-            name: "Leaflet: Location + Path",
-            url: "samples/leaflet-location+path.html"
-        },
-        {
-            name: "Cesium: Location",
+            name: "Moving Location (CesiumJS)",
+            description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle",
             url: "samples/cesium-location.html"
         },
         {
-            name: "OpenLayers: location",
+            name: "Moving Location (OpenLayers)",
+            description: "Display a moving marker on an OpenLayers map, tracking the current location of a vehicle",
             url: "samples/openlayers-location.html"
         },
         {
+            name: "Moving Location + Heading (Leaflet)",
+            description: "Display a moving marker on a Leaflet map, tracking the current location and heading of a vehicle",
+            url: "samples/leaflet-location+heading.html"
+        },
+        {
+            name: "Moving Location + Path (Leaflet)",
+            description: "Display a moving marker and a polyline on a Leaflet map, showing both the current location of a vehicle and the historical track",
+            url: "samples/leaflet-location+path.html"
+        },
+        {
+            name: "FOI Locations (Leaflet)",
+            description: "Display the location of several features of interest on a Leaflet map",
+            url: "samples/leaflet-fois.html"
+        },
+        {
+            name: "FOI Locations (CesiumJS)",
+            description: "Display the location of several features of interest on a CesiumJS globe",
+            url: "samples/cesium-fois.html"
+        },
+        {
             name: "MJPEG Video",
+            description: "Display an MJPEG video in a simple DIV",
             url: "samples/video-mjpeg.html"
         },
         {
             name: "H264 Video",
+            description: "Display an H264 video in a simple DIV using FFMPEG-JS decoder",
             url: "samples/video-h264.html"
         },
-        {
-            name: "Leaflet JSON Entity Location + orientation",
-            url: "viewers/Leaflet-orient-entity/leaflet-orient-entity.html"
-        },
+
+
+
         {
             name: "NVD3 JSON Windspeed",
             url: "viewers/CurveChart/curveChart.html"
@@ -225,7 +241,7 @@
     // setup handler to load sample in viewing area
     var currentSample;
     samples.forEach(s => {
-        var $newElt = $("<div class='item'>" + s.name + "</div>");
+        var $newElt = $("<div class='item' title='" + s.description + "'>" + s.name + "</div>");
         $newElt.on("click", e => { 
             // cleanup previously opened connections
             for (v in window) {
