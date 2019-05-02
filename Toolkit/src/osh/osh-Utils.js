@@ -17,6 +17,32 @@
 var MAX_LONG = Math.pow(2, 53) + 1;
 
 /**
+Global helper method to check if a variable or object attribute is defined
+*/
+function isDefined(v) {
+  return typeof(v) != 'undefined';
+}
+
+/**
+Global helper method to check if a variable or object attribute has a value,
+that is it is defined and non null
+*/
+function hasValue(v) {
+  return isDefined(v) && v != null;
+}
+
+/**
+Assert that a variable or object attribute is defined and non-null
+**/
+function assertHasValue(v, varName) {
+  if (!isDefined(v))
+    throw varName + " is not defined";
+  if (!hasValue(v))
+    throw varName + " is null";
+  return v;
+}
+
+/**
  *
  * @constructor
  */
