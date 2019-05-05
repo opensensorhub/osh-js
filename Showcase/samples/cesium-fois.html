@@ -6,24 +6,26 @@
         window.CESIUM_BASE_URL = 'vendor/';
 
         var server = new OSH.Server({
-            url:"https://nys.georobotix.com",
+            url: "http://sensiasoft.net:8181",
             sos: "sos",
             baseUrl: "sensorhub"
         });
 
-        // create Leaflet view
+        // create Cesium view
         var cesiumView = new OSH.UI.CesiumView("cesium-container", []);
-        cesiumView.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
         cesiumView.first = false; // don't zoom on first item added
         
         // retrieve list of features of interest from server (async call)
-        server.getFeatureOfInterest("urn:osh:sensor:nysmesonet", function(resp) {
+        //$loading = $("<p style='position:absolute; color:white; top:20; left:20; z-index:1000'>Loading...</p>");
+        $loading = $("<img class='spinner' src='images/spinner.svg'>");
+        $("#cesium-container").after($loading);
+        server.getFeatureOfInterest("urn:usgs:water:network", function(resp) {
 
             // render each feature with a marker
             resp.GetFeatureOfInterestResponse.featureMember.forEach(function(f) {
 
                 // parse location from GML
-                var pos = f.location.pos.split(" ");
+                var pos = f.shape.pos.split(" ");
                 var pointMarker = new OSH.UI.Styler.PointMarker({
                     location: {
                            x: parseFloat(pos[1]),
@@ -31,21 +33,25 @@
                     },
                     icon: 'images/marker-icon.png',
                     iconAnchor: [12, 41],
-                    label: f.name,
-                    labelColor: '#000000',
-                    labelSize: 40
+                    /*label: f.id,
+                    labelColor: '#ffffff',
+                    labelSize: 28,
+                    labelOffset: [0, 10],*/
                 });
  
                 // add marker to Leaflet map
                 cesiumView.addViewItem({
-                    name: f.name + " (" + pos[1] + "," + pos[0] + ")",
-                    description: f.description,
+                    name: f.name,
+                    description: f.description + "<br/>" +
+                        "Latitude: " + pos[0] + "°<br/>" +
+                        "Longitude: " + pos[1] + "°",
                     styler: pointMarker
                 });
             });
-
+            
             // zoom to all created markers
             cesiumView.viewer.zoomTo(cesiumView.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 5e5));
+            $loading.remove();
         });
 
     </script>

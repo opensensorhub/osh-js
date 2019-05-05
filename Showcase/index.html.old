@@ -1,0 +1,295 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>OSH-js Showcase</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <!-- Prettify -->
+    <script src="prettify.js"></script>
+    <link rel="stylesheet" href="prettify.css"></script>
+
+    <!-- OSH vendor libs -->
+    <link rel="stylesheet" href="vendor/vendor-debug.css"/>
+    <script src="vendor/vendor-debug.js"></script>
+    <link rel="stylesheet" href="../Toolkit/vendor-local/cesium-draw-helper/DrawHelper.css"/>
+    <script type="text/javascript" src="../Toolkit/vendor-local/cesium-draw-helper/DrawHelper.js"></script>
+
+    <!-- OSH toolkit -->
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-Template.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-Utils.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-BaseClass.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-Buffer.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-EventMap.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/osh-EventManager.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-Websocket.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/dataconnector/osh-DataConnector-HttpAjaxConnector.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSource.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceChart.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMp4.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/datasender/osh-DataSender-DataSink.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datasender/osh-DataSender-PtzTasking.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/datasender/osh-DataSender-FoscamPtzTasking.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-Styler.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerCurve.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/styler/osh-UI-StylerPolyline.js"></script>
+
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-View.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-H264View.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/video/osh-UI-Mp4View.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/chart/osh-UI-Nvd3CurveChartView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-LeafletView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/osh-UI-RangeSlider.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/discovery/osh-UI-DiscoveryView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-DialogView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/dialog/osh-UI-MultiDialogView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/tasking/osh-UI-PtzTaskingView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/server/osh-Server.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/parsers/osh-SWEXmlParser.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/view/entity/osh-UI-EntityTreeView.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-CssMenu.js"></script>
+    <script type="text/javascript" src="../Toolkit/src/osh/ui/contextmenu/osh-UI-ContextMenu-StackMenu.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/discovery.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/stackContextMenu.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../Toolkit/src/css/tasking.css"/>
+
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+	}
+        table {
+            width: 100%;
+            height: 100%;
+	}
+        td {
+            vertical-align: top;
+	}
+        #logo {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        #sample-list {
+            padding: 10px;
+            border-right: 1px solid gray;
+            height: 100%;
+        }
+        #sample-list .item {
+            cursor: pointer;
+            padding: 5px;            
+        }
+        #sample-list .item:hover {
+            background-color: #e5e5e5;            
+        }
+        #sample-area {            
+            width: 100%;
+            height: 100%;
+        }
+        #src-button {
+            position: fixed;
+            top: 20px;
+            right: 80px;
+            z-index: 999;
+            cursor: pointer;
+            /*padding: 5px;
+            background-color: #cccccc;*/
+        }
+        #src-dialog {
+            display: none;
+        }
+        .ui-front {
+            z-index: 2000;
+        }
+        .prettyprint {
+            overflow: auto;
+            -webkit-overflow-scrolling: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td width="17%">
+    <div id="sample-list">
+        <a href="http://www.opensensorhub.org/">
+            <img id="logo" src="https://opensensorhub.files.wordpress.com/2017/08/opensensorhub-logo2.png">
+        </a>
+    </div>
+</td>
+<td>
+    <div id="sample-area"></div>
+</td>
+</tr>
+</table>
+
+<div id="src-button">View Source Code</div>
+
+</body>
+
+<div id="src-dialog" title="Source Code">
+<?prettify lang=html linenums=true?>
+<pre class="prettyprint" id="src-code">
+</div>
+
+<script>
+    var samples = [
+        {
+            name: "Moving Location (Leaflet)",
+            description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle",
+            url: "samples/leaflet-location.html"
+        },
+        {
+            name: "Moving Location (CesiumJS)",
+            description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle",
+            url: "samples/cesium-location.html"
+        },
+        {
+            name: "Moving Location (OpenLayers)",
+            description: "Display a moving marker on an OpenLayers map, tracking the current location of a vehicle",
+            url: "samples/openlayers-location.html"
+        },
+        {
+            name: "Moving Location + Heading (Leaflet)",
+            description: "Display a moving marker on a Leaflet map, tracking the current location and heading of a vehicle",
+            url: "samples/leaflet-location+heading.html"
+        },
+        {
+            name: "Moving Location + Path (Leaflet)",
+            description: "Display a moving marker and a polyline on a Leaflet map, showing both the current location of a vehicle and the historical track",
+            url: "samples/leaflet-location+path.html"
+        },
+        {
+            name: "FOI Locations (Leaflet)",
+            description: "Display the location of several features of interest on a Leaflet map",
+            url: "samples/leaflet-fois.html"
+        },
+        {
+            name: "FOI Locations (CesiumJS)",
+            description: "Display the location of several features of interest on a CesiumJS globe",
+            url: "samples/cesium-fois.html"
+        },
+        {
+            name: "MJPEG Video",
+            description: "Display an MJPEG video in a simple DIV",
+            url: "samples/video-mjpeg.html"
+        },
+        {
+            name: "H264 Video",
+            description: "Display an H264 video in a simple DIV using FFMPEG-JS decoder",
+            url: "samples/video-h264.html"
+        },
+        {
+            name: "Simple Chart (NVD3)",
+            url: "samples/curveChart.html"
+        }
+
+/*
+        {
+            name: "NVD3 JSON Windspeed",
+            url: "viewers/CurveChart/curveChart.html"
+        },
+        {
+            name: "Entity tree + stack menu",
+            url: "viewers/Tree/tree.html"
+        },
+        {
+            name: "Discovery",
+            url: "viewers/Discovery/discovery.html"
+        },
+        {
+            name: "Time control RangeSlider",
+            url: "viewers/RangeSlider/RangeSlider.html"
+        },
+        {
+            name: "Multi dialog + tasking",
+            url: "viewers/Multidialog/Multidialog.html"
+        },{
+            name: "Server",
+            url: "viewers/Server/server.html"
+        },
+        {
+            name: "Live camera tasking",
+            url: "viewers/LiveTasking/LiveTasking.html"
+        },
+        {
+            name: "WFS-T / Cesium example",
+            url: "viewers/wfst/wfst.html"
+        }
+*/
+    ];
+
+    // setup handler to load sample in viewing area
+    var currentSample;
+    samples.forEach(s => {
+        var $newElt = $("<div class='item' title='" + s.description + "'>" + s.name + "</div>");
+        $newElt.on("click", e => { 
+            // cleanup previously opened connections
+            for (v in window) {
+                if (window[v] != null && typeof(window[v].disconnect) === "function") {
+                    console.log("Disconnecting " + window[v].name);
+                    window[v].disconnect();
+                    delete window[v];
+                }
+            }
+            // reset all event subscribers
+            eventMap = new OSH.EventMap();
+            // load selected sample
+            currentSample=s;
+            $("#sample-area").load(s.url);
+        });
+        $("#sample-list").append($newElt);
+    });
+
+    // setup handler to show code in popup
+    function htmlEscape(s) {
+        return s
+           .replace(/&/g, '&amp;')
+           .replace(/</g, '&lt;')
+           .replace(/>/g, '&gt;');
+    }
+
+    $("#src-button").button().on("click", e => { 
+        var stringData = $.ajax({
+                    url: currentSample.url,
+                    async: false
+                 }).responseText;
+        $("#src-code").empty();
+        $("#src-code").append(htmlEscape(stringData));
+        $("#src-code").removeClass("prettyprinted");
+        PR.prettyPrint();
+        $("#src-dialog").dialog({width: 800, height: 800}); 
+    });
+
+    // redefine workers folder
+    window.OSH.BASE_WORKER_URL = "../Toolkit/dist/js/workers";    
+
+</script>
+</html>

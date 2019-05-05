@@ -9,7 +9,7 @@
         //@ sourceURL=leaflet-fois.html.js
 
         var server = new OSH.Server({
-            url:"https://nys.georobotix.com",
+            url: "http://sensiasoft.net:8181",
             sos: "sos",
             baseUrl: "sensorhub"
         });
@@ -19,14 +19,18 @@
         leafletMapView.first = false; // don't zoom on first item added
         leafletMapView.map.setView(new L.LatLng(42.8, -76), 8);
 
+        // show loading spinner
+        $spinner = $("<img class='spinner' style='left:50px' src='images/spinner.svg'>");
+        $("#leafletMap").after($spinner);
+
         // retrieve list of features of interest from server (async call)
-        server.getFeatureOfInterest("urn:osh:sensor:nysmesonet", function(resp) {
+        server.getFeatureOfInterest("urn:usgs:water:network", function(resp) {
 
             // render each feature with a marker
             resp.GetFeatureOfInterestResponse.featureMember.forEach(function(f) {
 
                 // parse location from GML
-                var pos = f.location.pos.split(" ");
+                var pos = f.shape.pos.split(" ");
                 var pointMarker = new OSH.UI.Styler.PointMarker({
                     location: {
                            x: parseFloat(pos[1]),
@@ -34,17 +38,21 @@
                     },
                     icon: 'images/marker-icon.png',
                     iconAnchor: [12, 41],
-                    label: f.name,
-                    labelOffset: [0, -14]
+                    /*label: f.id,
+                    labelOffset: [0, -14]*/
                 });
  
                 // add marker to Leaflet map
                 leafletMapView.addViewItem({
-                    name: f.name + " (" + pos[1] + "," + pos[0] + ")",
-                    description: f.description,
+                    name: f.name,
+                    description: "<hr/>" + f.description + "<br/>" +
+                        "Latitude: " + pos[0] + "°<br/>" +
+                        "Longitude: " + pos[1] + "°",
                     styler: pointMarker
                 });
             });
+
+            $spinner.remove();
         });
 
     </script>
