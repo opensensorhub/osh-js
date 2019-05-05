@@ -291,9 +291,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	scene3DOnly: true // for draw layer
 	    });
 	    
-	    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-	        url : '//assets.agi.com/stk-terrain/world'
-	    });
+	    this.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
 	    
 	    this.viewer.scene.copyGlobeDepth = true;
 	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
