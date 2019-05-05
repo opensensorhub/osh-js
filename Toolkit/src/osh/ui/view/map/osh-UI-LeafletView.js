@@ -232,8 +232,12 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
                 direction: 'center',
                 offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });  
-	}
-        marker.bindPopup(properties.name);
+        }
+        
+        var name = properties.hasOwnProperty("name") && properties.name != null ? properties.name : "";
+        var desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
+        if (name.length > 0 || desc.length > 0)
+            marker.bindPopup(name + '<div>' + desc + '</div>');
 
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
@@ -344,7 +348,8 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
                 labelColor : styler.labelColor,
                 labelSize : styler.labelSize,
                 labelOffset : styler.labelOffset,
-                name: this.names[styler.getId()]
+                name : styler.viewItem.name,
+				description : styler.viewItem.description
             });
             this.stylerToObj[styler.getId()] = markerId;
         } else {
