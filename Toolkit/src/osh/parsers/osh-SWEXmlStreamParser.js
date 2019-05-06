@@ -7,60 +7,39 @@
  * @classdesc
  *
  */
-OSH.SWEXmlStreamParser = BaseClass.extend({
+// name this function so it can be easily imported in webworkers
+(OSH.SWEXmlStreamParserCreator = function() {
 
-    initialize:function(xml) {
+    OSH.SWEXmlStreamParser = function(xml) {
         this.originalXml = xml;
+    };
 
-        this.arrayNodeSet = new Set([
-            'featureMember'
-        ]);
+    OSH.SWEXmlStreamParser.arrayNodeSet = new Set([
+        'featureMember',
+        'offering',
+        'observableProperty',
+        'field',
+        'coordinate',
+        'item',
+        'quality',
+        'member',
+        'interval',
+        'AllowedValues/value'
+    ]);
 
-        var x2jsOptions = {
-            xmlns: false, // does not keep xmlns
-            attributePrefix:"",
-            prefix: false,
-            removeAttrPrefix:true,
-            arrayAccessFormPaths : [
-                /.*.coordinate$/,
-                /.*.field$/,
-                /.*.item$/,
-                /.*.quality$/,
-                /.*.member$/,
-                /.*.constraint\.value$/,
-                /.*.constraint\.interval$/,
-                /.*.offering$/,
-                /.*.observableProperty/
-            ],
-            numericalAccessFormPaths: [
-                "value",
-                "nilValue",
-                "paddingBytes-after",
-                "paddingBytes-before",
-                "byteLength",
-                "significantBits",
-                "bitLength",
-                /.*.Time\.value/,
-                /.*.Quantity\.value/,
-                /.*.Count\.value/
-            ],
-            skip: [
-                "type"
-            ]
+    OSH.SWEXmlStreamParser.numericalNodeSet = new Set([
+        'nilValue',
+        'paddingBytes-after',
+        'paddingBytes-before',
+        'byteLength',
+        'significantBits',
+        'bitLength',
+        'Time/value',
+        'Quantity/value',
+        'Count/value'
+    ]);
 
-        };
-    },
-
-    /**
-     * parseXML / html into a DOM Object. with no validation and some failur tolerance
-     * @param {string} S your XML to parse
-     * @param options {object} all other options:
-     * searchId {string} the id of a single element, that should be returned. using this will increase the speed rapidly
-     * filter {function} filter method, as you know it from Array.filter. but is goes throw the DOM.
-     * simplify {bool} to use tXml.simplify.
-     * @return {tNode[]}
-     */
-    toJson: function() {
+    OSH.SWEXmlStreamParser.prototype.toJson = function() {
         "use strict";
         var options = {};
         var S = this.originalXml;
@@ -80,7 +59,8 @@ OSH.SWEXmlStreamParser = BaseClass.extend({
         var singleQuoteCC = "'".charCodeAt(0);
         var doubleQuote = '"';
         var doubleQuoteCC = '"'.charCodeAt(0);
-        var arrayNodeSet = this.arrayNodeSet;
+        var arrayNodeSet = OSH.SWEXmlStreamParser.arrayNodeSet;
+        var numericalNodeSet = OSH.SWEXmlStreamParser.numericalNodeSet;
 
         function isArray(name) {
             return arrayNodeSet.has(name);
@@ -117,16 +97,21 @@ OSH.SWEXmlStreamParser = BaseClass.extend({
                     }
                     var child = parseNode();
                     var childName = child.type;
-                    var singleContent = Object.keys(child).length == 2;
-                    if (singleContent && child.hasOwnProperty('value')) {
+                    if (childName === 'type') // don't override special 'type' attribute!
+                        continue;
+                    var isProperty = childName.charAt(0) == childName.charAt(0).toLowerCase();//Object.keys(child).length == 2;
+                    if (isProperty && child.hasOwnProperty('value')) {
                         node[childName] = child.value;
                     }
                     else {
-                        // skip one level if child contains a single element
-                        if (singleContent) {
+                        // skip one level if child is an OGC property
+                        if (isProperty) {
+                            delete child.type;
                             for (var k in child) {
-                                if (k !== 'type')
-                                    child = child[k];
+                                if (typeof(child[k]) === 'object' && k !== 'name') {
+                                    Object.assign(child, child[k]);
+                                    delete child[k];
+                                }   
                             }
                         }
                         if (isArray(childName)) {
@@ -138,7 +123,13 @@ OSH.SWEXmlStreamParser = BaseClass.extend({
                         }                        
                     }
                 } else {
-                    node.value = parseText();
+                    var text = parseText();
+                    if (text.trim().length > 0) {
+                        if (numericalNodeSet.has(node.type))
+                            node.value = parseFloat(text);
+                        else
+                            node.value = text;
+                    }
                     pos++;
                 }
             }
@@ -233,9 +224,5 @@ OSH.SWEXmlStreamParser = BaseClass.extend({
         var out = parseNode();        
         out.pos = pos;
         return out;
-    },
-
-    toXml:function() {
-        return this.originalXml;
-    }
-});
+    };
+})();
