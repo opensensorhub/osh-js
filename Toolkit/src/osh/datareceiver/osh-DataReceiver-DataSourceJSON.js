@@ -117,7 +117,7 @@ OSH.DataReceiver.JSON = OSH.DataReceiver.DataSource.extend({
         url += "offering="+properties.offeringID+"&";
 
         // adds feature of interest urn
-        if(properties.foiURN !== null && properties.foiURN !== undefined && properties.foiURN !== '') {
+        if(properties.foiURN && properties.foiURN !== '') {
             url += 'featureOfInterest=' + properties.foiURN + '&';
         }
 

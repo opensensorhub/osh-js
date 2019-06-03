@@ -213,6 +213,11 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
 	  
 	  // adds offering
 	  url += "offering="+properties.offeringID+"&";
+
+          // adds feature of interest urn
+	  if(properties.foiURN && properties.foiURN !== '') {
+		url += 'featureOfInterest=' + properties.foiURN + '&';
+	  }
 	  
 	  // adds observedProperty
 	  url += "observedProperty="+properties.observedProperty+"&";
