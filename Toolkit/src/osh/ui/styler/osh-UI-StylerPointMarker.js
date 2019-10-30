@@ -67,8 +67,13 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		this.iconAnchor = [16,16];
 		this.label = null;
 		this.color = "#000000";
-		
+		this.defaultToTerrainElevation = false;
+
 		this.options = {};
+
+		if(typeof(properties.defaultToTerrainElevation) != "undefined") {
+			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
+		}
 		
 		if(typeof(properties.location) != "undefined"){
 			this.location = properties.location;
