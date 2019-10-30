@@ -105,6 +105,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			color : styler.color,
 			icon : styler.icon,
 			timeStamp: timeStamp,
+            defaultToTerrainElevation: styler.defaultToTerrainElevation,
 			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
 		});
 	},
@@ -390,12 +391,13 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         var alt = properties.alt;
         var orient = properties.orientation;
         var imgIcon = properties.icon;
-        
+		var defaultToTerrainElevation = properties.defaultToTerrainElevation;
+
         if (!isNaN(lon) && !isNaN(lat)) {
         	var marker =  this.markers[id];
         	
         	// get ground altitude if non specified
-        	if (typeof(alt) === "undefined" || isNaN(alt)) {
+        	if (typeof(alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
 	    		alt = this.getAltitude(lat, lon);
 	    		if (alt > 1)
 	    			alt += 0.3;
