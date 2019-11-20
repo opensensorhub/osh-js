@@ -339,6 +339,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		var isModel = imgIcon.endsWith(".glb");
 		var name = properties.label ? properties.label : "Selected Marker";
 		var geom;
+		var color = properties.color ? Cesium.Color.fromCssColorString(properties.color) : Cesium.Color.YELLOW;
 		
 		if (isModel)
 		{
@@ -348,7 +349,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				model : {
 					uri: imgIcon,
 					scale: 4,
-					modelM: Cesium.Matrix4.IDENTITY.clone()
+					modelM: Cesium.Matrix4.IDENTITY.clone(),
+					color: color
 				}
 			};
 		}
@@ -399,8 +401,9 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	// get ground altitude if non specified
         	if (typeof(alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
 	    		alt = this.getAltitude(lat, lon);
-	    		if (alt > 1)
+	    		if (alt > 1) {
 	    			alt += 0.3;
+	    		}
     		}
 
     		// update position
@@ -415,15 +418,18 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	    		var roll = 0.0;
 	    		var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
 	    		marker.orientation = quat;
-                        if (marker.billboard)
-				marker.billboard.rotation = Cesium.Math.toRadians(heading);
-    	    	}
+				if (marker.billboard) {
+					marker.billboard.rotation = Cesium.Math.toRadians(heading);
+				}
+			}
     		
     		// update icon or model
-    		if (marker.billboard)
-			marker.billboard.image = imgIcon;
-		else if (marker.model)
-			marker.model.uri = imgIcon; 
+    		if (marker.billboard) {
+				marker.billboard.image = imgIcon;
+			}
+			else if (marker.model)  {
+				marker.model.uri = imgIcon;
+			}
     		
     		// zoom map if first marker update
     		if (this.first) {
