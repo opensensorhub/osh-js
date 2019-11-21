@@ -1,13 +1,13 @@
 var gulp = require('gulp-help')(require('gulp'), {hideDepsMessage: true});
 var argv = require('yargs').argv;
 var clean = require('gulp-clean');
-// var jshint = require('gulp-jshint');
+var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
-// var sort = require('gulp-sort');
-// var order = require('gulp-order');
+var sort = require('gulp-sort');
+var order = require('gulp-order');
 var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
-// var noop = require('gulp-noop');
+var noop = require('gulp-noop');
 var file = require('gulp-file');
 var gap = require('gulp-append-prepend');
 var karmaServer = require('karma').Server;
@@ -26,21 +26,21 @@ var WORKERS_OUT_DIR = OUT_DIR + '/js/workers';
 
 // CESIUM
 
-var CESIUM_SRC = ['vendor-local/cesium/Build/Cesium/Cesium.js', 'vendor-local/cesium-draw-helper/DrawHelper.js', 'vendor-local/cesium-wfst/cesium-wfst.js'];
-var CESIUM_SRC_DEBUG = ['vendor-local/cesium/Build/CesiumUnminified/Cesium.js', 'vendor-local/cesium-draw-helper/DrawHelper.js', 'vendor-local/cesium-wfst/cesium-wfst.js'];
-var CESIUM_CSS = ['vendor-local/cesium-draw-helper/DrawHelper.css'];
+var CESIUM_SRC = ['vendor/cesium/Build/Cesium/Cesium.js', 'vendor/cesium-draw-helper/DrawHelper.js', 'vendor/cesium-wfst/cesium-wfst.js'];
+var CESIUM_SRC_DEBUG = ['vendor/cesium/Build/CesiumUnminified/Cesium.js', 'vendor/cesium-draw-helper/DrawHelper.js', 'vendor/cesium-wfst/cesium-wfst.js'];
+var CESIUM_CSS = ['vendor/cesium-draw-helper/DrawHelper.css'];
 var CESIUM_RESOURCES_DIR = {
-    'vendor-local/cesium-draw-helper/images': 'images',
-    'vendor-local/cesium-wfst/images': 'images',
+    'vendor/cesium-draw-helper/images': 'images',
+    'vendor/cesium-wfst/images': 'images',
 };
 
-var CESIUM_RESOURCES_FILES = ['vendor-local/cesium/Build/Cesium/**', '!vendor-local/cesium/Build/Cesium/Cesium.js'];
+var CESIUM_RESOURCES_FILES = ['vendor/cesium/Build/Cesium/**', '!vendor/cesium/Build/Cesium/Cesium.js'];
 
 // END CESIUM
 
 //--- FFMPEG
 
-var FFMPEG_SRC = ['vendor-local/yuvcanvas/YUVCanvas.js', 'vendor-local/ffmpeg/ffmpeg-h264.js'];
+var FFMPEG_SRC = ['vendor/yuvcanvas/YUVCanvas.js', 'vendor/ffmpeg/ffmpeg-h264.js'];
 var FFMPEG_SRC_DEBUG = FFMPEG_SRC;
 var FFMPEG_CSS = [];
 var FFMPEG_RESOURCES_DIR = {};
@@ -50,9 +50,9 @@ var FFMPEG_RESOURCES_FILES = [];
 
 // NVD3
 
-var NVD3_SRC = ['vendor-local/d3/d3.min.js', 'vendor-local/nvd3/build/nv.d3.min.js'];
-var NVD3_SRC_DEBUG = ['vendor-local/d3/d3.js', 'vendor-local/nvd3/build/nv.d3.js'];
-var NVD3_CSS = ['vendor-local/nvd3/build/nv.d3.css'];
+var NVD3_SRC = ['vendor/d3/d3.min.js', 'vendor/nvd3/build/nv.d3.min.js'];
+var NVD3_SRC_DEBUG = ['vendor/d3/d3.js', 'vendor/nvd3/build/nv.d3.js'];
+var NVD3_CSS = ['vendor/nvd3/build/nv.d3.css'];
 var NVD3_RESOURCES_DIR = {};
 var NVD3_RESOURCES_FILES = [];
 
@@ -61,9 +61,9 @@ var NVD3_RESOURCES_FILES = [];
 
 // NOUISLIDER
 
-var NOUISLIDER_SRC = ['vendor-local/nouislider/distribute/nouislider.min.js', 'vendor-local/wnumb/wNumb.js'];
-var NOUISLIDER_SRC_DEBUG = ['vendor-local/nouislider/distribute/nouislider.js', 'vendor-local/wnumb/wNumb.js'];
-var NOUISLIDER_CSS = ['vendor-local/nouislider/distribute/nouislider.css'];
+var NOUISLIDER_SRC = ['vendor/nouislider/distribute/nouislider.min.js', 'vendor/wnumb/wNumb.js'];
+var NOUISLIDER_SRC_DEBUG = ['vendor/nouislider/distribute/nouislider.js', 'vendor/wnumb/wNumb.js'];
+var NOUISLIDER_CSS = ['vendor/nouislider/distribute/nouislider.css'];
 var NOUISLIDER_RESOURCES_DIR = {};
 var NOUISLIDER_RESOURCES_FILES = {};
 
@@ -72,9 +72,9 @@ var NOUISLIDER_RESOURCES_FILES = {};
 // OL3
 
 //var OL3_SRC = ['vendor/ol3/ol.js','vendor/ol3-layerswitcher/src/ol3-layerswitcher.js'];
-var OL3_SRC = ['vendor-local/ol3/ol-debug.js', 'vendor-local/ol3-layerswitcher/src/ol3-layerswitcher.js'];
-var OL3_SRC_DEBUG = ['vendor-local/ol3/ol-debug.js', 'vendor-local/ol3-layerswitcher/src/ol3-layerswitcher.js'];
-var OL3_CSS = ['vendor-local/ol3/ol.css', 'vendor-local/ol3-layerswitcher/src/ol3-layerswitcher.css'];
+var OL3_SRC = ['vendor/ol3/ol-debug.js', 'vendor/ol3-layerswitcher/src/ol3-layerswitcher.js'];
+var OL3_SRC_DEBUG = ['vendor/ol3/ol-debug.js', 'vendor/ol3-layerswitcher/src/ol3-layerswitcher.js'];
+var OL3_CSS = ['vendor/ol3/ol.css', 'vendor/ol3-layerswitcher/src/ol3-layerswitcher.css'];
 var OL3_RESOURCES_DIR = {};
 var OL3_RESOURCES_FILES = [];
 
@@ -84,38 +84,38 @@ var OL3_RESOURCES_FILES = [];
 // LEAFLET
 
 var LEAFLET_SRC = [
-    'vendor-local/leaflet/dist/leaflet.js', // leaflet core
-    'vendor-local/Leaflet.fullscreen/dist/Leaflet.fullscreen.js', // leaflet fullscreen plugin
-    'vendor-local/Leaflet.draw/dist/leaflet.draw.js' // leaflet draw layer plugin
+    'vendor/leaflet/dist/leaflet.js', // leaflet core
+    'vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.js', // leaflet fullscreen plugin
+    'vendor/Leaflet.draw/dist/leaflet.draw.js' // leaflet draw layer plugin
 ];
 var LEAFLET_SRC_DEBUG = [
-    'vendor-local/leaflet/dist/leaflet-src.js', // leaflet core
-    'vendor-local/Leaflet.fullscreen/dist/Leaflet.fullscreen.js', // leaflet fullscreen plugin
-    'vendor-local/Leaflet.draw/dist/leaflet.draw-src.js' // leaflet draw layer plugin
+    'vendor/leaflet/dist/leaflet-src.js', // leaflet core
+    'vendor/Leaflet.fullscreen/dist/Leaflet.fullscreen.js', // leaflet fullscreen plugin
+    'vendor/Leaflet.draw/dist/leaflet.draw-src.js' // leaflet draw layer plugin
 ];
 
-var LEAFLET_CSS = ['vendor-local/leaflet/dist/leaflet.css', 'vendor-local/Leaflet.fullscreen/dist/leaflet.fullscreen.css', 'vendor-local/Leaflet.draw/dist/leaflet.draw.css'];
+var LEAFLET_CSS = ['vendor/leaflet/dist/leaflet.css', 'vendor/Leaflet.fullscreen/dist/leaflet.fullscreen.css', 'vendor/Leaflet.draw/dist/leaflet.draw.css'];
 var LEAFLET_RESOURCES_DIR = {
-    './vendor-local/leaflet/dist/images': 'images',
-    './vendor-local/Leaflet.draw/dist/images': 'images'
+    './vendor/leaflet/dist/images': 'images',
+    './vendor/Leaflet.draw/dist/images': 'images'
 };
-var LEAFLET_RESOURCES_FILES = ['vendor-local/Leaflet.fullscreen/dist/*.png'];
+var LEAFLET_RESOURCES_FILES = ['vendor/Leaflet.fullscreen/dist/*.png'];
 
 // END LEAFLET
 
 // TREE
 
-var TREE_SRC = ['vendor-local/tree/tree.js'];
+var TREE_SRC = ['vendor/tree/tree.js'];
 var TREE_SRC_DEBUG = TREE_SRC;
-var TREE_CSS = ['vendor-local/tree/tree.css'];
-var TREE_RESOURCES_DIR = {'./vendor-local/tree/images': 'images'};
+var TREE_CSS = ['vendor/tree/tree.css'];
+var TREE_RESOURCES_DIR = {'./vendor/tree/images': 'images'};
 var TREE_RESOURCES_FILES = [];
 
 // END TREE
 
 // X2JS
 
-var X2JS_SRC = ['vendor-local/x2js/x2js.js'];
+var X2JS_SRC = ['vendor/x2js/x2js.js'];
 var X2JS_SRC_DEBUG = X2JS_SRC;
 var X2JS_CSS = [];
 var X2JS_RESOURCES_DIR = {};
