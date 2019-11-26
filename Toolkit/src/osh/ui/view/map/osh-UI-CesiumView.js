@@ -207,10 +207,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                         }
                     }
                 }),
-                vertexShaderSource: Cesium._shadersImageDrapingVS,
-                fragmentShaderSource: Cesium._shadersImageDrapingFS
+                vertexShaderSource: Cesium._shaders.ImageDrapingVS,
+                fragmentShaderSource: Cesium._shaders.ImageDrapingFS
             });
-
+    	    
     	    /*appearance = new Cesium.MaterialAppearance({
                 material : new Cesium.Material({
                     fabric : {
