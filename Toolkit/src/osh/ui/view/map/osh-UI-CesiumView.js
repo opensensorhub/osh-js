@@ -133,7 +133,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     	///////////////////////////////////////////////////////////////////////////////////
     	var nedTransform = Cesium.Transforms.northEastDownToFixedFrame(camPos);
     	var camRot = new Cesium.Matrix3();
-    	Cesium.Matrix4.getRotation(nedTransform, camRot);    	
+    	Cesium.Matrix4.getMatrix3(nedTransform, camRot);
     	var rotM = new Cesium.Matrix3();
     	
         // UAV heading, pitch, roll (given in NED frame)
@@ -207,8 +207,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                         }
                     }
                 }),
-                vertexShaderSource: Cesium._shaders.ImageDrapingVS,
-                fragmentShaderSource: Cesium._shaders.ImageDrapingFS
+                vertexShaderSource: Cesium._shadersImageDrapingVS,
+                fragmentShaderSource: Cesium._shadersImageDrapingFS
             });
     	    
     	    /*appearance = new Cesium.MaterialAppearance({
@@ -234,8 +234,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                         geometryInstances: new Cesium.GeometryInstance({
                             geometry: new Cesium.RectangleGeometry({
                                 rectangle: Cesium.Rectangle.fromDegrees(llaPos.x-0.1, llaPos.y-0.1, llaPos.x+0.1, llaPos.y+0.1),
-                                height: updatedPositions[0].height-100,
-                                extrudedHeight: llaPos.z-1
+                                height: updatedPositions[0].height,
+                                // extrudedHeight: llaPos.z-1
                             })
                         }), 
                         appearance: appearance
@@ -285,13 +285,14 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	scene3DOnly: true // for draw layer
 	    });
 	    
-	    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-	        url : '//assets.agi.com/stk-terrain/world'
-	    });
+	    // this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+	    //     url : '//assets.agi.com/stk-terrain/world'
+	    // });
 	    
-	    this.viewer.scene.copyGlobeDepth = true;
+	    // this.viewer.scene.copyGlobeDepth = true;
 	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
-	    
+		this.viewer.scene.globe.depthTestAgainstTerrain = true;
+
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 	        //change icon
