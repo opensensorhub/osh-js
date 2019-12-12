@@ -235,7 +235,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                             geometry: new Cesium.RectangleGeometry({
                                 rectangle: Cesium.Rectangle.fromDegrees(llaPos.x-0.1, llaPos.y-0.1, llaPos.x+0.1, llaPos.y+0.1),
                                 height: updatedPositions[0].height,
-                                // extrudedHeight: llaPos.z-1
+                                extrudedHeight: llaPos.z-1
                             })
                         }), 
                         appearance: appearance
@@ -285,13 +285,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	scene3DOnly: true // for draw layer
 	    });
 	    
-	    // this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-	    //     url : '//assets.agi.com/stk-terrain/world'
-	    // });
-	    
-	    // this.viewer.scene.copyGlobeDepth = true;
 	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
-		this.viewer.scene.globe.depthTestAgainstTerrain = true;
 
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
