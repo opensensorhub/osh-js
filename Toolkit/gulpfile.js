@@ -237,6 +237,8 @@ OSH_SRC.push('./src/osh/datasender/osh-DataSender-PtzTasking.js');
 OSH_SRC.push('./src/osh/datasender/osh-DataSender-FoscamPtzTasking.js');
 OSH_SRC.push('./src/osh/datasender/osh-DataSender-UavMapTasking.js');
 OSH_SRC.push('./src/osh/datasender/osh-DataSenderController.js');
+OSH_SRC.push('./src/osh/parsers/osh-SWEJsonParser.js');
+OSH_SRC.push('./src/osh/parsers/osh-SWEXmlParser.js');
 OSH_SRC.push('./src/osh/server/osh-Server.js');
 OSH_SRC.push('./src/osh/log/osh-Log.js');
 OSH_SRC.push('./src/osh/ui/view/osh-UI-View.js');
