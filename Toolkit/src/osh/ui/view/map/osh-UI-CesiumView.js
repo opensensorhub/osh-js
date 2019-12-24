@@ -454,7 +454,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
 		var altitude = this.viewer.scene.globe.getHeight(Cesium.Ellipsoid.WGS84.cartesianToCartographic(position));
 
-		if (altitude === 'undefined' || altitude <= 0) {
+		if ((altitude === undefined) || (altitude <= 0)) {
             altitude = 0.1;
         }
 		return altitude;
