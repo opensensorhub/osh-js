@@ -68,6 +68,7 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		this.label = null;
 		this.color = "#000000";
 		this.defaultToTerrainElevation = false;
+		this.description = null;
 
 		this.options = {};
 
@@ -132,6 +133,12 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 				this.color = properties.colorFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.colorFunc.dataSourceIds,fn);
+		}
+
+		if (typeof (properties.description) != "undefined") {
+
+			this.description = properties.description;
+
 		}
 	},
 

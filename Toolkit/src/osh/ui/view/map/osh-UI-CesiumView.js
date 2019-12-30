@@ -89,7 +89,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				icon : styler.icon,
 				label : styler.label,
 				timeStamp: timeStamp,
-				selected: ((typeof(options.selected) !== 'undefined')? options.selected : false)
+				selected: ((typeof(options.selected) !== 'undefined')? options.selected : false),
+				description: styler.description
 			});
 
 			this.stylerToObj[styler.getId()] = markerId;
@@ -337,13 +338,15 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		var name = properties.label ? properties.label : 'Selected Marker';
 		var geom;
 		var color = properties.color ? Cesium.Color.fromCssColorString(properties.color) : Cesium.Color.YELLOW;
+		var description = (properties.description) ? properties.description : null;
 		
 		if (isModel)
 		{
 			geom = {
 				name: name,
-				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
-				model : {
+				description: description,
+				position: Cesium.Cartesian3.fromDegrees(0, 0, 0),
+				model: {
 					uri: imgIcon,
 					scale: 4,
 					modelM: Cesium.Matrix4.IDENTITY.clone(),
@@ -359,6 +362,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
             }
 			geom = {
 				name: name,
+				description: description,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
 				billboard : {
 					image : imgIcon,
