@@ -392,58 +392,64 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 */
 	updateMapMarker: function(id, properties) {
 		var lon = properties.lon;
-        var lat = properties.lat;
-        var alt = properties.alt;
-        var orient = properties.orientation;
-        var imgIcon = properties.icon;
+		var lat = properties.lat;
+		var alt = properties.alt;
+		var orient = properties.orientation;
+		var imgIcon = properties.icon;
 		var defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
-        if (!isNaN(lon) && !isNaN(lat)) {
-        	var marker =  this.markers[id];
-        	
-        	// get ground altitude if non specified
-        	if (typeof(alt) === 'undefined' || isNaN(alt) || defaultToTerrainElevation === true) {
-	    		alt = this.getAltitude(lat, lon);
-	    		if (alt > 1) {
-	    			alt += 0.3;
-	    		}
-    		}
+		if (!isNaN(lon) && !isNaN(lat)) {
+			var marker =  this.markers[id];
 
-    		// update position
-        	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-    		marker.position = pos;
-    		    		
-    		// update orientation
-    		if (typeof(orient) !== 'undefined') {
-    			var DTR = Math.PI/180.0;
-    			var heading = orient.heading;
-	    		var pitch = 0.0;
-	    		var roll = 0.0;
-	    		var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
-	    		marker.orientation = quat;
+			// get ground altitude if non specified
+			if (typeof(alt) === 'undefined' || isNaN(alt)) {
+				alt = this.getAltitude(lat, lon);
+				if (alt > 1) {
+					alt += 0.3;
+				}
+			}
+
+			// update position
+			var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+			marker.position = pos;
+
+			// update orientation
+			if (typeof(orient) !== 'undefined') {
+				var DTR = Math.PI/180.0;
+				var heading = orient.heading;
+				var pitch = 0.0;
+				var roll = 0.0;
+				var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
+				marker.orientation = quat;
 				if (marker.billboard) {
 					marker.billboard.rotation = Cesium.Math.toRadians(heading);
 				}
 			}
-    		
-    		// update icon or model
-    		if (marker.billboard) {
+
+			// update icon or model
+			if (marker.billboard) {
+				if (defaultToTerrainElevation) {
+					marker.billboard.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+				}
 				marker.billboard.image = imgIcon;
 			}
 			else if (marker.model)  {
+				if (defaultToTerrainElevation) {
+					marker.model.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+				}
 				marker.model.uri = imgIcon;
 			}
-    		
-    		// zoom map if first marker update
-    		if (this.first) {
-    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
-    			this.first = false;
-    		}
-    		
-    		if (properties.selected) {
-    			 this.viewer.selectedEntity = marker;
-    		}
-        }
+
+			// zoom map if first marker update
+			if (this.first) {
+				this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
+				this.first = false;
+			}
+
+			if (properties.selected) {
+				this.viewer.selectedEntity = marker;
+			}
+		}
 	},
 
 	/**
