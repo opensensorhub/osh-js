@@ -50,7 +50,7 @@ OSH.UI.EntityTreeView = OSH.UI.View.extend({
      * @memberof OSH.UI.EntityTreeView
      */
     initTree:function(options) {
-        this.tree = createTree(this.divId,'white',null);
+        this.tree = createTree(this.divId,'transparent',null);
 
         // iterates over entities to create treeNode
         for(var i = 0;i < this.entityItems.length;i++) {

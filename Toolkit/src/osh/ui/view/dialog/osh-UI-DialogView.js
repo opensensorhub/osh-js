@@ -161,10 +161,10 @@ OSH.UI.DialogView = OSH.UI.View.extend({
         // observe events to update the dialog after disconnect/connect events handling
         OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE,function(event) {
             var dataSources = event.dataSourcesId;
-            if(dataSources.length == self.connectionIds.length) {
+            if(dataSources.length === self.connectionIds.length) {
                 if(dataSources.filter(function(n) {
-                        return self.connectionIds.indexOf(n) != -1;
-                    }).length == self.connectionIds.length) {
+                        return self.connectionIds.indexOf(n) !== -1;
+                    }).length === self.connectionIds.length) {
                     document.getElementById(self.connectDivId).setAttribute("class", "pop-connect");
                     self.connected = true;
                 }
@@ -173,10 +173,10 @@ OSH.UI.DialogView = OSH.UI.View.extend({
 
         OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE,function(event) {
             var dataSources = event.dataSourcesId;
-            if(dataSources.length == self.connectionIds.length) {
+            if(dataSources.length === self.connectionIds.length) {
                 if(dataSources.filter(function(n) {
-                        return self.connectionIds.indexOf(n) != -1;
-                    }).length == self.connectionIds.length) {
+                        return self.connectionIds.indexOf(n) !== -1;
+                    }).length === self.connectionIds.length) {
                     document.getElementById(self.connectDivId).setAttribute("class", "pop-disconnect");
                     self.connected = false;
                 }
@@ -184,7 +184,7 @@ OSH.UI.DialogView = OSH.UI.View.extend({
         });
 
         OSH.EventManager.observe("swap-restore",function(event) {
-            if(self.swapped && event.exclude != self.id) {
+            if(self.swapped && event.exclude !== self.id) {
                 self.swap();
                 self.swapped = false;
             }
