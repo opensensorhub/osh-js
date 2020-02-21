@@ -383,31 +383,6 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		return id;
 	},
 
-	/**
-	 *
-	 * @param id
-	 * @param properties
-	 * @instance
-	 * @memberof OSH.UI.CesiumView
-	 */
-	updateMapMarker: function(id, properties) {
-		var lon = properties.lon;
-		var lat = properties.lat;
-		var alt = properties.alt;
-		var orient = properties.orientation;
-		var imgIcon = properties.icon;
-		var defaultToTerrainElevation = properties.defaultToTerrainElevation;
-
-		if (!isNaN(lon) && !isNaN(lat)) {
-			var marker =  this.markers[id];
-
-			// get ground altitude if non specified
-			if (typeof(alt) === 'undefined' || isNaN(alt)) {
-				alt = this.getAltitude(lat, lon);
-				if (alt > 1) {
-					alt += 0.3;
-				}
-			}
     /**
      *
      * @param id
@@ -491,12 +466,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
             altitude = 0.1;
         }
 		return altitude;
-	}
-        if (altitude === 'undefined' || altitude <= 0){
-            altitude = 0.1;
-        }
-        return altitude;
-    },
+	},
 
     /***
      * WIP: only supports WMS for right now
