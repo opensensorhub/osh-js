@@ -98,7 +98,12 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		
 		if(typeof(properties.color) != "undefined"){
 			this.color = properties.color;
-		} 
+		}
+
+		// TODO: Remove if not needed later
+		if (properties.hasOwnProperty('options')) {
+			this.options = properties.options;
+		}
 		
 		if(typeof(properties.locationFunc) != "undefined") {
 			var fn = function(rec,timeStamp,options) {
@@ -136,9 +141,7 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		}
 
 		if (typeof (properties.description) != "undefined") {
-
 			this.description = properties.description;
-
 		}
 	},
 

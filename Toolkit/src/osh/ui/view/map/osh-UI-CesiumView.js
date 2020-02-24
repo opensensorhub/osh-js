@@ -90,7 +90,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                 label: styler.label,
                 timeStamp: timeStamp,
                 selected: ((typeof (options.selected) !== 'undefined') ? options.selected : false),
-				description: styler.description
+				description: styler.description,
+				circle: styler.circle
 			});
 
             this.stylerToObj[styler.getId()] = markerId;
@@ -308,15 +309,17 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                     }
                 }
 
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
-                    dataSourcesIds: dataSrcIds,
-                    entityId: entityId
-                });
-            } else {
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
-                    dataSourcesIds: [],
-                    entityId: null
-                });
+				OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+					dataSourcesIds: dataSrcIds,
+					entityId: entityId,
+					source: 'cesium',
+				});
+			} else {
+				OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+					dataSourcesIds: [],
+					entityId: null,
+					source: 'cesium',
+				});
             }
         }.bind(this));
     },
@@ -373,6 +376,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 					eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
 				}
 			};
+		}
+
+		if (properties.hasOwnProperty('description')) {
+			geom.description = properties.description;
 		}
 
 		var entity = this.viewer.entities.add(geom);
