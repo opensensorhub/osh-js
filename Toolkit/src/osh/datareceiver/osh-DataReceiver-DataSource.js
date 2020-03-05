@@ -45,7 +45,7 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
    * @memberof OSH.DataReceiver.DataSource
    */
   initDataSource: function(properties) {
-    
+
     if(typeof(properties.timeShift) != "undefined") {
         this.timeShift = properties.timeShift;
     }
@@ -67,7 +67,7 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
     if(typeof(properties.connect) == "undefined") {
       properties.connect = true;
     }
-    
+
     // checks if type is WebSocket
     if (properties.protocol.startsWith('ws')){
       this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
@@ -88,7 +88,7 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
   disconnect : function() {
     this.connector.disconnect();
     this.connected = false;
-    
+
     // send data reset event
     OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+this.id,{
         dataSourceId: this.id,
@@ -141,18 +141,18 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
   parseData: function(data){
     return data;
   },
-  
+
   /**
    * @param {Object} data the data object
    * @instance
    * @memberof OSH.DataReceiver.DataSource
    * @example
-   * data is represented as 
-   * data = { 
+   * data is represented as
+   * data = {
    *    timeStamp: timeStamp // number
    *    data: data // data to render
    * };
-   */ 
+   */
   onData:function(data) {},
 
   /**
@@ -193,43 +193,47 @@ OSH.DataReceiver.DataSource = BaseClass.extend({
    */
   buildUrl: function(properties) {
 	  var url = "";
-	  
+
 	  // adds protocol
 	  url += properties.protocol + "://";
-	  
+
 	  // adds endpoint url
 	  url += properties.endpointUrl+"?";
-	  
+
 	  // adds service
 	  url += "service="+properties.service+"&";
-	  
+
 	  // adds version
 	  url += "version=2.0&";
-	  
+
 	  // adds request
 	  url += "request=GetResult&";
-	  
+
 	  // adds offering
 	  url += "offering="+properties.offeringID+"&";
-	  
+
 	  // adds observedProperty
 	  url += "observedProperty="+properties.observedProperty+"&";
-	  
+
 	  // adds temporalFilter
 	  var startTime = properties.startTime;
 	  var endTime = properties.endTime;
 	  url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&";
-	  
+
 	  if(properties.replaySpeed) {
 		  // adds replaySpeed
 		  url += "replaySpeed="+properties.replaySpeed;
 	  }
-	  
+
 	  // adds responseFormat (optional)
 	  if(properties.responseFormat) {
 		  url += "&responseFormat="+properties.responseFormat;
 	  }
 
 	  return url;
+  },
+
+  setReconnectTimeout: function(timeout) {
+    return  this.connector.setReconnectTimeout(timeout);
   }
 });

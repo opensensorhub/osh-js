@@ -36,6 +36,7 @@
 OSH.DataReceiver.VideoMjpeg = OSH.DataReceiver.DataSource.extend({
   initialize: function(name,properties,options) {
     this._super(name,properties,options);
+    this.setReconnectTimeout(1000 * 5); // 5 sec
   },
 
   /**
@@ -62,5 +63,5 @@ OSH.DataReceiver.VideoMjpeg = OSH.DataReceiver.DataSource.extend({
     var imgBlob = new Blob([data]);
     var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
     return blobURL;
-  } 
+  }
 });

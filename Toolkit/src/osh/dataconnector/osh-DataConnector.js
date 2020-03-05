@@ -24,6 +24,8 @@ OSH.DataConnector.DataConnector = BaseClass.extend({
   initialize: function(url) {
     this.url = url;
     this.id = "DataConnector-"+OSH.Utils.randomUUID();
+
+    this.reconnectTimeout = 1000 * 60 * 2; //2 min
   },
 
   /**
@@ -44,5 +46,9 @@ OSH.DataConnector.DataConnector = BaseClass.extend({
    */
   getUrl: function() {
     return this.url;
+  },
+
+  setReconnectTimeout: function(timeout) {
+    this.reconnectTimeout = timeout;
   }
 });
