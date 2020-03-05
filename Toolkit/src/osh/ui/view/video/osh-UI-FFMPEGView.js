@@ -39,20 +39,12 @@
  The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 OSH.UI.FFMPEGView = OSH.UI.View.extend({
-    initialize: function (parentElementDivId, options) {
-        this._super(parentElementDivId, [], options);
+    initialize: function (divId, options) {
+        this._super(divId, [], options);
 
         this.fps = 0;
         var width = "640";
         var height = "480";
-
-        this.nbFrames = 0;
-        /*
-         for 1920 x 1080 @ 25 fps = 7 MB/s
-         1 frame = 0.28MB
-         178 frames = 50MB
-         */
-        this.FLUSH_LIMIT  = 200;
 
         this.statistics = {
             videoStartTime: 0,
@@ -65,9 +57,8 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             fpsSinceStart: 0
         };
 
-        this.useWorker = OSH.Utils.isWebWorker();
+        this.useWorker = false;
         this.resetCalled = true;
-        this.useTransferableData = true;
 
         if (typeof options != "undefined") {
             if (options.width) {
@@ -79,22 +70,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             }
 
             this.useWorker = (typeof options.useWorker != "undefined") && (options.useWorker) && (OSH.Utils.isWebWorker());
-
-            if(options.adjust) {
-                var divElt = document.getElementById(this.divId);
-                if(divElt.offsetWidth < width) {
-                    width = divElt.offsetWidth;
-                }
-                if(divElt.offsetHeight < height) {
-                    height = divElt.offsetHeight;
-                }
-            }
-
-            if(options.useWebWorkerTransferableData) {
-                this.useWebWorkerTransferableData = options.useWebWorkerTransferableData;
-            }
         }
-
 
         // create webGL canvas
         this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
@@ -128,26 +104,31 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var pktData = data.data;
         var pktSize = pktData.length;
 
-        this.resetCalled = false;
-
         if (this.useWorker) {
+            this.resetCalled = false;
             this.decodeWorker(pktSize, pktData);
         } else {
             var decodedFrame = this.decode(pktSize, pktData);
-            this.displayFrame(decodedFrame);
-            this.update = false;
+            if(typeof decodedFrame != "undefined") {
+                this.yuvCanvas.drawNextOuptutPictureGL({
+                    yData: decodedFrame.frameYData,
+                    yDataPerRow: decodedFrame.frame_width,
+                    yRowCnt: decodedFrame.frame_height,
+                    uData: decodedFrame.frameUData,
+                    uDataPerRow: decodedFrame.frame_width / 2,
+                    uRowCnt: decodedFrame.frame_height / 2,
+                    vData: decodedFrame.frameVData,
+                    vDataPerRow: decodedFrame.frame_width / 2,
+                    vRowCnt: decodedFrame.frame_height / 2
+                });
+
+                this.updateStatistics();
+                this.onAfterDecoded();
+            }
         }
-        //check for flush
-        this.checkFlush();
     },
 
 
-    checkFlush: function() {
-        if(!this.useWorker && this.nbFrames >= this.FLUSH_LIMIT) {
-            this.nbFrames = 0;
-            _avcodec_flush_buffers(this.av_ctx);
-        }
-    },
     /**
      *
      * @param $super
@@ -244,64 +225,31 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @param callback
      */
     initFFMPEG_DECODER_WORKER: function (callback) {
-        this.worker = new Worker(window.OSH.BASE_WORKER_URL+'/osh-UI-FFMPEGViewWorker.js');
+        this.worker = new Worker('js/workers/osh-UI-FFMPEGViewWorker.js');
 
         var self = this;
-        var decodedFrame;
-
-        function release(decodedFrame) {
-            self.worker.postMessage({
-                data: decodedFrame,
-                release:true
-            }, [
-                decodedFrame.y.buffer,
-                decodedFrame.u.buffer,
-                decodedFrame.v.buffer
-            ]);
-        }
-
         this.worker.onmessage = function (e) {
-            if(e.data !== null) {
-                decodedFrame = e.data.data;
-                this.displayFrame(e.data.width,e.data.height,decodedFrame);
+            var decodedFrame = e.data;
 
-                release(decodedFrame);
+            if (!this.resetCalled) {
+                self.yuvCanvas.canvasElement.drawing = true;
+                self.yuvCanvas.drawNextOuptutPictureGL({
+                    yData: decodedFrame.frameYData,
+                    yDataPerRow: decodedFrame.frame_width,
+                    yRowCnt: decodedFrame.frame_height,
+                    uData: decodedFrame.frameUData,
+                    uDataPerRow: decodedFrame.frame_width / 2,
+                    uRowCnt: decodedFrame.frame_height / 2,
+                    vData: decodedFrame.frameVData,
+                    vDataPerRow: decodedFrame.frame_width / 2,
+                    vRowCnt: decodedFrame.frame_height / 2
+                });
+                self.yuvCanvas.canvasElement.drawing = false;
+
+                self.updateStatistics();
+                self.onAfterDecoded();
             }
         }.bind(this);
-        this.worker.onerror = function (e) {
-          console.error(e);
-        };
-    },
-
-    displayFrame:function(width,height,decodedFrame) {
-        if (!this.resetCalled) {
-            this.yuvCanvas.canvasElement.drawing = true;
-            // adjust canvas size to fit to the decoded frame
-            if(width != this.yuvCanvas.width) {
-                this.yuvCanvas.canvasElement.width = width;
-                this.yuvCanvas.width = width;
-            }
-            if(height != this.yuvCanvas.height) {
-                this.yuvCanvas.canvasElement.height = height;
-                this.yuvCanvas.height = height;
-            }
-
-            this.yuvCanvas.drawNextOuptutPictureGL({
-                yData: decodedFrame.y,
-                yDataPerRow: width,
-                yRowCnt: height,
-                uData: decodedFrame.u,
-                uDataPerRow: width / 2,
-                uRowCnt: height / 2,
-                vData: decodedFrame.v,
-                vDataPerRow: width / 2,
-                vRowCnt: height / 2
-            });
-            this.yuvCanvas.canvasElement.drawing = false;
-
-            this.updateStatistics();
-            this.onAfterDecoded();
-        }
     },
 
     /**
@@ -312,25 +260,12 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     decodeWorker: function (pktSize, pktData) {
-        // the transferableData actually transfer the ownership of the object to or from the web worker.
-        // It's like passing by reference where a copy isn't made.
-        // The difference between it and the normal pass-by-reference is that the side that transferred the data can no longer access it.
-
-        if (this.useWebWorkerTransferableData) {
-            this.worker.postMessage({data:pktData,release:false}, [pktData.buffer]);
-        } else {
-            // no transferable data
-            // a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
-
-            var noTransferableObjData = {
-                data: pktData,
-                byteOffset: pktData.byteOffset,
-                release:false
-            };
-
-            this.worker.postMessage(noTransferableObjData);
-        }
-
+        var transferableData = {
+            pktSize: pktSize,
+            pktData: pktData.buffer,
+            byteOffset:pktData.byteOffset
+        };
+        this.worker.postMessage(transferableData, [transferableData.pktData]);
     },
 
     //-------------------------------------------------------//
@@ -378,6 +313,8 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         // init decode frame function
         this.got_frame = Module._malloc(4);
         this.maxPktSize = 1024 * 50;
+
+
     },
 
     /**
@@ -389,100 +326,48 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     decode: function (pktSize, pktData) {
-        if(!this.update) {
-            this.update = true;
-            if (pktSize > this.maxPktSize) {
-                // dealloc old allocation
-                Module._free(this.av_pktData);
-                this.av_pktData = Module._malloc(pktSize);
-                Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
-                this.maxPktSize = pktSize;
-            }
-
-            /*// prepare packet
-             Module.setValue(this.av_pkt + 28, pktSize, 'i32');
-             Module.writeArrayToMemory(pktData, this.av_pktData);
-
-             // decode next frame
-             var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
-             if (len < 0) {
-             console.log("Error while decoding frame");
-             return;
-             }
-
-             if (Module.getValue(this.got_frame, 'i8') == 0) {
-             //console.log("No frame");
-             return;
-             }
-
-             var decoded_frame = this.av_frame;
-             var frame_width = Module.getValue(decoded_frame + 68, 'i32');
-             var frame_height = Module.getValue(decoded_frame + 72, 'i32');
-             //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
-
-             // copy Y channel to canvas
-             var frameYDataPtr = Module.getValue(decoded_frame, '*');
-             var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
-             var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
-
-             return {
-             frame_width: frame_width,
-             frame_height: frame_height,
-             frameYDataPtr: frameYDataPtr,
-             frameUDataPtr: frameUDataPtr,
-             frameVDataPtr: frameVDataPtr,
-             frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
-             frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
-             frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
-             };*/
-            var self = this;
-            // prepare packet
-            Module.setValue(self.av_pkt + 28, pktSize, 'i32');
-
-            Module.writeArrayToMemory(pktData, self.av_pktData);
-
-            // decode next frame
-            var len = _avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt);
-            if (len < 0) {
-                console.log("Error while decoding frame");
-                return null;
-            }
-
-            if (Module.getValue(self.got_frame, 'i8') == 0) {
-                //console.log("No frame");
-                return null;
-            }
-
-            var decoded_frame = self.av_frame;
-            var frame_width = Module.getValue(decoded_frame + 68, 'i32');
-            var frame_height = Module.getValue(decoded_frame + 72, 'i32');
-            //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
-
-            // copy Y channel to canvas
-            var frameYDataPtr = Module.getValue(decoded_frame, '*');
-            var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
-            var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
-
-
-            try {
-                var arrY = new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height);
-                var arrU = new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2);
-                var arrV = new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2);
-
-                return {
-                    frame_width: frame_width,
-                    frame_height: frame_height,
-                    frameYDataPtr: frameYDataPtr,
-                    frameUDataPtr: frameUDataPtr,
-                    frameVDataPtr: frameVDataPtr,
-                    frameYData: arrY,
-                    frameUData: arrU,
-                    frameVData: arrV
-                };
-            } catch (e) {
-                console.error(e);
-                return null;
-            }
+        if(pktSize > this.maxPktSize) {
+            this.av_pkt = Module._malloc(96);
+            this.av_pktData = Module._malloc(pktSize);
+            _av_init_packet(this.av_pkt);
+            Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
+            this.maxPktSize = pktSize;
         }
+        // prepare packet
+        Module.setValue(this.av_pkt + 28, pktSize, 'i32');
+        Module.writeArrayToMemory(pktData, this.av_pktData);
+
+        // decode next frame
+        var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
+        if (len < 0) {
+            console.log("Error while decoding frame");
+            return;
+        }
+
+        if (Module.getValue(this.got_frame, 'i8') == 0) {
+            //console.log("No frame");
+            return;
+        }
+
+        var decoded_frame = this.av_frame;
+        var frame_width = Module.getValue(decoded_frame + 68, 'i32');
+        var frame_height = Module.getValue(decoded_frame + 72, 'i32');
+        //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
+
+        // copy Y channel to canvas
+        var frameYDataPtr = Module.getValue(decoded_frame, '*');
+        var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
+        var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
+
+        return {
+            frame_width: frame_width,
+            frame_height: frame_height,
+            frameYDataPtr: frameYDataPtr,
+            frameUDataPtr: frameUDataPtr,
+            frameVDataPtr: frameVDataPtr,
+            frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
+            frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
+            frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
+        };
     },
 });

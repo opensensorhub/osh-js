@@ -40,7 +40,7 @@ var CESIUM_RESOURCES_FILES = ["vendor/cesium/Build/Cesium/**", "!vendor/cesium/B
 
 //--- FFMPEG
 
-var FFMPEG_SRC = ["vendor/yuvcanvas/YUVCanvas.js", "vendor/ffmpeg/ffmpeg-h264.js"];
+var FFMPEG_SRC = ["vendor/yuvcanvas/YUVCanvas.js", "vendor-local/ffmpegjs/ffmpeg-h264.js"];
 var FFMPEG_SRC_DEBUG = FFMPEG_SRC;
 var FFMPEG_CSS = [];
 var FFMPEG_RESOURCES_DIR = {};

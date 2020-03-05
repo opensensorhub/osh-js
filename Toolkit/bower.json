@@ -35,7 +35,7 @@
     "nouislider": "^9.2.0",
     "ogc-schemas": "^2.6.1",
     "broadway": "./vendor-local/broadway",
-    "ffmpeg":"https://github.com/sensiasoft/ffmpeg.js.git#ba8f6562b086ca3a14766a534d1cb3577fea7197",
+    "ffmpeg":"./vendor-local/ffmpegjs",
     "cesium":"https://github.com/sensiasoft/cesium.git#video-draping-1.31#a820f23889001357016765a6304726e61c7e66",
     "tree": "./vendor-local/tree",
     "Leaflet.fullscreen": "https://github.com/Leaflet/Leaflet.fullscreen.git#^1.0.2",
