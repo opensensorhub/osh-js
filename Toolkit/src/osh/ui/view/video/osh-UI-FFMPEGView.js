@@ -84,6 +84,31 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         } else {
             this.initFFMEG_DECODER();
         }
+
+        var hidden, visibilityChange;
+
+        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+            hidden = "hidden";
+            visibilityChange = "visibilitychange";
+        } else if (typeof document.msHidden !== "undefined") {
+            hidden = "msHidden";
+            visibilityChange = "msvisibilitychange";
+        } else if (typeof document.webkitHidden !== "undefined") {
+            hidden = "webkitHidden";
+            visibilityChange = "webkitvisibilitychange";
+        }
+
+        var that = this;
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                that.skipFrame = true;
+            } else {
+                that.skipFrame = false;
+            }
+        }
+
+        document.addEventListener(visibilityChange, handleVisibilityChange, false);
+
     },
 
     /**
@@ -94,29 +119,31 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     setData: function (dataSourceId, data) {
-        var pktData = data.data;
-        var pktSize = pktData.length;
+        if(!this.skipFrame) {
+            var pktData = data.data;
+            var pktSize = pktData.length;
 
-        if (this.useWorker) {
-            this.resetCalled = false;
-            this.decodeWorker(pktSize, pktData);
-        } else {
-            var decodedFrame = this.decode(pktSize, pktData);
-            if (typeof decodedFrame != "undefined") {
-                this.yuvCanvas.drawNextOuptutPictureGL({
-                    yData: decodedFrame.frameYData,
-                    yDataPerRow: decodedFrame.frame_width,
-                    yRowCnt: decodedFrame.frame_height,
-                    uData: decodedFrame.frameUData,
-                    uDataPerRow: decodedFrame.frame_width / 2,
-                    uRowCnt: decodedFrame.frame_height / 2,
-                    vData: decodedFrame.frameVData,
-                    vDataPerRow: decodedFrame.frame_width / 2,
-                    vRowCnt: decodedFrame.frame_height / 2
-                });
+            if (this.useWorker) {
+                this.resetCalled = false;
+                this.decodeWorker(pktSize, pktData);
+            } else {
+                var decodedFrame = this.decode(pktSize, pktData);
+                if (typeof decodedFrame != "undefined") {
+                    this.yuvCanvas.drawNextOuptutPictureGL({
+                        yData: decodedFrame.frameYData,
+                        yDataPerRow: decodedFrame.frame_width,
+                        yRowCnt: decodedFrame.frame_height,
+                        uData: decodedFrame.frameUData,
+                        uDataPerRow: decodedFrame.frame_width / 2,
+                        uRowCnt: decodedFrame.frame_height / 2,
+                        vData: decodedFrame.frameVData,
+                        vDataPerRow: decodedFrame.frame_width / 2,
+                        vRowCnt: decodedFrame.frame_height / 2
+                    });
 
-                this.updateStatistics();
-                this.onAfterDecoded();
+                    this.updateStatistics();
+                    this.onAfterDecoded();
+                }
             }
         }
     },
