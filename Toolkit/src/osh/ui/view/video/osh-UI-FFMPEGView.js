@@ -1,17 +1,12 @@
 /***************************** BEGIN LICENSE BLOCK ***************************
-
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
  at http://mozilla.org/MPL/2.0/.
-
  Software distributed under the License is distributed on an "AS IS" basis,
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
-
  Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
-
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
-
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
@@ -30,12 +25,10 @@
                                             by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
                                             See the not below for more details(*).
 });
-
  (*)The transferableData actually transfers the ownership of the object to or from the web worker.
  It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
  is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
  you cannot use the data for anything else (like another viewer).
-
  The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 OSH.UI.FFMPEGView = OSH.UI.View.extend({
@@ -72,12 +65,12 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             this.useWorker = (typeof options.useWorker != "undefined") && (options.useWorker) && (OSH.Utils.isWebWorker());
         }
 
-        // create webGL canvas
+// create webGL canvas
         this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
         var domNode = document.getElementById(this.divId);
         domNode.appendChild(this.yuvCanvas.canvasElement);
 
-        // add selection listener
+// add selection listener
         var self = this;
         OSH.EventManager.observeDiv(this.divId, "click", function (event) {
             OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
@@ -109,7 +102,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
             this.decodeWorker(pktSize, pktData);
         } else {
             var decodedFrame = this.decode(pktSize, pktData);
-            if(typeof decodedFrame != "undefined") {
+            if (typeof decodedFrame != "undefined") {
                 this.yuvCanvas.drawNextOuptutPictureGL({
                     yData: decodedFrame.frameYData,
                     yDataPerRow: decodedFrame.frame_width,
@@ -152,7 +145,7 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      */
     reset: function () {
         _avcodec_flush_buffers(this.av_ctx);
-        // clear canvas
+// clear canvas
         this.resetCalled = true;
         var nodata = new Uint8Array(1);
         this.yuvCanvas.drawNextOuptutPictureGL({
@@ -211,11 +204,11 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
     onAfterDecoded: function () {
     },
 
-    //-- FFMPEG DECODING PART
+//-- FFMPEG DECODING PART
 
-    //-------------------------------------------------------//
-    //---------- Web worker --------------------------------//
-    //-----------------------------------------------------//
+//-------------------------------------------------------//
+//---------- Web worker --------------------------------//
+//-----------------------------------------------------//
 
     /**
      * The worker code is located at the location js/workers/FFMPEGViewWorker.js.
@@ -226,7 +219,6 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      */
     initFFMPEG_DECODER_WORKER: function (callback) {
         this.worker = new Worker('js/workers/osh-UI-FFMPEGViewWorker.js');
-
         var self = this;
         this.worker.onmessage = function (e) {
             var decodedFrame = e.data;
@@ -263,54 +255,52 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         var transferableData = {
             pktSize: pktSize,
             pktData: pktData.buffer,
-            byteOffset:pktData.byteOffset
+            byteOffset: pktData.byteOffset
         };
         this.worker.postMessage(transferableData, [transferableData.pktData]);
     },
 
-    //-------------------------------------------------------//
-    //---------- No Web worker -----------------------------//
-    //-----------------------------------------------------//
+//-------------------------------------------------------//
+//---------- No Web worker -----------------------------//
+//-----------------------------------------------------//
 
     /**
      * @instance
      * @memberof OSH.UI.FFMPEGView
      */
     initFFMEG_DECODER: function () {
-        // register all compiled codecs
+// register all compiled codecs
         Module.ccall('avcodec_register_all');
 
-        // find h264 decoder
+// find h264 decoder
         var codec = Module.ccall('avcodec_find_decoder_by_name', 'number', ['string'], ["h264"]);
-        if (codec == 0)
-        {
+        if (codec == 0) {
             console.error("Could not find H264 codec");
             return;
         }
 
-        // init codec and conversion context
+// init codec and conversion context
         this.av_ctx = _avcodec_alloc_context3(codec);
 
-        // open codec
+// open codec
         var ret = _avcodec_open2(this.av_ctx, codec, 0);
-        if (ret < 0)
-        {
+        if (ret < 0) {
             console.error("Could not initialize codec");
             return;
         }
 
-        // allocate packet
+// allocate packet
         this.av_pkt = Module._malloc(96);
-        this.av_pktData = Module._malloc(1024*150);
+        this.av_pktData = Module._malloc(1024 * 150);
         _av_init_packet(this.av_pkt);
-        Module.setValue(this.av_pkt+24, this.av_pktData, '*');
+        Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
 
-        // allocate video frame
+// allocate video frame
         this.av_frame = _avcodec_alloc_frame();
         if (!this.av_frame)
             alert("Could not allocate video frame");
 
-        // init decode frame function
+// init decode frame function
         this.got_frame = Module._malloc(4);
         this.maxPktSize = 1024 * 50;
 
@@ -326,18 +316,18 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
      * @memberof OSH.UI.FFMPEGView
      */
     decode: function (pktSize, pktData) {
-        if(pktSize > this.maxPktSize) {
+        if (pktSize > this.maxPktSize) {
             this.av_pkt = Module._malloc(96);
             this.av_pktData = Module._malloc(pktSize);
             _av_init_packet(this.av_pkt);
             Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
             this.maxPktSize = pktSize;
         }
-        // prepare packet
+// prepare packet
         Module.setValue(this.av_pkt + 28, pktSize, 'i32');
         Module.writeArrayToMemory(pktData, this.av_pktData);
 
-        // decode next frame
+// decode next frame
         var len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
         if (len < 0) {
             console.log("Error while decoding frame");
@@ -345,16 +335,16 @@ OSH.UI.FFMPEGView = OSH.UI.View.extend({
         }
 
         if (Module.getValue(this.got_frame, 'i8') == 0) {
-            //console.log("No frame");
+//console.log("No frame");
             return;
         }
 
         var decoded_frame = this.av_frame;
         var frame_width = Module.getValue(decoded_frame + 68, 'i32');
         var frame_height = Module.getValue(decoded_frame + 72, 'i32');
-        //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
+//console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
 
-        // copy Y channel to canvas
+// copy Y channel to canvas
         var frameYDataPtr = Module.getValue(decoded_frame, '*');
         var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
         var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
