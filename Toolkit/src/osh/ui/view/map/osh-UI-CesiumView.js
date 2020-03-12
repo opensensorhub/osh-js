@@ -396,6 +396,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         var alt = properties.alt;
         var orient = properties.orientation;
         var imgIcon = properties.icon;
+        var defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
         if (!isNaN(lon) && !isNaN(lat)) {
             var marker = this.markers[id];
