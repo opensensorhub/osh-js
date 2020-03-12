@@ -66,6 +66,10 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		this.icon = null;
 		this.iconAnchor = [16,16];
 		this.label = null;
+		this.labelColor = "#000000";
+		this.labelSize = 16;
+		this.labelOffset = [0,0];
+
 		this.color = "#000000";
 		this.defaultToTerrainElevation = false;
 
@@ -74,64 +78,87 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 		if(typeof(properties.defaultToTerrainElevation) != "undefined") {
 			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
 		}
-		
-		if(typeof(properties.location) != "undefined"){
+
+		if (OSH.Utils.hasValue(properties.location)) {
+			OSH.Utils.assertObject(properties.location, "location");
 			this.location = properties.location;
-		} 
-		
-		if(typeof(properties.orientation) != "undefined"){
+		}
+
+		if (OSH.Utils.hasValue(properties.orientation)) {
+			OSH.Utils.assertObject(properties.orientation, "orientation");
 			this.orientation = properties.orientation;
-		} 
-		
-		if(typeof(properties.icon) != "undefined"){
+		}
+
+		if (OSH.Utils.hasValue(properties.icon)) {
+			OSH.Utils.assertString(properties.icon, "icon");
 			this.icon = properties.icon;
 		}
-		
-		if(typeof(properties.iconAnchor) != "undefined"){
-            this.iconAnchor = properties.iconAnchor;
-        }
-		
-		if(typeof(properties.label) != "undefined"){
+
+		if (OSH.Utils.hasValue(properties.iconAnchor)) {
+			OSH.Utils.assertArray(properties.iconAnchor, "iconAnchor");
+			this.iconAnchor = properties.iconAnchor;
+		}
+
+		if (OSH.Utils.hasValue(properties.label)) {
+			OSH.Utils.assertString(properties.label, "label");
 			this.label = properties.label;
 		}
-		
-		if(typeof(properties.color) != "undefined"){
-			this.color = properties.color;
-		} 
-		
-		if(typeof(properties.locationFunc) != "undefined") {
+
+		if (OSH.Utils.hasValue(properties.labelColor)) {
+			OSH.Utils.assertString(properties.labelColor, "labelColor");
+			this.labelColor = properties.labelColor;
+		}
+
+		if (OSH.Utils.hasValue(properties.labelSize)) {
+			OSH.Utils.assertPositive(properties.labelSize, "labelSize");
+			this.labelSize = properties.labelSize;
+		}
+
+		if (OSH.Utils.hasValue(properties.labelOffset)) {
+			OSH.Utils.assertArray(properties.labelOffset, "labelOffset");
+			this.labelOffset = properties.labelOffset;
+		}
+
+		if (this.checkFn("locationFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.location = properties.locationFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.locationFunc.dataSourceIds,fn);
 		}
-		
-		if(typeof(properties.orientationFunc) != "undefined") {
+
+		if (this.checkFn("orientationFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.orientation = properties.orientationFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.orientationFunc.dataSourceIds,fn);
 		}
-		
-		if(typeof(properties.iconFunc) != "undefined") {
+
+		if (this.checkFn("iconFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.icon = properties.iconFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.iconFunc.dataSourceIds,fn);
 		}
-		
-		if(typeof(properties.labelFunc) != "undefined") {
+
+		if (this.checkFn("labelFunc")) {
 			var fn = function(rec,timeStamp,options) {
 				this.label = properties.labelFunc.handler(rec,timeStamp,options);
 			}.bind(this);
 			this.addFn(properties.labelFunc.dataSourceIds,fn);
 		}
-		
-		if(typeof(properties.colorFunc) != "undefined") {
+
+		if (this.checkFn("labelColorFunc")) {
 			var fn = function(rec,timeStamp,options) {
-				this.color = properties.colorFunc.handler(rec,timeStamp,options);
+				this.labelColor = properties.labelColorFunc.handler(rec,timeStamp,options);
 			}.bind(this);
-			this.addFn(properties.colorFunc.dataSourceIds,fn);
+			this.addFn(properties.labelColorFunc.dataSourceIds,fn);
+		}
+
+		if (this.checkFn("labelSizeFunc")) {
+			var fn = function(rec,timeStamp,options) {
+				this.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
+			}.bind(this);
+			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
 		}
 	},
 
@@ -144,7 +171,7 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 	 */
 	init: function(view) {
 		this._super(view);
-		if(typeof(view) != "undefined" && this.location != null) {
+		if (OSH.Utils.isDefined(view) && this.location != null) {
 			view.updateMarker(this,0,{});
 		}
 	},
@@ -160,8 +187,8 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 	 * @instance
 	 */
 	setData: function(dataSourceId,rec,view,options) {
-		if(this._super(dataSourceId,rec,view,options)) {
-			if (typeof(view) != "undefined" && this.location != null) {
+		if (this._super(dataSourceId,rec,view,options)) {
+			if (OSH.Utils.isDefined(view) && this.location != null) {
 				view.updateMarker(this, rec.timeStamp, options);
 			}
 		}

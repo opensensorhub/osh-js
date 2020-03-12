@@ -226,10 +226,18 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
             marker = L.marker([properties.lat, properties.lon]);
         }
 
-        marker.bindPopup(properties.name);
-
-        //TODO:for selected marker event
-        //this.marker.on('click',this.onClick.bind(this));
+        if (properties.label != null) {
+            marker.bindTooltip(properties.label, {
+                permanent: true,
+                direction: 'center',
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
+            });  
+        }
+        
+        var name = properties.hasOwnProperty("name") && properties.name != null ? properties.name : "";
+        var desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
+        if (name.length > 0 || desc.length > 0)
+            marker.bindPopup(name + '<div>' + desc + '</div>');
 
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
@@ -336,7 +344,12 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
                 color: styler.color,
                 icon: styler.icon,
                 iconAnchor: styler.iconAnchor,
-                name: this.names[styler.getId()]
+                label : styler.label,
+                labelColor : styler.labelColor,
+                labelSize : styler.labelSize,
+                labelOffset : styler.labelOffset,
+                name : styler.viewItem.name,
+				description : styler.viewItem.description
             });
             this.stylerToObj[styler.getId()] = markerId;
         } else {
@@ -362,7 +375,7 @@ OSH.UI.LeafletView = OSH.UI.View.extend({
         if (styler.icon != null && marker._icon.iconUrl != styler.icon) {
             // updates icon
             var markerIcon = L.icon({
-                iconAnchor: [16, 16],
+                iconAnchor: styler.iconAnchor,
                 iconUrl: styler.icon
             });
             marker.setIcon(markerIcon);

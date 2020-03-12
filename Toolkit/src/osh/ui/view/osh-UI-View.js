@@ -232,8 +232,8 @@ OSH.UI.View = BaseClass.extend({
             if (viewItem.hasOwnProperty("name")) {
                 this.names[styler.getId()] = viewItem.name;
             }
-            styler.init(this);
             styler.viewItem = viewItem;
+            styler.init(this);
             this.stylerIdToStyler[styler.id] = styler;
         }
         if (viewItem.hasOwnProperty("contextmenu")) {

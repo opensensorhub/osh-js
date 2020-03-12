@@ -1,0 +1,45 @@
+<div>
+    <div id="video-container" style="padding:30px"/>
+    <style>
+        div.video-h264 {
+            width: 1280px;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            resize: horizontal;
+            overflow: hidden;
+            margin: auto;
+        }
+        div.video-h264 canvas {
+            width: 100%;
+        }
+    </style>    
+    <script>
+        //@ sourceURL=video-h264.html.js
+
+        // create data source for UAV camera
+        var videoDataSource = new OSH.DataReceiver.VideoH264("drone-Video", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:mysos:solo:video2",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "2015-12-19T21:04:30Z",
+            endTime: "2015-12-19T21:09:19Z",
+            replaySpeed: 1
+        });
+
+        // show it in video view using FFMPEG JS decoder
+        var videoView = new OSH.UI.FFMPEGView("video-container", {
+            dataSourceId: videoDataSource.id,
+            css: "video-h264",
+            name: "UAV Video",
+            useWorker: true,
+            width: 1280,
+            height: 720,
+            showTime: true
+        });
+
+        // start streaming
+        videoDataSource.connect();
+    </script>
+</div>

@@ -52,17 +52,17 @@
  );
  */
 OSH.UI.CesiumView = OSH.UI.View.extend({
-	
+
 	initialize : function(parentElementDivId,viewItems, properties) {
 		this._super(parentElementDivId,viewItems,properties);
 
 		var cssClass = document.getElementById(this.divId).className;
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
-		
+
 		this.imageDrapingPrimitive = null;
-		this.imageDrapingPrimitiveReady = false;		
+		this.imageDrapingPrimitiveReady = false;
 		this.frameCount = 0;
-		
+
 		this.captureCanvas = document.createElement('canvas');
 		this.captureCanvas.width = 640;
 		this.captureCanvas.height = 480;
@@ -85,9 +85,14 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				lon : styler.location.x,
 				alt : styler.location.z,
 				orientation : styler.orientation,
-				color : styler.color,
 				icon : styler.icon,
+				iconAnchor : styler.iconAnchor,
 				label : styler.label,
+				labelColor : styler.labelColor,
+				labelSize : styler.labelSize,
+				labelOffset : styler.labelOffset,
+				name : styler.viewItem.name,
+				description : styler.viewItem.description,
 				timeStamp: timeStamp,
 				selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
 			});
@@ -102,8 +107,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			lon : styler.location.x,
 			alt : styler.location.z,
 			orientation : styler.orientation,
-			color : styler.color,
 			icon : styler.icon,
+			label : styler.label,
+			labelColor : styler.labelColor,
+			labelSize : styler.labelSize,
 			timeStamp: timeStamp,
             defaultToTerrainElevation: styler.defaultToTerrainElevation,
 			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
@@ -120,30 +127,30 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 *
 	 */
     updateDrapedImage: function(styler,timeStamp,options,snapshot) {
-		
+
     	var llaPos = styler.platformLocation;
     	var camPos = Cesium.Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
-    	
+
     	var DTR = Math.PI/180;
     	var attitude = styler.platformOrientation;
     	var gimbal = styler.gimbalOrientation;
-    	
+
     	///////////////////////////////////////////////////////////////////////////////////
     	// compute rotation matrix to transform lookrays from camera frame to ECEF frame //
     	///////////////////////////////////////////////////////////////////////////////////
     	var nedTransform = Cesium.Transforms.northEastDownToFixedFrame(camPos);
     	var camRot = new Cesium.Matrix3();
-    	Cesium.Matrix4.getRotation(nedTransform, camRot);    	
+    	Cesium.Matrix4.getRotation(nedTransform, camRot);
     	var rotM = new Cesium.Matrix3();
-    	
+
         // UAV heading, pitch, roll (given in NED frame)
     	var uavHeading = Cesium.Matrix3.fromRotationZ(attitude.heading*DTR, rotM);
-    	Cesium.Matrix3.multiply(camRot, uavHeading, camRot);    	
+    	Cesium.Matrix3.multiply(camRot, uavHeading, camRot);
         var uavPitch = Cesium.Matrix3.fromRotationY(attitude.pitch*DTR, rotM);
         Cesium.Matrix3.multiply(camRot, uavPitch, camRot);
         var uavRoll = Cesium.Matrix3.fromRotationX(attitude.roll*DTR, rotM);
         Cesium.Matrix3.multiply(camRot, uavRoll, camRot);
-        
+
         // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
         var gimbalYaw = Cesium.Matrix3.fromRotationZ(gimbal.heading*DTR, rotM);
         Cesium.Matrix3.multiply(camRot, gimbalYaw, camRot);
@@ -151,19 +158,19 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         Cesium.Matrix3.multiply(camRot, gimbalRoll, camRot);
         var gimbalPitch = Cesium.Matrix3.fromRotationY((90+gimbal.pitch)*DTR, rotM);
         Cesium.Matrix3.multiply(camRot, gimbalPitch, camRot);
-        
+
         // transform to camera frame
         var img2cam = Cesium.Matrix3.fromRotationZ(90*DTR, rotM);
         Cesium.Matrix3.multiply(camRot, img2cam, camRot);
 
         ////////////////////////////////////////////////////////////////////////////////////
-        
+
     	var camProj = styler.cameraModel.camProj;
     	var camDistR = styler.cameraModel.camDistR;
     	var camDistT = styler.cameraModel.camDistT;
-    	
+
     	var imgSrc = styler.imageSrc;
-    	
+
     	//if (this.frameCount%60 == 0)
     	{
 	    	/*var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Cesium.ImageDrapingPrimitive({
@@ -175,7 +182,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	            camDistT: camDistT,
 	            asynchronous : true
 	        }));
-	        
+
 	        // remove previous primitive
             if (styler.snapshotFunc == null) {
                 if (this.imageDrapingPrimitive != null) {
@@ -183,14 +190,14 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                 }
                 this.imageDrapingPrimitive = newImageDrapingPrimitive;
             }*/
-    	    
+
     	    // snapshot
             if (snapshot) {
                 var ctx = this.captureCanvas.getContext('2d');
                 ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
-                imgSrc = this.captureCanvas;                
+                imgSrc = this.captureCanvas;
             }
-    	    
+
     	    var encCamPos = Cesium.EncodedCartesian3.fromCartesian(camPos);
     	    var appearance = new Cesium.MaterialAppearance({
                 material : new Cesium.Material({
@@ -210,7 +217,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                 vertexShaderSource: Cesium._shaders.ImageDrapingVS,
                 fragmentShaderSource: Cesium._shaders.ImageDrapingFS
             });
-    	    
+
     	    /*appearance = new Cesium.MaterialAppearance({
                 material : new Cesium.Material({
                     fabric : {
@@ -221,11 +228,11 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                     }
                 })
             });*/
-    	    
+
     	    if (this.imageDrapingPrimitive === null || snapshot) {
     	        if (this.imageDrapingPrimitive === null)
     	            this.imageDrapingPrimitive = {};
-    	        
+
     	        var promise = Cesium.sampleTerrain(this.viewer.terrainProvider, 11, [Cesium.Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
     	        var that = this;
                 Cesium.when(promise, function(updatedPositions) {
@@ -237,22 +244,22 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                                 height: updatedPositions[0].height-100,
                                 extrudedHeight: llaPos.z-1
                             })
-                        }), 
+                        }),
                         appearance: appearance
                     }));
-                    
+
                     if (!snapshot)
                         that.imageDrapingPrimitive = newImageDrapingPrimitive;
-                    
+
                     that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
                     that.imageDrapingPrimitiveReady = true;
-                });                
-    	        
+                });
+
     	    } else if (this.imageDrapingPrimitiveReady) {
     	        this.imageDrapingPrimitive.appearance = appearance;
     	    }
     	}
-    	
+
     	this.frameCount++;
 	},
 
@@ -267,7 +274,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	beforeAddingItems: function (options) {
 		this.markers = {};
 	    this.first = true;
-	    
+
 	    var imageryProviders = Cesium.createDefaultImageryProviderViewModels();
 	    this.viewer = new Cesium.Viewer(this.divId, {
 	    	baseLayerPicker: true,
@@ -284,14 +291,12 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			targetFrameRate: 10,
         	scene3DOnly: true // for draw layer
 	    });
-	    
-	    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-	        url : '//assets.agi.com/stk-terrain/world'
-	    });
-	    
+
+	    this.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+
 	    this.viewer.scene.copyGlobeDepth = true;
 	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
-	    
+
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 	        //change icon
@@ -331,20 +336,39 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @memberof OSH.UI.CesiumView
 	 */
 	addMarker : function(properties) {
-		
-		var imgIcon = 'images/cameralook.png';
-		if(properties.icon !== null) {
+
+		var imgIcon = 'images/pin.png';
+		if (properties.icon !== null) {
 			imgIcon = properties.icon;
 		}
 		var isModel = imgIcon.endsWith(".glb");
-		var name = properties.label ? properties.label : "Selected Marker";
+
+                var label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
+		var fillColor = properties.labelColor;
+		var labelSize = properties.labelSize;
+		var labelOffset = properties.labelOffset;
+
+		var name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
+		           label != null ? label : "Selected Marker";
+		var desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
+
 		var geom;
-		
 		if (isModel)
 		{
 			geom = {
 				name: name,
+                                description: desc,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
+ 				label: {
+ 					text: label,
+					font: labelSize + 'px sans-serif',
+					scaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0),
+					fillColor: Cesium.Color.fromCssColorString(fillColor),
+					horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					pixelOffset : labelOffset,
+                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1, 1e6, 0.0)
+				},
 				model : {
 					uri: imgIcon,
 					scale: 4,
@@ -354,27 +378,43 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		}
 		else
 		{
-			var rot = 0;
-			if (properties.orientation != 'undefined')
-				rot = properties.orientation.heading;
+			var rot = properties.orientation.heading;
+			var iconOffset = new Cesium.Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+			var labelOffset = new Cesium.Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+
 			geom = {
 				name: name,
+                                description: desc,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
+ 				label: {
+ 					text: label,
+					font: labelSize + 'px sans-serif',
+					scaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0),
+					fillColor: Cesium.Color.fromCssColorString(fillColor),
+					horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					pixelOffset : labelOffset,
+					pixelOffsetScaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0)
+				},
 				billboard : {
 					image : imgIcon,
-					alignedAxis : Cesium.Cartesian3.UNIT_Z, // axis is in ENU frame, Z means rotation is from north
+					scaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
+					alignedAxis : Cesium.Cartesian3.UNIT_Z, // Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
-					horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
-                                        eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
+					horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					pixelOffset : iconOffset,
+					pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
+					eyeOffset : new Cesium.Cartesian3(0, 0, -1) // make sure icon always displays in front
 				}
 			};
 		}
-		
+
 		var entity = this.viewer.entities.add(geom);
 		var id = "view-marker-"+OSH.Utils.randomUUID();
 		entity._dsid = id;
 		this.markers[id] = entity;
-		
+
 		return id;
 	},
 
@@ -391,11 +431,13 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         var alt = properties.alt;
         var orient = properties.orientation;
         var imgIcon = properties.icon;
+        var label = properties.label;
+
 		var defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
         if (!isNaN(lon) && !isNaN(lat)) {
         	var marker =  this.markers[id];
-        	
+
         	// get ground altitude if non specified
         	if (typeof(alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
 	    		alt = this.getAltitude(lat, lon);
@@ -406,7 +448,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     		// update position
         	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
     		marker.position = pos;
-    		    		
+
     		// update orientation
     		if (typeof(orient) !== "undefined") {
     			var DTR = Math.PI/180.;
@@ -418,19 +460,30 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                         if (marker.billboard)
 				marker.billboard.rotation = Cesium.Math.toRadians(heading);
     	    	}
-    		
+
     		// update icon or model
     		if (marker.billboard)
 			marker.billboard.image = imgIcon;
 		else if (marker.model)
-			marker.model.uri = imgIcon; 
-    		
+			marker.model.uri = imgIcon;
+
+		// update label
+		//marker.label = properties.label;
+		//if (properties.labelColor != null)
+		//	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
+
+                // update billboard aligned axis depending on camera angle
+    		if (this.viewer.camera.pitch < -Math.PI/4)
+    		    marker.billboard.alignedAxis = Cesium.Cartesian3.UNIT_Z;
+    		else
+    		    marker.billboard.alignedAxis = Cesium.Cartesian3.ZERO;
+
     		// zoom map if first marker update
     		if (this.first) {
     			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
     			this.first = false;
     		}
-    		
+
     		if (properties.selected) {
     			 this.viewer.selectedEntity = marker;
     		}
