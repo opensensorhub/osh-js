@@ -20,7 +20,7 @@
  * @class OSH.DataReceiver.VideoMp4
  * @augments OSH.DataReceiver.DataSource
  * @example
- * var videoDataSource = new OSH.DataReceiver.VideoMp4("MP4 video ", {
+ * let videoDataSource = new OSH.DataReceiver.VideoMp4("MP4 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -34,24 +34,25 @@
         responseFormat: "video/mp4
   });
  */
-OSH.DataReceiver.VideoMp4 = OSH.DataReceiver.DataSource.extend({
-    initialize: function (name, properties, options) {
-        this._super(name, properties, options);
+import DataSource from './osh-DataReceiver-DataSource';
+
+export default class VideoMp4 extends DataSource {
+    constructor(name, properties, options) {
+        super(name, properties, options);
         this.absoluteTime = -1;
-    },
+    }
 
     /**
      * Extracts timestamp from the message. The timestamp is located at the 60th bytes and is 8 bytes length.
-     * @param {function} $super the parseTimeStamp super method
      * @param {ArrayBuffer} data the data to parse
      * @returns {number} the extracted timestamp
      * @memberof OSH.DataReceiver.VideoMp4
      * @instance
      */
-    parseTimeStamp: function (data) {
+    parseTimeStamp(data) {
         // got the first box => MVDH
-        if (this.absoluteTime == -1) {
-            var infos = readMP4Info(data);
+        if (this.absoluteTime === -1) {
+            let infos = readMP4Info(data);
 
             //console.log("PTS : "+infos.pts);
             //console.log("timeScale : "+infos.timeScale);
@@ -65,7 +66,7 @@ OSH.DataReceiver.VideoMp4 = OSH.DataReceiver.DataSource.extend({
         } else {
             // for debug only --> MVDH has already been calculated
             // got the first box
-            var infos = readMP4Info(data);
+            let infos = readMP4Info(data);
             //console.log("PTS : "+infos.pts);
             //console.log("timeScale : "+infos.timeScale);
             //console.log("duration : "+infos.duration);
@@ -74,10 +75,10 @@ OSH.DataReceiver.VideoMp4 = OSH.DataReceiver.DataSource.extend({
             return ((infos.pts * 1000) * this.timeScale) + this.absoluteTime; // FPS to FPMS
         }
     }
-});
+}
 
 function readMP4Info(data) {
-    var infos = {
+    let infos = {
         absoluteTime: 0,
         pts: 0,
         timeScale: 0,
@@ -85,7 +86,7 @@ function readMP4Info(data) {
         rate: 0
     };
 
-    var pos = 60; // 60 bytes
+    let pos = 60; // 60 bytes
     // starts at 60 bytes length
     //console.log(data.byteLength);
     infos.absoluteTime = new DataView(data, pos, pos + 8).getUint32(0); //8 bytes length but takes the  last four
@@ -110,12 +111,12 @@ function readMP4Info(data) {
     infos.rate = (new DataView(data, pos, pos + 4).getUint32(0));
 
     return infos;
-};
+}
 
 function readNCC(bytes, n) {
-    var res = "";
-    for (var i = 0; i < n; i++) {
+    let res = "";
+    for (let i = 0; i < n; i++) {
         res += String.fromCharCode(bytes[i]);
     }
     return res;
-};
+}

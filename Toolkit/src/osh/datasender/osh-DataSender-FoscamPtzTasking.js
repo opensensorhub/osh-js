@@ -52,14 +52,17 @@
  </swe:Text>
  </swe:item>
  */
-OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
 
-    getCommandData: function (values) {
-        var cmdData = "";
+import PtzTasking from './osh-DataSender-PtzTasking';
+
+export default class FoscamPtzTasking extends PtzTasking {
+
+    getCommandData(values) {
+        let cmdData = "";
 
         if (values.preset !== null) {
             cmdData = "preset," + values.preset;
-        }else if(values.rzoom !== null) {
+        } else if (values.rzoom !== null) {
             cmdData = "zoom,";
             if (values.rzoom < 0) {
                 cmdData += "out";
@@ -67,7 +70,7 @@ OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
                 cmdData += "in";
             }
         } else {
-            if (values.rpan != null && values.rtilt != null) {
+            if (values.rpan !== null && values.rtilt !== null) {
                 cmdData += "relMove,";
 
                 if (values.rtilt !== null) {
@@ -106,4 +109,4 @@ OSH.DataSender.FoscamPtzTasking = OSH.DataSender.PtzTasking.extend({
         }
         return cmdData;
     }
-});
+}

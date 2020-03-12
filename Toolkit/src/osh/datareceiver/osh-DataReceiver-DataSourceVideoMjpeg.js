@@ -20,7 +20,7 @@
  * @class OSH.DataReceiver.VideoMjpeg
  * @augments OSH.DataReceiver.DataSource
  * @example
-  var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
+ var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -33,34 +33,33 @@
     bufferingTime: 1000
   });
  */
-OSH.DataReceiver.VideoMjpeg = OSH.DataReceiver.DataSource.extend({
-  initialize: function(name,properties,options) {
-    this._super(name,properties,options);
-  },
+import DataSource from './osh-DataReceiver-DataSource';
 
-  /**
-   * Extracts timestamp from the message. The timestamp is corresponding to the first 64 bits of the binary message.
-   * @param {function} $super the parseTimeStamp super method
-   * @param {ArrayBuffer} data the data to parse
-   * @returns {number} the extracted timestamp
-   * @memberof OSH.DataReceiver.VideoMjpeg
-   * @instance
-   */
-  parseTimeStamp: function(data){
-    return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
-  },
+export class VideoMjpeg extends DataSource {
+    /**
+     * Extracts timestamp from the message. The timestamp is corresponding to the first 64 bits of the binary message.
+     * @param {function} $super the parseTimeStamp super method
+     * @param {ArrayBuffer} data the data to parse
+     * @returns {number} the extracted timestamp
+     * @memberof OSH.DataReceiver.VideoMjpeg
+     * @instance
+     */
+    parseTimeStamp(data) {
+        return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
+    }
 
-  /**
-   * Extract data from the message. Creates a Blob object starting at byte 12. (after the 64 bits of the timestamp).
-   * @param {function} $super the parseData super method
-   * @param {ArrayBuffer} data the data to parse
-   * @returns {Blob} the parsed data
-   * @memberof OSH.DataReceiver.VideoMjpeg
-   * @instance
-   */
-  parseData: function(data){
-    var imgBlob = new Blob([data]);
-    var blobURL = window.URL.createObjectURL(imgBlob.slice(12));
-    return blobURL;
-  } 
-});
+    /**
+     * Extract data from the message. Creates a Blob object starting at byte 12. (after the 64 bits of the timestamp).
+     * @param {ArrayBuffer} data the data to parse
+     * @returns {Blob} the parsed data
+     * @memberof OSH.DataReceiver.VideoMjpeg
+     * @instance
+     */
+    parseData(data) {
+        let imgBlob = new Blob([data]);
+        // slice makes a shallow copy, we can release the blob
+        let url = window.URL.createObjectURL(imgBlob.slice(12));
+        window.URL.revokeObjectURL(imgBlob);
+        return url;
+    }
+}

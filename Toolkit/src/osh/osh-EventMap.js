@@ -14,32 +14,34 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-OSH.EventMap = BaseClass.extend({
+import {isDefined} from './osh-Utils';
 
-    initialize:function() {
+export default class EventMap {
+
+    constructor() {
         this.eventMap = {};
-    },
+    }
 
-    observe:function(eventName, fnCallback) {
-        if(typeof(eventName) == "undefined" || typeof(fnCallback) == "undefined") {
+    observe(eventName, fnCallback) {
+        if(!isDefined(eventName) || !isDefined(fnCallback)) {
             return;
         }
         if(!(eventName in this.eventMap)) {
             this.eventMap[eventName] = [];
         }
         this.eventMap[eventName].push(fnCallback);
-    },
+    }
 
-    fire: function(eventName, properties) {
-        if(typeof(eventName) == "undefined") {
+    fire(eventName, properties) {
+        if(!isDefined(eventName)) {
             return;
         }
         if(eventName in this.eventMap) {
-            var fnCallbackArr = this.eventMap[eventName];
-            for(var i = 0; i < fnCallbackArr.length;i++){
+            let fnCallbackArr = this.eventMap[eventName];
+            for(let i = 0; i < fnCallbackArr.length;i++){
                 // callback the properties to the current callback
                 fnCallbackArr[i](properties);
             }
         }
     }
-});
+}

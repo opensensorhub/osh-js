@@ -19,10 +19,12 @@
  * @class
  * @param {Object} options
  */
-OSH.DataSender.DataSenderController = BaseClass.extend({
-    initialize: function (options) {
+import {isDefined} from '../osh-Utils';
+
+export default class DataSenderController {
+    constructor(options) {
         this.dataSources = {};
-    },
+    }
 
     /**
      * Adds a datasource to the list of datasources to process
@@ -30,9 +32,9 @@ OSH.DataSender.DataSenderController = BaseClass.extend({
      * @instance
      * @memberof OSH.DataSender.DataSenderController
      */
-    addDataSource: function(dataSource) {
+    addDataSource(dataSource) {
         this.dataSources[dataSource.getId()] = dataSource;
-    },
+    }
 
     /**
      * Sends request to the server
@@ -43,22 +45,18 @@ OSH.DataSender.DataSenderController = BaseClass.extend({
      * @instance
      * @memberof OSH.DataSender.DataSenderController
      */
-    sendRequest: function(dataSourceId,properties, onSuccess, onError) {
+    sendRequest(dataSourceId, properties, onSuccess, onError) {
         if (dataSourceId in this.dataSources) {
             // may be optimized. It is redefined the callback for every requests
-            if(typeof(onSuccess) != "undefined" && onSuccess != null) {
-                this.dataSources[dataSourceId].onSuccess = function(response) {
-                    onSuccess(response);
-                }
+            if (isDefined(onSuccess) && onSuccess !== null) {
+                this.dataSources[dataSourceId].onSuccess = (response) => onSuccess(response);
             }
 
-            if(typeof(onError) != "undefined" && onError != null) {
-                this.dataSources[dataSourceId].onError = function(response) {
-                    onError(response);
-                }
+            if (isDefined(onError) && onError !== null) {
+                this.dataSources[dataSourceId].onError = (response) => onError(response);
             }
 
             this.dataSources[dataSourceId].sendRequest(properties);
         }
     }
-});
+}

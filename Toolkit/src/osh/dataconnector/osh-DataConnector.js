@@ -20,29 +20,32 @@
  * @abstract
  * @param {string} url The full url used to connect to the data stream
  */
-OSH.DataConnector.DataConnector = BaseClass.extend({
-  initialize: function(url) {
-    this.url = url;
-    this.id = "DataConnector-"+OSH.Utils.randomUUID();
-  },
 
-  /**
-   * The data connector default id.
-   * @returns {string}
-   * @memberof OSH.DataConnector.DataConnector
-   * @instance
-   */
-  getId: function() {
-    return this.id;
-  },
+import {randomUUID} from '../osh-Utils';
 
-  /**
-   * The stream url.
-   * @returns {string}
-   * @memberof OSH.DataConnector.DataConnector
-   * @instance
-   */
-  getUrl: function() {
-    return this.url;
-  }
-});
+export default class DataConnector {
+    constructor(url) {
+        this.url = url;
+        this.id = "DataConnector-" + randomUUID();
+    }
+
+    /**
+     * The data connector default id.
+     * @returns {string}
+     * @memberof OSH.DataConnector.DataConnector
+     * @instance
+     */
+    getId() {
+        return this.id;
+    }
+
+    /**
+     * The stream url.
+     * @returns {string}
+     * @memberof OSH.DataConnector.DataConnector
+     * @instance
+     */
+    getUrl() {
+        return this.url;
+    }
+}

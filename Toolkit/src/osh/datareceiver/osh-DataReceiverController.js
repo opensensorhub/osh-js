@@ -22,10 +22,10 @@
  * @listens {@link OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME}
  * @example
  *
- * var datasource = new OSH.DataReceiver... // creates OSH.DataReceiver.<>
+ * let datasource = new OSH.DataReceiver... // creates OSH.DataReceiver.<>
  *
  * // creates controller
- * var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+ * let dataProviderController = new OSH.DataReceiver.DataReceiverController({
  *   replayFactor : replayFactor
  * });
  *
@@ -33,7 +33,7 @@
  * dataProviderController.addDataSource(weatherDataSource);
  *
  * // and/or adds entity to controller
- * var entity = {
+ * let entity = {
  *       id : "entity-"+OSH.Utils.randomUUID(),
  *       name: "Some entity",
  *       dataSources: [datasource]
@@ -42,8 +42,11 @@
  * dataProviderController.addEntity(entity);
  *
  */
-OSH.DataReceiver.DataReceiverController = BaseClass.extend({
-    initialize: function (options) {
+import {isDefined} from '../osh-Utils';
+import EventManager from '../osh-EventManager';
+
+export default class DataReceiverController {
+    constructor(options) {
         this.options = options;
         this.initBuffer();
         this.dataSourcesIdToDataSources = {};
@@ -55,20 +58,22 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
         * @property {Object} event.dataSourcesId - The datasource id
         */
         // observe CONNECT event and connect dataSources consequently
-        OSH.EventManager.observe(OSH.EventManager.EVENT.CONNECT_DATASOURCE, function (event) {
-            var eventDataSourcesIds = event.dataSourcesId;
-            for (var i = 0; i < eventDataSourcesIds.length; i++) {
-                var id = eventDataSourcesIds[i];
-                if (id in this.dataSourcesIdToDataSources) {
+
+        let that = this;
+        EventManager.observe(EventManager.EVENT.CONNECT_DATASOURCE, (event) => {
+            let eventDataSourcesIds = event.dataSourcesId;
+            for (let i = 0; i < eventDataSourcesIds.length; i++) {
+                let id = eventDataSourcesIds[i];
+                if (id in that.dataSourcesIdToDataSources) {
                     // if sync to master to time, request data starting at current time
-                    if (this.dataSourcesIdToDataSources[id].syncMasterTime) {
-                        this.updateDataSourceTime(id, new Date(this.buffer.currentTime).toISOString());
+                    if (that.dataSourcesIdToDataSources[id].syncMasterTime) {
+                        that.updateDataSourceTime(id, new Date(that.buffer.currentTime).toISOString());
                     }
-                    this.dataSourcesIdToDataSources[id].connect();
-                    this.buffer.startDataSource(id);
+                    that.dataSourcesIdToDataSources[id].connect();
+                    that.buffer.startDataSource(id);
                 }
             }
-        }.bind(this));
+        });
 
         /*
          * @event {@link OSH.EventManager.EVENT.DISCONNECT_DATASOURCE}
@@ -77,16 +82,16 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
          * @property {Object} event.dataSourcesId - The datasource id
          */
         // observe DISCONNECT event and disconnect dataSources consequently
-        OSH.EventManager.observe(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE, function (event) {
-            var eventDataSourcesIds = event.dataSourcesId;
-            for (var i = 0; i < eventDataSourcesIds.length; i++) {
-                var id = eventDataSourcesIds[i];
-                if (id in this.dataSourcesIdToDataSources) {
-                    this.dataSourcesIdToDataSources[id].disconnect();
-                    this.buffer.cancelDataSource(id);
+        EventManager.observe(EventManager.EVENT.DISCONNECT_DATASOURCE, (event) => {
+            let eventDataSourcesIds = event.dataSourcesId;
+            for (let i = 0; i < eventDataSourcesIds.length; i++) {
+                let id = eventDataSourcesIds[i];
+                if (id in that.dataSourcesIdToDataSources) {
+                    that.dataSourcesIdToDataSources[id].disconnect();
+                    that.buffer.cancelDataSource(id);
                 }
             }
-        }.bind(this));
+        });
 
 
         /*
@@ -96,34 +101,34 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
          * @property {Object} event.startTime - The corresponding new start time
          * @property {Object} event.endTime - The corresponding new end time
          */
-        OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME, function (event) {
+        EventManager.observe(EventManager.EVENT.DATASOURCE_UPDATE_TIME, (event) => {
 
-            var dataSourcesToReconnect = [];
+            let dataSourcesToReconnect = [];
 
             // disconnect all synchronized datasources
-            for (var id in this.dataSourcesIdToDataSources) {
-                var dataSrc = this.dataSourcesIdToDataSources[id];
+            for (let id of that.dataSourcesIdToDataSources) {
+                let dataSrc = that.dataSourcesIdToDataSources[id];
                 if (dataSrc.syncMasterTime && dataSrc.connected) {
                     dataSrc.disconnect();
-                    this.buffer.cancelDataSource(id);
+                    that.buffer.cancelDataSource(id);
                     dataSourcesToReconnect.push(id);
                 }
             }
 
             // reset buffer current time
-            this.buffer.currentTime = Date.parse(event.startTime);
+            that.buffer.currentTime = Date.parse(event.startTime);
 
             // reconnect all synchronized datasources with new time parameters
-            for (var i = 0; i < dataSourcesToReconnect.length; i++) {
-                var id = dataSourcesToReconnect[i];
-                var dataSrc = this.dataSourcesIdToDataSources[id];
-                this.updateDataSourceTime(id, event.startTime, event.endTime);
+            for (let i = 0; i < dataSourcesToReconnect.length; i++) {
+                let id = dataSourcesToReconnect[i];
+                let dataSrc = this.dataSourcesIdToDataSources[id];
+                that.updateDataSourceTime(id, event.startTime, event.endTime);
                 dataSrc.connect();
-                this.buffer.startDataSource(id);
+                that.buffer.startDataSource(id);
             }
 
-        }.bind(this));
-    },
+        });
+    }
 
     /**
      * Updates the datasource time range.
@@ -133,33 +138,33 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    updateDataSourceTime: function (id, startTime, endTime) {
+    updateDataSourceTime(id, startTime, endTime) {
         // get current parameters
-        var dataSource = this.dataSourcesIdToDataSources[id];
-        var props = dataSource.properties;
-        var options = dataSource.options;
+        let dataSource = this.dataSourcesIdToDataSources[id];
+        let props = dataSource.properties;
+        let options = dataSource.options;
 
         // update start/end time
-        if (typeof startTime != "undefined") {
+        if (isDefined(startTime)) {
             props.startTime = startTime;
         }
 
-        if (typeof endTime != "undefined") {
+        if (isDefined(endTime)) {
             props.endTime = endTime;
         }
 
         // reset parameters
         dataSource.initDataSource(props, options);
-    },
+    }
 
     /**
      * Instantiates a new OSH.Buffer {@link OSH.Buffer}
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    initBuffer: function () {
+    initBuffer() {
         this.buffer = new OSH.Buffer(this.options);
-    },
+    }
 
     /**
      * Adds a entity to the current list of datasources and pushes it into the buffer.
@@ -169,13 +174,17 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    addEntity: function (entity, options) {
+    addEntity:
+
+    function(entity, options) {
         if (typeof (entity.dataSources) != "undefined") {
-            for (var i = 0; i < entity.dataSources.length; i++) {
+            for (let i = 0; i < entity.dataSources.length; i++) {
                 this.addDataSource(entity.dataSources[i], options);
             }
         }
-    },
+    }
+
+,
 
     /**
      * Adds a dataSource to the current list of datasources and pushes it into the buffer.
@@ -185,7 +194,9 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    addDataSource: function (dataSource, options) {
+    addDataSource:
+
+    function(dataSource, options) {
         this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
         this.buffer.addDataSource(dataSource.id, {
             name: dataSource.name,
@@ -194,24 +205,30 @@ OSH.DataReceiver.DataReceiverController = BaseClass.extend({
             timeOut: dataSource.timeOut
         });
 
-        //TODO: make frozen variables?
+        //TODO: make frozen letiables?
         dataSource.onData = function (data) {
             this.buffer.push({dataSourceId: dataSource.getId(), data: data});
 
         }.bind(this);
-    },
+    }
+
+,
 
     /**
      * Connects each connector
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    connectAll: function () {
+    connectAll:
+
+    function() {
         this.buffer.start();
-        for (var id in this.dataSourcesIdToDataSources) {
-            var ds = this.dataSourcesIdToDataSources[id];
+        for (let id in this.dataSourcesIdToDataSources) {
+            let ds = this.dataSourcesIdToDataSources[id];
             if (ds.properties.connect)
                 ds.connect();
         }
     }
-});
+}
+)
+;

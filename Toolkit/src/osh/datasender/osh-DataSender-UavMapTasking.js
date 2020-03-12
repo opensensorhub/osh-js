@@ -19,32 +19,30 @@
  * @class
  * @augments OSH.DataSender.DataSource
  */
-OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
+import DataSink from './osh-DataSender-DataSink';
+import EventManager from '../osh-EventManager';
 
-    initialize: function(name, properties) {
+export default class UavMapTasking extends DataSink {
 
-        this._super(name, properties);
+    constructor(name, properties) {
+        super(name, properties);
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_TAKEOFF, function (event) {
-            this.connector.sendRequest(this.buildTakeOffRequest());            
-        }.bind(this));
+        let that = this;
+        EventManager.observe(OSH.EventManager.EVENT.UAV_TAKEOFF, (event) =>
+            that.connector.sendRequest(that.buildTakeOffRequest()));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_GOTO, function (event) {
-            this.connector.sendRequest(this.buildGotoRequest({lat: event.geoLat, lon: event.geoLon}));
-        }.bind(this));
+        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_GOTO, (event) =>
+            that.connector.sendRequest(that.buildGotoRequest({lat: event.geoLat, lon: event.geoLon})));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_ORBIT, function (event) {
-            this.connector.sendRequest(this.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10}));
-        }.bind(this));
+        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_ORBIT, (event) =>
+            that.connector.sendRequest(that.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10})));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LOOKAT, function (event) {
-            this.connector.sendRequest(this.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon}));
-        }.bind(this));
+        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LOOKAT, (event) =>
+            that.connector.sendRequest(that.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon})));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LAND, function (event) {
-            this.connector.sendRequest(this.buildLandRequest({lat: event.geoLat, lon: event.geoLon}));
-        }.bind(this));
-    },
+        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LAND, (event) =>
+            that.connector.sendRequest(that.buildLandRequest({lat: event.geoLat, lon: event.geoLon})));
+    }
 
 
     /**
@@ -54,11 +52,9 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
      * @memberof OSH.DataReceiver.UavMapTasking
      * @instance
      */
-    buildTakeOffRequest: function(props) {
+    buildTakeOffRequest(props) {
         return this.buildRequest("navCommands,TAKEOFF,10");
-    },
-
-
+    }
 
     /**
      * Builds the got to SPS request.
@@ -67,9 +63,9 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
      * @memberof OSH.DataReceiver.UavMapTasking
      * @instance
      */
-    buildGotoRequest: function(props) {
-        return this.buildRequest("navCommands,GOTO_LLA,"+props.lat+","+props.lon+",0,0");
-    },
+    buildGotoRequest(props) {
+        return this.buildRequest("navCommands,GOTO_LLA," + props.lat + "," + props.lon + ",0,0");
+    }
 
 
     /**
@@ -79,9 +75,9 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
      * @param {string} props
      * @instance
      */
-    buildOrbitRequest: function(props) {
-        return this.buildRequest("navCommands,ORBIT,"+props.lat+","+props.lon+",0,"+props.radius);
-    },
+    buildOrbitRequest(props) {
+        return this.buildRequest("navCommands,ORBIT," + props.lat + "," + props.lon + ",0," + props.radius);
+    }
 
 
     /**
@@ -91,9 +87,9 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
      * @param {string} props
      * @instance
      */
-    buildLookAtRequest: function(props) {
-        return this.buildRequest("camCommands,MOUNT_TARGET,"+props.lat+","+props.lon+",0");
-    },
+    buildLookAtRequest(props) {
+        return this.buildRequest("camCommands,MOUNT_TARGET," + props.lat + "," + props.lon + ",0");
+    }
 
 
     /**
@@ -103,9 +99,9 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
      * @param {string} props
      * @instance
      */
-    buildLandRequest: function(props) {
-        return this.buildRequest("navCommands,LAND,"+props.lat+","+props.lon);
-    },
+    buildLandRequest(props) {
+        return this.buildRequest("navCommands,LAND," + props.lat + "," + props.lon);
+    }
 
 
     /**
@@ -115,20 +111,20 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
      * @memberof OSH.DataReceiver.UavMapTasking
      * @instance
      */
-    buildRequest: function(cmdData) {
-        var xmlSpsRequest = "<sps:Submit ";
+    buildRequest(cmdData) {
+        let xmlSpsRequest = "<sps:Submit ";
 
         // adds service
-        xmlSpsRequest += "service=\""+this.properties.service+"\" ";
+        xmlSpsRequest += "service=\"" + this.properties.service + "\" ";
 
         // adds version
-        xmlSpsRequest += "version=\""+this.properties.version+"\" ";
+        xmlSpsRequest += "version=\"" + this.properties.version + "\" ";
 
         // adds ns
         xmlSpsRequest += "xmlns:sps=\"http://www.opengis.net/sps/2.0\" xmlns:swe=\"http://www.opengis.net/swe/2.0\"> ";
 
         // adds procedure
-        xmlSpsRequest += "<sps:procedure>"+this.properties.offeringID+"</sps:procedure>";
+        xmlSpsRequest += "<sps:procedure>" + this.properties.offeringID + "</sps:procedure>";
 
         // adds taskingParameters
         xmlSpsRequest += "<sps:taskingParameters><sps:ParameterData>";
@@ -137,7 +133,7 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
         xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
 
         // adds values
-        xmlSpsRequest += "<sps:values>"+cmdData+"</sps:values>";
+        xmlSpsRequest += "<sps:values>" + cmdData + "</sps:values>";
 
         // adds endings
         xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
@@ -146,6 +142,4 @@ OSH.DataSender.UavMapTasking = OSH.DataSender.DataSink.extend({
 
         return xmlSpsRequest;
     }
-
-    
-});
+}

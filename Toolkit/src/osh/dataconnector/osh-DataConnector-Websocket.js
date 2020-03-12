@@ -20,8 +20,8 @@
  * @class
  * @augments OSH.DataConnector.DataConnector
  * @example
- * var url = ...;
- * var connector = new OSH.DataConnector.WebSocketDataConnector(url);
+ * let url = ...;
+ * let connector = new OSH.DataConnector.WebSocketDataConnector(url);
  *
  * // connect
  * connector.connect();
@@ -33,42 +33,47 @@
  * connector.close();
  *
  */
-OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.extend({
+
+import DataConnector from './osh-DataConnector';
+import {isWebWorker} from '../osh-Utils';
+
+export default class WebSocketDataConnector extends DataConnector {
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
      */
-    connect: function () {
+    connect() {
+        let that = this;
         if (!this.init) {
             //creates Web Socket
-            if (OSH.Utils.isWebWorker()){
-                var url = this.getUrl();
-                var blobURL = URL.createObjectURL(new Blob(['(',
+            if (isWebWorker()) {
+                let url = this.getUrl();
+                let blobURL = URL.createObjectURL(new Blob(['(',
 
                         function () {
-                            var ws = null;
-                            self.onmessage = function (e) {
-                                if(e.data == "close") {
+                            let ws = null;
+                            self.onmessage = (e) => {
+                                if (e.data === "close") {
                                     close();
                                 } else {
                                     // is URL
                                     init(e.data);
                                 }
-                            }
+                            };
 
                             function init(url) {
                                 ws = new WebSocket(url);
                                 ws.binaryType = 'arraybuffer';
-                                ws.onmessage = function (event) {
+                                ws.onmessage = (event) => {
                                     //callback data on message received
                                     if (event.data.byteLength > 0) {
-                                       self.postMessage(event.data,[event.data]);
+                                        self.postMessage(event.data, [event.data]);
                                     }
-                                }
+                                };
 
-                                ws.onerror = function(event) {
+                                ws.onerror = (event) => {
                                     ws.close();
                                 };
                             }
@@ -82,46 +87,42 @@ OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.exten
                 this.worker = new Worker(blobURL);
 
                 this.worker.postMessage(url);
-                this.worker.onmessage = function (e) {
-                    this.onMessage(e.data);
-                }.bind(this);
+                this.worker.onmessage = (e) => that.onMessage(e.data);
 
                 // Won't be needing this anymore
                 URL.revokeObjectURL(blobURL);
             } else {
                 this.ws = new WebSocket(this.getUrl());
                 this.ws.binaryType = 'arraybuffer';
-                this.ws.onmessage = function (event) {
+                this.ws.onmessage = (event) => {
                     //callback data on message received
                     if (event.data.byteLength > 0) {
-                        this.onMessage(event.data);
+                        that.onMessage(event.data);
                     }
-                }.bind(this);
+                };
 
                 // closes socket if any errors occur
-                this.ws.onerror = function(event) {
-                    this.ws.close();
-                }.bind(this);
+                this.ws.onerror = (event) => that.ws.close();
             }
             this.init = true;
         }
-    },
+    }
 
     /**
      * Disconnects the websocket.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
      */
-    disconnect: function() {
-        if (OSH.Utils.isWebWorker() && this.worker != null) {
+    disconnect() {
+        if (isWebWorker() && this.worker !== null) {
             this.worker.postMessage("close");
             this.worker.terminate();
             this.init = false;
-        } else if (this.ws != null) {
+        } else if (this.ws !== null) {
             this.ws.close();
             this.init = false;
         }
-    },
+    }
 
     /**
      * The onMessage method used by the websocket to callback the data
@@ -129,15 +130,15 @@ OSH.DataConnector.WebSocketDataConnector = OSH.DataConnector.DataConnector.exten
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
      */
-    onMessage: function (data) {
-    },
+    onMessage(data) {
+    }
 
     /**
      * Closes the webSocket.
      * @instance
      * @memberof OSH.DataConnector.WebSocketDataConnector
      */
-    close: function() {
+    close() {
         this.disconnect();
     }
-});
+}

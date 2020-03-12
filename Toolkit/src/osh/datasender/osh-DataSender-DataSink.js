@@ -18,43 +18,45 @@
  * @classdesc
  * @class
  */
-OSH.DataSender.DataSink =  BaseClass.extend({
-    initialize: function (name, properties, options) {
-        if (properties.protocol == "http") {
-            this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
+import AjaxConnector from '../dataconnector/osh-DataConnector-HttpAjaxConnector';
+
+export default class DataSink {
+    constructor(name, properties, options) {
+        if (properties.protocol === 'http') {
+            this.connector = new AjaxConnector(this.buildUrl(properties));
             this.connector.onError = this.onCatchError.bind(this);
             this.connector.onSuccess = this.onCatchSuccess.bind(this);
         }
         this.id = "DataSender-" + OSH.Utils.randomUUID();
         this.name = name;
         this.properties = properties;
-    },
+    }
 
     /**
      * @param properties
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    sendRequest: function(properties) {
+    sendRequest(properties) {
         this.connector.sendRequest(this.buildRequest(properties));
-    },
+    }
 
     /**
      * @param properties
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    buildRequest:function(properties) {
+    buildRequest(properties) {
         return "";
-    },
+    }
 
     /**
      * @param properties
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    buildUrl: function(properties) {
-        var url = "";
+    buildUrl(properties) {
+        let url = "";
 
         // adds protocol
         url += properties.protocol + "://";
@@ -63,43 +65,43 @@ OSH.DataSender.DataSink =  BaseClass.extend({
         url += properties.endpointUrl;
 
         return url;
-    },
+    }
 
     /**
      * @param response
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    onCatchError:function(response) {
+    onCatchError(response) {
         this.onError(response);
-    },
+    }
 
     /**
      * @param response
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    onCatchSuccess:function(response) {
+    onCatchSuccess(response) {
         this.onSuccess(response);
-    },
+    }
 
     /**
      * @param response
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    onError:function(response) {
+    onError(response) {
 
-    },
+    }
 
     /**
      * @param response
      * @instance
      * @memberof OSH.DataSender.DataSink
      */
-    onSuccess:function(response) {
+    onSuccess(response) {
 
-    },
+    }
 
     /**
      * The data connector default id.
@@ -107,9 +109,9 @@ OSH.DataSender.DataSink =  BaseClass.extend({
      * @memberof OSH.DataConnector.DataSink
      * @instance
      */
-    getId: function() {
+    getId() {
         return this.id;
-    },
+    }
 
     /**
      * The name.
@@ -117,7 +119,7 @@ OSH.DataSender.DataSink =  BaseClass.extend({
      * @memberof OSH.DataConnector.DataSink
      * @instance
      */
-    getName: function() {
+    getName() {
         return this.name;
     }
-});
+}

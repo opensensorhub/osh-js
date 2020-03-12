@@ -27,216 +27,219 @@
  * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
  *
  */
-OSH.DataReceiver.DataSource = BaseClass.extend({
-  initialize: function(name,properties) {
-    this.id = "DataSource-"+OSH.Utils.randomUUID();
-    this.name = name;
-    this.properties = properties;
-    this.timeShift = 0;
-    this.connected = false;
+import {randomUUID, isDefined} from '../osh-Utils';
 
-    this.initDataSource(properties);
-  },
+export default class DataSource {
+    constructor(name, properties) {
+        this.id = "DataSource-" + randomUUID();
+        this.name = name;
+        this.properties = properties;
+        this.timeShift = 0;
+        this.connected = false;
 
-  /**
-   * Inits the datasource with the constructor properties.
-   * @param properties
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   */
-  initDataSource: function(properties) {
-    
-    if(typeof(properties.timeShift) != "undefined") {
-        this.timeShift = properties.timeShift;
+        this.initDataSource(properties);
     }
 
-    if(typeof properties.syncMasterTime != "undefined") {
-      this.syncMasterTime = properties.syncMasterTime;
-    } else {
-      this.syncMasterTime = false;
+    /**
+     * Inits the datasource with the constructor properties.
+     * @param properties
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     */
+    initDataSource(properties) {
+
+        if (isDefined(properties.timeShift)) {
+            this.timeShift = properties.timeShift;
+        }
+
+        if (isDefined(properties.syncMasterTime)) {
+            this.syncMasterTime = properties.syncMasterTime;
+        } else {
+            this.syncMasterTime = false;
+        }
+
+        if (isDefined(properties.bufferingTime)) {
+            this.bufferingTime = properties.bufferingTime;
+        }
+
+        if (isDefined(properties.timeOut)) {
+            this.timeOut = properties.timeOut;
+        }
+
+        if (!isDefined(properties.connect)) {
+            properties.connect = true;
+        }
+
+        // checks if type is WebSocket
+        if (properties.protocol.startsWith('ws')) {
+            this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
+            // connects the callback
+            this.connector.onMessage = this.onMessage.bind(this);
+        } else if (properties.protocol.startsWith('http')) {
+            this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
+            this.connector.responseType = 'arraybuffer';
+            // connects the callback
+            this.connector.onMessage = this.onMessage.bind(this);
+        }
     }
 
-    if(typeof properties.bufferingTime != "undefined") {
-      this.bufferingTime = properties.bufferingTime;
+    /**
+     * Disconnect the dataSource then the connector will be closed as well.
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     */
+    disconnect() {
+        this.connector.disconnect();
+        this.connected = false;
+
+        // send data reset event
+        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA + "-" + this.id, {
+            dataSourceId: this.id,
+            reset: true
+        });
     }
 
-    if(typeof properties.timeOut != "undefined") {
-      this.timeOut = properties.timeOut;
+    /**
+     * Connect the dataSource then the connector will be opened as well.
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     */
+    connect() {
+        this.connector.connect();
+        this.connected = true;
     }
 
-    if(typeof(properties.connect) == "undefined") {
-      properties.connect = true;
+    /**
+     * The callback which receives data.
+     * @callback
+     * @param data
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     */
+    onMessage(data) {
+        this.onData({
+            timeStamp: this.parseTimeStamp(data) + this.timeShift,
+            data: this.parseData(data)
+        });
     }
-    
-    // checks if type is WebSocket
-    if (properties.protocol.startsWith('ws')){
-      this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
-      // connects the callback
-      this.connector.onMessage = this.onMessage.bind(this);
-    } else if(properties.protocol.startsWith('http')) {
-      this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
-      this.connector.responseType = 'arraybuffer';
-      // connects the callback
-      this.connector.onMessage = this.onMessage.bind(this);
+
+    /**
+     * The default timestamp parser
+     * @param data the full data message returned by the connector
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     * @returns {number} the formatted timestamp
+     */
+    parseTimeStamp(data) {
+        return new Date().getTime();
     }
-  },
-  /**
-   * Disconnect the dataSource then the connector will be closed as well.
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   */
-  disconnect : function() {
-    this.connector.disconnect();
-    this.connected = false;
-    
-    // send data reset event
-    OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+this.id,{
-        dataSourceId: this.id,
-        reset: true
-    });
-  },
 
-  /**
-   * Connect the dataSource then the connector will be opened as well.
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   */
-  connect: function() {
-    this.connector.connect();
-    this.connected = true;
-  },
+    /**
+     * The default timestamp parser
+     * @param data the full data message returned by the connector
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     * @returns {String|Object|number|ArrayBuffer|*} data the formatted data
+     */
+    parseData(data) {
+        return data;
+    }
 
-  /**
-   * The callback which receives data.
-   * @callback
-   * @param data
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   */
-  onMessage: function(data) {
-    this.onData({
-        timeStamp: this.parseTimeStamp(data) + this.timeShift,
-        data: this.parseData(data)
-    });
-  },
+    /**
+     * @param {Object} data the data object
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     * @example
+     * data is represented as
+     * data = {
+     *    timeStamp: timeStamp // number
+     *    data: data // data to render
+     * };
+     */
+    onData(data) {
+        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA + "-" + this.id, {data: data});
+    }
 
-  /**
-   * The default timestamp parser
-   * @param data the full data message returned by the connector
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   * @returns {number} the formatted timestamp
-   */
-  parseTimeStamp: function(data){
-    return new Date().getTime();
-  },
+    /**
+     * Gets the datasource id.
+     * @returns {string} the datasource id
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     */
+    getId() {
+        return this.id;
+    }
 
-  /**
-   * The default timestamp parser
-   * @param data the full data message returned by the connector
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   * @returns {String|Object|number|ArrayBuffer|*} data the formatted data
-   */
-  parseData: function(data){
-    return data;
-  },
-  
-  /**
-   * @param {Object} data the data object
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   * @example
-   * data is represented as 
-   * data = { 
-   *    timeStamp: timeStamp // number
-   *    data: data // data to render
-   * };
-   */ 
-  onData:function(data) {
-    OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+"-"+this.id, {data : data});
-  },
+    /**
+     * Gets the datasource name.
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     * @returns {*}
+     */
+    getName() {
+        return this.name;
+    }
 
-  /**
-   * Gets the datasource id.
-   * @returns {string} the datasource id
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   */
-  getId: function() {
-    return this.id;
-  },
+    /**
+     * Builds the full url.
+     * @param {object} properties
+     * @param {string} properties.protocol the connector protocol
+     * @param {string} properties.endpointUrl the endpoint url
+     * @param {string} properties.service the service
+     * @param {string} properties.offeringID the offeringID
+     * @param {string} properties.observedProperty the observed property
+     * @param {string} properties.startTime the start time (ISO format)
+     * @param {string} properties.endTime the end time (ISO format)
+     * @param {number} properties.replaySpeed the replay factor
+     * @param {number} properties.responseFormat the response format (e.g video/mp4)
+     * @instance
+     * @memberof OSH.DataReceiver.DataSource
+     * @returns {string} the full url
+     */
+    buildUrl(properties) {
+        let url = "";
 
-  /**
-   * Gets the datasource name.
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   * @returns {*}
-   */
-  getName: function() {
-    return this.name;
-  },
+        // adds protocol
+        url += properties.protocol + "://";
 
-  /**
-   * Builds the full url.
-   * @param {object} properties
-   * @param {string} properties.protocol the connector protocol
-   * @param {string} properties.endpointUrl the endpoint url
-   * @param {string} properties.service the service
-   * @param {string} properties.offeringID the offeringID
-   * @param {string} properties.observedProperty the observed property
-   * @param {string} properties.startTime the start time (ISO format)
-   * @param {string} properties.endTime the end time (ISO format)
-   * @param {number} properties.replaySpeed the replay factor
-   * @param {number} properties.responseFormat the response format (e.g video/mp4)
-   * @instance
-   * @memberof OSH.DataReceiver.DataSource
-   * @returns {string} the full url
-   */
-  buildUrl: function(properties) {
-	  var url = "";
-	  
-	  // adds protocol
-	  url += properties.protocol + "://";
-	  
-	  // adds endpoint url
-	  url += properties.endpointUrl+"?";
-	  
-	  // adds service
-	  url += "service="+properties.service+"&";
-	  
-	  // adds version
-	  url += "version=2.0&";
-	  
-	  // adds request
-	  url += "request=GetResult&";
-	  
-	  // adds offering
-	  url += "offering="+properties.offeringID+"&";
+        // adds endpoint url
+        url += properties.endpointUrl + "?";
 
-          // adds feature of interest urn
-	  if(properties.foiURN && properties.foiURN !== '') {
-		url += 'featureOfInterest=' + properties.foiURN + '&';
-	  }
-	  
-	  // adds observedProperty
-	  url += "observedProperty="+properties.observedProperty+"&";
-	  
-	  // adds temporalFilter
-	  var startTime = properties.startTime;
-	  var endTime = properties.endTime;
-	  url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&";
-	  
-	  if(properties.replaySpeed) {
-		  // adds replaySpeed
-		  url += "replaySpeed="+properties.replaySpeed;
-	  }
-	  
-	  // adds responseFormat (optional)
-	  if(properties.responseFormat) {
-		  url += "&responseFormat="+properties.responseFormat;
-	  }
+        // adds service
+        url += "service=" + properties.service + "&";
 
-	  return url;
-  }
-});
+        // adds version
+        url += "version=2.0&";
+
+        // adds request
+        url += "request=GetResult&";
+
+        // adds offering
+        url += "offering=" + properties.offeringID + "&";
+
+        // adds feature of interest urn
+        if (properties.foiURN && properties.foiURN !== '') {
+            url += 'featureOfInterest=' + properties.foiURN + '&';
+        }
+
+        // adds observedProperty
+        url += "observedProperty=" + properties.observedProperty + "&";
+
+        // adds temporalFilter
+        let startTime = properties.startTime;
+        let endTime = properties.endTime;
+        url += "temporalFilter=phenomenonTime," + startTime + "/" + endTime + "&";
+
+        if (properties.replaySpeed) {
+            // adds replaySpeed
+            url += "replaySpeed=" + properties.replaySpeed;
+        }
+
+        // adds responseFormat (optional)
+        if (properties.responseFormat) {
+            url += "&responseFormat=" + properties.responseFormat;
+        }
+
+        return url;
+    }
+}

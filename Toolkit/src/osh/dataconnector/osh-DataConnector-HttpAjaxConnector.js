@@ -20,8 +20,8 @@
  * @class
  * @augments OSH.DataConnector.DataConnector
  * @example
- * var request = ...;
- * var connector = new OSH.DataConnector.AjaxConnector(url);
+ * let request = ...;
+ * let connector = new OSH.DataConnector.AjaxConnector(url);
  *
  * // handle onSuccess
  * connector.onSuccess = function(event) {
@@ -36,47 +36,51 @@
  * connector.sendRequest(request);
  *
  */
-OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
+import DataConnector from './osh-DataConnector';
+import {isDefined} from '../osh-Utils';
 
-    initialize: function(url,properties) {
-        this._super(url);
+export default class AjaxConnector extends DataConnector {
+
+    constructor(url, properties) {
+        super(url);
 
         this.method = "POST";
         this.responseType = "arraybuffer";
 
-        if(typeof(properties) !== "undefined") {
-            if(properties.method) {
+        if (isDefined(properties)) {
+            if (properties.method) {
                 this.method = properties.method;
             }
 
-            if(properties.responseType) {
+            if (properties.responseType) {
                 this.responseType = properties.responseType;
             }
         }
-    },
+    }
+
     /**
      * Sends the request to the defined server.
      * @param request The Http request (as a String format)
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
      */
-    sendRequest: function (request,extraUrl) {
-        var self = this;
-        var xmlhttp = new XMLHttpRequest();
+    sendRequest(request, extraUrl) {
+        let self = this;
+        let xmlhttp = new XMLHttpRequest();
         xmlhttp.timeout = 60000;
-        if(request === null) {
-            if(typeof (extraUrl) !== "undefined") {
-                xmlhttp.open("GET", this.getUrl()+"?"+extraUrl, true);
+        if (request === null) {
+            if (isDefined(extraUrl)) {
+                xmlhttp.open("GET", this.getUrl() + "?" + extraUrl, true);
             } else {
                 xmlhttp.open("GET", this.getUrl(), true);
             }
             xmlhttp.responseType = this.responseType;
-            xmlhttp.onload = function (oEvent) {
+            xmlhttp.onload = (oEvent) => {
                 if (xmlhttp.response) {
                     self.onMessage(xmlhttp.response);
                 }
             };
-            xmlhttp.ontimeout = function (e) {
+            xmlhttp.ontimeout = (e) => {
                 console.log("Timeout");
             };
 
@@ -87,21 +91,19 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
 
             xmlhttp.send(request);
 
-            xmlhttp.onreadystatechange = function() {
+            xmlhttp.onreadystatechange = () => {
                 if (xmlhttp.readyState < 4) {
                     // while waiting response from server
-                }  else if (xmlhttp.readyState == 4) {                // 4 = Response from server has been completely loaded.
-                    if (xmlhttp.status == 200 && xmlhttp.status < 300) { // http status between 200 to 299 are all successful
-                        this.onSuccess(xmlhttp.responseText);
+                } else if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+                    if (xmlhttp.status === 200 && xmlhttp.status < 300) { // http status between 200 to 299 are all successful
+                        self.onSuccess(xmlhttp.responseText);
                     } else {
-                        this.onError("");
+                        self.onError("");
                     }
                 }
-            }.bind(this);
+            };
         }
-
-
-    },
+    }
 
     /**
      * This is the callback method in case of getting error connection.
@@ -109,9 +111,9 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
      */
-    onError:function(event){
+    onError(event) {
 
-    },
+    }
 
     /**
      * This is the callback method in case of getting success connection.
@@ -119,11 +121,11 @@ OSH.DataConnector.AjaxConnector = OSH.DataConnector.DataConnector.extend({
      * @memberof OSH.DataConnector.AjaxConnector
      * @instance
      */
-    onSuccess:function(event) {
+    onSuccess(event) {
 
-    },
+    }
 
-    connect:function(){
+    connect() {
         this.sendRequest(null);
     }
-});
+}

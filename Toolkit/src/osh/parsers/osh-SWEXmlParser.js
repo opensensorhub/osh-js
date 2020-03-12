@@ -2,17 +2,19 @@
  * Created by mdhsl on 5/4/17.
  */
 
+import X2JS from "../../../vendor-local/x2js/x2js";
+
 /**
  * @class Javascript binding for SWE requests
  * @classdesc
  *
  */
-OSH.SWEXmlParser = BaseClass.extend({
+export default class SWEXmlParser {
 
-    initialize:function(xml) {
+    constructor(xml) {
         this.originalXml = xml;
 
-        var x2jsOptions = {
+        let x2jsOptions = {
             xmlns: false, // does not keep xmlns
             attributePrefix:"",
             prefix: false,
@@ -47,14 +49,13 @@ OSH.SWEXmlParser = BaseClass.extend({
         };
 
         this.x2jsParser = new X2JS(x2jsOptions);
-    },
-
-    toXml:function() {
-        return this.originalXml;
-    },
-
-    toJson:function() {
-        return this.x2jsParser.xml_str2json(this.originalXml);
-
     }
-});
+
+    toXml() {
+        return this.originalXml;
+    }
+
+    toJson() {
+        return this.x2jsParser.xml_str2json(this.originalXml);
+    }
+}

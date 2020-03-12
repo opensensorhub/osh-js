@@ -20,15 +20,15 @@
  * @class
  * @deprecated
  */
-OSH.Log = BaseClass.extend({
-    initialize:function(){
+export default class Log {
+    constructor(){
         this.logDiv = document.createElement("TEXTAREA");
         this.logDiv.setAttribute("class", "osh-log popup-content");
         this.logDiv.setAttribute("wrap","off");
         this.first = true;
         // appends <div> tag to <body>
         document.observe("dom:loaded", function() {
-            var dialog = new OSH.UI.DialogView({
+            let dialog = new OSH.UI.DialogView({
                 title: "Logging console"
             });
             /*dialog.appendContent(this.logDiv);
@@ -46,6 +46,6 @@ OSH.Log = BaseClass.extend({
             }
         }.bind(this));
     }
-});
+}
 
 //var log = new OSH.Log();

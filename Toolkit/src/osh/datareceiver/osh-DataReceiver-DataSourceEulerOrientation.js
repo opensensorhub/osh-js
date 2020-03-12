@@ -20,48 +20,50 @@
  * @class OSH.DataReceiver.EulerOrientation
  * @augments OSH.DataReceiver.DataSource
  */
-OSH.DataReceiver.EulerOrientation = OSH.DataReceiver.DataSource.extend({
 
-  /**
-   * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-   * @param {function} $super the parseTimeStamp super method
-   * @param {string} data the data to parse
-   * @returns {number} the extracted timestamp
-   * @memberof OSH.DataReceiver.EulerOrientation
-   * @instance
-   */
-  parseTimeStamp: function(data){
-    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-    var tokens = rec.trim().split(",");
-    var t =  new Date(tokens[0]).getTime();
-    return t;
-  },
+import DataSource from './osh-DataReceiver-DataSource';
 
-  /**
-   * Extract data from the message. The data are got such as:<p><ul><li>yaw: tokens[1]</li><li>pitch: tokens [2]</li><li>roll: tokens[3]</li></ul></p>.
-   * @param {function} $super the parseData super method
-   * @param {Object} data the data to parse
-   * @returns {Object} the parsed data
-   * @example
-   * {
-   *   pitch:10,
-   *   roll: 11,
-   *   heading:12
-   * }
-   * @memberof OSH.DataReceiver.EulerOrientation
-   * @instance
-   */
-  parseData: function(data){
-    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-    var tokens = rec.trim().split(",");
-    var yaw = parseFloat(tokens[1]);    
-    var pitch = parseFloat(tokens[2]);
-    var roll = parseFloat(tokens[3]);
-    
-    return {
-      pitch : pitch,
-      roll : roll,
-      heading: yaw
-    };
-  } 
-});
+export default class EulerOrientation extends DataSource {
+
+    /**
+     * Extracts timestamp from the message. The timestamp is the first token got from split(',')
+     * @param {function} $super the parseTimeStamp super method
+     * @param {string} data the data to parse
+     * @returns {number} the extracted timestamp
+     * @memberof OSH.DataReceiver.EulerOrientation
+     * @instance
+     */
+    parseTimeStamp(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        return new Date(tokens[0]).getTime();
+    }
+
+    /**
+     * Extract data from the message. The data are got such as:<p><ul><li>yaw: tokens[1]</li><li>pitch: tokens [2]</li><li>roll: tokens[3]</li></ul></p>.
+     * @param {function} $super the parseData super method
+     * @param {Object} data the data to parse
+     * @returns {Object} the parsed data
+     * @example
+     * {
+     *   pitch:10,
+     *   roll: 11,
+     *   heading:12
+     * }
+     * @memberof OSH.DataReceiver.EulerOrientation
+     * @instance
+     */
+    parseData(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        let yaw = parseFloat(tokens[1]);
+        let pitch = parseFloat(tokens[2]);
+        let roll = parseFloat(tokens[3]);
+
+        return {
+            pitch: pitch,
+            roll: roll,
+            heading: yaw
+        };
+    }
+}

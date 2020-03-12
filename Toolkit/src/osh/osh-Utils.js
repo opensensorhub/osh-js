@@ -14,141 +14,145 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-var MAX_LONG = Math.pow(2, 53) + 1;
+export const MAX_LONG = Math.pow(2, 53) + 1;
 
 
 /**
  *
  * @constructor
  */
-OSH.Utils = function() {};
+
+/**
+ Global helper method to test if a letiable or object attribute is defined
+ */
+export function isDefined(v) {
+    return typeof (v) !== 'undefined';
+}
 
 
 /**
-Global helper method to test if a variable or object attribute is defined
-*/
-OSH.Utils.isDefined = function(v) {
-  return typeof(v) != 'undefined';
+ Global helper method to test if a letiable or object attribute has a value,
+ that is it is defined and non null
+ */
+export function hasValue(v) {
+    return isDefined(v) && v !== null;
 }
 
 /**
-Global helper method to test if a variable or object attribute has a value,
-that is it is defined and non null
-*/
-OSH.Utils.hasValue = function(v) {
-  return this.isDefined(v) && v != null;
+ Global helper method to test if a letiable or object attribute is of a particular type
+ */
+export function hasType(v, expectedType) {
+    let hasVal = hasValue(v);
+    return hasVal && typeof (v) === expectedType;
 }
 
 /**
-Global helper method to test if a variable or object attribute is of a particular type
-*/
-OSH.Utils.hasType = function(v, expectedType) {
-  var hasVal = this.hasValue(v);
-  return hasVal && typeof(v) == expectedType;
+ Global helper method to test if a letiable or object attribute is an object
+ */
+export function isObject(v, letName) {
+    return hasType(v, 'object', letName);
 }
 
 /**
-Global helper method to test if a variable or object attribute is an object
-*/
-OSH.Utils.isObject = function(v, varName) {
-  return this.hasType(v, 'object', varName);
+ Global helper method to test if a letiable or object attribute is an array
+ */
+export function isArray(v) {
+    return isDefined(v) && Array.isArray(v);
 }
 
 /**
-Global helper method to test if a variable or object attribute is an array
-*/
-OSH.Utils.isArray = function(v, varName) {
-  return this.isDefined(v) && Array.isArray(v);
+ Global helper method to test if a letiable or object attribute is a function
+ */
+export function isFunction(v, letName) {
+    return hasType(v, 'function', letName);
 }
 
 /**
-Global helper method to test if a variable or object attribute is a function
-*/
-OSH.Utils.isFunction = function(v, varName) {
-  return this.hasType(v, 'function', varName);
+ Assert that a letiable or object attribute is defined
+ **/
+export function assertDefined(v, letName = 'letiable') {
+    if (!isDefined(v)) {
+        throw letName + " must be defined";
+    }
+    return v;
 }
 
 /**
-Assert that a variable or object attribute is defined
-**/
-OSH.Utils.assertDefined = function(v, varName='variable') {
-  if (!this.isDefined(v))
-    throw varName + " must be defined";
-  return v;
+ Assert that a letiable or object attribute is defined and non-null
+ **/
+export function assertType(v, expectedType, letName = 'letiable') {
+    assertDefined(v, letName);
+    if (typeof (v) !== expectedType) {
+        throw letName + " must be of type " + expectedType;
+    }
+    return v;
 }
 
 /**
-Assert that a variable or object attribute is defined and non-null
-**/
-OSH.Utils.assertType = function(v, expectedType, varName='variable') {
-  this.assertDefined(v, varName);
-  if (typeof(v) != expectedType)
-    throw varName + " must be of type " + expectedType;
-  return v;
+ Assert that a letiable or object attribute is a string
+ **/
+export function assertBoolean(v, letName) {
+    return assertType(v, 'boolean', letName);
 }
 
 /**
-Assert that a variable or object attribute is a string
-**/
-OSH.Utils.assertBoolean = function(v, varName) {
-  return this.assertType(v, 'boolean', varName);
+ Assert that a letiable or object attribute is a string
+ **/
+export function assertString(v, letName) {
+    return assertType(v, 'string', letName);
 }
 
 /**
-Assert that a variable or object attribute is a string
-**/
-OSH.Utils.assertString = function(v, varName) {
-  return this.assertType(v, 'string', varName);
+ Assert that a letiable or object attribute is a number
+ **/
+export function assertNumber(v, letName) {
+    return assertType(v, 'number', letName);
 }
 
 /**
-Assert that a variable or object attribute is a number
-**/
-OSH.Utils.assertNumber = function(v, varName) {
-  return this.assertType(v, 'number', varName);
+ Assert that a letiable or object attribute is a number
+ **/
+export function assertPositive(v, letName) {
+    assertNumber(v, letName);
+    if (v <= 0) {
+        throw letName + " must be a positive number";
+    }
 }
 
 /**
-Assert that a variable or object attribute is a number
-**/
-OSH.Utils.assertPositive = function(v, varName) {
-  this.assertNumber(v, varName);
-  if (v <= 0)
-    throw varName + " must be a positive number";
+ Assert that a letiable or object attribute is an object
+ **/
+export function assertObject(v, letName) {
+    return assertType(v, 'object', letName);
 }
 
 /**
-Assert that a variable or object attribute is an object
-**/
-OSH.Utils.assertObject = function(v, varName) {
-  return this.assertType(v, 'object', varName);
+ Assert that a letiable or object attribute is an object
+ **/
+export function assertArray(v, letName = 'letiable') {
+    assertDefined(v, letName);
+    if (!Array.isArray(v)) {
+        throw letName + " must be an array";
+    }
+    return v;
 }
 
 /**
-Assert that a variable or object attribute is an object
-**/
-OSH.Utils.assertArray = function(v, varName='variable') {
-  this.assertDefined(v, varName);
-  if (!Array.isArray(v))
-    throw varName + " must be an array";
-  return v;
+ Assert that a letiable or object attribute is a function
+ **/
+export function assertFunction(v, letName) {
+    return assertType(v, 'function', letName);
 }
 
 /**
-Assert that a variable or object attribute is a function
-**/
-OSH.Utils.assertFunction = function(v, varName) {
-  return this.assertType(v, 'function', varName);
-}
-
-/**
-Assert that a variable or object attribute is defined and non-null
-**/
-OSH.Utils.assertHasValue = function(v, varName='variable') {
-  this.assertDefined(v, varName);
-  if (!this.hasValue(v))
-    throw varName + " must not be null";
-  return v;
+ Assert that a letiable or object attribute is defined and non-null
+ **/
+export function assertHasValue(v, letName = 'letiable') {
+    assertDefined(v, letName);
+    if (!hasValue(v)) {
+        throw letName + " must not be null";
+    }
+    return v;
 }
 
 /**
@@ -157,12 +161,12 @@ OSH.Utils.assertHasValue = function(v, varName='variable') {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.randomUUID = function() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-    return v.toString(16);
-  });
-};
+export function randomUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 /**
  * This function stamps/embeds a UUID into an object and returns the UUID generated for it
@@ -170,10 +174,10 @@ OSH.Utils.randomUUID = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.stampUUID = function(obj) {
-  obj._osh_id = obj._osh_id || OSH.Utils.randomUUID();
-  return obj._osh_id;
-};
+export function stampUUID(obj) {
+    obj._osh_id = obj._osh_id || randomUUID();
+    return obj._osh_id;
+}
 
 /**
  *
@@ -182,22 +186,18 @@ OSH.Utils.stampUUID = function(obj) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.jsonix_XML2JSON = function (xmlStr) {
-  var module = SOS_2_0_Module_Factory();
-  var context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
-  var unmarshaller = context.createUnmarshaller();
-  var jsonData = unmarshaller.unmarshalString(xmlStr);
-  return jsonData;
-};
+export function jsonix_XML2JSON(xmlStr) {
+    let context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
+    let unmarshaller = context.createUnmarshaller();
+    return unmarshaller.unmarshalString(xmlStr);
+}
 
 
-OSH.Utils.jsonix_JSON2XML = function (jsonStr) {
-    var module = SOS_2_0_Module_Factory();
-    var context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
-    var marshaller = context.createMarshaller();
-    var xmlData = marshaller.marshalString(jsonStr);
-    return xmlData;
-};
+export function jsonix_JSON2XML(jsonStr) {
+    let context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
+    let marshaller = context.createMarshaller();
+    return marshaller.marshalString(jsonStr);
+}
 
 //buffer is an ArrayBuffer object, the offset if specified in bytes, and the type is a string
 //corresponding to an OGC data type.
@@ -211,44 +211,44 @@ OSH.Utils.jsonix_JSON2XML = function (jsonStr) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.ParseBytes = function (buffer, offset, type) {
-  var view = new DataView(buffer);
+export function ParseBytes(buffer, offset, type) {
+    let view = new DataView(buffer);
 
-  //Note: There exist types not listed in the map below that have OGC definitions, but no appropriate
-  //methods or corresponding types available for parsing in javascript. They are float128, float16, signedLong,
-  //and unsignedLong
-  var typeMap = {
-    double: function (offset) {
-      return {val: view.getFloat64(offset), bytes: 8};
-    },
-    float64: function (offset) {
-      return {val: view.getFloat64(offset), bytes: 8};
-    },
-    float32: function (offset) {
-      return {val: view.getFloat32(offset), bytes: 4};
-    },
-    signedByte: function (offset) {
-      return {val: view.getInt8(offset), bytes: 1};
-    },
-    signedInt: function (offset) {
-      return {val: view.getInt32(offset), bytes: 4};
-    },
-    signedShort: function (offset) {
-      return {val: view.getInt16(offset), bytes: 2};
-    },
-    unsignedByte: function (offset) {
-      return {val: view.getUint8(offset), bytes: 1};
-    },
-    unsignedInt: function (offset) {
-      return {val: view.getUint32(offset), bytes: 4};
-    },
-    unsignedShort: function (offset) {
-      return {val: view.getUint16(offset), bytes: 2};
-    },
-    //TODO: string-utf-8:
-  };
-  return typeMap[type](offset);
-};
+    //Note: There exist types not listed in the map below that have OGC definitions, but no appropriate
+    //methods or corresponding types available for parsing in javascript. They are float128, float16, signedLong,
+    //and unsignedLong
+    let typeMap = {
+        double: function (offset) {
+            return {val: view.getFloat64(offset), bytes: 8};
+        },
+        float64: function (offset) {
+            return {val: view.getFloat64(offset), bytes: 8};
+        },
+        float32: function (offset) {
+            return {val: view.getFloat32(offset), bytes: 4};
+        },
+        signedByte: function (offset) {
+            return {val: view.getInt8(offset), bytes: 1};
+        },
+        signedInt: function (offset) {
+            return {val: view.getInt32(offset), bytes: 4};
+        },
+        signedShort: function (offset) {
+            return {val: view.getInt16(offset), bytes: 2};
+        },
+        unsignedByte: function (offset) {
+            return {val: view.getUint8(offset), bytes: 1};
+        },
+        unsignedInt: function (offset) {
+            return {val: view.getUint32(offset), bytes: 4};
+        },
+        unsignedShort: function (offset) {
+            return {val: view.getUint16(offset), bytes: 2};
+        },
+        //TODO: string-utf-8:
+    };
+    return typeMap[type](offset);
+}
 
 //This function recursivley iterates over the resultStructure to fill in
 //values read from data which should be an ArrayBuffer containing the payload from a websocket
@@ -261,33 +261,32 @@ OSH.Utils.ParseBytes = function (buffer, offset, type) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.ReadData = function(struct, data, offsetBytes) {
-  var offset = offsetBytes;
-  for(var i = 0 ; i < struct.fields.length; i++) {
-    var currFieldStruct = struct.fields[i];
-    if(typeof currFieldStruct.type != 'undefined' && currFieldStruct.type !== null) {
-      var ret = OSH.Utils.ParseBytes(data, offset, currFieldStruct.type);
-      currFieldStruct.val = ret.val;
-      offset += ret.bytes;
-    } else if(typeof currFieldStruct.count != 'undefined' && currFieldStruct.count !== null) {
-      //check if count is a reference to another variable
-      if(isNaN(currFieldStruct.count))
-      {
-        var id = currFieldStruct.count;
-        var fieldName = struct.id2FieldMap[id];
-        currFieldStruct.count = struct.findFieldByName(fieldName).val;
-      }
-      for(var c = 0; c < currFieldStruct.count; c++) {
-        for(var j = 0 ; j < currFieldStruct.fields.length; j++) {
-          var field = JSON.parse(JSON.stringify(currFieldStruct.fields[j]));
-          offset = OSH.Utils.ReadData(field, data, offset);
-          currFieldStruct.val.push(field);
+export function ReadData(struct, data, offsetBytes) {
+    let offset = offsetBytes;
+    for (let i = 0; i < struct.fields.length; i++) {
+        let currFieldStruct = struct.fields[i];
+        if (isDefined(currFieldStruct.type) && currFieldStruct.type !== null) {
+            let ret = ParseBytes(data, offset, currFieldStruct.type);
+            currFieldStruct.val = ret.val;
+            offset += ret.bytes;
+        } else if (isDefined(currFieldStruct.count) && currFieldStruct.count !== null) {
+            //check if count is a reference to another letiable
+            if (isNaN(currFieldStruct.count)) {
+                let id = currFieldStruct.count;
+                let fieldName = struct.id2FieldMap[id];
+                currFieldStruct.count = struct.findFieldByName(fieldName).val;
+            }
+            for (let c = 0; c < currFieldStruct.count; c++) {
+                for (let j = 0; j < currFieldStruct.fields.length; j++) {
+                    let field = JSON.parse(JSON.stringify(currFieldStruct.fields[j]));
+                    offset = ReadData(field, data, offset);
+                    currFieldStruct.val.push(field);
+                }
+            }
         }
-      }
     }
-  }
-  return offset;
-};
+    return offset;
+}
 
 /**
  *
@@ -296,25 +295,25 @@ OSH.Utils.ReadData = function(struct, data, offsetBytes) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.GetResultObject = function(resultStructure) {
-  //TODO: handle cases for nested arrays / matrix data types
-  var result = {};
-  for(var i = 0; i < resultStructure.fields.length; i++) {
-    if(typeof resultStructure.fields[i].count != 'undefined') {
-      result[resultStructure.fields[i].name] = [];
-      for(var c = 0; c < resultStructure.fields[i].count; c++) {
-        var item = {};
-        for(var k = 0; k < resultStructure.fields[i].val[c].fields.length; k++) {
-          item[resultStructure.fields[i].val[c].fields[k].name] = resultStructure.fields[i].val[c].fields[k].val;
+export function GetResultObject(resultStructure) {
+    //TODO: handle cases for nested arrays / matrix data types
+    let result = {};
+    for (let i = 0; i < resultStructure.fields.length; i++) {
+        if (isDefined(resultStructure.fields[i].count)) {
+            result[resultStructure.fields[i].name] = [];
+            for (let c = 0; c < resultStructure.fields[i].count; c++) {
+                let item = {};
+                for (let k = 0; k < resultStructure.fields[i].val[c].fields.length; k++) {
+                    item[resultStructure.fields[i].val[c].fields[k].name] = resultStructure.fields[i].val[c].fields[k].val;
+                }
+                result[resultStructure.fields[i].name].push(item);
+            }
+        } else {
+            result[resultStructure.fields[i].name] = resultStructure.fields[i].val;
         }
-        result[resultStructure.fields[i].name].push(item);
-      }
-    } else {
-      result[resultStructure.fields[i].name] = resultStructure.fields[i].val;
     }
-  }
-  return result;
-};
+    return result;
+}
 
 /**
  *
@@ -322,9 +321,9 @@ OSH.Utils.GetResultObject = function(resultStructure) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isOpera = function () {
-  return (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-};
+export function isOpera() {
+    return (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+}
 
 /**
  *
@@ -332,9 +331,9 @@ OSH.Utils.isOpera = function () {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isFirefox = function() {
-  return typeof InstallTrigger !== 'undefined';
-};
+export function isFirefox() {
+    return typeof InstallTrigger !== 'undefined';
+}
 
 /**
  *
@@ -342,9 +341,9 @@ OSH.Utils.isFirefox = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isSafari = function() {
-  return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-};
+export function isSafari() {
+    return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+}
 
 /**
  *
@@ -352,9 +351,9 @@ OSH.Utils.isSafari = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isIE = function() {
-  return /*@cc_on!@*/false || !!document.documentMode;
-};
+export function isIE() {
+    return /*@cc_on!@*/false || !!document.documentMode;
+}
 
 /**
  *
@@ -362,9 +361,9 @@ OSH.Utils.isIE = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isChrome = function() {
-  return !!window.chrome && !!window.chrome.webstore;
-};
+export function isChrome() {
+    return !!window.chrome && !!window.chrome.webstore;
+}
 
 /**
  *
@@ -372,20 +371,20 @@ OSH.Utils.isChrome = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isBlink = function() {
-  return (isChrome || isOpera) && !!window.CSS;
-};
+export function isBlink() {
+    return (isChrome || isOpera) && !!window.CSS;
+}
 
 //------- GET X,Y absolute cursor position ---//
-var absoluteXposition = null;
-var absoluteYposition = null;
+let absoluteXposition = null;
+let absoluteYposition = null;
 
 document.addEventListener('mousemove', onMouseUpdate, false);
 document.addEventListener('mouseenter', onMouseUpdate, false);
 
 function onMouseUpdate(e) {
-  absoluteXposition = e.pageX;
-  absoluteYposition = e.pageY;
+    absoluteXposition = e.pageX;
+    absoluteYposition = e.pageY;
 }
 
 /**
@@ -394,9 +393,9 @@ function onMouseUpdate(e) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.getXCursorPosition = function() {
-  return absoluteXposition;
-};
+export function getXCursorPosition() {
+    return absoluteXposition;
+}
 
 /**
  *
@@ -404,9 +403,9 @@ OSH.Utils.getXCursorPosition = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.getYCursorPosition = function() {
-  return absoluteYposition;
-};
+export function getYCursorPosition() {
+    return absoluteYposition;
+}
 
 /**
  *
@@ -416,11 +415,11 @@ OSH.Utils.getYCursorPosition = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isArrayIntersect = function(a, b) {
-  return a.filter(function(element){
+export function isArrayIntersect(a, b) {
+    return a.filter(function (element) {
         return b.indexOf(element) > -1;
-       }).length > 0;
-};
+    }).length > 0;
+}
 
 
 /**
@@ -430,12 +429,12 @@ OSH.Utils.isArrayIntersect = function(a, b) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isElement = function isElement(o) {
+export function isElement(o) {
     return (
         typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-        o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+            o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string"
     );
-};
+}
 
 /**
  *
@@ -443,12 +442,9 @@ OSH.Utils.isElement = function isElement(o) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.isWebWorker = function() {
-  if (typeof(Worker) !== "undefined") {
-      return true;
-  }
-  return false;
-};
+export function isWebWorker() {
+    return isDefined(Worker);
+}
 
 /**
  *
@@ -456,8 +452,8 @@ OSH.Utils.isWebWorker = function() {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.takeScreeshot = function(div) {
-};
+export function takeScreenShot(div) {
+}
 
 /**
  * Remove a css class from a the div given as argument.
@@ -466,11 +462,11 @@ OSH.Utils.takeScreeshot = function(div) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.removeCss = function(div,css) {
-  var divCss = div.className;
-  css = divCss.replace(css,"");
-  div.className = css;
-};
+export function removeCss(div, css) {
+    let divCss = div.className;
+    css = divCss.replace(css, "");
+    div.className = css;
+}
 
 
 /**
@@ -480,15 +476,15 @@ OSH.Utils.removeCss = function(div,css) {
  * @instance
  * @memberof OSH.Utils
  */
-OSH.Utils.addCss = function(div,css) {
-  div.setAttribute("class",div.className+" "+css);
-};
+export function addCss(div, css) {
+    div.setAttribute("class", div.className + " " + css);
+}
 
-OSH.Utils.removeLastCharIfExist = function(value,char) {
-  if(typeof value === undefined || value === null || value.length === 0 || !value.endsWith("/")) {
-    return value;
-  }
+export function removeLastCharIfExist(value) {
+    if (!isDefined(undefined) || value === null || value.length === 0 || !value.endsWith("/")) {
+        return value;
+    }
 
-  return value.substring(0,value.length-1);
-};
+    return value.substring(0, value.length - 1);
+}
 

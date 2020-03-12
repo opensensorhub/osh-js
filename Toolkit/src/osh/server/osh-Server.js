@@ -20,21 +20,25 @@
  * @classdesc
  * @example
  *
- * var oshServer = new OSH.Server({
+ * let oshServer = new OSH.Server({
  *    url : <someUrl>,
  *    sosService: 'sos',
  *    spsService: 'sps',
  *    baseUrl: 'sensorhub'
  * });
  */
-OSH.Server = BaseClass.extend({
-    initialize: function (properties) {
+import {isDefined, randomUUID, isWebWorker} from "../osh-Utils";
+import SWEXmlStreamParser from "../parsers/osh-SWEXmlStreamParser";
+
+export default class Server {
+    constructor(properties) {
         this.url = properties.url;
-        this.sos = (typeof properties.sos !== undefined) ?  properties.sos : 'sos';
-        this.sps = (typeof properties.sps !== undefined) ?  properties.sps : 'sps';
+        this.sos = (isDefined(properties.sos)) ?  properties.sos : 'sos';
+        this.sps = (isDefined(properties.sps)) ?  properties.sps : 'sps';
         this.baseUrl = properties.baseUrl;
-        this.id = "Server-" + OSH.Utils.randomUUID();
-    },
+        this.id = "Server-" + randomUUID();
+        this.executeGetRequestWorkerBlob = 'undefined';
+    }
 
     /**
      *
@@ -43,10 +47,10 @@ OSH.Server = BaseClass.extend({
      * @instance
      * @memberof OSH.Server
      */
-    getCapabilities: function (successCallback, errorCallback) {
-        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetCapabilities';
+    getCapabilities(successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetCapabilities';
         this.executeGetRequest(request, successCallback, errorCallback);
-    },
+    }
 
     /**
      *
@@ -55,10 +59,10 @@ OSH.Server = BaseClass.extend({
      * @instance
      * @memberof OSH.Server
      */
-    getFeatureOfInterest: function (successCallback, errorCallback) {
-        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest';
+    getFeatureOfInterest(successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest';
         this.executeGetRequest(request, successCallback, errorCallback);
-    },
+    }
 
     /**
      * @param procId ID of procedure from which to retrieve features of interest
@@ -67,10 +71,10 @@ OSH.Server = BaseClass.extend({
      * @instance
      * @memberof OSH.Server
      */
-    getFeatureOfInterest: function (procId, successCallback, errorCallback) {
-        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
+    getFeatureOfInterest(procId, successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
         this.executeGetRequest(request, successCallback, errorCallback);
-    },
+    }
 
     /**
      *
@@ -80,15 +84,15 @@ OSH.Server = BaseClass.extend({
      * @instance
      * @memberof OSH.Server
      */
-    getResultTemplate: function (offering, observedProperty,successCallback, errorCallback) {
-        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetResultTemplate&offering=' + offering + "&observedProperty=" + observedProperty;
+    getResultTemplate(offering, observedProperty,successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetResultTemplate&offering=' + offering + "&observedProperty=" + observedProperty;
         this.executeGetRequest(request, successCallback, errorCallback);
-    },
+    }
 
-    getDescribeSensor:function(procedure, successCallback, errorCallback) {
-        var request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure;
+    getDescribeSensor(procedure, successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure;
         this.executeGetRequest(request, successCallback, errorCallback);
-    },
+    }
 
     /**
      *
@@ -96,72 +100,73 @@ OSH.Server = BaseClass.extend({
      * @param successCallback
      * @param errorCallback
      */
-    executeGetRequest: function (request, successCallback, errorCallback) {
-        if (OSH.Utils.isWebWorker()) { // run in web worker if possible
+    executeGetRequest(request, successCallback, errorCallback) {
+        if (isWebWorker()) { // run in web worker if possible
             this.executeGetRequestWebWorker(request, successCallback, errorCallback);
         } else {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        var s = successCallback.bind(this);
-                        var sweXmlParser = new OSH.SWEXmlStreamParser(xhr.responseText);
+            let xhr = new XMLHttpRequest();
+            let that = this;
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let s = successCallback.bind(that);
+                        let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
                         s(sweXmlParser.toJson());
                     } else {
                         errorCallback(xhr.responseText);
                     }
                 }
-            }.bind(this);
+            };
             xhr.withCredentials = true;
             xhr.open('GET', request, true);
             xhr.send();
         }
-    },
+    }
 
-    executeGetRequestWebWorker: function (request, successCallback, errorCallback) {
+    executeGetRequestWebWorker(request, successCallback, errorCallback) {
         // create worker source code blob if not created yet
-        if (!OSH.Utils.isDefined(OSH.Server.executeGetRequestWorkerBlob)) {
-            OSH.Server.executeGetRequestWorkerBlob = URL.createObjectURL(new Blob([
-                'var OSH = function() {};\n',
-                //'self.importScripts("' + window.OSH.BASE_WORKER_URL + '/osh-SWEXmlStreamParser.js");',
-                '(' + OSH.SWEXmlStreamParserCreator.toString() + ')();\n',
-                'self.onmessage=',
-                function (e) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function () {
-                        if (xhr.readyState == 4) {
-                            if (xhr.status == 200) {
-                                var sweXmlParser = new OSH.SWEXmlStreamParser(xhr.responseText);
-                                var respObj = sweXmlParser.toJson();
-                                self.postMessage(respObj);
-                            } else {
-                                self.postMessage({error:true, msg:xhr.responseText});
-                            }
-                        }
-                    }.bind(this);
-                    xhr.withCredentials = true;
-                    xhr.open('GET', e.data, true);
-                    xhr.send();
-                }.toString()],
-            {type: 'application/javascript'}));
+        if (!isDefined(this.executeGetRequestWorkerBlob)) {
+            this.executeGetRequestWorkerBlob = URL.createObjectURL(new Blob(['(',
+                    'import SWEXmlStreamParser from "../osh-SWEXmlStreamParser"\n',
+                    function () {
+                        self.onmessage = (e) => {
+                            let xhr = new XMLHttpRequest();
+                            xhr.onreadystatechange = function () {
+                                if (xhr.readyState === 4) {
+                                    if (xhr.status === 200) {
+                                        //TODO: check if the ES6 import is working
+                                        let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
+                                        let respObj = sweXmlParser.toJson();
+                                        self.postMessage(respObj);
+                                    } else {
+                                        self.postMessage({error:true, msg:xhr.responseText});
+                                    }
+                                }
+                            }.bind(this);
+                            xhr.withCredentials = true;
+                            xhr.open('GET', e.data, true);
+                            xhr.send();
+                        };
+                    }.toString(), ')()'],
+                {type: 'application/javascript'}));
         }
 
-        var worker = new Worker(OSH.Server.executeGetRequestWorkerBlob);
-        
-        worker.onerror = function (e) {
+        let worker = new Worker(this.executeGetRequestWorkerBlob);
+
+        worker.onerror = (e) => {
             worker.terminate();
             errorCallback("Internal error in worker: " + e.message);
-        }
+        };
 
-        worker.onmessage = function (e) {
+        worker.onmessage = (e) => {
             worker.terminate();
-            if (OSH.Utils.isDefined(e.data.error)) {
+            if (isDefined(e.data.error)) {
                 errorCallback(e.data.msg);
             } else {
                 successCallback(e.data);
-            }            
-        }
+            }
+        };
 
         worker.postMessage(request);
     }
-});
+}

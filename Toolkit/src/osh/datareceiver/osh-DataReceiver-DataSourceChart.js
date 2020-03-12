@@ -20,7 +20,7 @@
  * @class
  * @augments OSH.DataReceiver.DataSource
  * @example
- *var chartDataSource = new OSH.DataReceiver.Chart("chart", {
+ *let chartDataSource = new OSH.DataReceiver.Chart("chart", {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -32,7 +32,9 @@
       bufferingTime: 1000
   });
  */
-OSH.DataReceiver.Chart = OSH.DataReceiver.DataSource.extend({
+import DataSource from './osh-DataReceiver-DataSource';
+
+export default class Chart extends DataSource {
 
     /**
      * Extracts timestamp from the data. The timestamp is the first token got from split(',')
@@ -42,12 +44,11 @@ OSH.DataReceiver.Chart = OSH.DataReceiver.DataSource.extend({
      * @memberof OSH.DataReceiver.Chart
      * @instance
      */
-    parseTimeStamp: function (data) {
-        var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-        var tokens = rec.trim().split(",");
-        var t = new Date(tokens[0]).getTime();
-        return t;
-    },
+    parseTimeStamp(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        return new Date(tokens[0]).getTime();
+    }
 
     /**
      * Extract data from the message. This split over ",".
@@ -57,11 +58,11 @@ OSH.DataReceiver.Chart = OSH.DataReceiver.DataSource.extend({
      * @memberof OSH.DataReceiver.Chart
      * @instance
      */
-    parseData: function (data) {
-        var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-        var tokens = rec.trim().split(",");
+    parseData(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
         //skip time
         tokens.shift();
         return tokens;
     }
-});
+}

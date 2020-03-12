@@ -19,33 +19,36 @@
  * @class
  * @augments OSH.DataSender.DataSink
  */
-OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
+import DataSink from './osh-DataSender-DataSink';
+import EventManager from '../osh-EventManager';
 
-    initialize: function(name, properties) {
-        this._super(name, properties);
+export default class PtzTasking extends DataSink {
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+"-"+this.id, function (event) {
-            this.connector.sendRequest(this.buildRequest(this.getCommandData(event.cmdData)));
-        }.bind(this));
-    },
+    constructor(name, properties) {
+        super(name, properties);
+
+        let that = this;
+        EventManager.observe(EventManager.EVENT.PTZ_SEND_REQUEST + "-" + this.id, (event) =>
+            that.connector.sendRequest(that.buildRequest(that.getCommandData(event.cmdData))));
+    }
 
     // to override by specific vendor dataSender
-    getCommandData:function(values) {
-        var cmdData = "";
+    getCommandData(values) {
+        let cmdData = '';
 
-        if(values.rtilt != null) {
-            cmdData += "rtilt,"+values.rtilt+" ";
+        if (values.rtilt !== null) {
+            cmdData += 'rtilt,' + values.rtilt + ' ';
         }
 
-        if(values.rpan != null) {
-            cmdData += "rpan,"+values.rpan+" ";
+        if (values.rpan !== null) {
+            cmdData += 'rpan,' + values.rpan + ' ';
         }
 
-        if(values.rzoom != null) {
-            cmdData += "rzoom,"+values.rzoom+" ";
+        if (values.rzoom !== null) {
+            cmdData += 'rzoom,' + values.rzoom + ' ';
         }
         return cmdData;
-    },
+    }
 
     /**
      * Builds the request based on sps standard.
@@ -53,20 +56,20 @@ OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
      * @memberof OSH.DataReceiver.PtzTasking
      * @instance
      */
-    buildRequest: function(cmdData) {
-        var xmlSpsRequest = "<sps:Submit ";
+    buildRequest(cmdData) {
+        let xmlSpsRequest = "<sps:Submit ";
 
         // adds service
-        xmlSpsRequest += "service=\""+this.properties.service+"\" ";
+        xmlSpsRequest += "service=\"" + this.properties.service + "\" ";
 
         // adds version
-        xmlSpsRequest += "version=\""+this.properties.version+"\" ";
+        xmlSpsRequest += "version=\"" + this.properties.version + "\" ";
 
         // adds ns
         xmlSpsRequest += "xmlns:sps=\"http://www.opengis.net/sps/2.0\" xmlns:swe=\"http://www.opengis.net/swe/2.0\"> ";
 
         // adds procedure
-        xmlSpsRequest += "<sps:procedure>"+this.properties.offeringID+"</sps:procedure>";
+        xmlSpsRequest += "<sps:procedure>" + this.properties.offeringID + "</sps:procedure>";
 
         // adds taskingParameters
         xmlSpsRequest += "<sps:taskingParameters><sps:ParameterData>";
@@ -75,11 +78,11 @@ OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
         xmlSpsRequest += "<sps:encoding><swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/></sps:encoding>";
 
         // adds values
-        xmlSpsRequest += "<sps:values>"+cmdData+"</sps:values>";
+        xmlSpsRequest += "<sps:values>" + cmdData + "</sps:values>";
 
         // adds endings
         xmlSpsRequest += "</sps:ParameterData></sps:taskingParameters></sps:Submit>";
 
         return xmlSpsRequest;
     }
-});
+}

@@ -20,7 +20,7 @@
  * @class OSH.DataReceiver.JSON
  * @augments OSH.DataReceiver.DataSource
  * @example
- * var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
+ * let androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -34,50 +34,53 @@
     timeShift: -16000
   });
  */
-OSH.DataReceiver.JSON = OSH.DataReceiver.DataSource.extend({
 
-  /**
-   * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
-   * @param {function} $super the parseTimeStamp super method
-   * @param {string} data the data to parse
-   * @returns {number} the extracted timestamp
-   * @memberof OSH.DataReceiver.JSON
-   * @instance
-   */
-  parseTimeStamp: function(data){
-    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-    return new Date(JSON.parse(rec)['time']).getTime();
-  },
+import DataSource from './osh-DataReceiver-DataSource';
 
-  /**
-   * Extract data from the message. The data are corresponding to the whole list of attributes of the JSON object
-   * excepting the 'time' one.
-   * @param {function} $super the parseData super method
-   * @param {Object} data the data to parse
-   * @returns {Object} the parsed data
-   * @example
-   * {
-   *   location : {
-   *    lat:43.61758626,
-   *    lon: 1.42376557,
-   *    alt:100
-   *   }
-   * }
-   * @memberof OSH.DataReceiver.JSON
-   * @instance
-   */
-  parseData: function(data){
-    var rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+export default class JSON extends DataSource {
 
-    var result = {};
-
-    for(var key in rec) {
-        if(key !== 'time') {
-            result[key] = rec[key];
-        }
+    /**
+     * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
+     * @param {function} $super the parseTimeStamp super method
+     * @param {string} data the data to parse
+     * @returns {number} the extracted timestamp
+     * @memberof OSH.DataReceiver.JSON
+     * @instance
+     */
+    parseTimeStamp(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        return new Date(JSON.parse(rec)['time']).getTime();
     }
-    return result;
-  },
+
+    /**
+     * Extract data from the message. The data are corresponding to the whole list of attributes of the JSON object
+     * excepting the 'time' one.
+     * @param {function} $super the parseData super method
+     * @param {Object} data the data to parse
+     * @returns {Object} the parsed data
+     * @example
+     * {
+     *   location : {
+     *    lat:43.61758626,
+     *    lon: 1.42376557,
+     *    alt:100
+     *   }
+     * }
+     * @memberof OSH.DataReceiver.JSON
+     * @instance
+     */
+    parseData(data) {
+        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+
+        let result = {};
+
+        for (let key in rec) {
+            if (key !== 'time') {
+                result[key] = rec[key];
+            }
+        }
+        return result;
+    }
 
     /**
      * Builds the full url.
@@ -95,17 +98,17 @@ OSH.DataReceiver.JSON = OSH.DataReceiver.DataSource.extend({
      * @memberof OSH.DataReceiver.DataSource
      * @returns {string} the full url
      */
-    buildUrl: function(properties) {
-        var url = "";
+    buildUrl(properties) {
+        let url = "";
 
         // adds protocol
         url += properties.protocol + "://";
 
         // adds endpoint url
-        url += properties.endpointUrl+"?";
+        url += properties.endpointUrl + "?";
 
         // adds service
-        url += "service="+properties.service+"&";
+        url += "service=" + properties.service + "&";
 
         // adds version
         url += "version=2.0&";
@@ -114,20 +117,20 @@ OSH.DataReceiver.JSON = OSH.DataReceiver.DataSource.extend({
         url += "request=GetResult&";
 
         // adds offering
-        url += "offering="+properties.offeringID+"&";
+        url += "offering=" + properties.offeringID + "&";
 
         // adds feature of interest urn
-        if(properties.foiURN && properties.foiURN !== '') {
+        if (properties.foiURN && properties.foiURN !== '') {
             url += 'featureOfInterest=' + properties.foiURN + '&';
         }
 
         // adds observedProperty
-        url += "observedProperty="+properties.observedProperty+"&";
+        url += "observedProperty=" + properties.observedProperty + "&";
 
         // adds temporalFilter
-        var startTime = properties.startTime;
-        var endTime = properties.endTime;
-        if (startTime !== "now" && this.timeShift != 0) {
+        let startTime = properties.startTime;
+        let endTime = properties.endTime;
+        if (startTime !== "now" && this.timeShift !== 0) {
             // HACK: don't do it for old Android dataset that is indexed differently
             if (properties.offeringID !== "urn:android:device:060693280a28e015-sos") {
                 // apply time shift
@@ -135,11 +138,11 @@ OSH.DataReceiver.JSON = OSH.DataReceiver.DataSource.extend({
                 endTime = new Date(Date.parse(endTime) - this.timeShift).toISOString();
             }
         }
-        url += "temporalFilter=phenomenonTime,"+startTime+"/"+endTime+"&";
+        url += "temporalFilter=phenomenonTime," + startTime + "/" + endTime + "&";
 
-        if(properties.replaySpeed) {
+        if (properties.replaySpeed) {
             // adds replaySpeed
-            url += "replaySpeed="+properties.replaySpeed;
+            url += "replaySpeed=" + properties.replaySpeed;
         }
 
         // adds responseFormat (mandatory)
@@ -147,4 +150,4 @@ OSH.DataReceiver.JSON = OSH.DataReceiver.DataSource.extend({
 
         return url;
     }
-});
+}

@@ -7,40 +7,41 @@
  * @classdesc
  *
  */
-// name this function so it can be easily imported in webworkers
-(OSH.SWEXmlStreamParserCreator = function() {
-
-    OSH.SWEXmlStreamParser = function(xml) {
+export default class SWEXmlStreamParser {
+    constructor(xml) {
         this.originalXml = xml;
-    };
+    }
 
-    OSH.SWEXmlStreamParser.arrayNodeSet = new Set([
-        'featureMember',
-        'offering',
-        'observableProperty',
-        'field',
-        'coordinate',
-        'item',
-        'quality',
-        'member',
-        'interval',
-        'AllowedValues/value'
-    ]);
+    static get arrayNodeSet() {
+        return new Set([
+            'featureMember',
+            'offering',
+            'observableProperty',
+            'field',
+            'coordinate',
+            'item',
+            'quality',
+            'member',
+            'interval',
+            'AllowedValues/value'
+        ]);
+    }
 
-    OSH.SWEXmlStreamParser.numericalNodeSet = new Set([
-        'nilValue',
-        'paddingBytes-after',
-        'paddingBytes-before',
-        'byteLength',
-        'significantBits',
-        'bitLength',
-        'Time/value',
-        'Quantity/value',
-        'Count/value'
-    ]);
+    static get numericalNodeSet() {
+        return new Set([
+            'nilValue',
+            'paddingBytes-after',
+            'paddingBytes-before',
+            'byteLength',
+            'significantBits',
+            'bitLength',
+            'Time/value',
+            'Quantity/value',
+            'Count/value'
+        ]);
+    }
 
-    OSH.SWEXmlStreamParser.prototype.toJson = function() {
-        "use strict";
+    toJson() {
         var options = {};
         var S = this.originalXml;
         var pos = options.pos || 0;
@@ -59,8 +60,8 @@
         var singleQuoteCC = "'".charCodeAt(0);
         var doubleQuote = '"';
         var doubleQuoteCC = '"'.charCodeAt(0);
-        var arrayNodeSet = OSH.SWEXmlStreamParser.arrayNodeSet;
-        var numericalNodeSet = OSH.SWEXmlStreamParser.numericalNodeSet;
+        var arrayNodeSet = SWEXmlStreamParser.arrayNodeSet;
+        var numericalNodeSet = SWEXmlStreamParser.numericalNodeSet;
 
         function isArray(name) {
             return arrayNodeSet.has(name);
@@ -102,16 +103,15 @@
                     var isProperty = childName.charAt(0) == childName.charAt(0).toLowerCase();//Object.keys(child).length == 2;
                     if (isProperty && child.hasOwnProperty('value')) {
                         node[childName] = child.value;
-                    }
-                    else {
+                    } else {
                         // skip one level if child is an OGC property
                         if (isProperty) {
                             delete child.type;
                             for (var k in child) {
-                                if (typeof(child[k]) === 'object' && k !== 'name') {
+                                if (typeof (child[k]) === 'object' && k !== 'name') {
                                     Object.assign(child, child[k]);
                                     delete child[k];
-                                }   
+                                }
                             }
                         }
                         if (isArray(childName)) {
@@ -120,7 +120,7 @@
                             node[childName].push(child);
                         } else {
                             node[childName] = child;
-                        }                        
+                        }
                     }
                 } else {
                     var text = parseText();
@@ -145,6 +145,7 @@
                 pos = S.length;
             return S.slice(start, pos + 1);
         }
+
         /**
          *    returns text until the first nonAlphebetic letter
          */
@@ -154,14 +155,14 @@
             var start = pos;
             while (nameSpacer.indexOf(S[pos]) === -1 && S[pos]) {
                 pos++;
-            } 
+            }
             return S.slice(start, pos);
         }
 
         function getLocalName(qname) {
             var nsEnd = qname.indexOf(':');
             if (nsEnd > 0)
-                return qname.substring(nsEnd+1);
+                return qname.substring(nsEnd + 1);
             else
                 return qname;
         }
@@ -221,8 +222,8 @@
             return S.slice(startpos, pos);
         }
 
-        var out = parseNode();        
+        var out = parseNode();
         out.pos = pos;
         return out;
-    };
-})();
+    }
+}

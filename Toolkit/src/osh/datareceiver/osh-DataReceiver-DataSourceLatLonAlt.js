@@ -20,7 +20,7 @@
  * @class OSH.DataReceiver.LatLonAlt
  * @augments OSH.DataReceiver.DataSource
  * @example
- * var androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
+ * let androidPhoneGpsDataSource = new OSH.DataReceiver.LatLonAlt("android-GPS", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -34,48 +34,49 @@
     timeShift: -16000
   });
  */
-OSH.DataReceiver.LatLonAlt = OSH.DataReceiver.DataSource.extend({
+import DataSource from './osh-DataReceiver-DataSource';
 
-  /**
-   * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-   * @param {function} $super the parseTimeStamp super method
-   * @param {string} data the data to parse
-   * @returns {number} the extracted timestamp
-   * @memberof OSH.DataReceiver.LatLonAlt
-   * @instance
-   */
-  parseTimeStamp: function(data){
-    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-    var tokens = rec.trim().split(",");
-    var t =  new Date(tokens[0]).getTime();
-    return t;
-  },
+export default class LatLonAlt extends DataSource {
 
-  /**
-   * Extract data from the message. The data are got such as:<p><ul><li>lat: tokens[1]</li><li>lon: tokens [2]</li><li>alt: tokens[3]</li></ul></p>.
-   * @param {function} $super the parseData super method
-   * @param {Object} data the data to parse
-   * @returns {Object} the parsed data
-   * @example
-   * {
-   *   lat:43.61758626,
-   *   lon: 1.42376557,
-   *   alt:100
-   * }
-   * @memberof OSH.DataReceiver.LatLonAlt
-   * @instance
-   */
-  parseData: function(data){
-    var rec = String.fromCharCode.apply(null, new Uint8Array(data));
-    var tokens = rec.trim().split(",");
-    var lat = parseFloat(tokens[1]);
-    var lon = parseFloat(tokens[2]);
-    var alt = parseFloat(tokens[3]);
-    
-    return {
-      lat : lat,
-      lon : lon,
-      alt : alt
-    };
-  } 
-});
+    /**
+     * Extracts timestamp from the message. The timestamp is the first token got from split(',')
+     * @param {function} $super the parseTimeStamp super method
+     * @param {string} data the data to parse
+     * @returns {number} the extracted timestamp
+     * @memberof OSH.DataReceiver.LatLonAlt
+     * @instance
+     */
+    parseTimeStamp(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        return new Date(tokens[0]).getTime();
+    }
+
+    /**
+     * Extract data from the message. The data are got such as:<p><ul><li>lat: tokens[1]</li><li>lon: tokens [2]</li><li>alt: tokens[3]</li></ul></p>.
+     * @param {function} $super the parseData super method
+     * @param {Object} data the data to parse
+     * @returns {Object} the parsed data
+     * @example
+     * {
+     *   lat:43.61758626,
+     *   lon: 1.42376557,
+     *   alt:100
+     * }
+     * @memberof OSH.DataReceiver.LatLonAlt
+     * @instance
+     */
+    parseData(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        let lat = parseFloat(tokens[1]);
+        let lon = parseFloat(tokens[2]);
+        let alt = parseFloat(tokens[3]);
+
+        return {
+            lat: lat,
+            lon: lon,
+            alt: alt
+        };
+    }
+}
