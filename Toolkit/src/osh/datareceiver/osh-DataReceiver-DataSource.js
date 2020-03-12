@@ -27,7 +27,9 @@
  * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
  *
  */
-import {randomUUID, isDefined} from '../osh-Utils';
+import {randomUUID, isDefined} from '../osh-Utils.js';
+import WebSocketDataConnector from "../dataconnector/osh-DataConnector-Websocket.js";
+import AjaxConnector from "../dataconnector/osh-DataConnector-HttpAjaxConnector.js";
 
 export default class DataSource {
     constructor(name, properties) {
@@ -72,11 +74,11 @@ export default class DataSource {
 
         // checks if type is WebSocket
         if (properties.protocol.startsWith('ws')) {
-            this.connector = new OSH.DataConnector.WebSocketDataConnector(this.buildUrl(properties));
+            this.connector = new WebSocketDataConnector(this.buildUrl(properties));
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
         } else if (properties.protocol.startsWith('http')) {
-            this.connector = new OSH.DataConnector.AjaxConnector(this.buildUrl(properties));
+            this.connector = new AjaxConnector(this.buildUrl(properties));
             this.connector.responseType = 'arraybuffer';
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);

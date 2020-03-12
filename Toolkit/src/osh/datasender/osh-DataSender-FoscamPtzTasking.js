@@ -53,7 +53,7 @@
  </swe:item>
  */
 
-import PtzTasking from './osh-DataSender-PtzTasking';
+import PtzTasking from './osh-DataSender-PtzTasking.js';
 
 export default class FoscamPtzTasking extends PtzTasking {
 

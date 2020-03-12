@@ -34,7 +34,7 @@
         responseFormat: "video/mp4
   });
  */
-import DataSource from './osh-DataReceiver-DataSource';
+import DataSource from './osh-DataReceiver-DataSource.js';
 
 export default class VideoMp4 extends DataSource {
     constructor(name, properties, options) {

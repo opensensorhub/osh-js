@@ -22,8 +22,11 @@
  * @param {string} options - The options
  * @abstract
  */
-OSH.UI.View = BaseClass.extend({
-    initialize: function (parentElementDivId, viewItems,options) {
+import {isDefined, randomUUID} from '../../osh-Utils.js';
+import EventManager from '../../osh-EventManager.js';
+
+export default class View {
+    constructor(parentElementDivId, viewItems, options) {
         // list of stylers
         this.stylers = [];
         this.contextMenus = [];
@@ -36,32 +39,32 @@ OSH.UI.View = BaseClass.extend({
         this.dataSources = [];
 
         //this.divId = divId;
-        this.id = "view-" + OSH.Utils.randomUUID();
+        this.id = "view-" + randomUUID();
 
         this.dataSourceId = -1;
         // sets dataSourceId
-        if(typeof(options) !== "undefined" && typeof(options.dataSourceId) !== "undefined") {
+        if (isDefined(options) && isDefined(options.dataSourceId)) {
             this.dataSourceId = options.dataSourceId;
         }
 
-        if(typeof(options) !== "undefined" && typeof(options.entityId) !== "undefined") {
+        if (isDefined(options) && isDefined(options.entityId)) {
             this.entityId = options.entityId;
         }
         this.css = "";
 
         this.cssSelected = "";
 
-        if(typeof(options) !== "undefined" && typeof(options.css) !== "undefined") {
+        if (isDefined(options) && isDefined(options.css)) {
             this.css = options.css;
         }
 
-        if(typeof(options) !== "undefined" && typeof(options.cssSelected) !== "undefined") {
+        if (isDefined(options) && isDefined(options.cssSelected)) {
             this.cssSelected = options.cssSelected;
         }
 
         // inits the view before adding the viewItem
-        this.init(parentElementDivId,viewItems,options);
-    },
+        this.init(parentElementDivId, viewItems, options);
+    }
 
     /**
      * Inits the view component.
@@ -70,15 +73,15 @@ OSH.UI.View = BaseClass.extend({
      * @param options [TODO]
      * @memberof OSH.UI.View
      */
-    init:function(parentElementDivId,viewItems,options) {
+    init(parentElementDivId, viewItems, options) {
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
         this.elementDiv.setAttribute("class", this.css);
         this.divId = this.id;
 
-        var div = document.getElementById(parentElementDivId);
+        let div = document.getElementById(parentElementDivId);
 
-        if (typeof(div) === "undefined" || div === null) {
+        if (!isDefined(div) || div === null) {
             document.body.appendChild(this.elementDiv);
             this.hide();
             this.container = document.body;
@@ -89,58 +92,59 @@ OSH.UI.View = BaseClass.extend({
 
         this.beforeAddingItems(options);
 
-        if (typeof (viewItems) !== "undefined") {
-            for (var i =0;i < viewItems.length;i++) {
+        if (isDefined(viewItems)) {
+            for (let i = 0; i < viewItems.length; i++) {
                 this.addViewItem(viewItems[i]);
             }
         }
 
-        if(typeof (options) !== "undefined") {
-            if(typeof (options.show) !== "undefined") {
-                document.getElementById(this.divId).style.display = (options.show)? "block": "none";
+        if (isDefined(options)) {
+            if (isDefined(options.show)) {
+                document.getElementById(this.divId).style.display = (options.show) ? "block" : "none";
             }
         }
         this.handleEvents();
 
+        var that = this;
         // observes the event associated to the dataSourceId
-        if(typeof(options) !== "undefined" && typeof(options.dataSourceId) !== "undefined") {
-            OSH.EventManager.observe(OSH.EventManager.EVENT.DATA+"-"+options.dataSourceId, function (event) {
-                if (event.reset)
-                    this.reset(); // on data stream reset
-                else
-                    this.setData(options.dataSourceId, event.data);
-            }.bind(this));
+        if (isDefined(options) && isDefined(options.dataSourceId)) {
+            EventManager.observe(EventManager.EVENT.DATA + "-" + options.dataSourceId, (event) => {
+                if (event.reset) {
+                    that.reset(); // on data stream reset
+                } else {
+                    that.setData(options.dataSourceId, event.data);
+                }
+            });
         }
 
-        var self = this;
-        var observer = new MutationObserver( function( mutations ){
-            mutations.forEach( function( mutation ){
+        let observer = new MutationObserver((mutations) => {
+            mutations.forEach(function (mutation) {
                 // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
-                if( mutation.attributeName === 'style') {
-                    self.onResize();
+                if (mutation.attributeName === 'style') {
+                    that.onResize();
 
                 }
             });
-        } );
+        });
 
         // Attach the mutation observer to blocker, and only when attribute values change
-        observer.observe( this.elementDiv, { attributes: true } );
-    },
+        observer.observe(this.elementDiv, {attributes: true});
+    }
 
     /**
      * @instance
      * @memberof OSH.UI.View
      */
-    hide: function() {
+    hide() {
         this.elementDiv.style.display = "none";
-    },
+    }
 
     /**
      * @instance
      * @memberof OSH.UI.View
      */
-    onResize:function() {
-    },
+    onResize() {
+    }
 
     /**
      *
@@ -148,18 +152,18 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    attachTo : function(divId) {
-        if(typeof this.elementDiv.parentNode !== "undefined") {
+    attachTo(divId) {
+        if (isDefined(this.elementDiv.parentNode)) {
             // detach from its parent
             this.elementDiv.parentNode.removeChild(this.elementDiv);
         }
         document.getElementById(divId).appendChild(this.elementDiv);
-        if(this.elementDiv.style.display === "none") {
+        if (this.elementDiv.style.display === "none") {
             this.elementDiv.style.display = "block";
         }
 
         this.onResize();
-    },
+    }
 
     /**
      *
@@ -167,9 +171,9 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    beforeAddingItems: function (options) {
+    beforeAddingItems(options) {
 
-    },
+    }
 
     /**
      *
@@ -177,9 +181,9 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    getId: function () {
+    getId() {
         return this.id;
-    },
+    }
 
     /**
      *
@@ -187,9 +191,9 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    getDivId: function () {
+    getDivId() {
         return this.divId;
-    },
+    }
 
     /**
      *
@@ -198,7 +202,8 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    setData: function(dataSourceId,data) {},
+    setData(dataSourceId, data) {
+    }
 
     /**
      * Show the view by removing display:none style if any.
@@ -206,8 +211,8 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    show: function(properties) {
-    },
+    show(properties) {
+    }
 
     /**
      *
@@ -215,8 +220,8 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    shows: function(properties) {
-    },
+    shows(properties) {
+    }
 
     /**
      * Add viewItem to the view
@@ -224,10 +229,10 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    addViewItem: function (viewItem) {
+    addViewItem(viewItem) {
         this.viewItems.push(viewItem);
         if (viewItem.hasOwnProperty("styler")) {
-            var styler = viewItem.styler;
+            let styler = viewItem.styler;
             this.stylers.push(styler);
             if (viewItem.hasOwnProperty("name")) {
                 this.names[styler.getId()] = viewItem.name;
@@ -239,26 +244,26 @@ OSH.UI.View = BaseClass.extend({
         if (viewItem.hasOwnProperty("contextmenu")) {
             this.contextMenus.push(viewItem.contextmenu);
         }
-        //for(var dataSourceId in styler.dataSourceToStylerMap) {
-        var ds = styler.getDataSourcesIds();
-        for(var i =0; i < ds.length;i++) {
-            var dataSourceId = ds[i];
+        //for(let dataSourceId in styler.dataSourceToStylerMap) {
+        let ds = styler.getDataSourcesIds();
+        for (let i = 0; i < ds.length; i++) {
+            let dataSourceId = ds[i];
             // observes the data come in
-            var self = this;
-            (function(frozenDataSourceId) { // use a close here to no share the dataSourceId variable
+            let self = this;
+            (function (frozenDataSourceId) { // use a close here to no share the dataSourceId letiable
 
-                OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + "-" + frozenDataSourceId, function (event) {
-                    
+                EventManager.observe(EventManager.EVENT.DATA + "-" + frozenDataSourceId, (event) => {
+
                     // skip data reset events for now
-                    if (event.reset)
+                    if (event.reset) {
                         return;
-                    
-                    // we check selected dataSource only when the selected entity is not set
-                    var selected = false;
-                    if (typeof self.selectedEntity !== "undefined") {
-                        selected = (viewItem.entityId === self.selectedEntity);
                     }
-                    else {
+
+                    // we check selected dataSource only when the selected entity is not set
+                    let selected = false;
+                    if (isDefined(self.selectedEntity)) {
+                        selected = (viewItem.entityId === self.selectedEntity);
+                    } else {
                         selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
                     }
 
@@ -269,52 +274,48 @@ OSH.UI.View = BaseClass.extend({
                     self.lastRec[frozenDataSourceId] = event.data;
                 });
 
-                OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW, function(event) {
+                EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
                     // we check selected dataSource only when the selected entity is not set
-                    var selected = false;
-                    if (typeof event.entityId !== "undefined") {
+                    let selected = false;
+                    if (isDefined(event.entityId)) {
                         selected = (viewItem.entityId === event.entityId);
-                    }
-                    else {
+                    } else {
                         selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
                     }
 
-                    if(frozenDataSourceId in self.lastRec) {
+                    if (frozenDataSourceId in self.lastRec) {
                         styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
                             selected: selected
                         });
                     }
                 });
 
-            })(dataSourceId); //passing the variable to freeze, creating a new closure
+            })(dataSourceId); //passing the letiable to freeze, creating a new closure
         }
-    },
+    }
 
     /**
      * @instance
      * @memberof OSH.UI.View
      */
-    handleEvents: function() {
+    handleEvents() {
+        var that = this;
         // observes the selected event
-        OSH.EventManager.observe(OSH.EventManager.EVENT.SELECT_VIEW,function(event){
-            this.selectDataView(event.dataSourcesIds,event.entityId);
-        }.bind(this));
+        EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) =>
+            that.selectDataView(event.dataSourcesIds, event.entityId));
 
         // observes the SHOW event
-        OSH.EventManager.observe(OSH.EventManager.EVENT.SHOW_VIEW,function(event){
-            this.show(event);
-        }.bind(this));
+        EventManager.observe(EventManager.EVENT.SHOW_VIEW, (event) => that.show(event));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.ADD_VIEW_ITEM,function(event){
-            if(typeof event.viewId !== "undefined" && event.viewId === this.id) {
-                this.addViewItem(event.viewItem);
+        EventManager.observe(EventManager.EVENT.ADD_VIEW_ITEM, (event) => {
+            if (isDefined(event.viewId) && event.viewId === that.id) {
+                that.addViewItem(event.viewItem);
             }
-        }.bind(this));
+        });
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.RESIZE+"-"+this.divId,function(event){
-            this.onResize();
-        }.bind(this));
-    },
+        EventManager.observe(EventManager.EVENT.RESIZE + "-" + this.divId, (event) =>
+            that.onResize());
+    }
 
     /**
      * Should be called after receiving osh:SELECT_VIEW event
@@ -324,17 +325,17 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    selectDataView: function (dataSourcesIds,entityId) {
-        if(typeof this.dataSources !== "undefined") {
+    selectDataView(dataSourcesIds, entityId) {
+        if (isDefined(this.dataSources)) {
             this.selectedDataSources = dataSourcesIds;
             // set the selected entity even if it is undefined
             // this is handled by the setData function
             this.selectedEntity = entityId;
-            for (var j = 0; j < this.dataSources.length; j++) {
+            for (let j = 0; j < this.dataSources.length; j++) {
                 this.setData(this.dataSources[j], this.lastRec[this.dataSources[j]]);
             }
         }
-    },
+    }
 
     /**
      *
@@ -342,28 +343,28 @@ OSH.UI.View = BaseClass.extend({
      * @instance
      * @memberof OSH.UI.View
      */
-    getDataSourcesId: function() {
-        var res = [];
-        if(this.dataSourceId !== -1) {
+    getDataSourcesId() {
+        let res = [];
+        if (this.dataSourceId !== -1) {
             res.push(this.dataSourceId);
         }
 
         // check for stylers
-        for(var i = 0; i < this.viewItems.length;i++) {
-            var viewItem = this.viewItems[i];
+        for (let i = 0; i < this.viewItems.length; i++) {
+            let viewItem = this.viewItems[i];
             if (viewItem.hasOwnProperty("styler")) {
-                var styler = viewItem.styler;
+                let styler = viewItem.styler;
                 res = res.concat(styler.getDataSourcesIds());
             }
         }
 
         return res;
-    },
+    }
 
     /**
      * @instance
      * @memberof OSH.UI.View
      */
-    reset: function() {
+    reset() {
     }
-});
+}

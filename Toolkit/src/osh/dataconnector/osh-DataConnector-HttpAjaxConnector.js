@@ -36,8 +36,8 @@
  * connector.sendRequest(request);
  *
  */
-import DataConnector from './osh-DataConnector';
-import {isDefined} from '../osh-Utils';
+import DataConnector from './osh-DataConnector.js';
+import {isDefined} from '../osh-Utils.js';
 
 export default class AjaxConnector extends DataConnector {
 

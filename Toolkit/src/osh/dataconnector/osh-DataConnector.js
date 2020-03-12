@@ -21,7 +21,7 @@
  * @param {string} url The full url used to connect to the data stream
  */
 
-import {randomUUID} from '../osh-Utils';
+import {randomUUID} from '../osh-Utils.js';
 
 export default class DataConnector {
     constructor(url) {

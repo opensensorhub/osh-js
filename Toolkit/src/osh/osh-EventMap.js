@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from './osh-Utils';
+import {isDefined} from './osh-Utils.js';
 
 export default class EventMap {
 

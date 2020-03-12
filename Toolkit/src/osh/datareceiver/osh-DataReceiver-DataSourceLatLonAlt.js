@@ -34,7 +34,7 @@
     timeShift: -16000
   });
  */
-import DataSource from './osh-DataReceiver-DataSource';
+import DataSource from './osh-DataReceiver-DataSource.js';
 
 export default class LatLonAlt extends DataSource {
 

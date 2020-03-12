@@ -18,7 +18,7 @@
  *
  * @constructor
  */
-import EventMap from './osh-EventMap';
+import EventMap from './osh-EventMap.js';
 
 const eventMap = new EventMap();
 

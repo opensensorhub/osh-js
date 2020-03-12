@@ -19,7 +19,7 @@
  * @class
  * @augments OSH.DataSender.DataSink
  */
-import DataSink from './osh-DataSender-DataSink';
+import DataSink from './osh-DataSender-DataSink.js';
 import EventManager from '../osh-EventManager';
 
 export default class PtzTasking extends DataSink {

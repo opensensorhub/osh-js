@@ -43,8 +43,8 @@ const BUFFER_STATUS = {
     replayFactor: 1
  });
  */
-import {isDefined,randomUUID} from './osh-Utils';
-import EventManager from './osh-EventManager';
+import {isDefined,randomUUID} from './osh-Utils.js';
+import EventManager from './osh-EventManager.js';
 
 export default class Buffer {
     constructor(options) {

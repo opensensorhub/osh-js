@@ -19,7 +19,7 @@
  * @class
  * @param {Object} options
  */
-import {isDefined} from '../osh-Utils';
+import {isDefined} from '../osh-Utils.js';
 
 export default class DataSenderController {
     constructor(options) {

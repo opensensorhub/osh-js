@@ -42,8 +42,9 @@
  * dataProviderController.addEntity(entity);
  *
  */
-import {isDefined} from '../osh-Utils';
-import EventManager from '../osh-EventManager';
+import {isDefined} from '../osh-Utils.js';
+import EventManager from '../osh-EventManager.js';
+import Buffer from "../osh-Buffer.js";
 
 export default class DataReceiverController {
     constructor(options) {
@@ -163,7 +164,7 @@ export default class DataReceiverController {
      * @memberof OSH.DataReceiver.DataReceiverController
      */
     initBuffer() {
-        this.buffer = new OSH.Buffer(this.options);
+        this.buffer = new Buffer(this.options);
     }
 
     /**
@@ -174,17 +175,13 @@ export default class DataReceiverController {
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    addEntity:
-
-    function(entity, options) {
-        if (typeof (entity.dataSources) != "undefined") {
+    addEntity(entity, options) {
+        if (isDefined(entity.dataSources)) {
             for (let i = 0; i < entity.dataSources.length; i++) {
                 this.addDataSource(entity.dataSources[i], options);
             }
         }
     }
-
-,
 
     /**
      * Adds a dataSource to the current list of datasources and pushes it into the buffer.
@@ -194,9 +191,7 @@ export default class DataReceiverController {
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    addDataSource:
-
-    function(dataSource, options) {
+    addDataSource(dataSource, options) {
         this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
         this.buffer.addDataSource(dataSource.id, {
             name: dataSource.name,
@@ -206,29 +201,22 @@ export default class DataReceiverController {
         });
 
         //TODO: make frozen letiables?
-        dataSource.onData = function (data) {
-            this.buffer.push({dataSourceId: dataSource.getId(), data: data});
-
-        }.bind(this);
+        var that = this;
+        dataSource.onData = (data) => that.buffer.push({dataSourceId: dataSource.getId(), data: data});
     }
-
-,
 
     /**
      * Connects each connector
      * @instance
      * @memberof OSH.DataReceiver.DataReceiverController
      */
-    connectAll:
-
-    function() {
+    connectAll() {
         this.buffer.start();
-        for (let id in this.dataSourcesIdToDataSources) {
+        for (let id of this.dataSourcesIdToDataSources) {
             let ds = this.dataSourcesIdToDataSources[id];
-            if (ds.properties.connect)
+            if (ds.properties.connect) {
                 ds.connect();
+            }
         }
     }
 }
-)
-;

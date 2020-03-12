@@ -34,8 +34,8 @@
  *
  */
 
-import DataConnector from './osh-DataConnector';
-import {isWebWorker} from '../osh-Utils';
+import DataConnector from './osh-DataConnector.js';
+import {isWebWorker} from '../osh-Utils.js';
 
 export default class WebSocketDataConnector extends DataConnector {
     /**

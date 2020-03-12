@@ -179,26 +179,6 @@ export function stampUUID(obj) {
     return obj._osh_id;
 }
 
-/**
- *
- * @param xmlStr
- * @returns {*}
- * @instance
- * @memberof OSH.Utils
- */
-export function jsonix_XML2JSON(xmlStr) {
-    let context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
-    let unmarshaller = context.createUnmarshaller();
-    return unmarshaller.unmarshalString(xmlStr);
-}
-
-
-export function jsonix_JSON2XML(jsonStr) {
-    let context = new Jsonix.Context([XLink_1_0, IC_2_0, SMIL_2_0, SMIL_2_0_Language, GML_3_1_1, SWE_1_0_1, GML_3_2_1, OWS_1_1_0, SWE_2_0, SWES_2_0, WSN_T_1, WS_Addr_1_0_Core, OM_2_0, ISO19139_GMD_20070417, ISO19139_GCO_20070417, ISO19139_GSS_20070417, ISO19139_GTS_20070417, ISO19139_GSR_20070417, Filter_2_0, SensorML_2_0, SOS_2_0]);
-    let marshaller = context.createMarshaller();
-    return marshaller.marshalString(jsonStr);
-}
-
 //buffer is an ArrayBuffer object, the offset if specified in bytes, and the type is a string
 //corresponding to an OGC data type.
 //See http://def.seegrid.csiro.au/sissvoc/ogc-def/resource?uri=http://www.opengis.net/def/dataType/OGC/0/

@@ -32,7 +32,7 @@
       bufferingTime: 1000
   });
  */
-import DataSource from './osh-DataReceiver-DataSource';
+import DataSource from './osh-DataReceiver-DataSource.js';
 
 export default class Chart extends DataSource {
 

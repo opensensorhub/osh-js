@@ -18,7 +18,7 @@
  * @classdesc
  * @class
  */
-import AjaxConnector from '../dataconnector/osh-DataConnector-HttpAjaxConnector';
+import AjaxConnector from '../dataconnector/osh-DataConnector-HttpAjaxConnector.js';
 
 export default class DataSink {
     constructor(name, properties, options) {

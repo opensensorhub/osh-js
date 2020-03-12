@@ -19,8 +19,8 @@
  * @class
  * @augments OSH.DataSender.DataSource
  */
-import DataSink from './osh-DataSender-DataSink';
-import EventManager from '../osh-EventManager';
+import DataSink from './osh-DataSender-DataSink.js';
+import EventManager from '../osh-EventManager.js';
 
 export default class UavMapTasking extends DataSink {
 

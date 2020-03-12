@@ -11,7 +11,7 @@
  Copyright (C) 2015-2017 Richard Becker. All Rights Reserved.
 
  Author: Richard Becker <beckerr@prominentedge.com>
-         Alex Robin, SensiaSoft
+ Alex Robin, SensiaSoft
 
  ******************************* END LICENSE BLOCK ***************************/
 
@@ -27,14 +27,14 @@
  *    baseUrl: 'sensorhub'
  * });
  */
-import {isDefined, randomUUID, isWebWorker} from "../osh-Utils";
-import SWEXmlStreamParser from "../parsers/osh-SWEXmlStreamParser";
+import {isDefined, randomUUID, isWebWorker} from "../osh-Utils.js";
+import SWEXmlStreamParser from "../parsers/osh-SWEXmlStreamParser.js";
 
 export default class Server {
     constructor(properties) {
         this.url = properties.url;
-        this.sos = (isDefined(properties.sos)) ?  properties.sos : 'sos';
-        this.sps = (isDefined(properties.sps)) ?  properties.sps : 'sps';
+        this.sos = (isDefined(properties.sos)) ? properties.sos : 'sos';
+        this.sps = (isDefined(properties.sps)) ? properties.sps : 'sps';
         this.baseUrl = properties.baseUrl;
         this.id = "Server-" + randomUUID();
         this.executeGetRequestWorkerBlob = 'undefined';
@@ -71,7 +71,7 @@ export default class Server {
      * @instance
      * @memberof OSH.Server
      */
-    getFeatureOfInterest(procId, successCallback, errorCallback) {
+    getFeatureOfInterestWithId(procId, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
         this.executeGetRequest(request, successCallback, errorCallback);
     }
@@ -84,7 +84,7 @@ export default class Server {
      * @instance
      * @memberof OSH.Server
      */
-    getResultTemplate(offering, observedProperty,successCallback, errorCallback) {
+    getResultTemplate(offering, observedProperty, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetResultTemplate&offering=' + offering + "&observedProperty=" + observedProperty;
         this.executeGetRequest(request, successCallback, errorCallback);
     }
@@ -139,7 +139,7 @@ export default class Server {
                                         let respObj = sweXmlParser.toJson();
                                         self.postMessage(respObj);
                                     } else {
-                                        self.postMessage({error:true, msg:xhr.responseText});
+                                        self.postMessage({error: true, msg: xhr.responseText});
                                     }
                                 }
                             }.bind(this);
