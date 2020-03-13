@@ -14,122 +14,125 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {randomUUID} from "../../osh-Utils.js";
+import {assertArray, assertFunction, hasValue, isDefined} from "../../osh-Utils.js";
+import EventManager from "../../osh-EventManager.js";
+
 /**
  * @classdesc
  * @class OSH.UI.Styler
  * @abstract
  */
-OSH.UI.Styler = BaseClass.extend({
-	initialize : function(jsonProperties) {
-		this.properties = jsonProperties;
-		this.id = "styler-" + OSH.Utils.randomUUID();
-		this.dataSourceToStylerMap = {};
-		this.initEvents();
-	},
+export default class Styler {
+    constructor(jsonProperties) {
+        this.properties = jsonProperties;
+        this.id = "styler-" + randomUUID();
+        this.dataSourceToStylerMap = {};
+        this.initEvents();
+    }
 
-	checkFn : function(funcName) {
-		var func = this.properties[funcName];
-		var isSet = OSH.Utils.hasValue(func);
-		if (isSet) {
-			OSH.Utils.assertArray(func.dataSourceIds, funcName + ".dataSourceIds");
-			OSH.Utils.assertFunction(func.handler, funcName + ".handler");
-		}
-		return isSet;	
-	},
+    checkFn(funcName) {
+        let func = this.properties[funcName];
+        let isSet = hasValue(func);
+        if (isSet) {
+            assertArray(func.dataSourceIds, funcName + ".dataSourceIds");
+            assertFunction(func.handler, funcName + ".handler");
+        }
+        return isSet;
+    }
 
-	/**
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	initEvents : function() {
-		OSH.EventManager.observe(OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME,function(event){
-			this.clear();
-		}.bind(this));
-	},
+    /**
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    initEvents() {
+        var that = this;
+        EventManager.observe(EventManager.EVENT.DATASOURCE_UPDATE_TIME, (event) => that.clear());
+    }
 
-	/**
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	clear : function() {
+    /**
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    clear() {
+    }
 
-	},
+    /**
+     * Gets the styler id.
+     * @returns {string} the styler id
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    getId() {
+        return this.id;
+    }
 
-	/**
-	 * Gets the styler id.
-	 * @returns {string} the styler id
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	getId : function() {
-		return this.id;
-	},
+    /**
+     * Selects the datasource contained into the list
+     * @param {Array} dataSourceIds the list of datasources
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    select(dataSourceIds) {
+    }
 
-	/**
-	 * Selects the datasource contained into the list
-	 * @param {Array} dataSourceIds the list of datasources
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	select : function(dataSourceIds) {
-	},
+    /**
+     * Adds a function
+     * @param {Array} dataSourceIds the list of datasources
+     * @param {function} fn the function to apply
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    addFn(dataSourceIds, fn) {
+        for (let i = 0; i < dataSourceIds.length; i++) {
+            let dataSourceId = dataSourceIds[i];
+            if (!isDefined(this.dataSourceToStylerMap[dataSourceId])) {
+                this.dataSourceToStylerMap[dataSourceId] = [];
+            }
+            this.dataSourceToStylerMap[dataSourceId].push(fn);
+        }
+    }
 
-	/**
-	 * Adds a function
-	 * @param {Array} dataSourceIds the list of datasources
-	 * @param {function} fn the function to apply
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	addFn : function(dataSourceIds, fn) {
-		for (var i = 0; i < dataSourceIds.length; i++) {
-			var dataSourceId = dataSourceIds[i];
-			if (!OSH.Utils.isDefined(this.dataSourceToStylerMap[dataSourceId])) {
-				this.dataSourceToStylerMap[dataSourceId] = [];
-			}
-			this.dataSourceToStylerMap[dataSourceId].push(fn);
-		}
-	},
+    /**
+     *
+     * @param dataSourceId
+     * @param rec
+     * @param view
+     * @param options
+     * @returns {boolean}
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    setData(dataSourceId, rec, view, options) {
+        if (dataSourceId in this.dataSourceToStylerMap) {
+            let fnArr = this.dataSourceToStylerMap[dataSourceId];
+            for (let i = 0; i < fnArr.length; i++) {
+                fnArr[i](rec.data, rec.timeStamp, options);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 *
-	 * @param dataSourceId
-	 * @param rec
-	 * @param view
-	 * @param options
-	 * @returns {boolean}
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	setData : function(dataSourceId, rec, view, options) {
-		if (dataSourceId in this.dataSourceToStylerMap) {
-			var fnArr = this.dataSourceToStylerMap[dataSourceId];
-			for (var i = 0; i < fnArr.length; i++) {
-				fnArr[i](rec.data, rec.timeStamp, options);
-			}
-			return true;
-		} else {
-			return false;
-		}
-	},
+    /**
+     *
+     * @returns {Array}
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    getDataSourcesIds() {
+        let res = [];
+        for (let i of this.dataSourceToStylerMap) {
+            res.push(i);
+        }
+        return res;
+    }
 
-	/**
-	 *
-	 * @returns {Array}
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	getDataSourcesIds : function() {
-		var res = [];
-		for ( var i in this.dataSourceToStylerMap) {
-			res.push(i);
-		}
-		return res;
-	},
-
-	/**
-	 * @memberof OSH.UI.Styler
-	 * @instance
-	 */
-	init: function() {}
-});
+    /**
+     * @memberof OSH.UI.Styler
+     * @instance
+     */
+    init() {
+    }
+}

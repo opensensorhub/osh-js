@@ -14,43 +14,48 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import Cesium from "cesium/Source/Core/Cartesian3.js";
+import {isDefined} from "../../osh-Utils.js";
+import Styler from "./osh-UI-Styler.js";
+
 /**
  * @classdesc
  * @class OSH.UI.Styler.Nexrad
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
-	initialize : function(properties) {
-		this._super(properties);
+export default class Nexrad extends Styler {
+	constructor(properties) {
+		super(properties);
 		this.properties = properties;
 		this.location = null;
 		this.radialData = null;
-		
+
 		this.options = {};
-		
-		if (typeof(properties.location) != "undefined"){
+
+		let that = this;
+		if (isDefined(properties.location)){
 			this.location = properties.location;
-		}  
-		
-		if (typeof(properties.radialData) != "undefined"){
+		}
+
+		if (isDefined(properties.radialData)){
 			this.radialData = properties.radialData;
-		} 
-		
-		if (typeof(properties.locationFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.location = properties.locationFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+		}
+
+		if (isDefined(properties.locationFunc)) {
+			let fn = function(rec,timeStamp,options) {
+				that.location = properties.locationFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.locationFunc.dataSourceIds,fn);
 		}
-		
-		if (typeof(properties.radialDataFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.radialData = properties.radialDataFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+
+		if (isDefined(properties.radialDataFunc)) {
+			let fn = function(rec,timeStamp,options) {
+				that.radialData = properties.radialDataFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.radialDataFunc.dataSourceIds,fn);
 		}
-		
+
 		this.reflectivityColorMap = [
 			Cesium.Color.fromBytes(100, 100, 100),
 			Cesium.Color.fromBytes(204, 255, 255),
@@ -76,25 +81,13 @@ OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
 			Cesium.Color.fromBytes(152,  84, 198),
 			Cesium.Color.fromBytes(253, 253, 253)
 		];
-		
+
 		this.pointCollection = new Cesium.PointPrimitiveCollection();
 		this.radialCount = 0;
-	},
+	}
 
 	/**
 	 *
-	 * @param $super
-	 * @param view
-	 * @instance
-	 * @memberof OSH.UI.Styler.Nexrad
-	 */
-	init: function(view) {
-		this._super(view);
-	},
-
-	/**
-	 *
-	 * @param $super
 	 * @param dataSourceId
 	 * @param rec
 	 * @param view
@@ -102,35 +95,37 @@ OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
 	 * @instance
 	 * @memberof OSH.UI.Styler.Nexrad
 	 */
-	setData: function(dataSourceId,rec,view,options) {
-		if (this._super(dataSourceId,rec,view,options)) {
-			if (typeof(view) != "undefined") {
-				
-				var DTR = Math.PI/180;
-				
+	setData(dataSourceId,rec,view,options) {
+		if (super.setData(dataSourceId,rec,view,options)) {
+			if (isDefined(view)) {
+
+				let DTR = Math.PI/180;
+
 				// keep only first elevation
-				if (rec.data.elevation > 0.7)
-					return;
-				
+				if (rec.data.elevation > 0.7) {
+					return false;
+				}
+
 				// draw directly in Cesium view
-				var radarLoc = Cesium.Cartesian3.fromDegrees(this.location.x, this.location.y, this.location.z);
-				var quat = Cesium.Transforms.headingPitchRollQuaternion(radarLoc, (rec.data.azimuth-90)*DTR, rec.data.elevation*DTR, 0.0);
-				var rotM = Cesium.Matrix3.fromQuaternion(quat);
-				
-				var points = new Cesium.PointPrimitiveCollection();
-				var dist0 = rec.data.rangeToCenterOfFirstRefGate;
-				var step = rec.data.refGateSize;
-				for (var i=0; i<rec.data.reflectivity.length; i++) {
-					
-				   var val = rec.data.reflectivity[i];
-				   
+				let radarLoc = Cesium.Cartesian3.fromDegrees(this.location.x, this.location.y, this.location.z);
+				let quat = Cesium.Transforms.headingPitchRollQuaternion(radarLoc, (rec.data.azimuth-90)*DTR, rec.data.elevation*DTR, 0.0);
+				let rotM = Cesium.Matrix3.fromQuaternion(quat);
+
+				let points = new Cesium.PointPrimitiveCollection();
+				let dist0 = rec.data.rangeToCenterOfFirstRefGate;
+				let step = rec.data.refGateSize;
+				for (let i=0; i<rec.data.reflectivity.length; i++) {
+
+				   let val = rec.data.reflectivity[i];
+
 				   // skip points that are out of range
-				   if (val < -32 || val > 94.5)
-					  continue;
-				   
-				   var gatePos = new Cesium.Cartesian3(dist0 + i*step, 0, 0);
+				   if (val < -32 || val > 94.5) {
+					   continue;
+				   }
+
+				   let gatePos = new Cesium.Cartesian3(dist0 + i*step, 0, 0);
 				   Cesium.Matrix3.multiplyByVector(rotM, gatePos, gatePos);
-				   
+
 				   // apply color map and add point to collection
 				   this.pointCollection.add({
 					  position : Cesium.Cartesian3.add(radarLoc, gatePos, gatePos),
@@ -138,17 +133,18 @@ OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
 					  pixelSize : 3
 				   });
 				}
-				
+
 				this.radialCount++;
-				if (this.radialCount == 100)
-			    {
+				if (this.radialCount === 100) {
 					view.viewer.scene.primitives.add(this.pointCollection);
 					this.pointCollection = new Cesium.PointPrimitiveCollection();
 					this.radialCount = 0;
 			    }
 			}
+			return true;
 		}
-	},
+		return false;
+	}
 
 	/**
 	 *
@@ -157,10 +153,8 @@ OSH.UI.Styler.Nexrad = OSH.UI.Styler.extend({
 	 * @instance
 	 * @memberof OSH.UI.Styler.Nexrad
 	 */
-	getReflectivityColor: function(val)
-	{
-		var index = Math.floor((val + 30) / 5) + 1;
+	getReflectivityColor(val) {
+		let index = Math.floor((val + 30) / 5) + 1;
 	    return this.reflectivityColorMap[index];
 	}
-
-});
+}

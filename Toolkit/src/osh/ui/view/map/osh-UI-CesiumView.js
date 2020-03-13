@@ -15,13 +15,35 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import View from "../osh-UI-View.js";
+import {isDefined, randomUUID} from "../../../osh-Utils.js";
+import Cartesian3 from "cesium/Source/Core/Cartesian3.js";
+import Transforms from "cesium/Source/Core/Transforms.js";
+import Matrix3 from "cesium/Source/Core/Matrix3.js";
+import MaterialAppearance from "cesium/Source/Scene/MaterialAppearance.js";
+import Material from "cesium/Source/Scene/Material.js";
+import sampleTerrain from "cesium/Source/Core/sampleTerrain.js";
+import GeometryInstance from "cesium/Source/Core/GeometryInstance.js";
+import RectangleGeometry from "cesium/Source/Core/RectangleGeometry.js";
+import Primitive from "cesium/Source/Scene/Primitive.js";
+import createDefaultImageryProviderViewModels
+	from "cesium/Source/Widgets/BaseLayerPicker/createDefaultImageryProviderViewModels.js";
+import Viewer from "cesium/Source/Widgets/Viewer/Viewer.js";
+import EllipsoidTerrainProvider from "cesium/Source/Core/EllipsoidTerrainProvider.js";
+import EventManager from "../../../osh-EventManager.js";
+import NearFarScalar from "cesium/Source/Core/NearFarScalar.js";
+import HeadingPitchRoll from "cesium/Source/Core/HeadingPitchRoll.js";
+import HeadingPitchRange from "cesium/Source/Core/HeadingPitchRange.js";
+import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
+import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
+
 /**
  * @classdesc
  * @class
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  * @example
- var cesiumMapView = new OSH.UI.CesiumView("",
+ let cesiumMapView = new OSH.UI.CesiumView("",
  [{
 	styler :  pointMarker,
 	contextMenuId: circularContextMenuId,
@@ -51,12 +73,12 @@
  }]
  );
  */
-OSH.UI.CesiumView = OSH.UI.View.extend({
+export default class CesiumView extends View {
 
-	initialize : function(parentElementDivId,viewItems, properties) {
-		this._super(parentElementDivId,viewItems,properties);
+	constructor(parentElementDivId,viewItems, properties) {
+		super(parentElementDivId,viewItems,properties);
 
-		var cssClass = document.getElementById(this.divId).className;
+		let cssClass = document.getElementById(this.divId).className;
 		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
 		this.imageDrapingPrimitive = null;
@@ -66,7 +88,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		this.captureCanvas = document.createElement('canvas');
 		this.captureCanvas.width = 640;
 		this.captureCanvas.height = 480;
-	},
+	}
 
 	/**
 	 *
@@ -76,8 +98,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	updateMarker : function(styler,timeStamp,options) {
-		var markerId = 0;
+	updateMarker(styler,timeStamp,options) {
+		let markerId = 0;
 
 		if (!(styler.getId() in this.stylerToObj)) {
 			markerId = this.addMarker({
@@ -94,7 +116,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				name : styler.viewItem.name,
 				description : styler.viewItem.description,
 				timeStamp: timeStamp,
-				selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
+				selected: ((isDefined(options.selected))? options.selected : false)
 			});
 
 			this.stylerToObj[styler.getId()] = markerId;
@@ -112,10 +134,10 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			labelColor : styler.labelColor,
 			labelSize : styler.labelSize,
 			timeStamp: timeStamp,
-            defaultToTerrainElevation: styler.defaultToTerrainElevation,
-			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
+			defaultToTerrainElevation: styler.defaultToTerrainElevation,
+			selected:((isDefined(options.selected))? options.selected : false)
 		});
-	},
+	}
 
 	/**
 	 *
@@ -126,64 +148,64 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @memberof OSH.UI.CesiumView
 	 *
 	 */
-    updateDrapedImage: function(styler,timeStamp,options,snapshot) {
+	updateDrapedImage(styler,timeStamp,options,snapshot) {
 
-    	var llaPos = styler.platformLocation;
-    	var camPos = Cesium.Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
+		let llaPos = styler.platformLocation;
+		let camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
 
-    	var DTR = Math.PI/180;
-    	var attitude = styler.platformOrientation;
-    	var gimbal = styler.gimbalOrientation;
+		let DTR = Math.PI/180;
+		let attitude = styler.platformOrientation;
+		let gimbal = styler.gimbalOrientation;
 
-    	///////////////////////////////////////////////////////////////////////////////////
-    	// compute rotation matrix to transform lookrays from camera frame to ECEF frame //
-    	///////////////////////////////////////////////////////////////////////////////////
-    	var nedTransform = Cesium.Transforms.northEastDownToFixedFrame(camPos);
-    	var camRot = new Cesium.Matrix3();
-    	Cesium.Matrix4.getRotation(nedTransform, camRot);
-    	var rotM = new Cesium.Matrix3();
+		///////////////////////////////////////////////////////////////////////////////////
+		// compute rotation matrix to transform lookrays from camera frame to ECEF frame //
+		///////////////////////////////////////////////////////////////////////////////////
+		let nedTransform = Transforms.northEastDownToFixedFrame(camPos);
+		let camRot = new Matrix3();
+		Matrix4.getRotation(nedTransform, camRot);
+		let rotM = new Matrix3();
 
-        // UAV heading, pitch, roll (given in NED frame)
-    	var uavHeading = Cesium.Matrix3.fromRotationZ(attitude.heading*DTR, rotM);
-    	Cesium.Matrix3.multiply(camRot, uavHeading, camRot);
-        var uavPitch = Cesium.Matrix3.fromRotationY(attitude.pitch*DTR, rotM);
-        Cesium.Matrix3.multiply(camRot, uavPitch, camRot);
-        var uavRoll = Cesium.Matrix3.fromRotationX(attitude.roll*DTR, rotM);
-        Cesium.Matrix3.multiply(camRot, uavRoll, camRot);
+		// UAV heading, pitch, roll (given in NED frame)
+		let uavHeading = Matrix3.fromRotationZ(attitude.heading*DTR, rotM);
+		Matrix3.multiply(camRot, uavHeading, camRot);
+		let uavPitch = Matrix3.fromRotationY(attitude.pitch*DTR, rotM);
+		Matrix3.multiply(camRot, uavPitch, camRot);
+		let uavRoll = Matrix3.fromRotationX(attitude.roll*DTR, rotM);
+		Matrix3.multiply(camRot, uavRoll, camRot);
 
-        // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
-        var gimbalYaw = Cesium.Matrix3.fromRotationZ(gimbal.heading*DTR, rotM);
-        Cesium.Matrix3.multiply(camRot, gimbalYaw, camRot);
-        var gimbalRoll = Cesium.Matrix3.fromRotationX(gimbal.roll*DTR, rotM);
-        Cesium.Matrix3.multiply(camRot, gimbalRoll, camRot);
-        var gimbalPitch = Cesium.Matrix3.fromRotationY((90+gimbal.pitch)*DTR, rotM);
-        Cesium.Matrix3.multiply(camRot, gimbalPitch, camRot);
+		// gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
+		let gimbalYaw = Matrix3.fromRotationZ(gimbal.heading*DTR, rotM);
+		Matrix3.multiply(camRot, gimbalYaw, camRot);
+		let gimbalRoll = Matrix3.fromRotationX(gimbal.roll*DTR, rotM);
+		Matrix3.multiply(camRot, gimbalRoll, camRot);
+		let gimbalPitch = Matrix3.fromRotationY((90+gimbal.pitch)*DTR, rotM);
+		Matrix3.multiply(camRot, gimbalPitch, camRot);
 
-        // transform to camera frame
-        var img2cam = Cesium.Matrix3.fromRotationZ(90*DTR, rotM);
-        Cesium.Matrix3.multiply(camRot, img2cam, camRot);
+		// transform to camera frame
+		let img2cam = Matrix3.fromRotationZ(90*DTR, rotM);
+		Matrix3.multiply(camRot, img2cam, camRot);
 
-        ////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////
 
-    	var camProj = styler.cameraModel.camProj;
-    	var camDistR = styler.cameraModel.camDistR;
-    	var camDistT = styler.cameraModel.camDistT;
+		let camProj = styler.cameraModel.camProj;
+		let camDistR = styler.cameraModel.camDistR;
+		let camDistT = styler.cameraModel.camDistT;
 
-    	var imgSrc = styler.imageSrc;
+		let imgSrc = styler.imageSrc;
 
-    	//if (this.frameCount%60 == 0)
-    	{
-	    	/*var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Cesium.ImageDrapingPrimitive({
-	            imageSrc: videoElt,
-	            camPos: camPos,
-	            camRot: camRot,
-	            camProj: camProj,
-	            camDistR: camDistR,
-	            camDistT: camDistT,
-	            asynchronous : true
-	        }));
+		//if (this.frameCount%60 == 0)
+		{
+			/*let newImageDrapingPrimitive = this.viewer.scene.primitives.add(new ImageDrapingPrimitive({
+                imageSrc: videoElt,
+                camPos: camPos,
+                camRot: camRot,
+                camProj: camProj,
+                camDistR: camDistR,
+                camDistT: camDistT,
+                asynchronous : true
+            }));
 
-	        // remove previous primitive
+            // remove previous primitive
             if (styler.snapshotFunc == null) {
                 if (this.imageDrapingPrimitive != null) {
                     this.viewer.scene.primitives.remove(this.imageDrapingPrimitive);
@@ -191,96 +213,97 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                 this.imageDrapingPrimitive = newImageDrapingPrimitive;
             }*/
 
-    	    // snapshot
-            if (snapshot) {
-                var ctx = this.captureCanvas.getContext('2d');
-                ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
-                imgSrc = this.captureCanvas;
-            }
+			// snapshot
+			if (snapshot) {
+				let ctx = this.captureCanvas.getContext('2d');
+				ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
+				imgSrc = this.captureCanvas;
+			}
 
-    	    var encCamPos = Cesium.EncodedCartesian3.fromCartesian(camPos);
-    	    var appearance = new Cesium.MaterialAppearance({
-                material : new Cesium.Material({
-                    fabric : {
-                        type : 'Image',
-                        uniforms : {
-                            image : imgSrc,
-                            camPosHigh : encCamPos.high,
-                            camPosLow : encCamPos.low,
-                            camAtt: Cesium.Matrix3.toArray(Cesium.Matrix3.transpose(camRot, new Cesium.Matrix3())),
-                            camProj: Cesium.Matrix3.toArray(camProj),
-                            camDistR: camDistR,
-                            camDistT: camDistT
-                        }
-                    }
-                }),
-                vertexShaderSource: Cesium._shaders.ImageDrapingVS,
-                fragmentShaderSource: Cesium._shaders.ImageDrapingFS
-            });
+			let encCamPos = EncodedCartesian3.fromCartesian(camPos);
+			let appearance = new MaterialAppearance({
+				material : new Material({
+					fabric : {
+						type : 'Image',
+						uniforms : {
+							image : imgSrc,
+							camPosHigh : encCamPos.high,
+							camPosLow : encCamPos.low,
+							camAtt: Matrix3.toArray(Matrix3.transpose(camRot, new Matrix3())),
+							camProj: Matrix3.toArray(camProj),
+							camDistR: camDistR,
+							camDistT: camDistT
+						}
+					}
+				}),
+				vertexShaderSource: ImageDrapingVS,
+				fragmentShaderSource: ImageDrapingFS
+			});
 
-    	    /*appearance = new Cesium.MaterialAppearance({
-                material : new Cesium.Material({
+			/*appearance = new MaterialAppearance({
+                material : new Material({
                     fabric : {
                         type: 'Color',
                         uniforms : {
-                            color : new Cesium.Color(1.0, 0.0, 0.0, 0.5)
+                            color : new Color(1.0, 0.0, 0.0, 0.5)
                         }
                     }
                 })
             });*/
 
-    	    if (this.imageDrapingPrimitive === null || snapshot) {
-    	        if (this.imageDrapingPrimitive === null)
-    	            this.imageDrapingPrimitive = {};
+			if (this.imageDrapingPrimitive === null || snapshot) {
+				if (this.imageDrapingPrimitive === null) {
+					this.imageDrapingPrimitive = {};
+				}
 
-    	        var promise = Cesium.sampleTerrain(this.viewer.terrainProvider, 11, [Cesium.Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-    	        var that = this;
-                Cesium.when(promise, function(updatedPositions) {
-                    //console.log(updatedPositions[0]);
-                    var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Cesium.Primitive({
-                        geometryInstances: new Cesium.GeometryInstance({
-                            geometry: new Cesium.RectangleGeometry({
-                                rectangle: Cesium.Rectangle.fromDegrees(llaPos.x-0.1, llaPos.y-0.1, llaPos.x+0.1, llaPos.y+0.1),
-                                height: updatedPositions[0].height-100,
-                                extrudedHeight: llaPos.z-1
-                            })
-                        }),
-                        appearance: appearance
-                    }));
+				let promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+				let that = this;
+				when(promise, function(updatedPositions) {
+					//console.log(updatedPositions[0]);
+					let newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Primitive({
+						geometryInstances: new GeometryInstance({
+							geometry: new RectangleGeometry({
+								rectangle: Rectangle.fromDegrees(llaPos.x-0.1, llaPos.y-0.1, llaPos.x+0.1, llaPos.y+0.1),
+								height: updatedPositions[0].height-100,
+								extrudedHeight: llaPos.z-1
+							})
+						}),
+						appearance: appearance
+					}));
 
-                    if (!snapshot)
-                        that.imageDrapingPrimitive = newImageDrapingPrimitive;
+					if (!snapshot) {
+						that.imageDrapingPrimitive = newImageDrapingPrimitive;
+					}
 
-                    that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
-                    that.imageDrapingPrimitiveReady = true;
-                });
+					that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
+					that.imageDrapingPrimitiveReady = true;
+				});
 
-    	    } else if (this.imageDrapingPrimitiveReady) {
-    	        this.imageDrapingPrimitive.appearance = appearance;
-    	    }
-    	}
+			} else if (this.imageDrapingPrimitiveReady) {
+				this.imageDrapingPrimitive.appearance = appearance;
+			}
+		}
 
-    	this.frameCount++;
-	},
+		this.frameCount++;
+	}
 
 	//---------- MAP SETUP --------------//
 	/**
 	 *
-	 * @param $super
 	 * @param options
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	beforeAddingItems: function (options) {
+	beforeAddingItems(options) {
 		this.markers = {};
-	    this.first = true;
+		this.first = true;
 
-	    var imageryProviders = Cesium.createDefaultImageryProviderViewModels();
-	    this.viewer = new Cesium.Viewer(this.divId, {
-	    	baseLayerPicker: true,
-	    	imageryProviderViewModels: imageryProviders,
-	    	selectedImageryProviderViewModel: imageryProviders[6],
-	    	timeline: false,
+		let imageryProviders = createDefaultImageryProviderViewModels();
+		this.viewer = new Viewer(this.divId, {
+			baseLayerPicker: true,
+			imageryProviderViewModels: imageryProviders,
+			selectedImageryProviderViewModel: imageryProviders[6],
+			timeline: false,
 			homeButton: false,
 			navigationInstructionsInitiallyVisible: false,
 			navigationHelpButton: false,
@@ -289,44 +312,44 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			showRenderLoopErrors: true,
 			animation: false,
 			targetFrameRate: 10,
-        	scene3DOnly: true // for draw layer
-	    });
+			scene3DOnly: true // for draw layer
+		});
 
-	    this.viewer.terrainProvider = new Cesium.EllipsoidTerrainProvider();
+		this.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
-	    this.viewer.scene.copyGlobeDepth = true;
-	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
+		this.viewer.scene.copyGlobeDepth = true;
+		this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 
-	    var self = this;
-	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
-	        //change icon
-            if (Cesium.defined(entity)) {
-	        	var dataSrcIds = [];
-	        	var entityId;
-		    	for (var stylerId in self.stylerToObj) {
-		    		if(self.stylerToObj[stylerId] === entity._dsid) {
-		    			for(var i=0;i < self.stylers.length;i++) {
-			    			if(self.stylers[i].getId() === stylerId) {
-			    				dataSrcIds = dataSrcIds.concat(self.stylers[i].getDataSourcesIds());
-			    				entityId = self.stylers[i].viewItem.entityId;
-				    			break;
-			    			}
-		    			}
-		    		}
-		    	}
+		let self = this;
+		knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
+			//change icon
+			if (defined(entity)) {
+				let dataSrcIds = [];
+				let entityId;
+				for (let stylerId in self.stylerToObj) {
+					if(self.stylerToObj[stylerId] === entity._dsid) {
+						for(let i=0;i < self.stylers.length;i++) {
+							if(self.stylers[i].getId() === stylerId) {
+								dataSrcIds = dataSrcIds.concat(self.stylers[i].getDataSourcesIds());
+								entityId = self.stylers[i].viewItem.entityId;
+								break;
+							}
+						}
+					}
+				}
 
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
-                    dataSourcesIds: dataSrcIds,
-                    entityId: entityId
-                });
-            } else {
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
-                    dataSourcesIds: [],
-                    entityId: null
-                });
-            }
-	    }.bind(this));
-	},
+				EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
+					dataSourcesIds: dataSrcIds,
+					entityId: entityId
+				});
+			} else {
+				OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+					dataSourcesIds: [],
+					entityId: null
+				});
+			}
+		}.bind(this));
+	}
 
 	/**
 	 *
@@ -335,88 +358,87 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	addMarker : function(properties) {
+	addMarker(properties) {
 
-		var imgIcon = 'images/pin.png';
+		let imgIcon = 'images/pin.png';
 		if (properties.icon !== null) {
 			imgIcon = properties.icon;
 		}
-		var isModel = imgIcon.endsWith(".glb");
+		let isModel = imgIcon.endsWith(".glb");
 
-                var label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
-		var fillColor = properties.labelColor;
-		var labelSize = properties.labelSize;
-		var labelOffset = properties.labelOffset;
+		let label = properties.hasOwnProperty("label") && properties.label !== null ? properties.label : null;
+		let fillColor = properties.labelColor;
+		let labelSize = properties.labelSize;
+		let labelOffset = properties.labelOffset;
 
-		var name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
-		           label != null ? label : "Selected Marker";
-		var desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
+		let name = properties.hasOwnProperty("name") && properties.name !== null ? properties.name :
+			label !== null ? label : "Selected Marker";
+		let desc = properties.hasOwnProperty("description") && properties.description !== null ? properties.description : null;
 
-		var geom;
+		let geom;
 		if (isModel)
 		{
 			geom = {
 				name: name,
-                                description: desc,
-				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
- 				label: {
- 					text: label,
+				description: desc,
+				position : Cartesian3.fromDegrees(0, 0, 0),
+				label: {
+					text: label,
 					font: labelSize + 'px sans-serif',
-					scaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0),
-					fillColor: Cesium.Color.fromCssColorString(fillColor),
-					horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-					verticalOrigin: Cesium.VerticalOrigin.TOP,
-					pixelOffset : labelOffset,
-                                        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1, 1e6, 0.0)
+					scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+					fillColor: Color.fromCssColorString(fillColor),
+					horizontalOrigin: HorizontalOrigin.CENTER,
+					verticalOrigin: VerticalOrigin.TOP,
+					pixelOffset : labelOffset
 				},
 				model : {
 					uri: imgIcon,
 					scale: 4,
-					modelM: Cesium.Matrix4.IDENTITY.clone()
+					modelM: Matrix4.IDENTITY.clone()
 				}
 			};
 		}
 		else
 		{
-			var rot = properties.orientation.heading;
-			var iconOffset = new Cesium.Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-			var labelOffset = new Cesium.Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+			let rot = properties.orientation.heading;
+			let iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+			let labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
 			geom = {
 				name: name,
-                                description: desc,
-				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
- 				label: {
- 					text: label,
+				description: desc,
+				position : Cartesian3.fromDegrees(0, 0, 0),
+				label: {
+					text: label,
 					font: labelSize + 'px sans-serif',
-					scaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0),
-					fillColor: Cesium.Color.fromCssColorString(fillColor),
-					horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+					fillColor: Color.fromCssColorString(fillColor),
+					horizontalOrigin: HorizontalOrigin.CENTER,
+					verticalOrigin: VerticalOrigin.TOP,
 					pixelOffset : labelOffset,
-					pixelOffsetScaleByDistance: new Cesium.NearFarScalar(150, 1.0, 1e6, 0.0)
+					pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0)
 				},
 				billboard : {
 					image : imgIcon,
-					scaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
-					alignedAxis : Cesium.Cartesian3.UNIT_Z, // Z means rotation is from north
-					rotation : Cesium.Math.toRadians(rot),
-					horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
-					verticalOrigin: Cesium.VerticalOrigin.TOP,
+					scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+					alignedAxis : Cartesian3.UNIT_Z, // Z means rotation is from north
+					rotation : Math.toRadians(rot),
+					horizontalOrigin : HorizontalOrigin.LEFT,
+					verticalOrigin: VerticalOrigin.TOP,
 					pixelOffset : iconOffset,
-					pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 10e6, 0.0),
-					eyeOffset : new Cesium.Cartesian3(0, 0, -1) // make sure icon always displays in front
+					pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+					eyeOffset : new Cartesian3(0, 0, -1) // make sure icon always displays in front
 				}
 			};
 		}
 
-		var entity = this.viewer.entities.add(geom);
-		var id = "view-marker-"+OSH.Utils.randomUUID();
+		let entity = this.viewer.entities.add(geom);
+		let id = "view-marker-"+randomUUID();
 		entity._dsid = id;
 		this.markers[id] = entity;
 
 		return id;
-	},
+	}
 
 	/**
 	 *
@@ -425,70 +447,74 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	updateMapMarker: function(id, properties) {
-		var lon = properties.lon;
-        var lat = properties.lat;
-        var alt = properties.alt;
-        var orient = properties.orientation;
-        var imgIcon = properties.icon;
-        var label = properties.label;
+	updateMapMarker(id, properties) {
+		let lon = properties.lon;
+		let lat = properties.lat;
+		let alt = properties.alt;
+		let orient = properties.orientation;
+		let imgIcon = properties.icon;
+		let label = properties.label;
 
-		var defaultToTerrainElevation = properties.defaultToTerrainElevation;
+		let defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
-        if (!isNaN(lon) && !isNaN(lat)) {
-        	var marker =  this.markers[id];
+		if (!isNaN(lon) && !isNaN(lat)) {
+			let marker =  this.markers[id];
 
-        	// get ground altitude if non specified
-        	if (typeof(alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
-	    		alt = this.getAltitude(lat, lon);
-	    		if (alt > 1)
-	    			alt += 0.3;
-    		}
+			// get ground altitude if non specified
+			if (typeof(alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
+				alt = this.getAltitude(lat, lon);
+				if (alt > 1) {
+					alt += 0.3;
+				}
+			}
 
-    		// update position
-        	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-    		marker.position = pos;
+			// update position
+			let pos = Cartesian3.fromDegrees(lon, lat, alt);
+			marker.position = pos;
 
-    		// update orientation
-    		if (typeof(orient) !== "undefined") {
-    			var DTR = Math.PI/180.;
-    			var heading = orient.heading;
-	    		var pitch = 0.0;
-	    		var roll = 0.0;
-	    		var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
-	    		marker.orientation = quat;
-                        if (marker.billboard)
-				marker.billboard.rotation = Cesium.Math.toRadians(heading);
-    	    	}
+			// update orientation
+			if (typeof(orient) !== "undefined") {
+				let DTR = Math.PI/180.;
+				let heading = orient.heading;
+				let pitch = 0.0;
+				let roll = 0.0;
+				let quat = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
+				marker.orientation = quat;
+				if (marker.billboard) {
+					marker.billboard.rotation = Math.toRadians(heading);
+				}
+			}
 
-    		// update icon or model
-    		if (marker.billboard)
-			marker.billboard.image = imgIcon;
-		else if (marker.model)
-			marker.model.uri = imgIcon;
+			// update icon or model
+			if (marker.billboard) {
+				marker.billboard.image = imgIcon;
+			} else if (marker.model) {
+				marker.model.uri = imgIcon;
+			}
 
-		// update label
-		//marker.label = properties.label;
-		//if (properties.labelColor != null)
-		//	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
+			// update label
+			//marker.label = properties.label;
+			//if (properties.labelColor != null)
+			//	marker.label.fillColor = Color.fromCssColorString(properties.labelColor);
 
-                // update billboard aligned axis depending on camera angle
-    		if (this.viewer.camera.pitch < -Math.PI/4)
-    		    marker.billboard.alignedAxis = Cesium.Cartesian3.UNIT_Z;
-    		else
-    		    marker.billboard.alignedAxis = Cesium.Cartesian3.ZERO;
+			// update billboard aligned axis depending on camera angle
+			if (this.viewer.camera.pitch < -Math.PI/4) {
+				marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
+			} else {
+				marker.billboard.alignedAxis = Cartesian3.ZERO;
+			}
 
-    		// zoom map if first marker update
-    		if (this.first) {
-    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
-    			this.first = false;
-    		}
+			// zoom map if first marker update
+			if (this.first) {
+				this.viewer.zoomTo(this.viewer.entities, new HeadingPitchRange(Math.toRadians(0), Math.toRadians(-90), 2000));
+				this.first = false;
+			}
 
-    		if (properties.selected) {
-    			 this.viewer.selectedEntity = marker;
-    		}
-        }
-	},
+			if (properties.selected) {
+				this.viewer.selectedEntity = marker;
+			}
+		}
+	}
 
 	/**
 	 *
@@ -498,12 +524,13 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 * @instance
 	 * @memberof OSH.UI.CesiumView
 	 */
-	getAltitude : function(lat, lon) {
-		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
-		var altitude = this.viewer.scene.globe.getHeight(Cesium.Ellipsoid.WGS84.cartesianToCartographic(position));
+	getAltitude(lat, lon) {
+		let position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
+		let altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
 
-		if (altitude === 'undefined' || altitude <= 0)
+		if (isDefined(altitude) || altitude <= 0) {
 			altitude = 0.1;
+		}
 		return altitude;
 	}
-});
+}

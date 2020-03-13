@@ -28,6 +28,7 @@
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "devDependencies": {
     "bower": "^1.8.0",
+    "cesium": "^1.67.0",
     "copy-dir": "^0.3.0",
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
@@ -55,8 +56,11 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-jasmine": "^1.1.0",
     "karma-requirejs": "^1.1.0",
+    "leaflet": "^1.6.0",
     "merge-stream": "^1.0.1",
     "mkdirp": "^0.5.1",
+    "ol": "^6.2.1",
+    "ol-layerswitcher": "^3.5.0",
     "requirejs": "^2.3.2",
     "uglify-js": "^2.7.3",
     "yargs": "^6.6.0"

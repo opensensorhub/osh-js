@@ -14,13 +14,15 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {assertArray, assertObject, assertPositive, assertString, hasValue, isDefined} from "../../osh-Utils.js";
+
 /**
  * @classdesc
  * @class OSH.UI.Styler.PointMarker
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  * @example
- * var pointMarker = new OSH.UI.Styler.PointMarker({
+ * let pointMarker = new OSH.UI.Styler.PointMarker({
         location : {
             x : 1.42376557,
             y : 43.61758626,
@@ -57,9 +59,9 @@
         }
     });
  */
-OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
-	initialize : function(properties) {
-		this._super(properties);
+export default class PointMarker extends Styler {
+	constructor(properties) {
+		super(properties);
 		this.properties = properties;
 		this.location = null;
 		this.orientation = {heading:0};
@@ -75,110 +77,109 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 
 		this.options = {};
 
-		if(typeof(properties.defaultToTerrainElevation) != "undefined") {
+		if(isDefined(properties.defaultToTerrainElevation)) {
 			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
 		}
 
-		if (OSH.Utils.hasValue(properties.location)) {
-			OSH.Utils.assertObject(properties.location, "location");
+		if (hasValue(properties.location)) {
+			assertObject(properties.location, "location");
 			this.location = properties.location;
 		}
 
-		if (OSH.Utils.hasValue(properties.orientation)) {
-			OSH.Utils.assertObject(properties.orientation, "orientation");
+		if (hasValue(properties.orientation)) {
+			assertObject(properties.orientation, "orientation");
 			this.orientation = properties.orientation;
 		}
 
-		if (OSH.Utils.hasValue(properties.icon)) {
-			OSH.Utils.assertString(properties.icon, "icon");
+		if (hasValue(properties.icon)) {
+			assertString(properties.icon, "icon");
 			this.icon = properties.icon;
 		}
 
-		if (OSH.Utils.hasValue(properties.iconAnchor)) {
-			OSH.Utils.assertArray(properties.iconAnchor, "iconAnchor");
+		if (hasValue(properties.iconAnchor)) {
+			assertArray(properties.iconAnchor, "iconAnchor");
 			this.iconAnchor = properties.iconAnchor;
 		}
 
-		if (OSH.Utils.hasValue(properties.label)) {
-			OSH.Utils.assertString(properties.label, "label");
+		if (hasValue(properties.label)) {
+			assertString(properties.label, "label");
 			this.label = properties.label;
 		}
 
-		if (OSH.Utils.hasValue(properties.labelColor)) {
-			OSH.Utils.assertString(properties.labelColor, "labelColor");
+		if (hasValue(properties.labelColor)) {
+			assertString(properties.labelColor, "labelColor");
 			this.labelColor = properties.labelColor;
 		}
 
-		if (OSH.Utils.hasValue(properties.labelSize)) {
-			OSH.Utils.assertPositive(properties.labelSize, "labelSize");
+		if (hasValue(properties.labelSize)) {
+			assertPositive(properties.labelSize, "labelSize");
 			this.labelSize = properties.labelSize;
 		}
 
-		if (OSH.Utils.hasValue(properties.labelOffset)) {
-			OSH.Utils.assertArray(properties.labelOffset, "labelOffset");
+		if (hasValue(properties.labelOffset)) {
+			assertArray(properties.labelOffset, "labelOffset");
 			this.labelOffset = properties.labelOffset;
 		}
 
+		let that = this;
 		if (this.checkFn("locationFunc")) {
-			var fn = function(rec,timeStamp,options) {
-				this.location = properties.locationFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+			let fn = function(rec,timeStamp,options) {
+				that.location = properties.locationFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.locationFunc.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("orientationFunc")) {
-			var fn = function(rec,timeStamp,options) {
-				this.orientation = properties.orientationFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+			let fn = function(rec,timeStamp,options) {
+				that.orientation = properties.orientationFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.orientationFunc.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("iconFunc")) {
-			var fn = function(rec,timeStamp,options) {
-				this.icon = properties.iconFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+			let fn = function(rec,timeStamp,options) {
+				that.icon = properties.iconFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.iconFunc.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("labelFunc")) {
-			var fn = function(rec,timeStamp,options) {
-				this.label = properties.labelFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+			let fn = function(rec,timeStamp,options) {
+				that.label = properties.labelFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.labelFunc.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("labelColorFunc")) {
-			var fn = function(rec,timeStamp,options) {
-				this.labelColor = properties.labelColorFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+			let fn = function(rec,timeStamp,options) {
+				that.labelColor = properties.labelColorFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.labelColorFunc.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("labelSizeFunc")) {
-			var fn = function(rec,timeStamp,options) {
-				this.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
-			}.bind(this);
+			let fn = function(rec,timeStamp,options) {
+				that.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
+			};
 			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
 		}
-	},
+	}
 
 	/**
 	 *
-	 * @param $super
 	 * @param view
 	 * @memberof OSH.UI.Styler.PointMarker
 	 * @instance
 	 */
-	init: function(view) {
-		this._super(view);
-		if (OSH.Utils.isDefined(view) && this.location != null) {
+	init(view) {
+		super.init(view);
+		if (isDefined(view) && this.location !== null) {
 			view.updateMarker(this,0,{});
 		}
-	},
+	}
 
 	/**
 	 *
-	 * @param $super
 	 * @param dataSourceId
 	 * @param rec
 	 * @param view
@@ -186,21 +187,13 @@ OSH.UI.Styler.PointMarker = OSH.UI.Styler.extend({
 	 * @memberof OSH.UI.Styler.PointMarker
 	 * @instance
 	 */
-	setData: function(dataSourceId,rec,view,options) {
-		if (this._super(dataSourceId,rec,view,options)) {
-			if (OSH.Utils.isDefined(view) && this.location != null) {
+	setData(dataSourceId,rec,view,options) {
+		if (super.setData(dataSourceId,rec,view,options)) {
+			if (isDefined(view) && this.location !== null) {
 				view.updateMarker(this, rec.timeStamp, options);
+				return true;
 			}
 		}
-	},
-
-	/**
-	 *
-	 * @param $super
-	 * @memberof OSH.UI.Styler.PointMarker
-	 * @instance
-	 */
-	clear:function($super){
+		return false;
 	}
-
-});
+}

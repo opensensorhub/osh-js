@@ -14,17 +14,44 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import View from "../osh-UI-View.js";
+import {isDefined} from "../../../osh-Utils.js";
+import EventManager from "../../../osh-EventManager.js";
+import {transform} from 'ol/proj.js';
+import Style from "ol/style/Style.js";
+import Stroke from "ol/style/Style.js";
+import Icon from "ol/style/Icon.js";
+import {View as OlView} from "ol/View.js";
+import Map from "ol/Map.js";
+import ZoomSlider from "ol/control/ZoomSlider";
+import Rotate from "ol/control/Rotate";
+import ScaleLine from "ol/control/ScaleLine";
+import {defaults} from "ol/control";
+import mouseMove from "ol/events/condition";
+import Select from "ol/interaction/Select";
+import {defaults as defaultInteraction} from "ol/interaction";
+import {Group} from "ol/layer";
+import LayerSwitcher from "ol-layerswitcher/src/ol-layerswitcher";
+import Tile from "ol/Tile";
+import OSM from "ol/source/OSM";
+import {Point} from "ol/geom";
+import Feature from "ol/Feature";
+import {Vector as VectorLayer} from "ol/layer";
+import {Vector as VectorSource} from "ol/source";
+import {getXCursorPosition, getYCursorPosition, randomUUID} from "../../../osh-Utils";
+import LineString from "ol/geom/LineString";
+import Fill from "ol/style/Fill";
 /**
  * @classdesc
  * @class
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  */
-OSH.UI.OpenLayerView = OSH.UI.View.extend({
-    initialize: function (parentElementDivId, viewItems, options) {
-        this._super(parentElementDivId, viewItems, options);
+export default class OpenLayerView extends View {
+    constructor(parentElementDivId, viewItems, options) {
+        super(parentElementDivId, viewItems, options);
         this.onResize();
-    },
+    }
 
     /**
      *
@@ -33,52 +60,55 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    beforeAddingItems: function (options) {
+    beforeAddingItems(options) {
         // inits the map
         this.initMap(options);
 
         //events will NOT automatically be added to the map, if one is provided by the user
-        if(typeof(options) == "undefined" || !options.map)
+        if(isDefined(options) || !options.map) {
             this.initEvents();
-    },
+        }
+    }
 
 
     /**
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    initEvents: function () {
+    initEvents() {
         // removes default right click
-        document.getElementById(this.divId).oncontextmenu = function (e) {
-            var evt = new Object({keyCode: 93});
-            if (e.preventDefault != undefined)
+        document.getElementById(this.divId).oncontextmenu = (e) => {
+            let evt = new Object({keyCode: 93});
+            if (isDefined(e.preventDefault)) {
                 e.preventDefault();
-            if (e.stopPropagation != undefined)
+            }
+            if (isDefined(e.stopPropagation)) {
                 e.stopPropagation();
+            }
         };
 
-        var self = this;
+        let self = this;
 
-        this.map.getViewport().addEventListener('contextmenu', function (e) {
+        this.map.getViewport().addEventListener('contextmenu', (e) => {
             e.preventDefault();
 
-            var feature = self.map.forEachFeatureAtPixel(self.map.getEventPixel(e),
+            let feature = self.map.forEachFeatureAtPixel(self.map.getEventPixel(e),
                 function (feature, layer) {
                     return feature;
                 });
             if (feature) {
-                var id = feature.ha;
+                let id = feature.ha;
 
                 // gets the corresponding styler
-                for(var stylerId in self.stylerToObj) {
-                    if(self.stylerToObj[stylerId] == id) {
-                        OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+self.stylerIdToStyler[stylerId].viewItem.contextMenuId,{
+                for(let stylerId in self.stylerToObj) {
+                    if(self.stylerToObj[stylerId] === id) {
+                        EventManager.fire(EventManager.EVENT.CONTEXT_MENU+"-"+self.stylerIdToStyler[stylerId].viewItem.contextMenuId,{
                             //TODO: values have to be provided by properties
                             offsetX: -70,
                             offsetY: -70,
                             action : "show",
-                            x:OSH.Utils.getXCursorPosition(),
-                            y:OSH.Utils.getYCursorPosition()
+                            x:getXCursorPosition(),
+                            y:getYCursorPosition()
                         });
                         break;
                     }
@@ -86,15 +116,15 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
             }
         });
 
-        this.map.on("click", function(e) {
+        this.map.on("click", (e) => {
             self.map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-                var id = feature.ha;
-                var dataSourcesIds = [];
-                var entityId;
-                for (var stylerId in self.stylerToObj) {
-                    if (self.stylerToObj[stylerId] == id) {
-                        var styler = self.stylerIdToStyler[stylerId];
-                        OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                let id = feature.ha;
+                let dataSourcesIds = [];
+                let entityId;
+                for (let stylerId in self.stylerToObj) {
+                    if (self.stylerToObj[stylerId] === id) {
+                        let styler = self.stylerIdToStyler[stylerId];
+                        EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
                             dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
                             entityId : styler.viewItem.entityId
                         });
@@ -103,7 +133,7 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
                 }
             });
         });
-    },
+    }
 
     /**
      *
@@ -111,8 +141,8 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    updateMarker: function (styler) {
-        var markerId = 0;
+    updateMarker(styler) {
+        let markerId = 0;
 
         if (!(styler.getId() in this.stylerToObj)) {
             // adds a new marker to the leaflet renderer
@@ -130,29 +160,29 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
             markerId = this.stylerToObj[styler.getId()];
         }
 
-        var markerFeature = this.markers[markerId];
+        let markerFeature = this.markers[markerId];
         // updates position
-        var lon = styler.location.x;
-        var lat = styler.location.y;
+        let lon = styler.location.x;
+        let lat = styler.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
-            var coordinates = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
+            let coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
             markerFeature.getGeometry().setCoordinates(coordinates);
         }
 
         // updates orientation
-        if (styler.icon != null) {
+        if (styler.icon !== null) {
             // updates icon
-            var iconStyle = new ol.style.Style({
-                image: new ol.style.Icon(({
+            let iconStyle = new Style({
+                image: new Icon({
                     opacity: 0.75,
                     src: styler.icon,
                     rotation: styler.orientation.heading * Math.PI / 180
-                }))
+                })
             });
             markerFeature.setStyle(iconStyle);
         }
-    },
+    }
 
     /**
      *
@@ -160,8 +190,8 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    updatePolyline: function (styler) {
-        var polylineId = 0;
+    updatePolyline(styler) {
+        let polylineId = 0;
 
         if (!(styler.getId() in this.stylerToObj)) {
             // adds a new marker to the leaflet renderer
@@ -182,16 +212,16 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
 
         //TODO: handle opacity, smoothFactor, color and weight
         if (polylineId in this.polylines) {
-            var geometry = this.polylines[polylineId];
+            let geometry = this.polylines[polylineId];
 
-            var polylinePoints = [];
-            for (var i = 0; i < styler.locations.length; i++) {
-                polylinePoints.push(ol.proj.transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+            let polylinePoints = [];
+            for (let i = 0; i < styler.locations.length; i++) {
+                polylinePoints.push(transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
             }
 
             geometry.setCoordinates(polylinePoints);
         }
-    },
+    }
 
     //---------- MAP SETUP --------------//
     /**
@@ -200,19 +230,19 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    initMap: function (options) {
+    initMap(options) {
 
-        var initialView = null;
+        let initialView = null;
         this.first = true;
-        var overlays = [];
-        var defaultLayer = null;
+        let overlays = [];
+        let defaultLayer = null;
         this.markers = {};
         this.polylines = {};
 
-        var baseLayers = this.getDefaultLayers();
+        let baseLayers = this.getDefaultLayers();
+        let maxZoom = 19;
 
-        if (typeof(options) != "undefined") {
-            var maxZoom = 19;
+        if (isDefined(options)) {
 
             //if the user passed in a map then use that one, don't make a new one
             if(options.map) {
@@ -224,8 +254,8 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
                 maxZoom = options.maxZoom;
             }
             if (options.initialView) {
-                initialView = new ol.View({
-                    center: ol.proj.transform([options.initialView.lon, options.initialView.lat], 'EPSG:4326', 'EPSG:900913'),
+                initialView = new OlView({
+                    center: transform([options.initialView.lon, options.initialView.lat], 'EPSG:4326', 'EPSG:900913'),
                     zoom: options.initialView.zoom,
                     maxZoom: maxZoom
                 });
@@ -251,8 +281,8 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
             }
         } else {
             // loads the default one
-            initialView = new ol.View({
-                center: ol.proj.transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
+            initialView = new OlView({
+                center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
                 zoom: 11,
                 maxZoom: maxZoom
             });
@@ -260,30 +290,30 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
 
         // sets layers to map
         //create map
-        this.map = new ol.Map({
+        this.map = new Map({
             target: this.divId,
-            controls: ol.control.defaults({
+            controls: defaults({
                 attributionOptions: ({
                     collapsible: false
                 })
             }).extend([
-                new ol.control.ZoomSlider(),
-                new ol.control.Rotate(),
-                new ol.control.ScaleLine(),
+                new ZoomSlider(),
+                new Rotate(),
+                new ScaleLine(),
             ]),
             // interactions and controls are seperate entities in ol3
             // we extend the default navigation with a hover select interaction
-            interactions: ol.interaction.defaults().extend([
-                new ol.interaction.Select({
-                    condition: ol.events.condition.mouseMove
+            interactions: defaultInteraction().extend([
+                new Select({
+                    condition: mouseMove
                 })
             ]),
             layers: [
-                new ol.layer.Group({
+                new Group({
                     'title': 'Base maps',
                     layers: baseLayers
                 }),
-                new ol.layer.Group({
+                new Group({
                     title: 'Overlays',
                     layers: overlays
                 })
@@ -292,24 +322,24 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
 
         });
 
-        var layerSwitcher = new ol.control.LayerSwitcher({
+        let layerSwitcher = new LayerSwitcher({
             tipLabel: 'Layers' // Optional label for button
         });
 
         this.map.addControl(layerSwitcher);
 
         // inits onClick events
-        var select_interaction = new ol.interaction.Select();
+        let select_interaction = new Select();
 
-        var self = this;
+        let self = this;
         select_interaction.getFeatures().on("add", function (e) {
-            var feature = e.element; //the feature selected
-            var dataSourcesIds = [];
-            var entityId;
-            for (var stylerId in self.stylerToObj) {
+            let feature = e.element; //the feature selected
+            let dataSourcesIds = [];
+            let entityId;
+            for (let stylerId in self.stylerToObj) {
                 if (self.stylerToObj[stylerId] == feature.getId()) {
-                    var styler = self.stylerIdToStyler[stylerId];
-                    OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                    let styler = self.stylerIdToStyler[stylerId];
+                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
                         dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
                         entityId : styler.viewItem.entityId
                     });
@@ -319,7 +349,7 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         });
 
         this.map.addInteraction(select_interaction);
-    },
+    }
 
     /**
      *
@@ -327,9 +357,9 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    getDefaultBaseLayers: function () {
+    getDefaultBaseLayers() {
         return {};
-    },
+    }
 
 
     /**
@@ -338,15 +368,15 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    getDefaultLayers: function () {
-        var osm = new ol.layer.Tile({
+    getDefaultLayers() {
+        let osm = new Tile({
             title: 'OSM',
             type: 'base',
             visible: true,
-            source: new ol.source.OSM()
+            source: new OSM()
         });
         return [osm];
-    },
+    }
 
     /**
      *
@@ -355,21 +385,21 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    addMarker: function (properties) {
+    addMarker(properties) {
         //create marker
-        var marker = new ol.geom.Point(ol.proj.transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-        var markerFeature = new ol.Feature({
+        let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+        let markerFeature = new Feature({
             geometry: marker,
             name: 'Marker' //TODO
         });
 
-        if (properties.icon != null) {
-            var iconStyle = new ol.style.Style({
-                image: new ol.style.Icon(({
+        if (properties.icon !== null) {
+            let iconStyle = new Style({
+                image: new Icon({
                     opacity: 0.75,
                     src: properties.icon,
                     rotation: properties.orientation * Math.PI / 180
-                }))
+                })
             });
             markerFeature.setStyle(iconStyle);
         }
@@ -377,28 +407,28 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
 
         //TODO:for selected marker event
         //this.marker.on('click',this.onClick.bind(this));
-        var vectorMarkerLayer =
-            new ol.layer.Vector({
+        let vectorMarkerLayer =
+            new VectorLayer({
                 title: properties.name,
-                source: new ol.source.Vector({
+                source: new VectorSource({
                     features: [markerFeature]
                 })
             });
 
         this.map.addLayer(vectorMarkerLayer);
 
-        var id = "view-marker-" + OSH.Utils.randomUUID();
+        let id = "view-marker-" + randomUUID();
         markerFeature.setId(id);
         this.markers[id] = markerFeature;
 
         if (this.first) {
             this.first = false;
-            this.map.getView().setCenter(ol.proj.transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
             this.map.getView().setZoom(19);
         }
 
         return id;
-    },
+    }
 
     /**
      *
@@ -407,12 +437,12 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    createMarkerFromStyler: function (styler) {
+    createMarkerFromStyler(styler) {
         //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
         //to the view or map to give the user more control
         if (!(styler.getId() in this.stylerToObj)) {
 
-            var properties = {
+            let properties = {
                 lat: styler.location.y,
                 lon: styler.location.x,
                 orientation: styler.orientation.heading,
@@ -422,15 +452,15 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
             }
 
             //create marker
-            var marker = new ol.geom.Point(ol.proj.transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-            var markerFeature = new ol.Feature({
+            let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            let markerFeature = new Feature({
                 geometry: marker,
                 name: 'Marker' //TODO
             });
 
-            if (properties.icon != null) {
-                var iconStyle = new ol.style.Style({
-                    image: new ol.style.Icon({
+            if (properties.icon !== null) {
+                let iconStyle = new Style({
+                    image: new Icon({
                         opacity: 0.75,
                         src: properties.icon,
                         rotation: properties.orientation * Math.PI / 180
@@ -438,7 +468,7 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
                 });
                 markerFeature.setStyle(iconStyle);
             }
-            var id = "view-marker-" + OSH.Utils.randomUUID();
+            let id = "view-marker-" + randomUUID();
             markerFeature.setId(id);
             this.markers[id] = markerFeature;
             this.stylerToObj[styler.getId()] = id;
@@ -447,7 +477,7 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         } else {
             return this.stylerToObj[styler.getId()];
         }
-    },
+    }
 
 
     /**
@@ -457,31 +487,31 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
      * @instance
      * @memberof OSH.UI.OpenLayerView
      */
-    addPolyline: function (properties) {
-        var polylinePoints = [];
+    addPolyline(properties) {
+        let polylinePoints = [];
 
-        for (var i = 0; i < properties.locations.length; i++) {
-            polylinePoints.push(ol.proj.transform([properties.locations[i].x, properties.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+        for (let i = 0; i < properties.locations.length; i++) {
+            polylinePoints.push(transform([properties.locations[i].x, properties.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
         }
 
         //create path
-        var pathGeometry = new ol.geom.LineString(polylinePoints);
-        var feature = new ol.Feature({
+        let pathGeometry = new LineString(polylinePoints);
+        let feature = new Feature({
             geometry: pathGeometry,
             name: 'Line'
         });
-        var source = new ol.source.Vector({
+        let source = new VectorSource({
             features: [feature]
         });
 
-        var vectorPathLayer = new ol.layer.Vector({
+        let vectorPathLayer = new VectorLayer({
             title: properties.name,
             source: source,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
+            style: new Style({
+                fill: new Fill({
                     color: properties.color
                 }),
-                stroke: new ol.style.Stroke({
+                stroke: new Stroke({
                     color: properties.color,
                     width: properties.weight
                 })
@@ -489,20 +519,19 @@ OSH.UI.OpenLayerView = OSH.UI.View.extend({
         });
 
         this.map.addLayer(vectorPathLayer);
-        var id = "view-polyline-" + OSH.Utils.randomUUID();
+        let id = "view-polyline-" + randomUUID();
         this.polylines[id] = pathGeometry;
 
         return id;
-    },
+    }
 
     /**
      *
-     * @param $super
      * @instance
      * @memberof OSH.UI.LeafletView
      */
-    onResize:function($super) {
-        this._super();
+    onResize() {
+        super.onResize();
         this.map.updateSize();
-    },
-});
+    }
+}

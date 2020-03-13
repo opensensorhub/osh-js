@@ -14,77 +14,83 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import Styler from "./osh-UI-Styler.js";
+import {isDefined} from "../../osh-Utils.js";
+
 /**
  * @classdesc
  * @class OSH.UI.Styler.Curve
  * @type {OSH.UI.Style}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.Curve = OSH.UI.Styler.extend({
-	initialize : function(properties) {
-		this._super(properties);
-		this.xLabel = "";
-		this.yLabel = "";
-		this.color = "#000000";
-		this.stroke = 1;
-		this.x = 0;
-		this.y = [];
-		
-		if(typeof(properties.stroke) != "undefined"){
-			this.stroke = properties.stroke;
-		} 
-		
-		if(typeof(properties.color) != "undefined"){
-			this.color = properties.color;
-		} 
-		
-		if(typeof(properties.x) != "undefined"){
-			this.x = properties.x;
-		} 
-		
-		if(typeof(properties.y) != "undefined"){
-			this.y = properties.y;
-		} 
-		
-		if(typeof(properties.strokeFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.stroke = properties.strokeFunc.handler(rec,timeStamp,options);
-			}.bind(this);
-			this.addFn(properties.strokeFunc.dataSourceIds,fn);
-		}
-		
-		if(typeof(properties.colorFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.color = properties.colorFunc.handler(rec,timeStamp,options);
-			}.bind(this);
-			this.addFn(properties.colorFunc.dataSourceIds,fn);
-		}
-		
-		if(typeof(properties.valuesFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				var values = properties.valuesFunc.handler(rec,timeStamp,options);
-				this.x = values.x;
-				this.y = values.y;
-			}.bind(this);
-			this.addFn(properties.valuesFunc.dataSourceIds,fn);
-		}
-	},
+export default class Curve extends Styler {
+    constructor(properties) {
+        super(properties);
+        this.xLabel = "";
+        this.yLabel = "";
+        this.color = "#000000";
+        this.stroke = 1;
+        this.x = 0;
+        this.y = [];
 
-	/**
-	 * @param $super
-	 * @param dataSourceId
-	 * @param rec
-	 * @param view
-	 * @param options
-	 * @instance
-	 * @memberof OSH.UI.Styler.Curve
-	 */
-	setData: function(dataSourceId,rec,view,options) {
-		if(this._super(dataSourceId,rec,view,options)) {
-			//if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
-			if(typeof(view) != "undefined") {
-				view.updateCurve(this,rec.timeStamp,options);
-			}
-		}
-	}
-});
+        let that = this;
+
+        if (isDefined(properties.stroke)) {
+            this.stroke = properties.stroke;
+        }
+
+        if (isDefined(properties.color)) {
+            this.color = properties.color;
+        }
+
+        if (isDefined(properties.x)) {
+            this.x = properties.x;
+        }
+
+        if (isDefined(properties.y)) {
+            this.y = properties.y;
+        }
+
+        if (typeof (properties.strokeFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                that.stroke = properties.strokeFunc.handler(rec, timeStamp, options);
+            };
+            this.addFn(properties.strokeFunc.dataSourceIds, fn);
+        }
+
+        if (isDefined(properties.colorFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                that.color = properties.colorFunc.handler(rec, timeStamp, options);
+            };
+            this.addFn(properties.colorFunc.dataSourceIds, fn);
+        }
+
+        if (isDefined(properties.valuesFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                let values = properties.valuesFunc.handler(rec, timeStamp, options);
+                that.x = values.x;
+                that.y = values.y;
+            };
+            this.addFn(properties.valuesFunc.dataSourceIds, fn);
+        }
+    }
+
+    /**
+     * @param dataSourceId
+     * @param rec
+     * @param view
+     * @param options
+     * @instance
+     * @memberof OSH.UI.Styler.Curve
+     */
+    setData(dataSourceId, rec, view, options) {
+        if (super.setData(dataSourceId, rec, view, options)) {
+            //if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
+            if (isDefined(view)) {
+                view.updateCurve(this, rec.timeStamp, options);
+                return true;
+            }
+        }
+        return false;
+    }
+}

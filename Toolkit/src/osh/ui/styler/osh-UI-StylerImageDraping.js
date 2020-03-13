@@ -14,116 +14,110 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {isDefined} from "../../osh-Utils.js";
+
 /**
  * @classdesc
  * @class OSH.UI.Styler.ImageDraping
  * @type {OSH.UI.Styler}
  * @augments OSH.UI.Styler
  */
-OSH.UI.Styler.ImageDraping = OSH.UI.Styler.extend({
-	initialize : function(properties) {
-		this._super(properties);
-		this.properties = properties;
-		this.platformLocation = null;
-		this.platformOrientation = null;
-		this.gimbalOrientation = null;
-		this.cameraModel = null;
-		this.imageSrc = null;
-		this.snapshotFunc = null;
-		
-		this.options = {};
-		
-		if (typeof(properties.platformLocation) != "undefined"){
-			this.platformLocation = properties.platformLocation;
-		} 
-		
-		if (typeof(properties.platformOrientation) != "undefined"){
-			this.platformOrientation = properties.platformOrientation;
-		} 
-		
-		if (typeof(properties.gimbalOrientation) != "undefined"){
-			this.gimbalOrientation = properties.gimbalOrientation;
-		} 
-		
-		if (typeof(properties.cameraModel) != "undefined"){
-			this.cameraModel = properties.cameraModel;
-		}
-		
-		if (typeof(properties.imageSrc) != "undefined"){
-			this.imageSrc = properties.imageSrc;
-		} 
-		
-		if (typeof(properties.platformLocationFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.platformLocation = properties.platformLocationFunc.handler(rec,timeStamp,options);
-			}.bind(this);
-			this.addFn(properties.platformLocationFunc.dataSourceIds,fn);
-		}
-		
-		if (typeof(properties.platformOrientationFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.platformOrientation = properties.platformOrientationFunc.handler(rec,timeStamp,options);
-			}.bind(this);
-			this.addFn(properties.platformOrientationFunc.dataSourceIds,fn);
-		}
-		
-		if (typeof(properties.gimbalOrientationFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.gimbalOrientation = properties.gimbalOrientationFunc.handler(rec,timeStamp,options);
-			}.bind(this);
-			this.addFn(properties.gimbalOrientationFunc.dataSourceIds,fn);
-		}
-		
-		if (typeof(properties.cameraModelFunc) != "undefined") {
-			var fn = function(rec,timeStamp,options) {
-				this.cameraModel = properties.cameraModelFunc.handler(rec,timeStamp,options);
-			}.bind(this);
-			this.addFn(properties.cameraModelFunc.dataSourceIds,fn);
-		}
-		
-		if (typeof(properties.snapshotFunc) != "undefined") {
-			this.snapshotFunc = properties.snapshotFunc;
-		}
-	},
+export default class ImageDraping extends Styler {
+    constructor(properties) {
+        super(properties);
+        this.properties = properties;
+        this.platformLocation = null;
+        this.platformOrientation = null;
+        this.gimbalOrientation = null;
+        this.cameraModel = null;
+        this.imageSrc = null;
+        this.snapshotFunc = null;
 
-	/**
-	 *
-	 * @param $super
-	 * @param view
-	 * @memberof  OSH.UI.Styler.ImageDraping
-	 * @instance
-	 */
-	init: function(view) {
-		this._super(view);
-	},
+        this.options = {};
+        var that = this;
 
-	/**
-	 *
-	 * @param $super
-	 * @param dataSourceId
-	 * @param rec
-	 * @param view
-	 * @param options
-	 * @memberof  OSH.UI.Styler.ImageDraping
-	 * @instance
-	 */
-	setData: function(dataSourceId,rec,view,options) {
-		if (this._super(dataSourceId,rec,view,options)) {
-			
-			var enabled = true;
-			var snapshot = false;
-			if (this.snapshotFunc != null)
-			    snapshot = this.snapshotFunc();
-			
-			if (typeof(view) != "undefined" && enabled &&
-				this.platformLocation != null &&
-				this.platformOrientation != null &&
-				this.gimbalOrientation != null &&
-				this.cameraModel != null &&
-				this.imageSrc != null) {
-				    view.updateDrapedImage(this,rec.timeStamp,options,snapshot);
-			}
-		}
-	}
+        if (isDefined(properties.platformLocation)) {
+            this.platformLocation = properties.platformLocation;
+        }
 
-});
+        if (isDefined(properties.platformOrientation)) {
+            this.platformOrientation = properties.platformOrientation;
+        }
+
+        if (isDefined(properties.gimbalOrientation)) {
+            this.gimbalOrientation = properties.gimbalOrientation;
+        }
+
+        if (isDefined(properties.cameraModel)) {
+            this.cameraModel = properties.cameraModel;
+        }
+
+        if (isDefined(properties.imageSrc)) {
+            this.imageSrc = properties.imageSrc;
+        }
+
+        if (isDefined(properties.platformLocationFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                that.platformLocation = properties.platformLocationFunc.handler(rec, timeStamp, options);
+            };
+            this.addFn(properties.platformLocationFunc.dataSourceIds, fn);
+        }
+
+        if (isDefined(properties.platformOrientationFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                that.platformOrientation = properties.platformOrientationFunc.handler(rec, timeStamp, options);
+            };
+            this.addFn(properties.platformOrientationFunc.dataSourceIds, fn);
+        }
+
+        if (isDefined(properties.gimbalOrientationFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                that.gimbalOrientation = properties.gimbalOrientationFunc.handler(rec, timeStamp, options);
+            };
+            this.addFn(properties.gimbalOrientationFunc.dataSourceIds, fn);
+        }
+
+        if (isDefined(properties.cameraModelFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                that.cameraModel = properties.cameraModelFunc.handler(rec, timeStamp, options);
+            };
+            this.addFn(properties.cameraModelFunc.dataSourceIds, fn);
+        }
+
+        if (isDefined(properties.snapshotFunc)) {
+            this.snapshotFunc = properties.snapshotFunc;
+        }
+    }
+
+    /**
+     *
+     * @param $super
+     * @param dataSourceId
+     * @param rec
+     * @param view
+     * @param options
+     * @memberof  OSH.UI.Styler.ImageDraping
+     * @instance
+     */
+    setData(dataSourceId, rec, view, options) {
+        if (super.setData(dataSourceId, rec, view, options)) {
+
+            let enabled = true;
+            let snapshot = false;
+            if (this.snapshotFunc !== null) {
+                snapshot = this.snapshotFunc();
+            }
+
+            if (isDefined(view) && enabled &&
+                this.platformLocation !== null &&
+                this.platformOrientation !== null &&
+                this.gimbalOrientation !== null &&
+                this.cameraModel !== null &&
+                this.imageSrc !== null) {
+                view.updateDrapedImage(this, rec.timeStamp, options, snapshot);
+                return true;
+            }
+        }
+        return false;
+    }
+}
