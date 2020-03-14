@@ -240,57 +240,57 @@ export default class View {
             styler.viewItem = viewItem;
             styler.init(this);
             this.stylerIdToStyler[styler.id] = styler;
-        }
-        if (viewItem.hasOwnProperty("contextmenu")) {
-            this.contextMenus.push(viewItem.contextmenu);
-        }
-        //for(let dataSourceId in styler.dataSourceToStylerMap) {
-        let ds = styler.getDataSourcesIds();
-        for (let i = 0; i < ds.length; i++) {
-            let dataSourceId = ds[i];
-            // observes the data come in
-            let self = this;
-            (function (frozenDataSourceId) { // use a close here to no share the dataSourceId letiable
+            if (viewItem.hasOwnProperty("contextmenu")) {
+                this.contextMenus.push(viewItem.contextmenu);
+            }
+            //for(let dataSourceId in styler.dataSourceToStylerMap) {
+            let ds = styler.getDataSourcesIds();
+            for (let i = 0; i < ds.length; i++) {
+                let dataSourceId = ds[i];
+                // observes the data come in
+                let self = this;
+                (function (frozenDataSourceId) { // use a close here to no share the dataSourceId letiable
 
-                EventManager.observe(EventManager.EVENT.DATA + "-" + frozenDataSourceId, (event) => {
+                    EventManager.observe(EventManager.EVENT.DATA + "-" + frozenDataSourceId, (event) => {
 
-                    // skip data reset events for now
-                    if (event.reset) {
-                        return;
-                    }
+                        // skip data reset events for now
+                        if (event.reset) {
+                            return;
+                        }
 
-                    // we check selected dataSource only when the selected entity is not set
-                    let selected = false;
-                    if (isDefined(self.selectedEntity)) {
-                        selected = (viewItem.entityId === self.selectedEntity);
-                    } else {
-                        selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
-                    }
+                        // we check selected dataSource only when the selected entity is not set
+                        let selected = false;
+                        if (isDefined(self.selectedEntity)) {
+                            selected = (viewItem.entityId === self.selectedEntity);
+                        } else {
+                            selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
+                        }
 
-                    //TODO: maybe done into the styler?
-                    styler.setData(frozenDataSourceId, event.data, self, {
-                        selected: selected
-                    });
-                    self.lastRec[frozenDataSourceId] = event.data;
-                });
-
-                EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
-                    // we check selected dataSource only when the selected entity is not set
-                    let selected = false;
-                    if (isDefined(event.entityId)) {
-                        selected = (viewItem.entityId === event.entityId);
-                    } else {
-                        selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
-                    }
-
-                    if (frozenDataSourceId in self.lastRec) {
-                        styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
+                        //TODO: maybe done into the styler?
+                        styler.setData(frozenDataSourceId, event.data, self, {
                             selected: selected
                         });
-                    }
-                });
+                        self.lastRec[frozenDataSourceId] = event.data;
+                    });
 
-            })(dataSourceId); //passing the letiable to freeze, creating a new closure
+                    EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
+                        // we check selected dataSource only when the selected entity is not set
+                        let selected = false;
+                        if (isDefined(event.entityId)) {
+                            selected = (viewItem.entityId === event.entityId);
+                        } else {
+                            selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
+                        }
+
+                        if (frozenDataSourceId in self.lastRec) {
+                            styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
+                                selected: selected
+                            });
+                        }
+                    });
+
+                })(dataSourceId); //passing the letiable to freeze, creating a new closure
+            }
         }
     }
 

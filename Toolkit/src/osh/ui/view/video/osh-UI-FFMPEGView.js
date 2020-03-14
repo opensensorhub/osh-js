@@ -13,6 +13,7 @@ import View from "../osh-UI-View.js";
 import {isDefined, isWebWorker} from "../../../osh-Utils.js";
 import YUVCanvas from "../../../../../vendor-local/yuvcanvas/YUVCanvas.js";
 import EventManager from "../../../osh-EventManager.js";
+import {BASE_WORKER_URL} from "../../../osh-Constants.js";
 
 /**
  * @classdesc
@@ -255,7 +256,7 @@ export default class FFMPEGView extends View {
      * @param callback
      */
     initFFMPEG_DECODER_WORKER(callback) {
-        this.worker = new Worker('js/workers/osh-UI-FFMPEGViewWorker.js');
+        this.worker = new Worker(BASE_WORKER_URL.path+'/osh-UI-FFMPEGViewWorker.js');
         let yuvCanvas = this.yuvCanvas;
 
         let buffer = [];

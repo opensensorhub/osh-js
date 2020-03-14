@@ -123,7 +123,7 @@ export default class Styler {
      */
     getDataSourcesIds() {
         let res = [];
-        for (let i of this.dataSourceToStylerMap) {
+        for (let i in this.dataSourceToStylerMap) {
             res.push(i);
         }
         return res;

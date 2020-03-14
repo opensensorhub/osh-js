@@ -18,7 +18,7 @@ import View from "../osh-UI-View.js";
 import {isDefined} from "../../../osh-Utils.js";
 import {randomUUID} from "../../../osh-Utils.js";
 import EventManager from "../../../osh-EventManager.js";
-import {Marker, LatLng, Map, tileLayer, icon, marker, point, Polyline} from "leaflet";
+import L from 'leaflet';
 
 /**
  * @classdesc
@@ -104,7 +104,7 @@ export default class LeafletView extends View {
     initMap(options) {
 
         let initialView = {
-            location: new LatLng(0, 0),
+            location: new L.LatLng(0, 0),
             zoom: 3
         };
         this.first = true;
@@ -121,7 +121,7 @@ export default class LeafletView extends View {
         if (isDefined(options)) {
             if (options.initialView) {
                 initialView = {
-                    location: new LatLng(options.initialView.lat, options.initialView.lon),
+                    location: new L.LatLng(options.initialView.lat, options.initialView.lon),
                     zoom: options.initialView.zoom
                 };
             }
@@ -147,12 +147,12 @@ export default class LeafletView extends View {
         }
 
         // sets layers to map
-        this.map = new Map(this.divId, {
+        this.map = new L.Map(this.divId, {
             fullscreenControl: true,
             layers: defaultLayer
         });
 
-        layers(baseLayers, overlays).addTo(this.map);
+        L.control.layers(baseLayers, overlays).addTo(this.map);
 
         this.map.setView(initialView.location, initialView.zoom);
         //this.initLayers();
@@ -183,14 +183,14 @@ export default class LeafletView extends View {
         let esriWholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 
         // leaflet layers
-        let esriLayer = tileLayer(
+        let esriLayer = L.tileLayer(
             'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; ' + esriLink + ', ' + esriWholink,
                 maxZoom: maxZoom,
                 maxNativeZoom: 19
             });
 
-        let streets = tileLayer(mbUrl, {id: 'mapbox.streets', attribution: mbAttr, maxZoom: maxZoom});
+        let streets = L.tileLayer(mbUrl, {id: 'mapbox.streets', attribution: mbAttr, maxZoom: maxZoom});
 
         return [{
             name: "OSM Streets",
@@ -209,7 +209,7 @@ export default class LeafletView extends View {
         // create the tile layer with correct attribution
         let osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         let osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        let osm = new tileLayer(osmUrl, {
+        let osm = new L.tileLayer(osmUrl, {
             minZoom: 1,
             maxZoom: 22,
             attribution: osmAttrib
@@ -222,16 +222,16 @@ export default class LeafletView extends View {
         //create marker
         let marker = null;
         if (properties.icon !== null) {
-            let markerIcon = icon({
+            let markerIcon = L.icon({
                 iconAnchor: properties.iconAnchor,
                 iconUrl: properties.icon
             });
 
-            marker = marker([properties.lat, properties.lon], {
+            marker = L.marker([properties.lat, properties.lon], {
                 icon: markerIcon
             });
         } else {
-            marker = marker([properties.lat, properties.lon]);
+            marker = L.marker([properties.lat, properties.lon]);
         }
 
         if (properties.label !== null) {
@@ -255,7 +255,7 @@ export default class LeafletView extends View {
         this.markers[id] = marker;
 
         if (this.first === true) {
-          this.map.setView(new LatLng(properties.lat, properties.lon), 19);
+          this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
           this.first = false;
         }
         let self = this;
@@ -321,11 +321,11 @@ export default class LeafletView extends View {
         let polylinePoints = [];
 
         for (let i = 0; i < properties.locations.length; i++) {
-            polylinePoints.push(new LatLng(properties.locations[i].y, properties.locations[i].x));
+            polylinePoints.push(new L.LatLng(properties.locations[i].y, properties.locations[i].x));
         }
 
         //create path
-        let polyline = new Polyline(polylinePoints, {
+        let polyline = new L.Polyline(polylinePoints, {
             color: properties.color,
             weight: properties.weight,
             opacity: properties.opacity,
@@ -373,7 +373,7 @@ export default class LeafletView extends View {
         let lat = styler.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
-            let newLatLng = new LatLng(lat, lon);
+            let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
         }
 
@@ -385,7 +385,7 @@ export default class LeafletView extends View {
 
         if (styler.icon !== null && marker._icon.iconUrl !== styler.icon) {
             // updates icon
-            let markerIcon = icon({
+            let markerIcon = L.icon({
                 iconAnchor: styler.iconAnchor,
                 iconUrl: styler.icon
             });
@@ -426,11 +426,11 @@ export default class LeafletView extends View {
 
             let polylinePoints = [];
             for (let i = 0; i < styler.locations.length; i++) {
-                polylinePoints.push(new LatLng(styler.locations[i].y, styler.locations[i].x));
+                polylinePoints.push(new L.LatLng(styler.locations[i].y, styler.locations[i].x));
             }
 
             //create path
-            polyline = new Polyline(polylinePoints, {
+            polyline = new L.Polyline(polylinePoints, {
                 color: styler.color,
                 weight: styler.weight,
                 opacity: styler.opacity,
@@ -466,7 +466,7 @@ export default class LeafletView extends View {
 
 /***  little hack starts here ***/
 
-Map.extend({
+L.Map = L.Map.extend({
     openPopup: function (popup) {
         this._popup = popup;
         return this.addLayer(popup).fire('popupopen', {
@@ -483,7 +483,7 @@ Map.extend({
 
     let oldIE = (L.DomUtil.TRANSFORM === 'msTransform');
 
-    Marker.addInitHook(function () {
+    L.Marker.addInitHook(function () {
         let iconAnchor = this.options.icon.options.iconAnchor;
         if (iconAnchor) {
             iconAnchor = (iconAnchor[0] + 'px ' + iconAnchor[1] + 'px');
@@ -492,7 +492,7 @@ Map.extend({
         this.options.rotationAngle = this.options.rotationAngle || 0;
     });
 
-    Marker.include({
+    L.Marker.include({
         _initIcon: function () {
             proto_initIcon.call(this);
         },

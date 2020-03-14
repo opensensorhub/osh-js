@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {assertArray, assertObject, assertPositive, assertString, hasValue, isDefined} from "../../osh-Utils.js";
+import Styler from "./osh-UI-Styler.js";
 
 /**
  * @classdesc

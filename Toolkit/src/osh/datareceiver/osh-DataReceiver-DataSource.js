@@ -30,6 +30,7 @@
 import {randomUUID, isDefined} from '../osh-Utils.js';
 import WebSocketDataConnector from "../dataconnector/osh-DataConnector-Websocket.js";
 import AjaxConnector from "../dataconnector/osh-DataConnector-HttpAjaxConnector.js";
+import EventManager from "../osh-EventManager";
 
 export default class DataSource {
     constructor(name, properties) {
@@ -95,7 +96,7 @@ export default class DataSource {
         this.connected = false;
 
         // send data reset event
-        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA + "-" + this.id, {
+        EventManager.fire(EventManager.EVENT.DATA + "-" + this.id, {
             dataSourceId: this.id,
             reset: true
         });
@@ -159,7 +160,7 @@ export default class DataSource {
      * };
      */
     onData(data) {
-        OSH.EventManager.fire(OSH.EventManager.EVENT.DATA + "-" + this.id, {data: data});
+        EventManager.fire(EventManager.EVENT.DATA + "-" + this.id, {data: data});
     }
 
     /**
