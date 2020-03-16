@@ -13,11 +13,14 @@
             width: 100%;
         }
     </style>
-    <script>
+    <script type="module">
         //@ sourceURL=video-mjpeg.html.js
 
         // create data source for Android phone camera
-        var videoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
+        import {VideoMjpeg} from "../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js";
+        import MjpegView from "../../Toolkit/src/osh/ui/view/video/osh-UI-MjpegView.js";
+
+        var videoDataSource = new VideoMjpeg("android-Video", {
             protocol: "ws",
             service: "SOS",
             endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -29,7 +32,7 @@
         });
 
         // show it in video view
-        var videoView = new OSH.UI.MjpegView("video-container", {
+        var videoView = new MjpegView("video-container", {
             dataSourceId: videoDataSource.id,
             css: "video-mjpeg",
             name: "Android Video",

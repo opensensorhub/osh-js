@@ -28,13 +28,17 @@ var videoView = new OSH.UI.MjpegView("containerId", {
     name: "Video"
 });
  */
-OSH.UI.MjpegView = OSH.UI.View.extend({
-  initialize: function(parentElementDivId,options) {
-    this._super(parentElementDivId,[],options);
+import View from "../osh-UI-View.js";
+import {isDefined} from "../../../osh-Utils.js";
+import EventManager from "../../../osh-EventManager.js";
+
+export default class MjpegView extends View {
+  constructor(parentElementDivId,options) {
+    super(parentElementDivId,[],options);
 
     // create timestamp slot
     this.timeStamp = null;
-    if (typeof(options.showTime) != "undefined" && options.showTime) { 
+    if (isDefined(options.showTime) && options.showTime) {
         this.timeStamp = document.createElement("div");
         this.timeStamp.setAttribute("class", "video-time");
         document.getElementById(this.divId).appendChild(this.timeStamp);
@@ -61,14 +65,14 @@ OSH.UI.MjpegView = OSH.UI.View.extend({
     }
 
     // adds listener
-    var self = this;
-    OSH.EventManager.observeDiv(this.divId,"click",function(event){
-      OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+    let self = this;
+    EventManager.observeDiv(this.divId,"click",(event) => {
+      EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
         dataSourcesIds: [self.dataSourceId],
         entityId : self.entityId
       });
     });
-  },
+  }
 
   /**
    *
@@ -78,13 +82,14 @@ OSH.UI.MjpegView = OSH.UI.View.extend({
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  setData: function(dataSourceId,data) {
-      var oldBlobURL = this.imgTag.src;
+  setData(dataSourceId,data) {
+      let oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
-      if (this.timeStamp != null)
-          this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString(); 
+      if (this.timeStamp !== null) {
+          this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString();
+      }
       window.URL.revokeObjectURL(oldBlobURL);
-  },
+  }
 
   /**
    *
@@ -94,20 +99,20 @@ OSH.UI.MjpegView = OSH.UI.View.extend({
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  selectDataView: function(dataSourceIds,entityId) {
-    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (typeof this.entityId != "undefined") && this.entityId == entityId) {
+  selectDataView(dataSourceIds,entityId) {
+    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId)) && this.entityId === entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {
       document.getElementById(this.divId).setAttribute("class",this.css);
     }
-  },
+  }
 
   /**
    * @instance
    * @memberof OSH.UI.MjpegView
    */
-  reset: function() {
+  reset() {
       this.imgTag.src = "";
   }
-});
+}
 

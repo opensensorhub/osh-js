@@ -1,10 +1,15 @@
 <div>
     <div id="ol-map" style="height:100%; width:100%"></div>
 
-    <script>
-        
+    <script type="module">
+
         // create data source for Android phone GPS
-        var gpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
+        import JSON from "../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js";
+        import PointMarker from "../../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker.js";
+        import OpenLayerView from "../../Toolkit/src/osh/ui/view/map/osh-UI-OpenLayerView.js";
+
+        // create data source for Android phone GPS
+        var gpsDataSource = new JSON("android-GPS", {
             protocol: "ws",
             service: "SOS",
             endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -16,7 +21,7 @@
         });
 
         // style it with a moving point marker
-        var pointMarker = new OSH.UI.Styler.PointMarker({
+        var pointMarker = new PointMarker({
             locationFunc: {
                 dataSourceIds: [gpsDataSource.getId()],
                 handler: function (rec) {
@@ -34,7 +39,7 @@
         });
 
         // create Cesium view
-        var olView = new OSH.UI.OpenLayerView("ol-map",
+        var olView = new OpenLayerView("ol-map",
             [{
                 styler: pointMarker,
                 name: "Android Phone GPS"

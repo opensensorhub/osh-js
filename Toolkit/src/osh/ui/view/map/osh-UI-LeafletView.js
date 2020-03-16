@@ -19,6 +19,7 @@ import {isDefined} from "../../../osh-Utils.js";
 import {randomUUID} from "../../../osh-Utils.js";
 import EventManager from "../../../osh-EventManager.js";
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 /**
  * @classdesc

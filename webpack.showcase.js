@@ -2,27 +2,32 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let config = {
-    entry: "./Showcase/index.js",
+    entry: ["./Showcase/samples/leaflet-location.js"],
     output: {
         path: path.resolve(__dirname, "./public"),
         filename: "./bundle.js"
     },
     module: {
-        rules: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: "babel-loader"
-        }]
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    'file-loader',
+                ],
+            },
+        ],
     },
     plugins: [
         new HtmlWebpackPlugin({
             title: 'OSH',
-            template: './Showcase/index.html'
+            template: './Showcase/samples/leaflet-location.html'
         })
     ],
     devServer: {
-        contentBase: [path.join(__dirname, "Showcase"),path.join(__dirname, "."),path.join(__dirname, "Showcase/samples")],
-        publicPath: '/',
         hot: true,
     },
 };

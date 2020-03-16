@@ -30,7 +30,7 @@
 import {randomUUID, isDefined} from '../osh-Utils.js';
 import WebSocketDataConnector from "../dataconnector/osh-DataConnector-Websocket.js";
 import AjaxConnector from "../dataconnector/osh-DataConnector-HttpAjaxConnector.js";
-import EventManager from "../osh-EventManager";
+import EventManager from "../osh-EventManager.js";
 
 export default class DataSource {
     constructor(name, properties) {

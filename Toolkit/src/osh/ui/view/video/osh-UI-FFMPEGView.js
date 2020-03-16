@@ -261,7 +261,6 @@ export default class FFMPEGView extends View {
 
         let buffer = [];
         this.worker.onmessage = function (e) {
-            console.log(e);
             if (this.bufferring > 0) {
                 buffer.push(e);
             } else {
