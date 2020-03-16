@@ -14,40 +14,41 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../osh-UI-View.js";
+import {View as OshView} from "../osh-UI-View.js";
 import {isDefined} from "../../../osh-Utils.js";
 import EventManager from "../../../osh-EventManager.js";
 import {transform} from 'ol/proj.js';
-import Style from "ol/style/Style.js";
-import Stroke from "ol/style/Style.js";
-import Icon from "ol/style/Icon.js";
-import {View as OlView} from "ol/View.js";
-import Map from "ol/Map.js";
-import ZoomSlider from "ol/control/ZoomSlider";
+import View from "ol/View.js";
+import {defaults} from "ol/control.js";
+import mouseMove from "ol/events/condition.js";
+import Select from "ol/interaction/Select.js";
+import {defaults as defaultInteraction} from "ol/interaction.js";
+import {Group} from "ol/layer.js";
+import Tile from "ol/Tile.js";
+import OSM from "ol/source/OSM.js";
+import {Point} from "ol/geom.js";
+import Feature from "ol/Feature.js";
+import {Vector as VectorLayer} from "ol/layer.js";
+import {Vector as VectorSource} from "ol/source.js";
+import {getXCursorPosition, getYCursorPosition, randomUUID} from "../../../osh-Utils.js";
+import LineString from "ol/geom/LineString.js";
+import Fill from "ol/style/Fill.js";
+import ZoomSlider from "ol/control/ZoomSlider.js";
 import Rotate from "ol/control/Rotate";
 import ScaleLine from "ol/control/ScaleLine";
-import {defaults} from "ol/control";
-import mouseMove from "ol/events/condition";
-import Select from "ol/interaction/Select";
-import {defaults as defaultInteraction} from "ol/interaction";
-import {Group} from "ol/layer";
-import LayerSwitcher from "ol-layerswitcher/src/ol-layerswitcher";
-import Tile from "ol/Tile";
-import OSM from "ol/source/OSM";
-import {Point} from "ol/geom";
-import Feature from "ol/Feature";
-import {Vector as VectorLayer} from "ol/layer";
-import {Vector as VectorSource} from "ol/source";
-import {getXCursorPosition, getYCursorPosition, randomUUID} from "../../../osh-Utils";
-import LineString from "ol/geom/LineString";
-import Fill from "ol/style/Fill";
+import Map from 'ol/Map';
+import TileLayer from 'ol/layer/Tile';
+import Style from 'ol/style/Style.js';
+import  Icon from 'ol/style/Icon.js';
+import LayerSwitcher from 'ol-layerswitcher/dist/ol-layerswitcher.js';
+
 /**
  * @classdesc
  * @class
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  */
-export default class OpenLayerView extends View {
+export default class OpenLayerView extends OshView {
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
         this.onResize();
@@ -65,9 +66,9 @@ export default class OpenLayerView extends View {
         this.initMap(options);
 
         //events will NOT automatically be added to the map, if one is provided by the user
-        if(isDefined(options) || !options.map) {
-            this.initEvents();
-        }
+        // if(isDefined(options) || !options.map) {
+        //     this.initEvents();
+        // }
     }
 
 
@@ -254,7 +255,7 @@ export default class OpenLayerView extends View {
                 maxZoom = options.maxZoom;
             }
             if (options.initialView) {
-                initialView = new OlView({
+                initialView = new View({
                     center: transform([options.initialView.lon, options.initialView.lat], 'EPSG:4326', 'EPSG:900913'),
                     zoom: options.initialView.zoom,
                     maxZoom: maxZoom
@@ -281,16 +282,18 @@ export default class OpenLayerView extends View {
             }
         } else {
             // loads the default one
-            initialView = new OlView({
+            initialView = new View({
                 center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
                 zoom: 11,
                 maxZoom: maxZoom
             });
+
         }
 
+        console.log(initialView);
         // sets layers to map
         //create map
-        this.map = new Map({
+       this.map = new Map({
             target: this.divId,
             controls: defaults({
                 attributionOptions: ({
@@ -329,26 +332,26 @@ export default class OpenLayerView extends View {
         this.map.addControl(layerSwitcher);
 
         // inits onClick events
-        let select_interaction = new Select();
-
-        let self = this;
-        select_interaction.getFeatures().on("add", function (e) {
-            let feature = e.element; //the feature selected
-            let dataSourcesIds = [];
-            let entityId;
-            for (let stylerId in self.stylerToObj) {
-                if (self.stylerToObj[stylerId] == feature.getId()) {
-                    let styler = self.stylerIdToStyler[stylerId];
-                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                        entityId : styler.viewItem.entityId
-                    });
-                    break;
-                }
-            }
-        });
-
-        this.map.addInteraction(select_interaction);
+        // let select_interaction = new Select();
+        //
+        // let self = this;
+        // select_interaction.getFeatures().on("add", function (e) {
+        //     let feature = e.element; //the feature selected
+        //     let dataSourcesIds = [];
+        //     let entityId;
+        //     for (let stylerId in self.stylerToObj) {
+        //         if (self.stylerToObj[stylerId] == feature.getId()) {
+        //             let styler = self.stylerIdToStyler[stylerId];
+        //             EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
+        //                 dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
+        //                 entityId : styler.viewItem.entityId
+        //             });
+        //             break;
+        //         }
+        //     }
+        // });
+        //
+        // this.map.addInteraction(select_interaction);
     }
 
     /**

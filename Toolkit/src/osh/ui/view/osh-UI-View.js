@@ -25,7 +25,7 @@
 import {isDefined, randomUUID} from '../../osh-Utils.js';
 import EventManager from '../../osh-EventManager.js';
 
-export default class View {
+export class View {
     constructor(parentElementDivId, viewItems, options) {
         // list of stylers
         this.stylers = [];

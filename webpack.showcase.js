@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let config = {
-    entry: ["./Showcase/samples/leaflet-location.js"],
+    entry: ["./Showcase/samples/openlayers-location.js"],
     output: {
         path: path.resolve(__dirname, "./public"),
         filename: "./bundle.js"
@@ -24,7 +24,7 @@ let config = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'OSH',
-            template: './Showcase/samples/leaflet-location.html'
+            template: './Showcase/samples/openlayers-location.html'
         })
     ],
     devServer: {
