@@ -16,31 +16,29 @@
 
 import {View as OshView} from "../osh-UI-View.js";
 import {isDefined} from "../../../osh-Utils.js";
-import EventManager from "../../../osh-EventManager.js";
-import {transform} from 'ol/proj.js';
-import View from "ol/View.js";
-import {defaults} from "ol/control.js";
-import mouseMove from "ol/events/condition.js";
-import Select from "ol/interaction/Select.js";
-import {defaults as defaultInteraction} from "ol/interaction.js";
-import {Group} from "ol/layer.js";
-import Tile from "ol/Tile.js";
-import OSM from "ol/source/OSM.js";
-import {Point} from "ol/geom.js";
-import Feature from "ol/Feature.js";
-import {Vector as VectorLayer} from "ol/layer.js";
-import {Vector as VectorSource} from "ol/source.js";
-import {getXCursorPosition, getYCursorPosition, randomUUID} from "../../../osh-Utils.js";
-import LineString from "ol/geom/LineString.js";
-import Fill from "ol/style/Fill.js";
-import ZoomSlider from "ol/control/ZoomSlider.js";
+import 'ol/css.js';
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import Rotate from "ol/control/Rotate";
 import ScaleLine from "ol/control/ScaleLine";
-import Map from 'ol/Map';
-import TileLayer from 'ol/layer/Tile';
-import Style from 'ol/style/Style.js';
-import  Icon from 'ol/style/Icon.js';
-import LayerSwitcher from 'ol-layerswitcher/dist/ol-layerswitcher.js';
+import {Group} from "ol/layer";
+import {transform} from "ol/proj";
+import {defaults} from "ol/control.js";
+import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction';
+import {defaults as defaultControls, FullScreen} from 'ol/control';
+import {ZoomSlider} from 'ol/control';
+import VectorSource from "ol/source/Vector";
+import VectorLayer from "ol/layer/Vector";
+import {randomUUID} from "../../../osh-Utils";
+import Point from 'ol/geom/Point';
+import Feature from 'ol/Feature';
+import {Icon, Style} from 'ol/style';
+import EventManager from "../../../osh-EventManager";
+import Select from "ol/interaction/Select";
 
 /**
  * @classdesc
@@ -56,7 +54,6 @@ export default class OpenLayerView extends OshView {
 
     /**
      *
-     * @param $super
      * @param options
      * @instance
      * @memberof OSH.UI.OpenLayerView
@@ -64,11 +61,6 @@ export default class OpenLayerView extends OshView {
     beforeAddingItems(options) {
         // inits the map
         this.initMap(options);
-
-        //events will NOT automatically be added to the map, if one is provided by the user
-        // if(isDefined(options) || !options.map) {
-        //     this.initEvents();
-        // }
     }
 
 
@@ -77,63 +69,6 @@ export default class OpenLayerView extends OshView {
      * @memberof OSH.UI.OpenLayerView
      */
     initEvents() {
-        // removes default right click
-        document.getElementById(this.divId).oncontextmenu = (e) => {
-            let evt = new Object({keyCode: 93});
-            if (isDefined(e.preventDefault)) {
-                e.preventDefault();
-            }
-            if (isDefined(e.stopPropagation)) {
-                e.stopPropagation();
-            }
-        };
-
-        let self = this;
-
-        this.map.getViewport().addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-
-            let feature = self.map.forEachFeatureAtPixel(self.map.getEventPixel(e),
-                function (feature, layer) {
-                    return feature;
-                });
-            if (feature) {
-                let id = feature.ha;
-
-                // gets the corresponding styler
-                for(let stylerId in self.stylerToObj) {
-                    if(self.stylerToObj[stylerId] === id) {
-                        EventManager.fire(EventManager.EVENT.CONTEXT_MENU+"-"+self.stylerIdToStyler[stylerId].viewItem.contextMenuId,{
-                            //TODO: values have to be provided by properties
-                            offsetX: -70,
-                            offsetY: -70,
-                            action : "show",
-                            x:getXCursorPosition(),
-                            y:getYCursorPosition()
-                        });
-                        break;
-                    }
-                }
-            }
-        });
-
-        this.map.on("click", (e) => {
-            self.map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-                let id = feature.ha;
-                let dataSourcesIds = [];
-                let entityId;
-                for (let stylerId in self.stylerToObj) {
-                    if (self.stylerToObj[stylerId] === id) {
-                        let styler = self.stylerIdToStyler[stylerId];
-                        EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-                            dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                            entityId : styler.viewItem.entityId
-                        });
-                        break;
-                    }
-                }
-            });
-        });
     }
 
     /**
@@ -233,6 +168,7 @@ export default class OpenLayerView extends OshView {
      */
     initMap(options) {
 
+        this.map = null;
         let initialView = null;
         this.first = true;
         let overlays = [];
@@ -290,27 +226,16 @@ export default class OpenLayerView extends OshView {
 
         }
 
-        console.log(initialView);
         // sets layers to map
         //create map
        this.map = new Map({
             target: this.divId,
-            controls: defaults({
-                attributionOptions: ({
-                    collapsible: false
-                })
-            }).extend([
-                new ZoomSlider(),
-                new Rotate(),
-                new ScaleLine(),
+            controls: defaultControls().extend([
+                new FullScreen()
             ]),
-            // interactions and controls are seperate entities in ol3
-            // we extend the default navigation with a hover select interaction
-            interactions: defaultInteraction().extend([
-                new Select({
-                    condition: mouseMove
-                })
-            ]),
+           interactions: defaultInteractions().extend([
+               new DragRotateAndZoom()
+           ]),
             layers: [
                 new Group({
                     'title': 'Base maps',
@@ -325,33 +250,29 @@ export default class OpenLayerView extends OshView {
 
         });
 
-        let layerSwitcher = new LayerSwitcher({
-            tipLabel: 'Layers' // Optional label for button
-        });
-
-        this.map.addControl(layerSwitcher);
+        this.map.addControl( new ZoomSlider());
 
         // inits onClick events
-        // let select_interaction = new Select();
-        //
-        // let self = this;
-        // select_interaction.getFeatures().on("add", function (e) {
-        //     let feature = e.element; //the feature selected
-        //     let dataSourcesIds = [];
-        //     let entityId;
-        //     for (let stylerId in self.stylerToObj) {
-        //         if (self.stylerToObj[stylerId] == feature.getId()) {
-        //             let styler = self.stylerIdToStyler[stylerId];
-        //             EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-        //                 dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-        //                 entityId : styler.viewItem.entityId
-        //             });
-        //             break;
-        //         }
-        //     }
-        // });
-        //
-        // this.map.addInteraction(select_interaction);
+        let select_interaction = new Select();
+
+        let self = this;
+        select_interaction.getFeatures().on("add", function (e) {
+            let feature = e.element; //the feature selected
+            let dataSourcesIds = [];
+            let entityId;
+            for (let stylerId in self.stylerToObj) {
+                if (self.stylerToObj[stylerId] === feature.getId()) {
+                    let styler = self.stylerIdToStyler[stylerId];
+                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
+                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
+                        entityId : styler.viewItem.entityId
+                    });
+                    break;
+                }
+            }
+        });
+
+        this.map.addInteraction(select_interaction);
     }
 
     /**
@@ -372,11 +293,10 @@ export default class OpenLayerView extends OshView {
      * @memberof OSH.UI.OpenLayerView
      */
     getDefaultLayers() {
-        let osm = new Tile({
-            title: 'OSM',
-            type: 'base',
-            visible: true,
-            source: new OSM()
+        let osm = new TileLayer({
+            source: new XYZ({
+                url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            })
         });
         return [osm];
     }
@@ -390,47 +310,61 @@ export default class OpenLayerView extends OshView {
      */
     addMarker(properties) {
         //create marker
-        let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-        let markerFeature = new Feature({
-            geometry: marker,
-            name: 'Marker' //TODO
-        });
+        if(isDefined(this.map) &&  this.map !== null) {
+            console.log(properties);
 
-        if (properties.icon !== null) {
-            let iconStyle = new Style({
-                image: new Icon({
-                    opacity: 0.75,
-                    src: properties.icon,
-                    rotation: properties.orientation * Math.PI / 180
-                })
-            });
-            markerFeature.setStyle(iconStyle);
-        }
-
-
-        //TODO:for selected marker event
-        //this.marker.on('click',this.onClick.bind(this));
-        let vectorMarkerLayer =
-            new VectorLayer({
-                title: properties.name,
-                source: new VectorSource({
-                    features: [markerFeature]
-                })
+            let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            let markerFeature = new Feature({
+                geometry: marker,
+                name: 'Marker' //TODO
             });
 
-        this.map.addLayer(vectorMarkerLayer);
+            let style = {
+                symbol: {
+                    symbolType: 'image',
+                    size: [16, 16],
+                    color: 'lightyellow',
+                    rotateWithView: false,
+                    offset: [0, 9]
+                }
+            };
 
-        let id = "view-marker-" + randomUUID();
-        markerFeature.setId(id);
-        this.markers[id] = markerFeature;
+            if (isDefined(properties.icon) && properties.icon !== null) {
+                let iconStyle = new Style({
+                    image: new Icon({
+                        opacity: 0.75,
+                        src: properties.icon,
+                        rotation: properties.orientation * Math.PI / 180
+                    }),
+                });
+                markerFeature.setStyle(iconStyle);
+            }
 
-        if (this.first) {
-            this.first = false;
-            this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-            this.map.getView().setZoom(19);
+            let source = new VectorSource({
+                wrapX: false,
+                features: [markerFeature]
+            });
+
+            let vectorMarkerLayer = new VectorLayer({
+                source: source,
+            });
+
+            this.map.addLayer(vectorMarkerLayer);
+
+            let id = "view-marker-" + randomUUID();
+            markerFeature.setId(id);
+            this.markers[id] = markerFeature;
+
+            if (this.first) {
+                this.first = false;
+                this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+                this.map.getView().setZoom(19);
+            }
+
+            return id;
         }
-
-        return id;
+        //TODO: exception
+        return null;
     }
 
     /**
@@ -535,6 +469,8 @@ export default class OpenLayerView extends OshView {
      */
     onResize() {
         super.onResize();
-        this.map.updateSize();
+        if(isDefined(this.map) && this.map !== null) {
+            this.map.updateSize();
+        }
     }
 }

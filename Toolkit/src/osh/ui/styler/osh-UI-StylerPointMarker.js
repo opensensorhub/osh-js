@@ -68,12 +68,13 @@ export default class PointMarker extends Styler {
 		this.orientation = {heading:0};
 		this.icon = null;
 		this.iconAnchor = [16,16];
+		this.iconSize = [16,16];
 		this.label = null;
 		this.labelColor = "#000000";
 		this.labelSize = 16;
 		this.labelOffset = [0,0];
 
-		this.color = "#000000";
+		this.color = null;
 		this.defaultToTerrainElevation = false;
 
 		this.options = {};
@@ -100,6 +101,11 @@ export default class PointMarker extends Styler {
 		if (hasValue(properties.iconAnchor)) {
 			assertArray(properties.iconAnchor, "iconAnchor");
 			this.iconAnchor = properties.iconAnchor;
+		}
+
+		if (hasValue(properties.iconSize)) {
+			assertArray(properties.iconSize, "iconSize");
+			this.iconSize = properties.iconSize;
 		}
 
 		if (hasValue(properties.label)) {

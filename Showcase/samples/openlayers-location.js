@@ -30,7 +30,8 @@ var pointMarker = new PointMarker({
         heading: 0
     },
     icon: 'images/car-location.png',
-    iconAnchor: [16, 40]
+    iconAnchor: [16, 40],
+    iconSize: [32, 64]
 });
 
 // create Cesium view
