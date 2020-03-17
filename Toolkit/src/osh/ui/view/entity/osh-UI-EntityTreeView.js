@@ -57,6 +57,7 @@ OSH.UI.EntityTreeView = OSH.UI.View.extend({
             var currentItem = this.entityItems[i];
             var entity = currentItem.entity;
             var path = currentItem.path;
+            var pathMenuId = currentItem.pathMenuId;
             var treeIcon = currentItem.treeIcon;
             var contextMenuId = currentItem.contextMenuId;
 
@@ -85,9 +86,9 @@ OSH.UI.EntityTreeView = OSH.UI.View.extend({
                 // otherwise create a new node to use as new parent
                 if (existingChildNode == null) {
                     if (currentNode === this.tree)
-                        currentNode = this.tree.createNode(folder[pos],false,'',this.tree,null,null);
+                        currentNode = this.tree.createNode(folder[pos],false,'',this.tree,null,pathMenuId);
                     else
-                        currentNode = currentNode.createChildNode(folder[pos],false,'',null,null);    
+                        currentNode = currentNode.createChildNode(folder[pos],false,'',null,pathMenuId);
                 } else {
                     currentNode = existingChildNode;
                 }

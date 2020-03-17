@@ -57,7 +57,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		this._super(parentElementDivId,viewItems,properties);
 
 		var cssClass = document.getElementById(this.divId).className;
-		document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
+		document.getElementById(this.divId).setAttribute('class', cssClass+' '+this.css);
 		
 		this.imageDrapingPrimitive = null;
 		this.imageDrapingPrimitiveReady = false;		
@@ -89,7 +89,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 				icon : styler.icon,
 				label : styler.label,
 				timeStamp: timeStamp,
-				selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
+				selected: ((typeof(options.selected) !== 'undefined')? options.selected : false),
+				description: styler.description
 			});
 
 			this.stylerToObj[styler.getId()] = markerId;
@@ -106,7 +107,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 			icon : styler.icon,
 			timeStamp: timeStamp,
             defaultToTerrainElevation: styler.defaultToTerrainElevation,
-			selected:((typeof(options.selected) !== "undefined")? options.selected : false)
+			selected:((typeof(options.selected) !== 'undefined')? options.selected : false)
 		});
 	},
 
@@ -133,7 +134,7 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
     	///////////////////////////////////////////////////////////////////////////////////
     	var nedTransform = Cesium.Transforms.northEastDownToFixedFrame(camPos);
     	var camRot = new Cesium.Matrix3();
-    	Cesium.Matrix4.getRotation(nedTransform, camRot);    	
+    	Cesium.Matrix4.getMatrix3(nedTransform, camRot);
     	var rotM = new Cesium.Matrix3();
     	
         // UAV heading, pitch, roll (given in NED frame)
@@ -207,8 +208,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                         }
                     }
                 }),
-                vertexShaderSource: Cesium._shaders.ImageDrapingVS,
-                fragmentShaderSource: Cesium._shaders.ImageDrapingFS
+                vertexShaderSource: Cesium._shadersImageDrapingVS,
+                fragmentShaderSource: Cesium._shadersImageDrapingFS
             });
     	    
     	    /*appearance = new Cesium.MaterialAppearance({
@@ -223,8 +224,9 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
             });*/
     	    
     	    if (this.imageDrapingPrimitive === null || snapshot) {
-    	        if (this.imageDrapingPrimitive === null)
-    	            this.imageDrapingPrimitive = {};
+    	        if (this.imageDrapingPrimitive === null) {
+                    this.imageDrapingPrimitive = {};
+                }
     	        
     	        var promise = Cesium.sampleTerrain(this.viewer.terrainProvider, 11, [Cesium.Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
     	        var that = this;
@@ -234,15 +236,16 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
                         geometryInstances: new Cesium.GeometryInstance({
                             geometry: new Cesium.RectangleGeometry({
                                 rectangle: Cesium.Rectangle.fromDegrees(llaPos.x-0.1, llaPos.y-0.1, llaPos.x+0.1, llaPos.y+0.1),
-                                height: updatedPositions[0].height-100,
+                                height: updatedPositions[0].height,
                                 extrudedHeight: llaPos.z-1
                             })
                         }), 
                         appearance: appearance
                     }));
                     
-                    if (!snapshot)
+                    if (!snapshot) {
                         that.imageDrapingPrimitive = newImageDrapingPrimitive;
+                    }
                     
                     that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
                     that.imageDrapingPrimitiveReady = true;
@@ -285,13 +288,8 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
         	scene3DOnly: true // for draw layer
 	    });
 	    
-	    this.viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-	        url : '//assets.agi.com/stk-terrain/world'
-	    });
-	    
-	    this.viewer.scene.copyGlobeDepth = true;
 	    this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
-	    
+
 	    var self = this;
 	    Cesium.knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 	        //change icon
@@ -336,42 +334,49 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		if(properties.icon !== null) {
 			imgIcon = properties.icon;
 		}
-		var isModel = imgIcon.endsWith(".glb");
-		var name = properties.label ? properties.label : "Selected Marker";
+		var isModel = imgIcon.endsWith('.glb');
+		var name = properties.label ? properties.label : 'Selected Marker';
 		var geom;
+		var color = properties.color ? Cesium.Color.fromCssColorString(properties.color) : Cesium.Color.YELLOW;
+		var description = (properties.description) ? properties.description : null;
 		
 		if (isModel)
 		{
 			geom = {
 				name: name,
-				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
-				model : {
+				description: description,
+				position: Cesium.Cartesian3.fromDegrees(0, 0, 0),
+				model: {
 					uri: imgIcon,
 					scale: 4,
-					modelM: Cesium.Matrix4.IDENTITY.clone()
+					modelM: Cesium.Matrix4.IDENTITY.clone(),
+					color: color
 				}
 			};
 		}
 		else
 		{
 			var rot = 0;
-			if (properties.orientation != 'undefined')
-				rot = properties.orientation.heading;
+			if (properties.orientation !== 'undefined') {
+                rot = properties.orientation.heading;
+            }
 			geom = {
 				name: name,
+				description: description,
 				position : Cesium.Cartesian3.fromDegrees(0, 0, 0),
 				billboard : {
 					image : imgIcon,
 					alignedAxis : Cesium.Cartesian3.UNIT_Z, // axis is in ENU frame, Z means rotation is from north
 					rotation : Cesium.Math.toRadians(rot),
+					scaleByDistance : new Cesium.NearFarScalar(4, 1, 5e5, 0.2), // set icon scale by distance in meters (near distance, near scale, far distance, far scale)
 					horizontalOrigin : Cesium.HorizontalOrigin.CENTER,
-                                        eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
+					eyeOffset : new Cesium.Cartesian3(0,0,-1) // make sure icon always displays in front
 				}
 			};
 		}
 		
 		var entity = this.viewer.entities.add(geom);
-		var id = "view-marker-"+OSH.Utils.randomUUID();
+		var id = 'view-marker-'+OSH.Utils.randomUUID();
 		entity._dsid = id;
 		this.markers[id] = entity;
 		
@@ -387,54 +392,64 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 	 */
 	updateMapMarker: function(id, properties) {
 		var lon = properties.lon;
-        var lat = properties.lat;
-        var alt = properties.alt;
-        var orient = properties.orientation;
-        var imgIcon = properties.icon;
+		var lat = properties.lat;
+		var alt = properties.alt;
+		var orient = properties.orientation;
+		var imgIcon = properties.icon;
 		var defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
-        if (!isNaN(lon) && !isNaN(lat)) {
-        	var marker =  this.markers[id];
-        	
-        	// get ground altitude if non specified
-        	if (typeof(alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
-	    		alt = this.getAltitude(lat, lon);
-	    		if (alt > 1)
-	    			alt += 0.3;
-    		}
+		if (!isNaN(lon) && !isNaN(lat)) {
+			var marker =  this.markers[id];
 
-    		// update position
-        	var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
-    		marker.position = pos;
-    		    		
-    		// update orientation
-    		if (typeof(orient) !== "undefined") {
-    			var DTR = Math.PI/180.;
-    			var heading = orient.heading;
-	    		var pitch = 0.0;
-	    		var roll = 0.0;
-	    		var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
-	    		marker.orientation = quat;
-                        if (marker.billboard)
-				marker.billboard.rotation = Cesium.Math.toRadians(heading);
-    	    	}
-    		
-    		// update icon or model
-    		if (marker.billboard)
-			marker.billboard.image = imgIcon;
-		else if (marker.model)
-			marker.model.uri = imgIcon; 
-    		
-    		// zoom map if first marker update
-    		if (this.first) {
-    			this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
-    			this.first = false;
-    		}
-    		
-    		if (properties.selected) {
-    			 this.viewer.selectedEntity = marker;
-    		}
-        }
+			// get ground altitude if non specified
+			if (typeof(alt) === 'undefined' || isNaN(alt)) {
+				alt = this.getAltitude(lat, lon);
+				if (alt > 1) {
+					alt += 0.3;
+				}
+			}
+
+			// update position
+			var pos = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+			marker.position = pos;
+
+			// update orientation
+			if (typeof(orient) !== 'undefined') {
+				var DTR = Math.PI/180.0;
+				var heading = orient.heading;
+				var pitch = 0.0;
+				var roll = 0.0;
+				var quat = Cesium.Transforms.headingPitchRollQuaternion(pos, new Cesium.HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
+				marker.orientation = quat;
+				if (marker.billboard) {
+					marker.billboard.rotation = Cesium.Math.toRadians(heading);
+				}
+			}
+
+			// update icon or model
+			if (marker.billboard) {
+				if (defaultToTerrainElevation) {
+					marker.billboard.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+				}
+				marker.billboard.image = imgIcon;
+			}
+			else if (marker.model)  {
+				if (defaultToTerrainElevation) {
+					marker.model.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+				}
+				marker.model.uri = imgIcon;
+			}
+
+			// zoom map if first marker update
+			if (this.first) {
+				this.viewer.zoomTo(this.viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 2000));
+				this.first = false;
+			}
+
+			if (properties.selected) {
+				this.viewer.selectedEntity = marker;
+			}
+		}
 	},
 
 	/**
@@ -449,8 +464,9 @@ OSH.UI.CesiumView = OSH.UI.View.extend({
 		var position = Cesium.Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cesium.Cartesian3());
 		var altitude = this.viewer.scene.globe.getHeight(Cesium.Ellipsoid.WGS84.cartesianToCartographic(position));
 
-		if (altitude === 'undefined' || altitude <= 0)
-			altitude = 0.1;
+		if ((altitude === undefined) || (altitude <= 0)) {
+            altitude = 0.1;
+        }
 		return altitude;
 	}
 });

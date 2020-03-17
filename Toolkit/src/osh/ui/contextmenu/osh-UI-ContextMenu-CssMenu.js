@@ -72,8 +72,9 @@ OSH.UI.ContextMenu.CssMenu = OSH.UI.ContextMenu.extend({
                         html : htmlVar,
                         id : elId,
                         action : action,
-                        viewId : viewId
-                    })
+                        viewId : viewId,
+                        clickOverride: clickOverride
+                    });
                 }
             }
         }
