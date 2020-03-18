@@ -9,7 +9,7 @@
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import View  from "../osh-UI-View.js";
+import {View} from "../osh-UI-View.js";
 import {isDefined, isWebWorker} from "../../../osh-Utils.js";
 import YUVCanvas from "../../../../../vendor-local/yuvcanvas/YUVCanvas.js";
 import EventManager from "../../../osh-EventManager.js";
