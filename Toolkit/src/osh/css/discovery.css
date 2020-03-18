@@ -1,0 +1,215 @@
+@import "font-awesome-4.6.3/css/font-awesome.min.css";
+
+/** Discovery Select box **/
+.discovery-form .select-style {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: #fff;
+    position: relative;
+}
+
+.discovery-form .select-style:before {
+    font-family: FontAwesome;
+    content: "\f0d7";
+    font-size: 25px;
+    display: inline-block;
+    position: absolute;
+    pointer-events: none;
+    right: 5px;
+    color: #777;
+    top:4px;
+}
+
+.discovery-form .select-style select {
+    padding: 5px 8px;
+    width: 100%;
+    background-color: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid #aaa;
+    box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
+    border-radius: 2px;
+}
+
+.discovery-form .select-style select:focus {
+    outline: none;
+}
+
+/** Form **/
+.discovery-form:-moz-placeholder {
+    color: #777;
+}
+
+.discovery-form::-webkit-input-placeholder {
+    color: #777;
+}
+
+.discovery-form*:focus {outline: none;}
+
+body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;}
+.discovery-form h2, .discovery-form label {font-family:Georgia, Times, "Times New Roman", serif;}
+.form_hint, .required_notification {font-size: 11px;}
+
+.discovery-form ul {
+    list-style-type:none;
+    list-style-position:outside;
+    margin:0px;
+    padding:0px;
+}
+.discovery-form li{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    position:relative;
+}
+
+.discovery-form li:first-child, .discovery-form li:last-child {
+    border-bottom:1px solid #777;
+}
+
+.discovery-form h2 {
+    margin:0;
+    display: inline;
+}
+
+.discovery-form .required_notification {
+    color: #d45252;
+    display: inline;
+    float: right;
+}
+
+.discovery-form label {
+    width:130px;
+    margin-top: 3px;
+    display:inline-block;
+    float:left;
+    padding:3px;
+}
+.discovery-form .input-text {
+    padding:5px 8px;
+    width:195px;
+}
+
+.discovery-form button {margin-left:156px;}
+
+.discovery-form .input-text, .discovery-form select {
+    border:1px solid #aaa;
+    box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
+    border-radius:2px;
+}
+.discovery-form .input-text:focus, .discovery-form select:focus {
+    background: #fff;
+    border:1px solid #555;
+    box-shadow: 0 0 3px #aaa;
+}
+/* Button Style */
+.discovery-form button.submit {
+    background-color: #056BA6;
+    background: -webkit-gradient(linear, left top, left bottom, from(#056BA6), to(#055690));
+    background: -webkit-linear-gradient(top, #056BA6, #055690);
+    background: -moz-linear-gradient(top, #056BA6, #055690);
+    background: -ms-linear-gradient(top, #056BA6, #055690);
+    background: -o-linear-gradient(top, #056BA6, #055690);
+    background: linear-gradient(top, #056BA6, #055690);
+    border: 1px solid #056BA6;
+    border-bottom: 1px solid #056BA6;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    box-shadow: inset 0 1px 0 0 #056BA6;
+    -webkit-box-shadow: 0 1px 0 0 #056BA6 inset ;
+    -moz-box-shadow: 0 1px 0 0 #056BA6 inset;
+    -ms-box-shadow: 0 1px 0 0 #056BA6 inset;
+    -o-box-shadow: 0 1px 0 0 #056BA6 inset;
+    color: white;
+    font-weight: bold;
+    padding: 6px 20px;
+    text-align: center;
+    text-shadow: 0 -1px 0 #056BA6;
+    display:table;
+    margin:0px auto 0px auto;
+}
+.discovery-form button.submit:hover {
+    opacity:.85;
+    cursor: pointer;
+}
+.discovery-form button.submit:active {
+    border: 1px solid #056BA6;
+    box-shadow: 0 0 10px 5px #056BA6 inset;
+    -webkit-box-shadow:0 0 10px 5px #056BA6 inset ;
+    -moz-box-shadow: 0 0 10px 5px #056BA6 inset;
+    -ms-box-shadow: 0 0 10px 5px #056BA6 inset;
+    -o-box-shadow: 0 0 10px 5px #056BA6 inset;
+
+}
+
+.discovery-form .input-text:focus { /* add this to the already existing style */
+    padding-right:10px;
+}
+
+.discovery-form .input-text, .discovery-form select { /* add this to the already existing style */
+    -moz-transition: padding .25s;
+    -webkit-transition: padding .25s;
+    -o-transition: padding .25s;
+    transition: padding .25s;
+}
+
+.discovery-form .input-text {
+    padding-right: 5px;
+}
+
+.discovery-form select {
+    padding-right: 21px;
+}
+
+.discovery-form select:focus  {
+    padding-right: 21px;
+}
+
+.discovery-form .input-text:required {
+    background: #fff url(../images/red_asterisk.png) no-repeat 98% center;
+}
+
+::-webkit-validation-bubble-message {
+    padding: 1em;
+}
+
+.discovery-form input:focus:invalid{ /* when a field is considered invalid by the browser */
+    background: #fff url(../images/invalid.png) no-repeat 98% center;
+    box-shadow: 0 0 5px #d45252;
+    border-color: #b03535
+}
+
+.discovery-form .form_hint {
+    background: #d45252;
+    border-radius: 3px 3px 3px 3px;
+    color: white;
+    margin-left:8px;
+    margin-top:4px;
+    padding: 1px 6px;
+    z-index: 999; /* hints stay above all other elements */
+    position: absolute; /* allows proper formatting if hint is two lines */
+    display: none;
+}
+
+.discovery-form .form_hint::before {
+    content: "\25C0"; /* left point triangle in escaped unicode */
+    color:#d45252;
+    position: absolute;
+    top:1px;
+    left:-6px;
+}
+
+.discovery-form .input-checkbox {
+    margin-top:10px;
+
+}
+.discovery-form .input-text:focus + .form_hint {display: inline;}
+.discovery-form .input-text:required:valid + .form_hint {background: #28921f;} /* change form hint color when valid */
+.discovery-form .input-text:required:valid + .form_hint::before {color:#28921f;} /* change form hint arrow color when valid */
