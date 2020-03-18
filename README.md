@@ -42,6 +42,18 @@ All you need to use the toolkit is to include the vendor dist file (the all-in-o
 
 Don't forget to include the {css,images,js} directories.
 
+Run Showcase
+===
+
+Install dependencies
+```bash
+$ npm install
+```
+Then launch the dev server
+```bash
+$ npm run showcase
+```
+
 Resources
 ===
 
