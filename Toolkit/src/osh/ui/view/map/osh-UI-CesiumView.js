@@ -15,28 +15,39 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../osh-UI-View.js";
+import {View} from "../osh-UI-View.js";
 import {isDefined, randomUUID} from "../../../osh-Utils.js";
-import Cartesian3 from "cesium/Source/Core/Cartesian3.js";
-import Transforms from "cesium/Source/Core/Transforms.js";
-import Matrix3 from "cesium/Source/Core/Matrix3.js";
-import MaterialAppearance from "cesium/Source/Scene/MaterialAppearance.js";
-import Material from "cesium/Source/Scene/Material.js";
-import sampleTerrain from "cesium/Source/Core/sampleTerrain.js";
-import GeometryInstance from "cesium/Source/Core/GeometryInstance.js";
-import RectangleGeometry from "cesium/Source/Core/RectangleGeometry.js";
-import Primitive from "cesium/Source/Scene/Primitive.js";
-import createDefaultImageryProviderViewModels
-	from "cesium/Source/Widgets/BaseLayerPicker/createDefaultImageryProviderViewModels.js";
-import Viewer from "cesium/Source/Widgets/Viewer/Viewer.js";
-import EllipsoidTerrainProvider from "cesium/Source/Core/EllipsoidTerrainProvider.js";
 import EventManager from "../../../osh-EventManager.js";
-import NearFarScalar from "cesium/Source/Core/NearFarScalar.js";
-import HeadingPitchRoll from "cesium/Source/Core/HeadingPitchRoll.js";
-import HeadingPitchRange from "cesium/Source/Core/HeadingPitchRange.js";
+
+import {
+	Cartesian3,
+	Cartesian2,
+	knockout,
+	Color,
+	HorizontalOrigin,
+	VerticalOrigin,
+	Math,
+	Transforms,
+	Matrix3,
+	MaterialAppearance,
+	Material,
+	sampleTerrain,
+	GeometryInstance,
+	RectangleGeometry,
+	Primitive,
+	createDefaultImageryProviderViewModels,
+	Viewer,
+	EllipsoidTerrainProvider,
+	NearFarScalar,
+	HeadingPitchRoll,
+	HeadingPitchRange,
+	Ellipsoid,
+
+} from 'cesium';
+
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
-
+import "cesium/Build/Cesium/Widgets/widgets.css";
 /**
  * @classdesc
  * @class

@@ -18,27 +18,27 @@ import {View as OshView} from "../osh-UI-View.js";
 import {isDefined} from "../../../osh-Utils.js";
 import 'ol/css.js';
 import 'ol/ol.css';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ';
-import WebGLPointsLayer from 'ol/layer/WebGLPoints';
-import Rotate from "ol/control/Rotate";
-import ScaleLine from "ol/control/ScaleLine";
-import {Group} from "ol/layer";
-import {transform} from "ol/proj";
+import {Map, View} from 'ol';
+import TileLayer from 'ol/layer/Tile.js';
+import XYZ from 'ol/source/XYZ.js';
+import WebGLPointsLayer from 'ol/layer/WebGLPoints.js';
+import Rotate from "ol/control/Rotate.js";
+import ScaleLine from "ol/control/ScaleLine.js";
+import {Group} from "ol/layer.js";
+import {transform} from "ol/proj.js";
 import {defaults} from "ol/control.js";
-import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction';
-import {defaults as defaultControls, FullScreen} from 'ol/control';
-import {ZoomSlider} from 'ol/control';
-import VectorSource from "ol/source/Vector";
-import VectorLayer from "ol/layer/Vector";
-import {randomUUID} from "../../../osh-Utils";
-import Point from 'ol/geom/Point';
-import Feature from 'ol/Feature';
-import {Icon, Style} from 'ol/style';
-import EventManager from "../../../osh-EventManager";
-import Select from "ol/interaction/Select";
+import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction.js';
+import {defaults as defaultControls, FullScreen} from 'ol/control.js';
+import {ZoomSlider} from 'ol/control.js';
+import VectorSource from "ol/source/Vector.js";
+import VectorLayer from "ol/layer/Vector.js";
+import {randomUUID} from "../../../osh-Utils.js";
+import Point from 'ol/geom/Point.js';
+import Feature from 'ol/Feature.js';
+import {Icon, Style} from 'ol/style.js';
+import EventManager from "../../../osh-EventManager.js";
+import Select from "ol/interaction/Select.js";
+import OSM from "ol/source/OSM.js";
 
 /**
  * @classdesc
@@ -49,7 +49,6 @@ import Select from "ol/interaction/Select";
 export default class OpenLayerView extends OshView {
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
-        this.onResize();
     }
 
     /**
@@ -273,6 +272,7 @@ export default class OpenLayerView extends OshView {
         });
 
         this.map.addInteraction(select_interaction);
+        this.map.updateSize();
     }
 
     /**
@@ -294,9 +294,7 @@ export default class OpenLayerView extends OshView {
      */
     getDefaultLayers() {
         let osm = new TileLayer({
-            source: new XYZ({
-                url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            })
+            source: new OSM()
         });
         return [osm];
     }
@@ -363,6 +361,7 @@ export default class OpenLayerView extends OshView {
 
             return id;
         }
+        this.onResize();
         //TODO: exception
         return null;
     }

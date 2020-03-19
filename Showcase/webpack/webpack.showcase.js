@@ -38,7 +38,14 @@ module.exports = {
             include: [
                 path.join(__dirname, '../../Toolkit/src/osh/workers')
             ]
-        }]
+        },
+        {
+            test: /\.(png|svg|jpg|gif)$/,
+            use: [
+                'file-loader',
+            ],
+        }
+        ]
     },
     optimization: {
         minimizer: [
@@ -64,8 +71,8 @@ module.exports = {
         }),
         new CopyPlugin([
             {from: '../../Toolkit/src/css/osh.css', to: 'css'},
-            { from: '../../Toolkit/src/images/*', to: './images', flatten:true },
-            { from: '../../Toolkit/src/css/font-awesome-4.6.3', to: './css/font-awesome-4.6.3/', flatten:false },
+            {from: '../../Toolkit/src/images/*', to: './images', flatten: true},
+            {from: '../../Toolkit/src/css/font-awesome-4.6.3', to: './css/font-awesome-4.6.3/', flatten: false},
             {from: 'images', to: 'images'},
             {from: 'pretiffy.js', to: 'pretiffy.js'},
             {from: 'index.html', to: 'index.html'}

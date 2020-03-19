@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../osh-UI-View.js";
+import {View} from "../osh-UI-View.js";
 import {isDefined} from "../../../osh-Utils.js";
 import {randomUUID} from "../../../osh-Utils.js";
 import EventManager from "../../../osh-EventManager.js";
@@ -223,6 +223,7 @@ export default class LeafletView extends View {
         //create marker
         let marker = null;
         if (properties.icon !== null) {
+            console.log(properties.iconAnchor);
             let markerIcon = L.icon({
                 iconAnchor: properties.iconAnchor,
                 iconUrl: properties.icon
