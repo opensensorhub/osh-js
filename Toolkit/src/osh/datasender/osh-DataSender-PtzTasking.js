@@ -33,9 +33,15 @@ OSH.DataSender.PtzTasking = OSH.DataSender.DataSink.extend({
     getCommandData:function(values) {
         var cmdData = "";
 
-        if(values.rtilt != null) {
-            cmdData += "rtilt,"+values.rtilt+" ";
+        // TODO: Test Integration
+        if (values.rtilt != null) {
+            if(this.properties.hasOwnProperty("reverseTilt") && this.properties.reverseTilt){
+                cmdData += "rtilt," + (-1 * values.rtilt) + " ";
+            }else {
+                cmdData += "rtilt," + values.rtilt + " ";
+            }
         }
+        // TODO: END INTEG TEST
 
         if(values.rpan != null) {
             cmdData += "rpan,"+values.rpan+" ";
