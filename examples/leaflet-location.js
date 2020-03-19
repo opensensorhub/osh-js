@@ -28,7 +28,7 @@ let pointMarker = new PointMarker({
       };
     }
   },
-  icon: './Showcase/images/car-location.png',
+  icon: './images/car-location.png',
   iconAnchor: [16, 65]
 });
 
