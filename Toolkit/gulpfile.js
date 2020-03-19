@@ -153,7 +153,7 @@ if (argv.ffmpeg || argv.all) {
     ALL_VENDOR_CSS.pushAll(FFMPEG_CSS);
     ALL_VENDOR_RESOURCES_DIR.push(FFMPEG_RESOURCES_DIR);
     ALL_VENDOR_RESOURCES_FILES.pushAll(FFMPEG_RESOURCES_FILES);
-    WORKERS_FILES.pushAll(['./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js', 'vendor/ffmpeg/ffmpeg-h264.js']);
+    WORKERS_FILES.pushAll(['./src/osh/ui/view/video/workers/osh-UI-FFMPEGViewWorker.js', 'vendor-local/ffmpegjs/ffmpeg-h264.js']);
 }
 
 if (argv.nvd3 || argv.all) {
