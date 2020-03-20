@@ -41,7 +41,7 @@ import {
 	NearFarScalar,
 	HeadingPitchRoll,
 	HeadingPitchRange,
-	Ellipsoid,
+	Ellipsoid, defined,
 
 } from 'cesium';
 
@@ -335,7 +335,7 @@ export default class CesiumView extends View {
 		let self = this;
 		knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 			//change icon
-			if (isDefined(entity)) {
+			if (defined(entity)) {
 				let dataSrcIds = [];
 				let entityId;
 				for (let stylerId in self.stylerToObj) {
