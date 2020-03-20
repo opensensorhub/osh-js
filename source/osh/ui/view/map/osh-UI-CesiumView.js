@@ -335,7 +335,7 @@ export default class CesiumView extends View {
 		let self = this;
 		knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
 			//change icon
-			if (defined(entity)) {
+			if (isDefined(entity)) {
 				let dataSrcIds = [];
 				let entityId;
 				for (let stylerId in self.stylerToObj) {
