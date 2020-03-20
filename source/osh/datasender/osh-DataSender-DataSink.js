@@ -19,6 +19,7 @@
  * @class
  */
 import AjaxConnector from '../dataconnector/osh-DataConnector-HttpAjaxConnector.js';
+import {randomUUID} from "../osh-Utils";
 
 export default class DataSink {
     constructor(name, properties, options) {
@@ -27,7 +28,7 @@ export default class DataSink {
             this.connector.onError = this.onCatchError.bind(this);
             this.connector.onSuccess = this.onCatchSuccess.bind(this);
         }
-        this.id = "DataSender-" + OSH.Utils.randomUUID();
+        this.id = "DataSender-" + randomUUID();
         this.name = name;
         this.properties = properties;
     }
