@@ -85,6 +85,7 @@ module.exports = {
         port: 9000,
         hot: true
     },
+    devtool: 'source-map',
     optimization: {
         minimizer: [
             new TerserPlugin({

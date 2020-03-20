@@ -47,6 +47,7 @@ module.exports = {
         port: 9000,
         hot: true
     },
+    devtool: 'source-map',
     plugins: [
         /**
          * All files inside webpack's output.path directory will be removed once, but the
