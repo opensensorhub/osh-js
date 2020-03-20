@@ -9,3 +9,5 @@ Toolkit/dist
 Toolkit/vendor
 npm-debug.log
 .DS_Store
+**/node_modules
+
