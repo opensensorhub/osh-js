@@ -1,7 +1,7 @@
-import Json from '../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceJSON';
-import CesiumView from '../../Toolkit/src/osh/ui/view/map/osh-UI-CesiumView';
+import Json from '../../source/osh/datareceiver/osh-DataReceiver-DataSourceJSON';
+import CesiumView from '../../source/osh/ui/view/map/osh-UI-CesiumView';
 import EllipsoidTerrainProvider from 'cesium/Source/Core/EllipsoidTerrainProvider';
-import PointMarker from '../../Toolkit/src/osh/ui/styler/osh-UI-StylerPointMarker';
+import PointMarker from '../../source/osh/ui/styler/osh-UI-StylerPointMarker';
 
 
 window.CESIUM_BASE_URL = './';
