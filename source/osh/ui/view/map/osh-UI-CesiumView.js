@@ -355,7 +355,7 @@ export default class CesiumView extends View {
 					entityId: entityId
 				});
 			} else {
-				OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW, {
+				EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
 					dataSourcesIds: [],
 					entityId: null
 				});
