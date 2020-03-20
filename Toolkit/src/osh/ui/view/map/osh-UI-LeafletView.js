@@ -103,7 +103,6 @@ export default class LeafletView extends View {
      * @memberof OSH.UI.LeafletView
      */
     initMap(options) {
-
         let initialView = {
             location: new L.LatLng(0, 0),
             zoom: 3

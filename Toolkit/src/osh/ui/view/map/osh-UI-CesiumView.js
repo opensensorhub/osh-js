@@ -48,6 +48,7 @@ import {
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+
 /**
  * @classdesc
  * @class

@@ -3,7 +3,6 @@ const load = () => {
     self.Module()
         .then((_Module) => {
             Module = _Module;
-
             // register all compiled codecs
             Module._avcodec_register_all();
 
