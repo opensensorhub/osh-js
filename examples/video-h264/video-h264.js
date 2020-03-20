@@ -1,8 +1,8 @@
-import {BASE_WORKER_URL} from '../../Toolkit/src/osh/osh-Constants.js';
+import {BASE_WORKER_URL} from '../../source/osh/osh-Constants.js';
 
 BASE_WORKER_URL.path = '/workers';
-import VideoH264 from '../../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js';
-import FFMPEGView from '../../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js';
+import VideoH264 from '../../source/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js';
+import FFMPEGView from '../../source/osh/ui/view/video/osh-UI-FFMPEGView.js';
 
 // create data source for UAV camera
 let videoDataSource = new VideoH264("drone-Video", {
