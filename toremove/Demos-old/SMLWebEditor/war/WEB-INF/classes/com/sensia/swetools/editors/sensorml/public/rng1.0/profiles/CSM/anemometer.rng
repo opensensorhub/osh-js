@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sml="http://www.opengis.net/sensorML/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sch="http://www.ascc.net/xml/schematron" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1" />
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml" />
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1" />
+   <!-- -->
+   <include href="../../sml/sensorML.rng">
+      <start>
+         <ref name="wst.Anemometer" />
+      </start>
+   </include>
+   <!-- -->
+   <define name="wst.Anemometer">
+      <element name="sml:Component">
+         <element name="gml:description">
+            <data type="string">
+               <a:defaultValue>Enter your sensor description here</a:defaultValue>
+            </data>
+         </element>
+         <element name="gml:name">
+            <data type="string">
+               <a:defaultValue>Enter your sensor name here</a:defaultValue>
+            </data>
+         </element>
+         <element name="sml:identification">
+            <element name="sml:IdentifierList">
+               <element name="sml:identifier">
+                  <attribute name="name">
+                     <value>Model Number</value>
+                  </attribute>
+                  <element name="sml:Term">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/ModelNumber</value>
+                     </attribute>
+                     <element name="sml:value">
+                        <value>7912</value>
+                     </element>
+                  </element>
+               </element>
+               <element name="sml:identifier">
+                  <attribute name="name">
+                     <value>Serial Number</value>
+                  </attribute>
+                  <element name="sml:Term">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/ModelNumber</value>
+                     </attribute>
+                     <ref name="sml.termValue" />
+                  </element>
+               </element>
+               <element name="sml:identifier">
+                  <attribute name="name">
+                     <value>Sensor Type</value>
+                  </attribute>
+                  <element name="sml:Term">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/SensorType</value>
+                     </attribute>
+                     <ref name="sml.termValue" />
+                  </element>
+               </element>
+               <zeroOrMore>
+                  <ref name="sml.identifier" />
+               </zeroOrMore>
+            </element>
+         </element>
+         <optional>
+            <ref name="sml.classification" />
+         </optional>
+         <optional>
+            <ref name="sml.validTime" />
+         </optional>
+         <optional>
+            <ref name="sml.securityConstraint" />
+         </optional>
+         
+         <!-- Physical Characteristics -->
+         <element name="sml:characteristics">
+            <attribute name="name">
+               <value>Physical Characteristics</value>
+            </attribute>
+            <element name="swe:DataRecord">
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>length</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/Length</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Length</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>mm</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>height</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/Height</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Height</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>mm</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>width</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/Width</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Width</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>mm</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+            </element>
+         </element>
+         
+         <!-- Electrical Characteristics -->
+         <element name="sml:characteristics">
+            <attribute name="name">
+               <value>Electrical Characteristics</value>
+            </attribute>
+            <element name="swe:DataRecord">
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>cableLength</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/CableLength</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Attached Cable Length</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>m</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>cableType</value>
+                  </attribute>
+                  <element name="swe:Category">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/CableType</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Cable Type</value>
+                     </element>
+                     <element name="swe:value">
+                        <choice>
+                            <value>4-conductor, 26 AWG</value>
+                            <value>6-conductor, 26 AWG</value>
+                            <value>8-conductor, 26 AWG</value>
+                        </choice>
+                     </element>
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>connector</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/ConnectorType</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Connector Type</value>
+                     </element>
+                     <element name="swe:value">
+                        <choice>
+                            <value>RJ-11</value>
+                            <value>RJ-45</value>
+                        </choice>
+                     </element>
+                  </element>
+               </element>
+            </element>
+         </element>
+         
+         <!-- Measurement Characteristics -->
+         <element name="sml:characteristics">
+            <attribute name="name">
+               <value>Measurement Characteristics</value>
+            </attribute>
+            <element name="swe:DataRecord">
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>windSpeedRange</value>
+                  </attribute>
+                  <element name="swe:QuantityRange">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/MeasurementRange</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Wind Speed Range</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>km/h</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityRangeValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>windSpeedAcc</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/RelativeAccuracy</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Wind Speed Accuracy</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>%</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>windSpeedRes</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/MeasurementResolution</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Wind Speed Resolution</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>km/h</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>windSpeedPeriod</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/SamplingPeriod</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Wind Speed Sample Period</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>s</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityValue" />
+                  </element>
+               </element>
+               <element name="swe:field">
+                  <attribute name="name">
+                     <value>windDirRange</value>
+                  </attribute>
+                  <element name="swe:QuantityRange">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/MeasurementRange</value>
+                     </attribute>
+                     <element name="gml:name">
+                        <value>Wind Direction Range</value>
+                     </element>
+                     <element name="swe:uom">
+                        <attribute name="code">
+                           <value>deg</value>
+                        </attribute>
+                     </element>
+                     <ref name="swe.quantityRangeValue" />
+                  </element>
+               </element>
+            </element>
+         </element>
+         
+         <!-- Other Stuff -->
+         <optional>
+            <ref name="sml.characteristics" />
+         </optional>         
+         <zeroOrMore>
+            <ref name="sml.contact" />
+         </zeroOrMore>
+         <zeroOrMore>
+            <ref name="sml.documentation" />
+         </zeroOrMore>
+         
+         <element name="sml:inputs">
+            <element name="sml:InputList">
+               <element name="sml:input">
+                  <attribute name="name">
+                     <value>wind</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/Wind</value>
+                     </attribute>
+                  </element>
+               </element>
+            </element>
+         </element>
+         <element name="sml:outputs">
+            <element name="sml:OutputList">
+               <element name="sml:output">
+                  <attribute name="name">
+                     <value>windSpeed</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/WindSpeed</value>
+                     </attribute>
+                  </element>
+               </element>
+               <element name="sml:output">
+                  <attribute name="name">
+                     <value>windDir</value>
+                  </attribute>
+                  <element name="swe:Quantity">
+                     <attribute name="definition">
+                        <value>http://sensorml.com/ont/swe/property/WindDirection</value>
+                     </attribute>
+                  </element>
+               </element>
+            </element>
+         </element>
+      </element>
+   </define>
+</grammar>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sml="http://www.opengis.net/sensorML/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sch="http://www.ascc.net/xml/schematron" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1"/>
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="../../sml/sensorML.rng"/>
+   <!-- -->
+   <define name="csm.ProcessHeaderGroup">
+      <ref name="sml.FeatureGroup"/>
+      <optional>
+         <ref name="sml.identification"/>
+      </optional>
+      <optional>
+         <ref name="sml.classification"/>
+      </optional>
+      <optional>
+         <ref name="sml.validTime"/>
+      </optional>
+      <optional>
+         <ref name="sml.securityConstraint"/>
+      </optional>
+      <zeroOrMore>
+         <ref name="sml.contact"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.documentation"/>
+      </zeroOrMore>
+   </define>
+   <!-- -->
+   <define name="csm.distanceUnit">
+      <a:documentation>Distance Unit</a:documentation>
+      <element name="swe:uom">
+         <attribute name="code">
+            <choice>
+               <value>m</value>
+               <value>mm</value>
+            </choice>
+         </attribute>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.pixelOrDistanceUnit">
+      <choice>
+         <ref name="csm.distanceUnit"/>
+		 <ref name="csm.pixelUnit"/>
+      </choice>
+   </define>
+   <!-- -->
+   <define name="csm.pixelUnit">
+      <a:documentation>Pixel Unit</a:documentation>
+      <element name="swe:uom">
+         <attribute name="xlink:href">
+            <value>urn:ogc:def:unit:CSM:pixel</value>
+         </attribute>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.angleUnit">
+      <a:documentation>Angular Unit</a:documentation>
+      <element name="swe:uom">
+         <attribute name="code">
+            <choice>
+               <value>deg</value>
+               <value>rad</value>
+            </choice>
+         </attribute>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.timeUnit">
+      <a:documentation>Temporal Unit</a:documentation>
+      <element name="swe:uom">
+         <attribute name="code">
+            <choice>
+               <value>s</value>
+               <value>ms</value>
+            </choice>
+         </attribute>
+      </element>
+   </define>
+</grammar>

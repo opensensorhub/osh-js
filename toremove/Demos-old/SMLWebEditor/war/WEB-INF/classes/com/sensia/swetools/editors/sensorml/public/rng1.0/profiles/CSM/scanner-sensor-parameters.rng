@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sml="http://www.opengis.net/sensorML/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sch="http://www.ascc.net/xml/schematron" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1"/>
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="optical-sensor-parameters.rng"/>
+   <!-- -->
+   <define name="csm.FrameSamplingPeriod">
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:FRAME_SAMPLING_PERIOD</value>
+         </attribute>
+         <ref name="csm.timeUnit"/>
+         <element name="swe:value">
+            <data type="double">
+               <param name="minExclusive">0</param>
+            </data>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.ScanPeriod">
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:SCAN_PERIOD</value>
+         </attribute>
+         <ref name="csm.timeUnit"/>
+         <element name="swe:value">
+            <data type="double">
+               <param name="minExclusive">0</param>
+            </data>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.ScanDuration">
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:SCAN_DURATION</value>
+         </attribute>
+         <ref name="csm.timeUnit"/>
+         <element name="swe:value">
+            <data type="double">
+               <param name="minExclusive">0</param>
+            </data>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.PushbroomTimingCharacteristics">
+      <a:documentation>Pushbroom Timing Characteristics</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Frame Period</value>
+            </attribute>
+            <ref name="csm.FrameSamplingPeriod"/>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.WhiskbroomTimingCharacteristics">
+      <a:documentation>Whiskbroom Timing Characteristics</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Frame Period</value>
+            </attribute>
+            <ref name="csm.FrameSamplingPeriod"/>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Scan Period</value>
+            </attribute>
+            <ref name="csm.ScanPeriod"/>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Scan Duration</value>
+            </attribute>
+            <ref name="csm.ScanDuration"/>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.SwathFOV">
+      <element name="swe:Quantity">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:SWATH_FOV</value>
+         </attribute>
+         <ref name="csm.angleUnit"/>
+         <element name="swe:value">
+            <data type="double">
+               <param name="minExclusive">0</param>
+            </data>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csm.MaxScanAngles">
+      <element name="swe:QuantityRange">
+         <attribute name="definition">
+            <value>urn:ogc:def:property:CSM:SCAN_ANGLE_MAX</value>
+         </attribute>
+         <ref name="csm.angleUnit"/>
+         <ref name="swe.quantityRangeValue"/>
+      </element>
+   </define>
+   <!-- -->   
+   <define name="csm.ScannerMotionCharacteristics">
+      <a:documentation>Scanner Motion Characteristics</a:documentation>
+      <element name="swe:DataRecord">
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Swath FOV</value>
+            </attribute>
+            <ref name="csm.SwathFOV"/>
+         </element>
+         <element name="swe:field">
+            <attribute name="name">
+               <value>Max Scan Angles</value>
+            </attribute>
+            <ref name="csm.MaxScanAngles"/>
+         </element>
+      </element>
+   </define>
+</grammar>

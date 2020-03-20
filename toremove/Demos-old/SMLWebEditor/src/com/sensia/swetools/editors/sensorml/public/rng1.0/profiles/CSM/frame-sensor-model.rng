@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+         xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+         xmlns:gml="http://www.opengis.net/gml"
+         xmlns:swe="http://www.opengis.net/swe/1.0.1"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:sch="http://www.ascc.net/xml/schematron"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1"/>
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="optical-sensor-parameters.rng">
+      <start>
+         <ref name="csm.FrameSensorModel"/>
+      </start>
+   </include>
+   <!-- -->
+   <define name="csm.FrameSensorModel">
+      <element name="sml:ProcessModel">
+         <ref name="csm.ProcessHeaderGroup"/>
+         <element name="sml:inputs">
+            <element name="sml:InputList">
+               <element name="sml:input">
+                  <attribute name="name">
+                     <value>Pixel Grid Coordinates</value>
+                  </attribute>
+                  <element name="swe:Vector">
+                     <attribute name="referenceFrame">
+                        <value>urn:ogc:def:crs:CSM:pixelGridCRS</value>
+                     </attribute>
+                     <element name="swe:coordinate">
+                        <attribute name="name">
+                           <value>r</value>
+                        </attribute>
+                        <element name="swe:Quantity">
+                           <ref name="csm.pixelOrDistanceUnit"/>
+                        </element>
+                     </element>
+                     <element name="swe:coordinate">
+                        <attribute name="name">
+                           <value>c</value>
+                        </attribute>
+                        <element name="swe:Quantity">
+                           <ref name="csm.pixelOrDistanceUnit"/>
+                        </element>
+                     </element>                    
+                  </element>
+               </element>
+            </element>         
+         </element>
+         <element name="sml:outputs">
+            <element name="sml:OutputList">
+               <element name="sml:output">
+                  <attribute name="name">
+                     <value>View Vector</value>
+                  </attribute>
+                  <element name="swe:Vector">
+                     <attribute name="referenceFrame">
+                        <value>urn:ogc:def:crs:CSM:sensorCRS</value>
+                     </attribute>
+                     <element name="swe:coordinate">
+                        <attribute name="name">
+                           <value>x</value>
+                        </attribute>
+                        <element name="swe:Quantity">
+                           <empty/>
+                        </element>
+                     </element>
+                     <element name="swe:coordinate">
+                        <attribute name="name">
+                           <value>y</value>
+                        </attribute>
+                        <element name="swe:Quantity">
+                           <empty/>
+                        </element>
+                     </element>
+                     <element name="swe:coordinate">
+                        <attribute name="name">
+                           <value>z</value>
+                        </attribute>
+                        <element name="swe:Quantity">
+                           <empty/>
+                        </element>
+                     </element>
+                  </element>
+               </element>
+            </element>
+         </element>
+         <element name="sml:parameters">
+            <element name="sml:ParameterList">
+               <element name="sml:parameter">
+                  <attribute name="name">
+                     <value>Pixel Grid Characteristics</value>
+                  </attribute>
+                  <ref name="csm.PixelGridCharacteristics"/>
+               </element>
+               <element name="sml:parameter">
+                  <attribute name="name">
+                     <value>Ideal Optical Characteristics</value>
+                  </attribute>
+                  <ref name="csm.IdealOpticalCharacteristics"/>
+               </element>
+               <element name="sml:parameter">
+                  <attribute name="name">
+                     <value>Optical Distortions</value>
+                  </attribute>
+                  <ref name="csm.OpticalDistortionCharacteristics"/>
+               </element>                         
+            </element>
+         </element>
+         <element name="sml:method">
+            <attribute name="xlink:href">
+               <value>urn:ogc:def:process:CSM:FrameSensorModel</value>
+            </attribute>
+         </element>
+      </element>
+   </define>
+</grammar>

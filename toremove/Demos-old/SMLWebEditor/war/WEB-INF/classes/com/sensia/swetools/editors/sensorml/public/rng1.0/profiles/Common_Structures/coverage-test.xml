@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="file:/D:/Projects/NSSTC/SensorML/RNG_1.0.1/profiles/Common_Structures/coverage.rng" type="xml"?>
+<test xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- -->
+    <swe:DataArray definition="urn:ogc:def:geometry:CSML:ProfileCoverage">
+        <swe:elementCount>
+            <swe:Count/>
+        </swe:elementCount>
+        <swe:elementType name="sample">
+            <swe:DataRecord>
+                <swe:field name="location">
+                    <swe:Vector definition="urn:ogc:def:geometry:OGC:Point">
+                        <swe:coordinate name="x">
+                            <swe:Quantity/>
+                        </swe:coordinate>
+                        <swe:coordinate name="y">
+                            <swe:Quantity/>
+                        </swe:coordinate>
+                        <swe:coordinate name="z">
+                            <swe:Quantity/>
+                        </swe:coordinate>
+                    </swe:Vector>
+                </swe:field>
+                <swe:field name="data">
+                    <swe:DataRecord>
+                        <swe:field name="water_temperature">
+                            <swe:Quantity>
+                                <swe:uom code="degC"/>
+                            </swe:Quantity>
+                        </swe:field>
+                        <swe:field name="water_pressure">
+                            <swe:Quantity>
+                                <swe:uom code="mbar"/>
+                            </swe:Quantity>
+                        </swe:field>
+                    </swe:DataRecord>
+                </swe:field>
+            </swe:DataRecord>
+        </swe:elementType>
+    </swe:DataArray>
+    <!-- -->
+    <swe:DataArray definition="urn:ogc:def:geometry:CSML:ScanningRadarCoverage">
+        <swe:elementCount>
+            <swe:Count>
+                <swe:value>180</swe:value>
+            </swe:Count>
+        </swe:elementCount>
+        <swe:elementType name="radial">
+            <swe:DataRecord definition="urn:ogc:def:geometry:CSML:ProfileCoverageWithLocation">
+                <swe:field name="location">
+                    <swe.Vector>
+                        <swe:coordinate name="azimuth">
+                            <swe:Quantity>
+                                <swe:uom code="deg"/>
+                            </swe:Quantity>
+                        </swe:coordinate>
+                        <swe:coordinate name="elevation">
+                            <swe:Quantity>
+                                <swe:uom code="deg"/>
+                            </swe:Quantity>
+                        </swe:coordinate>
+                    </swe.Vector>
+                </swe:field>                
+                <swe:field name="profile">
+                    <swe:DataArray definition="urn:ogc:def:geometry:CSML:ProfileCoverage">
+                        <swe:elementCount>
+                            <swe:Count>
+                                <swe:value>345</swe:value>
+                            </swe:Count>
+                        </swe:elementCount>
+                        <swe:elementType name="sample">
+                            <swe:DataRecord>
+                                <swe:field name="location">
+                                    <swe:Vector definition="urn:ogc:def:geometry:OGC:Point">
+                                        <swe:coordinate name="r">
+                                            <swe:Quantity>
+                                                <swe:uom code="m"/>
+                                            </swe:Quantity>
+                                        </swe:coordinate>
+                                    </swe:Vector>
+                                </swe:field>
+                                <swe:field name="data">
+                                    <swe:DataRecord>
+                                        <swe:field name="reflectivity">
+                                            <swe:Quantity>
+                                                <swe:uom code="%"/>
+                                            </swe:Quantity>
+                                        </swe:field>
+                                        <swe:field name="radial_velocity">
+                                            <swe:Quantity>
+                                                <swe:uom code="m/s"/>
+                                            </swe:Quantity>
+                                        </swe:field>
+                                    </swe:DataRecord>
+                                </swe:field>
+                            </swe:DataRecord>
+                        </swe:elementType>
+                    </swe:DataArray>
+                </swe:field>
+            </swe:DataRecord>
+        </swe:elementType>
+    </swe:DataArray>
+    <!-- -->
+    <swe:DataArray definition="urn:ogc:def:geometry:CSML:TrajectoryCoverage">
+        <swe:elementCount>
+            <swe:Count/>
+        </swe:elementCount>
+        <swe:elementType name="sample">
+            <swe:DataRecord>
+                <swe:field name="location">
+                    <swe:Vector definition="urn:ogc:def:geometry:OGC:Point" referenceFrame="urn:ogc:def:crs:EPSG:4326">
+                        <swe:coordinate name="lat">
+                            <swe:Quantity>
+                                <swe:uom code="deg"/>
+                            </swe:Quantity>
+                        </swe:coordinate>
+                        <swe:coordinate name="lon">
+                            <swe:Quantity>
+                                <swe:uom code="deg"/>
+                            </swe:Quantity>
+                        </swe:coordinate>
+                    </swe:Vector>
+                </swe:field>
+                <swe:field name="data">
+                    <swe:DataRecord>
+                        <gml:description>Measured parameters</gml:description>
+                        <swe:field name="temp">
+                            <swe:Quantity definition="urn:ogc:def:property:OGC:temperature">
+                                <swe:uom code="degF"/>
+                            </swe:Quantity>
+                        </swe:field>
+                        <swe:field name="NOx">
+                            <swe:Quantity definition="urn:ogc:def:property:OGC:concentration">
+                                <swe:uom code="mg/l[NO2]"/>
+                            </swe:Quantity>
+                        </swe:field>
+                    </swe:DataRecord>
+                </swe:field>
+            </swe:DataRecord>
+        </swe:elementType>
+        <swe:encoding>
+            <swe:TextBlock tokenSeparator="," blockSeparator="&#13;" decimalSeparator="."/>
+        </swe:encoding>
+        <swe:values>
+            45.6,23.4,73.4,123.4
+            45.6,23.4,73.4,123.4
+            45.6,23.4,73.4,123.4
+            45.6,23.4,73.4,123.4
+        </swe:values>
+    </swe:DataArray>
+</test>

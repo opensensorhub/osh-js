@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="file:/D:/Projects/NSSTC/SensorML/RNG_1.0.1/profiles/Geometry/geometry.rng" type="xml"?>
+<test xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <swe:Vector gml:id="MyVector" definition="urn:ogc:def:geometry:OGC:Point" referenceFrame="urn:ogc:def:crs:EPSG:4326">
+        <swe:coordinate name="lat">
+            <swe:Quantity>
+                <swe:uom code="deg"/>
+            </swe:Quantity>
+        </swe:coordinate>
+        <swe:coordinate name="lon">
+            <swe:Quantity>
+                <swe:uom code="deg"/>
+            </swe:Quantity>
+        </swe:coordinate>
+    </swe:Vector>
+    <swe:DataRecord definition="urn:ogc:def:geometry:OGC:Polygon">
+        <swe:field name="exterior">
+            <swe:DataArray definition="urn:ogc:def:geometry:OGC:LinearRing">
+                <swe:elementCount>
+                    <swe:Count/>
+                </swe:elementCount>
+                <swe:elementType name="point" xlink:href="#MyVector"/>
+            </swe:DataArray>
+        </swe:field>
+    </swe:DataRecord>
+    <swe:DataRecord definition="urn:ogc:def:geometry:OGC:Polygon">
+        <swe:field name="exterior">
+            <swe:DataArray definition="urn:ogc:def:geometry:OGC:LinearRing">
+                <swe:elementCount>
+                    <swe:Count/>
+                </swe:elementCount>
+                <swe:elementType name="point">
+                    <swe:Vector definition="urn:ogc:def:geometry:OGC:Point">
+                        <swe:coordinate name="time">
+                            <swe:Time/>
+                        </swe:coordinate>
+                        <swe:coordinate name="lat">
+                            <swe:Quantity>
+                                <swe:uom code="deg"/>
+                            </swe:Quantity>
+                        </swe:coordinate>
+                        <swe:coordinate name="lon">
+                            <swe:Quantity>
+                                <swe:uom code="deg"/>
+                            </swe:Quantity>
+                        </swe:coordinate>
+                    </swe:Vector>
+                </swe:elementType>
+            </swe:DataArray>
+        </swe:field>
+        <swe:field name="interiorList">
+            <swe:DataArray>
+                <swe:elementCount>
+                    <swe:Count/>
+                </swe:elementCount>
+                <swe:elementType name="interior">
+                    <swe:DataArray definition="urn:ogc:def:geometry:OGC:LinearRing">
+                        <swe:elementCount>
+                            <swe:Count/>
+                        </swe:elementCount>
+                        <swe:elementType name="point" xlink:href="#MyVector"/>
+                    </swe:DataArray>
+                </swe:elementType>
+            </swe:DataArray>
+        </swe:field>
+    </swe:DataRecord>
+    <swe:DataArray definition="urn:ogc:def:geometry:OGC:LineString">
+        <swe:elementCount>
+            <swe:Count></swe:Count>
+        </swe:elementCount>
+        <swe:elementType name="point" xlink:href="#MyVector"/>        
+    </swe:DataArray>
+    <swe:DataArray definition="urn:ogc:def:geometry:OGC:LinearRing">
+        <swe:elementCount>
+            <swe:Count/>
+        </swe:elementCount>
+        <swe:elementType name="point">
+            <swe:Vector definition="urn:ogc:def:geometry:OGC:Point" referenceFrame="#MyFrame">
+                <swe:coordinate name="x">
+                    <swe:Quantity axisID="X"/>
+                </swe:coordinate>
+                <swe:coordinate name="y">
+                    <swe:Quantity axisID="Y"/>
+                </swe:coordinate>
+                <swe:coordinate name="z">
+                    <swe:Quantity axisID="Z"/>
+                </swe:coordinate>
+            </swe:Vector>
+        </swe:elementType>
+    </swe:DataArray>
+</test>

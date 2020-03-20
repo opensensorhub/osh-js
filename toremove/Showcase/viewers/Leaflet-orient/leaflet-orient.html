@@ -1,0 +1,142 @@
+<div id="leafletOrientViewerId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --x2js --leaflet --nouislider --nvd3 --ol3 --tree
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="leafletOrientMap" style="height:100%;width:100%"></div>
+    <style>
+        .leaflet-container {
+            height: 100%;
+        }
+    </style>
+    <script>
+
+        //---------- DATASOURCE ------------//
+        var replayFactor = 3;
+        //--Android Phone orientation
+        var androidPhoneOrientationDataSource = new OSH.DataReceiver.JSON("android-Orientation", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:060693280a28e015-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+            startTime: "2015-02-16T07:58:00Z",
+            endTime: "2015-02-16T08:09:00Z",
+            replaySpeed: replayFactor+"",
+            syncMasterTime: true,
+            bufferingTime: 1000
+        });
+
+        //--Android Phone location
+        var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:060693280a28e015-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/Location",
+            startTime: "2015-02-16T07:58:00Z",
+            endTime: "2015-02-16T08:09:00Z",
+            replaySpeed: replayFactor + "",
+            syncMasterTime: true,
+            bufferingTime: 1000,
+            timeShift: -16000
+        });
+
+        //------------- STYLER ---------//
+        var pointMarker = new OSH.UI.Styler.PointMarker({
+            location: {
+                x: 1.42376557,
+                y: 43.61758626,
+                z: 100
+            },
+            locationFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec) {
+                    return {
+                        x: rec.location.lon,
+                        y: rec.location.lat,
+                        z: rec.location.alt
+                    };
+                }
+            },
+            orientationFunc : {
+                dataSourceIds : [androidPhoneOrientationDataSource.getId()],
+                handler : function(rec) {
+                    var qx = rec.orient.qx;
+                    var qy = rec.orient.qy;
+                    var qz = rec.orient.qz;
+                    var qw = rec.orient.q0;
+
+                    // look dir vector
+                    var x = 0;
+                    var y = 0;
+                    var z = -1;
+
+                    // calculate quat * vector
+                    var ix =  qw * x + qy * z - qz * y;
+                    var iy =  qw * y + qz * x - qx * z;
+                    var iz =  qw * z + qx * y - qy * x;
+                    var iw = - qx * x - qy * y - qz * z;
+
+                    // calculate result * inverse quat
+                    xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
+                    yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
+                    zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+
+                    var yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
+
+                    return {
+                        heading : yaw
+                    };
+                }
+            },
+            icon: 'images/cameralook.png',
+            iconFunc: {
+                dataSourceIds: [androidPhoneOrientationDataSource.getId(),androidPhoneGpsDataSource.getId()],
+                handler: function (rec, timeStamp, options) {
+                    if (options.selected) {
+                        return 'images/cameralook-selected.png'
+                    } else {
+                        return 'images/cameralook.png';
+                    }
+                    ;
+                }
+            }
+        });
+
+        //------------ VIEW -----------------//
+        var leafletMapView = new OSH.UI.LeafletView("leafletOrientMap",
+                [{
+                    styler: pointMarker,
+                    name: "Android Phone GPS"
+                }]
+        );
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : replayFactor
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(androidPhoneOrientationDataSource);
+        dataProviderController.addDataSource(androidPhoneGpsDataSource);
+
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+    </script>
+</div>

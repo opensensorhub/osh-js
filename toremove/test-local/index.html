@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Video display</title>
+
+    <!-- OSH libs -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Video display</title>
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
+    <!-- START VENDOR -->
+    <!-- END VENDOR -->
+
+    <style>
+
+        body {
+            margin: 0;
+            height: 100%;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .video{
+            width: 800px;
+            border:solid 1px #000;
+            margin-right:10px;
+            margin-bottom:10px;
+        }
+
+        canvas{
+            width: 100%;
+            height:100%;
+            position: relative;
+        }
+
+        .fps-video{
+            float:left;
+        }
+
+
+        .video img{
+            width: inherit;
+            height:inherit;
+        }
+
+    </style>
+</head>
+<body id="body">
+<h2>FFMPEG Web worker test</h2>
+<script type="module">
+    import VideoH264 from "../Toolkit/src/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js";
+    import FFMPEGView from "../Toolkit/src/osh/ui/view/video/osh-UI-FFMPEGView.js";
+    import EventManager from "../Toolkit/src/osh/osh-EventManager.js";
+    import DataReceiverController from "../Toolkit/src/osh/datareceiver/osh-DataReceiverController.js";
+    import {Map, View} from 'https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js';
+
+    console.log(Map);
+    let videoIdCount = 0;
+
+    // We can add a group of dataSources and set the options
+    let dataReceiverController = new DataReceiverController({
+        replayFactor: 1
+    });
+
+    const useWebWorker = true;
+    // create div element
+    let fpsVideoDiv = document.createElement("div");
+    fpsVideoDiv.setAttribute("class", "fps-video");
+
+    let spanFpsEl = document.createElement("span");
+    spanFpsEl.innerHTML = "WebWorker: " + useWebWorker + ", Fps: 0, Avg: 0";
+
+    let videoContainerEl = document.createElement("div");
+    videoContainerEl.setAttribute("id", "video-container-" + (videoIdCount));
+    videoContainerEl.setAttribute("class", "video");
+
+    fpsVideoDiv.appendChild(spanFpsEl);
+    fpsVideoDiv.appendChild(videoContainerEl);
+
+
+    document.body.appendChild(fpsVideoDiv);
+    // OSH connect
+
+    let videoDataSource = new VideoH264("H264 video " + videoIdCount, {
+        protocol: "ws",
+        service: "SOS",
+        endpointUrl: "localhost:8282/sensorhub/sos",
+        offeringID: "foscam",
+        // endpointUrl: "34.66.201.87:8282/sensorhub/sos",
+        // offeringID: "urn:osh:sensor:rtpcam:tvs-rop-1-sos",
+        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+        startTime: "now",
+        endTime: "2055-03-08T12:20:40.000Z",
+        syncMasterTime: false,
+        bufferingTime: 0
+    });
+
+
+    let videoView = new FFMPEGView(videoContainerEl.id, {
+        dataSourceId: videoDataSource.id,
+        css: "dialog onScreen",
+        cssSelected: "video-selected",
+        name: "Android Video",
+        useWorker: true,
+        width: "1920",
+        height: "1080"
+    });
+
+
+    dataReceiverController.addDataSource(videoDataSource);
+
+    // starts streaming
+    EventManager.fire(EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId: [videoDataSource.id]});
+
+
+    // videoDataSource.onData = function(data) {
+    //     videoView.setData(videoContainerEl.id,data);
+    // };
+    //
+    // videoDataSource.connect();
+
+    videoIdCount++;
+
+    // display FPS
+    videoView.onAfterDecoded = function () {
+        let today = new Date();
+        let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        spanFpsEl.innerHTML = time+" - WebWorker: " + useWebWorker + ", Fps: " + this.statistics.fps.toFixed(2) + ", Avg: " + this.statistics.fpsSinceStart.toFixed(2);
+    };
+</script>
+
+</body>
+</html>
