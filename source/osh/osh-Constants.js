@@ -15,7 +15,4 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 export const VERSION = '1.3';
-export const BASE_WORKER_URL = {
-    path: "js/workers"
-};
 
