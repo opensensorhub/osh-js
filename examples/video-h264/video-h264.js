@@ -1,6 +1,5 @@
 import {BASE_WORKER_URL} from '../../source/osh/osh-Constants.js';
 
-BASE_WORKER_URL.path = '/workers';
 import VideoH264 from '../../source/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js';
 import FFMPEGView from '../../source/osh/ui/view/video/osh-UI-FFMPEGView.js';
 

@@ -1,6 +1,6 @@
 import Json from '../../source/osh/datareceiver/osh-DataReceiver-DataSourceJSON';
 import CesiumView from '../../source/osh/ui/view/map/osh-UI-CesiumView';
-import EllipsoidTerrainProvider from 'cesium/Source/Core/EllipsoidTerrainProvider';
+import {EllipsoidTerrainProvider} from 'cesium';
 import PointMarker from '../../source/osh/ui/styler/osh-UI-StylerPointMarker';
 
 

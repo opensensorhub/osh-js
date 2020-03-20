@@ -18,7 +18,17 @@ module.exports = {
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        // Needed to compile multiline strings in Cesium
+        sourcePrefix: ''
+    },
+    amd: {
+        // Enable webpack-friendly use of require in Cesium
+        toUrlUndefined: true
+    },
+    node: {
+        // Resolve node module use of fs
+        fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
