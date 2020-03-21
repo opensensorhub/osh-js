@@ -126,8 +126,9 @@ export default class Server {
     executeGetRequestWebWorker(request, successCallback, errorCallback) {
         // create worker source code blob if not created yet
         if (!isDefined(this.executeGetRequestWorkerBlob)) {
+            let sweXmlParser = new SWEXmlStreamParser();
             this.executeGetRequestWorkerBlob = URL.createObjectURL(new Blob(['(',
-                    'import SWEXmlStreamParser from "../osh-SWEXmlStreamParser"\n',
+                    // 'import SWEXmlStreamParser from "../parsers/osh-SWEXmlStreamParser.js";"\n',
                     function () {
                         self.onmessage = (e) => {
                             let xhr = new XMLHttpRequest();
@@ -135,14 +136,15 @@ export default class Server {
                                 if (xhr.readyState === 4) {
                                     if (xhr.status === 200) {
                                         //TODO: check if the ES6 import is working
-                                        let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
+                                        // let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
+                                        sweXmlParser.setXml(xhr.responseText);
                                         let respObj = sweXmlParser.toJson();
                                         self.postMessage(respObj);
                                     } else {
                                         self.postMessage({error: true, msg: xhr.responseText});
                                     }
                                 }
-                            }.bind(this);
+                            };
                             xhr.withCredentials = true;
                             xhr.open('GET', e.data, true);
                             xhr.send();

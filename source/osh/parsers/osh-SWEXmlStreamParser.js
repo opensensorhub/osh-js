@@ -8,7 +8,11 @@
  *
  */
 export default class SWEXmlStreamParser {
-    constructor(xml) {
+    constructor(xml='undefined') {
+        this.originalXml = xml;
+    }
+
+    setXml(xml) {
         this.originalXml = xml;
     }
 
