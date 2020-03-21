@@ -72,7 +72,7 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
         {from: '../../source/osh/css/osh.css', to: 'css'},
-        { from: '../../source/osh/workers', to: 'workers' },
+        { from: '../../source/osh/ui/view/video/workers', to: 'workers' },
         ])
     ]
 };
