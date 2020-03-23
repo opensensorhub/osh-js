@@ -87,6 +87,7 @@ export default class OpenLayerView extends OshView {
                 orientation: styler.orientation.heading,
                 color: styler.color,
                 icon: styler.icon,
+                anchor: styler.iconAnchor,
                 name: this.names[styler.getId()]
             });
 
@@ -111,6 +112,9 @@ export default class OpenLayerView extends OshView {
             let iconStyle = new Style({
                 image: new Icon({
                     opacity: 0.75,
+                    anchor: styler.iconAnchor,
+                    anchorYUnits: 'pixels',
+                    anchorXUnits: 'pixels',
                     src: styler.icon,
                     rotation: styler.orientation.heading * Math.PI / 180
                 })
@@ -309,8 +313,6 @@ export default class OpenLayerView extends OshView {
     addMarker(properties) {
         //create marker
         if(isDefined(this.map) &&  this.map !== null) {
-            console.log(properties);
-
             let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
             let markerFeature = new Feature({
                 geometry: marker,
