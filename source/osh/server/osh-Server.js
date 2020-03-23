@@ -125,36 +125,7 @@ export default class Server {
 
     executeGetRequestWebWorker(request, successCallback, errorCallback) {
         // create worker source code blob if not created yet
-        if (!isDefined(this.executeGetRequestWorkerBlob)) {
-            let sweXmlParser = new SWEXmlStreamParser();
-            this.executeGetRequestWorkerBlob = URL.createObjectURL(new Blob(['(',
-                    // 'import SWEXmlStreamParser from "../parsers/osh-SWEXmlStreamParser.js";"\n',
-                    function () {
-                        self.onmessage = (e) => {
-                            let xhr = new XMLHttpRequest();
-                            xhr.onreadystatechange = function () {
-                                if (xhr.readyState === 4) {
-                                    if (xhr.status === 200) {
-                                        //TODO: check if the ES6 import is working
-                                        // let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
-                                        sweXmlParser.setXml(xhr.responseText);
-                                        let respObj = sweXmlParser.toJson();
-                                        self.postMessage(respObj);
-                                    } else {
-                                        self.postMessage({error: true, msg: xhr.responseText});
-                                    }
-                                }
-                            };
-                            xhr.withCredentials = true;
-                            xhr.open('GET', e.data, true);
-                            xhr.send();
-                        };
-                    }.toString(), ')()'],
-                {type: 'application/javascript'}));
-        }
-
-        let worker = new Worker(this.executeGetRequestWorkerBlob);
-
+        let worker = new Worker('./GetRequestWorker.js', { type: 'module' });
         worker.onerror = (e) => {
             worker.terminate();
             errorCallback("Internal error in worker: " + e.message);
@@ -168,7 +139,6 @@ export default class Server {
                 successCallback(e.data);
             }
         };
-
         worker.postMessage(request);
     }
 }

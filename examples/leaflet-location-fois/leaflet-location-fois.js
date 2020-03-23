@@ -1,5 +1,7 @@
 //@ sourceURL=leaflet-location.html.js
+import {BASE_WORKER_URL} from '../../source/osh/osh-Constants.js';
 
+BASE_WORKER_URL.path = './workers';
 // create data source for Android phone GPS
 import PointMarker from "../../source/osh/ui/styler/osh-UI-StylerPointMarker.js";
 import LeafletView from "../../source/osh/ui/view/map/osh-UI-LeafletView.js";
@@ -18,14 +20,11 @@ leafletMapView.first = false; // don't zoom on first item added
 leafletMapView.map.setView(new L.LatLng(42.8, -76), 8);
 
 // show loading spinner
-let $spinner = $("<img class='spinner' style='left:50px' src='images/spinner.svg'>");
-$("#leafletMap").after($spinner);
-
 // retrieve list of features of interest from server (async call)
 server.getFeatureOfInterestWithId("urn:usgs:water:network", function(resp) {
 
   // render each feature with a marker
-  resp.GetFeatureOfInterestResponse.featureMember.forEach(function(f) {
+  resp.GetFeatureOfInterestResponse.featureMember.forEach(function (f) {
 
     // parse location from GML
     var pos = f.shape.pos.split(" ");
@@ -49,6 +48,4 @@ server.getFeatureOfInterestWithId("urn:usgs:water:network", function(resp) {
       styler: pointMarker
     });
   });
-
-  $spinner.remove();
 });

@@ -3,6 +3,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WorkerPlugin = require('worker-plugin');
 
 var path = require('path');
 
@@ -73,6 +74,7 @@ module.exports = {
         new CopyWebpackPlugin([
         {from: '../../source/osh/css/osh.css', to: 'css'},
         { from: '../../source/osh/ui/view/video/workers', to: 'workers' },
-        ])
+        ]),
+        new WorkerPlugin()
     ]
 };
