@@ -71,7 +71,7 @@ export default class Server {
      * @instance
      * @memberof OSH.Server
      */
-    getFeatureOfInterestWithId(procId, successCallback, errorCallback) {
+    getFeatureOfInterestById(procId, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
         this.executeGetRequest(request, successCallback, errorCallback);
     }
