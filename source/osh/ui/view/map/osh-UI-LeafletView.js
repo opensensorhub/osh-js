@@ -222,7 +222,6 @@ export default class LeafletView extends View {
         //create marker
         let marker = null;
         if (properties.icon !== null) {
-            console.log(properties.iconAnchor);
             let markerIcon = L.icon({
                 iconAnchor: properties.iconAnchor,
                 iconUrl: properties.icon

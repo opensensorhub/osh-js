@@ -255,7 +255,8 @@ export default class FFMPEGView extends View {
      * @param callback
      */
     initFFMPEG_DECODER_WORKER(callback) {
-        this.worker = new Worker(BASE_WORKER_URL.path+'/osh-UI-FFMPEGViewWorker.js');
+        this.worker = new Worker('./workers/osh-UI-FFMPEGViewWorker.js',{ type: 'module' });
+
         let yuvCanvas = this.yuvCanvas;
 
         let buffer = [];

@@ -15,6 +15,9 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
+    node: {
+        fs: 'empty'
+    },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
     // the property we’ll need to tell it to look there in addition to the
@@ -73,7 +76,6 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
         {from: '../../source/osh/css/osh.css', to: 'css'},
-        { from: '../../source/osh/ui/view/video/workers', to: 'workers' },
         ]),
         new WorkerPlugin()
     ]

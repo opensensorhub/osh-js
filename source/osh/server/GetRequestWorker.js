@@ -6,7 +6,6 @@ self.onmessage = (e) => {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
-                console.log(sweXmlParser);
                 sweXmlParser.setXml(xhr.responseText);
                 let respObj = sweXmlParser.toJson();
                 self.postMessage(respObj);

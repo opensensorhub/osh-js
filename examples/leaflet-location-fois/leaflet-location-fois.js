@@ -19,6 +19,7 @@ let leafletMapView = new LeafletView("leafletMap", []);
 leafletMapView.first = false; // don't zoom on first item added
 leafletMapView.map.setView(new L.LatLng(42.8, -76), 8);
 
+var cc = 0;
 // show loading spinner
 // retrieve list of features of interest from server (async call)
 server.getFeatureOfInterestWithId("urn:usgs:water:network", function(resp) {
