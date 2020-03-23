@@ -323,7 +323,6 @@ export default class CesiumView extends View {
 			fullscreenButton: false,
 			showRenderLoopErrors: true,
 			animation: false,
-			targetFrameRate: 10,
 			scene3DOnly: true // for draw layer
 		});
 
