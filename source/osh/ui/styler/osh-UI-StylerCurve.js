@@ -51,7 +51,7 @@ export default class Curve extends Styler {
             this.y = properties.y;
         }
 
-        if (typeof (properties.strokeFunc)) {
+        if (isDefined(properties.strokeFunc)) {
             let fn = function (rec, timeStamp, options) {
                 that.stroke = properties.strokeFunc.handler(rec, timeStamp, options);
             };
@@ -81,7 +81,7 @@ export default class Curve extends Styler {
      * @param view
      * @param options
      * @instance
-     * @memberof OSH.UI.Styler.Curve
+     * @memberof Curve
      */
     setData(dataSourceId, rec, view, options) {
         if (super.setData(dataSourceId, rec, view, options)) {
