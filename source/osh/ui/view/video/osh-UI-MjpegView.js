@@ -28,7 +28,7 @@ var videoView = new OSH.UI.MjpegView("containerId", {
     name: "Video"
 });
  */
-import View from "../osh-UI-View.js";
+import {View} from "../osh-UI-View.js";
 import {isDefined} from "../../../osh-Utils.js";
 import EventManager from "../../../osh-EventManager.js";
 

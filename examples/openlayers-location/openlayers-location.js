@@ -4,7 +4,7 @@ import PointMarker from "../../source/osh/ui/styler/osh-UI-StylerPointMarker.js"
 import OpenLayerView from "../../source/osh/ui/view/map/osh-UI-OpenLayerView.js";
 
 // create data source for Android phone GPS
-var gpsDataSource = new Json("android-GPS", {
+let gpsDataSource = new Json("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -16,7 +16,7 @@ var gpsDataSource = new Json("android-GPS", {
 });
 
 // style it with a moving point marker
-var pointMarker = new PointMarker({
+let pointMarker = new PointMarker({
   locationFunc: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
@@ -35,7 +35,7 @@ var pointMarker = new PointMarker({
 });
 
 // create Cesium view
-var olView = new OpenLayerView("ol-map",
+let olView = new OpenLayerView("ol-map",
     [{
       styler: pointMarker,
       name: "Android Phone GPS"
