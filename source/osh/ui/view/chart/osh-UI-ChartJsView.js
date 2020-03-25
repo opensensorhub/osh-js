@@ -131,9 +131,8 @@ export default class ChartJsView extends View {
             this.datasets[styler.getId()] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         }
-        if(currentDataset.data.length > this.maxPoints) {
-            this.chart.data.labels.shift();
-            currentDataset.data.shift();
+        if(currentDataset.data.length >= this.maxPoints) {
+            this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
         }
 
         currentDataset.data.push({
@@ -143,6 +142,11 @@ export default class ChartJsView extends View {
         this.chart.data.labels.push(styler.x);
 
         this.chart.update();
+
+        if(currentDataset.data.length > this.maxPoints) {
+            this.chart.data.labels.shift();
+            currentDataset.data.shift();
+        }
 
     }
 
