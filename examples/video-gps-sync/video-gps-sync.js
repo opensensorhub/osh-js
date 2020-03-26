@@ -9,6 +9,7 @@ import {randomUUID} from "../../source/osh/osh-Utils";
 import DataReceiverController from "../../source/osh/datareceiver/osh-DataReceiverController";
 
 const REPLAY_FACTOR = 1.0;
+const BUFFERING = 5000;
 
 let videoDataSource = new VideoMjpeg("android-Video", {
   protocol: "ws",
@@ -19,7 +20,7 @@ let videoDataSource = new VideoMjpeg("android-Video", {
   startTime: "2015-02-16T07:58:35Z",
   endTime: "2015-02-16T08:09:00Z",
   syncMasterTime: true,
-  bufferingTime: 5000,
+  bufferingTime: BUFFERING,
   replaySpeed: REPLAY_FACTOR
 });
 
@@ -33,7 +34,7 @@ let gpsDataSource = new Json("android-GPS", {
   endTime: "2015-02-16T08:09:00Z",
   syncMasterTime: true,
   timeShift: -16000,
-  bufferingTime: 5000,
+  bufferingTime: BUFFERING,
   replaySpeed: REPLAY_FACTOR
 });
 
@@ -47,7 +48,7 @@ let gpsDataSourceNoSync = new Json("android-GPS", {
   endTime: "2015-02-16T08:09:00Z",
   syncMasterTime: true,
   timeShift: -16000,
-  bufferingTime: 5000,
+  bufferingTime: BUFFERING,
   replaySpeed: REPLAY_FACTOR
 });
 
