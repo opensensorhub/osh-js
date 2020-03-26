@@ -17,10 +17,10 @@
 /**
  * @classdesc This datasource provides parsing to H264 raw data.
  * Data: ArrayBuffer
- * @class OSH.DataReceiver.VideoH264
- * @augments OSH.DataReceiver.DataSource
+ * @class VideoH264
+ * @augments DataSource
  * @example
- * var videoDataSource = new OSH.DataReceiver.VideoH264("H264 video ", {
+ * var videoDataSource = new VideoH264("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -40,7 +40,7 @@ export default class VideoH264 extends DataSource {
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
      * @param {ArrayBuffer} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.VideoH264
+     * @memberof VideoH264
      * @instance
      */
     parseTimeStamp(data) {
@@ -52,7 +52,7 @@ export default class VideoH264 extends DataSource {
      * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
      * @param {ArrayBuffer} data the data to parse
      * @returns {Uint8Array} the parsed data
-     * @memberof OSH.DataReceiver.VideoH264
+     * @memberof VideoH264
      * @instance
      */
     parseData(data) {
