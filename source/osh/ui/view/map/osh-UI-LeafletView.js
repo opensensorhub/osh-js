@@ -108,6 +108,7 @@ export default class LeafletView extends View {
             zoom: 3
         };
         this.first = true;
+        this.watch = false;
         let defaultLayers = this.getDefaultLayers();
 
         let defaultLayer = defaultLayers[0].layer;
@@ -119,29 +120,32 @@ export default class LeafletView extends View {
         overlays[defaultLayers[1].name] = defaultLayers[1].layer;
 
         if (isDefined(options)) {
-            if (options.initialView) {
+            if (isDefined(options.initialView)) {
                 initialView = {
                     location: new L.LatLng(options.initialView.lat, options.initialView.lon),
                     zoom: options.initialView.zoom
                 };
             }
             // checks autoZoom
-            if (!options.autoZoomOnFirstMarker) {
+            if (!isDefined(options.autoZoomOnFirstMarker)) {
                 this.first = false;
             }
 
+            if(isDefined(options.watch)) {
+                this.watch = options.watch;
+            }
             // checks overlayers
-            if (options.overlayLayers) {
+            if (isDefined(options.overlayLayers)) {
                 overlays = options.overlayLayers;
             }
 
             // checks baseLayer
-            if (options.baseLayers) {
+            if (isDefined(options.baseLayers)) {
                 baseLayers = options.baseLayers;
             }
 
             // checks defaultLayer
-            if (options.defaultLayer) {
+            if (isDefined(options.defaultLayer)) {
                 defaultLayer = options.defaultLayer;
             }
         }
@@ -155,6 +159,7 @@ export default class LeafletView extends View {
         L.control.layers(baseLayers, overlays).addTo(this.map);
 
         this.map.setView(initialView.location, initialView.zoom);
+
         //this.initLayers();
         this.markers = {};
         this.polylines = {};
@@ -303,10 +308,7 @@ export default class LeafletView extends View {
                     break;
                 }
             }
-
-
         };
-
         return id;
     }
 
@@ -375,6 +377,9 @@ export default class LeafletView extends View {
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
+            if(this.watch) {
+                this.map.panTo(newLatLng);
+            }
         }
 
 
