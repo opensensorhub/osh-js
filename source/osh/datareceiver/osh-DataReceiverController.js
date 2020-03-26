@@ -16,16 +16,16 @@
 
 /**
  * @classdesc This class is responsible of handling datasources. It observes necessary events to manage datasources.
- * @class OSH.DataReceiver.DataReceiverController
- * @listens {@link OSH.EventManager.EVENT.CONNECT_DATASOURCE}
- * @listens {@link OSH.EventManager.EVENT.DISCONNECT_DATASOURCE}
- * @listens {@link OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME}
+ * @class DataReceiverController
+ * @listens {@link CONNECT_DATASOURCE}
+ * @listens {@link DISCONNECT_DATASOURCE}
+ * @listens {@link DATASOURCE_UPDATE_TIME}
  * @example
  *
- * let datasource = new OSH.DataReceiver... // creates OSH.DataReceiver.<>
+ * let datasource = new <>
  *
  * // creates controller
- * let dataProviderController = new OSH.DataReceiver.DataReceiverController({
+ * let dataProviderController = new DataReceiverController({
  *   replayFactor : replayFactor
  * });
  *
@@ -34,7 +34,7 @@
  *
  * // and/or adds entity to controller
  * let entity = {
- *       id : "entity-"+OSH.Utils.randomUUID(),
+ *       id : "entity-"+randomUUID(),
  *       name: "Some entity",
  *       dataSources: [datasource]
  * };
@@ -53,7 +53,7 @@ export default class DataReceiverController {
         this.dataSourcesIdToDataSources = {};
 
         /*
-        * @event {@link OSH.EventManager.EVENT.CONNECT_DATASOURCE}
+        * @event {@link CONNECT_DATASOURCE}
         * @type {Object}
         * @property {Object} event - Is notified when a dataSource has to be connected
         * @property {Object} event.dataSourcesId - The datasource id
@@ -77,7 +77,7 @@ export default class DataReceiverController {
         });
 
         /*
-         * @event {@link OSH.EventManager.EVENT.DISCONNECT_DATASOURCE}
+         * @event {@link DISCONNECT_DATASOURCE}
          * @type {Object}
          * @property {Object} event - Is notified when a dataSource has to be disconnected
          * @property {Object} event.dataSourcesId - The datasource id
@@ -96,7 +96,7 @@ export default class DataReceiverController {
 
 
         /*
-         * @event {@link OSH.EventManager.EVENT.DATASOURCE_UPDATE_TIME}
+         * @event {@link DATASOURCE_UPDATE_TIME}
          * @type {Object}
          * @property {Object} event - Is notified when the datasource has to be updated
          * @property {Object} event.startTime - The corresponding new start time
@@ -137,7 +137,7 @@ export default class DataReceiverController {
      * @param startTime the start time
      * @param endTime the end time
      * @instance
-     * @memberof OSH.DataReceiver.DataReceiverController
+     * @memberof DataReceiverController
      */
     updateDataSourceTime(id, startTime, endTime) {
         // get current parameters
@@ -159,7 +159,7 @@ export default class DataReceiverController {
     }
 
     /**
-     * Instantiates a new OSH.Buffer {@link OSH.Buffer}
+     * Instantiates a new Buffer}
      * @instance
      * @memberof DataReceiverController
      */
@@ -169,11 +169,11 @@ export default class DataReceiverController {
 
     /**
      * Adds a entity to the current list of datasources and pushes it into the buffer.
-     * @see {@link OSH.Buffer}
+     * @see {@link Buffer}
      * @param {Object} dataSource the datasource to add
      * @param options @deprecated
      * @instance
-     * @memberof OSH.DataReceiver.DataReceiverController
+     * @memberof DataReceiverController
      */
     addEntity(entity, options) {
         if (isDefined(entity.dataSources)) {
@@ -185,11 +185,11 @@ export default class DataReceiverController {
 
     /**
      * Adds a dataSource to the current list of datasources and pushes it into the buffer.
-     * @see {@link OSH.Buffer}
+     * @see {@link Buffer}
      * @param {Object} dataSource the datasource to add
      * @param options @deprecated
      * @instance
-     * @memberof OSH.DataReceiver.DataReceiverController
+     * @memberof DataReceiverController
      */
     addDataSource(dataSource, options) {
         this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
@@ -208,7 +208,7 @@ export default class DataReceiverController {
     /**
      * Connects each connector
      * @instance
-     * @memberof OSH.DataReceiver.DataReceiverController
+     * @memberof DataReceiverController
      */
     connectAll() {
         this.buffer.start();

@@ -17,10 +17,10 @@
 /**
  * @classdesc This datasource provides parsing to MJPEG raw data.
  * Data: ArrayBuffer
- * @class OSH.DataReceiver.VideoMjpeg
- * @augments OSH.DataReceiver.DataSource
+ * @class VideoMjpeg
+ * @augments DataSource
  * @example
- var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
+ var androidPhoneVideoDataSource = new VideoMjpeg("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -41,7 +41,7 @@ export class VideoMjpeg extends DataSource {
      * @param {function} $super the parseTimeStamp super method
      * @param {ArrayBuffer} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.VideoMjpeg
+     * @memberof VideoMjpeg
      * @instance
      */
     parseTimeStamp(data) {
@@ -52,7 +52,7 @@ export class VideoMjpeg extends DataSource {
      * Extract data from the message. Creates a Blob object starting at byte 12. (after the 64 bits of the timestamp).
      * @param {ArrayBuffer} data the data to parse
      * @returns {Blob} the parsed data
-     * @memberof OSH.DataReceiver.VideoMjpeg
+     * @memberof VideoMjpeg
      * @instance
      */
     parseData(data) {

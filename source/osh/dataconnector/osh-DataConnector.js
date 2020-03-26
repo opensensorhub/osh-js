@@ -32,7 +32,7 @@ export default class DataConnector {
     /**
      * The data connector default id.
      * @returns {string}
-     * @memberof OSH.DataConnector.DataConnector
+     * @memberof DataConnector
      * @instance
      */
     getId() {
@@ -42,7 +42,7 @@ export default class DataConnector {
     /**
      * The stream url.
      * @returns {string}
-     * @memberof OSH.DataConnector.DataConnector
+     * @memberof DataConnector
      * @instance
      */
     getUrl() {

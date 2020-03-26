@@ -36,7 +36,7 @@ export default class DataSink {
     /**
      * @param properties
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     sendRequest(properties) {
         this.connector.sendRequest(this.buildRequest(properties));
@@ -45,7 +45,7 @@ export default class DataSink {
     /**
      * @param properties
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     buildRequest(properties) {
         return "";
@@ -54,7 +54,7 @@ export default class DataSink {
     /**
      * @param properties
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     buildUrl(properties) {
         let url = "";
@@ -71,7 +71,7 @@ export default class DataSink {
     /**
      * @param response
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     onCatchError(response) {
         this.onError(response);
@@ -80,7 +80,7 @@ export default class DataSink {
     /**
      * @param response
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     onCatchSuccess(response) {
         this.onSuccess(response);
@@ -89,7 +89,7 @@ export default class DataSink {
     /**
      * @param response
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     onError(response) {
 
@@ -98,7 +98,7 @@ export default class DataSink {
     /**
      * @param response
      * @instance
-     * @memberof OSH.DataSender.DataSink
+     * @memberof DataSink
      */
     onSuccess(response) {
 
@@ -107,7 +107,7 @@ export default class DataSink {
     /**
      * The data connector default id.
      * @returns {string|*}
-     * @memberof OSH.DataConnector.DataSink
+     * @memberof DataSink
      * @instance
      */
     getId() {
@@ -117,7 +117,7 @@ export default class DataSink {
     /**
      * The name.
      * @returns {string}
-     * @memberof OSH.DataConnector.DataSink
+     * @memberof DataSink
      * @instance
      */
     getName() {

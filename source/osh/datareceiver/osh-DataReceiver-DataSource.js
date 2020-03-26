@@ -24,7 +24,7 @@
  * @param {boolean} properties.syncMasterTime defines if the datasource is synchronize with the others one
  * @param {number} properties.bufferingTime defines the time during the data has to be buffered
  * @param {number} properties.timeOut defines the limit time before data has to be skipped
- * @param {string} properties.protocol defines the protocol of the datasource. @see {@link OSH.DataConnector.DataConnector}
+ * @param {string} properties.protocol defines the protocol of the datasource. @see {@link DataConnector}
  *
  */
 import {randomUUID, isDefined} from '../osh-Utils.js';
@@ -47,7 +47,7 @@ export default class DataSource {
      * Inits the datasource with the constructor properties.
      * @param properties
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      */
     initDataSource(properties) {
 
@@ -89,7 +89,7 @@ export default class DataSource {
     /**
      * Disconnect the dataSource then the connector will be closed as well.
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      */
     disconnect() {
         this.connector.disconnect();
@@ -105,7 +105,7 @@ export default class DataSource {
     /**
      * Connect the dataSource then the connector will be opened as well.
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      */
     connect() {
         this.connector.connect();
@@ -117,7 +117,7 @@ export default class DataSource {
      * @callback
      * @param data
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      */
     onMessage(data) {
         this.onData({
@@ -130,7 +130,7 @@ export default class DataSource {
      * The default timestamp parser
      * @param data the full data message returned by the connector
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      * @returns {number} the formatted timestamp
      */
     parseTimeStamp(data) {
@@ -141,7 +141,7 @@ export default class DataSource {
      * The default timestamp parser
      * @param data the full data message returned by the connector
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      * @returns {String|Object|number|ArrayBuffer|*} data the formatted data
      */
     parseData(data) {
@@ -151,7 +151,7 @@ export default class DataSource {
     /**
      * @param {Object} data the data object
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      * @example
      * data is represented as
      * data = {
@@ -167,7 +167,7 @@ export default class DataSource {
      * Gets the datasource id.
      * @returns {string} the datasource id
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      */
     getId() {
         return this.id;
@@ -176,7 +176,7 @@ export default class DataSource {
     /**
      * Gets the datasource name.
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      * @returns {*}
      */
     getName() {
@@ -196,7 +196,7 @@ export default class DataSource {
      * @param {number} properties.replaySpeed the replay factor
      * @param {number} properties.responseFormat the response format (e.g video/mp4)
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      * @returns {string} the full url
      */
     buildUrl(properties) {

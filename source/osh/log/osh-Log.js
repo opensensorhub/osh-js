@@ -28,7 +28,7 @@ export default class Log {
         this.first = true;
         // appends <div> tag to <body>
         document.observe("dom:loaded", function() {
-            let dialog = new OSH.UI.DialogView({
+            let dialog = new DialogView({
                 title: "Logging console"
             });
             /*dialog.appendContent(this.logDiv);
@@ -48,4 +48,4 @@ export default class Log {
     }
 }
 
-//var log = new OSH.Log();
+//var log = new Log();

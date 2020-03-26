@@ -18,9 +18,9 @@
  * @classdesc This datasource provides parsing to chart data.
  * Data has to be under the format : ISODATE,X,Y,
  * @class
- * @augments OSH.DataReceiver.DataSource
+ * @augments DataSource
  * @example
- *let chartDataSource = new OSH.DataReceiver.Chart("chart", {
+ *let chartDataSource = new Chart("chart", {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -41,7 +41,7 @@ export default class Chart extends DataSource {
      * @param {function} $super the parseTimeStamp super method
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.Chart
+     * @memberof Chart
      * @instance
      */
     parseTimeStamp(data) {
@@ -55,7 +55,7 @@ export default class Chart extends DataSource {
      * @param {function} $super the parseData super method
      * @param {Object} data the data to parse
      * @returns {Array} the parsed data as an array of tokens
-     * @memberof OSH.DataReceiver.Chart
+     * @memberof Chart
      * @instance
      */
     parseData(data) {

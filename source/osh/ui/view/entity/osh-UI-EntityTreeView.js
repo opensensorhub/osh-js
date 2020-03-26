@@ -20,13 +20,13 @@ import {isDefined} from "../../../osh-Utils.js";
 /**
  * @classdesc
  * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * @type {View}
+ * @augments View
  * @param {Object} parentElement The parent html element to attach the view
  * @param {Array} entityItems The entity items array
- * @param {Object} options the {@link OSH.View} options
+ * @param {Object} options the {@link View} options
  * @example
- let entityTreeView = new OSH.UI.EntityTreeView(entityTreeDialog.popContentDiv.id,
+ let entityTreeView = new id,
      [{
         entity : androidEntity,
         path: "Sensors/Toulouse",
@@ -49,7 +49,7 @@ export default class EntityTreeView extends View {
      *
      * @param options
      * @instance
-     * @memberof OSH.UI.EntityTreeView
+     * @memberof EntityTreeView
      */
     initTree(options) {
         this.tree = createTree(this.divId,'white',null);
@@ -117,7 +117,7 @@ export default class EntityTreeView extends View {
      * @param dataSourcesIds
      * @param entityId
      * @instance
-     * @memberof OSH.UI.EntityTreeView
+     * @memberof EntityTreeView
      */
     selectDataView(dataSourcesIds, entityId) {
 

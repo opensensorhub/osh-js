@@ -52,10 +52,10 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 /**
  * @classdesc
  * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * @type {View}
+ * @augments View
  * @example
- let cesiumMapView = new OSH.UI.CesiumView("",
+ let cesiumMapView = new CesiumView("",
  [{
 	styler :  pointMarker,
 	contextMenuId: circularContextMenuId,
@@ -63,7 +63,7 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 	entityId : androidEntity.id
  },
  {
-    styler : new OSH.UI.Styler.Polyline({
+    styler : new Polyline({
         locationFunc : {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
@@ -108,7 +108,7 @@ export default class CesiumView extends View {
 	 * @param timeStamp
 	 * @param options
 	 * @instance
-	 * @memberof OSH.UI.CesiumView
+	 * @memberof CesiumView
 	 */
 	updateMarker(styler,timeStamp,options) {
 		let markerId = 0;
@@ -157,7 +157,7 @@ export default class CesiumView extends View {
 	 * @param timeStamp
 	 * @param options
 	 * @instance
-	 * @memberof OSH.UI.CesiumView
+	 * @memberof CesiumView
 	 *
 	 */
 	updateDrapedImage(styler,timeStamp,options,snapshot) {
@@ -304,7 +304,7 @@ export default class CesiumView extends View {
 	 *
 	 * @param options
 	 * @instance
-	 * @memberof OSH.UI.CesiumView
+	 * @memberof CesiumView
 	 */
 	beforeAddingItems(options) {
 		this.markers = {};
@@ -367,7 +367,7 @@ export default class CesiumView extends View {
 	 * @param properties
 	 * @returns {string}
 	 * @instance
-	 * @memberof OSH.UI.CesiumView
+	 * @memberof CesiumView
 	 */
 	addMarker(properties) {
 
@@ -456,7 +456,7 @@ export default class CesiumView extends View {
 	 * @param id
 	 * @param properties
 	 * @instance
-	 * @memberof OSH.UI.CesiumView
+	 * @memberof CesiumView
 	 */
 	updateMapMarker(id, properties) {
 		let lon = properties.lon;
@@ -533,7 +533,7 @@ export default class CesiumView extends View {
 	 * @param lon
 	 * @returns {Number|undefined}
 	 * @instance
-	 * @memberof OSH.UI.CesiumView
+	 * @memberof CesiumView
 	 */
 	getAltitude(lat, lon) {
 		let position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());

@@ -18,9 +18,9 @@ import {isDefined} from "../../osh-Utils.js";
 
 /**
  * @classdesc
- * @class OSH.UI.Styler.ImageDraping
- * @type {OSH.UI.Styler}
- * @augments OSH.UI.Styler
+ * @class ImageDraping
+ * @type {Styler}
+ * @augments Styler
  */
 export default class ImageDraping extends Styler {
     constructor(properties) {
@@ -96,7 +96,7 @@ export default class ImageDraping extends Styler {
      * @param rec
      * @param view
      * @param options
-     * @memberof  OSH.UI.Styler.ImageDraping
+     * @memberof  ImageDraping
      * @instance
      */
     setData(dataSourceId, rec, view, options) {

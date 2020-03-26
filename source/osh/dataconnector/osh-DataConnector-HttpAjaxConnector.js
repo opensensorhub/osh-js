@@ -15,13 +15,13 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @type {OSH.DataConnector.DataConnector}
+ * @type {DataConnector}
  * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @class
- * @augments OSH.DataConnector.DataConnector
+ * @augments DataConnector
  * @example
  * let request = ...;
- * let connector = new OSH.DataConnector.AjaxConnector(url);
+ * let connector = new AjaxConnector(url);
  *
  * // handle onSuccess
  * connector.onSuccess = function(event) {
@@ -61,7 +61,7 @@ export default class AjaxConnector extends DataConnector {
     /**
      * Sends the request to the defined server.
      * @param request The Http request (as a String format)
-     * @memberof OSH.DataConnector.AjaxConnector
+     * @memberof AjaxConnector
      * @instance
      */
     sendRequest(request, extraUrl) {
@@ -108,7 +108,7 @@ export default class AjaxConnector extends DataConnector {
     /**
      * This is the callback method in case of getting error connection.
      * @param event The error details
-     * @memberof OSH.DataConnector.AjaxConnector
+     * @memberof AjaxConnector
      * @instance
      */
     onError(event) {
@@ -118,7 +118,7 @@ export default class AjaxConnector extends DataConnector {
     /**
      * This is the callback method in case of getting success connection.
      * @param event
-     * @memberof OSH.DataConnector.AjaxConnector
+     * @memberof AjaxConnector
      * @instance
      */
     onSuccess(event) {

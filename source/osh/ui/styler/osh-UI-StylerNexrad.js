@@ -20,9 +20,9 @@ import Styler from "./osh-UI-Styler.js";
 
 /**
  * @classdesc
- * @class OSH.UI.Styler.Nexrad
- * @type {OSH.UI.Styler}
- * @augments OSH.UI.Styler
+ * @class Nexrad
+ * @type {Styler}
+ * @augments Styler
  */
 export default class Nexrad extends Styler {
 	constructor(properties) {
@@ -93,7 +93,7 @@ export default class Nexrad extends Styler {
 	 * @param view
 	 * @param options
 	 * @instance
-	 * @memberof OSH.UI.Styler.Nexrad
+	 * @memberof Nexrad
 	 */
 	setData(dataSourceId,rec,view,options) {
 		if (super.setData(dataSourceId,rec,view,options)) {
@@ -151,7 +151,7 @@ export default class Nexrad extends Styler {
 	 * @param val
 	 * @returns {*}
 	 * @instance
-	 * @memberof OSH.UI.Styler.Nexrad
+	 * @memberof Nexrad
 	 */
 	getReflectivityColor(val) {
 		let index = Math.floor((val + 30) / 5) + 1;

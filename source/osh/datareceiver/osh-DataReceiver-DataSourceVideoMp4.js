@@ -17,10 +17,10 @@
 /**
  * @classdesc This datasource provides parsing to fragmented mp4 raw data. The data is encapsulated into mp4 fragment.
  * Data: ArrayBuffer
- * @class OSH.DataReceiver.VideoMp4
- * @augments OSH.DataReceiver.DataSource
+ * @class VideoMp4
+ * @augments DataSource
  * @example
- * let videoDataSource = new OSH.DataReceiver.VideoMp4("MP4 video ", {
+ * let videoDataSource = new VideoMp4("MP4 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -46,7 +46,7 @@ export default class VideoMp4 extends DataSource {
      * Extracts timestamp from the message. The timestamp is located at the 60th bytes and is 8 bytes length.
      * @param {ArrayBuffer} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.VideoMp4
+     * @memberof VideoMp4
      * @instance
      */
     parseTimeStamp(data) {

@@ -39,7 +39,7 @@ const BUFFER_STATUS = {
  * @param {Object} options The options object
  * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
  * @example
- let buffer = new OSH.Buffer({
+ let buffer = new Buffer({
     replayFactor: 1
  });
  */
@@ -69,7 +69,7 @@ export default class Buffer {
 
     /**
      * Starts observing the data stream.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     startObservers() {
@@ -80,7 +80,7 @@ export default class Buffer {
 
     /**
      * Stops observing the data stream.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     stopObservers() {
@@ -92,7 +92,7 @@ export default class Buffer {
 
     /**
      * Starts the buffer and starts the observers.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     start() {
@@ -104,7 +104,7 @@ export default class Buffer {
 
     /**
      * Stops the buffer and stops the observers.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     stop() {
@@ -115,7 +115,7 @@ export default class Buffer {
     /**
      * Cancels all current running/pending jobs. This function loop over the
      * datasources and cancel them one by one.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     cancelAll() {
@@ -127,7 +127,7 @@ export default class Buffer {
     /**
      * Cancels the dataSource. Cancels means to clear the data contained into the buffer and change the status to CANCEL
      * @param dataSourceId The dataSource to cancel
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     cancelDataSource(dataSourceId) {
@@ -138,7 +138,7 @@ export default class Buffer {
     /**
      * Starts buffering the dataSource.
      * @param dataSourceId the dataSource to start
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     startDataSource(dataSourceId) {
@@ -148,8 +148,8 @@ export default class Buffer {
 
     /**
      * Starts all dataSources. The method loops over all datasources and
-     * calls the {@link OSH.Buffer.startDataSource}.
-     * @memberof OSH.Buffer
+     * calls the {@link
+     * @memberof Buffer
      * @instance
      */
     startAll() {
@@ -162,7 +162,7 @@ export default class Buffer {
      * Adds a new dataSource into the buffer.
      * @param dataSourceId The dataSource to add
      * @param options syncMasterTime | bufferingTime | timeOut | name
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     addDataSource(dataSourceId, options) {
@@ -197,10 +197,10 @@ export default class Buffer {
 
     /**
      * Adds an entity which contains one or more dataSources.
-     * The dataSources are then added to the buffer using {@link OSH.Buffer.addDataSource}
+     * The dataSources are then added to the buffer using {@link addDataSource}
      * @param entity The entity to add
-     * @param options The options object passed to the {@link OSH.Buffer.addDataSource}
-     * @memberof OSH.Buffer
+     * @param options The options object passed to the {@link addDataSource}
+     * @memberof Buffer
      * @instance
      */
     addEntity(entity, options) {
@@ -213,9 +213,9 @@ export default class Buffer {
     }
 
     /**
-     * Pushes a data into the buffer. This method is used as internal method by the {@link OSH.Buffer.startObservers}.
+     * Pushes a data into the buffer. This method is used as internal method by the {@link
      * The event contains the necessary elements to process the data.
-     * @param event The event object received from the OSH.EventManager
+     * @param event The event object received from the EventManager
      * @param event.dataSourceId The dataSource id to process
      * @param event.syncMasterTime A boolean used to check if the data has to be synchronized with another data. If the value
      * is FALSE, the data will pass through the buffer and send back immediately.
@@ -312,7 +312,7 @@ export default class Buffer {
 
     /**
      * [TODO] This is an internal method.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     processData(bufferObj, dataSourceId, fnEndTimeout) {
@@ -344,11 +344,11 @@ export default class Buffer {
     }
 
     /**
-     * Dispatches the data through the EventManager. If the data to process is synchronized, it will launch a {@link OSH.EventManager.EVENT.CURRENT_MASTER_TIME} event
-     * with {timeStamp:xxx} as parameter. In all case, it launches a {@link OSH.EventManager.EVENT.DATA}-dataSourceId event with {data:data} as parameter.
+     * Dispatches the data through the EventManager. If the data to process is synchronized, it will launch a {@link CURRENT_MASTER_TIME} event
+     * with {timeStamp:xxx} as parameter. In all case, it launches a {@link
      * @param dataSourceId The dataSourceId of the data. It will be used as concatenated String into the fire method.
      * @param data The data to fire
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     dispatchData(dataSourceId, data) {
@@ -369,7 +369,7 @@ export default class Buffer {
      * This method is responsible of buffering data, that is to say it will timeOut the whole process to wait after more data.
      * @param name The name of the current dataSource which needs to be buffered
      * @param bufferingTime The buffering time
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     buffering(name, bufferingTime) {

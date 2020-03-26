@@ -17,10 +17,10 @@
 /**
  * @classdesc This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
- * @class OSH.DataReceiver.OrientationQuaternion
- * @augments OSH.DataReceiver.DataSource
+ * @class OrientationQuaternion
+ * @augments DataSource
  * @example
- * let androidPhoneOrientationDataSource = new OSH.DataReceiver.OrientationQuaternion("android-Orientation", {
+ * let androidPhoneOrientationDataSource = new OrientationQuaternion("android-Orientation", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -43,7 +43,7 @@ export class OrientationQuaternion extends DataSource {
      * @param {function} $super the parseTimeStamp super method
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.OrientationQuaternion
+     * @memberof OrientationQuaternion
      * @instance
      */
     parseTimeStamp(data) {
@@ -63,7 +63,7 @@ export class OrientationQuaternion extends DataSource {
      *   roll: 11,
      *   heading:12
      * }
-     * @memberof OSH.DataReceiver.OrientationQuaternion
+     * @memberof OrientationQuaternion
      * @instance
      */
     parseData(data) {

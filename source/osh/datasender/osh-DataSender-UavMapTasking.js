@@ -17,7 +17,7 @@
 /**
  * @classdesc
  * @class
- * @augments OSH.DataSender.DataSource
+ * @augments DataSource
  */
 import DataSink from './osh-DataSender-DataSink.js';
 import EventManager from '../osh-EventManager.js';
@@ -28,19 +28,19 @@ export default class UavMapTasking extends DataSink {
         super(name, properties);
 
         let that = this;
-        EventManager.observe(OSH.EventManager.EVENT.UAV_TAKEOFF, (event) =>
+        EventManager.observe(UAV_TAKEOFF, (event) =>
             that.connector.sendRequest(that.buildTakeOffRequest()));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_GOTO, (event) =>
+        UAV_GOTO, (event) =>
             that.connector.sendRequest(that.buildGotoRequest({lat: event.geoLat, lon: event.geoLon})));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_ORBIT, (event) =>
+        UAV_ORBIT, (event) =>
             that.connector.sendRequest(that.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10})));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LOOKAT, (event) =>
+        UAV_LOOKAT, (event) =>
             that.connector.sendRequest(that.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon})));
 
-        OSH.EventManager.observe(OSH.EventManager.EVENT.UAV_LAND, (event) =>
+        UAV_LAND, (event) =>
             that.connector.sendRequest(that.buildLandRequest({lat: event.geoLat, lon: event.geoLon})));
     }
 
@@ -49,7 +49,7 @@ export default class UavMapTasking extends DataSink {
      * Builds the take off SPS request.
      * @param {string} props
      * @returns {string} the take off sps request
-     * @memberof OSH.DataReceiver.UavMapTasking
+     * @memberof UavMapTasking
      * @instance
      */
     buildTakeOffRequest(props) {
@@ -60,7 +60,7 @@ export default class UavMapTasking extends DataSink {
      * Builds the got to SPS request.
      * @param {string} props
      * @returns {string} the goto SPS request
-     * @memberof OSH.DataReceiver.UavMapTasking
+     * @memberof UavMapTasking
      * @instance
      */
     buildGotoRequest(props) {
@@ -71,7 +71,7 @@ export default class UavMapTasking extends DataSink {
     /**
      * Builds the orbit SPS request.
      * @returns {string} the orbit SPS request
-     * @memberof OSH.DataReceiver.UavMapTasking
+     * @memberof UavMapTasking
      * @param {string} props
      * @instance
      */
@@ -83,7 +83,7 @@ export default class UavMapTasking extends DataSink {
     /**
      * Builds the lookat SPS request.
      * @returns {string} the lookat SPS request
-     * @memberof OSH.DataReceiver.UavMapTasking
+     * @memberof UavMapTasking
      * @param {string} props
      * @instance
      */
@@ -95,7 +95,7 @@ export default class UavMapTasking extends DataSink {
     /**
      * Builds the land SPS request.
      * @returns {string} the land SPS request
-     * @memberof OSH.DataReceiver.UavMapTasking
+     * @memberof UavMapTasking
      * @param {string} props
      * @instance
      */
@@ -108,7 +108,7 @@ export default class UavMapTasking extends DataSink {
      * Builds the request based on sps standard.
      * @param {string} the command data
      * @returns {string} the sps request
-     * @memberof OSH.DataReceiver.UavMapTasking
+     * @memberof UavMapTasking
      * @instance
      */
     buildRequest(cmdData) {

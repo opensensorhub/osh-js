@@ -17,10 +17,10 @@
 /**
  * @classdesc
  * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * @type {View}
+ * @augments View
  * @example
-var videoView = new OSH.UI.MjpegView("containerId", {
+var videoView = new MjpegView("containerId", {
     dataSourceId: datasource.id,
     entityId : entity.id,
     css: "video",
@@ -80,7 +80,7 @@ export default class MjpegView extends View {
    * @param dataSourceId
    * @param data
    * @instance
-   * @memberof OSH.UI.MjpegView
+   * @memberof MjpegView
    */
   setData(dataSourceId,data) {
       let oldBlobURL = this.imgTag.src;
@@ -97,7 +97,7 @@ export default class MjpegView extends View {
    * @param dataSourceIds
    * @param entityId
    * @instance
-   * @memberof OSH.UI.MjpegView
+   * @memberof MjpegView
    */
   selectDataView(dataSourceIds,entityId) {
     if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId)) && this.entityId === entityId) {
@@ -109,7 +109,7 @@ export default class MjpegView extends View {
 
   /**
    * @instance
-   * @memberof OSH.UI.MjpegView
+   * @memberof MjpegView
    */
   reset() {
       this.imgTag.src = "";

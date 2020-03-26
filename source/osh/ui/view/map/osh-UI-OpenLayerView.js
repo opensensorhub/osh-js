@@ -43,8 +43,8 @@ import OSM from "ol/source/OSM.js";
 /**
  * @classdesc
  * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * @type {View}
+ * @augments View
  */
 export default class OpenLayerView extends OshView {
     constructor(parentElementDivId, viewItems, options) {
@@ -55,7 +55,7 @@ export default class OpenLayerView extends OshView {
      *
      * @param options
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     beforeAddingItems(options) {
         // inits the map
@@ -65,7 +65,7 @@ export default class OpenLayerView extends OshView {
 
     /**
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     initEvents() {
     }
@@ -74,7 +74,7 @@ export default class OpenLayerView extends OshView {
      *
      * @param styler
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     updateMarker(styler) {
         let markerId = 0;
@@ -127,7 +127,7 @@ export default class OpenLayerView extends OshView {
      *
      * @param styler
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     updatePolyline(styler) {
         let polylineId = 0;
@@ -167,7 +167,7 @@ export default class OpenLayerView extends OshView {
      *
      * @param options
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     initMap(options) {
 
@@ -283,7 +283,7 @@ export default class OpenLayerView extends OshView {
      *
      * @returns {Object}
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     getDefaultBaseLayers() {
         return {};
@@ -294,7 +294,7 @@ export default class OpenLayerView extends OshView {
      *
      * @returns {Array}
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     getDefaultLayers() {
         let osm = new TileLayer({
@@ -308,7 +308,7 @@ export default class OpenLayerView extends OshView {
      * @param properties
      * @returns {string}
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     addMarker(properties) {
         //create marker
@@ -373,7 +373,7 @@ export default class OpenLayerView extends OshView {
      * @param styler
      * @returns {string} the id of the newly created marker, or the id of the marker if it already exists from the current styler
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     createMarkerFromStyler(styler) {
         //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
@@ -423,7 +423,7 @@ export default class OpenLayerView extends OshView {
      * @param properties
      * @returns {string}
      * @instance
-     * @memberof OSH.UI.OpenLayerView
+     * @memberof OpenLayerView
      */
     addPolyline(properties) {
         let polylinePoints = [];
@@ -466,7 +466,7 @@ export default class OpenLayerView extends OshView {
     /**
      *
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     onResize() {
         super.onResize();

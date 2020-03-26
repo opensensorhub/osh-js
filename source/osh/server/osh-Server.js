@@ -20,7 +20,7 @@
  * @classdesc
  * @example
  *
- * let oshServer = new OSH.Server({
+ * let oshServer = new Server({
  *    url : <someUrl>,
  *    sosService: 'sos',
  *    spsService: 'sps',
@@ -45,7 +45,7 @@ export default class Server {
      * @param successCallback
      * @param errorCallback
      * @instance
-     * @memberof OSH.Server
+     * @memberof Server
      */
     getCapabilities(successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetCapabilities';
@@ -57,7 +57,7 @@ export default class Server {
      * @param successCallback callback the corresponding JSON object
      * @param errorCallback callback the corresponding error
      * @instance
-     * @memberof OSH.Server
+     * @memberof Server
      */
     getFeatureOfInterest(successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest';
@@ -69,7 +69,7 @@ export default class Server {
      * @param successCallback callback the corresponding JSON object
      * @param errorCallback callback the corresponding error
      * @instance
-     * @memberof OSH.Server
+     * @memberof Server
      */
     getFeatureOfInterestById(procId, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
@@ -82,7 +82,7 @@ export default class Server {
      * @param errorCallback callback the corresponding error
      * @param offering the corresponding offering
      * @instance
-     * @memberof OSH.Server
+     * @memberof Server
      */
     getResultTemplate(offering, observedProperty, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetResultTemplate&offering=' + offering + "&observedProperty=" + observedProperty;

@@ -17,7 +17,7 @@
 /**
  * @classdesc
  * @class
- * @augments OSH.DataSender.DataSink
+ * @augments DataSink
  * From describe tasking:
  * swe:item name="relMove">
  <swe:Text definition="http://sensorml.com/ont/swe/property/CameraRelativeMovementName">

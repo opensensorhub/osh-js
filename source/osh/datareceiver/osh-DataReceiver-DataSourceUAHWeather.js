@@ -16,8 +16,8 @@
 
 /**
  * @classdesc This datasource provides parsing to UAH Weather Station.
- * @class OSH.DataReceiver.UAHWeather
- * @augments OSH.DataReceiver.DataSource
+ * @class UAHWeather
+ * @augments DataSource
  */
 import DataSource from './osh-DataReceiver-DataSource.js';
 
@@ -27,7 +27,7 @@ export default class DataSourceUAHWeather extends DataSource {
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.DataSourceUAHWeather
+     * @memberof DataSourceUAHWeather
      * @instance
      */
     parseTimeStamp(data) {
@@ -40,7 +40,7 @@ export default class DataSourceUAHWeather extends DataSource {
      * Extract data from the message.
      * @param {Object} data the data to parse
      * @returns {Object} the parsed data
-     * @memberof OSH.DataReceiver.DataSourceUAHWeather
+     * @memberof DataSourceUAHWeather
      * @instance
      */
     parseData(data) {

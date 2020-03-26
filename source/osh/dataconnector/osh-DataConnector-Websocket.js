@@ -15,13 +15,13 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @type {OSH.DataConnector.DataConnector}
+ * @type {DataConnector}
  * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @class
- * @augments OSH.DataConnector.DataConnector
+ * @augments DataConnector
  * @example
  * let url = ...;
- * let connector = new OSH.DataConnector.WebSocketDataConnector(url);
+ * let connector = new WebSocketDataConnector(url);
  *
  * // connect
  * connector.connect();
@@ -42,7 +42,7 @@ export default class WebSocketDataConnector extends DataConnector {
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      * @instance
-     * @memberof OSH.DataConnector.WebSocketDataConnector
+     * @memberof WebSocketDataConnector
      */
     connect() {
         let that = this;
@@ -111,7 +111,7 @@ export default class WebSocketDataConnector extends DataConnector {
     /**
      * Disconnects the websocket.
      * @instance
-     * @memberof OSH.DataConnector.WebSocketDataConnector
+     * @memberof WebSocketDataConnector
      */
     disconnect() {
         if (isWebWorker() && this.worker !== null) {
@@ -128,7 +128,7 @@ export default class WebSocketDataConnector extends DataConnector {
      * The onMessage method used by the websocket to callback the data
      * @param data the callback data
      * @instance
-     * @memberof OSH.DataConnector.WebSocketDataConnector
+     * @memberof WebSocketDataConnector
      */
     onMessage(data) {
     }
@@ -136,7 +136,7 @@ export default class WebSocketDataConnector extends DataConnector {
     /**
      * Closes the webSocket.
      * @instance
-     * @memberof OSH.DataConnector.WebSocketDataConnector
+     * @memberof WebSocketDataConnector
      */
     close() {
         this.disconnect();

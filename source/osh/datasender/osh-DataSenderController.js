@@ -30,7 +30,7 @@ export default class DataSenderController {
      * Adds a datasource to the list of datasources to process
      * @param {Object} datasource the datasource to add
      * @instance
-     * @memberof OSH.DataSender.DataSenderController
+     * @memberof DataSenderController
      */
     addDataSource(dataSource) {
         this.dataSources[dataSource.getId()] = dataSource;
@@ -43,7 +43,7 @@ export default class DataSenderController {
      * @param {function} onSucess the onSucess function
      * @param {function} onError the onError function
      * @instance
-     * @memberof OSH.DataSender.DataSenderController
+     * @memberof DataSenderController
      */
     sendRequest(dataSourceId, properties, onSuccess, onError) {
         if (dataSourceId in this.dataSources) {

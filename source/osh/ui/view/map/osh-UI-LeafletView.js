@@ -24,10 +24,10 @@ import 'leaflet/dist/leaflet.css';
 /**
  * @classdesc
  * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * @type {View}
+ * @augments View
  * @example
- let leafletMapView = new OSH.UI.LeafletView("",
+ let leafletMapView = new LeafletView("",
  [{
             styler :  pointMarker,
             contextMenuId: circularContextMenuId,
@@ -35,7 +35,7 @@ import 'leaflet/dist/leaflet.css';
             entityId : androidEntity.id
         },
  {
-     styler : new OSH.UI.Styler.Polyline({
+     styler : new Polyline({
          locationFunc : {
              dataSourceIds : [androidPhoneGpsDataSource.getId()],
              handler : function(rec) {
@@ -70,7 +70,7 @@ export default class LeafletView extends View {
      * @param $super
      * @param options
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     beforeAddingItems(options) {
         // inits the map
@@ -80,7 +80,7 @@ export default class LeafletView extends View {
 
     /**
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     initEvents() {
         // removes default right click
@@ -100,7 +100,7 @@ export default class LeafletView extends View {
      *
      * @param options
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     initMap(options) {
         let initialView = {
@@ -169,7 +169,7 @@ export default class LeafletView extends View {
      *
      * @returns {{}}
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     getDefaultBaseLayers() {
         return {};
@@ -208,7 +208,7 @@ export default class LeafletView extends View {
 
     /**
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     initLayers() {
         // create the tile layer with correct attribution
@@ -301,8 +301,8 @@ export default class LeafletView extends View {
                         offsetX: -70,
                         offsetY: -70,
                         action : "show",
-                        x:OSH.Utils.getXCursorPosition(),
-                        y:OSH.Utils.getYCursorPosition(),
+                        x:getXCursorPosition(),
+                        y:getYCursorPosition(),
                         drawLineTo:id
                     });
                     break;
@@ -317,7 +317,7 @@ export default class LeafletView extends View {
      * @param properties
      * @returns {string}
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     addPolyline(properties) {
         let polylinePoints = [];
@@ -344,7 +344,7 @@ export default class LeafletView extends View {
      *
      * @param styler
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     updateMarker(styler) {
         let markerId = 0;
@@ -402,7 +402,7 @@ export default class LeafletView extends View {
      *
      * @param styler
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     updatePolyline(styler) {
         let polylineId = 0;
@@ -450,7 +450,7 @@ export default class LeafletView extends View {
      *
      * @param parentElement
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     attachTo(parentElement) {
         super.attachTo(parentElement);
@@ -461,7 +461,7 @@ export default class LeafletView extends View {
     /**
      *
      * @instance
-     * @memberof OSH.UI.LeafletView
+     * @memberof LeafletView
      */
     onResize() {
         super.onResize();

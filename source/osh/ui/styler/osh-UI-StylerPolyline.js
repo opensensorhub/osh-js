@@ -18,12 +18,12 @@ import Styler from "./osh-UI-Styler.js";
 import {isDefined} from "../../osh-Utils.js";
 
 /**
- * @class OSH.UI.Styler.Polyline
+ * @class Polyline
  * @classdesc
- * @type {OSH.UI.Styler}
- * @augments OSH.UI.Styler
+ * @type {Styler}
+ * @augments Styler
  * @example
- * let polylineStyler = new OSH.UI.Styler.Polyline({
+ * let polylineStyler = new Polyline({
 		locationFunc : {
 			dataSourceIds : [datasource.getId()],
 			handler : function(rec) {
@@ -120,7 +120,7 @@ export default class Polyline extends Styler {
 	 * @param view
 	 * @param options
 	 * @instance
-	 * @memberof OSH.UI.Styler.Polyline
+	 * @memberof Polyline
 	 */
 	setData(dataSourceId,rec,view,options) {
 		if(super.setData(dataSourceId,rec,view,options)) {
@@ -136,7 +136,7 @@ export default class Polyline extends Styler {
 	 *
 	 * @param $super
 	 * @instance
-	 * @memberof OSH.UI.Styler.Polyline
+	 * @memberof Polyline
 	 */
 	clear() {
 		this.locations = [];

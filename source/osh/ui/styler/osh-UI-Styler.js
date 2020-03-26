@@ -20,7 +20,7 @@ import EventManager from "../../osh-EventManager.js";
 
 /**
  * @classdesc
- * @class OSH.UI.Styler
+ * @class Styler
  * @abstract
  */
 export default class Styler {
@@ -42,7 +42,7 @@ export default class Styler {
     }
 
     /**
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     initEvents() {
@@ -51,7 +51,7 @@ export default class Styler {
     }
 
     /**
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     clear() {
@@ -60,7 +60,7 @@ export default class Styler {
     /**
      * Gets the styler id.
      * @returns {string} the styler id
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     getId() {
@@ -70,7 +70,7 @@ export default class Styler {
     /**
      * Selects the datasource contained into the list
      * @param {Array} dataSourceIds the list of datasources
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     select(dataSourceIds) {
@@ -80,7 +80,7 @@ export default class Styler {
      * Adds a function
      * @param {Array} dataSourceIds the list of datasources
      * @param {function} fn the function to apply
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     addFn(dataSourceIds, fn) {
@@ -100,7 +100,7 @@ export default class Styler {
      * @param view
      * @param options
      * @returns {boolean}
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     setData(dataSourceId, rec, view, options) {
@@ -118,7 +118,7 @@ export default class Styler {
     /**
      *
      * @returns {Array}
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     getDataSourcesIds() {
@@ -130,7 +130,7 @@ export default class Styler {
     }
 
     /**
-     * @memberof OSH.UI.Styler
+     * @memberof Styler
      * @instance
      */
     init() {

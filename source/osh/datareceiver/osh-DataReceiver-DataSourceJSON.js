@@ -17,10 +17,10 @@
 /**
  * @classdesc This datasource provides generic parsing for JSON response.
  *
- * @class OSH.DataReceiver.JSON
- * @augments OSH.DataReceiver.DataSource
+ * @class JSON
+ * @augments DataSource
  * @example
- * let androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
+ * let androidPhoneGpsDataSource = new JSON("android-GPS", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -44,7 +44,7 @@ export default class Json extends DataSource {
      * @param {function} $super the parseTimeStamp super method
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.JSON
+     * @memberof JSON
      * @instance
      */
     parseTimeStamp(data) {
@@ -66,7 +66,7 @@ export default class Json extends DataSource {
      *    alt:100
      *   }
      * }
-     * @memberof OSH.DataReceiver.JSON
+     * @memberof JSON
      * @instance
      */
     parseData(data) {
@@ -95,7 +95,7 @@ export default class Json extends DataSource {
      * @param {number} properties.replaySpeed the replay factor
      * @param {number} properties.responseFormat the response format (e.g video/mp4)
      * @instance
-     * @memberof OSH.DataReceiver.DataSource
+     * @memberof DataSource
      * @returns {string} the full url
      */
     buildUrl(properties) {

@@ -19,11 +19,11 @@ import Styler from "./osh-UI-Styler.js";
 
 /**
  * @classdesc
- * @class OSH.UI.Styler.PointMarker
- * @type {OSH.UI.Styler}
- * @augments OSH.UI.Styler
+ * @class PointMarker
+ * @type {Styler}
+ * @augments Styler
  * @example
- * let pointMarker = new OSH.UI.Styler.PointMarker({
+ * let pointMarker = new PointMarker({
         location : {
             x : 1.42376557,
             y : 43.61758626,
@@ -175,7 +175,7 @@ export default class PointMarker extends Styler {
 	/**
 	 *
 	 * @param view
-	 * @memberof OSH.UI.Styler.PointMarker
+	 * @memberof PointMarker
 	 * @instance
 	 */
 	init(view) {
@@ -191,7 +191,7 @@ export default class PointMarker extends Styler {
 	 * @param rec
 	 * @param view
 	 * @param options
-	 * @memberof OSH.UI.Styler.PointMarker
+	 * @memberof PointMarker
 	 * @instance
 	 */
 	setData(dataSourceId,rec,view,options) {

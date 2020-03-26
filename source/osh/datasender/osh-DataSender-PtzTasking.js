@@ -17,7 +17,7 @@
 /**
  * @classdesc
  * @class
- * @augments OSH.DataSender.DataSink
+ * @augments DataSink
  */
 import DataSink from './osh-DataSender-DataSink.js';
 import EventManager from '../osh-EventManager';
@@ -53,7 +53,7 @@ export default class PtzTasking extends DataSink {
     /**
      * Builds the request based on sps standard.
      * @returns {string} the sps request
-     * @memberof OSH.DataReceiver.PtzTasking
+     * @memberof PtzTasking
      * @instance
      */
     buildRequest(cmdData) {

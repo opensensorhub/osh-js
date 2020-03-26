@@ -17,8 +17,8 @@
 /**
  * @classdesc This datasource provides parsing to euler orientation.
  * Data has to be under the format : ISODATE,X,Y,
- * @class OSH.DataReceiver.EulerOrientation
- * @augments OSH.DataReceiver.DataSource
+ * @class EulerOrientation
+ * @augments DataSource
  */
 
 import DataSource from './osh-DataReceiver-DataSource.js';
@@ -30,7 +30,7 @@ export default class EulerOrientation extends DataSource {
      * @param {function} $super the parseTimeStamp super method
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.EulerOrientation
+     * @memberof EulerOrientation
      * @instance
      */
     parseTimeStamp(data) {
@@ -50,7 +50,7 @@ export default class EulerOrientation extends DataSource {
      *   roll: 11,
      *   heading:12
      * }
-     * @memberof OSH.DataReceiver.EulerOrientation
+     * @memberof EulerOrientation
      * @instance
      */
     parseData(data) {

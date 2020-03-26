@@ -29,7 +29,7 @@ export default class EventManager {
      * @param eventName
      * @param properties
      * @instance
-     * @memberof OSH.EventManager
+     * @memberof EventManager
      */
     static fire(eventName, properties) {
         properties.name = eventName;
@@ -42,7 +42,7 @@ export default class EventManager {
      * @param fnCallback
      * @param id
      * @instance
-     * @memberof OSH.EventManager
+     * @memberof EventManager
      */
     static observe(eventName, fnCallback) {
         eventMap.observe('osh:' + eventName, fnCallback);
@@ -54,7 +54,7 @@ export default class EventManager {
      * @param eventName
      * @param fnCallback
      * @instance
-     * @memberof OSH.EventManager
+     * @memberof EventManager
      */
     static observeDiv(divId, eventName, fnCallback) {
         let elem = document.getElementById(divId);

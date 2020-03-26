@@ -19,9 +19,9 @@ import {isDefined} from "../../osh-Utils.js";
 
 /**
  * @classdesc
- * @class OSH.UI.Styler.Curve
- * @type {OSH.UI.Style}
- * @augments OSH.UI.Styler
+ * @class Curve
+ * @type {Style}
+ * @augments Styler
  */
 export default class Curve extends Styler {
     constructor(properties) {

@@ -16,8 +16,8 @@
 
 /**
  * @classdesc This datasource provides parsing to Nexrad.
- * @class OSH.DataReceiver.Nexrad
- * @augments OSH.DataReceiver.DataSource
+ * @class Nexrad
+ * @augments DataSource
  */
 import DataSource from './osh-DataReceiver-DataSource.js';
 
@@ -28,7 +28,7 @@ export default class Nexrad extends DataSource {
      * @param {function} $super the parseTimeStamp super method
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof OSH.DataReceiver.Nexrad
+     * @memberof Nexrad
      * @instance
      */
     parseTimeStamp(data) {
@@ -42,7 +42,7 @@ export default class Nexrad extends DataSource {
      * @param {function} $super the parseData super method
      * @param {Object} data the data to parse
      * @returns {Object} the parsed data
-     * @memberof OSH.DataReceiver.Nexrad
+     * @memberof Nexrad
      * @instance
      */
     parseData(data) {

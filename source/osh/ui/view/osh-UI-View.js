@@ -71,7 +71,7 @@ export class View {
      * @param parentElementDivId The parent html element object to attach/create the view
      * @param viewItems the list of items to add
      * @param options [TODO]
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     init(parentElementDivId, viewItems, options) {
         this.elementDiv = document.createElement("div");
@@ -133,7 +133,7 @@ export class View {
 
     /**
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     hide() {
         this.elementDiv.style.display = "none";
@@ -141,7 +141,7 @@ export class View {
 
     /**
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     onResize() {
     }
@@ -150,7 +150,7 @@ export class View {
      *
      * @param divId
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     attachTo(divId) {
         if (isDefined(this.elementDiv.parentNode)) {
@@ -169,7 +169,7 @@ export class View {
      *
      * @param options
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     beforeAddingItems(options) {
 
@@ -179,7 +179,7 @@ export class View {
      *
      * @returns {string|*}
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     getId() {
         return this.id;
@@ -189,7 +189,7 @@ export class View {
      *
      * @returns {string|*}
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     getDivId() {
         return this.divId;
@@ -200,7 +200,7 @@ export class View {
      * @param dataSourceId
      * @param data
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     setData(dataSourceId, data) {
     }
@@ -209,7 +209,7 @@ export class View {
      * Show the view by removing display:none style if any.
      * @param properties
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     show(properties) {
     }
@@ -218,7 +218,7 @@ export class View {
      *
      * @param properties
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     shows(properties) {
     }
@@ -227,7 +227,7 @@ export class View {
      * Add viewItem to the view
      * @param viewItem
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     addViewItem(viewItem) {
         this.viewItems.push(viewItem);
@@ -296,7 +296,7 @@ export class View {
 
     /**
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     handleEvents() {
         var that = this;
@@ -323,7 +323,7 @@ export class View {
      * @param dataSourcesIds
      * @param entitiesIds
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     selectDataView(dataSourcesIds, entityId) {
         if (isDefined(this.dataSources)) {
@@ -341,7 +341,7 @@ export class View {
      *
      * @returns {Array}
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     getDataSourcesId() {
         let res = [];
@@ -363,7 +363,7 @@ export class View {
 
     /**
      * @instance
-     * @memberof OSH.UI.View
+     * @memberof View
      */
     reset() {
     }
