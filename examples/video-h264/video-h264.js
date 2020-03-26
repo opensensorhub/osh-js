@@ -25,6 +25,7 @@ let videoView = new FFMPEGView("video-container", {
   useWorker: true,
   width: 1280,
   height: 720,
+  framerate:25,
   showTime: true
 });
 

@@ -12,15 +12,14 @@
 import {View} from "../osh-UI-View.js";
 import {isDefined, isWebWorker} from "../../../osh-Utils.js";
 import EventManager from "../../../osh-EventManager.js";
-import {BASE_WORKER_URL} from "../../../osh-Constants";
 
 /**
  * @classdesc
  * @class
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * @type {View}
+ * @augments View
  * @example
- let videoView = new OSH.UI.FFMPEGView("videoContainer-id", {
+ let videoView = new FFMPEGView("videoContainer-id", {
     dataSourceId: videoDataSource.id,
     css: "video",
     cssSelected: "video-selected",
@@ -59,18 +58,19 @@ export default class FFMPEGView extends View {
 
         this.useWorker = false;
         this.resetCalled = true;
+        this.framerate = 29.67;
 
         if (isDefined(options)) {
-            if (options.width) {
+            if (isDefined(options.width)) {
                 width = options.width;
             }
 
-            if (options.height) {
+            if (isDefined(options.height)) {
                 height = options.height;
             }
 
-            if (options.buffering) {
-                this.bufferring = options.buffering;
+            if (isDefined(options.framerate)) {
+                this.framerate = options.framerate;
             }
 
             this.useWorker = (isDefined(options.useWorker)) && (options.useWorker) && (isWebWorker());
@@ -127,7 +127,7 @@ export default class FFMPEGView extends View {
      * @param dataSourceId
      * @param data
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     setData(dataSourceId, data) {
         if (!this.skipFrame) {
@@ -164,7 +164,7 @@ export default class FFMPEGView extends View {
      * @param dataSourceIds
      * @param entityId
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     selectDataView(dataSourceIds, entityId) {
         if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId) &&
@@ -178,7 +178,7 @@ export default class FFMPEGView extends View {
 
     /**
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     reset() {
         _avcodec_flush_buffers(this.av_ctx);
@@ -200,7 +200,7 @@ export default class FFMPEGView extends View {
 
     /**
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     updateStatistics() {
         let s = this.statistics;
@@ -236,7 +236,7 @@ export default class FFMPEGView extends View {
 
     /**
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     onAfterDecoded() {
     }
@@ -251,7 +251,7 @@ export default class FFMPEGView extends View {
      * The worker code is located at the location js/workers/FFMPEGViewWorker.js.
      * This location cannot be changed. Be sure to have the right file at the right place.
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      * @param callback
      */
     initFFMPEG_DECODER_WORKER(callback) {
@@ -261,22 +261,18 @@ export default class FFMPEGView extends View {
 
         let buffer = [];
         this.worker.onmessage = function (e) {
-            if (this.bufferring > 0) {
-                buffer.push(e);
-            } else {
-                display(e);
-            }
-        }
+            buffer.push(e);
+        };
 
-        setInterval(function () {
-            if (buffer.length > 30) {
+        setInterval(function() {
+            if (buffer.length > this.framerate) {
                 buffer = [];
             }
 
-            if (buffer.length > this.bufferring) {
+            if (buffer.length > 10) {
                 display(buffer.shift());
             }
-        }, 1000 / 30.);
+        }, 1000/this.framerate);
 
         function display(e) {
 
@@ -304,7 +300,7 @@ export default class FFMPEGView extends View {
      * @param pktSize
      * @param pktData
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     decodeWorker(pktSize, pktData) {
         let transferableData = {
@@ -321,7 +317,7 @@ export default class FFMPEGView extends View {
 
     /**
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     initFFMEG_DECODER() {
 // register all compiled codecs
@@ -368,7 +364,7 @@ export default class FFMPEGView extends View {
      * @param pktData
      * @returns {{frame_width: *, frame_height: *, frameYDataPtr: *, frameUDataPtr: *, frameVDataPtr: *, frameYData: Uint8Array, frameUData: Uint8Array, frameVData: Uint8Array}}
      * @instance
-     * @memberof OSH.UI.FFMPEGView
+     * @memberof FFMPEGView
      */
     decode(pktSize, pktData) {
         if (pktSize > this.maxPktSize) {
