@@ -161,7 +161,7 @@ export default class DataReceiverController {
     /**
      * Instantiates a new OSH.Buffer {@link OSH.Buffer}
      * @instance
-     * @memberof OSH.DataReceiver.DataReceiverController
+     * @memberof DataReceiverController
      */
     initBuffer() {
         this.buffer = new Buffer(this.options);
@@ -212,7 +212,7 @@ export default class DataReceiverController {
      */
     connectAll() {
         this.buffer.start();
-        for (let id of this.dataSourcesIdToDataSources) {
+        for (let id in this.dataSourcesIdToDataSources) {
             let ds = this.dataSourcesIdToDataSources[id];
             if (ds.properties.connect) {
                 ds.connect();

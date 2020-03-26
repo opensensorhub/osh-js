@@ -19,7 +19,7 @@
  @default
  */
 const INITIAL_BUFFERING_TIME = 3000; // ms time
-
+const MAX_LONG = Math.pow(2, 53) + 1;
 /**
  * This enumeration contains the whole list of available status for a job.
  * @enum
@@ -221,7 +221,7 @@ export default class Buffer {
      * is FALSE, the data will pass through the buffer and send back immediately.
      * @param event.data The raw data provided by the DataSource
      * @param event.data.timeStamp The timeStamp of the data. It will be used in case of the syncMasterTime is set to TRUE.
-     * @memberof OSH.Buffer
+     * @memberof Buffer
      * @instance
      */
     push(event) {
@@ -252,7 +252,7 @@ export default class Buffer {
         currentBufferObj.lastRecordTime = Date.now();
 
         if (!sync) {
-            this.processData(currentBufferObj, dataSourceId);
+            this.dispatchData(dataSourceId, currentBufferObj.buffer.shift());
         }
 
     }
@@ -270,7 +270,7 @@ export default class Buffer {
             let minTimeStamp = MAX_LONG;
 
             let that = this;
-            for (let dataSourceId of this.buffers) {
+            for (let dataSourceId in this.buffers) {
                 let currentBufferObj = this.buffers[dataSourceId];
                 if ((currentBufferObj.status === BUFFER_STATUS.START || currentBufferObj.status === BUFFER_STATUS.NOT_START_YET) && currentBufferObj.syncMasterTime) {
                     if (currentBufferObj.buffer.length === 0) {
