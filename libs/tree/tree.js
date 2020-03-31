@@ -2,7 +2,10 @@
 // p_div: ID of the div where the tree will be rendered;
 // p_backColor: Background color of the region where the tree is being rendered;
 // p_contextMenu: Object containing all the context menus. Set null for no context menu;
-function createTree(p_div,p_backColor,p_contextMenu) {
+import {randomUUID} from "../../source/osh/utils/Utils";
+import EventManager from "../../source/osh/events/EventManager";
+
+export function createTree(p_div, p_backColor, p_contextMenu) {
     var tree = {
         name: 'tree',
         div: p_div,
@@ -22,9 +25,9 @@ function createTree(p_div,p_backColor,p_contextMenu) {
         // p_tag: Tag is used to store additional information on the node. All node attributes are visible when programming events and context menu actions;
         // p_contextmenu: Name of the context menu, which is one of the attributes of the p_contextMenu object created with the tree;
         createNode: function(p_text, p_expanded, p_icon, p_parentNode, p_tag, p_contextmenu) {
-            v_tree = this;
-            node = {
-                id: 'node_' + OSH.Utils.randomUUID(),
+            let v_tree = this;
+            let node = {
+                id: 'node_' + randomUUID(),
                 text: p_text,
                 icon: p_icon,
                 parent: p_parentNode,
@@ -106,7 +109,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
             var div_tree = document.getElementById(this.div);
             div_tree.innerHTML = '';
 
-            ulElement = createSimpleElement('ul',this.name,'tree');
+            let ulElement = createSimpleElement('ul',this.name,'tree');
             this.ulElement = ulElement;
 
             for (var i=0; i<this.childNodes.length; i++) {
@@ -123,7 +126,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
         // p_node: Reference to the node object;
         drawNode: function(p_ulElement,p_node) {
 
-            v_tree = this;
+            let v_tree = this;
 
             var v_icon = null;
 
@@ -175,7 +178,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
             if (v_icon!=undefined)
                 v_span.appendChild(v_icon);
 
-            v_a = createSimpleElement('a',p_node.id,null);
+            let v_a = createSimpleElement('a',p_node.id,null);
             v_a.innerHTML=p_node.text;
             v_span.appendChild(v_a);
             v_li.appendChild(v_exp_col);
@@ -252,7 +255,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
                 img.id="toggle_off";
                 img.src = './images/tree/collapse.png';
-                elem_ul = img.parentElement.getElementsByTagName("ul")[0];
+                let elem_ul = img.parentElement.getElementsByTagName("ul")[0];
                 elem_ul.style.display = 'block';
 
                 if (this.nodeAfterOpenEvent!=undefined)
@@ -275,7 +278,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
                 img.id="toggle_on";
                 img.src = './images/tree/expand.png';
-                elem_ul = img.parentElement.getElementsByTagName("ul")[0];
+                let elem_ul = img.parentElement.getElementsByTagName("ul")[0];
                 elem_ul.style.display = 'none';
 
                 var divNode = document.getElementById(p_node.id);
@@ -309,7 +312,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
             // if node is an entity, send selected event
             if (send_event && p_node.tag !== null && typeof(p_node.tag.id) != "undefined") {
-                OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+                EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
                     dataSourcesIds: ["none"],
                     entityId: p_node.tag.id,
                 });
@@ -357,7 +360,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
                 p_event.stopPropagation();
                 if (p_node.contextMenu!=undefined) {
 
-                    v_tree = this;
+                    let v_tree = this;
 
                     var v_left = p_event.pageX;
                     var v_right = p_event.pageY;
@@ -365,7 +368,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
                     var divTree = document.getElementById(v_tree.div);
 
                     v_tree.currentContextMenu = p_node.contextMenu;
-                    OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+p_node.contextMenu,{
+                    EventManager.fire(EventManager.EVENT.CONTEXT_MENU+"-"+p_node.contextMenu,{
                         //TODO: values have to be provided by properties
                         offsetX: 10,
                         offsetY: 10,
@@ -382,7 +385,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
         // p_node: Reference to the node;
         contextMenuLi : function(p_submenu,p_ul,p_node) {
 
-            v_tree = this;
+            let v_tree = this;
 
             for (var i=0; i<p_submenu.elements.length; i++) (function(i){
 
@@ -459,7 +462,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
     window.onmousedown = function() {
         if(typeof tree.currentContextMenu != "undefined") {
-            OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
+            EventManager.fire(EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
                 action : "hide"
             });
             tree.currentContextMenu = undefined;
@@ -468,7 +471,7 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 
     window.onclick = function() {
         if(typeof tree.currentContextMenu != "undefined") {
-            OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
+            EventManager.fire(EventManager.EVENT.CONTEXT_MENU+"-"+tree.currentContextMenu,{
                 action : "hide"
             });
             tree.currentContextMenu = undefined;
@@ -480,8 +483,8 @@ function createTree(p_div,p_backColor,p_contextMenu) {
 // Helper Functions
 
 //Create a HTML element specified by parameter 'p_type'
-function createSimpleElement(p_type,p_id,p_class) {
-    element = document.createElement(p_type);
+export function createSimpleElement(p_type,p_id,p_class) {
+    let element = document.createElement(p_type);
     if (p_id!=undefined)
         element.id = p_id;
     if (p_class!=undefined)
@@ -490,8 +493,8 @@ function createSimpleElement(p_type,p_id,p_class) {
 }
 
 //Create img element
-function createImgElement(p_id,p_class,p_src) {
-    element = document.createElement('img');
+export function createImgElement(p_id,p_class,p_src) {
+    let element = document.createElement('img');
     if (p_id!=undefined)
         element.id = p_id;
     if (p_class!=undefined)

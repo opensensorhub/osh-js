@@ -14,8 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
+import {View} from "../View.js";
 import {isDefined} from "../../../utils/Utils.js";
+import {createTree} from "../../../../../libs/tree/tree.js";
+import "../../../../../libs/tree/tree.css";
 
 /**
  * @classdesc
@@ -75,7 +77,7 @@ export default class EntityTreeView extends View {
                 let existingChildNode = null;
 
                 // scan child nodes to see if folder already exists
-                for (n=0; n<currentNode.childNodes.length; n++) {
+                for (let n=0; n<currentNode.childNodes.length; n++) {
                     let node = currentNode.childNodes[n];
                     if (node.text === folder[pos]) {
                         existingChildNode = node;
