@@ -2,7 +2,7 @@
 import {DataSourceVideoMjpeg} from "../../source/osh/datareceiver/DataSourceVideoMjpeg.js";
 import MjpegView from "../../source/osh/ui/view/video/MjpegView.js";
 
-var videoDataSource = new DataSourceVideoMjpeg("android-Video", {
+let videoDataSource = new DataSourceVideoMjpeg("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -14,7 +14,7 @@ var videoDataSource = new DataSourceVideoMjpeg("android-Video", {
 });
 
 // show it in video view
-var videoView = new MjpegView("video-container", {
+let videoView = new MjpegView("video-container", {
     dataSourceId: videoDataSource.id,
     css: "video-mjpeg",
     name: "Android Video",
