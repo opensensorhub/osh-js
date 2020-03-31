@@ -181,7 +181,7 @@ export default class FFMPEGView extends View {
      * @memberof FFMPEGView
      */
     reset() {
-        _avcodec_flush_buffers(this.av_ctx);
+        // _avcodec_flush_buffers(this.av_ctx);
 // clear canvas
         this.resetCalled = true;
         let nodata = new Uint8Array(1);
