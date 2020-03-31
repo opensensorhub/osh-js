@@ -1,4 +1,4 @@
-import SWEXmlStreamParser from "../parsers/osh-SWEXmlStreamParser.js";
+import SWEXmlStreamParser from "../parsers/SWEXmlStreamParser.js";
 
 self.onmessage = (e) => {
     let xhr = new XMLHttpRequest();

@@ -1,8 +1,8 @@
 // create data source for Android phone camera
-import {VideoMjpeg} from "../../source/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js";
-import MjpegView from "../../source/osh/ui/view/video/osh-UI-MjpegView.js";
+import {DataSourceVideoMjpeg} from "../../source/osh/datareceiver/DataSourceVideoMjpeg.js";
+import MjpegView from "../../source/osh/ui/view/video/MjpegView.js";
 
-var videoDataSource = new VideoMjpeg("android-Video", {
+var videoDataSource = new DataSourceVideoMjpeg("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

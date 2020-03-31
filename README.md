@@ -9,7 +9,7 @@ It's an event based architecture suitable for real-time or playback. It allows o
 configurable stylers as well as an advanced support for video (H264/MJPEG). It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.
 
 Moreover, it offers support for SOS & SPS services, discovery function, uses the HTTP or WebSocket API.
-Several modules already exist to allow one to setup quickly an application such as Orientation, Chart, Video, Map etc..
+Several modules already exist to allow one to setup quickly an application such as Orientation, DataSourceChart, Video, Map etc..
  
 Please report all problems related to the SensorHub software including documentation errors via the [GitHub Issue Tracker](https://github.com/opensensorhub) 
 of the [osh-js](https://github.com/opensensorhub/osh-js) repository.

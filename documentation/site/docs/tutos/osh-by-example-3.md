@@ -49,7 +49,7 @@ The view allows you to extend the basic functionnality to fit as much as possibl
             name: 'Video dialog(MJPEG)',
             type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
         },{
-            name: 'Chart dialog',
+            name: 'DataSourceChart dialog',
             type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
         }
         ]

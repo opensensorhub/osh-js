@@ -1,17 +1,17 @@
 // create data source for Android phone camera
-import {VideoMjpeg} from "../../source/osh/datareceiver/osh-DataReceiver-DataSourceVideoMjpeg.js";
-import MjpegView from "../../source/osh/ui/view/video/osh-UI-MjpegView.js";
+import {DataSourceVideoMjpeg} from "../../source/osh/datareceiver/DataSourceVideoMjpeg.js";
+import MjpegView from "../../source/osh/ui/view/video/MjpegView.js";
 // create data source for Android phone GPS
-import Json from "../../source/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js";
-import PointMarker from "../../source/osh/ui/styler/osh-UI-StylerPointMarker.js";
-import LeafletView from "../../source/osh/ui/view/map/osh-UI-LeafletView.js";
-import {randomUUID} from "../../source/osh/osh-Utils";
-import DataReceiverController from "../../source/osh/datareceiver/osh-DataReceiverController";
+import DataSourceJson from "../../source/osh/datareceiver/DataSourceJSON.js";
+import PointMarker from "../../source/osh/ui/styler/StylerPointMarker.js";
+import LeafletView from "../../source/osh/ui/view/map/LeafletView.js";
+import {randomUUID} from "../../source/osh/utils/Utils";
+import DataReceiverController from "../../source/osh/datareceiver/DataReceiverController";
 
 const REPLAY_FACTOR = 1.0;
 const BUFFERING = 5000;
 
-let videoDataSource = new VideoMjpeg("android-Video", {
+let videoDataSource = new DataSourceVideoMjpeg("android-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -24,7 +24,7 @@ let videoDataSource = new VideoMjpeg("android-Video", {
   replaySpeed: REPLAY_FACTOR
 });
 
-let gpsDataSource = new Json("android-GPS", {
+let gpsDataSource = new DataSourceJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -38,7 +38,7 @@ let gpsDataSource = new Json("android-GPS", {
   replaySpeed: REPLAY_FACTOR
 });
 
-let gpsDataSourceNoSync = new Json("android-GPS", {
+let gpsDataSourceNoSync = new DataSourceJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

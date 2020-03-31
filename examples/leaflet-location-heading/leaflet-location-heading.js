@@ -1,14 +1,14 @@
 //@ sourceURL=leaflet-location.html.js
 
 // create data source for Android phone GPS
-import Json from "../../source/osh/datareceiver/osh-DataReceiver-DataSourceJSON.js";
-import PointMarker from "../../source/osh/ui/styler/osh-UI-StylerPointMarker.js";
-import LeafletView from "../../source/osh/ui/view/map/osh-UI-LeafletView.js";
+import DataSourceJson from "../../source/osh/datareceiver/DataSourceJSON.js";
+import PointMarker from "../../source/osh/ui/styler/StylerPointMarker.js";
+import LeafletView from "../../source/osh/ui/view/map/LeafletView.js";
 
 let replaySpeed = 2;
 
 // create data source for Android phone GPS
-let gpsDataSource = new Json("android-GPS", {
+let gpsDataSource = new DataSourceJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -20,7 +20,7 @@ let gpsDataSource = new Json("android-GPS", {
 });
 
 // create data source for Android phone orientation
-let attitudeDataSource = new Json("android-Att", {
+let attitudeDataSource = new DataSourceJson("android-Att", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

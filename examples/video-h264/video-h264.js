@@ -1,12 +1,8 @@
-import {BASE_WORKER_URL} from '../../source/osh/osh-Constants.js';
-
-BASE_WORKER_URL.path = './workers';
-
-import VideoH264 from '../../source/osh/datareceiver/osh-DataReceiver-DataSourceVideoH264.js';
-import FFMPEGView from '../../source/osh/ui/view/video/osh-UI-FFMPEGView.js';
+import DataSourceVideoH264 from '../../source/osh/datareceiver/DataSourceVideoH264.js';
+import FFMPEGView from '../../source/osh/ui/view/video/FFMPEGView.js';
 
 // create data source for UAV camera
-let videoDataSource = new VideoH264("drone-Video", {
+let videoDataSource = new DataSourceVideoH264("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

@@ -1,11 +1,8 @@
 //@ sourceURL=leaflet-location.html.js
-import {BASE_WORKER_URL} from '../../source/osh/osh-Constants.js';
-
-BASE_WORKER_URL.path = './workers';
 // create data source for Android phone GPS
-import PointMarker from "../../source/osh/ui/styler/osh-UI-StylerPointMarker.js";
-import LeafletView from "../../source/osh/ui/view/map/osh-UI-LeafletView.js";
-import Server from "../../source/osh/server/osh-Server.js";
+import PointMarker from "../../source/osh/ui/styler/StylerPointMarker.js";
+import LeafletView from "../../source/osh/ui/view/map/LeafletView.js";
+import Server from "../../source/osh/server/Server.js";
 import $ from 'jquery';
 
 let server = new Server({
@@ -22,7 +19,7 @@ leafletMapView.map.setView(new L.LatLng(42.8, -76), 8);
 var cc = 0;
 // show loading spinner
 // retrieve list of features of interest from server (async call)
-server.getFeatureOfInterestWithId("urn:usgs:water:network", function(resp) {
+server.getFeatureOfInterestById("urn:usgs:water:network", function(resp) {
 
   // render each feature with a marker
   resp.GetFeatureOfInterestResponse.featureMember.forEach(function (f) {

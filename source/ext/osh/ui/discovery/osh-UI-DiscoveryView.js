@@ -29,7 +29,7 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
         name: 'Video dialog(MJPEG)',
         type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
     },{
-        name: 'Chart dialog',
+        name: 'DataSourceChart dialog',
         type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
     }
     ]
@@ -57,7 +57,7 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
             name: 'Video dialog(MJPEG)',
             type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
         },{
-            name: 'Chart dialog',
+            name: 'DataSourceChart dialog',
             type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
         }
         ]
@@ -700,7 +700,7 @@ OSH.UI.DiscoveryView = OSH.UI.View.extend({
             swapId: this.swapId
         });
 
-        // Chart View
+        // DataSourceChart View
         var chartView = new OSH.UI.Nvd3CurveChartView(dialog.popContentDiv.id,
             [{
                 styler: new OSH.UI.Styler.Curve({
@@ -743,5 +743,5 @@ OSH.UI.DiscoveryView.Type = {
     MARKER_GPS : "Marker(GPS)",
     DIALOG_VIDEO_H264 : "Video Dialog(H264)",
     DIALOG_VIDEO_MJPEG: "Video Dialog(MJPEG)",
-    DIALOG_CHART : "Chart Dialog"
+    DIALOG_CHART : "DataSourceChart Dialog"
 };

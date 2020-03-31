@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: osh/osh-Sensor.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
@@ -103,7 +103,7 @@ OSH.Sensor = Class.create({
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) {
           var resultTemplate = OSH.Utils.jsonix_XML2JSON(xhr.responseText);
-          
+
           //First get the encoding type for each field
           resEncoding = {};
           resEncoding.fields = [];
@@ -125,7 +125,7 @@ OSH.Sensor = Class.create({
           } else {
             //TODO: handle xml encoding if necessary
           }
-          
+
           //Build the result structure
           var resStruct = {fields:[]};
           resStruct.findFieldByName = function(name) {
@@ -135,7 +135,7 @@ OSH.Sensor = Class.create({
             }
           }
           var fields = resultTemplate.value.resultStructure.abstractDataComponent.value.field;
-          
+
           //the fields read from the json object may be complex such as a nested array
           //or an array of vectors etc. buildDataField is a recursive function that will take
           //a given field and produce the correct data structure for it
@@ -146,7 +146,7 @@ OSH.Sensor = Class.create({
           for(var i = 0; i &lt; resEncoding.fields.length; i++) {
             this.setFieldEncoding(resStruct, resEncoding.fields[i]);
           }
-          
+
           //build up rest of result structure
           this.onGetResultTemplate(observabeProp, resStruct, resEncoding);
         }
@@ -167,7 +167,7 @@ OSH.Sensor = Class.create({
     var path = fieldEncoding.name;
     var pathToks = path.split('/');
     pathToks.shift();  //first item is always empty because the string starts with slash character
-    
+
     currFieldStruct = fieldStruct;
     while(pathToks.length > 0) {
       for(var i = 0; i &lt; currFieldStruct.fields.length; i++) {
@@ -201,14 +201,14 @@ OSH.Sensor = Class.create({
         var elemType = dataComp.value.elementType;
         var elemCount = dataComp.value.elementCount;
         var countVal = 0;
-        
+
         //Check if the count is referencing another field for its value
         //or if there is a static value provided already
         if(typeof elemCount.href != 'undefined')
           countVal = elemCount.href.split('#')[1];
         else
           countVal = elemCount.count.value;
-        
+
         var field = {name: field.name, val:[], count: countVal, fields:[]};
         resultStruct.fields.push(field);
 
@@ -218,14 +218,14 @@ OSH.Sensor = Class.create({
       } else if(dataComp.name.localPart == 'Vector') {
         var field = {name: field.name, fields:[]};
         resultStruct.fields.push(field);
-       
+
         for(var i = 0; i &lt; dataComp.value.coordinate.length; i++) {
           this.buildDataFields(dataComp.value.coordinate[i], field);
         }
       } else {
         resultStruct.fields.push({name: field.name, val : null, fields:[]});
         if(typeof dataComp.value.id != 'undefined') {
-          //This map holds references between ids and the fields that they represent. 
+          //This map holds references between ids and the fields that they represent.
           //This is used to reference values in one field from another. Example: A field
           //that represents an array of values may have its count stored in another field
           resultStruct.id2FieldMap = {};
@@ -410,7 +410,7 @@ OSH.Sensor = Class.create({
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.DataConnector.AjaxConnector.html">AjaxConnector</a></li><li><a href="OSH.DataConnector.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataConnector.WebSocketDataConnector.html">WebSocketDataConnector</a></li><li><a href="OSH.DataReceiver.Chart.html">Chart</a></li><li><a href="OSH.DataReceiver.DataReceiverController.html">DataReceiverController</a></li><li><a href="OSH.DataReceiver.DataSource.html">DataSource</a></li><li><a href="OSH.DataReceiver.EulerOrientation.html">EulerOrientation</a></li><li><a href="OSH.DataReceiver.LatLonAlt.html">LatLonAlt</a></li><li><a href="OSH.DataReceiver.Nexrad.html">Nexrad</a></li><li><a href="OSH.DataReceiver.OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="OSH.DataReceiver.VideoH264.html">VideoH264</a></li><li><a href="OSH.DataReceiver.VideoMjpeg.html">VideoMjpeg</a></li><li><a href="OSH.DataReceiver.VideoMp4.html">VideoMp4</a></li><li><a href="OSH.DataSender.DataSenderController.html">DataSenderController</a></li><li><a href="OSH.DataSender.DataSink.html">DataSink</a></li><li><a href="OSH.DataSender.PtzTasking.html">PtzTasking</a></li><li><a href="OSH.DataSender.UavMapTasking.html">UavMapTasking</a></li><li><a href="OSH.EventManager.html">EventManager</a></li><li><a href="OSH.Log.html">Log</a></li><li><a href="OSH.Sensor.html">Sensor</a></li><li><a href="OSH.Server.html">Server</a></li><li><a href="OSH.UI.CesiumView.html">CesiumView</a></li><li><a href="OSH.UI.ContextMenu.html">ContextMenu</a></li><li><a href="OSH.UI.ContextMenu.CircularMenu.html">CircularMenu</a></li><li><a href="OSH.UI.ContextMenu.CssMenu.html">CssMenu</a></li><li><a href="OSH.UI.ContextMenu.StackMenu.html">StackMenu</a></li><li><a href="OSH.UI.DialogView.html">DialogView</a></li><li><a href="OSH.UI.DiscoveryView.html">DiscoveryView</a></li><li><a href="OSH.UI.EntityTreeView.html">EntityTreeView</a></li><li><a href="OSH.UI.FFMPEGView.html">FFMPEGView</a></li><li><a href="OSH.UI.H264View.html">H264View</a></li><li><a href="OSH.UI.LeafletView.html">LeafletView</a></li><li><a href="OSH.UI.Loading.html">Loading</a></li><li><a href="OSH.UI.MjpegView.html">MjpegView</a></li><li><a href="OSH.UI.Mp4View.html">Mp4View</a></li><li><a href="OSH.UI.Nvd3CurveChartView.html">Nvd3CurveChartView</a></li><li><a href="OSH.UI.OpenLayerView.html">OpenLayerView</a></li><li><a href="OSH.UI.PtzTaskingView.html">PtzTaskingView</a></li><li><a href="OSH.UI.RangeSlider.html">RangeSlider</a></li><li><a href="OSH.UI.Styler.html">Styler</a></li><li><a href="OSH.UI.Styler.Curve.html">Curve</a></li><li><a href="OSH.UI.Styler.ImageDraping.html">ImageDraping</a></li><li><a href="OSH.UI.Styler.Nexrad.html">Nexrad</a></li><li><a href="OSH.UI.Styler.PointMarker.html">PointMarker</a></li><li><a href="OSH.UI.Styler.Polyline.html">Polyline</a></li><li><a href="OSH.UI.View.html">View</a></li><li><a href="OSH.Utils.html">Utils</a></li></ul><h3>Namespaces</h3><ul><li><a href="OSH.html">OSH</a></li><li><a href="OSH.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataReceiver.html">DataReceiver</a></li><li><a href="OSH.DataSender.html">DataSender</a></li><li><a href="OSH.UI.html">UI</a></li><li><a href="OSH.Video.html">Video</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUFFER_STATUS">BUFFER_STATUS</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#INITIAL_BUFFERING_TIME">INITIAL_BUFFERING_TIME</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.DataConnector.AjaxConnector.html">AjaxConnector</a></li><li><a href="OSH.DataConnector.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataConnector.WebSocketDataConnector.html">WebSocketDataConnector</a></li><li><a href="OSH.DataReceiver.Chart.html">DataSourceChart</a></li><li><a href="OSH.DataReceiver.DataReceiverController.html">DataReceiverController</a></li><li><a href="OSH.DataReceiver.DataSource.html">DataSource</a></li><li><a href="OSH.DataReceiver.EulerOrientation.html">DataSourceEulerOrientation</a></li><li><a href="OSH.DataReceiver.LatLonAlt.html">DataSourceLatLonAlt</a></li><li><a href="OSH.DataReceiver.Nexrad.html">DataSourceNexrad</a></li><li><a href="OSH.DataReceiver.OrientationQuaternion.html">DataSourceOrientationQuaternion</a></li><li><a href="OSH.DataReceiver.VideoH264.html">DataSourceVideoH264</a></li><li><a href="OSH.DataReceiver.VideoMjpeg.html">DataSourceVideoMjpeg</a></li><li><a href="OSH.DataReceiver.VideoMp4.html">VideoMp4</a></li><li><a href="OSH.DataSender.DataSenderController.html">DataSenderController</a></li><li><a href="OSH.DataSender.DataSink.html">DataSink</a></li><li><a href="OSH.DataSender.PtzTasking.html">PtzTasking</a></li><li><a href="OSH.DataSender.UavMapTasking.html">UavMapTasking</a></li><li><a href="OSH.EventManager.html">EventManager</a></li><li><a href="OSH.Log.html">Log</a></li><li><a href="OSH.Sensor.html">Sensor</a></li><li><a href="OSH.Server.html">Server</a></li><li><a href="OSH.UI.CesiumView.html">CesiumView</a></li><li><a href="OSH.UI.ContextMenu.html">ContextMenu</a></li><li><a href="OSH.UI.ContextMenu.CircularMenu.html">CircularMenu</a></li><li><a href="OSH.UI.ContextMenu.CssMenu.html">CssMenu</a></li><li><a href="OSH.UI.ContextMenu.StackMenu.html">StackMenu</a></li><li><a href="OSH.UI.DialogView.html">DialogView</a></li><li><a href="OSH.UI.DiscoveryView.html">DiscoveryView</a></li><li><a href="OSH.UI.EntityTreeView.html">EntityTreeView</a></li><li><a href="OSH.UI.FFMPEGView.html">FFMPEGView</a></li><li><a href="OSH.UI.H264View.html">H264View</a></li><li><a href="OSH.UI.LeafletView.html">LeafletView</a></li><li><a href="OSH.UI.Loading.html">Loading</a></li><li><a href="OSH.UI.MjpegView.html">MjpegView</a></li><li><a href="OSH.UI.Mp4View.html">Mp4View</a></li><li><a href="OSH.UI.Nvd3CurveChartView.html">Nvd3CurveChartView</a></li><li><a href="OSH.UI.OpenLayerView.html">OpenLayerView</a></li><li><a href="OSH.UI.PtzTaskingView.html">PtzTaskingView</a></li><li><a href="OSH.UI.RangeSlider.html">RangeSlider</a></li><li><a href="OSH.UI.Styler.html">Styler</a></li><li><a href="OSH.UI.Styler.Curve.html">Curve</a></li><li><a href="OSH.UI.Styler.ImageDraping.html">ImageDraping</a></li><li><a href="OSH.UI.Styler.Nexrad.html">DataSourceNexrad</a></li><li><a href="OSH.UI.Styler.PointMarker.html">PointMarker</a></li><li><a href="OSH.UI.Styler.Polyline.html">Polyline</a></li><li><a href="OSH.UI.View.html">View</a></li><li><a href="OSH.Utils.html">Utils</a></li></ul><h3>Namespaces</h3><ul><li><a href="OSH.html">OSH</a></li><li><a href="OSH.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataReceiver.html">DataReceiver</a></li><li><a href="OSH.DataSender.html">DataSender</a></li><li><a href="OSH.UI.html">UI</a></li><li><a href="OSH.Video.html">Video</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUFFER_STATUS">BUFFER_STATUS</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#INITIAL_BUFFERING_TIME">INITIAL_BUFFERING_TIME</a></li></ul>
 </nav>
 
 <br class="clear">

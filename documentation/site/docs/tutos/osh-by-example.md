@@ -104,9 +104,9 @@ You have to choose the corresponding data receivers and the corresponding views:
  * PlatformLocation => LatLon => textual including timestamp => [OSH.DataReceiver.JSON](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html). The generic
   JSON parser is able to parse any textual data and separate the timestamp from the others
 
- * GimbalOrientation => EulerOrientation => textual including timestamp => [OSH.DataReceiver.JSON](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html)
+ * GimbalOrientation => DataSourceEulerOrientation => textual including timestamp => [OSH.DataReceiver.JSON](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.JSON.html)
 
- * Video (H264) => VideoH264 => binary data => [OSH.DataReceiver. VideoH264](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.VideoH264.html)
+ * Video (H264) => DataSourceVideoH264 => binary data => [OSH.DataReceiver. DataSourceVideoH264](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataReceiver.VideoH264.html)
  
 ### Views
  
@@ -118,7 +118,7 @@ You have to choose the corresponding data receivers and the corresponding views:
 
  * RangeSlider => control time
 
- * Nvd3CurveChartView => Chart
+ * Nvd3CurveChartView => DataSourceChart
 
  * FFMPEGView => Display Video using FFMPEG JS
 
@@ -137,7 +137,7 @@ We need three containers to render the views:
 ```html
 <body>
  <div id="videoViewDivId" class="mini-view"></div> <!-- Video View -->
- <div id="chartViewDivId" class="mini-view"></div> <!-- Chart View -->
+ <div id="chartViewDivId" class="mini-view"></div> <!-- DataSourceChart View -->
  <div id="cesiumViewId" class="mini-view"></div> <!-- Cesium View -->
 </body>
 ```
@@ -192,7 +192,7 @@ var soloGimbal = new OSH.DataReceiver.JSON("Solo Gimbal", {
 
 
 // Video H264 DataReceiver
-var soloVideo = new OSH.DataReceiver.VideoH264("Solo Video", {
+var soloVideo = new OSH.DataReceiver.DataSourceVideoH264("Solo Video", {
     protocol : "ws",
     service: "SOS",
     endpointUrl: hostname + "/sensorhub/sos",
@@ -264,7 +264,7 @@ of your div with large width.
 This view has a special property `useWorker` which allows multithreading. The frame decoding will be processed 
 into a separate thread (using a WebWorker).
 
-### Chart view (--nvd3 third party library)
+### DataSourceChart view (--nvd3 third party library)
 
 To display the altitude of the drone, you can use the simple chart view. By default, the toolkit provide a NDV3 view allowing 
 to display curve chart:
@@ -357,7 +357,7 @@ data sources are needed to get this information.
 the `locationFunc` add MSL to LatLon data whereas the `orientationFunc` extracts heading from altitude.
 
 Depending on the `observeProperty`, the data can be provided in various ways. For example, let's suppose
-the `http://sensorml.com/ont/swe/property/OrientationQuaternion` instead, this would have as result:
+the `http://sensorml.com/ont/swe/property/DataSourceOrientationQuaternion` instead, this would have as result:
 
 ```javascript
 var pointMarker = new OSH.UI.Styler.PointMarker({
@@ -604,7 +604,7 @@ var menuItems = [{
     css: "fa fa-video-camera",
     action: "show" //Can also use EventManager: OSH.EventManager.EVENT.SHOW_VIEW
 }, {
-    name: "Show Altitude Chart",
+    name: "Show Altitude DataSourceChart",
     viewId: altChartDialog.getId(),
     css: "fa fa-bar-chart",
     action: "show"

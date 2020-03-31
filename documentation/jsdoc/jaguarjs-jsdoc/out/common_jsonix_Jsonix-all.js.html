@@ -19,16 +19,16 @@
 
     <h1 class="page-title">Source: common/jsonix/Jsonix-all.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>var _jsonix_factory = function(_jsonix_xmldom, _jsonix_xmlhttprequest, _jsonix_fs)
 {
-	// Complete Jsonix script is included below 
+	// Complete Jsonix script is included below
 var Jsonix = {
 	singleFile : true
 };
@@ -474,7 +474,7 @@ Jsonix.Util.Type = {
 		if (Jsonix.Util.Type.isRegExp(a) &amp;&amp; Jsonix.Util.Type.isRegExp(b)) {
 			return a.source === b.source &amp;&amp; a.global === b.global &amp;&amp; a.ignoreCase === b.ignoreCase &amp;&amp; a.multiline === b.multiline;
 		}
-		
+
 		if (Jsonix.Util.Type.isNode(a) &amp;&amp; Jsonix.Util.Type.isNode(b))
 		{
 			var aSerialized = Jsonix.DOM.serialize(a);
@@ -494,7 +494,7 @@ Jsonix.Util.Type = {
 				return true;
 			}
 		}
-		
+
 		// If a is not an object by this point, we can't handle it.
 		if (atype !== 'object') {
 			return false;
@@ -575,7 +575,7 @@ Jsonix.Util.Type = {
 				}
 			}
 			return defaultValue;
-			
+
 		}
 	}
 };
@@ -1337,7 +1337,7 @@ Jsonix.XML.Input = Jsonix.Class({
 		    numberOfOpenTags += (et === Jsonix.XML.Input.START_ELEMENT) ? 1 : -1;
 		  } while (numberOfOpenTags > 0);
 		return et;
-	},	
+	},
 	getElementText : function() {
 		if (this.eventType != 1) {
 			throw new Error("Parser must be on START_ELEMENT to read next text.");
@@ -1515,7 +1515,7 @@ Jsonix.XML.Input = Jsonix.Class({
 					}
 				}
 			}
-		}		
+		}
 	},
 	popNS : function () {
 		this.pns.pop();
@@ -1683,7 +1683,7 @@ Jsonix.XML.Output = Jsonix.Class({
 			}
 			this.declareNamespace(namespaceURI, prefix);
 		}
-		
+
 	},
 	writeNode : function(node) {
 		var importedNode;
@@ -1792,7 +1792,7 @@ Jsonix.XML.Output = Jsonix.Class({
 		if (Jsonix.Util.Type.isString(p))
 		{
 			var oldp = nspItem[ns];
-			// If prefix is already declared and equals the proposed prefix 
+			// If prefix is already declared and equals the proposed prefix
 			if (p === oldp)
 			{
 				// Nothing to do
@@ -2172,22 +2172,22 @@ Jsonix.Model.ClassInfo = Jsonix
 				var n = mapping.name||mapping.n||undefined;
 				Jsonix.Util.Ensure.ensureString(n);
 				this.name = n;
-				
+
 				var ln = mapping.localName||mapping.ln||null;
 				this.localName = ln;
 
 				var dens = mapping.defaultElementNamespaceURI||mapping.dens||mapping.targetNamespace||mapping.tns||'';
 				this.defaultElementNamespaceURI = dens;
-				
+
 				var tns =  mapping.targetNamespace||mapping.tns||mapping.defaultElementNamespaceURI||mapping.dens||this.defaultElementNamespaceURI;
 				this.targetNamespace = tns;
 
 				var dans = mapping.defaultAttributeNamespaceURI||mapping.dans||'';
 				this.defaultAttributeNamespaceURI = dans;
-				
+
 				var bti = mapping.baseTypeInfo||mapping.bti||null;
 				this.baseTypeInfo = bti;
-				
+
 				var inF = mapping.instanceFactory||mapping.inF||undefined;
 				if (Jsonix.Util.Type.exists(inF)) {
 					// TODO: should we support instanceFactory as functions?
@@ -2195,9 +2195,9 @@ Jsonix.Model.ClassInfo = Jsonix
 					Jsonix.Util.Ensure.ensureFunction(inF);
 					this.instanceFactory = inF;
 				}
-				
+
 				var tn = mapping.typeName||mapping.tn||undefined;
-				
+
 				if (Jsonix.Util.Type.exists(tn))
 				{
 					if (Jsonix.Util.Type.isString(tn))
@@ -2212,14 +2212,14 @@ Jsonix.Model.ClassInfo = Jsonix
 				{
 					this.typeName = new Jsonix.XML.QName(tns, ln);
 				}
-				
+
 				this.properties = [];
 				this.propertiesMap = {};
 				var ps = mapping.propertyInfos||mapping.ps||[];
 				Jsonix.Util.Ensure.ensureArray(ps);
 				for ( var index = 0; index &lt; ps.length; index++) {
 					this.p(ps[index]);
-				}				
+				}
 			},
 			getPropertyInfoByName : function(name) {
 				return this.propertiesMap[name];
@@ -2264,15 +2264,15 @@ Jsonix.Model.ClassInfo = Jsonix
 			unmarshal : function(context, input) {
 				this.build(context);
 				var result;
-				
+
 				if (this.instanceFactory) {
 					result = new this.instanceFactory();
 				}
 				else
 				{
-					result = { TYPE_NAME : this.name }; 
+					result = { TYPE_NAME : this.name };
 				}
-				
+
 				if (input.eventType !== 1) {
 					throw new Error("Parser must be on START_ELEMENT to read a class info.");
 				}
@@ -2563,14 +2563,14 @@ Jsonix.Model.EnumLeafInfo = Jsonix.Class(Jsonix.Model.TypeInfo, {
 	initialize : function(mapping) {
 		Jsonix.Model.TypeInfo.prototype.initialize.apply(this, []);
 		Jsonix.Util.Ensure.ensureObject(mapping);
-		
+
 		var n = mapping.name||mapping.n||undefined;
 		Jsonix.Util.Ensure.ensureString(n);
 		this.name = n;
-		
+
 		var bti = mapping.baseTypeInfo||mapping.bti||'String';
 		this.baseTypeInfo = bti;
-		
+
 		var vs = mapping.values||mapping.vs||undefined;
 		Jsonix.Util.Ensure.ensureExists(vs);
 		if (!(Jsonix.Util.Type.isObject(vs) || Jsonix.Util.Type.isArray(vs))) {
@@ -2579,7 +2579,7 @@ Jsonix.Model.EnumLeafInfo = Jsonix.Class(Jsonix.Model.TypeInfo, {
 		else
 		{
 			this.entries = vs;
-		}		
+		}
 	},
 	build : function(context, module) {
 		if (!this.built) {
@@ -2722,10 +2722,10 @@ Jsonix.Model.ElementInfo = Jsonix.Class({
 	built : false,
 	initialize : function(mapping) {
 		Jsonix.Util.Ensure.ensureObject(mapping);
-		
+
 		var dens = mapping.defaultElementNamespaceURI||mapping.dens||'';
 		this.defaultElementNamespaceURI = dens;
-		
+
 		var en = mapping.elementName || mapping.en||undefined;
 		if (Jsonix.Util.Type.isObject(en)) {
 			this.elementName = Jsonix.XML.QName.fromObject(en);
@@ -2733,13 +2733,13 @@ Jsonix.Model.ElementInfo = Jsonix.Class({
 			Jsonix.Util.Ensure.ensureString(en);
 			this.elementName = new Jsonix.XML.QName(this.defaultElementNamespaceURI, en);
 		}
-		
+
 		var ti = mapping.typeInfo||mapping.ti||'String';
 		this.typeInfo = ti;
-		
+
 		var sh = mapping.substitutionHead||mapping.sh||null;
 		this.substitutionHead = sh;
-		
+
 		var sc = mapping.scope||mapping.sc||null;
 		this.scope = sc;
 	},
@@ -4085,7 +4085,7 @@ Jsonix.Schema.XSD.AnySimpleType = Jsonix.Class(Jsonix.Model.TypeInfo, {
 	typeName : Jsonix.Schema.XSD.qname('anySimpleType'),
 	initialize : function() {
 		Jsonix.Model.TypeInfo.prototype.initialize.apply(this, []);
-	},	
+	},
 	print : function(value, context, output, scope) {
 		return value;
 	},
@@ -5550,13 +5550,13 @@ Jsonix.Schema.XSD.TimeAsDate = Jsonix.Class(Jsonix.Schema.XSD.Calendar, {
 				}));
 			} else {
 				var timezoneHours = Math.ceil(-correctedTime / 3600000);
-				
+
 				var correctedTimeInSeconds = correctedValue.getSeconds() +
 					correctedValue.getMinutes() * 60 +
 					correctedValue.getHours() * 3600 +
 					timezoneHours * 3600 -
 					timezone * 60;
-				
+
 				return this.printTime(new Jsonix.XML.Calendar({
 					hour : correctedTimeInSeconds % 86400,
 					minute : correctedTimeInSeconds % 3600,
@@ -5637,7 +5637,7 @@ Jsonix.Schema.XSD.DateAsDate = Jsonix.Class(Jsonix.Schema.XSD.Calendar, {
 		localDate.setMinutes(0);
 		localDate.setSeconds(0);
 		localDate.setMilliseconds(0);
-		
+
 		// Original timezone is unknown
 		if (value.originalTimezone === null)
 		{
@@ -5841,15 +5841,15 @@ Jsonix.Context = Jsonix
 					Jsonix.Util.Ensure.ensureObject(options);
 					if (Jsonix.Util.Type
 							.isObject(options.namespacePrefixes)) {
-						this.namespacePrefixes = 
+						this.namespacePrefixes =
 							Jsonix.Util.Type.cloneObject(options.namespacePrefixes, {});
 					}
 					if (Jsonix.Util.Type
 							.isBoolean(options.supportXsiType)) {
-						this.supportXsiType = options.supportXsiType; 
+						this.supportXsiType = options.supportXsiType;
 					}
 				}
-				
+
 				// Initialize prefix/namespace mapping
 				for (var ns in this.namespacePrefixes)
 				{
@@ -5878,7 +5878,7 @@ Jsonix.Context = Jsonix
 					module = mapping;
 				} else {
 					mapping = Jsonix.Util.Type.cloneObject(mapping);
-					module = new this.mappingStyle.module(mapping, 
+					module = new this.mappingStyle.module(mapping,
 					{
 						mappingStyle : this.mappingStyle
 					});
@@ -6165,7 +6165,7 @@ else
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.DataConnector.AjaxConnector.html">AjaxConnector</a></li><li><a href="OSH.DataConnector.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataConnector.WebSocketDataConnector.html">WebSocketDataConnector</a></li><li><a href="OSH.DataReceiver.Chart.html">Chart</a></li><li><a href="OSH.DataReceiver.DataReceiverController.html">DataReceiverController</a></li><li><a href="OSH.DataReceiver.DataSource.html">DataSource</a></li><li><a href="OSH.DataReceiver.EulerOrientation.html">EulerOrientation</a></li><li><a href="OSH.DataReceiver.LatLonAlt.html">LatLonAlt</a></li><li><a href="OSH.DataReceiver.Nexrad.html">Nexrad</a></li><li><a href="OSH.DataReceiver.OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="OSH.DataReceiver.VideoH264.html">VideoH264</a></li><li><a href="OSH.DataReceiver.VideoMjpeg.html">VideoMjpeg</a></li><li><a href="OSH.DataReceiver.VideoMp4.html">VideoMp4</a></li><li><a href="OSH.DataSender.DataSenderController.html">DataSenderController</a></li><li><a href="OSH.DataSender.DataSink.html">DataSink</a></li><li><a href="OSH.DataSender.PtzTasking.html">PtzTasking</a></li><li><a href="OSH.DataSender.UavMapTasking.html">UavMapTasking</a></li><li><a href="OSH.EventManager.html">EventManager</a></li><li><a href="OSH.Log.html">Log</a></li><li><a href="OSH.Sensor.html">Sensor</a></li><li><a href="OSH.Server.html">Server</a></li><li><a href="OSH.UI.CesiumView.html">CesiumView</a></li><li><a href="OSH.UI.ContextMenu.html">ContextMenu</a></li><li><a href="OSH.UI.ContextMenu.CircularMenu.html">CircularMenu</a></li><li><a href="OSH.UI.ContextMenu.CssMenu.html">CssMenu</a></li><li><a href="OSH.UI.ContextMenu.StackMenu.html">StackMenu</a></li><li><a href="OSH.UI.DialogView.html">DialogView</a></li><li><a href="OSH.UI.DiscoveryView.html">DiscoveryView</a></li><li><a href="OSH.UI.EntityTreeView.html">EntityTreeView</a></li><li><a href="OSH.UI.FFMPEGView.html">FFMPEGView</a></li><li><a href="OSH.UI.H264View.html">H264View</a></li><li><a href="OSH.UI.LeafletView.html">LeafletView</a></li><li><a href="OSH.UI.Loading.html">Loading</a></li><li><a href="OSH.UI.MjpegView.html">MjpegView</a></li><li><a href="OSH.UI.Mp4View.html">Mp4View</a></li><li><a href="OSH.UI.Nvd3CurveChartView.html">Nvd3CurveChartView</a></li><li><a href="OSH.UI.OpenLayerView.html">OpenLayerView</a></li><li><a href="OSH.UI.PtzTaskingView.html">PtzTaskingView</a></li><li><a href="OSH.UI.RangeSlider.html">RangeSlider</a></li><li><a href="OSH.UI.Styler.html">Styler</a></li><li><a href="OSH.UI.Styler.Curve.html">Curve</a></li><li><a href="OSH.UI.Styler.ImageDraping.html">ImageDraping</a></li><li><a href="OSH.UI.Styler.Nexrad.html">Nexrad</a></li><li><a href="OSH.UI.Styler.PointMarker.html">PointMarker</a></li><li><a href="OSH.UI.Styler.Polyline.html">Polyline</a></li><li><a href="OSH.UI.View.html">View</a></li><li><a href="OSH.Utils.html">Utils</a></li></ul><h3>Namespaces</h3><ul><li><a href="OSH.html">OSH</a></li><li><a href="OSH.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataReceiver.html">DataReceiver</a></li><li><a href="OSH.DataSender.html">DataSender</a></li><li><a href="OSH.UI.html">UI</a></li><li><a href="OSH.Video.html">Video</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUFFER_STATUS">BUFFER_STATUS</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#INITIAL_BUFFERING_TIME">INITIAL_BUFFERING_TIME</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSH.Buffer.html">Buffer</a></li><li><a href="OSH.DataConnector.AjaxConnector.html">AjaxConnector</a></li><li><a href="OSH.DataConnector.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataConnector.WebSocketDataConnector.html">WebSocketDataConnector</a></li><li><a href="OSH.DataReceiver.Chart.html">DataSourceChart</a></li><li><a href="OSH.DataReceiver.DataReceiverController.html">DataReceiverController</a></li><li><a href="OSH.DataReceiver.DataSource.html">DataSource</a></li><li><a href="OSH.DataReceiver.EulerOrientation.html">DataSourceEulerOrientation</a></li><li><a href="OSH.DataReceiver.LatLonAlt.html">DataSourceLatLonAlt</a></li><li><a href="OSH.DataReceiver.Nexrad.html">DataSourceNexrad</a></li><li><a href="OSH.DataReceiver.OrientationQuaternion.html">DataSourceOrientationQuaternion</a></li><li><a href="OSH.DataReceiver.VideoH264.html">DataSourceVideoH264</a></li><li><a href="OSH.DataReceiver.VideoMjpeg.html">DataSourceVideoMjpeg</a></li><li><a href="OSH.DataReceiver.VideoMp4.html">VideoMp4</a></li><li><a href="OSH.DataSender.DataSenderController.html">DataSenderController</a></li><li><a href="OSH.DataSender.DataSink.html">DataSink</a></li><li><a href="OSH.DataSender.PtzTasking.html">PtzTasking</a></li><li><a href="OSH.DataSender.UavMapTasking.html">UavMapTasking</a></li><li><a href="OSH.EventManager.html">EventManager</a></li><li><a href="OSH.Log.html">Log</a></li><li><a href="OSH.Sensor.html">Sensor</a></li><li><a href="OSH.Server.html">Server</a></li><li><a href="OSH.UI.CesiumView.html">CesiumView</a></li><li><a href="OSH.UI.ContextMenu.html">ContextMenu</a></li><li><a href="OSH.UI.ContextMenu.CircularMenu.html">CircularMenu</a></li><li><a href="OSH.UI.ContextMenu.CssMenu.html">CssMenu</a></li><li><a href="OSH.UI.ContextMenu.StackMenu.html">StackMenu</a></li><li><a href="OSH.UI.DialogView.html">DialogView</a></li><li><a href="OSH.UI.DiscoveryView.html">DiscoveryView</a></li><li><a href="OSH.UI.EntityTreeView.html">EntityTreeView</a></li><li><a href="OSH.UI.FFMPEGView.html">FFMPEGView</a></li><li><a href="OSH.UI.H264View.html">H264View</a></li><li><a href="OSH.UI.LeafletView.html">LeafletView</a></li><li><a href="OSH.UI.Loading.html">Loading</a></li><li><a href="OSH.UI.MjpegView.html">MjpegView</a></li><li><a href="OSH.UI.Mp4View.html">Mp4View</a></li><li><a href="OSH.UI.Nvd3CurveChartView.html">Nvd3CurveChartView</a></li><li><a href="OSH.UI.OpenLayerView.html">OpenLayerView</a></li><li><a href="OSH.UI.PtzTaskingView.html">PtzTaskingView</a></li><li><a href="OSH.UI.RangeSlider.html">RangeSlider</a></li><li><a href="OSH.UI.Styler.html">Styler</a></li><li><a href="OSH.UI.Styler.Curve.html">Curve</a></li><li><a href="OSH.UI.Styler.ImageDraping.html">ImageDraping</a></li><li><a href="OSH.UI.Styler.Nexrad.html">DataSourceNexrad</a></li><li><a href="OSH.UI.Styler.PointMarker.html">PointMarker</a></li><li><a href="OSH.UI.Styler.Polyline.html">Polyline</a></li><li><a href="OSH.UI.View.html">View</a></li><li><a href="OSH.Utils.html">Utils</a></li></ul><h3>Namespaces</h3><ul><li><a href="OSH.html">OSH</a></li><li><a href="OSH.DataConnector.html">DataConnector</a></li><li><a href="OSH.DataReceiver.html">DataReceiver</a></li><li><a href="OSH.DataSender.html">DataSender</a></li><li><a href="OSH.UI.html">UI</a></li><li><a href="OSH.Video.html">Video</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BUFFER_STATUS">BUFFER_STATUS</a></li><li><a href="global.html#builtinTypeInfos">builtinTypeInfos</a></li><li><a href="global.html#INITIAL_BUFFERING_TIME">INITIAL_BUFFERING_TIME</a></li></ul>
 </nav>
 
 <br class="clear">
