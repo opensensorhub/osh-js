@@ -59,6 +59,7 @@ export default class FFMPEGView extends View {
         this.useWorker = false;
         this.resetCalled = true;
         this.framerate = 29.67;
+        this.directPlay = false;
 
         if (isDefined(options)) {
             if (isDefined(options.width)) {
@@ -73,6 +74,9 @@ export default class FFMPEGView extends View {
                 this.framerate = options.framerate;
             }
 
+            if (isDefined(options.directPlay)) {
+                this.directPlay = options.directPlay;
+            }
             this.useWorker = (isDefined(options.useWorker)) && (options.useWorker) && (isWebWorker());
         }
 
@@ -260,8 +264,13 @@ export default class FFMPEGView extends View {
         let yuvCanvas = this.yuvCanvas;
 
         let buffer = [];
+        let that = this;
         this.worker.onmessage = function (e) {
-            buffer.push(e);
+            if(that.directPlay) {
+                display(e);
+            } else {
+                buffer.push(e);
+            }
         };
 
         setInterval(function() {
