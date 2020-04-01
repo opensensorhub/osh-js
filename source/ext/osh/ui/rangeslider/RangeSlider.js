@@ -103,14 +103,14 @@ export default class RangeSliderView extends View {
 					decimals: 1,
 					edit:function( value ){
 						let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-						return date.split("T")[1].split("Z")[0];
+						return date.split("T")[1].split("Z")[0].split(".")[0];
 					}
 				}),
 				wNumb({
 					decimals: 1,
 					edit:function( value ){
 						let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-						return date.split("T")[1].split("Z")[0];
+						return date.split("T")[1].split("Z")[0].split(".")[0];
 					}
 				})
 			],
@@ -122,7 +122,7 @@ export default class RangeSliderView extends View {
 				format: wNumb({
 					edit:function( value ){
 						return new Date(parseInt(value)).toISOString().replace(".000Z", "Z")
-							.split("T")[1].split("Z")[0];
+							.split("T")[1].split("Z")[0].split(".")[0];
 					}
 				})
 			}
