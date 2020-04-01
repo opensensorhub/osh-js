@@ -69,7 +69,7 @@ export default class PtzTasking extends DataSink {
         xmlSpsRequest += "xmlns:sps=\"http://www.opengis.net/sps/2.0\" xmlns:swe=\"http://www.opengis.net/swe/2.0\"> ";
 
         // adds procedure
-        xmlSpsRequest += "<sps:procedure>" + this.properties.offeringID + "</sps:procedure>";
+        xmlSpsRequest += "<sps:procedure>" + this.properties.procedure + "</sps:procedure>";
 
         // adds taskingParameters
         xmlSpsRequest += "<sps:taskingParameters><sps:ParameterData>";
