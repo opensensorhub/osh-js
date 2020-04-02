@@ -17,7 +17,7 @@
 /**
  * @classdesc This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
- * @class DataSourceOrientationQuaternion
+ * @class OrientationQuaternion
  * @augments DataSource
  * @example
  * let androidPhoneOrientationDataSource = new DataSourceOrientationQuaternion("android-Orientation", {
@@ -36,7 +36,7 @@
 
 import DataSource from './DataSource.js';
 
-export class DataSourceOrientationQuaternion extends DataSource {
+export class OrientationQuaternion extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')

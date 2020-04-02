@@ -16,12 +16,12 @@
 
 /**
  * @classdesc This datasource provides parsing to DataSourceNexrad.
- * @class DataSourceNexrad
+ * @class Nexrad
  * @augments DataSource
  */
 import DataSource from './DataSource.js';
 
-export default class DataSourceNexrad extends DataSource {
+export default class Nexrad extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')

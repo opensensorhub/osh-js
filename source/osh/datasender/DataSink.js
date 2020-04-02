@@ -18,13 +18,13 @@
  * @classdesc
  * @class
  */
-import AjaxConnector from '../dataconnector/AjaxConnector.js';
+import Ajax from '../dataconnector/Ajax.js';
 import {randomUUID} from "../utils/Utils";
 
 export default class DataSink {
     constructor(name, properties, options) {
         if (properties.protocol === 'http') {
-            this.connector = new AjaxConnector(this.buildUrl(properties));
+            this.connector = new Ajax(this.buildUrl(properties));
             this.connector.onError = this.onCatchError.bind(this);
             this.connector.onSuccess = this.onCatchSuccess.bind(this);
         }

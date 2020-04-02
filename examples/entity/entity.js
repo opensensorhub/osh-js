@@ -1,15 +1,15 @@
 //@ sourceURL=leaflet-location.html.js
 
 // create data source for Android phone GPS
-import DataSourceJson from "../../source/osh/datareceiver/DataSourceJSON.js";
-import PointMarker from "../../source/osh/ui/styler/StylerPointMarker.js";
+import Json from "../../source/osh/datareceiver/Json.js";
+import PointMarker from "../../source/osh/ui/styler/PointMarker.js";
 import LeafletView from "../../source/osh/ui/view/map/LeafletView.js";
-import {DataSourceVideoMjpeg} from "../../source/osh/datareceiver/DataSourceVideoMjpeg";
+import {VideoMjpeg} from "../../source/osh/datareceiver/VideoMjpeg";
 import MjpegView from "../../source/osh/ui/view/video/MjpegView";
 import {randomUUID} from "../../source/osh/utils/Utils";
 import EntityTreeView from "../../source/osh/ui/view/entity/EntityTreeView.js";
 
-let gpsDataSource = new DataSourceJson("android-GPS", {
+let gpsDataSource = new Json("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -44,7 +44,7 @@ let leafletMapView = new LeafletView("leafletMap",
     }]
 );
 
-let videoDataSource = new DataSourceVideoMjpeg("android-Video", {
+let videoDataSource = new VideoMjpeg("android-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

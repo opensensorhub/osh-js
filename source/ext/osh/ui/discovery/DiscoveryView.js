@@ -17,12 +17,12 @@
 import Server from "../../../../osh/server/Server";
 import EventManager from "../../../../osh/events/EventManager";
 import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils";
-import DataSourceLatLonAlt from "../../../../osh/datareceiver/DataSourceLatLonAlt";
-import PointMarker from "../../../../osh/ui/styler/StylerPointMarker";
-import {DataSourceVideoMjpeg} from "../../../../osh/datareceiver/DataSourceVideoMjpeg";
-import DataSourceVideoH264 from "../../../../osh/datareceiver/DataSourceVideoH264";
-import DataSourceChart from "../../../../osh/datareceiver/DataSourceChart";
-import Curve from "../../../../osh/ui/styler/StylerCurve";
+import LatLonAlt from "../../../../osh/datareceiver/LatLonAlt";
+import PointMarker from "../../../../osh/ui/styler/PointMarker";
+import {VideoMjpeg} from "../../../../osh/datareceiver/VideoMjpeg";
+import VideoH264 from "../../../../osh/datareceiver/VideoH264";
+import Chart from "../../../../osh/datareceiver/Chart";
+import Curve from "../../../../osh/ui/styler/Curve";
 import FFMPEGView from "../../../../osh/ui/view/video/FFMPEGView";
 import ChartJsView from "../../../../osh/ui/view/chart/ChartJsView";
 import {View} from "../../../../osh/ui/view/View";
@@ -515,7 +515,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createGPSMarker(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, viewId, entityId) {
-        let gpsDataSource = new DataSourceLatLonAlt(name, {
+        let gpsDataSource = new LatLonAlt(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -584,7 +584,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        let videoDataSource = new DataSourceVideoMjpeg(name, {
+        let videoDataSource = new VideoMjpeg(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -627,7 +627,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createH264VideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        let videoDataSource = new DataSourceVideoH264(name, {
+        let videoDataSource = new VideoH264(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -672,7 +672,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createChartDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        let chartDataSource = new DataSourceChart(name, {
+        let chartDataSource = new Chart(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,

@@ -34,7 +34,7 @@
  */
 import DataSource from './DataSource.js';
 
-export default class DataSourceChart extends DataSource {
+export default class Chart extends DataSource {
 
     /**
      * Extracts timestamp from the data. The timestamp is the first token got from split(',')

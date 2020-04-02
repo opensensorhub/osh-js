@@ -8,41 +8,26 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
 
- Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+ Author: Alex Robin <alex.robin@sensiasoftware.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @classdesc This datasource provides parsing to Lat,Lon,Alt location.
- * Data: ISODATE,LAT,LON,ALT
- * @class DataSourceLatLonAlt
+ * @classdesc This datasource provides parsing to UAH Weather Station.
+ * @class UAHWeather
  * @augments DataSource
- * @example
- * let androidPhoneGpsDataSource = new DataSourceLatLonAlt("android-GPS", {
-    protocol: "ws",
-    service: "SOS",
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-    offeringID: "urn:android:device:060693280a28e015-sos",
-    observedProperty: "http://sensorml.com/ont/swe/property/Location",
-    startTime: "2015-02-16T07:58:00Z",
-    endTime: "2015-02-16T08:09:00Z",
-    replaySpeed: replayFactor+"",
-    syncMasterTime: true,
-    bufferingTime: 1000,
-    timeShift: -16000
-  });
  */
 import DataSource from './DataSource.js';
 
-export default class DataSourceLatLonAlt extends DataSource {
+export default class UAHWeather extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof DataSourceLatLonAlt
+     * @memberof DataSourceUAHWeather
      * @instance
      */
     parseTimeStamp(data) {
@@ -52,29 +37,29 @@ export default class DataSourceLatLonAlt extends DataSource {
     }
 
     /**
-     * Extract data from the message. The data are got such as:<p><ul><li>lat: tokens[1]</li><li>lon: tokens [2]</li><li>alt: tokens[3]</li></ul></p>.
+     * Extract data from the message.
      * @param {Object} data the data to parse
      * @returns {Object} the parsed data
-     * @example
-     * {
-     *   lat:43.61758626,
-     *   lon: 1.42376557,
-     *   alt:100
-     * }
-     * @memberof DataSourceLatLonAlt
+     * @memberof DataSourceUAHWeather
      * @instance
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         let tokens = rec.trim().split(",");
-        let lat = parseFloat(tokens[1]);
-        let lon = parseFloat(tokens[2]);
-        let alt = parseFloat(tokens[3]);
+        let airPres = parseFloat(tokens[1]);
+        let airTemp = parseFloat(tokens[2]);
+        let humidity = parseFloat(tokens[3]);
+        let windSpeed = parseFloat(tokens[4]);
+        let windDir = parseFloat(tokens[5]);
+        let rainCnt = parseFloat(tokens[6]);
 
         return {
-            lat: lat,
-            lon: lon,
-            alt: alt
+            airPres: airPres,
+            airTemp: airTemp,
+            humidity: humidity,
+            windSpeed: windSpeed,
+            windDir: windDir,
+            rainCnt: rainCnt
         };
     }
 }

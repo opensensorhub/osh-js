@@ -37,7 +37,7 @@
 
 import DataSource from './DataSource.js';
 
-export default class DataSourceJson extends DataSource {
+export default class Json extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.

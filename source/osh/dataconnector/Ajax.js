@@ -39,7 +39,7 @@
 import DataConnector from './DataConnector.js';
 import {isDefined} from '../utils/Utils.js';
 
-export default class AjaxConnector extends DataConnector {
+export default class Ajax extends DataConnector {
 
     constructor(url, properties) {
         super(url);

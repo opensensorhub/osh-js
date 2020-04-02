@@ -1,6 +1,6 @@
 import CesiumView from '../../source/osh/ui/view/map/CesiumView';
 import {HeadingPitchRange, Math} from 'cesium';
-import PointMarker from '../../source/osh/ui/styler/StylerPointMarker';
+import PointMarker from '../../source/osh/ui/styler/PointMarker';
 import Server from "../../source/osh/server/Server";
 
 window.CESIUM_BASE_URL = './';

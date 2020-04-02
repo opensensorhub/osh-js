@@ -8,26 +8,28 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
 
- Author: Alex Robin <alex.robin@sensiasoftware.com>
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @classdesc This datasource provides parsing to UAH Weather Station.
- * @class UAHWeather
+ * @classdesc This datasource provides parsing to euler orientation.
+ * Data has to be under the format : ISODATE,X,Y,
+ * @class EulerOrientation
  * @augments DataSource
  */
+
 import DataSource from './DataSource.js';
 
-export default class DataSourceUAHWeather extends DataSource {
+export default class EulerOrientation extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof DataSourceUAHWeather
+     * @memberof DataSourceEulerOrientation
      * @instance
      */
     parseTimeStamp(data) {
@@ -37,29 +39,29 @@ export default class DataSourceUAHWeather extends DataSource {
     }
 
     /**
-     * Extract data from the message.
+     * Extract data from the message. The data are got such as:<p><ul><li>yaw: tokens[1]</li><li>pitch: tokens [2]</li><li>roll: tokens[3]</li></ul></p>.
      * @param {Object} data the data to parse
      * @returns {Object} the parsed data
-     * @memberof DataSourceUAHWeather
+     * @example
+     * {
+     *   pitch:10,
+     *   roll: 11,
+     *   heading:12
+     * }
+     * @memberof DataSourceEulerOrientation
      * @instance
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         let tokens = rec.trim().split(",");
-        let airPres = parseFloat(tokens[1]);
-        let airTemp = parseFloat(tokens[2]);
-        let humidity = parseFloat(tokens[3]);
-        let windSpeed = parseFloat(tokens[4]);
-        let windDir = parseFloat(tokens[5]);
-        let rainCnt = parseFloat(tokens[6]);
+        let yaw = parseFloat(tokens[1]);
+        let pitch = parseFloat(tokens[2]);
+        let roll = parseFloat(tokens[3]);
 
         return {
-            airPres: airPres,
-            airTemp: airTemp,
-            humidity: humidity,
-            windSpeed: windSpeed,
-            windDir: windDir,
-            rainCnt: rainCnt
+            pitch: pitch,
+            roll: roll,
+            heading: yaw
         };
     }
 }

@@ -28,8 +28,8 @@
  *
  */
 import {randomUUID, isDefined} from '../utils/Utils.js';
-import WebSocketDataConnector from "../dataconnector/WebSocketDataConnector.js";
-import AjaxConnector from "../dataconnector/AjaxConnector.js";
+import WebSocket from "../dataconnector/WebSocket.js";
+import Ajax from "../dataconnector/Ajax.js";
 import EventManager from "../events/EventManager.js";
 
 export default class DataSource {
@@ -75,11 +75,11 @@ export default class DataSource {
 
         // checks if type is WebSocket
         if (properties.protocol.startsWith('ws')) {
-            this.connector = new WebSocketDataConnector(this.buildUrl(properties));
+            this.connector = new WebSocket(this.buildUrl(properties));
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
         } else if (properties.protocol.startsWith('http')) {
-            this.connector = new AjaxConnector(this.buildUrl(properties));
+            this.connector = new Ajax(this.buildUrl(properties));
             this.connector.responseType = 'arraybuffer';
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);

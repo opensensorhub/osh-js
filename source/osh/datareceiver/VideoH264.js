@@ -17,7 +17,7 @@
 /**
  * @classdesc This datasource provides parsing to H264 raw data.
  * Data: ArrayBuffer
- * @class DataSourceVideoH264
+ * @class VideoH264
  * @augments DataSource
  * @example
  * var videoDataSource = new DataSourceVideoH264("H264 video ", {
@@ -35,7 +35,7 @@
  */
 import DataSource from './DataSource.js';
 
-export default class DataSourceVideoH264 extends DataSource {
+export default class VideoH264 extends DataSource {
     /**
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
      * @param {ArrayBuffer} data the data to parse

@@ -107,7 +107,7 @@ export default class DataReceiverController {
             let dataSourcesToReconnect = [];
 
             // disconnect all synchronized datasources
-            for (let id of that.dataSourcesIdToDataSources) {
+            for (let id in that.dataSourcesIdToDataSources) {
                 let dataSrc = that.dataSourcesIdToDataSources[id];
                 if (dataSrc.syncMasterTime && dataSrc.connected) {
                     dataSrc.disconnect();

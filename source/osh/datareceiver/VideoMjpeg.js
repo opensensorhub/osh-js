@@ -17,7 +17,7 @@
 /**
  * @classdesc This datasource provides parsing to MJPEG raw data.
  * Data: ArrayBuffer
- * @class DataSourceVideoMjpeg
+ * @class VideoMjpeg
  * @augments DataSource
  * @example
  var androidPhoneVideoDataSource = new DataSourceVideoMjpeg("android-Video", {
@@ -35,7 +35,7 @@
  */
 import DataSource from './DataSource.js';
 
-export class DataSourceVideoMjpeg extends DataSource {
+export class VideoMjpeg extends DataSource {
     /**
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64 bits of the binary message.
      * @param {ArrayBuffer} data the data to parse

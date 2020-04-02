@@ -119,7 +119,7 @@ export default class Buffer {
      * @instance
      */
     cancelAll() {
-        for (let dataSourceId of this.buffers) {
+        for (let dataSourceId in this.buffers) {
             this.cancelDataSource(dataSourceId);
         }
     }
@@ -153,7 +153,7 @@ export default class Buffer {
      * @instance
      */
     startAll() {
-        for (let dataSourceId of this.buffers) {
+        for (let dataSourceId in this.buffers) {
             this.startDataSource(dataSourceId);
         }
     }

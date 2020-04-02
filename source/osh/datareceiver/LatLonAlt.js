@@ -15,21 +15,34 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @classdesc This datasource provides parsing to euler orientation.
- * Data has to be under the format : ISODATE,X,Y,
- * @class DataSourceEulerOrientation
+ * @classdesc This datasource provides parsing to Lat,Lon,Alt location.
+ * Data: ISODATE,LAT,LON,ALT
+ * @class LatLonAlt
  * @augments DataSource
+ * @example
+ * let androidPhoneGpsDataSource = new DataSourceLatLonAlt("android-GPS", {
+    protocol: "ws",
+    service: "SOS",
+    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    offeringID: "urn:android:device:060693280a28e015-sos",
+    observedProperty: "http://sensorml.com/ont/swe/property/Location",
+    startTime: "2015-02-16T07:58:00Z",
+    endTime: "2015-02-16T08:09:00Z",
+    replaySpeed: replayFactor+"",
+    syncMasterTime: true,
+    bufferingTime: 1000,
+    timeShift: -16000
+  });
  */
-
 import DataSource from './DataSource.js';
 
-export default class DataSourceEulerOrientation extends DataSource {
+export default class LatLonAlt extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
      * @param {string} data the data to parse
      * @returns {number} the extracted timestamp
-     * @memberof DataSourceEulerOrientation
+     * @memberof DataSourceLatLonAlt
      * @instance
      */
     parseTimeStamp(data) {
@@ -39,29 +52,29 @@ export default class DataSourceEulerOrientation extends DataSource {
     }
 
     /**
-     * Extract data from the message. The data are got such as:<p><ul><li>yaw: tokens[1]</li><li>pitch: tokens [2]</li><li>roll: tokens[3]</li></ul></p>.
+     * Extract data from the message. The data are got such as:<p><ul><li>lat: tokens[1]</li><li>lon: tokens [2]</li><li>alt: tokens[3]</li></ul></p>.
      * @param {Object} data the data to parse
      * @returns {Object} the parsed data
      * @example
      * {
-     *   pitch:10,
-     *   roll: 11,
-     *   heading:12
+     *   lat:43.61758626,
+     *   lon: 1.42376557,
+     *   alt:100
      * }
-     * @memberof DataSourceEulerOrientation
+     * @memberof DataSourceLatLonAlt
      * @instance
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         let tokens = rec.trim().split(",");
-        let yaw = parseFloat(tokens[1]);
-        let pitch = parseFloat(tokens[2]);
-        let roll = parseFloat(tokens[3]);
+        let lat = parseFloat(tokens[1]);
+        let lon = parseFloat(tokens[2]);
+        let alt = parseFloat(tokens[3]);
 
         return {
-            pitch: pitch,
-            roll: roll,
-            heading: yaw
+            lat: lat,
+            lon: lon,
+            alt: alt
         };
     }
 }

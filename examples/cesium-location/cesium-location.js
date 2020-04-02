@@ -1,13 +1,13 @@
-import DataSourceJson from '../../source/osh/datareceiver/DataSourceJSON';
+import Json from '../../source/osh/datareceiver/Json';
 import CesiumView from '../../source/osh/ui/view/map/CesiumView';
 import {EllipsoidTerrainProvider} from 'cesium';
-import PointMarker from '../../source/osh/ui/styler/StylerPointMarker';
+import PointMarker from '../../source/osh/ui/styler/PointMarker';
 
 
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
-let gpsDataSource = new DataSourceJson('android-GPS', {
+let gpsDataSource = new Json('android-GPS', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

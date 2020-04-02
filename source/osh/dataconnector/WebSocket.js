@@ -37,7 +37,7 @@
 import DataConnector from './DataConnector.js';
 import {isWebWorker} from '../utils/Utils.js';
 
-export default class WebSocketDataConnector extends DataConnector {
+export default class WebSocket extends DataConnector {
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.

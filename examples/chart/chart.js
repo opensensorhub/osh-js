@@ -1,9 +1,9 @@
 // create data source for Android phone camera
-import DataSourceChart from "../../source/osh/datareceiver/DataSourceChart";
+import Chart from "../../source/osh/datareceiver/Chart";
 import ChartJsView from "../../source/osh/ui/view/chart/ChartJsView";
-import Curve from "../../source/osh/ui/styler/StylerCurve";
+import Curve from "../../source/osh/ui/styler/Curve";
 
-let chartDataSource = new DataSourceChart("weather", {
+let chartDataSource = new Chart("weather", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

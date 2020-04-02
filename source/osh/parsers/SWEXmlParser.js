@@ -2,7 +2,7 @@
  * Created by mdhsl on 5/4/17.
  */
 
-import X2JS from "../../../vendor-local/x2js/x2js.js";
+import X2JS from "../../../libs/x2js/x2js.js";
 
 /**
  * @class Javascript binding for SWE requests

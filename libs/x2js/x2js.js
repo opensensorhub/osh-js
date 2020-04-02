@@ -612,7 +612,7 @@ export default class X2JS {
         return parseXmlString(xmlDocStr);
     }
 
-    getVersion = function () {
+    getVersion() {
         return this.VERSION;
     }
 }
