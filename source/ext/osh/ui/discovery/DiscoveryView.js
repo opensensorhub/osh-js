@@ -16,7 +16,7 @@
 
 import Server from "../../../../osh/server/Server";
 import EventManager from "../../../../osh/events/EventManager";
-import {randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils";
+import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils";
 import DataSourceLatLonAlt from "../../../../osh/datareceiver/DataSourceLatLonAlt";
 import PointMarker from "../../../../osh/ui/styler/StylerPointMarker";
 import {DataSourceVideoMjpeg} from "../../../../osh/datareceiver/DataSourceVideoMjpeg";
@@ -34,7 +34,7 @@ import "../../resources/css/discovery.css";
  * @type {OSH.UI.View}
  * @augments OSH.UI.View
  * @example
-var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
+let discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
     services: ["http://sensiasoft.net:8181/"],
     views: [{
         name: 'Video dialog(H264)',
@@ -50,7 +50,7 @@ var discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
 });
 
 //------ More complex example
- var discoveryView = new OSH.UI.DiscoveryView("",{
+ let discoveryView = new OSH.UI.DiscoveryView("",{
         services: ["http://sensiasoft.net:8181/"], // server list
         css: "discovery-view",
         dataReceiverController:dataProviderController, // add custom dataProviderController
@@ -83,8 +83,8 @@ export default class DiscoveryView extends View {
 
         this.dialogContainer = document.body.id;
         this.swapId = "";
-        if (typeof properties !== "undefined") {
-            if (typeof properties.dataReceiverController !== "undefined") {
+        if (isDefined(properties)) {
+            if (isDefined(properties.dataReceiverController)) {
                 this.dataReceiverController = properties.dataReceiverController;
             } else {
                 this.dataReceiverController = new DataReceiverController({
@@ -93,11 +93,11 @@ export default class DiscoveryView extends View {
                 this.dataReceiverController.connectAll();
             }
 
-            if (typeof properties.swapId !== "undefined") {
+            if (isDefined(properties.swapId)) {
                 this.swapId = properties.swapId;
             }
 
-            if (typeof properties.dialogContainer !== "undefined") {
+            if (isDefined(properties.dialogContainer)) {
                 this.dialogContainer = properties.dialogContainer;
             }
         }
@@ -115,104 +115,104 @@ export default class DiscoveryView extends View {
         this.viewSelectTagId = "dialogSelect-" + randomUUID();
 
         // add template
-        var discoveryForm = document.createElement("form");
+        let discoveryForm = document.createElement("form");
         discoveryForm.setAttribute("action", "#");
         discoveryForm.setAttribute("id", this.formTagId);
         discoveryForm.setAttribute("class", 'discovery-form');
 
         document.getElementById(this.divId).appendChild(discoveryForm);
 
-        var strVar = "";
-        strVar += "<ul>";
-        strVar += "            <li>";
-        strVar += "                <h2>Discovery<\/h2>";
-        strVar += "                <span class=\"required_notification\">* Denotes Required Field<\/span>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label>Service:<\/label>";
-        strVar += "                <div class=\"select-style\">";
-        strVar += "                     <select id=\"" + this.serviceSelectTagId + "\" required pattern=\"^(?!Select a service$).*\">";
-        strVar += "                         <option value=\"\" disabled selected>Select a service<\/option>";
-        strVar += "                     <\/select>";
-        strVar += "                <\/div>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label>Offering:<\/label>";
-        strVar += "                <div class=\"select-style\">";
-        strVar += "                    <select id=\"" + this.offeringSelectTagId + "\" required>";
-        strVar += "                        <option value=\"\" disabled selected>Select an offering<\/option>";
-        strVar += "                    <\/select>";
-        strVar += "                <\/div>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label>Observable Property:<\/label>";
-        strVar += "                <div class=\"select-style\">";
-        strVar += "                     <select id=\"" + this.observablePropertyTagId + "\" required>";
-        strVar += "                         <option value=\"\" disabled selected>Select a property<\/option>";
-        strVar += "                     <\/select>";
-        strVar += "                <\/div>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label for=\"startTime\">Start time:<\/label>";
-        //strVar += "                <input type=\"text\" name=\"startTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
-        strVar += "                <input id=\"" + this.startTimeTagId + "\" type=\"text\" name=\"startTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required/>";
-        strVar += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label for=\"endTime\">End time:<\/label>";
-        //strVar += "                <input type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
-        strVar += "                <input id=\"" + this.endTimeTagId + "\" type=\"text\" name=\"endTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required/>";
-        strVar += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label for=\"syncMasterTime\">Sync master time:<\/label>";
-        strVar += "                <input id=\"" + this.syncMasterTimeId + "\"  class=\"input-checkbox\" type=\"checkbox\" name=\syncMasterTime\" />";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label>Type:<\/label>";
-        strVar += "                <div class=\"select-style\">";
-        strVar += "                    <select id=\"" + this.typeSelectTagId + "\" required>";
-        strVar += "                        <option value=\"\" disabled selected>Select a type<\/option>";
-        strVar += "                    <\/select>";
-        strVar += "                <\/div>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label>Entities:<\/label>";
-        strVar += "                <div class=\"select-style\">";
-        strVar += "                    <select id=\"" + this.entitiesSelectTagId + "\">";
-        strVar += "                        <option value=\"\" selected>None<\/option>";
-        strVar += "                    <\/select>";
-        strVar += "                <\/div>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <label>View:<\/label>";
-        strVar += "                <div class=\"select-style\">";
-        strVar += "                    <select id=\"" + this.viewSelectTagId + "\" required>";
-        strVar += "                        <option value=\"\" disabled selected>Select a view<\/option>";
-        strVar += "                    <\/select>";
-        strVar += "                <\/div>";
-        strVar += "            <\/li>";
-        strVar += "            <li>";
-        strVar += "                <button id=\"" + this.formButtonId + "\" class=\"submit\" type=\"submit\">Add<\/button>";
-        strVar += "            <\/li>";
-        strVar += "        <\/ul>";
+        let strlet = "";
+        strlet += "<ul>";
+        strlet += "            <li>";
+        strlet += "                <h2>Discovery<\/h2>";
+        strlet += "                <span class=\"required_notification\">* Denotes Required Field<\/span>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label>Service:<\/label>";
+        strlet += "                <div class=\"select-style\">";
+        strlet += "                     <select id=\"" + this.serviceSelectTagId + "\" required pattern=\"^(?!Select a service$).*\">";
+        strlet += "                         <option value=\"\" disabled selected>Select a service<\/option>";
+        strlet += "                     <\/select>";
+        strlet += "                <\/div>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label>Offering:<\/label>";
+        strlet += "                <div class=\"select-style\">";
+        strlet += "                    <select id=\"" + this.offeringSelectTagId + "\" required>";
+        strlet += "                        <option value=\"\" disabled selected>Select an offering<\/option>";
+        strlet += "                    <\/select>";
+        strlet += "                <\/div>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label>Observable Property:<\/label>";
+        strlet += "                <div class=\"select-style\">";
+        strlet += "                     <select id=\"" + this.observablePropertyTagId + "\" required>";
+        strlet += "                         <option value=\"\" disabled selected>Select a property<\/option>";
+        strlet += "                     <\/select>";
+        strlet += "                <\/div>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label for=\"startTime\">Start time:<\/label>";
+        //strlet += "                <input type=\"text\" name=\"startTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
+        strlet += "                <input id=\"" + this.startTimeTagId + "\" type=\"text\" name=\"startTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\" required/>";
+        strlet += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label for=\"endTime\">End time:<\/label>";
+        //strlet += "                <input type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
+        strlet += "                <input id=\"" + this.endTimeTagId + "\" type=\"text\" name=\"endTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required/>";
+        strlet += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label for=\"syncMasterTime\">Sync master time:<\/label>";
+        strlet += "                <input id=\"" + this.syncMasterTimeId + "\"  class=\"input-checkbox\" type=\"checkbox\" name=\syncMasterTime\" />";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label>Type:<\/label>";
+        strlet += "                <div class=\"select-style\">";
+        strlet += "                    <select id=\"" + this.typeSelectTagId + "\" required>";
+        strlet += "                        <option value=\"\" disabled selected>Select a type<\/option>";
+        strlet += "                    <\/select>";
+        strlet += "                <\/div>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label>Entities:<\/label>";
+        strlet += "                <div class=\"select-style\">";
+        strlet += "                    <select id=\"" + this.entitiesSelectTagId + "\">";
+        strlet += "                        <option value=\"\" selected>None<\/option>";
+        strlet += "                    <\/select>";
+        strlet += "                <\/div>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <label>View:<\/label>";
+        strlet += "                <div class=\"select-style\">";
+        strlet += "                    <select id=\"" + this.viewSelectTagId + "\" required>";
+        strlet += "                        <option value=\"\" disabled selected>Select a view<\/option>";
+        strlet += "                    <\/select>";
+        strlet += "                <\/div>";
+        strlet += "            <\/li>";
+        strlet += "            <li>";
+        strlet += "                <button id=\"" + this.formButtonId + "\" class=\"submit\" type=\"submit\">Add<\/button>";
+        strlet += "            <\/li>";
+        strlet += "        <\/ul>";
 
-        discoveryForm.innerHTML = strVar;
+        discoveryForm.innerHTML = strlet;
 
         // fill service from urls
-        if (typeof properties != "undefined") {
+        if (isDefined(properties)) {
             // add services
-            if (typeof properties.services != "undefined") {
+            if (isDefined(properties.services)) {
                 this.addValuesToSelect(this.serviceSelectTagId, properties.services);
             }
 
             // add entities
-            if (typeof properties.entities != "undefined") {
+            if (isDefined(properties.entities)) {
                 this.addObjectsToSelect(this.entitiesSelectTagId, properties.entities);
             }
 
             // add views
-            if (typeof properties.views != "undefined") {
+            if (isDefined(properties.views)) {
                 this.views = properties.views;
             } else {
                 this.views = [];
@@ -220,7 +220,7 @@ export default class DiscoveryView extends View {
         }
 
         // fill type
-        for (var type in DiscoveryType) {
+        for (let type in DiscoveryType) {
             this.addValueToSelect(this.typeSelectTagId, DiscoveryType[type]);
         }
 
@@ -238,26 +238,26 @@ export default class DiscoveryView extends View {
      * @instance
      */
     onSelectedService(event) {
-        var serverTag = document.getElementById(this.serviceSelectTagId);
-        var option = serverTag.options[serverTag.selectedIndex];
+        let serverTag = document.getElementById(this.serviceSelectTagId);
+        let option = serverTag.options[serverTag.selectedIndex];
 
         // connect to server and get the list of offering
-        //var oshServer = new OSH.Server(option.value);
+        //let oshServer = new OSH.Server(option.value);
 
         this.removeAllFromSelect(this.offeringSelectTagId);
-        /* var onSuccessGetCapabilities = function(event) {
+        /* let onSuccessGetCapabilities = function(event) {
              this.sensors = oshServer.sensors;
              // remove existing
-             var startTimeInputTag = document.getElementById(this.startTimeTagId);
-             var endTimeInputTag = document.getElementById(this.endTimeTagId);
+             let startTimeInputTag = document.getElementById(this.startTimeTagId);
+             let endTimeInputTag = document.getElementById(this.endTimeTagId);
 
              // add the new ones
-             for(var i = 0;i < this.sensors.length;i++) {
+             for(let i = 0;i < this.sensors.length;i++) {
                  this.addValueToSelect(this.offeringSelectTagId,this.sensors[i].name,this.sensors[i],this.sensors[i]);
              }
          }.bind(this);
 
-         var onErrorGetCapabilities = function(event) {
+         let onErrorGetCapabilities = function(event) {
          };
 
          oshServer.getCapabilities(onSuccessGetCapabilities,onErrorGetCapabilities);*/
@@ -270,19 +270,19 @@ export default class DiscoveryView extends View {
             baseUrl: 'sensorhub' // TODO: allow to customize that value
         });
 
-        var onSuccessGetCapabilities = function (jsonObj) {
-            var startTimeInputTag = document.getElementById(this.startTimeTagId);
-            var endTimeInputTag = document.getElementById(this.endTimeTagId);
+        let onSuccessGetCapabilities = function (jsonObj) {
+            let startTimeInputTag = document.getElementById(this.startTimeTagId);
+            let endTimeInputTag = document.getElementById(this.endTimeTagId);
 
-            var offering = null;
+            let offering = null;
 
-            for (var i = 0; i < jsonObj.Capabilities.contents.offering.length; i++) {
+            for (let i = 0; i < jsonObj.Capabilities.contents.offering.length; i++) {
                 offering = jsonObj.Capabilities.contents.offering[i];
                 this.addValueToSelect(this.offeringSelectTagId, offering.name, offering);
             }
         }.bind(this);
 
-        var onErrorGetCapabilities = function (event) {
+        let onErrorGetCapabilities = function (event) {
         };
 
         this.oshServer.getCapabilities(onSuccessGetCapabilities, onErrorGetCapabilities);
@@ -295,19 +295,19 @@ export default class DiscoveryView extends View {
      * @instance
      */
     onSelectedOffering(event) {
-        var e = document.getElementById(this.offeringSelectTagId);
-        var option = e.options[e.selectedIndex];
-        var offering = option.parent;
+        let e = document.getElementById(this.offeringSelectTagId);
+        let option = e.options[e.selectedIndex];
+        let offering = option.parent;
         this.removeAllFromSelect(this.observablePropertyTagId);
 
-        var startTimeInputTag = document.getElementById(this.startTimeTagId);
-        var endTimeInputTag = document.getElementById(this.endTimeTagId);
+        let startTimeInputTag = document.getElementById(this.startTimeTagId);
+        let endTimeInputTag = document.getElementById(this.endTimeTagId);
 
         // set times
         startTimeInputTag.value = offering.phenomenonTime.beginPosition;
 
-        if (typeof offering.phenomenonTime.endPosition.indeterminatePosition !== "undefined") {
-            var d = new Date();
+        if (isDefined(offering.phenomenonTime.endPosition.indeterminatePosition)) {
+            let d = new Date();
             d.setUTCFullYear(2055);
             endTimeInputTag.value = d.toISOString();
         } else {
@@ -315,8 +315,12 @@ export default class DiscoveryView extends View {
         }
 
         // feed observable properties
-        for (var i = 0; i < offering.observableProperty.length; i++) {
-            this.addValueToSelect(this.observablePropertyTagId, offering.observableProperty[i], offering);
+        if(Array.isArray(offering.observableProperty)) {
+            for (let i = 0; i < offering.observableProperty.length; i++) {
+                this.addValueToSelect(this.observablePropertyTagId, offering.observableProperty[i], offering);
+            }
+        } else {
+            this.addValueToSelect(this.observablePropertyTagId, offering.observableProperty, offering);
         }
     }
 
@@ -327,11 +331,11 @@ export default class DiscoveryView extends View {
      * @instance
      */
     onSelectedType(event) {
-        var typeTag = document.getElementById(this.typeSelectTagId);
-        var tagValue = typeTag.value;
+        let typeTag = document.getElementById(this.typeSelectTagId);
+        let tagValue = typeTag.value;
         this.removeAllFromSelect(this.viewSelectTagId);
-        for (var i = 0; i < this.views.length; i++) {
-            var currentView = this.views[i];
+        for (let i = 0; i < this.views.length; i++) {
+            let currentView = this.views[i];
             if (typeof currentView.type != "undefined" && currentView.type == tagValue) {
                 this.addValueToSelect(this.viewSelectTagId, currentView.name, undefined, currentView);
             }
@@ -348,48 +352,48 @@ export default class DiscoveryView extends View {
     onFormSubmit(event) {
         event.preventDefault();
         // service
-        var serviceTag = document.getElementById(this.serviceSelectTagId)
-        var serviceTagSelectedOption = serviceTag.options[serviceTag.selectedIndex];
+        let serviceTag = document.getElementById(this.serviceSelectTagId)
+        let serviceTagSelectedOption = serviceTag.options[serviceTag.selectedIndex];
 
         // offering
-        var offeringTag = document.getElementById(this.offeringSelectTagId)
-        var offeringTagSelectedOption = offeringTag.options[offeringTag.selectedIndex];
+        let offeringTag = document.getElementById(this.offeringSelectTagId)
+        let offeringTagSelectedOption = offeringTag.options[offeringTag.selectedIndex];
 
         // obs property
-        var observablePropertyTag = document.getElementById(this.observablePropertyTagId);
-        var observablePropertyTagSelectedOption = observablePropertyTag.options[observablePropertyTag.selectedIndex];
+        let observablePropertyTag = document.getElementById(this.observablePropertyTagId);
+        let observablePropertyTagSelectedOption = observablePropertyTag.options[observablePropertyTag.selectedIndex];
 
         // time
-        var startTimeInputTag = document.getElementById(this.startTimeTagId);
-        var endTimeInputTag = document.getElementById(this.endTimeTagId);
+        let startTimeInputTag = document.getElementById(this.startTimeTagId);
+        let endTimeInputTag = document.getElementById(this.endTimeTagId);
 
         // sync master time
-        var syncMasterTimeTag = document.getElementById(this.syncMasterTimeId);
+        let syncMasterTimeTag = document.getElementById(this.syncMasterTimeId);
 
         // type & view
-        var typeTag = document.getElementById(this.typeSelectTagId);
-        var viewTag = document.getElementById(this.viewSelectTagId);
-        var viewTagOption = viewTag.options[viewTag.selectedIndex];
+        let typeTag = document.getElementById(this.typeSelectTagId);
+        let viewTag = document.getElementById(this.viewSelectTagId);
+        let viewTagOption = viewTag.options[viewTag.selectedIndex];
 
         // entity
-        var entityTag = document.getElementById(this.entitiesSelectTagId);
-        var entityTagTagOption = entityTag.options[entityTag.selectedIndex];
+        let entityTag = document.getElementById(this.entitiesSelectTagId);
+        let entityTagTagOption = entityTag.options[entityTag.selectedIndex];
 
         // get values
-        var name = offeringTagSelectedOption.parent.name;
-        var endPointUrl = serviceTagSelectedOption.value + "sensorhub/sos";
-        var offeringID = offeringTagSelectedOption.parent.identifier;
-        var obsProp = observablePropertyTagSelectedOption.value;
-        var startTime = startTimeInputTag.value;
-        var endTime = endTimeInputTag.value;
-        var viewId = viewTagOption.object.viewId;
-        var entityId = undefined;
+        let name = offeringTagSelectedOption.parent.name;
+        let endPointUrl = serviceTagSelectedOption.value + "/sensorhub/sos";
+        let offeringID = offeringTagSelectedOption.parent.identifier;
+        let obsProp = observablePropertyTagSelectedOption.value;
+        let startTime = startTimeInputTag.value;
+        let endTime = endTimeInputTag.value;
+        let viewId = viewTagOption.object.viewId;
+        let entityId = undefined;
         if (typeof entityTagTagOption.object != "undefined") {
             entityId = entityTagTagOption.object.id;
         }
 
         endPointUrl = endPointUrl.replace('http://', '');
-        var syncMasterTime = syncMasterTimeTag.checked;
+        let syncMasterTime = syncMasterTimeTag.checked;
 
 
         switch (viewTagOption.object.type) {
@@ -415,6 +419,10 @@ export default class DiscoveryView extends View {
         return false;
     }
 
+    onChange(event) {
+
+    }
+
     /**
      *
      * @param tagId
@@ -423,10 +431,10 @@ export default class DiscoveryView extends View {
      * @instance
      */
     addObjectsToSelect(tagId, objectsArr) {
-        var selectTag = document.getElementById(tagId);
-        for (var i = 0; i < objectsArr.length; i++) {
-            var object = objectsArr[i];
-            var option = document.createElement("option");
+        let selectTag = document.getElementById(tagId);
+        for (let i = 0; i < objectsArr.length; i++) {
+            let object = objectsArr[i];
+            let option = document.createElement("option");
             option.text = object.name;
             option.value = object.name;
             option.object = object;
@@ -442,10 +450,10 @@ export default class DiscoveryView extends View {
      * @instance
      */
     addValuesToSelect(tagId, valuesArr) {
-        var selectTag = document.getElementById(tagId);
-        for (var i = 0; i < valuesArr.length; i++) {
-            var value = valuesArr[i];
-            var option = document.createElement("option");
+        let selectTag = document.getElementById(tagId);
+        for (let i = 0; i < valuesArr.length; i++) {
+            let value = valuesArr[i];
+            let option = document.createElement("option");
             option.text = value;
             option.value = value;
             selectTag.add(option);
@@ -462,8 +470,8 @@ export default class DiscoveryView extends View {
      * @instance
      */
     addValueToSelect(tagId, value, parent, object) {
-        var selectTag = document.getElementById(tagId);
-        var option = document.createElement("option");
+        let selectTag = document.getElementById(tagId);
+        let option = document.createElement("option");
         option.text = value;
         option.value = value;
         option.parent = parent;
@@ -485,8 +493,8 @@ export default class DiscoveryView extends View {
      * @instance
      */
     removeAllFromSelect(tagId) {
-        var i;
-        var selectTag = document.getElementById(tagId);
+        let i;
+        let selectTag = document.getElementById(tagId);
         for (i = selectTag.options.length - 1; i > 0; i--) {
             selectTag.remove(i);
         }
@@ -507,7 +515,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createGPSMarker(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, viewId, entityId) {
-        var gpsDataSource = new DataSourceLatLonAlt(name, {
+        let gpsDataSource = new DataSourceLatLonAlt(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -522,7 +530,7 @@ export default class DiscoveryView extends View {
         });
 
         // create viewItem
-        var pointMarker = new PointMarker({
+        let pointMarker = new PointMarker({
             locationFunc: {
                 dataSourceIds: [gpsDataSource.id],
                 handler: function (rec) {
@@ -538,11 +546,10 @@ export default class DiscoveryView extends View {
                 dataSourceIds: [gpsDataSource.getId()],
                 handler: function (rec, timeStamp, options) {
                     if (options.selected) {
-                        return 'images/cameralook-selected.png'
+                        return 'images/cameralook-selected.png';
                     } else {
                         return 'images/cameralook.png';
                     }
-                    ;
                 }
             }
         });
@@ -550,7 +557,7 @@ export default class DiscoveryView extends View {
         // We can add a group of dataSources and set the options
         this.dataReceiverController.addDataSource(gpsDataSource);
 
-        var viewItem = {
+        let viewItem = {
             styler: pointMarker,
             name: name
         };
@@ -577,7 +584,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        var videoDataSource = new DataSourceVideoMjpeg(name, {
+        let videoDataSource = new DataSourceVideoMjpeg(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -590,7 +597,7 @@ export default class DiscoveryView extends View {
             bufferingTime: 1000
         });
 
-        var videoView = new UI.MjpegView(document.body, {
+        let videoView = new UI.MjpegView(document.body, {
             dataSourceId: videoDataSource.id,
             css: "video",
             cssSelected: "video-selected",
@@ -620,7 +627,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createH264VideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        var videoDataSource = new DataSourceVideoH264(name, {
+        let videoDataSource = new DataSourceVideoH264(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -633,7 +640,7 @@ export default class DiscoveryView extends View {
             bufferingTime: 1000
         });
 
-        var videoView = new FFMPEGView(document.body, {
+        let videoView = new FFMPEGView(document.body, {
             dataSourceId: videoDataSource.getId(),
             css: "video",
             cssSelected: "video-selected",
@@ -665,7 +672,7 @@ export default class DiscoveryView extends View {
      * @instance
      */
     createChartDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        var chartDataSource = new DataSourceChart(name, {
+        let chartDataSource = new DataSourceChart(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -679,7 +686,7 @@ export default class DiscoveryView extends View {
         });
 
         // DataSourceChart View
-        var chartView = new ChartJsView(document.body,
+        let chartView = new ChartJsView(document.body,
             [{
                 styler: new Curve({
                     valuesFunc: {
