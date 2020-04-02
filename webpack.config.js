@@ -8,11 +8,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: './source/osh/OSH.js',
+    entry: './source/OSH.js',
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: '[name].min.js',
-        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js',
+        library: 'osh',
+        path: path.resolve(__dirname, 'dist/build'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
     },
@@ -39,16 +40,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /^((?!es2015-)[\s\S])*\.js$/,
-                use: {
-                    loader: 'buble-loader'
-                },
-                include: [
-                    path.join(__dirname, '..', '..', 'src'),
-                    path.join(__dirname, '..')
-                ]
-            },
-            {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
                     'file-loader',
@@ -71,21 +62,6 @@ module.exports = {
         //ignore leaflet
         /^(leaflet|\$)/i
     ],
-    optimization: {
-        minimizer: [new TerserPlugin({
-            parallel: true,
-            sourceMap: true
-        })],
-        runtimeChunk: {
-            name: 'common'
-        },
-        minimize: true,
-        splitChunks: {
-            name: 'common',
-            chunks: 'initial',
-            minChunks: 2
-        }
-    },
     mode: 'production',
     plugins: [
         /**
@@ -106,7 +82,12 @@ module.exports = {
         new CopyWebpackPlugin([
             {from: 'images', to: 'images'},
             {from: 'libs/tree/images/tree', to: 'images'},
-            {from: 'source/ext/osh/resources/images/tasking', to: 'images'},
+            {from: 'source/ext/osh/resources/css', to: 'css'},
+            {from: 'source/ext/osh/resources/images', to: 'images'},
+            {from: 'source/osh/resources/css', to: 'css'},
+            {from: 'source/osh/resources/images', to: 'images'},
+            {from: 'source/', to: '../source'},
+            {from: 'index.js', to: 'index.js'},
         ]),
         new WorkerPlugin(),
     ]
