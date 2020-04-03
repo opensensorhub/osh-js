@@ -19,7 +19,7 @@
  * @class
  */
 import Ajax from '../dataconnector/Ajax.js';
-import {randomUUID} from "../utils/Utils";
+import {randomUUID} from "../utils/Utils.js";
 
 export default class DataSink {
     constructor(name, properties, options) {

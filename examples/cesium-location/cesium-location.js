@@ -3,7 +3,6 @@ import CesiumView from '../../source/osh/ui/view/map/CesiumView';
 import {EllipsoidTerrainProvider} from 'cesium';
 import PointMarker from '../../source/osh/ui/styler/PointMarker';
 
-
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS

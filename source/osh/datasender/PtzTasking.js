@@ -20,7 +20,7 @@
  * @augments DataSink
  */
 import DataSink from './DataSink.js';
-import EventManager from '../events/EventManager';
+import EventManager from '../events/EventManager.js';
 
 export default class PtzTasking extends DataSink {
 

@@ -14,7 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Cesium from "cesium/Source/Core/Cartesian3.js";
+import {
+	Cartesian3,
+} from 'cesium';
+
 import {isDefined} from "../../utils/Utils.js";
 import Styler from "./Styler.js";
 
@@ -116,22 +119,22 @@ export default class Nexrad extends Styler {
 				let step = rec.data.refGateSize;
 				for (let i=0; i<rec.data.reflectivity.length; i++) {
 
-				   let val = rec.data.reflectivity[i];
+					let val = rec.data.reflectivity[i];
 
-				   // skip points that are out of range
-				   if (val < -32 || val > 94.5) {
-					   continue;
-				   }
+					// skip points that are out of range
+					if (val < -32 || val > 94.5) {
+						continue;
+					}
 
-				   let gatePos = new Cesium.Cartesian3(dist0 + i*step, 0, 0);
-				   Cesium.Matrix3.multiplyByVector(rotM, gatePos, gatePos);
+					let gatePos = new Cesium.Cartesian3(dist0 + i*step, 0, 0);
+					Cesium.Matrix3.multiplyByVector(rotM, gatePos, gatePos);
 
-				   // apply color map and add point to collection
-				   this.pointCollection.add({
-					  position : Cesium.Cartesian3.add(radarLoc, gatePos, gatePos),
-					  color : this.getReflectivityColor(val),
-					  pixelSize : 3
-				   });
+					// apply color map and add point to collection
+					this.pointCollection.add({
+						position : Cesium.Cartesian3.add(radarLoc, gatePos, gatePos),
+						color : this.getReflectivityColor(val),
+						pixelSize : 3
+					});
 				}
 
 				this.radialCount++;
@@ -139,7 +142,7 @@ export default class Nexrad extends Styler {
 					view.viewer.scene.primitives.add(this.pointCollection);
 					this.pointCollection = new Cesium.PointPrimitiveCollection();
 					this.radialCount = 0;
-			    }
+				}
 			}
 			return true;
 		}
@@ -155,6 +158,6 @@ export default class Nexrad extends Styler {
 	 */
 	getReflectivityColor(val) {
 		let index = Math.floor((val + 30) / 5) + 1;
-	    return this.reflectivityColorMap[index];
+		return this.reflectivityColorMap[index];
 	}
 }

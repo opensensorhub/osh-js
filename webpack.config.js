@@ -87,7 +87,7 @@ module.exports = {
             {from: 'source/osh/resources/css', to: 'css'},
             {from: 'source/osh/resources/images', to: 'images'},
             {from: 'source/', to: '../source'},
-            {from: 'index.js', to: 'index.js'},
+            {from: 'libs/', to: '../libs'},
         ]),
         new WorkerPlugin(),
     ]
