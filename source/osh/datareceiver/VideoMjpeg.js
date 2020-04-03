@@ -35,7 +35,7 @@
  */
 import DataSource from './DataSource.js';
 
-export class VideoMjpeg extends DataSource {
+export default class VideoMjpeg extends DataSource {
     /**
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64 bits of the binary message.
      * @param {ArrayBuffer} data the data to parse
