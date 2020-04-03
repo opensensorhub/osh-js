@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <Map></Map>
+    <Map />
   </div>
 </template>
 <script>
   // @ is an alias to /src
-  import Map from '@/components/Map.vue';
+import Map from '@/components/Map.vue';
 
-  export default {
-    components: {
-      Map
-    }
-  };
+export default {
+  components: {
+    Map
+  }
+};
 </script>
