@@ -13,3 +13,9 @@ export default {
   }
 };
 </script>
+<style>
+  body {
+    overflow-x: hidden;
+    margin:0;
+  }
+</style>

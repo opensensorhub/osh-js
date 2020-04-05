@@ -62,7 +62,10 @@ export default {
 </script>
 <style>
   .map {
-    height: 600px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
   }
 
   .leaflet-container {
