@@ -1,13 +1,13 @@
 //@ sourceURL=leaflet-location.html.js
 
 // create data source for Android phone GPS
-import Json from "../../source/osh/datareceiver/Json.js";
-import PointMarker from "../../source/osh/ui/styler/PointMarker.js";
-import LeafletView from "../../source/osh/ui/view/map/LeafletView.js";
-import {VideoMjpeg} from "../../source/osh/datareceiver/VideoMjpeg";
-import MjpegView from "../../source/osh/ui/view/video/MjpegView";
-import {randomUUID} from "../../source/osh/utils/Utils";
-import EntityTreeView from "../../source/osh/ui/view/entity/EntityTreeView.js";
+import Json from "osh/datareceiver/Json.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
+import LeafletView from "osh/ui/view/map/LeafletView.js";
+import VideoMjpeg from "osh/datareceiver/VideoMjpeg";
+import MjpegView from "osh/ui/view/video/MjpegView";
+import {randomUUID} from "osh/utils/Utils";
+import EntityTreeView from "osh/ui/view/entity/EntityTreeView.js";
 
 let gpsDataSource = new Json("android-GPS", {
   protocol: "ws",

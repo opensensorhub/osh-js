@@ -1,4 +1,4 @@
-import DiscoveryView, {DiscoveryType} from "../../source/ext/osh/ui/discovery/DiscoveryView";
+import DiscoveryView, {DiscoveryType} from "ext/osh/ui/discovery/DiscoveryView";
 
 let discoveryView = new DiscoveryView("discovery-container",{
     dialogContainer: "dialog-container",

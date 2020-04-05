@@ -1,6 +1,6 @@
-import RangeSlider from "../../source/ext/osh/ui/rangeslider/RangeSlider";
-import VideoH264 from "../../source/osh/datareceiver/VideoH264";
-import FFMPEGView from "../../source/osh/ui/view/video/FFMPEGView";
+import RangeSlider from "ext/osh/ui/rangeslider/RangeSlider";
+import VideoH264 from "osh/datareceiver/VideoH264";
+import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 
 // create data source for UAV camera
 let videoDataSource = new VideoH264("drone-Video", {

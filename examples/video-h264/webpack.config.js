@@ -24,7 +24,8 @@ module.exports = {
     // bower_components folder.
     resolve: {
         modules: [
-            path.resolve(__dirname, 'node_modules')
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, '../../source')
         ]
     },
     // These rules tell Webpack how to process different module types.
@@ -71,12 +72,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'video-h264.html')
         }),
-        // This plugin will copy files over to ‘./dist’ without transforming them.
-        // That's important because the custom-elements-es5-adapter.js MUST
-        // remain in ES2015. We’ll talk about this a bit later :)
-        new CopyWebpackPlugin([
-        {from: '../../source/osh/css/osh.css', to: 'css'},
-        ]),
         new WorkerPlugin()
     ]
 };

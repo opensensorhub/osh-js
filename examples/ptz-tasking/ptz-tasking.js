@@ -1,7 +1,7 @@
-import VideoH264 from '../../source/osh/datareceiver/VideoH264.js';
-import FFMPEGView from '../../source/osh/ui/view/video/FFMPEGView.js';
-import FoscamPtzTasking from "../../source/osh/datasender/FoscamPtzTasking";
-import PtzTaskingView from "../../source/ext/osh/ui/tasking/PtzTaskingView";
+import VideoH264 from 'osh/datareceiver/VideoH264.js';
+import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
+import FoscamPtzTasking from "osh/datasender/FoscamPtzTasking";
+import PtzTaskingView from "ext/osh/ui/tasking/PtzTaskingView";
 
 // create data source for UAV camera
 let videoDataSource = new VideoH264("drone-Video", {

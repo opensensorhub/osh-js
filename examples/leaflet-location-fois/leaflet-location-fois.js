@@ -1,8 +1,8 @@
 //@ sourceURL=leaflet-location.html.js
 // create data source for Android phone GPS
-import PointMarker from "../../source/osh/ui/styler/PointMarker.js";
-import LeafletView from "../../source/osh/ui/view/map/LeafletView.js";
-import Server from "../../source/osh/server/Server.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
+import LeafletView from "osh/ui/view/map/LeafletView.js";
+import Server from "osh/server/Server.js";
 import $ from 'jquery';
 
 let server = new Server({

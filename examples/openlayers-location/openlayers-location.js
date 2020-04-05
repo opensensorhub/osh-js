@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import Json from "../../source/osh/datareceiver/Json.js";
-import PointMarker from "../../source/osh/ui/styler/PointMarker.js";
-import OpenLayerView from "../../source/osh/ui/view/map/OpenLayerView.js";
+import Json from "osh/datareceiver/Json.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
+import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
 
 // create data source for Android phone GPS
 let gpsDataSource = new Json("android-GPS", {
