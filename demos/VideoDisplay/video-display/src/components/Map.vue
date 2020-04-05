@@ -66,6 +66,7 @@ export default {
     top: 0;
     bottom: 0;
     width: 100%;
+    z-index: 5;
   }
 
   .leaflet-container {
