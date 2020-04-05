@@ -1,7 +1,7 @@
-// create data source for Android phone camera
-import {VideoMjpeg} from "../../source/osh/datareceiver/VideoMjpeg.js";
-import MjpegView from "../../source/osh/ui/view/video/MjpegView.js";
+import VideoMjpeg from 'osh/datareceiver/VideoMjpeg.js';
+import MjpegView from 'osh/ui/view/video/MjpegView.js';
 
+// create data source for Android phone camera
 let videoDataSource = new VideoMjpeg("android-Video", {
     protocol: "ws",
     service: "SOS",

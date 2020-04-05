@@ -22,7 +22,8 @@ module.exports = {
     // bower_components folder.
     resolve: {
         modules: [
-            path.resolve(__dirname, 'node_modules')
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, '../../source')
         ]
     },
     // These rules tell Webpack how to process different module types.
