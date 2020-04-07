@@ -27,7 +27,7 @@ export default {
         observedProperty: "http://sensorml.com/ont/swe/property/Location",
         startTime: "2015-02-16T07:58:32Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: 2
+        replaySpeed: 3
       });
 
       // style it with a moving point marker
