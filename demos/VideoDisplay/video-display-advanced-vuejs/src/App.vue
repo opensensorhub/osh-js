@@ -192,11 +192,12 @@
         let dataSource;
         let idsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
 
-        if(idsToConnect.length > 0) {
-          this.dataSources[idsToConnect[0]].connect();
+        for(let i=0; i< idsToConnect.length;i++) {
+          this.dataSources[idsToConnect[i]].connect();
         }
-        if(idsToDisConnect.length > 0) {
-          this.dataSources[idsToDisConnect[0]].disconnect();
+
+        for(let i=0;i < idsToDisConnect.length;i++) {
+          this.dataSources[idsToDisConnect[i]].disconnect();
         }
         this.selectionIds = bIds;
       }
