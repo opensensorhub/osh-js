@@ -2,7 +2,7 @@ import {View} from "../View";
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import Chart from 'chart.js';
 import moment from 'moment';
-
+import 'chart.js/dist/Chart.min.css';
 export default class ChartJsView extends View {
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
@@ -15,7 +15,11 @@ export default class ChartJsView extends View {
         let showYAxis = true;
         let showXAxis = true;
         let transitionDuration = 1;
-        this.maxPoints = 30;
+        this.datasetsOpts = {};
+        this.gridLinesOpts = {};
+        this.tickOpts = {};
+        this.scaleLabelOpts = {};
+        this.legendOpts = {};
 
         let xTickFormat = function(d) {
             return moment().format();
@@ -24,6 +28,26 @@ export default class ChartJsView extends View {
         if (isDefined(options)) {
             if (options.hasOwnProperty('xLabel')) {
                 let xLabel = options.xLabel;
+            }
+
+            if(options.hasOwnProperty('datasetsOpts')){
+                this.datasetsOpts = options.datasetsOpts;
+            }
+
+            if(options.hasOwnProperty('gridLinesOpts')){
+                this.gridLinesOpts = options.gridLinesOpts;
+            }
+
+            if(options.hasOwnProperty('scaleLabelOpts')){
+                this.scaleLabelOpts = options.scaleLabelOpts;
+            }
+
+            if(options.hasOwnProperty('tickOpts')){
+                this.tickOpts = options.tickOpts;
+            }
+
+            if(options.hasOwnProperty('legendOpts')){
+                this.legendOpts = options.legendOpts;
             }
 
             if (options.hasOwnProperty('yLabel')) {
@@ -68,38 +92,56 @@ export default class ChartJsView extends View {
         ctx.setAttribute("id", randomUUID());
         domNode.appendChild(ctx);
 
+        const { maxTicksLimit } = this.tickOpts || 5;
+        this.maxPoints = maxTicksLimit;
+
         this.chart = new Chart(
             ctx, {
                 labels:[],
                 type: 'line',
-                data: { datasets: [] },
+                data: {
+                    datasets: []
+                },
                 options : {
+                    legend: {
+                        ...this.legendOpts
+                    },
                     animation: {
-                        duration: 500
+                        duration: 1000
                     },
                     spanGaps: true,
                     scales: {
                         yAxes: [{
                             scaleLabel: {
                                 display: true,
-                                labelString: yLabel
-                            }
+                                labelString: yLabel,
+                                ...this.scaleLabelOpts,
+                            },
+                            ticks: {
+                                maxTicksLimit:5,
+                                ...this.tickOpts
+                            },
+                            gridLines: this.gridLinesOpts,
                         }],
                         xAxes: [{
                             scaleLabel: {
                                 display: true,
-                                labelString: xLabel
+                                labelString: xLabel,
+                                ...this.scaleLabelOpts,
                             },
                             type: 'time',
                             time: {
                                 unit: 'second',
                             },
                             ticks: {
-                                maxTicksLimit: 8
-                            }
+                                maxTicksLimit:5,
+                                ...this.tickOpts
+                            },
+                            gridLines: this.gridLinesOpts,
                         }],
                     },
                     responsive: true,
+                    maintainAspectRatio: true
                 }
             });
 
@@ -119,6 +161,7 @@ export default class ChartJsView extends View {
                 pointHighlightStroke: "rgba(220,220,220,1)",
                 data: []
             };
+            currentDataset = {...currentDataset, ...this.datasetsOpts};
             this.datasets[styler.getId()] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         }
