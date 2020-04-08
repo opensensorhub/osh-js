@@ -87,6 +87,8 @@
           keepRatio: true,
           showTime: true
         });
+
+        this.title = "Android Video";
       }
     }
   }
