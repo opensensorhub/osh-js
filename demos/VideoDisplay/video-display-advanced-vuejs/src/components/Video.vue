@@ -69,7 +69,9 @@ export default {
     .dialog-drag .dialog-body {
         padding:0;
     }
-
+    .dialog-header {
+        background-color:#777777 !important;
+    }
     .video-mjpeg {
         width: 100%;
         margin-bottom:5px;
