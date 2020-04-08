@@ -1,6 +1,5 @@
 import Vue from "vue";
 import App from "./App.vue";
-import "./registerServiceWorker";
 // In main.js
 import LoadScript from 'vue-plugin-load-script';
 import Vuetify from 'vuetify'
