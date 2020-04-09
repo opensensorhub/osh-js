@@ -106,7 +106,6 @@
     color: #fff;
   }
 
-
   .osh-rangeslider-control-select {
     margin-left: 8px;
   }
