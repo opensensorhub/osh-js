@@ -62,12 +62,15 @@ export default class DataReceiverController {
 
         let that = this;
         EventManager.observe(EventManager.EVENT.CONNECT_DATASOURCE, (event) => {
+            if(!that.buffer.isStarted) {
+                that.buffer.start();
+            }
             let eventDataSourcesIds = event.dataSourcesId;
             for (let i = 0; i < eventDataSourcesIds.length; i++) {
                 let id = eventDataSourcesIds[i];
                 if (id in that.dataSourcesIdToDataSources) {
                     // if sync to master to time, request data starting at current time
-                    if (that.dataSourcesIdToDataSources[id].syncMasterTime) {
+                    if (that.dataSourcesIdToDataSources[id].syncMasterTime && isDefined(that.buffer.currentTime)) {
                         that.updateDataSourceTime(id, new Date(that.buffer.currentTime).toISOString());
                     }
                     that.dataSourcesIdToDataSources[id].connect();
@@ -216,6 +219,27 @@ export default class DataReceiverController {
             let ds = this.dataSourcesIdToDataSources[id];
             if (ds.properties.connect) {
                 ds.connect();
+            }
+        }
+    }
+
+    connect(dataSourceId) {
+        if(!this.buffer.isStarted) {
+            this.buffer.start();
+        }
+        for (let id in this.dataSourcesIdToDataSources) {
+            let ds = this.dataSourcesIdToDataSources[id];
+            if (ds.id === dataSourceId) {
+                ds.connect();
+            }
+        }
+    }
+
+    disconnect(dataSourceId) {
+        for (let id in this.dataSourcesIdToDataSources) {
+            let ds = this.dataSourcesIdToDataSources[id];
+            if (ds.id === dataSourceId) {
+                ds.disconnect();
             }
         }
     }
