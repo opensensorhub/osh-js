@@ -64,6 +64,7 @@ export default class Buffer {
         // defines a status to stop the buffer after stop() calling.
         // If start() method is called, this letiable should be set to TRUE
         this.stop = false;
+        this.isStarted = false;
         this.bufferingState = false;
     }
 
@@ -96,6 +97,7 @@ export default class Buffer {
      * @instance
      */
     start() {
+        this.isStarted = true;
         this.stop = false;
         this.startObservers();
         this.startRealTime = new Date().getTime();
