@@ -106,14 +106,10 @@
     color: #fff;
   }
 
-  .osh-rangeslider-control a:after {
-    font-size: 20px;
-  }
 
-  .osh-rangeslider-control-select a:after {
-    font-size: 20px;
+  .osh-rangeslider-control-select {
+    margin-left: 8px;
   }
-
   .noUi-tooltip {
     width: 60px;
     height: 20px;
