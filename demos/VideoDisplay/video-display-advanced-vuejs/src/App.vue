@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire"
-    dark
+         dark
   >
     <v-navigation-drawer
             v-model="left"
@@ -14,8 +14,9 @@
                 v-model="selection"
                 :items="items"
                 :selection-type="selectionType"
-                selectable
                 selected-color="#ef7245"
+                selectable
+                item-disabled="locked"
                 dark
                 return-object
                 open-all
@@ -40,26 +41,19 @@
       </v-container>
     </v-navigation-drawer>
     <v-app-bar app clipped-left dense dark>
-      <v-app-bar-nav-icon @click.stop="left = !left" />
+      <v-app-bar-nav-icon @click.stop="left = !left"/>
       <v-spacer></v-spacer>
-      <v-app-bar-nav-icon @click.stop="right = !right" />
+      <v-app-bar-nav-icon @click.stop="right = !right"/>
     </v-app-bar>
 
     <v-content app>
-      <v-container
-              class="fill-height"
-              fluid
-              dark
-      >
-        <v-row
-                align="center"
-                justify="center"
-        >
-          <Map :location-data-source="locationDataSource"
-               :heading-data-source="headingDataSource"
-          ></Map>
-        </v-row>
-      </v-container>
+      <div style="display: flex; flex-flow: column wrap;align-items: stretch;height:100%">
+        <Map :location-data-source="locationDataSource"
+             :heading-data-source="headingDataSource"
+             style="flex-grow:1"></Map>
+        <time-line
+                 class="range"></time-line>
+      </div>
     </v-content>
     <v-navigation-drawer
             v-model="right"
@@ -68,20 +62,20 @@
             dark
             width="340"
     >
-        <v-container>
-          <v-row dense>
-            <v-col cols="25">
-              <v-container v-for="item in selection" :key="item.dataSource.id">
-                 <chart-v-card v-if="item.type == 'chart-vcard'"
-                                   :data-source="item.dataSource"
-                 ></chart-v-card>
-                <mjpeg-video-v-card v-if="item.type == 'mjpeg-vcard'"
-                              :data-source="item.dataSource"
-                ></mjpeg-video-v-card>
-              </v-container>
-            </v-col>
-          </v-row>
-        </v-container>
+      <v-container>
+        <v-row dense>
+          <v-col cols="25">
+            <v-container v-for="item in selection" :key="item.dataSource.id">
+              <chart-v-card v-if="item.type == 'chart-vcard'"
+                            :data-source="item.dataSource"
+              ></chart-v-card>
+              <mjpeg-video-v-card v-if="item.type == 'mjpeg-vcard'"
+                                  :data-source="item.dataSource"
+              ></mjpeg-video-v-card>
+            </v-container>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-navigation-drawer>
     <v-footer app>
       <span>
@@ -95,18 +89,23 @@
 </template>
 <script>
   // @ is an alias to /src
-  import Map from '@/components/Map.vue';
+  import Map from './components/Map';
+  import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
   import Json from "osh/datareceiver/Json";
   import VideoMjpeg from "osh/datareceiver/VideoMjpeg";
   import Chart from "osh/datareceiver/Chart";
+  import {randomUUID} from "osh/utils/Utils";
+  import DataReceiverController from "osh/datareceiver/DataReceiverController";
+  import EventManager from "osh/events/EventManager";
 
   export default {
     components: {
       Map,
       MjpegVideoVCard,
-      ChartVCard
+      ChartVCard,
+      TimeLine
     },
     data: function () {
       return {
@@ -126,6 +125,9 @@
           observedProperty: "http://sensorml.com/ont/swe/property/Location",
           startTime: "2015-02-16T07:58:32Z",
           endTime: "2015-02-16T08:09:00Z",
+          syncMasterTime: true,
+          bufferingTime: 0,
+          timeShift: -16000,
           replaySpeed: 2
         }),
         headingDataSource: new Json("android-Att", {
@@ -136,6 +138,8 @@
           observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
           startTime: "2015-02-16T07:58:35Z",
           endTime: "2015-02-16T08:09:00Z",
+          syncMasterTime: true,
+          bufferingTime: 0,
           replaySpeed: 2
         }),
         videoDataSource: new VideoMjpeg("android-Video", {
@@ -146,7 +150,9 @@
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
           startTime: "2015-02-16T07:58:35Z",
           endTime: "2015-02-16T08:09:00Z",
-          replaySpeed: 3
+          syncMasterTime: true,
+          bufferingTime: 0,
+          replaySpeed: 2
         }),
         weatherDataSource: new Chart("weather", {
           protocol: "ws",
@@ -158,73 +164,91 @@
           endTime: "2055-01-01Z",
           syncMasterTime: false,
           bufferingTime: 0
+        }),
+        dataProviderController: new DataReceiverController({
+          replayFactor: 2
         })
       }
     },
-    computed: {
-    },
+    computed: {},
     mounted() {
       this.items.push({
         id: 1,
-          name: 'Android Phone',
+        name: 'Android Phone',
+        locked: false,
         children: [
-        { id: 2, name: 'GPS', dataSource: this.locationDataSource, type: 'center' },
-        { id: 3, name: 'Video',type: 'mjpeg-vcard', dataSource: this.videoDataSource },
-        { id: 4, name: 'Heading', dataSource: this.headingDataSource, type: 'center' },
-      ],
+          {id: 2, name: 'GPS', dataSource: this.locationDataSource, type: 'center', locked: true},
+          {id: 3, name: 'Video', type: 'mjpeg-vcard', dataSource: this.videoDataSource, locked: true},
+          {id: 4, name: 'Heading', dataSource: this.headingDataSource, type: 'center', locked: true},
+        ],
       });
-      this.items.push({ id: 5, name: 'Weather',type: 'chart-vcard',  dataSource: this.weatherDataSource });
+      this.items.push({id: 5, name: 'Weather', type: 'chart-vcard', dataSource: this.weatherDataSource, locked: false});
 
       this.dataSources['2'] = this.locationDataSource;
       this.dataSources['3'] = this.videoDataSource;
       this.dataSources['4'] = this.headingDataSource;
       this.dataSources['5'] = this.weatherDataSource;
+
+      let androidEntity = {
+        id: "entity-" + randomUUID(),
+        name: "Android Phone",
+        dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
+      };
+
+      // We can add a group of dataSources and set the options
+      this.dataProviderController.addEntity(androidEntity);
+      this.dataProviderController.addDataSource(this.weatherDataSource, {});
     },
     methods: {
       onSelect(nodes) {
         let bIds = [];
-        if(Array.isArray(nodes)) {
+        if (Array.isArray(nodes)) {
           for (let i = 0; i < nodes.length; i++) {
-            bIds.push(nodes[i].id);
+            bIds.push(nodes[i].dataSource.id);
           }
         } else {
-          bIds.push(nodes.id);
+          bIds.push(nodes.dataSource.id);
         }
 
+        EventManager.fire(EventManager.EVENT.CONNECT_DATASOURCE, {
+          dataSourcesId: bIds.filter(x => !this.selectionIds.includes(x))
+        });
 
-        // symmetrical difference
-        let   idsToDisConnect= this.selectionIds.filter(x => !bIds.includes(x));
-        let dataSource;
-        let idsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
+        EventManager.fire(EventManager.EVENT.DISCONNECT_DATASOURCE, {
+          dataSourcesId: this.selectionIds.filter(x => !bIds.includes(x))
+        });
 
-        for(let i=0; i< idsToConnect.length;i++) {
-          this.dataSources[idsToConnect[i]].connect();
-        }
-
-        for(let i=0;i < idsToDisConnect.length;i++) {
-          this.dataSources[idsToDisConnect[i]].disconnect();
-        }
         this.selectionIds = bIds;
       }
     },
-    created () {
+    created() {
       this.$vuetify.theme.dark = true
     }
   };
 </script>
 <style>
   .theme--light.v-divider {
-    border-color: rgba(0,0,0,0.12) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
   }
+
   body {
     overflow: hidden;
     margin: 0;
   }
+
   html {
     overflow: hidden !important;
   }
 
   .v-content {
     background-color: #363636;
+  }
+
+</style>
+
+<style scoped>
+  .range {
+    flex-shrink: 1;
+    padding-bottom: 15px;
   }
 </style>

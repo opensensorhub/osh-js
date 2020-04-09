@@ -1,6 +1,6 @@
 <template>
   <div
-    id="leafletMap"
+    id="map"
     class="map" />
 </template>
 
@@ -62,27 +62,28 @@ export default {
           }
         },
         icon: './images/car-topview.png',
-        iconAnchor: [16, 65]
+        iconAnchor: [16, 32]
       });
       // create Leaflet view
-      this.view = new LeafletView("leafletMap",
+      this.view = new LeafletView("map",
         [{
           styler: marker,
           name: "Android Phone GPS"
-        }]);
+        }],
+        {
+          watch: true
+        });
     },
   }
 };
 </script>
 <style>
   .map {
-    position: absolute;
     top: 0;
     bottom: 0;
     width: 100%;
     z-index: 5;
   }
-
   .leaflet-container {
     height: 100%;
   }
