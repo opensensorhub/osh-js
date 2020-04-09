@@ -15,7 +15,6 @@
 <script>
   import Curve from "osh/ui/styler/Curve";
   import ChartJsView from "osh/ui/view/chart/ChartJsView";
-  import MjpegView from "osh/ui/view/video/MjpegView";
   import {randomUUID} from "osh/utils/Utils";
 
   export default {
@@ -23,12 +22,11 @@
     props: ['dataSource'],
     data: function () {
       return {
-        title: 'Viewer',
+        title: 'Weather',
         id: randomUUID()
       }
     },
     mounted() {
-      if(this.dataSource.constructor.name === 'Chart') {
         // build chart
         let windSpeedStylerCurve = new Curve({
           valuesFunc: {
@@ -43,7 +41,7 @@
         });
 
         // show it in video view
-        let chartView = new ChartJsView(this.id,
+        new ChartJsView(this.id,
           [{
             styler: windSpeedStylerCurve,
             name: "WindSpeed"
@@ -76,20 +74,6 @@
             }
           }
         );
-        this.title = "Weather";
-      } else if(this.dataSource.constructor.name === 'VideoMjpeg'){
-        // build video
-        // show it in video view
-        let videoView = new MjpegView(this.id, {
-          dataSourceId: this.dataSource.id,
-          css: "video-mjpeg",
-          name: "Android Video",
-          keepRatio: true,
-          showTime: true
-        });
-
-        this.title = "Android Video";
-      }
     }
   }
 </script>
@@ -97,16 +81,5 @@
 <style scoped>
   .container {
     padding: 0px;
-  }
-
-</style>
-<style>
-  .container > div.video-mjpeg {
-    width: 100%;
-    padding: 8px;
-    overflow: hidden;
-  }
-  .container > div.video-mjpeg img {
-    width: 100%;
   }
 </style>

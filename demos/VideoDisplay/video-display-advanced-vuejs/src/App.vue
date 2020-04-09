@@ -72,9 +72,12 @@
           <v-row dense>
             <v-col cols="25">
               <v-container v-for="item in selection" :key="item.dataSource.id">
-                 <VCardViewElement v-if="item.type == 'vcard'"
+                 <chart-v-card v-if="item.type == 'chart-vcard'"
                                    :data-source="item.dataSource"
-                 ></VCardViewElement>
+                 ></chart-v-card>
+                <mjpeg-video-v-card v-if="item.type == 'mjpeg-vcard'"
+                              :data-source="item.dataSource"
+                ></mjpeg-video-v-card>
               </v-container>
             </v-col>
           </v-row>
@@ -93,15 +96,17 @@
 <script>
   // @ is an alias to /src
   import Map from '@/components/Map.vue';
-  import VCardViewElement from "./components/VCardViewElement";
+  import ChartVCard from "./components/vcards/ChartVCard";
+  import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
   import Json from "osh/datareceiver/Json";
-  import VideoMjpeg from "../../../../source/osh/datareceiver/VideoMjpeg";
-  import Chart from "../../../../source/osh/datareceiver/Chart";
+  import VideoMjpeg from "osh/datareceiver/VideoMjpeg";
+  import Chart from "osh/datareceiver/Chart";
 
   export default {
     components: {
       Map,
-      VCardViewElement
+      MjpegVideoVCard,
+      ChartVCard
     },
     data: function () {
       return {
@@ -164,11 +169,11 @@
           name: 'Android Phone',
         children: [
         { id: 2, name: 'GPS', dataSource: this.locationDataSource, type: 'center' },
-        { id: 3, name: 'Video',type: 'vcard', dataSource: this.videoDataSource },
+        { id: 3, name: 'Video',type: 'mjpeg-vcard', dataSource: this.videoDataSource },
         { id: 4, name: 'Heading', dataSource: this.headingDataSource, type: 'center' },
       ],
       });
-      this.items.push({ id: 5, name: 'Weather',type: 'vcard',  dataSource: this.weatherDataSource });
+      this.items.push({ id: 5, name: 'Weather',type: 'chart-vcard',  dataSource: this.weatherDataSource });
 
       this.dataSources['2'] = this.locationDataSource;
       this.dataSources['3'] = this.videoDataSource;

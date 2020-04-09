@@ -1,11 +1,9 @@
 import Vue from "vue";
 import App from "./App.vue";
 // In main.js
-import LoadScript from 'vue-plugin-load-script';
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
-Vue.use(LoadScript);
 Vue.use(Vuetify);
 
 Vue.config.productionTip = false;
