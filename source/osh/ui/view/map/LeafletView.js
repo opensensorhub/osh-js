@@ -127,7 +127,7 @@ export default class LeafletView extends View {
                 };
             }
             // checks autoZoom
-            if (!isDefined(options.autoZoomOnFirstMarker)) {
+            if (isDefined(options.autoZoomOnFirstMarker)) {
                 this.first = false;
             }
 
