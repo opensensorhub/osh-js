@@ -41,6 +41,12 @@ const config = {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
+  resolve: {
+    alias: {
+      'osh': path.resolve(__dirname, '../../../source/osh'),
+      'cesium': path.resolve(__dirname, 'node_modules/cesium'),
+    }
+  },
   module: {
     unknownContextCritical: false,
     rules: [
@@ -51,7 +57,7 @@ const config = {
         },
         include: [
           path.resolve(__dirname, './src'),
-          path.resolve(__dirname, '.'),
+          path.resolve(__dirname, '.')
         ]
       },{
         test: /\.js$/,

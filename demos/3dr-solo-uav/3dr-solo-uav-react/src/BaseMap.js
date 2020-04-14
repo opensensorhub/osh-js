@@ -1,16 +1,63 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Viewer} from "cesium";
-import "cesium/Build/Cesium/Widgets/widgets.css";
+import Json from "osh/datareceiver/Json";
+import PointMarker from "osh/ui/styler/PointMarker";
+import CesiumView from "osh/ui/view/map/CesiumView";
+
+window.CESIUM_BASE_URL = './';
 
 class BaseMap extends React.Component {
   constructor(props) {
     super(props);
     this.cesiumContainer =  React.createRef();
   }
+
   componentDidMount() {
     if (this.cesiumContainer.current) {
       this.cesiumContainer.current.id = "container";
-      var viewer = new Viewer(this.cesiumContainer.current.id);
+
+      // create data source for Android phone GPS
+      let gpsDataSource = new Json('android-GPS', {
+        protocol: 'ws',
+        service: 'SOS',
+        endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+        offeringID: 'urn:android:device:060693280a28e015-sos',
+        observedProperty: 'http://sensorml.com/ont/swe/property/Location',
+        startTime: '2015-02-16T07:58:30Z',
+        endTime: '2015-02-16T08:09:00Z',
+        replaySpeed: 2
+      });
+
+      // style it with a moving point marker
+      let pointMarker = new PointMarker({
+        locationFunc: {
+          dataSourceIds: [gpsDataSource.getId()],
+          handler: function (rec) {
+            return {
+              x: rec.location.lon,
+              y: rec.location.lat
+            };
+          }
+        },
+        orientation: {
+          heading: 0
+        },
+        icon: 'images/car-location.png',
+        iconAnchor: [16, 40]
+      });
+
+      // create Cesium view
+      let cesiumView = new CesiumView(this.cesiumContainer.current.id,
+        [{
+          styler: pointMarker,
+          name: 'Android Phone GPS'
+        }]
+      );
+      cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
+
+      // start streaming
+      gpsDataSource.connect();
+
     }
   }
 
