@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {isDefined} from "../../utils/Utils.js";
+import Styler from "./Styler";
 
 /**
  * @classdesc
@@ -109,11 +110,11 @@ export default class ImageDraping extends Styler {
             }
 
             if (isDefined(view) && enabled &&
-                this.platformLocation !== null &&
-                this.platformOrientation !== null &&
-                this.gimbalOrientation !== null &&
-                this.cameraModel !== null &&
-                this.imageSrc !== null) {
+              this.platformLocation !== null &&
+              this.platformOrientation !== null &&
+              this.gimbalOrientation !== null &&
+              this.cameraModel !== null &&
+              this.imageSrc !== null) {
                 view.updateDrapedImage(this, rec.timeStamp, options, snapshot);
                 return true;
             }

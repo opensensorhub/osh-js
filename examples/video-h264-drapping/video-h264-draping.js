@@ -39,7 +39,7 @@ let platformLocationDataSource = new Json('android-GPS', {
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
-    startTime: '2015-12-19T21:03:29.231Z',
+    startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
     replaySpeed: 1
 });
@@ -50,7 +50,7 @@ let platformOrientationDataSource = new Json('android-Heading', {
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-    startTime: '2015-12-19T21:05:29.231Z',
+    startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
     replaySpeed: 1
 });
@@ -61,7 +61,7 @@ let gimbalOrientationDataSource = new Json('android-Heading', {
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
-    startTime: '2015-12-19T21:05:29.231Z',
+    startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
     replaySpeed: 1
 });
