@@ -28,6 +28,7 @@ import {
   Color,
   HorizontalOrigin,
   VerticalOrigin,
+  HeightReference,
   Math,
   Transforms,
   Matrix3,
@@ -41,6 +42,7 @@ import {
   Primitive,
   createDefaultImageryProviderViewModels,
   Viewer,
+  WebMapServiceImageryProvider,
   EllipsoidTerrainProvider,
   NearFarScalar,
   HeadingPitchRoll,
@@ -344,77 +346,57 @@ export default class CesiumView extends View {
    */
   addMarker(properties) {
 
-    let imgIcon = 'images/pin.png';
-    if (properties.icon !== null) {
+    let imgIcon = 'images/cameralook.png';
+    if(properties.icon !== null) {
       imgIcon = properties.icon;
     }
-    let isModel = imgIcon.endsWith(".glb");
-
-    let label = properties.hasOwnProperty("label") && properties.label !== null ? properties.label : null;
-    let fillColor = properties.labelColor;
-    let labelSize = properties.labelSize;
-    let labelOffset = properties.labelOffset;
-
-    let name = properties.hasOwnProperty("name") && properties.name !== null ? properties.name :
-      label !== null ? label : "Selected Marker";
-    let desc = properties.hasOwnProperty("description") && properties.description !== null ? properties.description : null;
-
+    let isModel = imgIcon.endsWith('.glb');
+    let name = properties.label ? properties.label : 'Selected Marker';
     let geom;
-    if (isModel) {
+    let color = properties.color ? Color.fromCssColorString(properties.color) : Color.YELLOW;
+    let description = (properties.description) ? properties.description : null;
+
+    if (isModel)
+    {
       geom = {
         name: name,
-        description: desc,
+        description: description,
         position: Cartesian3.fromDegrees(0, 0, 0),
-        label: {
-          text: label,
-          font: labelSize + 'px sans-serif',
-          scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
-          fillColor: Color.fromCssColorString(fillColor),
-          horizontalOrigin: HorizontalOrigin.CENTER,
-          verticalOrigin: VerticalOrigin.TOP,
-          pixelOffset: labelOffset
-        },
         model: {
           uri: imgIcon,
           scale: 4,
-          modelM: Matrix4.IDENTITY.clone()
+          modelM: Matrix4.IDENTITY.clone(),
+          color: color
         }
       };
-    } else {
-      let rot = properties.orientation.heading;
-      let iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-      let labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
-
+    }
+    else
+    {
+      let rot = 0;
+      if (properties.orientation !== 'undefined') {
+        rot = properties.orientation.heading;
+      }
       geom = {
         name: name,
-        description: desc,
-        position: Cartesian3.fromDegrees(0, 0, 0),
-        label: {
-          text: label,
-          font: labelSize + 'px sans-serif',
-          scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
-          fillColor: Color.fromCssColorString(fillColor),
-          horizontalOrigin: HorizontalOrigin.CENTER,
-          verticalOrigin: VerticalOrigin.TOP,
-          pixelOffset: labelOffset,
-          pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0)
-        },
-        billboard: {
-          image: imgIcon,
-          scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-          alignedAxis: Cartesian3.UNIT_Z, // Z means rotation is from north
-          rotation: Math.toRadians(rot),
-          horizontalOrigin: HorizontalOrigin.LEFT,
-          verticalOrigin: VerticalOrigin.TOP,
-          pixelOffset: iconOffset,
-          pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-          eyeOffset: new Cartesian3(0, 0, -1) // make sure icon always displays in front
+        description: description,
+        position : Cartesian3.fromDegrees(0, 0, 0),
+        billboard : {
+          image : imgIcon,
+          alignedAxis : Cartesian3.UNIT_Z, // axis is in ENU frame, Z means rotation is from north
+          rotation : Math.toRadians(rot),
+          scaleByDistance : new NearFarScalar(4, 1, 5e5, 0.2), // set icon scale by distance in meters (near distance, near scale, far distance, far scale)
+          horizontalOrigin : HorizontalOrigin.CENTER,
+          eyeOffset : new Cartesian3(0,0,-1) // make sure icon always displays in front
         }
       };
     }
 
+    if (properties.hasOwnProperty('description')) {
+      geom.description = properties.description;
+    }
+
     let entity = this.viewer.entities.add(geom);
-    let id = "view-marker-" + randomUUID();
+    let id = 'view-marker-'+randomUUID();
     entity._dsid = id;
     this.markers[id] = entity;
 
@@ -434,19 +416,16 @@ export default class CesiumView extends View {
     let alt = properties.alt;
     let orient = properties.orientation;
     let imgIcon = properties.icon;
-    let label = properties.label;
-
     let defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
     if (!isNaN(lon) && !isNaN(lat)) {
       let marker = this.markers[id];
 
       // get ground altitude if non specified
-      if (typeof (alt) === "undefined" || isNaN(alt) || defaultToTerrainElevation === true) {
+      if (typeof (alt) === "undefined" || isNaN(alt)) {
         alt = this.getAltitude(lat, lon);
-        if (alt > 1) {
+        if (alt > 1)
           alt += 0.3;
-        }
       }
 
       // update position
@@ -454,12 +433,12 @@ export default class CesiumView extends View {
       marker.position = pos;
 
       // update orientation
-      if (typeof (orient) !== "undefined") {
-        let DTR = Math.PI / 180.;
+      if (typeof(orient) !== 'undefined') {
+        let DTR = Math.PI/180.0;
         let heading = orient.heading;
         let pitch = 0.0;
         let roll = 0.0;
-        let quat = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading * DTR, /*roll*DTR*/0.0, pitch * DTR)); // inverse roll and pitch to go from NED to ENU
+        let quat = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
         marker.orientation = quat;
         if (marker.billboard) {
           marker.billboard.rotation = Math.toRadians(heading);
@@ -468,21 +447,16 @@ export default class CesiumView extends View {
 
       // update icon or model
       if (marker.billboard) {
+        if (defaultToTerrainElevation) {
+          marker.billboard.heightReference = HeightReference.CLAMP_TO_GROUND;
+        }
         marker.billboard.image = imgIcon;
-      } else if (marker.model) {
-        marker.model.uri = imgIcon;
       }
-
-      // update label
-      //marker.label = properties.label;
-      //if (properties.labelColor != null)
-      //	marker.label.fillColor = Color.fromCssColorString(properties.labelColor);
-
-      // update billboard aligned axis depending on camera angle
-      if (this.viewer.camera.pitch < -Math.PI / 4) {
-        marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
-      } else {
-        marker.billboard.alignedAxis = Cartesian3.ZERO;
+      else if (marker.model)  {
+        if (defaultToTerrainElevation) {
+          marker.model.heightReference = HeightReference.CLAMP_TO_GROUND;
+        }
+        marker.model.uri = imgIcon;
       }
 
       // zoom map if first marker update
@@ -513,5 +487,34 @@ export default class CesiumView extends View {
       altitude = 0.1;
     }
     return altitude;
+  }
+
+  addImageryProvider(type, url, layers, imageFormat, options) {
+    let minLOD = 0;
+    let maxLOD;
+
+    if (options.hasOwnProperty('minLOD')){
+      minLOD = options.minLOD;
+    }
+    if (options.hasOwnProperty('maxLOD')){
+      maxLOD = options.maxLOD;
+    }
+
+    let imageryProvider;
+    if (type === 'wms') {
+      imageryProvider = new WebMapServiceImageryProvider({
+        url: url,
+        layers: layers,
+        minimumLevel: minLOD,
+        maximumLevel: maxLOD,
+        parameters: {
+          transparent: 'true',
+          format: 'image/' + imageFormat
+        }
+      });
+    }
+    // imageryProvider.alpha = 0.5;
+    this.viewer.imageryLayers.addImageryProvider(imageryProvider);
+    return imageryProvider;
   }
 }

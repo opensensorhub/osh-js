@@ -4,6 +4,7 @@ import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
 import VideoH264 from "osh/datareceiver/VideoH264";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 import ImageDraping from "osh/ui/styler/ImageDraping";
+import PointMarker from "osh/ui/styler/PointMarker";
 
 window.CESIUM_BASE_URL = './';
 
@@ -66,8 +67,32 @@ let gimbalOrientationDataSource = new Json('android-Heading', {
     replaySpeed: 1
 });
 
+// add 3D model marker to Cesium view
+let pointMarker = new PointMarker({
+    label: "3DR Solo",
+    locationFunc : {
+        dataSourceIds : [platformLocationDataSource.getId()],
+        handler : function(rec) {
+            return {
+                x : rec.loc.lon,
+                y : rec.loc.lat,
+                z : rec.loc.alt+30.-5. // model offset
+            };
+        }
+    },
+    orientationFunc : {
+        dataSourceIds : [platformOrientationDataSource.getId()],
+        handler : function(rec) {
+            return {
+                heading : rec.attitude.yaw
+            };
+        }
+    },
+    icon: "./models/Drone+06B.glb"
+});
+
 // style it with a moving point marker
-let pointMarker = new ImageDraping({
+let imageDrapingMarker = new ImageDraping({
     platformLocationFunc: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
@@ -114,12 +139,17 @@ let pointMarker = new ImageDraping({
 let cesiumView = new CesiumView("cesium-container",
   [{
       styler: pointMarker,
+      name: 'Solo draping marker'
+  },{
+      styler: imageDrapingMarker,
       name: 'Solo draping'
   }]
 );
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
+cesiumView.viewer.scene.logarithmicDepthBuffer = false;
 
 // start streaming
+videoDataSource.connect();
 platformLocationDataSource.connect();
 platformOrientationDataSource.connect();
 gimbalOrientationDataSource.connect();
