@@ -7,6 +7,7 @@ import ImageDraping from "osh/ui/styler/ImageDraping";
 import PointMarker from "osh/ui/styler/PointMarker";
 
 window.CESIUM_BASE_URL = './';
+let mslToWgs84 = -29 + 1.5; let soloAltitudeAdjust = 0.0;
 
 let videoDataSource = new VideoH264("drone-Video", {
     protocol: 'ws',
@@ -76,7 +77,7 @@ let pointMarker = new PointMarker({
             return {
                 x : rec.loc.lon,
                 y : rec.loc.lat,
-                z : rec.loc.alt+30.-5. // model offset
+                z : rec.loc.alt + mslToWgs84 // model offset
             };
         }
     },
@@ -119,7 +120,7 @@ let imageDrapingMarker = new ImageDraping({
             return {
                 heading : rec.attitude.yaw,
                 pitch: rec.attitude.pitch,
-                roll: rec.attitude.roll
+                roll: 0
             };
         }
     },
