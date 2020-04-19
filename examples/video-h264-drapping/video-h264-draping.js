@@ -1,6 +1,6 @@
 import Json from 'osh/datareceiver/Json';
 import CesiumView from 'osh/ui/view/map/CesiumView';
-import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
+import {EllipsoidTerrainProvider, Matrix3, Cartesian3, Cartesian2 } from "cesium";
 import VideoH264 from "osh/datareceiver/VideoH264";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 import ImageDraping from "osh/ui/styler/ImageDraping";
@@ -99,7 +99,7 @@ let imageDrapingMarker = new ImageDraping({
             return {
                 x: rec.loc.lon,
                 y: rec.loc.lat,
-                z: rec.loc.alt
+                z: rec.loc.alt - 184
             };
         }
     },
@@ -137,16 +137,19 @@ let imageDrapingMarker = new ImageDraping({
 
 // create Cesium view
 let cesiumView = new CesiumView("cesium-container",
-  [{
+  [/*{
       styler: pointMarker,
       name: 'Solo draping marker'
-  },{
+  },*/{
       styler: imageDrapingMarker,
       name: 'Solo draping'
   }]
 );
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 cesiumView.viewer.scene.logarithmicDepthBuffer = false;
+cesiumView.viewer.camera.setView({
+    destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
+});
 
 // start streaming
 videoDataSource.connect();
