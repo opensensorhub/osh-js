@@ -1,13 +1,12 @@
 import Json from 'osh/datareceiver/Json';
 import CesiumView from 'osh/ui/view/map/CesiumView';
-import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
+import {EllipsoidTerrainProvider, Matrix3, Cartesian3, Cartesian2 } from "cesium";
 import VideoH264 from "osh/datareceiver/VideoH264";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 import ImageDraping from "osh/ui/styler/ImageDraping";
 import PointMarker from "osh/ui/styler/PointMarker";
 
 window.CESIUM_BASE_URL = './';
-let mslToWgs84 = -29 + 1.5; let soloAltitudeAdjust = 0.0;
 
 let videoDataSource = new VideoH264("drone-Video", {
     protocol: 'ws',
@@ -77,7 +76,7 @@ let pointMarker = new PointMarker({
             return {
                 x : rec.loc.lon,
                 y : rec.loc.lat,
-                z : rec.loc.alt + mslToWgs84 // model offset
+                z : rec.loc.alt+30.-5. // model offset
             };
         }
     },
@@ -100,7 +99,7 @@ let imageDrapingMarker = new ImageDraping({
             return {
                 x: rec.loc.lon,
                 y: rec.loc.lat,
-                z: rec.loc.alt + mslToWgs84
+                z: rec.loc.alt - 184
             };
         }
     },
@@ -120,7 +119,7 @@ let imageDrapingMarker = new ImageDraping({
             return {
                 heading : rec.attitude.yaw,
                 pitch: rec.attitude.pitch,
-                roll: 0
+                roll: rec.attitude.roll
             };
         }
     },
@@ -148,6 +147,9 @@ let cesiumView = new CesiumView("cesium-container",
 );
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 cesiumView.viewer.scene.logarithmicDepthBuffer = false;
+cesiumView.viewer.camera.setView({
+    destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
+});
 
 // start streaming
 videoDataSource.connect();
