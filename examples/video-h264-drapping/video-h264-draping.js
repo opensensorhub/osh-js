@@ -76,7 +76,7 @@ let pointMarker = new PointMarker({
             return {
                 x : rec.loc.lon,
                 y : rec.loc.lat,
-                z : rec.loc.alt+30.-5. // model offset
+                z : rec.loc.alt - 184 // model offset
             };
         }
     },
