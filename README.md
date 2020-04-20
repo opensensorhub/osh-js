@@ -29,29 +29,32 @@ You can use both the all-in-one vendor minified script(vendor.js & vendor.css) o
 How To Use
 ===
 
-All you need to use the toolkit is to include the vendor dist file (the all-in-one or the separate ones) and the minified osh javascript and stylesheet:
-```javascript
-<!-- VENDOR -->
-<link rel="stylesheet" href="vendor/vendor.min.css"/>
-<script type="text/javascript" src="vendor/vendor.min.js"></script>
-
-<!-- OSH Toolkit -->
-<link rel="stylesheet" href="css/osh.min.css"/>
-<script src="js/osh.min.js"></script>
-```
-
-Don't forget to include the {css,images,js} directories.
 
 Run Showcase
 ===
 
-Install dependencies
-```bash
-$ npm install
+
+Vendors
+===
+
+##Cesium
+
+If you use the CesiumView, don't forget to install the corresponding npm package 'cesium'.
+Moreover, you can apply a path to fix texture issue while using image draping. The patch is 
+located into the patches directory. To apply the patch,you can use *patch-package*:
+
+```sh
+$ npm i -D patch-package
 ```
-Then launch the dev server
-```bash
-$ npm run showcase
+Add the corresponding patch into your source folder and apply the patch using *npm i*.
+
+package.json:
+```shell script
+
+"scripts": {
+    "postinstall": "patch-package",
+    ...
+  },
 ```
 
 Resources
