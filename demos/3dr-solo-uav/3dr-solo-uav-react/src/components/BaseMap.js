@@ -5,7 +5,6 @@ import PointMarker from "osh/ui/styler/PointMarker";
 import CesiumView from "osh/ui/view/map/CesiumView";
 import {randomUUID} from "osh/utils/Utils";
 import ImageDraping from "osh/ui/styler/ImageDraping";
-import SoloVideo from "./SoloVideo";
 
 window.CESIUM_BASE_URL = './';
 
@@ -147,7 +146,7 @@ class BaseMap extends React.Component {
       width: "100%",
       height: "100%",
     };
-    return <div id={this.divId} style={mystyle}><SoloVideo/></div>;
+    return <div id={this.divId} style={mystyle}></div>;
   }
 }
 

@@ -1,9 +1,10 @@
 import * as React from "react";
-import {randomUUID} from "osh/utils/Utils";
+import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
+
 import VideoH264 from "osh/datareceiver/VideoH264";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 
-class SoloVideo extends React.Component {
+export class SoloVideoComponent extends React.Component {
   constructor(props) {
     super(props);
     // this.divId = randomUUID();
@@ -11,7 +12,7 @@ class SoloVideo extends React.Component {
   }
 
   componentDidMount() {
-     // setup video
+    // setup video
     // create data source for UAV camera
     let videoDataSource = new VideoH264("drone-Video", {
       protocol: 'ws',
@@ -41,16 +42,22 @@ class SoloVideo extends React.Component {
   }
 
   render() {
-    const mystyle = {
-      width: '1280px',
-      padding: '8px',
-      border: '1px solid #dee2e6',
-      resize: 'horizontal',
-      overflow: 'hidden',
-      margin: 'auto',
-    }
-    return <div id={this.divId} style={mystyle}/>;
+    return (
+      <Draggable
+        handle=".handle"
+        defaultPosition={{x: 0, y: 30}}
+        position={null}
+        grid={[1, 1]}
+        bounds="parent"
+        scale={1}
+        onStart={this.handleStart}
+        onDrag={this.handleDrag}
+        onStop={this.handleStop}>
+        <div>
+          <div className="handle" id={this.divId}> </div>
+        </div>
+      </Draggable>
+    );
   }
 }
 
-export default SoloVideo;
