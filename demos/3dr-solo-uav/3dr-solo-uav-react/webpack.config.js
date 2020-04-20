@@ -2,6 +2,7 @@
 const CopywebpackPlugin = require('copy-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WorkerPlugin = require('worker-plugin');
 
 // Common configs
 const path = require('path');
@@ -25,6 +26,7 @@ const cesiumConfig = {
     new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' } ]),
     new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' } ]),
     new CopywebpackPlugin([ { from: 'images', to: 'images'} ]),
+    new CopywebpackPlugin([ { from: 'models', to: 'models\''} ]),
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify('')
@@ -46,6 +48,9 @@ const config = {
       'osh': path.resolve(__dirname, '../../../source/osh'),
       'cesium': path.resolve(__dirname, 'node_modules/cesium'),
     }
+  },
+  node: {
+    fs: 'empty'
   },
   module: {
     unknownContextCritical: false,
@@ -90,7 +95,8 @@ const config = {
       template: 'public/index.html',
       filename: './index.html',
       favicon: './public/favicon.ico'
-    })
+    }),
+    new WorkerPlugin()
 ],
 };
 
