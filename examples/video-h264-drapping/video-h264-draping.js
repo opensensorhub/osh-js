@@ -100,7 +100,7 @@ let imageDrapingMarker = new ImageDraping({
             return {
                 x: rec.loc.lon,
                 y: rec.loc.lat,
-                z: rec.loc.alt
+                z: rec.loc.alt + mslToWgs84
             };
         }
     },
