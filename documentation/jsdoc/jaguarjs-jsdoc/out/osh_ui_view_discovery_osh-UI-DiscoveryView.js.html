@@ -303,24 +303,24 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
 
 
         switch(viewTagOption.object.type) {
-            case OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG:
+            case OSH.UI.DiscoveryView.Type.VIDEO_MJPEG:
             {
                 this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
                 break;
             }
-            case OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264:
+            case OSH.UI.DiscoveryView.Type.VIDEO_H264:
             {
-                this.createH264VideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
+                this.createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
                 break;
             }
             case OSH.UI.DiscoveryView.Type.MARKER_GPS:
             {
-                this.createGPSMarker(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,viewTagOption.object.viewId,entityId);
+                this.createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,viewTagOption.object.viewId,entityId);
                 break;
             }
-            case OSH.UI.DiscoveryView.Type.DIALOG_CHART:
+            case OSH.UI.DiscoveryView.Type.CHART:
             {
-                this.createChartDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
+                this.createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,syncMasterTime,entityId);
                 break;
             }
             default : break;
@@ -416,7 +416,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.DiscoveryView
      * @instance
      */
-    createGPSMarker: function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,viewId,entityId) {
+    createGPSMarkerDataSource: function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,viewId,entityId) {
         var gpsDataSource = new OSH.DataReceiver.DataSourceLatLonAlt(name, {
             protocol: "ws",
             service: "SOS",
@@ -538,7 +538,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.DiscoveryView
      * @instance
      */
-    createH264VideoDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
+    createH264DataSource:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var videoDataSource = new OSH.DataReceiver.DataSourceVideoH264(name, {
             protocol: "ws",
             service: "SOS",
@@ -592,7 +592,7 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
      * @memberof OSH.UI.DiscoveryView
      * @instance
      */
-    createChartDialog:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
+    createChartDataSource:function(name,endPointUrl,offeringID,obsProp,startTime,endTime,syncMasterTime,entityId) {
         var chartDataSource = new OSH.DataReceiver.DataSourceChart(name, {
             protocol: "ws",
             service: "SOS",
@@ -652,13 +652,13 @@ OSH.UI.DiscoveryView = Class.create(OSH.UI.View, {
 
 /**
  * The different type of discovery.
- * @type {{MARKER_GPS: string, DIALOG_VIDEO_H264: string, DIALOG_VIDEO_MJPEG: string, DIALOG_CHART: string}}
+ * @type {{MARKER_GPS: string, VIDEO_H264: string, VIDEO_MJPEG: string, CHART: string}}
  */
 OSH.UI.DiscoveryView.Type = {
     MARKER_GPS : "Marker(GPS)",
-    DIALOG_VIDEO_H264 : "Video Dialog(H264)",
-    DIALOG_VIDEO_MJPEG: "Video Dialog(MJPEG)",
-    DIALOG_CHART : "DataSourceChart Dialog"
+    VIDEO_H264 : "Video Dialog(H264)",
+    VIDEO_MJPEG: "Video Dialog(MJPEG)",
+    CHART : "DataSourceChart Dialog"
 };</code></pre>
         </article>
     </section>

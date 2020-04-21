@@ -1591,11 +1591,11 @@
 
                 <li data-name="OSH.UI.DiscoveryView#beforeAddingItems"><a href="OSH.UI.DiscoveryView.html#beforeAddingItems">beforeAddingItems</a></li>
 
-                <li data-name="OSH.UI.DiscoveryView#createChartDialog"><a href="OSH.UI.DiscoveryView.html#createChartDialog">createChartDialog</a></li>
+                <li data-name="OSH.UI.DiscoveryView#createChartDataSource"><a href="OSH.UI.DiscoveryView.html#createChartDialog">createChartDataSource</a></li>
 
-                <li data-name="OSH.UI.DiscoveryView#createGPSMarker"><a href="OSH.UI.DiscoveryView.html#createGPSMarker">createGPSMarker</a></li>
+                <li data-name="OSH.UI.DiscoveryView#createGPSMarkerDataSource"><a href="OSH.UI.DiscoveryView.html#createGPSMarker">createGPSMarkerDataSource</a></li>
 
-                <li data-name="OSH.UI.DiscoveryView#createH264VideoDialog"><a href="OSH.UI.DiscoveryView.html#createH264VideoDialog">createH264VideoDialog</a></li>
+                <li data-name="OSH.UI.DiscoveryView#createH264DataSource"><a href="OSH.UI.DiscoveryView.html#createH264VideoDialog">createH264DataSource</a></li>
 
                 <li data-name="OSH.UI.DiscoveryView#createMJPEGVideoDialog"><a href="OSH.UI.DiscoveryView.html#createMJPEGVideoDialog">createMJPEGVideoDialog</a></li>
 
@@ -2608,8 +2608,8 @@
 
 
 
-    <pre class="prettyprint"><code><p>var discoveryView = new OSH.UI.DiscoveryView(&quot;discovery-container&quot;,{<br>    services: [&quot;http://sensiasoft.net:8181/&quot;],<br>    views: [{<br>        name: 'Video dialog(H264)',<br>        type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264<br>    },{<br>        name: 'Video dialog(MJPEG)',<br>        type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG<br>    },{<br>        name: 'DataSourceChart dialog',<br>        type : OSH.UI.DiscoveryView.Type.DIALOG_CHART<br>    }<br>    ]<br>});</p>
-<p>//------ More complex example<br> var discoveryView = new OSH.UI.DiscoveryView(&quot;&quot;,{<br>        services: [&quot;http://sensiasoft.net:8181/&quot;], // server list<br>        css: &quot;discovery-view&quot;,<br>        dataReceiverController:dataProviderController, // add custom dataProviderController<br>        swapId: &quot;main-container&quot;, // add a divId to swap data for inner dialog<br>        entities: [androidEntity], // add entities<br>        views: [{<br>            name: 'Leaflet 2D Map',<br>            viewId: leafletMainView.id,<br>            type : OSH.UI.DiscoveryView.Type.MARKER_GPS<br>        }, {<br>            name: 'Cesium 3D Globe',<br>            viewId: cesiumMainMapView.id,<br>            type : OSH.UI.DiscoveryView.Type.MARKER_GPS<br>        },{<br>            name: 'Video dialog(H264)',<br>            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264<br>        },{<br>            name: 'Video dialog(MJPEG)',<br>            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG<br>        },{<br>            name: 'DataSourceChart dialog',<br>            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART<br>        }<br>        ]<br>    });</p></code></pre>
+    <pre class="prettyprint"><code><p>var discoveryView = new OSH.UI.DiscoveryView(&quot;discovery-container&quot;,{<br>    services: [&quot;http://sensiasoft.net:8181/&quot;],<br>    views: [{<br>        name: 'Video dialog(H264)',<br>        type : OSH.UI.DiscoveryView.Type.VIDEO_H264<br>    },{<br>        name: 'Video dialog(MJPEG)',<br>        type : OSH.UI.DiscoveryView.Type.VIDEO_MJPEG<br>    },{<br>        name: 'DataSourceChart dialog',<br>        type : OSH.UI.DiscoveryView.Type.CHART<br>    }<br>    ]<br>});</p>
+<p>//------ More complex example<br> var discoveryView = new OSH.UI.DiscoveryView(&quot;&quot;,{<br>        services: [&quot;http://sensiasoft.net:8181/&quot;], // server list<br>        css: &quot;discovery-view&quot;,<br>        dataReceiverController:dataProviderController, // add custom dataProviderController<br>        swapId: &quot;main-container&quot;, // add a divId to swap data for inner dialog<br>        entities: [androidEntity], // add entities<br>        views: [{<br>            name: 'Leaflet 2D Map',<br>            viewId: leafletMainView.id,<br>            type : OSH.UI.DiscoveryView.Type.MARKER_GPS<br>        }, {<br>            name: 'Cesium 3D Globe',<br>            viewId: cesiumMainMapView.id,<br>            type : OSH.UI.DiscoveryView.Type.MARKER_GPS<br>        },{<br>            name: 'Video dialog(H264)',<br>            type : OSH.UI.DiscoveryView.Type.VIDEO_H264<br>        },{<br>            name: 'Video dialog(MJPEG)',<br>            type : OSH.UI.DiscoveryView.Type.VIDEO_MJPEG<br>        },{<br>            name: 'DataSourceChart dialog',<br>            type : OSH.UI.DiscoveryView.Type.CHART<br>        }<br>        ]<br>    });</p></code></pre>
 
 
 
@@ -3436,7 +3436,7 @@
     <div class="nameContainer">
         <h4 class="name" id="createChartDialog">
 
-            createChartDialog<span class="signature">(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId)</span>
+            createChartDataSource<span class="signature">(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId)</span>
         </h4>
 
 
@@ -3669,7 +3669,7 @@
     <div class="nameContainer">
         <h4 class="name" id="createGPSMarker">
 
-            createGPSMarker<span class="signature">(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, viewId, entityId)</span>
+            createGPSMarkerDataSource<span class="signature">(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, viewId, entityId)</span>
         </h4>
 
 
@@ -3920,7 +3920,7 @@
     <div class="nameContainer">
         <h4 class="name" id="createH264VideoDialog">
 
-            createH264VideoDialog<span class="signature">(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId)</span>
+            createH264DataSource<span class="signature">(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId)</span>
         </h4>
 
 
