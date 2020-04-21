@@ -84,7 +84,8 @@ export default class SWEXmlStreamParser {
                     } else if (S.charCodeAt(pos + 1) === exclamationCC) {
                         if (S.charCodeAt(pos + 2) == minusCC) {
                             //comment support
-                            while (pos !== -1 && !(S.charCodeAt(pos) === closeBracketCC && S.charCodeAt(pos - 1) == minusCC && S.charCodeAt(pos - 2) == minusCC && pos != -1)) {
+                            while (pos !== -1 && !(S.charCodeAt(pos) === closeBracketCC
+                              && S.charCodeAt(pos - 1) == minusCC && S.charCodeAt(pos - 2) == minusCC && pos != -1)) {
                                 pos = S.indexOf(closeBracket, pos + 1);
                             }
                             if (pos === -1) {
@@ -102,11 +103,20 @@ export default class SWEXmlStreamParser {
                     }
                     var child = parseNode();
                     var childName = child.type;
+                    if(childName === "observableProperty") {
+                        console.log("childName");
+                    }
                     if (childName === 'type') // don't override special 'type' attribute!
                         continue;
                     var isProperty = childName.charAt(0) == childName.charAt(0).toLowerCase();//Object.keys(child).length == 2;
                     if (isProperty && child.hasOwnProperty('value')) {
-                        node[childName] = child.value;
+                        if (isArray(childName)) {
+                            if (!node.hasOwnProperty(childName))
+                                node[childName] = [];
+                            node[childName].push(child.value);
+                        } else {
+                            node[childName] = child.value;
+                        }
                     } else {
                         // skip one level if child is an OGC property
                         if (isProperty) {
