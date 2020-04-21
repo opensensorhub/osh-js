@@ -249,47 +249,45 @@ export class View {
                 let dataSourceId = ds[i];
                 // observes the data come in
                 let self = this;
-                (function (frozenDataSourceId) { // use a close here to no share the dataSourceId letiable
+                // see https://www.pluralsight.com/guides/javascript-callbacks-variable-scope-problem
+                EventManager.observe(EventManager.EVENT.DATA + "-" + dataSourceId, (event) => {
 
-                    EventManager.observe(EventManager.EVENT.DATA + "-" + frozenDataSourceId, (event) => {
+                    // skip data reset events for now
+                    if (event.reset) {
+                        return;
+                    }
 
-                        // skip data reset events for now
-                        if (event.reset) {
-                            return;
-                        }
+                    // we check selected dataSource only when the selected entity is not set
+                    let selected = false;
+                    if (isDefined(self.selectedEntity)) {
+                        selected = (viewItem.entityId === self.selectedEntity);
+                    } else {
+                        selected = (self.selectedDataSources.indexOf(dataSourceId) > -1);
+                    }
 
-                        // we check selected dataSource only when the selected entity is not set
-                        let selected = false;
-                        if (isDefined(self.selectedEntity)) {
-                            selected = (viewItem.entityId === self.selectedEntity);
-                        } else {
-                            selected = (self.selectedDataSources.indexOf(frozenDataSourceId) > -1);
-                        }
+                    //TODO: maybe done into the styler?
+                    styler.setData(dataSourceId, event.data, self, {
+                        selected: selected
+                    });
+                    self.lastRec[dataSourceId] = event.data;
+                });
 
-                        //TODO: maybe done into the styler?
-                        styler.setData(frozenDataSourceId, event.data, self, {
+                EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
+                    // we check selected dataSource only when the selected entity is not set
+                    let selected = false;
+                    if (isDefined(event.entityId)) {
+                        selected = (viewItem.entityId === event.entityId);
+                    } else {
+                        selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
+                    }
+
+                    if (frozenDataSourceId in self.lastRec) {
+                        styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
                             selected: selected
                         });
-                        self.lastRec[frozenDataSourceId] = event.data;
-                    });
+                    }
+                });
 
-                    EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
-                        // we check selected dataSource only when the selected entity is not set
-                        let selected = false;
-                        if (isDefined(event.entityId)) {
-                            selected = (viewItem.entityId === event.entityId);
-                        } else {
-                            selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
-                        }
-
-                        if (frozenDataSourceId in self.lastRec) {
-                            styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
-                                selected: selected
-                            });
-                        }
-                    });
-
-                })(dataSourceId); //passing the letiable to freeze, creating a new closure
             }
         }
     }
