@@ -49,7 +49,6 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
-        port: 9000,
         hot: true
     },
     devtool: 'source-map',
@@ -77,7 +76,7 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
         {from: 'images', to: 'images'},
-        {from: '../../ext/osh/resources/images/tasking', to: 'images'},
+        {from: '../../source/ext/osh/resources/images', to: 'images'},
         ]),
         new WorkerPlugin()
     ]
