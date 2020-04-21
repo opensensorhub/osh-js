@@ -44,13 +44,13 @@ The view allows you to extend the basic functionnality to fit as much as possibl
             type : OSH.UI.DiscoveryView.Type.MARKER_GPS
         },{
             name: 'Video dialog(H264)',
-            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_H264
+            type : OSH.UI.DiscoveryView.Type.VIDEO_H264
         },{
             name: 'Video dialog(MJPEG)',
-            type : OSH.UI.DiscoveryView.Type.DIALOG_VIDEO_MJPEG
+            type : OSH.UI.DiscoveryView.Type.VIDEO_MJPEG
         },{
             name: 'DataSourceChart dialog',
-            type : OSH.UI.DiscoveryView.Type.DIALOG_CHART
+            type : OSH.UI.DiscoveryView.Type.CHART
         }
         ]
     });
