@@ -38,7 +38,9 @@ let chartView = new ChartJsView("char-container",
         yLabel: 'Wind Speed (m/s)',
         xLabel: 'Time',
         css: "chart-view",
-        maxPoints: 30
+        tickOpts: {
+            maxTicksLimit: 10
+        },
     }
 );
 
