@@ -103,9 +103,6 @@ export default class SWEXmlStreamParser {
                     }
                     var child = parseNode();
                     var childName = child.type;
-                    if(childName === "observableProperty") {
-                        console.log("childName");
-                    }
                     if (childName === 'type') // don't override special 'type' attribute!
                         continue;
                     var isProperty = childName.charAt(0) == childName.charAt(0).toLowerCase();//Object.keys(child).length == 2;
