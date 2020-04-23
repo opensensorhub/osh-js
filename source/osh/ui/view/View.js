@@ -278,11 +278,11 @@ export class View {
                     if (isDefined(event.entityId)) {
                         selected = (viewItem.entityId === event.entityId);
                     } else {
-                        selected = (event.dataSourcesIds.indexOf(frozenDataSourceId) > -1);
+                        selected = (event.dataSourcesIds.indexOf(dataSourceId) > -1);
                     }
 
-                    if (frozenDataSourceId in self.lastRec) {
-                        styler.setData(frozenDataSourceId, self.lastRec[frozenDataSourceId], self, {
+                    if (dataSourceId in self.lastRec) {
+                        styler.setData(dataSourceId, self.lastRec[dataSourceId], self, {
                             selected: selected
                         });
                     }
