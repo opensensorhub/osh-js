@@ -312,12 +312,18 @@ export default class FFMPEGView extends View {
      * @memberof FFMPEGView
      */
     decodeWorker(pktSize, pktData) {
-        let transferableData = {
-            pktSize: pktSize,
-            pktData: pktData.buffer,
-            byteOffset: pktData.byteOffset
-        };
-        this.worker.postMessage(transferableData, [transferableData.pktData]);
+        if(pktSize > 0) {
+            let transferableData = {
+                pktSize: pktSize,
+                pktData: pktData.buffer,
+                byteOffset: pktData.byteOffset
+            };
+            this.worker.postMessage(transferableData, [transferableData.pktData]);
+        }
+    }
+
+    destroy() {
+        this.worker.terminate();
     }
 
 //-------------------------------------------------------//
