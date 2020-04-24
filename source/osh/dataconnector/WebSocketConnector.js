@@ -37,7 +37,7 @@
 import DataConnector from './DataConnector.js';
 import {isWebWorker} from '../utils/Utils.js';
 
-export default class WebSocket extends DataConnector {
+export default class WebSocketConnector extends DataConnector {
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
@@ -94,15 +94,14 @@ export default class WebSocket extends DataConnector {
             } else {
                 this.ws = new WebSocket(this.getUrl());
                 this.ws.binaryType = 'arraybuffer';
-                this.ws.onmessage = (event) => {
-                    //callback data on message received
-                    if (event.data.byteLength > 0) {
-                        that.onMessage(event.data);
+                this.ws.onmessage = (e) =>   {
+                    if (e.data.byteLength > 0) {
+                        this.onMessage(e.data);
                     }
-                };
+                }
 
                 // closes socket if any errors occur
-                this.ws.onerror = (event) => that.ws.close();
+                this.ws.onerror = (event) => this.ws.close();
             }
             this.init = true;
         }

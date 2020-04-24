@@ -28,7 +28,7 @@
  *
  */
 import {randomUUID, isDefined} from '../utils/Utils.js';
-import WebSocket from "../dataconnector/WebSocket.js";
+import WebSocketConnector from "../dataconnector/WebSocketConnector.js";
 import Ajax from "../dataconnector/Ajax.js";
 import EventManager from "../events/EventManager.js";
 
@@ -73,9 +73,9 @@ export default class DataSource {
             properties.connect = true;
         }
 
-        // checks if type is WebSocket
+        // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) {
-            this.connector = new WebSocket(this.buildUrl(properties));
+            this.connector = new WebSocketConnector(this.buildUrl(properties));
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
         } else if (properties.protocol.startsWith('http')) {
