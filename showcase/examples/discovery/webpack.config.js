@@ -3,7 +3,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
 
 var path = require('path');
 
@@ -38,6 +37,10 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
             }
         ]
     },
@@ -80,7 +83,6 @@ module.exports = {
         new CopyWebpackPlugin([
         {from: path.resolve(__dirname,'images'), to: 'images'},
         {from: path.resolve(__dirname,'../../../source/ext/osh/resources/images'), to: 'images'},
-        ]),
-        new WorkerPlugin()
+        ])
     ]
 };

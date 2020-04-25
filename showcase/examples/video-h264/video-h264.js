@@ -14,7 +14,7 @@ let videoDataSource = new VideoH264("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView("video-container", {
+let videoView = new FFMPEGView("video-h264-container", {
   dataSourceId: videoDataSource.id,
   css: "video-h264",
   name: "UAV Video",

@@ -4,7 +4,6 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 var path = require('path');
-const WorkerPlugin = require('worker-plugin');
 
 let common = {
     resolve: {
@@ -30,10 +29,7 @@ let common = {
         // Resolve node module use of fs
         fs: 'empty'
     },
-    plugins: [
-      new WorkerPlugin( {
-        globalObject: false
-    })]
+    plugins: []
 };
 
 module.exports = [{
@@ -68,20 +64,13 @@ let directories = ['cesium-fois', 'cesium-location','chart', 'discovery',
 for(let i=0;i < directories.length;i++) {
     let example = 'examples/'+directories[i];
     let config = require(path.resolve(__dirname, './' + example + '/webpack.config.js'));
+
     //
     config.output.path = path.resolve(__dirname, 'dist');
     delete config.devServer;
     delete config.resolve;
     delete config.devtool;
-
-    // hack for issue https://github.com/GoogleChromeLabs/worker-plugin/issues/27
-    let pluginsLength = config.plugins.length;
-    config.plugins = config.plugins.filter(plugin => plugin.constructor.name !== 'WorkerPlugin');
-    if(pluginsLength !== 0 && pluginsLength != config.plugins) {
-        config.plugins.push(new WorkerPlugin());
-    }
-    // end hack
-
+    //
     module.exports.push({
         ...common,
         ...config

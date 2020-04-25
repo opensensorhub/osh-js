@@ -241,13 +241,11 @@ export default class FFMPEGView extends View {
         this.worker = new Worker();
         this.worker.id = randomUUID();
 
-        console.log('worker id '+this.worker.id);
         let yuvCanvas = this.yuvCanvas;
 
         let buffer = [];
         let that = this;
         this.worker.onmessage = function (e) {
-            console.log("outside worker");
             if(that.directPlay) {
                 display(e);
             } else {
@@ -295,7 +293,6 @@ export default class FFMPEGView extends View {
      */
     decodeWorker(pktSize, pktData) {
         if(pktSize > 0) {
-            console.log('transferring data..');
             let arrayBuffer = pktData.buffer;
 
             this.worker.postMessage({

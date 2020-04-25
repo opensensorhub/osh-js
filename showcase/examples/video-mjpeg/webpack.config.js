@@ -1,7 +1,6 @@
 /* webpack.config.js */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 var path = require('path');
 
@@ -10,7 +9,7 @@ module.exports = {
     entry: path.resolve(__dirname,'video-mjpeg.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.js',
+        filename: 'bundle.mjpeg.js',
         path: path.resolve(__dirname, 'dist')
     },
     node: {
@@ -71,11 +70,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'video-mjpeg.html',
             template: path.resolve(__dirname, 'video-mjpeg.html')
-        }),
-        // This plugin will copy files over to ‘./dist’ without transforming them.
-        // That's important because the custom-elements-es5-adapter.js MUST
-        // remain in ES2015. We’ll talk about this a bit later :)
-        new CopyWebpackPlugin([
-        ])
+        })
     ]
 };

@@ -3,7 +3,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
 
 // Cesium deps
 const cesiumSource = 'node_modules/cesium/Source';
@@ -54,6 +53,10 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
             }
         ]
     },
@@ -96,7 +99,6 @@ module.exports = {
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers' },
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets' },
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets' }
-        ]),
-        new WorkerPlugin()
+        ])
     ]
 };

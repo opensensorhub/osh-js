@@ -29,6 +29,7 @@
  */
 import {isDefined, randomUUID, isWebWorker} from "../utils/Utils.js";
 import SWEXmlStreamParser from "../parsers/SWEXmlStreamParser.js";
+import Worker from './GetRequest.worker.js';
 
 export default class Server {
     constructor(properties) {
@@ -125,7 +126,7 @@ export default class Server {
 
     executeGetRequestWebWorker(request, successCallback, errorCallback) {
         // create worker source code blob if not created yet
-        let worker = new Worker('./GetRequestWorker.js', { type: 'module' });
+        let worker = new Worker();
         worker.onerror = (e) => {
             worker.terminate();
             errorCallback("Internal error in worker: " + e.message);

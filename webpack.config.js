@@ -4,7 +4,6 @@ let CopyWebpackPlugin = require('copy-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
 var path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.

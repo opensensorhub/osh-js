@@ -1,10 +1,7 @@
 /* webpack.config.js */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
-const { SourceMapDevToolPlugin } = require('webpack');
 var path = require('path');
 
 module.exports = {

@@ -14,7 +14,7 @@ let videoDataSource = new VideoMjpeg("android-Video", {
 });
 
 // show it in video view
-let videoView = new MjpegView("video-container", {
+let videoView = new MjpegView("video-mjpeg-container", {
     dataSourceId: videoDataSource.id,
     css: "video-mjpeg",
     name: "Android Video",

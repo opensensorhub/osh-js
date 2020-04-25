@@ -14,7 +14,7 @@ let videoDataSource = new VideoH264("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView("video-container", {
+let videoView = new FFMPEGView("video-h264-transferable-container", {
   dataSourceId: videoDataSource.id,
   css: "video-h264",
   name: "UAV Video",
@@ -28,54 +28,14 @@ let videoView = new FFMPEGView("video-container", {
 // start streaming
 videoDataSource.connect();
 
-// class TestLog {
-//   constructor(div) {
-//     this.div = div;
-//     this.count = 0;
-//     this.worker = new Worker('./MultiplyWorker.js',{ type: 'module' });
-//   }
-//
-//   displayLog() {
-//     let base64Str = btoa("Mul: "+this.count++);
-//     let arrayBuffer = this.str2ab(base64Str);
-//     console.log(arrayBuffer);
-//     this.worker.postMessage({
-//       arrayBuffer : arrayBuffer
-//     }, [arrayBuffer]);
-//     let that = this;
-//     this.worker.onmessage = (e) => {
-//       document.getElementById(that.div).innerHTML = atob(e.data);
-//     };
-//   }
-//
-//   str2ab(str) {
-//     let buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-//     let bufView = new Uint16Array(buf);
-//     for (let i=0, strLen=str.length; i < strLen; i++) {
-//       bufView[i] = str.charCodeAt(i);
-//     }
-//     return buf;
-//   }
-// }
-//
-// let button = document.getElementById("destroy-button");
-// let testLog = new TestLog("video-container");
-//
-// setInterval(function(){
-//   testLog.displayLog();
-// },1000);
-// button.onclick = () => {
-//   testLog = new TestLog("video-container");
-// };
-
 let button = document.getElementById("destroy-button");
 button.onclick = () => {
-  const myDivView = document.getElementById("video-container");
+  const myDivView = document.getElementById("video-h264-transferable-container");
   videoView.destroy();
   videoView = null;
   myDivView.innerHTML = '';
 
-  videoView = new FFMPEGView("video-container", {
+  videoView = new FFMPEGView("video-h264-transferable-container", {
     dataSourceId: videoDataSource.id,
     css: "video-h264",
     name: "UAV Video",

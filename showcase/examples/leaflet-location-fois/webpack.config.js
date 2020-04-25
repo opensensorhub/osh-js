@@ -3,7 +3,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
 
 var path = require('path');
 
@@ -80,7 +79,6 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
         {from: path.resolve(__dirname,'images'), to: 'images'}
-        ]),
-        new WorkerPlugin()
+        ])
     ]
 };

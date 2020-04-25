@@ -3,7 +3,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
 
 var path = require('path');
 
@@ -38,6 +37,9 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
+            },{
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
             }
         ]
     },
@@ -79,7 +81,6 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
         {from: path.resolve(__dirname,'../../../ext/osh/resources/images/tasking'), to: 'images'},
-        ]),
-        new WorkerPlugin()
+        ])
     ]
 };

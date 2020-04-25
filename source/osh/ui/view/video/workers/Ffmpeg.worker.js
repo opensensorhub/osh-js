@@ -49,7 +49,6 @@ instance.ready
 
     let released = false;
     self.onmessage = function (e) {
-      console.log("in worker "+released);
       if(released) {
         return;
       }
@@ -74,7 +73,6 @@ instance.ready
     }
 
     function release() {
-      console.log(Module);
       instance._avcodec_close(self.av_ctx);
       instance._av_free(self.av_ctx);
       // instance._av_frame_free(self.av_frame);

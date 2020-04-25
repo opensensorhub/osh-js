@@ -1,10 +1,7 @@
 /* webpack.config.js */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
-
 var path = require('path');
 
 module.exports = {
@@ -41,6 +38,10 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
             }
         ]
     },
@@ -73,7 +74,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'video-h264.html',
             template: path.resolve(__dirname, 'video-h264.html')
-        }),
-        new WorkerPlugin()
+        })
     ]
 };

@@ -1,11 +1,8 @@
 /* webpack.config.js */
 
-const { DefinePlugin } = require('webpack');
-
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
 
 var path = require('path');
 const PROCESS_BASE_PATH = process.cwd();
@@ -48,6 +45,10 @@ module.exports = {
     // CSS, and (thanks to our loader) HTML.
     module: {
         rules: [
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader' }
+            },
             {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
@@ -97,7 +98,6 @@ module.exports = {
         { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers' },
         { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets' },
         { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets' }
-        ]),
-        new WorkerPlugin()
+        ])
     ]
 };
