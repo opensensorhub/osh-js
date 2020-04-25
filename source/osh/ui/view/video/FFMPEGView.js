@@ -305,6 +305,7 @@ export default class FFMPEGView extends View {
     }
 
     destroy() {
+        super.destroy();
         if(isDefined(this.interval)) {
             clearInterval(this.interval);
         }

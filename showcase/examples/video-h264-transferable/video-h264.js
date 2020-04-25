@@ -1,5 +1,6 @@
 import VideoH264 from 'osh/datareceiver/VideoH264.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
+import EventManager from "../../../source/osh/events/EventManager";
 //
 // // create data source for UAV camera
 let videoDataSource = new VideoH264("drone-Video", {
@@ -28,8 +29,11 @@ let videoView = new FFMPEGView("video-h264-transferable-container", {
 // start streaming
 videoDataSource.connect();
 
-let button = document.getElementById("destroy-button");
-button.onclick = () => {
+let destroyButton = document.getElementById("destroy-button");
+let unregisterButton = document.getElementById("unregister-button");
+let registerButton = document.getElementById("register-button");
+
+destroyButton.onclick = () => {
   const myDivView = document.getElementById("video-h264-transferable-container");
   videoView.destroy();
   videoView = null;
@@ -45,4 +49,12 @@ button.onclick = () => {
     framerate: 25,
     showTime: true
   });
+};
+
+unregisterButton.onclick = () => {
+  EventManager.unregisterView(videoView); // equivalent to videoView.unregisterCallback()
+};
+
+registerButton.onclick = () => {
+  EventManager.registerView(videoView); // equivalent to videoView.registerCallback()
 };

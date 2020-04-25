@@ -22,6 +22,12 @@ export default class EventMap {
         this.eventMap = {};
     }
 
+    remove(eventName) {
+        if(eventName in this.eventMap) {
+            delete this.eventMap[eventName];
+        }
+    }
+
     observe(eventName, fnCallback) {
         if(!isDefined(eventName) || !isDefined(fnCallback)) {
             return;

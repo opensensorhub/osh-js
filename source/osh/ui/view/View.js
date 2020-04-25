@@ -108,13 +108,7 @@ export class View {
         var that = this;
         // observes the event associated to the dataSourceId
         if (isDefined(options) && isDefined(options.dataSourceId)) {
-            EventManager.observe(EventManager.EVENT.DATA + "-" + options.dataSourceId, (event) => {
-                if (event.reset) {
-                    that.reset(); // on data stream reset
-                } else {
-                    that.setData(options.dataSourceId, event.data);
-                }
-            });
+            this.registerCallback();
         }
 
         let observer = new MutationObserver((mutations) => {
@@ -122,13 +116,30 @@ export class View {
                 // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
                 if (mutation.attributeName === 'style') {
                     that.onResize();
-
                 }
             });
         });
 
         // Attach the mutation observer to blocker, and only when attribute values change
         observer.observe(this.elementDiv, {attributes: true});
+    }
+
+    registerCallback() {
+        EventManager.observe(this.getEventName(), (event) => {
+            if (event.reset) {
+                this.reset(); // on data stream reset
+            } else {
+                this.setData(this.dataSourceId, event.data);
+            }
+        });
+    }
+
+    unregisterCallback() {
+        EventManager.remove(this.getEventName());
+    }
+
+    getEventName() {
+        return EventManager.EVENT.DATA + "-" + this.dataSourceId;
     }
 
     /**
@@ -221,6 +232,10 @@ export class View {
      * @memberof View
      */
     shows(properties) {
+    }
+
+    destroy()  {
+       this.unregisterCallback();
     }
 
     /**

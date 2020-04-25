@@ -24,6 +24,18 @@ const eventMap = new EventMap();
 
 export default class EventManager {
 
+    static remove(eventName) {
+        eventMap.remove('osh:' + eventName);
+    }
+
+    static registerView(view) {
+        view.registerCallback();
+    }
+
+    static unregisterView(view) {
+        view.unregisterCallback();
+    }
+
     /**
      *
      * @param eventName
