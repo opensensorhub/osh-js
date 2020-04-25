@@ -38,6 +38,7 @@ OSH.DataReceiver.VideoMp4 = OSH.DataReceiver.DataSource.extend({
     initialize: function (name, properties, options) {
         this._super(name, properties, options);
         this.absoluteTime = -1;
+        this.setReconnectTimeout(1000 * 5); // 5 sec
     },
 
     /**

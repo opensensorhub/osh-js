@@ -36,6 +36,7 @@
 OSH.DataReceiver.VideoH264 = OSH.DataReceiver.DataSource.extend({
     initialize: function (name, properties, options) {
         this._super(name, properties, options);
+        this.setReconnectTimeout(1000 * 5); // 5 sec
     },
 
     /**
