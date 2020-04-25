@@ -229,7 +229,7 @@ export class View {
      * @instance
      * @memberof View
      */
-    addViewItem(viewItem) {
+    async addViewItem(viewItem) {
         this.viewItems.push(viewItem);
         if (viewItem.hasOwnProperty("styler")) {
             let styler = viewItem.styler;
