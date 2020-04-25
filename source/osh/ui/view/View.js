@@ -131,11 +131,11 @@ export class View {
             } else {
                 this.setData(this.dataSourceId, event.data);
             }
-        });
+        }, this.divId);
     }
 
     unregisterCallback() {
-        EventManager.remove(this.getEventName());
+        EventManager.remove(this.getEventName(), this.divId);
     }
 
     getEventName() {

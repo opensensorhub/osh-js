@@ -22,20 +22,23 @@ export default class EventMap {
         this.eventMap = {};
     }
 
-    remove(eventName) {
+    remove(eventName, id) {
         if(eventName in this.eventMap) {
-            delete this.eventMap[eventName];
+            this.eventMap[eventName] = this.eventMap[eventName].filter(obj => obj.id !== id);
         }
     }
 
-    observe(eventName, fnCallback) {
-        if(!isDefined(eventName) || !isDefined(fnCallback)) {
+    observe(eventName, fnCallback, id = 'any') {
+        if(!isDefined(eventName) || !isDefined(fnCallback) || !isDefined(id)) {
             return;
         }
         if(!(eventName in this.eventMap)) {
             this.eventMap[eventName] = [];
         }
-        this.eventMap[eventName].push(fnCallback);
+        this.eventMap[eventName].push({
+            fn: fnCallback,
+            id: id
+        });
     }
 
     fire(eventName, properties) {
@@ -46,7 +49,7 @@ export default class EventMap {
             let fnCallbackArr = this.eventMap[eventName];
             for(let i = 0; i < fnCallbackArr.length;i++){
                 // callback the properties to the current callback
-                fnCallbackArr[i](properties);
+                fnCallbackArr[i].fn(properties);
             }
         }
     }

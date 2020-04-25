@@ -24,8 +24,8 @@ const eventMap = new EventMap();
 
 export default class EventManager {
 
-    static remove(eventName) {
-        eventMap.remove('osh:' + eventName);
+    static remove(eventName, id ='any') {
+        eventMap.remove('osh:' + eventName, id);
     }
 
     static registerView(view) {
@@ -56,8 +56,8 @@ export default class EventManager {
      * @instance
      * @memberof EventManager
      */
-    static observe(eventName, fnCallback) {
-        eventMap.observe('osh:' + eventName, fnCallback);
+    static observe(eventName, fnCallback, id = 'any') {
+        eventMap.observe('osh:' + eventName, fnCallback, id);
     }
 
     /**
