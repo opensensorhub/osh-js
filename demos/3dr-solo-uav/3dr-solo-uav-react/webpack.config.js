@@ -1,17 +1,21 @@
 // webpack.config.common.js
 const CopywebpackPlugin = require('copy-webpack-plugin');
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
-
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 
-// The path to the CesiumJS source code
-const cesiumSource = 'node_modules/cesium/Source';
-const cesiumWorkers = '../Build/Cesium/Workers';
-
 const cesiumConfig = {
+  // Tell Webpack which file kicks off our app.
+  entry: path.resolve(__dirname,'src/index.js'),
+  // Tell Weback to output our bundle to ./dist/bundle.js
+  output: {
+    filename: 'bundle.3dr.js',
+    path: path.resolve(__dirname, 'dist'),
+    // Needed to compile multiline strings in Cesium
+    sourcePrefix: ''
+  },
   amd: {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
@@ -29,7 +33,7 @@ const cesiumConfig = {
     new CopywebpackPlugin([ { from: 'models', to: 'models\''} ]),
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
-      CESIUM_BASE_URL: JSON.stringify('')
+      CESIUM_BASE_URL: JSON.stringify('/')
     }),
   ],
 };
@@ -56,26 +60,11 @@ const config = {
     unknownContextCritical: false,
     rules: [
       {
-        test: /^((?!es2015-)[\s\S])*\.js$/,
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
         use: {
-          loader: 'buble-loader'
-        },
-        include: [
-          path.resolve(__dirname, './src'),
-          path.resolve(__dirname, '.')
-        ]
-      },{
-        test: /\.js$/,
-        enforce: 'pre',
-        include: path.resolve(__dirname, cesiumSource),
-        use: [{
-          loader: 'strip-pragma-loader',
-          options: {
-            pragmas: {
-              debug: false
-            }
-          }
-        }]
+          loader: "babel-loader"
+        }
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
@@ -85,18 +74,24 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },{
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },
-
+  optimization: {
+    // We no not want to minimize our code.
+    minimize: false
+  },
   plugins: [
   ...cesiumConfig.plugins,
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',
       favicon: './public/favicon.ico'
     }),
-    new WorkerPlugin()
 ],
 };
 
