@@ -59,7 +59,7 @@ You need now to extract the `2.464,5.278,30.0` part:
 
 ```javascript
 parseData: function($super,data){
-    // get data from WebSocket
+    // get data from WebSocketConnector
     var record = String.fromCharCode.apply(null, new Uint8Array(data));
     
     // split String using "," as separator
