@@ -9,3 +9,4 @@ Toolkit/dist
 Toolkit/vendor
 npm-debug.log
 .DS_Store
+test-local
