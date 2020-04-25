@@ -10,8 +10,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {View} from "../View.js";
-import {isDefined, isWebWorker} from "../../../utils/Utils.js";
+import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
+import Worker from './workers/Ffmpeg.worker.js';
 
 /**
  * @classdesc
@@ -137,29 +138,8 @@ export default class FFMPEGView extends View {
         if (!this.skipFrame) {
             let pktData = data.data;
             let pktSize = pktData.length;
-
-            if (this.useWorker) {
-                this.resetCalled = false;
-                this.decodeWorker(pktSize, pktData);
-            } else {
-                let decodedFrame = this.decode(pktSize, pktData);
-                if (isDefined(decodedFrame)) {
-                    this.yuvCanvas.drawNextOuptutPictureGL({
-                        yData: decodedFrame.frameYData,
-                        yDataPerRow: decodedFrame.frame_width,
-                        yRowCnt: decodedFrame.frame_height,
-                        uData: decodedFrame.frameUData,
-                        uDataPerRow: decodedFrame.frame_width / 2,
-                        uRowCnt: decodedFrame.frame_height / 2,
-                        vData: decodedFrame.frameVData,
-                        vDataPerRow: decodedFrame.frame_width / 2,
-                        vRowCnt: decodedFrame.frame_height / 2
-                    });
-
-                    this.updateStatistics();
-                    this.onAfterDecoded();
-                }
-            }
+            this.resetCalled = false;
+            this.decodeWorker(pktSize, pktData);
         }
     }
 
@@ -185,8 +165,7 @@ export default class FFMPEGView extends View {
      * @memberof FFMPEGView
      */
     reset() {
-        // _avcodec_flush_buffers(this.av_ctx);
-// clear canvas
+        // clear canvas
         this.resetCalled = true;
         let nodata = new Uint8Array(1);
         this.yuvCanvas.drawNextOuptutPictureGL({
@@ -252,20 +231,23 @@ export default class FFMPEGView extends View {
 //-----------------------------------------------------//
 
     /**
-     * The worker code is located at the location js/workers/FFMPEGViewWorker.js.
+     * The worker code is located at the location js/workers/Ffmpeg.worker.js.
      * This location cannot be changed. Be sure to have the right file at the right place.
      * @instance
      * @memberof FFMPEGView
      * @param callback
      */
     initFFMPEG_DECODER_WORKER(callback) {
-        this.worker = new Worker('./workers/FFMPEGViewWorker.js',{ type: 'module' });
+        this.worker = new Worker();
+        this.worker.id = randomUUID();
 
+        console.log('worker id '+this.worker.id);
         let yuvCanvas = this.yuvCanvas;
 
         let buffer = [];
         let that = this;
         this.worker.onmessage = function (e) {
+            console.log("outside worker");
             if(that.directPlay) {
                 display(e);
             } else {
@@ -273,7 +255,7 @@ export default class FFMPEGView extends View {
             }
         };
 
-        setInterval(function() {
+        this.interval = setInterval(function() {
             if (buffer.length > this.framerate) {
                 buffer = [];
             }
@@ -313,118 +295,26 @@ export default class FFMPEGView extends View {
      */
     decodeWorker(pktSize, pktData) {
         if(pktSize > 0) {
-            let transferableData = {
+            console.log('transferring data..');
+            let arrayBuffer = pktData.buffer;
+
+            this.worker.postMessage({
                 pktSize: pktSize,
-                pktData: pktData.buffer,
+                pktData: arrayBuffer,
                 byteOffset: pktData.byteOffset
-            };
-            this.worker.postMessage(transferableData, [transferableData.pktData]);
+            }, [arrayBuffer]);
+            pktData = null;
         }
     }
 
     destroy() {
-        this.worker.terminate();
-    }
-
-//-------------------------------------------------------//
-//---------- No Web worker -----------------------------//
-//-----------------------------------------------------//
-
-    /**
-     * @instance
-     * @memberof FFMPEGView
-     */
-    initFFMEG_DECODER() {
-// register all compiled codecs
-        Module.ccall('avcodec_register_all');
-
-// find h264 decoder
-        let codec = Module.ccall('avcodec_find_decoder_by_name', 'number', ['string'], ["h264"]);
-        if (codec === 0) {
-            console.error("Could not find H264 codec");
-            return;
+        if(isDefined(this.interval)) {
+            clearInterval(this.interval);
         }
-
-// init codec and conversion context
-        this.av_ctx = _avcodec_alloc_context3(codec);
-
-// open codec
-        let ret = _avcodec_open2(this.av_ctx, codec, 0);
-        if (ret < 0) {
-            console.error("Could not initialize codec");
-            return;
-        }
-
-// allocate packet
-        this.av_pkt = Module._malloc(96);
-        this.av_pktData = Module._malloc(1024 * 150);
-        _av_init_packet(this.av_pkt);
-        Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
-
-// allocate video frame
-        this.av_frame = _avcodec_alloc_frame();
-        if (!this.av_frame)
-            alert("Could not allocate video frame");
-
-// init decode frame function
-        this.got_frame = Module._malloc(4);
-        this.maxPktSize = 1024 * 50;
-
-
-    }
-
-    /**
-     *
-     * @param pktSize
-     * @param pktData
-     * @returns {{frame_width: *, frame_height: *, frameYDataPtr: *, frameUDataPtr: *, frameVDataPtr: *, frameYData: Uint8Array, frameUData: Uint8Array, frameVData: Uint8Array}}
-     * @instance
-     * @memberof FFMPEGView
-     */
-    decode(pktSize, pktData) {
-        if (pktSize > this.maxPktSize) {
-            this.av_pkt = Module._malloc(96);
-            this.av_pktData = Module._malloc(pktSize);
-            _av_init_packet(this.av_pkt);
-            Module.setValue(this.av_pkt + 24, this.av_pktData, '*');
-            this.maxPktSize = pktSize;
-        }
-        // prepare packet
-        Module.setValue(this.av_pkt + 28, pktSize, 'i32');
-        Module.writeArrayToMemory(pktData, this.av_pktData);
-
-// decode next frame
-        let len = _avcodec_decode_video2(this.av_ctx, this.av_frame, this.got_frame, this.av_pkt);
-        if (len < 0) {
-            console.log("Error while decoding frame");
-            return;
-        }
-
-        if (Module.getValue(this.got_frame, 'i8') === 0) {
-//console.log("No frame");
-            return;
-        }
-
-        let decoded_frame = this.av_frame;
-        let frame_width = Module.getValue(decoded_frame + 68, 'i32');
-        let frame_height = Module.getValue(decoded_frame + 72, 'i32');
-//console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
-
-// copy Y channel to canvas
-        let frameYDataPtr = Module.getValue(decoded_frame, '*');
-        let frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
-        let frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
-
-        return {
-            frame_width: frame_width,
-            frame_height: frame_height,
-            frameYDataPtr: frameYDataPtr,
-            frameUDataPtr: frameUDataPtr,
-            frameVDataPtr: frameVDataPtr,
-            frameYData: new Uint8Array(Module.HEAPU8.buffer, frameYDataPtr, frame_width * frame_height),
-            frameUData: new Uint8Array(Module.HEAPU8.buffer, frameUDataPtr, frame_width / 2 * frame_height / 2),
-            frameVData: new Uint8Array(Module.HEAPU8.buffer, frameVDataPtr, frame_width / 2 * frame_height / 2)
-        };
+       this. worker.postMessage({
+           message: 'release'
+       });
+       this.worker.terminate();
     }
 }
 
