@@ -26,7 +26,7 @@ export const MAX_LONG = Math.pow(2, 53) + 1;
  Global helper method to test if a letiable or object attribute is defined
  */
 export function isDefined(v) {
-    return typeof (v) !== 'undefined';
+    return typeof (v) !== 'undefined' && v !== null;
 }
 
 
@@ -331,16 +331,6 @@ export function isSafari() {
  * @instance
  * @memberof Utils
  */
-export function isIE() {
-    return /*@cc_on!@*/false || !!document.documentMode;
-}
-
-/**
- *
- * @returns {boolean}
- * @instance
- * @memberof Utils
- */
 export function isChrome() {
     return !!window.chrome && !!window.chrome.webstore;
 }
@@ -353,38 +343,6 @@ export function isChrome() {
  */
 export function isBlink() {
     return (isChrome || isOpera) && !!window.CSS;
-}
-
-//------- GET X,Y absolute cursor position ---//
-let absoluteXposition = null;
-let absoluteYposition = null;
-
-document.addEventListener('mousemove', onMouseUpdate, false);
-document.addEventListener('mouseenter', onMouseUpdate, false);
-
-function onMouseUpdate(e) {
-    absoluteXposition = e.pageX;
-    absoluteYposition = e.pageY;
-}
-
-/**
- *
- * @returns {*}
- * @instance
- * @memberof Utils
- */
-export function getXCursorPosition() {
-    return absoluteXposition;
-}
-
-/**
- *
- * @returns {*}
- * @instance
- * @memberof Utils
- */
-export function getYCursorPosition() {
-    return absoluteYposition;
 }
 
 /**
