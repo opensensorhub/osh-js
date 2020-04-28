@@ -25,7 +25,7 @@ import Curve from "../../../../osh/ui/styler/Curve";
 import {View} from "../../../../osh/ui/view/View";
 import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController";
 import "../../resources/css/discovery.css";
-import EventManager from "../../../../../Test/dist/source/osh/events/EventManager";
+
 /**
  * @classdesc
  * @class OSH.UI.DiscoveryView
