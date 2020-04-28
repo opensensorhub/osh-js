@@ -312,6 +312,15 @@ export default class LeafletView extends View {
         return id;
     }
 
+    async removeViewItem(viewItem) {
+        await super.removeViewItem(viewItem);
+        let markerId = this.stylerToObj[viewItem.styler.getId()];
+        let marker = this.markers[markerId];
+        this.map.removeLayer(marker);
+
+        delete this.stylerToObj[viewItem.styler.getId()];
+        delete this.markers[markerId];
+    }
     /**
      *
      * @param properties
@@ -465,7 +474,9 @@ export default class LeafletView extends View {
      */
     onResize() {
         super.onResize();
-        this.map.invalidateSize();
+        let that = this;
+        setTimeout(function(){ that.map.invalidateSize()}, 100);
+
     }
 }
 

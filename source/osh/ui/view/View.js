@@ -270,7 +270,7 @@ export class View {
                         selected: selected
                     });
                     self.lastRec[dataSourceId] = event.data;
-                });
+                }, this.divId);
 
                 EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
                     // we check selected dataSource only when the selected entity is not set
@@ -286,12 +286,18 @@ export class View {
                             selected: selected
                         });
                     }
-                });
+                }, this.divId);
 
             }
         }
     }
 
+    async removeViewItem(viewItem) {
+        if(this.viewItems.includes(viewItem)) {
+            // 1) remove from STYLER fn
+            this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
+        }
+    }
     /**
      * @instance
      * @memberof View
