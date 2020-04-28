@@ -151,11 +151,14 @@ export default class FFMPEGView extends View {
      * @memberof FFMPEGView
      */
     selectDataView(dataSourceIds, entityId) {
-        if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId) &&
-            this.entityId === entityId)) {
-            document.getElementById(this.divId).setAttribute("class", this.css + " " + this.cssSelected);
-        } else {
-            document.getElementById(this.divId).setAttribute("class", this.css);
+        let elt = document.getElementById(this.divId);
+        if(isDefined(elt)) {
+            if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId) &&
+              this.entityId === entityId)) {
+                elt.setAttribute("class", this.css + " " + this.cssSelected);
+            } else {
+                elt.setAttribute("class", this.css);
+            }
         }
     }
 
@@ -258,7 +261,7 @@ export default class FFMPEGView extends View {
                 buffer = [];
             }
 
-            if (buffer.length > 10) {
+            if (buffer.length > 1) {
                 display(buffer.shift());
             }
         }, 1000/this.framerate);
