@@ -75,7 +75,7 @@ class BaseMap extends React.Component {
       icon: "./models/Drone+06B.glb"
     });
 
-// style it with a moving point marker
+    // style it with a moving point marker
     let imageDrapingMarker = new ImageDraping({
       platformLocationFunc: {
         dataSourceIds: [platformLocationDataSource.getId()],
