@@ -13,3 +13,4 @@ npm-debug.log
 **/dist
 
 demos/video-display/video-display-advanced-android-vuejs/
+out
