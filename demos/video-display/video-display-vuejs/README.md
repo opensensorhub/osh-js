@@ -1,24 +1,49 @@
 # video-display
-
+This is a VueJS client based on Cesium & OSH Toolkit. It displays 3DR Solo: orientation,location & gimbal orientation.
+Moreover, it draps the video content into the Cesium Globe.
+ 
 ## Project setup
 ```
-yarn install
+npm install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+npm run serve 
 ```
 
 ### Compiles and minifies for production
 ```
-yarn build
+npm run build 
 ```
 
-### Lints and fixes files
-```
-yarn lint
+## Dependencies
+
+Since the client only based on leaflet and MJPEG, we do not need custom Webpack configuration. 
+The one provided by VueJS is working fine.
+
+The client uses Leaflet as base map:
+```shell script
+npm i -D chart.js leaflet
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Babel configuration
+
+We add some configuration into *babel.config.js* file.
+We add an alias so we can reference OSH in our app code:
+
+```shell script
+const oshPlugins = [
+    [
+        require.resolve('babel-plugin-module-resolver'),
+        {
+            root: ["./src/"],
+            alias: {
+                "osh": "../../../source/osh",
+                "ext/osh": "../../../source/ext/osh",
+            }
+        }
+    ]
+];
+...
+```
