@@ -1,4 +1,4 @@
-import RangeSlider from "ext/osh/ui/rangeslider/RangeSlider";
+import RangeSlider from "ext/osh/ui/rangeslider/RangeSliderView";
 import VideoH264 from "osh/datareceiver/VideoH264";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 
