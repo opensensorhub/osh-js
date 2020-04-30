@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <Video />
-    <Map />
+    <Globe />
   </div>
 </template>
 <script>
   // @ is an alias to /src
-import Map from './components/Map.vue';
+import Globe from './components/Globe.vue';
 import Video from './components/Video.vue';
 
 export default {
   components: {
-    Map,
+    Globe,
     Video
   }
 };

@@ -14,6 +14,15 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
+    // Needed to compile multiline strings in Cesium
+    sourcePrefix: ''
+  },
+  amd: {
+    // Enable webpack-friendly use of require in Cesium
+    toUrlUndefined: true
+  },
+  node: {
+    fs: 'empty'
   },
   resolve: {
     modules: [
@@ -27,8 +36,27 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devtool: 'source-map',
-  node: {
-    fs: 'empty'
+  optimization: {
+    splitChunks: {
+      chunks: 'async',
+      minSize: 30000,
+      maxSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 6,
+      maxInitialRequests: 4,
+      automaticNameDelimiter: '~',
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
   },
   module: {
     rules: [
@@ -79,6 +107,16 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       {from: path.resolve(__dirname,'public/images'), to: 'images'},
-    ])
+      {from: path.resolve(__dirname,'images'), to: 'images'},
+      {from: path.resolve(__dirname,'models'), to: 'models'},
+      // Copy Cesium Assets, Widgets, and Workers to a static directory
+      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
+      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
+      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
+    ]),
+    new DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify('/')
+    }),
   ]
 }
