@@ -25,7 +25,7 @@
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
-    "documentation" : "jsdoc -t documentation/jsdoc/jaguarjs-jsdoc -r source/"
+    "documentation" : "jsdoc -t documentation/jsdoc/template/jaguarjs-jsdoc -r source/ -d  documentation/jsdoc/build"
   },
   "devDependencies": {
     "buble": "^0.19.8",
