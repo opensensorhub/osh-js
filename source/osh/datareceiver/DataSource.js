@@ -8,31 +8,31 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {randomUUID, isDefined} from '../utils/Utils';
+import WebSocketConnector from "../dataconnector/WebSocketConnector";
+import Ajax from "../dataconnector/Ajax";
+import EventManager from "../events/EventManager";
+
 /**
- * @classdesc The DataSource is the abstract class used to create different datasources.
- * @class
- * @abstract
- * @param {string} name the datasource name
- * @param {Object} properties the datasource properties
- * @param {boolean} properties.timeShift fix some problem with some android devices with some timestamp shift to 16 sec
- * @param {boolean} properties.syncMasterTime defines if the datasource is synchronize with the others one
- * @param {number} properties.bufferingTime defines the time during the data has to be buffered
- * @param {number} properties.timeOut defines the limit time before data has to be skipped
- * @param {string} properties.protocol defines the protocol of the datasource. @see {@link DataConnector}
+ * The DataSource is the abstract class used to create different datasources.
  *
  */
-import {randomUUID, isDefined} from '../utils/Utils.js';
-import WebSocketConnector from "../dataconnector/WebSocketConnector.js";
-import Ajax from "../dataconnector/Ajax.js";
-import EventManager from "../events/EventManager.js";
-
-export default class DataSource {
+class DataSource {
+    /**
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
+     * @param {Boolean} properties.syncMasterTime - defines if the datasource is synchronize with the others one
+     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
+     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     */
     constructor(name, properties) {
         this.id = "DataSource-" + randomUUID();
         this.name = name;
@@ -45,9 +45,8 @@ export default class DataSource {
 
     /**
      * Inits the datasource with the constructor properties.
+     * @private
      * @param properties
-     * @instance
-     * @memberof DataSource
      */
     initDataSource(properties) {
 
@@ -88,8 +87,6 @@ export default class DataSource {
 
     /**
      * Disconnect the dataSource then the connector will be closed as well.
-     * @instance
-     * @memberof DataSource
      */
     disconnect() {
         this.connector.disconnect();
@@ -104,8 +101,6 @@ export default class DataSource {
 
     /**
      * Connect the dataSource then the connector will be opened as well.
-     * @instance
-     * @memberof DataSource
      */
     connect() {
         this.connector.connect();
@@ -114,10 +109,8 @@ export default class DataSource {
 
     /**
      * The callback which receives data.
-     * @callback
-     * @param data
-     * @instance
-     * @memberof DataSource
+     * @event
+     * @param {Object} data - data received
      */
     onMessage(data) {
         this.onData({
@@ -128,31 +121,25 @@ export default class DataSource {
 
     /**
      * The default timestamp parser
-     * @param data the full data message returned by the connector
-     * @instance
-     * @memberof DataSource
-     * @returns {number} the formatted timestamp
+     * @param data - the full data message returned by the connector
+     * @return {Number} the formatted timestamp
      */
     parseTimeStamp(data) {
         return new Date().getTime();
     }
 
     /**
-     * The default timestamp parser
+     * The default data parser
      * @param data the full data message returned by the connector
-     * @instance
-     * @memberof DataSource
-     * @returns {String|Object|number|ArrayBuffer|*} data the formatted data
+     * @return {String|Object|number|ArrayBuffer|*} data the formatted data
      */
     parseData(data) {
         return data;
     }
 
     /**
+     * Fires the EventManager.EVENT.DATA event
      * @param {Object} data the data object
-     * @instance
-     * @memberof DataSource
-     * @example
      * data is represented as
      * data = {
      *    timeStamp: timeStamp // number
@@ -165,9 +152,7 @@ export default class DataSource {
 
     /**
      * Gets the datasource id.
-     * @returns {string} the datasource id
-     * @instance
-     * @memberof DataSource
+     * @return {String} the datasource id
      */
     getId() {
         return this.id;
@@ -175,9 +160,7 @@ export default class DataSource {
 
     /**
      * Gets the datasource name.
-     * @instance
-     * @memberof DataSource
-     * @returns {*}
+     * @return {String} the datasource name
      */
     getName() {
         return this.name;
@@ -185,19 +168,17 @@ export default class DataSource {
 
     /**
      * Builds the full url.
-     * @param {object} properties
-     * @param {string} properties.protocol the connector protocol
-     * @param {string} properties.endpointUrl the endpoint url
-     * @param {string} properties.service the service
-     * @param {string} properties.offeringID the offeringID
-     * @param {string} properties.observedProperty the observed property
-     * @param {string} properties.startTime the start time (ISO format)
-     * @param {string} properties.endTime the end time (ISO format)
-     * @param {number} properties.replaySpeed the replay factor
-     * @param {number} properties.responseFormat the response format (e.g video/mp4)
-     * @instance
-     * @memberof DataSource
-     * @returns {string} the full url
+     * @param {Object} properties
+     * @param {String} properties.protocol the connector protocol
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.offeringID the offeringID
+     * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.startTime the start time (ISO format)
+     * @param {String} properties.endTime the end time (ISO format)
+     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @return {String} the full url
      */
     buildUrl(properties) {
         let url = "";
@@ -246,3 +227,5 @@ export default class DataSource {
         return url;
     }
 }
+
+export default DataSource;

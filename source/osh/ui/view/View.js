@@ -8,28 +8,36 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @classdesc The abstract object to represent a view.
- * @class
+ * The abstract object to represent a view.
  * @param {Object} parentElementDivId - The parent html element div id to attach/or create the view.
- * @param {string} viewItems - The list of view items
- * @param {string} options - The options
+ * @param {String} viewItems - The list of view items
+ * @param {String} options - The options
  * @abstract
  */
 import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 
 export class View {
+    /**
+     * Create a View.
+     * @param {String} parentElementDivId - The div element to attach to
+     * @param {Object[]} viewItems - The initial view items to add
+     * @param {String} viewItems.name - The name of the view item
+     * @param {Styler} viewItems.styler - The styler object representing the view item
+     * @param {Object} options - the properties of the view
+     * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
+     * @param {String} options.entityId - The entity id to which the view belongs to
+     */
     constructor(parentElementDivId, viewItems, options) {
         // list of stylers
         this.stylers = [];
-        this.contextMenus = [];
         this.viewItems = [];
         this.names = {};
         this.stylerToObj = {};
@@ -132,25 +140,24 @@ export class View {
     }
 
     /**
-     * @instance
-     * @memberof View
+     * Hide the view
      */
     hide() {
         this.elementDiv.style.display = "none";
     }
 
     /**
-     * @instance
-     * @memberof View
+     * Callback called when the view is resized
+     * @event
      */
     onResize() {
     }
 
     /**
-     *
-     * @param divId
-     * @instance
-     * @memberof View
+     * Attach the view to a specific div. If the view has already been attached to a div, it will be removed
+     * from its current parent and will be attached to new one.
+     * Note: the onResize() is called at the end of the process.
+     * @param {String} divId - The div element to attach to
      */
     attachTo(divId) {
         if (isDefined(this.elementDiv.parentNode)) {
@@ -166,68 +173,51 @@ export class View {
     }
 
     /**
-     *
-     * @param options
-     * @instance
-     * @memberof View
+     * This method is called before attaching any view items passed as arguments in the constructor of the view.
+     * @event
+     * @param {Object} options - A generic object to use
      */
     beforeAddingItems(options) {
 
     }
 
     /**
-     *
-     * @returns {string|*}
-     * @instance
-     * @memberof View
+     * Gets the inner id of the view object.
+     * @return {String} The id of the view
      */
     getId() {
         return this.id;
     }
 
     /**
-     *
-     * @returns {string|*}
-     * @instance
-     * @memberof View
+     * Gets the div id of the DOM element.
+     * @return {String} The div id of the view
      */
     getDivId() {
         return this.divId;
     }
 
     /**
-     *
-     * @param dataSourceId
-     * @param data
-     * @instance
-     * @memberof View
+     * Set the data to the view. Each view has to handle the kind of the data separately.
+     * @param {String} dataSourceId - The dataSource id of the source providing the data
+     * @param {*} data - The data to set
      */
     setData(dataSourceId, data) {
     }
 
     /**
-     * Show the view by removing display:none style if any.
-     * @param properties
-     * @instance
-     * @memberof View
+     * Show the view.
+     * @param  {Object} properties - A generic object
      */
     show(properties) {
     }
 
     /**
-     *
-     * @param properties
-     * @instance
-     * @memberof View
-     */
-    shows(properties) {
-    }
-
-    /**
-     * Add viewItem to the view
-     * @param viewItem
-     * @instance
-     * @memberof View
+     * Adds a viewItem to the view. The EventManager.EVENT.DATA and EventManager.EVENT.SELECT_VIEW are then observed using the
+     * dataSource(s) contained into the styler.
+     * @param {Object} viewItem - The initial view items to add
+     * @param {String} viewItem.name - The name of the view item
+     * @param {Styler} viewItem.styler - The styler object representing the view item
      */
     async addViewItem(viewItem) {
         this.viewItems.push(viewItem);
@@ -240,9 +230,6 @@ export class View {
             styler.viewItem = viewItem;
             styler.init(this);
             this.stylerIdToStyler[styler.id] = styler;
-            if (viewItem.hasOwnProperty("contextmenu")) {
-                this.contextMenus.push(viewItem.contextmenu);
-            }
             //for(let dataSourceId in styler.dataSourceToStylerMap) {
             let ds = styler.getDataSourcesIds();
             for (let i = 0; i < ds.length; i++) {
@@ -292,6 +279,13 @@ export class View {
         }
     }
 
+    /**
+     * Removes a view item from the view.
+     * @param {Object} viewItem - The initial view items to add
+     * @param {String} viewItem.name - The name of the view item
+     * @param {Styler} viewItem.styler - The styler object representing the view item
+     * @return {Promise<void>}
+     */
     async removeViewItem(viewItem) {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
@@ -299,8 +293,7 @@ export class View {
         }
     }
     /**
-     * @instance
-     * @memberof View
+     * @private
      */
     handleEvents() {
         var that = this;
@@ -322,12 +315,9 @@ export class View {
     }
 
     /**
-     * Should be called after receiving osh:SELECT_VIEW event
-     * @param $super
-     * @param dataSourcesIds
-     * @param entitiesIds
-     * @instance
-     * @memberof View
+     * Selects the view by setting the current selected entity and dataSource.
+     * @param  {String} dataSourcesIds - The dataSource id
+     * @param {String} entityId - The entity id
      */
     selectDataView(dataSourcesIds, entityId) {
         if (isDefined(this.dataSources)) {
@@ -342,10 +332,8 @@ export class View {
     }
 
     /**
-     *
-     * @returns {Array}
-     * @instance
-     * @memberof View
+     * Gets the list of the dataSource ids contained into the view.
+     * @return {String[]} The list of dataSource ids
      */
     getDataSourcesId() {
         let res = [];
@@ -366,8 +354,7 @@ export class View {
     }
 
     /**
-     * @instance
-     * @memberof View
+     * Calls for resetting the view.
      */
     reset() {
     }

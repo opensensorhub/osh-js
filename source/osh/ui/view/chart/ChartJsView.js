@@ -1,35 +1,53 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+
 import {View} from "../View";
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import Chart from 'chart.js';
-import moment from 'moment';
 import 'chart.js/dist/Chart.min.css';
-export default class ChartJsView extends View {
+
+class ChartJsView extends View {
+    /**
+     * Create a View.
+     * @param {String} parentElementDivId - The div element to attach to
+     * @param {Object[]} viewItems - The initial view items to add
+     * @param {String} viewItems.name - The name of the view item
+     * @param {Styler} viewItems.styler - The styler object representing the view item
+     * @param {Object} options - the properties of the view
+     * @param {Object} options.datasetsOpts -
+     * @param {Object} options.gridLinesOpts -
+     * @param {Object} options.scaleLabelOpts -
+     * @param {Object} options.tickOpts -
+     * @param {Object} options.legendOpts -
+     * @param {Number} options.maxPoints -
+     */
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
 
         let xLabel = 'Time';
         let yLabel = 'Values';
 
-        let useInteractiveGuideline = true;
-        let showLegend = true;
-        let showYAxis = true;
-        let showXAxis = true;
-        let transitionDuration = 1;
         this.datasetsOpts = {};
         this.gridLinesOpts = {};
         this.tickOpts = {};
         this.scaleLabelOpts = {};
         this.legendOpts = {};
 
-        let xTickFormat = function(d) {
-            return moment().format();
-        };
-
         if (isDefined(options)) {
-            if (options.hasOwnProperty('xLabel')) {
-                let xLabel = options.xLabel;
-            }
-
             if(options.hasOwnProperty('datasetsOpts')){
                 this.datasetsOpts = options.datasetsOpts;
             }
@@ -50,37 +68,6 @@ export default class ChartJsView extends View {
                 this.legendOpts = options.legendOpts;
             }
 
-            if (options.hasOwnProperty('yLabel')) {
-                let yLabel = options.yLabel;
-            }
-
-            if (options.hasOwnProperty('xTickFormat')) {
-                xTickFormat = options.xTickFormat;
-            }
-
-            if (options.hasOwnProperty('yTickFormat')) {
-                yTickFormat = options.yTickFormat;
-            }
-
-            if (options.hasOwnProperty('showLegend')) {
-                showLegend = options.showLegend;
-            }
-
-            if (options.hasOwnProperty('showXAxis')) {
-                showXAxis = options.showXAxis;
-            }
-
-            if (options.hasOwnProperty('showYAxis')) {
-                showYAxis = options.showYAxis;
-            }
-
-            if (options.hasOwnProperty('useInteractiveGuideline')) {
-                useInteractiveGuideline = options.useInteractiveGuideline;
-            }
-
-            if (options.hasOwnProperty('transitionDuration')) {
-                transitionDuration = options.transitionDuration;
-            }
             if (options.hasOwnProperty('maxPoints')) {
                 this.maxPoints = options.maxPoints;
             }
@@ -148,6 +135,12 @@ export default class ChartJsView extends View {
         this.datasets = {};
     }
 
+    /**
+     *
+     * @param {Curve} styler -
+     * @param {Number} timestamp -
+     * @param {Object} options -
+     */
     updateCurve(styler, timestamp, options) {
         let currentDataset = this.datasets[styler.getId()];
         if(!isDefined(currentDataset)) {
@@ -183,12 +176,6 @@ export default class ChartJsView extends View {
         }
 
     }
-
-    selectDataView(dataSourceIds) {
-
-    }
-
-    reset() {
-
-    }
 }
+
+export default ChartJsView;

@@ -8,17 +8,19 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+
+import DataSource from './DataSource';
+
 /**
- * @classdesc This datasource provides generic parsing for JSON response.
+ * This datasource provides generic parsing for JSON response.
  *
- * @class JSON
- * @augments DataSource
+ * @extends DataSource
  * @example
  * let androidPhoneGpsDataSource = new JSON("android-GPS", {
     protocol: "ws",
@@ -35,16 +37,12 @@
   });
  */
 
-import DataSource from './DataSource.js';
-
-export default class Json extends DataSource {
+class Json extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
-     * @param {string} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof JSON
-     * @instance
+     * @param {String} data - the data to parse
+     * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -54,8 +52,8 @@ export default class Json extends DataSource {
     /**
      * Extract data from the message. The data are corresponding to the whole list of attributes of the JSON object
      * excepting the 'time' one.
-     * @param {Object} data the data to parse
-     * @returns {Object} the parsed data
+     * @param {Object} data - the data to parse
+     * @return {Object} the parsed data
      * @example
      * {
      *   location : {
@@ -64,8 +62,6 @@ export default class Json extends DataSource {
      *    alt:100
      *   }
      * }
-     * @memberof JSON
-     * @instance
      */
     parseData(data) {
         let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
@@ -82,19 +78,17 @@ export default class Json extends DataSource {
 
     /**
      * Builds the full url.
-     * @param {object} properties
-     * @param {string} properties.protocol the connector protocol
-     * @param {string} properties.endpointUrl the endpoint url
-     * @param {string} properties.service the service
-     * @param {string} properties.offeringID the offeringID
-     * @param {string} properties.observedProperty the observed property
-     * @param {string} properties.startTime the start time (ISO format)
-     * @param {string} properties.endTime the end time (ISO format)
-     * @param {number} properties.replaySpeed the replay factor
-     * @param {number} properties.responseFormat the response format (e.g video/mp4)
-     * @instance
-     * @memberof DataSource
-     * @returns {string} the full url
+     * @param {Object} properties
+     * @param {String} properties.protocol - the connector protocol
+     * @param {String} properties.endpointUrl - the endpoint url
+     * @param {String} properties.service - the service
+     * @param {String} properties.offeringID - the offeringID
+     * @param {String} properties.observedProperty -  the observed property
+     * @param {String} properties.startTime - the start time (ISO format)
+     * @param {String} properties.endTime - the end time (ISO format)
+     * @param {Number} properties.replaySpeed - the replay factor
+     * @param {Number} properties.responseFormat - the response format (e.g video/mp4)
+     * @return {String} the full url
      */
     buildUrl(properties) {
         let url = "";
@@ -149,3 +143,5 @@ export default class Json extends DataSource {
         return url;
     }
 }
+
+export default Json;

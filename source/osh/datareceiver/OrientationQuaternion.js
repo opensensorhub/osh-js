@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataSource from './DataSource';
+
 /**
- * @classdesc This datasource provides parsing to Orientation Quaternion.
+ * This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
- * @class OrientationQuaternion
- * @augments DataSource
+ * @extends DataSource
  * @example
  * let androidPhoneOrientationDataSource = new DataSourceOrientationQuaternion("android-Orientation", {
         protocol: "ws",
@@ -34,16 +35,12 @@
     });
  */
 
-import DataSource from './DataSource.js';
-
-export class OrientationQuaternion extends DataSource {
+class OrientationQuaternion extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-     * @param {string} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceOrientationQuaternion
-     * @instance
+     * @param {String} data - the data to parse
+     * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -52,17 +49,15 @@ export class OrientationQuaternion extends DataSource {
     }
 
     /**
-     * Extract data from the message. The data are got such as:<p><ul><li>qx: tokens[1]</li><li>qy: tokens [2]</li><li>qz: tokens[3]</li><li>qw: tokens[4]</li></ul></p>.
-     * @param {Object} data the data to parse
-     * @returns {Object} the parsed data
+     * Extracts data from the message. The data are got such as:<p><ul><li>qx: tokens[1]</li><li>qy: tokens [2]</li><li>qz: tokens[3]</li><li>qw: tokens[4]</li></ul></p>.
+     * @param {Object} data - the data to parse
+     * @return {Object} the parsed data
      * @example
      * {
      *   pitch:10,
      *   roll: 11,
      *   heading:12
      * }
-     * @memberof DataSourceOrientationQuaternion
-     * @instance
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -98,3 +93,5 @@ export class OrientationQuaternion extends DataSource {
         return {heading: yaw, roll: null, pitch: null};
     }
 }
+
+export default OrientationQuaternion;

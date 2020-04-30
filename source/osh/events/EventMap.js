@@ -8,20 +8,28 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from '../utils/Utils.js';
+import {isDefined} from '../utils/Utils';
 
-export default class EventMap {
+/**
+ * This class is responsible for observing and firing events. It used an object as backed data structure.
+ */
+class EventMap {
 
     constructor() {
         this.eventMap = {};
     }
 
+    /**
+     * Observes any eventName and calls the callback when the event is fired.
+     * @param {String} eventName -
+     * @param {Function} fnCallback -
+     */
     observe(eventName, fnCallback) {
         if(!isDefined(eventName) || !isDefined(fnCallback)) {
             return;
@@ -32,6 +40,11 @@ export default class EventMap {
         this.eventMap[eventName].push(fnCallback);
     }
 
+    /**
+     * Fires an event
+     * @param {String} eventName -
+     * @param {Object} properties -
+     */
     fire(eventName, properties) {
         if(!isDefined(eventName)) {
             return;
@@ -45,3 +58,4 @@ export default class EventMap {
         }
     }
 }
+export default EventMap;

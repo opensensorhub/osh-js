@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataConnector from './DataConnector';
+import {isWebWorker} from '../utils/Utils';
+
 /**
- * @type {DataConnector}
- * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
- * @class
- * @augments DataConnector
+ * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
+ * @extends DataConnector
  * @example
  * let url = ...;
  * let connector = new WebSocketDataConnector(url);
@@ -34,15 +35,10 @@
  *
  */
 
-import DataConnector from './DataConnector.js';
-import {isWebWorker} from '../utils/Utils.js';
-
-export default class WebSocketConnector extends DataConnector {
+class WebSocketConnector extends DataConnector {
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
-     * @instance
-     * @memberof WebSocketDataConnector
      */
     connect() {
         let that = this;
@@ -109,8 +105,6 @@ export default class WebSocketConnector extends DataConnector {
 
     /**
      * Disconnects the websocket.
-     * @instance
-     * @memberof WebSocketDataConnector
      */
     disconnect() {
         if (isWebWorker() && this.worker !== null) {
@@ -126,18 +120,17 @@ export default class WebSocketConnector extends DataConnector {
     /**
      * The onMessage method used by the websocket to callback the data
      * @param data the callback data
-     * @instance
-     * @memberof WebSocketDataConnector
+     * @event
      */
     onMessage(data) {
     }
 
     /**
      * Closes the webSocket.
-     * @instance
-     * @memberof WebSocketDataConnector
      */
     close() {
         this.disconnect();
     }
 }
+
+export default  WebSocketConnector;

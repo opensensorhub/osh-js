@@ -8,22 +8,19 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+/** * @module Utils */
+
+/** Maximum value of a long */
 export const MAX_LONG = Math.pow(2, 53) + 1;
 
-
 /**
- *
- * @constructor
- */
-
-/**
- Global helper method to test if a letiable or object attribute is defined
+ * Global helper method to test if a letiable or object attribute is defined
  */
 export function isDefined(v) {
     return typeof (v) !== 'undefined' && v !== null;
@@ -157,9 +154,7 @@ export function assertHasValue(v, letName = 'letiable') {
 
 /**
  *
- * @returns {string}
- * @instance
- * @memberof Utils
+ * @return {String}
  */
 export function randomUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -170,9 +165,7 @@ export function randomUUID() {
 
 /**
  * This function stamps/embeds a UUID into an object and returns the UUID generated for it
- * @returns {string}
- * @instance
- * @memberof Utils
+ * @return {String}
  */
 export function stampUUID(obj) {
     obj._osh_id = obj._osh_id || randomUUID();
@@ -187,9 +180,7 @@ export function stampUUID(obj) {
  * @param buffer
  * @param offset
  * @param type
- * @returns {*}
- * @instance
- * @memberof Utils
+ * @return {*}
  */
 export function ParseBytes(buffer, offset, type) {
     let view = new DataView(buffer);
@@ -237,9 +228,7 @@ export function ParseBytes(buffer, offset, type) {
  * @param struct
  * @param data
  * @param offsetBytes
- * @returns {*}
- * @instance
- * @memberof Utils
+ * @return {*}
  */
 export function ReadData(struct, data, offsetBytes) {
     let offset = offsetBytes;
@@ -271,9 +260,7 @@ export function ReadData(struct, data, offsetBytes) {
 /**
  *
  * @param resultStructure
- * @returns {{}}
- * @instance
- * @memberof Utils
+ * @return {{}}
  */
 export function GetResultObject(resultStructure) {
     //TODO: handle cases for nested arrays / matrix data types
@@ -297,9 +284,7 @@ export function GetResultObject(resultStructure) {
 
 /**
  *
- * @returns {boolean}
- * @instance
- * @memberof Utils
+ * @return {boolean}
  */
 export function isOpera() {
     return (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -307,9 +292,7 @@ export function isOpera() {
 
 /**
  *
- * @returns {boolean}
- * @instance
- * @memberof Utils
+ * @return {boolean}
  */
 export function isFirefox() {
     return typeof InstallTrigger !== 'undefined';
@@ -317,9 +300,7 @@ export function isFirefox() {
 
 /**
  *
- * @returns {boolean}
- * @instance
- * @memberof Utils
+ * @return {boolean}
  */
 export function isSafari() {
     return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
@@ -327,9 +308,7 @@ export function isSafari() {
 
 /**
  *
- * @returns {boolean}
- * @instance
- * @memberof Utils
+ * @return {boolean}
  */
 export function isChrome() {
     return !!window.chrome && !!window.chrome.webstore;
@@ -337,9 +316,7 @@ export function isChrome() {
 
 /**
  *
- * @returns {*|boolean}
- * @instance
- * @memberof Utils
+ * @return {*|boolean}
  */
 export function isBlink() {
     return (isChrome || isOpera) && !!window.CSS;
@@ -349,9 +326,7 @@ export function isBlink() {
  *
  * @param a
  * @param b
- * @returns {boolean}
- * @instance
- * @memberof Utils
+ * @return {boolean}
  */
 export function isArrayIntersect(a, b) {
     return a.filter(function (element) {
@@ -363,9 +338,7 @@ export function isArrayIntersect(a, b) {
 /**
  *
  * @param o
- * @returns {boolean}
- * @instance
- * @memberof Utils
+ * @return {boolean}
  */
 export function isElement(o) {
     return (
@@ -376,9 +349,7 @@ export function isElement(o) {
 
 /**
  *
- * @returns {*}
- * @instance
- * @memberof Utils
+ * @return {*}
  */
 export function isWebWorker() {
     return isDefined(Worker);
@@ -387,8 +358,6 @@ export function isWebWorker() {
 /**
  *
  * @param div
- * @instance
- * @memberof Utils
  */
 export function takeScreenShot(div) {
 }
@@ -397,8 +366,6 @@ export function takeScreenShot(div) {
  * Remove a css class from a the div given as argument.
  * @param div the div to remove the class from
  * @param css the css class to remove
- * @instance
- * @memberof Utils
  */
 export function removeCss(div, css) {
     let divCss = div.className;
@@ -411,13 +378,16 @@ export function removeCss(div, css) {
  * Add a css class to a the div given as argument.
  * @param div the div to add the class to
  * @param css the css class to add
- * @instance
- * @memberof Utils
  */
 export function addCss(div, css) {
     div.setAttribute("class", div.className + " " + css);
 }
 
+/**
+ * Removes the last character of a {string} object.
+ * @param {string} value - The input {string}
+ * @return {string} The value without the last character
+ */
 export function removeLastCharIfExist(value) {
     if (!isDefined(undefined) || value === null || value.length === 0 || !value.endsWith("/")) {
         return value;

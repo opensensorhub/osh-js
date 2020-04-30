@@ -8,48 +8,45 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2012-2020 Sensia Software LLC. All Rights Reserved.
 
  Author: Alex Robin <alex.robin@sensiasoftware.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- * @classdesc
- * @class
- * @augments DataSource
- */
-import DataSink from './DataSink.js';
-import EventManager from '../events/EventManager.js';
 
-export default class UavMapTasking extends DataSink {
+import DataSink from './DataSink';
+import EventManager from '../events/EventManager';
+
+/**
+ * @extends DataSink
+ */
+class UavMapTasking extends DataSink {
 
     constructor(name, properties) {
         super(name, properties);
 
         let that = this;
-        EventManager.observe(UAV_TAKEOFF, (event) => that.connector.sendRequest(that.buildTakeOffRequest()));
+        EventManager.observe(EventManager.EVENT.UAV_TAKEOFF, (event) => that.connector.sendRequest(that.buildTakeOffRequest()));
 
-        EventManager.observe(UAV_GOTO, (event) =>
+        EventManager.observe(EventManager.EVENT.UAV_GOTO, (event) =>
             that.connector.sendRequest(that.buildGotoRequest({lat: event.geoLat, lon: event.geoLon})));
 
-        EventManager.observe(UAV_ORBIT, (event) =>
+        EventManager.observe(EventManager.EVENT.UAV_ORBIT, (event) =>
             that.connector.sendRequest(that.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10})));
 
-        EventManager.observe(UAV_LOOKAT, (event) =>
+        EventManager.observe(EventManager.EVENT.UAV_LOOKAT, (event) =>
             that.connector.sendRequest(that.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon})));
 
-        EventManager.observe(UAV_LAND, (event) =>
+        EventManager.observe(EventManager.EVENT.UAV_LAND, (event) =>
             that.connector.sendRequest(that.buildLandRequest({lat: event.geoLat, lon: event.geoLon})));
     }
 
 
     /**
      * Builds the take off SPS request.
-     * @param {string} props
-     * @returns {string} the take off sps request
-     * @memberof UavMapTasking
-     * @instance
+     * @param {Object} props -
+     * @return {String} the take off sps request
      */
     buildTakeOffRequest(props) {
         return this.buildRequest("navCommands,TAKEOFF,10");
@@ -57,10 +54,9 @@ export default class UavMapTasking extends DataSink {
 
     /**
      * Builds the got to SPS request.
-     * @param {string} props
-     * @returns {string} the goto SPS request
-     * @memberof UavMapTasking
-     * @instance
+     * @private
+     * @param {Object} props -
+     * @returns {String} the goto SPS request
      */
     buildGotoRequest(props) {
         return this.buildRequest("navCommands,GOTO_LLA," + props.lat + "," + props.lon + ",0,0");
@@ -69,10 +65,8 @@ export default class UavMapTasking extends DataSink {
 
     /**
      * Builds the orbit SPS request.
-     * @returns {string} the orbit SPS request
-     * @memberof UavMapTasking
-     * @param {string} props
-     * @instance
+     * @return {String} the orbit SPS request
+     * @param {Object} props -
      */
     buildOrbitRequest(props) {
         return this.buildRequest("navCommands,ORBIT," + props.lat + "," + props.lon + ",0," + props.radius);
@@ -81,10 +75,8 @@ export default class UavMapTasking extends DataSink {
 
     /**
      * Builds the lookat SPS request.
-     * @returns {string} the lookat SPS request
-     * @memberof UavMapTasking
-     * @param {string} props
-     * @instance
+     * @return {String} the lookat SPS request
+     * @param {Object} props -
      */
     buildLookAtRequest(props) {
         return this.buildRequest("camCommands,MOUNT_TARGET," + props.lat + "," + props.lon + ",0");
@@ -93,10 +85,8 @@ export default class UavMapTasking extends DataSink {
 
     /**
      * Builds the land SPS request.
-     * @returns {string} the land SPS request
-     * @memberof UavMapTasking
-     * @param {string} props
-     * @instance
+     * @return {String} the land SPS request
+     * @param {Object} props -
      */
     buildLandRequest(props) {
         return this.buildRequest("navCommands,LAND," + props.lat + "," + props.lon);
@@ -105,10 +95,9 @@ export default class UavMapTasking extends DataSink {
 
     /**
      * Builds the request based on sps standard.
-     * @param {string} the command data
-     * @returns {string} the sps request
-     * @memberof UavMapTasking
-     * @instance
+     * @private
+     * @param {String} cmdData - the command data
+     * @return {String} the sps request
      */
     buildRequest(cmdData) {
         let xmlSpsRequest = "<sps:Submit ";
@@ -142,3 +131,5 @@ export default class UavMapTasking extends DataSink {
         return xmlSpsRequest;
     }
 }
+
+export default UavMapTasking;

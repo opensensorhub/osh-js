@@ -8,7 +8,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Richard Becker. All Rights Reserved.
+ Copyright (C) 2015-2020 Richard Becker. All Rights Reserved.
 
  Author: Richard Becker <beckerr@prominentedge.com>
  Alex Robin, SensiaSoft
@@ -16,8 +16,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @class
- * @classdesc
  * @example
  *
  * let oshServer = new Server({
@@ -31,22 +29,26 @@ import {isDefined, randomUUID, isWebWorker} from "../utils/Utils.js";
 import SWEXmlStreamParser from "../parsers/SWEXmlStreamParser.js";
 import Worker from './GetRequest.worker.js';
 
-export default class Server {
+class Server {
+    /**
+     * @param {Object} properties -
+     * @param {String} properties.url -
+     * @param {String} properties.baseUrl -
+     * @param {String} [properties.sos="sos"] -
+     * @param {String} [properties.sps="sps"] -
+     */
     constructor(properties) {
         this.url = properties.url;
         this.sos = (isDefined(properties.sos)) ? properties.sos : 'sos';
         this.sps = (isDefined(properties.sps)) ? properties.sps : 'sps';
         this.baseUrl = properties.baseUrl;
         this.id = "Server-" + randomUUID();
-        this.executeGetRequestWorkerBlob = 'undefined';
     }
 
     /**
-     *
-     * @param successCallback
-     * @param errorCallback
-     * @instance
-     * @memberof Server
+     * Gets the server Capabilities.
+     * @param {Function} successCallback - async method called when the response succeeded
+     * @param {Function} errorCallback - async method called when an error occured
      */
     getCapabilities(successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetCapabilities';
@@ -54,11 +56,9 @@ export default class Server {
     }
 
     /**
-     *
-     * @param successCallback callback the corresponding JSON object
-     * @param errorCallback callback the corresponding error
-     * @instance
-     * @memberof Server
+     * Gets the server Feature of interest.
+     * @param {Function} successCallback - async method called when the response succeeded
+     * @param {Function} errorCallback - async method called when an error occurred
      */
     getFeatureOfInterest(successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest';
@@ -66,37 +66,41 @@ export default class Server {
     }
 
     /**
-     * @param procId ID of procedure from which to retrieve features of interest
-     * @param successCallback callback the corresponding JSON object
-     * @param errorCallback callback the corresponding error
-     * @instance
-     * @memberof Server
+     * Gets the server Feature of interest given a procedure id.
+     * @param {String} procedure - The procedure id
+     * @param {Function} successCallback - async method called when the response succeeded
+     * @param {Function} errorCallback - async method called when an error occurred
      */
-    getFeatureOfInterestById(procId, successCallback, errorCallback) {
-        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procId;
+    getFeatureOfInterestById(procedure, successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetFeatureOfInterest&procedure=' + procedure;
         this.executeGetRequest(request, successCallback, errorCallback);
     }
 
     /**
-     *
-     * @param successCallback callback the corresponding JSON object
-     * @param errorCallback callback the corresponding error
-     * @param offering the corresponding offering
-     * @instance
-     * @memberof Server
+     * Gets the server result template.
+     * @param {String} offering - The corresponding offering
+     * @param {String} observedProperty - The corresponding observed property
+     * @param {Function} successCallback - async method called when the response succeeded
+     * @param {Function} errorCallback - async method called when an error occurred
      */
     getResultTemplate(offering, observedProperty, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=GetResultTemplate&offering=' + offering + "&observedProperty=" + observedProperty;
         this.executeGetRequest(request, successCallback, errorCallback);
     }
 
+    /**
+     * Gets the server Feature of interest given a procedure id.
+     * @param {String} procedure - The procedure id
+     * @param {Function} successCallback - async method called when the response succeeded
+     * @param {Function} errorCallback - async method called when an error occurred
+     */
     getDescribeSensor(procedure, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure;
         this.executeGetRequest(request, successCallback, errorCallback);
     }
 
     /**
-     *
+     * @private
      * @param request
      * @param successCallback
      * @param errorCallback
@@ -124,6 +128,12 @@ export default class Server {
         }
     }
 
+    /**
+     * @private
+     * @param request
+     * @param successCallback
+     * @param errorCallback
+     */
     executeGetRequestWebWorker(request, successCallback, errorCallback) {
         // create worker source code blob if not created yet
         let worker = new Worker();
@@ -143,3 +153,5 @@ export default class Server {
         worker.postMessage(request);
     }
 }
+
+export default Server;

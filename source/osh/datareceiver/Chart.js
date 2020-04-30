@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataSource from './DataSource';
+
 /**
- * @classdesc This datasource provides parsing to chart data.
+ * This datasource provides parsing to chart data.
  * Data has to be under the format : ISODATE,X,Y,
- * @class
- * @augments DataSource
+ * @extends DataSource
  * @example
  *let chartDataSource = new DataSourceChart("chart", {
       protocol: "ws",
@@ -32,16 +33,13 @@
       bufferingTime: 1000
   });
  */
-import DataSource from './DataSource.js';
 
-export default class Chart extends DataSource {
+class Chart extends DataSource {
 
     /**
      * Extracts timestamp from the data. The timestamp is the first token got from split(',')
-     * @param {string} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceChart
-     * @instance
+     * @param {String} data - the data to parse
+     * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -51,11 +49,8 @@ export default class Chart extends DataSource {
 
     /**
      * Extract data from the message. This split over ",".
-     * @param {function} $super the parseData super method
-     * @param {Object} data the data to parse
-     * @returns {Array} the parsed data as an array of tokens
-     * @memberof DataSourceChart
-     * @instance
+     * @param {Object} data - the data to parse
+     * @return {Array} the parsed data as an array of tokens
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -65,3 +60,4 @@ export default class Chart extends DataSource {
         return tokens;
     }
 }
+export default Chart;

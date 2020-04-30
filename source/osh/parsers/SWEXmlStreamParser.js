@@ -1,21 +1,44 @@
-/**
- * Created by Alex Robin on 5/5/19.
- */
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2020 Sensia Software LLC. All Rights Reserved.
+
+ Author: Alex Robin <alex.robin@sensiasoft.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @class Javascript binding for SWE requests
- * @classdesc
+ * Javascript binding for SWE requests
  *
  */
-export default class SWEXmlStreamParser {
+class SWEXmlStreamParser {
+    /**
+     *
+     * @param {String} xml -
+     */
     constructor(xml='undefined') {
         this.originalXml = xml;
     }
 
+    /**
+     * Sets the xml file to parse.
+     * @param {String} xml -
+     */
     setXml(xml) {
         this.originalXml = xml;
     }
 
+    /**
+     * @private
+     * @return {Set<string>}
+     */
     static get arrayNodeSet() {
         return new Set([
             'featureMember',
@@ -31,6 +54,10 @@ export default class SWEXmlStreamParser {
         ]);
     }
 
+    /**
+     * @private
+     * @return {Set<string>}
+     */
     static get numericalNodeSet() {
         return new Set([
             'nilValue',
@@ -45,6 +72,10 @@ export default class SWEXmlStreamParser {
         ]);
     }
 
+    /**
+     * Gets the result of the parsing as Json object.
+     * @return {Object} The JSON result
+     */
     toJson() {
         var options = {};
         var S = this.originalXml;
@@ -238,3 +269,4 @@ export default class SWEXmlStreamParser {
         return out;
     }
 }
+export default SWEXmlStreamParser;

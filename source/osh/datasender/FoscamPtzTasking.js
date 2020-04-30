@@ -8,16 +8,14 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
 /**
- * @classdesc
- * @class
- * @augments DataSink
+ *
  * From describe tasking:
  * swe:item name="relMove">
  <swe:Text definition="http://sensorml.com/ont/swe/property/CameraRelativeMovementName">
@@ -53,10 +51,22 @@
  </swe:item>
  */
 
-import PtzTasking from './PtzTasking.js';
+import PtzTasking from './PtzTasking';
 
-export default class FoscamPtzTasking extends PtzTasking {
+/**
+ * @extends DataSink
+ */
+class FoscamPtzTasking extends PtzTasking {
 
+    /**
+     * Gets the command data.
+     * @param {Object}  values -
+     * @param {String}  values.preset -
+     * @param {String}  values.rzoom -
+     * @param {String}  values.rpan -
+     * @param {String}  values.rtilt -
+     * @return {string}
+     */
     getCommandData(values) {
         let cmdData = "";
 
@@ -110,3 +120,5 @@ export default class FoscamPtzTasking extends PtzTasking {
         return cmdData;
     }
 }
+
+export default  FoscamPtzTasking;

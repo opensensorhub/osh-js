@@ -8,13 +8,14 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/** @constant
+/**
+ @constant
  @type {number}
  @default
  */
@@ -33,20 +34,22 @@ const BUFFER_STATUS = {
     NOT_START_YET: 'notStartYet'
 };
 
+import {isDefined,randomUUID} from '../utils/Utils';
+import EventManager from '../events/EventManager';
+
 /**
- * @classdesc Represents the buffer element which is in charge of synchronizing data.
- * @class
- * @param {Object} options The options object
- * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
+ * The buffer element which is in charge of synchronizing data.
  * @example
  let buffer = new Buffer({
     replayFactor: 1
  });
  */
-import {isDefined,randomUUID} from '../utils/Utils.js';
-import EventManager from '../events/EventManager.js';
 
-export default class Buffer {
+class Buffer {
+    /**
+     * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
+     * @param options
+     */
     constructor(options) {
         this.buffers = {};
 
@@ -70,8 +73,6 @@ export default class Buffer {
 
     /**
      * Starts observing the data stream.
-     * @memberof Buffer
-     * @instance
      */
     startObservers() {
         this.observeId = randomUUID();
@@ -81,8 +82,6 @@ export default class Buffer {
 
     /**
      * Stops observing the data stream.
-     * @memberof Buffer
-     * @instance
      */
     stopObservers() {
         if (isDefined(this.observeId) || this.observeId !== null) {
@@ -93,8 +92,6 @@ export default class Buffer {
 
     /**
      * Starts the buffer and starts the observers.
-     * @memberof Buffer
-     * @instance
      */
     start() {
         this.isStarted = true;
@@ -106,8 +103,6 @@ export default class Buffer {
 
     /**
      * Stops the buffer and stops the observers.
-     * @memberof Buffer
-     * @instance
      */
     stop() {
         this.stopObservers();
@@ -117,8 +112,6 @@ export default class Buffer {
     /**
      * Cancels all current running/pending jobs. This function loop over the
      * datasources and cancel them one by one.
-     * @memberof Buffer
-     * @instance
      */
     cancelAll() {
         for (let dataSourceId in this.buffers) {
@@ -129,8 +122,6 @@ export default class Buffer {
     /**
      * Cancels the dataSource. Cancels means to clear the data contained into the buffer and change the status to CANCEL
      * @param dataSourceId The dataSource to cancel
-     * @memberof Buffer
-     * @instance
      */
     cancelDataSource(dataSourceId) {
         this.buffers[dataSourceId].buffer = [];
@@ -140,8 +131,6 @@ export default class Buffer {
     /**
      * Starts buffering the dataSource.
      * @param dataSourceId the dataSource to start
-     * @memberof Buffer
-     * @instance
      */
     startDataSource(dataSourceId) {
         this.buffers[dataSourceId].status = BUFFER_STATUS.NOT_START_YET;
@@ -151,8 +140,6 @@ export default class Buffer {
     /**
      * Starts all dataSources. The method loops over all datasources and
      * calls the {@link
-     * @memberof Buffer
-     * @instance
      */
     startAll() {
         for (let dataSourceId in this.buffers) {
@@ -162,10 +149,12 @@ export default class Buffer {
 
     /**
      * Adds a new dataSource into the buffer.
-     * @param dataSourceId The dataSource to add
-     * @param options syncMasterTime | bufferingTime | timeOut | name
-     * @memberof Buffer
-     * @instance
+     * @param {String} dataSourceId - The id of the dataSource to add
+     * @param {Object} options -
+     * @param {Boolean} options.syncMasterTime -
+     * @param {Number} options.bufferingTime -
+     * @param {Number} options.timeOut -
+     * @param {String} options.name -
      */
     addDataSource(dataSourceId, options) {
         this.buffers[dataSourceId] = {
@@ -200,10 +189,12 @@ export default class Buffer {
     /**
      * Adds an entity which contains one or more dataSources.
      * The dataSources are then added to the buffer using {@link addDataSource}
-     * @param entity The entity to add
-     * @param options The options object passed to the {@link addDataSource}
-     * @memberof Buffer
-     * @instance
+     * @param {Object} entity - The entity to add
+     * @param {Object} options -
+     * @param {Boolean} options.syncMasterTime -
+     * @param {Number} options.bufferingTime -
+     * @param {Number} options.timeOut -
+     * @param {String} options.name -
      */
     addEntity(entity, options) {
         // get dataSources from entity and add them to buffers
@@ -217,14 +208,12 @@ export default class Buffer {
     /**
      * Pushes a data into the buffer. This method is used as internal method by the {@link
      * The event contains the necessary elements to process the data.
-     * @param event The event object received from the EventManager
-     * @param event.dataSourceId The dataSource id to process
-     * @param event.syncMasterTime A boolean used to check if the data has to be synchronized with another data. If the value
+     * @param {Object} event - The event object received from the EventManager
+     * @param {String} event.dataSourceId - The dataSource id to process
+     * @param {Number} event.syncMasterTime - A boolean used to check if the data has to be synchronized with another data. If the value
      * is FALSE, the data will pass through the buffer and send back immediately.
-     * @param event.data The raw data provided by the DataSource
-     * @param event.data.timeStamp The timeStamp of the data. It will be used in case of the syncMasterTime is set to TRUE.
-     * @memberof Buffer
-     * @instance
+     * @param {*} event.data -  The raw data provided by the DataSource
+     * @param {Number} event.data.timeStamp The timeStamp of the data. It will be used in case of the syncMasterTime is set to TRUE.
      */
     push(event) {
         let dataSourceId = event.dataSourceId;
@@ -260,9 +249,7 @@ export default class Buffer {
     }
 
     /**
-     * [TODO] This is an internal method.
-     * @memberof Buffer
-     * @instance
+     * @private
      */
     processSyncData() {
         if (!this.bufferingState) {
@@ -313,9 +300,7 @@ export default class Buffer {
     }
 
     /**
-     * [TODO] This is an internal method.
-     * @memberof Buffer
-     * @instance
+     * @private
      */
     processData(bufferObj, dataSourceId, fnEndTimeout) {
         // compute waitTime and dispatch data
@@ -348,10 +333,9 @@ export default class Buffer {
     /**
      * Dispatches the data through the EventManager. If the data to process is synchronized, it will launch a {@link CURRENT_MASTER_TIME} event
      * with {timeStamp:xxx} as parameter. In all case, it launches a {@link
+     * @private
      * @param dataSourceId The dataSourceId of the data. It will be used as concatenated String into the fire method.
      * @param data The data to fire
-     * @memberof Buffer
-     * @instance
      */
     dispatchData(dataSourceId, data) {
         let bufObj = this.buffers[dataSourceId];
@@ -369,6 +353,7 @@ export default class Buffer {
 
     /**
      * This method is responsible of buffering data, that is to say it will timeOut the whole process to wait after more data.
+     * @private
      * @param name The name of the current dataSource which needs to be buffered
      * @param bufferingTime The buffering time
      * @memberof Buffer
@@ -385,3 +370,4 @@ export default class Buffer {
         }, bufferingTime);
     }
 }
+export default  Buffer;

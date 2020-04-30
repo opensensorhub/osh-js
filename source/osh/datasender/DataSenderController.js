@@ -8,29 +8,29 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- * @classdesc This class is responsible for sending request to server.
- * @class
- * @param {Object} options
- */
 import {isDefined} from '../utils/Utils.js';
 
-export default class DataSenderController {
+/**
+ * This class is in charge of send command to the server
+ */
+class DataSenderController {
+    /**
+     *
+     * @param {Object} options -
+     */
     constructor(options) {
         this.dataSources = {};
     }
 
     /**
      * Adds a datasource to the list of datasources to process
-     * @param {Object} datasource the datasource to add
-     * @instance
-     * @memberof DataSenderController
+     * @param {Object} datasource - the datasource to add
      */
     addDataSource(dataSource) {
         this.dataSources[dataSource.getId()] = dataSource;
@@ -38,12 +38,10 @@ export default class DataSenderController {
 
     /**
      * Sends request to the server
-     * @param {string} dataSourceId the datasource id to process
-     * @param {Object} properties the properties to use
-     * @param {function} onSucess the onSucess function
-     * @param {function} onError the onError function
-     * @instance
-     * @memberof DataSenderController
+     * @param {String} dataSourceId - the datasource id to process
+     * @param {Object} properties - the properties to use
+     * @param {Function} onSuccess - the onSucess function
+     * @param {Function} onError - the onError function
      */
     sendRequest(dataSourceId, properties, onSuccess, onError) {
         if (dataSourceId in this.dataSources) {
@@ -60,3 +58,4 @@ export default class DataSenderController {
         }
     }
 }
+export default DataSenderController;

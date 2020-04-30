@@ -8,21 +8,27 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2012-2020 Sensia Software LLC. All Rights Reserved.
 
  Author: Alex Robin <alex.robin@sensiasoftware.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- * @classdesc
- * @class
- */
-import Ajax from '../dataconnector/Ajax.js';
-import {randomUUID} from "../utils/Utils.js";
+import Ajax from '../dataconnector/Ajax';
+import {randomUUID} from "../utils/Utils";
 
-export default class DataSink {
-    constructor(name, properties, options) {
+/**
+ * This class is in charge of send command to the server
+ */
+class DataSink {
+    /**
+     *
+     * @param {String} name -
+     * @param {Object} properties -
+     * @param {String} properties.protocol - ['http']
+     * @param {String} properties.endpointUrl -
+     */
+    constructor(name, properties) {
         if (properties.protocol === 'http') {
             this.connector = new Ajax(this.buildUrl(properties));
             this.connector.onError = this.onCatchError.bind(this);
@@ -34,18 +40,16 @@ export default class DataSink {
     }
 
     /**
-     * @param properties
-     * @instance
-     * @memberof DataSink
+     * Sends the request.
+     * @param {Object} properties -
      */
     sendRequest(properties) {
         this.connector.sendRequest(this.buildRequest(properties));
     }
 
     /**
+     * @private
      * @param properties
-     * @instance
-     * @memberof DataSink
      */
     buildRequest(properties) {
         return "";
@@ -53,8 +57,7 @@ export default class DataSink {
 
     /**
      * @param properties
-     * @instance
-     * @memberof DataSink
+     * @private
      */
     buildUrl(properties) {
         let url = "";
@@ -69,58 +72,58 @@ export default class DataSink {
     }
 
     /**
+     * Called when an error is caught.
+     * @private
      * @param response
-     * @instance
-     * @memberof DataSink
+     * @event
      */
     onCatchError(response) {
         this.onError(response);
     }
 
     /**
+     * Called when the request succeeded.
+     * @private
      * @param response
-     * @instance
-     * @memberof DataSink
+     * @event
      */
     onCatchSuccess(response) {
         this.onSuccess(response);
     }
 
     /**
+     * Called when an error is caught.
      * @param response
-     * @instance
-     * @memberof DataSink
+     * @event
      */
     onError(response) {
 
     }
 
     /**
+     * Called when the request succeeded.
      * @param response
-     * @instance
-     * @memberof DataSink
+     * @event
      */
     onSuccess(response) {
 
     }
 
     /**
-     * The data connector default id.
-     * @returns {string|*}
-     * @memberof DataSink
-     * @instance
+     * Gets the data connector default id.
+     * @return {String} The id
      */
     getId() {
         return this.id;
     }
 
     /**
-     * The name.
-     * @returns {string}
-     * @memberof DataSink
-     * @instance
+     * Gets the name.
+     * @return {String} The name
      */
     getName() {
         return this.name;
     }
 }
+
+export default  DataSink;

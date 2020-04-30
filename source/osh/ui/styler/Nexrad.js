@@ -8,7 +8,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2015-2020 Sensia Software LLC. All Rights Reserved.
 
  Author: Alex Robin <alex.robin@sensiasoft.com>
 
@@ -18,16 +18,23 @@ import {
 	Cartesian3,
 } from 'cesium';
 
-import {isDefined} from "../../utils/Utils.js";
-import Styler from "./Styler.js";
+import {isDefined} from "../../utils/Utils";
+import Styler from "./Styler";
 
 /**
- * @classdesc
- * @class Nexrad
- * @type {Styler}
- * @augments Styler
+	* Nexrad Styler.
+ * @extends Styler
  */
-export default class Nexrad extends Styler {
+class Nexrad extends Styler {
+	/**
+		* Creates the Styler.
+		* @param {Object} properties
+		* @param {Number[]} properties.location - [x,y]
+		* @param {Object} radialData
+		* @param {Function} properties.locationFunc -
+		* @param {Function} properties.radialDataFunc -
+		*
+		*/
 	constructor(properties) {
 		super(properties);
 		this.properties = properties;
@@ -89,15 +96,6 @@ export default class Nexrad extends Styler {
 		this.radialCount = 0;
 	}
 
-	/**
-	 *
-	 * @param dataSourceId
-	 * @param rec
-	 * @param view
-	 * @param options
-	 * @instance
-	 * @memberof DataSourceNexrad
-	 */
 	setData(dataSourceId,rec,view,options) {
 		if (super.setData(dataSourceId,rec,view,options)) {
 			if (isDefined(view)) {
@@ -151,13 +149,12 @@ export default class Nexrad extends Styler {
 
 	/**
 	 *
-	 * @param val
-	 * @returns {*}
-	 * @instance
-	 * @memberof DataSourceNexrad
+	 * @private
 	 */
 	getReflectivityColor(val) {
 		let index = Math.floor((val + 30) / 5) + 1;
 		return this.reflectivityColorMap[index];
 	}
 }
+
+export default Nexrad;

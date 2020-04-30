@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataSource from './DataSource';
+
 /**
- * @classdesc This datasource provides parsing to MJPEG raw data.
+ * This datasource provides parsing to MJPEG raw data.
  * Data: ArrayBuffer
- * @class VideoMjpeg
- * @augments DataSource
+ * @extends DataSource
  * @example
  var androidPhoneVideoDataSource = new DataSourceVideoMjpeg("android-Video", {
     protocol: "ws",
@@ -33,26 +34,20 @@
     bufferingTime: 1000
   });
  */
-import DataSource from './DataSource.js';
-
-export default class VideoMjpeg extends DataSource {
+class VideoMjpeg extends DataSource {
     /**
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64 bits of the binary message.
-     * @param {ArrayBuffer} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceVideoMjpeg
-     * @instance
+     * @param {ArrayBuffer} data - the data to parse
+     * @returns {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         return new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
     }
 
     /**
-     * Extract data from the message. Creates a Blob object starting at byte 12. (after the 64 bits of the timestamp).
-     * @param {ArrayBuffer} data the data to parse
-     * @returns {Blob} the parsed data
-     * @memberof DataSourceVideoMjpeg
-     * @instance
+     * Extracts data from the message. Creates a Blob object starting at byte 12. (after the 64 bits of the timestamp).
+     * @param {ArrayBuffer} data - the data to parse
+     * @return {Blob} the parsed data
      */
     parseData(data) {
         let imgBlob = new Blob([data]);
@@ -62,3 +57,5 @@ export default class VideoMjpeg extends DataSource {
         return url;
     }
 }
+
+export default  VideoMjpeg;

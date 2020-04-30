@@ -5,19 +5,17 @@
  Software distributed under the License is distributed on an "AS IS" basis,
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../View.js";
-import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
-import Worker from './workers/Ffmpeg.worker.js';
+import {View} from "../View";
+import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils";
+import EventManager from "../../../events/EventManager";
+import Worker from './workers/Ffmpeg.worker';
 
 /**
- * @classdesc
- * @class
- * @type {View}
+ * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
  * @augments View
  * @example
  let videoView = new FFMPEGView("videoContainer-id", {
@@ -25,10 +23,10 @@ import Worker from './workers/Ffmpeg.worker.js';
     css: "video",
     cssSelected: "video-selected",
     name: "Video",
-    useWorker:true,
-    useWebWorkerTransferableData: false // this is because you can speed up the data transfert between main script and web worker
-                                            by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
-                                            See the not below for more details(*).
+    width: 800,
+    height: 450,
+    framerate: 25,
+    directPlay: false
 });
  (*)The transferableData actually transfers the ownership of the object to or from the web worker.
  It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
@@ -37,14 +35,23 @@ import Worker from './workers/Ffmpeg.worker.js';
  The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 
-export default class FFMPEGView extends View {
+class FFMPEGView extends View {
+    /**
+     * Create a View.
+     * @param {String} divId - The div element to attach to
+     * @param {Object} options - the properties of the view
+     * @param {String} [options.width=640] - The canvas width
+     * @param {String} [options.height=480] - The canvas height
+     * @param {String} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
+     * @param {String} [options.directPlay=false] - Enable or ignore the framerate play
+     *
+     */
     constructor(divId, options) {
         super(divId, [], options);
 
         this.fps = 0;
         let width = "640";
         let height = "480";
-        this.bufferring = 0;
 
         this.statistics = {
             videoStartTime: 0,
@@ -58,7 +65,6 @@ export default class FFMPEGView extends View {
         };
 
         this.useWorker = false;
-        this.resetCalled = true;
         this.framerate = 29.67;
         this.directPlay = false;
 
@@ -81,12 +87,12 @@ export default class FFMPEGView extends View {
             this.useWorker = (isDefined(options.useWorker)) && (options.useWorker) && (isWebWorker());
         }
 
-// create webGL canvas
+        // create webGL canvas
         this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
         let domNode = document.getElementById(this.divId);
         domNode.appendChild(this.yuvCanvas.canvasElement);
 
-// add selection listener
+        // add selection listener
         let self = this;
         EventManager.observeDiv(this.divId, "click", (event) => {
             EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
@@ -97,8 +103,6 @@ export default class FFMPEGView extends View {
 
         if (this.useWorker) {
             this.initFFMPEG_DECODER_WORKER();
-        } else {
-            this.initFFMEG_DECODER();
         }
 
         let hidden, visibilityChange;
@@ -127,29 +131,14 @@ export default class FFMPEGView extends View {
         document.addEventListener(visibilityChange, handleVisibilityChange, false);
     }
 
-    /**
-     *
-     * @param dataSourceId
-     * @param data
-     * @instance
-     * @memberof FFMPEGView
-     */
     setData(dataSourceId, data) {
         if (!this.skipFrame) {
             let pktData = data.data;
             let pktSize = pktData.length;
-            this.resetCalled = false;
             this.decodeWorker(pktSize, pktData);
         }
     }
 
-    /**
-     *
-     * @param dataSourceIds
-     * @param entityId
-     * @instance
-     * @memberof FFMPEGView
-     */
     selectDataView(dataSourceIds, entityId) {
         let elt = document.getElementById(this.divId);
         if(isDefined(elt)) {
@@ -164,12 +153,11 @@ export default class FFMPEGView extends View {
 
 
     /**
-     * @instance
-     * @memberof FFMPEGView
+     * Reset the view by drawing no data array into the YUV canvas.
+     * @override
      */
     reset() {
         // clear canvas
-        this.resetCalled = true;
         let nodata = new Uint8Array(1);
         this.yuvCanvas.drawNextOuptutPictureGL({
             yData: nodata,
@@ -185,8 +173,7 @@ export default class FFMPEGView extends View {
     }
 
     /**
-     * @instance
-     * @memberof FFMPEGView
+     * @private
      */
     updateStatistics() {
         let s = this.statistics;
@@ -221,23 +208,22 @@ export default class FFMPEGView extends View {
     }
 
     /**
-     * @instance
-     * @memberof FFMPEGView
+     * Called after each decoded frame.
+     * @event
      */
     onAfterDecoded() {
     }
 
 //-- FFMPEG DECODING PART
 
-//-------------------------------------------------------//
-//---------- Web worker --------------------------------//
-//-----------------------------------------------------//
+    //-------------------------------------------------------//
+    //---------- Web worker --------------------------------//
+    //-----------------------------------------------------//
 
     /**
      * The worker code is located at the location js/workers/Ffmpeg.worker.js.
      * This location cannot be changed. Be sure to have the right file at the right place.
-     * @instance
-     * @memberof FFMPEGView
+     * @private
      * @param callback
      */
     initFFMPEG_DECODER_WORKER(callback) {
@@ -288,11 +274,9 @@ export default class FFMPEGView extends View {
     }
 
     /**
-     *
+     * @private
      * @param pktSize
      * @param pktData
-     * @instance
-     * @memberof FFMPEGView
      */
     decodeWorker(pktSize, pktData) {
         if(pktSize > 0) {
@@ -816,4 +800,6 @@ export class YUVCanvas {
         }
     }
 }
+
+export default FFMPEGView;
 

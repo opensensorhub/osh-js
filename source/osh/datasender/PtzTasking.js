@@ -8,21 +8,19 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- * @classdesc
- * @class
- * @augments DataSink
- */
 import DataSink from './DataSink.js';
 import EventManager from '../events/EventManager.js';
 
-export default class PtzTasking extends DataSink {
+/**
+ * @extends DataSink
+ */
+class PtzTasking extends DataSink {
 
     constructor(name, properties) {
         super(name, properties);
@@ -52,9 +50,8 @@ export default class PtzTasking extends DataSink {
 
     /**
      * Builds the request based on sps standard.
+     * @private
      * @returns {string} the sps request
-     * @memberof PtzTasking
-     * @instance
      */
     buildRequest(cmdData) {
         let xmlSpsRequest = "<sps:Submit ";
@@ -86,3 +83,4 @@ export default class PtzTasking extends DataSink {
         return xmlSpsRequest;
     }
 }
+export default PtzTasking;

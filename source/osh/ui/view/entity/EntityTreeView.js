@@ -8,7 +8,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
@@ -20,27 +20,28 @@ import {createTree} from "../../../../../libs/tree/tree.js";
 import "../../../../../libs/tree/tree.css";
 
 /**
- * @classdesc
- * @class
- * @type {View}
- * @augments View
- * @param {Object} parentElement The parent html element to attach the view
- * @param {Array} entityItems The entity items array
- * @param {Object} options the {@link View} options
+ * This class is in charge of displaying the entities in a tree structure.
+ * @extends View
  * @example
  let entityTreeView = new id,
      [{
         entity : androidEntity,
         path: "Sensors/Toulouse",
-        treeIcon : "images/android_icon.png",
-        contextMenuId: stackContextMenuId
+        treeIcon : "images/android_icon.png"
      }],
      {
          css: "tree-container"
      }
  );
  */
-export default class EntityTreeView extends View {
+class EntityTreeView extends View {
+    /**
+     * Create a View.
+     * @param {String} parentElementDivId - The div element to attach to
+     * @param {Object[]} entityItems - The initial view items to add
+     * @param {Object} options - the properties of the view
+     *
+     */
     constructor(parentElementDivId,entityItems,options) {
         super(parentElementDivId,[],options);
         this.entityItems = entityItems;
@@ -48,10 +49,7 @@ export default class EntityTreeView extends View {
     }
 
     /**
-     *
-     * @param options
-     * @instance
-     * @memberof EntityTreeView
+     * @private
      */
     initTree(options) {
         this.tree = createTree(this.divId,'white',null);
@@ -62,7 +60,6 @@ export default class EntityTreeView extends View {
             let entity = currentItem.entity;
             let path = currentItem.path;
             let treeIcon = currentItem.treeIcon;
-            let contextMenuId = currentItem.contextMenuId;
 
             if(path.endsWith("/")) {
                 path = path.substring(0,path.length-1);
@@ -103,9 +100,9 @@ export default class EntityTreeView extends View {
 
             let entityNode;
             if(currentNode === this.tree) {
-                entityNode = this.tree.createNode(entity.name,false,treeIcon,this.tree,entity,contextMenuId);
+                entityNode = this.tree.createNode(entity.name,false,treeIcon,this.tree);
             } else {
-                entityNode = currentNode.createChildNode(entity.name,false,treeIcon,entity,contextMenuId);
+                entityNode = currentNode.createChildNode(entity.name,false,treeIcon,entity);
             }
             currentItem.node = entityNode;
         }
@@ -114,13 +111,6 @@ export default class EntityTreeView extends View {
         this.tree.drawTree();
     }
 
-    /**
-     *
-     * @param dataSourcesIds
-     * @param entityId
-     * @instance
-     * @memberof EntityTreeView
-     */
     selectDataView(dataSourcesIds, entityId) {
 
         // when an entity is selected we find the corresponding node in the tree
@@ -142,3 +132,4 @@ export default class EntityTreeView extends View {
         }
     }
 }
+export default  EntityTreeView;

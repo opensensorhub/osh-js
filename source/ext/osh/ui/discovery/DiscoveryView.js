@@ -27,55 +27,42 @@ import DataReceiverController from "../../../../osh/datareceiver/DataReceiverCon
 import "../../resources/css/discovery.css";
 
 /**
- * @classdesc
- * @class OSH.UI.DiscoveryView
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
+ * Class representing a Discovery View. The discovery view is a helper class to
+ * select dynamically an offering provided by a server.
+ * @extends View
  * @example
-let discoveryView = new OSH.UI.DiscoveryView("discovery-container",{
-    services: ["http://sensiasoft.net:8181/"],
+ let discoveryView = new DiscoveryView("discovery-container",{
+    callback: onSubmit,
+    css: "discovery-style",
+    services: ["http://sensiasoft.net:8181"],
     views: [{
-        name: 'Video dialog(H264)',
-        type : OSH.UI.DiscoveryView.Type.VIDEO_H264
+        name: 'Video',
+        type : DiscoveryType.VIDEO_H264
     },{
-        name: 'Video dialog(MJPEG)',
-        type : OSH.UI.DiscoveryView.Type.VIDEO_MJPEG
+        name: 'Video',
+        type : DiscoveryType.VIDEO_MJPEG
     },{
-        name: 'DataSourceChart dialog',
-        type : OSH.UI.DiscoveryView.Type.CHART
-    }
-    ]
+        name: 'Chart',
+        type : DiscoveryType.CHART
+    },{
+        name: 'Gps',
+        type : DiscoveryType.MARKER_GPS
+    }]
 });
-
-//------ More complex example
- let discoveryView = new OSH.UI.DiscoveryView("",{
-        services: ["http://sensiasoft.net:8181/"], // server list
-        css: "discovery-view",
-        dataReceiverController:dataProviderController, // add custom dataProviderController
-        swapId: "main-container", // add a divId to swap data for inner dialog
-        entities: [androidEntity], // add entities
-        views: [{
-            name: 'Leaflet 2D Map',
-            viewId: leafletMainView.id,
-            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
-        }, {
-            name: 'Cesium 3D Globe',
-            viewId: cesiumMainMapView.id,
-            type : OSH.UI.DiscoveryView.Type.MARKER_GPS
-        },{
-            name: 'Video dialog(H264)',
-            type : OSH.UI.DiscoveryView.Type.VIDEO_H264
-        },{
-            name: 'Video dialog(MJPEG)',
-            type : OSH.UI.DiscoveryView.Type.VIDEO_MJPEG
-        },{
-            name: 'DataSourceChart dialog',
-            type : OSH.UI.DiscoveryView.Type.CHART
-        }
-        ]
-    });
- */
-export default class DiscoveryView extends View {
+*/
+class DiscoveryView extends View {
+    /**
+     * Create the discoveryView
+     * @param {string} parentElementDivId The div element to attach to
+     * @param {Object} properties - The properties defining the view
+     * @param {Object} properties.dataReceiverController - An optional data receiver controller
+     * @param {string} properties.swapId - The div to switch element with
+     * @param {Function} properties.callback - The callback called when the submit button is pressed
+     * @param {Object[]} properties.views - The supported view types
+     * @param {string[]} properties.services - The supported remote or local services to explore
+     * @param {string} properties.css - The CSS class
+     * @param {Object[]} properties.entities - The entities to attach the new selected element
+     */
     constructor(parentElementDivId, properties) {
         super(parentElementDivId, [], properties);
 
@@ -223,8 +210,7 @@ export default class DiscoveryView extends View {
     /**
      *
      * @param event
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     onSelectedService(event) {
         let serverTag = document.getElementById(this.serviceSelectTagId);
@@ -280,8 +266,7 @@ export default class DiscoveryView extends View {
     /**
      *
      * @param event
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     onSelectedOffering(event) {
         let e = document.getElementById(this.offeringSelectTagId);
@@ -316,8 +301,7 @@ export default class DiscoveryView extends View {
     /**
      *
      * @param event
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     onSelectedType(event) {
     }
@@ -326,8 +310,7 @@ export default class DiscoveryView extends View {
      *
      * @param event
      * @returns {boolean}
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     onFormSubmit(event) {
         event.preventDefault();
@@ -396,16 +379,11 @@ export default class DiscoveryView extends View {
         return false;
     }
 
-    onChange(event) {
-
-    }
-
     /**
      *
      * @param tagId
      * @param objectsArr
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     addObjectsToSelect(tagId, objectsArr) {
         let selectTag = document.getElementById(tagId);
@@ -423,8 +401,7 @@ export default class DiscoveryView extends View {
      *
      * @param tagId
      * @param valuesArr
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     addValuesToSelect(tagId, valuesArr) {
         let selectTag = document.getElementById(tagId);
@@ -443,8 +420,7 @@ export default class DiscoveryView extends View {
      * @param value
      * @param parent
      * @param object
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     addValueToSelect(tagId, value, parent, object) {
         let selectTag = document.getElementById(tagId);
@@ -466,8 +442,7 @@ export default class DiscoveryView extends View {
     /**
      *
      * @param tagId
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     removeAllFromSelect(tagId) {
         let i;
@@ -488,8 +463,7 @@ export default class DiscoveryView extends View {
      * @param syncMasterTime
      * @param viewId
      * @param entityId
-     * @memberof OSH.UI.DiscoveryView
-     * @instance
+     * @private
      */
     createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime,  entityId) {
         let dataSource = new LatLonAlt(name, {
@@ -543,8 +517,7 @@ export default class DiscoveryView extends View {
      * @param endTime
      * @param syncMasterTime
      * @param entityId
-     * @memberof UI.DiscoveryView
-     * @instance
+     * @private
      */
     createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
         this.onAdd(new VideoMjpeg(name, {
@@ -571,8 +544,7 @@ export default class DiscoveryView extends View {
      * @param endTime
      * @param syncMasterTime
      * @param entityId
-     * @memberof UI.DiscoveryView
-     * @instance
+     * @private
      */
     createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
         this.onAdd(new VideoH264(name, {
@@ -600,8 +572,7 @@ export default class DiscoveryView extends View {
      * @param endTime
      * @param syncMasterTime
      * @param entityId
-     * @memberof UI.DiscoveryView
-     * @instance
+     * @private
      */
     createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
         let dataSource = new Chart(name, {
@@ -639,8 +610,9 @@ export default class DiscoveryView extends View {
 /**
  * The different type of discovery.
  * @type {{MARKER_GPS: string, VIDEO_H264: string, VIDEO_MJPEG: string, CHART: string}}
- * @memberof UI.DiscoveryView
+ * @memberof DiscoveryView
  * @instance
+ * @module
  */
 export const DiscoveryType = {
     MARKER_GPS : "Marker(GPS)",
@@ -648,3 +620,5 @@ export const DiscoveryType = {
     VIDEO_MJPEG: "Video Dialog(MJPEG)",
     CHART : "DataSourceChart Dialog"
 };
+
+export default DiscoveryView;

@@ -18,14 +18,7 @@ import {View} from "../../../../osh/ui/view/View";
 import {isDefined, randomUUID} from "../../../../osh/utils/Utils";
 import "../../resources/css/tasking.css";
 import EventManager from "../../../../osh/events/EventManager";
-/**
- *
- * @class
- * @classdesc
- * @type {OSH.UI.View}
- * @augments OSH.UI.View
- *
- */
+
 export const htmlTaskingComponent=`
         <div class=\"ptz-zoom\">
            <div class=\"ptz-zoom-in\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></div>
@@ -56,7 +49,21 @@ export const htmlTaskingComponent=`
             </ul>
         <\/div>`;
 
-export default class PtzTaskingView extends View {
+/**
+ * This class is in charge of creating the Ptz tasking View.
+ * @extends View
+ */
+class PtzTaskingView extends View {
+    /**
+     *
+     * @param {String} divId -
+     * @param {Object} options -
+     * @param {String} [options.width="640"] -
+     * @param {String} [options.height="480"] -
+     * @param {String} [options.css='tasking'] -
+     * @param {String} options.cssSelected - the css to apply when selected
+     * @param {String} options.dataSenderId -
+     */
     constructor(divId, options) {
         super(divId, [], options);
         let width = "640";
@@ -148,10 +155,8 @@ export default class PtzTaskingView extends View {
     }
 
     /**
-     *
+     * @private
      * @param presets array
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
      */
     addPresets(presetsArr) {
         let selectTag = document.querySelector('#' + this.rootTag.id + "  .ptz-right  .ptz-select-style  .ptz-presets");
@@ -165,9 +170,8 @@ export default class PtzTaskingView extends View {
 
     /**
      *
-     * @param event
-     * @memberof OSH.UI.PtzTaskingView
-     * @instance
+     * @param {Object} event - HTML event
+     * @event
      */
     onSelectedPresets(event) {
         let serverTag = document.querySelector('#' + this.rootTag.id + "  .ptz-right  .ptz-select-style  .ptz-presets");
@@ -176,10 +180,8 @@ export default class PtzTaskingView extends View {
     }
 
     /**
-     *
+     * @private
      * @param interval
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
      */
     removeInterval(interval) {
         if (this.timerIds.length > 0) {
@@ -188,10 +190,10 @@ export default class PtzTaskingView extends View {
     }
 
     /**
-     *
-     * @param value
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
+     * Changes the value on click
+     * @private
+     * @event
+     * @param {Number} value - the new tilt value
      */
     onTiltClick(value) {
         this.tilt += value;
@@ -199,11 +201,10 @@ export default class PtzTaskingView extends View {
     }
 
     /**
-     *
-     * @param tiltValue the titl value
-     * @param panValue the panValue value
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
+     * @private
+     * @param  {Number} tiltValue - the titl value
+     * @param  {Number} panValue -  the panValue value
+     * @event
      */
     onTiltPanClick(tiltValue, panValue) {
         this.tilt += tiltValue;
@@ -214,9 +215,8 @@ export default class PtzTaskingView extends View {
 
     /**
      *
+     * @private
      * @param value
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
      */
     onPanClick(value) {
         this.pan += value;
@@ -224,10 +224,8 @@ export default class PtzTaskingView extends View {
     }
 
     /**
-     *
+     * @private
      * @param value
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
      */
     onZoomClick(value) {
         this.zoom += value;
@@ -235,25 +233,14 @@ export default class PtzTaskingView extends View {
     }
 
     /**
-     *
-     * @param rpan
-     * @param rtilt
-     * @param rzoom
-     * @instance
-     * @memberof OSH.UI.PtzTaskingView
+     * Event caught after clicking onto control buttons.
+     * @event
+     * @param {Number} rpan -
+     * @param {Number} rtilt -
+     * @param {Number} rzoom -
      */
     onChange(rpan, rtilt, rzoom, preset) {}
 
-    sendEvent(rpan, rtilt, rzoom, preset) {
-        EventManager.fire(EventManager.EVENT.PTZ_SEND_REQUEST + "-" + this.dataSenderId, {
-            cmdData: {rpan: rpan, rtilt: rtilt, rzoom: rzoom, preset: preset},
-            onSuccess: function (event) {
-                console.log("Failed to send request: " + event);
-            },
-            onError: function (event) {
-                console.log("Request sent successfully: " + event);
-            }
-        });
-    }
 }
 
+export default PtzTaskingView;

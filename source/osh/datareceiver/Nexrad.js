@@ -8,27 +8,24 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2012-2020 Sensia Software LLC. All Rights Reserved.
 
  Author: Alex Robin <alex.robin@sensiasoftware.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- * @classdesc This datasource provides parsing to DataSourceNexrad.
- * @class Nexrad
- * @augments DataSource
- */
-import DataSource from './DataSource.js';
+import DataSource from './DataSource';
 
+/**
+ * This datasource provides parsing to DataSourceNexrad.
+ * @extends DataSource
+ */
 export default class Nexrad extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-     * @param {string} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceNexrad
-     * @instance
+     * @param {String} data - the data to parse
+     * @return {number} the extracted timestamp
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -37,11 +34,9 @@ export default class Nexrad extends DataSource {
     }
 
     /**
-     * Extract data from the message.
+     * Extracts data from the message.
      * @param {Object} data the data to parse
-     * @returns {Object} the parsed data
-     * @memberof DataSourceNexrad
-     * @instance
+     * @return {Object} the parsed data
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));

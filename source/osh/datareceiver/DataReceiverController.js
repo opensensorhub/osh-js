@@ -8,15 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {isDefined} from '../utils/Utils';
+import EventManager from '../events/EventManager';
+import Buffer from "../buffer/Buffer";
+
 /**
- * @classdesc This class is responsible of handling datasources. It observes necessary events to manage datasources.
- * @class DataReceiverController
+ * This class is responsible of handling datasources. It observes necessary events to manage datasources.
  * @listens {@link CONNECT_DATASOURCE}
  * @listens {@link DISCONNECT_DATASOURCE}
  * @listens {@link DATASOURCE_UPDATE_TIME}
@@ -42,11 +45,11 @@
  * dataProviderController.addEntity(entity);
  *
  */
-import {isDefined} from '../utils/Utils.js';
-import EventManager from '../events/EventManager.js';
-import Buffer from "../buffer/Buffer.js";
-
-export default class DataReceiverController {
+class DataReceiverController {
+    /**
+     * Creates the DataReceiverController
+     * @param {Object} options -
+     */
     constructor(options) {
         this.options = options;
         this.initBuffer();
@@ -136,11 +139,9 @@ export default class DataReceiverController {
 
     /**
      * Updates the datasource time range.
-     * @param id the datasource id
-     * @param startTime the start time
-     * @param endTime the end time
-     * @instance
-     * @memberof DataReceiverController
+     * @param {String} id - the datasource id
+     * @param {Number} startTime - the start time
+     * @param {Number} endTime - the end time
      */
     updateDataSourceTime(id, startTime, endTime) {
         // get current parameters
@@ -163,20 +164,17 @@ export default class DataReceiverController {
 
     /**
      * Instantiates a new Buffer}
-     * @instance
-     * @memberof DataReceiverController
+     * @private
      */
     initBuffer() {
         this.buffer = new Buffer(this.options);
     }
 
     /**
-     * Adds a entity to the current list of datasources and pushes it into the buffer.
+     * Adds an entity to the current list of datasources and pushes it into the buffer.
      * @see {@link Buffer}
-     * @param {Object} dataSource the datasource to add
+     * @param {Object} entity - the datasource to add
      * @param options @deprecated
-     * @instance
-     * @memberof DataReceiverController
      */
     addEntity(entity, options) {
         if (isDefined(entity.dataSources)) {
@@ -189,10 +187,8 @@ export default class DataReceiverController {
     /**
      * Adds a dataSource to the current list of datasources and pushes it into the buffer.
      * @see {@link Buffer}
-     * @param {Object} dataSource the datasource to add
+     * @param {Object} dataSource - the datasource to add
      * @param options @deprecated
-     * @instance
-     * @memberof DataReceiverController
      */
     addDataSource(dataSource, options) {
         this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
@@ -209,9 +205,7 @@ export default class DataReceiverController {
     }
 
     /**
-     * Connects each connector
-     * @instance
-     * @memberof DataReceiverController
+     * Connects each dataSources
      */
     connectAll() {
         this.buffer.start();
@@ -223,6 +217,10 @@ export default class DataReceiverController {
         }
     }
 
+    /**
+     * Connects a specific dataSource
+     * @param {String} dataSourceId - the id of the dataSource to connect
+     */
     connect(dataSourceId) {
         if(!this.buffer.isStarted) {
             this.buffer.start();
@@ -235,6 +233,10 @@ export default class DataReceiverController {
         }
     }
 
+    /**
+     * Disconnects a specific dataSource
+     * @param {String} dataSourceId - the id of the dataSource to disconnect
+     */
     disconnect(dataSourceId) {
         for (let id in this.dataSourcesIdToDataSources) {
             let ds = this.dataSourcesIdToDataSources[id];
@@ -244,3 +246,5 @@ export default class DataReceiverController {
         }
     }
 }
+
+export default DataReceiverController;

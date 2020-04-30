@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataConnector from './DataConnector';
+import {isDefined} from '../utils/Utils';
+
 /**
- * @type {DataConnector}
- * @classdesc Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
- * @class
- * @augments DataConnector
+ * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
+ * @extends DataConnector
  * @example
  * let request = ...;
  * let connector = new AjaxConnector(url);
@@ -36,11 +37,15 @@
  * connector.sendRequest(request);
  *
  */
-import DataConnector from './DataConnector.js';
-import {isDefined} from '../utils/Utils.js';
+class Ajax extends DataConnector {
 
-export default class Ajax extends DataConnector {
-
+    /**
+     * Creates Ajax.
+     * @param {String} url -
+     * @param {Object} properties -
+     * @param {String} properties.method -
+     * @param {String} properties.responseType -
+     */
     constructor(url, properties) {
         super(url);
 
@@ -60,9 +65,8 @@ export default class Ajax extends DataConnector {
 
     /**
      * Sends the request to the defined server.
-     * @param request The Http request (as a String format)
-     * @memberof AjaxConnector
-     * @instance
+     * @param {String} request - The Http request
+     * @param {String} extraUrl - get query parameters
      */
     sendRequest(request, extraUrl) {
         let self = this;
@@ -108,8 +112,7 @@ export default class Ajax extends DataConnector {
     /**
      * This is the callback method in case of getting error connection.
      * @param event The error details
-     * @memberof AjaxConnector
-     * @instance
+     * @event
      */
     onError(event) {
 
@@ -118,14 +121,18 @@ export default class Ajax extends DataConnector {
     /**
      * This is the callback method in case of getting success connection.
      * @param event
-     * @memberof AjaxConnector
-     * @instance
+     * @event
      */
     onSuccess(event) {
 
     }
 
+    /**
+     * Sends the request
+     * @private
+     */
     connect() {
         this.sendRequest(null);
     }
 }
+export default Ajax;

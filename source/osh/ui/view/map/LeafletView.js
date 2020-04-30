@@ -8,29 +8,25 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../View.js";
-import {isDefined} from "../../../utils/Utils.js";
-import {randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
+import {View} from "../View";
+import {isDefined, randomUUID} from "../../../utils/Utils";
+import EventManager from "../../../events/EventManager";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 /**
- * @classdesc
- * @class
- * @type {View}
- * @augments View
+ * This class is in charge of displaying GPS/orientation data by adding a marker to the Leaflet Map object.
+ * @extends View
  * @example
  let leafletMapView = new LeafletView("",
  [{
             styler :  pointMarker,
-            contextMenuId: circularContextMenuId,
             name : "Android Phone GPS",
             entityId : androidEntity.id
         },
@@ -57,7 +53,20 @@ import 'leaflet/dist/leaflet.css';
  }]
  );
  */
-export default class LeafletView extends View {
+class LeafletView extends View {
+    /**
+     * Create a View.
+     * @param {String} parentElementDivId - The div element to attach to
+     * @param {Object[]} viewItems - The initial view items to add
+     * @param {String} viewItems.name - The name of the view item
+     * @param {Styler} viewItems.styler - The styler object representing the view item
+     * @param {Object} options - the properties of the view
+     * @param {Boolean} options.autoZoomOnFirstMarker - auto zoom on the first added marker
+     * @param {Object} options.initialView - {lon:.., lat:..}
+     * @param {Object[]} options.overlayLayers - OpenLayers objects to use as overlay layer
+     * @param {Object[]} options.baseLayers - OpenLayers objects to use as base layer
+     *
+     */
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
 
@@ -65,42 +74,15 @@ export default class LeafletView extends View {
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
     }
 
-    /**
-     *
-     * @param $super
-     * @param options
-     * @instance
-     * @memberof LeafletView
-     */
     beforeAddingItems(options) {
         // inits the map
         this.initMap(options);
-        this.initEvents();
-    }
-
-    /**
-     * @instance
-     * @memberof LeafletView
-     */
-    initEvents() {
-        // removes default right click
-        document.getElementById(this.divId).oncontextmenu = (e) => {
-            let evt = new Object({keyCode: 93});
-            if (isDefined(e.preventDefault)) {
-                e.preventDefault();
-            }
-            if (isDefined(e.stopPropagation)) {
-                e.stopPropagation();
-            }
-        };
     }
 
     //---------- MAP SETUP --------------//
     /**
      *
-     * @param options
-     * @instance
-     * @memberof LeafletView
+     * @private
      */
     initMap(options) {
         let initialView = {
@@ -131,8 +113,8 @@ export default class LeafletView extends View {
                 this.first = false;
             }
 
-            if(isDefined(options.watch)) {
-                this.watch = options.watch;
+            if(isDefined(options.autoZoomOnFirstMarker)) {
+                this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
             }
             // checks overlayers
             if (isDefined(options.overlayLayers)) {
@@ -166,15 +148,9 @@ export default class LeafletView extends View {
     }
 
     /**
-     *
-     * @returns {{}}
-     * @instance
-     * @memberof LeafletView
+     * Gets the list of default layers.
+     * @return {Array}
      */
-    getDefaultBaseLayers() {
-        return {};
-    }
-
     getDefaultLayers(options) {
         let maxZoom = 22;
         if (isDefined(options) && options.maxZoom) {
@@ -207,8 +183,7 @@ export default class LeafletView extends View {
     }
 
     /**
-     * @instance
-     * @memberof LeafletView
+     * @private
      */
     initLayers() {
         // create the tile layer with correct attribution
@@ -222,7 +197,19 @@ export default class LeafletView extends View {
         this.map.addLayer(osm);
     }
 
-    //---------- FEATURES SETUP --------------//
+    /**
+     * Add a marker to the map.
+     * @param {Object} properties
+     * @param {Number} properties.lon
+     * @param {Number} properties.lat
+     * @param {String} properties.icon - the icon path
+     * @param {Integer[]} properties.iconAnchor - offset of the icon ex:[10,10]
+     * @param {String} properties.label - label of the tooltip
+     * @param {String} properties.description - description of the marker to display into the tooltip
+     * @param {String} properties.labelOffset - offset of the label of the tooltip
+     * @param {Number} properties.orientation - orientation of the icon in degree
+     * @return {string} the id of the new created marker
+     */
     addMarker(properties) {
         //create marker
         let marker = null;
@@ -282,33 +269,6 @@ export default class LeafletView extends View {
                 }
             }
         });
-
-        document.getElementById(id).oncontextmenu = function (e) {
-            let evt = new Object({keyCode: 93});
-
-            if (isDefined(e.preventDefault)) {
-                e.preventDefault();
-            }
-            if (isDefined(e.stopPropagation)) {
-                e.stopPropagation();
-            }
-
-            // gets the corresponding styler
-            for(let stylerId in self.stylerToObj) {
-                if(self.stylerToObj[stylerId] === id) {
-                    EventManager.fire(EventManager.EVENT.CONTEXT_MENU+"-"+self.stylerIdToStyler[stylerId].viewItem.contextMenuId,{
-                        //TODO: values have to be provided by properties
-                        offsetX: -70,
-                        offsetY: -70,
-                        action : "show",
-                        x:getXCursorPosition(),
-                        y:getYCursorPosition(),
-                        drawLineTo:id
-                    });
-                    break;
-                }
-            }
-        };
         return id;
     }
 
@@ -321,12 +281,16 @@ export default class LeafletView extends View {
         delete this.stylerToObj[viewItem.styler.getId()];
         delete this.markers[markerId];
     }
+
     /**
-     *
-     * @param properties
-     * @returns {string}
-     * @instance
-     * @memberof LeafletView
+     * Add a polyline to the map.
+     * @param {Object} properties
+     * @param {Object[]} properties.locations - [{x, y}]
+     * @param {String} properties.color
+     * @param {Number} properties.weight
+     * @param {Number} properties.opacity
+     * * @param {Number} properties.smoothFactor
+     * @return {string} the id of the new created polyline
      */
     addPolyline(properties) {
         let polylinePoints = [];
@@ -350,10 +314,8 @@ export default class LeafletView extends View {
     }
 
     /**
-     *
-     * @param styler
-     * @instance
-     * @memberof LeafletView
+     * Updates the marker associated to the styler.
+     * @param {PointMarker} styler - The styler allowing the update of the marker
      */
     updateMarker(styler) {
         let markerId = 0;
@@ -386,7 +348,7 @@ export default class LeafletView extends View {
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
-            if(this.watch) {
+            if(this.autoZoomOnFirstMarker) {
                 this.map.panTo(newLatLng);
             }
         }
@@ -408,10 +370,8 @@ export default class LeafletView extends View {
     }
 
     /**
-     *
-     * @param styler
-     * @instance
-     * @memberof LeafletView
+     * Updates the polyline associated to the styler.
+     * @param {Polyline} styler - The styler allowing the update of the polyline
      */
     updatePolyline(styler) {
         let polylineId = 0;
@@ -455,23 +415,12 @@ export default class LeafletView extends View {
         }
     }
 
-    /**
-     *
-     * @param parentElement
-     * @instance
-     * @memberof LeafletView
-     */
     attachTo(parentElement) {
         super.attachTo(parentElement);
         // Fix leaflet bug when resizing the div parent container
         this.map.invalidateSize();
     }
 
-    /**
-     *
-     * @instance
-     * @memberof LeafletView
-     */
     onResize() {
         super.onResize();
         let that = this;
@@ -545,3 +494,5 @@ L.Map = L.Map.extend({
 
 
 /***  end of hack ***/
+
+export default  LeafletView;

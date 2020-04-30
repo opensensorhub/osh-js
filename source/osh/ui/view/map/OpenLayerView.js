@@ -8,55 +8,57 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View as OshView} from "../View.js";
-import {isDefined} from "../../../utils/Utils.js";
+import {View as OshView} from "../View";
+import {isDefined, randomUUID} from "../../../utils/Utils";
+import EventManager from "../../../events/EventManager";
 import 'ol/css.js';
 import 'ol/ol.css';
 import {Map, View} from 'ol';
 import TileLayer from 'ol/layer/Tile.js';
-import XYZ from 'ol/source/XYZ.js';
-import WebGLPointsLayer from 'ol/layer/WebGLPoints.js';
-import Rotate from "ol/control/Rotate.js";
-import ScaleLine from "ol/control/ScaleLine.js";
 import {Group} from "ol/layer.js";
 import {transform} from "ol/proj.js";
-import {defaults} from "ol/control.js";
 import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction.js';
 import {defaults as defaultControls, FullScreen} from 'ol/control.js';
 import {ZoomSlider} from 'ol/control.js';
 import VectorSource from "ol/source/Vector.js";
 import VectorLayer from "ol/layer/Vector.js";
-import {randomUUID} from "../../../utils/Utils.js";
 import Point from 'ol/geom/Point.js';
 import Feature from 'ol/Feature.js';
 import {Icon, Style} from 'ol/style.js';
-import EventManager from "../../../events/EventManager.js";
-import Select from "ol/interaction/Select.js";
-import OSM from "ol/source/OSM.js";
+import Select from "ol/interaction/Select";
+import OSM from "ol/source/OSM";
 
 /**
- * @classdesc
- * @class
- * @type {View}
- * @augments View
+ * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
+ * @extends View
  */
-export default class OpenLayerView extends OshView {
+class OpenLayerView extends OshView {
+    /**
+     * Create a View.
+     * @param {String} parentElementDivId - The div element to attach to
+     * @param {Object[]} viewItems - The initial view items to add
+     * @param {String} viewItems.name - The name of the view item
+     * @param {Styler} viewItems.styler - The styler object representing the view item
+     * @param {Object} options - the properties of the view
+     * @param {Object} options.map - the map object to use
+     * @param {Integer} [options.zoom=11]
+     * @param {Integer} [options.maxZoom=19]
+     * @param {Boolean} options.autoZoomOnFirstMarker - auto zoom on the first added marker
+     * @param {Object} options.initialView - {lon:.., lat:..}
+     * @param {Object[]} options.overlayLayers - OpenLayers objects to use as overlay layer
+     * @param {Object[]} options.baseLayers - OpenLayers objects to use as base layer
+     *
+     */
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
     }
 
-    /**
-     *
-     * @param options
-     * @instance
-     * @memberof OpenLayerView
-     */
     beforeAddingItems(options) {
         // inits the map
         this.initMap(options);
@@ -64,17 +66,8 @@ export default class OpenLayerView extends OshView {
 
 
     /**
-     * @instance
-     * @memberof OpenLayerView
-     */
-    initEvents() {
-    }
-
-    /**
-     *
-     * @param styler
-     * @instance
-     * @memberof OpenLayerView
+     * Updates the marker associated to the styler.
+     * @param {PointMarker} styler - The styler allowing the update of the marker
      */
     updateMarker(styler) {
         let markerId = 0;
@@ -124,10 +117,8 @@ export default class OpenLayerView extends OshView {
     }
 
     /**
-     *
-     * @param styler
-     * @instance
-     * @memberof OpenLayerView
+     * Updates the polyline associated to the styler.
+     * @param {Polyline} styler - The styler allowing the update of the polyline
      */
     updatePolyline(styler) {
         let polylineId = 0;
@@ -164,10 +155,7 @@ export default class OpenLayerView extends OshView {
 
     //---------- MAP SETUP --------------//
     /**
-     *
-     * @param options
-     * @instance
-     * @memberof OpenLayerView
+     * @private
      */
     initMap(options) {
 
@@ -175,7 +163,6 @@ export default class OpenLayerView extends OshView {
         let initialView = null;
         this.first = true;
         let overlays = [];
-        let defaultLayer = null;
         this.markers = {};
         this.polylines = {};
 
@@ -213,11 +200,6 @@ export default class OpenLayerView extends OshView {
             // checks baseLayer
             if (options.baseLayers) {
                 baseLayers = options.baseLayers;
-            }
-
-            // checks defaultLayer
-            if (options.defaultLayer) {
-                defaultLayer = options.defaultLayer;
             }
         } else {
             // loads the default one
@@ -280,21 +262,8 @@ export default class OpenLayerView extends OshView {
     }
 
     /**
-     *
-     * @returns {Object}
-     * @instance
-     * @memberof OpenLayerView
-     */
-    getDefaultBaseLayers() {
-        return {};
-    }
-
-
-    /**
-     *
-     * @returns {Array}
-     * @instance
-     * @memberof OpenLayerView
+     * Gets the list of default layers.
+     * @return {Array}
      */
     getDefaultLayers() {
         let osm = new TileLayer({
@@ -304,11 +273,13 @@ export default class OpenLayerView extends OshView {
     }
 
     /**
-     *
-     * @param properties
-     * @returns {string}
-     * @instance
-     * @memberof OpenLayerView
+     * Add a marker to the map.
+     * @param {Object} properties
+     * @param {Number} properties.lon
+     * @param {Number} properties.lat
+     * @param {String} properties.icon - path of the icon
+     * @param {Number} properties.orientation - orientation in degree
+     * @return {String} the id of the new created marker
      */
     addMarker(properties) {
         //create marker
@@ -370,10 +341,9 @@ export default class OpenLayerView extends OshView {
 
     /**
      *
+     * @private
      * @param styler
-     * @returns {string} the id of the newly created marker, or the id of the marker if it already exists from the current styler
-     * @instance
-     * @memberof OpenLayerView
+     * @return {string} the id of the newly created marker, or the id of the marker if it already exists from the current styler
      */
     createMarkerFromStyler(styler) {
         //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
@@ -419,11 +389,13 @@ export default class OpenLayerView extends OshView {
 
 
     /**
-     *
-     * @param properties
-     * @returns {string}
-     * @instance
-     * @memberof OpenLayerView
+     * Add a polyline to the map.
+     * @param {Object} properties
+     * @param {Object[]} properties.locations - [{x, y}]
+     * @param {String} properties.color
+     * @param {Number} properties.weight
+     * @param {String} properties.name
+     * @return {string} the id of the new created polyline
      */
     addPolyline(properties) {
         let polylinePoints = [];
@@ -463,11 +435,6 @@ export default class OpenLayerView extends OshView {
         return id;
     }
 
-    /**
-     *
-     * @instance
-     * @memberof LeafletView
-     */
     onResize() {
         super.onResize();
         if(isDefined(this.map) && this.map !== null) {
@@ -475,3 +442,5 @@ export default class OpenLayerView extends OshView {
         }
     }
 }
+
+export default  OpenLayerView;

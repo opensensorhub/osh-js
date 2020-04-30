@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataSource from './DataSource';
+
 /**
- * @classdesc This datasource provides parsing to Lat,Lon,Alt location.
+ * This datasource provides parsing to Lat,Lon,Alt location.
  * Data: ISODATE,LAT,LON,ALT
- * @class LatLonAlt
- * @augments DataSource
+ * @extends DataSource
  * @example
  * let androidPhoneGpsDataSource = new DataSourceLatLonAlt("android-GPS", {
     protocol: "ws",
@@ -34,16 +35,13 @@
     timeShift: -16000
   });
  */
-import DataSource from './DataSource.js';
 
-export default class LatLonAlt extends DataSource {
+class LatLonAlt extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-     * @param {string} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceLatLonAlt
-     * @instance
+     * @param {String} data - the data to parse
+     * @returns {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -53,16 +51,14 @@ export default class LatLonAlt extends DataSource {
 
     /**
      * Extract data from the message. The data are got such as:<p><ul><li>lat: tokens[1]</li><li>lon: tokens [2]</li><li>alt: tokens[3]</li></ul></p>.
-     * @param {Object} data the data to parse
-     * @returns {Object} the parsed data
+     * @param {Object} data - the data to parse
+     * @return {{alt: number, lon: number, lat: number}} the parsed data
      * @example
      * {
      *   lat:43.61758626,
      *   lon: 1.42376557,
      *   alt:100
      * }
-     * @memberof DataSourceLatLonAlt
-     * @instance
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -78,3 +74,4 @@ export default class LatLonAlt extends DataSource {
         };
     }
 }
+export default  LatLonAlt;

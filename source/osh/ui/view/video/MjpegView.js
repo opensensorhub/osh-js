@@ -8,17 +8,19 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {View} from "../View";
+import {isDefined} from "../../../utils/Utils";
+import EventManager from "../../../events/EventManager";
+import DiscoveryView from "../../../../ext/osh/ui/discovery/DiscoveryView";
+
 /**
- * @classdesc
- * @class
- * @type {View}
- * @augments View
+ * @extends View
  * @example
 var videoView = new MjpegView("containerId", {
     dataSourceId: datasource.id,
@@ -28,11 +30,18 @@ var videoView = new MjpegView("containerId", {
     name: "Video"
 });
  */
-import {View} from "../View.js";
-import {isDefined} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
 
-export default class MjpegView extends View {
+class MjpegView extends View {
+  /**
+   * Create a View.
+   * @param {String} parentElementDivId - The div element to attach to
+   * @param {Object} options - the properties of the view
+   * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
+   * @param {String} options.entityId - The entity id to which the view belongs to
+   * @param {String} options.showTime - Display or not the time onto the view
+   * @param {String} options.rotation - Allow to define a rotation in degree
+   *
+   */
   constructor(parentElementDivId,options) {
     super(parentElementDivId,[],options);
 
@@ -74,14 +83,6 @@ export default class MjpegView extends View {
     });
   }
 
-  /**
-   *
-   * @param $super
-   * @param dataSourceId
-   * @param data
-   * @instance
-   * @memberof MjpegView
-   */
   setData(dataSourceId,data) {
       let oldBlobURL = this.imgTag.src;
       this.imgTag.src = data.data;
@@ -91,14 +92,6 @@ export default class MjpegView extends View {
       window.URL.revokeObjectURL(oldBlobURL);
   }
 
-  /**
-   *
-   * @param $super
-   * @param dataSourceIds
-   * @param entityId
-   * @instance
-   * @memberof MjpegView
-   */
   selectDataView(dataSourceIds,entityId) {
     if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId)) && this.entityId === entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
@@ -107,12 +100,9 @@ export default class MjpegView extends View {
     }
   }
 
-  /**
-   * @instance
-   * @memberof MjpegView
-   */
   reset() {
       this.imgTag.src = "";
   }
 }
 
+export default MjpegView;

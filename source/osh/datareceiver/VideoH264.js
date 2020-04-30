@@ -8,17 +8,18 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import DataSource from './DataSource';
+
 /**
- * @classdesc This datasource provides parsing to H264 raw data.
+ * This datasource provides parsing to H264 raw data.
  * Data: ArrayBuffer
- * @class VideoH264
- * @augments DataSource
+ * @extends DataSource
  * @example
  * var videoDataSource = new DataSourceVideoH264("H264 video ", {
         protocol: "ws",
@@ -33,15 +34,11 @@
         bufferingTime: 1000
   });
  */
-import DataSource from './DataSource.js';
-
-export default class VideoH264 extends DataSource {
+class VideoH264 extends DataSource {
     /**
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
-     * @param {ArrayBuffer} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceVideoH264
-     * @instance
+     * @param {ArrayBuffer} data - the data to parse
+     * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         // read double time stamp as big endian
@@ -50,13 +47,12 @@ export default class VideoH264 extends DataSource {
 
     /**
      * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
-     * @param {ArrayBuffer} data the data to parse
-     * @returns {Uint8Array} the parsed data
-     * @memberof DataSourceVideoH264
-     * @instance
+     * @param {ArrayBuffer} data - the data to parse
+     * @return {Uint8Array} the parsed data
      */
     parseData(data) {
         return new Uint8Array(data, 12, data.byteLength - 12); // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
     }
 }
 
+export default  VideoH264;

@@ -8,27 +8,25 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2012-2016 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2012-2020 Sensia Software LLC. All Rights Reserved.
 
  Author: Alex Robin <alex.robin@sensiasoftware.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- * @classdesc This datasource provides parsing to UAH Weather Station.
- * @class UAHWeather
- * @augments DataSource
- */
-import DataSource from './DataSource.js';
+import DataSource from './DataSource';
 
-export default class UAHWeather extends DataSource {
+/**
+ * This datasource provides parsing to UAH Weather Station.
+ * @extends DataSource
+ */
+
+class UAHWeather extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
-     * @param {string} data the data to parse
-     * @returns {number} the extracted timestamp
-     * @memberof DataSourceUAHWeather
-     * @instance
+     * @param {String} data - the data to parse
+     * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -37,11 +35,9 @@ export default class UAHWeather extends DataSource {
     }
 
     /**
-     * Extract data from the message.
-     * @param {Object} data the data to parse
-     * @returns {Object} the parsed data
-     * @memberof DataSourceUAHWeather
-     * @instance
+     * Extracts data from the message.
+     * @param {Object} data - the data to parse
+     * @return {Object} the parsed data
      */
     parseData(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
@@ -63,3 +59,4 @@ export default class UAHWeather extends DataSource {
         };
     }
 }
+export default UAHWeather;

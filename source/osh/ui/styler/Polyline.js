@@ -8,20 +8,17 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Styler from "./Styler.js";
-import {isDefined} from "../../utils/Utils.js";
+import Styler from "./Styler";
+import { isDefined } from "../../utils/Utils";
 
 /**
- * @class Polyline
- * @classdesc
- * @type {Styler}
- * @augments Styler
+ * @extends Styler
  * @example
  * let polylineStyler = new Polyline({
 		locationFunc : {
@@ -41,12 +38,27 @@ import {isDefined} from "../../utils/Utils.js";
 		maxPoints : 200
 	});
  */
-export default class Polyline extends Styler {
+class Polyline extends Styler {
+	/**
+		* Creates the Polyline
+		* @param {Object} properties
+		* @param {Object[]} properties.locations - [lat, lon]
+		* @param {String} [properties.color='red']
+		* @param {Number} [properties.weight=1]
+		* @param {Number} [properties.opacity=1]
+		* @param {Number} [properties.smoothFactor=1]
+		* @param {Number} [properties.maxPoints=10]
+		* @param {Function} properties.locationFunc -
+		* @param {Function} properties.colorFunc -
+		* @param {Function} properties.weightFunc -
+		* @param {Function} properties.opacityFunc -
+		* @param {Function} properties.smoothFactorFunc -
+		*/
 	constructor(properties) {
 		super(properties);
 		this.properties = properties;
 		this.locations = [];
-     	this.color = 'red';
+		this.color = 'red';
 		this.weight = 1;
 		this.opacity = 1;
 		this.smoothFactor = 1;
@@ -113,15 +125,6 @@ export default class Polyline extends Styler {
 		}
 	}
 
-	/**
-	 *
-	 * @param dataSourceId
-	 * @param rec
-	 * @param view
-	 * @param options
-	 * @instance
-	 * @memberof Polyline
-	 */
 	setData(dataSourceId,rec,view,options) {
 		if(super.setData(dataSourceId,rec,view,options)) {
 			if(isDefined(view) && typeof view.updatePolyline === 'function'){
@@ -132,13 +135,9 @@ export default class Polyline extends Styler {
 		return false;
 	}
 
-	/**
-	 *
-	 * @param $super
-	 * @instance
-	 * @memberof Polyline
-	 */
 	clear() {
 		this.locations = [];
 	}
 }
+
+export default Polyline;

@@ -8,22 +8,21 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {randomUUID} from '../utils/Utils';
+
 /**
- * @classdesc The DataConnector is the abstract class used to create different connectors.
- * @constructor
- * @abstract
- * @param {string} url The full url used to connect to the data stream
+ * The DataConnector is the abstract class used to create different connectors.
  */
-
-import {randomUUID} from '../utils/Utils.js';
-
-export default class DataConnector {
+class DataConnector {
+    /**
+     * @param {String} url - The full url used to connect to the data stream
+     */
     constructor(url) {
         this.url = url;
         this.id = "DataConnector-" + randomUUID();
@@ -31,9 +30,7 @@ export default class DataConnector {
 
     /**
      * The data connector default id.
-     * @returns {string}
-     * @memberof DataConnector
-     * @instance
+     * @return {String}
      */
     getId() {
         return this.id;
@@ -41,11 +38,11 @@ export default class DataConnector {
 
     /**
      * The stream url.
-     * @returns {string}
-     * @memberof DataConnector
-     * @instance
+     * @return {String}
      */
     getUrl() {
         return this.url;
     }
 }
+
+export default DataConnector;

@@ -18,10 +18,7 @@ import {assertArray, assertObject, assertPositive, assertString, hasValue, isDef
 import Styler from "./Styler.js";
 
 /**
- * @classdesc
- * @class PointMarker
- * @type {Styler}
- * @augments Styler
+ * @extends Styler
  * @example
  * let pointMarker = new PointMarker({
         location : {
@@ -60,7 +57,27 @@ import Styler from "./Styler.js";
         }
     });
  */
-export default class PointMarker extends Styler {
+class PointMarker extends Styler {
+	/**
+		* Create the PointMarker
+		* @param {Object} properties
+		* @param {Number[]} properties.location - [x,y]
+  * @param {Number} [properties.orientation=0] -
+		* @param {String} properties.icon -
+		* @param {Number[]} [properties.iconAnchor=[16,16]] -
+		* @param {Number[]} [properties.iconSize=[16,16]] -
+		* @param {String} properties.label -
+		* @param {String} [properties.labelColor="#000000"] - HTML color
+		* @param {Number} [properties.labelSize=16] -
+		* @param {Number[]} [properties.labelOffset=[0,0]] -
+		* @param {Function} properties.locationFunc -
+		* @param {Function} properties.orientationFunc -
+		* @param {Function} properties.iconFunc -
+		* @param {Function} properties.labelFunc -
+		* @param {Function} properties.labelColorFunc -
+		* @param {Function} properties.labelSizeFunc -
+		*
+		*/
 	constructor(properties) {
 		super(properties);
 		this.properties = properties;
@@ -172,12 +189,6 @@ export default class PointMarker extends Styler {
 		}
 	}
 
-	/**
-	 *
-	 * @param view
-	 * @memberof PointMarker
-	 * @instance
-	 */
 	init(view) {
 		super.init(view);
 		if (isDefined(view) && this.location !== null) {
@@ -185,15 +196,6 @@ export default class PointMarker extends Styler {
 		}
 	}
 
-	/**
-	 *
-	 * @param dataSourceId
-	 * @param rec
-	 * @param view
-	 * @param options
-	 * @memberof PointMarker
-	 * @instance
-	 */
 	setData(dataSourceId,rec,view,options) {
 		if (super.setData(dataSourceId,rec,view,options)) {
 			if (isDefined(view) && this.location !== null) {
@@ -204,3 +206,5 @@ export default class PointMarker extends Styler {
 		return false;
 	}
 }
+
+export default PointMarker;

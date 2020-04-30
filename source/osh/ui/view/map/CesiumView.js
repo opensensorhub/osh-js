@@ -8,16 +8,16 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2017 Sensia Software LLC. All Rights Reserved.
+ Copyright (C) 2015-2020 Sensia Software LLC. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  Author: Alex Robin <alex.robin@sensiasoft.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../View.js";
-import {isDefined, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
+import {View} from "../View";
+import {isDefined, randomUUID} from "../../../utils/Utils";
+import EventManager from "../../../events/EventManager";
 
 import {
   when,
@@ -56,15 +56,12 @@ import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 
 /**
- * @classdesc
- * @class
- * @type {View}
- * @augments View
+ * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
+ * @extends View
  * @example
  let cesiumMapView = new CesiumView("",
  [{
 	styler :  pointMarker,
-	contextMenuId: circularContextMenuId,
 	name : "Android Phone GPS",
 	entityId : androidEntity.id
  },
@@ -91,8 +88,17 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
  }]
  );
  */
-export default class CesiumView extends View {
+class CesiumView extends View {
 
+  /**
+   * Create a View.
+   * @param {String} parentElementDivId - The div element to attach to
+   * @param {Object[]} viewItems - The initial view items to add
+   * @param {String} viewItems.name - The name of the view item
+   * @param {Styler} viewItems.styler - The styler object representing the view item
+   * @param {Object} options - the properties of the view
+   *
+   */
   constructor(parentElementDivId, viewItems, properties) {
     super(parentElementDivId, viewItems, properties);
 
@@ -109,12 +115,22 @@ export default class CesiumView extends View {
   }
 
   /**
+   * Updates the marker associated to the styler.
+   * @param {Styler} styler - The styler allowing the update of the marker
+   * @param {Object} options -
+   * @param {Object} options.location -
+   * @param {Number} options.location.x -
+   * @param {Number} options.location.y -
+   * @param {Number} options.location.z -
+   * @param {Number} options.orientation -
+   * @param {String} options.icon -
+   * @param {Number[]} options.iconAnchor - [OffsetX, OffsetY] ex: [10,10]
+   * @param {String} options.label -
+   * @param {String} options.labelColor -
+   * @param {Number} options.labelOffset -
+   * @param {Boolean} options.selected -
+   * @param {Number} timeStamp -
    *
-   * @param styler
-   * @param timeStamp
-   * @param options
-   * @instance
-   * @memberof CesiumView
    */
   updateMarker(styler, timeStamp, options) {
     let markerId = 0;
@@ -158,12 +174,8 @@ export default class CesiumView extends View {
   }
 
   /**
-   *
-   * @param styler
-   * @param timeStamp
-   * @param options
-   * @instance
-   * @memberof CesiumView
+   * Updates the marker associated to the styler.
+   * @param {ImageDraping} styler - The styler allowing the update of the marker
    *
    */
   updateDrapedImage(styler, timeStamp, options, snapshot) {
@@ -275,12 +287,6 @@ export default class CesiumView extends View {
   }
 
   //---------- MAP SETUP --------------//
-  /**
-   *
-   * @param options
-   * @instance
-   * @memberof CesiumView
-   */
   beforeAddingItems(options) {
     this.markers = {};
     this.first = true;
@@ -338,11 +344,15 @@ export default class CesiumView extends View {
   }
 
   /**
-   *
-   * @param properties
-   * @returns {string}
-   * @instance
-   * @memberof CesiumView
+   * Add a marker to the map.
+   * @param {Object} properties
+   * @param {Number} properties.lon
+   * @param {Number} properties.lat
+   * @param {String} properties.icon - the icon path
+   * @param {String} properties.label - label of the tooltip
+   * @param {String} properties.description - description of the marker to display into the tooltip
+   * @param {Object} properties.orientation.heading - orientation of the icon in degree
+   * @return {string} the id of the new created marker
    */
   addMarker(properties) {
 
@@ -404,11 +414,16 @@ export default class CesiumView extends View {
   }
 
   /**
-   *
-   * @param id
-   * @param properties
-   * @instance
-   * @memberof CesiumView
+   * Updates the marker associated to the styler.
+   * @param {String} id - The styler allowing the update of the marker
+   * @param {Object} properties -
+   * @param {Object} properties.lon -
+   * @param {Object} properties.lat -
+   * @param {Object} properties.alt -
+   * @param {Object} properties.orientation -
+   * @param {Object} properties.icon -
+   * @param {Object} properties.defaultToTerrainElevation -
+   * @param {Object} properties.selected -
    */
   updateMapMarker(id, properties) {
     let lon = properties.lon;
@@ -473,11 +488,7 @@ export default class CesiumView extends View {
 
   /**
    *
-   * @param lat
-   * @param lon
-   * @returns {Number|undefined}
-   * @instance
-   * @memberof CesiumView
+   * @private
    */
   getAltitude(lat, lon) {
     let position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
@@ -489,6 +500,15 @@ export default class CesiumView extends View {
     return altitude;
   }
 
+  /**
+   *
+   * @param type
+   * @param url
+   * @param layers
+   * @param imageFormat
+   * @param options
+   * @return {*}
+   */
   addImageryProvider(type, url, layers, imageFormat, options) {
     let minLOD = 0;
     let maxLOD;
@@ -518,3 +538,5 @@ export default class CesiumView extends View {
     return imageryProvider;
   }
 }
+
+export default  CesiumView;
