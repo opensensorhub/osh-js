@@ -17,7 +17,6 @@
 import {View} from "../View";
 import {isDefined} from "../../../utils/Utils";
 import EventManager from "../../../events/EventManager";
-import DiscoveryView from "../../../../ext/osh/ui/discovery/DiscoveryView";
 
 /**
  * @extends View
