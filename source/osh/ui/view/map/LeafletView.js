@@ -228,9 +228,9 @@ class LeafletView extends View {
 
         if (properties.label !== null) {
             marker.bindTooltip(properties.label, {
-                permanent: true,
+                permanent: false,
                 direction: 'center',
-                offset: point(properties.labelOffset[0], properties.labelOffset[1])
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });
         }
 
