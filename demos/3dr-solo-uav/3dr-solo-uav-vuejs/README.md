@@ -14,7 +14,7 @@ npm run dev
 
 ### Compiles and minifies for production
 ```
-npm run dev 
+npm run prod
 ```
 
 ## Customize configuration
