@@ -1,6 +1,5 @@
 import Vue from "vue";
 import App from "./App.vue";
-// In main.js
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
