@@ -42,7 +42,7 @@ module.exports = function (grunt) {
             },
 
             jscopy: {
-                files: ['static/scripts/main.js'],
+                files: ['static/scripts/index.js'],
                 tasks: ['copy:js']
             },
 
@@ -95,8 +95,8 @@ module.exports = function (grunt) {
             },
 
             js: {
-                src: 'static/scripts/main.js',
-                dest: DEMO_PATH + '/scripts/main.js'
+                src: 'static/scripts/index.js',
+                dest: DEMO_PATH + '/scripts/index.js'
             }
         }
     });
