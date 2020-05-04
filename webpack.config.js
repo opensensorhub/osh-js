@@ -2,16 +2,17 @@
 
 let CopyWebpackPlugin = require('copy-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const WorkerPlugin = require('worker-plugin');
 var path = require('path');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: './source/OSH.js',
+    entry: './source/osh/OSH.js',
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
         filename: '[name].js',
-        library: 'osh',
+        library: 'OSH',
+        libraryTarget: 'umd',
+        globalObject: 'this',
         path: path.resolve(__dirname, 'dist/build'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
@@ -33,34 +34,49 @@ module.exports = {
             path.resolve(__dirname, 'node_modules')
         ]
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'async',
+            minSize: 30000,
+            maxSize: 0,
+            minChunks: 1,
+            maxAsyncRequests: 6,
+            maxInitialRequests: 4,
+            automaticNameDelimiter: '~',
+            cacheGroups: {
+                defaultVendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
+    },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes
     // CSS, and (thanks to our loader) HTML.
     module: {
         rules: [
             {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: [
-                    'file-loader',
-                ],
+                test: /\.(png|jpg|gif|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]?[hash]'
+                }
             }, {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader' }
             }
         ]
     },
-    devtool: 'source-map',
-    externals: [
-        // Regex
-        // ignore cesium
-        /^(cesium|\$)/i,
-        //ignore chart.js
-        /^(chart.js|\$)/i,
-        //ignore ol
-        /^(ol|\$)/i,
-        //ignore leaflet
-        /^(leaflet|\$)/i
-    ],
     mode: 'production',
     plugins: [
         /**
@@ -87,7 +103,9 @@ module.exports = {
             {from: 'source/osh/resources/images', to: 'images'},
             {from: 'source/', to: '../source'},
             {from: 'libs/', to: '../libs'},
-        ]),
-        new WorkerPlugin(),
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
+        ])
     ]
 };
