@@ -21,8 +21,9 @@
  * @param {String} options - The options
  * @abstract
  */
-import {isDefined, randomUUID} from '../../utils/Utils.js';
-import EventManager from '../../events/EventManager.js';
+import {isDefined, randomUUID} from '../../utils/Utils';
+import EventManager from '../../events/EventManager';
+import '../../resources/css/view.css';
 
 export class View {
     /**
@@ -84,7 +85,7 @@ export class View {
     init(parentElementDivId, viewItems, options) {
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
-        this.elementDiv.setAttribute("class", this.css);
+        this.elementDiv.setAttribute("class", this.css+" osh-view");
         this.divId = this.id;
 
         let div = document.getElementById(parentElementDivId);

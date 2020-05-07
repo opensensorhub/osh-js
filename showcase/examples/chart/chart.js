@@ -39,8 +39,31 @@ let chartView = new ChartJsView("char-container",
         xLabel: 'Time',
         css: "chart-view",
         tickOpts: {
-            maxTicksLimit: 10
+            maxTicksLimit: 10,
+            fontColor: 'gray',
         },
+        gridLinesOpts: {
+            color: 'lightgray'
+        },
+        scaleLabelOpts: {
+            fontColor: 'gray',
+            padding:1
+        },
+        datasetsOpts: {
+            borderColor: '#a3a3a3',
+            borderWidth:1,
+            backgroundColor: 'rgba(188,221,255,0.5)'
+        },
+        legendOpts: {
+            labels: {
+                fontColor: "gray",
+                fontSize: 14
+            }
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
     }
 );
 

@@ -1,4 +1,4 @@
-/* webpack.config.js */
+/* webpack.config.lib */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -55,14 +55,16 @@ module.exports = [{
             template: path.resolve(__dirname, 'index.html')
         }),
         new CopyWebpackPlugin([
+            {from: path.resolve(__dirname, 'lib'), to: 'lib'},
+            {from: path.resolve(__dirname, 'images'), to: 'images'},
         ])
     ]
 }];
 
-let directories = ['cesium-fois', 'cesium-location','chart', 'discovery',
+let directories = ['cesium-fois', 'cesium-location','cesium-location-dist','chart', 'discovery',
     'leaflet-location', 'entity', 'leaflet-location-fois', 'leaflet-location-heading',
-    'leaflet-location-path', 'openlayers-location', 'ptz-tasking', 'rangeslider','video-gps-sync',
-    'video-h264','video-h264-draping', 'video-mjpeg'];
+    'leaflet-location-path', 'openlayers-location', 'ptz-tasking', 'range-slider','video-gps-sync',
+    'video-h264','video-h264-draping', 'video-h264-transferable','video-mjpeg'];
 
 for(let i=0;i < directories.length;i++) {
     let example = 'examples/'+directories[i];
@@ -73,6 +75,13 @@ for(let i=0;i < directories.length;i++) {
     delete config.devServer;
     delete config.resolve;
     delete config.devtool;
+
+    let copyJsPlugin =  new CopyWebpackPlugin([
+        {from: path.resolve(__dirname, './' + example + '/'+directories[i]+'.js'), to: 'js'},
+    ]);
+
+    // copy js to toggle source code
+    config.plugins.push(copyJsPlugin);
     //
     module.exports.push({
         ...common,

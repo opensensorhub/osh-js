@@ -15,10 +15,10 @@ const cesiumWorkers = '../Build/Cesium/Workers';
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'cesium-location.js'),
+    entry: path.resolve(__dirname,'cesium-location-dist.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.cesium.location.js',
+        filename: 'bundle.cesium.location.dist.js',
         path: path.resolve(__dirname, 'dist'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
@@ -69,7 +69,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'cesium-location.html'
+        index: 'cesium-location-dist.html'
     },
     devtool: 'source-map',
     plugins: [
@@ -89,8 +89,8 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: "cesium-location.html",
-            template: path.resolve(__dirname, 'cesium-location.html')
+            filename: "cesium-location-dist.html",
+            template: path.resolve(__dirname, 'cesium-location-dist.html')
         }),
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST

@@ -62,7 +62,7 @@ Add a OSH  alias so we can reference it in our app code:
       'osh': path.resolve(__dirname, '../../../source/osh'),
       'vue$': 'vue/dist/vue.esm.js',
     },
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['*', '.lib', '.vue', '.json']
   },
 ```
 
@@ -97,7 +97,7 @@ module: {
         ]
       },
       {
-        test: /\.worker\.js$/,
+        test: /\.worker\.lib$/,
         use: { loader: 'worker-loader' }
       }
     ]

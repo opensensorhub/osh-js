@@ -10,8 +10,8 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import VideoMjpeg from 'osh/datareceiver/VideoMjpeg.js';
-import MjpegView from 'osh/ui/view/video/MjpegView.js';
+import VideoMjpeg from 'osh/datareceiver/VideoMjpeg.lib';
+import MjpegView from 'osh/ui/view/video/MjpegView.lib';
 
 export default {
   name: "Video",

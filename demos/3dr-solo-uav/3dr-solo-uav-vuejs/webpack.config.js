@@ -1,4 +1,4 @@
-// webpack.config.js
+// webpack.config.lib
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -9,10 +9,10 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    app: './src/main.js'
+    app: './src/main.lib'
   },
   output: {
-    filename: '[name].js',
+    filename: '[name].lib',
     path: path.resolve(__dirname, 'dist'),
     // Needed to compile multiline strings in Cesium
     sourcePrefix: ''
@@ -31,7 +31,7 @@ module.exports = {
     ],
     alias: {
       'osh': path.resolve(__dirname, '../../../source/osh'),
-      'vue$': 'vue/dist/vue.esm.js',
+      'vue$': 'vue/dist/vue.esm.lib',
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
@@ -64,7 +64,7 @@ module.exports = {
         test: /\.vue$/,
         loader: 'vue-loader'
       },
-      // this will apply to both plain `.js` files
+      // this will apply to both plain `.lib` files
       // AND `<script>` blocks in `.vue` files
       {
         test: /\.js$/,

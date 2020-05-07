@@ -46,8 +46,13 @@ class ChartJsView extends View {
         this.tickOpts = {};
         this.scaleLabelOpts = {};
         this.legendOpts = {};
+        this.options = {};
 
         if (isDefined(options)) {
+            if(options.hasOwnProperty('options')){
+                this.options = options.options;
+            }
+
             if(options.hasOwnProperty('datasetsOpts')){
                 this.datasetsOpts = options.datasetsOpts;
             }
@@ -128,7 +133,8 @@ class ChartJsView extends View {
                         }],
                     },
                     responsive: true,
-                    maintainAspectRatio: true
+                    maintainAspectRatio: true,
+                    ...this.options
                 }
             });
 
@@ -146,7 +152,7 @@ class ChartJsView extends View {
         if(!isDefined(currentDataset)) {
             currentDataset = {
                 label: styler.viewItem.name,
-                fillColor: "rgba(220,220,220,0.2)",
+                fillColor: "rgba(220,220,0,0.2)",
                 strokeColor: "rgba(220,220,220,1)",
                 pointColor: "rgba(220,220,220,1)",
                 pointStrokeColor: "#fff",

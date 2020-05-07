@@ -6,10 +6,10 @@ var path = require('path');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'video-h264.js'),
+    entry: path.resolve(__dirname,'video-h264-transferable.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.video.h264.js',
+        filename: 'bundle.video.h264.transferable.js',
         path: path.resolve(__dirname, 'dist')
     },
     node: {
@@ -52,7 +52,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-h264.html'
+        index: 'video-h264-transferable.html'
     },
     devtool: 'cheap-module-eval-source-map',
     plugins: [
@@ -72,8 +72,8 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: 'video-h264.html',
-            template: path.resolve(__dirname, 'video-h264.html')
+            filename: 'video-h264-transferable.html',
+            template: path.resolve(__dirname, 'video-h264-transferable.html')
         }),
     ]
 };

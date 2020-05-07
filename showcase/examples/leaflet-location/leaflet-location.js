@@ -1,5 +1,3 @@
-//@ sourceURL=leaflet-location.html.js
-
 // create data source for Android phone GPS
 import Json from "../../../source/osh/datareceiver/Json.js";
 import PointMarker from "../../../source/osh/ui/styler/PointMarker.js";
