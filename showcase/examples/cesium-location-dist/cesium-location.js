@@ -1,9 +1,8 @@
 // import * as osh from 'osh';
 
 // const osh = require('./dist-osh/build/main');
-import osh from 'osh';
+import * as osh from 'osh';
 
-console.log(osh);
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
