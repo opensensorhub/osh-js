@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "strip-ansi": "^6.0.0",
-    "cesium": "^1.68.0",
+    "cesium": "~1.68.0",
     "ol": "^6.2.1",
     "chart.js": "^2.9.3",
     "nouislider": "^14.2.0",
