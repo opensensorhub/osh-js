@@ -1,4 +1,4 @@
-export const VERSION = '1.3.3';
+export const VERSION = '2.0.0';
 export { default as  Buffer } from './buffer/Buffer.js';
 export { default as  Ajax } from './dataconnector/Ajax';
 export { default as  DataConnector } from './dataconnector/DataConnector';

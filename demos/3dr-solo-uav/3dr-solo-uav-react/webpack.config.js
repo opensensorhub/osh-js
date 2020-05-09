@@ -30,11 +30,7 @@ const cesiumConfig = {
     new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' } ]),
     new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' } ]),
     new CopywebpackPlugin([ { from: 'images', to: 'images'} ]),
-    new CopywebpackPlugin([ { from: 'models', to: 'models\''} ]),
-    new DefinePlugin({
-      // Define relative base path in cesium for loading assets
-      CESIUM_BASE_URL: JSON.stringify('/')
-    }),
+    new CopywebpackPlugin([ { from: 'models', to: 'models'} ]),
   ],
 };
 // Now, using the cesiumConfig in your real configuration

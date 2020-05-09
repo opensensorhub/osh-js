@@ -114,9 +114,5 @@ module.exports = {
       { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
       { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
     ]),
-    new DefinePlugin({
-      // Define relative base path in cesium for loading assets
-      CESIUM_BASE_URL: JSON.stringify('/')
-    }),
   ]
 }
