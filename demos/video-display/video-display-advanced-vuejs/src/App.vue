@@ -244,6 +244,18 @@
     background-color: #363636;
   }
 
+  .v-application .headline, .v-application .title {
+    line-height: 1px;
+    font-family: Roboto,sans-serif!important;
+    border-bottom: solid 1px #69696982;
+  }
+
+  .v-application .headline {
+    font-size: 1.0rem!important;
+    font-weight: 400;
+    letter-spacing: normal!important;
+  }
+
 </style>
 
 <style scoped>
