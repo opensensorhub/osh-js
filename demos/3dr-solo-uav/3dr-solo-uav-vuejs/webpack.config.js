@@ -9,10 +9,10 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    app: './src/main.lib'
+    app: './src/main.js'
   },
   output: {
-    filename: '[name].lib',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     // Needed to compile multiline strings in Cesium
     sourcePrefix: ''
@@ -31,7 +31,7 @@ module.exports = {
     ],
     alias: {
       'osh': path.resolve(__dirname, '../../../source/osh'),
-      'vue$': 'vue/dist/vue.esm.lib',
+      'vue$': 'vue/dist/vue.esm.js',
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
