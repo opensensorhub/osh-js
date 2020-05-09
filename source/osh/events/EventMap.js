@@ -25,19 +25,18 @@ class EventMap {
         this.eventMap = {};
     }
 
-    /**
-     * Observes any eventName and calls the callback when the event is fired.
-     * @param {String} eventName -
-     * @param {Function} fnCallback -
-     */
-    observe(eventName, fnCallback) {
-        if(!isDefined(eventName) || !isDefined(fnCallback)) {
     remove(eventName, id) {
         if(eventName in this.eventMap) {
             this.eventMap[eventName] = this.eventMap[eventName].filter(obj => obj.id !== id);
         }
     }
 
+    /**
+     * Observes any eventName and calls the callback when the event is fired.
+     * @param {String} eventName -
+     * @param {Function} fnCallback -
+     * @param {String} id - id of the div to observe
+     */
     observe(eventName, fnCallback, id = 'any') {
         if(!isDefined(eventName) || !isDefined(fnCallback) || !isDefined(id)) {
             return;
