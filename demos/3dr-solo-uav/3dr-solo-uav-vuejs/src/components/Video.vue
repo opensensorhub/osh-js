@@ -64,14 +64,28 @@ export default {
 </style>
 
 <style>
-    .dialog-drag {
-        overflow-y: hidden;
-        border: 1px solid #bbbbbb;
-        border-radius: 4px;
-        box-shadow: 0 0 7px #000000;
-    }
     .dialog-drag .dialog-body {
         padding:0;
+    }
+
+
+    .dialog-drag {
+        overflow-y: hidden;
+        border: 1px solid #5a5a5acc;
+        border-radius: 4px;
+        box-shadow: 0 0 7px #000000;
+        background: #232323cc;
+    }
+
+    .dialog-drag .dialog-header {
+        background: none;
+        color: #fff;
+        font-size: 1em;
+        padding: .25em 3em .25em 1em;
+        position: relative;
+        text-align: left;
+        width: auto;
+        font-family: cursive;
     }
 
     .video-h264 >  canvas {
