@@ -23,6 +23,18 @@ const eventMap = new EventMap();
  */
 class EventManager {
 
+    static remove(eventName, id ='any') {
+        eventMap.remove('osh:' + eventName, id);
+    }
+
+    static registerView(view) {
+        view.registerCallback();
+    }
+
+    static unregisterView(view) {
+        view.unregisterCallback();
+    }
+
     /**
      * Fires an event
      * @param {String} eventName -
@@ -38,8 +50,8 @@ class EventManager {
      * @param {String} eventName -
      * @param {Function} fnCallback -
      */
-    static observe(eventName, fnCallback) {
-        eventMap.observe('osh:' + eventName, fnCallback);
+    static observe(eventName, fnCallback, id = 'any') {
+        eventMap.observe('osh:' + eventName, fnCallback, id);
     }
 
     /**
