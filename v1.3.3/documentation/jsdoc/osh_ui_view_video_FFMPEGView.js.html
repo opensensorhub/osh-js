@@ -1,0 +1,2682 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: osh/ui/view/video/FFMPEGView.js</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html"></a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="Ajax">
+            <span class="title">
+                <a href="Ajax.html">Ajax</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Ajax#getId"><a href="Ajax.html#getId">getId</a></li>
+            
+                <li data-name="Ajax#getUrl"><a href="Ajax.html#getUrl">getUrl</a></li>
+            
+                <li data-name="Ajax#sendRequest"><a href="Ajax.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="Ajax#event:onError"><a href="Ajax.html#event:onError">onError</a></li>
+            
+                <li data-name="Ajax#event:onSuccess"><a href="Ajax.html#event:onSuccess">onSuccess</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Buffer">
+            <span class="title">
+                <a href="Buffer.html">Buffer</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Buffer#addDataSource"><a href="Buffer.html#addDataSource">addDataSource</a></li>
+            
+                <li data-name="Buffer#addEntity"><a href="Buffer.html#addEntity">addEntity</a></li>
+            
+                <li data-name="Buffer#cancelAll"><a href="Buffer.html#cancelAll">cancelAll</a></li>
+            
+                <li data-name="Buffer#cancelDataSource"><a href="Buffer.html#cancelDataSource">cancelDataSource</a></li>
+            
+                <li data-name="Buffer#push"><a href="Buffer.html#push">push</a></li>
+            
+                <li data-name="Buffer#start"><a href="Buffer.html#start">start</a></li>
+            
+                <li data-name="Buffer#startAll"><a href="Buffer.html#startAll">startAll</a></li>
+            
+                <li data-name="Buffer#startDataSource"><a href="Buffer.html#startDataSource">startDataSource</a></li>
+            
+                <li data-name="Buffer#startObservers"><a href="Buffer.html#startObservers">startObservers</a></li>
+            
+                <li data-name="Buffer#stop"><a href="Buffer.html#stop">stop</a></li>
+            
+                <li data-name="Buffer#stopObservers"><a href="Buffer.html#stopObservers">stopObservers</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CesiumView">
+            <span class="title">
+                <a href="CesiumView.html">CesiumView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CesiumView#addImageryProvider"><a href="CesiumView.html#addImageryProvider">addImageryProvider</a></li>
+            
+                <li data-name="CesiumView#addMarker"><a href="CesiumView.html#addMarker">addMarker</a></li>
+            
+                <li data-name="CesiumView#addViewItem"><a href="CesiumView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="CesiumView#attachTo"><a href="CesiumView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="CesiumView#getDataSourcesId"><a href="CesiumView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="CesiumView#getDivId"><a href="CesiumView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="CesiumView#getId"><a href="CesiumView.html#getId">getId</a></li>
+            
+                <li data-name="CesiumView#hide"><a href="CesiumView.html#hide">hide</a></li>
+            
+                <li data-name="CesiumView#init"><a href="CesiumView.html#init">init</a></li>
+            
+                <li data-name="CesiumView#removeViewItem"><a href="CesiumView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="CesiumView#reset"><a href="CesiumView.html#reset">reset</a></li>
+            
+                <li data-name="CesiumView#selectDataView"><a href="CesiumView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="CesiumView#setData"><a href="CesiumView.html#setData">setData</a></li>
+            
+                <li data-name="CesiumView#show"><a href="CesiumView.html#show">show</a></li>
+            
+                <li data-name="CesiumView#updateDrapedImage"><a href="CesiumView.html#updateDrapedImage">updateDrapedImage</a></li>
+            
+                <li data-name="CesiumView#updateMapMarker"><a href="CesiumView.html#updateMapMarker">updateMapMarker</a></li>
+            
+                <li data-name="CesiumView#updateMarker"><a href="CesiumView.html#updateMarker">updateMarker</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="CesiumView#event:beforeAddingItems"><a href="CesiumView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="CesiumView#event:onResize"><a href="CesiumView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CesiumView#View">
+            <span class="title">
+                <a href="CesiumView_View.html">CesiumView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Chart">
+            <span class="title">
+                <a href="Chart.html">Chart</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Chart#buildUrl"><a href="Chart.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="Chart#connect"><a href="Chart.html#connect">connect</a></li>
+            
+                <li data-name="Chart#disconnect"><a href="Chart.html#disconnect">disconnect</a></li>
+            
+                <li data-name="Chart#getId"><a href="Chart.html#getId">getId</a></li>
+            
+                <li data-name="Chart#getName"><a href="Chart.html#getName">getName</a></li>
+            
+                <li data-name="Chart#onData"><a href="Chart.html#onData">onData</a></li>
+            
+                <li data-name="Chart#parseData"><a href="Chart.html#parseData">parseData</a></li>
+            
+                <li data-name="Chart#parseTimeStamp"><a href="Chart.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="Chart#event:onMessage"><a href="Chart.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ChartJsView">
+            <span class="title">
+                <a href="ChartJsView.html">ChartJsView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ChartJsView#updateCurve"><a href="ChartJsView.html#updateCurve">updateCurve</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DataConnector">
+            <span class="title">
+                <a href="DataConnector.html">DataConnector</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="DataConnector#getId"><a href="DataConnector.html#getId">getId</a></li>
+            
+                <li data-name="DataConnector#getUrl"><a href="DataConnector.html#getUrl">getUrl</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DataReceiverController">
+            <span class="title">
+                <a href="DataReceiverController.html">DataReceiverController</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="DataReceiverController#addDataSource"><a href="DataReceiverController.html#addDataSource">addDataSource</a></li>
+            
+                <li data-name="DataReceiverController#addEntity"><a href="DataReceiverController.html#addEntity">addEntity</a></li>
+            
+                <li data-name="DataReceiverController#connect"><a href="DataReceiverController.html#connect">connect</a></li>
+            
+                <li data-name="DataReceiverController#connectAll"><a href="DataReceiverController.html#connectAll">connectAll</a></li>
+            
+                <li data-name="DataReceiverController#disconnect"><a href="DataReceiverController.html#disconnect">disconnect</a></li>
+            
+                <li data-name="DataReceiverController#updateDataSourceTime"><a href="DataReceiverController.html#updateDataSourceTime">updateDataSourceTime</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DataSenderController">
+            <span class="title">
+                <a href="DataSenderController.html">DataSenderController</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="DataSenderController#addDataSource"><a href="DataSenderController.html#addDataSource">addDataSource</a></li>
+            
+                <li data-name="DataSenderController#sendRequest"><a href="DataSenderController.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DataSink">
+            <span class="title">
+                <a href="DataSink.html">DataSink</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="DataSink#getId"><a href="DataSink.html#getId">getId</a></li>
+            
+                <li data-name="DataSink#getName"><a href="DataSink.html#getName">getName</a></li>
+            
+                <li data-name="DataSink#sendRequest"><a href="DataSink.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="DataSink#event:onError"><a href="DataSink.html#event:onError">onError</a></li>
+            
+                <li data-name="DataSink#event:onSuccess"><a href="DataSink.html#event:onSuccess">onSuccess</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DataSource">
+            <span class="title">
+                <a href="DataSource.html">DataSource</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="DataSource#buildUrl"><a href="DataSource.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="DataSource#connect"><a href="DataSource.html#connect">connect</a></li>
+            
+                <li data-name="DataSource#disconnect"><a href="DataSource.html#disconnect">disconnect</a></li>
+            
+                <li data-name="DataSource#getId"><a href="DataSource.html#getId">getId</a></li>
+            
+                <li data-name="DataSource#getName"><a href="DataSource.html#getName">getName</a></li>
+            
+                <li data-name="DataSource#onData"><a href="DataSource.html#onData">onData</a></li>
+            
+                <li data-name="DataSource#parseData"><a href="DataSource.html#parseData">parseData</a></li>
+            
+                <li data-name="DataSource#parseTimeStamp"><a href="DataSource.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="DataSource#event:onMessage"><a href="DataSource.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DiscoveryView">
+            <span class="title">
+                <a href="DiscoveryView.html">DiscoveryView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="DiscoveryView#addViewItem"><a href="DiscoveryView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="DiscoveryView#attachTo"><a href="DiscoveryView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="DiscoveryView#getDataSourcesId"><a href="DiscoveryView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="DiscoveryView#getDivId"><a href="DiscoveryView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="DiscoveryView#getId"><a href="DiscoveryView.html#getId">getId</a></li>
+            
+                <li data-name="DiscoveryView#hide"><a href="DiscoveryView.html#hide">hide</a></li>
+            
+                <li data-name="DiscoveryView#init"><a href="DiscoveryView.html#init">init</a></li>
+            
+                <li data-name="DiscoveryView#removeViewItem"><a href="DiscoveryView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="DiscoveryView#reset"><a href="DiscoveryView.html#reset">reset</a></li>
+            
+                <li data-name="DiscoveryView#selectDataView"><a href="DiscoveryView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="DiscoveryView#setData"><a href="DiscoveryView.html#setData">setData</a></li>
+            
+                <li data-name="DiscoveryView#show"><a href="DiscoveryView.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="DiscoveryView#event:beforeAddingItems"><a href="DiscoveryView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="DiscoveryView#event:onResize"><a href="DiscoveryView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="DiscoveryView#View">
+            <span class="title">
+                <a href="DiscoveryView_View.html">DiscoveryView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="EntityTreeView">
+            <span class="title">
+                <a href="EntityTreeView.html">EntityTreeView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="EntityTreeView#addViewItem"><a href="EntityTreeView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="EntityTreeView#attachTo"><a href="EntityTreeView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="EntityTreeView#getDataSourcesId"><a href="EntityTreeView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="EntityTreeView#getDivId"><a href="EntityTreeView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="EntityTreeView#getId"><a href="EntityTreeView.html#getId">getId</a></li>
+            
+                <li data-name="EntityTreeView#hide"><a href="EntityTreeView.html#hide">hide</a></li>
+            
+                <li data-name="EntityTreeView#init"><a href="EntityTreeView.html#init">init</a></li>
+            
+                <li data-name="EntityTreeView#removeViewItem"><a href="EntityTreeView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="EntityTreeView#reset"><a href="EntityTreeView.html#reset">reset</a></li>
+            
+                <li data-name="EntityTreeView#selectDataView"><a href="EntityTreeView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="EntityTreeView#setData"><a href="EntityTreeView.html#setData">setData</a></li>
+            
+                <li data-name="EntityTreeView#show"><a href="EntityTreeView.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="EntityTreeView#event:beforeAddingItems"><a href="EntityTreeView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="EntityTreeView#event:onResize"><a href="EntityTreeView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="EntityTreeView#View">
+            <span class="title">
+                <a href="EntityTreeView_View.html">EntityTreeView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="EulerOrientation">
+            <span class="title">
+                <a href="EulerOrientation.html">EulerOrientation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="EulerOrientation#buildUrl"><a href="EulerOrientation.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="EulerOrientation#connect"><a href="EulerOrientation.html#connect">connect</a></li>
+            
+                <li data-name="EulerOrientation#disconnect"><a href="EulerOrientation.html#disconnect">disconnect</a></li>
+            
+                <li data-name="EulerOrientation#getId"><a href="EulerOrientation.html#getId">getId</a></li>
+            
+                <li data-name="EulerOrientation#getName"><a href="EulerOrientation.html#getName">getName</a></li>
+            
+                <li data-name="EulerOrientation#onData"><a href="EulerOrientation.html#onData">onData</a></li>
+            
+                <li data-name="EulerOrientation#parseData"><a href="EulerOrientation.html#parseData">parseData</a></li>
+            
+                <li data-name="EulerOrientation#parseTimeStamp"><a href="EulerOrientation.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="EulerOrientation#event:onMessage"><a href="EulerOrientation.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="EventManager">
+            <span class="title">
+                <a href="EventManager.html">EventManager</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="EventManager.EVENT"><a href="EventManager.html#.EVENT">EVENT</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="EventManager.fire"><a href="EventManager.html#.fire">fire</a></li>
+            
+                <li data-name="EventManager.observe"><a href="EventManager.html#.observe">observe</a></li>
+            
+                <li data-name="EventManager.observeDiv"><a href="EventManager.html#.observeDiv">observeDiv</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="EventMap">
+            <span class="title">
+                <a href="EventMap.html">EventMap</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="EventMap#fire"><a href="EventMap.html#fire">fire</a></li>
+            
+                <li data-name="EventMap#observe"><a href="EventMap.html#observe">observe</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="FFMPEGView">
+            <span class="title">
+                <a href="FFMPEGView.html">FFMPEGView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="FFMPEGView#addViewItem"><a href="FFMPEGView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="FFMPEGView#attachTo"><a href="FFMPEGView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="FFMPEGView#getDataSourcesId"><a href="FFMPEGView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="FFMPEGView#getDivId"><a href="FFMPEGView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="FFMPEGView#getId"><a href="FFMPEGView.html#getId">getId</a></li>
+            
+                <li data-name="FFMPEGView#hide"><a href="FFMPEGView.html#hide">hide</a></li>
+            
+                <li data-name="FFMPEGView#init"><a href="FFMPEGView.html#init">init</a></li>
+            
+                <li data-name="FFMPEGView#removeViewItem"><a href="FFMPEGView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="FFMPEGView#reset"><a href="FFMPEGView.html#reset">reset</a></li>
+            
+                <li data-name="FFMPEGView#selectDataView"><a href="FFMPEGView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="FFMPEGView#setData"><a href="FFMPEGView.html#setData">setData</a></li>
+            
+                <li data-name="FFMPEGView#show"><a href="FFMPEGView.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="FFMPEGView#event:beforeAddingItems"><a href="FFMPEGView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="FFMPEGView#event:onAfterDecoded"><a href="FFMPEGView.html#event:onAfterDecoded">onAfterDecoded</a></li>
+            
+                <li data-name="FFMPEGView#event:onResize"><a href="FFMPEGView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="FFMPEGView#View">
+            <span class="title">
+                <a href="FFMPEGView_View.html">FFMPEGView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="FoscamPtzTasking">
+            <span class="title">
+                <a href="FoscamPtzTasking.html">FoscamPtzTasking</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="FoscamPtzTasking#getCommandData"><a href="FoscamPtzTasking.html#getCommandData">getCommandData</a></li>
+            
+                <li data-name="FoscamPtzTasking#getId"><a href="FoscamPtzTasking.html#getId">getId</a></li>
+            
+                <li data-name="FoscamPtzTasking#getName"><a href="FoscamPtzTasking.html#getName">getName</a></li>
+            
+                <li data-name="FoscamPtzTasking#sendRequest"><a href="FoscamPtzTasking.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="FoscamPtzTasking#event:onError"><a href="FoscamPtzTasking.html#event:onError">onError</a></li>
+            
+                <li data-name="FoscamPtzTasking#event:onSuccess"><a href="FoscamPtzTasking.html#event:onSuccess">onSuccess</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ImageDraping">
+            <span class="title">
+                <a href="ImageDraping.html">ImageDraping</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ImageDraping#addFn"><a href="ImageDraping.html#addFn">addFn</a></li>
+            
+                <li data-name="ImageDraping#clear"><a href="ImageDraping.html#clear">clear</a></li>
+            
+                <li data-name="ImageDraping#getDataSourcesIds"><a href="ImageDraping.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="ImageDraping#getId"><a href="ImageDraping.html#getId">getId</a></li>
+            
+                <li data-name="ImageDraping#init"><a href="ImageDraping.html#init">init</a></li>
+            
+                <li data-name="ImageDraping#select"><a href="ImageDraping.html#select">select</a></li>
+            
+                <li data-name="ImageDraping#setData"><a href="ImageDraping.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Json">
+            <span class="title">
+                <a href="Json.html">Json</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Json#buildUrl"><a href="Json.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="Json#connect"><a href="Json.html#connect">connect</a></li>
+            
+                <li data-name="Json#disconnect"><a href="Json.html#disconnect">disconnect</a></li>
+            
+                <li data-name="Json#getId"><a href="Json.html#getId">getId</a></li>
+            
+                <li data-name="Json#getName"><a href="Json.html#getName">getName</a></li>
+            
+                <li data-name="Json#onData"><a href="Json.html#onData">onData</a></li>
+            
+                <li data-name="Json#parseData"><a href="Json.html#parseData">parseData</a></li>
+            
+                <li data-name="Json#parseTimeStamp"><a href="Json.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="Json#event:onMessage"><a href="Json.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="LatLonAlt">
+            <span class="title">
+                <a href="LatLonAlt.html">LatLonAlt</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="LatLonAlt#buildUrl"><a href="LatLonAlt.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="LatLonAlt#connect"><a href="LatLonAlt.html#connect">connect</a></li>
+            
+                <li data-name="LatLonAlt#disconnect"><a href="LatLonAlt.html#disconnect">disconnect</a></li>
+            
+                <li data-name="LatLonAlt#getId"><a href="LatLonAlt.html#getId">getId</a></li>
+            
+                <li data-name="LatLonAlt#getName"><a href="LatLonAlt.html#getName">getName</a></li>
+            
+                <li data-name="LatLonAlt#onData"><a href="LatLonAlt.html#onData">onData</a></li>
+            
+                <li data-name="LatLonAlt#parseData"><a href="LatLonAlt.html#parseData">parseData</a></li>
+            
+                <li data-name="LatLonAlt#parseTimeStamp"><a href="LatLonAlt.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="LatLonAlt#event:onMessage"><a href="LatLonAlt.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="LeafletView">
+            <span class="title">
+                <a href="LeafletView.html">LeafletView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="LeafletView#addMarker"><a href="LeafletView.html#addMarker">addMarker</a></li>
+            
+                <li data-name="LeafletView#addPolyline"><a href="LeafletView.html#addPolyline">addPolyline</a></li>
+            
+                <li data-name="LeafletView#addViewItem"><a href="LeafletView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="LeafletView#attachTo"><a href="LeafletView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="LeafletView#getDataSourcesId"><a href="LeafletView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="LeafletView#getDefaultLayers"><a href="LeafletView.html#getDefaultLayers">getDefaultLayers</a></li>
+            
+                <li data-name="LeafletView#getDivId"><a href="LeafletView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="LeafletView#getId"><a href="LeafletView.html#getId">getId</a></li>
+            
+                <li data-name="LeafletView#hide"><a href="LeafletView.html#hide">hide</a></li>
+            
+                <li data-name="LeafletView#init"><a href="LeafletView.html#init">init</a></li>
+            
+                <li data-name="LeafletView#removeViewItem"><a href="LeafletView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="LeafletView#reset"><a href="LeafletView.html#reset">reset</a></li>
+            
+                <li data-name="LeafletView#selectDataView"><a href="LeafletView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="LeafletView#setData"><a href="LeafletView.html#setData">setData</a></li>
+            
+                <li data-name="LeafletView#show"><a href="LeafletView.html#show">show</a></li>
+            
+                <li data-name="LeafletView#updateMarker"><a href="LeafletView.html#updateMarker">updateMarker</a></li>
+            
+                <li data-name="LeafletView#updatePolyline"><a href="LeafletView.html#updatePolyline">updatePolyline</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="LeafletView#event:beforeAddingItems"><a href="LeafletView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="LeafletView#event:onResize"><a href="LeafletView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="LeafletView#View">
+            <span class="title">
+                <a href="LeafletView_View.html">LeafletView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="MjpegView">
+            <span class="title">
+                <a href="MjpegView.html">MjpegView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="MjpegView#addViewItem"><a href="MjpegView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="MjpegView#attachTo"><a href="MjpegView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="MjpegView#getDataSourcesId"><a href="MjpegView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="MjpegView#getDivId"><a href="MjpegView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="MjpegView#getId"><a href="MjpegView.html#getId">getId</a></li>
+            
+                <li data-name="MjpegView#hide"><a href="MjpegView.html#hide">hide</a></li>
+            
+                <li data-name="MjpegView#init"><a href="MjpegView.html#init">init</a></li>
+            
+                <li data-name="MjpegView#removeViewItem"><a href="MjpegView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="MjpegView#reset"><a href="MjpegView.html#reset">reset</a></li>
+            
+                <li data-name="MjpegView#selectDataView"><a href="MjpegView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="MjpegView#setData"><a href="MjpegView.html#setData">setData</a></li>
+            
+                <li data-name="MjpegView#show"><a href="MjpegView.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="MjpegView#event:beforeAddingItems"><a href="MjpegView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="MjpegView#event:onResize"><a href="MjpegView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="MjpegView#View">
+            <span class="title">
+                <a href="MjpegView_View.html">MjpegView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module.exports">
+            <span class="title">
+                <a href="module.exports.html">module.exports</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module.exports#addFn"><a href="module.exports.html#addFn">addFn</a></li>
+            
+                <li data-name="module.exports#buildUrl"><a href="module.exports.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="module.exports#clear"><a href="module.exports.html#clear">clear</a></li>
+            
+                <li data-name="module.exports#connect"><a href="module.exports.html#connect">connect</a></li>
+            
+                <li data-name="module.exports#disconnect"><a href="module.exports.html#disconnect">disconnect</a></li>
+            
+                <li data-name="module.exports#getDataSourcesIds"><a href="module.exports.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="module.exports#getId"><a href="module.exports.html#getId">getId</a></li>
+            
+                <li data-name="module.exports#getName"><a href="module.exports.html#getName">getName</a></li>
+            
+                <li data-name="module.exports#init"><a href="module.exports.html#init">init</a></li>
+            
+                <li data-name="module.exports#onData"><a href="module.exports.html#onData">onData</a></li>
+            
+                <li data-name="module.exports#parseData"><a href="module.exports.html#parseData">parseData</a></li>
+            
+                <li data-name="module.exports#parseTimeStamp"><a href="module.exports.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+                <li data-name="module.exports#select"><a href="module.exports.html#select">select</a></li>
+            
+                <li data-name="module.exports#setData"><a href="module.exports.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="module.exports#event:onMessage"><a href="module.exports.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module.exports">
+            <span class="title">
+                <a href="module.exports.html">module.exports</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module.exports#addFn"><a href="module.exports.html#addFn">addFn</a></li>
+            
+                <li data-name="module.exports#buildUrl"><a href="module.exports.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="module.exports#clear"><a href="module.exports.html#clear">clear</a></li>
+            
+                <li data-name="module.exports#connect"><a href="module.exports.html#connect">connect</a></li>
+            
+                <li data-name="module.exports#disconnect"><a href="module.exports.html#disconnect">disconnect</a></li>
+            
+                <li data-name="module.exports#getDataSourcesIds"><a href="module.exports.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="module.exports#getId"><a href="module.exports.html#getId">getId</a></li>
+            
+                <li data-name="module.exports#getName"><a href="module.exports.html#getName">getName</a></li>
+            
+                <li data-name="module.exports#init"><a href="module.exports.html#init">init</a></li>
+            
+                <li data-name="module.exports#onData"><a href="module.exports.html#onData">onData</a></li>
+            
+                <li data-name="module.exports#parseData"><a href="module.exports.html#parseData">parseData</a></li>
+            
+                <li data-name="module.exports#parseTimeStamp"><a href="module.exports.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+                <li data-name="module.exports#select"><a href="module.exports.html#select">select</a></li>
+            
+                <li data-name="module.exports#setData"><a href="module.exports.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="module.exports#event:onMessage"><a href="module.exports.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Nexrad">
+            <span class="title">
+                <a href="Nexrad.html">Nexrad</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Nexrad#addFn"><a href="Nexrad.html#addFn">addFn</a></li>
+            
+                <li data-name="Nexrad#clear"><a href="Nexrad.html#clear">clear</a></li>
+            
+                <li data-name="Nexrad#getDataSourcesIds"><a href="Nexrad.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="Nexrad#getId"><a href="Nexrad.html#getId">getId</a></li>
+            
+                <li data-name="Nexrad#init"><a href="Nexrad.html#init">init</a></li>
+            
+                <li data-name="Nexrad#select"><a href="Nexrad.html#select">select</a></li>
+            
+                <li data-name="Nexrad#setData"><a href="Nexrad.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OpenLayerView">
+            <span class="title">
+                <a href="OpenLayerView.html">OpenLayerView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OpenLayerView#addMarker"><a href="OpenLayerView.html#addMarker">addMarker</a></li>
+            
+                <li data-name="OpenLayerView#addPolyline"><a href="OpenLayerView.html#addPolyline">addPolyline</a></li>
+            
+                <li data-name="OpenLayerView#addViewItem"><a href="OpenLayerView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="OpenLayerView#attachTo"><a href="OpenLayerView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="OpenLayerView#getDataSourcesId"><a href="OpenLayerView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="OpenLayerView#getDefaultLayers"><a href="OpenLayerView.html#getDefaultLayers">getDefaultLayers</a></li>
+            
+                <li data-name="OpenLayerView#getDivId"><a href="OpenLayerView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="OpenLayerView#getId"><a href="OpenLayerView.html#getId">getId</a></li>
+            
+                <li data-name="OpenLayerView#hide"><a href="OpenLayerView.html#hide">hide</a></li>
+            
+                <li data-name="OpenLayerView#init"><a href="OpenLayerView.html#init">init</a></li>
+            
+                <li data-name="OpenLayerView#removeViewItem"><a href="OpenLayerView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="OpenLayerView#reset"><a href="OpenLayerView.html#reset">reset</a></li>
+            
+                <li data-name="OpenLayerView#selectDataView"><a href="OpenLayerView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="OpenLayerView#setData"><a href="OpenLayerView.html#setData">setData</a></li>
+            
+                <li data-name="OpenLayerView#show"><a href="OpenLayerView.html#show">show</a></li>
+            
+                <li data-name="OpenLayerView#updateMarker"><a href="OpenLayerView.html#updateMarker">updateMarker</a></li>
+            
+                <li data-name="OpenLayerView#updatePolyline"><a href="OpenLayerView.html#updatePolyline">updatePolyline</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="OpenLayerView#event:beforeAddingItems"><a href="OpenLayerView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="OpenLayerView#event:onResize"><a href="OpenLayerView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OpenLayerView#View">
+            <span class="title">
+                <a href="OpenLayerView_View.html">OpenLayerView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="OrientationQuaternion">
+            <span class="title">
+                <a href="OrientationQuaternion.html">OrientationQuaternion</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="OrientationQuaternion#buildUrl"><a href="OrientationQuaternion.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="OrientationQuaternion#connect"><a href="OrientationQuaternion.html#connect">connect</a></li>
+            
+                <li data-name="OrientationQuaternion#disconnect"><a href="OrientationQuaternion.html#disconnect">disconnect</a></li>
+            
+                <li data-name="OrientationQuaternion#getId"><a href="OrientationQuaternion.html#getId">getId</a></li>
+            
+                <li data-name="OrientationQuaternion#getName"><a href="OrientationQuaternion.html#getName">getName</a></li>
+            
+                <li data-name="OrientationQuaternion#onData"><a href="OrientationQuaternion.html#onData">onData</a></li>
+            
+                <li data-name="OrientationQuaternion#parseData"><a href="OrientationQuaternion.html#parseData">parseData</a></li>
+            
+                <li data-name="OrientationQuaternion#parseTimeStamp"><a href="OrientationQuaternion.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="OrientationQuaternion#event:onMessage"><a href="OrientationQuaternion.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="PointMarker">
+            <span class="title">
+                <a href="PointMarker.html">PointMarker</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="PointMarker#addFn"><a href="PointMarker.html#addFn">addFn</a></li>
+            
+                <li data-name="PointMarker#clear"><a href="PointMarker.html#clear">clear</a></li>
+            
+                <li data-name="PointMarker#getDataSourcesIds"><a href="PointMarker.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="PointMarker#getId"><a href="PointMarker.html#getId">getId</a></li>
+            
+                <li data-name="PointMarker#init"><a href="PointMarker.html#init">init</a></li>
+            
+                <li data-name="PointMarker#select"><a href="PointMarker.html#select">select</a></li>
+            
+                <li data-name="PointMarker#setData"><a href="PointMarker.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Polyline">
+            <span class="title">
+                <a href="Polyline.html">Polyline</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Polyline#addFn"><a href="Polyline.html#addFn">addFn</a></li>
+            
+                <li data-name="Polyline#clear"><a href="Polyline.html#clear">clear</a></li>
+            
+                <li data-name="Polyline#getDataSourcesIds"><a href="Polyline.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="Polyline#getId"><a href="Polyline.html#getId">getId</a></li>
+            
+                <li data-name="Polyline#init"><a href="Polyline.html#init">init</a></li>
+            
+                <li data-name="Polyline#select"><a href="Polyline.html#select">select</a></li>
+            
+                <li data-name="Polyline#setData"><a href="Polyline.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="PtzTasking">
+            <span class="title">
+                <a href="PtzTasking.html">PtzTasking</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="PtzTasking#getId"><a href="PtzTasking.html#getId">getId</a></li>
+            
+                <li data-name="PtzTasking#getName"><a href="PtzTasking.html#getName">getName</a></li>
+            
+                <li data-name="PtzTasking#sendRequest"><a href="PtzTasking.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="PtzTasking#event:onError"><a href="PtzTasking.html#event:onError">onError</a></li>
+            
+                <li data-name="PtzTasking#event:onSuccess"><a href="PtzTasking.html#event:onSuccess">onSuccess</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="PtzTaskingView">
+            <span class="title">
+                <a href="PtzTaskingView.html">PtzTaskingView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="PtzTaskingView#addViewItem"><a href="PtzTaskingView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="PtzTaskingView#attachTo"><a href="PtzTaskingView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="PtzTaskingView#getDataSourcesId"><a href="PtzTaskingView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="PtzTaskingView#getDivId"><a href="PtzTaskingView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="PtzTaskingView#getId"><a href="PtzTaskingView.html#getId">getId</a></li>
+            
+                <li data-name="PtzTaskingView#hide"><a href="PtzTaskingView.html#hide">hide</a></li>
+            
+                <li data-name="PtzTaskingView#init"><a href="PtzTaskingView.html#init">init</a></li>
+            
+                <li data-name="PtzTaskingView#removeViewItem"><a href="PtzTaskingView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="PtzTaskingView#reset"><a href="PtzTaskingView.html#reset">reset</a></li>
+            
+                <li data-name="PtzTaskingView#selectDataView"><a href="PtzTaskingView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="PtzTaskingView#setData"><a href="PtzTaskingView.html#setData">setData</a></li>
+            
+                <li data-name="PtzTaskingView#show"><a href="PtzTaskingView.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="PtzTaskingView#event:beforeAddingItems"><a href="PtzTaskingView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="PtzTaskingView#event:onChange"><a href="PtzTaskingView.html#event:onChange">onChange</a></li>
+            
+                <li data-name="PtzTaskingView#event:onResize"><a href="PtzTaskingView.html#event:onResize">onResize</a></li>
+            
+                <li data-name="PtzTaskingView#event:onSelectedPresets"><a href="PtzTaskingView.html#event:onSelectedPresets">onSelectedPresets</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="PtzTaskingView#View">
+            <span class="title">
+                <a href="PtzTaskingView_View.html">PtzTaskingView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="RangeSliderView">
+            <span class="title">
+                <a href="RangeSliderView.html">RangeSliderView</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="RangeSliderView#activate"><a href="RangeSliderView.html#activate">activate</a></li>
+            
+                <li data-name="RangeSliderView#addViewItem"><a href="RangeSliderView.html#addViewItem">addViewItem</a></li>
+            
+                <li data-name="RangeSliderView#attachTo"><a href="RangeSliderView.html#attachTo">attachTo</a></li>
+            
+                <li data-name="RangeSliderView#deactivate"><a href="RangeSliderView.html#deactivate">deactivate</a></li>
+            
+                <li data-name="RangeSliderView#getDataSourcesId"><a href="RangeSliderView.html#getDataSourcesId">getDataSourcesId</a></li>
+            
+                <li data-name="RangeSliderView#getDivId"><a href="RangeSliderView.html#getDivId">getDivId</a></li>
+            
+                <li data-name="RangeSliderView#getId"><a href="RangeSliderView.html#getId">getId</a></li>
+            
+                <li data-name="RangeSliderView#hide"><a href="RangeSliderView.html#hide">hide</a></li>
+            
+                <li data-name="RangeSliderView#init"><a href="RangeSliderView.html#init">init</a></li>
+            
+                <li data-name="RangeSliderView#removeViewItem"><a href="RangeSliderView.html#removeViewItem">removeViewItem</a></li>
+            
+                <li data-name="RangeSliderView#reset"><a href="RangeSliderView.html#reset">reset</a></li>
+            
+                <li data-name="RangeSliderView#selectDataView"><a href="RangeSliderView.html#selectDataView">selectDataView</a></li>
+            
+                <li data-name="RangeSliderView#setData"><a href="RangeSliderView.html#setData">setData</a></li>
+            
+                <li data-name="RangeSliderView#show"><a href="RangeSliderView.html#show">show</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="RangeSliderView#event:beforeAddingItems"><a href="RangeSliderView.html#event:beforeAddingItems">beforeAddingItems</a></li>
+            
+                <li data-name="RangeSliderView#event:onResize"><a href="RangeSliderView.html#event:onResize">onResize</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="RangeSliderView#View">
+            <span class="title">
+                <a href="RangeSliderView_View.html">RangeSliderView#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Server">
+            <span class="title">
+                <a href="Server.html">Server</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Server#getCapabilities"><a href="Server.html#getCapabilities">getCapabilities</a></li>
+            
+                <li data-name="Server#getDescribeSensor"><a href="Server.html#getDescribeSensor">getDescribeSensor</a></li>
+            
+                <li data-name="Server#getFeatureOfInterest"><a href="Server.html#getFeatureOfInterest">getFeatureOfInterest</a></li>
+            
+                <li data-name="Server#getFeatureOfInterestById"><a href="Server.html#getFeatureOfInterestById">getFeatureOfInterestById</a></li>
+            
+                <li data-name="Server#getResultTemplate"><a href="Server.html#getResultTemplate">getResultTemplate</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Styler">
+            <span class="title">
+                <a href="Styler.html">Styler</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Styler#addFn"><a href="Styler.html#addFn">addFn</a></li>
+            
+                <li data-name="Styler#clear"><a href="Styler.html#clear">clear</a></li>
+            
+                <li data-name="Styler#getDataSourcesIds"><a href="Styler.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="Styler#getId"><a href="Styler.html#getId">getId</a></li>
+            
+                <li data-name="Styler#init"><a href="Styler.html#init">init</a></li>
+            
+                <li data-name="Styler#select"><a href="Styler.html#select">select</a></li>
+            
+                <li data-name="Styler#setData"><a href="Styler.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="SWEXmlStreamParser">
+            <span class="title">
+                <a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="SWEXmlStreamParser#setXml"><a href="SWEXmlStreamParser.html#setXml">setXml</a></li>
+            
+                <li data-name="SWEXmlStreamParser#toJson"><a href="SWEXmlStreamParser.html#toJson">toJson</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="UAHWeather">
+            <span class="title">
+                <a href="UAHWeather.html">UAHWeather</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="UAHWeather#buildUrl"><a href="UAHWeather.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="UAHWeather#connect"><a href="UAHWeather.html#connect">connect</a></li>
+            
+                <li data-name="UAHWeather#disconnect"><a href="UAHWeather.html#disconnect">disconnect</a></li>
+            
+                <li data-name="UAHWeather#getId"><a href="UAHWeather.html#getId">getId</a></li>
+            
+                <li data-name="UAHWeather#getName"><a href="UAHWeather.html#getName">getName</a></li>
+            
+                <li data-name="UAHWeather#onData"><a href="UAHWeather.html#onData">onData</a></li>
+            
+                <li data-name="UAHWeather#parseData"><a href="UAHWeather.html#parseData">parseData</a></li>
+            
+                <li data-name="UAHWeather#parseTimeStamp"><a href="UAHWeather.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="UAHWeather#event:onMessage"><a href="UAHWeather.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="UavMapTasking">
+            <span class="title">
+                <a href="UavMapTasking.html">UavMapTasking</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="UavMapTasking#buildLandRequest"><a href="UavMapTasking.html#buildLandRequest">buildLandRequest</a></li>
+            
+                <li data-name="UavMapTasking#buildLookAtRequest"><a href="UavMapTasking.html#buildLookAtRequest">buildLookAtRequest</a></li>
+            
+                <li data-name="UavMapTasking#buildOrbitRequest"><a href="UavMapTasking.html#buildOrbitRequest">buildOrbitRequest</a></li>
+            
+                <li data-name="UavMapTasking#buildTakeOffRequest"><a href="UavMapTasking.html#buildTakeOffRequest">buildTakeOffRequest</a></li>
+            
+                <li data-name="UavMapTasking#getId"><a href="UavMapTasking.html#getId">getId</a></li>
+            
+                <li data-name="UavMapTasking#getName"><a href="UavMapTasking.html#getName">getName</a></li>
+            
+                <li data-name="UavMapTasking#sendRequest"><a href="UavMapTasking.html#sendRequest">sendRequest</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="UavMapTasking#event:onError"><a href="UavMapTasking.html#event:onError">onError</a></li>
+            
+                <li data-name="UavMapTasking#event:onSuccess"><a href="UavMapTasking.html#event:onSuccess">onSuccess</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="VideoH264">
+            <span class="title">
+                <a href="VideoH264.html">VideoH264</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="VideoH264#buildUrl"><a href="VideoH264.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="VideoH264#connect"><a href="VideoH264.html#connect">connect</a></li>
+            
+                <li data-name="VideoH264#disconnect"><a href="VideoH264.html#disconnect">disconnect</a></li>
+            
+                <li data-name="VideoH264#getId"><a href="VideoH264.html#getId">getId</a></li>
+            
+                <li data-name="VideoH264#getName"><a href="VideoH264.html#getName">getName</a></li>
+            
+                <li data-name="VideoH264#onData"><a href="VideoH264.html#onData">onData</a></li>
+            
+                <li data-name="VideoH264#parseData"><a href="VideoH264.html#parseData">parseData</a></li>
+            
+                <li data-name="VideoH264#parseTimeStamp"><a href="VideoH264.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="VideoH264#event:onMessage"><a href="VideoH264.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="VideoMjpeg">
+            <span class="title">
+                <a href="VideoMjpeg.html">VideoMjpeg</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="VideoMjpeg#buildUrl"><a href="VideoMjpeg.html#buildUrl">buildUrl</a></li>
+            
+                <li data-name="VideoMjpeg#connect"><a href="VideoMjpeg.html#connect">connect</a></li>
+            
+                <li data-name="VideoMjpeg#disconnect"><a href="VideoMjpeg.html#disconnect">disconnect</a></li>
+            
+                <li data-name="VideoMjpeg#getId"><a href="VideoMjpeg.html#getId">getId</a></li>
+            
+                <li data-name="VideoMjpeg#getName"><a href="VideoMjpeg.html#getName">getName</a></li>
+            
+                <li data-name="VideoMjpeg#onData"><a href="VideoMjpeg.html#onData">onData</a></li>
+            
+                <li data-name="VideoMjpeg#parseData"><a href="VideoMjpeg.html#parseData">parseData</a></li>
+            
+                <li data-name="VideoMjpeg#parseTimeStamp"><a href="VideoMjpeg.html#parseTimeStamp">parseTimeStamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="VideoMjpeg#event:onMessage"><a href="VideoMjpeg.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="View#View">
+            <span class="title">
+                <a href="View_View.html">View#View</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="WebSocketConnector">
+            <span class="title">
+                <a href="WebSocketConnector.html">WebSocketConnector</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="WebSocketConnector#close"><a href="WebSocketConnector.html#close">close</a></li>
+            
+                <li data-name="WebSocketConnector#connect"><a href="WebSocketConnector.html#connect">connect</a></li>
+            
+                <li data-name="WebSocketConnector#disconnect"><a href="WebSocketConnector.html#disconnect">disconnect</a></li>
+            
+                <li data-name="WebSocketConnector#getId"><a href="WebSocketConnector.html#getId">getId</a></li>
+            
+                <li data-name="WebSocketConnector#getUrl"><a href="WebSocketConnector.html#getUrl">getUrl</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="WebSocketConnector#event:onMessage"><a href="WebSocketConnector.html#event:onMessage">onMessage</a></li>
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="osh_ui_view_video_FFMPEGView.js.html">Source: osh/ui/view/video/FFMPEGView.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>/***************************** BEGIN LICENSE BLOCK ***************************
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
+ Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
+ ******************************* END LICENSE BLOCK ***************************/
+
+import {View} from "../View";
+import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils";
+import EventManager from "../../../events/EventManager";
+import Worker from './workers/Ffmpeg.worker';
+
+/**
+ * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
+ * @augments View
+ * @example
+ let videoView = new FFMPEGView("videoContainer-id", {
+    dataSourceId: videoDataSource.id,
+    css: "video",
+    cssSelected: "video-selected",
+    name: "Video",
+    width: 800,
+    height: 450,
+    framerate: 25,
+    directPlay: false
+});
+ (*)The transferableData actually transfers the ownership of the object to or from the web worker.
+ It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
+ is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
+ you cannot use the data for anything else (like another viewer).
+ The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
+ */
+
+class FFMPEGView extends View {
+    /**
+     * Create a View.
+     * @param {String} divId - The div element to attach to
+     * @param {Object} options - the properties of the view
+     * @param {String} [options.width=640] - The canvas width
+     * @param {String} [options.height=480] - The canvas height
+     * @param {String} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
+     * @param {String} [options.directPlay=false] - Enable or ignore the framerate play
+     *
+     */
+    constructor(divId, options) {
+        super(divId, [], options);
+
+        this.fps = 0;
+        let width = "640";
+        let height = "480";
+
+        this.statistics = {
+            videoStartTime: 0,
+            videoPictureCounter: 0,
+            windowStartTime: 0,
+            windowPictureCounter: 0,
+            fps: 0,
+            fpsMin: 1000,
+            fpsMax: -1000,
+            fpsSinceStart: 0
+        };
+
+        this.useWorker = false;
+        this.framerate = 29.67;
+        this.directPlay = false;
+
+        if (isDefined(options)) {
+            if (isDefined(options.width)) {
+                width = options.width;
+            }
+
+            if (isDefined(options.height)) {
+                height = options.height;
+            }
+
+            if (isDefined(options.framerate)) {
+                this.framerate = options.framerate;
+            }
+
+            if (isDefined(options.directPlay)) {
+                this.directPlay = options.directPlay;
+            }
+            this.useWorker = (isDefined(options.useWorker)) &amp;&amp; (options.useWorker) &amp;&amp; (isWebWorker());
+        }
+
+        // create webGL canvas
+        this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
+        let domNode = document.getElementById(this.divId);
+        domNode.appendChild(this.yuvCanvas.canvasElement);
+
+        // add selection listener
+        let self = this;
+        EventManager.observeDiv(this.divId, "click", (event) => {
+            EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
+                dataSourcesIds: [self.dataSourceId],
+                entityId: self.entityId
+            });
+        });
+
+        if (this.useWorker) {
+            this.initFFMPEG_DECODER_WORKER();
+        }
+
+        let hidden, visibilityChange;
+
+        if (isDefined(document.hidden)) { // Opera 12.10 and Firefox 18 and later support
+            hidden = "hidden";
+            visibilityChange = "visibilitychange";
+        } else if (isDefined(document.msHidden)) {
+            hidden = "msHidden";
+            visibilityChange = "msvisibilitychange";
+        } else if (isDefined(document.webkitHidden)) {
+            hidden = "webkitHidden";
+            visibilityChange = "webkitvisibilitychange";
+        }
+
+        let that = this;
+
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                that.skipFrame = true;
+            } else {
+                that.skipFrame = false;
+            }
+        }
+
+        document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    }
+
+    setData(dataSourceId, data) {
+        if (!this.skipFrame) {
+            let pktData = data.data;
+            let pktSize = pktData.length;
+            this.decodeWorker(pktSize, pktData);
+        }
+    }
+
+    selectDataView(dataSourceIds, entityId) {
+        let elt = document.getElementById(this.divId);
+        if(isDefined(elt)) {
+            if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId) &amp;&amp;
+              this.entityId === entityId)) {
+                elt.setAttribute("class", this.css + " " + this.cssSelected);
+            } else {
+                elt.setAttribute("class", this.css);
+            }
+        }
+    }
+
+
+    /**
+     * Reset the view by drawing no data array into the YUV canvas.
+     * @override
+     */
+    reset() {
+        // clear canvas
+        let nodata = new Uint8Array(1);
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
+    }
+
+    /**
+     * @private
+     */
+    updateStatistics() {
+        let s = this.statistics;
+        s.videoPictureCounter += 1;
+        s.windowPictureCounter += 1;
+        let now = Date.now();
+        if (!s.videoStartTime) {
+            s.videoStartTime = now;
+        }
+        let videoElapsedTime = now - s.videoStartTime;
+        s.elapsed = videoElapsedTime / 1000;
+        if (videoElapsedTime &lt; 1000) {
+            return;
+        }
+
+        if (!s.windowStartTime) {
+            s.windowStartTime = now;
+            return;
+        } else if ((now - s.windowStartTime) > 1000) {
+            let windowElapsedTime = now - s.windowStartTime;
+            let fps = (s.windowPictureCounter / windowElapsedTime) * 1000;
+            s.windowStartTime = now;
+            s.windowPictureCounter = 0;
+
+            if (fps &lt; s.fpsMin) s.fpsMin = fps;
+            if (fps > s.fpsMax) s.fpsMax = fps;
+            s.fps = fps;
+        }
+
+        let fps = (s.videoPictureCounter / videoElapsedTime) * 1000;
+        s.fpsSinceStart = fps;
+    }
+
+    /**
+     * Called after each decoded frame.
+     * @event
+     */
+    onAfterDecoded() {
+    }
+
+//-- FFMPEG DECODING PART
+
+    //-------------------------------------------------------//
+    //---------- Web worker --------------------------------//
+    //-----------------------------------------------------//
+
+    /**
+     * The worker code is located at the location js/workers/Ffmpeg.worker.js.
+     * This location cannot be changed. Be sure to have the right file at the right place.
+     * @private
+     * @param callback
+     */
+    initFFMPEG_DECODER_WORKER(callback) {
+        this.worker = new Worker();
+        this.worker.id = randomUUID();
+
+        let yuvCanvas = this.yuvCanvas;
+
+        let buffer = [];
+        let that = this;
+        this.worker.onmessage = function (e) {
+            if(that.directPlay) {
+                display(e);
+            } else {
+                buffer.push(e);
+            }
+        };
+
+        this.interval = setInterval(function() {
+            if (buffer.length > this.framerate) {
+                buffer = [];
+            }
+
+            if (buffer.length > 1) {
+                display(buffer.shift());
+            }
+        }, 1000/this.framerate);
+
+        function display(e) {
+
+            let decodedFrame = e.data;
+
+            yuvCanvas.canvasElement.drawing = true;
+            yuvCanvas.drawNextOuptutPictureGL({
+                yData: decodedFrame.frameYData,
+                yDataPerRow: decodedFrame.frame_width,
+                yRowCnt: decodedFrame.frame_height,
+                uData: decodedFrame.frameUData,
+                uDataPerRow: decodedFrame.frame_width / 2,
+                uRowCnt: decodedFrame.frame_height / 2,
+                vData: decodedFrame.frameVData,
+                vDataPerRow: decodedFrame.frame_width / 2,
+                vRowCnt: decodedFrame.frame_height / 2
+            });
+
+            yuvCanvas.canvasElement.drawing = false;
+        }
+    }
+
+    /**
+     * @private
+     * @param pktSize
+     * @param pktData
+     */
+    decodeWorker(pktSize, pktData) {
+        if(pktSize > 0) {
+            let arrayBuffer = pktData.buffer;
+
+            this.worker.postMessage({
+                pktSize: pktSize,
+                pktData: arrayBuffer,
+                byteOffset: pktData.byteOffset
+            }, [arrayBuffer]);
+            pktData = null;
+        }
+    }
+
+    destroy() {
+        if(isDefined(this.interval)) {
+            clearInterval(this.interval);
+        }
+       this. worker.postMessage({
+           message: 'release'
+       });
+       this.worker.terminate();
+    }
+}
+
+export class YUVCanvas {
+    constructor(parOptions) {
+
+        parOptions = parOptions || {};
+
+        this.canvasElement = parOptions.canvas || document.createElement("canvas");
+        this.contextOptions = parOptions.contextOptions;
+
+        this.type = parOptions.type || "yuv420";
+
+        this.customYUV444 = parOptions.customYUV444;
+
+        this.conversionType = parOptions.conversionType || "rec601";
+
+        this.width = parOptions.width || 640;
+        this.height = parOptions.height || 320;
+
+        this.animationTime = parOptions.animationTime || 0;
+
+        this.canvasElement.width = this.width;
+        this.canvasElement.height = this.height;
+
+        this.initContextGL();
+
+        if (this.contextGL) {
+            this.initProgram();
+            this.initBuffers();
+            this.initTextures();
+        }
+
+
+        /**
+         * Draw the next output picture using WebGL
+         */
+        if (this.type === "yuv420") {
+            this.drawNextOuptutPictureGL = (par) => {
+                var gl = this.contextGL;
+                var texturePosBuffer = this.texturePosBuffer;
+                var uTexturePosBuffer = this.uTexturePosBuffer;
+                var vTexturePosBuffer = this.vTexturePosBuffer;
+
+                var yTextureRef = this.yTextureRef;
+                var uTextureRef = this.uTextureRef;
+                var vTextureRef = this.vTextureRef;
+
+                var yData = par.yData;
+                var uData = par.uData;
+                var vData = par.vData;
+
+                var width = this.width;
+                var height = this.height;
+
+                var yDataPerRow = par.yDataPerRow || width;
+                var yRowCnt = par.yRowCnt || height;
+
+                var uDataPerRow = par.uDataPerRow || (width / 2);
+                var uRowCnt = par.uRowCnt || (height / 2);
+
+                var vDataPerRow = par.vDataPerRow || uDataPerRow;
+                var vRowCnt = par.vRowCnt || uRowCnt;
+
+                gl.viewport(0, 0, width, height);
+
+                var tTop = 0;
+                var tLeft = 0;
+                var tBottom = height / yRowCnt;
+                var tRight = width / yDataPerRow;
+                var texturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, texturePosValues, gl.DYNAMIC_DRAW);
+
+                if (this.customYUV444) {
+                    tBottom = height / uRowCnt;
+                    tRight = width / uDataPerRow;
+                } else {
+                    tBottom = (height / 2) / uRowCnt;
+                    tRight = (width / 2) / uDataPerRow;
+                }
+                var uTexturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, uTexturePosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, uTexturePosValues, gl.DYNAMIC_DRAW);
+
+
+                if (this.customYUV444) {
+                    tBottom = height / vRowCnt;
+                    tRight = width / vDataPerRow;
+                } else {
+                    tBottom = (height / 2) / vRowCnt;
+                    tRight = (width / 2) / vDataPerRow;
+                }
+                var vTexturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, vTexturePosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, vTexturePosValues, gl.DYNAMIC_DRAW);
+
+
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, yTextureRef);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, yDataPerRow, yRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, yData);
+
+                gl.activeTexture(gl.TEXTURE1);
+                gl.bindTexture(gl.TEXTURE_2D, uTextureRef);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, uDataPerRow, uRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, uData);
+
+                gl.activeTexture(gl.TEXTURE2);
+                gl.bindTexture(gl.TEXTURE_2D, vTextureRef);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, vDataPerRow, vRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, vData);
+
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+
+        } else if (this.type === "yuv422") {
+            this.drawNextOuptutPictureGL = (par) => {
+                var gl = this.contextGL;
+                var texturePosBuffer = this.texturePosBuffer;
+
+                var textureRef = this.textureRef;
+
+                var data = par.data;
+
+                var width = this.width;
+                var height = this.height;
+
+                var dataPerRow = par.dataPerRow || (width * 2);
+                var rowCnt = par.rowCnt || height;
+
+                gl.viewport(0, 0, width, height);
+
+                var tTop = 0;
+                var tLeft = 0;
+                var tBottom = height / rowCnt;
+                var tRight = width / (dataPerRow / 2);
+                var texturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, texturePosValues, gl.DYNAMIC_DRAW);
+
+                gl.uniform2f(gl.getUniformLocation(this.shaderProgram, 'resolution'), dataPerRow, height);
+
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, textureRef);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, dataPerRow, rowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, data);
+
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+        }
+    }
+
+    /**
+     * Returns true if the canvas supports WebGL
+     */
+    isWebGL() {
+        return this.contextGL;
+    }
+
+    /**
+     * Create the GL context from the canvas element
+     */
+    initContextGL() {
+        var canvas = this.canvasElement;
+        var gl = null;
+
+        var validContextNames = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
+        var nameIndex = 0;
+
+        while (!gl &amp;&amp; nameIndex &lt; validContextNames.length) {
+            var contextName = validContextNames[nameIndex];
+
+            try {
+                if (this.contextOptions) {
+                    gl = canvas.getContext(contextName, this.contextOptions);
+                } else {
+                    gl = canvas.getContext(contextName);
+                }
+            } catch (e) {
+                gl = null;
+            }
+
+            if (!gl || typeof gl.getParameter !== "function") {
+                gl = null;
+            }
+
+            ++nameIndex;
+        }
+
+        this.contextGL = gl;
+    }
+
+    /**
+     * Initialize GL shader program
+     */
+    initProgram() {
+        var gl = this.contextGL;
+
+        // vertex shader is the same for all types
+        var vertexShaderScript;
+        var fragmentShaderScript;
+
+        if (this.type === "yuv420") {
+
+            vertexShaderScript = [
+                'attribute vec4 vertexPos;',
+                'attribute vec4 texturePos;',
+                'attribute vec4 uTexturePos;',
+                'attribute vec4 vTexturePos;',
+                'varying vec2 textureCoord;',
+                'varying vec2 uTextureCoord;',
+                'varying vec2 vTextureCoord;',
+
+                'void main()',
+                '{',
+                '  gl_Position = vertexPos;',
+                '  textureCoord = texturePos.xy;',
+                '  uTextureCoord = uTexturePos.xy;',
+                '  vTextureCoord = vTexturePos.xy;',
+                '}'
+            ].join('\n');
+
+            fragmentShaderScript = [
+                'precision highp float;',
+                'varying highp vec2 textureCoord;',
+                'varying highp vec2 uTextureCoord;',
+                'varying highp vec2 vTextureCoord;',
+                'uniform sampler2D ySampler;',
+                'uniform sampler2D uSampler;',
+                'uniform sampler2D vSampler;',
+                'uniform mat4 YUV2RGB;',
+
+                'void main(void) {',
+                '  highp float y = texture2D(ySampler,  textureCoord).r;',
+                '  highp float u = texture2D(uSampler,  uTextureCoord).r;',
+                '  highp float v = texture2D(vSampler,  vTextureCoord).r;',
+                '  gl_FragColor = vec4(y, u, v, 1) * YUV2RGB;',
+                '}'
+            ].join('\n');
+
+        } else if (this.type === "yuv422") {
+            vertexShaderScript = [
+                'attribute vec4 vertexPos;',
+                'attribute vec4 texturePos;',
+                'varying vec2 textureCoord;',
+
+                'void main()',
+                '{',
+                '  gl_Position = vertexPos;',
+                '  textureCoord = texturePos.xy;',
+                '}'
+            ].join('\n');
+
+            fragmentShaderScript = [
+                'precision highp float;',
+                'varying highp vec2 textureCoord;',
+                'uniform sampler2D sampler;',
+                'uniform highp vec2 resolution;',
+                'uniform mat4 YUV2RGB;',
+
+                'void main(void) {',
+
+                '  highp float texPixX = 1.0 / resolution.x;',
+                '  highp float logPixX = 2.0 / resolution.x;', // half the resolution of the texture
+                '  highp float logHalfPixX = 4.0 / resolution.x;', // half of the logical resolution so every 4th pixel
+                '  highp float steps = floor(textureCoord.x / logPixX);',
+                '  highp float uvSteps = floor(textureCoord.x / logHalfPixX);',
+                '  highp float y = texture2D(sampler, vec2((logPixX * steps) + texPixX, textureCoord.y)).r;',
+                '  highp float u = texture2D(sampler, vec2((logHalfPixX * uvSteps), textureCoord.y)).r;',
+                '  highp float v = texture2D(sampler, vec2((logHalfPixX * uvSteps) + texPixX + texPixX, textureCoord.y)).r;',
+
+                //'  highp float y = texture2D(sampler,  textureCoord).r;',
+                //'  gl_FragColor = vec4(y, u, v, 1) * YUV2RGB;',
+                '  gl_FragColor = vec4(y, u, v, 1.0) * YUV2RGB;',
+                '}'
+            ].join('\n');
+        }
+
+        var YUV2RGB = [];
+
+        if (this.conversionType === "rec709") {
+            // ITU-T Rec. 709
+            YUV2RGB = [
+                1.16438, 0.00000, 1.79274, -0.97295,
+                1.16438, -0.21325, -0.53291, 0.30148,
+                1.16438, 2.11240, 0.00000, -1.13340,
+                0, 0, 0, 1,
+            ];
+        } else {
+            // assume ITU-T Rec. 601
+            YUV2RGB = [
+                1.16438, 0.00000, 1.59603, -0.87079,
+                1.16438, -0.39176, -0.81297, 0.52959,
+                1.16438, 2.01723, 0.00000, -1.08139,
+                0, 0, 0, 1
+            ];
+        }
+
+        var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vertexShader, vertexShaderScript);
+        gl.compileShader(vertexShader);
+        if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+            console.log('Vertex shader failed to compile: ' + gl.getShaderInfoLog(vertexShader));
+        }
+
+        var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fragmentShader, fragmentShaderScript);
+        gl.compileShader(fragmentShader);
+        if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+            console.log('Fragment shader failed to compile: ' + gl.getShaderInfoLog(fragmentShader));
+        }
+
+        var program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.log('Program failed to compile: ' + gl.getProgramInfoLog(program));
+        }
+
+        gl.useProgram(program);
+
+        var YUV2RGBRef = gl.getUniformLocation(program, 'YUV2RGB');
+        gl.uniformMatrix4fv(YUV2RGBRef, false, YUV2RGB);
+
+        this.shaderProgram = program;
+    }
+
+    /**
+     * Initialize vertex buffers and attach to shader program
+     */
+    initBuffers() {
+        var gl = this.contextGL;
+        var program = this.shaderProgram;
+
+        var vertexPosBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([1, 1, -1, 1, 1, -1, -1, -1]), gl.STATIC_DRAW);
+
+        var vertexPosRef = gl.getAttribLocation(program, 'vertexPos');
+        gl.enableVertexAttribArray(vertexPosRef);
+        gl.vertexAttribPointer(vertexPosRef, 2, gl.FLOAT, false, 0, 0);
+
+        if (this.animationTime) {
+
+            var animationTime = this.animationTime;
+            var timePassed = 0;
+            var stepTime = 15;
+
+            var aniFun = function () {
+
+                timePassed += stepTime;
+                var mul = (1 * timePassed) / animationTime;
+
+                if (timePassed >= animationTime) {
+                    mul = 1;
+                } else {
+                    setTimeout(aniFun, stepTime);
+                }
+
+                var neg = -1 * mul;
+                var pos = 1 * mul;
+
+                var vertexPosBuffer = gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([pos, pos, neg, pos, pos, neg, neg, neg]), gl.STATIC_DRAW);
+
+                var vertexPosRef = gl.getAttribLocation(program, 'vertexPos');
+                gl.enableVertexAttribArray(vertexPosRef);
+                gl.vertexAttribPointer(vertexPosRef, 2, gl.FLOAT, false, 0, 0);
+
+                try {
+                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                } catch (e) {
+                }
+
+            };
+            aniFun();
+
+        }
+
+
+        var texturePosBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([1, 0, 0, 0, 1, 1, 0, 1]), gl.STATIC_DRAW);
+
+        var texturePosRef = gl.getAttribLocation(program, 'texturePos');
+        gl.enableVertexAttribArray(texturePosRef);
+        gl.vertexAttribPointer(texturePosRef, 2, gl.FLOAT, false, 0, 0);
+
+        this.texturePosBuffer = texturePosBuffer;
+
+        if (this.type === "yuv420") {
+            var uTexturePosBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, uTexturePosBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([1, 0, 0, 0, 1, 1, 0, 1]), gl.STATIC_DRAW);
+
+            var uTexturePosRef = gl.getAttribLocation(program, 'uTexturePos');
+            gl.enableVertexAttribArray(uTexturePosRef);
+            gl.vertexAttribPointer(uTexturePosRef, 2, gl.FLOAT, false, 0, 0);
+
+            this.uTexturePosBuffer = uTexturePosBuffer;
+
+
+            var vTexturePosBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vTexturePosBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([1, 0, 0, 0, 1, 1, 0, 1]), gl.STATIC_DRAW);
+
+            var vTexturePosRef = gl.getAttribLocation(program, 'vTexturePos');
+            gl.enableVertexAttribArray(vTexturePosRef);
+            gl.vertexAttribPointer(vTexturePosRef, 2, gl.FLOAT, false, 0, 0);
+
+            this.vTexturePosBuffer = vTexturePosBuffer;
+        }
+    }
+
+    /**
+     * Initialize GL textures and attach to shader program
+     */
+    initTextures() {
+        var gl = this.contextGL;
+        var program = this.shaderProgram;
+
+        if (this.type === "yuv420") {
+
+            var yTextureRef = this.initTexture();
+            var ySamplerRef = gl.getUniformLocation(program, 'ySampler');
+            gl.uniform1i(ySamplerRef, 0);
+            this.yTextureRef = yTextureRef;
+
+            var uTextureRef = this.initTexture();
+            var uSamplerRef = gl.getUniformLocation(program, 'uSampler');
+            gl.uniform1i(uSamplerRef, 1);
+            this.uTextureRef = uTextureRef;
+
+            var vTextureRef = this.initTexture();
+            var vSamplerRef = gl.getUniformLocation(program, 'vSampler');
+            gl.uniform1i(vSamplerRef, 2);
+            this.vTextureRef = vTextureRef;
+
+        } else if (this.type === "yuv422") {
+            // only one texture for 422
+            var textureRef = this.initTexture();
+            var samplerRef = gl.getUniformLocation(program, 'sampler');
+            gl.uniform1i(samplerRef, 0);
+            this.textureRef = textureRef;
+
+        }
+    }
+
+    /**
+     * Create and configure a single texture
+     */
+    initTexture() {
+        var gl = this.contextGL;
+
+        var textureRef = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, textureRef);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+
+        return textureRef;
+    }
+
+    /**
+     * Draw picture data to the canvas.
+     * If this object is using WebGL, the data must be an I420 formatted ArrayBuffer,
+     * Otherwise, data must be an RGBA formatted ArrayBuffer.
+     */
+    drawNextOutputPicture(width, height, croppingParams, data) {
+        var gl = this.contextGL;
+
+        if (gl) {
+            this.drawNextOuptutPictureGL(width, height, croppingParams, data);
+        } else {
+            this.drawNextOuptutPictureRGBA(width, height, croppingParams, data);
+        }
+    }
+
+    /**
+     * Draw next output picture using ARGB data on a 2d canvas.
+     */
+    drawNextOuptutPictureRGBA(width, height, croppingParams, data) {
+        var canvas = this.canvasElement;
+
+        var argbData = data;
+        var ctx = canvas.getContext('2d');
+        var imageData = ctx.getImageData(0, 0, width, height);
+        imageData.data.set(argbData);
+
+        if (croppingParams === null) {
+            ctx.putImageData(imageData, 0, 0);
+        } else {
+            ctx.putImageData(imageData, -croppingParams.left, -croppingParams.top, 0, 0, croppingParams.width, croppingParams.height);
+        }
+    }
+}
+
+export default FFMPEGView;
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Sat May 09 2020 02:28:14 GMT+0200 (CEST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
