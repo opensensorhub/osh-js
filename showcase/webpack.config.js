@@ -4,6 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 var path = require('path');
+var fs = require('fs');
 
 let common = {
     resolve: {
@@ -29,7 +30,9 @@ let common = {
         // Resolve node module use of fs
         fs: 'empty'
     },
-    plugins: []
+    plugins: [
+        new CleanWebpackPlugin()
+    ]
 };
 
 module.exports = [{
@@ -54,10 +57,10 @@ module.exports = [{
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'index.html')
         }),
-        new CopyWebpackPlugin([
-            {from: path.resolve(__dirname, 'lib'), to: 'lib'},
-            {from: path.resolve(__dirname, 'images'), to: 'images'},
-        ])
+      new CopyWebpackPlugin([
+          { from: path.resolve(__dirname, 'lib'), to:'lib'},
+          { from: path.resolve(__dirname, 'images'), to:'images'}
+      ])
     ]
 }];
 
@@ -66,22 +69,31 @@ let directories = ['cesium-fois', 'cesium-location','cesium-location-dist','char
     'leaflet-location-path', 'openlayers-location', 'ptz-tasking', 'range-slider','video-gps-sync',
     'video-h264','video-h264-draping', 'video-h264-transferable','video-mjpeg'];
 
+const plug= {};
+
 for(let i=0;i < directories.length;i++) {
     let example = 'examples/'+directories[i];
     let config = require(path.resolve(__dirname, './' + example + '/webpack.config.js'));
 
     //
     config.output.path = path.resolve(__dirname, 'dist');
+
+    // removes clean webpack plugin because it is causing issues while copying files/dir
+    let currentPlugin = [];
+    for(let j=0;j < config.plugins.length;j++) {
+        if(config.plugins[j].constructor.name !== 'CleanWebpackPlugin') {
+            currentPlugin.push(config.plugins[j]);
+        }
+    }
+    currentPlugin.push(new CopyWebpackPlugin([
+        {from: path.resolve(__dirname, './' + example + '/'+directories[i]+'.js'), to: 'js'},
+    ]));
+
     delete config.devServer;
     delete config.resolve;
     delete config.devtool;
+    config.plugins = currentPlugin;
 
-    let copyJsPlugin =  new CopyWebpackPlugin([
-        {from: path.resolve(__dirname, './' + example + '/'+directories[i]+'.js'), to: 'js'},
-    ]);
-
-    // copy js to toggle source code
-    config.plugins.push(copyJsPlugin);
     //
     module.exports.push({
         ...common,

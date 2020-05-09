@@ -98,9 +98,9 @@ module.exports = {
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname,'images'), to: 'images'},
             { from: path.resolve(__dirname,'dist-osh'), to: 'dist-osh'},
-            { from: path.resolve(__dirname,'dist-osh/build/Assets'), to: 'Assets'},
-            { from: path.resolve(__dirname,'dist-osh/build/Workers'), to: 'Workers'},
-            { from: path.resolve(__dirname,'dist-osh/build/Widgets'), to: 'Widgets'},
+            { from: path.resolve(__dirname,'dist-osh/build/Assets'), to: 'Assets', force:true},
+            { from: path.resolve(__dirname,'dist-osh/build/Workers'), to: 'Workers', force:true},
+            { from: path.resolve(__dirname,'dist-osh/build/Widgets'), to: 'Widgets', force:true},
         ])
     ]
 };
