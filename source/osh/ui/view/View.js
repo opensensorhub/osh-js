@@ -304,7 +304,11 @@ export class View {
     async removeViewItem(viewItem) {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
+            for(let ds in viewItem.styler.dataSourceToStylerMap) {
+                EventManager.remove(EventManager.EVENT.DATA + "-" + ds, this.divId);
+            }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
+
         }
     }
     /**
