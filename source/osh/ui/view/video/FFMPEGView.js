@@ -50,8 +50,8 @@ class FFMPEGView extends View {
         super(divId, [], options);
 
         this.fps = 0;
-        let width = "640";
-        let height = "480";
+        this.width = "640";
+        this.height = "480";
 
         this.statistics = {
             videoStartTime: 0,
@@ -64,17 +64,16 @@ class FFMPEGView extends View {
             fpsSinceStart: 0
         };
 
-        this.useWorker = false;
         this.framerate = 29.67;
         this.directPlay = false;
 
         if (isDefined(options)) {
             if (isDefined(options.width)) {
-                width = options.width;
+                this.width = options.width;
             }
 
             if (isDefined(options.height)) {
-                height = options.height;
+                this.height = options.height;
             }
 
             if (isDefined(options.framerate)) {
@@ -84,11 +83,11 @@ class FFMPEGView extends View {
             if (isDefined(options.directPlay)) {
                 this.directPlay = options.directPlay;
             }
-            this.useWorker = (isDefined(options.useWorker)) && (options.useWorker) && (isWebWorker());
         }
 
         // create webGL canvas
-        this.yuvCanvas = new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
+        this.yuvCanvas = this.createCanvas(this.width,this.height);
+
         let domNode = document.getElementById(this.divId);
         domNode.appendChild(this.yuvCanvas.canvasElement);
 
@@ -101,9 +100,7 @@ class FFMPEGView extends View {
             });
         });
 
-        if (this.useWorker) {
-            this.initFFMPEG_DECODER_WORKER();
-        }
+        this.initFFMPEG_DECODER_WORKER();
 
         let hidden, visibilityChange;
 
@@ -129,14 +126,20 @@ class FFMPEGView extends View {
         }
 
         document.addEventListener(visibilityChange, handleVisibilityChange, false);
+        this.buf = [];
+        this.bufferingTime = 2 * 1000;
+    }
+
+    createCanvas(width, height) {
+        return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
     setData(dataSourceId, data) {
-        if (!this.skipFrame) {
-            let pktData = data.data;
-            let pktSize = pktData.length;
-            this.decodeWorker(pktSize, pktData);
-        }
+            if (!this.skipFrame) {
+                let pktData = data.data;
+                let pktSize = pktData.length;
+                this.decodeWorker(pktSize, pktData);
+            }
     }
 
     selectDataView(dataSourceIds, entityId) {
@@ -230,8 +233,6 @@ class FFMPEGView extends View {
         this.worker = new Worker();
         this.worker.id = randomUUID();
 
-        let yuvCanvas = this.yuvCanvas;
-
         let buffer = [];
         let that = this;
         this.worker.onmessage = function (e) {
@@ -243,11 +244,7 @@ class FFMPEGView extends View {
         };
 
         this.interval = setInterval(function() {
-            if (buffer.length > this.framerate) {
-                buffer = [];
-            }
-
-            if (buffer.length > 1) {
+            if(buffer.length > 1) {
                 display(buffer.shift());
             }
         }, 1000/this.framerate);
@@ -256,8 +253,16 @@ class FFMPEGView extends View {
 
             let decodedFrame = e.data;
 
-            yuvCanvas.canvasElement.drawing = true;
-            yuvCanvas.drawNextOuptutPictureGL({
+            if(that.width !== decodedFrame.frame_width ||
+              that.height !== decodedFrame.frame_height) {
+                //re-create the canvas
+                that.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
+                that.width = decodedFrame.frame_width;
+                that.height = decodedFrame.frame_height;
+            }
+
+            that.yuvCanvas.canvasElement.drawing = true;
+            that.yuvCanvas.drawNextOuptutPictureGL({
                 yData: decodedFrame.frameYData,
                 yDataPerRow: decodedFrame.frame_width,
                 yRowCnt: decodedFrame.frame_height,
@@ -269,7 +274,7 @@ class FFMPEGView extends View {
                 vRowCnt: decodedFrame.frame_height / 2
             });
 
-            yuvCanvas.canvasElement.drawing = false;
+            that.yuvCanvas.canvasElement.drawing = false;
         }
     }
 
@@ -799,6 +804,14 @@ export class YUVCanvas {
         } else {
             ctx.putImageData(imageData, -croppingParams.left, -croppingParams.top, 0, 0, croppingParams.width, croppingParams.height);
         }
+    }
+
+    resize(width, height) {
+        this.canvasElement.width = width;
+        this.canvasElement.height = height;
+
+        this.width = width;
+        this.height = height;
     }
 }
 
