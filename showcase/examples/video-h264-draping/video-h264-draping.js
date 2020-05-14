@@ -1,6 +1,13 @@
 import Json from 'osh/datareceiver/Json';
 import CesiumView from 'osh/ui/view/map/CesiumView';
-import {EllipsoidTerrainProvider, Matrix3, Cartesian3, Cartesian2 } from "cesium";
+import {
+    EllipsoidTerrainProvider,
+    Matrix3,
+    Cartesian3,
+    Cartesian2,
+    BingMapsStyle,
+    BingMapsImageryProvider
+} from "cesium";
 import VideoH264 from "osh/datareceiver/VideoH264";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 import ImageDraping from "osh/ui/styler/ImageDraping";
@@ -150,6 +157,10 @@ cesiumView.viewer.scene.logarithmicDepthBuffer = false;
 cesiumView.viewer.camera.setView({
     destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
 });
+
+// select bing maps as default imagery
+const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
 // start streaming
 videoDataSource.connect();
