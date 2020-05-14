@@ -14,11 +14,6 @@ var samples = [
     url: "cesium-location"
   },
   {
-    name: "Moving Location (CesiumJS) using Distributable OSH",
-    description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle.",
-    url: "cesium-location-dist"
-  },
-  {
     name: "Simple Chart (Chart.lib)",
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
