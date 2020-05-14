@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../../../../osh/ui/view/View";
-import EventManager from "../../../../osh/events/EventManager";
-import {isDefined} from "../../../../osh/utils/Utils";
+import {View} from "../../../osh/ui/view/View";
+import EventManager from "../../../osh/events/EventManager";
+import {isDefined} from "../../../osh/utils/Utils";
 import "../../resources/css/noUISlider.css";
 import * as noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.min.css';

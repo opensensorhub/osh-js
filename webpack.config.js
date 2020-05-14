@@ -95,10 +95,9 @@ module.exports = {
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-            {from: 'images', to: 'images'},
             {from: 'libs/tree/images/tree', to: 'images'},
-            {from: 'source/ext/osh/resources/css', to: 'css'},
-            {from: 'source/ext/osh/resources/images', to: 'images'},
+            {from: 'source/osh-ext/resources/css', to: 'css'},
+            {from: 'source/osh-ext/resources/images', to: 'images'},
             {from: 'source/osh/resources/css', to: 'css'},
             {from: 'source/osh/resources/images', to: 'images'},
             {from: 'source/', to: '../source'},

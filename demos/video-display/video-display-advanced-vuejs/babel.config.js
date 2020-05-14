@@ -5,7 +5,7 @@ const oshPlugins = [
             root: ["./src/"],
             alias: {
                 "osh": "../../../source/osh",
-                "ext/osh": "../../../source/ext/osh",
+                "ext/osh": "../../../source/osh-ext",
             }
         }
     ]
