@@ -41,6 +41,9 @@ class DataSource {
         this.connected = false;
 
         this.initDataSource(properties);
+
+        this.lastTimeStamp = Date.now();
+        this.lastStartTime = 'now';
     }
 
     /**
@@ -82,6 +85,14 @@ class DataSource {
             this.connector.responseType = 'arraybuffer';
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
+        }
+
+        this.connector.onReconnect = () => {
+            // if not real time, preserve last timestamp
+            if(this.lastStartTime !== 'now') {
+                properties.startTime = new Date(this.lastTimeStamp).toISOString();
+                this.connector.setUrl(this.buildUrl(properties));
+            }
         }
     }
 
@@ -210,9 +221,10 @@ class DataSource {
         url += "observedProperty=" + properties.observedProperty + "&";
 
         // adds temporalFilter
-        let startTime = properties.startTime;
+        this.lastStartTime = properties.startTime;
+
         let endTime = properties.endTime;
-        url += "temporalFilter=phenomenonTime," + startTime + "/" + endTime + "&";
+        url += "temporalFilter=phenomenonTime," + this.lastStartTime + "/" + endTime + "&";
 
         if (properties.replaySpeed) {
             // adds replaySpeed
@@ -226,6 +238,16 @@ class DataSource {
 
         return url;
     }
+
+    /**
+     * Set the delay before reconnecting the dataSource
+     * @param {Number} timeout - the delay in ms after reconnecting the dataSource
+     */
+    setReconnectTimeout (timeout) {
+        return  this.connector.setReconnectTimeout(timeout);
+    }
+
+
 }
 
 export default DataSource;

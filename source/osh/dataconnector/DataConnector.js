@@ -26,6 +26,16 @@ class DataConnector {
     constructor(url) {
         this.url = url;
         this.id = "DataConnector-" + randomUUID();
+
+        this.reconnectTimeout = 1000 * 60 * 2; //2 min
+    }
+
+    /**
+     * Sets the url
+     * @param url
+     */
+    setUrl(url) {
+        this.url = url;
     }
 
     /**
@@ -43,6 +53,16 @@ class DataConnector {
     getUrl() {
         return this.url;
     }
+
+    /**
+     * Sets the reconnection timeout
+     * @param {Number} timeout - delay in milliseconds before reconnecting dataSource
+     */
+    setReconnectTimeout(timeout) {
+        this.reconnectTimeout = timeout;
+    }
+
+    onReconnect(){}
 }
 
 export default DataConnector;

@@ -36,13 +36,28 @@ import DataSource from './DataSource';
  */
 class VideoH264 extends DataSource {
     /**
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
+     * @param {Boolean} properties.syncMasterTime - defines if the datasource is synchronize with the others one
+     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
+     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     */
+    constructor(name, properties) {
+        super(name, properties);
+        this.setReconnectTimeout(1000 * 5); // 5 sec
+    }
+
+    /**
      * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
      * @param {ArrayBuffer} data - the data to parse
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
         // read double time stamp as big endian
-        return new DataView(data).getFloat64(0, false) * 1000;
+        this.lastTimeStamp = new DataView(data).getFloat64(0, false) * 1000;
+        return this.lastTimeStamp;
     }
 
     /**

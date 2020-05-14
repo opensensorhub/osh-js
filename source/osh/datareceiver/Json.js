@@ -46,7 +46,8 @@ class Json extends DataSource {
      */
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
-        return new Date(JSON.parse(rec)['time']).getTime();
+        this.lastTimeStamp = new Date(JSON.parse(rec)['time']).getTime();
+        return this.lastTimeStamp;
     }
 
     /**

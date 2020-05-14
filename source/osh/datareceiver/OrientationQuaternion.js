@@ -45,7 +45,8 @@ class OrientationQuaternion extends DataSource {
     parseTimeStamp(data) {
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         let tokens = rec.trim().split(",");
-        return new Date(tokens[0]).getTime();
+        this.lastTimeStamp = new Date(tokens[0]).getTime();
+        return this.lastTimeStamp;
     }
 
     /**
