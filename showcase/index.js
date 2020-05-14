@@ -24,11 +24,6 @@ var samples = [
     url: "discovery"
   },
   {
-    name: "Entity tree (JsTree)",
-    description: "Display a native JS tree to select and interact onto your entities",
-    url: "entity"
-  },
-  {
     name: "Moving Location (Leaflet)",
     description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
     url: "leaflet-location"
@@ -53,11 +48,6 @@ var samples = [
     name: "Moving Location (OpenLayers)",
     description: "Display a moving marker on an OpenLayers map, tracking the current location of a vehicle.",
     url: "openlayers-location"
-  },
-  {
-    name: "Live camera tasking",
-    description: "Display control to task your camera.",
-    url: "ptz-tasking"
   },
   {
     name: "Range slider (noUiSlider)",
