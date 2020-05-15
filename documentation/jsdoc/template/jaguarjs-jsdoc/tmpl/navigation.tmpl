@@ -1,5 +1,10 @@
 <?js
 var self = this;
+
+function toShortName(name) {
+    return name.indexOf('module:') === 0 ? name.split('/').pop() : name;
+}
+
 ?>
 <div class="navigation">
     <h3 class="applicationName"><a href="index.html"><?js= env.conf.templates.applicationName ?></a></h3>

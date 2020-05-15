@@ -25,6 +25,7 @@ li {
 .navigation {
   position: fixed;
   float: left;
+  font-size:14px;
   width: 250px;
   height: 100%;
   background-color: #343131;
@@ -55,8 +56,8 @@ li {
   width: 100%;
 }
 .navigation li.item {
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 2px;
+  padding-bottom: 0px;
   border-bottom: 1px solid #333;
 }
 .navigation li.item a {
