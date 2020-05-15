@@ -5806,11 +5806,6 @@ var samples = [
     url: "cesium-location"
   },
   {
-    name: "Moving Location (CesiumJS) using Distributable OSH",
-    description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle.",
-    url: "cesium-location-dist"
-  },
-  {
     name: "Simple Chart (Chart.lib)",
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
@@ -5819,11 +5814,6 @@ var samples = [
     name: "Discovery (form)",
     description: "Display a Form helping to choose the correct DataSource depending on the offering.",
     url: "discovery"
-  },
-  {
-    name: "Entity tree (JsTree)",
-    description: "Display a native JS tree to select and interact onto your entities",
-    url: "entity"
   },
   {
     name: "Moving Location (Leaflet)",
@@ -5850,11 +5840,6 @@ var samples = [
     name: "Moving Location (OpenLayers)",
     description: "Display a moving marker on an OpenLayers map, tracking the current location of a vehicle.",
     url: "openlayers-location"
-  },
-  {
-    name: "Live camera tasking",
-    description: "Display control to task your camera.",
-    url: "ptz-tasking"
   },
   {
     name: "Range slider (noUiSlider)",
