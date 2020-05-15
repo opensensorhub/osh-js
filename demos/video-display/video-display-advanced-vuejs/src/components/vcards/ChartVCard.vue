@@ -34,7 +34,7 @@
             handler: function (rec, timeStamp) {
               return {
                 x: timeStamp,
-                y: rec[0]
+                y: rec.windSpeed
               };
             }
           }

@@ -16,15 +16,14 @@
 
 import Server from "../../../osh/server/Server";
 import {isDefined, randomUUID, removeLastCharIfExist} from "../../../osh/utils/Utils";
-import LatLonAlt from "../../../osh/datareceiver/LatLonAlt";
 import PointMarker from "../../../osh/ui/styler/PointMarker";
 import VideoMjpeg from "../../../osh/datareceiver/VideoMjpeg";
 import VideoH264 from "../../../osh/datareceiver/VideoH264";
-import Chart from "../../../osh/datareceiver/Chart";
 import Curve from "../../../osh/ui/styler/Curve";
 import {View} from "../../../osh/ui/view/View";
 import DataReceiverController from "../../../osh/datareceiver/DataReceiverController";
 import "../../resources/css/discovery.css";
+import SweJsonDataSource from "../../../osh/datareceiver/SweJsonDataSource";
 
 /**
  * Class representing a Discovery View. The discovery view is a helper class to
@@ -466,7 +465,7 @@ class DiscoveryView extends View {
      * @private
      */
     createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime,  entityId) {
-        let dataSource = new LatLonAlt(name, {
+        let dataSource = new SweJsonDataSource(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -575,7 +574,7 @@ class DiscoveryView extends View {
      * @private
      */
     createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        let dataSource = new Chart(name, {
+        let dataSource = new SweJsonDataSource(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
