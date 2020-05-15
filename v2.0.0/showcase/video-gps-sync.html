@@ -2,7 +2,7 @@
     #leafletMapLeft {
         padding: 8px;
         border: 1px solid #dee2e6;
-        width:calc(50% - 100px);
+        width:calc(35% - 27px);
         height: 400px;
         margin: auto;
         float:left;
@@ -11,24 +11,34 @@
     #leafletMapRight {
         padding: 8px;
         border: 1px solid #dee2e6;
-        width:calc(50% - 100px);
+        width:calc(35% - 27px);
         height: 400px;
         margin: auto;
         float:right;
     }
 
-    #gps-timestamp {
+    #middle {
+        width: 30%;
+        height: auto;
         float:left;
     }
+    #gps-timestamp-right, #gps-timestamp-left {
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        overflow: hidden;
+        margin: auto;
+        width: 100%;
+    }
+
     .leaflet-container {
         height: 100%;
     }
 
     div.video-mjpeg {
-        width: 25%;
+        height:auto;
         padding: 8px;
         border: 1px solid #dee2e6;
-        resize: horizontal;
         overflow: hidden;
         margin: auto;
     }
@@ -39,12 +49,11 @@
 </style>
 <div>
     <div id="leafletMapLeft"></div>
-    <div id="gps-timestamp">
-        <div>< </div>
-        <div> ></div>
+    <div id="middle">
+        <div id="gps-timestamp-left">timestamp1</div>
+        <div id="gps-timestamp-right">timestamp2</div>
+        <div id="video-container"></div>
     </div>
     <div id="leafletMapRight"></div>
 </div>
-<div id="gps-timestamp"/>
-<div id="video-container"/>
 <script type="text/javascript" src="bundle.video.gps.sync.js"></script>

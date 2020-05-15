@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/precache-manifest.2669bdb77783441b271d44de87038dc6.js"
+  "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/precache-manifest.2ff23dfce09699cba5d090572eeaab79.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "video-display"});
