@@ -1,4 +1,4 @@
-import Json from 'osh/datareceiver/Json';
+import Json from 'osh/datareceiver/SweJsonDataSource';
 import CesiumView from 'osh/ui/view/map/CesiumView';
 import {
     EllipsoidTerrainProvider,

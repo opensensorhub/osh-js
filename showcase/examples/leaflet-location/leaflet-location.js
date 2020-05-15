@@ -1,9 +1,9 @@
 // create data source for Android phone GPS
-import Json from "../../../source/osh/datareceiver/Json.js";
+import SweJsonDataSource from "../../../source/osh/datareceiver/SweJsonDataSource.js";
 import PointMarker from "../../../source/osh/ui/styler/PointMarker.js";
 import LeafletView from "../../../source/osh/ui/view/map/LeafletView.js";
 
-let gpsDataSource = new Json("android-GPS", {
+let gpsDataSource = new SweJsonDataSource("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

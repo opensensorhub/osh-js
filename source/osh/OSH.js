@@ -7,7 +7,7 @@ export { default as  DataReceiverController } from './datareceiver/DataReceiverC
 export { default as  DataSource } from './datareceiver/DataSource';
 export { default as  Chart } from './datareceiver/Chart';
 export { default as  EulerOrientation } from './datareceiver/EulerOrientation';
-export { default as  Json } from './datareceiver/Json';
+export { default as  Json } from './datareceiver/SweJsonDataSource';
 export { default as  LatLonAlt } from './datareceiver/LatLonAlt';
 export { default as  OrientationQuaternion  } from './datareceiver/OrientationQuaternion';
 export { default as  UAHWeather  } from './datareceiver/UAHWeather';

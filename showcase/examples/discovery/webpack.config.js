@@ -82,7 +82,7 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
         {from: path.resolve(__dirname,'images'), to: 'images'},
-        {from: path.resolve(__dirname,'../../../source/ext/osh/resources/images'), to: 'images'},
+        {from: path.resolve(__dirname,'../../../source/osh-ext/resources/images'), to: 'images'},
         ])
     ]
 };

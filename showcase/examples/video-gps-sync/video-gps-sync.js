@@ -2,7 +2,7 @@
 import VideoMjpeg from "osh/datareceiver/VideoMjpeg.js";
 import MjpegView from "osh/ui/view/video/MjpegView.js";
 // create data source for Android phone GPS
-import Json from "../../../source/osh/datareceiver/Json.js";
+import SweJsonDataSource from "../../../source/osh/datareceiver/SweJsonDataSource.js";
 import PointMarker from "../../../source/osh/ui/styler/PointMarker.js";
 import LeafletView from "../../../source/osh/ui/view/map/LeafletView.js";
 import {randomUUID} from "../../../source/osh/utils/Utils";
@@ -24,7 +24,7 @@ let videoDataSource = new VideoMjpeg("android-Video", {
   replaySpeed: REPLAY_FACTOR
 });
 
-let gpsDataSource = new Json("android-GPS", {
+let gpsDataSource = new SweJsonDataSource("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -38,7 +38,7 @@ let gpsDataSource = new Json("android-GPS", {
   replaySpeed: REPLAY_FACTOR
 });
 
-let gpsDataSourceNoSync = new Json("android-GPS", {
+let gpsDataSourceNoSync = new SweJsonDataSource("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

@@ -93,7 +93,7 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import Json from "osh/datareceiver/Json";
+  import SweJsonDataSource from "osh/datareceiver/SweJsonDataSource";
   import VideoMjpeg from "osh/datareceiver/VideoMjpeg";
   import Chart from "osh/datareceiver/Chart";
   import {randomUUID} from "osh/utils/Utils";

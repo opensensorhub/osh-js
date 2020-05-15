@@ -1,5 +1,5 @@
 // create data source for Android phone GPS
-import Json from "osh/datareceiver/Json.js";
+import Json from "osh/datareceiver/SweJsonDataSource.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import Polyline from "osh/ui/styler/Polyline";
