@@ -25,7 +25,7 @@
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         console.log(videoCanvas);
         // create data source for Android phone GPS
-        let platformLocationDataSource = new Json('android-GPS', {
+        let platformLocationDataSource = new SweJson('android-GPS', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -36,7 +36,7 @@
           replaySpeed: 1
         });
 
-        let platformOrientationDataSource = new Json('android-Heading', {
+        let platformOrientationDataSource = new SweJson('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -47,7 +47,7 @@
           replaySpeed: 1
         });
 
-        let gimbalOrientationDataSource = new Json('android-Heading', {
+        let gimbalOrientationDataSource = new SweJson('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

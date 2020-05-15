@@ -19,7 +19,7 @@ export default {
 
   methods: {
     init() {
-      let gpsDataSource = new Json("android-GPS", {
+      let gpsDataSource = new SweJson("android-GPS", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

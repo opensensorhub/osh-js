@@ -20,7 +20,7 @@
     methods: {
       init() {
         // create data source for Android phone GPS
-        let platformLocationDataSource = new Json('android-GPS', {
+        let platformLocationDataSource = new SweJson('android-GPS', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -31,7 +31,7 @@
           replaySpeed: 1
         });
 
-        let platformOrientationDataSource = new Json('android-Heading', {
+        let platformOrientationDataSource = new SweJson('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
