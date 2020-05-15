@@ -140,6 +140,9 @@
           destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
         });
 
+        // select bing maps as default imagery
+        const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
+        baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
         // start streaming
         platformLocationDataSource.connect();
