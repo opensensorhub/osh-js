@@ -6,7 +6,7 @@ export { default as  WebSocketConnector } from './dataconnector/WebSocketConnect
 export { default as  DataReceiverController } from './datareceiver/DataReceiverController';
 export { default as  DataSource } from './datareceiver/DataSource';
 export { default as  SweJsonDataSource } from './datareceiver/SweJson';
-export { default as  OrientationQuaternion  } from './datareceiver/OrientationQuaternion';
+export { default as  OrientationQuaternion  } from '../osh-ext/datareceiver/OrientationQuaternion';
 export { default as  VideoH264 } from './datareceiver/VideoH264';
 export { default as  VideMjpeg } from './datareceiver/VideoMjpeg';
 export { default as  DataSenderController } from './datasender/DataSenderController';
@@ -30,4 +30,4 @@ export { default as  OpenLayerView } from './ui/view/map/OpenLayerView';
 export { default as  LeafletView  } from './ui/view/map/LeafletView';
 export { default as  FFMPEGView } from './ui/view/video/FFMPEGView';
 export { default as  MjpegView } from './ui/view/video/MjpegView';
-export { View } from './ui/view/View';
+export { default as  View } from './ui/view/View';

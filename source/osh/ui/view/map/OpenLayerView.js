@@ -14,12 +14,12 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View as OshView} from "../View";
+import View from "../View";
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import EventManager from "../../../events/EventManager";
 import 'ol/css.js';
 import 'ol/ol.css';
-import {Map, View} from 'ol';
+import {Map, View as OlView} from 'ol';
 import TileLayer from 'ol/layer/Tile.js';
 import {Group} from "ol/layer.js";
 import {transform} from "ol/proj.js";
@@ -38,7 +38,7 @@ import OSM from "ol/source/OSM";
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
  * @extends View
  */
-class OpenLayerView extends OshView {
+class OpenLayerView extends View {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
@@ -181,7 +181,7 @@ class OpenLayerView extends OshView {
                 maxZoom = options.maxZoom;
             }
             if (options.initialView) {
-                initialView = new View({
+                initialView = new OlView({
                     center: transform([options.initialView.lon, options.initialView.lat], 'EPSG:4326', 'EPSG:900913'),
                     zoom: options.initialView.zoom,
                     maxZoom: maxZoom
@@ -203,7 +203,7 @@ class OpenLayerView extends OshView {
             }
         } else {
             // loads the default one
-            initialView = new View({
+            initialView = new OlView({
                 center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
                 zoom: 11,
                 maxZoom: maxZoom

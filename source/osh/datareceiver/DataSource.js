@@ -32,6 +32,15 @@ class DataSource {
      * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
      * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.offeringID the offeringID
+     * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.startTime the start time (ISO format)
+     * @param {String} properties.endTime the end time (ISO format)
+     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @return {String} the full url
      */
     constructor(name, properties) {
         this.id = "DataSource-" + randomUUID();
@@ -179,6 +188,7 @@ class DataSource {
 
     /**
      * Builds the full url.
+     * @private
      * @param {Object} properties
      * @param {String} properties.protocol the connector protocol
      * @param {String} properties.endpointUrl the endpoint url

@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../../../../osh/ui/view/View";
+import View from "../../../../osh/ui/view/View";
 import EventManager from "../../../../osh/events/EventManager";
 import {isDefined} from "../../../../osh/utils/Utils";
 import "../../../resources/css/noUISlider.css";

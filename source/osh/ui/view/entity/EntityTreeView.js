@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../View.js";
+import View from "../View.js";
 import {isDefined} from "../../../utils/Utils.js";
 import {createTree} from "../../../../../libs/tree/tree.js";
 import "../../../../../libs/tree/tree.css";

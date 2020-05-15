@@ -36,6 +36,10 @@ import {isWebWorker} from '../utils/Utils';
  */
 
 class WebSocketConnector extends DataConnector {
+    /**
+     *
+     * @param properties -
+     */
     constructor(properties) {
         super(properties);
         this.blobURL = URL.createObjectURL(new Blob(['(',

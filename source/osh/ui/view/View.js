@@ -19,13 +19,12 @@
  * @param {Object} parentElementDivId - The parent html element div id to attach/or create the view.
  * @param {String} viewItems - The list of view items
  * @param {String} options - The options
- * @abstract
  */
 import {isDefined, randomUUID} from '../../utils/Utils';
 import EventManager from '../../events/EventManager';
 import '../../resources/css/view.css';
 
-export class View {
+class View {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
@@ -378,3 +377,5 @@ export class View {
     reset() {
     }
 }
+
+export default View;

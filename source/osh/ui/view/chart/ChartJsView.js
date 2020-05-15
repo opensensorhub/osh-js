@@ -15,11 +15,14 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import {View} from "../View";
+import View from "../View";
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
 
+/**
+ * @extends View
+ */
 class ChartJsView extends View {
     /**
      * Create a View.

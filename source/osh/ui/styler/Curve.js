@@ -20,7 +20,7 @@ import {isDefined} from "../../utils/Utils";
 /**
  * @extends Styler
  */
-export default class Curve extends Styler {
+class Curve extends Styler {
     /**
      * Create the Curve
      * @param {Object} properties -
@@ -97,3 +97,4 @@ export default class Curve extends Styler {
         return false;
     }
 }
+export default Curve;

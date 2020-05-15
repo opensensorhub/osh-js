@@ -9,14 +9,14 @@
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../View";
+import View from "../View";
 import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils";
 import EventManager from "../../../events/EventManager";
 import Worker from './workers/Ffmpeg.worker';
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
- * @augments View
+ * @extends View
  * @example
  let videoView = new FFMPEGView("videoContainer-id", {
     dataSourceId: videoDataSource.id,

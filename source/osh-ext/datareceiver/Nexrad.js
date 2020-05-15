@@ -20,7 +20,7 @@ import DataSource from '../../osh/datareceiver/DataSource';
  * This datasource provides parsing to DataSourceNexrad.
  * @extends DataSource
  */
-export default class Nexrad extends DataSource {
+class Nexrad extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp is the first token got from split(',')
@@ -89,3 +89,4 @@ export default class Nexrad extends DataSource {
         };
     }
 }
+export default Nexrad;

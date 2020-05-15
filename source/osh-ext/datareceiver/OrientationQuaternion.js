@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from './DataSource';
+import DataSource from '../../osh/datareceiver/DataSource';
 
 /**
  * This datasource provides parsing to Orientation Quaternion.

@@ -15,7 +15,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../View";
+import View from "../View";
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import EventManager from "../../../events/EventManager";
 
