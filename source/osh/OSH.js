@@ -21,7 +21,6 @@ export { default as  Server } from './server/Server';
 export { default as  Styler } from './ui/styler/Styler';
 export { default as  Curve } from './ui/styler/Curve';
 export { default as  ImageDraping } from './ui/styler/ImageDraping';
-export { default as  Nexrad } from './ui/styler/Nexrad';
 export { default as  PointMarker } from './ui/styler/PointMarker';
 export { default as  Polyline } from './ui/styler/Polyline';
 export { default as  ChartJsView } from './ui/view/chart/ChartJsView';

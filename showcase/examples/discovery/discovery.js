@@ -1,4 +1,4 @@
-import DiscoveryView, {DiscoveryType} from "osh-ext/ui/discovery/DiscoveryView";
+import DiscoveryView, {DiscoveryType} from "osh-ext/ui/view/discovery/DiscoveryView";
 import LeafletView from "osh/ui/view/map/LeafletView";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 import MjpegView from "osh/ui/view/video/MjpegView";

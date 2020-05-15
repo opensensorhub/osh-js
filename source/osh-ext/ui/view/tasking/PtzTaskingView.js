@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {View} from "../../../osh/ui/view/View";
-import {isDefined, randomUUID} from "../../../osh/utils/Utils";
-import "../../resources/css/tasking.css";
+import {View} from "../../../../osh/ui/view/View";
+import {isDefined, randomUUID} from "../../../../osh/utils/Utils";
+import "../../../resources/css/tasking.css";
 import EventManager from "../../../../osh/events/EventManager";
 
 export const htmlTaskingComponent=`

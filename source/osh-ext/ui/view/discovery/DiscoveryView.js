@@ -14,15 +14,15 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Server from "../../../osh/server/Server";
-import {isDefined, randomUUID, removeLastCharIfExist} from "../../../osh/utils/Utils";
-import PointMarker from "../../../osh/ui/styler/PointMarker";
-import VideoMjpeg from "../../../osh/datareceiver/VideoMjpeg";
-import VideoH264 from "../../../osh/datareceiver/VideoH264";
-import Curve from "../../../osh/ui/styler/Curve";
-import {View} from "../../../osh/ui/view/View";
-import DataReceiverController from "../../../osh/datareceiver/DataReceiverController";
-import "../../resources/css/discovery.css";
+import Server from "../../../../osh/server/Server";
+import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils";
+import PointMarker from "../../../../osh/ui/styler/PointMarker";
+import VideoMjpeg from "../../../../osh/datareceiver/VideoMjpeg";
+import VideoH264 from "../../../../osh/datareceiver/VideoH264";
+import Curve from "../../../../osh/ui/styler/Curve";
+import {View} from "../../../../osh/ui/view/View";
+import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController";
+import "../../../resources/css/discovery.css";
 import SweJsonDataSource from "../../../osh/datareceiver/SweJsonDataSource";
 
 /**

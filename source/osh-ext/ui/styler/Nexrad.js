@@ -18,8 +18,8 @@ import {
 	Cartesian3,
 } from 'cesium';
 
-import {isDefined} from "../../utils/Utils";
-import Styler from "./Styler";
+import {isDefined} from "../../../osh/utils/Utils";
+import Styler from "../../../osh/ui/styler/Styler";
 
 /**
 	* Nexrad Styler.
