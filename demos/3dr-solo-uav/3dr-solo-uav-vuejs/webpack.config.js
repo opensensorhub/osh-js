@@ -73,9 +73,10 @@ const config = {
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
-        use: [
-          'file-loader',
-        ],
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]?[hash]'
+        }
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
