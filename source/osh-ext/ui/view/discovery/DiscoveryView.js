@@ -23,7 +23,7 @@ import Curve from "../../../../osh/ui/styler/Curve";
 import {View} from "../../../../osh/ui/view/View";
 import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController";
 import "../../../resources/css/discovery.css";
-import SweJsonDataSource from "../../../osh/datareceiver/SweJsonDataSource";
+import SweJson from "../../../../osh/datareceiver/SweJson";
 
 /**
  * Class representing a Discovery View. The discovery view is a helper class to
@@ -465,7 +465,7 @@ class DiscoveryView extends View {
      * @private
      */
     createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime,  entityId) {
-        let dataSource = new SweJsonDataSource(name, {
+        let dataSource = new SweJson(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -574,7 +574,7 @@ class DiscoveryView extends View {
      * @private
      */
     createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        let dataSource = new SweJsonDataSource(name, {
+        let dataSource = new SweJson(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,

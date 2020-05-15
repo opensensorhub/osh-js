@@ -93,7 +93,7 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SweJsonDataSource from "osh/datareceiver/SweJsonDataSource";
+  import SweJson from "osh/datareceiver/SweJson";
   import VideoMjpeg from "osh/datareceiver/VideoMjpeg";
   import {randomUUID} from "osh/utils/Utils";
   import DataReceiverController from "osh/datareceiver/DataReceiverController";
@@ -116,7 +116,7 @@
         selectionIds: [],
         dataSources: {},
         items: [],
-        locationDataSource: new SweJsonDataSource("android-GPS", {
+        locationDataSource: new SweJson("android-GPS", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -129,7 +129,7 @@
           timeShift: -16000,
           replaySpeed: 2
         }),
-        headingDataSource: new SweJsonDataSource("android-Att", {
+        headingDataSource: new SweJson("android-Att", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -153,7 +153,7 @@
           bufferingTime: 0,
           replaySpeed: 2
         }),
-        weatherDataSource: new SweJsonDataSource("weather", {
+        weatherDataSource: new SweJson("weather", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

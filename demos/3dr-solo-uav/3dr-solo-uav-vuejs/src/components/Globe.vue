@@ -10,7 +10,7 @@
   import CesiumView from "osh/ui/view/map/CesiumView";
   // @ is an alias to /src
   import ImageDraping from "osh/ui/styler/ImageDraping";
-  import SweJsonDataSource from "osh/datareceiver/SweJsonDataSource";
+  import SweJson from "osh/datareceiver/SweJson";
   import PointMarker from "osh/ui/styler/PointMarker";
 
   export default {

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
-import Json from "osh/datareceiver/Json";
+import SweJson from "osh/datareceiver/SweJson";
 import PointMarker from "osh/ui/styler/PointMarker";
 import CesiumView from "osh/ui/view/map/CesiumView";
 import {randomUUID} from "osh/utils/Utils";
@@ -18,7 +18,7 @@ class BaseMap extends React.Component {
     let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
 
     // create data source for Android phone GPS
-    let platformLocationDataSource = new Json('android-GPS', {
+    let platformLocationDataSource = new SweJson('android-GPS', {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -29,7 +29,7 @@ class BaseMap extends React.Component {
       replaySpeed: 1
     });
 
-    let platformOrientationDataSource = new Json('android-Heading', {
+    let platformOrientationDataSource = new SweJson('android-Heading', {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -40,7 +40,7 @@ class BaseMap extends React.Component {
       replaySpeed: 1
     });
 
-    let gimbalOrientationDataSource = new Json('android-Heading', {
+    let gimbalOrientationDataSource = new SweJson('android-Heading', {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -134,6 +134,11 @@ class BaseMap extends React.Component {
     cesiumView.viewer.camera.setView({
       destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
     });
+
+    // select bing maps as default imagery
+    const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
+    baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
+
 
 // start streaming
     platformLocationDataSource.connect();

@@ -37,7 +37,7 @@ import DataSource from './DataSource';
   });
  */
 
-class SweJsonDataSource extends DataSource {
+class SweJson extends DataSource {
 
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
@@ -145,4 +145,4 @@ class SweJsonDataSource extends DataSource {
     }
 }
 
-export default SweJsonDataSource;
+export default SweJson;

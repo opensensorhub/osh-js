@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
-    "showcase": "webpack-dev-server --config webpack.config.js --mode development --watch",
-    "showcase-prod": "webpack --config webpack.config.js --mode production",
+    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
+    "prod": "webpack --config webpack.config.js --mode production",
     "merge": "package-json-merge package-base.json cesium-fois/package.json  cesium-location/package.json chart/package.json discovery/package.json examples/entity/package.json examples/leaflet-location/package.json examples/leaflet-location-fois/package.json examples/leaflet-location-heading/package.json examples/leaflet-location-path/package.json examples/openlayers-location/package.json examples/ptz-tasking/package.json examples/rangeslider/package.json examples/video-gps-sync/package.json examples/video-h264/package.json examples/video-h264-drapping/package.json examples/video-mjpeg/package.json > package.json",
     "postinstall": "patch-package"
   },
