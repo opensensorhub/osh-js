@@ -272,7 +272,7 @@ class Buffer {
                                 this.processSyncData(), waitTime / 10.0);
                             return;
                         } else {
-                            //console.log("Timeout of data source " + dataSourceId);
+                            console.log("Timeout of data source " + dataSourceId);
                         }
                     } else if (currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
                         minTimeStampBufferObj = currentBufferObj;

@@ -349,7 +349,11 @@ class LeafletView extends View {
             let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
             if(this.autoZoomOnFirstMarker) {
-                this.map.panTo(newLatLng);
+                var latLngs = [newLatLng ];
+                var markerBounds = L.latLngBounds(latLngs);
+                this.map.fitBounds(markerBounds, {
+                    maxZoom: 17
+                });
             }
         }
 
@@ -427,6 +431,8 @@ class LeafletView extends View {
         setTimeout(function(){ that.map.invalidateSize()}, 100);
 
     }
+
+    onChange(data) {}
 }
 
 /***  little hack starts here ***/
