@@ -1,18 +1,18 @@
-// webpack.config.lib
+// webpack.config.common.js
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const CopywebpackPlugin = require('copy-webpack-plugin');
+const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// Common configs
 const path = require('path');
-const { DefinePlugin } = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-module.exports = {
-  mode: 'development',
-  entry: {
-    app: './src/main.js'
-  },
+const cesiumConfig = {
+  // Tell Webpack which file kicks off our app.
+  entry: path.resolve(__dirname,'src/index.js'),
+  // Tell Weback to output our bundle to ./dist/bundle.js
   output: {
-    filename: '[name].js',
+    filename: 'bundle.3dr.js',
     path: path.resolve(__dirname, 'dist'),
     // Needed to compile multiline strings in Cesium
     sourcePrefix: ''
@@ -21,21 +21,70 @@ module.exports = {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
   },
+  output: {
+    // Needed to compile multiline strings in Cesium
+    sourcePrefix: '',
+  },
+  plugins: [
+    // Copy Cesium Assets, Widgets, and Workers to a static directory
+    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' } ]),
+    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' } ]),
+    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' } ]),
+    new CopywebpackPlugin([ { from: 'images', to: 'images'} ]),
+    new CopywebpackPlugin([ { from: 'models', to: 'models'} ]),
+  ],
+};
+// Now, using the cesiumConfig in your real configuration
+const config = {
+  ...cesiumConfig,
+  entry: {
+    app: './src/main.js'
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  resolve: {
+    alias: {
+      'osh': path.resolve(__dirname, '../../../source/osh'),
+      'cesium': path.resolve(__dirname, 'node_modules/cesium'),
+    }
+  },
   node: {
     fs: 'empty'
   },
-  resolve: {
-    modules: [
-      path.resolve(__dirname, 'node_modules'),
-      path.resolve(__dirname, '../../../source')
-    ],
-    alias: {
-      'osh': path.resolve(__dirname, '../../../source/osh'),
-      'vue$': 'vue/dist/vue.esm.js',
-    },
-    extensions: ['*', '.js', '.vue', '.json']
+  amd: {
+    // Enable webpack-friendly use of require in Cesium
+    toUrlUndefined: true
   },
-  devtool: 'source-map',
+  module: {
+    unknownContextCritical: false,
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
+        use: [
+          'file-loader',
+        ],
+      },{
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },{
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
+      }
+    ],
+  },
   optimization: {
     splitChunks: {
       chunks: 'async',
@@ -58,43 +107,9 @@ module.exports = {
       }
     }
   },
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader'
-      },
-      // this will apply to both plain `.lib` files
-      // AND `<script>` blocks in `.vue` files
-      {
-        test: /\.js$/,
-        loader: 'babel-loader'
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
-      },
-      // this will apply to both plain `.css` files
-      // AND `<style>` blocks in `.vue` files
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader' }
-      }
-    ]
-  },
   plugins: [
-    // make sure to include the plugin for the magic
     new VueLoaderPlugin(),
+    ...cesiumConfig.plugins,
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
@@ -105,14 +120,7 @@ module.exports = {
       // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
     }),
-    new CopyWebpackPlugin([
-      {from: path.resolve(__dirname,'public/images'), to: 'images'},
-      {from: path.resolve(__dirname,'images'), to: 'images'},
-      {from: path.resolve(__dirname,'models'), to: 'models'},
-      // Copy Cesium Assets, Widgets, and Workers to a static directory
-      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
-      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
-      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
-    ]),
-  ]
-}
+  ],
+};
+
+module.exports = config;
