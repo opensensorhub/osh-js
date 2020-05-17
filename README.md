@@ -29,9 +29,29 @@ You can use both the all-in-one vendor minified script(vendor.js & vendor.css) o
 How To Use
 ===
 
+You can import the source directory directly into your APP application and refer to it. The Toolkit is ES6 compliant.
 
 Run Showcase
 ===
+
+The showcase can be run using npm and webpack configuration:
+
+```shell script
+$ yarn dev
+```
+or
+```shell script
+$ npm run dev
+```
+
+### Run prod
+```shell script
+$ yarn prod
+```
+or
+```shell script
+$ npm run prod
+```
 
 
 Vendors
@@ -60,8 +80,20 @@ package.json:
 Resources
 ===
 
+## Documentation
 The documentation can be found [here](http://opensensorhub.github.io/osh-js/Documentation/index.html).
 
-The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/)
+The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/)
 
-Some demos are available [here](http://opensensorhub.github.io/osh-js/Demos/) and [here](http://opensensorhub.github.io/osh-js/Demos-old/)
+## Showcase
+[Showcase](http://opensensorhub.github.io/osh-js/v2.0.0/showcase)
+
+## Live Demos
+
+[Video display Vuejs](http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-vuejs/)
+
+[Video advanced display Vuejs](http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/)
+
+[3dr solo UAV in react](http://opensensorhub.github.io/osh-js/v2.0.0/demos/3dr-solo-uav-react/)
+
+[3dr solo UAV in Vuejs](http://opensensorhub.github.io/osh-js/v2.0.0/demos/3dr-solo-uav-vuejs/)
