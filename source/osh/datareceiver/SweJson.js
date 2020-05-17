@@ -22,7 +22,9 @@ import DataSource from './DataSource';
  *
  * @extends DataSource
  * @example
- * let androidPhoneGpsDataSource = new JSON("android-GPS", {
+ * import SweJson from 'osh/datareceiver/SweJson';
+ *
+ * let androidPhoneGpsDataSource = new SweJson("android-GPS", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

@@ -21,8 +21,10 @@ import {isDefined} from '../utils/Utils';
  * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @extends DataConnector
  * @example
+ * import Ajax from 'osh/dataconnector/Ajax';
+ *
  * let request = ...;
- * let connector = new AjaxConnector(url);
+ * let connector = new Ajax(url);
  *
  * // handle onSuccess
  * connector.onSuccess = function(event) {

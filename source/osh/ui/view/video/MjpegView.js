@@ -21,6 +21,9 @@ import EventManager from "../../../events/EventManager";
 /**
  * @extends View
  * @example
+ *
+import MjpegView from 'osh/ui/view/video/MjpegView';
+
 var videoView = new MjpegView("containerId", {
     dataSourceId: datasource.id,
     entityId : entity.id,

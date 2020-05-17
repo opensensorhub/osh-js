@@ -40,6 +40,8 @@ import EventManager from '../events/EventManager';
 /**
  * The buffer element which is in charge of synchronizing data.
  * @example
+ import Buffer from 'osh/buffer/Buffer';
+
  let buffer = new Buffer({
     replayFactor: 1
  });

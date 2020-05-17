@@ -21,7 +21,9 @@ import DataSource from './DataSource';
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- var androidPhoneVideoDataSource = new DataSourceVideoMjpeg("android-Video", {
+ * import VideoMjpeg from 'osh/datareceiver/VideoMjpeg';
+ *
+ var androidPhoneVideoDataSource = new VideoMjpeg("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

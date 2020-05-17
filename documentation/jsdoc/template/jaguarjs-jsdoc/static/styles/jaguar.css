@@ -22,6 +22,9 @@ li {
   background-color: gray;
   border-radius: 4px;
 }
+.class-description {
+  margin-top: 30px;
+}
 .navigation {
   position: fixed;
   float: left;

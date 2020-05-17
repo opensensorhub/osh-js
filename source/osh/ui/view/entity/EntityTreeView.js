@@ -23,7 +23,9 @@ import "../../../../../libs/tree/tree.css";
  * This class is in charge of displaying the entities in a tree structure.
  * @extends View
  * @example
- let entityTreeView = new id,
+ import EntityTreeView from 'osh/ui/view/entity/EntityTreeView';
+
+ let entityTreeView = new EntityTreeView(divId,
      [{
         entity : androidEntity,
         path: "Sensors/Toulouse",

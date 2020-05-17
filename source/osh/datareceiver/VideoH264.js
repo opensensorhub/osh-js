@@ -21,7 +21,9 @@ import DataSource from './DataSource';
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * var videoDataSource = new DataSourceVideoH264("H264 video ", {
+ * import VideoH264 from 'osh/datareceiver/VideoH264';
+ *
+ * var videoDataSource = new VideoH264("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

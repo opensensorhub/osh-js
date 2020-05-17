@@ -24,6 +24,9 @@ import 'leaflet/dist/leaflet.css';
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Leaflet Map object.
  * @extends View
  * @example
+
+ import LeafletView from 'osh/ui/view/map/LeafletView';
+
  let leafletMapView = new LeafletView("",
  [{
             styler :  pointMarker,

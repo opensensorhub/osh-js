@@ -20,6 +20,8 @@ import Styler from "./Styler";
 /**
  * @extends Styler
  * @example
+ import ImageDraping from 'osh/ui/styler/ImageDraping';
+
  let imageDrapingMarker = new ImageDraping({
       platformLocationFunc: {
         dataSourceIds: [platformLocationDataSource.getId()],

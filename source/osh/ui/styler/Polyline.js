@@ -20,6 +20,9 @@ import { isDefined } from "../../utils/Utils";
 /**
  * @extends Styler
  * @example
+ *
+ * import Polyline from 'osh/ui/styler/Polyline';
+ *
  * let polylineStyler = new Polyline({
 		locationFunc : {
 			dataSourceIds : [datasource.getId()],

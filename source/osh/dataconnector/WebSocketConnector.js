@@ -21,8 +21,10 @@ import {isWebWorker} from '../utils/Utils';
  * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @extends DataConnector
  * @example
+ * import Buffer from 'osh/dataconnector/WebSocketConnector';
+ *
  * let url = ...;
- * let connector = new WebSocketDataConnector(url);
+ * let connector = new WebSocketConnector(url);
  *
  * // connect
  * connector.connect();

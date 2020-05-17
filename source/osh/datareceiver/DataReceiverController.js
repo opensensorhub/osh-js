@@ -24,6 +24,7 @@ import Buffer from "../buffer/Buffer";
  * @listens {@link DISCONNECT_DATASOURCE}
  * @listens {@link DATASOURCE_UPDATE_TIME}
  * @example
+ *import DataReceiverController from 'osh/datareceiver/DataReceiverController';
  *
  * let datasource = new <>
  *

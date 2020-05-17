@@ -17,7 +17,7 @@
 import DataSource from '../../osh/datareceiver/DataSource';
 
 /**
- * This datasource provides parsing to DataSourceNexrad.
+ * This datasource provides parsing to DataSource Nexrad.
  * @extends DataSource
  */
 class Nexrad extends DataSource {

@@ -18,13 +18,14 @@ import Worker from './workers/Ffmpeg.worker';
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
  * @extends View
  * @example
+ *
+ import FFMPEGView from 'osh/ui/view/video/FFMPEGView';
+
  let videoView = new FFMPEGView("videoContainer-id", {
     dataSourceId: videoDataSource.id,
     css: "video",
     cssSelected: "video-selected",
     name: "Video",
-    width: 800,
-    height: 450,
     framerate: 25,
     directPlay: false
 });
@@ -40,8 +41,6 @@ class FFMPEGView extends View {
      * Create a View.
      * @param {String} divId - The div element to attach to
      * @param {Object} options - the properties of the view
-     * @param {String} [options.width=640] - The canvas width
-     * @param {String} [options.height=480] - The canvas height
      * @param {String} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
      * @param {String} [options.directPlay=false] - Enable or ignore the framerate play
      *
@@ -68,14 +67,6 @@ class FFMPEGView extends View {
         this.directPlay = false;
 
         if (isDefined(options)) {
-            if (isDefined(options.width)) {
-                this.width = options.width;
-            }
-
-            if (isDefined(options.height)) {
-                this.height = options.height;
-            }
-
             if (isDefined(options.framerate)) {
                 this.framerate = options.framerate;
             }

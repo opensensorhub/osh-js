@@ -20,6 +20,9 @@ import Styler from "./Styler.js";
 /**
  * @extends Styler
  * @example
+ *
+ * import PointMarker from 'osh/ui/styler/PointMarker';
+ *
  * let pointMarker = new PointMarker({
         location : {
             x : 1.42376557,

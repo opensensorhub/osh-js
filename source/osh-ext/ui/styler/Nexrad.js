@@ -22,7 +22,7 @@ import {isDefined} from "../../../osh/utils/Utils";
 import Styler from "../../../osh/ui/styler/Styler";
 
 /**
-	* Nexrad Styler.
+ * Nexrad Styler.
  * @extends Styler
  */
 class Nexrad extends Styler {

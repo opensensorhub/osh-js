@@ -59,6 +59,9 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
  * @extends View
  * @example
+
+ import CesiumView from 'osh/ui/view/map/CesiumView';
+
  let cesiumMapView = new CesiumView("",
  [{
 	styler :  pointMarker,

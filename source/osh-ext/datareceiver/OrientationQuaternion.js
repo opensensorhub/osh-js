@@ -21,7 +21,7 @@ import DataSource from '../../osh/datareceiver/DataSource';
  * Data: ISODATE,Qx,Qy,Qz,Qw.
  * @extends DataSource
  * @example
- * let androidPhoneOrientationDataSource = new DataSourceOrientationQuaternion("android-Orientation", {
+ * let androidPhoneOrientationDataSource = new OrientationQuaternion("android-Orientation", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
