@@ -29,11 +29,6 @@ import Worker from './workers/Ffmpeg.worker';
     framerate: 25,
     directPlay: false
 });
- (*)The transferableData actually transfers the ownership of the object to or from the web worker.
- It's like passing by reference where a copy isn't made. The difference between it and the normal pass-by-reference
- is that the side that transferred the data can no longer access it. In that case, the use of the data must be UNIQUE, that means
- you cannot use the data for anything else (like another viewer).
- The non transferable data is a copy of the data to be made before being sent to the worker. That could be slow for a large amount of data.
  */
 
 class FFMPEGView extends View {
@@ -41,8 +36,8 @@ class FFMPEGView extends View {
      * Create a View.
      * @param {String} divId - The div element to attach to
      * @param {Object} options - the properties of the view
-     * @param {String} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
-     * @param {String} [options.directPlay=false] - Enable or ignore the framerate play
+     * @param {Number} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
+     * @param {Boolean} [options.directPlay=false] - Enable or ignore the framerate play
      *
      */
     constructor(divId, options) {

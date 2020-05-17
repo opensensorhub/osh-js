@@ -21,6 +21,8 @@ import DataSource from '../../osh/datareceiver/DataSource';
  * Data: ISODATE,Qx,Qy,Qz,Qw.
  * @extends DataSource
  * @example
+ * import OrientationQuaternion from 'osh-ext/datareceiver/OrientationQuaternion';
+ *
  * let androidPhoneOrientationDataSource = new OrientationQuaternion("android-Orientation", {
         protocol: "ws",
         service: "SOS",

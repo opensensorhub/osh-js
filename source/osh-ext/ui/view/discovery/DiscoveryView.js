@@ -30,6 +30,9 @@ import SweJson from "../../../../osh/datareceiver/SweJson";
  * select dynamically an offering provided by a server.
  * @extends View
  * @example
+
+ import DiscoveryView from 'osh-ext/ui/view/DiscoveryView';
+
  let discoveryView = new DiscoveryView("discovery-container",{
     callback: onSubmit,
     css: "discovery-style",

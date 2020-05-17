@@ -31,12 +31,12 @@ class ChartJsView extends View {
      * @param {String} viewItems.name - The name of the view item
      * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} options - the properties of the view
-     * @param {Object} options.datasetsOpts -
-     * @param {Object} options.gridLinesOpts -
-     * @param {Object} options.scaleLabelOpts -
-     * @param {Object} options.tickOpts -
-     * @param {Object} options.legendOpts -
-     * @param {Number} options.maxPoints -
+     * @param {Object} options.datasetsOpts - chart.js dataset options
+     * @param {Object} options.gridLinesOpts - chart.js gridline options
+     * @param {Object} options.scaleLabelOpts - chart.js scaleLabel options
+     * @param {Object} options.tickOpts - chart.js tick options
+     * @param {Object} options.legendOpts - chart.js legend options
+     * @param {Number} options.maxPoints - max points to display before shifting
      */
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);

@@ -25,7 +25,10 @@ import * as wNumb from 'wnumb';
 /**
  * @extends View
  * @example
- * let rangeSlider = new RangeSlider("rangeSlider",{
+ *
+ * import RangeSliderView from 'osh-ext/view/RangeSliderView';
+ *
+ * let rangeSlider = new RangeSliderView("rangeSlider",{
     dataSourceId: dataSource.id,
     startTime: "2015-12-19T21:04:30Z",
     endTime: "2015-12-19T21:09:19Z",

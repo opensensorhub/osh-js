@@ -49,6 +49,7 @@ import EventManager from '../events/EventManager';
 
 class Buffer {
     /**
+     * @param {Object} options -
      * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
      * @param options
      */
