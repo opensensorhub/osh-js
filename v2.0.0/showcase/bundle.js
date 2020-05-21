@@ -5806,7 +5806,7 @@ var samples = [
     url: "cesium-location"
   },
   {
-    name: "Simple Chart (Chart.lib)",
+    name: "Simple Chart (Chart.js)",
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
   },
