@@ -19,9 +19,6 @@ let videoView = new FFMPEGView("video-h264-transferable-container", {
   dataSourceId: videoDataSource.id,
   css: "video-h264",
   name: "UAV Video",
-  useWorker: true,
-  width: 1280,
-  height: 720,
   framerate:25,
   showTime: true
 });
@@ -43,9 +40,6 @@ destroyButton.onclick = () => {
     dataSourceId: videoDataSource.id,
     css: "video-h264",
     name: "UAV Video",
-    useWorker: true,
-    width: 1280,
-    height: 720,
     framerate: 25,
     showTime: true
   });
