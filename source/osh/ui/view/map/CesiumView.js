@@ -48,7 +48,7 @@ import {
   HeadingPitchRoll,
   HeadingPitchRange,
   Ellipsoid, defined,
-  EncodedCartesian3
+  EncodedCartesian3, CesiumTerrainProvider
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -135,25 +135,25 @@ class CesiumView extends View {
    * @param {Number} timeStamp -
    *
    */
-  updateMarker(styler, timeStamp, options) {
-    let markerId = 0;
+  updateMarker(styler,timeStamp,options) {
+    var markerId = 0;
 
     if (!(styler.getId() in this.stylerToObj)) {
       markerId = this.addMarker({
-        lat: styler.location.y,
-        lon: styler.location.x,
-        alt: styler.location.z,
-        orientation: styler.orientation,
-        icon: styler.icon,
-        iconAnchor: styler.iconAnchor,
-        label: styler.label,
-        labelColor: styler.labelColor,
-        labelSize: styler.labelSize,
-        labelOffset: styler.labelOffset,
-        name: styler.viewItem.name,
-        description: styler.viewItem.description,
+        lat : styler.location.y,
+        lon : styler.location.x,
+        alt : styler.location.z,
+        orientation : styler.orientation,
+        icon : styler.icon,
+        iconAnchor : styler.iconAnchor,
+        label : styler.label,
+        labelColor : styler.labelColor,
+        labelSize : styler.labelSize,
+        labelOffset : styler.labelOffset,
+        name : styler.viewItem.name,
+        description : styler.viewItem.description,
         timeStamp: timeStamp,
-        selected: ((isDefined(options.selected)) ? options.selected : false)
+        selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
       });
 
       this.stylerToObj[styler.getId()] = markerId;
@@ -162,17 +162,17 @@ class CesiumView extends View {
     }
 
     this.updateMapMarker(markerId, {
-      lat: styler.location.y,
-      lon: styler.location.x,
-      alt: styler.location.z,
-      orientation: styler.orientation,
-      icon: styler.icon,
-      label: styler.label,
-      labelColor: styler.labelColor,
-      labelSize: styler.labelSize,
+      lat : styler.location.y,
+      lon : styler.location.x,
+      alt : styler.location.z,
+      orientation : styler.orientation,
+      icon : styler.icon,
+      label : styler.label,
+      labelColor : styler.labelColor,
+      labelSize : styler.labelSize,
       timeStamp: timeStamp,
       defaultToTerrainElevation: styler.defaultToTerrainElevation,
-      selected: ((isDefined(options.selected)) ? options.selected : false)
+      selected:((typeof(options.selected) !== "undefined")? options.selected : false)
     });
   }
 
@@ -181,37 +181,37 @@ class CesiumView extends View {
    * @param {ImageDraping} styler - The styler allowing the update of the marker
    *
    */
-  updateDrapedImage(styler, timeStamp, options, snapshot) {
+  updateDrapedImage(styler,timeStamp,options,snapshot) {
 
-    var llaPos = styler.platformLocation;
-    var camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
+    const llaPos = styler.platformLocation;
+    const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
 
-    var DTR = Math.PI/180;
-    var attitude = styler.platformOrientation;
-    var gimbal = styler.gimbalOrientation;
+    const DTR = Math.PI/180;
+    const attitude = styler.platformOrientation;
+    const gimbal = styler.gimbalOrientation;
 
     ///////////////////////////////////////////////////////////////////////////////////
     // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
     ///////////////////////////////////////////////////////////////////////////////////
-    var nedTransform = Transforms.northEastDownToFixedFrame(camPos);
-    var camRot = new Matrix3();
+    const nedTransform = Transforms.northEastDownToFixedFrame(camPos);
+    const camRot = new Matrix3();
     Matrix4.getMatrix3(nedTransform, camRot);
-    var rotM = new Matrix3();
+    const rotM = new Matrix3();
 
     // UAV heading, pitch, roll (given in NED frame)
-    var uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
+    const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
     Matrix3.multiply(camRot, uavHeading, camRot);
-    var uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
+    const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
     Matrix3.multiply(camRot, uavPitch, camRot);
-    var uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
+    const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
     Matrix3.multiply(camRot, uavRoll, camRot);
 
     // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
-    var gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
+    const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
     Matrix3.multiply(camRot, gimbalYaw, camRot);
-    var gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
+    const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
     Matrix3.multiply(camRot, gimbalRoll, camRot);
-    var gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
+    const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
     Matrix3.multiply(camRot, gimbalPitch, camRot);
 
     // transform to camera frame
@@ -220,11 +220,11 @@ class CesiumView extends View {
 
     ////////////////////////////////////////////////////////////////////////////////////
 
-    var camProj = styler.cameraModel.camProj;
-    var camDistR = styler.cameraModel.camDistR;
-    var camDistT = styler.cameraModel.camDistT;
+    const camProj = styler.cameraModel.camProj;
+    const camDistR = styler.cameraModel.camDistR;
+    const camDistT = styler.cameraModel.camDistT;
 
-    var imgSrc = styler.imageSrc;
+    let imgSrc = styler.imageSrc;
 
     {
       // snapshot
@@ -234,15 +234,15 @@ class CesiumView extends View {
         imgSrc = this.captureCanvas;
       }
 
-      var encCamPos = EncodedCartesian3.fromCartesian(camPos);
-      var appearance = new MaterialAppearance({
-        material: new Material({
-          fabric: {
-            type: 'Image',
-            uniforms: {
-              image: imgSrc,
-              camPosHigh: encCamPos.high,
-              camPosLow: encCamPos.low,
+      const encCamPos = EncodedCartesian3.fromCartesian(camPos);
+      const appearance = new MaterialAppearance({
+        material : new Material({
+          fabric : {
+            type : 'Image',
+            uniforms : {
+              image : imgSrc,
+              camPosHigh : encCamPos.high,
+              camPosLow : encCamPos.low,
               camAtt: Matrix3.toArray(Matrix3.transpose(camRot, new Matrix3())),
               camProj: Matrix3.toArray(camProj),
               camDistR: camDistR,
@@ -255,12 +255,11 @@ class CesiumView extends View {
       });
 
       if (this.imageDrapingPrimitive === null || snapshot) {
-        if (this.imageDrapingPrimitive === null) {
+        if (this.imageDrapingPrimitive === null)
           this.imageDrapingPrimitive = {};
-        }
 
-        var promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-        var that = this;
+        const promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+        const that = this;
         when(promise, function(updatedPositions) {
           //console.log(updatedPositions[0]);
           var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Primitive({
@@ -274,9 +273,8 @@ class CesiumView extends View {
             appearance: appearance
           }));
 
-          if (!snapshot) {
+          if (!snapshot)
             that.imageDrapingPrimitive = newImageDrapingPrimitive;
-          }
 
           that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
           that.imageDrapingPrimitiveReady = true;
@@ -286,6 +284,7 @@ class CesiumView extends View {
         this.imageDrapingPrimitive.appearance = appearance;
       }
     }
+
     this.frameCount++;
   }
 
@@ -294,7 +293,7 @@ class CesiumView extends View {
     this.markers = {};
     this.first = true;
 
-    let imageryProviders = createDefaultImageryProviderViewModels();
+    const imageryProviders = createDefaultImageryProviderViewModels();
     this.viewer = new Viewer(this.divId, {
       baseLayerPicker: true,
       imageryProviderViewModels: imageryProviders,
@@ -311,20 +310,19 @@ class CesiumView extends View {
     });
 
     this.viewer.terrainProvider = new EllipsoidTerrainProvider();
-
     this.viewer.scene.copyGlobeDepth = true;
     this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 
-    let self = this;
-    knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function (entity) {
+    const self = this;
+    knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
       //change icon
       if (defined(entity)) {
         let dataSrcIds = [];
         let entityId;
         for (let stylerId in self.stylerToObj) {
-          if (self.stylerToObj[stylerId] === entity._dsid) {
-            for (let i = 0; i < self.stylers.length; i++) {
-              if (self.stylers[i].getId() === stylerId) {
+          if(self.stylerToObj[stylerId] === entity._dsid) {
+            for(let i=0;i < self.stylers.length;i++) {
+              if(self.stylers[i].getId() === stylerId) {
                 dataSrcIds = dataSrcIds.concat(self.stylers[i].getDataSourcesIds());
                 entityId = self.stylers[i].viewItem.entityId;
                 break;
@@ -360,46 +358,74 @@ class CesiumView extends View {
   addMarker(properties) {
 
     let imgIcon = 'images/cameralook.png';
-    if(properties.icon !== null) {
+    if (properties.icon !== null) {
       imgIcon = properties.icon;
     }
-    let isModel = imgIcon.endsWith('.glb');
-    let name = properties.label ? properties.label : 'Selected Marker';
-    let geom;
-    let color = properties.color ? Color.fromCssColorString(properties.color) : Color.YELLOW;
-    let description = (properties.description) ? properties.description : null;
+    const isModel = imgIcon.endsWith(".glb");
+    const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
+    const fillColor = properties.labelColor;
+    const labelSize = properties.labelSize;
+    const labelOffset = properties.labelOffset;
 
+    const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
+        label != null ? label : "Selected Marker";
+    const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
+
+    var geom;
     if (isModel)
     {
       geom = {
         name: name,
-        description: description,
-        position: Cartesian3.fromDegrees(0, 0, 0),
-        model: {
+        description: desc,
+        position : Cartesian3.fromDegrees(0, 0, 0),
+        label: {
+          text: label,
+          font: labelSize + 'px sans-serif',
+          scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+          fillColor: Color.fromCssColorString(fillColor),
+          horizontalOrigin: HorizontalOrigin.CENTER,
+          verticalOrigin: VerticalOrigin.TOP,
+          pixelOffset : labelOffset
+        },
+        model : {
           uri: imgIcon,
           scale: 4,
           modelM: Matrix4.IDENTITY.clone(),
           color: color
         }
       };
-    }
-    else
-    {
+    } else {
       let rot = 0;
       if (properties.orientation !== 'undefined') {
         rot = properties.orientation.heading;
       }
+      const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+      const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+
       geom = {
         name: name,
-        description: description,
+        description: desc,
         position : Cartesian3.fromDegrees(0, 0, 0),
+        label: {
+          text: label,
+          font: labelSize + 'px sans-serif',
+          scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+          fillColor: Color.fromCssColorString(fillColor),
+          horizontalOrigin: HorizontalOrigin.CENTER,
+          verticalOrigin: VerticalOrigin.TOP,
+          pixelOffset : labelOffset,
+          pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0)
+        },
         billboard : {
           image : imgIcon,
-          alignedAxis : Cartesian3.UNIT_Z, // axis is in ENU frame, Z means rotation is from north
+          scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+          alignedAxis : Cartesian3.UNIT_Z, // Z means rotation is from north
           rotation : Math.toRadians(rot),
-          scaleByDistance : new NearFarScalar(4, 1, 5e5, 0.2), // set icon scale by distance in meters (near distance, near scale, far distance, far scale)
-          horizontalOrigin : HorizontalOrigin.CENTER,
-          eyeOffset : new Cartesian3(0,0,-1) // make sure icon always displays in front
+          horizontalOrigin : HorizontalOrigin.LEFT,
+          verticalOrigin: VerticalOrigin.TOP,
+          pixelOffset : iconOffset,
+          pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+          eyeOffset : new Cartesian3(0, 0, -1) // make sure icon always displays in front
         }
       };
     }
@@ -412,6 +438,7 @@ class CesiumView extends View {
     let id = 'view-marker-'+randomUUID();
     entity._dsid = id;
     this.markers[id] = entity;
+
 
     return id;
   }
@@ -429,40 +456,48 @@ class CesiumView extends View {
    * @param {Object} properties.selected -
    */
   updateMapMarker(id, properties) {
-    let lon = properties.lon;
-    let lat = properties.lat;
+    const lon = properties.lon;
+    const lat = properties.lat;
     let alt = properties.alt;
-    let orient = properties.orientation;
-    let imgIcon = properties.icon;
+    const orient = properties.orientation;
+    const labelColor = properties.labelColor;
+    const imgIcon = properties.icon;
+    var label = properties.label;
     let defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
     if (!isNaN(lon) && !isNaN(lat)) {
-      let marker = this.markers[id];
+      var marker =  this.markers[id];
 
       // get ground altitude if non specified
-      if (typeof (alt) === "undefined" || isNaN(alt)) {
+      if (isDefined(alt) || isNaN(alt)) {
         alt = this.getAltitude(lat, lon);
         if (alt > 1)
           alt += 0.3;
       }
 
       // update position
-      let pos = Cartesian3.fromDegrees(lon, lat, alt);
+      const pos = Cartesian3.fromDegrees(lon, lat, alt);
       marker.position = pos;
 
       // update orientation
-      if (typeof(orient) !== 'undefined') {
-        let DTR = Math.PI/180.0;
-        let heading = orient.heading;
-        let pitch = 0.0;
-        let roll = 0.0;
-        let quat = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
+      if (isDefined(orient)) {
+        const DTR = Math.PI/180.;
+        const heading = orient.heading;
+        const pitch = 0.0;
+        const roll = 0.0;
+        const quat = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
         marker.orientation = quat;
-        if (marker.billboard) {
+        if (marker.billboard)
           marker.billboard.rotation = Math.toRadians(heading);
-        }
       }
 
+      if (isDefined(label)) {
+        marker.label.text = label;
+      }
+
+      if (isDefined(labelColor)) {
+        marker.label.fillColor = Color.fromCssColorString(labelColor);
+      }
       // update icon or model
       if (marker.billboard) {
         if (defaultToTerrainElevation) {
@@ -476,6 +511,17 @@ class CesiumView extends View {
         }
         marker.model.uri = imgIcon;
       }
+
+      // update label
+      //marker.label = properties.label;
+      //if (properties.labelColor != null)
+      //	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
+
+      // update billboard aligned axis depending on camera angle
+      if (this.viewer.camera.pitch < -Math.PI/4)
+        marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
+      else
+        marker.billboard.alignedAxis = Cartesian3.ZERO;
 
       // zoom map if first marker update
       if (this.first) {
@@ -494,12 +540,11 @@ class CesiumView extends View {
    * @private
    */
   getAltitude(lat, lon) {
-    let position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
-    let altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
+    var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
+    var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
 
-    if (isDefined(altitude) || altitude <= 0) {
+    if (altitude === 'undefined' || altitude <= 0)
       altitude = 0.1;
-    }
     return altitude;
   }
 
