@@ -44,8 +44,8 @@ class FFMPEGView extends View {
         super(divId, [], options);
 
         this.fps = 0;
-        this.width = "640";
-        this.height = "480";
+        this.width = "1280";
+        this.height = "720";
 
         this.statistics = {
             videoStartTime: 0,

@@ -38,9 +38,6 @@ export default {
           dataSourceId: videoDataSource.id,
           css: "video-h264",
           name: "UAV Video",
-          useWorker: true,
-          width: 1280,
-          height: 720,
           framerate:25,
           showTime: true
       });
