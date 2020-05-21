@@ -1,0 +1,77 @@
+<template>
+    <dialog-drag
+            id="drag-window-1"
+            title="Video MJPEG"
+            class="resizable"
+            :options="{ width:350,top:100,left:2 }">
+        <div id="video-container"></div>
+    </dialog-drag>
+</template>
+
+<script>
+import DialogDrag from 'vue-dialog-drag';
+import VideoMjpeg from 'osh/datareceiver/VideoMjpeg';
+import MjpegView from 'osh/ui/view/video/MjpegView';
+
+export default {
+  name: "Video",
+  components: {
+    DialogDrag
+  },
+  mounted() {
+
+    // create data source for Android phone camera
+    let videoDataSource = new VideoMjpeg("android-Video", {
+      protocol: "ws",
+      service: "SOS",
+      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      offeringID: "urn:android:device:060693280a28e015-sos",
+      observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+      startTime: "2015-02-16T07:58:35Z",
+      endTime: "2015-02-16T08:09:00Z",
+      replaySpeed: 3
+    });
+
+    // show it in video view
+    let videoView = new MjpegView("video-container", {
+      dataSourceId: videoDataSource.id,
+      css: "video-mjpeg",
+      name: "Android Video",
+      keepRatio: true,
+      showTime: true
+    });
+
+    // start streaming
+    videoDataSource.connect();
+  }
+}
+</script>
+<style src="vue-dialog-drag/dist/vue-dialog-drag.css"></style>
+
+<!-- optional dialog styles, see example -->
+<style scoped>
+  .dialog-drag {
+    z-index: 10;
+  }
+
+  .resizable {
+      resize: both;   /* Options: horizontal, vertical, both */
+  }
+</style>
+
+<style>
+    .dialog-drag {
+        overflow-y: hidden;
+        border: 1px solid #bbbbbb;
+        border-radius: 4px;
+        box-shadow: 0 0 7px #000000;
+    }
+    .dialog-drag .dialog-body {
+        padding:0;
+    }
+
+    .video-mjpeg {
+        width: 100%;
+        margin-bottom:5px;
+    }
+</style>

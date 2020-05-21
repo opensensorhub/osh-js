@@ -1,0 +1,26 @@
+site_name: OpenSensorHub Toolkit
+site_description: 'Software for building smart sensor networks'
+repo_url: https://github.com/opensensorhub/
+copyright: 'The content of this site is licensed under a Creative Commons Zero v1.0 Universal License'
+google_analytics: ['UA-36723568-3', 'opensensorhub.org']
+
+pages:
+- Introduction: index.md
+- Getting started:
+  - Download: download.md
+  - How to use: install.md
+- Developer Documentation:
+    - Developer's Guide: dev/dev-guide.md
+    - Architecture: dev/architecture.md
+    - Technical: dev/technical.md
+    - JSdoc: dev/jsdoc.md
+- Tutorials:
+    - OSH by example: tutos/osh-by-example.md
+    - Make your own data receiver: tutos/osh-by-example-2.md
+    - Use the discovery view: tutos/osh-by-example-3.md
+- License: license.md
+  
+#theme: readthedocs
+theme_dir: 'custom_theme'
+dev_addr: 127.0.0.1:8000
+

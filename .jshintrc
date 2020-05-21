@@ -1,0 +1,11 @@
+{
+    "maxerr"        : 50,
+    "bitwise"       : false,
+    "camelcase"     : false,
+    "curly"         : false,
+    "eqeqeq"        : false,
+    "forin"         : false,
+    "immed"         : false,
+    "indent"        : 4,
+    "esversion"     : 6
+}

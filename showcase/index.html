@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>Showcase Examples</title>
+  <link rel="stylesheet" href="lib/bootstrap.min.css"/>
+  <link href="lib/prism.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    td {
+      vertical-align: top;
+    }
+
+    #github {
+      position: fixed;
+      right: 0;
+    }
+
+    #logo {
+      margin: 10px 0 10px 0;
+      width: 80%;
+      max-width: 450px;
+      -webkit-filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Code blocks */
+    #pre-code {
+      padding: 0px 10px 10px 10px;
+      margin: 0 !important;
+      overflow: auto;
+    }
+
+    #sample-area {
+      width: 100%;
+      height: 100%;
+      padding: 0px 0px 10px 0px;
+    }
+
+    #src-code {
+      display: none;
+      overflow: auto;
+      -webkit-overflow-scrolling: auto;
+      border: none;
+    }
+
+    #pre-code.show {
+      display: block;
+    }
+
+    #pre-code.show > code {
+      display: block;
+    }
+
+    #pre-code.hide {
+      display: none;
+    }
+
+    .modal-dialog {
+      height: 90%;
+      max-width: 100%;
+      height: 100%;
+    }
+
+    .modal-content {
+      height: 100%;
+    }
+
+    .modal-body {
+      height: calc(100% - 63px);
+      padding: 0;
+    }
+
+    .close {
+      line-height: 1.3;
+    }
+
+    .card {
+      border-radius: 0.7em;
+    }
+
+    .card-img-top {
+      border-radius: 1em;
+      padding: 0.5rem 0.5rem 0 0.5rem;
+    }
+
+    .fullscreen-bg {
+      position: fixed;
+      top: -10px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: -100;
+    }
+
+    .fullscreen-bg video {
+      position: absolute;
+      top: -15px;
+      left: 0;
+      height: calc(100% + 20px);
+    }
+
+    .spinner {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      width: 64px;
+    }
+
+    @media (min-width: 576px) {
+      /*body {
+          background-image: url("images/bg.jpg");
+          background-attachment: fixed;
+      }*/
+      .modal-dialog {
+        max-width: 80%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      #github {
+        position: absolute;
+      }
+
+      #github img {
+        width: 80%;
+        float: right;
+      }
+
+      .modal-dialog {
+        margin: 0;
+        max-height: 100%;
+      }
+
+      .modal-dialog-scrollable .modal-content {
+        max-height: 100%;
+      }
+
+      .fullscreen-bg video {
+        display: none;
+      }
+
+    }
+  </style>
+
+</head>
+
+<body>
+  <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<div class="container">
+  <a id="github" href="https://github.com/opensensorhub/osh-js" style="">
+    <img src="https://github.blog/wp-content/uploads/2008/12/forkme_right_gray_6d6d6d.png?resize=149%2C149"
+         alt="Fork me on GitHub">
+  </a>
+  <a href="http://www.opensensorhub.org/">
+    <img id="logo" src="images/osh-logo-blacktext.png">
+  </a>
+  <div id="sample-list" class="row"></div>
+</div>
+
+<!-- card template -->
+<div id="card-template" hidden="true" aria-hidden="true">
+  <div class="col-md-4 p-3 d-flex">
+    <div class="card shadow-sm flex-fill">
+      <img class="bd-placeholder-img card-img-top" src=""/>
+      <div class="card-body">
+        <p class="card-text" style="margin-bottom:50px">sample description</p>
+        <div class="d-flex justify-content-between align-items-center" style="position:absolute; bottom:20px">
+          <div class="btn-group">
+            <button role="button" class="btn btn-sm btn-outline-secondary">View</button>
+            <!--<button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal dialog -->
+<div class="modal" id="sample-dialog" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">OSH Sample</h5>
+        <button id="src-button" role="button" class="btn btn-sm btn-outline-secondary ml-auto">Toggle Source Code
+        </button>
+        <button role="button" class="close ml-2" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="sample-area" class="prettyprint"></div>
+        <pre id="pre-code" class="hide">
+          <code class="language-javascript"  id="src-code"></code>
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

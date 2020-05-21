@@ -9,4 +9,9 @@ Toolkit/dist
 Toolkit/vendor
 npm-debug.log
 .DS_Store
-test-local
+**/node_modules
+**/dist
+
+demos/video-display/video-display-advanced-android-vuejs/
+out
+documentation/jsdoc/build/
