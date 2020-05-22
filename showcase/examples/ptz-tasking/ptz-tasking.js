@@ -20,9 +20,6 @@ let videoView = new FFMPEGView("video-container", {
     dataSourceId: videoDataSource.id,
     css: "video-h264",
     name: "Foscam Video",
-    useWorker: true,
-    width: 1280,
-    height: 720,
     framerate:25,
     showTime: true,
     directPlay: true
