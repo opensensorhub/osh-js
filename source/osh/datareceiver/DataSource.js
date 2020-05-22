@@ -40,6 +40,7 @@ class DataSource {
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
      * @return {String} the full url
      */
     constructor(name, properties) {
@@ -48,11 +49,13 @@ class DataSource {
         this.properties = properties;
         this.timeShift = 0;
         this.connected = false;
+        this.reconnectTimeout = 1000 * 60 * 2; //2 min
 
         this.initDataSource(properties);
 
         this.lastTimeStamp = Date.now();
         this.lastStartTime = 'now';
+
     }
 
     /**
@@ -84,6 +87,10 @@ class DataSource {
             properties.connect = true;
         }
 
+        if (isDefined(properties.reconnectTimeout)) {
+            this.reconnectTimeout = properties.reconnectTimeout;
+        }
+
         // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) {
             this.connector = new WebSocketConnector(this.buildUrl(properties));
@@ -96,6 +103,7 @@ class DataSource {
             this.connector.onMessage = this.onMessage.bind(this);
         }
 
+        this.connector.setReconnectTimeout(this.reconnectTimeout);
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp
             if(this.lastStartTime !== 'now') {
@@ -248,16 +256,6 @@ class DataSource {
 
         return url;
     }
-
-    /**
-     * Set the delay before reconnecting the dataSource
-     * @param {Number} timeout - the delay in ms after reconnecting the dataSource
-     */
-    setReconnectTimeout (timeout) {
-        return  this.connector.setReconnectTimeout(timeout);
-    }
-
-
 }
 
 export default DataSource;

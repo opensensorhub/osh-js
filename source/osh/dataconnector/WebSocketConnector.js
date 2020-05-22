@@ -135,7 +135,7 @@ class WebSocketConnector extends DataConnector {
                     let currentTimestamp = Date.now();
                     let delta = currentTimestamp - this.lastTimestamp;
                     if (this.lastTimestamp === -1 || (delta >= this.reconnectTimeout)) {
-                        console.warn('trying to reconnect..');
+                        console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
                         this.reconnect();
                     }
                 }.bind(this), this.reconnectTimeout);
