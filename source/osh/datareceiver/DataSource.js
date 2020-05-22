@@ -53,7 +53,7 @@ class DataSource {
 
         this.initDataSource(properties);
 
-        this.lastTimeStamp = Date.now();
+        this.lastReceiveTime = Date.now();
         this.lastStartTime = 'now';
 
     }
@@ -104,11 +104,16 @@ class DataSource {
         }
 
         this.connector.setReconnectTimeout(this.reconnectTimeout);
+
+        const lastStartTimeCst = this.lastStartTime;
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp
-            if(this.lastStartTime !== 'now') {
-                properties.startTime = new Date(this.lastTimeStamp).toISOString();
-                this.connector.setUrl(this.buildUrl(properties));
+            if(lastStartTimeCst !== 'now') {
+                this.connector.setUrl(this.buildUrl(
+                    {
+                        lastReceiveTime: new Date(this.lastReceiveTime).toISOString(),
+                        ...properties
+                    }));
             }
         }
     }
@@ -207,6 +212,7 @@ class DataSource {
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Date} properties.lastReceiveTime - the last received time to start at this time (ISO String)
      * @return {String} the full url
      */
     buildUrl(properties) {
@@ -239,10 +245,10 @@ class DataSource {
         url += "observedProperty=" + properties.observedProperty + "&";
 
         // adds temporalFilter
+        const stTime = (isDefined(properties.lastReceiveTime)) ? properties.lastReceiveTime :  properties.startTime;
         this.lastStartTime = properties.startTime;
-
         let endTime = properties.endTime;
-        url += "temporalFilter=phenomenonTime," + this.lastStartTime + "/" + endTime + "&";
+        url += "temporalFilter=phenomenonTime," + stTime+ "/" + endTime + "&";
 
         if (properties.replaySpeed) {
             // adds replaySpeed

@@ -60,8 +60,8 @@ class VideoH264 extends DataSource {
      */
     parseTimeStamp(data) {
         // read double time stamp as big endian
-        this.lastTimeStamp = new DataView(data).getFloat64(0, false) * 1000;
-        return this.lastTimeStamp;
+        this.lastReceiveTime = new DataView(data).getFloat64(0, false) * 1000;
+        return this.lastReceiveTime;
     }
 
     /**

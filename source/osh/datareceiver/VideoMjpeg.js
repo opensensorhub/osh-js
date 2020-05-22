@@ -60,8 +60,8 @@ class VideoMjpeg extends DataSource {
      * @returns {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        this.lastTimeStamp = new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
-        return this.lastTimeStamp;
+        this.lastReceiveTime = new DataView(data).getFloat64(0, false) * 1000; // read double time stamp as big endian
+        return this.lastReceiveTime;
     }
 
     /**
