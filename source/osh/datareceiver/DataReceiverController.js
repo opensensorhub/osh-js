@@ -212,7 +212,7 @@ class DataReceiverController {
         this.buffer.start();
         for (let id in this.dataSourcesIdToDataSources) {
             let ds = this.dataSourcesIdToDataSources[id];
-            if (ds.properties.connect) {
+            if (!ds.connected) {
                 ds.connect();
             }
         }
