@@ -80,10 +80,6 @@ class DataSource {
             this.timeOut = properties.timeOut;
         }
 
-        if (!isDefined(properties.connect)) {
-            properties.connect = true;
-        }
-
         // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) {
             this.connector = new WebSocketConnector(this.buildUrl(properties));
