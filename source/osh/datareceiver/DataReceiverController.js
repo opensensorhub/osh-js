@@ -37,11 +37,7 @@ import Buffer from "../buffer/Buffer";
  * dataProviderController.addDataSource(weatherDataSource);
  *
  * // and/or adds entity to controller
- * let entity = {
- *       id : "entity-"+randomUUID(),
- *       name: "Some entity",
- *       dataSources: [datasource]
- * };
+ * let entity = new Entity("Some entity", [datasource])
  *
  * dataProviderController.addEntity(entity);
  *
@@ -174,14 +170,12 @@ class DataReceiverController {
     /**
      * Adds an entity to the current list of datasources and pushes it into the buffer.
      * @see {@link Buffer}
-     * @param {Object} entity - the datasource to add
+     * @param {Entity} entity - the entity to add
      * @param options @deprecated
      */
     addEntity(entity, options) {
-        if (isDefined(entity.dataSources)) {
-            for (let i = 0; i < entity.dataSources.length; i++) {
-                this.addDataSource(entity.dataSources[i], options);
-            }
+        for (let i = 0; i < entity.getDataSources().length; i++) {
+            this.addDataSource(entity.getDataSources()[i], options);
         }
     }
 

@@ -26,7 +26,7 @@ import MjpegView from 'osh/ui/view/video/MjpegView';
 
 var videoView = new MjpegView("containerId", {
     dataSourceId: datasource.id,
-    entityId : entity.id,
+    entity : entity,
     css: "video",
     cssSelected: "video-selected",
     name: "Video"
@@ -95,7 +95,7 @@ class MjpegView extends View {
   }
 
   selectDataView(dataSourceIds,entityId) {
-    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId)) && this.entityId === entityId) {
+    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entity)) && this.entity.getId() === entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {
       document.getElementById(this.divId).setAttribute("class",this.css);

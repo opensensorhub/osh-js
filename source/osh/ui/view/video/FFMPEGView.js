@@ -131,8 +131,8 @@ class FFMPEGView extends View {
     selectDataView(dataSourceIds, entityId) {
         let elt = document.getElementById(this.divId);
         if(isDefined(elt)) {
-            if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId) &&
-              this.entityId === entityId)) {
+            if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entity) &&
+              this.entity.getId() === entityId)) {
                 elt.setAttribute("class", this.css + " " + this.cssSelected);
             } else {
                 elt.setAttribute("class", this.css);
