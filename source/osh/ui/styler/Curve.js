@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Styler from "./Styler";
-import {isDefined} from "../../utils/Utils";
+import Styler from "./Styler.js";
+import {isDefined} from "../../utils/Utils.js";
 
 /**
  * @extends Styler

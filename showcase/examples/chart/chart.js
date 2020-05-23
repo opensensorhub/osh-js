@@ -1,7 +1,7 @@
 // create data source for Android phone camera
-import ChartJsView from "osh/ui/view/chart/ChartJsView";
-import Curve from "osh/ui/styler/Curve";
-import SweJson from "osh/datareceiver/SweJson";
+import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
+import Curve from "osh/ui/styler/Curve.js";
+import SweJson from "osh/datareceiver/SweJson.js";
 
 let chartDataSource = new SweJson("weather", {
     protocol: "ws",

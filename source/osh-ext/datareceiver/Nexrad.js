@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from '../../osh/datareceiver/DataSource';
+import DataSource from '../../osh/datareceiver/DataSource.js';
 
 /**
  * This datasource provides parsing to DataSource Nexrad.

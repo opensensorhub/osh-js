@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import EventMap from './EventMap';
+import EventMap from './EventMap.js';
 
 const eventMap = new EventMap();
 

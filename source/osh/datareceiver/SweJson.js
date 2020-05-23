@@ -15,14 +15,14 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import DataSource from './DataSource';
+import DataSource from './DataSource.js';
 
 /**
  * This datasource provides generic parsing for JSON response.
  *
  * @extends DataSource
  * @example
- * import SweJson from 'osh/datareceiver/SweJson';
+ * import SweJson from 'osh/datareceiver/SweJson.js';
  *
  * let androidPhoneGpsDataSource = new SweJson("android-GPS", {
     protocol: "ws",

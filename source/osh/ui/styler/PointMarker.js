@@ -21,7 +21,7 @@ import Styler from "./Styler.js";
  * @extends Styler
  * @example
  *
- * import PointMarker from 'osh/ui/styler/PointMarker';
+ * import PointMarker from 'osh/ui/styler/PointMarker.js';
  *
  * let pointMarker = new PointMarker({
         location : {

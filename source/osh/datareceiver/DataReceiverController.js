@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from '../utils/Utils';
-import EventManager from '../events/EventManager';
-import Buffer from "../buffer/Buffer";
+import {isDefined} from '../utils/Utils.js';
+import EventManager from '../events/EventManager.js';
+import Buffer from "../buffer/Buffer.js";
 
 /**
  * This class is responsible of handling datasources. It observes necessary events to manage datasources.
@@ -24,7 +24,7 @@ import Buffer from "../buffer/Buffer";
  * @listens {@link DISCONNECT_DATASOURCE}
  * @listens {@link DATASOURCE_UPDATE_TIME}
  * @example
- *import DataReceiverController from 'osh/datareceiver/DataReceiverController';
+ *import DataReceiverController from 'osh/datareceiver/DataReceiverController.js';
  *
  * let datasource = new <>
  *

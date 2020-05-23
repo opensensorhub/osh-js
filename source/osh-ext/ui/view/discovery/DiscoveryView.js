@@ -14,16 +14,16 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Server from "../../../../osh/server/Server";
-import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils";
-import PointMarker from "../../../../osh/ui/styler/PointMarker";
-import VideoMjpeg from "../../../../osh/datareceiver/VideoMjpeg";
-import VideoH264 from "../../../../osh/datareceiver/VideoH264";
-import Curve from "../../../../osh/ui/styler/Curve";
-import View from "../../../../osh/ui/view/View";
-import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController";
+import Server from "../../../../osh/server/Server.js";
+import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils.js";
+import PointMarker from "../../../../osh/ui/styler/PointMarker.js";
+import VideoMjpeg from "../../../../osh/datareceiver/VideoMjpeg.js";
+import VideoH264 from "../../../../osh/datareceiver/VideoH264.js";
+import Curve from "../../../../osh/ui/styler/Curve.js";
+import View from "../../../../osh/ui/view/View.js";
+import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController.js";
 import "../../../resources/css/discovery.css";
-import SweJson from "../../../../osh/datareceiver/SweJson";
+import SweJson from "../../../../osh/datareceiver/SweJson.js";
 
 /**
  * Class representing a Discovery View. The discovery view is a helper class to
@@ -31,7 +31,7 @@ import SweJson from "../../../../osh/datareceiver/SweJson";
  * @extends View
  * @example
 
- import DiscoveryView from 'osh-ext/ui/view/DiscoveryView';
+ import DiscoveryView from 'osh-ext/ui/view/DiscoveryView.js';
 
  let discoveryView = new DiscoveryView("discovery-container",{
     callback: onSubmit,

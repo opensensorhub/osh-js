@@ -14,13 +14,13 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
-import Styler from "./Styler";
+import {isDefined} from "../../utils/Utils.js";
+import Styler from "./Styler.js";
 
 /**
  * @extends Styler
  * @example
- import ImageDraping from 'osh/ui/styler/ImageDraping';
+ import ImageDraping from 'osh/ui/styler/ImageDraping.js';
 
  let imageDrapingMarker = new ImageDraping({
       platformLocationFunc: {

@@ -14,14 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataConnector from './DataConnector';
-import {isDefined} from '../utils/Utils';
+import DataConnector from './DataConnector.js';
+import {isDefined} from '../utils/Utils.js';
 
 /**
  * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @extends DataConnector
  * @example
- * import Ajax from 'osh/dataconnector/Ajax';
+ * import Ajax from 'osh/dataconnector/Ajax.js';
  *
  * let request = ...;
  * let connector = new Ajax(url);

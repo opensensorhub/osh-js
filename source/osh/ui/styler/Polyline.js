@@ -14,14 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Styler from "./Styler";
-import { isDefined } from "../../utils/Utils";
+import Styler from "./Styler.js";
+import { isDefined } from "../../utils/Utils.js";
 
 /**
  * @extends Styler
  * @example
  *
- * import Polyline from 'osh/ui/styler/Polyline';
+ * import Polyline from 'osh/ui/styler/Polyline.js';
  *
  * let polylineStyler = new Polyline({
 		locationFunc : {

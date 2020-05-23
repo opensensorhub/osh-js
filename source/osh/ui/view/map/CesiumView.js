@@ -15,9 +15,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined, randomUUID} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
+import View from "../View.js";
+import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
 
 import {
   when,
@@ -60,7 +60,7 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
  * @extends View
  * @example
 
- import CesiumView from 'osh/ui/view/map/CesiumView';
+ import CesiumView from 'osh/ui/view/map/CesiumView.js';
 
  let cesiumMapView = new CesiumView("",
  [{

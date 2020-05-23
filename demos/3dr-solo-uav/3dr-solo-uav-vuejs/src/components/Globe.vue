@@ -7,11 +7,11 @@
 <script>
   window.CESIUM_BASE_URL = './';
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
-  import CesiumView from "osh/ui/view/map/CesiumView";
+  import CesiumView from "osh/ui/view/map/CesiumView.js";
   // @ is an alias to /src
-  import ImageDraping from "osh/ui/styler/ImageDraping";
-  import SweJson from "osh/datareceiver/SweJson";
-  import PointMarker from "osh/ui/styler/PointMarker";
+  import ImageDraping from "osh/ui/styler/ImageDraping.js";
+  import SweJson from "osh/datareceiver/SweJson.js";
+  import PointMarker from "osh/ui/styler/PointMarker.js";
 
   export default {
     name: "Globe",

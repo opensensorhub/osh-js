@@ -1,8 +1,8 @@
-import DiscoveryView, {DiscoveryType} from "osh-ext/ui/view/discovery/DiscoveryView";
-import LeafletView from "osh/ui/view/map/LeafletView";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView";
-import MjpegView from "osh/ui/view/video/MjpegView";
-import ChartJsView from "osh/ui/view/chart/ChartJsView";
+import DiscoveryView, {DiscoveryType} from "osh-ext/ui/view/discovery/DiscoveryView.js";
+import LeafletView from "osh/ui/view/map/LeafletView.js";
+import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
+import MjpegView from "osh/ui/view/video/MjpegView.js";
+import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
 
 // create Leaflet view
 let leafletMapView = new LeafletView("map-container");
