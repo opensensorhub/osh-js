@@ -37,7 +37,7 @@
     ]
   },
   "devDependencies": {
-    "cesium": "~1.68.0",
+    "cesium": "1.68.0",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",

@@ -6,10 +6,10 @@ import {
     Cartesian3,
     Cartesian2
 } from "cesium";
-import VideoH264 from "osh/datareceiver/VideoH264";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView";
-import ImageDraping from "osh/ui/styler/ImageDraping";
-import PointMarker from "osh/ui/styler/PointMarker";
+import VideoH264 from "osh/datareceiver/VideoH264.js";
+import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
+import ImageDraping from "osh/ui/styler/ImageDraping.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 
 window.CESIUM_BASE_URL = './';
 
