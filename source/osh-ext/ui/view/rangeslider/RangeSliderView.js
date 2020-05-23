@@ -53,8 +53,7 @@ class RangeSliderView extends View {
     let aTagActivateButton = document.createElement("a");
     activateButtonDiv.appendChild(aTagActivateButton);
 
-
-    this.slider.setAttribute("class", "osh-èrangeslider-slider");
+    this.slider.setAttribute("class", "osh-rangeslider-slider");
     activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
 
     let self = this;
