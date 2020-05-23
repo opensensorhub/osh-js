@@ -9,17 +9,17 @@
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
-import Worker from './workers/Ffmpeg.worker';
+import View from "../View.js";
+import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
+import Worker from './workers/Ffmpeg.worker.js';
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
  * @extends View
  * @example
  *
- import FFMPEGView from 'osh/ui/view/video/FFMPEGView';
+ import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
 
  let videoView = new FFMPEGView("videoContainer-id", {
     dataSourceId: videoDataSource.id,

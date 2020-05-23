@@ -14,10 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {randomUUID, isDefined} from '../utils/Utils';
-import WebSocketConnector from "../dataconnector/WebSocketConnector";
-import Ajax from "../dataconnector/Ajax";
-import EventManager from "../events/EventManager";
+import {randomUUID, isDefined} from '../utils/Utils.js';
+import WebSocketConnector from "../dataconnector/WebSocketConnector.js";
+import Ajax from "../dataconnector/Ajax.js";
+import EventManager from "../events/EventManager.js";
 
 /**
  * The DataSource is the abstract class used to create different datasources.

@@ -51,7 +51,7 @@
  </swe:item>
  */
 
-import PtzTasking from './PtzTasking';
+import PtzTasking from './PtzTasking.js';
 
 /**
  * @extends DataSink

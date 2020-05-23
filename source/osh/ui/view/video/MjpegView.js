@@ -14,15 +14,15 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
+import View from "../View.js";
+import {isDefined} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
 
 /**
  * @extends View
  * @example
  *
-import MjpegView from 'osh/ui/view/video/MjpegView';
+import MjpegView from 'osh/ui/view/video/MjpegView.js';
 
 var videoView = new MjpegView("containerId", {
     dataSourceId: datasource.id,

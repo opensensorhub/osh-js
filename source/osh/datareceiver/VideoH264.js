@@ -14,14 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from './DataSource';
+import DataSource from './DataSource.js';
 
 /**
  * This datasource provides parsing to H264 raw data.
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoH264 from 'osh/datareceiver/VideoH264';
+ * import VideoH264 from 'osh/datareceiver/VideoH264.js';
  *
  * var videoDataSource = new VideoH264("H264 video ", {
         protocol: "ws",

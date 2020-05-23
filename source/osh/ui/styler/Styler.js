@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {assertArray, assertFunction, hasValue, isDefined, randomUUID} from "../../utils/Utils";
-import EventManager from "../../events/EventManager";
+import {assertArray, assertFunction, hasValue, isDefined, randomUUID} from "../../utils/Utils.js";
+import EventManager from "../../events/EventManager.js";
 
 /**
  * This class is in charge of defining a Styler object.

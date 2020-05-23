@@ -17,7 +17,7 @@
 
 /**
  * @example
- * import Server from 'osh/server/Server';
+ * import Server from 'osh/server/Server.js';
  *
  * let oshServer = new Server({
  *    url : <someUrl>,

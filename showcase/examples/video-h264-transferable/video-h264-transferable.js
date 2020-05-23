@@ -1,6 +1,6 @@
 import VideoH264 from 'osh/datareceiver/VideoH264.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
-import EventManager from "../../../source/osh/events/EventManager";
+import EventManager from "../../../source/osh/events/EventManager.js";
 //
 // // create data source for UAV camera
 let videoDataSource = new VideoH264("drone-Video", {

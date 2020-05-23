@@ -34,13 +34,13 @@ const BUFFER_STATUS = {
     NOT_START_YET: 'notStartYet'
 };
 
-import {isDefined,randomUUID} from '../utils/Utils';
-import EventManager from '../events/EventManager';
+import {isDefined,randomUUID} from '../utils/Utils.js';
+import EventManager from '../events/EventManager.js';
 
 /**
  * The buffer element which is in charge of synchronizing data.
  * @example
- import Buffer from 'osh/buffer/Buffer';
+ import Buffer from 'osh/buffer/Buffer.js';
 
  let buffer = new Buffer({
     replayFactor: 1

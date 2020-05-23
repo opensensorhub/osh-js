@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import RangeSlider from "ext/osh/ui/view/rangeslider/RangeSliderView";
+  import RangeSlider from "ext/osh/ui/view/rangeslider/RangeSliderView.js";
 
   export default {
     name: "TimeLine",

@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined, randomUUID} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
+import View from "../View.js";
+import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -25,7 +25,7 @@ import 'leaflet/dist/leaflet.css';
  * @extends View
  * @example
 
- import LeafletView from 'osh/ui/view/map/LeafletView';
+ import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
  let leafletMapView = new LeafletView("",
  [{

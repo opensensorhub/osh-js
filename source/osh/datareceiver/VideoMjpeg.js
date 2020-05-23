@@ -14,14 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from './DataSource';
+import DataSource from './DataSource.js';
 
 /**
  * This datasource provides parsing to MJPEG raw data.
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoMjpeg from 'osh/datareceiver/VideoMjpeg';
+ * import VideoMjpeg from 'osh/datareceiver/VideoMjpeg.js';
  *
  var androidPhoneVideoDataSource = new VideoMjpeg("android-Video", {
     protocol: "ws",

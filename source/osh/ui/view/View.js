@@ -20,8 +20,8 @@
  * @param {String} viewItems - The list of view items
  * @param {String} options - The options
  */
-import {isDefined, randomUUID} from '../../utils/Utils';
-import EventManager from '../../events/EventManager';
+import {isDefined, randomUUID} from '../../utils/Utils.js';
+import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
 
 class View {

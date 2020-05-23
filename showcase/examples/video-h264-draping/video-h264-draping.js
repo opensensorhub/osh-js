@@ -1,5 +1,5 @@
-import SweJson from 'osh/datareceiver/SweJson';
-import CesiumView from 'osh/ui/view/map/CesiumView';
+import SweJson from 'osh/datareceiver/SweJson.js';
+import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
     Matrix3,

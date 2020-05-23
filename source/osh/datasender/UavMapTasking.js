@@ -15,8 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import DataSink from './DataSink';
-import EventManager from '../events/EventManager';
+import DataSink from './DataSink.js';
+import EventManager from '../events/EventManager.js';
 
 /**
  * @extends DataSink
