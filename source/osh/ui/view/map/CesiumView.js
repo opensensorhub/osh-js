@@ -365,15 +365,17 @@ class CesiumView extends View {
     const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
     const fillColor = properties.labelColor;
     const labelSize = properties.labelSize;
-    const labelOffset = properties.labelOffset;
+    const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+    const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
     const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
         label != null ? label : "Selected Marker";
     const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
+    const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
+        Color.fromCssColorString(properties.color) : Color.YELLOW;
 
     var geom;
-    if (isModel)
-    {
+    if (isModel) {
       geom = {
         name: name,
         description: desc,
@@ -399,8 +401,6 @@ class CesiumView extends View {
       if (properties.orientation !== 'undefined') {
         rot = properties.orientation.heading;
       }
-      const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-      const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
       geom = {
         name: name,
@@ -518,11 +518,12 @@ class CesiumView extends View {
       //	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
 
       // update billboard aligned axis depending on camera angle
-      if (this.viewer.camera.pitch < -Math.PI/4)
-        marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
-      else
-        marker.billboard.alignedAxis = Cartesian3.ZERO;
-
+      if (marker.billboard) {
+        if (this.viewer.camera.pitch < -Math.PI / 4)
+          marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
+        else
+          marker.billboard.alignedAxis = Cartesian3.ZERO;
+      }
       // zoom map if first marker update
       if (this.first) {
         this.viewer.zoomTo(this.viewer.entities, new HeadingPitchRange(Math.toRadians(0), Math.toRadians(-90), 2000));
