@@ -33,12 +33,14 @@ class View {
      * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} options - the properties of the view
      * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
-     * @param {String} options.entityId - The entity id to which the view belongs to
+     * @param {Entity} options.entity - The entity to which the view belongs to
      */
     constructor(parentElementDivId, viewItems, options) {
         // list of stylers
+        /** @protected @const {!Styler} */
         this.stylers = [];
         this.viewItems = [];
+        /** @protected @const {!String[]} */
         this.names = {};
         this.stylerToObj = {};
         this.stylerIdToStyler = {};
@@ -49,14 +51,17 @@ class View {
         //this.divId = divId;
         this.id = "view-" + randomUUID();
 
+        /** @protected {!Entity} */
+        this.entity = null;
+
         this.dataSourceId = -1;
         // sets dataSourceId
         if (isDefined(options) && isDefined(options.dataSourceId)) {
             this.dataSourceId = options.dataSourceId;
         }
 
-        if (isDefined(options) && isDefined(options.entityId)) {
-            this.entityId = options.entityId;
+        if (isDefined(options) && isDefined(options.entity)) {
+            this.entity = options.entity;
         }
         this.css = "";
 

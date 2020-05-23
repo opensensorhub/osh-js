@@ -23,11 +23,12 @@ import "../../../../../libs/tree/tree.css";
  * This class is in charge of displaying the entities in a tree structure.
  * @extends View
  * @example
- import EntityTreeView from 'osh/ui/view/entity/EntityTreeView';
+ import EntityTreeView from 'osh/ui/view/entity/EntityTreeView.js';
+ import EntityTreeView from 'osh/entity/Entity.js';
 
  let entityTreeView = new EntityTreeView(divId,
      [{
-        entity : androidEntity,
+        entity : new Entity('android entity',[dataSource]),
         path: "Sensors/Toulouse",
         treeIcon : "images/android_icon.png"
      }],
@@ -102,9 +103,9 @@ class EntityTreeView extends View {
 
             let entityNode;
             if(currentNode === this.tree) {
-                entityNode = this.tree.createNode(entity.name,false,treeIcon,this.tree);
+                entityNode = this.tree.createNode(entity.getName(),false,treeIcon,this.tree);
             } else {
-                entityNode = currentNode.createChildNode(entity.name,false,treeIcon,entity);
+                entityNode = currentNode.createChildNode(entity.getName(),false,treeIcon,entity);
             }
             currentItem.node = entityNode;
         }
@@ -120,7 +121,7 @@ class EntityTreeView extends View {
         if (isDefined(entityId)) {
             for(let i = 0;i < this.entityItems.length;i++) {
                 let currentItem = this.entityItems[i];
-                if (currentItem.entity.id === entityId) {
+                if (currentItem.entity.getId() === entityId) {
                     this.tree.selectNode(currentItem.node, false);
                     let node = currentItem.node.parent;
                     while (node !== this.tree) {
