@@ -2,12 +2,12 @@
 import VideoMjpeg from "osh/datareceiver/VideoMjpeg.js";
 import MjpegView from "osh/ui/view/video/MjpegView.js";
 // create data source for Android phone GPS
-import SweJson from "../../../source/osh/datareceiver/SweJson.js";
-import PointMarker from "../../../source/osh/ui/styler/PointMarker.js";
-import LeafletView from "../../../source/osh/ui/view/map/LeafletView.js";
-import {randomUUID} from "../../../source/osh/utils/Utils";
-import DataReceiverController from "../../../source/osh/datareceiver/DataReceiverController";
-import EventManager from "../../../source/osh/events/EventManager";
+import SweJson from "osh/datareceiver/SweJson.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
+import LeafletView from "osh/ui/view/map/LeafletView.js";
+import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
+import EventManager from "osh/events/EventManager.js";
+import Entity from "osh/entity/Entity.js";
 
 const REPLAY_FACTOR = 1.0;
 const BUFFERING = 5000;
@@ -117,18 +117,13 @@ let videoView = new MjpegView("video-container", {
     showTime: true
 });
 
-let androidEntity = {
-    id: "entity-" + randomUUID(),
-    name: "Android Phone",
-    dataSources: [gpsDataSource, videoDataSource, gpsDataSourceNoSync]
-};
-
+const entity = new Entity("Android phone", [gpsDataSource, videoDataSource, gpsDataSourceNoSync]);
 let dataProviderController = new DataReceiverController({
     replayFactor: REPLAY_FACTOR
 });
 
 // We can add a group of dataSources and set the options
-dataProviderController.addEntity(androidEntity);
+dataProviderController.addEntity(entity);
 // starts streaming
 dataProviderController.connectAll();
 

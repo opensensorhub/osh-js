@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9df329e21c1716680c85",
-    "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/css/app.fe8d66bd.css"
+    "revision": "5b67b4494321c916e64f",
+    "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/css/app.abf031a7.css"
   },
   {
-    "revision": "1602e7524287d5d999c9",
-    "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/css/chunk-vendors.0038339e.css"
+    "revision": "faea6580d591a99c8f39",
+    "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/css/chunk-vendors.65a78c1d.css"
   },
   {
     "revision": "1dc35d25e61d819a9c357074014867ab",
@@ -40,15 +40,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/img/fontawesome-webfont.d7c63908.svg"
   },
   {
-    "revision": "b34d7838d898b092ce3fcb11ae98135e",
+    "revision": "36d8b9afcf6e705cadb31ef90dd888ef",
     "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/index.html"
   },
   {
-    "revision": "9df329e21c1716680c85",
-    "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/js/app.cf7b6b9b.js"
+    "revision": "5b67b4494321c916e64f",
+    "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/js/app.a1394545.js"
   },
   {
-    "revision": "1602e7524287d5d999c9",
+    "revision": "faea6580d591a99c8f39",
     "url": "http://opensensorhub.github.io/osh-js/v2.0.0/demos/video-display-advanced-vuejs/js/chunk-vendors.8aabb909.js"
   },
   {
