@@ -157,8 +157,18 @@ class View {
         }, this.divId);
     }
 
+    /**
+     * @private
+     */
     unregisterCallback() {
-        EventManager.remove(this.getEventName(), this.divId);
+        if(this.dataSourceId > -1) {
+            EventManager.remove(this.getEventName(), this.divId);
+        }
+        EventManager.remove(EventManager.EVENT.SELECT_VIEW, this.divId);
+        EventManager.remove(EventManager.EVENT.SHOW_VIEW, this.divId);
+        EventManager.remove(EventManager.EVENT.RESIZE, this.divId);
+        EventManager.remove(EventManager.EVENT.ADD_VIEW_ITEM, this.divId);
+        this.removeViewItems();
     }
 
     getEventName() {
@@ -248,7 +258,7 @@ class View {
      * @param {String} viewItem.name - The name of the view item
      * @param {Styler} viewItem.styler - The styler object representing the view item
      */
-    async addViewItem(viewItem) {
+    addViewItem(viewItem) {
         this.viewItems.push(viewItem);
         if (viewItem.hasOwnProperty("styler")) {
             let styler = viewItem.styler;
@@ -313,18 +323,26 @@ class View {
      * @param {Object} viewItem - The initial view items to add
      * @param {String} viewItem.name - The name of the view item
      * @param {Styler} viewItem.styler - The styler object representing the view item
-     * @return {Promise<void>}
      */
-    async removeViewItem(viewItem) {
+    removeViewItem(viewItem) {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
                 EventManager.remove(EventManager.EVENT.DATA + "-" + ds, this.divId);
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
-
         }
     }
+
+    /**
+     * Removes all view item from the view.
+     */
+    removeViewItems() {
+        for(const viewItem of this.viewItems) {
+            this.removeViewItem(viewItem);
+        }
+    }
+
     /**
      * @private
      */
@@ -332,19 +350,19 @@ class View {
         var that = this;
         // observes the selected event
         EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) =>
-            that.selectDataView(event.dataSourcesIds, event.entityId));
+            that.selectDataView(event.dataSourcesIds, event.entityId),this.divId);
 
         // observes the SHOW event
-        EventManager.observe(EventManager.EVENT.SHOW_VIEW, (event) => that.show(event));
+        EventManager.observe(EventManager.EVENT.SHOW_VIEW, (event) => that.show(event),this.divId);
 
         EventManager.observe(EventManager.EVENT.ADD_VIEW_ITEM, (event) => {
             if (isDefined(event.viewId) && event.viewId === that.id) {
                 that.addViewItem(event.viewItem);
             }
-        });
+        },this.divId);
 
         EventManager.observe(EventManager.EVENT.RESIZE + "-" + this.divId, (event) =>
-            that.onResize());
+            that.onResize(),this.divId);
     }
 
     /**
