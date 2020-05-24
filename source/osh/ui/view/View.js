@@ -132,9 +132,19 @@ class View {
                 }
             });
         });
-
         // Attach the mutation observer to blocker, and only when attribute values change
         observer.observe(this.elementDiv, {attributes: true});
+
+        const rootObserver = new MutationObserver(function(mutations) {
+            // try to get the div element by the id to check if it is still owned by the document object
+            if(!isDefined(document.getElementById(that.divId))){
+                this.disconnect();
+                that.destroy();
+            }
+        });
+        rootObserver.observe(document.body, {
+            childList: true,
+        });
     }
 
     registerCallback() {
