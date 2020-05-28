@@ -132,8 +132,8 @@ class WebSocketConnector extends DataConnector {
             //init the reconnect handler
             if (this.interval === -1) {
                 this.interval = window.setInterval(function () {
-                    let currentTimestamp = Date.now();
-                    let delta = currentTimestamp - this.lastReceiveTime;
+                    let delta = Date.now() - this.lastReceiveTime;
+                    // -1 means the WS went in error
                     if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
                         console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
                         this.reconnect();

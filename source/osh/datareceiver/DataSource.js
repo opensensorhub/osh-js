@@ -53,7 +53,7 @@ class DataSource {
 
         this.initDataSource(properties);
 
-        this.lastReceiveTime = Date.now();
+        this.lastTimeStamp = null;
         this.lastStartTime = 'now';
 
     }
@@ -105,13 +105,13 @@ class DataSource {
 
         this.connector.setReconnectTimeout(this.reconnectTimeout);
 
-        const lastStartTimeCst = this.lastStartTime;
         this.connector.onReconnect = () => {
-            // if not real time, preserve last timestamp
-            if(lastStartTimeCst !== 'now') {
+            // if not real time, preserve last timestamp to reconnect at the last time received
+            // for that, we update the URL with the new last time received
+            if(this.lastStartTime !== 'now') {
                 this.connector.setUrl(this.buildUrl(
                     {
-                        lastReceiveTime: new Date(this.lastReceiveTime).toISOString(),
+                        lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
                         ...properties
                     }));
             }
@@ -212,7 +212,7 @@ class DataSource {
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
-     * @param {Date} properties.lastReceiveTime - the last received time to start at this time (ISO String)
+     * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
      * @return {String} the full url
      */
     buildUrl(properties) {
@@ -245,7 +245,7 @@ class DataSource {
         url += "observedProperty=" + properties.observedProperty + "&";
 
         // adds temporalFilter
-        const stTime = (isDefined(properties.lastReceiveTime)) ? properties.lastReceiveTime :  properties.startTime;
+        const stTime = (isDefined(properties.lastTimeStamp)) ? properties.lastTimeStamp :  properties.startTime;
         this.lastStartTime = properties.startTime;
         let endTime = properties.endTime;
         url += "temporalFilter=phenomenonTime," + stTime+ "/" + endTime + "&";
