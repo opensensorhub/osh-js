@@ -105,10 +105,11 @@ class DataSource {
 
         this.connector.setReconnectTimeout(this.reconnectTimeout);
 
+        const lastStartTimeCst  = this.lastStartTime;
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp to reconnect at the last time received
             // for that, we update the URL with the new last time received
-            if(this.lastStartTime !== 'now') {
+            if(lastStartTimeCst !== 'now') {
                 this.connector.setUrl(this.buildUrl(
                     {
                         lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
