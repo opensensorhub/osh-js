@@ -57,16 +57,13 @@ class Buffer {
                     minDelta = minDelta === -1 ? currentDelta: minDelta < currentDelta? minDelta: currentDelta;
                 }
             } else {
-                // // handle timeOut
-                // // we wait until reach the timeOut
-                // let waitTime = currentDs.timeOut - (Date.now() - currentDs.lastRecordTime);
-                // if (waitTime > 0) {
-                //     window.setTimeout(() => this.processData(), waitTime );
-                //     return;
-                // }
-                //
-                // // otherwise, send back the data with late and continue for other DS
-                // this.onData(currentDs.id, data.shift());
+                // handle timeOut
+                // we wait until reach the timeOut
+                let waitTime = currentDs.timeOut - (Date.now() - currentDs.lastRecordTime);
+                if (waitTime > 0) {
+                    window.setTimeout(() => this.processData(), waitTime );
+                    return;
+                }
             }
         }
 

@@ -90,7 +90,7 @@ buffer.addDataSource( {
   id: '1',
   syncMasterTime: true,
   bufferingTime: 100,
-  timeOut: 100000,
+  timeOut: 5000,
   name: '1'
 });
 
@@ -98,14 +98,14 @@ buffer.addDataSource({
   id: '2',
   syncMasterTime: true,
   bufferingTime: 200,
-  timeOut: 100000
+  timeOut: 5000
 });
 
 buffer.addDataSource( {
   id: '3',
   syncMasterTime: true,
   bufferingTime: 300,
-  timeOut: 100000
+  timeOut: 1000
 });
 
 for(let i=0;i <dataSet.length;i++ ) {
