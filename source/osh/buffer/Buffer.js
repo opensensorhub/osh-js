@@ -14,363 +14,90 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-/**
- @constant
- @type {number}
- @default
- */
-const INITIAL_BUFFERING_TIME = 3000; // ms time
-const MAX_LONG = Math.pow(2, 53) + 1;
-/**
- * This enumeration contains the whole list of available status for a job.
- * @enum
- * @readonly
- * @type {{CANCEL: string, START: string, STOP: string, NOT_START_YET: string}}
- */
-const BUFFER_STATUS = {
-    CANCEL: 'cancel',
-    START: 'start',
-    STOP: 'stop',
-    NOT_START_YET: 'notStartYet'
-};
-
-import {isDefined,randomUUID} from '../utils/Utils.js';
-import EventManager from '../events/EventManager.js';
-
-/**
- * The buffer element which is in charge of synchronizing data.
- * @example
- import Buffer from 'osh/buffer/Buffer.js';
-
- let buffer = new Buffer({
-    replayFactor: 1
- });
- */
-
 class Buffer {
-    /**
-     * @param {Object} options -
-     * @param {Object} options.replayFactor defines the replay speed of the buffer in order to synchronize data
-     * @param options
-     */
-    constructor(options) {
-        this.buffers = {};
+    constructor(properties) {
+        this.dataSourceMap = {};
+        this.bufferingTime = properties.bufferingTime ? properties.bufferingTime : 1000;
+        this.startBufferingTime = -1;
+        this.currentMasterTime = -1;
+    }
 
-        this.replayFactor = 1;
+    push(dataSourceId, data) {
+        const ds = this.dataSourceMap[dataSourceId];
 
-        // update values from options
-        if (isDefined(options)) {
-            if (isDefined(options.replayFactor)) {
-                this.replayFactor = options.replayFactor;
-            }
+        if(this.startBufferingTime === -1) {
+            this.startBufferingTime = Date.now();
+            // start iterating on data after bufferingTime
+            setTimeout(() => this.processData(), this.bufferingTime);
         }
 
-        // define buffer letiable
-
-        // defines a status to stop the buffer after stop() calling.
-        // If start() method is called, this letiable should be set to TRUE
-        this.stop = false;
-        this.isStarted = false;
-        this.bufferingState = false;
+        ds.data.push(data);
+        ds.lastRecordTime = Date.now();
     }
 
-    /**
-     * Starts observing the data stream.
-     */
-    startObservers() {
-        this.observeId = randomUUID();
-        this.boundHandlerMethod = this.push.bind(this);
-        EventManager.observe(EventManager.EVENT.DATA, this.boundHandlerMethod, this.observeId);
-    }
+    processData() {
+        let oldestDataDs = null;
+        let minDelta = -1;
 
-    /**
-     * Stops observing the data stream.
-     */
-    stopObservers() {
-        if (isDefined(this.observeId) || this.observeId !== null) {
-            EventManager.observe(EventManager.EVENT.DATA, this.boundHandlerMethod, this.observeId);
-            this.observeId = 'undefined';
-        }
-    }
+        let currentDelta = -1;
 
-    /**
-     * Starts the buffer and starts the observers.
-     */
-    start() {
-        this.isStarted = true;
-        this.stop = false;
-        this.startObservers();
-        this.startRealTime = new Date().getTime();
-        this.processSyncData();
-    }
-
-    /**
-     * Stops the buffer and stops the observers.
-     */
-    stop() {
-        this.stopObservers();
-        this.stop = true;
-    }
-
-    /**
-     * Cancels all current running/pending jobs. This function loop over the
-     * datasources and cancel them one by one.
-     */
-    cancelAll() {
-        for (let dataSourceId in this.buffers) {
-            this.cancelDataSource(dataSourceId);
-        }
-    }
-
-    /**
-     * Cancels the dataSource. Cancels means to clear the data contained into the buffer and change the status to CANCEL
-     * @param dataSourceId The dataSource to cancel
-     */
-    cancelDataSource(dataSourceId) {
-        this.buffers[dataSourceId].buffer = [];
-        this.buffers[dataSourceId].status = BUFFER_STATUS.CANCEL;
-    }
-
-    /**
-     * Starts buffering the dataSource.
-     * @param dataSourceId the dataSource to start
-     */
-    startDataSource(dataSourceId) {
-        this.buffers[dataSourceId].status = BUFFER_STATUS.NOT_START_YET;
-        this.buffers[dataSourceId].lastRecordTime = Date.now();
-    }
-
-    /**
-     * Starts all dataSources. The method loops over all datasources and
-     * calls the {@link
-     */
-    startAll() {
-        for (let dataSourceId in this.buffers) {
-            this.startDataSource(dataSourceId);
-        }
-    }
-
-    /**
-     * Adds a new dataSource into the buffer.
-     * @param {String} dataSourceId - The id of the dataSource to add
-     * @param {Object} options -
-     * @param {Boolean} options.syncMasterTime -
-     * @param {Number} options.bufferingTime -
-     * @param {Number} options.timeOut -
-     * @param {String} options.name -
-     */
-    addDataSource(dataSourceId, options) {
-        this.buffers[dataSourceId] = {
-            buffer: [],
-            syncMasterTime: false,
-            bufferingTime: INITIAL_BUFFERING_TIME,
-            timeOut: 3000,
-            lastRecordTime: Date.now(),
-            status: BUFFER_STATUS.NOT_START_YET,
-            name: 'undefined'
-        };
-
-        if (isDefined(options)) {
-            if (isDefined(options.syncMasterTime)) {
-                this.buffers[dataSourceId].syncMasterTime = options.syncMasterTime;
-            }
-
-            if (isDefined(options.bufferingTime)) {
-                this.buffers[dataSourceId].bufferingTime = options.bufferingTime;
-            }
-
-            if (isDefined(options.timeOut)) {
-                this.buffers[dataSourceId].timeOut = options.timeOut;
-            }
-
-            if (isDefined(options.name)) {
-                this.buffers[dataSourceId].name = options.name;
-            }
-        }
-    }
-
-    /**
-     * Adds an entity which contains one or more dataSources.
-     * The dataSources are then added to the buffer using {@link addDataSource}
-     * @param {Object} entity - The entity to add
-     * @param {Object} options -
-     * @param {Boolean} options.syncMasterTime -
-     * @param {Number} options.bufferingTime -
-     * @param {Number} options.timeOut -
-     * @param {String} options.name -
-     */
-    addEntity(entity, options) {
-        // get dataSources from entity and add them to buffers
-        if (isDefined(entity.dataSources)) {
-            for (let i = 0; i < entity.dataSources.length; i++) {
-                this.addDataSource(entity.dataSources[i], options);
-            }
-        }
-    }
-
-    /**
-     * Pushes a data into the buffer. This method is used as internal method by the {@link
-     * The event contains the necessary elements to process the data.
-     * @param {Object} event - The event object received from the EventManager
-     * @param {String} event.dataSourceId - The dataSource id to process
-     * @param {Number} event.syncMasterTime - A boolean used to check if the data has to be synchronized with another data. If the value
-     * is FALSE, the data will pass through the buffer and send back immediately.
-     * @param {*} event.data -  The raw data provided by the DataSource
-     * @param {Number} event.data.timeStamp The timeStamp of the data. It will be used in case of the syncMasterTime is set to TRUE.
-     */
-    push(event) {
-        let dataSourceId = event.dataSourceId;
-
-        // append the data to the existing corresponding buffer
-        let currentBufferObj = this.buffers[dataSourceId];
-
-        // discard data if it should be synchronized by was too late
-        let sync = currentBufferObj.syncMasterTime;
-        if (sync && event.data.timeStamp < this.currentTime) {
-            return;
-        }
-
-        // also discard if streamwas canceled
-        if (currentBufferObj.status === BUFFER_STATUS.CANCEL) {
-            return;
-        }
-
-        // define the time of the first data as relative time
-        if (currentBufferObj.status === BUFFER_STATUS.NOT_START_YET) {
-            currentBufferObj.startRelativeTime = event.data.timeStamp;
-            currentBufferObj.startRelativeRealTime = new Date().getTime();
-            currentBufferObj.status = BUFFER_STATUS.START;
-        }
-
-        currentBufferObj.buffer.push(event.data);
-        currentBufferObj.lastRecordTime = Date.now();
-
-        if (!sync) {
-            this.dispatchData(dataSourceId, currentBufferObj.buffer.shift());
-        }
-
-    }
-
-    /**
-     * @private
-     */
-    processSyncData() {
-        if (!this.bufferingState) {
-
-            let minTimeStampBufferObj = null;
-            let minTimeStampDSId = null;
-            let minTimeStamp = MAX_LONG;
-
-            let that = this;
-            for (let dataSourceId in this.buffers) {
-                let currentBufferObj = this.buffers[dataSourceId];
-                if ((currentBufferObj.status === BUFFER_STATUS.START || currentBufferObj.status === BUFFER_STATUS.NOT_START_YET) && currentBufferObj.syncMasterTime) {
-                    if (currentBufferObj.buffer.length === 0) {
-                        /*if(maxBufferingTime < currentBufferObj.bufferingTime) {
-                          maxBufferingTime = currentBufferObj.bufferingTime;
-                        }*/
-                        let waitTime = currentBufferObj.timeOut - (Date.now() - currentBufferObj.lastRecordTime);
-                        if (waitTime > 0) {
-                            window.setTimeout(() =>  // to be replaced by setInterval
-                                this.processSyncData(), waitTime / 10.0);
-                            return;
-                        } else {
-                            console.log("Timeout of data source " + dataSourceId);
-                        }
-                    } else if (currentBufferObj.buffer[0].timeStamp < minTimeStamp) {
-                        minTimeStampBufferObj = currentBufferObj;
-                        minTimeStampDSId = dataSourceId;
-                        minTimeStamp = currentBufferObj.buffer[0].timeStamp;
+        for(let currentDsId in this.dataSourceMap) {
+            let currentDs = this.dataSourceMap[currentDsId];
+            if(currentDs.data.length > 0) {
+                if (oldestDataDs === null) {
+                    oldestDataDs = currentDs;
+                    if(oldestDataDs.data.length > 1) {
+                        minDelta = oldestDataDs.data[1].timeStamp - oldestDataDs.data[0].timeStamp;
                     }
+                } else if(currentDs.data[0].timeStamp < oldestDataDs.data[0].timeStamp) {
+                    minDelta = oldestDataDs.data[0].timeStamp - currentDs.data[0].timeStamp;
+                    oldestDataDs = currentDs;
+                } else {
+                    currentDelta = currentDs.data[0].timeStamp - oldestDataDs.data[0].timeStamp;
+                    minDelta = minDelta === -1 ? currentDelta: minDelta < currentDelta? minDelta: currentDelta;
                 }
-            }
-
-            // re-buffer because at least one dataSource has no data and its status is START
-            /*if(maxBufferingTime > -1) {
-              this.buffering(currentBufferObj.name,maxBufferingTime);
-            } else*/
-            if (minTimeStampBufferObj !== null) {
-                this.currentTime = minTimeStamp;
-                this.processData(minTimeStampBufferObj, minTimeStampDSId, () => {
-                    that.processSyncData();
-                });
             } else {
-                window.setTimeout(() => {
-                    that.processSyncData();
-                }, 1000);
-            }
-        }
-    }
-
-    /**
-     * @private
-     */
-    processData(bufferObj, dataSourceId, fnEndTimeout) {
-        // compute waitTime and dispatch data
-        let startRelativeTime = bufferObj.startRelativeTime;
-        let elapsedTime = new Date().getTime() - bufferObj.startRelativeRealTime;
-        let data = bufferObj.buffer.shift();
-
-        let waitTime = (((data.timeStamp - startRelativeTime) / this.replayFactor) - elapsedTime);
-        bufferObj.startRelativeTime = data.timeStamp;
-        bufferObj.startRelativeRealTime = new Date().getTime();
-
-        if (waitTime > 0) {
-            //callback the data after waiting for a time equals to the difference between the two timeStamps
-            let that = this;
-            window.setTimeout(() => {
-                //TODO: check if BUFFER TASK isw
-                that.dispatchData(dataSourceId, data);
-                if (isDefined(fnEndTimeout)) {
-                    fnEndTimeout();
+                // handle timeOut
+                // we wait until reach the timeOut
+                let waitTime = currentDs.timeOut - (Date.now() - currentDs.lastRecordTime);
+                if (waitTime > 0) {
+                    window.setTimeout(() => this.processData(), waitTime );
+                    return;
                 }
-            }, waitTime);
+
+                // otherwise, send back the data with late and continue for other DS
+                this.onData(currentDs.id, data.shift());
+            }
+        }
+
+        // no more data, re-buffering
+        if(oldestDataDs === null) {
+            this.startBufferingTime = -1;
         } else {
-            this.dispatchData(dataSourceId, data);
-            if (isDefined(fnEndTimeout)) {
-                fnEndTimeout();
+            this.currentMasterTime = oldestDataDs.data[0].timeStamp;
+            // return oldest data
+            this.onData(oldestDataDs.id, oldestDataDs.data.shift());
+            if(minDelta >= 0) {
+                // re play next data at min time
+                setTimeout(() => this.processData(), minDelta);
             }
         }
     }
 
-    /**
-     * Dispatches the data through the EventManager. If the data to process is synchronized, it will launch a {@link CURRENT_MASTER_TIME} event
-     * with {timeStamp:xxx} as parameter. In all case, it launches a {@link
-     * @private
-     * @param dataSourceId The dataSourceId of the data. It will be used as concatenated String into the fire method.
-     * @param data The data to fire
-     */
-    dispatchData(dataSourceId, data) {
-        let bufObj = this.buffers[dataSourceId];
-        if (bufObj.status !== BUFFER_STATUS.CANCEL) {
-            if (bufObj.syncMasterTime) {
-                EventManager.fire(EventManager.EVENT.CURRENT_MASTER_TIME,
-                    {
-                        timeStamp: data.timeStamp,
-                        dataSourceId: dataSourceId
-                    });
-            }
-            EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
-        }
+    addDataSource(dataSource) {
+        this.dataSourceMap[dataSource.id] = {
+            bufferingTime: dataSource.bufferingTime,
+            timeOut: dataSource.timeOut,
+            syncMasterTime: dataSource.syncMasterTime,
+            data: [],
+            startBufferingTime: -1,
+            id: dataSource.id,
+            lastRecordTime:-1
+        };
     }
 
-    /**
-     * This method is responsible of buffering data, that is to say it will timeOut the whole process to wait after more data.
-     * @private
-     * @param name The name of the current dataSource which needs to be buffered
-     * @param bufferingTime The buffering time
-     * @memberof Buffer
-     * @instance
-     */
-    buffering(name, bufferingTime) {
-        EventManager.fire(EventManager.EVENT.LOADING_START, {name: name});
-        this.bufferingState = true;
-        let that = this;
-        window.setTimeout(() => {
-            that.bufferingState = false;
-            EventManager.fire(EventManager.EVENT.LOADING_STOP);
-            that.processSyncData();
-        }, bufferingTime);
+    onData(dataSourceId, data) {
+
     }
 }
 export default  Buffer;
