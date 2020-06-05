@@ -38,7 +38,7 @@ class FFMPEGView extends View {
      * @param {Object} options - the properties of the view
      * @param {Number} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
      * @param {Boolean} [options.directPlay=false] - Enable or ignore the framerate play
-     *
+     * @param {String} [options.codec='h264'] - Video codec
      */
     constructor(divId, options) {
         super(divId, [], options);
@@ -60,6 +60,7 @@ class FFMPEGView extends View {
 
         this.framerate = 29.67;
         this.directPlay = false;
+        this.codec = 'h264';
 
         if (isDefined(options)) {
             if (isDefined(options.framerate)) {
@@ -68,6 +69,10 @@ class FFMPEGView extends View {
 
             if (isDefined(options.directPlay)) {
                 this.directPlay = options.directPlay;
+            }
+
+            if (isDefined(options.codec)) {
+                this.codec = options.codec;
             }
         }
 
@@ -221,6 +226,7 @@ class FFMPEGView extends View {
 
         let buffer = [];
         let that = this;
+
         this.worker.onmessage = function (e) {
             if(that.directPlay) {
                 display(e);
@@ -276,7 +282,8 @@ class FFMPEGView extends View {
             this.worker.postMessage({
                 pktSize: pktSize,
                 pktData: arrayBuffer,
-                byteOffset: pktData.byteOffset
+                byteOffset: pktData.byteOffset,
+                codec: this.codec
             }, [arrayBuffer]);
             pktData = null;
         }
