@@ -1,6 +1,5 @@
 // create data source for Android phone GPS
-import Buffer from "../../../source/osh/buffer/Buffer";
-import EventManager from "../../../source/osh/events/EventManager";
+import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
 
 const dataSet = [
   {
@@ -84,7 +83,7 @@ const dataSet = [
     }
   },
 ];
-const buffer = new Buffer({replayFactor:1});
+const buffer = new DataSynchronizer({replayFactor:1});
 
 buffer.addDataSource( {
   id: '1',
@@ -120,7 +119,7 @@ buffer.onData = function(databaseId, data) {
 };
 
 // dynamic part
-const bufferDynamic = new Buffer({replayFactor:1, bufferingTime:1000});
+const bufferDynamic = new DataSynchronizer({replayFactor:1, bufferingTime:1000});
 
 bufferDynamic.addDataSource( {
   id: '1',
@@ -161,7 +160,7 @@ function getNewData() {
 const eltDynamic = document.getElementById("buffer-dynamic");
 
 bufferDynamic.onData = function(dataSourceId, data) {
-  eltDynamic.innerHTML = eltDynamic.innerHTML+dataSourceId+" =>  "+data.data+" <br>";
+  eltDynamic.innerText = eltDynamic.innerText+dataSourceId+" =>  "+data.data+" \n";
 };
 
 function addNewData() {

@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-class Buffer {
+class DataSynchronizer {
     constructor(properties) {
         this.dataSourceMap = {};
         this.bufferingTime = properties.bufferingTime ? properties.bufferingTime : 1000;
@@ -32,7 +32,9 @@ class Buffer {
         }
 
         ds.data.push(data);
-        ds.lastRecordTime = Date.now();
+        // can we use the same attribute to determine if the DS has already timed out?
+        ds.timedOut = false;
+        ds.lastReceivedTime = Date.now();
     }
 
     processData() {
@@ -56,11 +58,12 @@ class Buffer {
                     currentDelta = currentDs.data[0].timeStamp - oldestDataDs.data[0].timeStamp;
                     minDelta = minDelta === -1 ? currentDelta: minDelta < currentDelta? minDelta: currentDelta;
                 }
-            } else {
+            } else if(!currentDs.timedOut){
                 // handle timeOut
                 // we wait until reach the timeOut
-                let waitTime = currentDs.timeOut - (Date.now() - currentDs.lastRecordTime);
+                let waitTime = currentDs.timeOut - (Date.now() - currentDs.lastReceivedTime);
                 if (waitTime > 0) {
+                    currentDs.timedOut = true;
                     window.setTimeout(() => this.processData(), waitTime );
                     return;
                 }
@@ -89,7 +92,8 @@ class Buffer {
             data: [],
             startBufferingTime: -1,
             id: dataSource.id,
-            lastRecordTime:-1
+            lastReceivedTime:-1,
+            timedOut: false
         };
     }
 
@@ -97,4 +101,4 @@ class Buffer {
 
     }
 }
-export default  Buffer;
+export default  DataSynchronizer;

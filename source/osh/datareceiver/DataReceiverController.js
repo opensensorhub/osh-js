@@ -16,7 +16,7 @@
 
 import {isDefined} from '../utils/Utils.js';
 import EventManager from '../events/EventManager.js';
-import Buffer from "../buffer/Buffer.js";
+import DataSynchronizer from "../buffer/DataSynchronizer.js";
 
 /**
  * This class is responsible of handling datasources. It observes necessary events to manage datasources.
@@ -164,7 +164,7 @@ class DataReceiverController {
      * @private
      */
     initBuffer() {
-        this.buffer = new Buffer(this.options);
+        this.buffer = new DataSynchronizer(this.options);
     }
 
     /**
