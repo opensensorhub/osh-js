@@ -27,6 +27,10 @@ class EventManager {
         eventMap.remove('osh:' + eventName, id);
     }
 
+    static removeById(id ='any') {
+        eventMap.removeById(id);
+    }
+
     static registerView(view) {
         view.registerCallback();
     }

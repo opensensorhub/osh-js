@@ -161,14 +161,7 @@ class View {
      * @private
      */
     unregisterCallback() {
-        if(this.dataSourceId > -1) {
-            EventManager.remove(this.getEventName(), this.divId);
-        }
-        EventManager.remove(EventManager.EVENT.SELECT_VIEW, this.divId);
-        EventManager.remove(EventManager.EVENT.SHOW_VIEW, this.divId);
-        EventManager.remove(EventManager.EVENT.RESIZE, this.divId);
-        EventManager.remove(EventManager.EVENT.ADD_VIEW_ITEM, this.divId);
-        this.removeViewItems();
+        EventManager.removeById(this.divId);
     }
 
     getEventName() {

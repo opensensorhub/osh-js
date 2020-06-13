@@ -31,6 +31,12 @@ class EventMap {
         }
     }
 
+    removeById(id) {
+        for(let eventName in this.eventMap) {
+            this.eventMap[eventName] = this.eventMap[eventName].filter(obj => obj.id !== id);
+        }
+    }
+
     /**
      * Observes any eventName and calls the callback when the event is fired.
      * @param {String} eventName -
