@@ -201,15 +201,16 @@ class OpenLayerView extends View {
             if (options.baseLayers) {
                 baseLayers = options.baseLayers;
             }
-        } else {
+        }
+        if(initialView === null) {
             // loads the default one
             initialView = new OlView({
                 center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
-                zoom: 11,
+                zoom: 5,
                 maxZoom: maxZoom
             });
-
         }
+
 
         // sets layers to map
         //create map
