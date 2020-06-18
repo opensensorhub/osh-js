@@ -18,7 +18,7 @@ const totalElt = document.getElementById("total");
 
 const viewItems = [];
 
-function addMarker() {
+function createViewItem() {
     let gpsDataSource = new SweJson('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
@@ -52,20 +52,26 @@ function addMarker() {
     };
     viewItems.push(viewItem);
 
-    cesiumView.addViewItem(viewItem);
-    leafletView.addViewItem(viewItem);
-
     gpsDataSource.connect();
 
     updateTotal();
+
+    return viewItem;
+}
+
+function addMarker() {
+    cesiumView.addViewItem(createViewItem());
+    leafletView.addViewItem(createViewItem());
+    openLayerView.addViewItem(createViewItem());
 }
 
 function updateTotal() {
     totalElt.innerText = viewItems.length;
 }
 function removeMarker() {
-    const firstViewItem = viewItems.shift();
-    leafletView.removeViewItem(firstViewItem);
+    cesiumView.removeViewItem(viewItems.shift());
+    leafletView.removeViewItem(viewItems.shift());
+    openLayerView.removeViewItem(viewItems.shift());
 
     updateTotal();
 }
