@@ -15,3 +15,4 @@ npm-debug.log
 demos/video-display/video-display-advanced-android-vuejs/
 out
 documentation/jsdoc/build/
+**/video-display-advanced-android-vuejs/
