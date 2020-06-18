@@ -13,6 +13,7 @@ import View from "../View.js";
 import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
 import Worker from './workers/Ffmpeg.worker.js';
+import '../../../resources/css/ffmpegview.css';
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -38,6 +39,8 @@ class FFMPEGView extends View {
      * @param {Object} options - the properties of the view
      * @param {Number} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
      * @param {Boolean} [options.directPlay=false] - Enable or ignore the framerate play
+     * @param {Boolean} [options.showTime=false] - Enable or ignore the show timestamp text onto the canvas
+     * @param {Boolean} [options.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
      * @param {String} [options.codec='h264'] - Video codec
      */
     constructor(divId, options) {
@@ -46,16 +49,15 @@ class FFMPEGView extends View {
         this.fps = 0;
         this.width = "1280";
         this.height = "720";
+        this.showTime = false;
+        this.showStats = false;
 
         this.statistics = {
-            videoStartTime: 0,
-            videoPictureCounter: 0,
-            windowStartTime: 0,
-            windowPictureCounter: 0,
-            fps: 0,
-            fpsMin: 1000,
-            fpsMax: -1000,
-            fpsSinceStart: 0
+            averageFps: 0,
+            frames: 0,
+            firstTime: 0,
+            bitRate: 0,
+            averageBitRate:0
         };
 
         this.framerate = 29.67;
@@ -74,12 +76,42 @@ class FFMPEGView extends View {
             if (isDefined(options.codec)) {
                 this.codec = options.codec;
             }
+
+            if (isDefined(options.showTime)) {
+                this.showTime = options.showTime;
+            }
+
+            if (isDefined(options.showStats)) {
+                this.showStats = options.showStats;
+            }
+        }
+
+        let domNode = document.getElementById(this.divId);
+
+        // if need to draw text
+        if(this.showTime || this.showStats) {
+            this.textDiv = document.createElement("div");
+            this.textDiv.setAttribute("width",this.width);
+            this.textDiv.setAttribute("height",15);
+            this.textDiv.setAttribute("class","ffmpeg-info");
+
+            if(this.showTime) {
+                this.textFpsDiv = document.createElement("div");
+                this.textFpsDiv.setAttribute("class","ffmpeg-fps");
+                this.textDiv.appendChild(this.textFpsDiv);
+            }
+            if(this.showStats) {
+                this.textStatsDiv = document.createElement("div");
+                this.textStatsDiv.setAttribute("class","ffmpeg-stats");
+                this.textDiv.appendChild(this.textStatsDiv);
+            }
+
+            domNode.appendChild(this.textDiv);
         }
 
         // create webGL canvas
         this.yuvCanvas = this.createCanvas(this.width,this.height);
 
-        let domNode = document.getElementById(this.divId);
         domNode.appendChild(this.yuvCanvas.canvasElement);
 
         // add selection listener
@@ -127,9 +159,10 @@ class FFMPEGView extends View {
 
     setData(dataSourceId, data) {
             if (!this.skipFrame) {
-                let pktData = data.data;
+                let pktData = data.data.frameData;
                 let pktSize = pktData.length;
-                this.decodeWorker(pktSize, pktData);
+                let roll = data.data.roll;
+                this.decodeWorker(pktSize, pktData, data.timeStamp,roll);
             }
     }
 
@@ -169,36 +202,24 @@ class FFMPEGView extends View {
     /**
      * @private
      */
-    updateStatistics() {
-        let s = this.statistics;
-        s.videoPictureCounter += 1;
-        s.windowPictureCounter += 1;
-        let now = Date.now();
-        if (!s.videoStartTime) {
-            s.videoStartTime = now;
+    updateStatistics(pktSize) {
+        this.statistics.frames++;
+        this.statistics.pktSize+=pktSize;
+        if(this.statistics.firstTime === 0) {
+            this.statistics.firstTime = performance.now();
+            return;
         }
-        let videoElapsedTime = now - s.videoStartTime;
-        s.elapsed = videoElapsedTime / 1000;
-        if (videoElapsedTime < 1000) {
+        const currentTime = performance.now();
+        if(currentTime - this.statistics.firstTime < 1000) {
             return;
         }
 
-        if (!s.windowStartTime) {
-            s.windowStartTime = now;
-            return;
-        } else if ((now - s.windowStartTime) > 1000) {
-            let windowElapsedTime = now - s.windowStartTime;
-            let fps = (s.windowPictureCounter / windowElapsedTime) * 1000;
-            s.windowStartTime = now;
-            s.windowPictureCounter = 0;
-
-            if (fps < s.fpsMin) s.fpsMin = fps;
-            if (fps > s.fpsMax) s.fpsMax = fps;
-            s.fps = fps;
-        }
-
-        let fps = (s.videoPictureCounter / videoElapsedTime) * 1000;
-        s.fpsSinceStart = fps;
+        // compute current time
+        this.statistics.averageFps = (this.statistics.frames-1) / ((currentTime - this.statistics.firstTime)/1000);
+        this.statistics.averageBitRate=   (this.statistics.pktSize-pktSize) / ((currentTime - this.statistics.firstTime)/1000);
+        this.statistics.frames = 1;
+        this.statistics.pktSize = pktSize;
+        this.statistics.firstTime = currentTime;
     }
 
     /**
@@ -235,16 +256,18 @@ class FFMPEGView extends View {
             }
         };
 
-        this.interval = setInterval(function() {
-            if(buffer.length > 1) {
-                display(buffer.shift());
-            }
-        }, 1000/this.framerate);
+        if(!this.directPlay) {
+            let waitTime;
+            this.interval = setInterval(function () {
+                if (buffer.length > 1) {
+                    display(buffer.shift());
+                }
+            }, 1000 / this.framerate);
+        }
 
         function display(e) {
 
             let decodedFrame = e.data;
-
             if(that.width !== decodedFrame.frame_width ||
               that.height !== decodedFrame.frame_height) {
                 //re-create the canvas
@@ -263,27 +286,45 @@ class FFMPEGView extends View {
                 uRowCnt: decodedFrame.frame_height / 2,
                 vData: decodedFrame.frameVData,
                 vDataPerRow: decodedFrame.frame_width / 2,
-                vRowCnt: decodedFrame.frame_height / 2
+                vRowCnt: decodedFrame.frame_height / 2,
+                roll: decodedFrame.roll
             });
 
             that.yuvCanvas.canvasElement.drawing = false;
+            that.updateStatistics(decodedFrame.pktSize);
+            if(that.showTime) {
+                that.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
+            }
+            if(that.showStats) {
+                that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
+                (that.statistics.averageBitRate/1000).toFixed(2)+' kb/s';
+            }
+
+            that.onUpdated(that.statistics);
         }
+    }
+
+    onUpdated(stats) {
+
     }
 
     /**
      * @private
      * @param pktSize
      * @param pktData
+     * @param timeStamp
      */
-    decodeWorker(pktSize, pktData) {
+    decodeWorker(pktSize, pktData, timeStamp, roll) {
         if(pktSize > 0) {
             let arrayBuffer = pktData.buffer;
 
             this.worker.postMessage({
                 pktSize: pktSize,
                 pktData: arrayBuffer,
+                roll: roll,
                 byteOffset: pktData.byteOffset,
-                codec: this.codec
+                codec: this.codec,
+                timeStamp: timeStamp
             }, [arrayBuffer]);
             pktData = null;
         }
@@ -362,7 +403,17 @@ export class YUVCanvas {
                 var vDataPerRow = par.vDataPerRow || uDataPerRow;
                 var vRowCnt = par.vRowCnt || uRowCnt;
 
-                gl.viewport(0, 0, width, height);
+                let roll = Math.round(par.roll/90) * 90;
+                if (roll > 180) roll -= 360;
+                if (Math.abs(roll) == 90) {
+                    this.canvasElement.width = this.height;
+                    this.canvasElement.height = this.width;
+                    gl.viewport(0, 0, height, width);
+                } else {
+                    this.canvasElement.width = this.width;
+                    this.canvasElement.height = this.height;
+                    gl.viewport(0, 0, width, height);
+                }
 
                 var tTop = 0;
                 var tLeft = 0;
@@ -411,6 +462,7 @@ export class YUVCanvas {
                 gl.bindTexture(gl.TEXTURE_2D, vTextureRef);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, vDataPerRow, vRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, vData);
 
+                gl.uniform1f(this.rollUniform, roll*Math.PI/180.);
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             };
 
@@ -511,13 +563,19 @@ export class YUVCanvas {
                 'varying vec2 textureCoord;',
                 'varying vec2 uTextureCoord;',
                 'varying vec2 vTextureCoord;',
+                'uniform float roll;',
 
                 'void main()',
                 '{',
+                '  vec4 ctr = vec4(0.5, 0.5, 0, 0);',
+                '  mat4 rotMatrix = mat4( cos(roll), -sin(roll), 0, 0,',
+                '                         sin(roll),  cos(roll), 0, 0,',
+                '                         0,          0,         1, 0,',
+                '                         0,          0,         0, 1);',
                 '  gl_Position = vertexPos;',
-                '  textureCoord = texturePos.xy;',
-                '  uTextureCoord = uTexturePos.xy;',
-                '  vTextureCoord = vTexturePos.xy;',
+                '  textureCoord = mat2(rotMatrix) * (texturePos.xy - vec2(ctr)) + vec2(ctr);',
+                '  uTextureCoord = mat2(rotMatrix) * (uTexturePos.xy - vec2(ctr)) + vec2(ctr);',
+                '  vTextureCoord = mat2(rotMatrix) * (vTexturePos.xy - vec2(ctr)) + vec2(ctr);',
                 '}'
             ].join('\n');
 
@@ -624,6 +682,7 @@ export class YUVCanvas {
         var YUV2RGBRef = gl.getUniformLocation(program, 'YUV2RGB');
         gl.uniformMatrix4fv(YUV2RGBRef, false, YUV2RGB);
 
+        this.rollUniform = gl.getUniformLocation(program, "roll");
         this.shaderProgram = program;
     }
 
