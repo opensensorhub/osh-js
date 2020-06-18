@@ -274,14 +274,17 @@ class LeafletView extends View {
         return id;
     }
 
-    async removeViewItem(viewItem) {
-        await super.removeViewItem(viewItem);
-        let markerId = this.stylerToObj[viewItem.styler.getId()];
-        let marker = this.markers[markerId];
-        this.map.removeLayer(marker);
+    removeViewItem(viewItem) {
+        const markerId = this.stylerToObj[viewItem.styler.id];
+        super.removeViewItem(viewItem);
+        if(isDefined(markerId)) {
+            let marker = this.markers[markerId];
+            if(isDefined(marker)) {
+                this.map.removeLayer(marker);
+            }
 
-        delete this.stylerToObj[viewItem.styler.getId()];
-        delete this.markers[markerId];
+            delete this.markers[markerId];
+        }
     }
 
     /**
