@@ -14,16 +14,16 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from './DataSource.js';
+import VideoH264 from './VideoH264.js';
 
 /**
- * This datasource provides parsing to H264 raw data.
+ * This datasource provides parsing to H264 raw data with roll.
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoH264 from 'osh/datareceiver/VideoH264.js';
+ * import VideoH264WithRoll from 'osh/datareceiver/VideoH264WithRoll.js';
  *
- * var videoDataSource = new VideoH264("H264 video ", {
+ * var videoDataSource = new VideoH264WithRoll("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -36,32 +36,7 @@ import DataSource from './DataSource.js';
         bufferingTime: 1000
   });
  */
-class VideoH264 extends DataSource {
-    /**
-     * @param {String} name - the datasource name
-     * @param {Object} properties - the datasource properties
-     * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
-     * @param {Boolean} properties.syncMasterTime - defines if the datasource is synchronize with the others one
-     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
-     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
-     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
-     */
-    constructor(name, properties) {
-        super(name, properties);
-        this.setReconnectTimeout(1000 * 5); // 5 sec
-    }
-
-    /**
-     * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
-     * @param {ArrayBuffer} data - the data to parse
-     * @return {Number} the extracted timestamp
-     */
-    parseTimeStamp(data) {
-        // read double time stamp as big endian
-        this.lastTimeStamp = new DataView(data).getFloat64(0, false) * 1000;
-        return this.lastTimeStamp;
-    }
-
+class VideoH264WithRoll extends VideoH264 {
     /**
      * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
      * @param {ArrayBuffer} data - the data to parse
@@ -70,10 +45,10 @@ class VideoH264 extends DataSource {
     parseData(data) {
         return {
             // H264 NAL unit starts at offset 14 after 8-bytes time stamp, 2-bytes roll value, and 4-bytes frame length
-            frameData: new Uint8Array(data, 12, data.byteLength - 12),
-            roll: 0
+            frameData: new Uint8Array(data, 14),
+            roll: new DataView(data).getInt16(8, false)
         }
     }
 }
 
-export default  VideoH264;
+export default  VideoH264WithRoll;

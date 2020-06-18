@@ -33,13 +33,15 @@ instance.ready
           init(e.data.codec);
       }
       var data = e.data;
-      var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize));
+      var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize),
+          data.timeStamp);
       if (typeof decodedFrame != "undefined") {
+        decodedFrame.roll = data.roll;
         self.postMessage(decodedFrame, [
           decodedFrame.frameYData.buffer,
           decodedFrame.frameUData.buffer,
           decodedFrame.frameVData.buffer,
-          data.pktData
+          data.pktData,
         ]);
       }
     };
@@ -90,7 +92,7 @@ instance.ready
       // instance._av_frame_free(self.av_frame);
     }
 
-    function innerWorkerDecode(pktSize, pktData) {
+    function innerWorkerDecode(pktSize, pktData, timeStamp) {
       // prepare packet
       instance.setValue(self.av_pkt + 28, pktSize, 'i32');
       instance.writeArrayToMemory(pktData, self.av_pktData);
@@ -127,7 +129,9 @@ instance.ready
         frameVDataPtr: frameVDataPtr,
         frameYData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
         frameUData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-        frameVData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2))
+        frameVData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+        timeStamp:timeStamp,
+        pktSize:pktSize
       };
     }
   });
