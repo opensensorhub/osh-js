@@ -53,7 +53,6 @@ instance.ready
         if(codec === 'h265') {
             cod = 'hevc';
         }
-        console.error("CODEC IS: "+codec);
         // find h264 decoder
         var codec = instance.ccall('avcodec_find_decoder_by_name', 'number', ['string'], [cod]);
         if (codec == 0) {
