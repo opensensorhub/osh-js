@@ -17,36 +17,8 @@ instance.ready
     // register all compiled codecs
     instance._avcodec_register_all();
 
-    // find h264 decoder
-    var codec = instance.ccall('avcodec_find_decoder_by_name', 'number', ['string'], ["h264"]);
-    if (codec == 0) {
-      console.error("Could not find H264 codec");
-    }
-
-    // init codec and conversion context
-    self.av_ctx = instance._avcodec_alloc_context3(codec);
-
-    // open codec
-    var ret = instance._avcodec_open2(self.av_ctx, codec, 0);
-    if (ret < 0) {
-      console.error("Could not initialize codec");
-    }
-
-
-    // allocate packet
-    self.av_pkt = instance._malloc(96);
-    self.av_pktData = instance._malloc(1024 * 3000);
-    instance._av_init_packet(self.av_pkt);
-    instance.setValue(self.av_pkt + 24, self.av_pktData, '*');
-
-    // allocate video frame
-    self.av_frame = instance._av_frame_alloc();
-    if (!self.av_frame)
-      alert("Could not allocate video frame");
-
-    // init decode frame function
-    self.got_frame = instance._malloc(4);
-
+    init('h264');
+    self.codec = null;
     let released = false;
     self.onmessage = function (e) {
       if(released) {
@@ -56,6 +28,9 @@ instance.ready
       if(e.data.message && e.data.message === 'release') {
         release();
         released = true;
+      }
+      if(e.data.codec !== self.codec) {
+          init(e.data.codec);
       }
       var data = e.data;
       var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize));
@@ -70,6 +45,43 @@ instance.ready
     };
     self.onerror = (e) => {
       console.log('closing worker');
+    }
+
+    function init(codec) {
+        self.codec = codec;
+        let cod = codec;
+        if(codec === 'h265') {
+            cod = 'hevc';
+        }
+        // find h264 decoder
+        var codec = instance.ccall('avcodec_find_decoder_by_name', 'number', ['string'], [cod]);
+        if (codec == 0) {
+            console.error("Could not find H264 codec");
+        }
+
+        // init codec and conversion context
+        self.av_ctx = instance._avcodec_alloc_context3(codec);
+
+        // open codec
+        var ret = instance._avcodec_open2(self.av_ctx, codec, 0);
+        if (ret < 0) {
+            console.error("Could not initialize codec");
+        }
+
+
+        // allocate packet
+        self.av_pkt = instance._malloc(96);
+        self.av_pktData = instance._malloc(1024 * 3000);
+        instance._av_init_packet(self.av_pkt);
+        instance.setValue(self.av_pkt + 24, self.av_pktData, '*');
+
+        // allocate video frame
+        self.av_frame = instance._av_frame_alloc();
+        if (!self.av_frame)
+            alert("Could not allocate video frame");
+
+        // init decode frame function
+        self.got_frame = instance._malloc(4);
     }
 
     function release() {
