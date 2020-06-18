@@ -258,6 +258,17 @@ class OpenLayerView extends View {
             }
         });
 
+        this.vectorSource = new VectorSource({
+            wrapX: false,
+            features: []
+        });
+
+        let vectorMarkerLayer = new VectorLayer({
+            source: this.vectorSource,
+        });
+
+        this.map.addLayer(vectorMarkerLayer);
+
         this.map.addInteraction(select_interaction);
         this.map.updateSize();
     }
@@ -312,20 +323,12 @@ class OpenLayerView extends View {
                 markerFeature.setStyle(iconStyle);
             }
 
-            let source = new VectorSource({
-                wrapX: false,
-                features: [markerFeature]
-            });
-
-            let vectorMarkerLayer = new VectorLayer({
-                source: source,
-            });
-
-            this.map.addLayer(vectorMarkerLayer);
 
             let id = "view-marker-" + randomUUID();
             markerFeature.setId(id);
             this.markers[id] = markerFeature;
+
+            this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {
                 this.first = false;
@@ -338,6 +341,25 @@ class OpenLayerView extends View {
         this.onResize();
         //TODO: exception
         return null;
+    }
+
+    /**
+     * Removes a view item from the view.
+     * @param {Object} viewItem - The initial view items to add
+     * @param {String} viewItem.name - The name of the view item
+     * @param {Styler} viewItem.styler - The styler object representing the view item
+     */
+    removeViewItem(viewItem) {
+        const markerId = this.stylerToObj[viewItem.styler.id];
+        super.removeViewItem(viewItem);
+        if(isDefined(markerId)) {
+            let feature = this.markers[markerId];
+            if(isDefined(feature)) {
+                this.vectorSource.removeFeature(feature);
+            }
+
+            delete this.markers[markerId];
+        }
     }
 
     /**
