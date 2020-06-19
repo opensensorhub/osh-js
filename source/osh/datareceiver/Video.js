@@ -69,7 +69,7 @@ class Video extends DataSource {
      */
     parseData(data) {
         return {
-            // H264 NAL unit starts at offset 12 after 8-bytes time stamp
+            // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
             frameData: new Uint8Array(data, 12, data.byteLength - 12),
             roll: 0
         }
