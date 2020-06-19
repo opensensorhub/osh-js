@@ -14,16 +14,16 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import VideoH264 from './VideoH264.js';
+import Video from './Video.js';
 
 /**
  * This datasource provides parsing to H264 raw data with roll.
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoH264WithRoll from 'osh/datareceiver/VideoH264WithRoll.js';
+ * import VideoWithRoll from 'osh/datareceiver/VideoWithRoll.js';
  *
- * var videoDataSource = new VideoH264WithRoll("H264 video ", {
+ * var videoDataSource = new VideoWithRoll("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -36,7 +36,7 @@ import VideoH264 from './VideoH264.js';
         bufferingTime: 1000
   });
  */
-class VideoH264WithRoll extends VideoH264 {
+class VideoWithRoll extends Video {
     /**
      * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
      * @param {ArrayBuffer} data - the data to parse
@@ -51,4 +51,4 @@ class VideoH264WithRoll extends VideoH264 {
     }
 }
 
-export default  VideoH264WithRoll;
+export default  VideoWithRoll;

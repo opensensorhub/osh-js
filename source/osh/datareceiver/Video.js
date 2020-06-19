@@ -21,9 +21,9 @@ import DataSource from './DataSource.js';
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoH264 from 'osh/datareceiver/VideoH264.js';
+ * import Video from 'osh/datareceiver/Video.js';
  *
- * var videoDataSource = new VideoH264("H264 video ", {
+ * var videoDataSource = new Video("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -36,7 +36,7 @@ import DataSource from './DataSource.js';
         bufferingTime: 1000
   });
  */
-class VideoH264 extends DataSource {
+class Video extends DataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
@@ -76,4 +76,4 @@ class VideoH264 extends DataSource {
     }
 }
 
-export default  VideoH264;
+export default  Video;
