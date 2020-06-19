@@ -88,7 +88,6 @@ class MjpegView extends View {
   setData(dataSourceId,data) {
       let imgBlob = new Blob([data.data.frameData]);
       let url = window.URL.createObjectURL(imgBlob);
-      window.URL.revokeObjectURL(imgBlob);
 
       let oldBlobURL = this.imgTag.src;
       this.imgTag.src = url;
