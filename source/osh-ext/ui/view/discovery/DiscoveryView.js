@@ -17,8 +17,7 @@
 import Server from "../../../../osh/server/Server.js";
 import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils.js";
 import PointMarker from "../../../../osh/ui/styler/PointMarker.js";
-import VideoMjpeg from "../../../../osh/datareceiver/VideoMjpeg.js";
-import VideoH264 from "../../../../osh/datareceiver/VideoH264.js";
+import Video from "../../../../osh/datareceiver/Video.js";
 import Curve from "../../../../osh/ui/styler/Curve.js";
 import View from "../../../../osh/ui/view/View.js";
 import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController.js";
@@ -522,7 +521,7 @@ class DiscoveryView extends View {
      * @private
      */
     createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        this.onAdd(new VideoMjpeg(name, {
+        this.onAdd(new Video(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,
@@ -549,7 +548,7 @@ class DiscoveryView extends View {
      * @private
      */
     createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
-        this.onAdd(new VideoH264(name, {
+        this.onAdd(new Video(name, {
             protocol: "ws",
             service: "SOS",
             endpointUrl: endPointUrl,

@@ -1,10 +1,10 @@
-import VideoH264 from 'osh/datareceiver/VideoH264.js';
+import Video from 'osh/datareceiver/Video.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
 
 const warningArea = document.getElementById('console-output');
 
 // create data source for UAV camera
-let videoDataSource = new VideoH264("drone-Video", {
+let videoDataSource = new Video("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "localhost:8080/sensorhub/sos",

@@ -1,10 +1,10 @@
-import VideoH264 from 'osh/datareceiver/VideoH264.js';
+import Video from 'osh/datareceiver/Video.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
 import FoscamPtzTasking from "osh/datasender/FoscamPtzTasking.js";
 import PtzTaskingView from "osh-ext/ui/view/tasking/PtzTaskingView.js";
 
 // create data source for UAV camera
-let videoDataSource = new VideoH264("drone-Video", {
+let videoDataSource = new Video("drone-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "localhost:8282/sensorhub/sos",

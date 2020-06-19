@@ -1,9 +1,9 @@
-import VideoH264 from 'osh/datareceiver/VideoH264.js';
+import Video from 'osh/datareceiver/Video.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
 import EventManager from "../../../source/osh/events/EventManager.js";
 //
 // // create data source for UAV camera
-let videoDataSource = new VideoH264("drone-Video", {
+let videoDataSource = new Video("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
