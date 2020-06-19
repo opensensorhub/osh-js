@@ -21,9 +21,9 @@ import DataSource from './DataSource.js';
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoH264 from 'osh/datareceiver/VideoH264.js';
+ * import Video from 'osh/datareceiver/Video.js';
  *
- * var videoDataSource = new VideoH264("H264 video ", {
+ * var videoDataSource = new Video("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -36,7 +36,7 @@ import DataSource from './DataSource.js';
         bufferingTime: 1000
   });
  */
-class VideoH264 extends DataSource {
+class Video extends DataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
@@ -69,11 +69,11 @@ class VideoH264 extends DataSource {
      */
     parseData(data) {
         return {
-            // H264 NAL unit starts at offset 14 after 8-bytes time stamp, 2-bytes roll value, and 4-bytes frame length
+            // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
             frameData: new Uint8Array(data, 12, data.byteLength - 12),
             roll: 0
         }
     }
 }
 
-export default  VideoH264;
+export default  Video;

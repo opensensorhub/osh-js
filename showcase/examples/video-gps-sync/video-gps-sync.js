@@ -1,5 +1,5 @@
 // create data source for Android phone camera
-import VideoMjpeg from "osh/datareceiver/VideoMjpeg.js";
+import Video from "osh/datareceiver/Video.js";
 import MjpegView from "osh/ui/view/video/MjpegView.js";
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
@@ -12,7 +12,7 @@ import Entity from "osh/entity/Entity.js";
 const REPLAY_FACTOR = 1.0;
 const BUFFERING = 5000;
 
-let videoDataSource = new VideoMjpeg("android-Video", {
+let videoDataSource = new Video("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

@@ -10,7 +10,7 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import VideoH264 from "osh/datareceiver/VideoH264.js";
+import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 
 export default {
