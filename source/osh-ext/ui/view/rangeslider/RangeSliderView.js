@@ -42,8 +42,10 @@ class RangeSliderView extends View {
 		* @param {Object} options - The properties defining the view
 		* @param {Number} options.startTime - The start time
 		* @param {Number} options.endTime - The end time
-		* @param {String} options.dataSourcesId - The dataSource id
+		* @param {String} options.dataSourcesId - The dataSource id which are sync with master time
+    * @param {String} options.dataSourceId - The dataSource id which is not sync with master time
 		* @param {Number} options.refreshRate - The refresh rate
+    * @param {Boolean} options.disabled - disabled the range slider
 		*/
   constructor(parentElementDivId, options) {
     super(parentElementDivId, [], options);
@@ -59,7 +61,6 @@ class RangeSliderView extends View {
 
     this.multi = false;
     // compute a refresh rate
-    this.dataCount = 0;
     this.refreshRate = 10;
 
     this.options = {};
@@ -67,7 +68,6 @@ class RangeSliderView extends View {
     if (isDefined(options)) {
       if (isDefined(options.startTime)) {
         startTime = new Date(options.startTime).getTime();
-        //slider.removeAttribute('disabled');
       }
 
       if (isDefined(options.endTime)) {
@@ -88,7 +88,6 @@ class RangeSliderView extends View {
       if(isDefined(options.disabled)) {
         this.slider.setAttribute('disabled', options.disabled);
       }
-
     }
 
     noUiSlider.create(this.slider, {
@@ -143,21 +142,8 @@ class RangeSliderView extends View {
     this.slider.noUiSlider.on("end", function (values, handle) {
       self.onChange(values[0], values[1]);
     });
-    // listen for DataSourceId
-    EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-      let filterOk = true;
 
-      if (self.dataSourcesId.length > 0) {
-        if (self.dataSourcesId.indexOf(event.dataSourceId) < 0) {
-          filterOk = false;
-        }
-      }
-
-      if (filterOk && !self.lock && ((++self.dataCount) % self.refreshRate == 0)) {
-        self.slider.noUiSlider.set([event.timeStamp]);
-        self.dataCount = 0;
-      }
-    });
+    this.createEvents();
   }
 
   createActivateButton() {
@@ -181,20 +167,27 @@ class RangeSliderView extends View {
 
   }
 
-  /**
-   * Deactivate the timeline bar
-   */
-  deactivate() {
-    this.slider.setAttribute('disabled', true);
-    this.lock = false;
-    if (this.update) {
+  createEvents() {
+      if(this.dataSourcesId.length > 0) {
+        // listen for DataSourceId
+        EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
+          if (self.dataSourcesId.length > 0 && this.dataSourcesId.indexOf(event.dataSourceId) < 0) {
+              this.slider.noUiSlider.set([event.timeStamp]);
+          }
+      });
+
       let values = this.slider.noUiSlider.get();
       EventManager.fire(EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
         startTime: new Date(parseInt(values[0])).toISOString(),
         endTime: new Date(parseInt(values[1])).toISOString()
       });
     }
-    this.update = false;
+  }
+  /**
+   * Deactivate the timeline bar
+   */
+  deactivate() {
+    this.slider.setAttribute('disabled', true);
   }
 
   /**
@@ -202,13 +195,11 @@ class RangeSliderView extends View {
    */
   activate() {
     this.slider.removeAttribute('disabled');
-    this.lock = true;
   }
 
   setData(dataSourceId, data) {
-    if (!this.lock && ((++this.dataCount) % this.refreshRate === 0)) {
+    if (this.dataSourcesId.length === 0) {
       this.slider.noUiSlider.set([data.timeStamp]);
-      this.dataCount = 0;
     }
   }
 
