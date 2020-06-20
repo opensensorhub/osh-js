@@ -125,16 +125,6 @@ class RangeSliderView extends View {
       ...this.options
     });
 
-    //noUi-handle noUi-handle-lower
-    // start->update->end
-    this.slider.noUiSlider.on("slide", function (values, handle) {
-      self.update = true;
-    });
-
-    this.slider.noUiSlider.on("end", function (values, handle) {
-      self.onChange(values[0], values[1]);
-    });
-
     this.createEvents();
   }
 
@@ -160,12 +150,24 @@ class RangeSliderView extends View {
   }
 
   createEvents() {
-      if(this.dataSourcesId.length > 0) {
-        // listen for DataSourceId
-        EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-          if (self.dataSourcesId.length > 0 && this.dataSourcesId.indexOf(event.dataSourceId) < 0) {
-              this.slider.noUiSlider.set([event.timeStamp]);
-          }
+    const that = this;
+    //noUi-handle noUi-handle-lower
+    // start->update->end
+    this.slider.noUiSlider.on("slide", function (values, handle) {
+      that.update = true;
+    });
+
+    this.slider.noUiSlider.on("end", function (values, handle) {
+      that.onChange(values[0], values[1]);
+      that.update = false;
+    });
+
+    if (this.dataSourcesId.length > 0) {
+      // listen for DataSourceId
+      EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
+        if (self.dataSourcesId.length > 0 && this.dataSourcesId.indexOf(event.dataSourceId) < 0) {
+          this.slider.noUiSlider.set([event.timeStamp]);
+        }
       });
 
       let values = this.slider.noUiSlider.get();
@@ -190,12 +192,13 @@ class RangeSliderView extends View {
   }
 
   setData(dataSourceId, data) {
-    if (this.dataSourcesId.length === 0) {
-      this.slider.noUiSlider.set([data.timeStamp]);
+    if (this.dataSourcesId.length === 0 && !this.update) {
+     this.slider.noUiSlider.set([data.timeStamp]);
     }
   }
 
   onChange(startTime, endTime) {
+
   }
 }
 
