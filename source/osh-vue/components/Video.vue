@@ -1,5 +1,5 @@
 <template>
-  <div data-app>
+  <div data-app class="main-video">
     <slot v-if="!dialog">
       <slot v-if="draggable">
         <dialog-drag
@@ -7,11 +7,15 @@
                 :title="title"
                 class="resizable"
                 :options="options">
-          <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container"></div>
+          <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
+            <Control :dataSource="dataSource"></Control>
+          </div>
         </dialog-drag>
       </slot>
       <slot v-else>
-        <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container"></div>
+        <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
+        </div>
+        <Control :dataSource="dataSource"></Control>
       </slot>
     </slot>
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
@@ -19,21 +23,24 @@
               v-model="dialog"
               v-on="modal ? {click: toggleDialog } : {}"
       >
-        <v-container :id="id" v-on="modal ? {click: toggleDialog } : {}" class="dialog-container"></v-container>
+        <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="dialog-container">
+          <Control :dataSource="dataSource"></Control>
+        </div>
       </v-dialog>
     </slot>
   </div>
 </template>
-
 <script>
     import DialogDrag from 'vue-dialog-drag';
     import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
     import {randomUUID} from "osh/utils/Utils.js";
+    import Control from 'osh-vue/components/Control.vue';
 
     export default {
         name: "Video",
         components: {
-            DialogDrag
+            DialogDrag,
+            Control
         },
         // props: ['dataSource', 'codec', 'draggable', 'title', 'modal'],
         props: {
@@ -110,7 +117,7 @@
                     this.view.destroy();
                 }
 
-                if(!this.dataSource.isConnected) {
+                if (!this.dataSource.isConnected) {
                     this.dataSource.connect();
                 }
                 this.view = new FFMPEGView(id, {
@@ -132,31 +139,6 @@
 <!-- optional dialog styles, see example -->
 <style scoped>
   .dialog-drag {
-    z-index: 10;
-  }
-
-  .resizable {
-    resize: both; /* Options: horizontal, vertical, both */
-    width:550px;
-  }
-
-</style>
-
-<style>
-  .dialog-drag .dialog-header button.close{
-    margin-right: 2px;
-  }
-
-  .dialog-drag .dialog-header button.pin {
-    margin-bottom: 2px;
-    margin-right: 5px;
-  }
-
-  .dialog-drag .dialog-body {
-    padding: 0;
-  }
-
-  .dialog-drag {
     overflow-y: hidden;
     border: 1px solid #5a5a5acc;
     border-radius: 4px;
@@ -164,6 +146,37 @@
     background: #232323cc;
   }
 
+  .dialog-drag {
+    z-index: 10;
+  }
+
+  .resizable {
+    resize: both; /* Options: horizontal, vertical, both */
+    width: 550px;
+  }
+
+  /** Place the control bar rigth to the bottom **/
+
+  .video-container {
+    position: relative;
+  }
+
+  .dialog-container {
+    padding:12px;
+    position: relative;
+  }
+
+  .dialog-container > .control {
+    width: calc(100% - 24px); /* consider the above padding of 12 px */
+    bottom: 12px; /* consider the above padding of 12 px */
+  }
+
+  .main-video {
+    background: rgba(0,0,0,0.8);
+  }
+</style>
+
+<style>
   .dialog-drag .dialog-header {
     background: none;
     color: #fff;
@@ -175,8 +188,16 @@
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
   }
 
-  .video-h264 > canvas {
-    width: 100%;
+  .dialog-drag .dialog-header button.close {
+    margin-right: 2px;
+  }
+
+  .dialog-drag .dialog-header button.pin {
+    margin-bottom: 2px;
+    margin-right: 5px;
+  }
+  .dialog-drag .dialog-body {
+    padding: 0;
   }
 
   .v-dialog {
@@ -184,19 +205,17 @@
     cursor: pointer;
   }
 
+  .video-h264 > canvas {
+    width: 100%;
+  }
+
   .container.dialog-container > div.video-h264 canvas {
     max-height: 100%;
+    position: relative;
   }
 
-  @media (min-width: 1264px) {
-    .container {
-      max-width: unset!important;;
-    }
-  }
-
-  @media (min-width: 960px) {
-    .container {
-      max-width: unset!important;
-    }
+  .dialog-container > .control {
+    position: absolute;
+    z-index: 9999;
   }
 </style>
