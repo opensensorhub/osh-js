@@ -49,30 +49,11 @@ class RangeSliderView extends View {
     super(parentElementDivId, [], options);
 
     this.slider = document.createElement("div");
-    let activateButtonDiv = document.createElement("div");
-    let aTagActivateButton = document.createElement("a");
-    activateButtonDiv.appendChild(aTagActivateButton);
-
     this.slider.setAttribute("class", "osh-rangeslider-slider");
-    activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
-
-    let self = this;
-
-    activateButtonDiv.addEventListener("click", function (event) {
-      if (activateButtonDiv.className.indexOf("osh-rangeslider-control-select") > -1) {
-        activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
-        self.deactivate();
-      } else {
-        activateButtonDiv.setAttribute("class", "osh-rangeslider-control-select");
-        self.activate();
-      }
-    });
     document.getElementById(this.divId).appendChild(this.slider);
-    document.getElementById(this.divId).appendChild(activateButtonDiv);
 
     let startTime = new Date().getTime();
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
-    this.slider.setAttribute('disabled', true);
 
     this.dataSourcesId = [];
 
@@ -80,6 +61,8 @@ class RangeSliderView extends View {
     // compute a refresh rate
     this.dataCount = 0;
     this.refreshRate = 10;
+
+    this.options = {};
 
     if (isDefined(options)) {
       if (isDefined(options.startTime)) {
@@ -96,6 +79,14 @@ class RangeSliderView extends View {
       }
       if (isDefined(options.refreshRate)) {
         this.refreshRate = options.refreshRate;
+      }
+
+      if(isDefined(options.options)) {
+        this.options = options.options;
+      }
+
+      if(isDefined(options.disabled)) {
+        this.slider.setAttribute('disabled', options.disabled);
       }
 
     }
@@ -136,10 +127,11 @@ class RangeSliderView extends View {
         format: wNumb({
           edit: function (value) {
             return new Date(parseInt(value)).toISOString().replace(".000Z", "Z")
-              .split("T")[1].split("Z")[0].split(".")[0];
+                .split("T")[1].split("Z")[0].split(".")[0];
           }
         })
-      }
+      },
+      ...this.options
     });
 
     //noUi-handle noUi-handle-lower
@@ -166,6 +158,27 @@ class RangeSliderView extends View {
         self.dataCount = 0;
       }
     });
+  }
+
+  createActivateButton() {
+    let activateButtonDiv = document.createElement("div");
+    let aTagActivateButton = document.createElement("a");
+    activateButtonDiv.appendChild(aTagActivateButton);
+
+    activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
+    let self = this;
+
+    activateButtonDiv.addEventListener("click", function (event) {
+      if (activateButtonDiv.className.indexOf("osh-rangeslider-control-select") > -1) {
+        activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
+        self.deactivate();
+      } else {
+        activateButtonDiv.setAttribute("class", "osh-rangeslider-control-select");
+        self.activate();
+      }
+    });
+    document.getElementById(this.divId).appendChild(activateButtonDiv);
+
   }
 
   /**
