@@ -1,11 +1,18 @@
 <template>
   <div id="app">
-    <Video
-            :draggable="true"
-            :modal="true"
-            :dataSource="dataSource"
-            :options="{top: '50', left: '50'}"
-    />
+    <keep-alive>
+      <Video
+              :draggable="false"
+              :modal="false"
+              :dataSource="dataSource"
+              :options="{top: '50', left: '50'}"
+              :showStats="true"
+              :showTime="true"
+              :frameRate=25
+              class="video"
+      >
+      </Video>
+    </keep-alive>
   </div>
 </template>
 <script>
@@ -42,5 +49,10 @@
   body {
     overflow-x: hidden;
     margin: 0;
+    padding:50px;
+  }
+
+  .video {
+    width: 500px;
   }
 </style>
