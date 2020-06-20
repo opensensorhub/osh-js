@@ -31,8 +31,7 @@ import * as wNumb from 'wnumb';
  * let rangeSlider = new RangeSliderView("rangeSlider",{
     dataSourceId: dataSource.id,
     startTime: "2015-12-19T21:04:30Z",
-    endTime: "2015-12-19T21:09:19Z",
-    refreshRate:1
+    endTime: "2015-12-19T21:09:19Z"
 });
  */
 class RangeSliderView extends View {
@@ -44,7 +43,6 @@ class RangeSliderView extends View {
 		* @param {Number} options.endTime - The end time
 		* @param {String} options.dataSourcesId - The dataSource id which are sync with master time
     * @param {String} options.dataSourceId - The dataSource id which is not sync with master time
-		* @param {Number} options.refreshRate - The refresh rate
     * @param {Boolean} options.disabled - disabled the range slider
 		*/
   constructor(parentElementDivId, options) {
@@ -58,10 +56,7 @@ class RangeSliderView extends View {
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 
     this.dataSourcesId = [];
-
     this.multi = false;
-    // compute a refresh rate
-    this.refreshRate = 10;
 
     this.options = {};
 
@@ -76,9 +71,6 @@ class RangeSliderView extends View {
 
       if (isDefined(options.dataSourcesId)) {
         this.dataSourcesId = options.dataSourcesId;
-      }
-      if (isDefined(options.refreshRate)) {
-        this.refreshRate = options.refreshRate;
       }
 
       if(isDefined(options.options)) {
