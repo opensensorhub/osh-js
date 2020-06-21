@@ -84,6 +84,24 @@
             left: '200'
           }
         }
+      },
+      encoding: {
+        type: Object,
+        default () {
+          return {
+            bitrate: {
+              min: 100 * 8,
+              max: 500 * 8,
+              use: true
+            },
+            scale: {
+              min: 0.5,
+              max: 1.0,
+              use: true
+            },
+            responseFormat: 'video/H264'
+          }
+        }
       }
     },
     data: function () {
@@ -116,6 +134,30 @@
       initView(id) {
         if (this.view !== null) {
           this.view.destroy();
+        }
+
+        // check for extra properties
+        let extraProps = {};
+        if(this.encoding.bitrate.use) {
+          if(!this.dialog) {
+            extraProps['bitrate'] = this.encoding.bitrate.min;
+          } else {
+            extraProps['bitrate'] = this.encoding.bitrate.max;
+          }
+          extraProps['responseFormat'] = this.encoding.responseFormat;
+        }
+        if(this.encoding.scale.use) {
+          if(!this.dialog) {
+            extraProps['scale'] = this.encoding.scale.min;
+          } else {
+            extraProps['scale'] = this.encoding.scale.max;
+          }
+        }
+
+        if(Object.keys(extraProps).length > 0) {
+          this.dataSource.disconnect();
+          extraProps['responseFormat'] = this.encoding.responseFormat;
+          this.dataSource.rebuildUrl(extraProps);
         }
 
         if (!this.dataSource.connected) {
