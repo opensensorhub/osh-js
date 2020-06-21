@@ -30,109 +30,110 @@
     </slot>
   </div>
 </template>
+<style src="vue-dialog-drag/dist/vue-dialog-drag.css"></style>
 <script>
-    import DialogDrag from 'vue-dialog-drag';
-    import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-    import {randomUUID} from "osh/utils/Utils.js";
-    import Control from 'osh-vue/components/Control.vue';
+  import DialogDrag from 'vue-dialog-drag';
+  import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
+  import {randomUUID} from "osh/utils/Utils.js";
+  import Control from 'osh-vue/components/Control.vue';
 
-    export default {
-        name: "Video",
-        components: {
-            DialogDrag,
-            Control
-        },
-        // props: ['dataSource', 'codec', 'draggable', 'title', 'modal'],
-        props: {
-            dataSource: {
-                type: Object
-            },
-            codec: {
-                type: String,
-                default: () => 'h264'
-            },
-            draggable: {
-                type: Boolean,
-                default: () => false
-            },
-            title: {
-                type: String,
-                default: () => 'Video'
-            },
-            modal: {
-                type: Boolean,
-                default: () => false
-            },
-            showStats: {
-                type: Boolean,
-                default: () => true
-            },
-            showTime: {
-                type: Boolean,
-                default: () => true
-            },
-            frameRate: {
-                type: Number,
-                default: () => 25
-            },
-            options: {
-                type: Object,
-                default() {
-                    return {
-                        top: '100',
-                        left: '200'
-                    }
-                }
-            }
-        },
-        data: function () {
-            return {
-                id: randomUUID(),
-                view: null,
-                dialog: false
-            };
-        },
-        watch: {
-            dialog(newValue) {
-                this.$emit('toggle-dialog', newValue);
-            }
-        },
-        destroyed() {
-            this.view.destroy();
-        },
-        updated() {
-            this.initView(this.id);
-        },
-        mounted() {
-            // build video
-            // show it in video view
-            this.initView(this.id);
-        },
-        methods: {
-            toggleDialog() {
-                this.dialog = !this.dialog;
-            },
-            initView(id) {
-                if (this.view !== null) {
-                    this.view.destroy();
-                }
-
-                if (!this.dataSource.isConnected) {
-                    this.dataSource.connect();
-                }
-                this.view = new FFMPEGView(id, {
-                    dataSourceId: this.dataSource.id,
-                    css: "video-h264",
-                    name: "Android Video",
-                    framerate: this.framerate,
-                    codec: this.codec,
-                    directPlay: true,
-                    showStats: this.showStats,
-                    showTime: this.showTime
-                });
-            }
+  export default {
+    name: "Video",
+    components: {
+      DialogDrag,
+      Control
+    },
+    // props: ['dataSource', 'codec', 'draggable', 'title', 'modal'],
+    props: {
+      dataSource: {
+        type: Object
+      },
+      codec: {
+        type: String,
+        default: () => 'h264'
+      },
+      draggable: {
+        type: Boolean,
+        default: () => false
+      },
+      title: {
+        type: String,
+        default: () => 'Video'
+      },
+      modal: {
+        type: Boolean,
+        default: () => false
+      },
+      showStats: {
+        type: Boolean,
+        default: () => true
+      },
+      showTime: {
+        type: Boolean,
+        default: () => true
+      },
+      frameRate: {
+        type: Number,
+        default: () => 25
+      },
+      options: {
+        type: Object,
+        default() {
+          return {
+            top: '100',
+            left: '200'
+          }
         }
+      }
+    },
+    data: function () {
+      return {
+        id: randomUUID(),
+        view: null,
+        dialog: false
+      };
+    },
+    watch: {
+      dialog(newValue) {
+        this.$emit('toggle-dialog', newValue);
+      }
+    },
+    destroyed() {
+      this.view.destroy();
+    },
+    updated() {
+      this.initView(this.id);
+    },
+    mounted() {
+      // build video
+      // show it in video view
+      this.initView(this.id);
+    },
+    methods: {
+      toggleDialog() {
+        this.dialog = !this.dialog;
+      },
+      initView(id) {
+        if (this.view !== null) {
+          this.view.destroy();
+        }
+
+        if (!this.dataSource.connected) {
+          this.dataSource.connect();
+        }
+        this.view = new FFMPEGView(id, {
+          dataSourceId: this.dataSource.id,
+          css: "video-h264",
+          name: "Android Video",
+          framerate: this.framerate,
+          codec: this.codec,
+          directPlay: true,
+          showStats: this.showStats,
+          showTime: this.showTime
+        });
+      }
     }
+  }
 </script>
 
 <!-- optional dialog styles, see example -->
@@ -143,6 +144,7 @@
     border-radius: 4px;
     box-shadow: 0 0 7px #000000;
     background: #232323cc;
+    width:500px;
   }
 
   .dialog-drag {
@@ -151,8 +153,11 @@
 
   .resizable {
     resize: both; /* Options: horizontal, vertical, both */
-    width: 550px;
     overflow: hidden;
+  }
+
+  .dialog-drag {
+    background: rgba(0,0,0,0.85);
   }
 
   /** Place the control bar rigth to the bottom **/
@@ -171,17 +176,17 @@
     bottom: 12px; /* consider the above padding of 12 px */
   }
 
-  .main-video {
-    background: rgba(0,0,0,0.8);
-  }
 </style>
 
 <style>
   .dialog-drag .dialog-header {
+    padding: .45em 3.25em .45em 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: none;
     color: #fff;
     font-size: 1em;
-    padding: .25em 3em .25em 1em;
     position: relative;
     text-align: left;
     width: auto;
@@ -203,7 +208,7 @@
   .v-dialog {
     width: auto !important;
     cursor: pointer;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     overflow-x: hidden ;
   }
 
