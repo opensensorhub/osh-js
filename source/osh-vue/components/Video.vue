@@ -134,7 +134,6 @@
         }
     }
 </script>
-<style src="../../../issues/184/node_modules/vue-dialog-drag/dist/vue-dialog-drag.css"></style>
 
 <!-- optional dialog styles, see example -->
 <style scoped>
