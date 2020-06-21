@@ -8,8 +8,8 @@
                 class="resizable"
                 :options="options">
           <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
-            <Control :dataSource="dataSource"></Control>
           </div>
+          <Control :dataSource="dataSource"></Control>
         </dialog-drag>
       </slot>
       <slot v-else>
@@ -24,8 +24,8 @@
               v-on="modal ? {click: toggleDialog } : {}"
       >
         <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="dialog-container">
-          <Control :dataSource="dataSource"></Control>
         </div>
+        <Control :dataSource="dataSource"></Control>
       </v-dialog>
     </slot>
   </div>
@@ -152,6 +152,7 @@
   .resizable {
     resize: both; /* Options: horizontal, vertical, both */
     width: 550px;
+    overflow: hidden;
   }
 
   /** Place the control bar rigth to the bottom **/
@@ -202,6 +203,8 @@
   .v-dialog {
     width: auto !important;
     cursor: pointer;
+    background: rgba(0,0,0,0.8);
+    overflow-x: hidden ;
   }
 
   .video-h264 > canvas {
@@ -214,7 +217,7 @@
   }
 
   .dialog-container > .control {
-    position: absolute;
+    position: relative;
     z-index: 9999;
   }
 </style>
