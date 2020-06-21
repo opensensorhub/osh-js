@@ -112,6 +112,17 @@
             pauseButton.onclick = () => {
                 if(that.dataSource.connected) {
                     that.dataSource.disconnect();
+                    //save current time
+
+                    // get current parameters
+                    let props = that.dataSource.properties;
+                    let options = that.dataSource.options;
+
+                    props.startTime = new Date(parseInt(rangeSlider.slider.noUiSlider.get())).toISOString();
+
+                    // re-init the DS from the last timestamp  played
+                    that.dataSource.initDataSource(props, options);
+
                 }
             }
 
