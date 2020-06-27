@@ -81,30 +81,30 @@ const dataSet = [
       data: '5000',
       timeStamp: 5000,
     }
+  },{
+    dataSourceId: '3',
+    data: {
+      data: '5001',
+      timeStamp: 5001,
+    }
   },
 ];
-const buffer = new DataSynchronizer({replayFactor:1});
-
-buffer.addDataSource( {
-  id: '1',
-  syncMasterTime: true,
-  bufferingTime: 100,
-  timeOut: 5000,
-  name: '1'
-});
-
-buffer.addDataSource({
-  id: '2',
-  syncMasterTime: true,
-  bufferingTime: 200,
-  timeOut: 5000
-});
-
-buffer.addDataSource( {
-  id: '3',
-  syncMasterTime: true,
-  bufferingTime: 300,
-  timeOut: 1000
+const buffer = new DataSynchronizer({
+  replayFactor:1,
+  dataSources: [{
+      id: '1',
+      bufferingTime: 100,
+      timeOut: 5000,
+      name: '1'
+    }, {
+      id: '2',
+      bufferingTime: 200,
+      timeOut: 5000
+    }, {
+      id: '3',
+      bufferingTime: 300,
+      timeOut: 1000
+    }]
 });
 
 for(let i=0;i <dataSet.length;i++ ) {
@@ -118,61 +118,57 @@ buffer.onData = function(databaseId, data) {
   eltStatic.innerHTML = eltStatic.innerHTML+" "+data.data;
 };
 
-// dynamic part
-const bufferDynamic = new DataSynchronizer({replayFactor:1, bufferingTime:1000});
-
-bufferDynamic.addDataSource( {
-  id: '1',
-  syncMasterTime: true,
-  bufferingTime: 100
-});
-
-bufferDynamic.addDataSource({
-  id: '2',
-  syncMasterTime: true,
-  bufferingTime: 200
-});
-
-bufferDynamic.addDataSource( {
-  id: '3',
-  syncMasterTime: true,
-  bufferingTime: 300
-});
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min +1)) + min;
-}
-let count = 0;
-
-function getNewData() {
-  let time = Date.now();
-  return  {
-    dataSourceId: ''+getRandomInt(1,3),
-    data: {
-      data: new Date(time).toISOString(),
-      timeStamp: time,
-    }
-  };
-}
-
-const eltDynamic = document.getElementById("buffer-dynamic");
-
-bufferDynamic.onData = function(dataSourceId, data) {
-  eltDynamic.innerText = eltDynamic.innerText+dataSourceId+" =>  "+data.data+" \n";
-};
-
-function addNewData() {
-  const data = getNewData();
-  bufferDynamic.push(data.dataSourceId,data.data);
-}
-
-// ingest new random data
-for(let i=0;i < 40;i++) {
-  const random = getRandomInt(10,100);
-  console.log(random);
-  setTimeout(()=> addNewData(), random);
-}
+// // dynamic part
+// const bufferDynamic = new DataSynchronizer({
+//   replayFactor:1,
+//   dataSources: [{
+//     id: '1',
+//     syncMasterTime: true,
+//     bufferingTime: 100
+//   },{
+//     id: '3',
+//     syncMasterTime: true,
+//     bufferingTime: 300
+//   },{
+//     id: '2',
+//     syncMasterTime: true,
+//     bufferingTime: 200
+//   }]
+// });
+//
+// function getRandomInt(min, max) {
+//   min = Math.ceil(min);
+//   max = Math.floor(max);
+//   return Math.floor(Math.random() * (max - min +1)) + min;
+// }
+// let count = 0;
+//
+// function getNewData() {
+//   let time = Date.now();
+//   return  {
+//     dataSourceId: ''+getRandomInt(1,3),
+//     data: {
+//       data: new Date(time).toISOString(),
+//       timeStamp: time,
+//     }
+//   };
+// }
+//
+// const eltDynamic = document.getElementById("buffer-dynamic");
+//
+// bufferDynamic.onData = function(dataSourceId, data) {
+//   eltDynamic.innerText = eltDynamic.innerText+dataSourceId+" =>  "+data.data+" \n";
+// };
+//
+// function addNewData() {
+//   const data = getNewData();
+//   bufferDynamic.push(data.dataSourceId,data.data);
+// }
+//
+// // ingest new random data
+// for(let i=0;i < 40;i++) {
+//   const random = getRandomInt(10,100);
+//   setTimeout(()=> addNewData(), random);
+// }
 
 

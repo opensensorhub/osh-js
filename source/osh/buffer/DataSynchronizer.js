@@ -14,87 +14,57 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import EventManager from "osh/events/EventManager";
+import {isDefined} from "../../../dist/source/osh/utils/Utils";
+import SynchronizerWorkerInterval from './DataSynchronizer.worker';
+
+
 class DataSynchronizer {
+    /**
+     * Creates The dataSynchronizer.
+     * @param {DataSource[]} datasSources - the dataSource array
+     */
     constructor(properties) {
-        this.dataSourceMap = {};
-        this.bufferingTime = properties.bufferingTime ? properties.bufferingTime : 1000;
-        this.startBufferingTime = -1;
-        this.currentMasterTime = -1;
+        if(!isDefined(properties.dataSources)) {
+            throw 'You must specified a dataSource array';
+        }
+        this.bufferingTime = 1000; // default
+        this.initWorker(properties.dataSources);
+    }
+
+    /**
+     * @private
+     */
+    initWorker(dataSources) {
+        // build object for Worker because DataSource is not clonable
+        const dataSourcesForWorker = [];
+        for(let dataSource of dataSources) {
+            dataSourcesForWorker.push({
+                bufferingTime: dataSource.bufferingTime,
+                timeOut: dataSource.timeOut,
+                id: dataSource.id
+            });
+            // bind dataSource data onto dataSynchronizer data
+            dataSource.onData = (data) => push(dataSource.id, data);
+        }
+
+
+        this.synchronizerWorker = new SynchronizerWorkerInterval({bufferingTime: this.bufferingTime});
+        this.synchronizerWorker.postMessage({
+            dataSources: dataSourcesForWorker
+        });
+
+        this.synchronizerWorker.onmessage =(event) => {
+            // EventManager.fire(EventManager.EVENT.DATA + "-" + event.data.dataSourceId, {data: event.data.data});
+            this.onData(event.data.dataSourceId, event.data.data);
+        }
     }
 
     push(dataSourceId, data) {
-        const ds = this.dataSourceMap[dataSourceId];
-
-        if(this.startBufferingTime === -1) {
-            this.startBufferingTime = Date.now();
-            // start iterating on data after bufferingTime
-            setTimeout(() => this.processData(), this.bufferingTime);
-        }
-
-        ds.data.push(data);
-        // can we use the same attribute to determine if the DS has already timed out?
-        ds.timedOut = false;
-        ds.lastReceivedTime = Date.now();
-    }
-
-    processData() {
-        let oldestDataDs = null;
-        let minDelta = -1;
-
-        let currentDelta = -1;
-
-        for(let currentDsId in this.dataSourceMap) {
-            let currentDs = this.dataSourceMap[currentDsId];
-            if(currentDs.data.length > 0) {
-                if (oldestDataDs === null) {
-                    oldestDataDs = currentDs;
-                    if(oldestDataDs.data.length > 1) {
-                        minDelta = oldestDataDs.data[1].timeStamp - oldestDataDs.data[0].timeStamp;
-                    }
-                } else if(currentDs.data[0].timeStamp < oldestDataDs.data[0].timeStamp) {
-                    minDelta = oldestDataDs.data[0].timeStamp - currentDs.data[0].timeStamp;
-                    oldestDataDs = currentDs;
-                } else {
-                    currentDelta = currentDs.data[0].timeStamp - oldestDataDs.data[0].timeStamp;
-                    minDelta = minDelta === -1 ? currentDelta: minDelta < currentDelta? minDelta: currentDelta;
-                }
-            } else if(!currentDs.timedOut){
-                // handle timeOut
-                // we wait until reach the timeOut
-                let waitTime = currentDs.timeOut - (Date.now() - currentDs.lastReceivedTime);
-                if (waitTime > 0) {
-                    currentDs.timedOut = true;
-                    window.setTimeout(() => this.processData(), waitTime );
-                    return;
-                }
-            }
-        }
-
-        // no more data, re-buffering
-        if(oldestDataDs === null) {
-            this.startBufferingTime = -1;
-        } else {
-            this.currentMasterTime = oldestDataDs.data[0].timeStamp;
-            // return oldest data
-            this.onData(oldestDataDs.id, oldestDataDs.data.shift());
-            if(minDelta >= 0) {
-                // re play next data at min time
-                setTimeout(() => this.processData(), minDelta);
-            }
-        }
-    }
-
-    addDataSource(dataSource) {
-        this.dataSourceMap[dataSource.id] = {
-            bufferingTime: dataSource.bufferingTime,
-            timeOut: dataSource.timeOut? dataSource.timeOut: 5000,
-            syncMasterTime: dataSource.syncMasterTime,
-            data: [],
-            startBufferingTime: -1,
-            id: dataSource.id,
-            lastReceivedTime:-1,
-            timedOut: false
-        };
+        this.synchronizerWorker.postMessage({
+            dataSourceId: dataSourceId,
+            data: data
+        });
     }
 
     onData(dataSourceId, data) {
