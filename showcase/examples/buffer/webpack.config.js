@@ -9,7 +9,7 @@ module.exports = {
     entry: path.resolve(__dirname,'buffer.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.video.h264.js',
+        filename: 'bundle.buffer.js',
         path: path.resolve(__dirname, 'dist')
     },
     node: {
@@ -54,7 +54,7 @@ module.exports = {
         hot: true,
         index: 'buffer.html'
     },
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     plugins: [
         /**
          * All files inside webpack's output.path directory will be removed once, but the
