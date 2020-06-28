@@ -54,30 +54,32 @@ function processData() {
         for (let currentDsId in self.dataSourceMap) {
             currentDs = self.dataSourceMap[currentDsId];
 
-            if(currentDs.data.length === 0 && currentDs.timeOut > 0) {
-                // check timeout
-                let currentWaitTime = currentDs.timeOut - performance.now() - currentDs.lastReceivedTime;
-                // check maxWait time in case where we have multive dataSources to wait
+            if(currentDs.data.length > 0) {
+                let diffTimeStamps = currentDs.data[0].timeStamp - refTimeStamp;
+                if (diffTimeStamps <= diffClockTime) {
+                    if(currentDsToShift === null) {
+                        currentDsToShift = currentDs;
+                    } else {
+                        currentDsToShift = (currentDsToShift.data[0].timeStamp < currentDs.data[0].timeStamp ) ?
+                            currentDsToShift : currentDs;
+                    }
+                }
+            } else {
+                if(currentDs.timeOut > 0) {
+                    // check timeout
+                    let currentWaitTime = currentDs.timeOut - performance.now() - currentDs.lastReceivedTime;
+                    // check maxWait time in case where we have multive dataSources to wait
 
-                if (currentWaitTime > 0) {
-                    // wait for timeout
-                    waitTime = (currentWaitTime > waitTime) ? currentWaitTime : waitTime;
-                    break;
+                    if (currentWaitTime > 0) {
+                        // wait for timeout
+                        waitTime = (currentWaitTime > waitTime) ? currentWaitTime : waitTime;
+                    }
                 }
             }
         }
         // 1) check wait time, if we have to wait, do not shift any dataSource
-        if(waitTime <= 0)  {
-            for (let currentDsId in self.dataSourceMap) {
-                currentDs = self.dataSourceMap[currentDsId];
-
-                if(currentDs.data.length > 0) {
-                    let diffTimeStamps = currentDs.data[0].timeStamp - refTimeStamp;
-                    if (diffTimeStamps <= diffClockTime) {
-                        onData(currentDs.id, currentDs.data.shift());
-                    }
-                }
-            }
+        if(waitTime <= 0 && currentDsToShift !== null)  {
+            onData(currentDsToShift.id, currentDsToShift.data.shift());
         }
     },INTERVAL_FREQ);
 }
