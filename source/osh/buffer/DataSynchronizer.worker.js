@@ -29,6 +29,7 @@ function push(dataSourceId, data) {
     }
 
     ds.data.push(data);
+    ds.lastReceivedTime = performance.now();
 }
 
 function processData() {
@@ -46,6 +47,7 @@ function processData() {
         }
     }
 
+    //TODO: TimeOut should wait for the time defined into the dataSource
     this.interval = setInterval(() => {
         let waitTime = -1;
         let currentDsToShift = null;
@@ -54,13 +56,13 @@ function processData() {
         for (let currentDsId in self.dataSourceMap) {
             currentDs = self.dataSourceMap[currentDsId];
 
-            if(currentDs.data.length > 0) {
+            if (currentDs.data.length > 0) {
                 let diffTimeStamps = currentDs.data[0].timeStamp - refTimeStamp;
                 if (diffTimeStamps <= diffClockTime) {
-                    if(currentDsToShift === null) {
+                    if (currentDsToShift === null) {
                         currentDsToShift = currentDs;
                     } else {
-                        currentDsToShift = (currentDsToShift.data[0].timeStamp < currentDs.data[0].timeStamp ) ?
+                        currentDsToShift = (currentDsToShift.data[0].timeStamp < currentDs.data[0].timeStamp) ?
                             currentDsToShift : currentDs;
                     }
                 }
@@ -78,7 +80,7 @@ function processData() {
             }
         }
         // 1) check wait time, if we have to wait, do not shift any dataSource
-        if(waitTime <= 0 && currentDsToShift !== null)  {
+        if (waitTime <= 0 && currentDsToShift !== null) {
             onData(currentDsToShift.id, currentDsToShift.data.shift());
         }
     },INTERVAL_FREQ);
