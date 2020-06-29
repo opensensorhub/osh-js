@@ -81,7 +81,7 @@ function processData() {
  */
 function checkWaiting(currentTimeOutData) {
     // first check wait time & data source data array length
-    if(currentTimeOutData !== null) {
+    if(currentTimeOutData !== null && !timedOutDsSet.has(currentTimeOutData.dsId)) {
         // meaning we have to wait for this DS timeOut
         // check array
         let currentDs = self.dataSourceMap[currentTimeOutData.dsId];
