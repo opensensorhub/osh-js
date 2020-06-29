@@ -69,7 +69,7 @@ function processData() {
             return;
         }
         // 3) return the oldest data if any
-        computeNextData(refTimeStamp, diffClockTime);
+        while(computeNextData(refTimeStamp, diffClockTime));
 
     },INTERVAL_FREQ);
 }
@@ -170,7 +170,9 @@ function computeNextData(refTimeStamp, diffClockTime) {
     // finally shift the data
     if (currentDsToShift !== null) {
         onData(currentDsToShift.id, currentDsToShift.data.shift());
+        return true;
     }
+    return false;
 }
 
 function addDataSource(dataSource) {
