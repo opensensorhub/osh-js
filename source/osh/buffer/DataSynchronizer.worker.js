@@ -52,6 +52,8 @@ function processData() {
     }
 
     let currentTimeOutData = null;
+    //TODO: missing replayFactor
+    //TODO: add interval as worker argument
     this.interval = setInterval(() => {
         const clockTime = performance.now();
         const diffClockTime = clockTime - refClockTime;
