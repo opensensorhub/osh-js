@@ -103,7 +103,7 @@ function checkWaiting(currentTimeOutData) {
 }
 
 /**
- * Function computing the DS to wait if any. We have to wait if the DS has no data. If multiple DS has no data, we take
+ * Compute the DS to wait if any. We have to wait if the DS has no data. If multiple DS has no data, we take
  * the maximum of their timeOut value.
  * @param currentTimeOutData - the object holding the information of the current DS being timingOut
  * @returns {Object | null} - the object holding the new information of the DS to wait, null otherwise
