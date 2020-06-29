@@ -115,6 +115,33 @@ for(let i=0;i <dataSet.length;i++ ) {
 const eltStatic = document.getElementById("buffer-static");
 startDataSet(buffer, eltStatic);
 
+// static with TimeOut
+const bufferStaticWithTimeOut = new DataSynchronizer({
+  replayFactor:1,
+  dataSources: [{
+    id: '1',
+    bufferingTime: 100,
+    timeOut: 500,
+    name: '1'
+  }, {
+    id: '2',
+    bufferingTime: 200,
+    timeOut: 500
+  }, {
+    id: '3',
+    bufferingTime: 300,
+    timeOut: 500
+  }]
+});
+
+for(let i=0;i <dataSet.length;i++ ) {
+  let event = dataSet[i];
+  bufferStaticWithTimeOut.push(event.dataSourceId,event.data);
+}
+
+startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"));
+
+//--------------------
 // dynamic part
 const bufferDynamic = new DataSynchronizer({
   replayFactor:1,
@@ -125,7 +152,7 @@ const bufferDynamic = new DataSynchronizer({
   },{
     id: '3',
     timeOut:0,
-    bufferingTime: 300
+    bufferingTime: 3000
 
   },{
     id: '2',
@@ -163,7 +190,8 @@ function addNewData() {
 // ingest new random data
 let lastTimeStamp = 30;
 for(let i=0;i < 200;i++) {
-  const random = getRandomInt(40,100);
+  let random;
+  while( lastTimeStamp + (random = getRandomInt(40,100))  < lastTimeStamp) {}
   lastTimeStamp += random;
   setTimeout(()=> addNewData(), lastTimeStamp);
 }
