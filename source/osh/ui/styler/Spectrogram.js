@@ -29,6 +29,8 @@ class Spectrogram extends Styler {
         this.colors = 'interpolateOrRd';
         this.powerRange = [-80, 250];
 
+        let self = this;
+
         if (isDefined(properties.xLabel)) {
             this.xLabel = properties.xLabel;
         }
@@ -53,6 +55,11 @@ class Spectrogram extends Styler {
             let fn = function (rec, timeStamp, options) {
                 let values = properties.valuesFunc.handler(rec, timeStamp, options);
 
+                if(Array.isArray(values)){
+                    self.latestData = values;
+                }else{
+                    self.latestData = [values];
+                }
             };
             this.addFn(properties.valuesFunc.dataSourceIds, fn);
         }

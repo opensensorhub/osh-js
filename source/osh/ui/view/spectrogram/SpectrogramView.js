@@ -71,7 +71,7 @@ class SpectrogramView extends View {
             .range([this.yOffset, this.yOffsetBottom]);    // TODO: name {bottomOffset} something better
         this.initYAxis = d3.axisLeft(this.initYScale).ticks(this.numBands).tickFormat((d, i) => d + this.freqUnit);
 
-        this.initZScale = d3.scaleSequential(d3.interpolateTurbo).domain(this.decibelRange);
+        this.initZScale = d3.scaleSequential(d3.interpolateOrRd).domain(this.decibelRange);
 
 
         // Add Axes to Chart
@@ -86,7 +86,7 @@ class SpectrogramView extends View {
     }
 
     /**
-     *
+     * Updates the spectrogram dataset and redraws the image
      * @param {Spectrogram} styler
      * @param {Number} timestamp
      * @param {Object} options
@@ -95,8 +95,14 @@ class SpectrogramView extends View {
         // push styler data into Spectrogram Data Object
         if (styler !== null) this.spectrogramData.push(styler.latestData);
 
+        // redraw
+        this.draw();
+
     }
 
+    /**
+     * Draws the spectrogram
+     */
     draw() {
         this.maxDate = Date.now();
 
