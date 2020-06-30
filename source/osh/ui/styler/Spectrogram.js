@@ -14,53 +14,59 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 import {isDefined} from "../../utils/Utils";
+import Styler from "./Styler";
 
-class Spectrogram extends Styler{
+class Spectrogram extends Styler {
     constructor(properties) {
         super(properties);
 
+        this.latestData = null;
         this.xLabel = 'Time';
         this.yLabel = 'Frequency (Hz)';
         this.zLabel = 'Amplitude (dB)';
-        this.colors = [
-            '#FF0000',
-            '#FF7F00',
-            '#FFFF00',
-            '#00FF00',
-            '#0000FF',
-            '#2E2B5F',
-            '#8B00FF',
-        ];
-        this.colorRange = [-80,250];
+        // Currently using chromatic scales from d3-scale-chromatic
+        // TODO: Allow custom color sets
+        this.colors = 'interpolateOrRd';
+        this.powerRange = [-80, 250];
 
-        if(isDefined(properties.xLabel)){
+        if (isDefined(properties.xLabel)) {
             this.xLabel = properties.xLabel;
         }
 
-        if(isDefined(properties.yLabel)){
+        if (isDefined(properties.yLabel)) {
             this.yLabel = properties.yLabel;
         }
 
-        if(isDefined(properties.zLabel)){
+        if (isDefined(properties.zLabel)) {
             this.zLabel = properties.zLabel;
         }
 
-        if(isDefined(properties.colors)){
+        if (isDefined(properties.colors)) {
             this.colors = properties.colors;
         }
 
-        if(isDefined(properties.colorRange)){
+        if (isDefined(properties.colorRange)) {
             this.colorRange = properties.colorRange;
+        }
+
+        if (isDefined(properties.valuesFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                let values = properties.valuesFunc.handler(rec, timeStamp, options);
+
+            };
+            this.addFn(properties.valuesFunc.dataSourceIds, fn);
         }
     }
 
-    setData(dataSourceId, rec, view, options){
-        if(super.setData(dataSourceId, rec, view, options)){
-            if(isDefined(view)){
-                view.updateSpectrogram(this. rec.timestamp, options);
+    setData(dataSourceId, rec, view, options) {
+        if (super.setData(dataSourceId, rec, view, options)) {
+            if (isDefined(view)) {
+                view.updateSpectrogram(this, rec.timestamp, options);
                 return true;
             }
         }
-        return  false;
+        return false;
     }
+
+
 }
