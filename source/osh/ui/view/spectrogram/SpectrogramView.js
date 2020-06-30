@@ -14,7 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import * as d3 from 'd3';
+import View from '../View.js';
+import * as d3 from 'd3/dist/d3.js';
 
 /**
  * @extends View
@@ -30,57 +31,58 @@ class SpectrogramView extends View {
     constructor(parentElementDivID, viewItems, options) {
         super(parentElementDivID, viewItems, options);
 
-        // Setup Scales
-        let xScale = d3.scaleTime()
-            .domain([minDate, maxDate])
-            .range([xoffset, containerWidth]);
-        let xAxis = d3.axisBottom(xScale);
+        // Data Vars
+        this.spectrogramData = [];
+        this.decibelRange = [-100, 250];
+        this.minDate = Date.now();
+        this.maxDate = Date.now() + 60000;
+        this.freqUnit = 'Hz';
+        this.minFreq = 0;
+        this.maxFreq = 24000;
+        this.numBands = 10;
 
-        let yScale = d3.scaleLinear()
-            .domain([minFreq, maxFreq])
-            .range([yOffset, bottomOffset]);    // TODO: name {bottomOffset} something better
-        let yAxis = d3.axisLeft(yScale).ticks(numBands).tickFormat((d, i) => d + freqUnit);
 
-        let zScale = d3.scaleSequential(d3.interpolateTurbo).domain(decibelRange);
+        // Layout Vars
+        let thisDiv = document.getElementById(this.divId);
+        this.width = thisDiv.getAttribute('width');
+        this.height = thisDiv.getAttribute('height');
+        this.xOffset = (0.95 * this.height) + 'px';
+        this.yOffset = (0.90 * this.height) + 'px';
+        this.yOffsetBottom = 10 + 'px';
+
 
         // Draw Spectrogram
         // The div that will be the root of the D3JS Chart
-        let container = d3.select(this.divId);
-        let svg = container.append('svg')
+        this.container = d3.select(this.divId);
+        this.svg = this.container.append('svg')
             .classed('spec-svg', true)
             .attr('width', container.attr('width'))
             .attr('height', container.attr('height'));
 
+
+        // Setup Scales
+        this.initXScale = d3.scaleTime()
+            .domain([this.minDate, this.maxDate])
+            .range([this.xOffset, this.width]);
+        this.initXAxis = d3.axisBottom(this.initXScale);
+
+        this.initYScale = d3.scaleLinear()
+            .domain([this.minFreq, this.maxFreq])
+            .range([this.yOffset, this.yOffsetBottom]);    // TODO: name {bottomOffset} something better
+        this.initYAxis = d3.axisLeft(this.initYScale).ticks(this.numBands).tickFormat((d, i) => d + this.freqUnit);
+
+        this.initZScale = d3.scaleSequential(d3.interpolateTurbo).domain(this.decibelRange);
+
+
         // Add Axes to Chart
-        let xBar = svg.append('g')
+        this.xBar = this.svg.append('g')
             .attr('class', ' x axis')
-            .attr('transform', 'translate(' + (0) + ',' + (yOffset) + ')')
-            .call(xAxis);
-        let yBar = svg.append('g')
+            .attr('transform', 'translate(' + (0) + ',' + (this.yOffset) + ')')
+            .call(this.initXAxis);
+        this.yBar = this.svg.append('g')
             .attr('class', 'y axis')
-            .attr('transform', 'translate(' + (xOffset) + ',' + (0) + ')')
-            .call(yAxis);
-
-        // the collections of audio frequency bands
-        let group = svg.selectAll('g.band')
-            // .data(FREQ_DATA_ARR)
-            .data(BANDED_DATA)
-            .enter().append('g')
-            .attr('class', 'fBand');
-
-// an individual band
-        let rect = group.selectAll('rect')
-            .data(data => {
-                console.log(data);
-                return data;
-            })
-            .enter().append('rect')
-            .attr('width', 10)
-            .attr('height', data => yScale(data.freq) - yScale(data.freq + data.freq1))
-            .attr('x', data => xScale(data.time))
-            .attr('y', data => yScale(data.freq + data.freq1))
-            .style('fill', data => zScale(data.power));
-
+            .attr('transform', 'translate(' + (this.xOffset) + ',' + (0) + ')')
+            .call(this.initYAxis);
     }
 
     /**
@@ -90,6 +92,30 @@ class SpectrogramView extends View {
      * @param {Object} options
      */
     updateSpectrogram(styler, timestamp, options) {
+        // push styler data into Spectrogram Data Object
+        if (styler !== null) this.spectrogramData.push(styler.latestData);
 
+    }
+
+    draw() {
+        this.maxDate = Date.now();
+
+        let tempXScale = d3
+            .scaleTime()
+            .domain([this.minDate, this.maxDate])
+            .range([xOffset, width]);
+        let newXAxis = d3.axisBottom(tempXScale).ticks(10);
+
+        this.xBar = svg.select('g.x.axis')
+            .call(newXAxis);
+
+        this.svg.selectAll('rect')
+            .data(this.spectrogramData)
+            .join('rect')
+            .attr('width', '10')
+            .attr('height', d => this.initYScale(d.freqBand[0]) - this.initYScale(d.freqBand[0] + d.freqBand[1]))
+            .attr('x', d => tempXScale(d.time))
+            .attr('y', d => this.initYScale(d.freqBand[0] + d.freqBand[1]))
+            .style('fill', d => this.initZScale(d.power));
     }
 }
