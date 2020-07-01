@@ -24,7 +24,7 @@ self.addEventListener('message', (e) => {
             self.postMessage('SETTING DATA CALLBACK FUNCTION');
             dataCallback = data.callback;
             break;
-        case 'setIntercval':
+        case 'setInterval':
             self.postMessage('SETTING DATA CALLBACK INTERVAL');
             dataInterval = data.interval;
             break;

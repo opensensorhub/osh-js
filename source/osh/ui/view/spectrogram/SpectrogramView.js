@@ -33,37 +33,37 @@ class SpectrogramView extends View {
 
         // Data Vars
         this.spectrogramData = [];
-        this.decibelRange = [-100, 250];
+        this.powerRange = [-80, 250];
         this.minDate = Date.now();
         this.maxDate = Date.now() + 60000;
         this.freqUnit = 'Hz';
         this.minFreq = 0;
-        this.maxFreq = 24000;
+        this.maxFreq = 4000;
         this.numBands = 10;
-
 
         // Layout Vars
         let thisDiv = document.getElementById(this.divId);
-        this.width = thisDiv.getAttribute('width');
-        this.height = thisDiv.getAttribute('height');
-        this.xOffset = (0.95 * this.height) + 'px';
-        this.yOffset = (0.90 * this.height) + 'px';
-        this.yOffsetBottom = 10 + 'px';
-
+        thisDiv.style.height = thisDiv.parentElement.getBoundingClientRect().height + 'px';
+        this.width = thisDiv.getBoundingClientRect().width;
+        this.height = thisDiv.getBoundingClientRect().height;
+        this.xOffset = (0.13 * this.width);
+        this.yOffset = (0.90 * this.height);
+        this.yOffsetBottom = 10;
 
         // Draw Spectrogram
         // The div that will be the root of the D3JS Chart
-        this.container = d3.select(this.divId);
+        this.container = d3.select('#' + this.divId);
+
         this.svg = this.container.append('svg')
             .classed('spec-svg', true)
-            .attr('width', container.attr('width'))
-            .attr('height', container.attr('height'));
+            .attr('width', this.width + 'px')
+            .attr('height', this.height + 'px');
 
 
         // Setup Scales
         this.initXScale = d3.scaleTime()
             .domain([this.minDate, this.maxDate])
-            .range([this.xOffset, this.width]);
+            .range([this.xOffset, this.width-5]);
         this.initXAxis = d3.axisBottom(this.initXScale);
 
         this.initYScale = d3.scaleLinear()
@@ -71,7 +71,7 @@ class SpectrogramView extends View {
             .range([this.yOffset, this.yOffsetBottom]);    // TODO: name {bottomOffset} something better
         this.initYAxis = d3.axisLeft(this.initYScale).ticks(this.numBands).tickFormat((d, i) => d + this.freqUnit);
 
-        this.initZScale = d3.scaleSequential(d3.interpolateOrRd).domain(this.decibelRange);
+        this.initZScale = d3.scaleSequential(d3.interpolateOrRd).domain(this.powerRange);
 
 
         // Add Axes to Chart
@@ -104,6 +104,7 @@ class SpectrogramView extends View {
      * Draws the spectrogram
      */
     draw() {
+        console.log('Drawing...')
         this.maxDate = Date.now();
 
         let tempXScale = d3
@@ -125,3 +126,5 @@ class SpectrogramView extends View {
             .style('fill', d => this.initZScale(d.power));
     }
 }
+
+export default SpectrogramView;
