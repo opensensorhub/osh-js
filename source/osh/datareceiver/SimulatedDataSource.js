@@ -13,40 +13,43 @@
  Author: Ian Patterson <cr31.dev@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
-import {DataSource} from "../OSH";
-import SimConnector from "../dataconnector/SimConnector";
+import DataSource from "./DataSource.js";
+import SimConnector from "../dataconnector/SimConnector.js";
 
 class SimulatedDataSource extends DataSource {
 
-    // constructor() {
-    //     super();
-    // }
+    constructor(name, properties) {
+        super(name, properties);
+        this.initDataSource(properties)
+    }
 
     initDataSource(properties) {
         this.connector = new SimConnector({
             interval: 1000,
-            dataCallback: createDataEntries
+            dataCallback: this.createDataEntries
         });
+    }
+
+    // TODO: Move this out of here after testing
+    createDataEntries() {
+        let tempDataArr = [];
+        let freqCounter = 0;
+
+        let maxPower = 250;
+        let minPower = -80;
+        let numBands = 10;
+
+        for (let i = 0; i < numBands; i++) {
+            let randomPower = Math.random() * (maxPower - minPower) + minPower;
+            tempDataArr.push({
+                time: Date.now(),
+                freqBand: [freqCounter, freqCounter + 400],
+                power: randomPower
+            });
+            freqCounter += 400;
+        }
+        return tempDataArr;
     }
 }
 
-// TODO: Move this out of here after testing...
-function createDataEntries() {
-    let tempDataArr = [];
-    let freqCounter = 0;
-
-    let maxPower = 250;
-    let minPower = -80;
-    let numBands = 10;
-
-    for (let i = 0; i < numBands; i++) {
-        let randomPower = Math.random() * (maxPower - minPower) + minPower;
-        tempDataArr.push({
-            time: Date.now(),
-            freqBand: [freqCounter, freqCounter + 400],
-            power: randomPower
-        });
-        freqCounter += 400;
-    }
-    return tempDataArr;
-}
+export default SimulatedDataSource;

@@ -1,5 +1,4 @@
 import DataConnector from "./DataConnector";
-import {bind} from "leaflet/dist/leaflet-src.esm";
 
 class SimConnector extends DataConnector {
 
@@ -17,6 +16,7 @@ class SimConnector extends DataConnector {
     }
 
     connect() {
+        console.log('Connecting...')
         if (!this.init) {
             this.worker = new Worker('../datareceiver/SimWorker.js');
             this.worker.postMessage({cmd: 'start', msg: 'Start Data'});

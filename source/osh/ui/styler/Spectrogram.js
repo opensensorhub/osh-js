@@ -74,6 +74,6 @@ class Spectrogram extends Styler {
         }
         return false;
     }
-
-
 }
+
+export default Spectrogram;
