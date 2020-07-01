@@ -20,18 +20,23 @@ class SimulatedDataSource extends DataSource {
 
     constructor(name, properties) {
         super(name, properties);
-        this.initDataSource(properties)
+        // this.initDataSource(properties)
     }
 
     initDataSource(properties) {
+        console.log('Init Sim Data Source')
+        // let dataEntryString = this.createDataEntries.toString();
+        // let fcnBlob = new Blob([dataEntryString], {type: 'text/plain'});
+        // console.log(fcnBlob);
         this.connector = new SimConnector({
             interval: 1000,
-            dataCallback: this.createDataEntries
+            // dataCallback: this.createDataEntries
+            // dataCallback: fcnBlob
         });
     }
 
     // TODO: Move this out of here after testing
-    createDataEntries() {
+    /*createDataEntries() {
         let tempDataArr = [];
         let freqCounter = 0;
 
@@ -49,7 +54,7 @@ class SimulatedDataSource extends DataSource {
             freqCounter += 400;
         }
         return tempDataArr;
-    }
+    }*/
 }
 
 export default SimulatedDataSource;
