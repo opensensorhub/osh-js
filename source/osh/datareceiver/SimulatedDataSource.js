@@ -25,13 +25,8 @@ class SimulatedDataSource extends DataSource {
 
     initDataSource(properties) {
         console.log('Init Sim Data Source')
-        // let dataEntryString = this.createDataEntries.toString();
-        // let fcnBlob = new Blob([dataEntryString], {type: 'text/plain'});
-        // console.log(fcnBlob);
         this.connector = new SimConnector({
             interval: 1000,
-            // dataCallback: this.createDataEntries
-            // dataCallback: fcnBlob
         });
     }
 
