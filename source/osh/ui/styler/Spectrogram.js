@@ -55,9 +55,9 @@ class Spectrogram extends Styler {
             let fn = function (rec, timeStamp, options) {
                 let values = properties.valuesFunc.handler(rec, timeStamp, options);
 
-                if(Array.isArray(values)){
+                if (Array.isArray(values)) {
                     self.latestData = values;
-                }else{
+                } else {
                     self.latestData = [values];
                 }
             };
@@ -66,6 +66,7 @@ class Spectrogram extends Styler {
     }
 
     setData(dataSourceId, rec, view, options) {
+        console.log(rec);
         if (super.setData(dataSourceId, rec, view, options)) {
             if (isDefined(view)) {
                 view.updateSpectrogram(this, rec.timestamp, options);

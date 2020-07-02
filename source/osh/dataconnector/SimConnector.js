@@ -1,4 +1,5 @@
 import DataConnector from "./DataConnector";
+import {parseTimestamp} from "vuetify/lib/components/VCalendar/util/timestamp";
 
 class SimConnector extends DataConnector {
 
@@ -59,7 +60,7 @@ class SimConnector extends DataConnector {
                     function generateData(dataCallback) {
                         // let data = eval(dataCallback);
                         let data = createDataEntries();
-                        console.log(data);
+                        // console.log(data);
                         self.postMessage({data: data});
                         return true;
                     }
@@ -97,10 +98,10 @@ class SimConnector extends DataConnector {
             this.worker.postMessage({cmd: 'setInterval', msg: this.interval, interval: this.interval});
             // this.worker.postMessage({cmd: 'setDataCallback', callback: this.dataCallback});
 
-            this.worker.onmessage = (ev) => {
+            this.worker.onmessage = function (ev) {
                 this.lastTimestamp = Date.now();
                 this.onMessage(ev.data);
-            }; // Do we need a binding here?
+            }.bind(this); // Do we need a binding here?
 
             this.worker.postMessage({cmd: 'startData'});
         }
@@ -131,6 +132,11 @@ class SimConnector extends DataConnector {
      * @param data the callback data
      */
     onMessage(data) {
+        console.log(data);
+        this.onData({
+            timestamp: this.parseTimeStamp(data) + this.timeShift,
+            data: this.parseData(data)
+        })
     }
 
     /**
@@ -138,6 +144,45 @@ class SimConnector extends DataConnector {
      */
     close() {
         this.disconnect();
+    }
+
+    /**
+     * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
+     * @param {String} data - the data to parse
+     * @return {Number} the extracted timestamp
+     */
+    parseTimeStamp(data) {
+        console.log(data)
+        // let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        this.lastTimeStamp = data.data[0].time;
+        return this.lastTimeStamp;
+    }
+
+    /**
+     * Extract data from the message. The data are corresponding to the whole list of attributes of the JSON object
+     * excepting the 'time' one.
+     * @param {Object} data - the data to parse
+     * @return {Object} the parsed data
+     * @example
+     * {
+     *   location : {
+     *    lat:43.61758626,
+     *    lon: 1.42376557,
+     *    alt:100
+     *   }
+     * }
+     */
+    parseData(data) {
+        // let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        // let result = {};
+        //
+        // for (let key in rec) {
+        //     if (key !== 'time') {
+        //         result[key] = rec[key];
+        //     }
+        // }
+
+        return data;
     }
 
 }

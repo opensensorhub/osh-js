@@ -40,6 +40,8 @@ class SpectrogramView extends View {
         this.minFreq = 0;
         this.maxFreq = 4000;
         this.numBands = 10;
+        this.isSim = false;
+
 
         // Layout Vars
         let thisDiv = document.getElementById(this.divId);
@@ -83,6 +85,18 @@ class SpectrogramView extends View {
             .attr('class', 'y axis')
             .attr('transform', 'translate(' + (this.xOffset) + ',' + (0) + ')')
             .call(this.initYAxis);
+
+        if(options.hasOwnProperty('isSim')){
+            this.isSim = options.isSim;
+        }
+
+        if(this.isSim){
+            console.log("Simulating Spectrogram")
+            setInterval(()=>{
+                this.spectrogramData = this.spectrogramData.concat(this.createDataEntries())
+                this.draw();
+            }, 1000)
+        }
     }
 
     /**
@@ -104,16 +118,15 @@ class SpectrogramView extends View {
      * Draws the spectrogram
      */
     draw() {
-        console.log('Drawing...')
         this.maxDate = Date.now();
 
         let tempXScale = d3
             .scaleTime()
             .domain([this.minDate, this.maxDate])
-            .range([xOffset, width]);
+            .range([this.xOffset, this.width]);
         let newXAxis = d3.axisBottom(tempXScale).ticks(10);
 
-        this.xBar = svg.select('g.x.axis')
+        this.xBar = this.svg.select('g.x.axis')
             .call(newXAxis);
 
         this.svg.selectAll('rect')
@@ -124,6 +137,23 @@ class SpectrogramView extends View {
             .attr('x', d => tempXScale(d.time))
             .attr('y', d => this.initYScale(d.freqBand[0] + d.freqBand[1]))
             .style('fill', d => this.initZScale(d.power));
+    }
+
+    createDataEntries() {
+        let tempDataArr = [];
+        let freqCounter = 0;
+
+        for (let i = 0; i < this.numBands; i++) {
+            let randomPower = Math.random() * (this.powerRange[1] - this.powerRange[0]) + this.powerRange[0];
+            tempDataArr.push({
+                time: Date.now(),
+                freqBand: [freqCounter, freqCounter + 400],
+                power: randomPower
+            });
+            freqCounter += 400;
+        }
+
+        return tempDataArr;
     }
 }
 
