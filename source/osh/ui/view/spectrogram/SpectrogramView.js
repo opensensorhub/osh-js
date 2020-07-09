@@ -48,7 +48,7 @@ class SpectrogramView extends View {
         thisDiv.style.height = thisDiv.parentElement.getBoundingClientRect().height + 'px';
         this.width = thisDiv.getBoundingClientRect().width;
         this.height = thisDiv.getBoundingClientRect().height;
-        this.xOffset = (0.13 * this.width);
+        this.xOffset = (0.15 * this.width);
         this.yOffset = (0.90 * this.height);
         this.yOffsetBottom = 10;
 
