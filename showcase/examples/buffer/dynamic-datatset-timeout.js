@@ -19,6 +19,7 @@ function getNewData(dsId) {
         data: {
             data: '(' + dsId + ') ' + new Date(time).toISOString(),
             timeStamp: time,
+            clockTime: performance.now(),
             delayed: false
         }
     };
@@ -45,6 +46,7 @@ function addNewData(dsId, latency) {
             pendingDs[dsId] = true;
             setTimeout(() => {
                 data.data.delayed = true;
+                data.data.clockTime = performance.now();
                 bufferDynamic.push(data.dataSourceId, data.data);
                 pendingDs[dsId] = false;
             }, latency);

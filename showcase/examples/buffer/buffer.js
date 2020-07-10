@@ -13,6 +13,21 @@ const selectorMapping= {
   '5': 'five'
 }
 export function startDataSet(buffer, div) {
+  let lastWait = -1;
+  buffer.onWait = (dataSourceId, time ,total) => {
+    if(lastWait === -1) {
+      div.innerHTML += '<span style="color:darkgreen" >Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
+      lastWait = 0;
+    } else {
+      const moduloTime = time - lastWait;
+      console.log(total, time);
+      if(moduloTime > 500) {
+        div.innerHTML += '<span style="color:darkgreen" >Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
+        lastWait = time;
+      }
+    }
+    //
+  };
   const refClockTime = performance.now();
   let lastData = null;
   let lastClockTime;
@@ -20,12 +35,8 @@ export function startDataSet(buffer, div) {
   buffer.onData = function (databaseId, data) {
     const clockTime = performance.now();
     let diffClockTime = clockTime - refClockTime;
-
     let htmlContent = '';
     if (lastData !== null) {
-      let colorTag = '<span style="color:green"  class="line '+selectorMapping[databaseId]+'">';
-      const diffLast = clockTime - lastClockTime;
-      const diffTimeStamp = data.timeStamp - lastData.timeStamp;
 
       let delayed = data.delayed? ' (delayed) ' : '';
       const italicSt = data.delayed? '<i>': '';
@@ -40,11 +51,18 @@ export function startDataSet(buffer, div) {
             italicEnd;
       }
 
-      if (diffLast > diffTimeStamp + intervalTime * 2 || diffLast < diffTimeStamp - intervalTime * 2) {
-        colorTag = '<span style="color:red">';
-      }
-      // div.innerHTML += colorTag + ' expected: '+diffTimeStamp+'ms, real= '+diffLast.toFixed(2)+
-      //     'ms, delta= '+(diffTimeStamp-diffLast).toFixed(2)+' (+/- '+(intervalTime*2)+'ms)</span>';
+      const diffTime = (data.timeStamp - lastData.timeStamp);
+
+      //expected time
+      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +((diffTime > 0)? '+':'') + diffTime+'ms';
+
+      // real spent time
+      const d0 = (lastData.clockTime - refClockTime);
+      const d1 = (data.clockTime - refClockTime);
+      let delta = (d1-d0);
+
+      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;'+((delta > 0)? '+':'') + delta.toFixed(1)+'ms';
+
     } else {
       htmlContent+= data.data + ' (Absolute +' + diffClockTime.toFixed(2) + 'ms)';
     }

@@ -2,6 +2,8 @@
    #buffer-static, #buffer-timeout-static {
      height: 250px;
      margin-right: 150px;
+     overflow: auto;
+     width:500px;
    }
 
   #buffer-dynamic input {
@@ -41,6 +43,11 @@
   .select-this {
     border: solid 2px brown;
   }
+
+  #replay-factor, #duration,#replay-factor-label, #duration-label {
+    width:130px;
+    display: inline-block;
+  }
 </style>
 <div class="container">
   <div>
@@ -59,9 +66,28 @@
   buffer, a random number &#8712; [0,1] is computed to decide if the data will get some latency. If 0, the data is sent
   directly into the buffer, if 1, the data is sent will delay (the latency value) using a setTimeout() function.
   <br>
+  Result line example: <br><br>
+  (4) 2020-07-10T17:08:03.911Z (Absolute +1025.89ms) (delayed)   Δ +20ms  Δ 20.6ms
+  <ul>
+    <li>(4) : the Dataset id</li>
+    <li>2020-07-10T17:08:03.911Z: the data timeStamp</li>
+    <li>(Absolute +1025.89ms): the absolute time from the start (using perf.now())</li>
+    <li>(delayed): the data took latency, it has been delayed</li>
+    <li>Δ +20ms: the expected time to spend between the previous and this data</li>
+    <li>Δ 20.6ms: the real time spent based on the refClockTime (done once at the start) and the data ClockTime such as = d1 - d0 with
+    <pre>
+      const d0 = (lastData.clockTime - refClockTime);
+      const d1 = (data.clockTime - refClockTime);
+    </pre>
+    </li>
+  </ul>
   <br>
-  <label for="duration">Total duration(s)</label>
+  <label for="duration" id="duration-label">Total duration(s)</label>
   <input type="text" id="duration" name="duration" value="15" />
+  <br>
+  <label for="replay-factor" id="replay-factor-label">Replay factor</label>
+  <input type="text" id="replay-factor" name="replay-factor" value="1" />
+  <br> <br>
   <div>
     <b>DataSet 1 | </b>
     <label for="freq1">Frequency(ms)</label>
@@ -117,6 +143,7 @@
     <label for="buffering5">Buffering(ms)</label>
     <input type="text" id="buffering5" name="buffering5" value="100"/>
   </div>
+  <br>
   <button type="button" id="simulation">Start simulation</button>
   <label id="select-line-label" for="select-line">Select a ligne:</label>
   <select name="select-line" id="select-line" disabled>

@@ -7,26 +7,26 @@ export function startStatic() {
         {
             dataSourceId: '1',
             data: {
-                data: '30',
+                data: '(1) 30',
                 timeStamp: 30,
             }
         }, {
             dataSourceId: '1',
             data: {
-                data: '50',
+                data: '(1) 50',
                 timeStamp: 50,
             }
         }, {
             dataSourceId: '1',
             data: {
-                data: '100',
+                data: '(1) 100',
                 timeStamp: 100,
             }
         },
         {
             dataSourceId: '1',
             data: {
-                data: '150',
+                data: '(1) 150',
                 timeStamp: 150,
             }
         },
@@ -34,26 +34,26 @@ export function startStatic() {
         {
             dataSourceId: '2',
             data: {
-                data: '10',
+                data: '(2) 10',
                 timeStamp: 10,
             }
         }, {
             dataSourceId: '2',
             data: {
-                data: '40',
+                data: '(2) 40',
                 timeStamp: 40,
             }
         }, {
             dataSourceId: '2',
             data: {
-                data: '90',
+                data: '(2) 90',
                 timeStamp: 90,
             }
         },
         {
             dataSourceId: '2',
             data: {
-                data: '170',
+                data: '(2) 170',
                 timeStamp: 170,
             }
         },
@@ -61,32 +61,32 @@ export function startStatic() {
         {
             dataSourceId: '3',
             data: {
-                data: '30',
+                data: '(3) 30',
                 timeStamp: 30,
             }
         }, {
             dataSourceId: '3',
             data: {
-                data: '40',
+                data: '(3) 40',
                 timeStamp: 40,
             }
         }, {
             dataSourceId: '3',
             data: {
-                data: '180',
+                data: '(3) 180',
                 timeStamp: 180,
             }
         },
         {
             dataSourceId: '3',
             data: {
-                data: '5000',
+                data: '(3) 5000',
                 timeStamp: 5000,
             }
         }, {
             dataSourceId: '3',
             data: {
-                data: '5020',
+                data: '(3) 5020',
                 timeStamp: 5020,
             }
         },
@@ -111,6 +111,7 @@ export function startStatic() {
 
     for (let i = 0; i < dataSet.length; i++) {
         let event = dataSet[i];
+        event.data.clockTime = performance.now();
         buffer.push(event.dataSourceId, event.data);
     }
 
