@@ -1,4 +1,22 @@
 <style>
+   #buffer-static, #buffer-timeout-static {
+     height: 250px;
+   }
+
+  #buffer-dynamic input {
+    width: 50px;
+    height: 20px;
+    margin-top:6px;
+    margin-bottom:6px;
+    text-align: center;
+    margin-right:10px;
+  }
+
+   #simulation {
+     margin-top: 10px;
+     font-size: 16px;
+     padding: 5px 5px 5px 5px;
+   }
 </style>
 <p><u><b>Static DataSet:</b></u></p>
 <div id="buffer-static"></div>
@@ -7,4 +25,67 @@
 <div id="buffer-timeout-static"></div>
 
 <p><u><b>Dynamic DataSet: random data insert:</b></u></p>
-<div id="buffer-dynamic"></div>
+<div id="buffer-dynamic">
+  <label for="duration">Total duration(s)</label>
+  <input type="text" id="duration" name="duration" value="30" />
+  <div>
+    <b>DataSet 1 | </b>
+    <label for="freq1">Frequency(ms)</label>
+    <input type="text" id="freq1" name="freq1" value="100"/>
+    <label for="latency1">Latency(ms)</label>
+    <input type="text" id="latency1" name="latency1" value="0"/>
+    <label for="timeout1">Timeout(ms)</label>
+    <input type="text" id="timeout1" name="timeout1" value="500"/>
+    <label for="buffering1">Buffering(ms)</label>
+    <input type="text" id="buffering1" name="buffering1" value="100"/>
+  </div>
+  <div>
+    <b>DataSet 2 | </b>
+    <label for="freq2">Frequency(ms)</label>
+    <input type="text" id="freq2" name="freq2" value="10"/>
+    <label for="latency2">Latency(ms)</label>
+    <input type="text" id="latency2" name="latency2" value="600"/>
+    <label for="timeout2">Timeout(ms)</label>
+    <input type="text" id="timeout2" name="timeout2" value="500"/>
+    <label for="buffering2">Buffering(ms)</label>
+    <input type="text" id="buffering2" name="buffering2" value="100"/>
+  </div>
+  <div>
+    <b>DataSet 3 | </b>
+    <label for="freq3">Frequency(ms)</label>
+    <input type="text" id="freq3" name="freq3" value="210"/>
+    <label for="latency3">Latency(ms)</label>
+    <input type="text" id="latency3" name="latency3" value="25"/>
+    <label for="timeout3">Timeout(ms)</label>
+    <input type="text" id="timeout3" name="timeout3" value="500"/>
+    <label for="buffering3">Buffering(ms)</label>
+    <input type="text" id="buffering3" name="buffering3" value="100"/>
+  </div>
+  <div>
+    <b>DataSet 4 | </b>
+    <label for="freq4">Frequency(ms)</label>
+    <input type="text" id="freq4" name="freq4" value="120"/>
+    <label for="latency4">Latency(ms)</label>
+    <input type="text" id="latency4" name="latency4" value="150"/>
+    <label for="timeout4">Timeout(ms)</label>
+    <input type="text" id="timeout4" name="timeout4" value="250"/>
+    <label for="buffering4">Buffering(ms)</label>
+    <input type="text" id="buffering4" name="buffering4" value="100"/>
+  </div>
+  <div>
+    <b>DataSet 5 | </b>
+    <label for="freq5">Frequency(ms)</label>
+    <input type="text" id="freq5" name="freq5" value="1000"/>
+    <label for="latency5">Latency(ms)</label>
+    <input type="text" id="latency5" name="latency5" value="1700"/>
+    <label for="timeout5">Timeout(ms)</label>
+    <input type="text" id="timeout5" name="timeout5" value="2000"/>
+    <label for="buffering5">Buffering(ms)</label>
+    <input type="text" id="buffering5" name="buffering5" value="100"/>
+  </div>
+  <button type="button" id="simulation">Start simulation</button>
+  <br/><br/>
+  <div id="buffer-dynamic-data">
+</div>
+
+
