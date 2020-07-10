@@ -61,14 +61,24 @@ class DataSynchronizer {
     }
 
     push(dataSourceId, data) {
-        this.synchronizerWorker.postMessage({
-            dataSourceId: dataSourceId,
-            data: data
-        });
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.postMessage({
+                dataSourceId: dataSourceId,
+                data: data
+            });
+        }
     }
 
     onData(dataSourceId, data) {
 
+    }
+
+    terminate() {
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.terminate();
+            this.synchronizerWorker = null;
+            console.log("Buffer has been terminated successfully");
+        }
     }
 }
 export default  DataSynchronizer;
