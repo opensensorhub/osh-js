@@ -58,7 +58,7 @@ function addNewData(dsId, latency) {
 
 let bufferDynamic;
 
-export function startDynamicWithTimeout() {
+export function startDynamicWithTimeout(cbFinish) {
     eltDynamic.innerHTML = "";
 
     const duration = parseInt(document.getElementById("duration").value) * 1000;
@@ -109,8 +109,7 @@ export function startDynamicWithTimeout() {
         setTimeout(() => {
             clearInterval(interval1);
             bufferDynamic.terminate();
-            const simulButton = document.getElementById("simulation");
-            simulButton.disabled = false;
+            cbFinish();
         }, duration);
     }
 }

@@ -97,16 +97,16 @@ export function startStaticWithTimeout() {
         dataSources: [{
             id: '1',
             bufferingTime: 100,
-            timeOut: 500,
+            timeOut: 4500,
             name: '1'
         }, {
             id: '2',
             bufferingTime: 200,
-            timeOut: 500
+            timeOut: 4500
         }, {
             id: '3',
             bufferingTime: 300,
-            timeOut: 500
+            timeOut: 4500
         }]
     });
 

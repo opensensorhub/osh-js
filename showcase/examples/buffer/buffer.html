@@ -1,6 +1,7 @@
 <style>
    #buffer-static, #buffer-timeout-static {
      height: 250px;
+     margin-right: 150px;
    }
 
   #buffer-dynamic input {
@@ -12,22 +13,55 @@
     margin-right:10px;
   }
 
-   #simulation {
+   #simulation, #select-line {
      margin-top: 10px;
      font-size: 16px;
      padding: 5px 5px 5px 5px;
+     margin-right: 50px;
    }
+
+   #select-line-label {
+     font-size: 18px;
+   }
+
+  #buffer-dynamic-data {
+    height: 350px;
+    width: 750px;
+    overflow: auto;
+  }
+
+  .container {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+   .select-none {
+     opacity: 0.5;
+   }
+  .select-this {
+    border: solid 2px brown;
+  }
 </style>
-<p><u><b>Static DataSet:</b></u></p>
-<div id="buffer-static"></div>
-
-<p><u><b>Static DataSet with timeOut:</b></u></p>
-<div id="buffer-timeout-static"></div>
-
+<div class="container">
+  <div>
+  <p><u><b>Static DataSet:</b></u></p>
+    <div id="buffer-static"></div>
+  </div>
+  <div>
+    <p><u><b>Static DataSet with timeOut:</b></u></p>
+    <div id="buffer-timeout-static"></div>
+  </div>
+</div>
 <p><u><b>Dynamic DataSet: random data insert:</b></u></p>
+
 <div id="buffer-dynamic">
+  The simulation starts multiple injection of data using a random latency. Every time a data is injected into the
+  buffer, a random number &#8712; [0,1] is computed to decide if the data will get some latency. If 0, the data is sent
+  directly into the buffer, if 1, the data is sent will delay (the latency value) using a setTimeout() function.
+  <br>
+  <br>
   <label for="duration">Total duration(s)</label>
-  <input type="text" id="duration" name="duration" value="30" />
+  <input type="text" id="duration" name="duration" value="15" />
   <div>
     <b>DataSet 1 | </b>
     <label for="freq1">Frequency(ms)</label>
@@ -84,6 +118,15 @@
     <input type="text" id="buffering5" name="buffering5" value="100"/>
   </div>
   <button type="button" id="simulation">Start simulation</button>
+  <label id="select-line-label" for="select-line">Select a ligne:</label>
+  <select name="select-line" id="select-line" disabled>
+    <option value="-">-</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
   <br/><br/>
   <div id="buffer-dynamic-data">
 </div>
