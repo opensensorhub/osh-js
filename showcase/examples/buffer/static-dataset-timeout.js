@@ -115,7 +115,7 @@ export function startStaticWithTimeout() {
         bufferStaticWithTimeOut.push(event.dataSourceId, event.data);
     }
 
-    startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"));
+    startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"), 1000);
 
     setTimeout(() => {
         bufferStaticWithTimeOut.terminate();

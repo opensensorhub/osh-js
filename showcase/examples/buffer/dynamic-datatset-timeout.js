@@ -94,7 +94,7 @@ export function startDynamicWithTimeout(cbFinish) {
         }]
     });
 
-    startDataSet(bufferDynamic, eltDynamic);
+    startDataSet(bufferDynamic, eltDynamic, 100);
 
     addDataInjection(1, parseInt(document.getElementById("freq1").value), parseInt(document.getElementById("latency1").value));
     addDataInjection(2, parseInt(document.getElementById("freq2").value), parseInt(document.getElementById("latency2").value));

@@ -116,7 +116,7 @@ export function startStatic() {
     }
 
     const eltStatic = document.getElementById("buffer-static");
-    startDataSet(buffer, eltStatic);
+    startDataSet(buffer, eltStatic, 1000);
 
     setTimeout(() => {
         buffer.terminate();

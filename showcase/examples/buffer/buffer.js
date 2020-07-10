@@ -12,18 +12,24 @@ const selectorMapping= {
   '4': 'four',
   '5': 'five'
 }
-export function startDataSet(buffer, div) {
+export function startDataSet(buffer, div, waitDisplayFactor) {
   let lastWait = -1;
+  let lastDsWait;
+  let count = 0;
   buffer.onWait = (dataSourceId, time ,total) => {
+    if(lastDsWait !== dataSourceId) {
+      lastWait = -1;
+      count = 0;
+    }
+    lastDsWait = dataSourceId;
     if(lastWait === -1) {
       div.innerHTML += '<span style="color:darkgreen" >Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
       lastWait = 0;
     } else {
-      const moduloTime = time - lastWait;
-      console.log(total, time);
-      if(moduloTime > 500) {
+      if(parseInt((time/(waitDisplayFactor))) === count) {
         div.innerHTML += '<span style="color:darkgreen" >Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
         lastWait = time;
+        count++;
       }
     }
     //
@@ -31,8 +37,11 @@ export function startDataSet(buffer, div) {
   const refClockTime = performance.now();
   let lastData = null;
   let lastClockTime;
-  const intervalTime = 5;
   buffer.onData = function (databaseId, data) {
+    if(lastDsWait === databaseId) {
+      lastWait = -1;
+      count = 0;
+    }
     const clockTime = performance.now();
     let diffClockTime = clockTime - refClockTime;
     let htmlContent = '';
