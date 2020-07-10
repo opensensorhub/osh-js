@@ -59,9 +59,9 @@ function processData() {
         const diffClockTime = clockTime - refClockTime;
 
         // 1) check if we are timing Out
-        if(!checkWaiting(currentTimeOutData)) {
-            return;
-        }
+       if(!checkWaiting(currentTimeOutData)) {
+           return;
+       }
         // 2) check if we have to wait for a DS
         currentTimeOutData = computeWaitTime(currentTimeOutData);
         // wait time detected?
@@ -118,6 +118,7 @@ function computeWaitTime(currentTimeOutData) {
     for (let currentDsId in self.dataSourceMap) {
         currentDs = self.dataSourceMap[currentDsId];
         if (currentDs.data.length === 0) {
+            console.log("ds "+currentDs.id+" has no data");
             // case where the current DS is the same that we have already wait and it is currently timedOut
             // skip it until new data comes up
             if (currentTimeOutData !== null && timedOutDsSet.has(currentDs.id)) {
