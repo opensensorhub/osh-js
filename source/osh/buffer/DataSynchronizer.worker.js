@@ -59,13 +59,16 @@ function processData() {
         const diffClockTime = clockTime - refClockTime;
 
         // 1) check if we are timing Out
-       if(!checkWaiting(currentTimeOutData)) {
+       const checkWait = checkWaiting(currentTimeOutData);
+       if(checkWait.wait) {
+           onWait(currentTimeOutData.dsId, checkWait.time,currentTimeOutData.timeOut);
            return;
        }
         // 2) check if we have to wait for a DS
         currentTimeOutData = computeWaitTime(currentTimeOutData);
         // wait time detected?
         if(currentTimeOutData !== null) {
+            onWait(currentTimeOutData.dsId, 0, currentTimeOutData.timeOut);
             return;
         }
         // 3) return the oldest data if any
@@ -93,7 +96,7 @@ function checkWaiting(currentTimeOutData) {
         if(currentDs.data.length === 0) {
             if( diffClockTime < currentDs.timeOut) {
                 // continue to wait
-                return false;
+                return { 'time':diffClockTime, 'total':currentDs.timeOut, 'wait': true };
             } else {
                 // times up, add the dataSource to the Set to be sure we will not loop on it at the next iteration
                 // the values is reset when a new data is pushed into this DS
@@ -101,7 +104,7 @@ function checkWaiting(currentTimeOutData) {
             }
         }
     }
-    return true;
+    return { 'time':0, 'wait': false, 'total':0  };
 }
 
 /**
@@ -118,7 +121,7 @@ function computeWaitTime(currentTimeOutData) {
     for (let currentDsId in self.dataSourceMap) {
         currentDs = self.dataSourceMap[currentDsId];
         if (currentDs.data.length === 0) {
-            console.log("ds "+currentDs.id+" has no data");
+            // console.log("ds "+currentDs.id+" has no data");
             // case where the current DS is the same that we have already wait and it is currently timedOut
             // skip it until new data comes up
             if (currentTimeOutData !== null && timedOutDsSet.has(currentDs.id)) {
@@ -131,7 +134,8 @@ function computeWaitTime(currentTimeOutData) {
                 waitTime = currentDs.timeOut;
                 timeOutData = {
                     dsId: currentDs.id,
-                    refClockTime: performance.now()
+                    refClockTime: performance.now(),
+                    timeOut: currentDs.timeOut
                 }
             }
         }
@@ -189,8 +193,18 @@ function addDataSource(dataSource) {
 
 function onData(dataSourceId, data) {
     self.postMessage({
+        message: 'data',
         dataSourceId: dataSourceId,
         data: data
+    });
+}
+
+function onWait(dataSourceId, time, total) {
+    self.postMessage({
+        message: 'wait',
+        dataSourceId: dataSourceId,
+        time: time,
+        total: total
     });
 }
 

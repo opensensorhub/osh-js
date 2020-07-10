@@ -55,10 +55,16 @@ class DataSynchronizer {
         });
 
         this.synchronizerWorker.onmessage =(event) => {
-            // EventManager.fire(EventManager.EVENT.DATA + "-" + event.data.dataSourceId, {data: event.data.data});
-            this.onData(event.data.dataSourceId, event.data.data);
+            if(event.data.message === 'data') {
+                // EventManager.fire(EventManager.EVENT.DATA + "-" + event.data.dataSourceId, {data: event.data.data});
+                this.onData(event.data.dataSourceId, event.data.data);
+            } else if(event.data.message === 'wait') {
+                this.onWait(event.data.dataSourceId, event.data.time, event.data.total);
+            }
         }
     }
+
+    onWait(dataSourceId, time) {}
 
     push(dataSourceId, data) {
         if(this.synchronizerWorker !== null) {
@@ -69,7 +75,7 @@ class DataSynchronizer {
         }
     }
 
-    onData(dataSourceId, data) {
+    onData(dataSourceId, data, total) {
 
     }
 
