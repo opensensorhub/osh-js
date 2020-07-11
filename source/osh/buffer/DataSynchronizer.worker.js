@@ -64,7 +64,7 @@ function processData() {
            return;
        }
         // 2) check if we have to wait for a DS
-        currentTimeOutData = computeWaitTime(currentTimeOutData);
+        currentTimeOutData = computeWaitData();
         // wait time detected?
         if(currentTimeOutData !== null) {
             onWait(currentTimeOutData.dsId, 0, currentTimeOutData.timeOut);
@@ -109,10 +109,9 @@ function checkWaiting(currentTimeOutData) {
 /**
  * Compute the DS to wait if any. We have to wait if the DS has no data. If multiple DS has no data, we take
  * the maximum of their timeOut value.
- * @param currentTimeOutData - the object holding the information of the current DS being timingOut
  * @returns {Object | null} - the object holding the new information of the DS to wait, null otherwise
  */
-function computeWaitTime(currentTimeOutData) {
+function computeWaitData() {
     let waitTime = -1;
     let currentDs;
     let timeOutData = null;
@@ -123,7 +122,7 @@ function computeWaitTime(currentTimeOutData) {
             // console.log("ds "+currentDs.id+" has no data");
             // case where the current DS is the same that we have already wait and it is currently timedOut
             // skip it until new data comes up
-            if (currentTimeOutData !== null && timedOutDsSet.has(currentDs.id)) {
+            if (timedOutDsSet.has(currentDs.id)) {
                 continue;
             }
             // we have to wait for this DS
@@ -208,4 +207,5 @@ function onWait(dataSourceId, time, total) {
 
 self.onclose = function() {
     clearInterval(this.interval);
+    console.log("Buffer has been terminated successfully");
 }

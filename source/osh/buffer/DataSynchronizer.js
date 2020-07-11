@@ -83,7 +83,6 @@ class DataSynchronizer {
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.terminate();
             this.synchronizerWorker = null;
-            console.log("Buffer has been terminated successfully");
         }
     }
 }
