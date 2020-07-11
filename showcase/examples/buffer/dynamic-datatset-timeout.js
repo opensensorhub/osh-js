@@ -50,11 +50,16 @@ export function startDynamicWithTimeout(cbFinish) {
         onData: function (databaseId, data){}
     };
 
+    function ab2str(buf) {
+        return String.fromCharCode.apply(null, new Uint16Array(buf));
+    }
+
     dynamicBuffer.onmessage = (event) => {
         if(event.data.message === 'data') {
-            //virtBuffer.onData(event.data.dataSourceId, event.data.data);
+            // const jsonObject = JSON.parse(ab2str(event.data.data));
+            virtBuffer.onData(event.data.dataSourceId, event.data.data);
         } else if(event.data.message === 'wait') {
-            //virtBuffer.onWait(event.data.dataSourceId, event.data.time, event.data.total);
+            virtBuffer.onWait(event.data.dataSourceId, event.data.time, event.data.total);
         }
     }
 
@@ -74,10 +79,6 @@ export function startDynamicWithTimeout(cbFinish) {
            id: dsId,
            latency:latency
         });
-
-        // dataInjector.onmessage = (event) => {
-        //     bufferDynamic.push(event.data.id, event.data.data);
-        // };
 
         setTimeout(() => {
             console.log('calling terminate..');

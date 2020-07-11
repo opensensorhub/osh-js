@@ -13,31 +13,47 @@ const selectorMapping= {
   '5': 'five'
 }
 
+let scrolled = false;
+const scrollControl = document.getElementById("scroll");
+
+function updateScroll(divElement){
+  if(scrollControl.checked){
+    divElement.scrollTop = divElement.scrollHeight;
+  }
+}
+
 export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
   let lastWait = -1;
   let lastDsWait;
   let count = 0;
+
   buffer.onWait = (dataSourceId, time ,total) => {
     if(lastDsWait !== dataSourceId) {
       lastWait = -1;
       count = 0;
     }
+    const line = document.createElement("div");
+    line.setAttribute('class', 'wait');
+
     lastDsWait = dataSourceId;
     if(lastWait === -1) {
-      div.innerHTML += '<span style="color:darkorange" >Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
+      line.innerHTML = 'Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...';
       lastWait = 0;
     } else {
       if(parseInt((time/(waitDisplayFactor))) === count) {
-        div.innerHTML += '<span style="color:darkorange" >Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
+        line.innerHTML = 'Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...';
         lastWait = time;
         count++;
       }
     }
+    div.appendChild(line);
+    updateScroll(div);
     //
   };
   const refClockTime = performance.now();
   let lastData = null;
   let lastClockTime;
+
   buffer.onData = function (databaseId, data) {
     if(lastDsWait === databaseId) {
       lastWait = -1;
@@ -45,58 +61,56 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
     }
     const clockTime = performance.now();
     let diffClockTime = clockTime - refClockTime;
-    let htmlContent = '';
+
+    const line = document.createElement("div");
+
     if (lastData !== null) {
 
       let delayed = data.delayed? ' (delayed) ' : '';
-      const italicSt = data.delayed? '<i>': '';
-      const italicEnd = data.delayed? '</i>': '';
+
       if (lastData.timeStamp > data.timeStamp) {
-        const errorLine = italicSt+ '<span style="color:red" class="line '+selectorMapping[databaseId]+'">' + data.data +
-            '</span> (Absolute +' + diffClockTime.toFixed(2) + 'ms)'+ delayed +
-            italicEnd;
-        htmlContent += errorLine;
+        let classes = 'error line '+selectorMapping[databaseId];
+        if(data.delayed) {
+          classes += ' delayed';
+        }
+        line.setAttribute('class', classes);
+        line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
         if(divError !== null) {
-          divError.innerHTML +=  errorLine+'<br>';
+          const lineError = document.createElement("div");
+          lineError.setAttribute('class', classes);
+          lineError.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
+          divError.appendChild(lineError);
         }
       } else {
-        htmlContent += italicSt+'<span style="color:green" class="line '+selectorMapping[databaseId]+'">' +  data.data +
-            '</span> (Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed +
-            italicEnd;
+        let classes = 'noerror line '+selectorMapping[databaseId];
+        if(data.delayed) {
+          classes += ' delayed';
+        }
+        line.setAttribute('class', classes);
+        line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
       }
 
       const diffTime = (data.timeStamp - lastData.timeStamp);
 
       //expected time
-      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +((diffTime > 0)? '+':'') + diffTime+'ms';
+      // htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +((diffTime > 0)? '+':'') + diffTime+'ms';
 
       // real spent time
       const d0 = (lastData.clockTime - refClockTime);
       const d1 = (data.clockTime - refClockTime);
       let delta = (d1-d0);
 
-      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;'+((delta > 0)? '+':'') + delta.toFixed(1)+'ms';
+      // htmlContent += '&nbsp;&nbsp;&#916;&nbsp;'+((delta > 0)? '+':'') + delta.toFixed(1)+'ms';
 
     } else {
-      htmlContent += data.data + ' (Absolute +' + diffClockTime.toFixed(2) + 'ms)';
+      line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)';
     }
-    htmlContent += '<br>';
-    div.innerHTML += htmlContent;
     lastData = data;
     lastClockTime = clockTime;
 
-    let scrolled = false;
-    function updateScroll(){
-      if(!scrolled){
-        div.scrollTop = div.scrollHeight;
-      }
-    }
+    div.appendChild(line);
 
-    div.onscroll = () => {
-      scrolled=true;
-    };
-
-    updateScroll();
+    updateScroll(div);
   };
 }
 
