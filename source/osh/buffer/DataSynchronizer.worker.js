@@ -28,11 +28,10 @@ function push(dataSourceId, data) {
         setTimeout(() => processData(), self.bufferingTime);
     }
 
-    ds.data.push(data);
-    ds.lastReceivedTime = performance.now();
     if(timedOutDsSet.has(ds.id)) {
         timedOutDsSet.delete(ds.id);
     }
+    ds.data.push(data);
 }
 
 function processData() {
@@ -58,7 +57,7 @@ function processData() {
         const clockTime = performance.now();
         const diffClockTime = clockTime - refClockTime;
 
-        // 1) check if we are timing Out
+        // 1) check if we are waiting
        const checkWait = checkWaiting(currentTimeOutData);
        if(checkWait.wait) {
            onWait(currentTimeOutData.dsId, checkWait.time,currentTimeOutData.timeOut);
@@ -185,7 +184,6 @@ function addDataSource(dataSource) {
         data: [],
         startBufferingTime: -1,
         id: dataSource.id,
-        lastReceivedTime: -1,
         timedOut: false,
         name: dataSource.name
     };
