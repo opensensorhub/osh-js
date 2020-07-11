@@ -48,8 +48,24 @@
    }
   .select-this {
     border: solid 2px brown;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
 
+  .delayed {
+    font-style: italic;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .wait {
+    color: darkorange;
+  }
+   .noerror {
+     color: green;
+   }
   #replay-factor, #duration,#replay-factor-label, #duration-label {
     width:130px;
     display: inline-block;
@@ -160,6 +176,9 @@
     <option value="4">4</option>
     <option value="5">5</option>
   </select>
+  <label for="scroll">Auto scroll</label>
+  <input type="checkbox" id="scroll" name="scroll"
+         checked>
   <br/><br/>
   <div class="container-dynamic">
     <div id="buffer-dynamic-data"></div>
