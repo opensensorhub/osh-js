@@ -26,7 +26,7 @@
      font-size: 18px;
    }
 
-  #buffer-dynamic-data {
+  #buffer-dynamic-data, #buffer-dynamic-errors {
     height: 350px;
     width: 750px;
     overflow: auto;
@@ -34,11 +34,11 @@
     scroll-snap-type: y mandatory;
   }
 
-   #buffer-dynamic-data > div > div:last-child {
+   #buffer-dynamic-data, #buffer-dynamic-errors > div > div:last-child {
      scroll-snap-align: end;
    }
 
-  .container {
+  .container, .container-dynamic {
     display: flex;
     justify-content: flex-start;
   }
@@ -108,7 +108,7 @@
   <div>
     <b>DataSet 2 | </b>
     <label for="freq2">Frequency(ms)</label>
-    <input type="text" id="freq2" name="freq2" value="10"/>
+    <input type="text" id="freq2" name="freq2" value="100"/>
     <label for="latency2">Latency(ms)</label>
     <input type="text" id="latency2" name="latency2" value="600"/>
     <label for="timeout2">Timeout(ms)</label>
@@ -161,7 +161,10 @@
     <option value="5">5</option>
   </select>
   <br/><br/>
-  <div id="buffer-dynamic-data">
+  <div class="container-dynamic">
+    <div id="buffer-dynamic-data"></div>
+    <div id="buffer-dynamic-errors"></div>
+  </div>
 </div>
 
 

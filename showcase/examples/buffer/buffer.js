@@ -12,7 +12,8 @@ const selectorMapping= {
   '4': 'four',
   '5': 'five'
 }
-export function startDataSet(buffer, div, waitDisplayFactor) {
+
+export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
   let lastWait = -1;
   let lastDsWait;
   let count = 0;
@@ -51,9 +52,13 @@ export function startDataSet(buffer, div, waitDisplayFactor) {
       const italicSt = data.delayed? '<i>': '';
       const italicEnd = data.delayed? '</i>': '';
       if (lastData.timeStamp > data.timeStamp) {
-        htmlContent += italicSt+ '<span style="color:red" class="line '+selectorMapping[databaseId]+'">' + data.data +
+        const errorLine = italicSt+ '<span style="color:red" class="line '+selectorMapping[databaseId]+'">' + data.data +
             '</span> (Absolute +' + diffClockTime.toFixed(2) + 'ms)'+ delayed +
             italicEnd;
+        htmlContent += errorLine;
+        if(divError !== null) {
+          divError.innerHTML +=  errorLine+'<br>';
+        }
       } else {
         htmlContent += italicSt+'<span style="color:green" class="line '+selectorMapping[databaseId]+'">' +  data.data +
             '</span> (Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed +
@@ -73,7 +78,7 @@ export function startDataSet(buffer, div, waitDisplayFactor) {
       htmlContent += '&nbsp;&nbsp;&#916;&nbsp;'+((delta > 0)? '+':'') + delta.toFixed(1)+'ms';
 
     } else {
-      htmlContent+= data.data + ' (Absolute +' + diffClockTime.toFixed(2) + 'ms)';
+      htmlContent += data.data + ' (Absolute +' + diffClockTime.toFixed(2) + 'ms)';
     }
     htmlContent += '<br>';
     div.innerHTML += htmlContent;
