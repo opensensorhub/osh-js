@@ -23,11 +23,11 @@ export function startDataSet(buffer, div, waitDisplayFactor) {
     }
     lastDsWait = dataSourceId;
     if(lastWait === -1) {
-      div.innerHTML += '<span style="color:darkgreen" >Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
+      div.innerHTML += '<span style="color:darkorange" >Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
       lastWait = 0;
     } else {
       if(parseInt((time/(waitDisplayFactor))) === count) {
-        div.innerHTML += '<span style="color:darkgreen" >Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
+        div.innerHTML += '<span style="color:darkorange" >Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...</span><br>';
         lastWait = time;
         count++;
       }
@@ -79,6 +79,19 @@ export function startDataSet(buffer, div, waitDisplayFactor) {
     div.innerHTML += htmlContent;
     lastData = data;
     lastClockTime = clockTime;
+
+    let scrolled = false;
+    function updateScroll(){
+      if(!scrolled){
+        div.scrollTop = div.scrollHeight;
+      }
+    }
+
+    div.onscroll = () => {
+      scrolled=true;
+    };
+
+    updateScroll();
   };
 }
 

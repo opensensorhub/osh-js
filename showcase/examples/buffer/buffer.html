@@ -30,7 +30,13 @@
     height: 350px;
     width: 750px;
     overflow: auto;
+    overscroll-behavior-y: contain;
+    scroll-snap-type: y mandatory;
   }
+
+   #buffer-dynamic-data > div > div:last-child {
+     scroll-snap-align: end;
+   }
 
   .container {
     display: flex;
