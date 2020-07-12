@@ -168,6 +168,10 @@ function computeNextData(refTimeStamp, diffClockTime) {
                         currentDsToShift : currentDs;
                 }
             }
+        } else if (!timedOutDsSet.has(currentDs.id)){
+            // case where there were some data before shifting. Once the data has been shifted, there
+            // is no data anymore in this DS and we have to check again to figure out if we have to wait.
+            return false;
         }
     }
     // finally shift the data
