@@ -1,224 +1,155 @@
 // create data source for Android phone GPS
 import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
+import {startStatic} from './static-dataset';
+import {startStaticWithTimeout} from './static-dataset-timeout';
+import {startDynamicWithTimeout} from './dynamic-datatset-timeout';
+import {isDefined} from "../../../source/osh/utils/Utils";
 
-const dataSet = [
-  {
-    dataSourceId: '1',
-    data: {
-      data: '30',
-      timeStamp: 30,
-    }
-  }, {
-    dataSourceId: '1',
-    data: {
-      data: '50',
-      timeStamp: 50,
-    }
-  },{
-    dataSourceId: '1',
-    data: {
-      data: '100',
-      timeStamp: 100,
-    }
-  },
-  {
-    dataSourceId: '1',
-    data: {
-      data: '150',
-      timeStamp: 150,
-    }
-  },
-    /////
-  {
-    dataSourceId: '2',
-    data: {
-      data: '10',
-      timeStamp: 10,
-    }
-  }, {
-    dataSourceId: '2',
-    data: {
-      data: '40',
-      timeStamp: 40,
-    }
-  },{
-    dataSourceId: '2',
-    data: {
-      data: '90',
-      timeStamp: 90,
-    }
-  },
-  {
-    dataSourceId: '2',
-    data: {
-      data: '170',
-      timeStamp: 170,
-    }
-  },
-  /////
-  {
-    dataSourceId: '3',
-    data: {
-      data: '30',
-      timeStamp: 30,
-    }
-  }, {
-    dataSourceId: '3',
-    data: {
-      data: '40',
-      timeStamp: 40,
-    }
-  },{
-    dataSourceId: '3',
-    data: {
-      data: '180',
-      timeStamp: 180,
-    }
-  },
-  {
-    dataSourceId: '3',
-    data: {
-      data: '5000',
-      timeStamp: 5000,
-    }
-  },{
-    dataSourceId: '3',
-    data: {
-      data: '5020',
-      timeStamp: 5020,
-    }
-  },
-];
-const buffer = new DataSynchronizer({
-  replayFactor:1,
-  dataSources: [{
-      id: '1',
-      bufferingTime: 100,
-      timeOut: 0,
-      name: '1'
-    }, {
-      id: '2',
-      bufferingTime: 200,
-      timeOut: 0
-    }, {
-      id: '3',
-      bufferingTime: 300,
-      timeOut: 0
-    }]
-});
-
-for(let i=0;i <dataSet.length;i++ ) {
-  let event = dataSet[i];
-  buffer.push(event.dataSourceId,event.data);
+const selectorMapping= {
+  '1': 'one',
+  '2': 'two',
+  '3': 'three',
+  '4': 'four',
+  '5': 'five'
 }
 
-const eltStatic = document.getElementById("buffer-static");
-startDataSet(buffer, eltStatic);
+let scrolled = false;
+const scrollControl = document.getElementById("scroll");
 
-// static with TimeOut
-const bufferStaticWithTimeOut = new DataSynchronizer({
-  replayFactor:1,
-  dataSources: [{
-    id: '1',
-    bufferingTime: 100,
-    timeOut: 500,
-    name: '1'
-  }, {
-    id: '2',
-    bufferingTime: 200,
-    timeOut: 500
-  }, {
-    id: '3',
-    bufferingTime: 300,
-    timeOut: 500
-  }]
-});
-
-for(let i=0;i <dataSet.length;i++ ) {
-  let event = dataSet[i];
-  bufferStaticWithTimeOut.push(event.dataSourceId,event.data);
+function updateScroll(divElement){
+  if(scrollControl.checked){
+    divElement.scrollTop = divElement.scrollHeight;
+  }
 }
 
-startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"));
+export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
+  let lastWait = -1;
+  let lastDsWait;
+  let count = 0;
 
-//--------------------
-// dynamic part
-const bufferDynamic = new DataSynchronizer({
-  replayFactor:1,
-  dataSources: [{
-    id: '1',
-    bufferingTime: 100,
-    timeOut:0,
-  },{
-    id: '3',
-    timeOut:0,
-    bufferingTime: 3000
-
-  },{
-    id: '2',
-    timeOut:0,
-    bufferingTime: 200
-  }]
-});
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min +1)) + min;
-}
-let count = 0;
-
-function getNewData() {
-  let time = Date.now();
-  return  {
-    dataSourceId: ''+getRandomInt(1,3),
-    data: {
-      data: new Date(time).toISOString(),
-      timeStamp: time,
+  buffer.onWait = (dataSourceId, time ,total) => {
+    if(lastDsWait !== dataSourceId) {
+      lastWait = -1;
+      count = 0;
     }
+    const line = document.createElement("div");
+    line.setAttribute('class', 'wait');
+
+    lastDsWait = dataSourceId;
+    if(lastWait === -1) {
+      line.innerHTML = 'Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...';
+      lastWait = 0;
+    } else {
+      if(parseInt((time/(waitDisplayFactor))) === count) {
+        line.innerHTML = 'Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...';
+        lastWait = time;
+        count++;
+      }
+    }
+    div.appendChild(line);
+    updateScroll(div);
+    //
   };
-}
-
-const eltDynamic = document.getElementById("buffer-dynamic");
-startDataSet(bufferDynamic, eltDynamic);
-
-function addNewData() {
-  const data = getNewData();
-  bufferDynamic.push(data.dataSourceId,data.data);
-}
-
-// ingest new random data
-let lastTimeStamp = 30;
-for(let i=0;i < 200;i++) {
-  let random;
-  while( lastTimeStamp + (random = getRandomInt(40,100))  < lastTimeStamp) {}
-  lastTimeStamp += random;
-  setTimeout(()=> addNewData(), lastTimeStamp);
-}
-
-
-function startDataSet(buffer, div) {
   const refClockTime = performance.now();
   let lastData = null;
   let lastClockTime;
-  const intervalTime = 5;
-  buffer.onData = function(databaseId, data) {
+
+  buffer.onData = function (databaseId, data) {
+    if(lastDsWait === databaseId) {
+      lastWait = -1;
+      count = 0;
+    }
     const clockTime = performance.now();
     let diffClockTime = clockTime - refClockTime;
-    div.innerHTML = div.innerHTML + data.data +' (Absolute +' + diffClockTime.toFixed(2) + 'ms)';
-    let colorTag = '<span style="color:green">';
 
-    if(lastData !== null) {
-      const diffLast = clockTime - lastClockTime;
-      const diffTimeStamp = data.timeStamp - lastData.timeStamp;
-      if( diffLast > diffTimeStamp + intervalTime*2 || diffLast < diffTimeStamp - intervalTime*2 ) {
-        colorTag = '<span style="color:red">';
+    const line = document.createElement("div");
+
+    if (lastData !== null) {
+
+      let delayed = data.delayed? ' (delayed) ' : '';
+
+      if (lastData.timeStamp > data.timeStamp) {
+        let classes = 'error line '+selectorMapping[databaseId];
+        if(data.delayed) {
+          classes += ' delayed';
+        }
+        line.setAttribute('class', classes);
+        line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
+        if(divError !== null) {
+          const lineError = document.createElement("div");
+          lineError.setAttribute('class', classes);
+          lineError.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
+          divError.appendChild(lineError);
+        }
+      } else {
+        let classes = 'noerror line '+selectorMapping[databaseId];
+        if(data.delayed) {
+          classes += ' delayed';
+        }
+        line.setAttribute('class', classes);
+        line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
       }
-      div.innerHTML += colorTag + ' expected: '+diffTimeStamp+'ms, real= '+diffLast.toFixed(2)+
-          'ms, delta= '+(diffTimeStamp-diffLast).toFixed(2)+' (+/- '+(intervalTime*2)+'ms)</span>';
+
+      const diffTime = (data.timeStamp - lastData.timeStamp);
+
+      //expected time
+      // htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +((diffTime > 0)? '+':'') + diffTime+'ms';
+
+      // real spent time
+      const d0 = (lastData.clockTime - refClockTime);
+      const d1 = (data.clockTime - refClockTime);
+      let delta = (d1-d0);
+
+      // htmlContent += '&nbsp;&nbsp;&#916;&nbsp;'+((delta > 0)? '+':'') + delta.toFixed(1)+'ms';
+
+    } else {
+      line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)';
     }
-    div.innerHTML += '<br>';
     lastData = data;
     lastClockTime = clockTime;
+
+    div.appendChild(line);
+
+    updateScroll(div);
   };
 }
+
+startStatic();
+startStaticWithTimeout();
+
+const simulButton = document.getElementById("simulation");
+const selectLine = document.getElementById("select-line");
+const bufferDynamicData = document.getElementById("buffer-dynamic-data");
+
+simulButton.onclick = () => {
+  simulButton.disabled = true;
+  selectLine.disabled = true;
+  startDynamicWithTimeout(() => {
+    simulButton.disabled = false;
+    selectLine.disabled = false;
+  });
+};
+
+selectLine.onchange = (event) => {
+  let value = selectLine.value;
+  if(value !== '-') {
+    value = selectorMapping[parseInt(value)];
+  }
+  const elements = bufferDynamicData.querySelectorAll('.line');
+  elements.forEach(element => {
+   if (isDefined(element.classList)) {
+     element.classList.remove("select-this");
+     element.classList.remove("select-none");
+     if (element.classList.contains(value)) {
+       element.classList.add("select-this");
+     } else if(value !== '-'){
+       element.classList.add("select-none");
+     }
+   }
+  });
+};
+
+
+
+
+

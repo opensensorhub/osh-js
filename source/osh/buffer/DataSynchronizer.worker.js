@@ -28,11 +28,10 @@ function push(dataSourceId, data) {
         setTimeout(() => processData(), self.bufferingTime);
     }
 
-    ds.data.push(data);
-    ds.lastReceivedTime = performance.now();
     if(timedOutDsSet.has(ds.id)) {
         timedOutDsSet.delete(ds.id);
     }
+    ds.data.push(data);
 }
 
 function processData() {
@@ -58,14 +57,17 @@ function processData() {
         const clockTime = performance.now();
         const diffClockTime = clockTime - refClockTime;
 
-        // 1) check if we are timing Out
-        if(!checkWaiting(currentTimeOutData)) {
-            return;
-        }
+        // 1) check if we are waiting
+       const checkWait = checkWaiting(currentTimeOutData);
+       if(checkWait.wait) {
+           onWait(currentTimeOutData.dsId, checkWait.time,currentTimeOutData.timeOut);
+           return;
+       }
         // 2) check if we have to wait for a DS
-        currentTimeOutData = computeWaitTime(currentTimeOutData);
+        currentTimeOutData = computeWaitData();
         // wait time detected?
         if(currentTimeOutData !== null) {
+            onWait(currentTimeOutData.dsId, 0, currentTimeOutData.timeOut);
             return;
         }
         // 3) return the oldest data if any
@@ -93,7 +95,7 @@ function checkWaiting(currentTimeOutData) {
         if(currentDs.data.length === 0) {
             if( diffClockTime < currentDs.timeOut) {
                 // continue to wait
-                return false;
+                return { 'time':diffClockTime, 'total':currentDs.timeOut, 'wait': true };
             } else {
                 // times up, add the dataSource to the Set to be sure we will not loop on it at the next iteration
                 // the values is reset when a new data is pushed into this DS
@@ -101,16 +103,15 @@ function checkWaiting(currentTimeOutData) {
             }
         }
     }
-    return true;
+    return { 'time':0, 'wait': false, 'total':0  };
 }
 
 /**
  * Compute the DS to wait if any. We have to wait if the DS has no data. If multiple DS has no data, we take
  * the maximum of their timeOut value.
- * @param currentTimeOutData - the object holding the information of the current DS being timingOut
  * @returns {Object | null} - the object holding the new information of the DS to wait, null otherwise
  */
-function computeWaitTime(currentTimeOutData) {
+function computeWaitData() {
     let waitTime = -1;
     let currentDs;
     let timeOutData = null;
@@ -118,9 +119,10 @@ function computeWaitTime(currentTimeOutData) {
     for (let currentDsId in self.dataSourceMap) {
         currentDs = self.dataSourceMap[currentDsId];
         if (currentDs.data.length === 0) {
+            // console.log("ds "+currentDs.id+" has no data");
             // case where the current DS is the same that we have already wait and it is currently timedOut
             // skip it until new data comes up
-            if (currentTimeOutData !== null && timedOutDsSet.has(currentDs.id)) {
+            if (timedOutDsSet.has(currentDs.id)) {
                 continue;
             }
             // we have to wait for this DS
@@ -130,7 +132,8 @@ function computeWaitTime(currentTimeOutData) {
                 waitTime = currentDs.timeOut;
                 timeOutData = {
                     dsId: currentDs.id,
-                    refClockTime: performance.now()
+                    refClockTime: performance.now(),
+                    timeOut: currentDs.timeOut
                 }
             }
         }
@@ -182,7 +185,6 @@ function addDataSource(dataSource) {
         data: [],
         startBufferingTime: -1,
         id: dataSource.id,
-        lastReceivedTime: -1,
         timedOut: false,
         name: dataSource.name
     };
@@ -190,11 +192,22 @@ function addDataSource(dataSource) {
 
 function onData(dataSourceId, data) {
     self.postMessage({
+        message: 'data',
         dataSourceId: dataSourceId,
         data: data
     });
 }
 
+function onWait(dataSourceId, time, total) {
+    self.postMessage({
+        message: 'wait',
+        dataSourceId: dataSourceId,
+        time: time,
+        total: total
+    });
+}
+
 self.onclose = function() {
     clearInterval(this.interval);
+    console.log("Buffer has been terminated successfully");
 }
