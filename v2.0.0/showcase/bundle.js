@@ -5909,6 +5909,9 @@ samples.forEach(s => {
   $("#sample-list").append($newElt);
 });
 
+$("#close-button").button().on("click", e => {
+    $("#sample-area").empty();
+});
 // setup handler to show code in popup
 $("#src-button").button().on("click", e => {
   if ($("#sample-area").is(":hidden")) {
