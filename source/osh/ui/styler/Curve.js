@@ -23,7 +23,7 @@ import {isDefined} from "../../utils/Utils.js";
 class Curve extends Styler {
     /**
      * Create the Curve
-     * @param {Object} properties -
+     * @param {{valuesFunc: {handler: (function(*, *=): {x: *, y: *}), dataSourceIds: [*]}}} properties -
      * @param {String} [properties.xLabel=""] -
      * @param {String} [properties.yLabel=""] -
      * @param {String} [properties.color="#000000"] -
