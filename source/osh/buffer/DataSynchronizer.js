@@ -45,7 +45,7 @@ class DataSynchronizer {
                 id: dataSource.id
             });
             // bind dataSource data onto dataSynchronizer data
-            dataSource.onData = (data) => push(dataSource.id, data);
+            dataSource.onData = (data) => this.push(dataSource.id, data);
         }
 
 
@@ -76,7 +76,7 @@ class DataSynchronizer {
     }
 
     onData(dataSourceId, data, total) {
-
+        EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
     }
 
     terminate() {
