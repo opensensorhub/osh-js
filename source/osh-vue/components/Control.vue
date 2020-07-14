@@ -41,8 +41,14 @@
         },
         data() {
             return {
-                id: randomUUID()
+                id: randomUUID(),
+                event: null
             };
+        },
+        watch: {
+          event(newValue){
+            this.$emit('event', newValue);
+          }
         },
         mounted() {
             let rangeSlider = new RangeSlider(this.id, {
@@ -104,6 +110,9 @@
                 }
             };
 
+            rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
+            rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
+
             const pauseButton = document.getElementById("pause-btn");
             const playButton = document.getElementById("play-btn");
             const fastBackwardButton = document.getElementById("fast-back-btn");
@@ -158,6 +167,9 @@
             }
         },
         methods: {
+            on(eventName) {
+              this.event = eventName;
+            },
             parseDate(intTimeStamp) {
                 const date = new Date(intTimeStamp);
                 return this.hoursWithLeadingZeros(date)+":"+this.minutesWithLeadingZeros(date)+":"

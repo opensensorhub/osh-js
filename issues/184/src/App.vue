@@ -40,7 +40,7 @@
                 observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
                 // startTime: '2015-12-19T21:04:29.231Z',
                 // endTime: '2015-12-19T21:09:19.675Z',
-                endpointUrl: 'localhost:8080/sensorhub/sos',
+                endpointUrl: 'localhost:8082/sensorhub/sos',
                 offeringID: 'replay-android',
                 startTime: '2020-06-06T15:07:15.359Z',
                 endTime: '2020-06-06T15:07:57.016Z',

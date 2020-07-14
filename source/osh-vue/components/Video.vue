@@ -1,22 +1,9 @@
 <template>
   <div data-app class="main-video">
     <slot v-if="!dialog">
-      <slot v-if="draggable">
-        <dialog-drag
-                id="drag-window-1"
-                :title="title"
-                class="resizable"
-                :options="options">
-          <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
-          </div>
-          <Control :dataSource="dataSource"></Control>
-        </dialog-drag>
-      </slot>
-      <slot v-else>
-        <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
-        </div>
-        <Control :dataSource="dataSource"></Control>
-      </slot>
+      <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
+      </div>
+      <Control :dataSource="dataSource" @event='onControlEvent'></Control>
     </slot>
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
@@ -25,14 +12,13 @@
       >
         <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="dialog-container">
         </div>
-        <Control :dataSource="dataSource"></Control>
+        <Control :dataSource="dataSource" @event='onControlEvent' ></Control>
       </v-dialog>
     </slot>
   </div>
 </template>
 <style src="vue-dialog-drag/dist/vue-dialog-drag.css"></style>
 <script>
-  import DialogDrag from 'vue-dialog-drag';
   import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
   import {randomUUID} from "osh/utils/Utils.js";
   import Control from 'osh-vue/components/Control.vue';
@@ -40,10 +26,8 @@
   export default {
     name: "Video",
     components: {
-      DialogDrag,
       Control
     },
-    // props: ['dataSource', 'codec', 'draggable', 'title', 'modal'],
     props: {
       dataSource: {
         type: Object
@@ -51,10 +35,6 @@
       codec: {
         type: String,
         default: () => 'h264'
-      },
-      draggable: {
-        type: Boolean,
-        default: () => false
       },
       title: {
         type: String,
@@ -128,6 +108,8 @@
       this.initView(this.id);
     },
     methods: {
+      onControlEvent(eventName) {
+      },
       toggleDialog() {
         this.dialog = !this.dialog;
       },
@@ -180,27 +162,6 @@
 
 <!-- optional dialog styles, see example -->
 <style scoped>
-  .dialog-drag {
-    overflow-y: hidden;
-    border: 1px solid #5a5a5acc;
-    border-radius: 4px;
-    box-shadow: 0 0 7px #000000;
-    background: #232323cc;
-    width:500px;
-  }
-
-  .dialog-drag {
-    z-index: 10;
-  }
-
-  .resizable {
-    resize: both; /* Options: horizontal, vertical, both */
-    overflow: hidden;
-  }
-
-  .dialog-drag {
-    background: rgba(0,0,0,0.85);
-  }
 
   /** Place the control bar rigth to the bottom **/
 
@@ -221,32 +182,9 @@
 </style>
 
 <style>
-  .dialog-drag .dialog-header {
-    padding: .45em 3.25em .45em 1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    color: #fff;
-    font-size: 1em;
-    position: relative;
-    text-align: left;
-    width: auto;
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
+  .main-video {
+    background: rgba(0,0,0,1.0);;
   }
-
-  .dialog-drag .dialog-header button.close {
-    margin-right: 2px;
-  }
-
-  .dialog-drag .dialog-header button.pin {
-    margin-bottom: 2px;
-    margin-right: 5px;
-  }
-  .dialog-drag .dialog-body {
-    padding: 0;
-  }
-
   .v-dialog {
     width: auto !important;
     cursor: pointer;
