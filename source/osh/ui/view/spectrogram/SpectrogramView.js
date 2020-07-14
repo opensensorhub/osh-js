@@ -41,13 +41,21 @@ class SpectrogramView extends View {
         this.maxFreq = 4000;
         this.numBands = 10;
         this.isSim = false;
+        this.tickArray = [];
+        for (let i = 0; i <= this.numBands; i++) {
+            let interval = (this.maxFreq - this.minFreq) / this.numBands;
+            let tickVal = i * interval;
+            this.tickArray.push(tickVal);
+        }
 
 
         // Layout Vars
         let thisDiv = document.getElementById(this.divId);
         thisDiv.style.height = thisDiv.parentElement.getBoundingClientRect().height + 'px';
-        this.width = thisDiv.getBoundingClientRect().width;
-        this.height = thisDiv.getBoundingClientRect().height;
+        // this.width = thisDiv.getBoundingClientRect().width;
+        // this.height = thisDiv.getBoundingClientRect().height;
+        this.width = 550;
+        this.height = 305;
         this.xOffset = (0.15 * this.width);
         this.yOffset = (0.90 * this.height);
         this.yOffsetBottom = 10;
@@ -58,20 +66,22 @@ class SpectrogramView extends View {
 
         this.svg = this.container.append('svg')
             .classed('spec-svg', true)
-            .attr('width', this.width + 'px')
-            .attr('height', this.height + 'px');
-
+            .attr("viewBox", `0 0 ${this.width} ${this.height}`);
+        // .attr('width', this.width + 'px')
+        // .attr('height', this.height + 'px');
+        console.log(this.svg);
 
         // Setup Scales
         this.initXScale = d3.scaleTime()
             .domain([this.minDate, this.maxDate])
-            .range([this.xOffset, this.width-5]);
+            .range([this.xOffset, this.width - 5]);
         this.initXAxis = d3.axisBottom(this.initXScale);
 
         this.initYScale = d3.scaleLinear()
             .domain([this.minFreq, this.maxFreq])
             .range([this.yOffset, this.yOffsetBottom]);    // TODO: name {bottomOffset} something better
-        this.initYAxis = d3.axisLeft(this.initYScale).ticks(this.numBands).tickFormat((d, i) => d + this.freqUnit);
+        // this.initYAxis = d3.axisLeft(this.initYScale).ticks(this.numBands).tickFormat((d, i) => d + this.freqUnit);
+        this.initYAxis = d3.axisLeft(this.initYScale).tickValues(this.tickArray).tickFormat((d, i) => d + this.freqUnit);
 
         this.initZScale = d3.scaleSequential(d3.interpolateOrRd).domain(this.powerRange);
 
@@ -86,13 +96,13 @@ class SpectrogramView extends View {
             .attr('transform', 'translate(' + (this.xOffset) + ',' + (0) + ')')
             .call(this.initYAxis);
 
-        if(options.hasOwnProperty('isSim')){
+        if (options.hasOwnProperty('isSim')) {
             this.isSim = options.isSim;
         }
 
-        if(this.isSim){
+        if (this.isSim) {
             console.log("Simulating Spectrogram")
-            setInterval(()=>{
+            setInterval(() => {
                 this.spectrogramData = this.spectrogramData.concat(this.createDataEntries())
                 this.draw();
             }, 1000)
@@ -132,10 +142,10 @@ class SpectrogramView extends View {
         this.svg.selectAll('rect')
             .data(this.spectrogramData)
             .join('rect')
-            .attr('width', '10')
-            .attr('height', d => this.initYScale(d.freqBand[0]) - this.initYScale(d.freqBand[0] + d.freqBand[1]))
+            .attr('width', '5')
+            .attr('height', d => this.initYScale(d.freqBand[0]) - this.initYScale(d.freqBand[1]))
             .attr('x', d => tempXScale(d.time))
-            .attr('y', d => this.initYScale(d.freqBand[0] + d.freqBand[1]))
+            .attr('y', d => this.initYScale(d.freqBand[1]))
             .style('fill', d => this.initZScale(d.power));
     }
 
