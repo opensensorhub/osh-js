@@ -139,6 +139,10 @@ class SpectrogramView extends View {
             .style('fill', d => this.initZScale(d.power));
     }
 
+    /**
+     *
+     * @returns {[]}
+     */
     createDataEntries() {
         let tempDataArr = [];
         let freqCounter = 0;
