@@ -17,6 +17,7 @@
 import EventManager from "osh/events/EventManager";
 import {isDefined} from "../../../dist/source/osh/utils/Utils";
 import SynchronizerWorkerInterval from './DataSynchronizer.worker';
+import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
 
 
 class DataSynchronizer {
@@ -48,7 +49,9 @@ class DataSynchronizer {
             dataSource.onData = (data) => this.push(dataSource.id, data);
         }
 
-
+        // const dataSynchronizerAlgo = new DataSynchronizerAlgo(dataSources);
+        // dataSynchronizerAlgo.onData = this.onData;
+        // dataSynchronizerAlgo.onWait = this.onWait;
         this.synchronizerWorker = new SynchronizerWorkerInterval({bufferingTime: this.bufferingTime});
         this.synchronizerWorker.postMessage({
             dataSources: dataSourcesForWorker
@@ -64,7 +67,12 @@ class DataSynchronizer {
         }
     }
 
-    onWait(dataSourceId, time) {}
+    onWait(dataSourceId, time, total) {}
+
+    onData(dataSourceId, data) {
+        // console.log(data.data, performance.now());
+        EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
+    }
 
     push(dataSourceId, data) {
         if(this.synchronizerWorker !== null) {
@@ -73,10 +81,6 @@ class DataSynchronizer {
                 data: data
             });
         }
-    }
-
-    onData(dataSourceId, data, total) {
-        EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
     }
 
     terminate() {
