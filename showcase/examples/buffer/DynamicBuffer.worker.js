@@ -2,17 +2,10 @@ import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
 
 const bc = new BroadcastChannel('test_channel');
 
-function str2ab(str) {
-    const buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-    const bufView = new Uint16Array(buf);
-    for (let i=0, strLen=str.length; i < strLen; i++) {
-        bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-}
+const bcChannels = {};
 
 self.onmessage = (event) => {
-    self.buffer = new DataSynchronizer({
+    const buffer = new DataSynchronizer({
         replayFactor: 1,
         dataSources: event.data.dataSources
     });
@@ -31,13 +24,16 @@ self.onmessage = (event) => {
     }
 
     buffer.onData = function (dataSourceId, data) {
+        if(!(dataSourceId in bcChannels)) {
+            bcChannels[dataSourceId] = new BroadcastChannel('test_channel-'+dataSourceId);
+        }
         // const dataArray = str2ab(JSON.stringify(data));
         const objData = {
             message: 'data',
             dataSourceId: dataSourceId,
             data: data
         };
-        // self.postMessage(objData, [objData.data]);
         self.postMessage(objData);
+        // bcChannels[dataSourceId].postMessage(objData);
     }
 }

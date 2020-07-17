@@ -7,8 +7,8 @@ export function startStaticWithTimeout() {
         {
             dataSourceId: '1',
             data: {
-                data: '(1) 30',
-                timeStamp: 30,
+                data: '(1) 25',
+                timeStamp: 25,
             }
         }, {
             dataSourceId: '1',
@@ -46,15 +46,15 @@ export function startStaticWithTimeout() {
         }, {
             dataSourceId: '2',
             data: {
-                data: '(2) 90',
-                timeStamp: 90,
+                data: '(2) 80',
+                timeStamp: 80,
             }
         },
         {
             dataSourceId: '2',
             data: {
-                data: '(2) 170',
-                timeStamp: 170,
+                data: '(2) 120',
+                timeStamp: 120,
             }
         },
         /////
@@ -73,21 +73,21 @@ export function startStaticWithTimeout() {
         }, {
             dataSourceId: '3',
             data: {
-                data: '(3) 180',
-                timeStamp: 180,
+                data: '(3) 60',
+                timeStamp: 60,
             }
         },
         {
             dataSourceId: '3',
             data: {
-                data: '(3) 5000',
-                timeStamp: 5000,
+                data: '(3) 90',
+                timeStamp: 90,
             }
         }, {
             dataSourceId: '3',
             data: {
-                data: '(3) 5020',
-                timeStamp: 5020,
+                data: '(3) 150',
+                timeStamp: 150  ,
             }
         },
     ];
@@ -114,8 +114,50 @@ export function startStaticWithTimeout() {
         let event = dataSet[i];
         bufferStaticWithTimeOut.push(event.dataSourceId, event.data);
     }
+    const expectedResults = [{
+        d0 : 10,
+        d1: 10,
+        d2: 10
+    },{
+        d0: 0,
+        d1: 30,
+        d2: 30
+    },{
+        d0: 10,
+        d1: 25,
+        d2: 25
+    },{
+        d0: 10,
+        d1: 20,
+        d2: 20
+    },{
+        d0: 20,
+        d1: 40,
+        d2: 40
+    },{
+        d0: 10,
+        d1: 30,
+        d2: 30
+    },{
+        d0: 10,
+        d1: 50,
+        d2:50
+    }, {
+        d0: 20,
+        d1: 40,
+        d2: 40
+    }, {
+        d0: 4500,
+        d1: 60,
+        d2: 4500 // ds 2 timeout
+    },{
+        d0: 0,
+        d1: 50,
+        d2: 50
+    }];
 
-    startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"), 1000);
+    startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"), 1000,
+        null, expectedResults);
 
     setTimeout(() => {
         bufferStaticWithTimeOut.terminate();

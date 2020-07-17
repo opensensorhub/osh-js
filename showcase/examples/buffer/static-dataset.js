@@ -2,13 +2,14 @@
 import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
 import {startDataSet} from './buffer';
 
+
 export function startStatic() {
     const dataSet = [
         {
             dataSourceId: '1',
             data: {
-                data: '(1) 30',
-                timeStamp: 30,
+                data: '(1) 25',
+                timeStamp: 25,
             }
         }, {
             dataSourceId: '1',
@@ -19,15 +20,15 @@ export function startStatic() {
         }, {
             dataSourceId: '1',
             data: {
-                data: '(1) 100',
-                timeStamp: 100,
+                data: '(1) 75',
+                timeStamp: 75,
             }
         },
         {
             dataSourceId: '1',
             data: {
-                data: '(1) 150',
-                timeStamp: 150,
+                data: '(1) 100',
+                timeStamp: 100,
             }
         },
         /////
@@ -46,15 +47,15 @@ export function startStatic() {
         }, {
             dataSourceId: '2',
             data: {
-                data: '(2) 90',
-                timeStamp: 90,
+                data: '(2) 80',
+                timeStamp: 80,
             }
         },
         {
             dataSourceId: '2',
             data: {
-                data: '(2) 170',
-                timeStamp: 170,
+                data: '(2) 120',
+                timeStamp: 120,
             }
         },
         /////
@@ -67,27 +68,27 @@ export function startStatic() {
         }, {
             dataSourceId: '3',
             data: {
-                data: '(3) 40',
-                timeStamp: 40,
+                data: '(3) 60',
+                timeStamp: 60,
             }
         }, {
             dataSourceId: '3',
             data: {
-                data: '(3) 180',
-                timeStamp: 180,
+                data: '(3) 90',
+                timeStamp: 90,
             }
         },
         {
             dataSourceId: '3',
             data: {
-                data: '(3) 5000',
-                timeStamp: 5000,
+                data: '(3) 120',
+                timeStamp: 120,
             }
         }, {
             dataSourceId: '3',
             data: {
-                data: '(3) 5020',
-                timeStamp: 5020,
+                data: '(3) 150',
+                timeStamp: 150,
             }
         },
     ];
@@ -111,12 +112,44 @@ export function startStatic() {
 
     for (let i = 0; i < dataSet.length; i++) {
         let event = dataSet[i];
-        event.data.clockTime = performance.now();
-        buffer.push(event.dataSourceId, event.data);
+        setTimeout(() => {
+            event.data.clockTime = performance.now();
+            buffer.push(event.dataSourceId, event.data);
+        },event.data.timeStamp);
     }
 
     const eltStatic = document.getElementById("buffer-static");
-    startDataSet(buffer, eltStatic, 1000);
+    const expectedResults = [{
+        d0 : 10,
+        d1: 30,
+        d2: 30,
+    },{
+        d0: 10,
+        d1: 25,
+        d2: 25,
+    },{
+        d0: 10,
+        d1: 30,
+        d2: 30,
+    },{
+        d0: 15,
+        d1: 25,
+        d2: 25,
+    },{
+        d0: 5,
+        d1: 40,
+        d2: 40,
+    },{
+        d0: 10,
+        d1: 30,
+        d2: 30,
+    },{
+        d0: 10,
+        d1: 25,
+        d2: 25,
+    }];
+
+    startDataSet(buffer, eltStatic, 1000, null,expectedResults);
 
     setTimeout(() => {
         buffer.terminate();

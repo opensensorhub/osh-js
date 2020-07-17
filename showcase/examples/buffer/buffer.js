@@ -22,7 +22,7 @@ function updateScroll(divElement){
   }
 }
 
-export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
+export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expectedResults = []) {
   let lastWait = -1;
   let lastDsWait;
   let count = 0;
@@ -50,12 +50,17 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
     updateScroll(div);
     //
   };
-  const refClockTime = performance.now();
-  let lastData = null;
-  let lastClockTime;
 
-  buffer.onData = function (databaseId, data) {
-    if(lastDsWait === databaseId) {
+  let lastDataMap = {};
+  let lastDiffClockTime=0;
+  const refClockTime = performance.now();
+  let lineCount = 0;
+  buffer.onData = function (dataSourceId, data) {
+    if(lineCount++ >= 500) {
+      div.innerHTML = '';
+      lineCount = 0;
+    }
+    if(lastDsWait === dataSourceId) {
       lastWait = -1;
       count = 0;
     }
@@ -63,54 +68,112 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null) {
     let diffClockTime = clockTime - refClockTime;
 
     const line = document.createElement("div");
+    const absoluteTime = ' (Absolute +' + clockTime.toFixed(2) + 'ms)';
 
-    if (lastData !== null) {
-
+    const lastDataByDs = lastDataMap[dataSourceId];
+    if (isDefined(lastDataByDs)) {
       let delayed = data.delayed? ' (delayed) ' : '';
 
-      if (lastData.timeStamp > data.timeStamp) {
-        let classes = 'error line '+selectorMapping[databaseId];
+      let htmlContent = '';
+
+      // diff between real time spent and the last data
+      // d0
+      const dct = (diffClockTime - lastDiffClockTime);
+      // expected time based on data timeStamp
+      // d1
+      const diffDataTimeStamp = (data.timeStamp - lastDataByDs.timeStamp);
+      // real spent time
+      const deltaClockTime = clockTime - lastDataByDs.refClockTime;
+
+      let error = false;
+      // check lastData for a DS
+      for(let d in lastDataMap) {
+        if(lastDataMap[d].timeStamp > data.timeStamp) {
+          error = true;
+          break;
+        }
+      }
+      // let error = (lastDataByDs.timeStamp > data.timeStamp);
+
+      let d0Details = '';
+      let d1Details = '';
+      let d2Details = '';
+
+      if (expectedResults.length > 0) {
+        const nextExpectedResult = expectedResults.shift();
+        // d0
+        error |=  Math.abs(Math.abs(dct) - nextExpectedResult.d0) > 15.0;
+        // d1
+        error |=  Math.abs(Math.abs(diffDataTimeStamp) - nextExpectedResult.d1)  > 15.0;
+        // d2
+        error |=  Math.abs(Math.abs(deltaClockTime) - nextExpectedResult.d2)  > 15.0;
+
+        d0Details = ' (+'+ Math.abs(Math.abs(dct) - nextExpectedResult.d0).toFixed(1)+')';
+        d1Details = ' (+'+ Math.abs(Math.abs(diffDataTimeStamp) - nextExpectedResult.d1).toFixed(1)+')';
+        d2Details = ' (+'+Math.abs(Math.abs(deltaClockTime) - nextExpectedResult.d2).toFixed(1)+')';
+      }
+
+      if (error) {
+        let classes = 'error line '+selectorMapping[dataSourceId];
         if(data.delayed) {
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
-        line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
+        htmlContent +=  data.data +
+            absoluteTime +
+            delayed;
+
         if(divError !== null) {
           const lineError = document.createElement("div");
           lineError.setAttribute('class', classes);
-          lineError.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
+          lineError.innerHTML =  data.data +
+              absoluteTime +
+              delayed;
           divError.appendChild(lineError);
         }
       } else {
-        let classes = 'noerror line '+selectorMapping[databaseId];
+        let classes = 'noerror line '+selectorMapping[dataSourceId];
         if(data.delayed) {
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
-        line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)' + delayed;
+        htmlContent +=  data.data + ' (Absolute +' + clockTime.toFixed(2) + 'ms)' + delayed;
       }
 
-      const diffTime = (data.timeStamp - lastData.timeStamp);
+      // diff between real time spent and the last data
+      // d0
+      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
+          ((dct > 0)? '+':'') +
+          dct.toFixed(1)+'ms' +
+          d0Details
+      ;
 
-      //expected time
-      // htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +((diffTime > 0)? '+':'') + diffTime+'ms';
+      // expected time based on data timeStamp
+      // d1
+      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
+          ((diffDataTimeStamp > 0)? '+':'') +
+          diffDataTimeStamp+'ms'
+      ;
 
       // real spent time
-      const d0 = (lastData.clockTime - refClockTime);
-      const d1 = (data.clockTime - refClockTime);
-      let delta = (d1-d0);
+      // d2
+      htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
+          ((deltaClockTime > 0)? '+':'') +
+          deltaClockTime.toFixed(1) + 'ms' +
+          d2Details
+      ;
 
-      // htmlContent += '&nbsp;&nbsp;&#916;&nbsp;'+((delta > 0)? '+':'') + delta.toFixed(1)+'ms';
-
+      line.innerHTML = htmlContent;
     } else {
-      line.innerHTML =  data.data + '(Absolute +' + diffClockTime.toFixed(2) + 'ms)';
+      line.innerHTML =  data.data + absoluteTime;
     }
-    lastData = data;
-    lastClockTime = clockTime;
+    lastDataMap[dataSourceId] = data;
+    lastDataMap[dataSourceId].refClockTime = clockTime;
 
     div.appendChild(line);
 
     updateScroll(div);
+    lastDiffClockTime = diffClockTime;
   };
 }
 

@@ -7,8 +7,6 @@ import DynamicBuffer from './DynamicBuffer.worker';
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
 
-let bufferDynamic;
-
 export function startDynamicWithTimeout(cbFinish) {
     eltDynamic.innerHTML = '';
     eltDynamicErrors.innerHTML = '';
@@ -40,23 +38,27 @@ export function startDynamicWithTimeout(cbFinish) {
             timeOut: parseInt(document.getElementById("timeout5").value),
         }];
 
-    const dynamicBuffer = new DynamicBuffer();
-    dynamicBuffer.postMessage({
-        dataSources: dataSources
-    });
+    // const dataSynchronizer = new DataSynchronizer({
+    //     replayFactor: 1,
+    //     dataSources: dataSources
+    // });
 
     const virtBuffer = {
         onWait: function (dataSourceId, time ,total){},
         onData: function (databaseId, data){}
     };
 
-    function ab2str(buf) {
-        return String.fromCharCode.apply(null, new Uint16Array(buf));
-    }
+    // dataSynchronizer.onData = function(dataSourceId, data)  {
+    //     console.log('onmessage ', data.data, performance.now(), new Date().toISOString());
+    // };
+
+    const dynamicBuffer = new DynamicBuffer();
+    dynamicBuffer.postMessage({
+        dataSources: dataSources
+    });
 
     dynamicBuffer.onmessage = (event) => {
         if(event.data.message === 'data') {
-            // const jsonObject = JSON.parse(ab2str(event.data.data));
             virtBuffer.onData(event.data.dataSourceId, event.data.data);
         } else if(event.data.message === 'wait') {
             virtBuffer.onWait(event.data.dataSourceId, event.data.time, event.data.total);

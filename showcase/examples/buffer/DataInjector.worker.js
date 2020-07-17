@@ -1,9 +1,9 @@
 self.interval=null;
 self.pending = false;
 let count = 0;
-const bc = new BroadcastChannel('test_channel');
 
 self.onmessage = (event) => {
+    self.bc = new BroadcastChannel('test_channel-data-'+event.data.id);
     injectData(event.data.id, event.data.latency, event.data.freq);
 }
 function getRandomInt(min, max) {
@@ -30,7 +30,7 @@ function addNewData(dsId, latency) {
     if (self.pending) {
         return;
     }
-    let data = getNewData(dsId, latency);
+    let data = getNewData(dsId);
     if (latency > 0 && !self.pending) {
         // get one of the DS to simulate latency
         const doLatency = getRandomInt(0, 1);
@@ -39,7 +39,6 @@ function addNewData(dsId, latency) {
             setTimeout(() => {
                 data.data.delayed = true;
                 data.data.clockTime = performance.now();
-                // bufferDynamic.push(data.dataSourceId, data.data);
                 pushBack(data.dataSourceId, data.data);
                 self.pending = false;
             }, latency);
@@ -52,7 +51,7 @@ function addNewData(dsId, latency) {
 }
 
 function pushBack(id, data) {
-    bc.postMessage({
+    self.bc.postMessage({
         message: 'data',
         id: id,
         data: data
