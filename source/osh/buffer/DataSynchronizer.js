@@ -49,9 +49,6 @@ class DataSynchronizer {
             dataSource.onData = (data) => this.push(dataSource.id, data);
         }
 
-        // const dataSynchronizerAlgo = new DataSynchronizerAlgo(dataSources);
-        // dataSynchronizerAlgo.onData = this.onData;
-        // dataSynchronizerAlgo.onWait = this.onWait;
         this.synchronizerWorker = new SynchronizerWorkerInterval({bufferingTime: this.bufferingTime});
         this.synchronizerWorker.postMessage({
             dataSources: dataSourcesForWorker
@@ -59,7 +56,6 @@ class DataSynchronizer {
 
         this.synchronizerWorker.onmessage =(event) => {
             if(event.data.message === 'data') {
-                // EventManager.fire(EventManager.EVENT.DATA + "-" + event.data.dataSourceId, {data: event.data.data});
                 this.onData(event.data.dataSourceId, event.data.data);
             } else if(event.data.message === 'wait') {
                 this.onWait(event.data.dataSourceId, event.data.time, event.data.total);
@@ -70,7 +66,6 @@ class DataSynchronizer {
     onWait(dataSourceId, time, total) {}
 
     onData(dataSourceId, data) {
-        // console.log(data.data, performance.now());
         EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
     }
 

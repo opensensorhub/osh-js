@@ -13,11 +13,6 @@ class DataSynchronizerAlgo {
         for (let ds of dataSources) {
             this.addDataSource(ds);
             maxBufferingTime = ds.bufferingTime > maxBufferingTime ? ds.bufferingTime : maxBufferingTime;
-            bcChannels[ds.id] = new BroadcastChannel('test_channel-data-' + ds.id);
-            // listen for this specific DS
-            bcChannels[ds.id].onmessage = (event) => {
-                that.push(event.data.id, event.data.data);
-            };
         }
         if (maxBufferingTime !== -1) {
             this.bufferingTime = maxBufferingTime;
@@ -75,7 +70,7 @@ class DataSynchronizerAlgo {
     computeNextData(tsRef, refClockTime) {
         let currentDs;
         let currentDsToShift = null;
-        
+
         // compute max latency
         let maxLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
