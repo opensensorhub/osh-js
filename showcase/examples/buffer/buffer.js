@@ -53,8 +53,10 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
 
   let lastDataMap = {};
   let lastDiffClockTime=0;
-  const refClockTime = performance.now();
+  let refClockTime = 0;
+  let refTs = 0;
   let lineCount = 0;
+
   buffer.onData = function (dataSourceId, data) {
     if(lineCount++ >= 500) {
       div.innerHTML = '';
@@ -65,10 +67,15 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
       count = 0;
     }
     const clockTime = performance.now();
-    let diffClockTime = clockTime - refClockTime;
-
     const line = document.createElement("div");
     const absoluteTime = ' (Absolute +' + clockTime.toFixed(2) + 'ms)';
+
+    // init ref times
+    if (refClockTime == 0)
+      refClockTime = clockTime;
+    if (refTs == 0)
+      refTs = data.timeStamp;
+    const diffRefClockTime = clockTime - refClockTime;
 
     const lastDataByDs = lastDataMap[dataSourceId];
     if (isDefined(lastDataByDs)) {
@@ -78,9 +85,10 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
 
       // diff between real time spent and the last data
       // d0
-      const dct = (diffClockTime - lastDiffClockTime);
+      const dct = (diffRefClockTime - lastDiffClockTime);
       // expected time based on data timeStamp
       // d1
+      const diffRefTs = data.timeStamp - refTs;
       const diffDataTimeStamp = (data.timeStamp - lastDataByDs.timeStamp);
       // real spent time
       const deltaClockTime = clockTime - lastDataByDs.refClockTime;
@@ -152,14 +160,16 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
       // d1
       htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
           ((diffDataTimeStamp > 0)? '+':'') +
-          diffDataTimeStamp+'ms'
+          //diffDataTimeStamp+'ms'
+          diffRefTs+'ms'
       ;
 
       // real spent time
       // d2
       htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
           ((deltaClockTime > 0)? '+':'') +
-          deltaClockTime.toFixed(1) + 'ms' +
+          //deltaClockTime.toFixed(1) + 'ms' +
+          diffRefClockTime.toFixed(1) + 'ms' +
           d2Details
       ;
 
@@ -173,7 +183,7 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
     div.appendChild(line);
 
     updateScroll(div);
-    lastDiffClockTime = diffClockTime;
+    lastDiffClockTime = diffRefClockTime;
   };
 }
 
