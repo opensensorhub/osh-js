@@ -1,8 +1,7 @@
 // dynamic part
-import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
 import {startDataSet} from "./buffer";
 import DataInjectorWorker from './DataInjector.worker';
-import DynamicBuffer from './DynamicBuffer.worker';
+import DynamicBuffer from './DynamicBuffer.worker.js';
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
@@ -38,19 +37,10 @@ export function startDynamicWithTimeout(cbFinish) {
             timeOut: parseInt(document.getElementById("timeout5").value),
         }];
 
-    // const dataSynchronizer = new DataSynchronizer({
-    //     replayFactor: 1,
-    //     dataSources: dataSources
-    // });
-
     const virtBuffer = {
         onWait: function (dataSourceId, time ,total){},
         onData: function (databaseId, data){}
     };
-
-    // dataSynchronizer.onData = function(dataSourceId, data)  {
-    //     console.log('onmessage ', data.data, performance.now(), new Date().toISOString());
-    // };
 
     const dynamicBuffer = new DynamicBuffer();
     dynamicBuffer.postMessage({

@@ -14,7 +14,7 @@ const selectorMapping= {
 }
 
 let scrolled = false;
-const scrollControl = document.getElementById("scroll");
+const scrollControl = document.getElementById('scroll');
 
 function updateScroll(divElement){
   if(scrollControl.checked){
@@ -32,7 +32,7 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
       lastWait = -1;
       count = 0;
     }
-    const line = document.createElement("div");
+    const line = document.createElement('div');
     line.setAttribute('class', 'wait');
 
     lastDsWait = dataSourceId;
@@ -67,13 +67,13 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
       count = 0;
     }
     const clockTime = performance.now();
-    const line = document.createElement("div");
+    const line = document.createElement('div');
     const absoluteTime = ' (Absolute +' + clockTime.toFixed(2) + 'ms)';
 
     // init ref times
-    if (refClockTime == 0)
+    if (refClockTime === 0)
       refClockTime = clockTime;
-    if (refTs == 0)
+    if (refTs === 0)
       refTs = data.timeStamp;
     const diffRefClockTime = clockTime - refClockTime;
 
@@ -160,7 +160,6 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
       // d1
       htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
           ((diffDataTimeStamp > 0)? '+':'') +
-          //diffDataTimeStamp+'ms'
           diffRefTs+'ms'
       ;
 
@@ -168,7 +167,6 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
       // d2
       htmlContent += '&nbsp;&nbsp;&#916;&nbsp;' +
           ((deltaClockTime > 0)? '+':'') +
-          //deltaClockTime.toFixed(1) + 'ms' +
           diffRefClockTime.toFixed(1) + 'ms' +
           d2Details
       ;

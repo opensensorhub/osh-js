@@ -147,9 +147,9 @@ export function startStaticWithTimeout() {
         d1: 40,
         d2: 40
     }, {
-        d0: 4500,
+        d0: 30,
         d1: 60,
-        d2: 4500 // ds 2 timeout
+        d2: 60 // ds 2 timeout
     },{
         d0: 0,
         d1: 50,

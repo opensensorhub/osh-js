@@ -3,7 +3,7 @@ self.pending = false;
 let count = 0;
 
 self.onmessage = (event) => {
-    self.bc = new BroadcastChannel('test_channel-data-'+event.data.id);
+    self.bc = new BroadcastChannel('datasource-data-'+event.data.id);
     injectData(event.data.id, event.data.latency, event.data.freq);
 }
 function getRandomInt(min, max) {
@@ -54,7 +54,7 @@ function addNewData(dsId, latency) {
 function pushBack(id, data) {
     self.bc.postMessage({
         message: 'data',
-        id: id,
+        dataSourceId: id,
         data: data
     });
 }
