@@ -33,8 +33,8 @@ function addNewData(dsId, latency) {
     let data = getNewData(dsId);
     if (latency > 0 && !self.pending) {
         // get one of the DS to simulate latency
-        const doLatency = getRandomInt(0, 1);
-        if (doLatency === 1) {
+        const doLatency = count%2 == 0;//getRandomInt(0, 1) == 1;
+        if (doLatency) {
             self.pending = true;
             setTimeout(() => {
                 data.data.delayed = true;
@@ -48,6 +48,7 @@ function addNewData(dsId, latency) {
     } else {
         pushBack(data.dataSourceId, data.data);
     }
+    count++;
 }
 
 function pushBack(id, data) {
