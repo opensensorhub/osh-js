@@ -1,9 +1,10 @@
 class DataSynchronizerAlgo {
-    constructor(dataSources) {
+    constructor(dataSources, replayFactor = 1) {
         this.dataSourceMap = {};
         this.bufferingTime = 1000;
         this.startBufferingTime = -1;
         this.tsRun = 0;
+        this.replayFactor = replayFactor;
         let maxBufferingTime = -1;
 
         for (let ds of dataSources) {
@@ -87,7 +88,7 @@ class DataSynchronizerAlgo {
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClockAdj) {
+                if (dTs <= dClockAdj*this.replayFactor) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;

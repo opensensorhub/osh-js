@@ -16,27 +16,31 @@
 
 import EventManager from "osh/events/EventManager";
 import {isDefined} from "../utils/Utils";
-import SynchronizerWorkerInterval from './DataSynchronizer.worker';
-import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
-
+import DataSynchronizerWorker from './DataSynchronizer.worker';
 
 class DataSynchronizer {
     /**
      * Creates The dataSynchronizer.
-     * @param {DataSource[]} datasSources - the dataSource array
+     * @param {Object} properties - the property of the object
+     * @param {Number} properties.replayFactor - replayFactor value
+     * @param {DataSource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
         if(!isDefined(properties.dataSources)) {
             throw 'You must specified a dataSource array';
         }
         this.bufferingTime = 1000; // default
-        this.initWorker(properties.dataSources);
+        let replayFactor = 1;
+        if(isDefined(properties.replayFactor)) {
+            replayFactor = properties.replayFactor;
+        }
+        this.initWorker(properties.dataSources, replayFactor);
     }
 
     /**
      * @private
      */
-    initWorker(dataSources) {
+    initWorker(dataSources, replayFactor) {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
@@ -49,9 +53,10 @@ class DataSynchronizer {
             dataSource.onData = (data) => this.push(dataSource.id, data);
         }
 
-        this.synchronizerWorker = new SynchronizerWorkerInterval({bufferingTime: this.bufferingTime});
+        this.synchronizerWorker = new DataSynchronizerWorker();
         this.synchronizerWorker.postMessage({
-            dataSources: dataSourcesForWorker
+            dataSources: dataSourcesForWorker,
+            replayFactor: replayFactor
         });
 
         this.synchronizerWorker.onmessage =(event) => {
@@ -69,6 +74,10 @@ class DataSynchronizer {
         EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
     }
 
+    /**
+     * @param {String} dataSourceId - the dataSource id
+     * @param {Object} data - the data to push into the data synchronizer
+     */
     push(dataSourceId, data) {
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.postMessage({
@@ -78,6 +87,9 @@ class DataSynchronizer {
         }
     }
 
+    /**
+     * Terminate the corresponding running WebWorker by calling terminate() on it.
+     */
     terminate() {
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.terminate();
