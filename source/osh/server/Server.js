@@ -96,8 +96,14 @@ class Server {
      * @param {Function} errorCallback - async method called when an error occurred
      */
     getDescribeSensor(procedure, successCallback, errorCallback) {
-        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure;
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure ;
         this.executeGetRequest(request, successCallback, errorCallback);
+    }
+
+    getDescribeSensorAsJson(procedure, successCallback, errorCallback) {
+        let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure='
+            + procedure + '&procedureDescriptionFormat=http://www.opengis.net/sensorml-json/2.0';
+        this.executeGetRequest(request, successCallback, errorCallback, true);
     }
 
     /**
@@ -106,9 +112,9 @@ class Server {
      * @param successCallback
      * @param errorCallback
      */
-    executeGetRequest(request, successCallback, errorCallback) {
+    executeGetRequest(request, successCallback, errorCallback, fromJson = false) {
         if (isWebWorker()) { // run in web worker if possible
-            this.executeGetRequestWebWorker(request, successCallback, errorCallback);
+            this.executeGetRequestWebWorker(request, successCallback, errorCallback,fromJson);
         } else {
             let xhr = new XMLHttpRequest();
             let that = this;
@@ -116,8 +122,12 @@ class Server {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         let s = successCallback.bind(that);
-                        let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
-                        s(sweXmlParser.toJson());
+                        if(fromJson) {
+                            s(JSON.parse(xhr.responseText));
+                        } else {
+                            let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
+                            s(sweXmlParser.toJson());
+                        }
                     } else {
                         errorCallback(xhr.responseText);
                     }
@@ -135,7 +145,7 @@ class Server {
      * @param successCallback
      * @param errorCallback
      */
-    executeGetRequestWebWorker(request, successCallback, errorCallback) {
+    executeGetRequestWebWorker(request, successCallback, errorCallback, fromJson = false) {
         // create worker source code blob if not created yet
         let worker = new Worker();
         worker.onerror = (e) => {
@@ -151,8 +161,12 @@ class Server {
                 successCallback(e.data);
             }
         };
-        worker.postMessage(request);
+        worker.postMessage({
+            request: request,
+            json: fromJson
+        });
     }
 }
 
 export default Server;
+1

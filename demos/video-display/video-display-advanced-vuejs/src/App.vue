@@ -94,7 +94,7 @@
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
   import SweJson from "osh/datareceiver/SweJson.js";
-  import VideoMjpeg from "osh/datareceiver/VideoMjpeg.js";
+  import Video from "osh/datareceiver/Video.js";
   import {randomUUID} from "osh/utils/Utils.js";
   import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
   import EventManager from "osh/events/EventManager.js";
@@ -142,7 +142,7 @@
           bufferingTime: 0,
           replaySpeed: 2
         }),
-        videoDataSource: new VideoMjpeg("android-Video", {
+        videoDataSource: new Video("android-Video", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

@@ -86,8 +86,11 @@ class MjpegView extends View {
   }
 
   setData(dataSourceId,data) {
+      let imgBlob = new Blob([data.data.frameData]);
+      let url = window.URL.createObjectURL(imgBlob);
+
       let oldBlobURL = this.imgTag.src;
-      this.imgTag.src = data.data;
+      this.imgTag.src = url;
       if (this.timeStamp !== null) {
           this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString();
       }

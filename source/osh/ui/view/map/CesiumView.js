@@ -345,6 +345,26 @@ class CesiumView extends View {
   }
 
   /**
+   * Removes a view item from the view.
+   * @param {Object} viewItem - The initial view items to add
+   * @param {String} viewItem.name - The name of the view item
+   * @param {Styler} viewItem.styler - The styler object representing the view item
+   */
+  removeViewItem(viewItem) {
+    const markerId = this.stylerToObj[viewItem.styler.id];
+    super.removeViewItem(viewItem);
+
+    if(isDefined(markerId)) {
+      let marker = this.markers[markerId];
+      if(isDefined(marker)) {
+        this.viewer.entities.remove(marker);
+      }
+
+      delete this.markers[markerId];
+    }
+  }
+
+  /**
    * Add a marker to the map.
    * @param {Object} properties
    * @param {Number} properties.lon

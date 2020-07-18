@@ -7,8 +7,7 @@ export { default as  DataReceiverController } from './datareceiver/DataReceiverC
 export { default as  DataSource } from './datareceiver/DataSource.js';
 export { default as  SweJsonDataSource } from './datareceiver/SweJson.js';
 export { default as  OrientationQuaternion  } from '../osh-ext/datareceiver/OrientationQuaternion.js';
-export { default as  VideoH264 } from './datareceiver/VideoH264.js';
-export { default as  VideMjpeg } from './datareceiver/VideoMjpeg.js';
+export { default as  Video } from './datareceiver/Video.js';
 export { default as  DataSenderController } from './datasender/DataSenderController.js';
 export { default as  DataSink } from './datasender/DataSink.js';
 export { default as  FoscamPtzTasking } from './datasender/FoscamPtzTasking.js';

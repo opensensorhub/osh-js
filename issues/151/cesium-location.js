@@ -6,14 +6,14 @@ import {
     Cartesian3,
     Cartesian2
 } from "cesium";
-import VideoH264 from "osh/datareceiver/VideoH264.js";
+import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 import ImageDraping from "osh/ui/styler/ImageDraping.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
 
 window.CESIUM_BASE_URL = './';
 
-let videoDataSource = new VideoH264("drone-Video", {
+let videoDataSource = new Video("drone-Video", {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

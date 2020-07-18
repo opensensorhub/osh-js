@@ -30,7 +30,7 @@ export class SoloVideoComponent extends React.Component {
       dataSourceId: videoDataSource.id,
       css: "video-h264",
       name: "UAV Video",
-      framerate:25,
+      directPlay: true,
       showTime: true
     });
 
