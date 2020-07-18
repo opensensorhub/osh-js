@@ -6,6 +6,7 @@ class DataSynchronizerAlgo {
         this.dataSourceMap = {};
         this.bufferingTime = 1000;
         this.startBufferingTime = -1;
+        this.tsRun = 0;
         let maxBufferingTime = -1;
 
         const that = this;
@@ -32,11 +33,11 @@ class DataSynchronizerAlgo {
             setTimeout(() => this.processData(), this.bufferingTime);
         }
 
-        let minLatency = 0;
-        if(ds.tsRun > 0) {
-            minLatency = Math.min(ds.tsRun - data.timeStamp, ds.timeOut);
+        let latency = 0;
+        if (this.tsRun > 0) {
+            latency = Math.min(this.tsRun - data.timeStamp, ds.timeOut);
         }
-        ds.latencies.push(minLatency);
+        ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
         ds.data.push(data);
     }
 
@@ -72,23 +73,24 @@ class DataSynchronizerAlgo {
      * @param refClockTime - the absolute diff time really spent
      */
     computeNextData(tsRef, refClockTime) {
-        const dClock = performance.now() - refClockTime;
         let currentDs;
         let currentDsToShift = null;
-
+        
         // compute max latency
         let maxLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if(currentDs.latencies.length > 0) {
-                maxLatency = (currentDs.latencies[0] > maxLatency) ? currentDs.latencies[0] : maxLatency;
+            if(currentDs.latency > 0) {
+                maxLatency = (currentDs.latency > maxLatency) ? currentDs.latency : maxLatency;
             }
         }
+
+        const dClock = performance.now() - refClockTime;
+        this.tsRun = tsRef + dClock;
 
         // third compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            this.dataSourceMap[currentDsId].tsRun = tsRef + dClock;
             if (currentDs.data.length > 0) {
                 const dTs = currentDs.data[0].timeStamp - tsRef;
                 const dClockAdj = dClock - maxLatency;
@@ -123,8 +125,7 @@ class DataSynchronizerAlgo {
             id: dataSource.id,
             timedOut: false,
             name: dataSource.name,
-            latencies:[],
-            tsRun:0
+            latency: 0
         };
     }
 
