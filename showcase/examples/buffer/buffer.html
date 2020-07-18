@@ -72,6 +72,25 @@
   }
 </style>
 <div>
+  <h3>Recall the principle of the main algorithm:</h3>
+  Data records from each DS are received in a separate queue (records are added at the end of the queue)<br>
+  The DataSynchronizer loop is run with a <i>setInterval()</i> at a frequency that can be adjusted between 5 and 1000ms<br>
+  The reference time stamp (<b>TSref</b>) is the timestamp of the first data received from any DS.<br>
+  <p>The reference clock time is computed with <i>performance.now()</i> when the first data is outputted by the synchronizer (i.e. at the end of the initial buffering period).<br>
+  In each synchronizer loop, we loop through each DS and evaluate the oldest record received from it (i.e. the record at the front of the queue, if any):<br>
+    We compare the <b>𝜟TS</b> of this oldest record (diff between the DS record timestamp and <b>TSref</b>) to the <b>𝜟clock</b>
+    (diff between current <i>performance.now()</i> and the reference clock time).
+    If <b>𝜟clock</b> > <b>𝜟TS</b>, the head of this DS queue can be dispatched<br>
+    Continue evaluating the next record from this DS until the condition above returns <i>false</i><br>
+    <br><br>
+  In addition to the above existing algorithm, the idea is to also do the following:<br>
+  <ul>
+  <li>Always compute the timestamp of the latest synchronizer loop <b>TSrun</b> = <b>TSref</b> + <b>𝜟clock</b></li>
+  <li>When we receive a new record from a DS with timestamp <b>TSrec</b>, we compute its latency = <i>min</i>(<b>TSrun</b> - <b>TSrec</b> , DS_timeout) (this is computed when the data is received, not in the main loop, and stored as a variable of the queue object associated with each DS)</li>
+  <li>We regularly compute the maximum latency of all DS and compute <b>𝜟clock_adj</b>  = <b>𝜟clock</b> - <i>max_latency</i></li>
+  <li>We use <b>𝜟clock_adj</b> instead of <b>𝜟clock</b> in the comparison with <b>𝜟TS</b> in the main loop</li>
+  <li>If needed, in order to avoid abrupt changes, we can also smoothout the change of <b>𝜟clock_adj</b> over time (e.g. over 10 loops)</li>
+  </ul>
   <br>
   Result line example: <br><br>
   (4) 2020-07-10T17:08:03.911Z (Absolute +1025.89ms) (delayed)   Δ +10ms  Δ +20ms Δ +20.6ms
