@@ -1,6 +1,3 @@
-const bcChannels = {};
-const dataSynchronizerChannel =  new BroadcastChannel('test_channel-datasync');
-
 class DataSynchronizerAlgo {
     constructor(dataSources) {
         this.dataSourceMap = {};
@@ -9,7 +6,6 @@ class DataSynchronizerAlgo {
         this.tsRun = 0;
         let maxBufferingTime = -1;
 
-        const that = this;
         for (let ds of dataSources) {
             this.addDataSource(ds);
             maxBufferingTime = ds.bufferingTime > maxBufferingTime ? ds.bufferingTime : maxBufferingTime;
@@ -83,7 +79,7 @@ class DataSynchronizerAlgo {
         const dClock = performance.now() - refClockTime;
         this.tsRun = tsRef + dClock;
 
-        // third compute next data to return
+        // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
             if (currentDs.data.length > 0) {
@@ -125,25 +121,6 @@ class DataSynchronizerAlgo {
     }
 
     onData(dataSourceId, data) {
-        // self.postMessage({
-        //     message: 'data',
-        //     dataSourceId: dataSourceId,
-        //     data: data
-        // });
-        // dataSynchronizerChannel.postMessage({
-        //     message: 'data',
-        //     dataSourceId: dataSourceId,
-        //     data: data
-        // });
-    }
-
-    onWait(dataSourceId, time, total) {
-        // self.postMessage({
-        //     message: 'wait',
-        //     dataSourceId: dataSourceId,
-        //     time: time,
-        //     total: total
-        // });
     }
 
     close() {
