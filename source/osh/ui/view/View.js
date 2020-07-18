@@ -161,14 +161,7 @@ class View {
      * @private
      */
     unregisterCallback() {
-        if(this.dataSourceId > -1) {
-            EventManager.remove(this.getEventName(), this.divId);
-        }
-        EventManager.remove(EventManager.EVENT.SELECT_VIEW, this.divId);
-        EventManager.remove(EventManager.EVENT.SHOW_VIEW, this.divId);
-        EventManager.remove(EventManager.EVENT.RESIZE, this.divId);
-        EventManager.remove(EventManager.EVENT.ADD_VIEW_ITEM, this.divId);
-        this.removeViewItems();
+        EventManager.removeById(this.divId);
     }
 
     getEventName() {
@@ -272,7 +265,7 @@ class View {
             //for(let dataSourceId in styler.dataSourceToStylerMap) {
             let ds = styler.getDataSourcesIds();
             for (let i = 0; i < ds.length; i++) {
-                let dataSourceId = ds[i];
+                const dataSourceId = ds[i];
                 // observes the data come in
                 let self = this;
                 // see https://www.pluralsight.com/guides/javascript-callbacks-variable-scope-problem
@@ -329,9 +322,14 @@ class View {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
                 EventManager.remove(EventManager.EVENT.DATA + "-" + ds, this.divId);
+                delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
         }
+        delete this.stylerIdToStyler[viewItem.styler.id]
+        this.stylers = this.stylers.filter(currentStyler => currentStyler.id !== viewItem.styler.id);
+        delete this.names[viewItem.styler.id];
+        delete this.stylerToObj[viewItem.styler.id]
     }
 
     /**

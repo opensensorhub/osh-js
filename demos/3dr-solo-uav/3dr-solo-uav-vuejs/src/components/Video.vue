@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import DialogDrag from 'vue-dialog-drag';
+import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 
 export default {
