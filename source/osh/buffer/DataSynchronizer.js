@@ -23,6 +23,7 @@ class DataSynchronizer {
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
      * @param {Number} properties.replayFactor - replayFactor value
+     * @param {Number} properties.intervalRate - interval in which data is played
      * @param {DataSource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
@@ -31,16 +32,21 @@ class DataSynchronizer {
         }
         this.bufferingTime = 1000; // default
         let replayFactor = 1;
+        let intervalRate = 5;
+
         if(isDefined(properties.replayFactor)) {
             replayFactor = properties.replayFactor;
         }
-        this.initWorker(properties.dataSources, replayFactor);
+        if(isDefined(properties.intervalRate)) {
+            intervalRate = properties.intervalRate;
+        }
+        this.initWorker(properties.dataSources, replayFactor, intervalRate);
     }
 
     /**
      * @private
      */
-    initWorker(dataSources, replayFactor) {
+    initWorker(dataSources, replayFactor, intervalRate) {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
@@ -56,7 +62,8 @@ class DataSynchronizer {
         this.synchronizerWorker = new DataSynchronizerWorker();
         this.synchronizerWorker.postMessage({
             dataSources: dataSourcesForWorker,
-            replayFactor: replayFactor
+            replayFactor: replayFactor,
+            intervalRate: intervalRate
         });
 
         this.synchronizerWorker.onmessage =(event) => {

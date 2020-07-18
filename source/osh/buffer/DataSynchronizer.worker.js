@@ -5,7 +5,11 @@ let dataSynchronizerAlgo;
 
 self.onmessage = (event) => {
     if(event.data.dataSources) {
-        dataSynchronizerAlgo = new DataSynchronizerAlgo(event.data.dataSources,event.data.replayFactor);
+        dataSynchronizerAlgo = new DataSynchronizerAlgo(
+            event.data.dataSources,
+            event.data.replayFactor,
+            event.data.intervalRate
+            );
         dataSynchronizerAlgo.onData = onData;
         dataSynchronizerAlgo.onWait = onWait;
         for(let ds of event.data.dataSources) {

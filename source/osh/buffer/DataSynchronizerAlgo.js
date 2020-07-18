@@ -1,10 +1,11 @@
 class DataSynchronizerAlgo {
-    constructor(dataSources, replayFactor = 1) {
+    constructor(dataSources, replayFactor = 1, intervalRate = 5) {
         this.dataSourceMap = {};
         this.bufferingTime = 1000;
         this.startBufferingTime = -1;
         this.tsRun = 0;
         this.replayFactor = replayFactor;
+        this.intervalRate = intervalRate;
         let maxBufferingTime = -1;
 
         for (let ds of dataSources) {
@@ -34,7 +35,6 @@ class DataSynchronizerAlgo {
     }
 
     processData() {
-        const INTERVAL_FREQ = 5;
         let tsRef = -1;
         const clockTimeRef = performance.now();
 
@@ -55,7 +55,7 @@ class DataSynchronizerAlgo {
             // 1) return the oldest data if any
             while (this.computeNextData(tsRef, clockTimeRef)) ;
 
-        }, INTERVAL_FREQ);
+        }, this.intervalRate);
     }
 
     /**
