@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import EventManager from "osh/events/EventManager";
-import {isDefined} from "../../../dist/source/osh/utils/Utils";
+import {isDefined} from "../utils/Utils";
 import SynchronizerWorkerInterval from './DataSynchronizer.worker';
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
 
