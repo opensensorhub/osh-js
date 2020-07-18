@@ -2,8 +2,8 @@ import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
 
 self.onmessage = (event) => {
     const buffer = new DataSynchronizer({
-        replayFactor: 1,
-        dataSources: event.data.dataSources
+        replayFactor: event.data.replayFactor,
+        dataSources:  event.data.dataSources
     });
 
     buffer.onWait = (dataSourceId, time ,total) => {

@@ -43,8 +43,10 @@ export function startDynamicWithTimeout(cbFinish) {
     };
 
     const dynamicBuffer = new DynamicBuffer();
+    const replayFactor = parseInt(document.getElementById("replay-factor").value);
     dynamicBuffer.postMessage({
-        dataSources: dataSources
+        dataSources: dataSources,
+        replayFactor: replayFactor
     });
 
     dynamicBuffer.onmessage = (event) => {
@@ -57,19 +59,45 @@ export function startDynamicWithTimeout(cbFinish) {
 
     startDataSet(virtBuffer, eltDynamic, 100, eltDynamicErrors);
 
-    addDataInjection(1, parseInt(document.getElementById("freq1").value), parseInt(document.getElementById("latency1").value));
-    addDataInjection(2, parseInt(document.getElementById("freq2").value), parseInt(document.getElementById("latency2").value));
-    addDataInjection(3, parseInt(document.getElementById("freq3").value), parseInt(document.getElementById("latency3").value));
-    addDataInjection(4, parseInt(document.getElementById("freq4").value), parseInt(document.getElementById("latency4").value));
-    addDataInjection(5, parseInt(document.getElementById("freq5").value), parseInt(document.getElementById("latency5").value));
+    addDataInjection(
+        1,
+        parseInt(document.getElementById("freq1").value),
+        parseInt(document.getElementById("latency1").value),
+        replayFactor
+        );
+    addDataInjection(
+        2,
+        parseInt(document.getElementById("freq2").value),
+        parseInt(document.getElementById("latency2").value),
+        replayFactor
+    );
+    addDataInjection(
+        3,
+        parseInt(document.getElementById("freq3").value),
+        parseInt(document.getElementById("latency3").value),
+        replayFactor
+    );
+    addDataInjection(
+        4,
+        parseInt(document.getElementById("freq4").value),
+        parseInt(document.getElementById("latency4").value),
+        replayFactor
+        );
+    addDataInjection(
+        5,
+        parseInt(document.getElementById("freq5").value),
+        parseInt(document.getElementById("latency5").value),
+        replayFactor
+    );
 
-    function addDataInjection(dsId, freq, latency = 0) {
+    function addDataInjection(dsId, freq, latency = 0,replayFactor) {
         // DS1
         const dataInjector = new DataInjectorWorker();
         dataInjector.postMessage({
            freq: freq,
            id: dsId,
-           latency:latency
+           latency:latency,
+           replayFactor: replayFactor
         });
 
         setTimeout(() => {
