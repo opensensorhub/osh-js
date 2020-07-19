@@ -1,4 +1,6 @@
 import Module from './ffmpeg-h264.js';
+import YUVCanvas from "../YUVCanvas";
+import {isDefined} from "../../../../utils/Utils";
 
 let instance = {
   ready: new Promise(resolve => {
@@ -20,14 +22,27 @@ instance.ready
     init('h264');
     self.codec = null;
     let released = false;
+    let yuvCanvas;
+
     self.onmessage = function (e) {
       if(released) {
         return;
       }
 
-      if(e.data.message && e.data.message === 'release') {
-        release();
-        released = true;
+        if(e.data.message && e.data.message === 'canvas') {
+            self.offscreenCanvas = e.data.canvas;
+            self.gl = self.offscreenCanvas.getContext("webgl");
+            self.yuvCanvas = new YUVCanvas({
+                width: e.data.width,
+                height: e.data.height,
+                contextOptions: {preserveDrawingBuffer: true},
+                canvas: e.data.canvas
+            });
+            return;
+        }
+        if(e.data.message && e.data.message === 'release') {
+            release();
+            released = true;
       }
       if(e.data.codec !== self.codec) {
           init(e.data.codec);
@@ -36,13 +51,13 @@ instance.ready
       var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize),
           data.timeStamp);
       if (typeof decodedFrame != "undefined") {
-        decodedFrame.roll = data.roll;
-        self.postMessage(decodedFrame, [
-          decodedFrame.frameYData.buffer,
-          decodedFrame.frameUData.buffer,
-          decodedFrame.frameVData.buffer,
-          data.pktData,
-        ]);
+        // decodedFrame.roll = data.roll;
+        // self.postMessage(decodedFrame, [
+        //   decodedFrame.frameYData.buffer,
+        //   decodedFrame.frameUData.buffer,
+        //   decodedFrame.frameVData.buffer,
+        //   data.pktData,
+        // ]);
       }
     };
     self.onerror = (e) => {
@@ -121,17 +136,32 @@ instance.ready
       var frameVDataPtr = instance.getValue(decoded_frame + 8, '*');
 
 
+      if(isDefined(self.yuvCanvas)) {
+          self.yuvCanvas.drawNextOuptutPictureGL({
+                  yData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
+                  yDataPerRow: frame_width,
+                  yRowCnt: frame_height,
+                  uData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
+                  uDataPerRow: frame_width / 2,
+                  uRowCnt: frame_height / 2,
+                  vData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+                  vDataPerRow: frame_width / 2,
+                  vRowCnt: frame_height / 2
+              });
+          console.log(self.gl);
+          self.gl.commit();
+      };
       return {
-        frame_width: frame_width,
-        frame_height: frame_height,
-        frameYDataPtr: frameYDataPtr,
-        frameUDataPtr: frameUDataPtr,
-        frameVDataPtr: frameVDataPtr,
-        frameYData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-        frameUData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-        frameVData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
-        timeStamp:timeStamp,
-        pktSize:pktSize
+        // frame_width: frame_width,
+        // frame_height: frame_height,
+        // frameYDataPtr: frameYDataPtr,
+        // frameUDataPtr: frameUDataPtr,
+        // frameVDataPtr: frameVDataPtr,
+        // frameYData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
+        // frameUData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
+        // frameVData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+        // timeStamp:timeStamp,
+        // pktSize:pktSize
       };
     }
   });
