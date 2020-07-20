@@ -30,14 +30,13 @@ instance.ready
       }
 
         if(e.data.message && e.data.message === 'canvas') {
-            self.offscreenCanvas = e.data.canvas;
-            self.gl = self.offscreenCanvas.getContext("webgl");
-            self.yuvCanvas = new YUVCanvas({
-                width: e.data.width,
-                height: e.data.height,
+            self.yuvCanvas  = new YUVCanvas({
+                width: 1280,
+                height: 720,
                 contextOptions: {preserveDrawingBuffer: true},
                 canvas: e.data.canvas
             });
+            self.yuvCanvas.init();
             return;
         }
         if(e.data.message && e.data.message === 'release') {
@@ -52,12 +51,7 @@ instance.ready
           data.timeStamp);
       if (typeof decodedFrame != "undefined") {
         // decodedFrame.roll = data.roll;
-        // self.postMessage(decodedFrame, [
-        //   decodedFrame.frameYData.buffer,
-        //   decodedFrame.frameUData.buffer,
-        //   decodedFrame.frameVData.buffer,
-        //   data.pktData,
-        // ]);
+        self.postMessage(decodedFrame);
       }
     };
     self.onerror = (e) => {
@@ -137,31 +131,25 @@ instance.ready
 
 
       if(isDefined(self.yuvCanvas)) {
+          self.yuvCanvas.canvasElement.drawing = true;
           self.yuvCanvas.drawNextOuptutPictureGL({
-                  yData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-                  yDataPerRow: frame_width,
-                  yRowCnt: frame_height,
-                  uData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-                  uDataPerRow: frame_width / 2,
-                  uRowCnt: frame_height / 2,
-                  vData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
-                  vDataPerRow: frame_width / 2,
-                  vRowCnt: frame_height / 2
-              });
-          console.log(self.gl);
-          self.gl.commit();
-      };
+              yData: new Uint8Array(instance.HEAPU8.buffer, frameYDataPtr, frameYDataPtr + frame_width * frame_height),
+              yDataPerRow: frame_width,
+              yRowCnt: frame_height,
+              uData: new Uint8Array(instance.HEAPU8.buffer,frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2),
+              uDataPerRow: frame_width / 2,
+              uRowCnt: frame_height / 2,
+              vData: new Uint8Array(instance.HEAPU8.buffer, frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2),
+              vDataPerRow: frame_width / 2,
+              vRowCnt: frame_height / 2,
+              roll: 0
+          });
+
+          self.yuvCanvas.canvasElement.drawing = false;
+      }
       return {
-        // frame_width: frame_width,
-        // frame_height: frame_height,
-        // frameYDataPtr: frameYDataPtr,
-        // frameUDataPtr: frameUDataPtr,
-        // frameVDataPtr: frameVDataPtr,
-        // frameYData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-        // frameUData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-        // frameVData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
-        // timeStamp:timeStamp,
-        // pktSize:pktSize
+        timeStamp:timeStamp,
+        pktSize:pktSize
       };
     }
   });

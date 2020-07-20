@@ -19,7 +19,9 @@ class YUVCanvas {
 
         this.canvasElement.width = this.width;
         this.canvasElement.height = this.height;
+    }
 
+    init() {
         this.initContextGL();
 
         if (this.contextGL) {

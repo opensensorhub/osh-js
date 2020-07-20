@@ -14,6 +14,7 @@ import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
 import Worker from './workers/Ffmpeg.worker.js';
 import '../../../resources/css/ffmpegview.css';
+import YUVCanvas from "./YUVCanvas";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -110,12 +111,13 @@ class FFMPEGView extends View {
         }
 
         // create webGL canvas
-        // this.yuvCanvas = this.createCanvas(this.width,this.height);
-        this.canvas = document.createElement('canvas');
-        this.canvas.setAttribute('width', this.width);
-        this.canvas.setAttribute('height', this.height);
+        this.domNode = domNode;
+        // this.yuvCanvas = this.createCanvas(this.width,this.height, domNode);
+        // this.canvas = document.createElement('canvas');
+        // this.canvas.setAttribute('width', this.width);
+        // this.canvas.setAttribute('height', this.height);
 
-        domNode.appendChild(this.canvas);
+        // domNode.appendChild(this.yuvCanvas.canvasElement);
 
         // add selection listener
         let self = this;
@@ -156,8 +158,16 @@ class FFMPEGView extends View {
         this.bufferingTime = 2 * 1000;
     }
 
-    createCanvas(width, height) {
-        return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
+    createCanvas(width, height, domNode) {
+        const canvas = document.createElement("canvas");
+        domNode.appendChild(canvas);
+
+        return new YUVCanvas({
+            width: width,
+            height: height,
+            contextOptions: {preserveDrawingBuffer: true},
+            canvas: canvas.transferControlToOffscreen()
+        });
     }
 
     setData(dataSourceId, data) {
@@ -248,17 +258,21 @@ class FFMPEGView extends View {
         this.worker = new Worker();
         this.worker.id = randomUUID();
 
-        const offscreenCanvas = this.canvas.transferControlToOffscreen();
+        // const offscreenCanvas = this.canvas.transferControlToOffscreen();
 
         setTimeout(() => {
+            let canvas = document.createElement('canvas');
+            canvas.setAttribute('width', this.width);
+            canvas.setAttribute('height', this.height);
+            this.domNode.appendChild(canvas);
+            const offscreenCanvas = canvas.transferControlToOffscreen();
 
-
-        this.worker.postMessage({
-            message: 'canvas',
-            canvas: offscreenCanvas,
-            width: this.width,
-            height: this.height
-        }, [offscreenCanvas]);
+            this.worker.postMessage({
+                message: 'canvas',
+                canvas: offscreenCanvas,
+                width: this.width,
+                height: this.height
+            }, [offscreenCanvas]);
         },3000);
         let buffer = [];
         let that = this;
@@ -285,10 +299,10 @@ class FFMPEGView extends View {
             let decodedFrame = e.data;
             // if(that.width !== decodedFrame.frame_width ||
             //   that.height !== decodedFrame.frame_height) {
-            //     //re-create the canvas
-            //     that.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
-            //     that.width = decodedFrame.frame_width;
-            //     that.height = decodedFrame.frame_height;
+                //re-create the canvas
+                // that.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
+                // that.width = decodedFrame.frame_width;
+                // that.height = decodedFrame.frame_height;
             // }
             //
             // that.yuvCanvas.canvasElement.drawing = true;
