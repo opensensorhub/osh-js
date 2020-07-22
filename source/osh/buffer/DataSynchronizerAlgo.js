@@ -28,7 +28,7 @@ class DataSynchronizerAlgo {
 
         let latency = 0;
         if (this.tsRun > 0) {
-            latency = Math.min(this.tsRun - data.timeStamp, ds.timeOut);
+            latency = this.tsRun - data.timeStamp;
         }
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
         ds.data.push(data);
@@ -72,8 +72,9 @@ class DataSynchronizerAlgo {
         let maxLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if(currentDs.latency > 0) {
-                maxLatency = (currentDs.latency > maxLatency) ? currentDs.latency : maxLatency;
+            if (currentDs.latency > 0) {
+                let latency = Math.min(currentDs.latency, currentDs.timeOut);
+                maxLatency = (latency > maxLatency) ? latency : maxLatency;
             }
         }
 
@@ -126,7 +127,7 @@ class DataSynchronizerAlgo {
 
     close() {
         clearInterval(this.interval);
-        console.log("Buffer has been terminated successfully");
+        console.log("Data synchronizer terminated successfully");
     }
 }
 export default DataSynchronizerAlgo;
