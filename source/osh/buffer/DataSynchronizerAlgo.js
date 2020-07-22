@@ -31,7 +31,7 @@ class DataSynchronizerAlgo {
             latency = this.tsRun - data.timeStamp;
         }
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
-        ds.data.push(data);
+        ds.dataBuffer.push(data);
     }
 
     processData() {
@@ -43,8 +43,8 @@ class DataSynchronizerAlgo {
         let currentDs;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.data.length > 0) {
-                tsRef = (tsRef === -1 || currentDs.data[0].timeStamp < tsRef) ? currentDs.data[0].timeStamp :
+            if (currentDs.dataBuffer.length > 0) {
+                tsRef = (tsRef === -1 || currentDs.dataBuffer[0].timeStamp < tsRef) ? currentDs.dataBuffer[0].timeStamp :
                     tsRef;
             }
         }
@@ -70,11 +70,13 @@ class DataSynchronizerAlgo {
 
         // compute max latency
         let maxLatency = 0;
+        let minLatency;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
             if (currentDs.latency > 0) {
                 let latency = Math.min(currentDs.latency, currentDs.timeOut);
                 maxLatency = (latency > maxLatency) ? latency : maxLatency;
+                minLatency = (currentDs.latency < minLatency) ? currentDs.latency : minLatency;
             }
         }
 
@@ -84,8 +86,8 @@ class DataSynchronizerAlgo {
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.data.length > 0) {
-                const dTs = currentDs.data[0].timeStamp - tsRef;
+            if (currentDs.dataBuffer.length > 0) {
+                const dTs = currentDs.dataBuffer[0].timeStamp - tsRef;
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
@@ -95,15 +97,23 @@ class DataSynchronizerAlgo {
                         currentDsToShift = currentDs;
                     } else {
                         // take the oldest data
-                        currentDsToShift = (currentDsToShift.data[0].timeStamp < currentDs.data[0].timeStamp) ?
+                        currentDsToShift = (currentDsToShift.dataBuffer[0].timeStamp < currentDs.dataBuffer[0].timeStamp) ?
                             currentDsToShift : currentDs;
                     }
                 }
             }
         }
-        // finally shift the data
+
+        // finally pop the data from DS queue
         if (currentDsToShift !== null) {
-            this.onData(currentDsToShift.id, currentDsToShift.data.shift());
+            let rec = currentDsToShift.dataBuffer.shift();
+
+            // add latency flag to data record before we dispatch it
+            // this is relative latency in millis compared to the DS with the lowest latency
+            // so it is accurate even if local device time is not set properly
+            rec['@latency'] = currentDs.latency - minLatency;
+
+            this.onData(currentDsToShift.id, rec);
             return true;
         }
         return false;
@@ -113,7 +123,7 @@ class DataSynchronizerAlgo {
         this.dataSourceMap[dataSource.id] = {
             bufferingTime: dataSource.bufferingTime,
             timeOut: dataSource.timeOut,
-            data: [],
+            dataBuffer: [],
             startBufferingTime: -1,
             id: dataSource.id,
             timedOut: false,
