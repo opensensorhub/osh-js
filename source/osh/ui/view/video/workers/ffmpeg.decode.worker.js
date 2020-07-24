@@ -39,7 +39,7 @@ instance.ready
       }
       var data = e.data;
       var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize),
-          data.timeStamp);
+          data.timeStamp, data.roll);
       if (typeof decodedFrame != "undefined") {
         // decodedFrame.roll = data.roll;
         self.postMessage(decodedFrame);
@@ -92,7 +92,7 @@ instance.ready
       // instance._av_frame_free(self.av_frame);
     }
 
-    function innerWorkerDecode(pktSize, pktData, timeStamp) {
+    function innerWorkerDecode(pktSize, pktData, timeStamp, roll) {
       // prepare packet
       instance.setValue(self.av_pkt + 28, pktSize, 'i32');
       instance.writeArrayToMemory(pktData, self.av_pktData);
@@ -130,7 +130,9 @@ instance.ready
           vData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
           vDataPerRow: frame_width / 2,
           vRowCnt: frame_height / 2,
-          roll: 0
+          roll: roll,
+          width: frame_width,
+          height: frame_height
       };
 
       self.bc.postMessage(dec);
