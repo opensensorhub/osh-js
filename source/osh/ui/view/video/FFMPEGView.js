@@ -13,6 +13,8 @@ import View from "../View.js";
 import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
 import Worker from './workers/Ffmpeg.worker.js';
+import DrawWorker from './workers/ffmpeg.draw.worker.js';
+
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 
@@ -256,81 +258,37 @@ class FFMPEGView extends View {
      */
     initFFMPEG_DECODER_WORKER(callback) {
         this.worker = new Worker();
+        const drawWorker = new DrawWorker();
         this.worker.id = randomUUID();
 
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
+        let canvas = document.createElement('canvas');
+        canvas.setAttribute('width', this.width);
+        canvas.setAttribute('height', this.height);
+        this.domNode.appendChild(canvas);
 
-        setTimeout(() => {
-            let canvas = document.createElement('canvas');
-            canvas.setAttribute('width', this.width);
-            canvas.setAttribute('height', this.height);
-            this.domNode.appendChild(canvas);
+        setTimeout(()=>{
             const offscreenCanvas = canvas.transferControlToOffscreen();
-
-            this.worker.postMessage({
-                message: 'canvas',
+            drawWorker.postMessage({
                 canvas: offscreenCanvas,
                 width: this.width,
                 height: this.height
             }, [offscreenCanvas]);
         },3000);
-        let buffer = [];
-        let that = this;
 
         this.worker.onmessage = function (e) {
-            if(that.directPlay) {
-                display(e);
-            } else {
-                buffer.push(e);
+            const decodedFrame = e.data;
+            this.updateStatistics(decodedFrame.pktSize);
+            if(this.showTime) {
+                this.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
             }
-        };
-
-        if(!this.directPlay) {
-            let waitTime;
-            this.interval = setInterval(function () {
-                if (buffer.length > 1) {
-                    display(buffer.shift());
-                }
-            }, 1000 / this.framerate);
-        }
-
-        function display(e) {
-
-            let decodedFrame = e.data;
-            // if(that.width !== decodedFrame.frame_width ||
-            //   that.height !== decodedFrame.frame_height) {
-                //re-create the canvas
-                // that.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
-                // that.width = decodedFrame.frame_width;
-                // that.height = decodedFrame.frame_height;
-            // }
-            //
-            // that.yuvCanvas.canvasElement.drawing = true;
-            // that.yuvCanvas.drawNextOuptutPictureGL({
-            //     yData: decodedFrame.frameYData,
-            //     yDataPerRow: decodedFrame.frame_width,
-            //     yRowCnt: decodedFrame.frame_height,
-            //     uData: decodedFrame.frameUData,
-            //     uDataPerRow: decodedFrame.frame_width / 2,
-            //     uRowCnt: decodedFrame.frame_height / 2,
-            //     vData: decodedFrame.frameVData,
-            //     vDataPerRow: decodedFrame.frame_width / 2,
-            //     vRowCnt: decodedFrame.frame_height / 2,
-            //     roll: decodedFrame.roll
-            // });
-            //
-            // that.yuvCanvas.canvasElement.drawing = false;
-            that.updateStatistics(decodedFrame.pktSize);
-            if(that.showTime) {
-                that.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
-            }
-            if(that.showStats) {
-                that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
-                (that.statistics.averageBitRate/1000).toFixed(2)+' kb/s';
+            if(this.showStats) {
+                this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
+                    (this.statistics.averageBitRate/1000).toFixed(2)+' kb/s';
             }
 
-            that.onUpdated(that.statistics);
-        }
+            this.onUpdated(this.statistics);
+        }.bind(this);
     }
 
     onUpdated(stats) {
