@@ -14,11 +14,11 @@
   // @ is an alias to /src
 import Globe from './components/Globe.vue';
 import Video from './components/Video.vue';
-import VideoH264 from "osh/datareceiver/VideoH264.js";
+import VideoH264 from "osh/datareceiver/Video.js";
 import ImageDraping from "osh/ui/styler/ImageDraping.js";
 import SweJson from "osh/datareceiver/SweJson.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
-  import DataSynchronizer from "osh/buffer/DataSynchronizer";
+import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
 
   export default {
   components: {

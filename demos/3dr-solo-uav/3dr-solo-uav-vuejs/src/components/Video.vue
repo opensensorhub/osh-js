@@ -11,6 +11,7 @@
 <script>
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
+import DialogDrag from 'vue-dialog-drag'
 
 export default {
   name: "Video",
@@ -25,7 +26,8 @@ export default {
           css: "video-h264",
           name: "UAV Video",
           framerate:25,
-          showTime: true
+          showTime: true,
+          showStats: true
       });
   }
 }
