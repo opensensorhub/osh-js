@@ -19,7 +19,8 @@ let videoView = new FFMPEGView("video-h264-container", {
   css: "video-h264",
   name: "UAV Video",
   framerate:25,
-  showTime: true
+  showTime: true,
+  showStats: true
 });
 
 // start streaming
