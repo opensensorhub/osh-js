@@ -12,7 +12,7 @@
 import View from "../View.js";
 import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
-import Worker from './workers/Ffmpeg.worker.js';
+import DecodeWorker from './workers/ffmpeg.decode.worker.js';
 import DrawWorker from './workers/ffmpeg.draw.worker.js';
 
 import '../../../resources/css/ffmpegview.css';
@@ -50,8 +50,8 @@ class FFMPEGView extends View {
         super(divId, [], options);
 
         this.fps = 0;
-        this.width = "1280";
-        this.height = "720";
+        this.width = "1920";
+        this.height = "1080";
         this.showTime = false;
         this.showStats = false;
 
@@ -177,7 +177,7 @@ class FFMPEGView extends View {
                 let pktData = data.data.frameData;
                 let pktSize = pktData.length;
                 let roll = data.data.roll;
-                this.decodeWorker(pktSize, pktData, data.timeStamp,roll);
+                this.decode(pktSize, pktData, data.timeStamp,roll);
             }
     }
 
@@ -257,9 +257,9 @@ class FFMPEGView extends View {
      * @param callback
      */
     initFFMPEG_DECODER_WORKER(callback) {
-        this.worker = new Worker();
+        this.decodeWorker = new DecodeWorker();
         const drawWorker = new DrawWorker();
-        this.worker.id = randomUUID();
+        this.decodeWorker.id = randomUUID();
 
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
         let canvas = document.createElement('canvas');
@@ -267,16 +267,15 @@ class FFMPEGView extends View {
         canvas.setAttribute('height', this.height);
         this.domNode.appendChild(canvas);
 
-        setTimeout(()=>{
-            const offscreenCanvas = canvas.transferControlToOffscreen();
-            drawWorker.postMessage({
-                canvas: offscreenCanvas,
-                width: this.width,
-                height: this.height
-            }, [offscreenCanvas]);
-        },3000);
+        const offscreenCanvas = canvas.transferControlToOffscreen();
+        drawWorker.postMessage({
+            canvas: offscreenCanvas,
+            width: this.width,
+            height: this.height,
+            framerate: this.framerate
+        }, [offscreenCanvas]);
 
-        this.worker.onmessage = function (e) {
+        this.decodeWorker.onmessage = function (e) {
             const decodedFrame = e.data;
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
@@ -301,11 +300,11 @@ class FFMPEGView extends View {
      * @param pktData
      * @param timeStamp
      */
-    decodeWorker(pktSize, pktData, timeStamp, roll) {
+    decode(pktSize, pktData, timeStamp, roll) {
         if(pktSize > 0) {
             let arrayBuffer = pktData.buffer;
 
-            this.worker.postMessage({
+            this.decodeWorker.postMessage({
                 pktSize: pktSize,
                 pktData: arrayBuffer,
                 roll: roll,
@@ -322,10 +321,10 @@ class FFMPEGView extends View {
         if(isDefined(this.interval)) {
             clearInterval(this.interval);
         }
-       this. worker.postMessage({
+       this. decodeWorker.postMessage({
            message: 'release'
        });
-       this.worker.terminate();
+       this.decodeWorker.terminate();
     }
 }
 
