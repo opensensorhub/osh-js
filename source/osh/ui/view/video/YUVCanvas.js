@@ -3,7 +3,7 @@ class YUVCanvas {
 
         parOptions = parOptions || {};
 
-        this.canvasElement = parOptions.canvas /*|| document.createElement("canvas");*/
+        this.canvasElement = parOptions.canvas;
         this.contextOptions = parOptions.contextOptions;
 
         this.type = parOptions.type || "yuv420";
@@ -19,6 +19,8 @@ class YUVCanvas {
 
         this.canvasElement.width = this.width;
         this.canvasElement.height = this.height;
+
+        this.init();
     }
 
     init() {
