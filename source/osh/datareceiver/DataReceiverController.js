@@ -16,7 +16,7 @@
 
 import {isDefined} from '../utils/Utils.js';
 import EventManager from '../events/EventManager.js';
-import DataSynchronizer from "../buffer/DataSynchronizer.js";
+import DataSynchronizer from "../datasynchronizer/DataSynchronizer.js";
 
 /**
  * This class is responsible of handling datasources. It observes necessary events to manage datasources.

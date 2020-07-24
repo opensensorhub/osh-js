@@ -1,4 +1,4 @@
-import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
+import DataSynchronizer from "../../../source/osh/datasynchronizer/DataSynchronizer";
 
 self.onmessage = (event) => {
     const buffer = new DataSynchronizer({

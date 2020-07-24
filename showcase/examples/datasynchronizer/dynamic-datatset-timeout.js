@@ -1,7 +1,7 @@
 // dynamic part
-import {startDataSet} from "./buffer";
+import {startDataSet} from "./datasynchronizer";
 import DataInjectorWorker from './DataInjector.worker';
-import DynamicBuffer from './DynamicBuffer.worker.js';
+import DynamicDatasynchronizer from './DynamicDatasynchronizer.worker.js';
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
@@ -42,7 +42,7 @@ export function startDynamicWithTimeout(cbFinish) {
         onData: function (databaseId, data){}
     };
 
-    const dynamicBuffer = new DynamicBuffer();
+    const dynamicBuffer = new DynamicDatasynchronizer();
     const replayFactor = parseInt(document.getElementById("replay-factor").value);
     dynamicBuffer.postMessage({
         dataSources: dataSources,

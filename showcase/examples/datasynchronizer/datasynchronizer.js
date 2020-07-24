@@ -1,5 +1,4 @@
 // create data source for Android phone GPS
-import DataSynchronizer from "../../../source/osh/buffer/DataSynchronizer";
 import {startStatic} from './static-dataset';
 import {startStaticWithTimeout} from './static-dataset-timeout';
 import {startDynamicWithTimeout} from './dynamic-datatset-timeout';
@@ -58,7 +57,7 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
   let lineCount = 0;
 
   buffer.onData = function (dataSourceId, data) {
-    if(lineCount++ >= 500) {
+    if(lineCount++ >= 1200  ) {
       div.innerHTML = '';
       lineCount = 0;
     }
