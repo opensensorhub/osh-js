@@ -22,26 +22,17 @@ instance.ready
     init('h264');
     self.codec = null;
     let released = false;
-    let yuvCanvas;
+
+    self.bc = new BroadcastChannel('ffmpeg-draw-1');
 
     self.onmessage = function (e) {
       if(released) {
         return;
       }
 
-        if(e.data.message && e.data.message === 'canvas') {
-            self.yuvCanvas  = new YUVCanvas({
-                width: 1280,
-                height: 720,
-                contextOptions: {preserveDrawingBuffer: true},
-                canvas: e.data.canvas
-            });
-            self.yuvCanvas.init();
-            return;
-        }
-        if(e.data.message && e.data.message === 'release') {
-            release();
-            released = true;
+      if(e.data.message && e.data.message === 'release') {
+        release();
+        released = true;
       }
       if(e.data.codec !== self.codec) {
           init(e.data.codec);
@@ -129,24 +120,20 @@ instance.ready
       var frameUDataPtr = instance.getValue(decoded_frame + 4, '*');
       var frameVDataPtr = instance.getValue(decoded_frame + 8, '*');
 
+      const dec = {
+          yData:  new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
+          yDataPerRow: frame_width,
+          yRowCnt: frame_height,
+          uData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
+          uDataPerRow: frame_width / 2,
+          uRowCnt: frame_height / 2,
+          vData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+          vDataPerRow: frame_width / 2,
+          vRowCnt: frame_height / 2,
+          roll: 0
+      };
 
-      if(isDefined(self.yuvCanvas)) {
-          self.yuvCanvas.canvasElement.drawing = true;
-          self.yuvCanvas.drawNextOuptutPictureGL({
-              yData: new Uint8Array(instance.HEAPU8.buffer, frameYDataPtr, frameYDataPtr + frame_width * frame_height),
-              yDataPerRow: frame_width,
-              yRowCnt: frame_height,
-              uData: new Uint8Array(instance.HEAPU8.buffer,frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2),
-              uDataPerRow: frame_width / 2,
-              uRowCnt: frame_height / 2,
-              vData: new Uint8Array(instance.HEAPU8.buffer, frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2),
-              vDataPerRow: frame_width / 2,
-              vRowCnt: frame_height / 2,
-              roll: 0
-          });
-
-          self.yuvCanvas.canvasElement.drawing = false;
-      }
+      self.bc.postMessage(dec);
       return {
         timeStamp:timeStamp,
         pktSize:pktSize
