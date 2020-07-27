@@ -30,7 +30,8 @@ let videoView = new FFMPEGView("video-h264-draping-container", {
     css: "video-h264",
     name: "UAV Video",
     framerate:25,
-    showTime: true
+    showTime: true,
+    showStats: true
 });
 
 let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];

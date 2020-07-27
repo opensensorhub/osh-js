@@ -21,7 +21,8 @@ let videoView = new FFMPEGView("video-container", {
     css: "video-h264",
     name: "UAV Video",
     framerate:25,
-    showTime: true
+    showTime: true,
+    showStats: true
 });
 
 let rangeSlider = new RangeSlider("rangeSlider",{
