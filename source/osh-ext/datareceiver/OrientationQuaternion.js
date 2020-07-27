@@ -14,14 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from '../../osh/datareceiver/DataSource';
+import DataSource from '../../osh/datareceiver/DataSource.js';
 
 /**
  * This datasource provides parsing to Orientation Quaternion.
  * Data: ISODATE,Qx,Qy,Qz,Qw.
  * @extends DataSource
  * @example
- * import OrientationQuaternion from 'osh-ext/datareceiver/OrientationQuaternion';
+ * import OrientationQuaternion from 'osh-ext/datareceiver/OrientationQuaternion.js';
  *
  * let androidPhoneOrientationDataSource = new OrientationQuaternion("android-Orientation", {
         protocol: "ws",

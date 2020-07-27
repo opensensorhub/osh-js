@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from '../utils/Utils';
+import {isDefined} from '../utils/Utils.js';
 
 /**
  * This class is responsible for observing and firing events. It used an object as backed data structure.
@@ -27,6 +27,12 @@ class EventMap {
 
     remove(eventName, id) {
         if(eventName in this.eventMap) {
+            this.eventMap[eventName] = this.eventMap[eventName].filter(obj => obj.id !== id);
+        }
+    }
+
+    removeById(id) {
+        for(let eventName in this.eventMap) {
             this.eventMap[eventName] = this.eventMap[eventName].filter(obj => obj.id !== id);
         }
     }

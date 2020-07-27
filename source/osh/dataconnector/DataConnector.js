@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {randomUUID} from '../utils/Utils';
+import {randomUUID} from '../utils/Utils.js';
 
 /**
  * The DataConnector is the abstract class used to create different connectors.

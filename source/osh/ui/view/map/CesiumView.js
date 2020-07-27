@@ -15,9 +15,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined, randomUUID} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
+import View from "../View.js";
+import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
 
 import {
   when,
@@ -60,7 +60,7 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
  * @extends View
  * @example
 
- import CesiumView from 'osh/ui/view/map/CesiumView';
+ import CesiumView from 'osh/ui/view/map/CesiumView.js';
 
  let cesiumMapView = new CesiumView("",
  [{
@@ -345,6 +345,26 @@ class CesiumView extends View {
   }
 
   /**
+   * Removes a view item from the view.
+   * @param {Object} viewItem - The initial view items to add
+   * @param {String} viewItem.name - The name of the view item
+   * @param {Styler} viewItem.styler - The styler object representing the view item
+   */
+  removeViewItem(viewItem) {
+    const markerId = this.stylerToObj[viewItem.styler.id];
+    super.removeViewItem(viewItem);
+
+    if(isDefined(markerId)) {
+      let marker = this.markers[markerId];
+      if(isDefined(marker)) {
+        this.viewer.entities.remove(marker);
+      }
+
+      delete this.markers[markerId];
+    }
+  }
+
+  /**
    * Add a marker to the map.
    * @param {Object} properties
    * @param {Number} properties.lon
@@ -365,15 +385,17 @@ class CesiumView extends View {
     const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
     const fillColor = properties.labelColor;
     const labelSize = properties.labelSize;
-    const labelOffset = properties.labelOffset;
+    const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+    const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
     const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
         label != null ? label : "Selected Marker";
     const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
+    const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
+        Color.fromCssColorString(properties.color) : Color.YELLOW;
 
     var geom;
-    if (isModel)
-    {
+    if (isModel) {
       geom = {
         name: name,
         description: desc,
@@ -399,8 +421,6 @@ class CesiumView extends View {
       if (properties.orientation !== 'undefined') {
         rot = properties.orientation.heading;
       }
-      const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-      const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
       geom = {
         name: name,
@@ -518,11 +538,12 @@ class CesiumView extends View {
       //	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
 
       // update billboard aligned axis depending on camera angle
-      if (this.viewer.camera.pitch < -Math.PI/4)
-        marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
-      else
-        marker.billboard.alignedAxis = Cartesian3.ZERO;
-
+      if (marker.billboard) {
+        if (this.viewer.camera.pitch < -Math.PI / 4)
+          marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
+        else
+          marker.billboard.alignedAxis = Cartesian3.ZERO;
+      }
       // zoom map if first marker update
       if (this.first) {
         this.viewer.zoomTo(this.viewer.entities, new HeadingPitchRange(Math.toRadians(0), Math.toRadians(-90), 2000));

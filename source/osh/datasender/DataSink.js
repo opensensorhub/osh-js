@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Ajax from '../dataconnector/Ajax';
-import {randomUUID} from "../utils/Utils";
+import Ajax from '../dataconnector/Ajax.js';
+import {randomUUID} from "../utils/Utils.js";
 
 /**
  * This class is in charge of send command to the server

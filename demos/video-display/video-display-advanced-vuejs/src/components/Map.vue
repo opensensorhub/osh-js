@@ -6,8 +6,8 @@
 
 <script>
     // @ is an alias to /src
-import LeafletView from "osh/ui/view/map/LeafletView";
-import PointMarker from "osh/ui/styler/PointMarker";
+import LeafletView from "osh/ui/view/map/LeafletView.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 
 export default {
   name: "Map",

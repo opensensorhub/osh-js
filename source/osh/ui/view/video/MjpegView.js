@@ -14,19 +14,19 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
+import View from "../View.js";
+import {isDefined} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
 
 /**
  * @extends View
  * @example
  *
-import MjpegView from 'osh/ui/view/video/MjpegView';
+import MjpegView from 'osh/ui/view/video/MjpegView.js';
 
 var videoView = new MjpegView("containerId", {
     dataSourceId: datasource.id,
-    entityId : entity.id,
+    entity : entity,
     css: "video",
     cssSelected: "video-selected",
     name: "Video"
@@ -86,8 +86,11 @@ class MjpegView extends View {
   }
 
   setData(dataSourceId,data) {
+      let imgBlob = new Blob([data.data.frameData]);
+      let url = window.URL.createObjectURL(imgBlob);
+
       let oldBlobURL = this.imgTag.src;
-      this.imgTag.src = data.data;
+      this.imgTag.src = url;
       if (this.timeStamp !== null) {
           this.timeStamp.innerHTML = new Date(data.timeStamp).toISOString();
       }
@@ -95,7 +98,7 @@ class MjpegView extends View {
   }
 
   selectDataView(dataSourceIds,entityId) {
-    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entityId)) && this.entityId === entityId) {
+    if(dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entity)) && this.entity.getId() === entityId) {
       document.getElementById(this.divId).setAttribute("class",this.css+" "+this.cssSelected);
     } else {
       document.getElementById(this.divId).setAttribute("class",this.css);

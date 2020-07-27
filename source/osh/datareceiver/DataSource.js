@@ -14,10 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {randomUUID, isDefined} from '../utils/Utils';
-import WebSocketConnector from "../dataconnector/WebSocketConnector";
-import Ajax from "../dataconnector/Ajax";
-import EventManager from "../events/EventManager";
+import {randomUUID, isDefined} from '../utils/Utils.js';
+import WebSocketConnector from "../dataconnector/WebSocketConnector.js";
+import Ajax from "../dataconnector/Ajax.js";
+import EventManager from "../events/EventManager.js";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -28,7 +28,6 @@ class DataSource {
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
      * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
-     * @param {Boolean} properties.syncMasterTime - defines if the datasource is synchronize with the others one
      * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
      * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
@@ -81,10 +80,6 @@ class DataSource {
 
         if (isDefined(properties.timeOut)) {
             this.timeOut = properties.timeOut;
-        }
-
-        if (!isDefined(properties.connect)) {
-            properties.connect = true;
         }
 
         if (isDefined(properties.reconnectTimeout)) {

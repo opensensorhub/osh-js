@@ -20,8 +20,8 @@
  * @param {String} viewItems - The list of view items
  * @param {String} options - The options
  */
-import {isDefined, randomUUID} from '../../utils/Utils';
-import EventManager from '../../events/EventManager';
+import {isDefined, randomUUID} from '../../utils/Utils.js';
+import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
 
 class View {
@@ -33,12 +33,14 @@ class View {
      * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} options - the properties of the view
      * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
-     * @param {String} options.entityId - The entity id to which the view belongs to
+     * @param {Entity} options.entity - The entity to which the view belongs to
      */
     constructor(parentElementDivId, viewItems, options) {
         // list of stylers
+        /** @protected @const {!Styler} */
         this.stylers = [];
         this.viewItems = [];
+        /** @protected @const {!String[]} */
         this.names = {};
         this.stylerToObj = {};
         this.stylerIdToStyler = {};
@@ -49,14 +51,17 @@ class View {
         //this.divId = divId;
         this.id = "view-" + randomUUID();
 
+        /** @protected {!Entity} */
+        this.entity = null;
+
         this.dataSourceId = -1;
         // sets dataSourceId
         if (isDefined(options) && isDefined(options.dataSourceId)) {
             this.dataSourceId = options.dataSourceId;
         }
 
-        if (isDefined(options) && isDefined(options.entityId)) {
-            this.entityId = options.entityId;
+        if (isDefined(options) && isDefined(options.entity)) {
+            this.entity = options.entity;
         }
         this.css = "";
 
@@ -127,9 +132,19 @@ class View {
                 }
             });
         });
-
         // Attach the mutation observer to blocker, and only when attribute values change
         observer.observe(this.elementDiv, {attributes: true});
+
+        const rootObserver = new MutationObserver(function(mutations) {
+            // try to get the div element by the id to check if it is still owned by the document object
+            if(!isDefined(document.getElementById(that.divId))){
+                this.disconnect();
+                that.destroy();
+            }
+        });
+        rootObserver.observe(document.body, {
+            childList: true,
+        });
     }
 
     registerCallback() {
@@ -142,8 +157,11 @@ class View {
         }, this.divId);
     }
 
+    /**
+     * @private
+     */
     unregisterCallback() {
-        EventManager.remove(this.getEventName(), this.divId);
+        EventManager.removeById(this.divId);
     }
 
     getEventName() {
@@ -233,7 +251,7 @@ class View {
      * @param {String} viewItem.name - The name of the view item
      * @param {Styler} viewItem.styler - The styler object representing the view item
      */
-    async addViewItem(viewItem) {
+    addViewItem(viewItem) {
         this.viewItems.push(viewItem);
         if (viewItem.hasOwnProperty("styler")) {
             let styler = viewItem.styler;
@@ -247,7 +265,7 @@ class View {
             //for(let dataSourceId in styler.dataSourceToStylerMap) {
             let ds = styler.getDataSourcesIds();
             for (let i = 0; i < ds.length; i++) {
-                let dataSourceId = ds[i];
+                const dataSourceId = ds[i];
                 // observes the data come in
                 let self = this;
                 // see https://www.pluralsight.com/guides/javascript-callbacks-variable-scope-problem
@@ -298,18 +316,31 @@ class View {
      * @param {Object} viewItem - The initial view items to add
      * @param {String} viewItem.name - The name of the view item
      * @param {Styler} viewItem.styler - The styler object representing the view item
-     * @return {Promise<void>}
      */
-    async removeViewItem(viewItem) {
+    removeViewItem(viewItem) {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
                 EventManager.remove(EventManager.EVENT.DATA + "-" + ds, this.divId);
+                delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
+        }
+        delete this.stylerIdToStyler[viewItem.styler.id]
+        this.stylers = this.stylers.filter(currentStyler => currentStyler.id !== viewItem.styler.id);
+        delete this.names[viewItem.styler.id];
+        delete this.stylerToObj[viewItem.styler.id]
+    }
 
+    /**
+     * Removes all view item from the view.
+     */
+    removeViewItems() {
+        for(const viewItem of this.viewItems) {
+            this.removeViewItem(viewItem);
         }
     }
+
     /**
      * @private
      */
@@ -317,19 +348,19 @@ class View {
         var that = this;
         // observes the selected event
         EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) =>
-            that.selectDataView(event.dataSourcesIds, event.entityId));
+            that.selectDataView(event.dataSourcesIds, event.entityId),this.divId);
 
         // observes the SHOW event
-        EventManager.observe(EventManager.EVENT.SHOW_VIEW, (event) => that.show(event));
+        EventManager.observe(EventManager.EVENT.SHOW_VIEW, (event) => that.show(event),this.divId);
 
         EventManager.observe(EventManager.EVENT.ADD_VIEW_ITEM, (event) => {
             if (isDefined(event.viewId) && event.viewId === that.id) {
                 that.addViewItem(event.viewItem);
             }
-        });
+        },this.divId);
 
         EventManager.observe(EventManager.EVENT.RESIZE + "-" + this.divId, (event) =>
-            that.onResize());
+            that.onResize(),this.divId);
     }
 
     /**

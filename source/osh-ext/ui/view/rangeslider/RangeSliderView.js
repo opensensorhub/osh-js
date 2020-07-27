@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../../../../osh/ui/view/View";
-import EventManager from "../../../../osh/events/EventManager";
-import {isDefined} from "../../../../osh/utils/Utils";
+import View from "../../../../osh/ui/view/View.js";
+import EventManager from "../../../../osh/events/EventManager.js";
+import {isDefined} from "../../../../osh/utils/Utils.js";
 import "../../../resources/css/noUISlider.css";
 import * as noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.min.css';
@@ -26,7 +26,7 @@ import * as wNumb from 'wnumb';
  * @extends View
  * @example
  *
- * import RangeSliderView from 'osh-ext/view/RangeSliderView';
+ * import RangeSliderView from 'osh-ext/view/RangeSliderView.js';
  *
  * let rangeSlider = new RangeSliderView("rangeSlider",{
     dataSourceId: dataSource.id,
@@ -53,8 +53,7 @@ class RangeSliderView extends View {
     let aTagActivateButton = document.createElement("a");
     activateButtonDiv.appendChild(aTagActivateButton);
 
-
-    this.slider.setAttribute("class", "osh-èrangeslider-slider");
+    this.slider.setAttribute("class", "osh-rangeslider-slider");
     activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
 
     let self = this;

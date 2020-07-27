@@ -93,11 +93,12 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SweJson from "osh/datareceiver/SweJson";
-  import VideoMjpeg from "osh/datareceiver/VideoMjpeg";
-  import {randomUUID} from "osh/utils/Utils";
-  import DataReceiverController from "osh/datareceiver/DataReceiverController";
-  import EventManager from "osh/events/EventManager";
+  import SweJson from "osh/datareceiver/SweJson.js";
+  import Video from "osh/datareceiver/Video.js";
+  import {randomUUID} from "osh/utils/Utils.js";
+  import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
+  import EventManager from "osh/events/EventManager.js";
+  import Entity from "osh/entity/Entity.js";
 
   export default {
     components: {
@@ -141,7 +142,7 @@
           bufferingTime: 0,
           replaySpeed: 2
         }),
-        videoDataSource: new VideoMjpeg("android-Video", {
+        videoDataSource: new Video("android-Video", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -188,14 +189,9 @@
       this.dataSources['4'] = this.headingDataSource;
       this.dataSources['5'] = this.weatherDataSource;
 
-      let androidEntity = {
-        id: "entity-" + randomUUID(),
-        name: "Android Phone",
-        dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
-      };
-
+      const entity = new Entity("Android phone",  [this.locationDataSource, this.videoDataSource, this.headingDataSource] );
       // We can add a group of dataSources and set the options
-      this.dataProviderController.addEntity(androidEntity);
+      this.dataProviderController.addEntity(entity);
       this.dataProviderController.addDataSource(this.weatherDataSource, {});
     },
     methods: {

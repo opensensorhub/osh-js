@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import EventMap from './EventMap';
+import EventMap from './EventMap.js';
 
 const eventMap = new EventMap();
 
@@ -25,6 +25,10 @@ class EventManager {
 
     static remove(eventName, id ='any') {
         eventMap.remove('osh:' + eventName, id);
+    }
+
+    static removeById(id ='any') {
+        eventMap.removeById(id);
     }
 
     static registerView(view) {

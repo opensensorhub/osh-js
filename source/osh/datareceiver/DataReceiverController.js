@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from '../utils/Utils';
-import EventManager from '../events/EventManager';
-import Buffer from "../buffer/Buffer";
+import {isDefined} from '../utils/Utils.js';
+import EventManager from '../events/EventManager.js';
+import DataSynchronizer from "../datasynchronizer/DataSynchronizer.js";
 
 /**
  * This class is responsible of handling datasources. It observes necessary events to manage datasources.
@@ -24,7 +24,7 @@ import Buffer from "../buffer/Buffer";
  * @listens {@link DISCONNECT_DATASOURCE}
  * @listens {@link DATASOURCE_UPDATE_TIME}
  * @example
- *import DataReceiverController from 'osh/datareceiver/DataReceiverController';
+ *import DataReceiverController from 'osh/datareceiver/DataReceiverController.js';
  *
  * let datasource = new <>
  *
@@ -37,11 +37,7 @@ import Buffer from "../buffer/Buffer";
  * dataProviderController.addDataSource(weatherDataSource);
  *
  * // and/or adds entity to controller
- * let entity = {
- *       id : "entity-"+randomUUID(),
- *       name: "Some entity",
- *       dataSources: [datasource]
- * };
+ * let entity = new Entity("Some entity", [datasource])
  *
  * dataProviderController.addEntity(entity);
  *
@@ -168,20 +164,18 @@ class DataReceiverController {
      * @private
      */
     initBuffer() {
-        this.buffer = new Buffer(this.options);
+        this.buffer = new DataSynchronizer(this.options);
     }
 
     /**
      * Adds an entity to the current list of datasources and pushes it into the buffer.
      * @see {@link Buffer}
-     * @param {Object} entity - the datasource to add
+     * @param {Entity} entity - the entity to add
      * @param options @deprecated
      */
     addEntity(entity, options) {
-        if (isDefined(entity.dataSources)) {
-            for (let i = 0; i < entity.dataSources.length; i++) {
-                this.addDataSource(entity.dataSources[i], options);
-            }
+        for (let i = 0; i < entity.getDataSources().length; i++) {
+            this.addDataSource(entity.getDataSources()[i], options);
         }
     }
 
@@ -212,7 +206,7 @@ class DataReceiverController {
         this.buffer.start();
         for (let id in this.dataSourcesIdToDataSources) {
             let ds = this.dataSourcesIdToDataSources[id];
-            if (ds.properties.connect) {
+            if (!ds.connected) {
                 ds.connect();
             }
         }

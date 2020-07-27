@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View";
-import {isDefined, randomUUID} from "../../../utils/Utils";
-import EventManager from "../../../events/EventManager";
+import View from "../View.js";
+import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import EventManager from "../../../events/EventManager.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -25,7 +25,7 @@ import 'leaflet/dist/leaflet.css';
  * @extends View
  * @example
 
- import LeafletView from 'osh/ui/view/map/LeafletView';
+ import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
  let leafletMapView = new LeafletView("",
  [{
@@ -65,6 +65,7 @@ class LeafletView extends View {
      * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} options - the properties of the view
      * @param {Boolean} options.autoZoomOnFirstMarker - auto zoom on the first added marker
+     * @param {Boolean} options.follow - follow the marker
      * @param {Object} options.initialView - {lon:.., lat:..}
      * @param {Object[]} options.overlayLayers - OpenLayers objects to use as overlay layer
      * @param {Object[]} options.baseLayers - OpenLayers objects to use as base layer
@@ -93,7 +94,8 @@ class LeafletView extends View {
             zoom: 3
         };
         this.first = true;
-        this.watch = false;
+        this.follow = false;
+        this.autoZoomOnFirstMarker = false;
         let defaultLayers = this.getDefaultLayers();
 
         let defaultLayer = defaultLayers[0].layer;
@@ -113,12 +115,9 @@ class LeafletView extends View {
             }
             // checks autoZoom
             if (isDefined(options.autoZoomOnFirstMarker)) {
-                this.first = false;
-            }
-
-            if(isDefined(options.autoZoomOnFirstMarker)) {
                 this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
             }
+
             // checks overlayers
             if (isDefined(options.overlayLayers)) {
                 overlays = options.overlayLayers;
@@ -127,6 +126,10 @@ class LeafletView extends View {
             // checks baseLayer
             if (isDefined(options.baseLayers)) {
                 baseLayers = options.baseLayers;
+            }
+
+            if (isDefined(options.follow)) {
+                this.follow = options.follow;
             }
 
             // checks defaultLayer
@@ -148,6 +151,7 @@ class LeafletView extends View {
         //this.initLayers();
         this.markers = {};
         this.polylines = {};
+
     }
 
     /**
@@ -248,11 +252,6 @@ class LeafletView extends View {
 
         let id = "view-marker-" + randomUUID();
         this.markers[id] = marker;
-
-        if (this.first === true) {
-          this.map.setView(new L.LatLng(properties.lat, properties.lon), 19);
-          this.first = false;
-        }
         let self = this;
 
         marker._icon.id = id;
@@ -275,14 +274,17 @@ class LeafletView extends View {
         return id;
     }
 
-    async removeViewItem(viewItem) {
-        await super.removeViewItem(viewItem);
-        let markerId = this.stylerToObj[viewItem.styler.getId()];
-        let marker = this.markers[markerId];
-        this.map.removeLayer(marker);
+    removeViewItem(viewItem) {
+        const markerId = this.stylerToObj[viewItem.styler.id];
+        super.removeViewItem(viewItem);
+        if(isDefined(markerId)) {
+            let marker = this.markers[markerId];
+            if(isDefined(marker)) {
+                this.map.removeLayer(marker);
+            }
 
-        delete this.stylerToObj[viewItem.styler.getId()];
-        delete this.markers[markerId];
+            delete this.markers[markerId];
+        }
     }
 
     /**
@@ -351,12 +353,14 @@ class LeafletView extends View {
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
-            if(this.autoZoomOnFirstMarker) {
-                var latLngs = [newLatLng ];
-                var markerBounds = L.latLngBounds(latLngs);
+            if((this.first && this.autoZoomOnFirstMarker) || this.follow) {
+                const markerBounds = L.latLngBounds([newLatLng ]);
                 this.map.fitBounds(markerBounds, {
-                    maxZoom: 17
+                    maxZoom: styler.zoomLevel
                 });
+                if(this.first) {
+                    this.first = false;
+                }
             }
         }
 

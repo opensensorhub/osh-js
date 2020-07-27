@@ -21,7 +21,7 @@ import Styler from "./Styler.js";
  * @extends Styler
  * @example
  *
- * import PointMarker from 'osh/ui/styler/PointMarker';
+ * import PointMarker from 'osh/ui/styler/PointMarker.js';
  *
  * let pointMarker = new PointMarker({
         location : {
@@ -64,8 +64,8 @@ class PointMarker extends Styler {
 	/**
 		* Create the PointMarker
 		* @param {Object} properties
-		* @param {Number[]} properties.location - [x,y]
-  * @param {Number} [properties.orientation=0] -
+		* @param {Number[]} properties.location - [x,y,z]
+  		* @param {Number} [properties.orientation=0] -
 		* @param {String} properties.icon -
 		* @param {Number[]} [properties.iconAnchor=[16,16]] -
 		* @param {Number[]} [properties.iconSize=[16,16]] -
@@ -79,6 +79,7 @@ class PointMarker extends Styler {
 		* @param {Function} properties.labelFunc -
 		* @param {Function} properties.labelColorFunc -
 		* @param {Function} properties.labelSizeFunc -
+	 	* @param {Number} [properties.zoomLevel=15] -
 		*
 		*/
 	constructor(properties) {
@@ -93,7 +94,7 @@ class PointMarker extends Styler {
 		this.labelColor = "#000000";
 		this.labelSize = 16;
 		this.labelOffset = [0,0];
-
+		this.zoomLevel = 15;
 		this.color = null;
 		this.defaultToTerrainElevation = false;
 
@@ -146,6 +147,12 @@ class PointMarker extends Styler {
 		if (hasValue(properties.labelOffset)) {
 			assertArray(properties.labelOffset, "labelOffset");
 			this.labelOffset = properties.labelOffset;
+		}
+
+
+		if (hasValue(properties.zoomLevel)) {
+			assertPositive(properties.zoomLevel, "zoomLevel");
+			this.zoomLevel = properties.zoomLevel;
 		}
 
 		let that = this;

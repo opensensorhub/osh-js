@@ -15,8 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import View from "../View";
-import {isDefined, randomUUID} from "../../../utils/Utils";
+import View from "../View.js";
+import {isDefined, randomUUID} from "../../../utils/Utils.js";
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
 

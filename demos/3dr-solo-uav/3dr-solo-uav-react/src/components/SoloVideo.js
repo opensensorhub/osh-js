@@ -1,8 +1,8 @@
 import * as React from "react";
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
-import VideoH264 from "osh/datareceiver/VideoH264";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView";
+import VideoH264 from "osh/datareceiver/Video.js";
+import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 
 export class SoloVideoComponent extends React.Component {
   constructor(props) {
@@ -30,8 +30,9 @@ export class SoloVideoComponent extends React.Component {
       dataSourceId: videoDataSource.id,
       css: "video-h264",
       name: "UAV Video",
-      framerate:25,
-      showTime: true
+      directPlay: true,
+      showTime: true,
+      showStats: true
     });
 
     // start streaming

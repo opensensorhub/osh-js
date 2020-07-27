@@ -14,14 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataConnector from './DataConnector';
-import {isWebWorker} from '../utils/Utils';
+import DataConnector from './DataConnector.js';
+import {isWebWorker} from '../utils/Utils.js';
 
 /**
  * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
  * @extends DataConnector
  * @example
- * import Buffer from 'osh/dataconnector/WebSocketConnector';
+ * import Buffer from 'osh/dataconnector/WebSocketConnector.js';
  *
  * let url = ...;
  * let connector = new WebSocketConnector(url);
