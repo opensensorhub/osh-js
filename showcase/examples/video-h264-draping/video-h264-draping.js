@@ -156,7 +156,7 @@ cesiumView.viewer.camera.setView({
 
 // select bing maps as default imagery
 const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[3];
 
 // start streaming
 videoDataSource.connect();
