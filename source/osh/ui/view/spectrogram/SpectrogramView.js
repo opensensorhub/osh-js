@@ -153,7 +153,7 @@ class SpectrogramView extends View {
         this.xBar = this.svg.select('g.x.axis')
             .call(newXAxis);
 
-        let bandwidth = 2* this.width/this.spectrogramData.length;
+        let bandwidth = 10* this.width/this.spectrogramData.length;
 
         this.svg.selectAll('rect')
             .data(this.spectrogramData)
