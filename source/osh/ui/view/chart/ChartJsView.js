@@ -86,8 +86,6 @@ class ChartJsView extends View {
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
         domNode.appendChild(ctx);
-        console.log(domNode);
-        console.log(ctx);
 
         const { maxTicksLimit } = this.tickOpts || 5;
         this.maxPoints = maxTicksLimit;
