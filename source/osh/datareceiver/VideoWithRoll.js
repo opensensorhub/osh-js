@@ -14,7 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Video from './Video.js';
+import DataSource from "./DataSource";
+import VideoWithRollWorker from './workers/VideoWithRoll.worker.js';
 
 /**
  * This datasource provides parsing to H264 raw data with roll.
@@ -36,18 +37,20 @@ import Video from './Video.js';
         bufferingTime: 1000
   });
  */
-class VideoWithRoll extends Video {
+class VideoWithRoll extends DataSource {
     /**
-     * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
-     * @param {ArrayBuffer} data - the data to parse
-     * @return {Uint8Array} the parsed data
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
+     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
+     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
      */
-    parseData(data) {
-        return {
-            // H264 NAL unit starts at offset 14 after 8-bytes time stamp, 2-bytes roll value, and 4-bytes frame length
-            frameData: new Uint8Array(data, 14),
-            roll: new DataView(data).getInt16(8, false)
-        }
+    constructor(name, properties) {
+        super(name, {
+            reconnectTimeout: 1000 * 5, // default if not defined into properties
+            ...properties
+        }, new VideoWithRollWorker());
     }
 }
 
