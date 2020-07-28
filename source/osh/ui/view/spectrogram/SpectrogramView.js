@@ -40,6 +40,7 @@ class SpectrogramView extends View {
         this.minFreq = 0;
         this.maxFreq = 4000;
         this.numBands = 10;
+        this.maxDataPoints = 1000;
         this.isSim = false;
         this.tickArray = [];
         for (let i = 0; i <= this.numBands; i++) {
@@ -54,27 +55,33 @@ class SpectrogramView extends View {
         thisDiv.style.height = thisDiv.parentElement.getBoundingClientRect().height + 'px';
         // this.width = thisDiv.getBoundingClientRect().width;
         // this.height = thisDiv.getBoundingClientRect().height;
-        this.width = 550;
-        this.height = 305;
-        this.xOffset = (0.15 * this.width);
+        this.width = 500;
+        this.height = 350;
+        this.xOffset = (0.10 * this.width);
         this.yOffset = (0.90 * this.height);
         this.yOffsetBottom = 10;
 
         // Draw Spectrogram
         // The div that will be the root of the D3JS Chart
         this.container = d3.select('#' + this.divId);
+        this.width = parseInt(this.container.style('width'), 10);
+        this.height = parseInt(this.container.style('height'), 10);
+        this.aspect = this.width / this.height;
+
+        console.log(this.width, this.height, this.aspect);
 
         this.svg = this.container.append('svg')
             .classed('spec-svg', true)
-            .attr("viewBox", `0 0 ${this.width} ${this.height}`);
-        // .attr('width', this.width + 'px')
-        // .attr('height', this.height + 'px');
+            .attr("viewBox", `0 0 ${this.width} ${this.height}`)
+            .attr('preserveAspectRatio', 'xMinYMid')
+            .call(this.makeResponsive);
+
         console.log(this.svg);
 
         // Setup Scales
         this.initXScale = d3.scaleTime()
             .domain([this.minDate, this.maxDate])
-            .range([this.xOffset, this.width - 5]);
+            .range([this.xOffset, this.width - 100]);
         this.initXAxis = d3.axisBottom(this.initXScale);
 
         this.initYScale = d3.scaleLinear()
@@ -128,6 +135,13 @@ class SpectrogramView extends View {
      * Draws the spectrogram
      */
     draw() {
+        // check for dataset size
+        if(this.spectrogramData.length > this.maxDataPoints){
+            let pointsToCull = this.spectrogramData.length - this.maxDataPoints;
+            this.spectrogramData = this.spectrogramData.slice(pointsToCull, this.spectrogramData.length);
+        }
+
+        this.minDate = this.spectrogramData[0].time;
         this.maxDate = Date.now();
 
         let tempXScale = d3
@@ -139,10 +153,12 @@ class SpectrogramView extends View {
         this.xBar = this.svg.select('g.x.axis')
             .call(newXAxis);
 
+        let bandwidth = 2* this.width/this.spectrogramData.length;
+
         this.svg.selectAll('rect')
             .data(this.spectrogramData)
             .join('rect')
-            .attr('width', '5')
+            .attr('width', bandwidth)
             .attr('height', d => this.initYScale(d.freqBand[0]) - this.initYScale(d.freqBand[1]))
             .attr('x', d => tempXScale(d.time))
             .attr('y', d => this.initYScale(d.freqBand[1]))
@@ -168,6 +184,47 @@ class SpectrogramView extends View {
         }
 
         return tempDataArr;
+    }
+
+
+    makeResponsive(svg) {
+        // container will be the DOM element
+        // that the svg is appended to
+        // we then measure the container
+        // and find its aspect ratio
+        const container = d3.select(svg.node().parentNode),
+            width = parseInt(svg.style('width'), 10),
+            height = parseInt(svg.style('height'), 10),
+            aspect = width / height;
+
+        // set viewBox attribute to the initial size
+        // control scaling with preserveAspectRatio
+        // resize svg on inital page load
+        svg.attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('preserveAspectRatio', 'xMinYMid')
+            .call(resize);
+
+        // add a listener so the chart will be resized
+        // when the window resizes
+        // multiple listeners for the same event type
+        // requires a namespace, i.e., 'click.foo'
+        // api docs: https://goo.gl/F3ZCFr
+        d3.select(window).on(
+            'resize.' + container.attr('id'),
+            resize
+        );
+
+        // this is the code that resizes the chart
+        // it will be called on load
+        // and in response to window resizes
+        // gets the width of the container
+        // and resizes the svg to fill it
+        // while maintaining a consistent aspect ratio
+        function resize() {
+            const w = parseInt(container.style('width'));
+            svg.attr('width', w - 5);
+            svg.attr('height', Math.round(w / aspect));
+        }
     }
 }
 
