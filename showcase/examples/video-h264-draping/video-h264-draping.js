@@ -30,7 +30,8 @@ let videoView = new FFMPEGView("video-h264-draping-container", {
     css: "video-h264",
     name: "UAV Video",
     framerate:25,
-    showTime: true
+    showTime: true,
+    showStats: true
 });
 
 let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
@@ -155,7 +156,7 @@ cesiumView.viewer.camera.setView({
 
 // select bing maps as default imagery
 const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[3];
 
 // start streaming
 videoDataSource.connect();

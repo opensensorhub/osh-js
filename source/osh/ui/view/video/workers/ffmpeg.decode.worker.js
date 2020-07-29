@@ -1,4 +1,6 @@
 import Module from './ffmpeg-h264.js';
+import YUVCanvas from "../YUVCanvas";
+import {isDefined} from "../../../../utils/Utils";
 
 let instance = {
   ready: new Promise(resolve => {
@@ -20,6 +22,9 @@ instance.ready
     init('h264');
     self.codec = null;
     let released = false;
+
+    self.bc = new BroadcastChannel('ffmpeg-draw-1');
+
     self.onmessage = function (e) {
       if(released) {
         return;
@@ -34,15 +39,10 @@ instance.ready
       }
       var data = e.data;
       var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize),
-          data.timeStamp);
+          data.timeStamp, data.roll);
       if (typeof decodedFrame != "undefined") {
-        decodedFrame.roll = data.roll;
-        self.postMessage(decodedFrame, [
-          decodedFrame.frameYData.buffer,
-          decodedFrame.frameUData.buffer,
-          decodedFrame.frameVData.buffer,
-          data.pktData,
-        ]);
+        // decodedFrame.roll = data.roll;
+        self.postMessage(decodedFrame);
       }
     };
     self.onerror = (e) => {
@@ -92,7 +92,7 @@ instance.ready
       // instance._av_frame_free(self.av_frame);
     }
 
-    function innerWorkerDecode(pktSize, pktData, timeStamp) {
+    function innerWorkerDecode(pktSize, pktData, timeStamp, roll) {
       // prepare packet
       instance.setValue(self.av_pkt + 28, pktSize, 'i32');
       instance.writeArrayToMemory(pktData, self.av_pktData);
@@ -120,16 +120,23 @@ instance.ready
       var frameUDataPtr = instance.getValue(decoded_frame + 4, '*');
       var frameVDataPtr = instance.getValue(decoded_frame + 8, '*');
 
+      const dec = {
+          yData:  new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
+          yDataPerRow: frame_width,
+          yRowCnt: frame_height,
+          uData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
+          uDataPerRow: frame_width / 2,
+          uRowCnt: frame_height / 2,
+          vData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+          vDataPerRow: frame_width / 2,
+          vRowCnt: frame_height / 2,
+          roll: roll,
+          width: frame_width,
+          height: frame_height
+      };
 
+      self.bc.postMessage(dec);
       return {
-        frame_width: frame_width,
-        frame_height: frame_height,
-        frameYDataPtr: frameYDataPtr,
-        frameUDataPtr: frameUDataPtr,
-        frameVDataPtr: frameVDataPtr,
-        frameYData: new Uint8Array(instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-        frameUData: new Uint8Array(instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-        frameVData: new Uint8Array(instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
         timeStamp:timeStamp,
         pktSize:pktSize
       };

@@ -164,9 +164,6 @@
           endTime: "2055-01-01Z",
           syncMasterTime: false,
           bufferingTime: 0
-        }),
-        dataProviderController: new DataReceiverController({
-          replayFactor: 2
         })
       }
     },
@@ -189,10 +186,29 @@
       this.dataSources['4'] = this.headingDataSource;
       this.dataSources['5'] = this.weatherDataSource;
 
-      const entity = new Entity("Android phone",  [this.locationDataSource, this.videoDataSource, this.headingDataSource] );
       // We can add a group of dataSources and set the options
-      this.dataProviderController.addEntity(entity);
-      this.dataProviderController.addDataSource(this.weatherDataSource, {});
+       this.dataProviderController = new DataReceiverController({
+           replayFactor: 2,
+           dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
+       });
+
+        EventManager.observe(EventManager.EVENT.CONNECT_DATASOURCE, (event) => {
+            let eventDataSourcesIds = event.dataSourcesId;
+            for(let dsId of eventDataSourcesIds) {
+                if(dsId === this.weatherDataSource.id) {
+                    this.weatherDataSource.connect();
+                }
+            }
+        });
+
+        EventManager.observe(EventManager.EVENT.DISCONNECT_DATASOURCE, (event) => {
+            let eventDataSourcesIds = event.dataSourcesId;
+            for(let dsId of eventDataSourcesIds) {
+                if(dsId === this.weatherDataSource.id) {
+                    this.weatherDataSource.disconnect();
+                }
+            }
+        });
     },
     methods: {
       onSelect(nodes) {

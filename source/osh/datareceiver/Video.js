@@ -47,8 +47,10 @@ class Video extends DataSource {
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
      */
     constructor(name, properties) {
-        super(name, properties);
-        this.setReconnectTimeout(1000 * 5); // 5 sec
+        super(name, {
+            reconnectTimeout: 1000 * 5, // default if not defined into properties
+            ...properties
+        });
     }
 
     /**

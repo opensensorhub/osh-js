@@ -81,7 +81,7 @@ class WebSocketConnector extends DataConnector {
                 }.toString(), ')()'],
             {type: 'application/javascript'}));
         this.interval = -1;
-        this.lastTimestamp = -1;
+        this.lastReceiveTime = -1;
     }
 
     /**
@@ -98,7 +98,7 @@ class WebSocketConnector extends DataConnector {
 
                 this.worker.postMessage(url);
                 this.worker.onmessage = function (e) {
-                    this.lastTimestamp = Date.now();
+                    this.lastReceiveTime = Date.now();
                     this.onMessage(e.data);
                 }.bind(this);
 
@@ -113,7 +113,7 @@ class WebSocketConnector extends DataConnector {
                 this.ws = new WebSocket(this.getUrl());
                 this.ws.binaryType = 'arraybuffer';
                 this.ws.onmessage = function (event) {
-                    this.lastTimestamp = Date.now();
+                    this.lastReceiveTime = Date.now();
                     //callback data on message received
                     if (event.data.byteLength > 0) {
                         this.onMessage(event.data);
@@ -125,17 +125,17 @@ class WebSocketConnector extends DataConnector {
                     console.error('WebSocket stream error: ' + event);
                     this.ws.close();
                     this.init = false;
-                    this.lastTimestamp = -1;
+                    this.lastReceiveTime = -1;
                 }.bind(this);
             }
 
             //init the reconnect handler
             if (this.interval === -1) {
                 this.interval = window.setInterval(function () {
-                    let currentTimestamp = Date.now();
-                    let delta = currentTimestamp - this.lastTimestamp;
-                    if (this.lastTimestamp === -1 || (delta >= this.reconnectTimeout)) {
-                        console.warn('trying to reconnect..');
+                    let delta = Date.now() - this.lastReceiveTime;
+                    // -1 means the WS went in error
+                    if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
+                        console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
                         this.reconnect();
                     }
                 }.bind(this), this.reconnectTimeout);

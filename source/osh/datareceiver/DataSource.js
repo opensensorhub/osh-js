@@ -28,7 +28,6 @@ class DataSource {
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
      * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
-     * @param {Boolean} properties.syncMasterTime - defines if the datasource is synchronize with the others one
      * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
      * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
@@ -40,6 +39,7 @@ class DataSource {
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
      * @return {String} the full url
      */
     constructor(name, properties) {
@@ -48,11 +48,13 @@ class DataSource {
         this.properties = properties;
         this.timeShift = 0;
         this.connected = false;
+        this.reconnectTimeout = 1000 * 60 * 2; //2 min
 
         this.initDataSource(properties);
 
-        this.lastTimeStamp = Date.now();
+        this.lastTimeStamp = null;
         this.lastStartTime = 'now';
+
     }
 
     /**
@@ -80,6 +82,10 @@ class DataSource {
             this.timeOut = properties.timeOut;
         }
 
+        if (isDefined(properties.reconnectTimeout)) {
+            this.reconnectTimeout = properties.reconnectTimeout;
+        }
+
         // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) {
             this.connector = new WebSocketConnector(this.buildUrl(properties));
@@ -92,11 +98,18 @@ class DataSource {
             this.connector.onMessage = this.onMessage.bind(this);
         }
 
+        this.connector.setReconnectTimeout(this.reconnectTimeout);
+
+        const lastStartTimeCst  = this.lastStartTime;
         this.connector.onReconnect = () => {
-            // if not real time, preserve last timestamp
-            if(this.lastStartTime !== 'now') {
-                properties.startTime = new Date(this.lastTimeStamp).toISOString();
-                this.connector.setUrl(this.buildUrl(properties));
+            // if not real time, preserve last timestamp to reconnect at the last time received
+            // for that, we update the URL with the new last time received
+            if(lastStartTimeCst !== 'now') {
+                this.connector.setUrl(this.buildUrl(
+                    {
+                        lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
+                        ...properties
+                    }));
             }
         }
     }
@@ -224,6 +237,7 @@ class DataSource {
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Number} properties.bitrate the bitrate of the video in KB/s
      * @param {Number} properties.scale the scale ratio of the video in [0..1]
+     * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
      * @return {String} the full url
      */
     buildUrl(properties) {
@@ -256,10 +270,10 @@ class DataSource {
         url += "observedProperty=" + properties.observedProperty + "&";
 
         // adds temporalFilter
+        const stTime = (isDefined(properties.lastTimeStamp)) ? properties.lastTimeStamp :  properties.startTime;
         this.lastStartTime = properties.startTime;
-
         let endTime = properties.endTime;
-        url += "temporalFilter=phenomenonTime," + this.lastStartTime + "/" + endTime + "&";
+        url += "temporalFilter=phenomenonTime," + stTime+ "/" + endTime + "&";
 
         if (properties.replaySpeed) {
             // adds replaySpeed
@@ -280,16 +294,6 @@ class DataSource {
         }
         return url;
     }
-
-    /**
-     * Set the delay before reconnecting the dataSource
-     * @param {Number} timeout - the delay in ms after reconnecting the dataSource
-     */
-    setReconnectTimeout (timeout) {
-        return  this.connector.setReconnectTimeout(timeout);
-    }
-
-
 }
 
 export default DataSource;

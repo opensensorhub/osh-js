@@ -2,6 +2,8 @@
 **/.settings
 **/.externalToolBuilders
 **/.idea
+**/package-lock.json
+**/yarn.lock
 Toolkit/node_modules
 Toolkit/vendor
 Toolkit/.idea
@@ -17,3 +19,4 @@ out
 documentation/jsdoc/build/
 **/video-display-advanced-android-vuejs/
 ../video-display-advanced-android-vuejs/
+/issues/166/

@@ -16,7 +16,7 @@
 
 import {isDefined} from '../utils/Utils.js';
 import EventManager from '../events/EventManager.js';
-import Buffer from "../buffer/Buffer.js";
+import DataSynchronizer from "../datasynchronizer/DataSynchronizer.js";
 
 /**
  * This class is responsible of handling datasources. It observes necessary events to manage datasources.
@@ -49,9 +49,14 @@ class DataReceiverController {
      */
     constructor(options) {
         this.options = options;
-        this.initBuffer();
+        this.dataSynchronizer = new DataSynchronizer(this.options);
         this.dataSourcesIdToDataSources = {};
 
+        if(isDefined(options.dataSources)) {
+            for(let ds of options.dataSources) {
+                this.addDataSource(ds);
+            }
+        }
         /*
         * @event {@link CONNECT_DATASOURCE}
         * @type {Object}
@@ -62,19 +67,16 @@ class DataReceiverController {
 
         let that = this;
         EventManager.observe(EventManager.EVENT.CONNECT_DATASOURCE, (event) => {
-            if(!that.buffer.isStarted) {
-                that.buffer.start();
-            }
             let eventDataSourcesIds = event.dataSourcesId;
             for (let i = 0; i < eventDataSourcesIds.length; i++) {
                 let id = eventDataSourcesIds[i];
                 if (id in that.dataSourcesIdToDataSources) {
+                    //TODO: how to handle that with new DataSynchronizer??
                     // if sync to master to time, request data starting at current time
-                    if (that.dataSourcesIdToDataSources[id].syncMasterTime && isDefined(that.buffer.currentTime)) {
-                        that.updateDataSourceTime(id, new Date(that.buffer.currentTime).toISOString());
-                    }
+                    // if (that.dataSourcesIdToDataSources[id].syncMasterTime && isDefined(that.dataSynchronizer.currentTime)) {
+                    //     that.updateDataSourceTime(id, new Date(that.dataSynchronizer.currentTime).toISOString());
+                    // }
                     that.dataSourcesIdToDataSources[id].connect();
-                    that.buffer.startDataSource(id);
                 }
             }
         });
@@ -92,7 +94,6 @@ class DataReceiverController {
                 let id = eventDataSourcesIds[i];
                 if (id in that.dataSourcesIdToDataSources) {
                     that.dataSourcesIdToDataSources[id].disconnect();
-                    that.buffer.cancelDataSource(id);
                 }
             }
         });
@@ -114,13 +115,12 @@ class DataReceiverController {
                 let dataSrc = that.dataSourcesIdToDataSources[id];
                 if (dataSrc.syncMasterTime && dataSrc.connected) {
                     dataSrc.disconnect();
-                    that.buffer.cancelDataSource(id);
                     dataSourcesToReconnect.push(id);
                 }
             }
 
-            // reset buffer current time
-            that.buffer.currentTime = Date.parse(event.startTime);
+            // reset dataSynchronizer current time
+            that.dataSynchronizer.currentTime = Date.parse(event.startTime);
 
             // reconnect all synchronized datasources with new time parameters
             for (let i = 0; i < dataSourcesToReconnect.length; i++) {
@@ -128,7 +128,6 @@ class DataReceiverController {
                 let dataSrc = this.dataSourcesIdToDataSources[id];
                 that.updateDataSourceTime(id, event.startTime, event.endTime);
                 dataSrc.connect();
-                that.buffer.startDataSource(id);
             }
 
         });
@@ -159,56 +158,34 @@ class DataReceiverController {
         dataSource.initDataSource(props, options);
     }
 
-    /**
-     * Instantiates a new Buffer}
-     * @private
-     */
-    initBuffer() {
-        this.buffer = new Buffer(this.options);
-    }
 
     /**
-     * Adds an entity to the current list of datasources and pushes it into the buffer.
+     * Adds an entity to the current list of datasources and pushes it into the dataSynchronizer.
      * @see {@link Buffer}
      * @param {Entity} entity - the entity to add
-     * @param options @deprecated
      */
-    addEntity(entity, options) {
+    addEntity(entity) {
         for (let i = 0; i < entity.getDataSources().length; i++) {
-            this.addDataSource(entity.getDataSources()[i], options);
+            this.addDataSource(entity.getDataSources()[i]);
         }
     }
 
     /**
-     * Adds a dataSource to the current list of datasources and pushes it into the buffer.
+     * Adds a dataSource to the current list of datasources and pushes it into the dataSynchronizer.
      * @see {@link Buffer}
      * @param {Object} dataSource - the datasource to add
-     * @param options @deprecated
      */
-    addDataSource(dataSource, options) {
+    addDataSource(dataSource) {
         this.dataSourcesIdToDataSources[dataSource.id] = dataSource;
-        this.buffer.addDataSource(dataSource.id, {
-            name: dataSource.name,
-            syncMasterTime: dataSource.syncMasterTime,
-            bufferingTime: dataSource.bufferingTime,
-            timeOut: dataSource.timeOut
-        });
-
-        //TODO: make frozen letiables?
-        var that = this;
-        dataSource.onData = (data) => that.buffer.push({dataSourceId: dataSource.getId(), data: data});
+        this.dataSynchronizer.addDataSource(dataSource);
     }
 
     /**
      * Connects each dataSources
      */
     connectAll() {
-        this.buffer.start();
         for (let id in this.dataSourcesIdToDataSources) {
-            let ds = this.dataSourcesIdToDataSources[id];
-            if (!ds.connected) {
-                ds.connect();
-            }
+            this.dataSourcesIdToDataSources[id].connect();
         }
     }
 
@@ -217,14 +194,8 @@ class DataReceiverController {
      * @param {String} dataSourceId - the id of the dataSource to connect
      */
     connect(dataSourceId) {
-        if(!this.buffer.isStarted) {
-            this.buffer.start();
-        }
-        for (let id in this.dataSourcesIdToDataSources) {
-            let ds = this.dataSourcesIdToDataSources[id];
-            if (ds.id === dataSourceId) {
-                ds.connect();
-            }
+        if (id in this.dataSourcesIdToDataSources) {
+            this.dataSourcesIdToDataSources[id].connect();
         }
     }
 
@@ -233,11 +204,8 @@ class DataReceiverController {
      * @param {String} dataSourceId - the id of the dataSource to disconnect
      */
     disconnect(dataSourceId) {
-        for (let id in this.dataSourcesIdToDataSources) {
-            let ds = this.dataSourcesIdToDataSources[id];
-            if (ds.id === dataSourceId) {
-                ds.disconnect();
-            }
+        if (id in this.dataSourcesIdToDataSources) {
+            this.dataSourcesIdToDataSources[id].disconnect();
         }
     }
 }
