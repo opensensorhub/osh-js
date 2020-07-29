@@ -71,7 +71,8 @@ export default {
           name: "Android Phone GPS"
         }],
         {
-          watch: true
+          watch: true,
+          autoZoomOnFirstMarker:true
         });
     },
   }
