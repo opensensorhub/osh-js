@@ -31,6 +31,8 @@ class DataSynchronizer {
             throw 'You must specify a dataSource array';
         }
         this.bufferingTime = 1000; // default
+        this.currentTime = Date.now();
+
         let replayFactor = 1;
         let intervalRate = 5;
 
@@ -61,6 +63,7 @@ class DataSynchronizer {
 
         this.synchronizerWorker = new DataSynchronizerWorker();
         this.synchronizerWorker.postMessage({
+            message: 'init',
             dataSources: dataSourcesForWorker,
             replayFactor: replayFactor,
             intervalRate: intervalRate
@@ -73,6 +76,21 @@ class DataSynchronizer {
                 this.onWait(event.data.dataSourceId, event.data.time, event.data.total);
             }
         }
+    }
+
+    addDataSource(dataSource) {
+        const obj = {
+            bufferingTime: dataSource.bufferingTime || 0,
+            timeOut: dataSource.timeOut || 0,
+            id: dataSource.id
+        };
+        // bind dataSource data onto dataSynchronizer data
+        dataSource.onData = (data) => this.push(dataSource.id, data);
+
+        this.synchronizerWorker.postMessage({
+            message: 'add',
+            dataSources: [obj]
+        });
     }
 
     onWait(dataSourceId, time, total) {}

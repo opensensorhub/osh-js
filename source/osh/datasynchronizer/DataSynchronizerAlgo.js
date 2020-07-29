@@ -19,7 +19,6 @@ class DataSynchronizerAlgo {
 
     push(dataSourceId, data) {
         const ds = this.dataSourceMap[dataSourceId];
-
         if (this.startBufferingTime === -1) {
             this.startBufferingTime = performance.now();
             // start iterating on data after bufferingTime
@@ -122,12 +121,12 @@ class DataSynchronizerAlgo {
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
             bufferingTime: dataSource.bufferingTime,
-            timeOut: dataSource.timeOut,
+            timeOut: dataSource.timeOut || 0,
             dataBuffer: [],
             startBufferingTime: -1,
             id: dataSource.id,
             timedOut: false,
-            name: dataSource.name,
+            name: dataSource.name || dataSource.id,
             latency: 0
         };
     }

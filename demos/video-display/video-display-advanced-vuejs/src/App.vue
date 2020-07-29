@@ -89,16 +89,16 @@
 </template>
 <script>
   // @ is an alias to /src
-  import Map from './components/Map.vue';
-  import TimeLine from './components/TimeLine.vue';
-  import ChartVCard from "./components/vcards/ChartVCard.vue";
-  import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard.vue";
+  import Map from './components/Map';
+  import TimeLine from './components/TimeLine';
+  import ChartVCard from "./components/vcards/ChartVCard";
+  import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
   import SweJson from "osh/datareceiver/SweJson.js";
   import Video from "osh/datareceiver/Video.js";
   import {randomUUID} from "osh/utils/Utils.js";
+  import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
   import EventManager from "osh/events/EventManager.js";
   import Entity from "osh/entity/Entity.js";
-  import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
 
   export default {
     components: {
@@ -118,57 +118,56 @@
         dataSources: {},
         items: [],
         locationDataSource: new SweJson("android-GPS", {
-            protocol: "ws",
-            service: "SOS",
-            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-            offeringID: "urn:android:device:060693280a28e015-sos",
-            observedProperty: "http://sensorml.com/ont/swe/property/Location",
-            startTime: "2015-02-16T07:58:32Z",
-            endTime: "2015-02-16T08:09:00Z",
-            syncMasterTime: true,
-            bufferingTime: 0,
-            timeShift: -16000,
-            replaySpeed: 2
+          protocol: "ws",
+          service: "SOS",
+          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          offeringID: "urn:android:device:060693280a28e015-sos",
+          observedProperty: "http://sensorml.com/ont/swe/property/Location",
+          startTime: "2015-02-16T07:58:32Z",
+          endTime: "2015-02-16T08:09:00Z",
+          syncMasterTime: true,
+          bufferingTime: 0,
+          timeShift: -16000,
+          replaySpeed: 2
         }),
-        headingDataSource:new SweJson("android-Att", {
-              protocol: "ws",
-              service: "SOS",
-              endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-              offeringID: "urn:android:device:060693280a28e015-sos",
-              observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-              startTime: "2015-02-16T07:58:35Z",
-              endTime: "2015-02-16T08:09:00Z",
-              syncMasterTime: true,
-              bufferingTime: 0,
-              replaySpeed: 2
-          }),
-          videoDataSource:new Video("android-Video", {
-              protocol: "ws",
-              service: "SOS",
-              endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-              offeringID: "urn:android:device:060693280a28e015-sos",
-              observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-              startTime: "2015-02-16T07:58:35Z",
-              endTime: "2015-02-16T08:09:00Z",
-              syncMasterTime: true,
-              bufferingTime: 0,
-              replaySpeed: 2
-          }),
-          weatherDataSource: new SweJson("weather", {
-              protocol: "ws",
-              service: "SOS",
-              endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-              offeringID: "urn:mysos:offering03",
-              observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-              startTime: "now",
-              endTime: "2055-01-01Z",
-              syncMasterTime: false,
-              bufferingTime: 0
-          })
+        headingDataSource: new SweJson("android-Att", {
+          protocol: "ws",
+          service: "SOS",
+          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          offeringID: "urn:android:device:060693280a28e015-sos",
+          observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+          startTime: "2015-02-16T07:58:35Z",
+          endTime: "2015-02-16T08:09:00Z",
+          syncMasterTime: true,
+          bufferingTime: 0,
+          replaySpeed: 2
+        }),
+        videoDataSource: new Video("android-Video", {
+          protocol: "ws",
+          service: "SOS",
+          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          offeringID: "urn:android:device:060693280a28e015-sos",
+          observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+          startTime: "2015-02-16T07:58:35Z",
+          endTime: "2015-02-16T08:09:00Z",
+          syncMasterTime: true,
+          bufferingTime: 0,
+          replaySpeed: 2
+        }),
+        weatherDataSource: new SweJson("weather", {
+          protocol: "ws",
+          service: "SOS",
+          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          offeringID: "urn:mysos:offering03",
+          observedProperty: "http://sensorml.com/ont/swe/property/Weather",
+          startTime: "now",
+          endTime: "2055-01-01Z",
+          syncMasterTime: false,
+          bufferingTime: 0
+        })
       }
     },
-    computed: {
-    },
+    computed: {},
     mounted() {
       this.items.push({
         id: 1,
@@ -187,15 +186,29 @@
       this.dataSources['4'] = this.headingDataSource;
       this.dataSources['5'] = this.weatherDataSource;
 
-      const entity = new Entity("Android phone",  [this.locationDataSource, this.videoDataSource, this.headingDataSource] );
       // We can add a group of dataSources and set the options
-
        this.dataProviderController = new DataReceiverController({
-           replayFactor: 1,
+           replayFactor: 2,
            dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
        });
-      // this.dataProviderController.addEntity(entity);
-      // this.dataProviderController.addDataSource(this.weatherDataSource, {});
+
+        EventManager.observe(EventManager.EVENT.CONNECT_DATASOURCE, (event) => {
+            let eventDataSourcesIds = event.dataSourcesId;
+            for(let dsId of eventDataSourcesIds) {
+                if(dsId === this.weatherDataSource.id) {
+                    this.weatherDataSource.connect();
+                }
+            }
+        });
+
+        EventManager.observe(EventManager.EVENT.DISCONNECT_DATASOURCE, (event) => {
+            let eventDataSourcesIds = event.dataSourcesId;
+            for(let dsId of eventDataSourcesIds) {
+                if(dsId === this.weatherDataSource.id) {
+                    this.weatherDataSource.disconnect();
+                }
+            }
+        });
     },
     methods: {
       onSelect(nodes) {

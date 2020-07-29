@@ -3,27 +3,35 @@ import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
 const bcChannels = {};
 let dataSynchronizerAlgo;
 
+let init = false;
 self.onmessage = (event) => {
-    if(event.data.dataSources) {
+    if(event.data.message === 'init') {
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
             event.data.dataSources,
             event.data.replayFactor,
             event.data.intervalRate
-            );
+        );
         dataSynchronizerAlgo.onData = onData;
         dataSynchronizerAlgo.onWait = onWait;
-        for(let ds of event.data.dataSources) {
-            bcChannels[ds.id] = new BroadcastChannel('datasource-data-' + ds.id);
-            // listen for this specific DS
-            bcChannels[ds.id].onmessage = (event) => {
-                dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-            };
-        }
+        init = true;
+        addDataSources(event.data.dataSources);
+    } else if(event.data.message === 'add' && event.data.dataSources) {
+        addDataSources(event.data.dataSources);
     } else if(dataSynchronizerAlgo !== null) {
         dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
     }
 }
 
+function addDataSources(dataSources) {
+    for(let ds of dataSources) {
+        dataSynchronizerAlgo.addDataSource(ds);
+        bcChannels[ds.id] = new BroadcastChannel('datasource-data-' + ds.id);
+        // listen for this specific DS
+        bcChannels[ds.id].onmessage = (event) => {
+            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+        };
+    }
+}
 function onData(dataSourceId, data) {
     self.postMessage({
         message: 'data',
