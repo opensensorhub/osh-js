@@ -72,12 +72,12 @@
             bitrate: {
               min: 100 * 8,
               max: 500 * 8,
-              use: true
+              use: false
             },
             scale: {
               min: 0.5,
               max: 1.0,
-              use: true
+              use: false
             },
             responseFormat: 'video/H264'
           }
@@ -142,9 +142,6 @@
           this.dataSource.rebuildUrl(extraProps);
         }
 
-        if (!this.dataSource.connected) {
-          this.dataSource.connect();
-        }
         this.view = new FFMPEGView(id, {
           dataSourceId: this.dataSource.id,
           css: "video-h264",
@@ -155,6 +152,10 @@
           showStats: this.showStats,
           showTime: this.showTime
         });
+
+        if (!this.dataSource.connected) {
+            this.dataSource.connect();
+        }
       }
     }
   }
