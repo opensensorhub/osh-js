@@ -31,8 +31,7 @@ import * as wNumb from 'wnumb';
  * let rangeSlider = new RangeSliderView("rangeSlider",{
     dataSourceId: dataSource.id,
     startTime: "2015-12-19T21:04:30Z",
-    endTime: "2015-12-19T21:09:19Z",
-    refreshRate:1
+    endTime: "2015-12-19T21:09:19Z"
 });
  */
 class RangeSliderView extends View {
@@ -42,49 +41,28 @@ class RangeSliderView extends View {
 		* @param {Object} options - The properties defining the view
 		* @param {Number} options.startTime - The start time
 		* @param {Number} options.endTime - The end time
-		* @param {String} options.dataSourcesId - The dataSource id
-		* @param {Number} options.refreshRate - The refresh rate
+		* @param {String} options.dataSourcesId - The dataSource id which are sync with master time
+    * @param {String} options.dataSourceId - The dataSource id which is not sync with master time
+    * @param {Boolean} options.disabled - disabled the range slider
 		*/
   constructor(parentElementDivId, options) {
     super(parentElementDivId, [], options);
 
     this.slider = document.createElement("div");
-    let activateButtonDiv = document.createElement("div");
-    let aTagActivateButton = document.createElement("a");
-    activateButtonDiv.appendChild(aTagActivateButton);
-
     this.slider.setAttribute("class", "osh-rangeslider-slider");
-    activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
-
-    let self = this;
-
-    activateButtonDiv.addEventListener("click", function (event) {
-      if (activateButtonDiv.className.indexOf("osh-rangeslider-control-select") > -1) {
-        activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
-        self.deactivate();
-      } else {
-        activateButtonDiv.setAttribute("class", "osh-rangeslider-control-select");
-        self.activate();
-      }
-    });
     document.getElementById(this.divId).appendChild(this.slider);
-    document.getElementById(this.divId).appendChild(activateButtonDiv);
 
     let startTime = new Date().getTime();
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
-    this.slider.setAttribute('disabled', true);
 
     this.dataSourcesId = [];
-
     this.multi = false;
-    // compute a refresh rate
-    this.dataCount = 0;
-    this.refreshRate = 10;
+
+    this.options = {};
 
     if (isDefined(options)) {
       if (isDefined(options.startTime)) {
         startTime = new Date(options.startTime).getTime();
-        //slider.removeAttribute('disabled');
       }
 
       if (isDefined(options.endTime)) {
@@ -94,10 +72,14 @@ class RangeSliderView extends View {
       if (isDefined(options.dataSourcesId)) {
         this.dataSourcesId = options.dataSourcesId;
       }
-      if (isDefined(options.refreshRate)) {
-        this.refreshRate = options.refreshRate;
+
+      if(isDefined(options.options)) {
+        this.options = options.options;
       }
 
+      if(isDefined(options.disabled)) {
+        this.slider.setAttribute('disabled', options.disabled);
+      }
     }
 
     noUiSlider.create(this.slider, {
@@ -136,52 +118,70 @@ class RangeSliderView extends View {
         format: wNumb({
           edit: function (value) {
             return new Date(parseInt(value)).toISOString().replace(".000Z", "Z")
-              .split("T")[1].split("Z")[0].split(".")[0];
+                .split("T")[1].split("Z")[0].split(".")[0];
           }
         })
-      }
+      },
+      ...this.options
     });
 
+    this.createEvents();
+  }
+
+  createActivateButton() {
+    let activateButtonDiv = document.createElement("div");
+    let aTagActivateButton = document.createElement("a");
+    activateButtonDiv.appendChild(aTagActivateButton);
+
+    activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
+    let self = this;
+
+    activateButtonDiv.addEventListener("click", function (event) {
+      if (activateButtonDiv.className.indexOf("osh-rangeslider-control-select") > -1) {
+        activateButtonDiv.setAttribute("class", "osh-rangeslider-control");
+        self.deactivate();
+      } else {
+        activateButtonDiv.setAttribute("class", "osh-rangeslider-control-select");
+        self.activate();
+      }
+    });
+    document.getElementById(this.divId).appendChild(activateButtonDiv);
+
+  }
+
+  createEvents() {
+    const that = this;
     //noUi-handle noUi-handle-lower
     // start->update->end
     this.slider.noUiSlider.on("slide", function (values, handle) {
-      self.update = true;
+      that.update = true;
     });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
-      self.onChange(values[0], values[1]);
+      that.onChange(values[0], values[1]);
+      that.update = false;
     });
-    // listen for DataSourceId
-    EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-      let filterOk = true;
 
-      if (self.dataSourcesId.length > 0) {
-        if (self.dataSourcesId.indexOf(event.dataSourceId) < 0) {
-          filterOk = false;
+    if (this.dataSourcesId.length > 0) {
+      // listen for DataSourceId
+      EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
+        if (self.dataSourcesId.length > 0 && this.dataSourcesId.indexOf(event.dataSourceId) < 0) {
+          this.slider.noUiSlider.set([event.timeStamp]);
         }
-      }
+      });
 
-      if (filterOk && !self.lock && ((++self.dataCount) % self.refreshRate == 0)) {
-        self.slider.noUiSlider.set([event.timeStamp]);
-        self.dataCount = 0;
-      }
-    });
-  }
-
-  /**
-   * Deactivate the timeline bar
-   */
-  deactivate() {
-    this.slider.setAttribute('disabled', true);
-    this.lock = false;
-    if (this.update) {
       let values = this.slider.noUiSlider.get();
       EventManager.fire(EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
         startTime: new Date(parseInt(values[0])).toISOString(),
         endTime: new Date(parseInt(values[1])).toISOString()
       });
     }
-    this.update = false;
+  }
+  /**
+   * Deactivate the timeline bar
+   */
+  deactivate() {
+    this.slider.setAttribute('disabled', true);
   }
 
   /**
@@ -189,17 +189,16 @@ class RangeSliderView extends View {
    */
   activate() {
     this.slider.removeAttribute('disabled');
-    this.lock = true;
   }
 
   setData(dataSourceId, data) {
-    if (!this.lock && ((++this.dataCount) % this.refreshRate === 0)) {
-      this.slider.noUiSlider.set([data.timeStamp]);
-      this.dataCount = 0;
+    if (this.dataSourcesId.length === 0 && !this.update) {
+     this.slider.noUiSlider.set([data.timeStamp]);
     }
   }
 
   onChange(startTime, endTime) {
+
   }
 }
 

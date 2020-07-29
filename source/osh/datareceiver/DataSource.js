@@ -196,6 +196,33 @@ class DataSource {
     }
 
     /**
+     * Rebuild the url with the extra properties without modifying initial ones.
+     * @param {Object} extraProps - the extra properties to apply
+     */
+    rebuildUrl(extraProps) {
+        this.connector.setUrl(this.buildUrl(
+            {
+                ...this.properties,
+                ...extraProps
+            }));
+    }
+    /**
+     * Reconnect the dataSource
+     * @param {Boolean} reinitProperties - force rebuilding the URL from properties
+     */
+    reconnect(reinitProperties = false) {
+        this.connector.disconnect();
+        if(reinitProperties) {
+            this.connector.setUrl(this.buildUrl(
+                {
+                    lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
+                    ...this.properties
+                }));
+        }
+        this.connect();
+    }
+
+    /**
      * Builds the full url.
      * @private
      * @param {Object} properties
@@ -208,6 +235,8 @@ class DataSource {
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.bitrate the bitrate of the video in KB/s
+     * @param {Number} properties.scale the scale ratio of the video in [0..1]
      * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
      * @return {String} the full url
      */
@@ -256,6 +285,13 @@ class DataSource {
             url += "&responseFormat=" + properties.responseFormat;
         }
 
+        if (properties.bitrate) {
+            url += "&video_bitrate=" + properties.bitrate;
+        }
+
+        if (properties.scale) {
+            url += "&video_scale=" + properties.scale;
+        }
         return url;
     }
 }
