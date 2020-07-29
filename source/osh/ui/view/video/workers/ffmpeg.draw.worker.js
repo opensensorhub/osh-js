@@ -47,3 +47,19 @@ setInterval(() => {
 bc.onmessage = (e) => {
     self.buffer.push(e.data);
 };
+
+function reset() {
+// clear canvas
+    let nodata = new Uint8Array(1);
+    self.yuvCanvas.drawNextOuptutPictureGL({
+        yData: nodata,
+        yDataPerRow: 1,
+        yRowCnt: 1,
+        uData: nodata,
+        uDataPerRow: 1,
+        uRowCnt: 1,
+        vData: nodata,
+        vDataPerRow: 1,
+        vRowCnt: 1
+    });
+}
