@@ -51,7 +51,9 @@ export default {
                       [{
                         styler: pointMarker,
                         name: "Android Phone GPS"
-                      }]
+                      }], {
+          autoZoomOnFirstMarker:true
+          }
       );
 
       // start streaming
