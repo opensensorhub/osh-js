@@ -70,6 +70,10 @@
     width:130px;
     display: inline-block;
   }
+
+  #current-time-container{
+      width:50px;
+  }
 </style>
 <div>
   <h3>Recall the principle of the main algorithm:</h3>
@@ -199,9 +203,12 @@
     <option value="4">4</option>
     <option value="5">5</option>
   </select>
+
   <label for="scroll">Auto scroll</label>
   <input type="checkbox" id="scroll" name="scroll"
          checked>
+    <label for="current-time">Current synchronized time: </label>
+  <b><span id="current-time" ></span></b>
   <br/><br/>
   <div class="container-dynamic">
     <div id="buffer-dynamic-data"></div>

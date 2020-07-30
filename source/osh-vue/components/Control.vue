@@ -41,8 +41,14 @@
         },
         data() {
             return {
-                id: randomUUID()
+                id: randomUUID(),
+                event: null
             };
+        },
+        watch: {
+          event(newValue){
+            this.$emit('event', newValue);
+          }
         },
         mounted() {
             let rangeSlider = new RangeSlider(this.id, {
@@ -74,6 +80,11 @@
             currentTimeElement.innerText = this.parseDate(this.dataSource.properties.startTime);
             endTimeElement.innerText = this.parseDate(this.dataSource.properties.endTime);
 
+            rangeSlider.slider.noUiSlider.on('set', () => {
+              const date = parseInt(rangeSlider.slider.noUiSlider.get());
+              currentTimeElement.innerText = that.parseDate(date);
+            });
+
             rangeSlider.onChange = function (startTime, endTime) {
                 if(that.dataSource.connected) {
                     that.dataSource.disconnect();
@@ -83,12 +94,14 @@
 
                     // update start/end time
                     if (isDefined(startTime)) {
-                        props.startTime = new Date(parseInt(startTime)).toISOString();
-                        currentTimeElement.innerText = that.parseDate(props.startTime);
+                        const intValue = parseInt(startTime);
+                        props.startTime = new Date(intValue).toISOString();
+                        currentTimeElement.innerText = that.parseDate(intValue);
                     }
                     if (isDefined(endTime)) {
-                        props.endTime = new Date(parseInt(endTime)).toISOString();
-                        endTimeElement.innerText = that.parseDate(props.endTime);
+                      const intValue = parseInt(endTime);
+                      props.endTime = new Date(intValue).toISOString();
+                      endTimeElement.innerText = that.parseDate(intValue);
                     }
 
                     // reset parameters
@@ -96,6 +109,9 @@
                     that.dataSource.connect();
                 }
             };
+
+            rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
+            rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
 
             const pauseButton = document.getElementById("pause-btn");
             const playButton = document.getElementById("play-btn");
@@ -105,6 +121,17 @@
             pauseButton.onclick = () => {
                 if(that.dataSource.connected) {
                     that.dataSource.disconnect();
+                    //save current time
+
+                    // get current parameters
+                    let props = that.dataSource.properties;
+                    let options = that.dataSource.options;
+
+                    props.startTime = new Date(parseInt(rangeSlider.slider.noUiSlider.get())).toISOString();
+
+                    // re-init the DS from the last timestamp  played
+                    that.dataSource.initDataSource(props, options);
+
                 }
             }
 
@@ -140,8 +167,11 @@
             }
         },
         methods: {
-            parseDate(timeStamp) {
-                const date = new Date(timeStamp);
+            on(eventName) {
+              this.event = eventName;
+            },
+            parseDate(intTimeStamp) {
+                const date = new Date(intTimeStamp);
                 return this.hoursWithLeadingZeros(date)+":"+this.minutesWithLeadingZeros(date)+":"
                     +this.secondsWithLeadingZeros(date);
             },

@@ -71,6 +71,7 @@ class DataSynchronizer {
 
         this.synchronizerWorker.onmessage =(event) => {
             if(event.data.message === 'data') {
+                this.currentTime = event.data.data.timeStamp;
                 this.onData(event.data.dataSourceId, event.data.data);
             } else if(event.data.message === 'wait') {
                 this.onWait(event.data.dataSourceId, event.data.time, event.data.total);

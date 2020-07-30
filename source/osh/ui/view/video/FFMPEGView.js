@@ -199,19 +199,6 @@ class FFMPEGView extends View {
      * @override
      */
     reset() {
-        // clear canvas
-        let nodata = new Uint8Array(1);
-        this.yuvCanvas.drawNextOuptutPictureGL({
-            yData: nodata,
-            yDataPerRow: 1,
-            yRowCnt: 1,
-            uData: nodata,
-            uDataPerRow: 1,
-            uRowCnt: 1,
-            vData: nodata,
-            vDataPerRow: 1,
-            vRowCnt: 1
-        });
     }
 
     /**
@@ -254,9 +241,8 @@ class FFMPEGView extends View {
      * The worker code is located at the location js/workers/Ffmpeg.worker.js.
      * This location cannot be changed. Be sure to have the right file at the right place.
      * @private
-     * @param callback
      */
-    initFFMPEG_DECODER_WORKER(callback) {
+    initFFMPEG_DECODER_WORKER() {
         this.decodeWorker = new DecodeWorker();
         const drawWorker = new DrawWorker();
         this.decodeWorker.id = randomUUID();
