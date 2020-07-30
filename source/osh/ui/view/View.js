@@ -48,6 +48,7 @@ class View {
         this.lastRec = {};
         this.selectedDataSources = [];
         this.dataSources = [];
+        this.viewItemsBroadcastChannels = {};
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -243,7 +244,8 @@ class View {
         this.unregisterCallback();
     }
     /**
-     * Adds a viewItem to the view. The EventManager.EVENT.DATA and EventManager.EVENT.SELECT_VIEW are then observed using the
+     * Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
+     * and EventManager.EVENT.SELECT_VIEW are then observed using the
      * dataSource(s) contained into the styler.
      * @param {Object} viewItem - The initial view items to add
      * @param {String} viewItem.name - The name of the view item
@@ -267,6 +269,7 @@ class View {
                 // observes the data come in
                 let self = this;
                 const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
+                this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
                 broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
                     if (event.data.message && event.data.message === 'reset') {
@@ -317,7 +320,8 @@ class View {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
-                EventManager.remove(EventManager.EVENT.DATA + "-" + ds, this.divId);
+                this.viewItemsBroadcastChannels[ds.id].close();
+                delete this.viewItemsBroadcastChannels[ds.id];
                 delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
