@@ -72,15 +72,6 @@ class DataSynchronizer {
             intervalRate: intervalRate,
             topic: DATA_SYNCHRONIZER_TOPIC+this.id
         });
-
-        this.synchronizerWorker.onmessage =(event) => {
-            if(event.data.message === 'data') {
-                this.currentTime = event.data.data.timeStamp;
-                this.onData(event.data.dataSourceId, event.data.data);
-            } else if(event.data.message === 'wait') {
-                this.onWait(event.data.dataSourceId, event.data.time, event.data.total);
-            }
-        }
     }
 
     addDataSource(dataSource) {
@@ -99,10 +90,6 @@ class DataSynchronizer {
     }
 
     onWait(dataSourceId, time, total) {}
-
-    onData(dataSourceId, data) {
-        EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
-    }
 
     /**
      * @param {String} dataSourceId - the dataSource id
