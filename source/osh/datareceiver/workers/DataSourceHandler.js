@@ -15,12 +15,14 @@ class DataSourceHandler {
         this.connected = false;
     }
 
-    createConnector(propertiesStr) {
+    createConnector(propertiesStr, topic) {
         // check for existing connector
         if(this.connector !== null) {
             this.connector.disconnect();
             this.connector = null;
         }
+        this.broadcastChannel = new BroadcastChannel(topic);
+
         const properties = JSON.parse(propertiesStr);
         if (isDefined(properties.timeShift)) {
             this.timeShift = properties.timeShift;
@@ -68,6 +70,11 @@ class DataSourceHandler {
         }
     }
 
+    setTopic(topic) {
+        this.broadcastChannel = new BroadcastChannel(topic);
+        this.topic = topic;
+    }
+
     connect() {
         if(this.connector !== null) {
             this.connector.connect();
@@ -86,10 +93,8 @@ class DataSourceHandler {
             data: this.parser.parseData(event)
         };
         this.lastTimeStamp = obj.timeStamp;
-        this.onData(obj);
+        this.broadcastChannel.postMessage(obj);
     }
-
-    onData(data) {}
 }
 export default DataSourceHandler;
 

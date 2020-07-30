@@ -15,8 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import EventManager from "osh/events/EventManager";
-import {isDefined} from "../utils/Utils";
+import {isDefined, randomUUID} from "../utils/Utils";
 import DataSynchronizerWorker from './DataSynchronizer.worker';
+import {DATA_SYNCHRONIZER_TOPIC} from "../Constants";
 
 class DataSynchronizer {
     /**
@@ -32,6 +33,7 @@ class DataSynchronizer {
         }
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
+        this.id = randomUUID();
 
         let replayFactor = 1;
         let intervalRate = 5;
@@ -59,6 +61,7 @@ class DataSynchronizer {
             });
             // bind dataSource data onto dataSynchronizer data
             dataSource.onData = (data) => this.push(dataSource.id, data);
+            dataSource.dataSynchronizer = this;
         }
 
         this.synchronizerWorker = new DataSynchronizerWorker();
@@ -66,7 +69,8 @@ class DataSynchronizer {
             message: 'init',
             dataSources: dataSourcesForWorker,
             replayFactor: replayFactor,
-            intervalRate: intervalRate
+            intervalRate: intervalRate,
+            topic: DATA_SYNCHRONIZER_TOPIC+this.id
         });
 
         this.synchronizerWorker.onmessage =(event) => {
@@ -87,7 +91,7 @@ class DataSynchronizer {
         };
         // bind dataSource data onto dataSynchronizer data
         dataSource.onData = (data) => this.push(dataSource.id, data);
-
+        dataSource.dataSynchronizer = this;
         this.synchronizerWorker.postMessage({
             message: 'add',
             dataSources: [obj]

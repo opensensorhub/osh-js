@@ -1,8 +1,10 @@
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
 
+let broadcastChannel;
 let init = false;
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
@@ -15,6 +17,10 @@ self.onmessage = (event) => {
         dataSynchronizerAlgo.onWait = onWait;
         init = true;
         addDataSources(event.data.dataSources);
+        // listen for this specific data synchronizer
+        broadcastChannel.onmessage = (event) => {
+            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+        };
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(dataSynchronizerAlgo !== null) {
@@ -25,24 +31,15 @@ self.onmessage = (event) => {
 function addDataSources(dataSources) {
     for(let ds of dataSources) {
         dataSynchronizerAlgo.addDataSource(ds);
-        bcChannels[ds.id] = new BroadcastChannel('datasource-data-' + ds.id);
-        // listen for this specific DS
-        bcChannels[ds.id].onmessage = (event) => {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-        };
+        bcChannels[ds.id] = new BroadcastChannel(DATASOURCE_DATA_TOPIC + ds.id);
     }
 }
 function onData(dataSourceId, data) {
-    self.postMessage({
+    bcChannels[dataSourceId].postMessage({
         message: 'data',
         dataSourceId: dataSourceId,
         data: data
     });
-    // dataSynchronizerChannel.postMessage({
-    //     message: 'data',
-    //     dataSourceId: dataSourceId,
-    //     data: data
-    // });
 }
 
 function onWait(dataSourceId, time, total) {
@@ -56,5 +53,5 @@ function onWait(dataSourceId, time, total) {
 
 self.onclose = function() {
     clearInterval(this.interval);
-    console.log("Buffer has been terminated successfully");
+    console.log("Data Synchronizer has been terminated successfully");
 }
