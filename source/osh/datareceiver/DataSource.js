@@ -14,9 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {randomUUID, isDefined} from '../utils/Utils.js';
-import WebSocketConnector from "../dataconnector/WebSocketConnector.js";
-import Ajax from "../dataconnector/Ajax.js";
+import {randomUUID} from '../utils/Utils.js';
 import EventManager from "../events/EventManager.js";
 
 /**
@@ -40,21 +38,15 @@ class DataSource {
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
+     * @param {Object} worker - DataSource worker
      * @return {String} the full url
      */
-    constructor(name, properties) {
+    constructor(name, properties, worker) {
         this.id = "DataSource-" + randomUUID();
         this.name = name;
         this.properties = properties;
-        this.timeShift = 0;
-        this.connected = false;
-        this.reconnectTimeout = 1000 * 60 * 2; //2 min
-
+        this.dataSourceWorker = worker;
         this.initDataSource(properties);
-
-        this.lastTimeStamp = null;
-        this.lastStartTime = 'now';
-
     }
 
     /**
@@ -63,120 +55,38 @@ class DataSource {
      * @param properties
      */
     initDataSource(properties) {
+        this.dataSourceWorker.postMessage({
+            message: 'init',
+            properties: JSON.stringify(properties)
+        });
 
-        if (isDefined(properties.timeShift)) {
-            this.timeShift = properties.timeShift;
+        this.dataSourceWorker.onmessage = (event) => {
+            this.onData(event.data);
         }
+    }
 
-        if (isDefined(properties.syncMasterTime)) {
-            this.syncMasterTime = properties.syncMasterTime;
-        } else {
-            this.syncMasterTime = false;
-        }
-
-        if (isDefined(properties.bufferingTime)) {
-            this.bufferingTime = properties.bufferingTime;
-        }
-
-        if (isDefined(properties.timeOut)) {
-            this.timeOut = properties.timeOut;
-        }
-
-        if (isDefined(properties.reconnectTimeout)) {
-            this.reconnectTimeout = properties.reconnectTimeout;
-        }
-
-        // checks if type is WebSocketConnector
-        if (properties.protocol.startsWith('ws')) {
-            this.connector = new WebSocketConnector(this.buildUrl(properties));
-            // connects the callback
-            this.connector.onMessage = this.onMessage.bind(this);
-        } else if (properties.protocol.startsWith('http')) {
-            this.connector = new Ajax(this.buildUrl(properties));
-            this.connector.responseType = 'arraybuffer';
-            // connects the callback
-            this.connector.onMessage = this.onMessage.bind(this);
-        }
-
-        this.connector.setReconnectTimeout(this.reconnectTimeout);
-
-        const lastStartTimeCst  = this.lastStartTime;
-        this.connector.onReconnect = () => {
-            // if not real time, preserve last timestamp to reconnect at the last time received
-            // for that, we update the URL with the new last time received
-            if(lastStartTimeCst !== 'now') {
-                this.connector.setUrl(this.buildUrl(
-                    {
-                        lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-                        ...properties
-                    }));
-            }
-        }
+    onData(data) {
+        EventManager.fire(EventManager.EVENT.DATA + "-" + this.id, {data: data});
     }
 
     /**
      * Disconnect the dataSource then the connector will be closed as well.
      */
     disconnect() {
-        this.connector.disconnect();
-        this.connected = false;
-
-        // send data reset event
-        EventManager.fire(EventManager.EVENT.DATA + "-" + this.id, {
-            dataSourceId: this.id,
-            reset: true
+        this.dataSourceWorker.postMessage({
+            message: 'disconnect'
         });
+        this.connected = false;
     }
 
     /**
      * Connect the dataSource then the connector will be opened as well.
      */
     connect() {
-        this.connector.connect();
-        this.connected = true;
-    }
-
-    /**
-     * The callback which receives data.
-     * @event
-     * @param {Object} data - data received
-     */
-    onMessage(data) {
-        this.onData({
-            timeStamp: this.parseTimeStamp(data) + this.timeShift,
-            data: this.parseData(data)
+        this.dataSourceWorker.postMessage({
+            message: 'connect'
         });
-    }
-
-    /**
-     * The default timestamp parser
-     * @param data - the full data message returned by the connector
-     * @return {Number} the formatted timestamp
-     */
-    parseTimeStamp(data) {
-        return new Date().getTime();
-    }
-
-    /**
-     * The default data parser
-     * @param data the full data message returned by the connector
-     * @return {String|Object|number|ArrayBuffer|*} data the formatted data
-     */
-    parseData(data) {
-        return data;
-    }
-
-    /**
-     * Fires the EventManager.EVENT.DATA event
-     * @param {Object} data the data object
-     * data is represented as
-     * data = {
-     *    timeStamp: timeStamp // number
-     *    data: data // data to render
-     * };
-     */
-    onData(data) {
-        EventManager.fire(EventManager.EVENT.DATA + "-" + this.id, {data: data});
+        this.connected = true;
     }
 
     /**
@@ -193,106 +103,6 @@ class DataSource {
      */
     getName() {
         return this.name;
-    }
-
-    /**
-     * Rebuild the url with the extra properties without modifying initial ones.
-     * @param {Object} extraProps - the extra properties to apply
-     */
-    rebuildUrl(extraProps) {
-        this.connector.setUrl(this.buildUrl(
-            {
-                ...this.properties,
-                ...extraProps
-            }));
-    }
-    /**
-     * Reconnect the dataSource
-     * @param {Boolean} reinitProperties - force rebuilding the URL from properties
-     */
-    reconnect(reinitProperties = false) {
-        this.connector.disconnect();
-        if(reinitProperties) {
-            this.connector.setUrl(this.buildUrl(
-                {
-                    lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-                    ...this.properties
-                }));
-        }
-        this.connect();
-    }
-
-    /**
-     * Builds the full url.
-     * @private
-     * @param {Object} properties
-     * @param {String} properties.protocol the connector protocol
-     * @param {String} properties.endpointUrl the endpoint url
-     * @param {String} properties.service the service
-     * @param {String} properties.offeringID the offeringID
-     * @param {String} properties.observedProperty the observed property
-     * @param {String} properties.startTime the start time (ISO format)
-     * @param {String} properties.endTime the end time (ISO format)
-     * @param {Number} properties.replaySpeed the replay factor
-     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
-     * @param {Number} properties.bitrate the bitrate of the video in KB/s
-     * @param {Number} properties.scale the scale ratio of the video in [0..1]
-     * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
-     * @return {String} the full url
-     */
-    buildUrl(properties) {
-        let url = "";
-
-        // adds protocol
-        url += properties.protocol + "://";
-
-        // adds endpoint url
-        url += properties.endpointUrl + "?";
-
-        // adds service
-        url += "service=" + properties.service + "&";
-
-        // adds version
-        url += "version=2.0&";
-
-        // adds request
-        url += "request=GetResult&";
-
-        // adds offering
-        url += "offering=" + properties.offeringID + "&";
-
-        // adds feature of interest urn
-        if (properties.foiURN && properties.foiURN !== '') {
-            url += 'featureOfInterest=' + properties.foiURN + '&';
-        }
-
-        // adds observedProperty
-        url += "observedProperty=" + properties.observedProperty + "&";
-
-        // adds temporalFilter
-        const stTime = (isDefined(properties.lastTimeStamp)) ? properties.lastTimeStamp :  properties.startTime;
-        this.lastStartTime = properties.startTime;
-        let endTime = properties.endTime;
-        url += "temporalFilter=phenomenonTime," + stTime+ "/" + endTime + "&";
-
-        if (properties.replaySpeed) {
-            // adds replaySpeed
-            url += "replaySpeed=" + properties.replaySpeed;
-        }
-
-        // adds responseFormat (optional)
-        if (properties.responseFormat) {
-            url += "&responseFormat=" + properties.responseFormat;
-        }
-
-        if (properties.bitrate) {
-            url += "&video_bitrate=" + properties.bitrate;
-        }
-
-        if (properties.scale) {
-            url += "&video_scale=" + properties.scale;
-        }
-        return url;
     }
 }
 

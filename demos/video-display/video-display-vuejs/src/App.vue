@@ -6,8 +6,8 @@
 </template>
 <script>
   // @ is an alias to /src
-import Map from '@/components/Map.vue';
-import Video from '@/components/Video.vue';
+import Map from './components/Map.vue';
+import Video from './components/Video.vue';
 
 export default {
   components: {

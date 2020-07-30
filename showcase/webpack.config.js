@@ -51,7 +51,7 @@ module.exports = [{
         port: 8081,
         hot: true
     },
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({

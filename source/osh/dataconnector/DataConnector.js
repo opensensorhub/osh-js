@@ -63,6 +63,8 @@ class DataConnector {
     }
 
     onReconnect(){}
+
+    disconnect() {}
 }
 
 export default DataConnector;

@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSource from './DataSource.js';
+import VideoWorker from "./workers/Video.worker.js";
 
 /**
  * This datasource provides parsing to H264 raw data.
@@ -41,7 +42,6 @@ class Video extends DataSource {
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
      * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
-     * @param {Boolean} properties.syncMasterTime - defines if the datasource is synchronize with the others one
      * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
      * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
@@ -50,31 +50,7 @@ class Video extends DataSource {
         super(name, {
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             ...properties
-        });
-    }
-
-    /**
-     * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
-     * @param {ArrayBuffer} data - the data to parse
-     * @return {Number} the extracted timestamp
-     */
-    parseTimeStamp(data) {
-        // read double time stamp as big endian
-        this.lastTimeStamp = new DataView(data).getFloat64(0, false) * 1000;
-        return this.lastTimeStamp;
-    }
-
-    /**
-     * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
-     * @param {ArrayBuffer} data - the data to parse
-     * @return {Uint8Array} the parsed data
-     */
-    parseData(data) {
-        return {
-            // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
-            frameData: new Uint8Array(data, 12, data.byteLength - 12),
-            roll: 0
-        }
+        }, new VideoWorker());
     }
 }
 

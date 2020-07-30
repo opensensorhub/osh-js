@@ -28,7 +28,7 @@ class DataSynchronizer {
      */
     constructor(properties) {
         if(!isDefined(properties.dataSources)) {
-            throw 'You must specified a dataSource array';
+            throw 'You must specify a dataSource array';
         }
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
