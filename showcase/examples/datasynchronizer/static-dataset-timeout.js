@@ -5,26 +5,26 @@ import {startDataSet} from './datasynchronizer';
 export function startStaticWithTimeout() {
     const dataSet = [
         {
-            dataSourceId: '1',
+            dataSourceId: '1b',
             data: {
                 data: '(1) 25',
                 timeStamp: 25,
             }
         }, {
-            dataSourceId: '1',
+            dataSourceId: '1b',
             data: {
                 data: '(1) 50',
                 timeStamp: 50,
             }
         }, {
-            dataSourceId: '1',
+            dataSourceId: '1b',
             data: {
                 data: '(1) 100',
                 timeStamp: 100,
             }
         },
         {
-            dataSourceId: '1',
+            dataSourceId: '1b',
             data: {
                 data: '(1) 150',
                 timeStamp: 150,
@@ -32,26 +32,26 @@ export function startStaticWithTimeout() {
         },
         /////
         {
-            dataSourceId: '2',
+            dataSourceId: '2b',
             data: {
                 data: '(2) 10',
                 timeStamp: 10,
             }
         }, {
-            dataSourceId: '2',
+            dataSourceId: '2b',
             data: {
                 data: '(2) 40',
                 timeStamp: 40,
             }
         }, {
-            dataSourceId: '2',
+            dataSourceId: '2b',
             data: {
                 data: '(2) 80',
                 timeStamp: 80,
             }
         },
         {
-            dataSourceId: '2',
+            dataSourceId: '2b',
             data: {
                 data: '(2) 120',
                 timeStamp: 120,
@@ -59,32 +59,32 @@ export function startStaticWithTimeout() {
         },
         /////
         {
-            dataSourceId: '3',
+            dataSourceId: '3b',
             data: {
                 data: '(3) 30',
                 timeStamp: 30,
             }
         }, {
-            dataSourceId: '3',
+            dataSourceId: '3b',
             data: {
                 data: '(3) 40',
                 timeStamp: 40,
             }
         }, {
-            dataSourceId: '3',
+            dataSourceId: '3b',
             data: {
                 data: '(3) 60',
                 timeStamp: 60,
             }
         },
         {
-            dataSourceId: '3',
+            dataSourceId: '3b',
             data: {
                 data: '(3) 90',
                 timeStamp: 90,
             }
         }, {
-            dataSourceId: '3',
+            dataSourceId: '3b',
             data: {
                 data: '(3) 150',
                 timeStamp: 150  ,
@@ -95,16 +95,16 @@ export function startStaticWithTimeout() {
     const bufferStaticWithTimeOut = new DataSynchronizer({
         replayFactor: 1,
         dataSources: [{
-            id: '1',
+            id: '1b',
             bufferingTime: 100,
             timeOut: 4500,
             name: '1'
         }, {
-            id: '2',
+            id: '2b',
             bufferingTime: 200,
             timeOut: 4500
         }, {
-            id: '3',
+            id: '3b',
             bufferingTime: 300,
             timeOut: 4500
         }]
@@ -156,8 +156,8 @@ export function startStaticWithTimeout() {
         d2: 50
     }];
 
-    startDataSet(bufferStaticWithTimeOut, document.getElementById("buffer-timeout-static"), 1000,
-        null, expectedResults);
+    startDataSet(document.getElementById("buffer-timeout-static"), 1000,
+        null, expectedResults, ['1b','2b','3b']);
 
     setTimeout(() => {
         bufferStaticWithTimeOut.terminate();

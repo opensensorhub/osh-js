@@ -92,7 +92,7 @@ export function startStatic() {
             }
         },
     ];
-    const buffer = new DataSynchronizer({
+    const dataSynchronizer = new DataSynchronizer({
         replayFactor: 1,
         dataSources: [{
             id: '1',
@@ -114,7 +114,7 @@ export function startStatic() {
         let event = dataSet[i];
         setTimeout(() => {
             event.data.clockTime = performance.now();
-            buffer.push(event.dataSourceId, event.data);
+            dataSynchronizer.push(event.dataSourceId, event.data);
         },event.data.timeStamp);
     }
 
@@ -149,9 +149,9 @@ export function startStatic() {
         d2: 25,
     }];
 
-    startDataSet(buffer, eltStatic, 1000, null,expectedResults);
+    startDataSet(eltStatic, 1000, null,expectedResults, ['1','2','3']);
 
     setTimeout(() => {
-        buffer.terminate();
+        dataSynchronizer.terminate();
     },1000 * 15);
 }
