@@ -76,6 +76,7 @@ class DataSource {
         this.dataSourceWorker.postMessage({
             message: 'disconnect'
         });
+        this.connected = false;
     }
 
     /**
@@ -85,6 +86,7 @@ class DataSource {
         this.dataSourceWorker.postMessage({
             message: 'connect'
         });
+        this.connected = true;
     }
 
     /**
