@@ -24,4 +24,11 @@ self.onmessage = (event) => {
         };
         self.postMessage(objData);
     }
+
+    setInterval(() => {
+        self.postMessage({
+            message: 'current-time',
+            currentTime: buffer.currentTime
+        });
+    },5);
 }

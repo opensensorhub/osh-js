@@ -71,6 +71,7 @@ class DataSynchronizer {
 
         this.synchronizerWorker.onmessage =(event) => {
             if(event.data.message === 'data') {
+                this.currentTime = event.data.data.timeStamp;
                 this.onData(event.data.dataSourceId, event.data.data);
             } else if(event.data.message === 'wait') {
                 this.onWait(event.data.dataSourceId, event.data.time, event.data.total);
@@ -104,7 +105,6 @@ class DataSynchronizer {
      * @param {Object} data - the data to push into the data synchronizer
      */
     push(dataSourceId, data) {
-        console.log('push into worker');
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.postMessage({
                 dataSourceId: dataSourceId,

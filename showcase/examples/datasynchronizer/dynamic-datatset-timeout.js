@@ -5,6 +5,7 @@ import DynamicDatasynchronizer from './DynamicDatasynchronizer.worker.js';
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
+const eltCurrentTime = document.getElementById("current-time");
 
 export function startDynamicWithTimeout(cbFinish) {
     eltDynamic.innerHTML = '';
@@ -54,6 +55,8 @@ export function startDynamicWithTimeout(cbFinish) {
             virtBuffer.onData(event.data.dataSourceId, event.data.data);
         } else if(event.data.message === 'wait') {
             virtBuffer.onWait(event.data.dataSourceId, event.data.time, event.data.total);
+        } else if(event.data.message === 'current-time') {
+            eltCurrentTime.innerText = new Date(event.data.currentTime).toISOString();
         }
     }
 
