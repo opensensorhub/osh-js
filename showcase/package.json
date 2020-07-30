@@ -26,10 +26,22 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
     "prod": "webpack --config webpack.config.js --mode production",
-    "merge": "package-json-merge package-base.json cesium-fois/package.json  cesium-location/package.json chart/package.json discovery/package.json examples/entity/package.json examples/leaflet-location/package.json examples/leaflet-location-fois/package.json examples/leaflet-location-heading/package.json examples/leaflet-location-path/package.json examples/openlayers-location/package.json examples/ptz-tasking/package.json examples/rangeslider/package.json examples/video-gps-sync/package.json examples/video-h264/package.json examples/video-h264-drapping/package.json examples/video-mjpeg/package.json > package.json",
+    "merge": "package-json-merge package-base.json cesium-fois/package.json  cesium-location/package.json chart/package.json discovery/package.json examples/entity/package.json examples/leaflet-location/package.json examples/leaflet-location-fois/package.json examples/leaflet-location-heading/package.json examples/leaflet-location-path/package.json examples/openlayers-location/package.json examples/ptz-tasking/package.json examples/rangeslider/package.json examples/video-gps-sync/package.json examples/video-h264/package.json examples/video-h264-drapping/package.json examples/video-mjpeg/package.json examples/video-with-control-vuejs/package.json > package.json",
     "postinstall": "patch-package"
   },
   "devDependencies": {
+    "@babel/core": "7.9.0",
+    "babel-core": "6.26.3",
+    "babel-loader": "8.1.0",
+    "babel-preset-env": "1.7.0",
+    "vue-loader": "15.9.1",
+    "vue-template-compiler": "2.6.11",
+    "vuetify": "2.3.1",
+    "vue": "2.6.11",
+    "vue-router": "3.1.6",
+    "vuex": "3.3.0",
+    "vue-dialog-drag": "0.1.29",
+    "vue-plugin-load-script": "1.2.0",
     "clean-webpack-plugin": "3.0.0",
     "copy-webpack-plugin": "5.1.1",
     "css-loader": "3.4.2",
