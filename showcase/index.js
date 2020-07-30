@@ -83,7 +83,7 @@ var samples = [
   },
   {
     name: 'VueJs component: Video with control',
-    description: 'Display an video using forward/pause/play/backward conrol',
+    description: 'Display a video using forward/pause/play/backward control',
     url: 'video-with-control-vuejs'
   }
 ];
