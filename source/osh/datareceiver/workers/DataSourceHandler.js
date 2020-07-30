@@ -16,6 +16,11 @@ class DataSourceHandler {
     }
 
     createConnector(propertiesStr) {
+        // check for existing connector
+        if(this.connector !== null) {
+            this.connector.disconnect();
+            this.connector = null;
+        }
         const properties = JSON.parse(propertiesStr);
         if (isDefined(properties.timeShift)) {
             this.timeShift = properties.timeShift;
