@@ -14,13 +14,8 @@ self.onmessage = (event) => {
             event.data.intervalRate
         );
         dataSynchronizerAlgo.onData = onData;
-        dataSynchronizerAlgo.onWait = onWait;
         init = true;
         addDataSources(event.data.dataSources);
-        // listen for this specific data synchronizer
-        broadcastChannel.onmessage = (event) => {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-        };
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(dataSynchronizerAlgo !== null) {
@@ -42,14 +37,6 @@ function onData(dataSourceId, data) {
     });
 }
 
-function onWait(dataSourceId, time, total) {
-    self.postMessage({
-        message: 'wait',
-        dataSourceId: dataSourceId,
-        time: time,
-        total: total
-    });
-}
 
 self.onclose = function() {
     clearInterval(this.interval);
