@@ -23,6 +23,7 @@
 import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
+import {DATASOURCE_DATA_TOPIC} from "../../Constants";
 
 class View {
     /**
@@ -148,13 +149,14 @@ class View {
     }
 
     registerCallback() {
-        EventManager.observe(this.getEventName(), (event) => {
-            if (event.reset) {
+        const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+this.dataSourceId);
+        broadcastChannel.onmessage = (event) => {
+            if (event.data.message && event.data.message === 'reset') {
                 this.reset(); // on data stream reset
             } else {
                 this.setData(this.dataSourceId, event.data);
             }
-        }, this.divId);
+        };
     }
 
     /**
@@ -162,10 +164,6 @@ class View {
      */
     unregisterCallback() {
         EventManager.removeById(this.divId);
-    }
-
-    getEventName() {
-        return EventManager.EVENT.DATA + "-" + this.dataSourceId;
     }
 
     /**
@@ -268,14 +266,12 @@ class View {
                 const dataSourceId = ds[i];
                 // observes the data come in
                 let self = this;
-                // see https://www.pluralsight.com/guides/javascript-callbacks-variable-scope-problem
-                EventManager.observe(EventManager.EVENT.DATA + "-" + dataSourceId, (event) => {
-
+                const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
+                broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
-                    if (event.reset) {
+                    if (event.data.message && event.data.message === 'reset') {
                         return;
                     }
-
                     // we check selected dataSource only when the selected entity is not set
                     let selected = false;
                     if (isDefined(self.selectedEntity)) {
@@ -289,7 +285,7 @@ class View {
                         selected: selected
                     });
                     self.lastRec[dataSourceId] = event.data;
-                }, this.divId);
+                };
 
                 EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
                     // we check selected dataSource only when the selected entity is not set
