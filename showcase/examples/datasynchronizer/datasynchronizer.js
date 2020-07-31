@@ -33,7 +33,7 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
   for(let dsId of dataSourceIds) {
     const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dsId);
     broadcastChannel.onmessage = (event) => {
-      displayData(event.data.dataSourceId, event.data.data);
+      displayData(event.data.dataSourceId, event.data);
     }
   }
   function displayData (dataSourceId, data) {
@@ -102,14 +102,14 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
-        htmlContent +=  data.data.data +
+        htmlContent +=  data.data +
             absoluteTime +
             delayed;
 
         if(divError !== null) {
           const lineError = document.createElement("div");
           lineError.setAttribute('class', classes);
-          lineError.innerHTML =  data.data.data +
+          lineError.innerHTML =  data.data +
               absoluteTime +
               delayed;
           divError.appendChild(lineError);
@@ -120,7 +120,7 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
-        htmlContent +=  data.data.data + ' (Absolute +' + clockTime.toFixed(2) + 'ms)' + delayed;
+        htmlContent +=  data.data + ' (Absolute +' + clockTime.toFixed(2) + 'ms)' + delayed;
       }
 
       // diff between real time spent and the last data
@@ -148,7 +148,7 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
 
       line.innerHTML = htmlContent;
     } else {
-      line.innerHTML =  data.data.data + absoluteTime;
+      line.innerHTML =  data.data + absoluteTime;
     }
     lastDataMap[dataSourceId] = data;
     lastDataMap[dataSourceId].refClockTime = clockTime;

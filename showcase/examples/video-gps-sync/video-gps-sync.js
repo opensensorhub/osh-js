@@ -8,9 +8,10 @@ import LeafletView from "osh/ui/view/map/LeafletView.js";
 import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
 import EventManager from "osh/events/EventManager.js";
 import Entity from "osh/entity/Entity.js";
+import {DATASOURCE_DATA_TOPIC} from "../../../source/osh/Constants";
 
-const REPLAY_FACTOR = 1.0;
-const BUFFERING = 5000;
+const REPLAY_FACTOR = 5.0;
+const BUFFERING = 200;
 
 let videoDataSource = new Video("android-Video", {
     protocol: "ws",
@@ -130,11 +131,15 @@ dataProviderController.connectAll();
 
 let timeStampNoSyncElt = document.getElementById("gps-timestamp-left");
 let timeStampSyncElt = document.getElementById("gps-timestamp-right");
-//update timestamp after getting data
-EventManager.observe(EventManager.EVENT.DATA + "-" + gpsDataSourceNoSync.getId(), (event) => {
-  timeStampNoSyncElt.innerHTML = new Date(event.data.timeStamp).toISOString() + " > NoSync";
-});
 
-EventManager.observe(EventManager.EVENT.DATA + "-" + gpsDataSource.getId(), (event) => {
+const bcNoSync = new BroadcastChannel(DATASOURCE_DATA_TOPIC+gpsDataSourceNoSync.id);
+const bcSync = new BroadcastChannel(DATASOURCE_DATA_TOPIC+gpsDataSource.id);
+
+//update timestamp after getting data
+bcNoSync.onmessage = (event) => {
+  timeStampNoSyncElt.innerHTML = new Date(event.data.timeStamp).toISOString() + " > NoSync";
+};
+
+bcSync.onmessage = (event) => {
   timeStampSyncElt.innerHTML = new Date(event.data.timeStamp).toISOString() + " < Sync ";
-});
+};

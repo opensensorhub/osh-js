@@ -22,9 +22,8 @@ function getNewData(id, name, freq) {
     let time = currentTimeMillis;
     // const id = ''+getRandomInt(1,3);
     return {
-        timeStamp: time,
+        dataSourceId: id,
         data: {
-            dataSourceId: id,
             data: '(' + name + ') ' + new Date(time).toISOString(),
             timeStamp: time,
             clockTime: performance.now(),
@@ -61,7 +60,7 @@ function addNewData(id, name, latency, freq) {
 function pushBack(id, data) {
     bc.postMessage({
         message: 'data',
-        data: data
+        ...data
     })
 
 }

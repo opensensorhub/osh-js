@@ -42,7 +42,7 @@ function onData(dataSourceId, data) {
     bcChannels[dataSourceId].postMessage({
         message: 'data',
         dataSourceId: dataSourceId,
-        data: data
+        ...data
     });
     currentTimeBroadCastChannel.postMessage({
         currentTime: data.timeStamp
