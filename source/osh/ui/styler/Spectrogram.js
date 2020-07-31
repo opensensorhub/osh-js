@@ -66,7 +66,6 @@ class Spectrogram extends Styler {
     }
 
     setData(dataSourceId, rec, view, options) {
-        console.log(rec);
         if (super.setData(dataSourceId, rec, view, options)) {
             if (isDefined(view)) {
                 view.updateSpectrogram(this, rec.timestamp, options);

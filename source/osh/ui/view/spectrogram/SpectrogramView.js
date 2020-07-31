@@ -68,15 +68,11 @@ class SpectrogramView extends View {
         this.height = parseInt(this.container.style('height'), 10);
         this.aspect = this.width / this.height;
 
-        console.log(this.width, this.height, this.aspect);
-
         this.svg = this.container.append('svg')
             .classed('spec-svg', true)
             .attr("viewBox", `0 0 ${this.width} ${this.height}`)
             .attr('preserveAspectRatio', 'xMinYMid')
             .call(this.makeResponsive);
-
-        console.log(this.svg);
 
         // Setup Scales
         this.initXScale = d3.scaleTime()
@@ -108,11 +104,12 @@ class SpectrogramView extends View {
         }
 
         if (this.isSim) {
-            console.log("Simulating Spectrogram")
+            console.info("Simulating Spectrogram");
             setInterval(() => {
-                this.spectrogramData = this.spectrogramData.concat(this.createDataEntries())
+                // this.spectrogramData = this.spectrogramData.concat(this.createDataEntries());
+                this.spectrogramData = [...this.spectrogramData, ...this.createDataEntries()];
                 this.draw();
-            }, 1000)
+            }, 1000);
         }
     }
 
