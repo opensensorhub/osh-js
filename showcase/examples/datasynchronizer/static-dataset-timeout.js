@@ -92,27 +92,33 @@ export function startStaticWithTimeout() {
         },
     ];
 // static with TimeOut
-    const bufferStaticWithTimeOut = new DataSynchronizer({
+    const dataSynchronizerWithTimeout = new DataSynchronizer({
         replayFactor: 1,
         dataSources: [{
             id: '1b',
-            bufferingTime: 100,
-            timeOut: 4500,
-            name: '1'
+            properties: {
+                bufferingTime: 100,
+                timeOut: 4500,
+                name: '1'
+            }
         }, {
             id: '2b',
-            bufferingTime: 200,
-            timeOut: 4500
+            properties: {
+                bufferingTime: 200,
+                timeOut: 4500
+            }
         }, {
             id: '3b',
-            bufferingTime: 300,
-            timeOut: 4500
+            properties: {
+                bufferingTime: 300,
+                timeOut: 4500
+            }
         }]
     });
 
     for (let i = 0; i < dataSet.length; i++) {
         let event = dataSet[i];
-        bufferStaticWithTimeOut.push(event.dataSourceId, event.data);
+        dataSynchronizerWithTimeout.push(event.dataSourceId, event.data);
     }
     const expectedResults = [{
         d0 : 10,
@@ -160,6 +166,6 @@ export function startStaticWithTimeout() {
         null, expectedResults, ['1b','2b','3b']);
 
     setTimeout(() => {
-        bufferStaticWithTimeOut.terminate();
+        dataSynchronizerWithTimeout.terminate();
     },1000 * 15);
 }

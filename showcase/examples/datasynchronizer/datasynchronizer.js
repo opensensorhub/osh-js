@@ -24,10 +24,6 @@ function updateScroll(divElement){
 
 export function startDataSet(div, waitDisplayFactor, divError=null, expectedResults = [],
                              dataSourceIds = []){
-  let lastWait = -1;
-  let lastDsWait;
-  let count = 0;
-
   let lastDataMap = {};
   let lastDiffClockTime=0;
   let refClockTime = 0;
@@ -44,10 +40,6 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
     if(lineCount++ >= 1200  ) {
       div.innerHTML = '';
       lineCount = 0;
-    }
-    if(lastDsWait === dataSourceId) {
-      lastWait = -1;
-      count = 0;
     }
     const clockTime = performance.now();
     const line = document.createElement('div');

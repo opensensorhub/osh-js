@@ -96,17 +96,23 @@ export function startStatic() {
         replayFactor: 1,
         dataSources: [{
             id: '1',
-            bufferingTime: 100,
-            timeOut: 0,
-            name: '1'
+            properties: {
+                bufferingTime: 100,
+                timeOut: 0,
+                name: '1'
+            }
         }, {
             id: '2',
-            bufferingTime: 200,
-            timeOut: 0
+            properties: {
+                bufferingTime: 200,
+                timeOut: 0
+            }
         }, {
             id: '3',
-            bufferingTime: 300,
-            timeOut: 0
+            properties: {
+                bufferingTime: 300,
+                timeOut: 0
+            }
         }]
     });
 
