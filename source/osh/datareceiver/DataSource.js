@@ -58,6 +58,7 @@ class DataSource {
     initDataSource(properties) {
         this.dataSourceWorker.postMessage({
             message: 'init',
+            id: this.id,
             properties: JSON.stringify(properties),
             topic: DATASOURCE_DATA_TOPIC+this.id
         });

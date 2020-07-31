@@ -55,13 +55,15 @@ class DataSynchronizer {
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
             dataSourcesForWorker.push({
-                bufferingTime: dataSource.bufferingTime,
-                timeOut: dataSource.timeOut,
+                bufferingTime: dataSource.properties.bufferingTime || 0,
+                timeOut: dataSource.properties.timeOut || 0,
                 id: dataSource.id
             });
-            // bind dataSource data onto dataSynchronizer data
-            dataSource.onData = (data) => this.push(dataSource.id, data);
-            dataSource.dataSynchronizer = this;
+            try {
+                dataSource.setDataSynchronizer(this);
+            } catch(ex) {
+                console.warn("Cannot set the synchronizer to this DataSource");
+            }
         }
 
         this.synchronizerWorker = new DataSynchronizerWorker();
@@ -70,6 +72,7 @@ class DataSynchronizer {
             dataSources: dataSourcesForWorker,
             replayFactor: replayFactor,
             intervalRate: intervalRate,
+            dataSynchronizerId:this.id,
             topic: DATA_SYNCHRONIZER_TOPIC+this.id
         });
     }
@@ -81,15 +84,16 @@ class DataSynchronizer {
             id: dataSource.id
         };
         // bind dataSource data onto dataSynchronizer data
-        dataSource.onData = (data) => this.push(dataSource.id, data);
-        dataSource.dataSynchronizer = this;
+        try {
+            dataSource.setDataSynchronizer(this);
+        } catch(ex) {
+            console.warn("Cannot set the synchronizer to this DataSource");
+        }
         this.synchronizerWorker.postMessage({
             message: 'add',
             dataSources: [obj]
         });
     }
-
-    onWait(dataSourceId, time, total) {}
 
     /**
      * @param {String} dataSourceId - the dataSource id

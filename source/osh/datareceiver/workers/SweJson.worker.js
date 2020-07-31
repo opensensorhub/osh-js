@@ -9,7 +9,7 @@ function onData(data) {
 
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
-        dataSourceHandler.createConnector(event.data.properties, event.data.topic);
+        dataSourceHandler.createConnector(event.data.properties, event.data.topic, event.data.id);
         dataSourceHandler.onData = onData;
     } else if (event.data.message === 'connect') {
         dataSourceHandler.connect();

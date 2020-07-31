@@ -4,8 +4,9 @@ import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
 const bcChannels = {};
 let dataSynchronizerAlgo;
 
-let broadcastChannel;
 let init = false;
+let currentTimeBroadCastChannel = null;
+
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
@@ -16,6 +17,10 @@ self.onmessage = (event) => {
         dataSynchronizerAlgo.onData = onData;
         init = true;
         addDataSources(event.data.dataSources);
+        currentTimeBroadCastChannel = new BroadcastChannel(event.data.topic);
+        currentTimeBroadCastChannel.onmessage = (event) => {
+            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+        }
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(dataSynchronizerAlgo !== null) {
@@ -29,12 +34,16 @@ function addDataSources(dataSources) {
         bcChannels[ds.id] = new BroadcastChannel(DATASOURCE_DATA_TOPIC + ds.id);
     }
 }
+
 function onData(dataSourceId, data) {
     bcChannels[dataSourceId].postMessage({
         message: 'data',
         dataSourceId: dataSourceId,
         data: data
     });
+    currentTimeBroadCastChannel.postMessage({
+        currentTime: data.timeStamp
+    })
 }
 
 
