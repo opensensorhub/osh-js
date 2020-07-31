@@ -119,7 +119,8 @@ let videoView = new MjpegView("video-container", {
 
 const entity = new Entity("Android phone", [gpsDataSource, videoDataSource, gpsDataSourceNoSync]);
 let dataProviderController = new DataReceiverController({
-    replayFactor: REPLAY_FACTOR
+    replayFactor: REPLAY_FACTOR,
+    dataSources: [gpsDataSource, videoDataSource, gpsDataSourceNoSync]
 });
 
 // We can add a group of dataSources and set the options

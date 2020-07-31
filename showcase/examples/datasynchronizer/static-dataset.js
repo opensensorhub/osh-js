@@ -7,88 +7,88 @@ export function startStatic() {
     const dataSet = [
         {
             dataSourceId: '1',
+            timeStamp: 25,
             data: {
                 data: '(1) 25',
-                timeStamp: 25,
             }
         }, {
             dataSourceId: '1',
+            timeStamp: 50,
             data: {
                 data: '(1) 50',
-                timeStamp: 50,
             }
         }, {
             dataSourceId: '1',
+            timeStamp: 75,
             data: {
                 data: '(1) 75',
-                timeStamp: 75,
             }
         },
         {
             dataSourceId: '1',
+            timeStamp: 100,
             data: {
                 data: '(1) 100',
-                timeStamp: 100,
             }
         },
         /////
         {
             dataSourceId: '2',
+            timeStamp: 10,
             data: {
                 data: '(2) 10',
-                timeStamp: 10,
             }
         }, {
             dataSourceId: '2',
+            timeStamp: 40,
             data: {
                 data: '(2) 40',
-                timeStamp: 40,
             }
         }, {
             dataSourceId: '2',
+            timeStamp: 80,
             data: {
                 data: '(2) 80',
-                timeStamp: 80,
             }
         },
         {
             dataSourceId: '2',
+            timeStamp: 120,
             data: {
                 data: '(2) 120',
-                timeStamp: 120,
             }
         },
         /////
         {
             dataSourceId: '3',
+            timeStamp: 30,
             data: {
                 data: '(3) 30',
-                timeStamp: 30,
             }
         }, {
             dataSourceId: '3',
+            timeStamp: 60,
             data: {
                 data: '(3) 60',
-                timeStamp: 60,
             }
         }, {
             dataSourceId: '3',
+            timeStamp: 90,
             data: {
                 data: '(3) 90',
-                timeStamp: 90,
             }
         },
         {
             dataSourceId: '3',
+            timeStamp: 120,
             data: {
                 data: '(3) 120',
-                timeStamp: 120,
             }
         }, {
             dataSourceId: '3',
+            timeStamp: 150,
             data: {
                 data: '(3) 150',
-                timeStamp: 150,
             }
         },
     ];
@@ -120,7 +120,7 @@ export function startStatic() {
         let event = dataSet[i];
         setTimeout(() => {
             event.data.clockTime = performance.now();
-            dataSynchronizer.push(event.dataSourceId, event.data);
+            dataSynchronizer.push(event.dataSourceId, event);
         },event.data.timeStamp);
     }
 

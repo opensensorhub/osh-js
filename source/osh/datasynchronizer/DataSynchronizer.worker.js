@@ -19,7 +19,10 @@ self.onmessage = (event) => {
         addDataSources(event.data.dataSources);
         currentTimeBroadCastChannel = new BroadcastChannel(event.data.topic);
         currentTimeBroadCastChannel.onmessage = (event) => {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+            dataSynchronizerAlgo.push(event.data.dataSourceId, {
+                data: event.data.data,
+                timeStamp: event.data.timeStamp
+            });
         }
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);

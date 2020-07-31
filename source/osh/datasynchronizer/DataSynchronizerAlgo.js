@@ -48,8 +48,6 @@ class DataSynchronizerAlgo {
             }
         }
 
-        //TODO: missing replayFactor
-        //TODO: add interval as worker argument
         this.interval = setInterval(() => {
             // 1) return the oldest data if any
             while (this.computeNextData(tsRef, clockTimeRef)) ;

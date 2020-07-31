@@ -54,7 +54,7 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
 
     const lastDataByDs = lastDataMap[dataSourceId];
     if (isDefined(lastDataByDs)) {
-      let delayed = data.delayed? ' (delayed) ' : '';
+      let delayed = data.data.delayed? ' (delayed) ' : '';
 
       let htmlContent = '';
 
@@ -98,29 +98,29 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
 
       if (error) {
         let classes = 'error line '+selectorMapping[dataSourceId];
-        if(data.delayed) {
+        if(data.data.delayed) {
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
-        htmlContent +=  data.data +
+        htmlContent +=  data.data.data +
             absoluteTime +
             delayed;
 
         if(divError !== null) {
           const lineError = document.createElement("div");
           lineError.setAttribute('class', classes);
-          lineError.innerHTML =  data.data +
+          lineError.innerHTML =  data.data.data +
               absoluteTime +
               delayed;
           divError.appendChild(lineError);
         }
       } else {
         let classes = 'noerror line '+selectorMapping[dataSourceId];
-        if(data.delayed) {
+        if(data.data.delayed) {
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
-        htmlContent +=  data.data + ' (Absolute +' + clockTime.toFixed(2) + 'ms)' + delayed;
+        htmlContent +=  data.data.data + ' (Absolute +' + clockTime.toFixed(2) + 'ms)' + delayed;
       }
 
       // diff between real time spent and the last data
@@ -148,7 +148,7 @@ export function startDataSet(div, waitDisplayFactor, divError=null, expectedResu
 
       line.innerHTML = htmlContent;
     } else {
-      line.innerHTML =  data.data + absoluteTime;
+      line.innerHTML =  data.data.data + absoluteTime;
     }
     lastDataMap[dataSourceId] = data;
     lastDataMap[dataSourceId].refClockTime = clockTime;
