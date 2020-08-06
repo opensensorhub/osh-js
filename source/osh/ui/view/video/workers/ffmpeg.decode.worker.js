@@ -1,6 +1,5 @@
 import Module from './ffmpeg-h264.js';
-import YUVCanvas from "../YUVCanvas";
-import {isDefined} from "../../../../utils/Utils";
+import {FFMPEG_VIEW_DECODE_TOPIC} from "../../../../Constants";
 
 let instance = {
   ready: new Promise(resolve => {
@@ -23,7 +22,7 @@ instance.ready
     self.codec = null;
     let released = false;
 
-    self.bc = new BroadcastChannel('ffmpeg-draw-1');
+    self.bc = null;
 
     self.onmessage = function (e) {
       if(released) {
@@ -37,8 +36,14 @@ instance.ready
       if(e.data.codec !== self.codec) {
           init(e.data.codec);
       }
-      var data = e.data;
-      var decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize),
+
+      const data = e.data;
+
+      if(self.bc === null) {
+          self.bc = new BroadcastChannel(FFMPEG_VIEW_DECODE_TOPIC+data.dataSourceId);
+      }
+
+      const decodedFrame = innerWorkerDecode(data.pktSize, new Uint8Array(data.pktData, data.byteOffset, data.pktSize),
           data.timeStamp, data.roll);
       if (typeof decodedFrame != "undefined") {
         // decodedFrame.roll = data.roll;

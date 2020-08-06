@@ -406,6 +406,7 @@ class View {
      * Calls for resetting the view.
      */
     reset() {
+        console.log('reset view');
     }
 }
 
