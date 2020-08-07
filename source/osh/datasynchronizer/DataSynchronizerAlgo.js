@@ -1,3 +1,5 @@
+import {isDefined} from "../utils/Utils";
+
 class DataSynchronizerAlgo {
     constructor(dataSources, replayFactor = 1, intervalRate = 5) {
         this.dataSourceMap = {};
@@ -33,9 +35,18 @@ class DataSynchronizerAlgo {
         ds.dataBuffer.push(data);
     }
 
+    reset() {
+        this.close();
+        for (let currentDsId in this.dataSourceMap) {
+            const currentDs = this.dataSourceMap[currentDsId];
+            currentDs.dataBuffer = [];
+        }
+        this.startBufferingTime = -1;
+    }
+
     processData() {
         let tsRef = -1;
-        const clockTimeRef = performance.now();
+        let clockTimeRef = performance.now();
 
         // get reference start timestamp
         // the reference start timestamp should the oldest one
@@ -133,8 +144,10 @@ class DataSynchronizerAlgo {
     }
 
     close() {
-        clearInterval(this.interval);
-        console.log("Data synchronizer terminated successfully");
+        if(isDefined(this.interval)) {
+            clearInterval(this.interval);
+            console.log("Data synchronizer terminated successfully");
+        }
     }
 }
 export default DataSynchronizerAlgo;

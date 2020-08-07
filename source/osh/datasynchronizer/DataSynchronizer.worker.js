@@ -32,6 +32,8 @@ self.onmessage = (event) => {
             message: 'current-time',
             data: self.currentTime
         });
+    }  else if(event.data.message === 'reset') {
+        dataSynchronizerAlgo.reset();
     } else if(dataSynchronizerAlgo !== null) {
         dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
     }
@@ -51,13 +53,10 @@ function onData(dataSourceId, data) {
         dataSourceId: dataSourceId,
         ...data
     });
-    // currentTimeBroadCastChannel.postMessage({
-    //     currentTime: data.timeStamp
-    // })
 }
 
 
 self.onclose = function() {
-    clearInterval(this.interval);
+    dataSynchronizerAlgo.close();
     console.log("Data Synchronizer has been terminated successfully");
 }

@@ -124,6 +124,16 @@ class DataSynchronizer {
     }
 
     /**
+     * Resets reference time
+     */
+    reset() {
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.postMessage({
+                message: 'reset'
+            });
+        }
+    }
+    /**
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
     terminate() {
@@ -135,15 +145,19 @@ class DataSynchronizer {
 
     async getCurrentTime() {
         const promise = new Promise(resolve => {
-            this.synchronizerWorker.onmessage = (event) => {
-                if (event.data.message === 'current-time') {
-                    resolve(event.data.data);
-                }
-            };
+            if(this.synchronizerWorker !== null) {
+                this.synchronizerWorker.onmessage = (event) => {
+                    if (event.data.message === 'current-time') {
+                        resolve(event.data.data);
+                    }
+                };
+            }
         });
-        this.synchronizerWorker.postMessage({
-            message: 'current-time'
-        });
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.postMessage({
+                message: 'current-time'
+            });
+        }
 
         return promise;
     }
