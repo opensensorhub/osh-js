@@ -12,7 +12,7 @@ class DataSourceHandler {
         this.lastTimeStamp = null;
         this.lastStartTime = 'now';
         this.timeShift = 0;
-        this.reconnectTimeout = 1000 * 60 * 2; //2 min
+        this.reconnectTimeout = 1000 * 10; // 10 secs
         this.connected = false;
     }
 
@@ -26,6 +26,7 @@ class DataSourceHandler {
         this.broadcastChannel = new BroadcastChannel(topic);
 
         const properties = JSON.parse(propertiesStr);
+
         if (isDefined(properties.timeShift)) {
             this.timeShift = properties.timeShift;
         }
@@ -51,15 +52,21 @@ class DataSourceHandler {
             this.connector = new WebSocketConnector(url);
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
+            // set the reconnectTimeout
+            this.connector.setReconnectTimeout(this.reconnectTimeout);
         } else if (properties.protocol.startsWith('http')) {
             this.connector = new Ajax(url);
             this.connector.responseType = 'arraybuffer';
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
+            // set the reconnectTimeout
+            this.connector.setReconnectTimeout(this.reconnectTimeout);
         } else if (properties.protocol.startsWith('topic')) {
             this.connector = new TopicConnector(url);
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
+            // set the reconnectTimeout
+            this.connector.setReconnectTimeout(this.reconnectTimeout);
         }
 
         const lastStartTimeCst  = this.parser.lastStartTime;
