@@ -52,6 +52,7 @@
              :heading-data-source="headingDataSource"
              style="flex-grow:1"></Map>
         <time-line
+                 :dataSynchronizer="dataSynchronizer"
                  class="range"></time-line>
       </div>
     </v-content>
@@ -95,10 +96,8 @@
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
   import SweJson from "osh/datareceiver/SweJson.js";
   import Video from "osh/datareceiver/Video.js";
-  import {randomUUID} from "osh/utils/Utils.js";
-  import DataReceiverController from "osh/datareceiver/DataReceiverController.js";
-  import EventManager from "osh/events/EventManager.js";
-  import Entity from "osh/entity/Entity.js";
+  import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer.js";
+  import {isDefined} from "../../../../source/osh/utils/Utils";
 
   export default {
     components: {
@@ -125,8 +124,8 @@
           observedProperty: "http://sensorml.com/ont/swe/property/Location",
           startTime: "2015-02-16T07:58:32Z",
           endTime: "2015-02-16T08:09:00Z",
-          syncMasterTime: true,
-          bufferingTime: 0,
+          timeOut: 100,
+          bufferingTime: 100,
           timeShift: -16000,
           replaySpeed: 2
         }),
@@ -138,8 +137,8 @@
           observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
           startTime: "2015-02-16T07:58:35Z",
           endTime: "2015-02-16T08:09:00Z",
-          syncMasterTime: true,
-          bufferingTime: 0,
+          timeOut: 100,
+          bufferingTime: 100,
           replaySpeed: 2
         }),
         videoDataSource: new Video("android-Video", {
@@ -150,8 +149,8 @@
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
           startTime: "2015-02-16T07:58:35Z",
           endTime: "2015-02-16T08:09:00Z",
-          syncMasterTime: true,
-          bufferingTime: 0,
+          timeOut: 100,
+          bufferingTime: 100,
           replaySpeed: 2
         }),
         weatherDataSource: new SweJson("weather", {
@@ -162,13 +161,13 @@
           observedProperty: "http://sensorml.com/ont/swe/property/Weather",
           startTime: "now",
           endTime: "2055-01-01Z",
-          syncMasterTime: false,
-          bufferingTime: 0
-        })
+          timeOut: 100,
+          bufferingTime: 100
+        }),
+        dataSynchronizer:null
       }
     },
-    computed: {},
-    mounted() {
+    beforeMount() {
       this.items.push({
         id: 1,
         name: 'Android Phone',
@@ -186,29 +185,13 @@
       this.dataSources['4'] = this.headingDataSource;
       this.dataSources['5'] = this.weatherDataSource;
 
-      // We can add a group of dataSources and set the options
-       this.dataProviderController = new DataReceiverController({
-           replayFactor: 2,
-           dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
-       });
+      this.dataSources = [this.locationDataSource, this.videoDataSource, this.headingDataSource, this.weatherDataSource];
 
-        EventManager.observe(EventManager.EVENT.CONNECT_DATASOURCE, (event) => {
-            let eventDataSourcesIds = event.dataSourcesId;
-            for(let dsId of eventDataSourcesIds) {
-                if(dsId === this.weatherDataSource.id) {
-                    this.weatherDataSource.connect();
-                }
-            }
-        });
+      this.dataSynchronizer = new DataSynchronizer({
+        replayFactor: 2,
+        dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
+      });
 
-        EventManager.observe(EventManager.EVENT.DISCONNECT_DATASOURCE, (event) => {
-            let eventDataSourcesIds = event.dataSourcesId;
-            for(let dsId of eventDataSourcesIds) {
-                if(dsId === this.weatherDataSource.id) {
-                    this.weatherDataSource.disconnect();
-                }
-            }
-        });
     },
     methods: {
       onSelect(nodes) {
@@ -221,14 +204,23 @@
           bIds.push(nodes.dataSource.id);
         }
 
-        EventManager.fire(EventManager.EVENT.CONNECT_DATASOURCE, {
-          dataSourcesId: bIds.filter(x => !this.selectionIds.includes(x))
-        });
+        const dsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
+        const dsToDisconnect = this.selectionIds.filter(x => !bIds.includes(x));
 
-        EventManager.fire(EventManager.EVENT.DISCONNECT_DATASOURCE, {
-          dataSourcesId: this.selectionIds.filter(x => !bIds.includes(x))
-        });
-
+        let reset = false;
+        for(let dsId in this.dataSources) {
+          const currentDs = this.dataSources[dsId];
+          if(dsToConnect.includes(currentDs.id)) {
+            currentDs.connect();
+          } else if(dsToDisconnect.includes(currentDs.id)){
+            currentDs.disconnect();
+            // check if this is owned by synchronizer
+            if(isDefined(currentDs.dataSynchronizer) && !reset) {
+              currentDs.dataSynchronizer.reset();
+              reset = true;
+            }
+          }
+        }
         this.selectionIds = bIds;
       }
     },

@@ -7,13 +7,23 @@
 
   export default {
     name: "TimeLine",
-    props: ['dataSources'],
+    props: ['dataSynchronizer'],
+    data() {
+      return {
+        rangeSlider: null
+      }
+    },
     mounted() {
-      let rangeSlider = new RangeSlider("timeline-container", {
+      this.rangeSlider = new RangeSlider("timeline-container", {
         startTime: "2015-02-16T07:58:35Z",
         endTime: "2015-02-16T08:09:00Z",
-        refreshRate: 1
+        refreshRate: 1,
+        dataSynchronizer: this.dataSynchronizer,
+        disabled: true
       });
+    },
+    destroyed() {
+      this.rangeSlider.destroy();
     }
   }
 </script>

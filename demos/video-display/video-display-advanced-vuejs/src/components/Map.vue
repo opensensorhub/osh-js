@@ -62,7 +62,8 @@ export default {
           }
         },
         icon: './images/car-topview.png',
-        iconAnchor: [16, 32]
+        iconAnchor: [16, 32],
+        zoomLevel: 17
       });
       // create Leaflet view
       this.view = new LeafletView("map",
@@ -71,7 +72,7 @@ export default {
           name: "Android Phone GPS"
         }],
         {
-          watch: true,
+          follow: true,
           autoZoomOnFirstMarker:true
         });
     },
