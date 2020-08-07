@@ -49,6 +49,7 @@ class View {
         this.selectedDataSources = [];
         this.dataSources = [];
         this.viewItemsBroadcastChannels = {};
+        this.entity = null;
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -122,9 +123,7 @@ class View {
 
         var that = this;
         // observes the event associated to the dataSourceId
-        if (isDefined(options) && isDefined(options.dataSourceId)) {
-            this.registerCallback();
-        }
+        this.registerCallback();
 
         let observer = new MutationObserver((mutations) => {
             mutations.forEach(function (mutation) {
@@ -150,14 +149,26 @@ class View {
     }
 
     registerCallback() {
-        const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+this.dataSourceId);
-        broadcastChannel.onmessage = (event) => {
-            if (event.data.message && event.data.message === 'reset') {
-                this.reset(); // on data stream reset
-            } else {
-                this.setData(this.dataSourceId, event.data);
+        if (isDefined(this.dataSourceId) || isDefined(this.entity)) {
+            const that = this;
+            function registerDs(dataSourceId) {
+                const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + dataSourceId);
+                broadcastChannel.onmessage = (event) => {
+                    if (event.data.message && event.data.message === 'reset') {
+                        that.reset(); // on data stream reset
+                    } else {
+                        that.setData(dataSourceId, event.data);
+                    }
+                };
             }
-        };
+            if(this.entity !== null) {
+                for(let dataSource of this.entity.getDataSources()) {
+                    registerDs(dataSource.id);
+                }
+            } else {
+                registerDs(this.dataSourceId);
+            }
+        }
     }
 
     /**
