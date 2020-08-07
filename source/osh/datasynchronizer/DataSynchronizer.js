@@ -34,7 +34,7 @@ class DataSynchronizer {
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
         this.id = randomUUID();
-
+        this.dataSources = [];
         let replayFactor = 1;
         let intervalRate = 5;
 
@@ -54,16 +54,9 @@ class DataSynchronizer {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
-            dataSourcesForWorker.push({
-                bufferingTime: dataSource.properties.bufferingTime || 0,
-                timeOut: dataSource.properties.timeOut || 0,
-                id: dataSource.id
-            });
-            try {
-                dataSource.setDataSynchronizer(this);
-            } catch(ex) {
-                console.warn("Cannot set the synchronizer to this DataSource");
-            }
+            const dataSourceForWorker= this.createDataSourceForWorker(dataSource);
+            dataSourcesForWorker.push(dataSourceForWorker);
+            this.dataSources.push(dataSource);
         }
 
         this.synchronizerWorker = new DataSynchronizerWorker();
@@ -77,7 +70,11 @@ class DataSynchronizer {
         });
     }
 
-    addDataSource(dataSource) {
+    /**
+     * @private
+     * @param dataSource
+     */
+    createDataSourceForWorker(dataSource) {
         const obj = {
             bufferingTime: dataSource.bufferingTime || 0,
             timeOut: dataSource.timeOut || 0,
@@ -89,9 +86,15 @@ class DataSynchronizer {
         } catch(ex) {
             console.warn("Cannot set the synchronizer to this DataSource");
         }
+        return obj;
+    }
+
+    addDataSource(dataSource) {
+        const dataSourceForWorker = this.createDataSourceForWorker(dataSource);
+        this.dataSources.push(dataSource);
         this.synchronizerWorker.postMessage({
             message: 'add',
-            dataSources: [obj]
+            dataSources: [dataSourceForWorker]
         });
     }
 
@@ -108,6 +111,18 @@ class DataSynchronizer {
         }
     }
 
+    connectAll() {
+        for(let dataSource of this.dataSources) {
+            dataSource.connect();
+        }
+    }
+
+    disconnectAll() {
+        for(let dataSource of this.dataSources) {
+            dataSource.disconnect();
+        }
+    }
+
     /**
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
@@ -116,6 +131,21 @@ class DataSynchronizer {
             this.synchronizerWorker.terminate();
             this.synchronizerWorker = null;
         }
+    }
+
+    async getCurrentTime() {
+        const promise = new Promise(resolve => {
+            this.synchronizerWorker.onmessage = (event) => {
+                if (event.data.message === 'current-time') {
+                    resolve(event.data.data);
+                }
+            };
+        });
+        this.synchronizerWorker.postMessage({
+            message: 'current-time'
+        });
+
+        return promise;
     }
 }
 export default  DataSynchronizer;

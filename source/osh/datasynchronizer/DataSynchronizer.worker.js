@@ -5,7 +5,8 @@ const bcChannels = {};
 let dataSynchronizerAlgo;
 
 let init = false;
-let currentTimeBroadCastChannel = null;
+let dataSourceBroadCastChannel = null;
+self.currentTime = -1;
 
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
@@ -17,8 +18,8 @@ self.onmessage = (event) => {
         dataSynchronizerAlgo.onData = onData;
         init = true;
         addDataSources(event.data.dataSources);
-        currentTimeBroadCastChannel = new BroadcastChannel(event.data.topic);
-        currentTimeBroadCastChannel.onmessage = (event) => {
+        dataSourceBroadCastChannel = new BroadcastChannel(event.data.topic);
+        dataSourceBroadCastChannel.onmessage = (event) => {
             dataSynchronizerAlgo.push(event.data.dataSourceId, {
                 data: event.data.data,
                 timeStamp: event.data.timeStamp
@@ -26,6 +27,11 @@ self.onmessage = (event) => {
         }
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
+    } else if(event.data.message === 'current-time') {
+        self.postMessage({
+            message: 'current-time',
+            data: self.currentTime
+        });
     } else if(dataSynchronizerAlgo !== null) {
         dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
     }
@@ -39,14 +45,15 @@ function addDataSources(dataSources) {
 }
 
 function onData(dataSourceId, data) {
+    self.currentTime = data.timeStamp;
     bcChannels[dataSourceId].postMessage({
         message: 'data',
         dataSourceId: dataSourceId,
         ...data
     });
-    currentTimeBroadCastChannel.postMessage({
-        currentTime: data.timeStamp
-    })
+    // currentTimeBroadCastChannel.postMessage({
+    //     currentTime: data.timeStamp
+    // })
 }
 
 
