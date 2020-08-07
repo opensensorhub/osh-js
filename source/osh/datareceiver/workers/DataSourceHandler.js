@@ -43,6 +43,14 @@ class DataSourceHandler {
             this.reconnectTimeout = properties.reconnectTimeout;
         }
 
+        this.properties = properties;
+        this.createDataConnector(properties);
+    }
+
+    /**
+     * @private
+     */
+    createDataConnector(properties) {
         const url = this.parser.buildUrl({
             ...properties,
             timeShift: this.timeShift
@@ -78,13 +86,17 @@ class DataSourceHandler {
                     this.connector.setUrl(this.parser.buildUrl(
                         {
                             lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-                            ...properties
+                            ...this.properties
                         }));
                 }
             }
         }
     }
 
+    /**
+     * Sets the current topic to listen
+     * @param {String} topic - the topic to listen
+     */
     setTopic(topic) {
         if(this.broadcastChannel !== null) {
             this.broadcastChannel.close();

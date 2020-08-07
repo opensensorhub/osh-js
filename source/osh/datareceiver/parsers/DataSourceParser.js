@@ -51,7 +51,6 @@ class DataSourceParser {
         this.lastStartTime = properties.startTime;
         let endTime = properties.endTime;
         url += "temporalFilter=phenomenonTime," + stTime+ "/" + endTime + "&";
-
         if (properties.replaySpeed) {
             // adds replaySpeed
             url += "replaySpeed=" + properties.replaySpeed;
