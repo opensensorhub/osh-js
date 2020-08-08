@@ -164,7 +164,6 @@ class SpectrogramView extends View {
 
     /**
      *
-     * @returns {[]}
      */
     createDataEntries() {
         let tempDataArr = [];
