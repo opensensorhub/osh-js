@@ -1,3 +1,5 @@
+import {randomUUID} from "../source/osh/utils/Utils";
+
 const Prism = require('prismjs');
 const beautify = require('js-beautify').js;
 var Normalizer = require('prismjs/plugins/normalize-whitespace/prism-normalize-whitespace');
@@ -18,11 +20,11 @@ var samples = [
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
   },
-  {
-    name: "Discovery (form)",
-    description: "Display a Form helping to choose the correct DataSource depending on the offering.",
-    url: "discovery"
-  },
+  // {
+  //   name: "Discovery (form)",
+  //   description: "Display a Form helping to choose the correct DataSource depending on the offering.",
+  //   url: "discovery"
+  // },
   {
     name: "Moving Location (Leaflet)",
     description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
@@ -107,22 +109,26 @@ samples.forEach(s => {
 
   // setup handler to load sample in popup
   $("button", $newElt).on("click", e => {
-    // cleanup previously opened connections
-    for (v in window) {
-      if (window[v] != null && typeof(window[v].disconnect) === "function") {
-        console.log("Disconnecting " + window[v].name);
-        window[v].disconnect();
-        delete window[v];
-      }
-    }
-
     // load selected sample in modal
     currentSample = s;
     $("#src-code").empty();
     $("#src-code").hide();
     $("#sample-area").empty();
     $("#sample-area").show();
-    $("#sample-area").load("" + s.url+'.html');
+
+    const iframeId = randomUUID();
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("style","width:100%;height:100%;border:none;");
+    iframe.setAttribute("id", iframeId);
+    iframe.setAttribute("src",s.url+'.html');
+    // iframe.onload = function() {
+    //     let $body = $('body',iframe.contentWindow.document);
+    //     $body.load("" + s.url+'.html');
+    // };
+
+    const sampleArea = document.getElementById("sample-area");
+    sampleArea.appendChild(iframe);
+
     $("#sample-dialog h5").html(s.name);
     $("#sample-dialog").modal("show");
   });

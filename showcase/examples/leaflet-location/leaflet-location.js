@@ -35,7 +35,9 @@ let leafletMapView = new LeafletView("leafletMap",
     [{
       styler: pointMarker,
       name: "Android Phone GPS"
-    }]
+    }], {
+      autoZoomOnFirstMarker:true
+    }
 );
 
 // start streaming
