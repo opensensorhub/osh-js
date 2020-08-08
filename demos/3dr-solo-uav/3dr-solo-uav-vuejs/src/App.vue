@@ -78,10 +78,7 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
       });
 
     // start streaming
-    this.videoDataSource.connect();
-    this.platformLocationDataSource.connect();
-    this.platformOrientationDataSource.connect();
-    this.gimbalOrientationDataSource.connect();
+    dataSynchronizer.connectAll();
   }
 };
 </script>
