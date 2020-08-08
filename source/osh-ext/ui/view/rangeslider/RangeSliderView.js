@@ -44,6 +44,7 @@ class RangeSliderView extends View {
 		* @param {String} options.dataSourcesId - The dataSource id which are sync with master time
     * @param {String} options.dataSourceId - The dataSource id which is not sync with master time
     * @param {Boolean} options.disabled - disabled the range slider
+    * @param {Object} options.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
 		*/
   constructor(parentElementDivId, options) {
     super(parentElementDivId, [], options);
@@ -57,7 +58,7 @@ class RangeSliderView extends View {
 
     this.dataSourcesId = [];
     this.multi = false;
-
+    this.dataSynchonizer = null;
     this.options = {};
 
     if (isDefined(options)) {
@@ -71,6 +72,10 @@ class RangeSliderView extends View {
 
       if (isDefined(options.dataSourcesId)) {
         this.dataSourcesId = options.dataSourcesId;
+      }
+
+      if (isDefined(options.dataSynchronizer)) {
+        this.dataSynchonizer = options.dataSynchronizer;
       }
 
       if(isDefined(options.options)) {
@@ -162,19 +167,12 @@ class RangeSliderView extends View {
       that.update = false;
     });
 
-    if (this.dataSourcesId.length > 0) {
-      // listen for DataSourceId
-      EventManager.observe(EventManager.EVENT.CURRENT_MASTER_TIME, function (event) {
-        if (self.dataSourcesId.length > 0 && this.dataSourcesId.indexOf(event.dataSourceId) < 0) {
-          this.slider.noUiSlider.set([event.timeStamp]);
-        }
-      });
-
-      let values = this.slider.noUiSlider.get();
-      EventManager.fire(EventManager.EVENT.DATASOURCE_UPDATE_TIME, {
-        startTime: new Date(parseInt(values[0])).toISOString(),
-        endTime: new Date(parseInt(values[1])).toISOString()
-      });
+    if (this.dataSynchonizer !== null) {
+      this.interval = setInterval(async ()=> {
+        this.dataSynchonizer.getCurrentTime().then(time => {
+          this.slider.noUiSlider.set([time]);
+        });
+      },100);
     }
   }
   /**
@@ -199,6 +197,14 @@ class RangeSliderView extends View {
 
   onChange(startTime, endTime) {
 
+  }
+
+  destroy() {
+    super.destroy();
+
+    if(isDefined(this.interval)) {
+      clearInterval(this.interval);
+    }
   }
 }
 

@@ -1,9 +1,13 @@
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
 
 let init = false;
+let dataSourceBroadCastChannel = null;
+self.currentTime = -1;
+
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
@@ -12,11 +16,24 @@ self.onmessage = (event) => {
             event.data.intervalRate
         );
         dataSynchronizerAlgo.onData = onData;
-        dataSynchronizerAlgo.onWait = onWait;
         init = true;
         addDataSources(event.data.dataSources);
+        dataSourceBroadCastChannel = new BroadcastChannel(event.data.topic);
+        dataSourceBroadCastChannel.onmessage = (event) => {
+            dataSynchronizerAlgo.push(event.data.dataSourceId, {
+                data: event.data.data,
+                timeStamp: event.data.timeStamp
+            });
+        }
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
+    } else if(event.data.message === 'current-time') {
+        self.postMessage({
+            message: 'current-time',
+            data: self.currentTime
+        });
+    }  else if(event.data.message === 'reset') {
+        dataSynchronizerAlgo.reset();
     } else if(dataSynchronizerAlgo !== null) {
         dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
     }
@@ -25,36 +42,21 @@ self.onmessage = (event) => {
 function addDataSources(dataSources) {
     for(let ds of dataSources) {
         dataSynchronizerAlgo.addDataSource(ds);
-        bcChannels[ds.id] = new BroadcastChannel('datasource-data-' + ds.id);
-        // listen for this specific DS
-        bcChannels[ds.id].onmessage = (event) => {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-        };
+        bcChannels[ds.id] = new BroadcastChannel(DATASOURCE_DATA_TOPIC + ds.id);
     }
 }
+
 function onData(dataSourceId, data) {
-    self.postMessage({
+    self.currentTime = data.timeStamp;
+    bcChannels[dataSourceId].postMessage({
         message: 'data',
         dataSourceId: dataSourceId,
-        data: data
+        ...data
     });
-    // dataSynchronizerChannel.postMessage({
-    //     message: 'data',
-    //     dataSourceId: dataSourceId,
-    //     data: data
-    // });
 }
 
-function onWait(dataSourceId, time, total) {
-    self.postMessage({
-        message: 'wait',
-        dataSourceId: dataSourceId,
-        time: time,
-        total: total
-    });
-}
 
 self.onclose = function() {
-    clearInterval(this.interval);
-    console.log("Buffer has been terminated successfully");
+    dataSynchronizerAlgo.close();
+    console.log("Data Synchronizer has been terminated successfully");
 }

@@ -114,12 +114,6 @@ class FFMPEGView extends View {
 
         // create webGL canvas
         this.domNode = domNode;
-        // this.yuvCanvas = this.createCanvas(this.width,this.height, domNode);
-        // this.canvas = document.createElement('canvas');
-        // this.canvas.setAttribute('width', this.width);
-        // this.canvas.setAttribute('height', this.height);
-
-        // domNode.appendChild(this.yuvCanvas.canvasElement);
 
         // add selection listener
         let self = this;
@@ -258,7 +252,8 @@ class FFMPEGView extends View {
             canvas: offscreenCanvas,
             width: this.width,
             height: this.height,
-            framerate: this.framerate
+            framerate: this.framerate,
+            dataSourceId: this.dataSourceId
         }, [offscreenCanvas]);
 
         this.decodeWorker.onmessage = function (e) {
@@ -296,7 +291,8 @@ class FFMPEGView extends View {
                 roll: roll,
                 byteOffset: pktData.byteOffset,
                 codec: this.codec,
-                timeStamp: timeStamp
+                timeStamp: timeStamp,
+                dataSourceId: this.dataSourceId
             }, [arrayBuffer]);
             pktData = null;
         }

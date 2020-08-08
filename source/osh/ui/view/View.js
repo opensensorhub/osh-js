@@ -23,6 +23,7 @@
 import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
+import {DATASOURCE_DATA_TOPIC} from "../../Constants";
 
 class View {
     /**
@@ -47,6 +48,8 @@ class View {
         this.lastRec = {};
         this.selectedDataSources = [];
         this.dataSources = [];
+        this.viewItemsBroadcastChannels = {};
+        this.entity = null;
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -120,9 +123,7 @@ class View {
 
         var that = this;
         // observes the event associated to the dataSourceId
-        if (isDefined(options) && isDefined(options.dataSourceId)) {
-            this.registerCallback();
-        }
+        this.registerCallback();
 
         let observer = new MutationObserver((mutations) => {
             mutations.forEach(function (mutation) {
@@ -148,13 +149,26 @@ class View {
     }
 
     registerCallback() {
-        EventManager.observe(this.getEventName(), (event) => {
-            if (event.reset) {
-                this.reset(); // on data stream reset
-            } else {
-                this.setData(this.dataSourceId, event.data);
+        if (isDefined(this.dataSourceId) || isDefined(this.entity)) {
+            const that = this;
+            function registerDs(dataSourceId) {
+                const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + dataSourceId);
+                broadcastChannel.onmessage = (event) => {
+                    if (event.data.message && event.data.message === 'reset') {
+                        that.reset(); // on data stream reset
+                    } else {
+                        that.setData(dataSourceId, event.data);
+                    }
+                };
             }
-        }, this.divId);
+            if(this.entity !== null) {
+                for(let dataSource of this.entity.getDataSources()) {
+                    registerDs(dataSource.id);
+                }
+            } else {
+                registerDs(this.dataSourceId);
+            }
+        }
     }
 
     /**
@@ -162,10 +176,6 @@ class View {
      */
     unregisterCallback() {
         EventManager.removeById(this.divId);
-    }
-
-    getEventName() {
-        return EventManager.EVENT.DATA + "-" + this.dataSourceId;
     }
 
     /**
@@ -245,7 +255,8 @@ class View {
         this.unregisterCallback();
     }
     /**
-     * Adds a viewItem to the view. The EventManager.EVENT.DATA and EventManager.EVENT.SELECT_VIEW are then observed using the
+     * Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
+     * and EventManager.EVENT.SELECT_VIEW are then observed using the
      * dataSource(s) contained into the styler.
      * @param {Object} viewItem - The initial view items to add
      * @param {String} viewItem.name - The name of the view item
@@ -268,14 +279,13 @@ class View {
                 const dataSourceId = ds[i];
                 // observes the data come in
                 let self = this;
-                // see https://www.pluralsight.com/guides/javascript-callbacks-variable-scope-problem
-                EventManager.observe(EventManager.EVENT.DATA + "-" + dataSourceId, (event) => {
-
+                const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
+                this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
+                broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
-                    if (event.reset) {
+                    if (event.data.message && event.data.message === 'reset') {
                         return;
                     }
-
                     // we check selected dataSource only when the selected entity is not set
                     let selected = false;
                     if (isDefined(self.selectedEntity)) {
@@ -289,7 +299,7 @@ class View {
                         selected: selected
                     });
                     self.lastRec[dataSourceId] = event.data;
-                }, this.divId);
+                };
 
                 EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
                     // we check selected dataSource only when the selected entity is not set
@@ -321,7 +331,8 @@ class View {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
-                EventManager.remove(EventManager.EVENT.DATA + "-" + ds, this.divId);
+                this.viewItemsBroadcastChannels[ds.id].close();
+                delete this.viewItemsBroadcastChannels[ds.id];
                 delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
@@ -406,6 +417,7 @@ class View {
      * Calls for resetting the view.
      */
     reset() {
+        console.log('reset view');
     }
 }
 

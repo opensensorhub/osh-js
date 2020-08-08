@@ -15,8 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import EventManager from "osh/events/EventManager";
-import {isDefined} from "../utils/Utils";
+import {isDefined, randomUUID} from "../utils/Utils";
 import DataSynchronizerWorker from './DataSynchronizer.worker';
+import {DATA_SYNCHRONIZER_TOPIC} from "../Constants";
 
 class DataSynchronizer {
     /**
@@ -32,7 +33,8 @@ class DataSynchronizer {
         }
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
-
+        this.id = randomUUID();
+        this.dataSources = [];
         let replayFactor = 1;
         let intervalRate = 5;
 
@@ -52,13 +54,9 @@ class DataSynchronizer {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
-            dataSourcesForWorker.push({
-                bufferingTime: dataSource.bufferingTime,
-                timeOut: dataSource.timeOut,
-                id: dataSource.id
-            });
-            // bind dataSource data onto dataSynchronizer data
-            dataSource.onData = (data) => this.push(dataSource.id, data);
+            const dataSourceForWorker= this.createDataSourceForWorker(dataSource);
+            dataSourcesForWorker.push(dataSourceForWorker);
+            this.dataSources.push(dataSource);
         }
 
         this.synchronizerWorker = new DataSynchronizerWorker();
@@ -66,38 +64,38 @@ class DataSynchronizer {
             message: 'init',
             dataSources: dataSourcesForWorker,
             replayFactor: replayFactor,
-            intervalRate: intervalRate
+            intervalRate: intervalRate,
+            dataSynchronizerId:this.id,
+            topic: DATA_SYNCHRONIZER_TOPIC+this.id
         });
-
-        this.synchronizerWorker.onmessage =(event) => {
-            if(event.data.message === 'data') {
-                this.currentTime = event.data.data.timeStamp;
-                this.onData(event.data.dataSourceId, event.data.data);
-            } else if(event.data.message === 'wait') {
-                this.onWait(event.data.dataSourceId, event.data.time, event.data.total);
-            }
-        }
     }
 
-    addDataSource(dataSource) {
+    /**
+     * @private
+     * @param dataSource
+     */
+    createDataSourceForWorker(dataSource) {
         const obj = {
             bufferingTime: dataSource.bufferingTime || 0,
             timeOut: dataSource.timeOut || 0,
             id: dataSource.id
         };
         // bind dataSource data onto dataSynchronizer data
-        dataSource.onData = (data) => this.push(dataSource.id, data);
-
-        this.synchronizerWorker.postMessage({
-            message: 'add',
-            dataSources: [obj]
-        });
+        try {
+            dataSource.setDataSynchronizer(this);
+        } catch(ex) {
+            console.warn("Cannot set the synchronizer to this DataSource");
+        }
+        return obj;
     }
 
-    onWait(dataSourceId, time, total) {}
-
-    onData(dataSourceId, data) {
-        EventManager.fire(EventManager.EVENT.DATA + "-" + dataSourceId, {data: data});
+    addDataSource(dataSource) {
+        const dataSourceForWorker = this.createDataSourceForWorker(dataSource);
+        this.dataSources.push(dataSource);
+        this.synchronizerWorker.postMessage({
+            message: 'add',
+            dataSources: [dataSourceForWorker]
+        });
     }
 
     /**
@@ -113,6 +111,28 @@ class DataSynchronizer {
         }
     }
 
+    connectAll() {
+        for(let dataSource of this.dataSources) {
+            dataSource.connect();
+        }
+    }
+
+    disconnectAll() {
+        for(let dataSource of this.dataSources) {
+            dataSource.disconnect();
+        }
+    }
+
+    /**
+     * Resets reference time
+     */
+    reset() {
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.postMessage({
+                message: 'reset'
+            });
+        }
+    }
     /**
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
@@ -121,6 +141,25 @@ class DataSynchronizer {
             this.synchronizerWorker.terminate();
             this.synchronizerWorker = null;
         }
+    }
+
+    async getCurrentTime() {
+        const promise = new Promise(resolve => {
+            if(this.synchronizerWorker !== null) {
+                this.synchronizerWorker.onmessage = (event) => {
+                    if (event.data.message === 'current-time') {
+                        resolve(event.data.data);
+                    }
+                };
+            }
+        });
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.postMessage({
+                message: 'current-time'
+            });
+        }
+
+        return promise;
     }
 }
 export default  DataSynchronizer;

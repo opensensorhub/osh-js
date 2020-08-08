@@ -83,7 +83,7 @@ const config = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'video-with-control-vuejs.html'),
-      filename: './index.html',
+      filename: './video-with-control-vuejs.html',
       favicon: path.resolve(__dirname,'favicon.ico')
     }),
     new DefinePlugin({

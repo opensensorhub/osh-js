@@ -1,7 +1,7 @@
-import SweJsonParser from '../parsers/SweJson.parser';
-import DataSourceHandler from './DataSourceHandler.js';
+import DataSourceHandler from "../../../../source/osh/datareceiver/workers/DataSourceHandler";
+import DummyParser from "./DummyParser";
 
-const dataSourceHandler = new DataSourceHandler(new SweJsonParser());
+const dataSourceHandler = new DataSourceHandler(new DummyParser());
 
 function onData(data) {
     self.postMessage(data);
@@ -17,7 +17,7 @@ self.onmessage = (event) => {
         dataSourceHandler.disconnect();
     } else if (event.data.message === 'topic') {
         dataSourceHandler.setTopic(event.data.topic);
+    } else if(event.data.message === 'data') {
+        dataSourceHandler.onMessage(event.data.data);
     }
 }
-
-

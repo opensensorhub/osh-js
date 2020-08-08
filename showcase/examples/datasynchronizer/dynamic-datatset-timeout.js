@@ -1,7 +1,10 @@
 // dynamic part
 import {startDataSet} from "./datasynchronizer";
 import DataInjectorWorker from './DataInjector.worker';
-import DynamicDatasynchronizer from './DynamicDatasynchronizer.worker.js';
+import DataSynchronizer from "../../../source/osh/datasynchronizer/DataSynchronizer";
+import {DATA_SYNCHRONIZER_TOPIC} from "../../../source/osh/Constants";
+import DummyDataSource from "./datasource/DummyDataSource";
+import {randomUUID} from "../../../source/osh/utils/Utils";
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
@@ -12,101 +15,119 @@ export function startDynamicWithTimeout(cbFinish) {
     eltDynamicErrors.innerHTML = '';
 
     const duration = parseInt(document.getElementById("duration").value) * 1000;
-    const dataSources = [{
-            id: '1',
-            bufferingTime: parseInt(document.getElementById("buffering1").value),
-            timeOut: parseInt(document.getElementById("timeout1").value),
-        },  {
-            id: '2',
-            bufferingTime: parseInt(document.getElementById("buffering2").value),
-            timeOut: parseInt(document.getElementById("timeout2").value),
-        },
-        {
-            id: '3',
-            bufferingTime: parseInt(document.getElementById("buffering3").value),
-            timeOut: parseInt(document.getElementById("timeout3").value),
-
-        },
-        {
-            id: '4',
-            bufferingTime: parseInt(document.getElementById("buffering4").value),
-            timeOut: parseInt(document.getElementById("timeout4").value),
-        },
-        {
-            id: '5',
-            bufferingTime: parseInt(document.getElementById("buffering5").value),
-            timeOut: parseInt(document.getElementById("timeout5").value),
-        }];
-
-    const virtBuffer = {
-        onWait: function (dataSourceId, time ,total){},
-        onData: function (databaseId, data){}
-    };
-
-    const dynamicBuffer = new DynamicDatasynchronizer();
     const replayFactor = parseInt(document.getElementById("replay-factor").value);
-    dynamicBuffer.postMessage({
-        dataSources: dataSources,
-        replayFactor: replayFactor
+
+    const dataSources = [
+        new DummyDataSource('1t',{
+            replayFactor: replayFactor,
+            bufferingTime:  parseInt(document.getElementById("buffering1").value),
+            timeOut:  parseInt(document.getElementById("timeout1").value),
+            name: '1t',
+            protocol: 'topic',
+            topicName: randomUUID()
+        }),
+        new DummyDataSource('2t',{
+            replayFactor: replayFactor,
+            bufferingTime:  parseInt(document.getElementById("buffering2").value),
+            timeOut:  parseInt(document.getElementById("timeout2").value),
+            name: '2t',
+            protocol: 'topic',
+            topicName: randomUUID()
+        }),
+        new DummyDataSource('3t',{
+            replayFactor: replayFactor,
+            bufferingTime:  parseInt(document.getElementById("buffering3").value),
+            timeOut:  parseInt(document.getElementById("timeout3").value),
+            name: '3t',
+            protocol: 'topic',
+            topicName: randomUUID()
+        }),
+        new DummyDataSource('4t',{
+            replayFactor: replayFactor,
+            bufferingTime:  parseInt(document.getElementById("buffering4").value),
+            timeOut:  parseInt(document.getElementById("timeout4").value),
+            name: '4t',
+            protocol: 'topic',
+            topicName: randomUUID()
+        }),
+        new DummyDataSource('5t',{
+            replayFactor: replayFactor,
+            bufferingTime:  parseInt(document.getElementById("buffering5").value),
+            timeOut:  parseInt(document.getElementById("timeout5").value),
+            name: '5t',
+            protocol: 'topic',
+            topicName: randomUUID()
+        })
+    ];
+
+    const dataSynchronizer = new DataSynchronizer({
+        replayFactor: replayFactor,
+        dataSources:  dataSources,
+        intervalRate: 5
     });
 
-    dynamicBuffer.onmessage = (event) => {
-        if(event.data.message === 'data') {
-            virtBuffer.onData(event.data.dataSourceId, event.data.data);
-        } else if(event.data.message === 'wait') {
-            virtBuffer.onWait(event.data.dataSourceId, event.data.time, event.data.total);
-        } else if(event.data.message === 'current-time') {
-            eltCurrentTime.innerText = new Date(event.data.currentTime).toISOString();
-        }
-    }
+    const currentTimeBroadCastChannel = new BroadcastChannel(DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id);
+    console.log('listen for currentTime',DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id)
+    currentTimeBroadCastChannel.onmessage = (event) => {
+      eltCurrentTime.innerText = new Date(event.data.currentTime);
+    };
 
-    startDataSet(virtBuffer, eltDynamic, 100, eltDynamicErrors);
+    startDataSet(eltDynamic, 100, eltDynamicErrors, [],
+        [dataSources[0].id,dataSources[1].id,dataSources[2].id,dataSources[3].id,dataSources[4].id]);
 
     addDataInjection(
-        1,
+        dataSources[0],
         parseInt(document.getElementById("freq1").value),
         parseInt(document.getElementById("latency1").value),
-        replayFactor
+        replayFactor,
+        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
         );
     addDataInjection(
-        2,
+        dataSources[1],
         parseInt(document.getElementById("freq2").value),
         parseInt(document.getElementById("latency2").value),
-        replayFactor
+        replayFactor,
+        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
     );
     addDataInjection(
-        3,
+        dataSources[2],
         parseInt(document.getElementById("freq3").value),
         parseInt(document.getElementById("latency3").value),
-        replayFactor
+        replayFactor,
+        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
     );
     addDataInjection(
-        4,
+        dataSources[3],
         parseInt(document.getElementById("freq4").value),
         parseInt(document.getElementById("latency4").value),
-        replayFactor
+        replayFactor,
+        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
         );
     addDataInjection(
-        5,
+        dataSources[4],
         parseInt(document.getElementById("freq5").value),
         parseInt(document.getElementById("latency5").value),
-        replayFactor
+        replayFactor,
+        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
     );
 
-    function addDataInjection(dsId, freq, latency = 0,replayFactor) {
-        // DS1
+    function addDataInjection(dummyDataSource, freq, latency = 0,replayFactor, topic) {
+        dummyDataSource.connect();
         const dataInjector = new DataInjectorWorker();
         dataInjector.postMessage({
            freq: freq,
-           id: dsId,
+           id: dummyDataSource.id,
            latency:latency,
-           replayFactor: replayFactor
+           replayFactor: replayFactor,
+           topic: topic,
+            name: dummyDataSource.name,
+           topicDs: dummyDataSource.properties.topicName
         });
 
         setTimeout(() => {
             console.log('calling terminate..');
             dataInjector.terminate();
-            dynamicBuffer.terminate();
+            dataSynchronizer.terminate();
             cbFinish();
         }, duration);
     }

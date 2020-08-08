@@ -1,10 +1,12 @@
+import DummyDataSource from "./datasource/DummyDataSource";
+
 self.interval=null;
 self.pending = false;
 let count = 0;
-
+let bc=null;
 self.onmessage = (event) => {
-    self.bc = new BroadcastChannel('datasource-data-'+event.data.id);
-    injectData(event.data.id, event.data.latency, event.data.freq, event.data.replayFactor);
+    bc = new BroadcastChannel(event.data.topicDs);
+    injectData(event.data.id, event.data.name, event.data.latency, event.data.freq, event.data.replayFactor);
 }
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -15,14 +17,14 @@ function getRandomInt(min, max) {
 const startTime = "2010-05-05T15:00:00.00Z";
 let currentTimeMillis = new Date(startTime).getTime();
 
-function getNewData(dsId, freq) {
+function getNewData(id, name, freq) {
     currentTimeMillis += freq;
     let time = currentTimeMillis;
     // const id = ''+getRandomInt(1,3);
     return {
-        dataSourceId: dsId,
+        dataSourceId: id,
         data: {
-            data: '(' + dsId + ') ' + new Date(time).toISOString(),
+            data: '(' + name + ') ' + new Date(time).toISOString(),
             timeStamp: time,
             clockTime: performance.now(),
             delayed: false
@@ -30,11 +32,11 @@ function getNewData(dsId, freq) {
     };
 }
 
-function addNewData(dsId, latency, freq) {
+function addNewData(id, name, latency, freq) {
     if (self.pending) {
         return;
     }
-    let data = getNewData(dsId, freq);
+    let data = getNewData(id, name, freq);
     if (latency > 0 && !self.pending) {
         // get one of the DS to simulate latency
         const doLatency = count%2 === 0;//getRandomInt(0, 1) == 1;
@@ -43,28 +45,29 @@ function addNewData(dsId, latency, freq) {
             setTimeout(() => {
                 data.data.delayed = true;
                 data.data.clockTime = performance.now();
-                pushBack(data.dataSourceId, data.data);
+                pushBack(id, data);
                 self.pending = false;
             }, latency);
         } else {
-            pushBack(data.dataSourceId, data.data);
+            pushBack(id, data);
         }
     } else {
-        pushBack(data.dataSourceId, data.data);
+        pushBack(id, data);
     }
     count++;
 }
 
 function pushBack(id, data) {
-    self.bc.postMessage({
+    bc.postMessage({
         message: 'data',
-        dataSourceId: id,
-        data: data
-    });
+        ...data
+    })
+
 }
-function injectData(id, latency, freq, replayFactor) {
+
+function injectData(id, name, latency, freq, replayFactor) {
     self.interval = setInterval(() => {
-        addNewData(id, latency, freq, replayFactor);
+        addNewData(id, name, latency, freq, replayFactor);
     }, freq/replayFactor);
 }
 

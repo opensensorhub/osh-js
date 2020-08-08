@@ -105,7 +105,6 @@ class LeafletView extends View {
 
         baseLayers[defaultLayers[0].name] = defaultLayers[0].layer;
         overlays[defaultLayers[1].name] = defaultLayers[1].layer;
-
         if (isDefined(options)) {
             if (isDefined(options.initialView)) {
                 initialView = {

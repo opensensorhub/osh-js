@@ -1,7 +1,8 @@
 import YUVCanvas from "../YUVCanvas";
 import {isDefined} from "../../../../utils/Utils";
+import {FFMPEG_VIEW_DECODE_TOPIC} from "../../../../Constants";
 
-const bc = new BroadcastChannel('ffmpeg-draw-1');
+let bc;
 
 self.buffer = [];
 
@@ -13,6 +14,12 @@ self.onmessage = (e) => {
         contextOptions: {preserveDrawingBuffer: true},
         canvas: e.data.canvas
     });
+
+   bc = new BroadcastChannel(FFMPEG_VIEW_DECODE_TOPIC+e.data.dataSourceId);
+
+    bc.onmessage = (e) => {
+        self.buffer.push(e.data);
+    };
 };
 
 function display(e) {
@@ -43,10 +50,6 @@ setInterval(() => {
         display(buffer.shift());
     }
 }, 1000 / self.framerate);
-
-bc.onmessage = (e) => {
-    self.buffer.push(e.data);
-};
 
 function reset() {
 // clear canvas

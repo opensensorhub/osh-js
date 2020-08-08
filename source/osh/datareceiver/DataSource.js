@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {randomUUID} from '../utils/Utils.js';
-import EventManager from "../events/EventManager.js";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -46,6 +46,7 @@ class DataSource {
         this.name = name;
         this.properties = properties;
         this.dataSourceWorker = worker;
+        this.dataSynchronizer = null;
         this.initDataSource(properties);
     }
 
@@ -57,16 +58,18 @@ class DataSource {
     initDataSource(properties) {
         this.dataSourceWorker.postMessage({
             message: 'init',
-            properties: JSON.stringify(properties)
+            id: this.id,
+            properties: JSON.stringify(properties),
+            topic: DATASOURCE_DATA_TOPIC+this.id
         });
-
-        this.dataSourceWorker.onmessage = (event) => {
-            this.onData(event.data);
-        }
     }
 
-    onData(data) {
-        EventManager.fire(EventManager.EVENT.DATA + "-" + this.id, {data: data});
+    setDataSynchronizer(dataSynchronizer) {
+        this.dataSynchronizer = dataSynchronizer;
+        this.dataSourceWorker.postMessage({
+            message: 'topic',
+            topic: DATA_SYNCHRONIZER_TOPIC+this.dataSynchronizer.id
+        });
     }
 
     /**

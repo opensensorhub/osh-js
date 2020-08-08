@@ -48,7 +48,7 @@ module.exports = [{
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
-        port: 8081,
+        port: 9000,
         hot: true
     },
     devtool: 'eval-source-map',
@@ -66,8 +66,9 @@ module.exports = [{
 
 let directories = ['cesium-fois', 'cesium-location','chart', 'discovery',
     'leaflet-location', 'leaflet-location-fois', 'leaflet-location-heading',
-    'leaflet-location-path', 'openlayers-location', 'range-slider','video-gps-sync',
-    'video-h264','video-h264-draping', 'video-h264-transferable','video-mjpeg', 'video-with-control-vuejs'];
+    'leaflet-location-path', 'openlayers-location', 'range-slider',
+    'video-h264','video-h264-draping', 'video-h264-transferable','video-mjpeg', 'video-with-control-vuejs',
+    'video-map-multiple-datasource', 'video-map-multiple-datasource-synchronizer'];
 
 const plug= {};
 

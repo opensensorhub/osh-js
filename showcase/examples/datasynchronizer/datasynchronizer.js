@@ -3,6 +3,7 @@ import {startStatic} from './static-dataset';
 import {startStaticWithTimeout} from './static-dataset-timeout';
 import {startDynamicWithTimeout} from './dynamic-datatset-timeout';
 import {isDefined} from "../../../source/osh/utils/Utils";
+import {DATASOURCE_DATA_TOPIC} from "../../../source/osh/Constants";
 
 const selectorMapping= {
   '1': 'one',
@@ -21,49 +22,24 @@ function updateScroll(divElement){
   }
 }
 
-export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expectedResults = []) {
-  let lastWait = -1;
-  let lastDsWait;
-  let count = 0;
-
-  buffer.onWait = (dataSourceId, time ,total) => {
-    if(lastDsWait !== dataSourceId) {
-      lastWait = -1;
-      count = 0;
-    }
-    const line = document.createElement('div');
-    line.setAttribute('class', 'wait');
-
-    lastDsWait = dataSourceId;
-    if(lastWait === -1) {
-      line.innerHTML = 'Wait '+total.toFixed(1)+' for dataSource '+dataSourceId+'...';
-      lastWait = 0;
-    } else {
-      if(parseInt((time/(waitDisplayFactor))) === count) {
-        line.innerHTML = 'Wait '+(total - time).toFixed(1)+' for dataSource '+dataSourceId+'...';
-        lastWait = time;
-        count++;
-      }
-    }
-    div.appendChild(line);
-    updateScroll(div);
-    //
-  };
-
+export function startDataSet(div, waitDisplayFactor, divError=null, expectedResults = [],
+                             dataSourceIds = []){
   let lastDataMap = {};
   let lastDiffClockTime=0;
   let refClockTime = 0;
   let refTs = 0;
   let lineCount = 0;
 
-  buffer.onData = function (dataSourceId, data) {
+  for(let dsId of dataSourceIds) {
+    const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dsId);
+    broadcastChannel.onmessage = (event) => {
+      displayData(event.data.dataSourceId, event.data);
+    }
+  }
+  function displayData (dataSourceId, data) {
     if(lineCount++ >= 1200  ) {
       div.innerHTML = '';
       lineCount = 0;
-    }
-    if(lastDsWait === dataSourceId) {
-      lastWait = -1;
-      count = 0;
     }
     const clockTime = performance.now();
     const line = document.createElement('div');
@@ -78,7 +54,7 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
 
     const lastDataByDs = lastDataMap[dataSourceId];
     if (isDefined(lastDataByDs)) {
-      let delayed = data.delayed? ' (delayed) ' : '';
+      let delayed = data.data.delayed? ' (delayed) ' : '';
 
       let htmlContent = '';
 
@@ -122,7 +98,7 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
 
       if (error) {
         let classes = 'error line '+selectorMapping[dataSourceId];
-        if(data.delayed) {
+        if(data.data.delayed) {
           classes += ' delayed';
         }
         line.setAttribute('class', classes);
@@ -140,7 +116,7 @@ export function startDataSet(buffer, div, waitDisplayFactor, divError=null, expe
         }
       } else {
         let classes = 'noerror line '+selectorMapping[dataSourceId];
-        if(data.delayed) {
+        if(data.data.delayed) {
           classes += ' delayed';
         }
         line.setAttribute('class', classes);

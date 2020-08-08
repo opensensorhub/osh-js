@@ -3,7 +3,7 @@ export { default as  Buffer } from './datasynchronizer/Buffer.js';
 export { default as  Ajax } from './dataconnector/Ajax.js';
 export { default as  DataConnector } from './dataconnector/DataConnector.js';
 export { default as  WebSocketConnector } from './dataconnector/WebSocketConnector.js';
-export { default as  DataReceiverController } from './datareceiver/DataReceiverController.js';
+export { default as  DataSynchronizer } from './datasynchronizer/DataSynchronizer.js';
 export { default as  DataSource } from './datareceiver/DataSource.js';
 export { default as  SweJsonDataSource } from './datareceiver/SweJson.js';
 export { default as  OrientationQuaternion  } from '../osh-ext/datareceiver/OrientationQuaternion.js';

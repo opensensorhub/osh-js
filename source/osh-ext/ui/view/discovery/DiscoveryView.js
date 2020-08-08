@@ -20,7 +20,7 @@ import PointMarker from "../../../../osh/ui/styler/PointMarker.js";
 import Video from "../../../../osh/datareceiver/Video.js";
 import Curve from "../../../../osh/ui/styler/Curve.js";
 import View from "../../../../osh/ui/view/View.js";
-import DataReceiverController from "../../../../osh/datareceiver/DataReceiverController.js";
+import DataSynchronizer from "../../../../osh/datasynchronizer/DataSynchronizer.js";
 import "../../../resources/css/discovery.css";
 import SweJson from "../../../../osh/datareceiver/SweJson.js";
 
@@ -72,7 +72,7 @@ class DiscoveryView extends View {
             if (isDefined(properties.dataReceiverController)) {
                 this.dataReceiverController = properties.dataReceiverController;
             } else {
-                this.dataReceiverController = new DataReceiverController({
+                this.dataReceiverController = new DataSynchronizer({
                     replayFactor: 1
                 });
                 this.dataReceiverController.connectAll();

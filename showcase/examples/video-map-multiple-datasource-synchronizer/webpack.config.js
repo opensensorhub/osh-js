@@ -8,10 +8,10 @@ var path = require('path');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'video-gps-sync.js'),
+    entry: path.resolve(__dirname,'video-map-multiple-datasource-synchronizer.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.video.gps.sync.js',
+        filename: 'bundle.video-map-multiple-datasource-synchronizer.js',
         path: path.resolve(__dirname, 'dist')
     },
     // Tell Webpack which directories to look in to resolve import statements.
@@ -24,6 +24,14 @@ module.exports = {
             path.resolve(__dirname, '../../../source')
 
         ]
+    },
+    amd: {
+        // Enable webpack-friendly use of require in Cesium
+        toUrlUndefined: true
+    },
+    node: {
+        // Resolve node module use of fs
+        fs: 'empty'
     },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes
@@ -51,9 +59,9 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-gps-sync.html'
+        index: 'video-map-multiple-datasource-synchronizer.html'
     },
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     plugins: [
         /**
          * All files inside webpack's output.path directory will be removed once, but the
@@ -71,8 +79,8 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: 'video-gps-sync.html',
-            template: path.resolve(__dirname, 'video-gps-sync.html')
+            filename: 'video-map-multiple-datasource-synchronizer.html',
+            template: path.resolve(__dirname, 'video-map-multiple-datasource-synchronizer.html')
         }),
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST

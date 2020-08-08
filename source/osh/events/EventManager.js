@@ -77,14 +77,8 @@ class EventManager {
      */
     static get EVENT() {
         return {
-            DATA: "data",
-            SYNC_DATA: "syncData",
             SELECT_VIEW: "selectView",
             SHOW_VIEW: "showView",
-            CONNECT_DATASOURCE: "connectDataSource",
-            DISCONNECT_DATASOURCE: "disconnectDataSource",
-            DATASOURCE_UPDATE_TIME: "updateDataSourceTime",
-            CURRENT_MASTER_TIME: "currentMasterTime",
             UAV_TAKEOFF: "uav:takeoff",
             UAV_GOTO: "uav:goto",
             UAV_LOOKAT: "uav:lookat",
