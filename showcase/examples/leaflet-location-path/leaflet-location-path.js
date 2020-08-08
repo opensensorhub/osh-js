@@ -59,7 +59,9 @@ let leafletMapView = new LeafletView("leafletMap",
         {
             styler: polyline,
             name: "Android Phone GPS Path"
-        }]
+        }], {
+        autoZoomOnFirstMarker:true
+    }
 );
 
 // start streaming
