@@ -4,7 +4,7 @@ import {
     EllipsoidTerrainProvider,
     Matrix3,
     Cartesian3,
-    Cartesian2
+    Cartesian2, Ion
 } from "cesium";
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
@@ -139,6 +139,9 @@ let imageDrapingMarker = new ImageDraping({
 });
 
 // create Cesium view
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
+    'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
+    '2WfIX0QHiZcOjVaXI92stjDh4fI';
 let cesiumView = new CesiumView("cesium-h264-draping-container",
   [{
       styler: pointMarker,
@@ -156,7 +159,7 @@ cesiumView.viewer.camera.setView({
 
 // select bing maps as default imagery
 const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[3];
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
 // start streaming
 videoDataSource.connect();
