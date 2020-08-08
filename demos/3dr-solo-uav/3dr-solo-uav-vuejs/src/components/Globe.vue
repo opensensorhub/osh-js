@@ -6,7 +6,7 @@
 
 <script>
   window.CESIUM_BASE_URL = './';
-  import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
+  import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
   import CesiumView from "osh/ui/view/map/CesiumView.js";
   // @ is an alias to /src
   import ImageDraping from "osh/ui/styler/ImageDraping.js";
@@ -90,6 +90,9 @@
         });
 
         // create Cesium view
+        Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
+            'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
+            '2WfIX0QHiZcOjVaXI92stjDh4fI';
         let cesiumView = new CesiumView("cesium-container",
           [{
             styler: pointMarker,
@@ -107,7 +110,7 @@
 
         // select bing maps as default imagery
         const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-        baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[3];
+        baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
       }
     }

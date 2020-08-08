@@ -1,5 +1,5 @@
 import * as React from "react";
-import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2 } from "cesium";
+import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
 import SweJson from "osh/datareceiver/SweJson.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
 import CesiumView from "osh/ui/view/map/CesiumView.js";
@@ -120,6 +120,9 @@ class BaseMap extends React.Component {
     });
 
     // create Cesium view
+    Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
+        'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
+        '2WfIX0QHiZcOjVaXI92stjDh4fI';
     let cesiumView = new CesiumView(this.divId,
       [{
         styler: pointMarker,
@@ -137,7 +140,7 @@ class BaseMap extends React.Component {
 
     // select bing maps as default imagery
     const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-    baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[3];
+    baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
 
 // start streaming
