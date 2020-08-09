@@ -1,18 +1,21 @@
 <template>
   <div data-app class="main-video">
     <slot v-if="!dialog">
-      <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="video-container">
+      <div :id="id" class="video-container">
       </div>
-      <Control :dataSource="dataSource" @event='onControlEvent'></Control>
+      <Control :dataSource="dataSource" @event='onControlEvent' :expand="false"></Control>
     </slot>
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
               v-model="dialog"
-              v-on="modal ? {click: toggleDialog } : {}"
       >
-        <div :id="id" v-on="modal ? {click: toggleDialog } : {}" class="dialog-container">
+        <div :id="id" class="dialog-container">
         </div>
-        <Control :dataSource="dataSource" @event='onControlEvent' ></Control>
+        <Control
+            :dataSource="dataSource"
+            @event='onControlEvent'
+            expand
+        ></Control>
       </v-dialog>
     </slot>
   </div>
@@ -109,6 +112,9 @@
     },
     methods: {
       onControlEvent(eventName) {
+        if(eventName === 'expand' || eventName === 'compress') {
+          this.toggleDialog();
+        }
       },
       toggleDialog() {
         this.dialog = !this.dialog;
@@ -188,7 +194,6 @@
   }
   .v-dialog {
     width: auto !important;
-    cursor: pointer;
     background: rgba(0,0,0,0.85);
     overflow-x: hidden ;
   }
