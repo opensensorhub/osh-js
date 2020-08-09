@@ -13,6 +13,10 @@
         <span>/</span>
         <span id="end-time"></span>
       </div>
+      <VideoControl
+          @event='on'
+          :expand='this.expand'
+      ></VideoControl>
     </div>
   </div>
 </template>
@@ -22,10 +26,11 @@
     import {randomUUID} from 'osh/utils/Utils.js';
     import * as wNumb from 'wnumb';
     import {isDefined} from "../../osh/utils/Utils";
+    import VideoControl from "./VideoControl.vue";
 
     export default {
         name: "Control",
-        components: {},
+        components: {VideoControl},
         props: {
             dataSource: {
                 type: Object
@@ -37,6 +42,10 @@
             forward: {
                 type: Number,
                 default: () => 10
+            },
+            expand: {
+              type: Boolean,
+              default: () => false
             }
         },
         data() {
@@ -132,12 +141,14 @@
                     // re-init the DS from the last timestamp  played
                     that.dataSource.initDataSource(props, options);
 
+                    this.on('pause');
                 }
             }
 
             playButton.onclick = () => {
                 if(!that.dataSource.connected) {
                     that.dataSource.connect();
+                    this.on('play');
                 }
             }
 
@@ -151,6 +162,7 @@
                     // reset parameters
                     that.dataSource.initDataSource(props, options);
                     that.dataSource.connect();
+                    this.on('backward');
                 }
             }
             fastForwardButton.onclick = () => {
@@ -163,12 +175,13 @@
                     // reset parameters
                     that.dataSource.initDataSource(props, options);
                     that.dataSource.connect();
+                    this.on('forward');
                 }
             }
         },
         methods: {
             on(eventName) {
-              this.event = eventName;
+              this.$emit('event', eventName);
             },
             parseDate(intTimeStamp) {
                 const date = new Date(intTimeStamp);
@@ -289,5 +302,14 @@
 
   .control .buttons .time {
     font-size: 16px;
+  }
+
+  .control {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 </style>
