@@ -1,28 +1,20 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <title>Video H264 Example</title>
-</head>
 <style>
     div.video-h264 {
         width: calc(100% - 20px);
         border: 1px solid #dee2e6;
-        resize: horizontal;
         overflow: hidden;
         margin: auto;
     }
     div.video-h264 canvas {
         width: 100%;
     }
+    #video-h264-transferable-container {
+        height: calc(100% - 30px);
+    }
 </style>
-<body>
 <button id="destroy-button">Destroy & re-create</button>
 <button id="unregister-button">Unregister view</button>
 <button id="register-button">Register view</button>
 <div id="video-h264-transferable-container"></div>
-<script type="text/javascript" src="bundle.video.h264.transferable.js"></script></body>
-</html>
 
+<script type="text/javascript" src="bundle.video.h264.transferable.js"></script>
