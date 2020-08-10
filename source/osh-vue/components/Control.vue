@@ -47,16 +47,13 @@
             expand: {
               type: Boolean,
               default: () => false
-            },
-            showDataSourceActions: {
-              type: Boolean,
-              default: () => true
             }
         },
         data() {
             return {
                 id: randomUUID(),
-                event: null
+                event: null,
+                showDataSourceActions: true
             };
         },
         watch: {
@@ -64,129 +61,130 @@
             this.$emit('event', newValue);
           }
         },
+        beforeMount() {
+          this.showDataSourceActions = this.dataSource.properties.startTime !== 'now';
+        },
         mounted() {
-            let rangeSlider = new RangeSlider(this.id, {
+            if(this.showDataSourceActions) {
+              let rangeSlider = new RangeSlider(this.id, {
                 dataSourceId: this.dataSource.id,
                 startTime: this.dataSource.properties.startTime,
                 endTime: this.dataSource.properties.endTime,
                 refreshRate: 1,
                 options: {
-                    start: [this.dataSource.properties.startTime],
-                    behaviour: "none",
-                    tooltips: [
-                        wNumb({
-                            decimals: 1,
-                            edit: function (value) {
-                                let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-                                return date.split("T")[1].split("Z")[0].split(".")[0];
-                            }
-                        })
-                    ],
-                    connect: 'lower'
-                }
-            });
-            rangeSlider.activate();
-
-            const that = this;
-            const currentTimeElement = document.getElementById("current-time");
-            const endTimeElement = document.getElementById("end-time");
-
-            currentTimeElement.innerText = this.parseDate(this.dataSource.properties.startTime);
-            if(isDefined(endTimeElement)) {
-              endTimeElement.innerText = this.parseDate(this.dataSource.properties.endTime);
-            }
-
-            rangeSlider.slider.noUiSlider.on('set', () => {
-              const date = parseInt(rangeSlider.slider.noUiSlider.get());
-              currentTimeElement.innerText = that.parseDate(date);
-            });
-
-            rangeSlider.onChange = function (startTime, endTime) {
-                if(that.dataSource.connected) {
-                    that.dataSource.disconnect();
-                    // get current parameters
-                    let props = that.dataSource.properties;
-                    let options = that.dataSource.options;
-
-                    // update start/end time
-                    if (isDefined(startTime)) {
-                        const intValue = parseInt(startTime);
-                        props.startTime = new Date(intValue).toISOString();
-                        currentTimeElement.innerText = that.parseDate(intValue);
-                    }
-                    if(isDefined(endTimeElement)) {
-                      if (isDefined(endTime)) {
-                        const intValue = parseInt(endTime);
-                        props.endTime = new Date(intValue).toISOString();
-                        endTimeElement.innerText = that.parseDate(intValue);
+                  start: [this.dataSource.properties.startTime],
+                  behaviour: "none",
+                  tooltips: [
+                    wNumb({
+                      decimals: 1,
+                      edit: function (value) {
+                        let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
+                        return date.split("T")[1].split("Z")[0].split(".")[0];
                       }
-                    }
-
-                    // reset parameters
-                    that.dataSource.initDataSource(props, options);
-                    that.dataSource.connect();
+                    })
+                  ],
+                  connect: 'lower'
                 }
-            };
+              });
+              rangeSlider.activate();
 
-            rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
-            rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
+              const that = this;
+              const currentTimeElement = document.getElementById("current-time");
+              const endTimeElement = document.getElementById("end-time");
 
-            const pauseButton = document.getElementById("pause-btn");
-            // const playButton = document.getElementById("play-btn");
-            const fastBackwardButton = document.getElementById("fast-back-btn");
-            const fastForwardButton = document.getElementById("fast-forward-btn");
+              currentTimeElement.innerText = this.parseDate(this.dataSource.properties.startTime);
+              if (isDefined(endTimeElement)) {
+                endTimeElement.innerText = this.parseDate(this.dataSource.properties.endTime);
+              }
 
-            pauseButton.onclick = () => {
-                if(that.dataSource.connected) {
-                    that.dataSource.disconnect();
-                    //save current time
+              rangeSlider.slider.noUiSlider.on('set', () => {
+                const date = parseInt(rangeSlider.slider.noUiSlider.get());
+                currentTimeElement.innerText = that.parseDate(date);
+              });
 
-                    // get current parameters
-                    let props = that.dataSource.properties;
-                    let options = that.dataSource.options;
+              rangeSlider.onChange = function (startTime, endTime) {
+                if (that.dataSource.connected) {
+                  that.dataSource.disconnect();
+                  // get current parameters
+                  let props = that.dataSource.properties;
+                  let options = that.dataSource.options;
 
-                    props.startTime = new Date(parseInt(rangeSlider.slider.noUiSlider.get())).toISOString();
+                  // update start/end time
+                  if (isDefined(startTime)) {
+                    const intValue = parseInt(startTime);
+                    props.startTime = new Date(intValue).toISOString();
+                    currentTimeElement.innerText = that.parseDate(intValue);
+                  }
+                  if (isDefined(endTimeElement)) {
+                    if (isDefined(endTime)) {
+                      const intValue = parseInt(endTime);
+                      props.endTime = new Date(intValue).toISOString();
+                      endTimeElement.innerText = that.parseDate(intValue);
+                    }
+                  }
 
-                    // re-init the DS from the last timestamp  played
-                    that.dataSource.initDataSource(props, options);
+                  // reset parameters
+                  that.dataSource.initDataSource(props, options);
+                  that.dataSource.connect();
+                }
+              };
 
-                    this.on('pause');
+              rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
+              rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
+
+              const pauseButton = document.getElementById("pause-btn");
+              // const playButton = document.getElementById("play-btn");
+              const fastBackwardButton = document.getElementById("fast-back-btn");
+              const fastForwardButton = document.getElementById("fast-forward-btn");
+
+              pauseButton.onclick = () => {
+                if (that.dataSource.connected) {
+                  that.dataSource.disconnect();
+                  //save current time
+
+                  // get current parameters
+                  let props = that.dataSource.properties;
+                  let options = that.dataSource.options;
+
+                  props.startTime = new Date(parseInt(rangeSlider.slider.noUiSlider.get())).toISOString();
+
+                  // re-init the DS from the last timestamp  played
+                  that.dataSource.initDataSource(props, options);
+
+                  this.on('pause');
                 } else {
                   that.dataSource.connect();
                   this.on('play');
+                }
               }
-            }
 
-            if(isDefined(fastBackwardButton)) {
-              fastBackwardButton.onclick = () => {
-                if (that.dataSource.connected) {
-                  that.dataSource.disconnect();
-                  let props = that.dataSource.properties;
-                  let options = that.dataSource.options;
-                  props.startTime = new Date(parseInt(new Date(props.startTime).getTime() - that.forward * 1000)).toISOString();
-                  currentTimeElement.innerText = that.parseDate(props.startTime);
-                  // reset parameters
-                  that.dataSource.initDataSource(props, options);
-                  that.dataSource.connect();
-                  this.on('backward');
+                fastBackwardButton.onclick = () => {
+                  if (that.dataSource.connected) {
+                    that.dataSource.disconnect();
+                    let props = that.dataSource.properties;
+                    let options = that.dataSource.options;
+                    props.startTime = new Date(parseInt(new Date(props.startTime).getTime() - that.forward * 1000)).toISOString();
+                    currentTimeElement.innerText = that.parseDate(props.startTime);
+                    // reset parameters
+                    that.dataSource.initDataSource(props, options);
+                    that.dataSource.connect();
+                    this.on('backward');
+                  }
+                }
+                fastForwardButton.onclick = () => {
+                  if (that.dataSource.connected) {
+                    that.dataSource.disconnect();
+                    let props = that.dataSource.properties;
+                    let options = that.dataSource.options;
+                    props.startTime = new Date(parseInt(new Date(props.startTime).getTime() + that.forward * 1000)).toISOString();
+                    currentTimeElement.innerText = that.parseDate(props.startTime);
+                    // reset parameters
+                    that.dataSource.initDataSource(props, options);
+                    that.dataSource.connect();
+                    this.on('forward');
+                  }
                 }
               }
-            }
-            if(isDefined(fastForwardButton)) {
-              fastForwardButton.onclick = () => {
-                if (that.dataSource.connected) {
-                  that.dataSource.disconnect();
-                  let props = that.dataSource.properties;
-                  let options = that.dataSource.options;
-                  props.startTime = new Date(parseInt(new Date(props.startTime).getTime() + that.forward * 1000)).toISOString();
-                  currentTimeElement.innerText = that.parseDate(props.startTime);
-                  // reset parameters
-                  that.dataSource.initDataSource(props, options);
-                  that.dataSource.connect();
-                  this.on('forward');
-                }
-              }
-            }
         },
         methods: {
             on(eventName) {
