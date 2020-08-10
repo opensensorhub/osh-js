@@ -3,10 +3,11 @@
     <div :id="id"></div>
     <div class="buttons" >
       <div class="actions" > <!-- Next Page Buttons -->
-        <a id="fast-back-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-backward"></i></a>
-        <a id="pause-btn" class="control-btn"><i class="fa fa-pause"></i></a>
-        <a id="play-btn" class="control-btn"><i class="fa fa-play"></i></a>
-        <a id="fast-forward-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-forward"></i></a>
+        <div class="datasource-actions">
+          <a id="fast-back-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-backward"></i></a>
+          <a id="pause-btn" class="control-btn control-btn-pause"><i class="fa fa-pause"></i></a>
+          <a id="fast-forward-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-forward"></i></a>
+        </div>
         <div class="time">
           <span id="current-time"></span>
           <span v-if="showDataSourceActions">/</span>
@@ -131,7 +132,7 @@
             rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
 
             const pauseButton = document.getElementById("pause-btn");
-            const playButton = document.getElementById("play-btn");
+            // const playButton = document.getElementById("play-btn");
             const fastBackwardButton = document.getElementById("fast-back-btn");
             const fastForwardButton = document.getElementById("fast-forward-btn");
 
@@ -150,14 +151,10 @@
                     that.dataSource.initDataSource(props, options);
 
                     this.on('pause');
-                }
-            }
-
-            playButton.onclick = () => {
-                if(!that.dataSource.connected) {
-                    that.dataSource.connect();
-                    this.on('play');
-                }
+                } else {
+                  that.dataSource.connect();
+                  this.on('play');
+              }
             }
 
             if(isDefined(fastBackwardButton)) {
@@ -194,6 +191,15 @@
         methods: {
             on(eventName) {
               this.$emit('event', eventName);
+              if(eventName === 'pause') {
+                const elt = document.querySelector(".control .control-btn-pause > i");
+                elt.classList.remove("fa-pause");
+                elt.classList.add("fa-play");
+              } else if(eventName === 'play') {
+                const elt = document.querySelector(".control .control-btn-pause > i");
+                elt.classList.remove("fa-play");
+                elt.classList.add("fa-pause");
+              }
             },
             parseDate(intTimeStamp) {
                 const date = new Date(intTimeStamp);
@@ -220,6 +226,20 @@
     bottom: 0px;
   }
 
+  .control a {
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition:all 0.5s ease-in-out;
+    -o-transition:all 0.5s ease-in-out;
+    transition:all 0.5s ease-in-out;
+  }
+
+  .control .datasource-actions {
+    width: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    float: left;
+  }
 </style>
 
 <style>
@@ -314,7 +334,6 @@
   }
 
   .control .buttons .actions {
-    min-width: 115px;
     display: inline;
   }
 
