@@ -199,6 +199,17 @@
                   }
                 }
 
+                // get time from DS
+                const currentTimeElement = document.getElementById("current-time-"+this.id);
+                setInterval(() => {
+                  this.dataSource.getCurrentTime().then(timestamp => {
+                    let date = new Date(timestamp);
+                    currentTimeElement.innerText =
+                        this.withLeadingZeros(date.getHours())+":"+this.withLeadingZeros(date.getMinutes())
+                        +":"+this.withLeadingZeros(date.getSeconds()) +"."+date.getMilliseconds() + " "+
+                        date.getFullYear()+"/"+this.withLeadingZeros(date.getMonth())+"/"+this.withLeadingZeros(date.getDay())
+                  })
+                },500);
               }
         },
         methods: {
@@ -218,18 +229,12 @@
             },
             parseDate(intTimeStamp) {
                 const date = new Date(intTimeStamp);
-                return this.hoursWithLeadingZeros(date)+":"+this.minutesWithLeadingZeros(date)+":"
-                    +this.secondsWithLeadingZeros(date);
+                return this.withLeadingZeros(date.getHours())+":"+this.withLeadingZeros(date.getMinutes())+":"
+                    +this.withLeadingZeros(date.getSeconds());
             },
-            minutesWithLeadingZeros(dt) {
-                return (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
-            },
-            hoursWithLeadingZeros(dt) {
-                return (dt.getHours() < 10 ? '0' : '') + dt.getHours();
-            },
-            secondsWithLeadingZeros(dt) {
-                return (dt.getSeconds() < 10 ? '0' : '') + dt.getSeconds();
-            },
+            withLeadingZeros(dt) {
+              return (dt < 10 ? '0' : '') + dt;
+            }
         }
     }
 </script>
@@ -249,7 +254,6 @@
   }
 
   .control .datasource-actions {
-    width: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
