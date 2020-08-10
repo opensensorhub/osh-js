@@ -17,6 +17,12 @@ self.onmessage = (event) => {
         dataSourceHandler.disconnect();
     } else if (event.data.message === 'topic') {
         dataSourceHandler.setTopic(event.data.topic);
+    } else if (event.data.message === 'last-timestamp') {
+        const lastTimeStamp = dataSourceHandler.getLastTimeStamp();
+        self.postMessage({
+            message: 'last-timestamp',
+            data: lastTimeStamp
+        })
     }
 }
 
