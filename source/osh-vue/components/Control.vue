@@ -4,14 +4,14 @@
     <div class="buttons" >
       <div class="actions" > <!-- Next Page Buttons -->
         <div class="datasource-actions">
-          <a id="fast-back-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-backward"></i></a>
-          <a id="pause-btn" class="control-btn control-btn-pause"><i class="fa fa-pause"></i></a>
-          <a id="fast-forward-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-forward"></i></a>
+          <a :id="'fast-back-btn-'+this.id" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-backward"></i></a>
+          <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"><i class="fa fa-pause"></i></a>
+          <a :id="'fast-forward-btn-'+this.id" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-forward"></i></a>
         </div>
         <div class="time">
-          <span id="current-time"></span>
+          <span :id="'current-time-'+this.id"></span>
           <span v-if="showDataSourceActions">/</span>
-          <span id="end-time" v-if="showDataSourceActions"></span>
+          <span :id="'end-time-'+this.id" v-if="showDataSourceActions"></span>
         </div>
       </div>
       <VideoControl
@@ -66,6 +66,7 @@
         },
         mounted() {
             if(this.showDataSourceActions) {
+              console.log('replay', this.dataSource.properties.offeringID)
               let rangeSlider = new RangeSlider(this.id, {
                 dataSourceId: this.dataSource.id,
                 startTime: this.dataSource.properties.startTime,
@@ -89,8 +90,8 @@
               rangeSlider.activate();
 
               const that = this;
-              const currentTimeElement = document.getElementById("current-time");
-              const endTimeElement = document.getElementById("end-time");
+              const currentTimeElement = document.getElementById("current-time-"+this.id);
+              const endTimeElement = document.getElementById("end-time-"+this.id);
 
               currentTimeElement.innerText = this.parseDate(this.dataSource.properties.startTime);
               if (isDefined(endTimeElement)) {
@@ -132,10 +133,10 @@
               rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
               rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
 
-              const pauseButton = document.getElementById("pause-btn");
+              const pauseButton = document.getElementById("pause-btn-"+this.id);
               // const playButton = document.getElementById("play-btn");
-              const fastBackwardButton = document.getElementById("fast-back-btn");
-              const fastForwardButton = document.getElementById("fast-forward-btn");
+              const fastBackwardButton = document.getElementById("fast-back-btn-"+this.id);
+              const fastForwardButton = document.getElementById("fast-forward-btn-"+this.id);
 
               pauseButton.onclick = () => {
                 if (that.dataSource.connected) {
@@ -182,6 +183,21 @@
                     that.dataSource.initDataSource(props, options);
                     that.dataSource.connect();
                     this.on('forward');
+                  }
+                }
+              } else {
+                console.log('real time', this.dataSource.properties.offeringID)
+                // REAL TIME
+                const pauseButton = document.getElementById("pause-btn-"+this.id);
+
+                pauseButton.onclick = () => {
+                  if (this.dataSource.connected) {
+                    this.dataSource.disconnect();
+                    //save current time
+                    this.on('pause');
+                  } else {
+                    this.dataSource.connect();
+                    this.on('play');
                   }
                 }
               }
