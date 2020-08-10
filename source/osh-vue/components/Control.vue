@@ -1,17 +1,17 @@
 <template>
   <div class="control">
     <div :id="id"></div>
-    <div class="buttons">
-      <div class="actions"> <!-- Next Page Buttons -->
-        <a id="fast-back-btn" class="control-btn"> <i class="fa fa-fast-backward"></i></a>
+    <div class="buttons" >
+      <div class="actions" > <!-- Next Page Buttons -->
+        <a id="fast-back-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-backward"></i></a>
         <a id="pause-btn" class="control-btn"><i class="fa fa-pause"></i></a>
         <a id="play-btn" class="control-btn"><i class="fa fa-play"></i></a>
-        <a id="fast-forward-btn" class="control-btn"> <i class="fa fa-fast-forward"></i></a>
-      </div>
-      <div class="time">
-        <span id="current-time"></span>
-        <span>/</span>
-        <span id="end-time"></span>
+        <a id="fast-forward-btn" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-forward"></i></a>
+        <div class="time">
+          <span id="current-time"></span>
+          <span v-if="showDataSourceActions">/</span>
+          <span id="end-time" v-if="showDataSourceActions"></span>
+        </div>
       </div>
       <VideoControl
           @event='on'
@@ -46,6 +46,10 @@
             expand: {
               type: Boolean,
               default: () => false
+            },
+            showDataSourceActions: {
+              type: Boolean,
+              default: () => true
             }
         },
         data() {
@@ -87,7 +91,9 @@
             const endTimeElement = document.getElementById("end-time");
 
             currentTimeElement.innerText = this.parseDate(this.dataSource.properties.startTime);
-            endTimeElement.innerText = this.parseDate(this.dataSource.properties.endTime);
+            if(isDefined(endTimeElement)) {
+              endTimeElement.innerText = this.parseDate(this.dataSource.properties.endTime);
+            }
 
             rangeSlider.slider.noUiSlider.on('set', () => {
               const date = parseInt(rangeSlider.slider.noUiSlider.get());
@@ -107,10 +113,12 @@
                         props.startTime = new Date(intValue).toISOString();
                         currentTimeElement.innerText = that.parseDate(intValue);
                     }
-                    if (isDefined(endTime)) {
-                      const intValue = parseInt(endTime);
-                      props.endTime = new Date(intValue).toISOString();
-                      endTimeElement.innerText = that.parseDate(intValue);
+                    if(isDefined(endTimeElement)) {
+                      if (isDefined(endTime)) {
+                        const intValue = parseInt(endTime);
+                        props.endTime = new Date(intValue).toISOString();
+                        endTimeElement.innerText = that.parseDate(intValue);
+                      }
                     }
 
                     // reset parameters
@@ -152,31 +160,35 @@
                 }
             }
 
-            fastBackwardButton.onclick = () => {
-                if(that.dataSource.connected) {
-                    that.dataSource.disconnect();
-                    let props = that.dataSource.properties;
-                    let options = that.dataSource.options;
-                    props.startTime = new Date(parseInt(new Date(props.startTime).getTime() - that.forward*1000)).toISOString();
-                    currentTimeElement.innerText = that.parseDate(props.startTime);
-                    // reset parameters
-                    that.dataSource.initDataSource(props, options);
-                    that.dataSource.connect();
-                    this.on('backward');
+            if(isDefined(fastBackwardButton)) {
+              fastBackwardButton.onclick = () => {
+                if (that.dataSource.connected) {
+                  that.dataSource.disconnect();
+                  let props = that.dataSource.properties;
+                  let options = that.dataSource.options;
+                  props.startTime = new Date(parseInt(new Date(props.startTime).getTime() - that.forward * 1000)).toISOString();
+                  currentTimeElement.innerText = that.parseDate(props.startTime);
+                  // reset parameters
+                  that.dataSource.initDataSource(props, options);
+                  that.dataSource.connect();
+                  this.on('backward');
                 }
+              }
             }
-            fastForwardButton.onclick = () => {
-                if(that.dataSource.connected) {
-                    that.dataSource.disconnect();
-                    let props = that.dataSource.properties;
-                    let options = that.dataSource.options;
-                    props.startTime = new Date(parseInt(new Date(props.startTime).getTime() + that.forward*1000)).toISOString();
-                    currentTimeElement.innerText = that.parseDate(props.startTime);
-                    // reset parameters
-                    that.dataSource.initDataSource(props, options);
-                    that.dataSource.connect();
-                    this.on('forward');
+            if(isDefined(fastForwardButton)) {
+              fastForwardButton.onclick = () => {
+                if (that.dataSource.connected) {
+                  that.dataSource.disconnect();
+                  let props = that.dataSource.properties;
+                  let options = that.dataSource.options;
+                  props.startTime = new Date(parseInt(new Date(props.startTime).getTime() + that.forward * 1000)).toISOString();
+                  currentTimeElement.innerText = that.parseDate(props.startTime);
+                  // reset parameters
+                  that.dataSource.initDataSource(props, options);
+                  that.dataSource.connect();
+                  this.on('forward');
                 }
+              }
             }
         },
         methods: {
@@ -213,7 +225,11 @@
 <style>
   /** reduce bar size **/
   .control .noUi-horizontal {
-    height: 2px;
+    height: 3px;
+  }
+
+  .noUi-connects {
+    border-radius: 0px;
   }
 
   .control .noUi-target {
@@ -293,15 +309,18 @@
     color:#00B5B8;
   }
   .control .time {
+    float: right;
+    margin-left: 15px;
   }
 
   .control .buttons .actions {
-    width: 115px;
+    min-width: 115px;
     display: inline;
   }
 
   .control .buttons .time {
-    font-size: 16px;
+    font-family: "YouTube Noto",Roboto,Arial,Helvetica,sans-serif;
+    line-height: 20px;
   }
 
   .control {

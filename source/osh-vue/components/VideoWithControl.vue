@@ -3,7 +3,7 @@
     <slot v-if="!dialog">
       <div :id="id" class="video-container">
       </div>
-      <Control :dataSource="dataSource" @event='onControlEvent' :expand="false"></Control>
+      <Control :dataSource="dataSource" @event='onControlEvent' :showDataSourceActions="true"></Control>
     </slot>
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
