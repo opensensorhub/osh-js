@@ -1,6 +1,6 @@
 <template>
   <div class="control">
-    <div :id="id"></div>
+    <div :id="id" ></div>
     <div class="buttons" >
       <div class="actions" > <!-- Next Page Buttons -->
         <div class="datasource-actions">
@@ -66,7 +66,6 @@
         },
         mounted() {
             if(this.showDataSourceActions) {
-              console.log('replay', this.dataSource.properties.offeringID)
               let rangeSlider = new RangeSlider(this.id, {
                 dataSourceId: this.dataSource.id,
                 startTime: this.dataSource.properties.startTime,
@@ -186,7 +185,6 @@
                   }
                 }
               } else {
-                console.log('real time', this.dataSource.properties.offeringID)
                 // REAL TIME
                 const pauseButton = document.getElementById("pause-btn-"+this.id);
 
@@ -200,17 +198,20 @@
                     this.on('play');
                   }
                 }
+
               }
         },
         methods: {
             on(eventName) {
               this.$emit('event', eventName);
               if(eventName === 'pause') {
-                const elt = document.querySelector(".control .control-btn-pause > i");
+                const currentTemplate = document.getElementById(this.id).nextElementSibling;
+                const elt = currentTemplate.querySelector(".control-btn-pause > i");
                 elt.classList.remove("fa-pause");
                 elt.classList.add("fa-play");
               } else if(eventName === 'play') {
-                const elt = document.querySelector(".control .control-btn-pause > i");
+                const currentTemplate = document.getElementById(this.id).nextElementSibling;
+                const elt = currentTemplate.querySelector(".control-btn-pause > i");
                 elt.classList.remove("fa-play");
                 elt.classList.add("fa-pause");
               }
