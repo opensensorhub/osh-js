@@ -8,6 +8,7 @@
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
               v-model="dialog"
+              persistent
       >
         <div :id="id" class="dialog-container">
         </div>
@@ -20,7 +21,6 @@
     </slot>
   </div>
 </template>
-<style src="vue-dialog-drag/dist/vue-dialog-drag.css"></style>
 <script>
   import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
   import {randomUUID} from "osh/utils/Utils.js";
@@ -145,7 +145,7 @@
         if(Object.keys(extraProps).length > 0) {
           this.dataSource.disconnect();
           extraProps['responseFormat'] = this.encoding.responseFormat;
-          this.dataSource.rebuildUrl(extraProps);
+          this.dataSource.updateUrl({encoding: extraProps});
         }
 
         this.view = new FFMPEGView(id, {
