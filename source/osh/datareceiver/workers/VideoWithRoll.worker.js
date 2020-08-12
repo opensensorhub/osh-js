@@ -23,6 +23,8 @@ self.onmessage = (event) => {
             message: 'last-timestamp',
             data: lastTimeStamp
         })
+    } else if (event.data.message === 'update-url') {
+        dataSourceHandler.updateUrl(event.data.data);
     }
 }
 
