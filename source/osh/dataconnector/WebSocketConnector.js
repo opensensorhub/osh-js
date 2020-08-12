@@ -52,7 +52,7 @@ class WebSocketConnector extends DataConnector {
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    connect() {
+    connect(endTime = new Date('2055-01-01').getTime()) {
         if (!this.init) {
             this.init = true;
             //creates Web Socket
@@ -80,7 +80,6 @@ class WebSocketConnector extends DataConnector {
                     let delta = Date.now() - this.lastReceiveTime;
                     // -1 means the WS went in error
                     if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
-                        console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
                         this.reconnect();
                     }
                 }.bind(this), this.reconnectTimeout);
@@ -113,12 +112,13 @@ class WebSocketConnector extends DataConnector {
      * Try to reconnect if the connexion if closed
      */
     reconnect() {
-        this.onReconnect();
-        if (this.init) {
-            this.fullDisconnect(false);
+        if(this.onReconnect()) {
+            console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
+            if (this.init) {
+                this.fullDisconnect(false);
+            }
+            this.connect();
         }
-        this.connect();
-
     }
 
     /**
