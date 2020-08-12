@@ -115,6 +115,10 @@ class FFMPEGView extends View {
         // create webGL canvas
         this.domNode = domNode;
 
+        // create webGL canvas
+        this.yuvCanvas = this.createCanvas(this.width,this.height);
+        domNode.appendChild(this.yuvCanvas.canvasElement);
+
         // add selection listener
         let self = this;
         EventManager.observeDiv(this.divId, "click", (event) => {
@@ -155,31 +159,23 @@ class FFMPEGView extends View {
     }
 
     createCanvas(width, height, domNode) {
-        const canvas = document.createElement("canvas");
-        domNode.appendChild(canvas);
-
-        return new YUVCanvas({
-            width: width,
-            height: height,
-            contextOptions: {preserveDrawingBuffer: true},
-            canvas: canvas.transferControlToOffscreen()
-        });
+        return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
     setData(dataSourceId, data) {
-            if (!this.skipFrame) {
-                let pktData = data.data.frameData;
-                let pktSize = pktData.length;
-                let roll = data.data.roll;
-                this.decode(pktSize, pktData, data.timeStamp,roll);
-            }
+        if (!this.skipFrame) {
+            let pktData = data.data.frameData;
+            let pktSize = pktData.length;
+            let roll = data.data.roll;
+            this.decode(pktSize, pktData, data.timeStamp,roll);
+        }
     }
 
     selectDataView(dataSourceIds, entityId) {
         let elt = document.getElementById(this.divId);
         if(isDefined(elt)) {
             if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entity) &&
-              this.entity.getId() === entityId)) {
+                this.entity.getId() === entityId)) {
                 elt.setAttribute("class", this.css + " " + this.cssSelected);
             } else {
                 elt.setAttribute("class", this.css);
@@ -238,26 +234,51 @@ class FFMPEGView extends View {
      */
     initFFMPEG_DECODER_WORKER() {
         this.decodeWorker = new DecodeWorker();
-        const drawWorker = new DrawWorker();
+        // const drawWorker = new DrawWorker();
         this.decodeWorker.id = randomUUID();
 
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
-        let canvas = document.createElement('canvas');
-        canvas.setAttribute('width', this.width);
-        canvas.setAttribute('height', this.height);
-        this.domNode.appendChild(canvas);
+        // let canvas = document.createElement('canvas');
+        // canvas.setAttribute('width', this.width);
+        // canvas.setAttribute('height', this.height);
+        // this.domNode.appendChild(canvas);
 
-        const offscreenCanvas = canvas.transferControlToOffscreen();
-        drawWorker.postMessage({
-            canvas: offscreenCanvas,
-            width: this.width,
-            height: this.height,
-            framerate: this.framerate,
-            dataSourceId: this.dataSourceId
-        }, [offscreenCanvas]);
+        // const offscreenCanvas = canvas.transferControlToOffscreen();
+        // drawWorker.postMessage({
+        //     canvas: offscreenCanvas,
+        //     width: this.width,
+        //     height: this.height,
+        //     framerate: this.framerate,
+        //     dataSourceId: this.dataSourceId
+        // }, [offscreenCanvas]);
 
+        const that = this;
         this.decodeWorker.onmessage = function (e) {
-            const decodedFrame = e.data;
+            let decodedFrame = e.data;
+            if(that.width !== decodedFrame.frame_width ||
+                that.height !== decodedFrame.frame_height) {
+                //re-create the canvas
+                that.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
+                that.width = decodedFrame.frame_width;
+                that.height = decodedFrame.frame_height;
+            }
+
+            that.yuvCanvas.canvasElement.drawing = true;
+            that.yuvCanvas.drawNextOuptutPictureGL({
+                yData: decodedFrame.frameYData,
+                yDataPerRow: decodedFrame.frame_width,
+                yRowCnt: decodedFrame.frame_height,
+                uData: decodedFrame.frameUData,
+                uDataPerRow: decodedFrame.frame_width / 2,
+                uRowCnt: decodedFrame.frame_height / 2,
+                vData: decodedFrame.frameVData,
+                vDataPerRow: decodedFrame.frame_width / 2,
+                vRowCnt: decodedFrame.frame_height / 2,
+                roll: decodedFrame.roll
+            });
+
+            that.yuvCanvas.canvasElement.drawing = false;
+
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
                 this.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
@@ -303,10 +324,10 @@ class FFMPEGView extends View {
         if(isDefined(this.interval)) {
             clearInterval(this.interval);
         }
-       this. decodeWorker.postMessage({
-           message: 'release'
-       });
-       this.decodeWorker.terminate();
+        this. decodeWorker.postMessage({
+            message: 'release'
+        });
+        this.decodeWorker.terminate();
     }
 }
 
