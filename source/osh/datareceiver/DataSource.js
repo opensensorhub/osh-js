@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {randomUUID} from '../utils/Utils.js';
+import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
 
 /**
@@ -92,6 +92,28 @@ class DataSource {
         this.connected = true;
     }
 
+    async getCurrentTime() {
+        if(isDefined(this.dataSynchronizer)) {
+            return this.dataSynchronizer.getCurrentTime();
+        } else {
+            const promise = new Promise(resolve => {
+                if(this.dataSourceWorker !== null) {
+                    this.dataSourceWorker.onmessage = (event) => {
+                        if (event.data.message === 'last-timestamp') {
+                            resolve(event.data.data);
+                        }
+                    };
+                }
+            });
+            if(this.dataSourceWorker !== null) {
+                this.dataSourceWorker.postMessage({
+                    message: 'last-timestamp'
+                });
+            }
+
+            return promise;
+        }
+    }
     /**
      * Gets the datasource id.
      * @return {String} the datasource id

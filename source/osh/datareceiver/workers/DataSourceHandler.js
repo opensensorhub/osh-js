@@ -126,6 +126,10 @@ class DataSourceHandler {
         this.lastTimeStamp = obj.timeStamp;
         this.broadcastChannel.postMessage(obj);
     }
+
+    getLastTimeStamp() {
+        return this.lastTimeStamp;
+    }
 }
 export default DataSourceHandler;
 
