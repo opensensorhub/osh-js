@@ -85,6 +85,12 @@ class WebSocketConnector extends DataConnector {
                     }
                 }.bind(this), this.reconnectTimeout);
             }
+
+            // DEBUGGING
+            this.ws.onclose = (ev) =>{
+                console.log('Socket Closed', ev);
+            }
+            // END DEBUG
         }
     }
 

@@ -78,11 +78,15 @@ class DataSourceHandler {
         }
 
         const lastStartTimeCst  = this.parser.lastStartTime;
+        // console.log(lastStartTimeCst);
+        // console.log(this.lastStartTime);
         if(this.connector !== null) {
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
                 if (lastStartTimeCst !== 'now') {
+                    // console.log(this.lastStartTime);
+                    // console.log(this.lastTimeStamp);
                     this.connector.setUrl(this.parser.buildUrl(
                         {
                             lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
@@ -125,7 +129,12 @@ class DataSourceHandler {
             timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
             data: this.parser.parseData(event)
         };
+        // console.log(obj);
         this.lastTimeStamp = obj.timeStamp;
+        // HACK
+        // if(obj.timeStamp === NaN){
+        //     this.lastTimeStamp = obj.data.Time;
+        // }
         this.broadcastChannel.postMessage(obj);
     }
 
