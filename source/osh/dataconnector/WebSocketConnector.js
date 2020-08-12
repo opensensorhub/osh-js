@@ -52,7 +52,7 @@ class WebSocketConnector extends DataConnector {
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    connect(endTime = new Date('2055-01-01').getTime()) {
+    connect() {
         if (!this.init) {
             this.init = true;
             //creates Web Socket
