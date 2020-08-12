@@ -108,12 +108,14 @@ class DataSourceHandler {
     connect() {
         if(this.connector !== null) {
             this.connector.connect();
+            this.connected = true;
         }
     }
 
     disconnect() {
         if(this.connector !== null) {
             this.connector.disconnect();
+            this.connected = false;
         }
     }
 
@@ -129,6 +131,18 @@ class DataSourceHandler {
 
     getLastTimeStamp() {
         return this.lastTimeStamp;
+    }
+
+    updateUrl(properties) {
+        const isConnected = this.connected;
+        if(isConnected) {
+            this.disconnect();
+        }
+        this.properties = properties;
+        this.createDataConnector(properties);
+        if(isConnected) {
+            this.connect();
+        }
     }
 }
 export default DataSourceHandler;
