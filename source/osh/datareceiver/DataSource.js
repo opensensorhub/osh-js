@@ -162,6 +162,12 @@ class DataSource {
             });
         }
     }
+
+    terminate() {
+        if(this.dataSourceWorker !== null) {
+            this.dataSourceWorker.terminate();
+        }
+    }
 }
 
 export default DataSource;

@@ -141,6 +141,9 @@ class DataSynchronizer {
             this.synchronizerWorker.terminate();
             this.synchronizerWorker = null;
         }
+        for(let dataSource of this.dataSources) {
+            dataSource.terminate();
+        }
     }
 
     async getCurrentTime() {
