@@ -42,6 +42,7 @@ import SweJsonWorker from './workers/SweJson.worker.js';
 class SweJson extends DataSource {
     constructor(name, properties) {
         super(name, {
+            timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             ...properties
         }, new SweJsonWorker());
