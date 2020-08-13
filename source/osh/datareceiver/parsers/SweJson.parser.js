@@ -8,7 +8,6 @@ class SweJsonParser extends DataSourceParser {
      */
     parseTimeStamp(data) {
         console.log(data);
-        console.log(data);
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         let parseRec = JSON.parse(rec);
         console.log(parseRec);
