@@ -331,8 +331,8 @@ class View {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
-                this.viewItemsBroadcastChannels[ds.id].close();
-                delete this.viewItemsBroadcastChannels[ds.id];
+                this.viewItemsBroadcastChannels[ds].close();
+                delete this.viewItemsBroadcastChannels[ds];
                 delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
@@ -363,7 +363,7 @@ class View {
 
         // observes the SHOW event
         EventManager.observe(EventManager.EVENT.SHOW_VIEW, (event) => that.show(event),this.divId);
-
+        //
         EventManager.observe(EventManager.EVENT.ADD_VIEW_ITEM, (event) => {
             if (isDefined(event.viewId) && event.viewId === that.id) {
                 that.addViewItem(event.viewItem);
