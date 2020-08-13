@@ -102,10 +102,12 @@ class Server {
         });
     }
 
-    getDescribeSensorAsJson(procedure, successCallback, errorCallback) {
+    async getDescribeSensorAsJson(procedure, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure='
             + procedure + '&procedureDescriptionFormat=http://www.opengis.net/sensorml-json/2.0';
-        this.executeGetRequest(request, successCallback, errorCallback, true);
+        return new Promise(resolve => {
+            this.executeGetRequest(request, resolve, errorCallback, true);
+        });
     }
 
     /**
