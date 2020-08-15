@@ -45,7 +45,7 @@ class WebSocketConnector extends DataConnector {
     constructor(properties) {
         super(properties);
         this.interval = -1;
-        this.lastReceiveTime = -1;
+        this.lastReceiveTime = 0;
     }
 
     /**
