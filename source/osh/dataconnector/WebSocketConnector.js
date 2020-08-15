@@ -74,6 +74,11 @@ class WebSocketConnector extends DataConnector {
                 this.lastReceiveTime = -1;
             }.bind(this);
 
+            this.ws.onclose = (event) => {
+                console.info('Closing gracefully..');
+                this.fullDisconnect(true);
+            };
+
             //init the reconnect handler
             if (this.interval === -1) {
                 this.interval = setInterval(function () {
@@ -99,10 +104,10 @@ class WebSocketConnector extends DataConnector {
      * @param {Boolean} removeInterval  - force removing the interval
      */
     fullDisconnect(removeInterval) {
-       if (this.ws != null) {
-            this.ws.close();
-            this.init = false;
-        }
+       if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
+               this.ws.close();
+               this.init = false;
+       }
         if (removeInterval) {
             clearInterval(this.interval);
         }

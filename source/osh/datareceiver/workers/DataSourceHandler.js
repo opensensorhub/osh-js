@@ -78,12 +78,8 @@ class DataSourceHandler {
         }
 
         const lastStartTimeCst  = this.parser.lastStartTime;
-        const endTime = new Date(properties.endTime).getTime();
         if(this.connector !== null) {
             this.connector.onReconnect = () => {
-                if(this.lastTimeStamp >= endTime) {
-                    return false;
-                }
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
                 if (lastStartTimeCst !== 'now') {
