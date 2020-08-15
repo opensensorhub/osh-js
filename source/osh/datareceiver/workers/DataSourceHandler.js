@@ -143,6 +143,7 @@ class DataSourceHandler {
         if(isConnected) {
             this.disconnect();
         }
+
         this.properties = properties;
         this.createDataConnector(properties);
         if(isConnected) {

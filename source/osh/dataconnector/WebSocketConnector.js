@@ -68,7 +68,7 @@ class WebSocketConnector extends DataConnector {
 
             // closes socket if any errors occur
             this.ws.onerror = function (event) {
-                console.error('WebSocket stream error: ' + event);
+                console.error('WebSocket stream error: ',event);
                 this.ws.close();
                 this.init = false;
                 this.lastReceiveTime = -1;
