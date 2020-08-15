@@ -10,7 +10,7 @@ self.onmessage = (event) => {
 
     setInterval(() => {
         server.getCapabilities(successFn, errorFn);
-    }, 1500);
+    }, 5000);
 }
 
 
