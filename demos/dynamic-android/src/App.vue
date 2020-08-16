@@ -80,22 +80,22 @@ export default {
           replaySpeed: 1
         });
         dataSources.push(mapItem['location']);
-      }
-      if(item.heading) {
-        mapItem['heading'] = new SweJson("android-Att", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: process.env.HOST + "/sensorhub/sos",
-          offeringID: item.id,
-          observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-          startTime: item.startTime,
-          endTime: item.endTime,
-          bufferingTime: 0,
-          timeShift: 0,
-          timeOut: 1000,
-          replaySpeed: 1
-        });
-        dataSources.push(mapItem['heading']);
+        if (item.heading) {
+          mapItem['heading'] = new SweJson("android-Att", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: process.env.HOST + "/sensorhub/sos",
+            offeringID: item.id,
+            observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+            startTime: item.startTime,
+            endTime: item.endTime,
+            bufferingTime: 0,
+            timeShift: 0,
+            timeOut: 1000,
+            replaySpeed: 1
+          });
+          dataSources.push(mapItem['heading']);
+        }
       }
       if(item.video) {
         let videoProperties = {
@@ -132,7 +132,7 @@ export default {
         dataSources: dataSources
       });
 
-      if('location' in mapItem || 'heading' in mapItem) {
+      if('location' in mapItem) {
         this.map.push(mapItem);
         this.$refs['map'].add(mapItem);
       }
@@ -141,6 +141,7 @@ export default {
     },
     removeItem(item) {
       if (item.id in this.dataSynchronizers) {
+        console.log('Remove datasync', item.id)
         // stop all others DS
         this.dataSynchronizers[item.id].terminate();
         // remove from map
