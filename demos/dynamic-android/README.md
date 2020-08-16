@@ -20,5 +20,8 @@ yarn build
 yarn lint
 ```
 
+## Environments
+Change .env.development, .env.production and .env.public depending on your environment.
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
