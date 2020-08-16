@@ -142,12 +142,6 @@
           }
         }
 
-        if(Object.keys(extraProps).length > 0) {
-          this.dataSource.disconnect();
-          extraProps['responseFormat'] = this.encoding.responseFormat;
-          this.dataSource.updateUrl({encoding: extraProps});
-        }
-
         this.view = new FFMPEGView(id, {
           dataSourceId: this.dataSource.id,
           css: "video-h264",
@@ -160,7 +154,12 @@
         });
 
         if (!this.dataSource.connected) {
-            this.dataSource.connect();
+          if(Object.keys(extraProps).length > 0) {
+            this.dataSource.disconnect();
+            extraProps['responseFormat'] = this.encoding.responseFormat;
+            this.dataSource.updateUrl({encoding: extraProps});
+          }
+          this.dataSource.connect();
         }
       }
     }
