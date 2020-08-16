@@ -1,5 +1,6 @@
 <template>
   <div class="video-control">
+    <VideoMenuSettings></VideoMenuSettings>
     <a class="control-btn">
         <slot  v-if="!expand">
           <i class="fa fa-expand" v-on="{click: toggleExpand}"></i>
@@ -9,7 +10,6 @@
         </slot>
     </a>
 <!--    <a class="control-btn control-btn-settings"><i class="fa fa-cog"></i></a>-->
-    <VideoMenuSettings></VideoMenuSettings>
   </div>
 </template>
 

@@ -8,16 +8,21 @@
       :close-on-content-click="closeOnContentClick"
       :offset-x="offsetX"
       :offset-y="offsetY"
+      :rounded="false"
+      left
+      top
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn
+          depressed
+          :outlined="false"
           color="primary"
           dark
           v-bind="attrs"
           v-on="on"
           icon
       >
-        <v-icon>fas fa-lock</v-icon>
+        <a class="control-btn control-btn-settings"><i class="fa fa-cog"></i></a>
       </v-btn>
     </template>
     <v-list>
@@ -59,4 +64,12 @@ export default {
 </script>
 <!-- optional dialog styles, see example -->
 <style scoped>
+.v-btn:before {
+  background-color: unset;
+}
+
+.v-btn--icon.v-size--default {
+  width: unset;
+  height: unset;
+}
 </style>
