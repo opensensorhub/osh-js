@@ -5,7 +5,7 @@
   "scripts": {
     "prod": "webpack --config webpack.config.js --mode production --env.NODE_ENV=production",
     "prod_public": "webpack --config webpack.config.js --mode production --env.NODE_ENV=public",
-    "dev": "webpack-dev-server --host 192.168.2.146 --config webpack.config.js --mode development --watch --env.NODE_ENV=development"
+    "dev": "webpack-dev-server --host 127.0.0.1 --config webpack.config.js --mode development --watch --env.NODE_ENV=development"
   },
   "dependencies": {
     "vue": "^2.6.11",

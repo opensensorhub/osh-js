@@ -44,11 +44,11 @@ export default {
       console.log('add to map',item)
 
       let locationStyler = {
-        location: {
-          y:43.600541,
-          x:1.4267618,
-          z:0
-        }
+        // location: {
+        //   y:43.600541,
+        //   x:1.4267618,
+        //   z:0
+        // }
       };
       let headingStyler  = {};
 
