@@ -141,7 +141,10 @@ class DataSourceHandler {
         }
 
         this.properties = properties;
-        this.createDataConnector(properties);
+        this.createDataConnector({
+            ...properties,
+            lastTimeStamp: new Date(this.lastTimeStamp).toISOString()
+        });
         if(isConnected) {
             this.connect();
         }
