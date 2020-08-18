@@ -16,7 +16,7 @@
 </template>
 <script>
     // @ is an alias to /src
-    import Video from 'osh-vue/components/Video.vue';
+    import Video from 'osh-vue/components/VideoWithControl.vue';
     import VideoOsh from "osh/datareceiver/Video.js";
 
     export default {
@@ -34,15 +34,15 @@
             this.dataSource = new VideoOsh("drone-Video", {
                 protocol: 'ws',
                 service: 'SOS',
-                endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-                offeringID: 'urn:mysos:solo:video2',
+                // endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+                // offeringID: 'urn:mysos:solo:video2',
                 observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-                startTime: '2015-12-19T21:04:29.231Z',
-                endTime: '2015-12-19T21:09:19.675Z',
-                // endpointUrl: 'localhost:8082/sensorhub/sos',
-                // offeringID: 'replay-android',
-                // startTime: '2020-06-06T15:07:15.359Z',
-                // endTime: '2020-06-06T15:07:57.016Z',
+                // startTime: '2015-12-19T21:04:29.231Z',
+                // endTime: '2015-12-19T21:09:19.675Z',
+                endpointUrl: 'localhost:8082/sensorhub/sos',
+                offeringID: 'replay-android',
+                startTime: '2020-08-16T11:31:11.706Z',
+                endTime: '2020-08-16T11:32:06.781Z',
                 replaySpeed: 1
             });
         }

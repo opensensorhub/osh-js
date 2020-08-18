@@ -9,6 +9,7 @@
       :offset-x="offsetX"
       :offset-y="offsetY"
       :rounded="false"
+      content-class="settings"
       left
       top
   >
@@ -25,11 +26,13 @@
         <a class="control-btn control-btn-settings"><i class="fa fa-cog"></i></a>
       </v-btn>
     </template>
-    <v-list>
+    <v-list
+      dense
+    >
       <v-list-item
           v-for="(item, index) in items"
           :key="index"
-          @click=""
+          @click="onClick(item)"
       >
         <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
@@ -46,10 +49,12 @@ export default {
   },
   data: () => ({
     items: [
-      { title: 'Click Me' },
-      { title: 'Click Me' },
-      { title: 'Click Me' },
-      { title: 'Click Me 2' },
+      { title: '1080p' },
+      { title: '720p' },
+      { title: '480p' },
+      { title: '360p' },
+      { title: '240p' },
+      { title: '144p' },
     ],
     disabled: false,
     absolute: false,
@@ -60,6 +65,14 @@ export default {
     offsetX: false,
     offsetY: true,
   }),
+  methods: {
+    onClick(item) {
+      this.$emit('settingsEvent', {
+        type: 'resolution',
+        value: item.title
+      });
+    }
+  }
 }
 </script>
 <!-- optional dialog styles, see example -->

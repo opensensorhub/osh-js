@@ -16,6 +16,7 @@
       </div>
       <VideoControl
           @event='on'
+          @settingsEvent='onSettingsEvent'
           :expand='this.expand'
       ></VideoControl>
     </div>
@@ -224,6 +225,9 @@
                 elt.classList.remove("fa-play");
                 elt.classList.add("fa-pause");
               }
+            },
+            onSettingsEvent(item) {
+              this.$emit('settingsEvent', item);
             },
             parseDate(intTimeStamp) {
                 const date = new Date(intTimeStamp);

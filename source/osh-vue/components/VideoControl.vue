@@ -1,6 +1,8 @@
 <template>
   <div class="video-control">
-    <VideoMenuSettings></VideoMenuSettings>
+    <VideoMenuSettings
+        @settingsEvent="onSettingsEvent"
+    ></VideoMenuSettings>
     <a class="control-btn">
         <slot  v-if="!expand">
           <i class="fa fa-expand" v-on="{click: toggleExpand}"></i>
@@ -40,6 +42,9 @@ export default {
     on(eventName) {
       this.$emit('event', 'expand');
     },
+    onSettingsEvent(item) {
+      this.$emit('settingsEvent', item);
+    }
   }
 }
 </script>

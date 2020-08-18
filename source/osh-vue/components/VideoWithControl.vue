@@ -3,7 +3,12 @@
     <slot v-if="!dialog">
       <div :id="id" class="video-container">
       </div>
-      <Control :dataSource="dataSource" @event='onControlEvent' :showDataSourceActions="true"></Control>
+      <Control
+          :dataSource="dataSource"
+          @event='onControlEvent'
+          :showDataSourceActions="true"
+          @settingsEvent="onSettingsEvent"
+      ></Control>
     </slot>
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
@@ -26,6 +31,50 @@
   import {randomUUID} from "osh/utils/Utils.js";
   import Control from 'osh-vue/components/Control.vue';
 
+  const RESOLUTIONS = {
+    '1080p': {
+      resolution: {
+        width: 1920,
+        height: 1080
+      },
+      bitrate: 1000 * 8
+    },
+    '720p' : {
+      resolution: {
+        width: 1280,
+        height: 720
+      },
+      bitrate: 800 * 8
+    },
+    '480p': {
+      resolution: {
+        width: 854,
+        height: 480
+      },
+      bitrate: 500 * 8
+    },
+    '360p': {
+      resolution: {
+        width: 640,
+        height: 360
+      },
+      bitrate: 400 * 8
+    },
+    '240p': {
+      resolution: {
+        width: 426,
+        height: 240
+      },
+      bitrate: 300 * 8
+    },
+    '144p': {
+      resolution: {
+        width: 196,
+        height: 144
+      },
+      bitrate: 100 * 8
+    }
+  }
   export default {
     name: "Video",
     components: {
@@ -73,14 +122,8 @@
         default () {
           return {
             bitrate: {
-              min: 100 * 8,
-              max: 500 * 8,
-              use: false
             },
             scale: {
-              min: 0.5,
-              max: 1.0,
-              use: false
             },
             responseFormat: 'video/H264'
           }
@@ -111,6 +154,12 @@
       this.initView(this.id);
     },
     methods: {
+      onSettingsEvent(event) {
+        if(event.type === 'resolution') {
+          this.updateResolution(event.value);
+        }
+
+      },
       onControlEvent(eventName) {
         if(eventName === 'expand' || eventName === 'compress') {
           this.toggleDialog();
@@ -119,33 +168,24 @@
       toggleDialog() {
         this.dialog = !this.dialog;
       },
+      updateResolution(resolution) {
+        // check for extra properties
+        let extraProps = {};
+        extraProps['bitrate'] = RESOLUTIONS[resolution].bitrate;
+        //TOOD: compute scale depending on size
+        extraProps['scale'] = 1.0;
+
+        if(Object.keys(extraProps).length > 0) {
+          this.dataSource.updateUrl(
+              {
+                encoding: extraProps,
+                responseFormat: this.encoding.responseFormat
+              });
+        }
+      },
       initView(id) {
         if (this.view !== null) {
           this.view.destroy();
-        }
-
-        // check for extra properties
-        let extraProps = {};
-        if(this.encoding.bitrate.use) {
-          if(!this.dialog) {
-            extraProps['bitrate'] = this.encoding.bitrate.min;
-          } else {
-            extraProps['bitrate'] = this.encoding.bitrate.max;
-          }
-          extraProps['responseFormat'] = this.encoding.responseFormat;
-        }
-        if(this.encoding.scale.use) {
-          if(!this.dialog) {
-            extraProps['scale'] = this.encoding.scale.min;
-          } else {
-            extraProps['scale'] = this.encoding.scale.max;
-          }
-        }
-
-        if(Object.keys(extraProps).length > 0) {
-          this.dataSource.disconnect();
-          extraProps['responseFormat'] = this.encoding.responseFormat;
-          this.dataSource.updateUrl({encoding: extraProps});
         }
 
         this.view = new FFMPEGView(id, {
@@ -154,7 +194,7 @@
           name: "Android Video",
           framerate: this.framerate,
           codec: this.codec,
-          directPlay: true,
+          directPlay: false,
           showStats: this.showStats,
           showTime: this.showTime
         });
