@@ -73,6 +73,13 @@
         height: 144
       },
       bitrate: 100 * 8
+    },
+    'low144p': {
+      resolution: {
+        width: 196,
+        height: 144
+      },
+      bitrate: 20 * 8
     }
   }
   export default {
@@ -173,7 +180,7 @@
         let extraProps = {};
         extraProps['bitrate'] = RESOLUTIONS[resolution].bitrate;
         //TOOD: compute scale depending on size
-        extraProps['scale'] = 1.0;
+        // extraProps['scale'] = 1.0;
 
         if(Object.keys(extraProps).length > 0) {
           this.dataSource.updateUrl(

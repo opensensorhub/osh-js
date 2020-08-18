@@ -55,6 +55,7 @@ export default {
       { title: '360p' },
       { title: '240p' },
       { title: '144p' },
+      { title: 'low144p' },
     ],
     disabled: false,
     absolute: false,
