@@ -1,6 +1,6 @@
 <template>
   <div data-app class="main-video">
-    <slot v-if="!dialog">
+    <div v-if="!dialog">
       <div :id="id" class="video-container">
       </div>
       <Control
@@ -9,8 +9,8 @@
           :showDataSourceActions="true"
           @settingsEvent="onSettingsEvent"
       ></Control>
-    </slot>
-    <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
+    </div>
+    <div name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
               v-model="dialog"
               persistent
@@ -23,7 +23,7 @@
             expand
         ></Control>
       </v-dialog>
-    </slot>
+    </div>
   </div>
 </template>
 <script>
@@ -31,57 +31,6 @@
   import {randomUUID} from "osh/utils/Utils.js";
   import Control from 'osh-vue/components/Control.vue';
 
-  const RESOLUTIONS = {
-    '1080p': {
-      resolution: {
-        width: 1920,
-        height: 1080
-      },
-      bitrate: 1000 * 8
-    },
-    '720p' : {
-      resolution: {
-        width: 1280,
-        height: 720
-      },
-      bitrate: 800 * 8
-    },
-    '480p': {
-      resolution: {
-        width: 854,
-        height: 480
-      },
-      bitrate: 500 * 8
-    },
-    '360p': {
-      resolution: {
-        width: 640,
-        height: 360
-      },
-      bitrate: 400 * 8
-    },
-    '240p': {
-      resolution: {
-        width: 426,
-        height: 240
-      },
-      bitrate: 300 * 8
-    },
-    '144p': {
-      resolution: {
-        width: 196,
-        height: 144
-      },
-      bitrate: 100 * 8
-    },
-    'low144p': {
-      resolution: {
-        width: 196,
-        height: 144
-      },
-      bitrate: 20 * 8
-    }
-  }
   export default {
     name: "Video",
     components: {
@@ -124,15 +73,59 @@
           }
         }
       },
-      encoding: {
+      resolutions: {
         type: Object,
         default () {
           return {
-            bitrate: {
+            '1080p': {
+              resolution: {
+                width: 1920,
+                height: 1080
+              },
+              bitrate: 1000 * 8
             },
-            scale: {
+            '720p' : {
+              resolution: {
+                width: 1280,
+                height: 720
+              },
+              bitrate: 800 * 8
             },
-            responseFormat: 'video/H264'
+            '480p': {
+              resolution: {
+                width: 854,
+                height: 480
+              },
+              bitrate: 500 * 8
+            },
+            '360p': {
+              resolution: {
+                width: 640,
+                height: 360
+              },
+              bitrate: 400 * 8
+            },
+            '240p': {
+              resolution: {
+                width: 426,
+                height: 240
+              },
+              bitrate: 300 * 8
+            },
+            '144p': {
+              resolution: {
+                width: 196,
+                height: 144
+              },
+              bitrate: 100 * 8
+            },
+            'low144p': {
+              resolution: {
+                width: 196,
+                height: 144
+              },
+              bitrate: 20 * 8
+            }
           }
         }
       }
@@ -178,15 +171,15 @@
       updateResolution(resolution) {
         // check for extra properties
         let extraProps = {};
-        extraProps['bitrate'] = RESOLUTIONS[resolution].bitrate;
+        extraProps['bitrate'] = this.resolutions[resolution].bitrate;
         //TOOD: compute scale depending on size
-        // extraProps['scale'] = 1.0;
+        extraProps['width'] = this.resolutions[resolution].resolution.width;
 
         if(Object.keys(extraProps).length > 0) {
           this.dataSource.updateUrl(
               {
                 encoding: extraProps,
-                responseFormat: this.encoding.responseFormat
+                responseFormat: 'video/' + this.codec.toUpperCase()
               });
         }
       },

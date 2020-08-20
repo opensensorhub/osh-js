@@ -4,12 +4,8 @@
         @settingsEvent="onSettingsEvent"
     ></VideoMenuSettings>
     <a class="control-btn">
-        <slot  v-if="!expand">
-          <i class="fa fa-expand" v-on="{click: toggleExpand}"></i>
-        </slot>
-        <slot v-else>
-          <i class="fa fa-compress" v-on="{click: toggleExpand}"></i>
-        </slot>
+        <i class="fa fa-expand" v-on="{click: toggleExpand}" v-if="!expand"></i>
+        <i class="fa fa-compress" v-on="{click: toggleExpand}"  v-else></i>
     </a>
 <!--    <a class="control-btn control-btn-settings"><i class="fa fa-cog"></i></a>-->
   </div>

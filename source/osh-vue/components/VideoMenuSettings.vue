@@ -13,13 +13,13 @@
       left
       top
   >
+
     <template v-slot:activator="{ on, attrs }">
       <v-btn
           depressed
           :outlined="false"
           color="primary"
           dark
-          v-bind="attrs"
           v-on="on"
           icon
       >
