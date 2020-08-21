@@ -7,8 +7,8 @@
               :options="{top: '50', left: '50'}"
               :showStats="true"
               :showTime="true"
-              :frameRate=25
-              class="video"
+              :frameRate=30
+              class="video-container-vue"
       >
       </Video>
     </keep-alive>
@@ -16,8 +16,8 @@
 </template>
 <script>
     // @ is an alias to /src
-    import Video from 'osh-vue/components/VideoWithControl.vue';
-    import VideoOsh from "osh/datareceiver/Video.js";
+    import Video from 'osh-vue/components/video/VideoWithControl.vue';
+    import VideoOsh from "osh/datareceiver/VideoWithRoll.js";
 
     export default {
         components: {
@@ -55,7 +55,18 @@
     padding:50px;
   }
 
-  .video {
-    width: 500px;
+  .video-container  {
+    margin:auto;
+    height: 337px;
+    width: auto;
+  }
+
+  .osh-view {
+    margin: auto;
+    display: flex;
+  }
+
+  #app {
+    max-width: 600px;
   }
 </style>
