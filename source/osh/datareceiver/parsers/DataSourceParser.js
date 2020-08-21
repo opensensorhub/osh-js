@@ -19,7 +19,7 @@ class DataSourceParser {
      * @param {Number} properties.encoding.bitrate - define a custom bitrate (in b/s)
      * @param {Number} properties.encoding.scale - define a custom scale, 0.0 < value < 1.0
      * @param {Number} properties.encoding.width - define a custom width
-
+     * @param {Number} properties.encoding.height - define a custom height
      * @return {String} the full url
      */
     buildUrl(properties) {
@@ -76,6 +76,10 @@ class DataSourceParser {
 
             if (isDefined(properties.encoding.width)) {
                 url += "&video_width=" + properties.encoding.width;
+            }
+
+            if (isDefined(properties.encoding.height)) {
+                url += "&video_height=" + properties.encoding.height;
             }
         }
         return url;
