@@ -14,11 +14,6 @@
           <span :id="'end-time-'+this.id" v-if="showDataSourceActions"></span>
         </div>
       </div>
-      <VideoControl
-          @event='on'
-          @settingsEvent='onSettingsEvent'
-          :expand='this.expand'
-      ></VideoControl>
     </div>
   </div>
 </template>
@@ -28,7 +23,7 @@
     import {randomUUID} from 'osh/utils/Utils.js';
     import * as wNumb from 'wnumb';
     import {isDefined} from "../../osh/utils/Utils";
-    import VideoControl from "./VideoControl.vue";
+    import VideoControl from "./video/VideoControl.vue";
 
     export default {
         name: "Control",
@@ -39,15 +34,11 @@
             },
             backward: {
                 type: Number,
-                default: () => 10
+                default: () => 5
             },
             forward: {
                 type: Number,
-                default: () => 10
-            },
-            expand: {
-              type: Boolean,
-              default: () => false
+                default: () => 5
             }
         },
         data() {
@@ -142,16 +133,6 @@
                 if (that.dataSource.connected) {
                   that.dataSource.disconnect();
                   //save current time
-
-                  // get current parameters
-                  let props = that.dataSource.properties;
-                  let options = that.dataSource.options;
-
-                  props.startTime = new Date(parseInt(rangeSlider.slider.noUiSlider.get())).toISOString();
-
-                  // re-init the DS from the last timestamp  played
-                  that.dataSource.initDataSource(props, options);
-
                   this.on('pause');
                 } else {
                   that.dataSource.connect();
@@ -161,37 +142,42 @@
 
                 fastBackwardButton.onclick = () => {
                   if (that.dataSource.connected) {
-                    that.dataSource.disconnect();
                     let props = that.dataSource.properties;
-                    let options = that.dataSource.options;
-                    props.startTime = new Date(parseInt(new Date(props.startTime).getTime() - that.forward * 1000)).toISOString();
                     currentTimeElement.innerText = that.parseDate(props.startTime);
                     // reset parameters
-                    that.dataSource.initDataSource(props, options);
-                    that.dataSource.connect();
-                    this.on('backward');
+                    that.dataSource.getCurrentTime().then(time => {
+                      that.dataSource.updateUrl({
+                        startTime: new Date(parseInt(time - that.backward * 1000)).toISOString()
+                      });
+                      this.on('backward');
+                    });
                   }
                 }
                 fastForwardButton.onclick = () => {
                   if (that.dataSource.connected) {
-                    that.dataSource.disconnect();
                     let props = that.dataSource.properties;
-                    let options = that.dataSource.options;
-                    props.startTime = new Date(parseInt(new Date(props.startTime).getTime() + that.forward * 1000)).toISOString();
                     currentTimeElement.innerText = that.parseDate(props.startTime);
                     // reset parameters
-                    that.dataSource.initDataSource(props, options);
-                    that.dataSource.connect();
-                    this.on('forward');
+                    that.dataSource.getCurrentTime().then(time => {
+                      that.dataSource.updateUrl({
+                        startTime: new Date(parseInt(time + that.backward * 1000)).toISOString()
+                      });
+                      this.on('forward');
+                    });
                   }
                 }
 
-              pauseButton.onclick = () => {
+              let currentTime;
+              pauseButton.onclick = async () => {
                 if (this.dataSource.connected) {
+                  currentTime = await that.dataSource.getCurrentTime();
                   this.dataSource.disconnect();
                   //save current time
                   this.on('pause');
                 } else {
+                  this.dataSource.updateUrl({
+                    startTime: new Date(currentTime).toISOString()
+                  });
                   this.dataSource.connect();
                   this.on('play');
                 }
@@ -225,9 +211,6 @@
                 elt.classList.remove("fa-play");
                 elt.classList.add("fa-pause");
               }
-            },
-            onSettingsEvent(item) {
-              this.$emit('settingsEvent', item);
             },
             parseDate(intTimeStamp) {
                 const date = new Date(intTimeStamp);

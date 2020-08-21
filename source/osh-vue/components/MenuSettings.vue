@@ -27,14 +27,14 @@
       </v-btn>
     </template>
     <v-list
-      dense
+        dense
     >
       <v-list-item
           v-for="(item, index) in items"
           :key="index"
           @click="onClick(item)"
       >
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
+        <v-list-item-title>{{ index }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-menu>
@@ -42,21 +42,17 @@
 
 <script>
 
+/*
+
+item = {
+  title: 'title'
+}
+ */
 export default {
   name: "VideoMenuSettings",
   components: {},
-  props: {
-  },
+  props: ['items'],
   data: () => ({
-    items: [
-      { title: '1080p' },
-      { title: '720p' },
-      { title: '480p' },
-      { title: '360p' },
-      { title: '240p' },
-      { title: '144p' },
-      { title: 'low144p' },
-    ],
     disabled: false,
     absolute: false,
     openOnHover: false,
@@ -68,10 +64,7 @@ export default {
   }),
   methods: {
     onClick(item) {
-      this.$emit('settingsEvent', {
-        type: 'resolution',
-        value: item.title
-      });
+      this.$emit('settingsEvent', item);
     }
   }
 }
