@@ -26,7 +26,6 @@ class DataConnector {
     constructor(url) {
         this.url = url;
         this.id = "DataConnector-" + randomUUID();
-
         this.reconnectTimeout = 1000 * 60 * 2; //2 min
     }
 
@@ -62,7 +61,9 @@ class DataConnector {
         this.reconnectTimeout = timeout;
     }
 
-    onReconnect(){}
+    onReconnect(){
+        return true;
+    }
 
     disconnect() {}
 }

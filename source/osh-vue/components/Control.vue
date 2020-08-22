@@ -5,7 +5,7 @@
       <div class="actions" > <!-- Next Page Buttons -->
         <div class="datasource-actions">
           <a :id="'fast-back-btn-'+this.id" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-backward"></i></a>
-          <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"><i class="fa fa-pause"></i></a>
+          <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause" v-if="showDataSourceActions"><i class="fa fa-pause"></i></a>
           <a :id="'fast-forward-btn-'+this.id" class="control-btn" v-if="showDataSourceActions"> <i class="fa fa-fast-forward"></i></a>
         </div>
         <div class="time">
@@ -184,21 +184,19 @@
                     this.on('forward');
                   }
                 }
+
+              pauseButton.onclick = () => {
+                if (this.dataSource.connected) {
+                  this.dataSource.disconnect();
+                  //save current time
+                  this.on('pause');
+                } else {
+                  this.dataSource.connect();
+                  this.on('play');
+                }
+              }
               } else {
                 // REAL TIME
-                const pauseButton = document.getElementById("pause-btn-"+this.id);
-
-                pauseButton.onclick = () => {
-                  if (this.dataSource.connected) {
-                    this.dataSource.disconnect();
-                    //save current time
-                    this.on('pause');
-                  } else {
-                    this.dataSource.connect();
-                    this.on('play');
-                  }
-                }
-
                 // get time from DS
                 const currentTimeElement = document.getElementById("current-time-"+this.id);
                 setInterval(() => {

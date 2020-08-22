@@ -95,15 +95,19 @@ class Server {
      * @param {Function} successCallback - async method called when the response succeeded
      * @param {Function} errorCallback - async method called when an error occurred
      */
-    getDescribeSensor(procedure, successCallback, errorCallback) {
+    async getDescribeSensor(procedure, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure=' + procedure ;
-        this.executeGetRequest(request, successCallback, errorCallback);
+        return new Promise(resolve => {
+            this.executeGetRequest(request, resolve, errorCallback);
+        });
     }
 
-    getDescribeSensorAsJson(procedure, successCallback, errorCallback) {
+    async getDescribeSensorAsJson(procedure, successCallback, errorCallback) {
         let request = this.url + '/' + this.baseUrl + '/' + this.sos + '?service=SOS&version=2.0&request=DescribeSensor&procedure='
             + procedure + '&procedureDescriptionFormat=http://www.opengis.net/sensorml-json/2.0';
-        this.executeGetRequest(request, successCallback, errorCallback, true);
+        return new Promise(resolve => {
+            this.executeGetRequest(request, resolve, errorCallback, true);
+        });
     }
 
     /**

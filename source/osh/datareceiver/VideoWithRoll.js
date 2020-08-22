@@ -48,6 +48,7 @@ class VideoWithRoll extends DataSource {
      */
     constructor(name, properties) {
         super(name, {
+            timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             ...properties
         }, new VideoWithRollWorker());
