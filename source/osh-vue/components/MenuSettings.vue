@@ -1,43 +1,4 @@
 <template>
-  <!--v-menu
-      v-model="value"
-      :disabled="disabled"
-      :absolute="absolute"
-      :open-on-hover="openOnHover"
-      :close-on-click="closeOnClick"
-      :close-on-content-click="closeOnContentClick"
-      :offset-x="offsetX"
-      :offset-y="offsetY"
-      :rounded="false"
-      content-class="settings"
-      left
-      top
-  >
-
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-          depressed
-          :outlined="false"
-          color="primary"
-          dark
-          v-on="on"
-          icon
-      >
-        <a class="control-btn control-btn-settings"><i class="fa fa-cog"></i></a>
-      </v-btn>
-    </template>
-    <v-list
-        dense
-    >
-      <v-list-item
-          v-for="(item, index) in items"
-          :key="index"
-          @click="onClick(item)"
-      >
-        <v-list-item-title>{{ index }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu-->
   <div class="dropup">
     <v-btn
         depressed
@@ -49,9 +10,10 @@
     >
       <a class="control-btn control-btn-settings"><i class="fa fa-cog"></i></a>
     </v-btn>
-    <div class="dropup-content" id="dropup-content">
+    <div class="dropup-content" id="dropup-content" v-show="show">
       <v-list
           dense
+          dark
       >
         <v-list-item
             v-for="(item, index) in items"
@@ -78,35 +40,29 @@ export default {
   components: {},
   props: ['items'],
   data: () => ({
-    disabled: false,
-    absolute: false,
-    openOnHover: false,
-    value: false,
-    closeOnClick: true,
-    closeOnContentClick: true,
-    offsetX: false,
-    offsetY: true,
+    show: false
   }),
+  destroyed () {
+    document.body.removeEventListener('click', this.closeMenu)
+  },
   mounted() {
     // Close the dropdown menu if the user clicks outside of it
-    window.onclick = function(event) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-            document.getElementById("dropup-content").classList.remove("show");
-          }
-        }
+    if(typeof document === "object") {
+      document.body.addEventListener('click', this.closeMenu);
     }
   },
   methods: {
     onClick(item) {
       this.$emit('settingsEvent', item);
+      this.show = false;
+    },
+    closeMenu($event) {
+      if (!this.$el.contains($event.target)) {
+        this.show = false;
+      }
     },
     on() {
-      document.getElementById("dropup-content").classList.toggle("show");
+      this.show = !this.show;
     }
   }
 }
@@ -117,6 +73,12 @@ export default {
   background-color: unset;
 }
 
+.v-sheet.v-list {
+  border-radius: 2px!important;
+}
+.v-list-item {
+  min-height: 32px !important;
+}
 .v-btn--icon.v-size--default {
   width: unset;
   height: unset;
@@ -138,7 +100,7 @@ export default {
 
 /* Dropup content (Hidden by Default) */
 .dropup-content {
-  display: none;
+  display: block;
   position: absolute;
   bottom: 20px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -155,7 +117,7 @@ export default {
 }
 
 /* Change color of dropup links on hover */
-.dropup-content a:active {background-color: #ddd}
+.dropup-content a:active {background-color: #000}
 
 /* Show the dropup menu on hover */
 .dropup:active .dropup-content {

@@ -1,9 +1,9 @@
 <template>
   <div data-app class="main-video">
-    <div v-if="!dialog" class="no-dialog">
+    <div v-if="!dialog" class="no-dialog" >
       <div :id="id" class="video-container">
       </div>
-      <div class="video-control-container">
+      <div class="video-control-container" >
         <Control
             :dataSource="dataSource"
             :showDataSourceActions="true"
