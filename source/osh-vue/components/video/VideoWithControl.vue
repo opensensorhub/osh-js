@@ -194,7 +194,8 @@
 <style>
 .v-dialog {
   background: rgba(0,0,0,0.85);
-  height: 90%;
+  height: calc(100% - 52px) !important;
+  width: 90% !important;
   overflow: hidden;
 }
 
@@ -209,6 +210,13 @@
   width: inherit;
   height: inherit;
 }
+
+.v-dialog .video-container .video-h264 > canvas,
+.v-dialog .video-container .video-h264.osh-view {
+  width: inherit;
+  height: 100%;
+}
+
 .video-container .video-h264 > canvas {
   margin: auto;
 }
