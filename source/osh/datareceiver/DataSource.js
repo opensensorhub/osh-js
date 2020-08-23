@@ -150,15 +150,14 @@ class DataSource {
      * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
      */
     updateUrl(properties) {
-        const newProperties = {
-            ...this.properties,
-            ...properties
-        };
-
+        // this.properties = {
+        //     ...this.properties,
+        //     ...properties
+        // }
         if(this.dataSourceWorker !== null) {
             this.dataSourceWorker.postMessage({
                 message: 'update-url',
-                data: newProperties
+                data: properties
             });
         }
     }
