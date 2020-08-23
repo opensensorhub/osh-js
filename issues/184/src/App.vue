@@ -11,6 +11,7 @@
               class="video-container-vue"
       >
       </Video>
+      <div id="toto">0</div>
     </keep-alive>
   </div>
 </template>
@@ -45,7 +46,29 @@
                 endTime: '2020-08-16T11:32:06.781Z',
                 replaySpeed: 1
             });
-        }
+        },
+      mounted() {
+        // test
+        const props = {
+          protocol: 'ws',
+          service: 'SOS',
+          // endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+          // offeringID: 'urn:mysos:solo:video2',
+          observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
+          // startTime: '2015-12-19T21:04:29.231Z',
+          // endTime: '2015-12-19T21:09:19.675Z',
+          endpointUrl: 'localhost:8082/sensorhub/sos',
+          offeringID: 'replay-android',
+          startTime: '2020-08-16T11:31:11.706Z',
+          endTime: '2020-08-16T11:32:06.781Z',
+          replaySpeed: 1,
+          responseFormat: 'video/H264',
+          encoding: {
+            bitrate: 800 * 8,
+            scale: 0.9
+          }
+        };
+      }
     };
 </script>
 <style>
