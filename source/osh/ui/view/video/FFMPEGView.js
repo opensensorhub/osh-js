@@ -285,7 +285,8 @@ class FFMPEGView extends View {
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
-                    (this.statistics.averageBitRate/1000).toFixed(2)+' kb/s';
+                    (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @'+
+                    that.yuvCanvas.width+"x"+that.yuvCanvas.height+'\n '+this.codec;
             }
 
             this.onUpdated(this.statistics);

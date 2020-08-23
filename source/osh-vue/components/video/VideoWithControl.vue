@@ -1,35 +1,62 @@
 <template>
   <div data-app class="main-video">
-    <slot v-if="!dialog">
+    <div v-if="!dialog" class="no-dialog" >
       <div :id="id" class="video-container">
       </div>
-      <Control :dataSource="dataSource" @event='onControlEvent' :showDataSourceActions="true"></Control>
-    </slot>
-    <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
+      <div class="video-control-container" >
+        <Control
+            :dataSource="dataSource"
+            :showDataSourceActions="true"
+            @event='onControlEvent'
+            :backward=5
+            :forward=5
+        ></Control>
+        <VideoControl
+            :dataSource="dataSource"
+            :resolutions="resolutions"
+            :codec="codec"
+            @expand='toggleDialog'
+            :expand='false'
+        ></VideoControl>
+      </div>
+    </div>
+    <div name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
               v-model="dialog"
               persistent
       >
-        <div :id="id" class="dialog-container">
+        <div :id="id" class="dialog-container video-container">
         </div>
-        <Control
-            :dataSource="dataSource"
-            @event='onControlEvent'
-            expand
-        ></Control>
+        <div class="video-control-container">
+          <Control
+              :dataSource="dataSource"
+              @event='onControlEvent'
+          ></Control>
+          <VideoControl
+              :dataSource="dataSource"
+              :resolutions="resolutions"
+              :codec="codec"
+              expand
+              @expand='toggleDialog'
+              :backward=5
+              :forward=5
+          ></VideoControl>
+        </div>
       </v-dialog>
-    </slot>
+    </div>
   </div>
 </template>
 <script>
   import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
   import {randomUUID} from "osh/utils/Utils.js";
-  import Control from 'osh-vue/components/Control.vue';
+  import Control from '../Control.vue';
+  import VideoControl from './VideoControl.vue';
 
   export default {
     name: "Video",
     components: {
-      Control
+      Control,
+      VideoControl
     },
     props: {
       dataSource: {
@@ -68,23 +95,9 @@
           }
         }
       },
-      encoding: {
+      resolutions: {
         type: Object,
-        default () {
-          return {
-            bitrate: {
-              min: 100 * 8,
-              max: 500 * 8,
-              use: false
-            },
-            scale: {
-              min: 0.5,
-              max: 1.0,
-              use: false
-            },
-            responseFormat: 'video/H264'
-          }
-        }
+        default: () => {}
       }
     },
     data: function () {
@@ -112,9 +125,6 @@
     },
     methods: {
       onControlEvent(eventName) {
-        if(eventName === 'expand' || eventName === 'compress') {
-          this.toggleDialog();
-        }
       },
       toggleDialog() {
         this.dialog = !this.dialog;
@@ -124,37 +134,13 @@
           this.view.destroy();
         }
 
-        // check for extra properties
-        let extraProps = {};
-        if(this.encoding.bitrate.use) {
-          if(!this.dialog) {
-            extraProps['bitrate'] = this.encoding.bitrate.min;
-          } else {
-            extraProps['bitrate'] = this.encoding.bitrate.max;
-          }
-          extraProps['responseFormat'] = this.encoding.responseFormat;
-        }
-        if(this.encoding.scale.use) {
-          if(!this.dialog) {
-            extraProps['scale'] = this.encoding.scale.min;
-          } else {
-            extraProps['scale'] = this.encoding.scale.max;
-          }
-        }
-
-        if(Object.keys(extraProps).length > 0) {
-          this.dataSource.disconnect();
-          extraProps['responseFormat'] = this.encoding.responseFormat;
-          this.dataSource.updateUrl({encoding: extraProps});
-        }
-
         this.view = new FFMPEGView(id, {
           dataSourceId: this.dataSource.id,
           css: "video-h264",
           name: "Android Video",
           framerate: this.framerate,
           codec: this.codec,
-          directPlay: true,
+          directPlay: false,
           showStats: this.showStats,
           showTime: this.showTime
         });
@@ -186,29 +172,52 @@
     bottom: 12px; /* consider the above padding of 12 px */
   }
 
-</style>
+  .video-control-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 5px 0px 0 0px;
+  }
 
-<style>
+  .video-control {
+    position: absolute;
+    left: calc(100% - 55px);
+    bottom: auto;
+    margin-top: 2px;
+  }
+
   .main-video {
     background: rgba(0,0,0,1.0);;
   }
-  .v-dialog {
-    width: auto !important;
-    background: rgba(0,0,0,0.85);
-    overflow-x: hidden ;
-  }
+</style>
 
-  .video-h264 > canvas {
-    width: 100%;
-  }
+<style>
+.v-dialog {
+  background: rgba(0,0,0,0.85);
+  height: calc(100% - 52px) !important;
+  width: 90% !important;
+  overflow: hidden;
+}
 
-  .container.dialog-container > div.video-h264 canvas {
-    max-height: 100%;
-    position: relative;
-  }
+.v-dialog>* {
+  width: auto !important;
+}
 
-  .dialog-container > .control {
-    position: relative;
-    z-index: 9999;
-  }
+.v-dialog .video-container {
+  height: inherit;
+}
+.video-container .video-h264 > canvas, .video-container .video-h264.osh-view {
+  width: inherit;
+  height: inherit;
+}
+
+.v-dialog .video-container .video-h264 > canvas,
+.v-dialog .video-container .video-h264.osh-view {
+  width: inherit;
+  height: 100%;
+}
+
+.video-container .video-h264 > canvas {
+  margin: auto;
+}
 </style>

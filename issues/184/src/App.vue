@@ -7,17 +7,18 @@
               :options="{top: '50', left: '50'}"
               :showStats="true"
               :showTime="true"
-              :frameRate=25
-              class="video"
+              :frameRate=30
+              class="video-container-vue"
       >
       </Video>
+      <div id="toto">0</div>
     </keep-alive>
   </div>
 </template>
 <script>
     // @ is an alias to /src
-    import Video from 'osh-vue/components/Video.vue';
-    import VideoOsh from "osh/datareceiver/Video.js";
+    import Video from 'osh-vue/components/video/VideoWithControl.vue';
+    import VideoOsh from "osh/datareceiver/VideoWithRoll.js";
 
     export default {
         components: {
@@ -34,18 +35,40 @@
             this.dataSource = new VideoOsh("drone-Video", {
                 protocol: 'ws',
                 service: 'SOS',
-                endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-                offeringID: 'urn:mysos:solo:video2',
+                // endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+                // offeringID: 'urn:mysos:solo:video2',
                 observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-                startTime: '2015-12-19T21:04:29.231Z',
-                endTime: '2015-12-19T21:09:19.675Z',
-                // endpointUrl: 'localhost:8082/sensorhub/sos',
-                // offeringID: 'replay-android',
-                // startTime: '2020-06-06T15:07:15.359Z',
-                // endTime: '2020-06-06T15:07:57.016Z',
+                // startTime: '2015-12-19T21:04:29.231Z',
+                // endTime: '2015-12-19T21:09:19.675Z',
+                endpointUrl: 'localhost:8082/sensorhub/sos',
+                offeringID: 'replay-android',
+                startTime: '2020-08-16T11:31:11.706Z',
+                endTime: '2020-08-16T11:32:06.781Z',
                 replaySpeed: 1
             });
-        }
+        },
+      mounted() {
+        // test
+        const props = {
+          protocol: 'ws',
+          service: 'SOS',
+          // endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+          // offeringID: 'urn:mysos:solo:video2',
+          observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
+          // startTime: '2015-12-19T21:04:29.231Z',
+          // endTime: '2015-12-19T21:09:19.675Z',
+          endpointUrl: 'localhost:8082/sensorhub/sos',
+          offeringID: 'replay-android',
+          startTime: '2020-08-16T11:31:11.706Z',
+          endTime: '2020-08-16T11:32:06.781Z',
+          replaySpeed: 1,
+          responseFormat: 'video/H264',
+          encoding: {
+            bitrate: 800 * 8,
+            scale: 0.9
+          }
+        };
+      }
     };
 </script>
 <style>
@@ -55,7 +78,18 @@
     padding:50px;
   }
 
-  .video {
-    width: 500px;
+  .video-container  {
+    margin:auto;
+    height: 337px;
+    width: auto;
+  }
+
+  .osh-view {
+    margin: auto;
+    display: flex;
+  }
+
+  #app {
+    max-width: 600px;
   }
 </style>
