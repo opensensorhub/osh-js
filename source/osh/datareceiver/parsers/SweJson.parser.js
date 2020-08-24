@@ -7,15 +7,11 @@ class SweJsonParser extends DataSourceParser {
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        console.log(data);
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         let parseRec = JSON.parse(rec);
-        console.log(parseRec);
-        console.log('HasPropTime', rec.hasOwnProperty('Time'));
 
         let timestamp;
         if(parseRec.hasOwnProperty('Time')){
-            console.log(parseRec.Time);
             timestamp =  new Date(parseRec.Time).getTime();
         }else if(parseRec.hasOwnProperty('time')){
            timestamp =  new Date(parseRec.time).getTime();
@@ -99,9 +95,7 @@ class SweJsonParser extends DataSourceParser {
         // adds temporalFilter
         let startTime = properties.startTime;
         let endTime = properties.endTime;
-        // console.log(startTime);
-        // console.log(endTime);
-        // console.log('TimeShift', properties.timeShift);
+
         if (startTime !== "now" && properties.timeShift !== 0) {
             if (properties.timeShift === undefined){
                 properties.timeShift =0;
@@ -111,8 +105,6 @@ class SweJsonParser extends DataSourceParser {
                 // apply time shift
                 startTime = new Date(Date.parse(startTime) - properties.timeShift).toISOString();
                 endTime = new Date(Date.parse(endTime) - properties.timeShift).toISOString();
-                // console.log(startTime);
-                // console.log(endTime);
             }
         }
         url += "temporalFilter=phenomenonTime," + startTime + "/" + endTime + "&";
