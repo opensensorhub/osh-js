@@ -16,7 +16,7 @@ class SweJsonParser extends DataSourceParser {
         }else if(parseRec.hasOwnProperty('time')){
            timestamp =  new Date(parseRec.time).getTime();
         }
-        console.log(timestamp);
+        // console.log(timestamp);
 
         return timestamp
     }
