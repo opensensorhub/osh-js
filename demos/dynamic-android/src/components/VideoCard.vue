@@ -9,16 +9,13 @@
           :frameRate=30
           class="video"
           :codec="dataSource.properties.codec"
-          :encoding="{bitrate: { use: true, min:100 * 8, max:500 * 8 },
-                      scale: {use: true, min:0.5, max:1.0},
-                       responseFormat: 'video/'+dataSource.properties.codec}"
       >
       </Video>
     </v-card>
 </template>
 
 <script>
-import Video from 'osh-vue/components/VideoWithControl.vue';
+import Video from 'osh-vue/components/video/VideoWithControl.vue';
 
 export default {
   name: "VideoCard",
@@ -29,13 +26,6 @@ export default {
   data () {
     return {
       view: null,
-      encoding: {
-        bitrate: {
-          use: true,
-          min: 0.5,
-          max: 1.0
-        }
-      }
     }
   },
   mounted() {
@@ -47,51 +37,28 @@ export default {
 </script>
 
 <style scoped>
-  .video {
-    width:280px;
-  }
 
 </style>
 <style>
-  .v-card {
-    margin:10px;
-  }
+.video-container  {
+  margin:auto;
+  height: inherit;
+  width: auto;
+}
 
-  .video-container .video-h264 > canvas {
-    width: auto;
-    max-height: 158px;
-    max-width: 280px;
-    margin:auto;
-  }
+.osh-view {
+  margin: auto;
+  display: flex;
+}
 
+.video, .v-card, .no-dialog {
+  width: inherit;
+  height: 250px;
+  background-color: #000000 !important;
+}
 
-  .dialog-container .video-h264 > canvas {
-    height:100%;
-    width: auto;
-  }
-
-  .dialog-container .osh-view {
-    width: auto;
-    height: 100%;
-  }
-
-  .osh-view {
-    margin: auto;
-    display: flex;
-  }
-  .dialog-container {
-    height: calc(100% - 50px);
-  }
-
-  .v-dialog {
-    height:100%;
-    width: 100%;
-    /*overflow: hidden !important;*/
-    display:block;
-  }
-
-  .v-dialog>* {
-    width: 100%;
-  }
-
+.v-card {
+  height: 100%;
+  width: 444px;
+}
 </style>

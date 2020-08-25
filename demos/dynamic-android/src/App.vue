@@ -63,9 +63,9 @@ export default {
       const dataSources = [];
       const mapItem = {};
 
-      if(item.startTime !== 'now') {
-        item.startTime = '2020-08-13T19:28:50.052Z';
-      }
+      // if(item.startTime !== 'now') {
+      //   item.startTime = '2020-08-13T19:28:50.052Z';
+      // }
       if(item.location) {
         mapItem['location'] = new SweJson("android-GPS", {
           protocol: "ws",

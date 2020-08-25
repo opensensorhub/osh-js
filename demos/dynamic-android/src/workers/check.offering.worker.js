@@ -39,7 +39,7 @@ function successFn(event) {
 
     const allPromises = [];
     for (let item of items) {
-        allPromises.push(server.getDescribeSensorAsJson(item.procedure));
+        allPromises.push(server.getDescribeSensorAsJson(item.procedure, errorFn));
     }
 
     // get corresponding compression
@@ -102,6 +102,7 @@ function computeTree(items) {
     }
     // compare items and current items
     if (changedItems.length > 0) {
+        console.log(changedItems)
         worker.postMessage(changedItems)
     }
 }

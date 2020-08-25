@@ -1,5 +1,5 @@
 <template>
-  <div id="video-container" class="video-container">
+  <div id="video-container" class="video-container-vue">
     <video-card
         v-for="dataSource in dataSources"
         :key="dataSource.id"
@@ -19,7 +19,7 @@ export default {
 </script>
 
 <style scoped>
-  .video-container {
+  .video-container-vue {
     z-index: 10 !important;
     border-radius: 4px !important;
     padding:10px;
@@ -29,7 +29,7 @@ export default {
     justify-content: center;
     align-items: center;
     position: absolute;
-    height: 230px;
+    height: 330px;
     background: rgba(0,0,0,0.5) !important;
     bottom: 0px;
     left: 50%;
