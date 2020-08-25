@@ -191,7 +191,7 @@
                     let date = new Date(timestamp);
                     currentTimeElement.innerText =
                         this.withLeadingZeros(date.getHours())+":"+this.withLeadingZeros(date.getMinutes())
-                        +":"+this.withLeadingZeros(date.getSeconds()) +"."+date.getMilliseconds() + " "+
+                        +":"+this.withLeadingZeros(date.getSeconds())+ " "+
                         date.getFullYear()+"/"+this.withLeadingZeros(date.getMonth())+"/"+this.withLeadingZeros(date.getDay())
                   })
                 },500);
