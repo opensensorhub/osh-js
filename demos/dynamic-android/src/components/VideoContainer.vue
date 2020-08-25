@@ -35,4 +35,10 @@ export default {
     left: 50%;
     transform: translate(-50%, -20px);
   }
+
+</style>
+<style>
+  div.v-overlay+div.v-application--wrap .video-container-vue {
+    opacity: 0.4;
+  }
 </style>
