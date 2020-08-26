@@ -76,7 +76,7 @@ class WebSocketConnector extends DataConnector {
 
             this.ws.onclose = (event) => {
                 console.info('Closing gracefully..');
-                this.fullDisconnect(true);
+                this.fullDisconnect(false);
             };
 
             //init the reconnect handler
@@ -105,9 +105,9 @@ class WebSocketConnector extends DataConnector {
      */
     fullDisconnect(removeInterval) {
        if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
-               this.ws.close();
-               this.init = false;
+           this.ws.close();
        }
+        this.init = false;
         if (removeInterval) {
             clearInterval(this.interval);
         }
@@ -118,8 +118,9 @@ class WebSocketConnector extends DataConnector {
      */
     reconnect() {
         if(this.onReconnect()) {
-            console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
+            console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`,this.url);
             if (this.init) {
+                console.warn('disconnecting ',this.url);
                 this.fullDisconnect(false);
             }
             this.connect();
