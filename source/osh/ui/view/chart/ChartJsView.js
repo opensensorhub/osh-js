@@ -135,7 +135,7 @@ class ChartJsView extends View {
                             gridLines: this.gridLinesOpts,
                         }],
                     },
-                    cubicInterpolationMode: 'linear',
+                    cubicInterpolationMode: 'monotone',
                     responsive: true,
                     maintainAspectRatio: true,
                     ...this.options
