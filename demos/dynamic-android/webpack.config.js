@@ -54,7 +54,7 @@ module.exports = env => {
       hot: true,
     },
     devtool: (env.NODE_ENV === 'production') ? 'false' :
-      'eval-source-map',
+      'source-map',
     node: {
       fs: 'empty'
     },
