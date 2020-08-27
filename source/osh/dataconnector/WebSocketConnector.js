@@ -54,7 +54,6 @@ class WebSocketConnector extends DataConnector {
      */
     connect() {
         if (!this.init) {
-            this.init = true;
             //creates Web Socket
             this.ws = new WebSocket(this.getUrl());
             this.ws.binaryType = 'arraybuffer';
@@ -68,14 +67,16 @@ class WebSocketConnector extends DataConnector {
 
             // closes socket if any errors occur
             this.ws.onerror = function (event) {
-                console.error('WebSocket stream error: ',event);
-                this.ws.close();
+                console.warn('WebSocket stream error: ',event);
                 this.init = false;
+                this.ws.close();
                 this.lastReceiveTime = -1;
             }.bind(this);
 
             this.ws.onclose = (event) => {
-                console.info('Closing gracefully..');
+                if(this.init) {
+                    console.info('Closing gracefully..');
+                }
                 this.fullDisconnect(false);
             };
 
@@ -89,6 +90,7 @@ class WebSocketConnector extends DataConnector {
                     }
                 }.bind(this), this.reconnectTimeout);
             }
+            this.init = true;
         }
     }
 
