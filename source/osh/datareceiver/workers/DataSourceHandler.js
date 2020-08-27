@@ -139,10 +139,10 @@ class DataSourceHandler {
         if(isConnected) {
             this.disconnect();
         }
-        this.properties =  {
-            ...this.properties,
-            ...properties
-        };
+        // this.properties =  {
+        //     ...this.properties,
+        //     ...properties
+        // };
         let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
 
         if(properties.hasOwnProperty('startTime')) {
@@ -154,6 +154,7 @@ class DataSourceHandler {
 
         this.createDataConnector({
             ...this.properties,
+            ...properties,
             lastTimeStamp: lastTimestamp
         });
         if(isConnected) {

@@ -147,6 +147,7 @@
                     // reset parameters
                     that.dataSource.getCurrentTime().then(time => {
                       that.dataSource.updateUrl({
+                        ...this.dataSource.getCurrentRunningProperties(),
                         startTime: new Date(parseInt(time - that.backward * 1000)).toISOString()
                       });
                       this.on('backward');
@@ -160,6 +161,7 @@
                     // reset parameters
                     that.dataSource.getCurrentTime().then(time => {
                       that.dataSource.updateUrl({
+                        ...this.dataSource.getCurrentRunningProperties(),
                         startTime: new Date(parseInt(time + that.backward * 1000)).toISOString()
                       });
                       this.on('forward');
@@ -176,6 +178,7 @@
                   this.on('pause');
                 } else {
                   this.dataSource.updateUrl({
+                    ...this.dataSource.getCurrentRunningProperties(),
                     startTime: new Date(currentTime).toISOString()
                   });
                   this.dataSource.connect();
