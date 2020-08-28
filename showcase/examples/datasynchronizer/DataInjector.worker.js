@@ -6,7 +6,7 @@ let count = 0;
 let bc=null;
 self.onmessage = (event) => {
     bc = new BroadcastChannel(event.data.topicDs);
-    injectData(event.data.id, event.data.name, event.data.latency, event.data.freq, event.data.replayFactor);
+    injectData(event.data.id, event.data.name, event.data.latency, event.data.freq, event.data.replaySpeed);
 }
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -65,9 +65,9 @@ function pushBack(id, data) {
 
 }
 
-function injectData(id, name, latency, freq, replayFactor) {
+function injectData(id, name, latency, freq, replaySpeed) {
     self.interval = setInterval(() => {
-        addNewData(id, name, latency, freq, replayFactor);
-    }, freq/replayFactor);
+        addNewData(id, name, latency, freq, replaySpeed);
+    }, freq/replaySpeed);
 }
 

@@ -73,7 +73,7 @@ class DiscoveryView extends View {
                 this.dataReceiverController = properties.dataReceiverController;
             } else {
                 this.dataReceiverController = new DataSynchronizer({
-                    replayFactor: 1
+                    replaySpeed: 1
                 });
                 this.dataReceiverController.connectAll();
             }
@@ -95,7 +95,6 @@ class DiscoveryView extends View {
         this.endTimeTagId = "endTime-" + randomUUID();
         this.typeSelectTagId = "type-" + randomUUID();
         this.formButtonId = "submit-" + randomUUID();
-        this.syncMasterTimeId = "syncMasterTime-" + randomUUID();
         this.entitiesSelectTagId = "entities-" + randomUUID();
         this.viewSelectTagId = "dialogSelect-" + randomUUID();
 
@@ -148,10 +147,6 @@ class DiscoveryView extends View {
         //strlet += "                <input type=\"text\" name=\"endTime\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required pattern=\"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)\" />";
         strlet += "                <input id=\"" + this.endTimeTagId + "\" type=\"text\" name=\"endTime\" class=\"input-text\" placeholder=\"YYYY-MM-DDTHH:mm:ssZ\"  required/>";
         strlet += "                <span class=\"form_hint\">YYYY-MM-DDTHH:mm:ssZ<\/span>";
-        strlet += "            <\/li>";
-        strlet += "            <li>";
-        strlet += "                <label for=\"syncMasterTime\">Sync master time:<\/label>";
-        strlet += "                <input id=\"" + this.syncMasterTimeId + "\"  class=\"input-checkbox\" type=\"checkbox\" name=\syncMasterTime\" />";
         strlet += "            <\/li>";
         strlet += "            <li>";
         strlet += "                <label>Type:<\/label>";
@@ -331,9 +326,6 @@ class DiscoveryView extends View {
         let startTimeInputTag = document.getElementById(this.startTimeTagId);
         let endTimeInputTag = document.getElementById(this.endTimeTagId);
 
-        // sync master time
-        let syncMasterTimeTag = document.getElementById(this.syncMasterTimeId);
-
         // type & view
         let typeTag = document.getElementById(this.typeSelectTagId);
         let typeTagOption = typeTag.options[typeTag.selectedIndex];
@@ -355,23 +347,22 @@ class DiscoveryView extends View {
         }
 
         endPointUrl = endPointUrl.replace('http://', '');
-        let syncMasterTime = syncMasterTimeTag.checked;
 
         switch (typeTagOption.value) {
             case DiscoveryType.VIDEO_MJPEG: {
-                this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId);
+                this.createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, entityId);
                 break;
             }
             case DiscoveryType.VIDEO_H264: {
-                this.createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId);
+                this.createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,  entityId);
                 break;
             }
             case DiscoveryType.MARKER_GPS: {
-                this.createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId);
+                this.createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,  entityId);
                 break;
             }
             case DiscoveryType.CHART: {
-                this.createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId);
+                this.createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, entityId);
                 break;
             }
             default :
@@ -461,12 +452,11 @@ class DiscoveryView extends View {
      * @param obsProp
      * @param startTime
      * @param endTime
-     * @param syncMasterTime
      * @param viewId
      * @param entityId
      * @private
      */
-    createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime,  entityId) {
+    createGPSMarkerDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,   entityId) {
         let dataSource = new SweJson(name, {
             protocol: "ws",
             service: "SOS",
@@ -476,7 +466,6 @@ class DiscoveryView extends View {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: 1,
-            syncMasterTime: syncMasterTime,
             bufferingTime: 1000,
             timeShift: -16000
         });
@@ -516,11 +505,10 @@ class DiscoveryView extends View {
      * @param obsProp
      * @param startTime
      * @param endTime
-     * @param syncMasterTime
      * @param entityId
      * @private
      */
-    createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
+    createMJPEGVideoDialog(name, endPointUrl, offeringID, obsProp, startTime, endTime,  entityId) {
         this.onAdd(new Video(name, {
             protocol: "ws",
             service: "SOS",
@@ -530,7 +518,6 @@ class DiscoveryView extends View {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: 1,
-            syncMasterTime: syncMasterTime,
             bufferingTime: 1000
         }),DiscoveryType.VIDEO_MJPEG);
     }
@@ -543,11 +530,10 @@ class DiscoveryView extends View {
      * @param obsProp
      * @param startTime
      * @param endTime
-     * @param syncMasterTime
      * @param entityId
      * @private
      */
-    createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
+    createH264DataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,  entityId) {
         this.onAdd(new Video(name, {
             protocol: "ws",
             service: "SOS",
@@ -557,7 +543,6 @@ class DiscoveryView extends View {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: 1,
-            syncMasterTime: syncMasterTime,
             bufferingTime: 1000
         }), DiscoveryType.VIDEO_H264);
     }
@@ -571,11 +556,10 @@ class DiscoveryView extends View {
      * @param obsProp
      * @param startTime
      * @param endTime
-     * @param syncMasterTime
      * @param entityId
      * @private
      */
-    createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime, syncMasterTime, entityId) {
+    createChartDataSource(name, endPointUrl, offeringID, obsProp, startTime, endTime,  entityId) {
         let dataSource = new SweJson(name, {
             protocol: "ws",
             service: "SOS",
@@ -585,7 +569,6 @@ class DiscoveryView extends View {
             startTime: startTime,
             endTime: endTime,
             replaySpeed: 1,
-            syncMasterTime: syncMasterTime,
             bufferingTime: 1000
         });
 

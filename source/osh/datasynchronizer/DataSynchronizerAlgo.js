@@ -1,12 +1,12 @@
 import {isDefined} from "../utils/Utils";
 
 class DataSynchronizerAlgo {
-    constructor(dataSources, replayFactor = 1, intervalRate = 5) {
+    constructor(dataSources, replaySpeed = 1, intervalRate = 5) {
         this.dataSourceMap = {};
         this.bufferingTime = 1000;
         this.startBufferingTime = -1;
         this.tsRun = 0;
-        this.replayFactor = replayFactor;
+        this.replaySpeed = replaySpeed;
         this.intervalRate = intervalRate;
         let maxBufferingTime = -1;
 
@@ -99,7 +99,7 @@ class DataSynchronizerAlgo {
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClockAdj*this.replayFactor) {
+                if (dTs <= dClockAdj*this.replaySpeed) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;

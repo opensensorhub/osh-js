@@ -33,7 +33,6 @@ import VideoWorker from "./workers/Video.worker.js";
         startTime: "2016-08-11T20:17:30.402Z",
         endTime: "2016-08-11T20:18:05.451Z",
         replaySpeed: 1,
-        syncMasterTime: false,
         bufferingTime: 1000
   });
  */
