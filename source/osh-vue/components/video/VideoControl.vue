@@ -105,14 +105,14 @@ export default {
       let extraProps = {};
       if(item.bitrate !== 'native') {
         // check for extra properties
-        extraProps['bitrate'] = item.bitrate;
+        extraProps['video_bitrate'] = item.bitrate;
       }
 
       if(item.resolution.width !== 'native') {
-        extraProps['width'] = item.resolution.width;
+        extraProps['video_width'] = item.resolution.width;
       }
       if(item.resolution.height !== 'native') {
-        extraProps['height'] = item.resolution.height;
+        extraProps['video_height'] = item.resolution.height;
       }
       const responseFormat = (Object.keys(extraProps).length > 0) ? { responseFormat : 'video/H264'} :
           {};
@@ -120,7 +120,7 @@ export default {
       delete this.dataSource.currentRunningProperties.responseFormat;
       this.dataSource.updateUrl(
           {
-            encoding: extraProps,
+            ...extraProps,
             ...responseFormat
           }
       );
