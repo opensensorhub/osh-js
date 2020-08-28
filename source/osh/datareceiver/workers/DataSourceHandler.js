@@ -157,6 +157,26 @@ class DataSourceHandler {
             this.connect();
         }
     }
+
+    handleMessage(message, worker) {
+        if(message.message === 'init') {
+            this.createConnector(message.properties, message.topic, message.id);
+        } else if (message.message === 'connect') {
+            this.connect();
+        } else if (message.message === 'disconnect') {
+            this.disconnect();
+        } else if (message.message === 'topic') {
+            this.setTopic(message.topic);
+        } else if (message.message === 'last-timestamp') {
+            const lastTimeStamp = this.getLastTimeStamp();
+            worker.postMessage({
+                message: 'last-timestamp',
+                data: lastTimeStamp
+            })
+        }  else if (message.message === 'update-url') {
+            this.updateUrl(message.data);
+        }
+    }
 }
 export default DataSourceHandler;
 
