@@ -146,7 +146,7 @@ class DataSource {
      * @param {String} properties.observedProperty the observed property
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
-     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.replaySpeed the replay speed
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
      */

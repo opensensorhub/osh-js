@@ -33,7 +33,7 @@ import SweJsonWorker from './workers/SweJson.worker.js';
     observedProperty: "http://sensorml.com/ont/swe/property/Location",
     startTime: "2015-02-16T07:58:00Z",
     endTime: "2015-02-16T08:09:00Z",
-    replaySpeed: replayFactor+"",
+    replaySpeed: replaySpeed+"",
     bufferingTime: 1000,
     timeShift: -16000
   });

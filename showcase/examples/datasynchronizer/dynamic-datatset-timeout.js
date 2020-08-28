@@ -15,11 +15,11 @@ export function startDynamicWithTimeout(cbFinish) {
     eltDynamicErrors.innerHTML = '';
 
     const duration = parseInt(document.getElementById("duration").value) * 1000;
-    const replayFactor = parseInt(document.getElementById("replay-factor").value);
+    const replaySpeed = parseInt(document.getElementById("replay-factor").value);
 
     const dataSources = [
         new DummyDataSource('1t',{
-            replayFactor: replayFactor,
+            replaySpeed: replaySpeed,
             bufferingTime:  parseInt(document.getElementById("buffering1").value),
             timeOut:  parseInt(document.getElementById("timeout1").value),
             name: '1t',
@@ -27,7 +27,7 @@ export function startDynamicWithTimeout(cbFinish) {
             topicName: randomUUID()
         }),
         new DummyDataSource('2t',{
-            replayFactor: replayFactor,
+            replaySpeed: replaySpeed,
             bufferingTime:  parseInt(document.getElementById("buffering2").value),
             timeOut:  parseInt(document.getElementById("timeout2").value),
             name: '2t',
@@ -35,7 +35,7 @@ export function startDynamicWithTimeout(cbFinish) {
             topicName: randomUUID()
         }),
         new DummyDataSource('3t',{
-            replayFactor: replayFactor,
+            replaySpeed: replaySpeed,
             bufferingTime:  parseInt(document.getElementById("buffering3").value),
             timeOut:  parseInt(document.getElementById("timeout3").value),
             name: '3t',
@@ -43,7 +43,7 @@ export function startDynamicWithTimeout(cbFinish) {
             topicName: randomUUID()
         }),
         new DummyDataSource('4t',{
-            replayFactor: replayFactor,
+            replaySpeed: replaySpeed,
             bufferingTime:  parseInt(document.getElementById("buffering4").value),
             timeOut:  parseInt(document.getElementById("timeout4").value),
             name: '4t',
@@ -51,7 +51,7 @@ export function startDynamicWithTimeout(cbFinish) {
             topicName: randomUUID()
         }),
         new DummyDataSource('5t',{
-            replayFactor: replayFactor,
+            replaySpeed: replaySpeed,
             bufferingTime:  parseInt(document.getElementById("buffering5").value),
             timeOut:  parseInt(document.getElementById("timeout5").value),
             name: '5t',
@@ -61,7 +61,7 @@ export function startDynamicWithTimeout(cbFinish) {
     ];
 
     const dataSynchronizer = new DataSynchronizer({
-        replayFactor: replayFactor,
+        replaySpeed: replaySpeed,
         dataSources:  dataSources,
         intervalRate: 5
     });
@@ -79,48 +79,48 @@ export function startDynamicWithTimeout(cbFinish) {
         dataSources[0],
         parseInt(document.getElementById("freq1").value),
         parseInt(document.getElementById("latency1").value),
-        replayFactor,
+        replaySpeed,
         DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
         );
     addDataInjection(
         dataSources[1],
         parseInt(document.getElementById("freq2").value),
         parseInt(document.getElementById("latency2").value),
-        replayFactor,
+        replaySpeed,
         DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
     );
     addDataInjection(
         dataSources[2],
         parseInt(document.getElementById("freq3").value),
         parseInt(document.getElementById("latency3").value),
-        replayFactor,
+        replaySpeed,
         DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
     );
     addDataInjection(
         dataSources[3],
         parseInt(document.getElementById("freq4").value),
         parseInt(document.getElementById("latency4").value),
-        replayFactor,
+        replaySpeed,
         DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
         );
     addDataInjection(
         dataSources[4],
         parseInt(document.getElementById("freq5").value),
         parseInt(document.getElementById("latency5").value),
-        replayFactor,
+        replaySpeed,
         DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
     );
 
-    function addDataInjection(dummyDataSource, freq, latency = 0,replayFactor, topic) {
+    function addDataInjection(dummyDataSource, freq, latency = 0,replaySpeed, topic) {
         dummyDataSource.connect();
         const dataInjector = new DataInjectorWorker();
         dataInjector.postMessage({
            freq: freq,
            id: dummyDataSource.id,
            latency:latency,
-           replayFactor: replayFactor,
+           replaySpeed: replaySpeed,
            topic: topic,
-            name: dummyDataSource.name,
+           name: dummyDataSource.name,
            topicDs: dummyDataSource.properties.topicName
         });
 

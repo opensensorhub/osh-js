@@ -23,7 +23,7 @@ class DataSynchronizer {
     /**
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
-     * @param {Number} properties.replayFactor - replayFactor value
+     * @param {Number} properties.replaySpeed - replaySpeed value
      * @param {Number} properties.intervalRate - interval in which data is played
      * @param {DataSource[]} properties.dataSources - the dataSource array
      */
@@ -35,22 +35,22 @@ class DataSynchronizer {
         this.currentTime = Date.now();
         this.id = randomUUID();
         this.dataSources = [];
-        let replayFactor = 1;
+        this.replaySpeed = 1;
         let intervalRate = 5;
 
-        if(isDefined(properties.replayFactor)) {
-            replayFactor = properties.replayFactor;
+        if(isDefined(properties.replaySpeed)) {
+            this.replaySpeed = properties.replaySpeed;
         }
         if(isDefined(properties.intervalRate)) {
             intervalRate = properties.intervalRate;
         }
-        this.initWorker(properties.dataSources, replayFactor, intervalRate);
+        this.initWorker(properties.dataSources, intervalRate);
     }
 
     /**
      * @private
      */
-    initWorker(dataSources, replayFactor, intervalRate) {
+    initWorker(dataSources, intervalRate) {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
@@ -63,7 +63,7 @@ class DataSynchronizer {
         this.synchronizerWorker.postMessage({
             message: 'init',
             dataSources: dataSourcesForWorker,
-            replayFactor: replayFactor,
+            replaySpeed: this.replaySpeed,
             intervalRate: intervalRate,
             dataSynchronizerId:this.id,
             topic: DATA_SYNCHRONIZER_TOPIC+this.id
@@ -83,6 +83,7 @@ class DataSynchronizer {
         // bind dataSource data onto dataSynchronizer data
         try {
             dataSource.setDataSynchronizer(this);
+            dataSource.properties.replaySpeed = this.replaySpeed;
         } catch(ex) {
             console.warn("Cannot set the synchronizer to this DataSource");
         }

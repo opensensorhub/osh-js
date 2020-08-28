@@ -93,7 +93,7 @@ export function startStaticWithTimeout() {
     ];
 // static with TimeOut
     const dataSynchronizerWithTimeout = new DataSynchronizer({
-        replayFactor: 1,
+        replaySpeed: 1,
         dataSources: [{
             id: '1b',
             properties: {

@@ -73,7 +73,7 @@ class DiscoveryView extends View {
                 this.dataReceiverController = properties.dataReceiverController;
             } else {
                 this.dataReceiverController = new DataSynchronizer({
-                    replayFactor: 1
+                    replaySpeed: 1
                 });
                 this.dataReceiverController.connectAll();
             }
