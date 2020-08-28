@@ -45,7 +45,7 @@ class WebSocketConnector extends DataConnector {
     constructor(properties) {
         super(properties);
         this.interval = -1;
-        this.lastReceiveTime = -1;
+        this.lastReceiveTime = 0;
     }
 
     /**
@@ -54,7 +54,6 @@ class WebSocketConnector extends DataConnector {
      */
     connect() {
         if (!this.init) {
-            this.init = true;
             //creates Web Socket
             this.ws = new WebSocket(this.getUrl());
             this.ws.binaryType = 'arraybuffer';
@@ -68,15 +67,17 @@ class WebSocketConnector extends DataConnector {
 
             // closes socket if any errors occur
             this.ws.onerror = function (event) {
-                console.error('WebSocket stream error: ',event);
-                this.ws.close();
+                console.warn('WebSocket stream error: ',event);
                 this.init = false;
+                this.ws.close();
                 this.lastReceiveTime = -1;
             }.bind(this);
 
             this.ws.onclose = (event) => {
-                console.info('Closing gracefully..');
-                this.fullDisconnect(true);
+                if(this.init) {
+                    console.info('Closing gracefully..');
+                }
+                this.fullDisconnect(false);
             };
 
             //init the reconnect handler
@@ -89,6 +90,7 @@ class WebSocketConnector extends DataConnector {
                     }
                 }.bind(this), this.reconnectTimeout);
             }
+            this.init = true;
         }
     }
 
@@ -105,9 +107,9 @@ class WebSocketConnector extends DataConnector {
      */
     fullDisconnect(removeInterval) {
        if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
-               this.ws.close();
-               this.init = false;
+           this.ws.close();
        }
+        this.init = false;
         if (removeInterval) {
             clearInterval(this.interval);
         }
@@ -118,8 +120,9 @@ class WebSocketConnector extends DataConnector {
      */
     reconnect() {
         if(this.onReconnect()) {
-            console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
+            console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`,this.url);
             if (this.init) {
+                console.warn('disconnecting ',this.url);
                 this.fullDisconnect(false);
             }
             this.connect();

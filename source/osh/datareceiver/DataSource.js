@@ -47,6 +47,7 @@ class DataSource {
         this.properties = properties;
         this.dataSourceWorker = worker;
         this.dataSynchronizer = null;
+        this.currentRunningProperties = {};
         this.initDataSource(properties);
     }
 
@@ -150,16 +151,21 @@ class DataSource {
      * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
      */
     updateUrl(properties) {
-        // this.properties = {
-        //     ...this.properties,
-        //     ...properties
-        // }
+        // save current running properties
+        this.currentRunningProperties = {
+            ...this.properties,
+            ...properties
+        };
         if(this.dataSourceWorker !== null) {
             this.dataSourceWorker.postMessage({
                 message: 'update-url',
                 data: properties
             });
         }
+    }
+
+    getCurrentRunningProperties() {
+        return this.currentRunningProperties;
     }
 
     terminate() {

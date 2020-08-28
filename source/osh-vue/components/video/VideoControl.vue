@@ -34,6 +34,13 @@ export default {
       type: Object,
       default() {
         return {
+          'Original': {
+            resolution: {
+              width: 'native',
+              height: 'native'
+            },
+            bitrate: 'native'
+          },
           '1080p': {
             resolution: {
               width: 1920,
@@ -95,20 +102,28 @@ export default {
       this.updateResolution(item);
     },
     updateResolution(item) {
-      // check for extra properties
       let extraProps = {};
-      extraProps['bitrate'] = item.bitrate;
-      //TOOD: compute scale depending on size
-      extraProps['width'] = item.resolution.width;
-      extraProps['height'] = item.resolution.height;
-
-      if(Object.keys(extraProps).length > 0) {
-        this.dataSource.updateUrl(
-            {
-              encoding: extraProps,
-              responseFormat: 'video/' + this.codec.toUpperCase()
-            });
+      if(item.bitrate !== 'native') {
+        // check for extra properties
+        extraProps['bitrate'] = item.bitrate;
       }
+
+      if(item.resolution.width !== 'native') {
+        extraProps['width'] = item.resolution.width;
+      }
+      if(item.resolution.height !== 'native') {
+        extraProps['height'] = item.resolution.height;
+      }
+      const responseFormat = (Object.keys(extraProps).length > 0) ? { responseFormat : 'video/H264'} :
+          {};
+
+      delete this.dataSource.currentRunningProperties.responseFormat;
+      this.dataSource.updateUrl(
+          {
+            encoding: extraProps,
+            ...responseFormat
+          }
+      );
     }
   }
 }

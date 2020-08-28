@@ -1,6 +1,6 @@
 <template>
   <div data-app class="main-video">
-    <div v-if="!dialog" class="no-dialog" >
+    <slot v-if="!dialog" class="no-dialog" >
       <div :id="id" class="video-container">
       </div>
       <div class="video-control-container" >
@@ -19,8 +19,8 @@
             :expand='false'
         ></VideoControl>
       </div>
-    </div>
-    <div name="modal" dark="true" max-width="1280" width="1280" v-else>
+    </slot>
+    <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
       <v-dialog
               v-model="dialog"
               persistent
@@ -43,7 +43,7 @@
           ></VideoControl>
         </div>
       </v-dialog>
-    </div>
+    </slot>
   </div>
 </template>
 <script>
