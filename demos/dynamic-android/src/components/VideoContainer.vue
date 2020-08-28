@@ -29,7 +29,7 @@ export default {
     justify-content: center;
     align-items: center;
     position: absolute;
-    height: 330px;
+    height: 245px;
     background: rgba(0,0,0,0.5) !important;
     bottom: 0px;
     left: 50%;

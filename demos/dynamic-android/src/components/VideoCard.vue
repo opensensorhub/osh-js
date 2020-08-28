@@ -55,12 +55,16 @@ export default {
 
 .video, .v-card, .no-dialog {
   width: inherit;
-  height: 250px;
+  height: 180px;
   background-color: #000000 !important;
 }
 
 .v-card {
   height: 100%;
-  width: 444px;
+  width: 320px;
+}
+
+.video-h264 > canvas {
+  border-radius: 2px;
 }
 </style>
