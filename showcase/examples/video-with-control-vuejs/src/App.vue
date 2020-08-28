@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app-vue">
     <keep-alive>
       <Video
               :modal="true"
@@ -16,7 +16,7 @@
 </template>
 <script>
     // @ is an alias to /src
-    import Video from 'osh-vue/components/VideoWithControl.vue';
+    import Video from 'osh-vue/components/video/VideoWithControl.vue';
     import VideoOsh from "osh/datareceiver/Video.js";
 
     export default {
@@ -48,6 +48,11 @@
         }
     };
 </script>
+<style scoped>
+  .app-vue {
+    background: rgba(0,0,0,1.0)
+  }
+</style>
 <style>
   body {
     overflow-x: hidden;
@@ -56,6 +61,12 @@
   }
 
   .video {
-    width: 500px;
+    width: auto;
+    height: 400px;
+  }
+
+  .video .video-container {
+    width: inherit;
+    height: inherit;
   }
 </style>
