@@ -32,7 +32,6 @@ import DataSource from '../../osh/datareceiver/DataSource.js';
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
         replaySpeed: replaySpeed+"",
-        syncMasterTime: true,
         bufferingTime: 1000
     });
  */

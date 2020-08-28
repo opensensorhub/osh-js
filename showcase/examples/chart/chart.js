@@ -11,7 +11,6 @@ let chartDataSource = new SweJson("weather", {
     observedProperty: "http://sensorml.com/ont/swe/property/Weather",
     startTime: "now",
     endTime: "2055-01-01Z",
-    syncMasterTime: false,
     bufferingTime: 0
 });
 
