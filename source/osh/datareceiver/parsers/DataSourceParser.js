@@ -37,7 +37,7 @@ class DataSourceParser {
         url += "request=GetResult&";
 
         const skipTerms = new Set(['lastTimeStamp','endTime', 'reconnectTimeout', 'timeShift', 'protocol',
-            'endpointUrl']);
+            'endpointUrl', 'bufferingTime']);
 
         for(let key in properties) {
             // skip this keys
