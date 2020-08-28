@@ -28,6 +28,8 @@
     "less-loader": "^6.0.0",
     "node-sass": "^4.14.0",
     "nouislider": "^14.6.0",
+    "ol": "^6.4.3",
+    "ol-layerswitcher": "^3.6.0",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.0",
     "vue-loader": "^15.9.1",

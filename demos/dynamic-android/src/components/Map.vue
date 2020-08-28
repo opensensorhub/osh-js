@@ -5,9 +5,11 @@
 </template>
 
 <script>
-import LeafletView from "osh/ui/view/map/LeafletView.js";
+import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
-import {isDefined} from "osh/utils/Utils.js";
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+import OSM from "ol/source/OSM";
 
 export default {
   name: "Map",
@@ -18,25 +20,40 @@ export default {
   },
   mounted() {
     //Stadia_Outdoors
-    const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
-      maxZoom: 20,
-      attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, ' +
-          '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> ' +
-          '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+    // const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+    //   maxZoom: 20,
+    //   attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, ' +
+    //       '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> ' +
+    //       '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+    // });
+
+    let baseLayer = new TileLayer({
+      source: new XYZ({
+        url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
+        tilePixelRatio: 2
+      }),
+      title: 'Stadia',
+      visible: true
     });
-
-    const baseLayers = {
-     "OSM Bright" : layer
-    };
-
+//
+    let overlay = new TileLayer({
+      source: new XYZ({
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
+        tilePixelRatio: 2
+      }),
+      title: 'Esri Sat',
+      visible: false
+    });
     // create Leaflet view
-    this.view = new LeafletView("map",
+    this.view = new OpenLayerView("map",
         [],
         {
           watch: false,
           autoZoomOnFirstMarker: true,
-          baseLayers: baseLayers,
-          defaultLayer: layer
+          baseLayers: [baseLayer],
+          overlayLayers: [
+              overlay,
+          ]
         });
   },
   methods: {

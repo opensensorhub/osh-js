@@ -37,7 +37,9 @@ export default {
 </script>
 
 <style scoped>
-
+.v-sheet.v-card {
+  margin: 15px;
+}
 </style>
 <style>
 .video-container  {
