@@ -55,7 +55,7 @@ export default {
 
 .video, .v-card, .no-dialog {
   width: inherit;
-  height: 180px;
+  height: 175px;
   background-color: #000000 !important;
 }
 

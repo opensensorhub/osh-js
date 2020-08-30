@@ -341,7 +341,8 @@
   }
 
   .control .buttons .actions {
-    display: inline;
+    display: flex;
+    align-items: center;
   }
 
   .control .buttons .time {
