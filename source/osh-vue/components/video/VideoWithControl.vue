@@ -144,10 +144,6 @@
           showStats: this.showStats,
           showTime: this.showTime
         });
-
-        if (!this.dataSource.connected) {
-            this.dataSource.connect();
-        }
       }
     }
   }
