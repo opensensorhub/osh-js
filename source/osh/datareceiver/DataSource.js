@@ -74,6 +74,44 @@ class DataSource {
     }
 
     /**
+     * Sets the startTime of the DataSource.
+     * @param {Number} startTime - the startTime (in millis)
+     */
+    setStartTime(startTime) {
+        this.updateUrl({
+            ...this.currentRunningProperties,
+            startTime: new Date(startTime).toISOString()
+        });
+    }
+
+    /**
+     * Sets the endTime of the DataSource.
+     * @param {Number} endTime - the endTime (in millis)
+     */
+    setEndTime(endTime) {
+        this.updateUrl({
+            ...this.currentRunningProperties,
+            endTime: new Date(endTime).toISOString()
+        });
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as ISO date
+     */
+    getStartTime() {
+        return this.properties.startTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getEndTime() {
+        return this.properties.endTime;
+    }
+
+    /**
      * Disconnect the dataSource then the connector will be closed as well.
      */
     disconnect() {
