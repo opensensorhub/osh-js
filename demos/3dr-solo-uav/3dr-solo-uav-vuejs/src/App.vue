@@ -78,7 +78,7 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
       });
 
     // start streaming
-    dataSynchronizer.connectAll();
+    dataSynchronizer.connect();
   }
 };
 </script>
