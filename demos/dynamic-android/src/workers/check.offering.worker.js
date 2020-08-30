@@ -16,7 +16,6 @@ self.onmessage = (event) => {
 
 function successFn(event) {
     let items = event.Capabilities.contents.offering.map(offering => {
-        console.log(offering)
         let starTime = 'now';
         let endTime = '2055-01-01T00:00:00.00Z';
         if (!isDefined(offering.phenomenonTime.beginPosition.indeterminatePosition)) {
