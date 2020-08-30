@@ -66,6 +66,7 @@ class FFMPEGView extends View {
         this.framerate = 29.67;
         this.directPlay = false;
         this.codec = 'h264';
+        this.resetCalled = false;
 
         if (isDefined(options)) {
             if (isDefined(options.framerate)) {
@@ -163,6 +164,7 @@ class FFMPEGView extends View {
     }
 
     setData(dataSourceId, data) {
+        this.resetCalled = false;
         if (!this.skipFrame) {
             let pktData = data.data.frameData;
             let pktSize = pktData.length;
@@ -189,6 +191,33 @@ class FFMPEGView extends View {
      * @override
      */
     reset() {
+        /**
+             yData: decodedFrame.frameYData,
+             yDataPerRow: decodedFrame.frame_width,
+             yRowCnt: decodedFrame.frame_height,
+             uData: decodedFrame.frameUData,
+             uDataPerRow: decodedFrame.frame_width / 2,
+             uRowCnt: decodedFrame.frame_height / 2,
+             vData: decodedFrame.frameVData,
+             vDataPerRow: decodedFrame.frame_width / 2,
+             vRowCnt: decodedFrame.frame_height / 2,
+             roll: decodedFrame.roll
+         * @type {boolean}
+         */
+        this.resetCalled = true;
+        let nodata = new Uint8Array(1);
+        nodata[0] = 128;
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
     }
 
     /**
@@ -254,6 +283,9 @@ class FFMPEGView extends View {
 
         const that = this;
         this.decodeWorker.onmessage = function (e) {
+            if(that.resetCalled) {
+                return;
+            }
             let decodedFrame = e.data;
             if(that.width !== decodedFrame.frame_width ||
                 that.height !== decodedFrame.frame_height) {

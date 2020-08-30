@@ -42,8 +42,8 @@
               // endTime: '2015-12-19T21:09:19.675Z',
               endpointUrl: 'localhost:8082/sensorhub/sos',
               offeringID: 'replay-android',
-              startTime: '2020-08-16T11:31:11.444Z',
-              endTime: '2020-08-16T11:32:06.773Z',
+              startTime: '2020-08-16T11:32:00.444Z',
+              endTime: '2020-08-16T11:32:06.746Z',
               replaySpeed: 1
             });
         },

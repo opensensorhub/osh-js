@@ -2,6 +2,7 @@ import WebSocketConnector from "../../dataconnector/WebSocketConnector";
 import Ajax from "../../dataconnector/Ajax";
 import {isDefined} from "../../utils/Utils";
 import TopicConnector from "../../dataconnector/TopicConnector";
+import {DATASOURCE_CLOSE_TOPIC} from "../../Constants";
 
 class DataSourceHandler {
 
@@ -78,8 +79,13 @@ class DataSourceHandler {
         }
 
         const lastStartTimeCst  = this.parser.lastStartTime;
+        const endTimeCst = properties.endTime;
+
         if(this.connector !== null) {
             this.connector.onReconnect = () => {
+                // if(new Date(endTimeCst).getTime() >= this.lastTimeStamp) {
+                //     return false;
+                // }
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
                 if (lastStartTimeCst !== 'now') {
@@ -91,6 +97,11 @@ class DataSourceHandler {
                 }
                 return true;
             }
+            this.connector.onClose = () => {
+                this.broadcastChannel.postMessage({
+                    message: 'reset'
+                });
+            };
         }
     }
 
@@ -124,7 +135,8 @@ class DataSourceHandler {
         const obj = {
             dataSourceId: this.dataSourceId,
             timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
-            data: this.parser.parseData(event)
+            data: this.parser.parseData(event),
+            message: 'data'
         };
         this.lastTimeStamp = obj.timeStamp;
         this.broadcastChannel.postMessage(obj);

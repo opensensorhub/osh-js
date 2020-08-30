@@ -78,6 +78,7 @@ class WebSocketConnector extends DataConnector {
                     console.info('Closing gracefully..');
                 }
                 this.fullDisconnect(false);
+                this.onClose();
             };
 
             //init the reconnect handler
@@ -126,6 +127,8 @@ class WebSocketConnector extends DataConnector {
                 this.fullDisconnect(false);
             }
             this.connect();
+        } else {
+            this.fullDisconnect(true);
         }
     }
 
@@ -136,6 +139,11 @@ class WebSocketConnector extends DataConnector {
      */
     onMessage(data) {
     }
+
+    /**
+     * The onClose method is called when the WS is closed
+     */
+    onClose() {}
 
     /**
      * Closes the webSocket.
