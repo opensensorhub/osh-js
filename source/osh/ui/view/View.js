@@ -23,7 +23,7 @@
 import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
-import {DATASOURCE_DATA_TOPIC} from "../../Constants";
+import {DATASOURCE_DATA_TOPIC, DATASOURCE_DISCONNECT_TOPIC} from "../../Constants";
 
 class View {
     /**
@@ -50,6 +50,8 @@ class View {
         this.dataSources = [];
         this.viewItemsBroadcastChannels = {};
         this.entity = null;
+
+        this.resetChannel = new BroadcastChannel(DATASOURCE_DISCONNECT_TOPIC);
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -154,10 +156,11 @@ class View {
             function registerDs(dataSourceId) {
                 const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + dataSourceId);
                 broadcastChannel.onmessage = (event) => {
-                    if (event.data.message && event.data.message === 'reset') {
-                        that.reset(); // on data stream reset
-                    } else {
-                        that.setData(dataSourceId, event.data);
+                    that.setData(dataSourceId, event.data);
+                };
+                that.resetChannel.onmessage = (event) => {
+                    if(event.data.dataSourceId === that.dataSourceId) {
+                        that.reset();
                     }
                 };
             }
@@ -281,6 +284,7 @@ class View {
                 let self = this;
                 const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
                 this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
+
                 broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
                     if (event.data.message && event.data.message === 'reset') {

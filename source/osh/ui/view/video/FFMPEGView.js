@@ -191,19 +191,6 @@ class FFMPEGView extends View {
      * @override
      */
     reset() {
-        /**
-             yData: decodedFrame.frameYData,
-             yDataPerRow: decodedFrame.frame_width,
-             yRowCnt: decodedFrame.frame_height,
-             uData: decodedFrame.frameUData,
-             uDataPerRow: decodedFrame.frame_width / 2,
-             uRowCnt: decodedFrame.frame_height / 2,
-             vData: decodedFrame.frameVData,
-             vDataPerRow: decodedFrame.frame_width / 2,
-             vRowCnt: decodedFrame.frame_height / 2,
-             roll: decodedFrame.roll
-         * @type {boolean}
-         */
         this.resetCalled = true;
         let nodata = new Uint8Array(1);
         nodata[0] = 128;

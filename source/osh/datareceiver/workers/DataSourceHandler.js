@@ -2,7 +2,7 @@ import WebSocketConnector from "../../dataconnector/WebSocketConnector";
 import Ajax from "../../dataconnector/Ajax";
 import {isDefined} from "../../utils/Utils";
 import TopicConnector from "../../dataconnector/TopicConnector";
-import {DATASOURCE_CLOSE_TOPIC} from "../../Constants";
+import {DATASOURCE_CLOSE_TOPIC, DATASOURCE_DISCONNECT_TOPIC} from "../../Constants";
 
 class DataSourceHandler {
 
@@ -98,8 +98,8 @@ class DataSourceHandler {
                 return true;
             }
             this.connector.onClose = () => {
-                this.broadcastChannel.postMessage({
-                    message: 'reset'
+                new BroadcastChannel(DATASOURCE_DISCONNECT_TOPIC).postMessage({
+                    dataSourceId: this.dataSourceId
                 });
             };
         }
