@@ -44,6 +44,20 @@ class Video extends DataSource {
      * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
      * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.offeringID the offeringID
+     * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.startTime the start time (ISO format)
+     * @param {String} properties.endTime the end time (ISO format)
+     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
+     * @param {Object} properties.customUrlParams - the encoding options
+     * @param {Number} properties.customUrlParams.video_bitrate - define a custom bitrate (in b/s)
+     * @param {Number} properties.customUrlParams.video_scale - define a custom scale, 0.0 < value < 1.0
+     * @param {Number} properties.customUrlParams.video_width - define a custom width
+     * @param {Number} properties.customUrlParams.video_height - define a custom height
      */
     constructor(name, properties) {
         super(name, {
