@@ -100,10 +100,18 @@
               rangeSlider.onChange = function (startTime, endTime) {
                 dataSourceObject.disconnect();
                 if (isDefined(startTime)) {
-                  dataSourceObject.setStartTime(parseInt(startTime))
+                  dataSourceObject.setTimeRange(
+                      new Date(parseInt(startTime)),
+                      dataSourceObject.getEndTime(),
+                      dataSourceObject.getReplaySpeed()
+                  );
                 }
                 if (isDefined(endTime)) {
-                  dataSourceObject.setEndTime(parseInt(endTime))
+                  dataSourceObject.setTimeRange(
+                      dataSourceObject.getStartTime(),
+                      new Date(parseInt(endTime)).toISOString(),
+                      dataSourceObject.getReplaySpeed()
+                  );
                 }
                 dataSourceObject.connect();
               };
@@ -132,7 +140,11 @@
                     currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
                     // reset parameters
                     dataSourceObject.getCurrentTime().then(time => {
-                      dataSourceObject.setStartTime(parseInt(time - that.backward * 1000));
+                      dataSourceObject.setTimeRange(
+                          new Date(parseInt(time - that.backward * 1000)).toISOString(),
+                          dataSourceObject.getEndTime(),
+                          dataSourceObject.getReplaySpeed()
+                      );
                       this.on('backward');
                     });
                   }
@@ -142,7 +154,11 @@
                     currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
                     // reset parameters
                     dataSourceObject.getCurrentTime().then(time => {
-                      dataSourceObject.setStartTime(parseInt(time + that.backward * 1000));
+                      dataSourceObject.setTimeRange(
+                          new Date(parseInt(time + that.backward * 1000)).toISOString(),
+                          dataSourceObject.getEndTime(),
+                          dataSourceObject.getReplaySpeed()
+                      );
                       this.on('forward');
                     });
                   }
@@ -156,7 +172,11 @@
                   //save current time
                   this.on('pause');
                 } else {
-                  dataSourceObject.setStartTime(parseInt(currentTime));
+                  dataSourceObject.setTimeRange(
+                      new Date(parseInt(currentTime)).toISOString(),
+                      dataSourceObject.getEndTime(),
+                      dataSourceObject.getReplaySpeed()
+                  );
                   dataSourceObject.connect();
                   this.on('play');
                 }

@@ -74,24 +74,17 @@ class DataSource {
     }
 
     /**
-     * Sets the startTime of the DataSource.
-     * @param {Number} startTime - the startTime (in millis)
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
      */
-    setStartTime(startTime) {
+    setTimeRange(startTime, endTime, replaySpeed) {
         this.updateUrl({
             ...this.currentRunningProperties,
-            startTime: new Date(startTime).toISOString()
-        });
-    }
-
-    /**
-     * Sets the endTime of the DataSource.
-     * @param {Number} endTime - the endTime (in millis)
-     */
-    setEndTime(endTime) {
-        this.updateUrl({
-            ...this.currentRunningProperties,
-            endTime: new Date(endTime).toISOString()
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: replaySpeed
         });
     }
 
@@ -109,6 +102,14 @@ class DataSource {
      */
     getEndTime() {
         return this.properties.endTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getReplaySpeed() {
+        return isDefined(this.properties.replaySpeed) ? this.properties.replaySpeed : 1;
     }
 
     /**

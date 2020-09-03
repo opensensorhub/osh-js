@@ -159,22 +159,14 @@ class DataSynchronizer {
     }
 
     /**
-     * Sets the startTime of the DataSynchronizer.
-     * @param {Number} startTime - the startTime (in millis)
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
      */
-    setStartTime(startTime) {
+    setTimeRange(startTime, endTime, replaySpeed) {
         for(let ds of this.dataSources) {
-            ds.setStartTime(startTime);
-        }
-    }
-
-    /**
-     * Sets the endTime of the DataSynchronizer.
-     * @param {Number} endTime - the endTime (in millis)
-     */
-    setEndTime(endTime) {
-        for(let ds of this.dataSources) {
-            ds.setEndTime(endTime);
+            ds.setTimeRange(startTime, endTime, replaySpeed);
         }
     }
 
