@@ -120,7 +120,7 @@ export default {
       delete this.dataSource.currentRunningProperties.responseFormat;
       this.dataSource.updateUrl(
           {
-            ...extraProps,
+            customUrlParams: extraProps,
             ...responseFormat
           }
       );
