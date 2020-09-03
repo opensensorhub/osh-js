@@ -36,6 +36,7 @@ class DataSynchronizer {
         this.id = randomUUID();
         this.dataSources = [];
         this.replaySpeed = 1;
+        this.connected = false;
         let intervalRate = 5;
 
         if(isDefined(properties.replaySpeed)) {
@@ -112,15 +113,60 @@ class DataSynchronizer {
         }
     }
 
-    connectAll() {
+    /**
+     * Connects all dataSources
+     */
+    connect() {
         for(let dataSource of this.dataSources) {
             dataSource.connect();
         }
+        this.connected = true;
+        console.log(this.connected)
     }
 
-    disconnectAll() {
+    /**
+     * Disconnects all dataSources
+     */
+    disconnect() {
+        this.reset();
         for(let dataSource of this.dataSources) {
             dataSource.disconnect();
+        }
+        this.connected = false;
+        console.log(this.connected)
+    }
+
+    /**
+     * Gets the startTime of the first DataSource objet
+     * @returns {String} - startTime as ISO date
+     */
+    getStartTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return this.dataSources[0].properties.startTime;
+    }
+
+    /**
+     * Gets the endTime of the first DataSource objet
+     * @returns {String} - endTime as ISO date
+     */
+    getEndTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return this.dataSources[0].properties.endTime;
+    }
+
+    /**
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
+     */
+    setTimeRange(startTime, endTime, replaySpeed) {
+        for(let ds of this.dataSources) {
+            ds.setTimeRange(startTime, endTime, replaySpeed);
         }
     }
 

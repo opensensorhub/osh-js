@@ -57,7 +57,9 @@
           this.showDataSourceActions = this.dataSource.properties.startTime !== 'now';
         },
         mounted() {
-            if(this.showDataSourceActions) {
+          const dataSourceObject = this.getDataSourceObject();
+
+          if(this.showDataSourceActions) {
               let rangeSlider = new RangeSlider(this.id, {
                 dataSourceId: this.dataSource.id,
                 startTime: this.dataSource.properties.startTime,
@@ -78,6 +80,7 @@
                   connect: 'lower'
                 }
               });
+
               rangeSlider.activate();
 
               const that = this;
@@ -95,30 +98,22 @@
               });
 
               rangeSlider.onChange = function (startTime, endTime) {
-                if (that.dataSource.connected) {
-                  that.dataSource.disconnect();
-                  // get current parameters
-                  let props = that.dataSource.properties;
-                  let options = that.dataSource.options;
-
-                  // update start/end time
-                  if (isDefined(startTime)) {
-                    const intValue = parseInt(startTime);
-                    props.startTime = new Date(intValue).toISOString();
-                    currentTimeElement.innerText = that.parseDate(intValue);
-                  }
-                  if (isDefined(endTimeElement)) {
-                    if (isDefined(endTime)) {
-                      const intValue = parseInt(endTime);
-                      props.endTime = new Date(intValue).toISOString();
-                      endTimeElement.innerText = that.parseDate(intValue);
-                    }
-                  }
-
-                  // reset parameters
-                  that.dataSource.initDataSource(props, options);
-                  that.dataSource.connect();
+                dataSourceObject.disconnect();
+                if (isDefined(startTime)) {
+                  dataSourceObject.setTimeRange(
+                      new Date(parseInt(startTime)),
+                      dataSourceObject.getEndTime(),
+                      dataSourceObject.getReplaySpeed()
+                  );
                 }
+                if (isDefined(endTime)) {
+                  dataSourceObject.setTimeRange(
+                      dataSourceObject.getStartTime(),
+                      new Date(parseInt(endTime)).toISOString(),
+                      dataSourceObject.getReplaySpeed()
+                  );
+                }
+                dataSourceObject.connect();
               };
 
               rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
@@ -130,40 +125,40 @@
               const fastForwardButton = document.getElementById("fast-forward-btn-"+this.id);
 
               pauseButton.onclick = () => {
-                if (that.dataSource.connected) {
-                  that.dataSource.disconnect();
+                if (dataSourceObject.connected) {
+                  dataSourceObject.disconnect();
                   //save current time
                   this.on('pause');
                 } else {
-                  that.dataSource.connect();
+                  dataSourceObject.connect();
                   this.on('play');
                 }
               }
 
                 fastBackwardButton.onclick = () => {
-                  if (that.dataSource.connected) {
-                    let props = that.dataSource.properties;
-                    currentTimeElement.innerText = that.parseDate(props.startTime);
+                  if (dataSourceObject.connected) {
+                    currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
                     // reset parameters
-                    that.dataSource.getCurrentTime().then(time => {
-                      that.dataSource.updateUrl({
-                        ...this.dataSource.getCurrentRunningProperties(),
-                        startTime: new Date(parseInt(time - that.backward * 1000)).toISOString()
-                      });
+                    dataSourceObject.getCurrentTime().then(time => {
+                      dataSourceObject.setTimeRange(
+                          new Date(parseInt(time - that.backward * 1000)).toISOString(),
+                          dataSourceObject.getEndTime(),
+                          dataSourceObject.getReplaySpeed()
+                      );
                       this.on('backward');
                     });
                   }
                 }
                 fastForwardButton.onclick = () => {
-                  if (that.dataSource.connected) {
-                    let props = that.dataSource.properties;
-                    currentTimeElement.innerText = that.parseDate(props.startTime);
+                  if (dataSourceObject.connected) {
+                    currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
                     // reset parameters
-                    that.dataSource.getCurrentTime().then(time => {
-                      that.dataSource.updateUrl({
-                        ...this.dataSource.getCurrentRunningProperties(),
-                        startTime: new Date(parseInt(time + that.backward * 1000)).toISOString()
-                      });
+                    dataSourceObject.getCurrentTime().then(time => {
+                      dataSourceObject.setTimeRange(
+                          new Date(parseInt(time + that.backward * 1000)).toISOString(),
+                          dataSourceObject.getEndTime(),
+                          dataSourceObject.getReplaySpeed()
+                      );
                       this.on('forward');
                     });
                   }
@@ -171,17 +166,18 @@
 
               let currentTime;
               pauseButton.onclick = async () => {
-                if (this.dataSource.connected) {
-                  currentTime = await that.dataSource.getCurrentTime();
-                  this.dataSource.disconnect();
+                if (dataSourceObject.connected) {
+                  currentTime = await dataSourceObject.getCurrentTime();
+                  dataSourceObject.disconnect();
                   //save current time
                   this.on('pause');
                 } else {
-                  this.dataSource.updateUrl({
-                    ...this.dataSource.getCurrentRunningProperties(),
-                    startTime: new Date(currentTime).toISOString()
-                  });
-                  this.dataSource.connect();
+                  dataSourceObject.setTimeRange(
+                      new Date(parseInt(currentTime)).toISOString(),
+                      dataSourceObject.getEndTime(),
+                      dataSourceObject.getReplaySpeed()
+                  );
+                  dataSourceObject.connect();
                   this.on('play');
                 }
               }
@@ -190,7 +186,7 @@
                 // get time from DS
                 const currentTimeElement = document.getElementById("current-time-"+this.id);
                 setInterval(() => {
-                  this.dataSource.getCurrentTime().then(timestamp => {
+                  dataSourceObject.getCurrentTime().then(timestamp => {
                     let date = new Date(timestamp);
                     currentTimeElement.innerText =
                         this.withLeadingZeros(date.getHours())+":"+this.withLeadingZeros(date.getMinutes())
@@ -201,6 +197,10 @@
               }
         },
         methods: {
+            getDataSourceObject() {
+              return (isDefined(this.dataSource.dataSynchronizer)) ? this.dataSource.dataSynchronizer :
+                  this.dataSource;
+            },
             on(eventName) {
               this.$emit('event', eventName);
               if(eventName === 'pause') {

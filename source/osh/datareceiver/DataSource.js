@@ -74,6 +74,45 @@ class DataSource {
     }
 
     /**
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
+     */
+    setTimeRange(startTime, endTime, replaySpeed) {
+        this.updateUrl({
+            ...this.currentRunningProperties,
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: replaySpeed
+        });
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as ISO date
+     */
+    getStartTime() {
+        return this.properties.startTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getEndTime() {
+        return this.properties.endTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getReplaySpeed() {
+        return isDefined(this.properties.replaySpeed) ? this.properties.replaySpeed : 1;
+    }
+
+    /**
      * Disconnect the dataSource then the connector will be closed as well.
      */
     disconnect() {

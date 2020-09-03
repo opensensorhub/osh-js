@@ -137,7 +137,7 @@ export default {
         this.$refs['map'].add(mapItem);
       }
 
-      this.dataSynchronizers[item.id].connectAll();
+      this.dataSynchronizers[item.id].connect();
     },
     removeItem(item) {
       if (item.id in this.dataSynchronizers) {
