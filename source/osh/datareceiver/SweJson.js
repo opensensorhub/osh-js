@@ -40,6 +40,23 @@ import SweJsonWorker from './workers/SweJson.worker.js';
  */
 
 class SweJson extends DataSource {
+    /**
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
+     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
+     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.offeringID the offeringID
+     * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.startTime the start time (ISO format)
+     * @param {String} properties.endTime the end time (ISO format)
+     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
+     */
     constructor(name, properties) {
         super(name, {
             timeShift:0,
