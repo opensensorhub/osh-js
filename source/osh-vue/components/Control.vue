@@ -95,7 +95,7 @@
               });
 
               rangeSlider.onChange = function (startTime, endTime) {
-                if (that.dataSource.connected) {
+                if (that.dataSource.isConnected()) {
                   that.dataSource.disconnect();
                   // get current parameters
                   let props = that.dataSource.properties;
@@ -130,7 +130,7 @@
               const fastForwardButton = document.getElementById("fast-forward-btn-"+this.id);
 
               pauseButton.onclick = () => {
-                if (that.dataSource.connected) {
+                if (that.dataSource.isConnected()) {
                   that.dataSource.disconnect();
                   //save current time
                   this.on('pause');
@@ -141,7 +141,7 @@
               }
 
                 fastBackwardButton.onclick = () => {
-                  if (that.dataSource.connected) {
+                  if (that.dataSource.isConnected()) {
                     let props = that.dataSource.properties;
                     currentTimeElement.innerText = that.parseDate(props.startTime);
                     // reset parameters
@@ -155,7 +155,7 @@
                   }
                 }
                 fastForwardButton.onclick = () => {
-                  if (that.dataSource.connected) {
+                  if (that.dataSource.isConnected()) {
                     let props = that.dataSource.properties;
                     currentTimeElement.innerText = that.parseDate(props.startTime);
                     // reset parameters
@@ -171,7 +171,7 @@
 
               let currentTime;
               pauseButton.onclick = async () => {
-                if (this.dataSource.connected) {
+                if (this.dataSource.isConnected()) {
                   currentTime = await that.dataSource.getCurrentTime();
                   this.dataSource.disconnect();
                   //save current time
