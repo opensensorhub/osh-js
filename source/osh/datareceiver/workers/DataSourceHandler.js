@@ -13,7 +13,6 @@ class DataSourceHandler {
         this.lastStartTime = 'now';
         this.timeShift = 0;
         this.reconnectTimeout = 1000 * 10; // 10 secs
-        this.connected = false;
     }
 
     createConnector(propertiesStr, topic, dataSourceId) {
@@ -77,16 +76,17 @@ class DataSourceHandler {
             this.connector.setReconnectTimeout(this.reconnectTimeout);
         }
 
-        const lastStartTimeCst  = this.parser.lastStartTime;
-        if(this.connector !== null) {
+        const lastStartTimeCst = this.parser.lastStartTime;
+        const lastProperties = properties;
+        if (this.connector !== null) {
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
                 if (lastStartTimeCst !== 'now') {
                     this.connector.setUrl(this.parser.buildUrl(
                         {
+                            ...properties,
                             lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-                            ...this.properties
                         }));
                 }
                 return true;
@@ -109,15 +109,14 @@ class DataSourceHandler {
     connect() {
         if(this.connector !== null) {
             this.connector.connect();
-            this.connected = true;
         }
     }
 
     disconnect() {
         if(this.connector !== null) {
             this.connector.disconnect();
-            this.connected = false;
         }
+        this.connector = null;
     }
 
     onMessage(event) {
@@ -135,10 +134,8 @@ class DataSourceHandler {
     }
 
     updateUrl(properties) {
-        const isConnected = this.connected;
-        if(isConnected) {
-            this.disconnect();
-        }
+        this.disconnect();
+
         let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
 
         if(properties.hasOwnProperty('startTime')) {
@@ -153,9 +150,8 @@ class DataSourceHandler {
             ...properties,
             lastTimeStamp: lastTimestamp
         });
-        if(isConnected) {
-            this.connect();
-        }
+
+        this.connect();
     }
 
     handleMessage(message, worker) {
@@ -175,6 +171,11 @@ class DataSourceHandler {
             })
         }  else if (message.message === 'update-url') {
             this.updateUrl(message.data);
+        } else if (message.message === 'is-connected') {
+            worker.postMessage({
+                message: 'is-connected',
+                data: (this.connector === null)? false: this.connector.isConnected()
+            })
         }
     }
 }

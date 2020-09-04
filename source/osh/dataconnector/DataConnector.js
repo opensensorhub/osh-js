@@ -65,7 +65,11 @@ class DataConnector {
         return true;
     }
 
+    forceReconnect() {}
+
     disconnect() {}
+
+    isConnected() {}
 }
 
 export default DataConnector;
