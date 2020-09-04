@@ -15,6 +15,7 @@ class DataSourceParser {
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
+     * @param {Object} properties.customUrlParams - custom url parameters
      * @return {String} the full url
      */
     buildUrl(properties) {

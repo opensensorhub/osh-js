@@ -80,7 +80,6 @@ class DataSource {
         this.dataSourceWorker.postMessage({
             message: 'disconnect'
         });
-        this.connected = false;
     }
 
     /**
@@ -90,7 +89,25 @@ class DataSource {
         this.dataSourceWorker.postMessage({
             message: 'connect'
         });
-        this.connected = true;
+    }
+
+    async isConnected() {
+        const promise = new Promise(resolve => {
+            if(this.dataSourceWorker !== null) {
+                this.dataSourceWorker.onmessage = (event) => {
+                    if (event.data.message === 'is-connected') {
+                        resolve(event.data.data);
+                    }
+                };
+            }
+        });
+        if(this.dataSourceWorker !== null) {
+            this.dataSourceWorker.postMessage({
+                message: 'is-connected'
+            });
+        }
+
+        return promise;
     }
 
     async getCurrentTime() {

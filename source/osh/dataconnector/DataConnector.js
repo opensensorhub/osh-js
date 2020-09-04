@@ -66,6 +66,8 @@ class DataConnector {
     }
 
     disconnect() {}
+
+    isConnected() {}
 }
 
 export default DataConnector;
