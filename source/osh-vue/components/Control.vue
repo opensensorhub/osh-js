@@ -125,7 +125,7 @@
               const fastForwardButton = document.getElementById("fast-forward-btn-"+this.id);
 
               pauseButton.onclick = () => {
-                if (dataSourceObject.connected) {
+                if (dataSourceObject.isConnected()) {
                   dataSourceObject.disconnect();
                   //save current time
                   this.on('pause');
@@ -136,7 +136,7 @@
               }
 
                 fastBackwardButton.onclick = () => {
-                  if (dataSourceObject.connected) {
+                  if (dataSourceObject.isConnected()) {
                     currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
                     // reset parameters
                     dataSourceObject.getCurrentTime().then(time => {
@@ -150,7 +150,7 @@
                   }
                 }
                 fastForwardButton.onclick = () => {
-                  if (dataSourceObject.connected) {
+                  if (dataSourceObject.isConnected()) {
                     currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
                     // reset parameters
                     dataSourceObject.getCurrentTime().then(time => {
@@ -166,7 +166,7 @@
 
               let currentTime;
               pauseButton.onclick = async () => {
-                if (dataSourceObject.connected) {
+                if (dataSourceObject.isConnected()) {
                   currentTime = await dataSourceObject.getCurrentTime();
                   dataSourceObject.disconnect();
                   //save current time
