@@ -65,6 +65,8 @@ class DataConnector {
         return true;
     }
 
+    forceReconnect() {}
+
     disconnect() {}
 
     isConnected() {}

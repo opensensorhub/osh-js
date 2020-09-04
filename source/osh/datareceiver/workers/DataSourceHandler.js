@@ -76,9 +76,9 @@ class DataSourceHandler {
             this.connector.setReconnectTimeout(this.reconnectTimeout);
         }
 
-        const lastStartTimeCst  = this.parser.lastStartTime;
+        const lastStartTimeCst = this.parser.lastStartTime;
         const lastProperties = properties;
-        if(this.connector !== null) {
+        if (this.connector !== null) {
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
@@ -116,6 +116,7 @@ class DataSourceHandler {
         if(this.connector !== null) {
             this.connector.disconnect();
         }
+        this.connector = null;
     }
 
     onMessage(event) {
@@ -133,10 +134,8 @@ class DataSourceHandler {
     }
 
     updateUrl(properties) {
-        const isConnected = this.connector.isConnected();
-        if(isConnected) {
-            this.disconnect();
-        }
+        this.disconnect();
+
         let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
 
         if(properties.hasOwnProperty('startTime')) {
@@ -151,9 +150,8 @@ class DataSourceHandler {
             ...properties,
             lastTimeStamp: lastTimestamp
         });
-        if(isConnected) {
-            this.connect();
-        }
+
+        this.connect();
     }
 
     handleMessage(message, worker) {
@@ -176,7 +174,7 @@ class DataSourceHandler {
         } else if (message.message === 'is-connected') {
             worker.postMessage({
                 message: 'is-connected',
-                data: this.connector.isConnected()
+                data: (this.connector === null)? false: this.connector.isConnected()
             })
         }
     }

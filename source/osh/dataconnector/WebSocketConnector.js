@@ -55,6 +55,7 @@ class WebSocketConnector extends DataConnector {
      */
     async connect() {
         if (!this.init) {
+            this.closed = false;
             this.init = true;
             //creates Web Socket
             this.ws = new WebSocket(this.getUrl());
@@ -79,7 +80,7 @@ class WebSocketConnector extends DataConnector {
             this.ws.onclose = (event) => {
                 console.warn('WebSocket stream closed: ',event.reason, event.code);
                 this.init = false;
-                if(event.code !== 1000) {
+                if(event.code !== 1000 && !this.closed) {
                     this.createReconnection();
                 }
             };
@@ -91,6 +92,10 @@ class WebSocketConnector extends DataConnector {
             clearInterval(this.reconnectionInterval);
             this.reconnectionInterval = -1;
         }
+    }
+    forceReconnect() {
+        this.disconnect();
+        this.connect();
     }
 
     createReconnection() {
@@ -117,6 +122,7 @@ class WebSocketConnector extends DataConnector {
     disconnect() {
         this.checkAndclearReconnection();
         this.init = false;
+        this.closed = true;
         if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
             this.ws.close();
         }
@@ -132,7 +138,7 @@ class WebSocketConnector extends DataConnector {
 
 
     isConnected() {
-        return (this.ws != null && this.ws.readyState !== WebSocket.OPEN);
+        return (this.ws != null && this.ws.readyState === WebSocket.OPEN);
     }
 }
 
