@@ -13,7 +13,6 @@ class DataSourceHandler {
         this.lastStartTime = 'now';
         this.timeShift = 0;
         this.reconnectTimeout = 1000 * 10; // 10 secs
-        this.connected = false;
     }
 
     createConnector(propertiesStr, topic, dataSourceId) {
@@ -78,6 +77,7 @@ class DataSourceHandler {
         }
 
         const lastStartTimeCst  = this.parser.lastStartTime;
+        const lastProperties = properties;
         if(this.connector !== null) {
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
@@ -85,8 +85,8 @@ class DataSourceHandler {
                 if (lastStartTimeCst !== 'now') {
                     this.connector.setUrl(this.parser.buildUrl(
                         {
+                            ...properties,
                             lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-                            ...this.properties
                         }));
                 }
                 return true;
@@ -109,14 +109,12 @@ class DataSourceHandler {
     connect() {
         if(this.connector !== null) {
             this.connector.connect();
-            this.connected = true;
         }
     }
 
     disconnect() {
         if(this.connector !== null) {
             this.connector.disconnect();
-            this.connected = false;
         }
     }
 
@@ -135,7 +133,7 @@ class DataSourceHandler {
     }
 
     updateUrl(properties) {
-        const isConnected = this.connected;
+        const isConnected = this.connector.isConnected();
         if(isConnected) {
             this.disconnect();
         }
@@ -175,6 +173,11 @@ class DataSourceHandler {
             })
         }  else if (message.message === 'update-url') {
             this.updateUrl(message.data);
+        } else if (message.message === 'is-connected') {
+            worker.postMessage({
+                message: 'is-connected',
+                data: this.connector.isConnected()
+            })
         }
     }
 }
