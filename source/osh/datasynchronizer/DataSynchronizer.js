@@ -36,16 +36,15 @@ class DataSynchronizer {
         this.id = randomUUID();
         this.dataSources = [];
         this.replaySpeed = 1;
-        this.connected = false;
-        let intervalRate = 5;
+        this.intervalRate = 5;
 
         if(isDefined(properties.replaySpeed)) {
             this.replaySpeed = properties.replaySpeed;
         }
         if(isDefined(properties.intervalRate)) {
-            intervalRate = properties.intervalRate;
+            this.intervalRate = properties.intervalRate;
         }
-        this.initWorker(properties.dataSources, intervalRate);
+        this.initWorker(properties.dataSources, this.intervalRate);
     }
 
     /**
@@ -120,8 +119,6 @@ class DataSynchronizer {
         for(let dataSource of this.dataSources) {
             dataSource.connect();
         }
-        this.connected = true;
-        console.log(this.connected)
     }
 
     /**
@@ -132,8 +129,6 @@ class DataSynchronizer {
         for(let dataSource of this.dataSources) {
             dataSource.disconnect();
         }
-        this.connected = false;
-        console.log(this.connected)
     }
 
     /**
@@ -158,6 +153,13 @@ class DataSynchronizer {
         return this.dataSources[0].properties.endTime;
     }
 
+    /**
+     * Gets the replaySpeed
+     * @returns {Number} - the replay speed
+     */
+    getReplaySpeed() {
+        return this.replaySpeed;
+    }
     /**
      * Sets the data source time range
      * @param {String} startTime - the startTime (in date ISO)
