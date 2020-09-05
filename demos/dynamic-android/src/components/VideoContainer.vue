@@ -25,21 +25,21 @@ export default {
     padding:10px;
     display: flex;
     margin: auto;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: absolute;
-    max-height: 245px;
-    height: calc(100% - 15px);
+    max-width: 350px;
     background: rgba(0,0,0,0.5) !important;
     bottom: 0px;
-    left: 50%;
+    left: 200px;
     transform: translate(-50%, -20px);
   }
+
 
 </style>
 <style>
   div.v-overlay+div.v-application--wrap .video-container-vue {
-    opacity: 0.4;
+    opacity: 1.0;
   }
 </style>

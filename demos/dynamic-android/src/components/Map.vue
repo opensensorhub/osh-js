@@ -202,4 +202,15 @@ export default {
 .v-application .map a {
   color: unset;
 }
+
+.leaflet-left .leaflet-control {
+  margin-left: 0px;
+  right: 14px;
+  top: 70px;
+}
+
+.leaflet-left {
+  left:unset;
+  right:0;
+}
 </style>
