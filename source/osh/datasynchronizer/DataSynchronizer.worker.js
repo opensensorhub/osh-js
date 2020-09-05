@@ -12,7 +12,7 @@ self.onmessage = (event) => {
     if(event.data.message === 'init') {
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
             event.data.dataSources,
-            event.data.replayFactor,
+            event.data.replaySpeed,
             event.data.intervalRate
         );
         dataSynchronizerAlgo.onData = onData;

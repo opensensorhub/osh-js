@@ -2,13 +2,13 @@
   <div id="app">
     <keep-alive>
       <Video
-              :modal="true"
-              :dataSource="dataSource"
-              :options="{top: '50', left: '50'}"
-              :showStats="true"
-              :showTime="true"
-              :frameRate=25
-              class="video"
+          :modal="true"
+          :dataSource="dataSource"
+          :options="{top: '50', left: '50'}"
+          :showStats="true"
+          :showTime="true"
+          :frameRate=30
+          class="video-container-vue"
       >
       </Video>
     </keep-alive>
@@ -16,7 +16,7 @@
 </template>
 <script>
     // @ is an alias to /src
-    import Video from 'osh-vue/components/VideoWithControl.vue';
+    import Video from 'osh-vue/components/video/VideoWithControl.vue';
     import VideoOsh from "osh/datareceiver/Video.js";
 
     export default {
@@ -39,23 +39,34 @@
                 observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
                 startTime: '2015-12-19T21:04:29.231Z',
                 endTime: '2015-12-19T21:09:19.675Z',
-                // endpointUrl: 'localhost:8082/sensorhub/sos',
-                // offeringID: 'replay-android',
-                // startTime: '2020-06-06T15:07:15.359Z',
-                // endTime: '2020-06-06T15:07:57.016Z',
                 replaySpeed: 1
             });
         }
     };
 </script>
 <style>
-  body {
-    overflow-x: hidden;
-    margin: 0;
-    padding:50px;
-  }
+body {
+  overflow-x: hidden;
+  margin: 0;
+  padding:0px;
+}
 
-  .video {
-    width: 500px;
-  }
+.video-container  {
+  margin:auto;
+  height: inherit;
+  width: inherit;
+}
+
+.osh-view {
+  margin: auto;
+  display: flex;
+}
+
+.main-video {
+  width: 100%;
+  height: 100%;
+}
+#app {
+  max-width: 600px;
+}
 </style>

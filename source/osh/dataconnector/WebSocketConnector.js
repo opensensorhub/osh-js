@@ -45,20 +45,23 @@ class WebSocketConnector extends DataConnector {
     constructor(properties) {
         super(properties);
         this.interval = -1;
-        this.lastReceiveTime = -1;
+        this.lastReceiveTime = 0;
+        this.reconnectionInterval = -1;
     }
 
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    connect() {
+    async connect() {
         if (!this.init) {
+            this.closed = false;
             this.init = true;
             //creates Web Socket
             this.ws = new WebSocket(this.getUrl());
             this.ws.binaryType = 'arraybuffer';
             this.ws.onmessage = function (event) {
+                this.checkAndclearReconnection();
                 this.lastReceiveTime = Date.now();
                 //callback data on message received
                 if (event.data.byteLength > 0) {
@@ -68,67 +71,60 @@ class WebSocketConnector extends DataConnector {
 
             // closes socket if any errors occur
             this.ws.onerror = function (event) {
-                console.error('WebSocket stream error: ',event);
-                this.ws.close();
+                console.error('WebSocket stream error');
                 this.init = false;
                 this.lastReceiveTime = -1;
+                this.createReconnection();
             }.bind(this);
 
             this.ws.onclose = (event) => {
-                console.info('Closing gracefully..');
-                this.fullDisconnect(true);
+                console.warn('WebSocket stream closed: ',event.reason, event.code);
+                this.init = false;
+                if(event.code !== 1000 && !this.closed) {
+                    this.createReconnection();
+                }
             };
-
-            //init the reconnect handler
-            if (this.interval === -1) {
-                this.interval = setInterval(function () {
-                    let delta = Date.now() - this.lastReceiveTime;
-                    // -1 means the WS went in error
-                    if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
-                        this.reconnect();
-                    }
-                }.bind(this), this.reconnectTimeout);
-            }
-
-            // DEBUGGING
-            this.ws.onclose = (ev) =>{
-                console.log('Socket Closed', ev);
-            }
-            // END DEBUG
         }
     }
 
+    checkAndclearReconnection() {
+        if(this.reconnectionInterval !== -1) {
+            clearInterval(this.reconnectionInterval);
+            this.reconnectionInterval = -1;
+        }
+    }
+    forceReconnect() {
+        this.disconnect();
+        this.connect();
+    }
+
+    createReconnection() {
+        if(this.reconnectionInterval === -1) {
+            this.onReconnect();
+            this.reconnectionInterval =  setInterval(function () {
+                let delta = Date.now() - this.lastReceiveTime;
+                // -1 means the WS went in error
+                if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
+                    console.warn('trying to reconnect', this.url);
+                    this.connect();
+                }
+            }.bind(this), this.reconnectTimeout);
+        }
+    }
+
+    onReconnect() {
+
+    }
+
     /**
-     * Disconnects the websocket.
+     * Disconnects and close the websocket.
      */
     disconnect() {
-        this.fullDisconnect(true);
-    }
-
-    /**
-     * Fully disconnect the websocket connection by sending a close message to the webWorker.
-     * @param {Boolean} removeInterval  - force removing the interval
-     */
-    fullDisconnect(removeInterval) {
-       if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
-               this.ws.close();
-               this.init = false;
-       }
-        if (removeInterval) {
-            clearInterval(this.interval);
-        }
-    }
-
-    /**
-     * Try to reconnect if the connexion if closed
-     */
-    reconnect() {
-        if(this.onReconnect()) {
-            console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
-            if (this.init) {
-                this.fullDisconnect(false);
-            }
-            this.connect();
+        this.checkAndclearReconnection();
+        this.init = false;
+        this.closed = true;
+        if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
+            this.ws.close();
         }
     }
 
@@ -140,11 +136,9 @@ class WebSocketConnector extends DataConnector {
     onMessage(data) {
     }
 
-    /**
-     * Closes the webSocket.
-     */
-    close() {
-        this.disconnect();
+
+    isConnected() {
+        return (this.ws != null && this.ws.readyState === WebSocket.OPEN);
     }
 }
 

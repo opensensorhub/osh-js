@@ -47,6 +47,7 @@ class DataSource {
         this.properties = properties;
         this.dataSourceWorker = worker;
         this.dataSynchronizer = null;
+        this.currentRunningProperties = {};
         this.initDataSource(properties);
     }
 
@@ -73,13 +74,51 @@ class DataSource {
     }
 
     /**
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
+     */
+    setTimeRange(startTime, endTime, replaySpeed) {
+        this.updateUrl({
+            ...this.currentRunningProperties,
+            startTime: startTime,
+            endTime: endTime,
+            replaySpeed: replaySpeed
+        });
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as ISO date
+     */
+    getStartTime() {
+        return this.properties.startTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getEndTime() {
+        return this.properties.endTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getReplaySpeed() {
+        return isDefined(this.properties.replaySpeed) ? this.properties.replaySpeed : 1;
+    }
+
+    /**
      * Disconnect the dataSource then the connector will be closed as well.
      */
     disconnect() {
         this.dataSourceWorker.postMessage({
             message: 'disconnect'
         });
-        this.connected = false;
     }
 
     /**
@@ -89,7 +128,25 @@ class DataSource {
         this.dataSourceWorker.postMessage({
             message: 'connect'
         });
-        this.connected = true;
+    }
+
+    async isConnected() {
+        const promise = new Promise(resolve => {
+            if(this.dataSourceWorker !== null) {
+                this.dataSourceWorker.onmessage = (event) => {
+                    if (event.data.message === 'is-connected') {
+                        resolve(event.data.data);
+                    }
+                };
+            }
+        });
+        if(this.dataSourceWorker !== null) {
+            this.dataSourceWorker.postMessage({
+                message: 'is-connected'
+            });
+        }
+
+        return promise;
     }
 
     async getCurrentTime() {
@@ -145,22 +202,26 @@ class DataSource {
      * @param {String} properties.observedProperty the observed property
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
-     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.replaySpeed the replay speed
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
      */
     updateUrl(properties) {
-        const newProperties = {
+        // save current running properties
+        this.currentRunningProperties = {
             ...this.properties,
             ...properties
         };
-
         if(this.dataSourceWorker !== null) {
             this.dataSourceWorker.postMessage({
                 message: 'update-url',
-                data: newProperties
+                data: properties
             });
         }
+    }
+
+    getCurrentRunningProperties() {
+        return this.currentRunningProperties;
     }
 
     terminate() {

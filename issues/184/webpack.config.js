@@ -28,6 +28,13 @@ const config = {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
   },
+  devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        compress: true,
+        port: 9000,
+        hot: true,
+        index: 'index.html'
+    },
   module: {
     unknownContextCritical: false,
     rules: [

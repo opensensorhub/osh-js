@@ -23,7 +23,6 @@ let videoMjpegDataSource = new Video("android-Video", {
   observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
   startTime: "2015-02-16T07:58:35Z",
   endTime: "2015-02-16T08:09:00Z",
-  syncMasterTime: true,
   bufferingTime: 0,
   replaySpeed: 1
 });

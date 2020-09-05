@@ -33,6 +33,10 @@ import Feature from 'ol/Feature.js';
 import {Icon, Style} from 'ol/style.js';
 import Select from "ol/interaction/Select";
 import OSM from "ol/source/OSM";
+import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
+import LayerSwitcher from 'ol-layerswitcher';
+import 'ol-layerswitcher/src/ol-layerswitcher.css';
+
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
@@ -219,8 +223,12 @@ class OpenLayerView extends View {
             controls: defaultControls().extend([
                 new FullScreen()
             ]),
-           interactions: defaultInteractions().extend([
-               new DragRotateAndZoom()
+           interactions: defaultInteractions({mouseWheelZoom: false}).extend([
+               new DragRotateAndZoom(),
+               new MouseWheelZoom({
+                   constrainResolution: true, // force zooming to a integer zoom,
+                   duration: 200
+               })
            ]),
             layers: [
                 new Group({
@@ -235,6 +243,12 @@ class OpenLayerView extends View {
             view: initialView,
 
         });
+
+        const layerSwitcher = new LayerSwitcher({
+            tipLabel: 'Legend', // Optional label for button
+            groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
+        });
+        this.map.addControl(layerSwitcher);
 
         this.map.addControl( new ZoomSlider());
 

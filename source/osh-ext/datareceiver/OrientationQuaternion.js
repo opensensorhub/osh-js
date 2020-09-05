@@ -31,8 +31,7 @@ import DataSource from '../../osh/datareceiver/DataSource.js';
         observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
         startTime: "2015-02-16T07:58:00Z",
         endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: replayFactor+"",
-        syncMasterTime: true,
+        replaySpeed: replaySpeed+"",
         bufferingTime: 1000
     });
  */

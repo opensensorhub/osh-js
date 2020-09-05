@@ -93,7 +93,7 @@ export function startStatic() {
         },
     ];
     const dataSynchronizer = new DataSynchronizer({
-        replayFactor: 1,
+        replaySpeed: 1,
         dataSources: [{
             id: '1',
             properties: {

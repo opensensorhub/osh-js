@@ -8,7 +8,13 @@ self.onmessage = (e) => {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 if(json) {
-                    self.postMessage(JSON.parse(xhr.responseText));
+                    try {
+                        const jsonResp = JSON.parse(xhr.responseText);
+                        self.postMessage(jsonResp);
+                    }catch(exception) {
+                        console.error('Cannot parse Json: \n',xhr.responseText);
+                        self.postMessage({error: true, msg: 'Cannot parse Json'});
+                    }
                 } else {
                     let sweXmlParser = new SWEXmlStreamParser(xhr.responseText);
                     sweXmlParser.setXml(xhr.responseText);

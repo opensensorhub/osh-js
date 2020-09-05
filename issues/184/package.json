@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    "dev": "webpack-dev-server --config webpack.config.js --host 192.168.2.146 --mode development --watch"
   },
   "dependencies": {
     "vue": "2.6.11",

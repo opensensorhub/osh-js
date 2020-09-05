@@ -23,7 +23,7 @@ class DataSynchronizer {
     /**
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
-     * @param {Number} properties.replayFactor - replayFactor value
+     * @param {Number} properties.replaySpeed - replaySpeed value
      * @param {Number} properties.intervalRate - interval in which data is played
      * @param {DataSource[]} properties.dataSources - the dataSource array
      */
@@ -35,22 +35,22 @@ class DataSynchronizer {
         this.currentTime = Date.now();
         this.id = randomUUID();
         this.dataSources = [];
-        let replayFactor = 1;
-        let intervalRate = 5;
+        this.replaySpeed = 1;
+        this.intervalRate = 5;
 
-        if(isDefined(properties.replayFactor)) {
-            replayFactor = properties.replayFactor;
+        if(isDefined(properties.replaySpeed)) {
+            this.replaySpeed = properties.replaySpeed;
         }
         if(isDefined(properties.intervalRate)) {
-            intervalRate = properties.intervalRate;
+            this.intervalRate = properties.intervalRate;
         }
-        this.initWorker(properties.dataSources, replayFactor, intervalRate);
+        this.initWorker(properties.dataSources, this.intervalRate);
     }
 
     /**
      * @private
      */
-    initWorker(dataSources, replayFactor, intervalRate) {
+    initWorker(dataSources, intervalRate) {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
@@ -63,7 +63,7 @@ class DataSynchronizer {
         this.synchronizerWorker.postMessage({
             message: 'init',
             dataSources: dataSourcesForWorker,
-            replayFactor: replayFactor,
+            replaySpeed: this.replaySpeed,
             intervalRate: intervalRate,
             dataSynchronizerId:this.id,
             topic: DATA_SYNCHRONIZER_TOPIC+this.id
@@ -83,6 +83,7 @@ class DataSynchronizer {
         // bind dataSource data onto dataSynchronizer data
         try {
             dataSource.setDataSynchronizer(this);
+            dataSource.properties.replaySpeed = this.replaySpeed;
         } catch(ex) {
             console.warn("Cannot set the synchronizer to this DataSource");
         }
@@ -111,15 +112,63 @@ class DataSynchronizer {
         }
     }
 
-    connectAll() {
+    /**
+     * Connects all dataSources
+     */
+    connect() {
         for(let dataSource of this.dataSources) {
             dataSource.connect();
         }
     }
 
-    disconnectAll() {
+    /**
+     * Disconnects all dataSources
+     */
+    disconnect() {
+        this.reset();
         for(let dataSource of this.dataSources) {
             dataSource.disconnect();
+        }
+    }
+
+    /**
+     * Gets the startTime of the first DataSource objet
+     * @returns {String} - startTime as ISO date
+     */
+    getStartTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return this.dataSources[0].properties.startTime;
+    }
+
+    /**
+     * Gets the endTime of the first DataSource objet
+     * @returns {String} - endTime as ISO date
+     */
+    getEndTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return this.dataSources[0].properties.endTime;
+    }
+
+    /**
+     * Gets the replaySpeed
+     * @returns {Number} - the replay speed
+     */
+    getReplaySpeed() {
+        return this.replaySpeed;
+    }
+    /**
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
+     */
+    setTimeRange(startTime, endTime, replaySpeed) {
+        for(let ds of this.dataSources) {
+            ds.setTimeRange(startTime, endTime, replaySpeed);
         }
     }
 

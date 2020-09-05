@@ -13,7 +13,6 @@ class DataSourceHandler {
         this.lastStartTime = 'now';
         this.timeShift = 0;
         this.reconnectTimeout = 1000 * 10; // 10 secs
-        this.connected = false;
     }
 
     createConnector(propertiesStr, topic, dataSourceId) {
@@ -44,7 +43,7 @@ class DataSourceHandler {
         }
 
         this.properties = properties;
-        this.createDataConnector(properties);
+        this.createDataConnector(this.properties);
     }
 
     /**
@@ -77,10 +76,9 @@ class DataSourceHandler {
             this.connector.setReconnectTimeout(this.reconnectTimeout);
         }
 
-        const lastStartTimeCst  = this.parser.lastStartTime;
-        // console.log(lastStartTimeCst);
-        // console.log(this.lastStartTime);
-        if(this.connector !== null) {
+        const lastStartTimeCst = this.parser.lastStartTime;
+        const lastProperties = properties;
+        if (this.connector !== null) {
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
@@ -89,8 +87,8 @@ class DataSourceHandler {
                     // console.log(this.lastTimeStamp);
                     this.connector.setUrl(this.parser.buildUrl(
                         {
+                            ...properties,
                             lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-                            ...this.properties
                         }));
                 }
                 return true;
@@ -113,15 +111,14 @@ class DataSourceHandler {
     connect() {
         if(this.connector !== null) {
             this.connector.connect();
-            this.connected = true;
         }
     }
 
     disconnect() {
         if(this.connector !== null) {
             this.connector.disconnect();
-            this.connected = false;
         }
+        this.connector = null;
     }
 
     onMessage(event) {
@@ -144,15 +141,48 @@ class DataSourceHandler {
     }
 
     updateUrl(properties) {
-        const isConnected = this.connected;
-        if(isConnected) {
-            this.disconnect();
+        this.disconnect();
+
+        let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
+
+        if(properties.hasOwnProperty('startTime')) {
+            lastTimestamp = properties.startTime;
+        } else if(this.properties.startTime === 'now'){
+            //handle RealTime
+            lastTimestamp = 'now';
         }
 
-        this.properties = properties;
-        this.createDataConnector(properties);
-        if(isConnected) {
+        this.createDataConnector({
+            ...this.properties,
+            ...properties,
+            lastTimeStamp: lastTimestamp
+        });
+
+        this.connect();
+    }
+
+    handleMessage(message, worker) {
+        if(message.message === 'init') {
+            this.createConnector(message.properties, message.topic, message.id);
+        } else if (message.message === 'connect') {
             this.connect();
+        } else if (message.message === 'disconnect') {
+            this.disconnect();
+        } else if (message.message === 'topic') {
+            this.setTopic(message.topic);
+        } else if (message.message === 'last-timestamp') {
+            const lastTimeStamp = this.getLastTimeStamp();
+            worker.postMessage({
+                message: 'last-timestamp',
+                data: lastTimeStamp
+            })
+        }  else if (message.message === 'update-url') {
+            this.updateUrl(message.data);
+        } else if (message.message === 'is-connected') {
+            worker.postMessage({
+                message: 'is-connected',
+                data: (this.connector === null)? false: this.connector.isConnected()
+            })
         }
     }
 }
