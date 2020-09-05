@@ -301,15 +301,11 @@ export default {
 }
 
 .control .buttons {
-  padding: 12px 8px 8px 8px;
   color: lightgray;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .control-btn {
-  padding: 0px 5px 0px 5px;
+  padding: 0px 0px 0px 5px;
 }
 
 .control-btn:hover {

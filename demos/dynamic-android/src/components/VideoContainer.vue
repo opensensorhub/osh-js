@@ -29,7 +29,8 @@ export default {
     justify-content: center;
     align-items: center;
     position: absolute;
-    height: 245px;
+    max-height: 245px;
+    height: calc(100% - 15px);
     background: rgba(0,0,0,0.5) !important;
     bottom: 0px;
     left: 50%;

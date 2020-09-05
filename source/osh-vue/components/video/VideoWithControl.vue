@@ -172,14 +172,13 @@
     position: relative;
     display: flex;
     align-items: center;
-    padding: 5px 0px 0 0px;
+    padding: 0px 0px 0 0px;
   }
 
   .video-control {
     position: absolute;
     left: calc(100% - 55px);
-    bottom: auto;
-    margin-top: 2px;
+    flex: auto;
   }
 
   .main-video {
@@ -190,7 +189,7 @@
 <style>
 .v-dialog {
   background: rgba(0,0,0,0.85);
-  height: calc(100% - 52px) !important;
+  height: calc(100% - 30px) !important;
   width: 90% !important;
   overflow: hidden;
 }
