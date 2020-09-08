@@ -41,6 +41,8 @@
                 endTime: '2015-12-19T21:09:19.675Z',
                 replaySpeed: 1
             });
+
+            this.dataSource.connect();
         }
     };
 </script>

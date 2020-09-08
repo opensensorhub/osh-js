@@ -55,15 +55,25 @@ export default {
 
 .video, .v-card, .no-dialog {
   width: inherit;
-  height: 175px;
+  height: calc(100% - 12px);
   background-color: #000000 !important;
 }
 
 .v-card {
-  height: 100%;
-  width: 320px;
+  height: 220px;
+  width: inherit;
+  min-width: 320px;
 }
 
+.v-application .video-h264 .ffmpeg-info {
+  padding: 0px;
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.v-application .v-dialog {
+  margin-left:400px !important;
+}
 .video-h264 > canvas {
   border-radius: 2px;
 }
