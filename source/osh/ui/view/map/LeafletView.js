@@ -19,6 +19,7 @@ import {isDefined, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import {bind} from "leaflet/dist/leaflet-src.esm";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Leaflet Map object.
@@ -75,7 +76,7 @@ class LeafletView extends View {
         super(parentElementDivId, viewItems, options);
 
         let cssClass = document.getElementById(this.divId).className;
-        document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
+        document.getElementById(this.divId).setAttribute("class", cssClass + " " + this.css);
     }
 
     beforeAddingItems(options) {
@@ -214,6 +215,7 @@ class LeafletView extends View {
      * @param {String} properties.description - description of the marker to display into the tooltip
      * @param {String} properties.labelOffset - offset of the label of the tooltip
      * @param {Number} properties.orientation - orientation of the icon in degree
+     * @param {function} properties.contextMenuFunction - function to be called when a marker icon is right clicked
      * @return {string} the id of the new created marker
      */
     addMarker(properties) {
@@ -246,6 +248,24 @@ class LeafletView extends View {
             marker.bindPopup(name + '<div>' + desc + '</div>');
         }
 
+        // OOT Modifications
+        marker.bubblingMouseEvents = false;
+        // marker.on('click', (evt)=>{
+        //     alert(`Clicked on marker ${name}`);
+        // });
+        console.log(properties);
+        if (properties.hasOwnProperty('contextMenuFunction')) {
+            console.log('Adding Context Menu Function');
+            let ctxtMFunc = properties.contextMenuFunction.handler.bind(this);
+            // this.ctxtMFunc = properties.contextMenuFunction;
+            marker.on('contextmenu', (evt) => {
+                // alert(`Clicked on marker ${name}`);
+                // properties.contextMenuFunction.handler();
+                ctxtMFunc(evt);
+            });
+        }
+        // END OOT Mods
+
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
 
@@ -262,9 +282,9 @@ class LeafletView extends View {
             for (let stylerId in self.stylerToObj) {
                 if (self.stylerToObj[stylerId] === id) {
                     let styler = self.stylerIdToStyler[stylerId];
-                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
+                    EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
                         dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                        entityId : styler.viewItem.entityId
+                        entityId: styler.viewItem.entityId
                     });
                     break;
                 }
@@ -276,9 +296,9 @@ class LeafletView extends View {
     removeViewItem(viewItem) {
         const markerId = this.stylerToObj[viewItem.styler.id];
         super.removeViewItem(viewItem);
-        if(isDefined(markerId)) {
+        if (isDefined(markerId)) {
             let marker = this.markers[markerId];
-            if(isDefined(marker)) {
+            if (isDefined(marker)) {
                 this.map.removeLayer(marker);
             }
 
@@ -332,12 +352,13 @@ class LeafletView extends View {
                 color: styler.color,
                 icon: styler.icon,
                 iconAnchor: styler.iconAnchor,
-                label : styler.label,
-                labelColor : styler.labelColor,
-                labelSize : styler.labelSize,
-                labelOffset : styler.labelOffset,
-                name : styler.viewItem.name,
-				description : styler.viewItem.description
+                label: styler.label,
+                labelColor: styler.labelColor,
+                labelSize: styler.labelSize,
+                labelOffset: styler.labelOffset,
+                name: styler.viewItem.name,
+                description: styler.viewItem.description,
+                contextMenuFunction: styler.contextMenuFunction
             });
             this.stylerToObj[styler.getId()] = markerId;
         } else {
@@ -352,12 +373,12 @@ class LeafletView extends View {
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
-            if((this.first && this.autoZoomOnFirstMarker) || this.follow) {
-                const markerBounds = L.latLngBounds([newLatLng ]);
+            if ((this.first && this.autoZoomOnFirstMarker) || this.follow) {
+                const markerBounds = L.latLngBounds([newLatLng]);
                 this.map.fitBounds(markerBounds, {
                     maxZoom: styler.zoomLevel
                 });
-                if(this.first) {
+                if (this.first) {
                     this.first = false;
                 }
             }
@@ -365,7 +386,7 @@ class LeafletView extends View {
 
 
         // updates orientation
-        if(isDefined(styler.orientation)) {
+        if (isDefined(styler.orientation)) {
             marker.setRotationAngle(styler.orientation.heading);
         }
 
@@ -434,11 +455,16 @@ class LeafletView extends View {
     onResize() {
         super.onResize();
         let that = this;
-        setTimeout(function(){ that.map.invalidateSize()}, 100);
+        setTimeout(function () {
+            that.map.invalidateSize()
+        }, 100);
 
     }
 
-    onChange(data) {}
+    onChange(data) {
+    }
+
+
 }
 
 /***  little hack starts here ***/
@@ -507,4 +533,4 @@ L.Map = L.Map.extend({
 
 /***  end of hack ***/
 
-export default  LeafletView;
+export default LeafletView;

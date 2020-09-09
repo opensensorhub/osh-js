@@ -295,6 +295,7 @@ class View {
                     }
 
                     //TODO: maybe done into the styler?
+                    console.log('DataSource Data:', event.data);
                     styler.setData(dataSourceId, event.data, self, {
                         selected: selected
                     });

@@ -84,6 +84,16 @@ class Curve extends Styler {
             };
             this.addFn(properties.valuesFunc.dataSourceIds, fn);
         }
+
+        if (isDefined(properties.valuesBlockFunc)) {
+            let fn = function (rec, timeStamp, options) {
+                let values = properties.valuesBlockFunc.handler(rec, timeStamp, options);
+                that.valueArray = values;
+            };
+            this.addFn(properties.valuesBlockFunc.dataSourceIds, fn);
+        }
+
+
     }
 
     setData(dataSourceId, rec, view, options) {

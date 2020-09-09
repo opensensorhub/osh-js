@@ -102,7 +102,7 @@ class ChartJsView extends View {
                         ...this.legendOpts
                     },
                     animation: {
-                        duration: 1000
+                        duration: 0
                     },
                     spanGaps: true,
                     scales: {
@@ -152,6 +152,9 @@ class ChartJsView extends View {
      * @param {Object} options -
      */
     updateCurve(styler, timestamp, options) {
+        console.log('UPDATING CURVE...');
+        console.log(styler);
+        console.log(this.datasets)
         let currentDataset = this.datasets[styler.getId()];
         if(!isDefined(currentDataset)) {
             currentDataset = {
@@ -164,6 +167,11 @@ class ChartJsView extends View {
                 pointHighlightStroke: "rgba(220,220,220,1)",
                 data: []
             };
+            if(styler.hasOwnProperty('valueArray')){
+                console.log(this.chart);
+                console.log(styler.valueArray);
+                currentDataset.data = styler.valueArray;
+            }
             currentDataset = {...currentDataset, ...this.datasetsOpts};
             this.datasets[styler.getId()] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
@@ -172,11 +180,16 @@ class ChartJsView extends View {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
         }
 
-        currentDataset.data.push({
-            x: styler.x,
-            y: styler.y
-        });
-        this.chart.data.labels.push(styler.x);
+        console.log(this.chart.data);
+
+        if(!styler.hasOwnProperty('valueArray')) {
+            currentDataset.data.push({
+                x: styler.x,
+                y: styler.y
+            });
+
+            this.chart.data.labels.push(styler.x);
+        }
 
         this.chart.update();
 

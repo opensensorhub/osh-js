@@ -197,6 +197,16 @@ class PointMarker extends Styler {
 			};
 			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
 		}
+
+		/*if (this.checkFn("contextMenuFunction")) {
+			let fn = function(rec,timeStamp,options) {
+				that.contextMenuFunction = properties.contextMenuFunction.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.contextMenuFunction.dataSourceIds,fn);
+		}*/
+		if(properties.hasOwnProperty('contextMenuFunction')){
+			this.contextMenuFunction  = properties.contextMenuFunction;
+		}
 	}
 
 	init(view) {
