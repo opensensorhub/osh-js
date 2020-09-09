@@ -77,6 +77,11 @@ class LeafletView extends View {
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass + " " + this.css);
+
+        this.selectionMarker = {};
+        this.selectedMarker = {};
+        this.hasMarkerSelected = false;
+
     }
 
     beforeAddingItems(options) {
@@ -248,21 +253,34 @@ class LeafletView extends View {
             marker.bindPopup(name + '<div>' + desc + '</div>');
         }
 
-        // OOT Modifications
-        marker.bubblingMouseEvents = false;
-        // marker.on('click', (evt)=>{
-        //     alert(`Clicked on marker ${name}`);
-        // });
-        console.log(properties);
-        if (properties.hasOwnProperty('contextMenuFunction') && properties.contextMenuFunction !== undefined) {
-            console.log('Adding Context Menu Function');
-            let ctxtMFunc = properties.contextMenuFunction.handler.bind(this);
-            // this.ctxtMFunc = properties.contextMenuFunction;
-            marker.on('contextmenu', (evt) => {
-                // alert(`Clicked on marker ${name}`);
-                // properties.contextMenuFunction.handler();
-                ctxtMFunc(evt);
+        // SelectionStuff
+        if(name === 'Selection Marker'){
+            this.selectionMarker = marker;
+            console.log(properties);
+            console.log(marker);
+        }else {
+            // OOT Modifications
+            marker.bubblingMouseEvents = false;
+            marker.on('click', (evt) => {
+                alert(`Clicked on marker ${name}`);
+                // console.log(properties);
+                // console.log(marker);
+                // let clickFn = properties.clickFunction.handler.bind(this);
+                properties.clickFunction.handler(this);
+                // clickFn(this)
+                // console.log(evt);
             });
+            console.log(properties);
+            if (properties.hasOwnProperty('contextMenuFunction') && properties.contextMenuFunction !== undefined) {
+                console.log('Adding Context Menu Function');
+                let ctxtMFunc = properties.contextMenuFunction.handler.bind(this);
+                // this.ctxtMFunc = properties.contextMenuFunction;
+                marker.on('contextmenu', (evt) => {
+                    // alert(`Clicked on marker ${name}`);
+                    // properties.contextMenuFunction.handler();
+                    ctxtMFunc(evt);
+                });
+            }
         }
         // END OOT Mods
 
@@ -286,6 +304,9 @@ class LeafletView extends View {
                         dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
                         entityId: styler.viewItem.entityId
                     });
+                    console.log(styler);
+                    self.selectionStyler.location = styler.location;
+                    self.updateMarker(self.selectionStyler);
                     break;
                 }
             }
@@ -358,9 +379,13 @@ class LeafletView extends View {
                 labelOffset: styler.labelOffset,
                 name: styler.viewItem.name,
                 description: styler.viewItem.description,
-                contextMenuFunction: styler.contextMenuFunction
+                contextMenuFunction: styler.contextMenuFunction,
+                clickFunction: styler.clickFunction
             });
             this.stylerToObj[styler.getId()] = markerId;
+            if(styler.viewItem.name === 'Selection Marker'){
+                this.selectionStyler = styler;
+            }
         } else {
             markerId = this.stylerToObj[styler.getId()];
         }

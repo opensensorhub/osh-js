@@ -207,6 +207,11 @@ class PointMarker extends Styler {
 		if(properties.hasOwnProperty('contextMenuFunction')){
 			this.contextMenuFunction  = properties.contextMenuFunction;
 		}
+
+		console.log(properties);
+		if(properties.hasOwnProperty('clickFunction')){
+			this.clickFunction = properties.clickFunction;
+		}
 	}
 
 	init(view) {
