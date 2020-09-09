@@ -254,7 +254,7 @@ class LeafletView extends View {
         //     alert(`Clicked on marker ${name}`);
         // });
         console.log(properties);
-        if (properties.hasOwnProperty('contextMenuFunction')) {
+        if (properties.hasOwnProperty('contextMenuFunction') && properties.contextMenuFunction !== undefined) {
             console.log('Adding Context Menu Function');
             let ctxtMFunc = properties.contextMenuFunction.handler.bind(this);
             // this.ctxtMFunc = properties.contextMenuFunction;
