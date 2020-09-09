@@ -262,13 +262,7 @@ class LeafletView extends View {
             // OOT Modifications
             marker.bubblingMouseEvents = false;
             marker.on('click', (evt) => {
-                alert(`Clicked on marker ${name}`);
-                // console.log(properties);
-                // console.log(marker);
-                // let clickFn = properties.clickFunction.handler.bind(this);
                 properties.clickFunction.handler(this);
-                // clickFn(this)
-                // console.log(evt);
             });
             console.log(properties);
             if (properties.hasOwnProperty('contextMenuFunction') && properties.contextMenuFunction !== undefined) {
