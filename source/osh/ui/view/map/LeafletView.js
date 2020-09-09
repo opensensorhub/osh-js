@@ -483,6 +483,12 @@ class LeafletView extends View {
     onChange(data) {
     }
 
+    selectMarker(styler){
+        console.log(styler.styler);
+        console.log(this.selectionStyler);
+        this.selectionStyler.location = styler.styler.location;
+        this.updateMarker(this.selectionStyler);
+    }
 
 }
 
