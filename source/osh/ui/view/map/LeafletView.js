@@ -490,6 +490,8 @@ class LeafletView extends View {
         this.updateMarker(this.selectionStyler);
     }
 
+    deselectMarker(){}
+
 }
 
 /***  little hack starts here ***/
