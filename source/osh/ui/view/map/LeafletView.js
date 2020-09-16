@@ -154,6 +154,10 @@ class LeafletView extends View {
         this.map.zoomControl.setPosition('topright')
         this.map.setView(initialView.location, initialView.zoom);
 
+        this.map.on('click', ()=>{
+            this.selectionMarker.setOpacity(0);
+        })
+
         //this.initLayers();
         this.markers = {};
         this.polylines = {};
@@ -264,6 +268,7 @@ class LeafletView extends View {
             marker.bubblingMouseEvents = false;
             marker.on('click', (evt) => {
                 properties.clickFunction.handler(this);
+                this.selectionMarker.setOpacity(100);
             });
             console.log(properties);
             if (properties.hasOwnProperty('contextMenuFunction') && properties.contextMenuFunction !== undefined) {
