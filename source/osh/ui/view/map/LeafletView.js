@@ -150,7 +150,8 @@ class LeafletView extends View {
         });
 
         L.control.layers(baseLayers, overlays).addTo(this.map);
-
+        // L.control.zoom({position: 'topright'}).addTo(this.map);
+        this.map.zoomControl.setPosition('topright')
         this.map.setView(initialView.location, initialView.zoom);
 
         //this.initLayers();
