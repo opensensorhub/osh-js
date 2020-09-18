@@ -277,8 +277,9 @@ class LeafletView extends View {
                 // this.ctxtMFunc = properties.contextMenuFunction;
                 marker.on('contextmenu', (evt) => {
                     // alert(`Clicked on marker ${name}`);
-                    // properties.contextMenuFunction.handler();
-                    ctxtMFunc(evt);
+                    console.log('Event:', evt);
+                    properties.contextMenuFunction.handler(this, evt);
+                    // ctxtMFunc(evt);
                 });
             }
         }
