@@ -73,6 +73,7 @@ class Ajax extends DataConnector {
     sendRequest(request, extraUrl) {
         let self = this;
         let xmlhttp = new XMLHttpRequest();
+        xmlhttp.withCredentials = true;
         xmlhttp.timeout = 60000;
         if (request === null) {
             if (isDefined(extraUrl)) {
