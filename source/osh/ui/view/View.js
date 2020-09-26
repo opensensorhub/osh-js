@@ -157,7 +157,13 @@ class View {
                     if (event.data.message && event.data.message === 'reset') {
                         that.reset(); // on data stream reset
                     } else {
-                        that.setData(dataSourceId, event.data);
+                        if(event.data.type === 'data') {
+                            that.setData(dataSourceId, event.data);
+                        } else if(event.data.type === 'message') {
+                            if(event.data.status === 'disconnected') {
+                                that.reset();
+                            }
+                        }
                     }
                 };
             }

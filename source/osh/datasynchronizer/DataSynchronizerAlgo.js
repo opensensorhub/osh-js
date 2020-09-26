@@ -21,6 +21,10 @@ class DataSynchronizerAlgo {
 
     push(dataSourceId, data) {
         const ds = this.dataSourceMap[dataSourceId];
+        if(ds.status === 0) {
+            return;
+        }
+
         if (this.startBufferingTime === -1) {
             this.startBufferingTime = performance.now();
             // start iterating on data after bufferingTime
@@ -53,6 +57,9 @@ class DataSynchronizerAlgo {
         let currentDs;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if(currentDs.status === 0) {
+                continue;
+            }
             if (currentDs.dataBuffer.length > 0) {
                 tsRef = (tsRef === -1 || currentDs.dataBuffer[0].timeStamp < tsRef) ? currentDs.dataBuffer[0].timeStamp :
                     tsRef;
@@ -78,9 +85,12 @@ class DataSynchronizerAlgo {
 
         // compute max latency
         let maxLatency = 0;
-        let minLatency;
+        let minLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if(currentDs.status === 0) {
+                continue;
+            }
             if (currentDs.latency > 0) {
                 let latency = Math.min(currentDs.latency, currentDs.timeOut);
                 maxLatency = (latency > maxLatency) ? latency : maxLatency;
@@ -94,6 +104,9 @@ class DataSynchronizerAlgo {
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if(currentDs.status === 0) {
+                continue;
+            }
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = currentDs.dataBuffer[0].timeStamp - tsRef;
                 const dClockAdj = dClock - maxLatency;
@@ -127,6 +140,10 @@ class DataSynchronizerAlgo {
         return false;
     }
 
+    /**
+     * Add dataSource to be synchronized
+     * @param {DataSource} dataSource - the dataSource to synchronize
+     */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
             bufferingTime: dataSource.bufferingTime,
@@ -136,11 +153,38 @@ class DataSynchronizerAlgo {
             id: dataSource.id,
             timedOut: false,
             name: dataSource.name || dataSource.id,
-            latency: 0
+            latency: 0,
+            status: 1 //MEANING Enabled, 0 = Disabled
         };
     }
 
     onData(dataSourceId, data) {
+    }
+
+    /**
+     * Disable a DataSource from the Algorithm synchronization
+     * @param dataSourceId
+     */
+    disable(dataSourceId) {
+        if(dataSourceId in  this.dataSourceMap) {
+            this.dataSourceMap[dataSourceId].status = 0;
+
+            console.warn('Disabled DataSource '+dataSourceId+' from the synchronizer ');
+            // reset latency and buffer
+            this.dataSourceMap[dataSourceId].latency = 0;
+            this.dataSourceMap[dataSourceId].dataBuffer = [];
+        }
+    }
+
+    /**
+     * Disable a DataSource from the Algorithm synchronization
+     * @param dataSourceId
+     */
+    enable(dataSourceId) {
+        if(dataSourceId in  this.dataSourceMap) {
+            this.dataSourceMap[dataSourceId].status = 1;
+            console.warn('Enabled DataSource '+dataSourceId+' from the synchronizer ');
+        }
     }
 
     close() {

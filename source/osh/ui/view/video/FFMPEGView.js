@@ -189,6 +189,20 @@ class FFMPEGView extends View {
      * @override
      */
     reset() {
+        this.resetCalled = true;
+        let nodata = new Uint8Array(1);
+        nodata[0] = 128;
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
     }
 
     /**

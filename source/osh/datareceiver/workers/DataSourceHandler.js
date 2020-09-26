@@ -8,7 +8,6 @@ class DataSourceHandler {
     constructor(parser) {
         this.parser = parser;
         this.connector = null;
-
         this.lastTimeStamp = null;
         this.lastStartTime = 'now';
         this.timeShift = 0;
@@ -79,6 +78,9 @@ class DataSourceHandler {
         const lastStartTimeCst = this.parser.lastStartTime;
         const lastProperties = properties;
         if (this.connector !== null) {
+            // bind change connection STATUS
+            this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
+
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
@@ -121,11 +123,25 @@ class DataSourceHandler {
 
     onMessage(event) {
         const obj = {
+            type: 'data',
             dataSourceId: this.dataSourceId,
             timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
             data: this.parser.parseData(event)
         };
         this.lastTimeStamp = obj.timeStamp;
+        this.broadcastChannel.postMessage(obj);
+    }
+
+    /**
+     * Send a change status event into the broadcast channel
+     * @param {Status} status - the new status
+     */
+    onChangeStatus(status) {
+        const obj = {
+            type: 'message',
+            dataSourceId: this.dataSourceId,
+            status: status.name
+        };
         this.broadcastChannel.postMessage(obj);
     }
 
