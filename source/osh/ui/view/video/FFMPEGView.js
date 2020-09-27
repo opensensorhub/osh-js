@@ -128,8 +128,6 @@ class FFMPEGView extends View {
             });
         });
 
-        this.initFFMPEG_DECODER_WORKER();
-
         let hidden, visibilityChange;
 
         if (isDefined(document.hidden)) { // Opera 12.10 and Firefox 18 and later support
@@ -164,6 +162,10 @@ class FFMPEGView extends View {
 
     setData(dataSourceId, data) {
         if (!this.skipFrame) {
+            if(this.decodeWorker == null) {
+               this.initFFMPEG_DECODER_WORKER();
+            }
+
             let pktData = data.data.frameData;
             let pktSize = pktData.length;
             let roll = data.data.roll;
@@ -189,6 +191,10 @@ class FFMPEGView extends View {
      * @override
      */
     reset() {
+        if(this.decodeWorker !== null) {
+            this.decodeWorker.terminate();
+            this.decodeWorker = null;
+        }
         this.resetCalled = true;
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
