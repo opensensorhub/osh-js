@@ -1,5 +1,7 @@
-import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
-import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
+import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
+import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
+import {Status} from "../dataconnector/Status.js";
+import {isDefined} from "../utils/Utils";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -45,10 +47,9 @@ function initBroadcastChannel(topic) {
             });
         } else if(event.data.type === 'message') {
             const dataSourceId = event.data.dataSourceId;
-            if(event.data.status === 'disconnected') {
-                dataSynchronizerAlgo.disable(dataSourceId);
-            } else  if(event.data.status === 'connected') {
-                dataSynchronizerAlgo.enable(dataSourceId);
+
+            if(isDefined(event.data.status)) {
+                dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
             }
             // bubble the message
             bcChannels[dataSourceId].postMessage(event.data);

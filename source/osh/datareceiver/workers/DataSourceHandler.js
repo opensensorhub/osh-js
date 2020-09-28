@@ -140,7 +140,7 @@ class DataSourceHandler {
         const obj = {
             type: 'message',
             dataSourceId: this.dataSourceId,
-            status: status.name
+            status: status
         };
         this.broadcastChannel.postMessage(obj);
     }

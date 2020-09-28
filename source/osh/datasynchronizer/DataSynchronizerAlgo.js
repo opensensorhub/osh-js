@@ -1,4 +1,5 @@
 import {isDefined} from "../utils/Utils";
+import {Status} from "../dataconnector/Status";
 
 class DataSynchronizerAlgo {
     constructor(dataSources, replaySpeed = 1, intervalRate = 5) {
@@ -21,7 +22,7 @@ class DataSynchronizerAlgo {
 
     push(dataSourceId, data) {
         const ds = this.dataSourceMap[dataSourceId];
-        if(ds.status === 0) {
+        if (ds.status === Status.DISCONNECTED) {
             return;
         }
 
@@ -57,7 +58,7 @@ class DataSynchronizerAlgo {
         let currentDs;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if(currentDs.status === 0) {
+            if (currentDs.status === Status.DISCONNECTED) {
                 continue;
             }
             if (currentDs.dataBuffer.length > 0) {
@@ -88,7 +89,7 @@ class DataSynchronizerAlgo {
         let minLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if(currentDs.status === 0) {
+            if (currentDs.status === Status.DISCONNECTED) {
                 continue;
             }
             if (currentDs.latency > 0) {
@@ -104,7 +105,7 @@ class DataSynchronizerAlgo {
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if(currentDs.status === 0) {
+            if (currentDs.status === Status.DISCONNECTED) {
                 continue;
             }
             if (currentDs.dataBuffer.length > 0) {
@@ -112,7 +113,7 @@ class DataSynchronizerAlgo {
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClockAdj*this.replaySpeed) {
+                if (dTs <= dClockAdj * this.replaySpeed) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;
@@ -154,7 +155,7 @@ class DataSynchronizerAlgo {
             timedOut: false,
             name: dataSource.name || dataSource.id,
             latency: 0,
-            status: 1 //MEANING Enabled, 0 = Disabled
+            status: Status.DISCONNECTED //MEANING Enabled, 0 = Disabled
         };
     }
 
@@ -162,36 +163,29 @@ class DataSynchronizerAlgo {
     }
 
     /**
-     * Disable a DataSource from the Algorithm synchronization
-     * @param dataSourceId
+     * Change the dataSource status
+     * @param {Status} status - the new status
+     * @param {String} dataSourceId - the corresponding dataSource id
      */
-    disable(dataSourceId) {
-        if(dataSourceId in  this.dataSourceMap) {
-            this.dataSourceMap[dataSourceId].status = 0;
+    setStatus(dataSourceId, status) {
+        if (dataSourceId in this.dataSourceMap) {
+            this.dataSourceMap[dataSourceId].status = status;
+            if (status === Status.DISCONNECTED) {
+                // reset latency and buffer
+                this.dataSourceMap[dataSourceId].latency = 0;
+                this.dataSourceMap[dataSourceId].dataBuffer = [];
+            }
 
-            console.warn('Disabled DataSource '+dataSourceId+' from the synchronizer ');
-            // reset latency and buffer
-            this.dataSourceMap[dataSourceId].latency = 0;
-            this.dataSourceMap[dataSourceId].dataBuffer = [];
-        }
-    }
-
-    /**
-     * Disable a DataSource from the Algorithm synchronization
-     * @param dataSourceId
-     */
-    enable(dataSourceId) {
-        if(dataSourceId in  this.dataSourceMap) {
-            this.dataSourceMap[dataSourceId].status = 1;
-            console.warn('Enabled DataSource '+dataSourceId+' from the synchronizer ');
+            console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
     }
 
     close() {
-        if(isDefined(this.interval)) {
+        if (isDefined(this.interval)) {
             clearInterval(this.interval);
             console.log("Data synchronizer terminated successfully");
         }
     }
 }
+
 export default DataSynchronizerAlgo;

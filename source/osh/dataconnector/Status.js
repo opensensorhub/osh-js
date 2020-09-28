@@ -3,7 +3,7 @@
  * @readonly
  * @enum {{name: string}}
  */
-export const Status = Object.freeze({
-    CONNECTED:   { name: "connected"},
-    DISCONNECTED:  { name: "disconnected"}
-});
+export const Status = {
+    CONNECTED:  "connected",
+    DISCONNECTED: "disconnected"
+};
