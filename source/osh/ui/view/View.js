@@ -24,6 +24,7 @@ import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC} from "../../Constants";
+import {Status} from "../../dataconnector/Status";
 
 class View {
     /**
@@ -157,7 +158,14 @@ class View {
                     if (event.data.message && event.data.message === 'reset') {
                         that.reset(); // on data stream reset
                     } else {
-                        that.setData(dataSourceId, event.data);
+                        if(event.data.type === 'data') {
+                            that.setData(dataSourceId, event.data);
+                        } else if(event.data.type === 'message') {
+                            if(isDefined(event.data.status) &&
+                                                    event.data.status === Status.DISCONNECTED) {
+                                that.reset();
+                            }
+                        }
                     }
                 };
             }
@@ -417,7 +425,6 @@ class View {
      * Calls for resetting the view.
      */
     reset() {
-        console.log('reset view');
     }
 }
 

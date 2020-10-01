@@ -16,6 +16,7 @@
 
 import DataConnector from './DataConnector.js';
 import {isWebWorker} from '../utils/Utils.js';
+import {Status} from './Status.js';
 
 /**
  * Defines the WebSocketConnector to connect to a remote server by creating a WebSocket channel.
@@ -46,7 +47,6 @@ class WebSocketConnector extends DataConnector {
         super(properties);
         this.interval = -1;
         this.lastReceiveTime = 0;
-        this.reconnectionInterval = -1;
     }
 
     /**
@@ -61,8 +61,10 @@ class WebSocketConnector extends DataConnector {
             this.ws = new WebSocket(this.getUrl());
             this.ws.binaryType = 'arraybuffer';
             this.ws.onmessage = function (event) {
-                this.checkAndclearReconnection();
+                this.checkAndClearReconnection();
+                this.checkStatus(Status.CONNECTED);
                 this.lastReceiveTime = Date.now();
+
                 //callback data on message received
                 if (event.data.byteLength > 0) {
                     this.onMessage(event.data);
@@ -72,12 +74,14 @@ class WebSocketConnector extends DataConnector {
             // closes socket if any errors occur
             this.ws.onerror = function (event) {
                 console.error('WebSocket stream error');
+                this.checkStatus(Status.DISCONNECTED);
                 this.init = false;
                 this.lastReceiveTime = -1;
                 this.createReconnection();
             }.bind(this);
 
             this.ws.onclose = (event) => {
+                this.checkStatus(Status.DISCONNECTED);
                 console.warn('WebSocket stream closed: ',event.reason, event.code);
                 this.init = false;
                 if(event.code !== 1000 && !this.closed) {
@@ -85,17 +89,6 @@ class WebSocketConnector extends DataConnector {
                 }
             };
         }
-    }
-
-    checkAndclearReconnection() {
-        if(this.reconnectionInterval !== -1) {
-            clearInterval(this.reconnectionInterval);
-            this.reconnectionInterval = -1;
-        }
-    }
-    forceReconnect() {
-        this.disconnect();
-        this.connect();
     }
 
     createReconnection() {
@@ -112,15 +105,11 @@ class WebSocketConnector extends DataConnector {
         }
     }
 
-    onReconnect() {
-
-    }
-
     /**
      * Disconnects and close the websocket.
      */
     disconnect() {
-        this.checkAndclearReconnection();
+       super.disconnect();
         this.init = false;
         this.closed = true;
         if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {

@@ -68,7 +68,7 @@ let directories = ['cesium-fois', 'cesium-location','chart', 'discovery',
     'leaflet-location', 'leaflet-location-fois', 'leaflet-location-heading',
     'leaflet-location-path', 'openlayers-location', 'range-slider',
     'video-h264','video-h264-draping', 'video-h264-transferable','video-mjpeg', 'video-with-control-vuejs',
-    'video-map-multiple-datasource', 'video-map-multiple-datasource-synchronizer'];
+    'video-with-control-vuejs-synchronized', 'video-map-multiple-datasource', 'video-map-multiple-datasource-synchronizer'];
 
 const plug= {};
 

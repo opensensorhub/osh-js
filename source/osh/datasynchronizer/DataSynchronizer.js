@@ -106,6 +106,7 @@ class DataSynchronizer {
     push(dataSourceId, data) {
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.postMessage({
+                type: 'data',
                 dataSourceId: dataSourceId,
                 data: data
             });

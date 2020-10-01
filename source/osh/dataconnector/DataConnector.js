@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {randomUUID} from '../utils/Utils.js';
+import {Status} from './Status.js';
 
 /**
  * The DataConnector is the abstract class used to create different connectors.
@@ -27,6 +28,20 @@ class DataConnector {
         this.url = url;
         this.id = "DataConnector-" + randomUUID();
         this.reconnectTimeout = 1000 * 60 * 2; //2 min
+        this.status =  Status.DISCONNECTED;
+        this.reconnectionInterval = -1;
+    }
+
+    checkAndClearReconnection() {
+        if(this.reconnectionInterval !== -1) {
+            clearInterval(this.reconnectionInterval);
+            this.reconnectionInterval = -1;
+        }
+    }
+
+    disconnect() {
+        this.checkStatus(Status.DISCONNECTED);
+        this.checkAndClearReconnection();
     }
 
     /**
@@ -65,11 +80,44 @@ class DataConnector {
         return true;
     }
 
-    forceReconnect() {}
+    connect() {}
 
-    disconnect() {}
+    forceReconnect() {
+        this.disconnect();
+        this.connect();
+    }
 
-    isConnected() {}
+    /**
+     * Called when the connection STATUS changes
+     * @param {Status} status - the new status
+     */
+    onChangeStatus(status) {
+
+    }
+
+    /**
+     * Check a change of the status and call the corresponding callbacks if necessary
+     * @param {Status} status - the currentStatus
+     */
+    checkStatus(status) {
+        if(status !== this.status) {
+            this.onChangeStatus(status);
+            this.status = status;
+        }
+    }
+    /**
+     * Called when the connector has been disconnected
+     */
+    onDisconnect() {
+
+    }
+
+    /**
+     * Called when the connector has been connected
+     */
+    onConnect() {
+
+    }
 }
 
 export default DataConnector;

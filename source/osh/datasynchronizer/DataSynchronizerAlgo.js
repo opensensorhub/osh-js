@@ -1,4 +1,5 @@
 import {isDefined} from "../utils/Utils";
+import {Status} from "../dataconnector/Status";
 
 class DataSynchronizerAlgo {
     constructor(dataSources, replaySpeed = 1, intervalRate = 5) {
@@ -21,6 +22,10 @@ class DataSynchronizerAlgo {
 
     push(dataSourceId, data) {
         const ds = this.dataSourceMap[dataSourceId];
+        if (ds.status === Status.DISCONNECTED) {
+            return;
+        }
+
         if (this.startBufferingTime === -1) {
             this.startBufferingTime = performance.now();
             // start iterating on data after bufferingTime
@@ -53,6 +58,9 @@ class DataSynchronizerAlgo {
         let currentDs;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.status === Status.DISCONNECTED) {
+                continue;
+            }
             if (currentDs.dataBuffer.length > 0) {
                 tsRef = (tsRef === -1 || currentDs.dataBuffer[0].timeStamp < tsRef) ? currentDs.dataBuffer[0].timeStamp :
                     tsRef;
@@ -78,9 +86,12 @@ class DataSynchronizerAlgo {
 
         // compute max latency
         let maxLatency = 0;
-        let minLatency;
+        let minLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.status === Status.DISCONNECTED) {
+                continue;
+            }
             if (currentDs.latency > 0) {
                 let latency = Math.min(currentDs.latency, currentDs.timeOut);
                 maxLatency = (latency > maxLatency) ? latency : maxLatency;
@@ -94,12 +105,15 @@ class DataSynchronizerAlgo {
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.status === Status.DISCONNECTED) {
+                continue;
+            }
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = currentDs.dataBuffer[0].timeStamp - tsRef;
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClockAdj*this.replaySpeed) {
+                if (dTs <= dClockAdj * this.replaySpeed) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;
@@ -127,6 +141,10 @@ class DataSynchronizerAlgo {
         return false;
     }
 
+    /**
+     * Add dataSource to be synchronized
+     * @param {DataSource} dataSource - the dataSource to synchronize
+     */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
             bufferingTime: dataSource.bufferingTime,
@@ -136,18 +154,38 @@ class DataSynchronizerAlgo {
             id: dataSource.id,
             timedOut: false,
             name: dataSource.name || dataSource.id,
-            latency: 0
+            latency: 0,
+            status: Status.DISCONNECTED //MEANING Enabled, 0 = Disabled
         };
     }
 
     onData(dataSourceId, data) {
     }
 
+    /**
+     * Change the dataSource status
+     * @param {Status} status - the new status
+     * @param {String} dataSourceId - the corresponding dataSource id
+     */
+    setStatus(dataSourceId, status) {
+        if (dataSourceId in this.dataSourceMap) {
+            this.dataSourceMap[dataSourceId].status = status;
+            if (status === Status.DISCONNECTED) {
+                // reset latency and buffer
+                this.dataSourceMap[dataSourceId].latency = 0;
+                this.dataSourceMap[dataSourceId].dataBuffer = [];
+            }
+
+            console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
+        }
+    }
+
     close() {
-        if(isDefined(this.interval)) {
+        if (isDefined(this.interval)) {
             clearInterval(this.interval);
             console.log("Data synchronizer terminated successfully");
         }
     }
 }
+
 export default DataSynchronizerAlgo;
