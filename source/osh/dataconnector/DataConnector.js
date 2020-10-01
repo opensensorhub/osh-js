@@ -32,7 +32,7 @@ class DataConnector {
         this.reconnectionInterval = -1;
     }
 
-    checkAndclearReconnection() {
+    checkAndClearReconnection() {
         if(this.reconnectionInterval !== -1) {
             clearInterval(this.reconnectionInterval);
             this.reconnectionInterval = -1;
@@ -41,7 +41,7 @@ class DataConnector {
 
     disconnect() {
         this.checkStatus(Status.DISCONNECTED);
-        this.checkAndclearReconnection();
+        this.checkAndClearReconnection();
     }
 
     /**
