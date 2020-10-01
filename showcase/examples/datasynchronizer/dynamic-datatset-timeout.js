@@ -68,8 +68,8 @@ export function startDynamicWithTimeout(cbFinish) {
 
     const currentTimeBroadCastChannel = new BroadcastChannel(DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id);
     console.log('listen for currentTime',DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id)
-    currentTimeBroadCastChannel.onmessage = (event) => {
-      eltCurrentTime.innerText = new Date(event.data.currentTime);
+    currentTimeBroadCastChannel.onmessage = async (event) => {
+      eltCurrentTime.innerText = new Date(await dataSynchronizer.getCurrentTime()).toISOString();
     };
 
     startDataSet(eltDynamic, 100, eltDynamicErrors, [],
