@@ -132,10 +132,9 @@ export default {
 <style scoped>
   .video-control {
     position: relative;
-    bottom: 0px;
+    bottom: 0;
     display:flex;
     align-items: baseline;
-    padding: 5px 0 0 0;
     color: #fff;
   }
 
@@ -144,7 +143,7 @@ export default {
   }
 
   .video-control .control-btn {
-    padding: 0px 15px 0px 5px
+    padding: 0 10px 0 10px;
   }
 </style>
 

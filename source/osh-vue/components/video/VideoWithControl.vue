@@ -176,8 +176,6 @@
   }
 
   .video-control {
-    position: absolute;
-    left: calc(100% - 55px);
     flex: auto;
   }
 
@@ -214,5 +212,9 @@
 
 .video-container .video-h264 > canvas {
   margin: auto;
+}
+
+.v-dialog > .video-control-container > .control .buttons .actions{
+  padding: 0;
 }
 </style>

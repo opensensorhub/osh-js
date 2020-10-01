@@ -228,7 +228,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  float: left;
+  margin-left: 10px;
+}
+
+.control .control-btn {
+  padding: 0px 10px 0px 0;
 }
 </style>
 
@@ -304,10 +308,6 @@ export default {
   color: lightgray;
 }
 
-.control-btn {
-  padding: 0px 0px 0px 5px;
-}
-
 .control-btn:hover {
   cursor: pointer;
   color: #00B5B8;
@@ -319,12 +319,13 @@ export default {
 
 .control .time {
   float: right;
-  margin-left: 15px;
+  margin-left:10px;
 }
 
 .control .buttons .actions {
   display: flex;
   align-items: center;
+  padding: 10px 10px 10px 10px;
 }
 
 .control .buttons .time {
