@@ -109,17 +109,6 @@
     <?js } ?>
 
     <?js
-        var members = self.find({kind: 'member', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
-        if (members && members.length && members.forEach) {
-    ?>
-        <h3 class="subsection-title">Members</h3>
-
-        <dl><?js members.forEach(function(p) { ?>
-            <?js= self.partial('members.tmpl', p) ?>
-        <?js }); ?></dl>
-    <?js } ?>
-
-    <?js
         var methods = self.find({kind: 'function', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
         if (methods && methods.length && methods.forEach) {
     ?>
