@@ -31,9 +31,16 @@ self.onmessage = (event) => {
             data: self.currentTime
         });
     }  else if(event.data.message === 'reset') {
-        dataSynchronizerAlgo.reset();
-    } else if(dataSynchronizerAlgo !== null) {
-        dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+        if(dataSynchronizerAlgo !== null) {
+            dataSynchronizerAlgo.reset();
+        }
+    } else if(event.data.message === 'data') {
+        if(dataSynchronizerAlgo !== null) {
+            dataSynchronizerAlgo.push(event.data.dataSourceId, {
+                data: event.data.data,
+                timeStamp: event.data.timeStamp
+            });
+        }
     }
 }
 
