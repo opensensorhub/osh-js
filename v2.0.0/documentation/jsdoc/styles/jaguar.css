@@ -247,7 +247,7 @@ li {
   border-radius: 3px;
   background-color: #888!important;
   font-size: 0.7em;
-  padding: 2px 4px;
+  padding: 3px 4px;
   margin-right: 5px;
 }
 .main .nameContainer .inherited a {
@@ -266,6 +266,8 @@ li {
   color: gray;
 }
 .main .nameContainer h4 {
+  display:flex;
+  align-items: flex-end;
   margin-right: 150px;
   line-height: 1.3;
 }

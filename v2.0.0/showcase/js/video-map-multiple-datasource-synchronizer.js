@@ -92,7 +92,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         intervalRate: 5,
         dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
     })
-    dataSynchronizer.connectAll();
+    dataSynchronizer.connect();
 
     return dataSynchronizer;
 }

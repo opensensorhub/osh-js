@@ -534,7 +534,7 @@ function removeLastCharIfExist(value) {
 class DataSourceParser_DataSourceParser {
   /**
    * Builds the full url.
-   * @private
+   * @protected
    * @param {Object} properties
    * @param {String} properties.protocol the connector protocol
    * @param {String} properties.endpointUrl the endpoint url
@@ -544,12 +544,13 @@ class DataSourceParser_DataSourceParser {
    * @param {String} properties.startTime the start time (ISO format)
    * @param {String} properties.endTime the end time (ISO format)
    * @param {Number} properties.replaySpeed the replay factor
-   * @param {Number} properties.responseFormat the response format (e.g video/mp4, application/json, video/H264)
+   * @param {Number} properties.responseFormat the response format (e.g video/mp4)
    * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
-   * @param {Number} properties.video_bitrate - define a custom bitrate (in b/s)
-   * @param {Number} properties.video_scale - define a custom scale, 0.0 < value < 1.0
-   * @param {Number} properties.video_width - define a custom width
-   * @param {Number} properties.video_height - define a custom height
+   * @param {Object} properties.customUrlParams - the encoding options
+   * @param {Number} properties.customUrlParams.video_bitrate - define a custom bitrate (in b/s)
+   * @param {Number} properties.customUrlParams.video_scale - define a custom scale, 0.0 < value < 1.0
+   * @param {Number} properties.customUrlParams.video_width - define a custom width
+   * @param {Number} properties.customUrlParams.video_height - define a custom height
    * @return {String} the full url
    */
   buildUrl(properties) {
@@ -557,42 +558,48 @@ class DataSourceParser_DataSourceParser {
 
     url += properties.protocol + "://"; // adds endpoint url
 
-    url += properties.endpointUrl + "?"; // adds version
+    url += properties.endpointUrl + "?"; // adds service
+
+    url += "service=" + properties.service + "&"; // adds version
 
     url += "version=2.0&"; // adds request
 
-    url += "request=GetResult&";
-    const skipTerms = new Set(['lastTimeStamp', 'endTime', 'reconnectTimeout', 'timeShift', 'protocol', 'endpointUrl', 'bufferingTime']);
+    url += "request=GetResult&"; // adds offering
 
-    for (let key in properties) {
-      // skip this keys
-      if (skipTerms.has(key)) {
-        continue;
-      }
+    url += "offering=" + properties.offeringID + "&"; // adds feature of interest urn
 
-      if (key === 'offeringID') {
-        // adds offering
-        url += "offering=" + properties.offeringID + "&";
-      } else if (key === 'foiURN') {
-        // adds feature of interest urn
-        if (properties.foiURN && properties.foiURN !== '') {
-          url += 'featureOfInterest=' + properties.foiURN + '&';
-        }
-      }
+    if (properties.foiURN && properties.foiURN !== '') {
+      url += 'featureOfInterest=' + properties.foiURN + '&';
+    } // adds observedProperty
 
-      if (key === 'startTime') {
-        // adds temporalFilter
-        const stTime = isDefined(properties.lastTimeStamp) ? properties.lastTimeStamp : properties.startTime;
-        this.lastStartTime = properties.startTime;
-        let endTime = properties.endTime;
-        url += "temporalFilter=phenomenonTime," + stTime + "/" + endTime + "&";
-      } else {
-        url += key + '=' + properties[key] + '&';
-      }
+
+    url += "observedProperty=" + properties.observedProperty + "&"; // adds temporalFilter
+
+    const stTime = isDefined(properties.lastTimeStamp) ? properties.lastTimeStamp : properties.startTime;
+    this.lastStartTime = properties.startTime;
+    let endTime = properties.endTime;
+    url += "temporalFilter=phenomenonTime," + stTime + "/" + endTime + "&";
+
+    if (properties.replaySpeed) {
+      // adds replaySpeed
+      url += "replaySpeed=" + properties.replaySpeed;
+    } // adds responseFormat (optional)
+
+
+    if (properties.responseFormat) {
+      url += "&responseFormat=" + properties.responseFormat;
     }
 
-    if (url.endsWith('&')) {
-      url = url.slice(0, -1);
+    if (isDefined(properties.customUrlParams) && Object.keys(properties.customUrlParams).length > 0) {
+      url += '&';
+
+      for (let key in properties.customUrlParams) {
+        url += key + '=' + properties.customUrlParams[key] + '&';
+      }
+
+      if (url.endsWith('&')) {
+        url = url.slice(0, -1);
+      }
     }
 
     return url;
@@ -601,57 +608,47 @@ class DataSourceParser_DataSourceParser {
 }
 
 /* harmony default export */ var parsers_DataSourceParser = (DataSourceParser_DataSourceParser);
-// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/datareceiver/parsers/SweJson.parser.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/datareceiver/parsers/Video.parser.js
 
 
-class SweJson_parser_SweJsonParser extends parsers_DataSourceParser {
+class Video_parser_VideoParser extends parsers_DataSourceParser {
   /**
-   * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
-   * @param {String} data - the data to parse
+   * Extracts timestamp from the message. The timestamp is corresponding to the first 64bits of the binary message.
+   * @param {ArrayBuffer} data - the data to parse
    * @return {Number} the extracted timestamp
    */
   parseTimeStamp(data) {
-    let rec = String.fromCharCode.apply(null, new Uint8Array(data));
-    return new Date(JSON.parse(rec)['time']).getTime();
+    // read double time stamp as big endian
+    return new DataView(data).getFloat64(0, false) * 1000;
   }
   /**
-   * Extract data from the message. The data are corresponding to the whole list of attributes of the JSON object
-   * excepting the 'time' one.
-   * @param {Object} data - the data to parse
-   * @return {Object} the parsed data
-   * @example
-   * {
-   *   location : {
-   *    lat:43.61758626,
-   *    lon: 1.42376557,
-   *    alt:100
-   *   }
-   * }
+   * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
+   * @param {ArrayBuffer} data - the data to parse
+   * @return {Uint8Array} the parsed data
    */
 
 
   parseData(data) {
-    let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-    let result = {};
-
-    for (let key in rec) {
-      if (key !== 'time') {
-        result[key] = rec[key];
-      }
-    }
-
-    return result;
-  }
-
-  buildUrl(properties) {
-    return super.buildUrl({ ...properties,
-      responseFormat: 'application/json'
-    });
+    return {
+      // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
+      frameData: new Uint8Array(data, 12, data.byteLength - 12),
+      roll: 0
+    };
   }
 
 }
 
-/* harmony default export */ var SweJson_parser = (SweJson_parser_SweJsonParser);
+/* harmony default export */ var Video_parser = (Video_parser_VideoParser);
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/dataconnector/Status.js
+/**
+ * Enum for connection status.
+ * @readonly
+ * @enum {{name: string}}
+ */
+const Status = {
+  CONNECTED: "connected",
+  DISCONNECTED: "disconnected"
+};
 // CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/dataconnector/DataConnector.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -669,6 +666,7 @@ class SweJson_parser_SweJsonParser extends parsers_DataSourceParser {
 
  ******************************* END LICENSE BLOCK ***************************/
 
+
 /**
  * The DataConnector is the abstract class used to create different connectors.
  */
@@ -681,6 +679,21 @@ class DataConnector_DataConnector {
     this.url = url;
     this.id = "DataConnector-" + randomUUID();
     this.reconnectTimeout = 1000 * 60 * 2; //2 min
+
+    this.status = Status.DISCONNECTED;
+    this.reconnectionInterval = -1;
+  }
+
+  checkAndClearReconnection() {
+    if (this.reconnectionInterval !== -1) {
+      clearInterval(this.reconnectionInterval);
+      this.reconnectionInterval = -1;
+    }
+  }
+
+  disconnect() {
+    this.checkStatus(Status.DISCONNECTED);
+    this.checkAndClearReconnection();
   }
   /**
    * Sets the url
@@ -723,7 +736,43 @@ class DataConnector_DataConnector {
     return true;
   }
 
-  disconnect() {}
+  connect() {}
+
+  forceReconnect() {
+    this.disconnect();
+    this.connect();
+  }
+  /**
+   * Called when the connection STATUS changes
+   * @param {Status} status - the new status
+   */
+
+
+  onChangeStatus(status) {}
+  /**
+   * Check a change of the status and call the corresponding callbacks if necessary
+   * @param {Status} status - the currentStatus
+   */
+
+
+  checkStatus(status) {
+    if (status !== this.status) {
+      this.onChangeStatus(status);
+      this.status = status;
+    }
+  }
+  /**
+   * Called when the connector has been disconnected
+   */
+
+
+  onDisconnect() {}
+  /**
+   * Called when the connector has been connected
+   */
+
+
+  onConnect() {}
 
 }
 
@@ -744,6 +793,7 @@ class DataConnector_DataConnector {
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
+
 
 
 /**
@@ -782,13 +832,17 @@ class WebSocketConnector_WebSocketConnector extends dataconnector_DataConnector 
    */
 
 
-  connect() {
+  async connect() {
     if (!this.init) {
-      //creates Web Socket
+      this.closed = false;
+      this.init = true; //creates Web Socket
+
       this.ws = new WebSocket(this.getUrl());
       this.ws.binaryType = 'arraybuffer';
 
       this.ws.onmessage = function (event) {
+        this.checkAndClearReconnection();
+        this.checkStatus(Status.CONNECTED);
         this.lastReceiveTime = Date.now(); //callback data on message received
 
         if (event.data.byteLength > 0) {
@@ -798,74 +852,50 @@ class WebSocketConnector_WebSocketConnector extends dataconnector_DataConnector 
 
 
       this.ws.onerror = function (event) {
-        console.warn('WebSocket stream error: ', event);
+        console.error('WebSocket stream error');
+        this.checkStatus(Status.DISCONNECTED);
         this.init = false;
-        this.ws.close();
         this.lastReceiveTime = -1;
+        this.createReconnection();
       }.bind(this);
 
       this.ws.onclose = event => {
-        if (this.init) {
-          console.info('Closing gracefully..');
+        this.checkStatus(Status.DISCONNECTED);
+        console.warn('WebSocket stream closed: ', event.reason, event.code);
+        this.init = false;
+
+        if (event.code !== 1000 && !this.closed) {
+          this.createReconnection();
         }
+      };
+    }
+  }
 
-        this.fullDisconnect(false);
-      }; //init the reconnect handler
+  createReconnection() {
+    if (this.reconnectionInterval === -1) {
+      this.onReconnect();
+      this.reconnectionInterval = setInterval(function () {
+        let delta = Date.now() - this.lastReceiveTime; // -1 means the WS went in error
 
-
-      if (this.interval === -1) {
-        this.interval = setInterval(function () {
-          let delta = Date.now() - this.lastReceiveTime; // -1 means the WS went in error
-
-          if (this.lastReceiveTime === -1 || delta >= this.reconnectTimeout) {
-            this.reconnect();
-          }
-        }.bind(this), this.reconnectTimeout);
-      }
-
-      this.init = true;
+        if (this.lastReceiveTime === -1 || delta >= this.reconnectTimeout) {
+          console.warn('trying to reconnect', this.url);
+          this.connect();
+        }
+      }.bind(this), this.reconnectTimeout);
     }
   }
   /**
-   * Disconnects the websocket.
+   * Disconnects and close the websocket.
    */
 
 
   disconnect() {
-    this.fullDisconnect(true);
-  }
-  /**
-   * Fully disconnect the websocket connection by sending a close message to the webWorker.
-   * @param {Boolean} removeInterval  - force removing the interval
-   */
+    super.disconnect();
+    this.init = false;
+    this.closed = true;
 
-
-  fullDisconnect(removeInterval) {
     if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
       this.ws.close();
-    }
-
-    this.init = false;
-
-    if (removeInterval) {
-      clearInterval(this.interval);
-    }
-  }
-  /**
-   * Try to reconnect if the connexion if closed
-   */
-
-
-  reconnect() {
-    if (this.onReconnect()) {
-      console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`, this.url);
-
-      if (this.init) {
-        console.warn('disconnecting ', this.url);
-        this.fullDisconnect(false);
-      }
-
-      this.connect();
     }
   }
   /**
@@ -876,13 +906,9 @@ class WebSocketConnector_WebSocketConnector extends dataconnector_DataConnector 
 
 
   onMessage(data) {}
-  /**
-   * Closes the webSocket.
-   */
 
-
-  close() {
-    this.disconnect();
+  isConnected() {
+    return this.ws != null && this.ws.readyState === WebSocket.OPEN;
   }
 
 }
@@ -962,6 +988,7 @@ class Ajax_Ajax extends dataconnector_DataConnector {
   sendRequest(request, extraUrl) {
     let self = this;
     let xmlhttp = new XMLHttpRequest();
+    xmlhttp.withCredentials = true;
     xmlhttp.timeout = 60000;
 
     if (request === null) {
@@ -1155,8 +1182,6 @@ class DataSourceHandler_DataSourceHandler {
     this.lastStartTime = 'now';
     this.timeShift = 0;
     this.reconnectTimeout = 1000 * 10; // 10 secs
-
-    this.connected = false;
   }
 
   createConnector(propertiesStr, topic, dataSourceId) {
@@ -1221,15 +1246,18 @@ class DataSourceHandler_DataSourceHandler {
     }
 
     const lastStartTimeCst = this.parser.lastStartTime;
+    const lastProperties = properties;
 
     if (this.connector !== null) {
+      // bind change connection STATUS
+      this.connector.onChangeStatus = this.onChangeStatus.bind(this);
+
       this.connector.onReconnect = () => {
         // if not real time, preserve last timestamp to reconnect at the last time received
         // for that, we update the URL with the new last time received
         if (lastStartTimeCst !== 'now') {
-          this.connector.setUrl(this.parser.buildUrl({
-            lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
-            ...this.properties
+          this.connector.setUrl(this.parser.buildUrl({ ...properties,
+            lastTimeStamp: new Date(this.lastTimeStamp).toISOString()
           }));
         }
 
@@ -1255,24 +1283,39 @@ class DataSourceHandler_DataSourceHandler {
   connect() {
     if (this.connector !== null) {
       this.connector.connect();
-      this.connected = true;
     }
   }
 
   disconnect() {
     if (this.connector !== null) {
       this.connector.disconnect();
-      this.connected = false;
     }
+
+    this.connector = null;
   }
 
   onMessage(event) {
     const obj = {
+      type: 'data',
       dataSourceId: this.dataSourceId,
       timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
       data: this.parser.parseData(event)
     };
     this.lastTimeStamp = obj.timeStamp;
+    this.broadcastChannel.postMessage(obj);
+  }
+  /**
+   * Send a change status event into the broadcast channel
+   * @param {Status} status - the new status
+   */
+
+
+  onChangeStatus(status) {
+    const obj = {
+      type: 'message',
+      dataSourceId: this.dataSourceId,
+      status: status
+    };
     this.broadcastChannel.postMessage(obj);
   }
 
@@ -1281,12 +1324,7 @@ class DataSourceHandler_DataSourceHandler {
   }
 
   updateUrl(properties) {
-    const isConnected = this.connected;
-
-    if (isConnected) {
-      this.disconnect();
-    }
-
+    this.disconnect();
     let lastTimestamp = new Date(this.lastTimeStamp).toISOString();
 
     if (properties.hasOwnProperty('startTime')) {
@@ -1300,10 +1338,7 @@ class DataSourceHandler_DataSourceHandler {
       ...properties,
       lastTimeStamp: lastTimestamp
     });
-
-    if (isConnected) {
-      this.connect();
-    }
+    this.connect();
   }
 
   handleMessage(message, worker) {
@@ -1323,17 +1358,22 @@ class DataSourceHandler_DataSourceHandler {
       });
     } else if (message.message === 'update-url') {
       this.updateUrl(message.data);
+    } else if (message.message === 'is-connected') {
+      worker.postMessage({
+        message: 'is-connected',
+        data: this.connector === null ? false : this.connector.isConnected()
+      });
     }
   }
 
 }
 
 /* harmony default export */ var workers_DataSourceHandler = (DataSourceHandler_DataSourceHandler);
-// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/datareceiver/workers/SweJson.worker.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/datareceiver/workers/Video.worker.js
 
 
 
-const dataSourceHandler = new workers_DataSourceHandler(new SweJson_parser());
+const dataSourceHandler = new workers_DataSourceHandler(new Video_parser());
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);
