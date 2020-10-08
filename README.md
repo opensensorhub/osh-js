@@ -14,10 +14,25 @@ Several modules already exist to allow one to setup quickly an application such 
 Please report all problems related to the SensorHub software including documentation errors via the [GitHub Issue Tracker](https://github.com/opensensorhub) 
 of the [osh-js](https://github.com/opensensorhub/osh-js) repository.
 
-How To Download
-===
-
-
+## Features
+- Supports parsing data:
+    - Video (with roll) data with codecs H265, H264, VP9, VP8
+    - Any Swe generic JSON such as GPS, Quaternion etc.
+    - Spectrogram, ImageDraping, Nexrad
+- Supports for data Synchronization
+- Supports WebSocket and HttpRequest Connector
+- Supports SWE JSON generic requests:
+    - GetCapabilities
+    - GetFeatureOfInterest
+    - GetResultTemplate
+    - DescribeSensor
+- Supports some dedicated visualizer:
+    - OpenLayer, Leaflet or Cesium for Map data
+    - FFMPeg for Video 
+    - Chart
+    - Spectrogram
+- Supports for Vue.js components
+## Installation
 ### Releases
 
 Binary and Source distributions archives can be downloaded directly from the [Releases Section](https://github.com/opensensorhub/osh-js/releases) of our GitHub account.
@@ -25,39 +40,38 @@ Binary and Source distributions archives can be downloaded directly from the [Re
 The release contains a vendor directory (needed for some pre-coded views), the minified osh-js library and its corresponding stylesheet.
 You can use both the all-in-one vendor minified script(vendor.js & vendor.css) or the separate ones. 
 
-
-How To Use
-===
-
 You can import the source directory directly into your APP application and refer to it. The Toolkit is ES6 compliant.
 
-Run Showcase
-===
+### Showcase
 
 The showcase can be run using npm and webpack configuration:
 
 ```shell script
+$ cd ./showcase
+$ yarn install
 $ yarn dev
 ```
 or
 ```shell script
+$ cd ./showcase
+$ npm install
 $ npm run dev
 ```
 
-### Run prod
+### Production
 ```shell script
+$ yarn install
 $ yarn prod
 ```
 or
 ```shell script
+$ npm install
 $ npm run prod
 ```
 
 
-Vendors
-===
-
-##Cesium
+## Dependencies
+### Cesium
 
 If you use the CesiumView, don't forget to install the corresponding npm package 'cesium'.
 Moreover, you can apply a path to fix texture issue while using image draping. The patch is 
@@ -77,15 +91,15 @@ package.json:
   },
 ```
 
-Resources
-===
+You can add any external dependencies using *npm*. For example, if you attempt to use 
+some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
 ## Documentation
 The documentation can be found [here](http://opensensorhub.github.io/osh-js/Documentation/index.html).
 
 The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/)
 
-## Showcase
+## Live Showcase
 [Showcase](http://opensensorhub.github.io/osh-js/v2.0.0/showcase)
 
 ## Live Demos
