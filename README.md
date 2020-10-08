@@ -15,7 +15,7 @@ Please report all problems related to the SensorHub software including documenta
 of the [osh-js](https://github.com/opensensorhub/osh-js) repository.
 
 ## Features
-- Supports parsing data:
+- Supports for data parsing:
     - Video (with roll) data with codecs H265, H264, VP9, VP8
     - Any Swe generic JSON such as GPS, Quaternion etc.
     - Spectrogram, ImageDraping, Nexrad
