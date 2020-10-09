@@ -1,7 +1,8 @@
-import WebSocketConnector from "../../dataconnector/WebSocketConnector";
-import Ajax from "../../dataconnector/Ajax";
-import {isDefined} from "../../utils/Utils";
-import TopicConnector from "../../dataconnector/TopicConnector";
+import WebSocketConnector from "../../dataconnector/WebSocketConnector.js";
+import Ajax from "../../dataconnector/Ajax.js";
+import {isDefined} from "../../utils/Utils.js";
+import TopicConnector from "../../dataconnector/TopicConnector.js";
+import StatusEvent from "../../event/StatusEvent.js";
 
 class DataSourceHandler {
 
@@ -137,12 +138,9 @@ class DataSourceHandler {
      * @param {Status} status - the new status
      */
     onChangeStatus(status) {
-        const obj = {
-            type: 'message',
-            dataSourceId: this.dataSourceId,
-            status: status
-        };
-        this.broadcastChannel.postMessage(obj);
+        this.broadcastChannel.postMessage(
+            new StatusEvent(status, this.dataSourceId)
+        );
     }
 
     getLastTimeStamp() {

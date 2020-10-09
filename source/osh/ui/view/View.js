@@ -23,8 +23,9 @@
 import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
-import {DATASOURCE_DATA_TOPIC} from "../../Constants";
-import {Status} from "../../dataconnector/Status";
+import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
+import {Status} from "../../dataconnector/Status.js";
+import {EventType} from "../../event/EventType.js";
 
 class View {
     /**
@@ -160,11 +161,8 @@ class View {
                     } else {
                         if(event.data.type === 'data') {
                             that.setData(dataSourceId, event.data);
-                        } else if(event.data.type === 'message') {
-                            if(isDefined(event.data.status) &&
-                                                    event.data.status === Status.DISCONNECTED) {
+                        } else if(event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED)  {
                                 that.reset();
-                            }
                         }
                     }
                 };

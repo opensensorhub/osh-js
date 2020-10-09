@@ -2,6 +2,7 @@ import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
 import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
 import {Status} from "../dataconnector/Status.js";
 import {isDefined} from "../utils/Utils";
+import {EventType} from "../event/EventType";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -52,12 +53,9 @@ function initBroadcastChannel(topic) {
                 data: event.data.data,
                 timeStamp: event.data.timeStamp
             });
-        } else if(event.data.type === 'message') {
+        } else if(event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
-
-            if(isDefined(event.data.status)) {
-                dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
-            }
+            dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
             // bubble the message
             bcChannels[dataSourceId].postMessage(event.data);
         }
