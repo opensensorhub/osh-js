@@ -160,16 +160,19 @@ class FFMPEGView extends View {
         return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
-    setData(dataSourceId, data) {
-        if (!this.skipFrame) {
-            if(this.decodeWorker == null) {
-               this.initFFMPEG_DECODER_WORKER();
-            }
+    setData(dataSourceId, values) {
+        for(let i=0; i < values.length;i++) {
+            if (!this.skipFrame) {
+                if (this.decodeWorker == null) {
+                    this.initFFMPEG_DECODER_WORKER();
+                }
 
-            let pktData = data.data.frameData;
-            let pktSize = pktData.length;
-            let roll = data.data.roll;
-            this.decode(pktSize, pktData, data.timeStamp,roll);
+                const value = values.shift();
+                let pktData = value.data.frameData;
+                let roll = value.data.roll;
+                let pktSize = pktData.length;
+                this.decode(pktSize, pktData, value.timeStamp, roll);
+            }
         }
     }
 

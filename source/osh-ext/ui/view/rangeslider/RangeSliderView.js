@@ -189,9 +189,11 @@ class RangeSliderView extends View {
     this.slider.removeAttribute('disabled');
   }
 
-  setData(dataSourceId, data) {
-    if (this.dataSourcesId.length === 0 && !this.update) {
-     this.slider.noUiSlider.set([data.timeStamp]);
+  setData(dataSourceId, values) {
+      if (this.dataSourcesId.length === 0 && !this.update) {
+        for(let i=0;i < values.length;i++) {
+          this.slider.noUiSlider.set([values[i].timeStamp]);
+      }
     }
   }
 

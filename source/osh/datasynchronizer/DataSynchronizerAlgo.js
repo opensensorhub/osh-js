@@ -1,5 +1,5 @@
-import {isDefined} from "../utils/Utils";
-import {Status} from "../dataconnector/Status";
+import {isDefined} from "../utils/Utils.js";
+import {Status} from "../dataconnector/Status.js";
 
 class DataSynchronizerAlgo {
     constructor(dataSources, replaySpeed = 1, intervalRate = 5) {

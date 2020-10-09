@@ -2,7 +2,7 @@ import WebSocketConnector from "../../dataconnector/WebSocketConnector.js";
 import Ajax from "../../dataconnector/Ajax.js";
 import {isDefined} from "../../utils/Utils.js";
 import TopicConnector from "../../dataconnector/TopicConnector.js";
-import StatusEvent from "../../event/StatusEvent.js";
+import {EventType} from "../../event/EventType.js";
 
 class DataSourceHandler {
 
@@ -123,14 +123,18 @@ class DataSourceHandler {
     }
 
     onMessage(event) {
-        const obj = {
-            type: 'data',
+        const timeStamp = this.parser.parseTimeStamp(event) + this.timeShift;
+        const data = this.parser.parseData(event);
+
+        this.lastTimeStamp = timeStamp;
+        this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,
-            timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
-            data: this.parser.parseData(event)
-        };
-        this.lastTimeStamp = obj.timeStamp;
-        this.broadcastChannel.postMessage(obj);
+            type: EventType.DATA,
+            values: [{
+              data: data,
+              timeStamp:  timeStamp
+            }]
+        });
     }
 
     /**
@@ -138,9 +142,11 @@ class DataSourceHandler {
      * @param {Status} status - the new status
      */
     onChangeStatus(status) {
-        this.broadcastChannel.postMessage(
-            new StatusEvent(status, this.dataSourceId)
-        );
+        this.broadcastChannel.postMessage({
+            type: EventType.STATUS,
+            status: status,
+            dataSourceId: this.dataSourceId
+        });
     }
 
     getLastTimeStamp() {
