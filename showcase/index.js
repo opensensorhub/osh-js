@@ -20,6 +20,12 @@ var samples = [
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
   },
+  {
+    name: "Simple Batch Chart (Chart.js)",
+    description: "Display a chart with time series of weather measurements and using different datasource parameters " +
+        "to get data in batch",
+    url: "chart-batch"
+  },
   // {
   //   name: "Discovery (form)",
   //   description: "Display a Form helping to choose the correct DataSource depending on the offering.",
