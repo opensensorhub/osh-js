@@ -3,6 +3,7 @@ import Ajax from "../../dataconnector/Ajax.js";
 import {isDefined} from "../../utils/Utils.js";
 import TopicConnector from "../../dataconnector/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
+import {Status} from "../../dataconnector/Status";
 
 class DataSourceHandler {
 
@@ -13,6 +14,7 @@ class DataSourceHandler {
         this.lastStartTime = 'now';
         this.timeShift = 0;
         this.reconnectTimeout = 1000 * 10; // 10 secs
+        this.values = [];
     }
 
     createConnector(propertiesStr, topic, dataSourceId) {
@@ -25,6 +27,10 @@ class DataSourceHandler {
         this.broadcastChannel = new BroadcastChannel(topic);
 
         const properties = JSON.parse(propertiesStr);
+
+        if (isDefined(properties.fetch)) {
+            this.fetch = properties.fetch;
+        }
 
         if (isDefined(properties.timeShift)) {
             this.timeShift = properties.timeShift;
@@ -40,6 +46,20 @@ class DataSourceHandler {
 
         if (isDefined(properties.reconnectTimeout)) {
             this.reconnectTimeout = properties.reconnectTimeout;
+        }
+
+        if(properties.startTime === 'now') {
+            this.batchSize = 1;
+        } else {
+            if (isDefined(properties.replaySpeed)) {
+                if (!isDefined(properties.batchSize)) {
+                    this.batchSize = 1;
+                }
+            }
+
+            if (isDefined(properties.batchSize)) {
+                this.batchSize = properties.batchSize;
+            }
         }
 
         this.properties = properties;
@@ -126,15 +146,15 @@ class DataSourceHandler {
         const timeStamp = this.parser.parseTimeStamp(event) + this.timeShift;
         const data = this.parser.parseData(event);
 
-        this.lastTimeStamp = timeStamp;
-        this.broadcastChannel.postMessage({
-            dataSourceId: this.dataSourceId,
-            type: EventType.DATA,
-            values: [{
-              data: data,
-              timeStamp:  timeStamp
-            }]
+        this.values.push({
+            data: data,
+            timeStamp: timeStamp
         });
+        this.lastTimeStamp = timeStamp;
+
+        if(isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+            this.flush();
+        }
     }
 
     /**
@@ -142,6 +162,10 @@ class DataSourceHandler {
      * @param {Status} status - the new status
      */
     onChangeStatus(status) {
+        if(status === Status.DISCONNECTED) {
+            this.flush();
+        }
+
         this.broadcastChannel.postMessage({
             type: EventType.STATUS,
             status: status,
@@ -172,6 +196,14 @@ class DataSourceHandler {
         });
 
         this.connect();
+    }
+
+    flush() {
+        this.broadcastChannel.postMessage({
+            dataSourceId: this.dataSourceId,
+            type: EventType.DATA,
+            values: this.values.splice(0, this.values.length)
+        });
     }
 
     handleMessage(message, worker) {
