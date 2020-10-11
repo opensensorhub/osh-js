@@ -1188,7 +1188,14 @@ class TopicConnector_TopicConnector extends dataconnector_DataConnector {
 }
 
 /* harmony default export */ var dataconnector_TopicConnector = (TopicConnector_TopicConnector);
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/event/EventType.js
+const EventType = {
+  DATA: 'data',
+  STATUS: 'status'
+};
 // CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/osh/datareceiver/workers/DataSourceHandler.js
+
+
 
 
 
@@ -1202,6 +1209,8 @@ class DataSourceHandler_DataSourceHandler {
     this.lastStartTime = 'now';
     this.timeShift = 0;
     this.reconnectTimeout = 1000 * 10; // 10 secs
+
+    this.values = [];
   }
 
   createConnector(propertiesStr, topic, dataSourceId) {
@@ -1214,6 +1223,10 @@ class DataSourceHandler_DataSourceHandler {
 
     this.broadcastChannel = new BroadcastChannel(topic);
     const properties = JSON.parse(propertiesStr);
+
+    if (isDefined(properties.fetch)) {
+      this.fetch = properties.fetch;
+    }
 
     if (isDefined(properties.timeShift)) {
       this.timeShift = properties.timeShift;
@@ -1229,6 +1242,20 @@ class DataSourceHandler_DataSourceHandler {
 
     if (isDefined(properties.reconnectTimeout)) {
       this.reconnectTimeout = properties.reconnectTimeout;
+    }
+
+    if (properties.startTime === 'now') {
+      this.batchSize = 1;
+    } else {
+      if (isDefined(properties.replaySpeed)) {
+        if (!isDefined(properties.batchSize)) {
+          this.batchSize = 1;
+        }
+      }
+
+      if (isDefined(properties.batchSize)) {
+        this.batchSize = properties.batchSize;
+      }
     }
 
     this.properties = properties;
@@ -1315,14 +1342,17 @@ class DataSourceHandler_DataSourceHandler {
   }
 
   onMessage(event) {
-    const obj = {
-      type: 'data',
-      dataSourceId: this.dataSourceId,
-      timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
-      data: this.parser.parseData(event)
-    };
-    this.lastTimeStamp = obj.timeStamp;
-    this.broadcastChannel.postMessage(obj);
+    const timeStamp = this.parser.parseTimeStamp(event) + this.timeShift;
+    const data = this.parser.parseData(event);
+    this.values.push({
+      data: data,
+      timeStamp: timeStamp
+    });
+    this.lastTimeStamp = timeStamp;
+
+    if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+      this.flush();
+    }
   }
   /**
    * Send a change status event into the broadcast channel
@@ -1331,12 +1361,15 @@ class DataSourceHandler_DataSourceHandler {
 
 
   onChangeStatus(status) {
-    const obj = {
-      type: 'message',
-      dataSourceId: this.dataSourceId,
-      status: status
-    };
-    this.broadcastChannel.postMessage(obj);
+    if (status === Status.DISCONNECTED) {
+      this.flush();
+    }
+
+    this.broadcastChannel.postMessage({
+      type: EventType.STATUS,
+      status: status,
+      dataSourceId: this.dataSourceId
+    });
   }
 
   getLastTimeStamp() {
@@ -1359,6 +1392,14 @@ class DataSourceHandler_DataSourceHandler {
       lastTimeStamp: lastTimestamp
     });
     this.connect();
+  }
+
+  flush() {
+    this.broadcastChannel.postMessage({
+      dataSourceId: this.dataSourceId,
+      type: EventType.DATA,
+      values: this.values.splice(0, this.values.length)
+    });
   }
 
   handleMessage(message, worker) {
