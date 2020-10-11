@@ -23,8 +23,9 @@
 import {isDefined, randomUUID} from '../../utils/Utils.js';
 import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
-import {DATASOURCE_DATA_TOPIC} from "../../Constants";
-import {Status} from "../../dataconnector/Status";
+import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
+import {Status} from "../../dataconnector/Status.js";
+import {EventType} from "../../event/EventType.js";
 
 class View {
     /**
@@ -158,13 +159,10 @@ class View {
                     if (event.data.message && event.data.message === 'reset') {
                         that.reset(); // on data stream reset
                     } else {
-                        if(event.data.type === 'data') {
-                            that.setData(dataSourceId, event.data);
-                        } else if(event.data.type === 'message') {
-                            if(isDefined(event.data.status) &&
-                                                    event.data.status === Status.DISCONNECTED) {
+                        if(event.data.type === EventType.DATA) {
+                            that.setData(dataSourceId, event.data.values);
+                        } else if(event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED)  {
                                 that.reset();
-                            }
                         }
                     }
                 };
@@ -247,7 +245,7 @@ class View {
     /**
      * Set the data to the view. Each view has to handle the kind of the data separately.
      * @param {String} dataSourceId - The dataSource id of the source providing the data
-     * @param {*} data - The data to set
+     * @param {[*]} data - The data array to set
      */
     setData(dataSourceId, data) {
     }
@@ -291,7 +289,7 @@ class View {
                 this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
                 broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
-                    if (event.data.message && event.data.message === 'reset') {
+                    if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
                         return;
                     }
                     // we check selected dataSource only when the selected entity is not set
@@ -303,10 +301,12 @@ class View {
                     }
 
                     //TODO: maybe done into the styler?
-                    styler.setData(dataSourceId, event.data, self, {
-                        selected: selected
-                    });
-                    self.lastRec[dataSourceId] = event.data;
+                    if(event.data.type === EventType.DATA) {
+                        styler.setData(dataSourceId, event.data, self, {
+                            selected: selected
+                        });
+                        self.lastRec[dataSourceId] = event.data;
+                    }
                 };
 
                 EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {

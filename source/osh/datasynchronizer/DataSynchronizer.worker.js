@@ -1,7 +1,6 @@
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
 import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
-import {Status} from "../dataconnector/Status.js";
-import {isDefined} from "../utils/Utils";
+import {EventType} from "../event/EventType.js";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -47,17 +46,15 @@ self.onmessage = (event) => {
 function initBroadcastChannel(topic) {
     dataSourceBroadCastChannel = new BroadcastChannel(topic);
     dataSourceBroadCastChannel.onmessage = (event) => {
-        if(event.data.type === 'data') {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, {
-                data: event.data.data,
-                timeStamp: event.data.timeStamp
-            });
-        } else if(event.data.type === 'message') {
-            const dataSourceId = event.data.dataSourceId;
-
-            if(isDefined(event.data.status)) {
-                dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
+        if(event.data.type === EventType.DATA) {
+            for(let i=0; i < event.data.values.length;i++) {
+                dataSynchronizerAlgo.push(event.data.dataSourceId, {
+                    ...event.data.values[i]
+                });
             }
+        } else if(event.data.type === EventType.STATUS) {
+            const dataSourceId = event.data.dataSourceId;
+            dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
             // bubble the message
             bcChannels[dataSourceId].postMessage(event.data);
         }
@@ -87,10 +84,11 @@ function addDataSource(dataSource) {
 function onData(dataSourceId, data) {
     self.currentTime = data.timeStamp;
     bcChannels[dataSourceId].postMessage({
-        type: 'data',
-        dataSourceId: dataSourceId,
-        ...data
-    });
+            values: [data],
+            dataSourceId,
+            type: EventType.DATA
+        }
+    );
 }
 
 

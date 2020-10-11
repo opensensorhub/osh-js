@@ -103,7 +103,9 @@ class Styler {
         if (dataSourceId in this.dataSourceToStylerMap) {
             let fnArr = this.dataSourceToStylerMap[dataSourceId];
             for (let i = 0; i < fnArr.length; i++) {
-                fnArr[i](rec.data, rec.timeStamp, options);
+                for(let j=0;j < rec.values.length;j++) {
+                    fnArr[i](rec.values[j].data, rec.values[j].timeStamp, options);
+                }
             }
             return true;
         } else {
