@@ -118,7 +118,6 @@ class WebCodecView extends CanvasView {
             });
 
             try {
-                console.log(that.videoDecoder);
                 that.videoDecoder.decode(chunk);
             } catch (error) {
                 console.error(error);
@@ -143,6 +142,46 @@ class WebCodecView extends CanvasView {
     reset() {
     }
 
+    ev(signed, data) {
+        let bitCount = 0;
+        while (this.getBit(data) === 0) {
+            bitCount++;
+        }
+        let result = 1;
+        for (let i = 0; i < bitCount; i++) {
+            let b = this.getBit(data);
+            result = result * 2 + b;
+        }
+        result--;
+        if (signed) {
+            result = (result + 1) / 2 * (result % 2 === 0 ? -1 : 1);
+        }
+        return result;
+    }
+
+    uev(data) {
+        return this.ev(false,data);
+    }
+
+    sev(data) {
+        return this.ev(true,data);
+    }
+
+    getU(bits, data) {
+        let result = 0;
+        for (let i = 0; i < bits; i++) {
+            result = result * 2 + this.getBit(data);
+        }
+        return result;
+    }
+
+    getBit(data) {
+     let mask = 1 << (7 - (this.pos & 7));
+     let idx = this.pos >> 3;
+     this.pos++;
+     return ((data[idx] & mask) === 0) ? 0 : 1;
+    }
+
     /**
      * @private
      * @param pktSize
@@ -151,12 +190,47 @@ class WebCodecView extends CanvasView {
      */
     decode(pktSize, pktData, timeStamp, roll) {
         if(pktSize > 0) {
+            this.pos = 4 * 8;
             let arrayBuffer = pktData.buffer;
             // check configure
             // init decoder with config
             if (!this.codecConfigured) {
-                if(pktData[4] === 103) {
-                    console.log('configure')
+                if(pktData[4] === 0x67) {
+                    const data = pktData;
+                    const forbidden_zero_bit = this.getU(1,data);
+                    const nal_ref_idc = this.getU(2,data); // 3 for SPS
+                    const nal_unit_type = this.getU(5,data); // 7 = SPS
+                    const profile_idc = this.getU(8,data); // 66 = Baseline
+                    const constraint_set0_flag = this.getU(1,data);
+                    const constraint_set1_flag = this.getU(1,data);
+                    const constraint_set2_flag = this.getU(1,data);
+                    const constraint_set3_flag = this.getU(1,data);
+                    const reserved = this.getU(4,data);
+                    const level_idc = this.getU(8, data);
+                    const seq_parameter_set_id = this.uev(data);
+                    const log2_max_frame_num_minus4 = this.uev(data);
+                    const pict_order_cnt_type = this.uev(data);
+                    if (pict_order_cnt_type === 0) {
+                        this.uev(data);
+                    } else if (pict_order_cnt_type === 1) {
+                        this.getU(1,data);
+                        this.sev(data);
+                        this.sev(data);
+                        const n = this.uev(data);
+                        for (let i = 0; i < n; i++) {
+                            this.sev(data);
+                        }
+                    }
+                    const num_ref_frames = this.uev(data);
+                    const gaps_in_frame_num_value_allowed_flag = this.getU(1,data);
+                    const pic_width = (this.uev(data) + 1) * 16;
+                    const pic_height = (this.uev(data) + 1) * 16;
+                    const frame_mbs_only_flag = this.getU(1,data);
+                    const direct_8x8_inference_flag = this.getU(1, data);
+                    const frame_cropping_flag = this.getU(1, data);
+                    const vui_prameters_present_flag = this.getU(1,data);
+                    const rbsp_stop_one_bit = this.getU(1,data);
+
                     this.videoDecoder.configure({
                         codec: 'avc1.42e01e',
                         description: new Uint8Array([
@@ -164,10 +238,12 @@ class WebCodecView extends CanvasView {
                             0xE1, 0, 9, 103, 66, 64, 31, 166, 128, 80, 5, 185, //sps
                             0x01, 0, 5, 104, 206, 48, 166, 128 // pps
                         ]),
-                        codedWidth: parseInt(this.width),
-                        codedHeight: parseInt(this.height)
+                        codedWidth: parseInt(pic_width),
+                        codedHeight: parseInt(pic_height)
                     });
                     this.codecConfigured = true;
+                    this.width = pic_width;
+                    this.height = pic_height;
                 }
             } else {
                 this.decodeWorker.postMessage({
