@@ -18,7 +18,6 @@ let videoView = new WebCodecView("video-h264-container", {
   dataSourceId: videoDataSource.id,
   css: "video-h264",
   name: "UAV Video",
-  framerate:25,
   showTime: true,
   showStats: true
 });
