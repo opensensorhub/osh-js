@@ -11,16 +11,14 @@
 
 import View from "../View.js";
 import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
 import DecodeWorker from './workers/ffmpeg.decode.worker.js';
-import DrawWorker from './workers/ffmpeg.draw.worker.js';
-
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
+import CanvasView from "./CanvasView";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
- * @extends View
+ * @extends CanvasView
  * @example
  *
  import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
@@ -35,7 +33,7 @@ import YUVCanvas from "./YUVCanvas";
 });
  */
 
-class FFMPEGView extends View {
+class FFMPEGView extends CanvasView {
     /**
      * Create a View.
      * @param {String} divId - The div element to attach to
@@ -47,116 +45,20 @@ class FFMPEGView extends View {
      * @param {String} [options.codec='h264'] - Video codec
      */
     constructor(divId, options) {
-        super(divId, [], options);
+        super(divId, options);
 
-        this.fps = 0;
-        this.width = "1920";
-        this.height = "1080";
-        this.showTime = false;
-        this.showStats = false;
-
-        this.statistics = {
-            averageFps: 0,
-            frames: 0,
-            firstTime: 0,
-            bitRate: 0,
-            averageBitRate:0
-        };
-
-        this.framerate = 29.67;
         this.directPlay = false;
         this.codec = 'h264';
 
-        if (isDefined(options)) {
-            if (isDefined(options.framerate)) {
-                this.framerate = options.framerate;
-            }
-
-            if (isDefined(options.directPlay)) {
-                this.directPlay = options.directPlay;
-            }
-
-            if (isDefined(options.codec)) {
-                this.codec = options.codec;
-            }
-
-            if (isDefined(options.showTime)) {
-                this.showTime = options.showTime;
-            }
-
-            if (isDefined(options.showStats)) {
-                this.showStats = options.showStats;
-            }
-        }
-
-        let domNode = document.getElementById(this.divId);
-
-        // if need to draw text
-        if(this.showTime || this.showStats) {
-            this.textDiv = document.createElement("div");
-            this.textDiv.setAttribute("width",this.width);
-            this.textDiv.setAttribute("height",15);
-            this.textDiv.setAttribute("class","ffmpeg-info");
-
-            if(this.showTime) {
-                this.textFpsDiv = document.createElement("div");
-                this.textFpsDiv.setAttribute("class","ffmpeg-fps");
-                this.textDiv.appendChild(this.textFpsDiv);
-            }
-            if(this.showStats) {
-                this.textStatsDiv = document.createElement("div");
-                this.textStatsDiv.setAttribute("class","ffmpeg-stats");
-                this.textDiv.appendChild(this.textStatsDiv);
-            }
-
-            domNode.appendChild(this.textDiv);
-        }
-
-        // create webGL canvas
-        this.domNode = domNode;
-
         // create webGL canvas
         this.yuvCanvas = this.createCanvas(this.width,this.height);
-        domNode.appendChild(this.yuvCanvas.canvasElement);
+        this.domNode.appendChild(this.yuvCanvas.canvasElement);
 
-        // add selection listener
-        let self = this;
-        EventManager.observeDiv(this.divId, "click", (event) => {
-            EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
-                dataSourcesIds: [self.dataSourceId],
-                entityId: self.entityId
-            });
-        });
-
-        let hidden, visibilityChange;
-
-        if (isDefined(document.hidden)) { // Opera 12.10 and Firefox 18 and later support
-            hidden = "hidden";
-            visibilityChange = "visibilitychange";
-        } else if (isDefined(document.msHidden)) {
-            hidden = "msHidden";
-            visibilityChange = "msvisibilitychange";
-        } else if (isDefined(document.webkitHidden)) {
-            hidden = "webkitHidden";
-            visibilityChange = "webkitvisibilitychange";
-        }
-
-        let that = this;
-
-        function handleVisibilityChange() {
-            if (document.hidden) {
-                that.skipFrame = true;
-            } else {
-                that.skipFrame = false;
-            }
-        }
-
-        document.addEventListener(visibilityChange, handleVisibilityChange, false);
         this.buf = [];
         this.bufferingTime = 2 * 1000;
     }
 
-    createCanvas(width, height, domNode) {
+    createCanvas(width, height, style) {
         return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
@@ -212,36 +114,6 @@ class FFMPEGView extends View {
             vDataPerRow: 1,
             vRowCnt: 1
         });
-    }
-
-    /**
-     * @private
-     */
-    updateStatistics(pktSize) {
-        this.statistics.frames++;
-        this.statistics.pktSize+=pktSize;
-        if(this.statistics.firstTime === 0) {
-            this.statistics.firstTime = performance.now();
-            return;
-        }
-        const currentTime = performance.now();
-        if(currentTime - this.statistics.firstTime < 1000) {
-            return;
-        }
-
-        // compute current time
-        this.statistics.averageFps = (this.statistics.frames-1) / ((currentTime - this.statistics.firstTime)/1000);
-        this.statistics.averageBitRate=   (this.statistics.pktSize-pktSize) / ((currentTime - this.statistics.firstTime)/1000);
-        this.statistics.frames = 1;
-        this.statistics.pktSize = pktSize;
-        this.statistics.firstTime = currentTime;
-    }
-
-    /**
-     * Called after each decoded frame.
-     * @event
-     */
-    onAfterDecoded() {
     }
 
 //-- FFMPEG DECODING PART
@@ -314,10 +186,6 @@ class FFMPEGView extends View {
 
             this.onUpdated(this.statistics);
         }.bind(this);
-    }
-
-    onUpdated(stats) {
-
     }
 
     /**
