@@ -101,7 +101,7 @@ instance.ready
             instance.writeArrayToMemory(pktData, self.av_pktData);
 
             // decode next frame
-            var len = instance._avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt);
+            const len = instance._avcodec_decode_video2(self.av_ctx, self.av_frame, self.got_frame, self.av_pkt);
             if (len < 0) {
                 console.log("Error while decoding frame");
                 return;
@@ -113,15 +113,15 @@ instance.ready
                 return;
             }
 
-            var decoded_frame = self.av_frame;
-            var frame_width = instance.getValue(decoded_frame + 68, 'i32');
-            var frame_height = instance.getValue(decoded_frame + 72, 'i32');
+            const decoded_frame = self.av_frame;
+            const frame_width = instance.getValue(decoded_frame + 68, 'i32');
+            const frame_height = instance.getValue(decoded_frame + 72, 'i32');
             //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
 
             // copy Y channel to canvas
-            var frameYDataPtr = instance.getValue(decoded_frame, '*');
-            var frameUDataPtr = instance.getValue(decoded_frame + 4, '*');
-            var frameVDataPtr = instance.getValue(decoded_frame + 8, '*');
+            const frameYDataPtr = instance.getValue(decoded_frame, '*');
+            const frameUDataPtr = instance.getValue(decoded_frame + 4, '*');
+            const frameVDataPtr = instance.getValue(decoded_frame + 8, '*');
 
             return {
                 frame_width: frame_width,

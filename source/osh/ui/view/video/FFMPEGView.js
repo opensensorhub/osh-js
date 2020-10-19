@@ -154,6 +154,7 @@ class FFMPEGView extends View {
         document.addEventListener(visibilityChange, handleVisibilityChange, false);
         this.buf = [];
         this.bufferingTime = 2 * 1000;
+        this.configured = false;
     }
 
     createCanvas(width, height, domNode) {
@@ -328,18 +329,27 @@ class FFMPEGView extends View {
      */
     decode(pktSize, pktData, timeStamp, roll) {
         if(pktSize > 0) {
-            let arrayBuffer = pktData.buffer;
+            if(!this.configured) {
+                // skip until find SPS to start the sequence
+                if(pktData[4] === 0x67) {
+                    this.configured = true;
+                }
+            }
 
-            this.decodeWorker.postMessage({
-                pktSize: pktSize,
-                pktData: arrayBuffer,
-                roll: roll,
-                byteOffset: pktData.byteOffset,
-                codec: this.codec,
-                timeStamp: timeStamp,
-                dataSourceId: this.dataSourceId
-            }, [arrayBuffer]);
-            pktData = null;
+            if(this.configured) {
+                let arrayBuffer = pktData.buffer;
+
+                this.decodeWorker.postMessage({
+                    pktSize: pktSize,
+                    pktData: arrayBuffer,
+                    roll: roll,
+                    byteOffset: pktData.byteOffset,
+                    codec: this.codec,
+                    timeStamp: timeStamp,
+                    dataSourceId: this.dataSourceId
+                }, [arrayBuffer]);
+                pktData = null;
+            }
         }
     }
 
