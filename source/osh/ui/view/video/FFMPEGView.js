@@ -321,6 +321,17 @@ class FFMPEGView extends View {
 
     }
 
+    getSPSValue() {
+        let result;
+
+        switch (this.codec) {
+            case 'h264': result = { idx:4, hexaValue:0x67};break;
+            case 'h265': result = { idx:4, hexaValue:0x40};break;
+            case 'vp9': result = { idx: 0,hexaValue:0x82};break;
+            case 'vp8': result = null; break;
+        }
+        return result;
+    }
     /**
      * @private
      * @param pktSize
@@ -330,8 +341,13 @@ class FFMPEGView extends View {
     decode(pktSize, pktData, timeStamp, roll) {
         if(pktSize > 0) {
             if(!this.configured) {
+                // 0x67 = h264 on idx 4
+                // 0x40 = HEVC on idx 4
+                // 0x82 = VP9 on idx 0
+                // 0x9d = VP8 on idx 3
                 // skip until find SPS to start the sequence
-                if(pktData[4] === 0x67) {
+                const sps = this.getSPSValue();
+                if(sps === null || pktData[sps.idx] === sps.hexaValue) {
                     this.configured = true;
                 }
             }
