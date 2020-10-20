@@ -8,32 +8,64 @@ import styles from './styles.module.css';
 
 const features = [
     {
-        title: 'Easy to Use',
-        imageUrl: 'img/undraw_docusaurus_mountain.svg',
+        title: 'Mixed data',
+        imageUrl: 'img/data-map.jpeg',
         description: (
             <>
-                Docusaurus was designed from the ground up to be easily installed and
-                used to get your website up and running quickly.
+                Mix Video(H265, H264, VP9, VP8), Spectrogram, ImageDraping,
+                Nexrad, any Swe generic(GPS, Quaternion, Weather temperature)..
             </>
         ),
     },
     {
-        title: 'Focus on What Matters',
-        imageUrl: 'img/undraw_docusaurus_tree.svg',
+        title: 'Data visualization',
+        imageUrl: 'img/drone.jpeg',
         description: (
             <>
-                Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-                ahead and move your docs into the <code>docs</code> directory.
+                Styling overlay using configurable stylers as well as an advanced support
+                for video. It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.
             </>
         ),
     },
     {
-        title: 'Powered by React',
-        imageUrl: 'img/undraw_docusaurus_react.svg',
+        title: 'Synchronized Temporal & Real time playback',
+        imageUrl: 'img/sync.jpeg',
         description: (
             <>
-                Extend or customize your website layout by reusing React. Docusaurus can
-                be extended while reusing the same header and footer.
+                Event based architecture suitable for real-time or playback and for making temporal
+                synchronization on multiple data stream.
+            </>
+        ),
+    },
+    {
+        title: 'Support for SOS & SPS',
+        imageUrl: 'img/ogc.jpg',
+        description: (
+            <>
+                Supports SWE JSON generic requests: GetCapabilities, GetFeatureOfInterest, GetResultTemplate, DescribeSensor
+            </>
+        ),
+    },
+    {
+        title: 'Pure ES6 Javascript code & Vue.js components',
+        imageUrl: 'img/technos.png',
+        description: (
+            <>
+                Pure javascript framework with some extended high level frameworks/APIs:
+                <ul>
+                    <li>OpenLayers, Leaflet or Cesium for Map data</li>
+                    <li>FFMPeg.js for Video Software decoding</li>
+                    <li>Chart.js</li>
+                </ul>
+            </>
+        ),
+    },
+    {
+        title: 'Toolkit integration',
+        imageUrl: 'img/vuejsreact.png',
+        description: (
+            <>
+                Integrate the toolkit inside your App using pure JS code or Vue.js based components
             </>
         ),
     },
@@ -69,25 +101,27 @@ function Home() {
                 <div className="container">
                     <h1 className="hero__title">{siteConfig.title}</h1>
                     <p className="hero__subtitle">{siteConfig.tagline}</p>
-                    <div className={styles.buttons}>
-                        <Link
-                            className={clsx(
-                                'button button--outline button--lg button--fg --ifm-color-primary',
-                                styles.getStarted,
-                            )}
-                            to={useBaseUrl('docs/')}>
-                            Get Started
-                        </Link>
-                    </div>
-                    <div className={styles.buttons}>
-                        <Link
-                            className={clsx(
-                                'button button--outline button--lg button--fg --ifm-color-primary',
-                                styles.samples,
-                            )}
-                            to={useBaseUrl('samples/')}>
-                            Samples
-                        </Link>
+                    <div className={styles.containerButton}>
+                        <div className={styles.buttons}>
+                            <Link
+                                className={clsx(
+                                    'button button--outline button--lg button--fg --ifm-color-primary',
+                                    styles.getStarted,
+                                )}
+                                to={useBaseUrl('docs/')}>
+                                Get Started
+                            </Link>
+                        </div>
+                        <div className={styles.buttons}>
+                            <Link
+                                className={clsx(
+                                    'button button--outline button--lg button--fg --ifm-color-primary',
+                                    styles.samples,
+                                )}
+                                to={useBaseUrl('http://opensensorhub.github.io/osh-js/v2.0.0/showcase/')}>
+                                Samples
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </header>

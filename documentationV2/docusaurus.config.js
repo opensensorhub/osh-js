@@ -12,7 +12,7 @@ module.exports = {
       title: '',
       logo: {
         alt: '',
-        src: 'img/logo-osh.png',
+        src: 'img/OSH-Logo-min.svg',
       },
       items: [
         {
@@ -22,7 +22,7 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'samples',
+          to: 'http://opensensorhub.github.io/osh-js/v2.0.0/showcase/',
           label: 'Samples',
         },
         {href: 'https://opensensorhub.org/blog/', label: 'Blog', position: 'left'},
