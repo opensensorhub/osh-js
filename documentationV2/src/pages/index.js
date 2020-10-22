@@ -32,7 +32,7 @@ const features = [
         imageUrl: 'img/sync.jpeg',
         description: (
             <>
-                Event based architecture suitable for real-time or playback and for making temporal
+                Event based architecture suitable for real-time or playback with support of temporal
                 synchronization on multiple data stream.
             </>
         ),
@@ -98,7 +98,7 @@ function Home() {
                        className={clsx('video-bg')}>
                     <source src="img/bg.mp4" type="video/mp4"></source>
                 </video>
-                <div className="container">
+                <div className="container fade-in-up animation-delay__0">
                     <h1 className="hero__title">{siteConfig.title}</h1>
                     <p className="hero__subtitle">{siteConfig.tagline}</p>
                     <div className={styles.containerButton}>

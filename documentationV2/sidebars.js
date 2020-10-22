@@ -1,13 +1,6 @@
 module.exports = {
   someSidebar: {
-    Docusaurus: ['doc1', 'doc2', 'doc3'],
-    Features: ['mdx'],
-  },
-  communauty: [
-    {
-      type: 'link',
-      href: '/samples',
-      label: 'Samples',
-    }
-  ]
+    'OpenSensorHub Toolkit': ['intro',  'server', 'projects'],
+    'Getting Started': ['getting_started/installation', 'getting_started/integration', 'getting_started/usage']
+  }
 };

@@ -1,3 +1,7 @@
+/**
+ * Codeblock theme: https://github.com/FormidableLabs/prism-react-renderer/tree/master/src/themes
+ */
+
 module.exports = {
   title: 'OpenSensorHub Web Client Toolkit',
   tagline: 'OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors.',
@@ -7,7 +11,11 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'OpenSensorHub', // Usually your GitHub org/user name.
   projectName: 'osh.js', // Usually your repo name.
+  themes: [require.resolve('@docusaurus/theme-live-codeblock')],
   themeConfig: {
+    prism: {
+      theme: require('prism-react-renderer/themes/github'),
+    },
     navbar: {
       title: '',
       logo: {
@@ -21,16 +29,17 @@ module.exports = {
           label: 'Docs',
           position: 'left',
         },
-        {
-          to: 'http://opensensorhub.github.io/osh-js/v2.0.0/showcase/',
-          label: 'Samples',
-        },
         {href: 'https://opensensorhub.org/blog/', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/opensensorhub/osh-js',
           label: 'GitHub',
           position: 'left',
         },
+        {
+          to: 'http://opensensorhub.github.io/osh-js/v2.0.0/showcase/',
+          label: 'Samples',
+        },
+        {href: 'http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc', label: 'API', position: 'left'},
       ],
     },
   },
@@ -39,9 +48,7 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/opensensorhub/osh-js',
+          sidebarPath: require.resolve('./sidebars.js')
         },
         blog: {
           showReadingTime: true,
