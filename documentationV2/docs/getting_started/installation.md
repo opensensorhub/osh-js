@@ -18,7 +18,7 @@ npm install osh-js
 
 OSH.js built files are available on [CDNJS](https://cdnjs.com/):
 
-https://cdnjs.com/libraries/OSH.js
+https://cdnjs.com/libraries/osh-js
 
 ### Github
 [![github](https://img.shields.io/github/release/opensensorhub/osh-js.svg?style=flat-square&maxAge=600)](https://github.com/opensensorhub/osh-js/releases/latest)
