@@ -38,9 +38,8 @@ class DataSource {
      * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
-     * @param {Number} properties.fetch - the number of data to fetch (default = 1)
+     * @param {Number} properties.batchSize - the number of data to fetch (default = 1)
      * @param {Object} worker - DataSource worker
-     * @return {String} the full url
      */
     constructor(name, properties, worker) {
         this.id = "DataSource-" + randomUUID();
