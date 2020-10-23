@@ -8,7 +8,7 @@ VideoDataSourceWithRoll is a specific DataSource to parse Video data with roll i
 
 Roll gives the angle of the camera allowing the View to re-orient the Y-axis depending on the angle.
 
-The class inherits directly from [VideoDataSource](./video.md).
+The class inherits directly from [VideoDataSource](video.md).
 
 There are specific properties for this DataSource.
 

@@ -6,7 +6,7 @@ sidebar_label: Video
 
 VideoDataSource is a specific DataSource to parse Video data.
 
-The class inherits directly from [DataSource](./index.md).
+The class inherits directly from [DataSource](index.md).
 
 There are specific properties for this DataSource.
 

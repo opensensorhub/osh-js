@@ -6,7 +6,7 @@ sidebar_label: SweJson
 
 SweJson is a specific DataSource to parse JSON data.
 
-The class inherits directly from [DataSource](./index.md).
+The class inherits directly from [DataSource](index.md).
 
 There are not specific properties for this DataSource. 
 
@@ -43,6 +43,6 @@ The other fields are keeping as they are and are forwarded to the result object.
 }  
 ```
 
-The result is then processed through the Toolkit to be synchronized or/and displayed into the [View](../view/index).
+The result is then processed through the Toolkit to be synchronized or/and displayed into the [View](../../views/index).
 
 
