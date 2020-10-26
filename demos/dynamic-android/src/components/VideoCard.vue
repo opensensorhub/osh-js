@@ -55,14 +55,13 @@ export default {
 
 .video, .v-card, .no-dialog {
   width: inherit;
-  height: calc(100% - 12px);
+  height: 270px;
   background-color: #000000 !important;
 }
 
 .v-card {
-  height: 220px;
-  width: inherit;
-  min-width: 320px;
+  height: 310px;
+  min-width: 480px;
 }
 
 .v-application .video-h264 .ffmpeg-info {

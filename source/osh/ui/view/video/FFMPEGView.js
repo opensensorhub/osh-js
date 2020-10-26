@@ -128,8 +128,6 @@ class FFMPEGView extends View {
             });
         });
 
-        this.initFFMPEG_DECODER_WORKER();
-
         let hidden, visibilityChange;
 
         if (isDefined(document.hidden)) { // Opera 12.10 and Firefox 18 and later support
@@ -162,12 +160,19 @@ class FFMPEGView extends View {
         return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
-    setData(dataSourceId, data) {
-        if (!this.skipFrame) {
-            let pktData = data.data.frameData;
-            let pktSize = pktData.length;
-            let roll = data.data.roll;
-            this.decode(pktSize, pktData, data.timeStamp,roll);
+    setData(dataSourceId, values) {
+        for(let i=0; i < values.length;i++) {
+            if (!this.skipFrame) {
+                if (this.decodeWorker == null) {
+                    this.initFFMPEG_DECODER_WORKER();
+                }
+
+                const value = values.shift();
+                let pktData = value.data.frameData;
+                let roll = value.data.roll;
+                let pktSize = pktData.length;
+                this.decode(pktSize, pktData, value.timeStamp, roll);
+            }
         }
     }
 
@@ -189,6 +194,24 @@ class FFMPEGView extends View {
      * @override
      */
     reset() {
+        if(this.decodeWorker !== null) {
+            this.decodeWorker.terminate();
+            this.decodeWorker = null;
+        }
+        this.resetCalled = true;
+        let nodata = new Uint8Array(1);
+        nodata[0] = 128;
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
     }
 
     /**

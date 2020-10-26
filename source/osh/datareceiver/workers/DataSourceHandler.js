@@ -1,18 +1,20 @@
-import WebSocketConnector from "../../dataconnector/WebSocketConnector";
-import Ajax from "../../dataconnector/Ajax";
-import {isDefined} from "../../utils/Utils";
-import TopicConnector from "../../dataconnector/TopicConnector";
+import WebSocketConnector from "../../dataconnector/WebSocketConnector.js";
+import Ajax from "../../dataconnector/Ajax.js";
+import {isDefined} from "../../utils/Utils.js";
+import TopicConnector from "../../dataconnector/TopicConnector.js";
+import {EventType} from "../../event/EventType.js";
+import {Status} from "../../dataconnector/Status";
 
 class DataSourceHandler {
 
     constructor(parser) {
         this.parser = parser;
         this.connector = null;
-
         this.lastTimeStamp = null;
         this.lastStartTime = 'now';
         this.timeShift = 0;
         this.reconnectTimeout = 1000 * 10; // 10 secs
+        this.values = [];
     }
 
     createConnector(propertiesStr, topic, dataSourceId) {
@@ -25,6 +27,10 @@ class DataSourceHandler {
         this.broadcastChannel = new BroadcastChannel(topic);
 
         const properties = JSON.parse(propertiesStr);
+
+        if (isDefined(properties.fetch)) {
+            this.fetch = properties.fetch;
+        }
 
         if (isDefined(properties.timeShift)) {
             this.timeShift = properties.timeShift;
@@ -40,6 +46,20 @@ class DataSourceHandler {
 
         if (isDefined(properties.reconnectTimeout)) {
             this.reconnectTimeout = properties.reconnectTimeout;
+        }
+
+        if(properties.startTime === 'now') {
+            this.batchSize = 1;
+        } else {
+            if (isDefined(properties.replaySpeed)) {
+                if (!isDefined(properties.batchSize)) {
+                    this.batchSize = 1;
+                }
+            }
+
+            if (isDefined(properties.batchSize)) {
+                this.batchSize = properties.batchSize;
+            }
         }
 
         this.properties = properties;
@@ -79,12 +99,13 @@ class DataSourceHandler {
         const lastStartTimeCst = this.parser.lastStartTime;
         const lastProperties = properties;
         if (this.connector !== null) {
+            // bind change connection STATUS
+            this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
+
             this.connector.onReconnect = () => {
                 // if not real time, preserve last timestamp to reconnect at the last time received
                 // for that, we update the URL with the new last time received
                 if (lastStartTimeCst !== 'now') {
-                    // console.log(this.lastStartTime);
-                    // console.log(this.lastTimeStamp);
                     this.connector.setUrl(this.parser.buildUrl(
                         {
                             ...properties,
@@ -122,18 +143,34 @@ class DataSourceHandler {
     }
 
     onMessage(event) {
-        const obj = {
-            dataSourceId: this.dataSourceId,
-            timeStamp: this.parser.parseTimeStamp(event) + this.timeShift,
-            data: this.parser.parseData(event)
-        };
-        // console.log(obj);
-        this.lastTimeStamp = obj.timeStamp;
-        // HACK
-        // if(obj.timeStamp === NaN){
-        //     this.lastTimeStamp = obj.data.Time;
-        // }
-        this.broadcastChannel.postMessage(obj);
+        const timeStamp = this.parser.parseTimeStamp(event) + this.timeShift;
+        const data = this.parser.parseData(event);
+
+        this.values.push({
+            data: data,
+            timeStamp: timeStamp
+        });
+        this.lastTimeStamp = timeStamp;
+
+        if(isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+            this.flush();
+        }
+    }
+
+    /**
+     * Send a change status event into the broadcast channel
+     * @param {Status} status - the new status
+     */
+    onChangeStatus(status) {
+        if(status === Status.DISCONNECTED) {
+            this.flush();
+        }
+
+        this.broadcastChannel.postMessage({
+            type: EventType.STATUS,
+            status: status,
+            dataSourceId: this.dataSourceId
+        });
     }
 
     getLastTimeStamp() {
@@ -159,6 +196,14 @@ class DataSourceHandler {
         });
 
         this.connect();
+    }
+
+    flush() {
+        this.broadcastChannel.postMessage({
+            dataSourceId: this.dataSourceId,
+            type: EventType.DATA,
+            values: this.values.splice(0, this.values.length)
+        });
     }
 
     handleMessage(message, worker) {

@@ -29,10 +29,9 @@ export default {
     justify-content: center;
     align-items: center;
     position: absolute;
-    max-width: 350px;
     background: rgba(0,0,0,0.5) !important;
     bottom: 0px;
-    left: 200px;
+    left: 270px;
     transform: translate(-50%, -20px);
   }
 

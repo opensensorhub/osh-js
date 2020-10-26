@@ -1,10 +1,10 @@
 // dynamic part
 import {startDataSet} from "./datasynchronizer";
 import DataInjectorWorker from './DataInjector.worker';
-import DataSynchronizer from "../../../source/osh/datasynchronizer/DataSynchronizer";
-import {DATA_SYNCHRONIZER_TOPIC} from "../../../source/osh/Constants";
+import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import {DATA_SYNCHRONIZER_TOPIC} from "osh/Constants";
 import DummyDataSource from "./datasource/DummyDataSource";
-import {randomUUID} from "../../../source/osh/utils/Utils";
+import {randomUUID} from "osh/utils/Utils";
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
@@ -68,8 +68,8 @@ export function startDynamicWithTimeout(cbFinish) {
 
     const currentTimeBroadCastChannel = new BroadcastChannel(DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id);
     console.log('listen for currentTime',DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id)
-    currentTimeBroadCastChannel.onmessage = (event) => {
-      eltCurrentTime.innerText = new Date(event.data.currentTime);
+    currentTimeBroadCastChannel.onmessage = async (event) => {
+      eltCurrentTime.innerText = new Date(await dataSynchronizer.getCurrentTime()).toISOString();
     };
 
     startDataSet(eltDynamic, 100, eltDynamicErrors, [],

@@ -20,6 +20,12 @@ var samples = [
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
   },
+  {
+    name: "Simple Batch Chart (Chart.js)",
+    description: "Display a chart with time series of weather measurements and using different datasource parameters " +
+        "to get data in batch",
+    url: "chart-batch"
+  },
   // {
   //   name: "Discovery (form)",
   //   description: "Display a Form helping to choose the correct DataSource depending on the offering.",
@@ -94,6 +100,11 @@ var samples = [
     name: 'VueJs component: Video with control',
     description: 'Display a video using forward/pause/play/backward control',
     url: 'video-with-control-vuejs'
+  },
+  {
+    name: 'VueJs component: Multiple Video with control',
+    description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
+    url: 'video-with-control-vuejs-synchronized'
   }
 ];
 

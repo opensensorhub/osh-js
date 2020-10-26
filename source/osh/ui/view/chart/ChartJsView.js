@@ -148,13 +148,10 @@ class ChartJsView extends View {
     /**
      *
      * @param {Curve} styler -
-     * @param {Number} timestamp -
+     * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
      * @param {Object} options -
      */
-    updateCurve(styler, timestamp, options) {
-        console.log('UPDATING CURVE...');
-        console.log(styler);
-        console.log(this.datasets)
+    updateCurve(styler, values, options) {
         let currentDataset = this.datasets[styler.getId()];
         if(!isDefined(currentDataset)) {
             currentDataset = {
@@ -165,13 +162,8 @@ class ChartJsView extends View {
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
-                data: []
+                data: styler.values
             };
-            if(styler.hasOwnProperty('valueArray')){
-                console.log(this.chart);
-                console.log(styler.valueArray);
-                currentDataset.data = styler.valueArray;
-            }
             currentDataset = {...currentDataset, ...this.datasetsOpts};
             this.datasets[styler.getId()] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
@@ -179,25 +171,16 @@ class ChartJsView extends View {
         if(currentDataset.data.length >= this.maxPoints) {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
         }
-
-        console.log(this.chart.data);
-
-        if(!styler.hasOwnProperty('valueArray')) {
-            currentDataset.data.push({
-                x: styler.x,
-                y: styler.y
-            });
-
-            this.chart.data.labels.push(styler.x);
+        this.chart.data.labels.push(currentDataset.data[currentDataset.data.length-1].x);
+        if(currentDataset.data.length > 1) {
+            this.chart.update(0);
+        } else {
+            this.chart.update();
         }
-
-        this.chart.update();
-
         if(currentDataset.data.length > this.maxPoints) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();
         }
-
     }
 }
 

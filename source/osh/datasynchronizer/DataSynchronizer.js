@@ -15,9 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import EventManager from "osh/events/EventManager";
-import {isDefined, randomUUID} from "../utils/Utils";
-import DataSynchronizerWorker from './DataSynchronizer.worker';
-import {DATA_SYNCHRONIZER_TOPIC} from "../Constants";
+import {isDefined, randomUUID} from "../utils/Utils.js";
+import DataSynchronizerWorker from './DataSynchronizer.worker.js';
+import {DATA_SYNCHRONIZER_TOPIC} from "../Constants.js";
 
 class DataSynchronizer {
     /**
@@ -106,6 +106,7 @@ class DataSynchronizer {
     push(dataSourceId, data) {
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.postMessage({
+                type: 'data',
                 dataSourceId: dataSourceId,
                 data: data
             });

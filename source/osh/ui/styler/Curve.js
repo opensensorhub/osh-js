@@ -41,8 +41,10 @@ class Curve extends Styler {
         this.yLabel = "";
         this.color = "#000000";
         this.stroke = 1;
-        this.x = 0;
-        this.y = [];
+        // this.x = 0;
+        // this.y = [];
+
+        this.values = [];
 
         let that = this;
 
@@ -78,9 +80,10 @@ class Curve extends Styler {
 
         if (isDefined(properties.valuesFunc)) {
             let fn = function (rec, timeStamp, options) {
-                let values = properties.valuesFunc.handler(rec, timeStamp, options);
-                that.x = values.x;
-                that.y = values.y;
+                let value = properties.valuesFunc.handler(rec, timeStamp, options);
+                // that.x = values.x;
+                // that.y = values.y;
+                that.values.push(value);
             };
             this.addFn(properties.valuesFunc.dataSourceIds, fn);
         }
@@ -100,7 +103,7 @@ class Curve extends Styler {
         if (super.setData(dataSourceId, rec, view, options)) {
             //if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
             if (isDefined(view)) {
-                view.updateCurve(this, rec.timeStamp, options);
+                view.updateCurve(this, this.values, options);
                 return true;
             }
         }
