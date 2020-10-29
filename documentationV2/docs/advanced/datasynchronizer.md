@@ -1,6 +1,6 @@
 ---
 id: datasynchronizer
-title: DataSynchronization algorithm
+title: Data synchronization algorithm
 sidebar_label: Synchronization
 ---
 

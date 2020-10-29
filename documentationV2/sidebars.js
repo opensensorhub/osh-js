@@ -57,9 +57,11 @@ module.exports = {
             {
                 type: 'category',
                 label: 'Stylers',
-                items: ['views/stylers/index'],
+                items: ['views/stylers/styler'],
             },
+            'views/chart',
             'views/entity/entity',
+            'views/spectrogram',
             {
                 type: 'category',
                 label: 'Ext',
@@ -77,7 +79,15 @@ module.exports = {
             'vuejs/videocontrol',
         ],
         'Advanced': [
-            'advanced/datasynchronizer'
+            'advanced/comchannels',
+            'advanced/datasynchronizer',
+            {
+                type: 'category',
+                label: 'Developers',
+                items: [
+                    'advanced/developers/datasourcesdev'
+                ],
+            }
         ]
     }
 };

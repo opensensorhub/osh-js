@@ -103,4 +103,4 @@ let gpsDataSource = new SweJson('android-GPS', {
 ```
 **Useful only when used with DataSynchronizer*
 
-To create a new datasource type, see the [developer docs](../../developers/datasources.md).
+To create a new datasource type, see the [developer docs](../../advanced/developers/datasources.md).

@@ -6,6 +6,11 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
+
+if (typeof window === 'undefined') {
+    global.window = {}
+}
+
 const features = [
     {
         title: 'Mixed data',

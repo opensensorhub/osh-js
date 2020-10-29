@@ -7,11 +7,12 @@ module.exports = {
   tagline: 'OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors.',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'OpenSensorHub', // Usually your GitHub org/user name.
   projectName: 'osh.js', // Usually your repo name.
   themes: [require.resolve('@docusaurus/theme-live-codeblock')],
+  plugins: ['my-loaders'], // loader required for .svg
   themeConfig: {
     prism: {
       theme: require('prism-react-renderer/themes/github'),

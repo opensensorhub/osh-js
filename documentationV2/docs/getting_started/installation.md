@@ -25,5 +25,5 @@ https://cdnjs.com/libraries/osh-js
 
 You can download the latest version of [osh-js on GitHub](https://github.com/opensensorhub/osh-js/releases/latest).
 
-If you download or clone the repository, you must [build](../developers/contributing.md#building-and-testing) osh-js.js to generate the dist files. osh-js no longer comes with prebuilt release versions, so an alternative option to downloading the repo is **strongly** advised.
+If you download or clone the repository, you must [build](../advanced/developers/contributing) osh-js.js to generate the dist files. osh-js no longer comes with prebuilt release versions, so an alternative option to downloading the repo is **strongly** advised.
 

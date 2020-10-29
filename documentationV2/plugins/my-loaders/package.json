@@ -19,7 +19,9 @@
     "clsx": "^1.1.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "my-loaders": "file:plugins/my-loaders"
+    "ol": "^6.2.1",
+    "ol-layerswitcher": "^3.6.0",
+    "worker-loader": "^2.0.0"
   },
   "browserslist": {
     "production": [

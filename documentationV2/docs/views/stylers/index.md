@@ -1,5 +1,14 @@
 ---
-id: index
-title: Styler
+id: styler
+title: Stylers
 sidebar_label: General
 ---
+
+The Stylers allow styling and filter data. They are generic and can be applied to any View that support them.
+
+For example, the data can be displayed as:
+- text
+- icon
+- line
+- map point
+- ...
