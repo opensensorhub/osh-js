@@ -21,7 +21,10 @@
     "react-dom": "^16.8.4",
     "ol": "^6.2.1",
     "ol-layerswitcher": "^3.6.0",
-    "worker-loader": "^2.0.0"
+    "leaflet": "^1.6.0",
+    "worker-loader": "^2.0.0",
+    "cesium": "1.68.0",
+    "copy-webpack-plugin": "^5.1.1"
   },
   "browserslist": {
     "production": [

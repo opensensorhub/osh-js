@@ -10,7 +10,7 @@ This View can also display path using the corresponding [Styler](../stylers/styl
 import { useEffect } from 'react';
 import SweJson from 'osh/datareceiver/SweJson.js';
 import PointMarker from 'osh/ui/styler/PointMarker.js';
-import OpenLayerView from 'osh/ui/view/map/OpenLayerView.js';
+import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
 export const ExampleOpenLayers = () => {
  // Similar to componentDidMount and componentDidUpdate:
@@ -23,7 +23,7 @@ export const ExampleOpenLayers = () => {
             observedProperty: "http://sensorml.com/ont/swe/property/Location",
             startTime: "2015-02-16T07:58:32Z",
             endTime: "2015-02-16T08:09:00Z",
-            replaySpeed: 1
+            replaySpeed: 2
         };
         const dataSource = new SweJson("android-GPS", cfg);
         const pointMarker = new PointMarker({
@@ -41,15 +41,34 @@ export const ExampleOpenLayers = () => {
             },
           	icon: '/img/car-location.png',
             iconAnchor: [16, 64],
-            iconSize: [32, 64]
+            iconSize: [32, 64],
+            zoomLevel: 17
         });
-        new OpenLayerView("ol-map",
+        const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+              maxZoom: 20,
+              attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, ' +
+                  '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> ' +
+                  '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            });
+        const baseLayers = {
+                  "OSM Bright" : layer
+        };
+        const view = new LeafletView("ol-map",
             [{
                 styler: pointMarker,
                 name: "Android Phone GPS"
-            }]
+            }], {
+              		autoZoomOnFirstMarker: true,
+              		follow: true,
+              		baseLayers: baseLayers,
+                    defaultLayer: layer
+              	}
         );
         dataSource.connect();
+        return () => {
+            dataSource.terminate();
+            view.destroy();
+        }
     });
     return <div style={{height:500 +'px'}} id="ol-map"></div>;
 }

@@ -1,4 +1,5 @@
 const path = require('path');
+const CopywebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = function(context, options) {
     return {
@@ -22,9 +23,24 @@ module.exports = function(context, options) {
                 },
                 resolve: {
                     alias: {
-                        'osh': path.resolve(__dirname, '../../../source/osh')
+                        'osh': path.resolve(__dirname, '../../../source/osh'),
+                        'cesium': path.resolve(__dirname, '../../node_modules/cesium'),
                     }
-                }
+                },
+                amd: {
+                    // Enable webpack-friendly use of require in Cesium
+                    toUrlUndefined: true
+                },
+                node: {
+                    // Resolve node module use of fs
+                    fs: 'empty'
+                },
+                plugins: [
+                    // Copy Cesium Assets, Widgets, and Workers to a static directory
+                    new CopywebpackPlugin([ { from:  'node_modules/cesium/Source/Workers', to: 'Workers' } ]),
+                    new CopywebpackPlugin([ { from:  'node_modules/cesium/Source/Assets', to: 'Assets' } ]),
+                    new CopywebpackPlugin([ { from:  'node_modules/cesium/Source/Widgets', to: 'Widgets' } ])
+                ]
             };
         },
     };

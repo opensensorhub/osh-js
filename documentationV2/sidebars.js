@@ -41,6 +41,7 @@ module.exports = {
                 type: 'category',
                 label: 'Map',
                 items: [
+                    'views/map/index',
                     'views/map/ol',
                     'views/map/leaflet',
                     'views/map/cesium',

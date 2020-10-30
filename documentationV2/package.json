@@ -17,9 +17,9 @@
     "@mdx-js/react": "^1.5.8",
     "@mdx-js/vue-loader": "^1.6.19",
     "clsx": "^1.1.1",
+    "my-loaders": "file:plugins/my-loaders",
     "react": "^16.8.4",
-    "react-dom": "^16.8.4",
-    "my-loaders": "file:plugins/my-loaders"
+    "react-dom": "^16.8.4"
   },
   "browserslist": {
     "production": [
