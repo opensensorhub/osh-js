@@ -51,7 +51,6 @@ class OpenLayerView extends View {
      * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} options - the properties of the view
      * @param {Object} options.map - the map object to use
-     * @param {Integer} [options.zoom=11]
      * @param {Integer} [options.maxZoom=19]
      * @param {Boolean} options.autoZoomOnFirstMarker - auto zoom on the first added marker
      * @param {Object} options.initialView - {lon:.., lat:..}
