@@ -49,6 +49,7 @@ article > header >  h1 {
 .navbar__logo {
   height: 60px;
   margin-right: 0.5rem;
+  margin-top: 10px;
 }
 
 .video-bg {
