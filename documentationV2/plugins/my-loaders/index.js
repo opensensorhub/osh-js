@@ -16,6 +16,13 @@ module.exports = function(context, options) {
                             }
                         },
                         {
+                            test: /\.(js|jsx)$/,
+                            exclude: /node_modules/,
+                            use: {
+                                loader: "babel-loader"
+                            }
+                        },
+                        {
                             test: /\.worker\.js$/,
                             use: {loader: 'worker-loader'}
                         }

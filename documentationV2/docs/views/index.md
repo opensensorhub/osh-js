@@ -10,7 +10,7 @@ or pure Javascript.
 This is the list of actual supported Views in the Toolkit:
 - Map
     - [Cesium](./map/cesium) 1.68 
-    - [Leaflet](./map/leaflet)  1.6
+    - [Leaflet](map/leafletcomp)  1.6
     - [OpenLayers](./map/ol)  6.2.1
 - Chart
     - [Chart.js](./chart)   2.9.3

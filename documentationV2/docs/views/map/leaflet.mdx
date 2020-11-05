@@ -57,57 +57,9 @@ The initial View can be passed to override the default [View](https://openlayers
 
 ### Simple Example
 
-import { useEffect } from 'react';
-import SweJson from 'osh/datareceiver/SweJson.js';
-import PointMarker from 'osh/ui/styler/PointMarker.js';
-import LeafletView from 'osh/ui/view/map/LeafletView.js';
+import LazyLeafletMap from './leafletcomp/lazyleaflet.jsx';
 
-export const ExampleLeaflet = () => {
- // Similar to componentDidMount and componentDidUpdate:
-  useEffect(() => {
-        const dataSource = new SweJson("android-GPS", {
-        	protocol: "ws",
-        	service: "SOS",
-        	endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-        	offeringID: "urn:android:device:060693280a28e015-sos",
-        	observedProperty: "http://sensorml.com/ont/swe/property/Location",
-        	startTime: "2015-02-16T07:58:32Z",
-        	endTime: "2015-02-16T08:09:00Z",
-        	replaySpeed: 2
-        });
-        const pointMarker = new PointMarker({
-        	locationFunc: {
-        		dataSourceIds: [dataSource.getId()],
-        		handler: function(rec) {
-        			return {
-        				x: rec.location.lon,
-        				y: rec.location.lat
-        			};
-        		}
-        	},
-        	orientation: {
-        		heading: 0
-        	},
-          	icon: '/img/car-location.png',
-        	iconAnchor: [16, 64],
-        	iconSize: [32, 64]
-        });
-        const view = new LeafletView("leaflet-single-map",
-        	[{
-        		styler: pointMarker,
-        		name: "Android Phone GPS"
-        	}]
-        );
-        dataSource.connect();
-        return () => {
-            dataSource.terminate();
-            view.destroy();
-        }
-    });
-    return <div style={{height:500 +'px'}} id="leaflet-single-map"></div>;
-}
-
-<ExampleLeaflet/>
+<LazyLeafletMap/>
 
 #### Code
 
@@ -153,7 +105,10 @@ const view = new LeafletView("leaflet-single-map",
     [{
         styler: pointMarker,
         name: "Android Phone GPS"
-    }]
+    }],
+    {
+        autoZoomOnFirstMarker:true
+    }
 );
 
 // start streaming
@@ -161,73 +116,9 @@ gpsDataSource.connect();
 ```
 
 ### Example using custom BaseLayer, Overlay & InitialView
+import LazyLeafletMapComplex from './leafletcomp/lazyleafletcomplex.jsx';
 
-export const ExampleLeafletWithCustomBaseLayer = () => {
- // Similar to componentDidMount and componentDidUpdate:
-  useEffect(() => {
-        const dataSource = new SweJson("android-GPS", {
-        	protocol: "ws",
-        	service: "SOS",
-        	endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-        	offeringID: "urn:android:device:060693280a28e015-sos",
-        	observedProperty: "http://sensorml.com/ont/swe/property/Location",
-        	startTime: "2015-02-16T07:58:32Z",
-        	endTime: "2015-02-16T08:09:00Z",
-        	replaySpeed: 2
-        });
-        const pointMarker = new PointMarker({
-        	locationFunc: {
-        		dataSourceIds: [dataSource.getId()],
-        		handler: function(rec) {
-        			return {
-        				x: rec.location.lon,
-        				y: rec.location.lat
-        			};
-        		}
-        	},
-        	orientation: {
-        		heading: 0
-        	},
-          	icon: '/img/car-location.png',
-        	iconAnchor: [16, 64],
-        	iconSize: [32, 64]
-        });
-         const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
-             maxZoom: 20,
-             attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, ' +
-              '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> ' +
-              '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-         });
-         const baseLayers = {
-            "OSM Bright" : layer
-         };
-        const view = new LeafletView("leaflet-single-baselayer-map",
-        	[{
-        		styler: pointMarker,
-        		name: "Android Phone GPS"
-        	}],
-        	 {
-                autoZoomOnFirstMarker: false,
-                initialView: {
-                    lon: 1.42376344,
-                    lat: 43.61759948,
-                    zoom: 15
-                },
-                follow: true,
-                baseLayers: baseLayers,
-                defaultLayer: layer
-            }
-        );
-        dataSource.connect();
-        return () => {
-            dataSource.terminate();
-            view.destroy();
-        }
-    });
-    return <div style={{height:500 +'px'}} id="leaflet-single-baselayer-map"></div>;
-}
-
-<ExampleLeafletWithCustomBaseLayer/>
+<LazyLeafletMapComplex/>
 
 #### Code
 
@@ -301,4 +192,3 @@ const view = new LeafletView("leaflet-single-baselayer-map",
 // start streaming
 gpsDataSource.connect();
 ```
-
