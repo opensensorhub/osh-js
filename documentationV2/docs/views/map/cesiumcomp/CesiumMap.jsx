@@ -1,13 +1,18 @@
 import * as React from "react";
-import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import LeafletView from 'osh/ui/view/map/LeafletView.js';
+import SweJson from 'osh/datareceiver/SweJson.js';
+import PointMarker from 'osh/ui/styler/PointMarker.js';
+import CesiumView from 'osh/ui/view/map/CesiumView.js';
+import {
+  EllipsoidTerrainProvider
+} from 'cesium';
 import {randomUUID} from "osh/utils/Utils.js";
 
-class LeafletMap extends React.Component {
+
+class CesiumMap extends React.Component {
   constructor(props) {
     super(props);
     this.divId = randomUUID();
+    window.CESIUM_BASE_URL = '../../../';
   }
 
   componentDidMount() {
@@ -38,7 +43,7 @@ class LeafletMap extends React.Component {
       iconAnchor: [16, 64],
       iconSize: [32, 64]
     });
-    this.view = new LeafletView("leaflet-single-map",
+    this.view = new CesiumView("cesium-single-map",
         [{
           styler: pointMarker,
           name: "Android Phone GPS"
@@ -47,6 +52,7 @@ class LeafletMap extends React.Component {
           autoZoomOnFirstMarker:true
         }
     );
+    this.view.viewer.terrainProvider = new EllipsoidTerrainProvider();
     this.dataSource.connect();
   }
 
@@ -56,8 +62,8 @@ class LeafletMap extends React.Component {
   }
 
   render() {
-    return <div style={{height:500 +'px'}} id="leaflet-single-map"></div>;
+    return <div style={{height:500 +'px'}} id="cesium-single-map"></div>;
   }
 }
 
-export default LeafletMap;
+export default CesiumMap;

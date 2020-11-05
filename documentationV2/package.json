@@ -2,6 +2,7 @@
   "name": "documentation-v-2",
   "version": "0.0.0",
   "private": true,
+  "homepage": "/osh-js/v2.0.0/documentationV2/",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",

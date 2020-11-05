@@ -5,8 +5,8 @@
 module.exports = {
   title: 'OpenSensorHub Web Client Toolkit',
   tagline: 'OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors.',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  url: 'http://opensensorhub.github.io/',
+  baseUrl: '/osh-js/v2.0.0/documentationV2/',
   onBrokenLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'OpenSensorHub', // Usually your GitHub org/user name.

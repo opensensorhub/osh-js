@@ -37,7 +37,7 @@ class OlMapComplex extends React.Component {
       orientation: {
         heading: 0
       },
-      icon: '/img/car-location.png',
+      icon: this.props.base+'img/car-location.png',
       iconAnchor: [16, 64],
       iconSize: [32, 64]
     });

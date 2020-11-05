@@ -1,4 +1,5 @@
 import React from "react"
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 const Placeholder = () => null
 
@@ -11,7 +12,7 @@ const LazyOlMapComplex = props => {
     React.useEffect(() => {
         import("./OlMapComplex.jsx").then(Thing => setComponent(() => Thing.default))
     }, [])
-    return <Component {...props} />
+    return <Component {...{...props, base: useBaseUrl('/')}} />
 }
 
 export default LazyOlMapComplex
