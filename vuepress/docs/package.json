@@ -1,0 +1,27 @@
+{
+  "name": "osh-js",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "authors": {
+    "name": "",
+    "email": ""
+  },
+  "repository": "/vuepress",
+  "scripts": {
+    "build-showcase": "yarn --cwd ../../showcase/ prod",
+    "dev": "vuepress dev src",
+    "build": "yarn --cwd ../../showcase/ prod && vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  },
+  "dependencies": {
+    "copy-webpack-plugin": "^6.3.0",
+    "markdown-it-include": "^2.0.0",
+    "prism-themes": "^1.5.0",
+    "vuepress-plugin-auto-sidebar": "^1.5.0",
+    "worker-loader": "^3.0.5"
+  }
+}
