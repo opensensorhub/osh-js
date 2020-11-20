@@ -6,9 +6,14 @@ var Normalizer = require('prismjs/plugins/normalize-whitespace/prism-normalize-w
 
 var samples = [
   {
-     name: "DataSources",
-     description: "Display the data of 3 differents datasources: Video, Gps and Orientation",
-     url: "datasources"
+    name: "SweJson DataSource",
+    description: "Display the data of a SweJson DataSource",
+    url: "datasource-swejson"
+  },
+  {
+    name: "Video DataSource",
+    description: "Display the data of a Video DataSource",
+    url: "datasource-video"
   },
   {
     name: "FOI Locations (CesiumJS)",
@@ -74,6 +79,11 @@ var samples = [
     url: "video-map-multiple-datasource"
   },
   {
+    name: "DataSource Synchronized",
+    description: "Display the data of 3 differents kind of datasources(Video, Gps and Orientation) using time synchronization algorithm",
+    url: "datasources-synchronized"
+  },
+  {
     name: "Moving Location + Heading + Video (Leaflet)",
     description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
         "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
@@ -134,7 +144,7 @@ samples.forEach(s => {
 
     const iframeId = randomUUID();
     const iframe = document.createElement("iframe");
-    iframe.setAttribute("style","width:100%;height:100%;border:none;");
+    iframe.setAttribute("style","width:calc(100% - 50px);height:100%;border:none;");
     iframe.setAttribute("id", iframeId);
     iframe.setAttribute("src",s.url+'.html');
     // iframe.onload = function() {
