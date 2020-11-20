@@ -27,11 +27,7 @@ into a [View](../../views/index).
 
 There are global properties common to every datasource owned by the DataSource Object.
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-|name|String|-| the datasource name
-|properties|Object| object |the datasource properties
-|customUrlParams|Object| - | custom URL params 
+<DocumentationLoad path="/guide/api/DataSource.html"/>
 
 The **customUrlParams** are properties that are automatically appended to the URL as they are provided.
 
@@ -61,6 +57,4 @@ associated with a DataSynchronizer.
 
 *batchsize* is useful if you want to process data in batches and display them all at once rather than displaying them one by one. For example, in the case of static data that one would like to display in a block.
 
- [API reference](../../api/osh/datareceiver/DataSource.md)
- 
 To create a new datasource type, see the [developer docs](../../advanced/developers/datasources.md).

@@ -1,25 +1,16 @@
----
-id: video
-title: Video
-sidebar_label: Video
----
+# Video
 
 VideoDataSource is a specific DataSource to parse Video data.
 
-The class inherits directly from [DataSource](index.md).
+The class inherits directly from [DataSource](general.md).
 
 There are specific properties for this DataSource.
 
 ## Specific properties
 
-These properties are members of [customUrlParams](index.md#global-configuration).
+These properties are members of [customUrlParams](general.md#global-configuration).
 
-| Name | Type | Default | Description |  Mandatory 
-| ---- | ---- | ------- | --------------- |  ---------
-|video_bitrate|Number| - |define a custom bitrate (in b/s)| -
-|video_scale|Number| - | define a custom scale, 0.0 < value < 1.0| -
-|video_width|Number| - |define a custom width (in pixel)| -
-|video_height|Number| - |define a custom height (in pixel)| -
+<DocumentationLoad path="/guide/api/Video.html"/>
 
 *(1) Note that in case of the video stream, it is very important to define the **responseFormat** to activate the support of these parameters.*
 
@@ -58,8 +49,10 @@ ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult
 
 The underlaying stream is binary.
  
-The first 12 bytes is the timestamp in millis.
+The first 8 bytes is the timestamp in millis.
  
+The next 4 bytes define the frame length.
+
 The next bytes are corresponding to a full NAL unit.
 
 **|--- 8 bytes timestamp ---|--- 4 bytes frame length ---|--- NAL UNIT ---|**

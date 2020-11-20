@@ -1,8 +1,4 @@
----
-id: swejson
-title: SweJson
-sidebar_label: SweJson
----
+# SweJson
 
 SweJson is a specific DataSource to parse JSON data.
 
@@ -45,10 +41,10 @@ The other fields are keeping as they are and are forwarded to the result object.
 
 The result is then processed through the Toolkit to be synchronized or/and displayed into the [View](../../views/index).
 
- [API reference](../../api/osh/datareceiver/SweJson.md)
+<DocumentationLoad path="/guide/api/SweJson.html"/>
 
 ## Example
 
-<LazyLoadCode path='leaflet-location/leaflet-location.js'/>
+<<< @/../../showcase/examples/leaflet-location/leaflet-location.js#snippet_leaflet_location_import
 
-<<< @/../../showcase/examples/leaflet-location/leaflet-location.js
+<<< @/../../showcase/examples/leaflet-location/leaflet-location.js#snippet_leaflet_location_datasource

@@ -25,9 +25,9 @@ class DataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
-     * @param {Boolean} properties.timeShift=false - fix some problem with some android devices with some timestamp shift to 16 sec
-     * @param {Number} properties.bufferingTime=0 - defines the time during the data has to be buffered. Useful only when used with DataSynchronizer
-     * @param {Number} properties.timeOut=0 - defines the limit time before data has to be skipped. Useful only when used with DataSynchronizer
+     * @param {Boolean} [properties.timeShift=false] - fix some problem with some android devices with some timestamp shift to 16 sec
+     * @param {Number} [properties.bufferingTime=0 - defines the time during the data has to be buffered. Useful only when used with DataSynchronizer
+     * @param {Number} [properties.timeOut=0] - defines the limit time before data has to be skipped. Useful only when used with DataSynchronizer
      * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
      * @param {String} properties.endpointUrl the endpoint url
      * @param {String} properties.service the service
@@ -35,10 +35,11 @@ class DataSource {
      * @param {String} properties.observedProperty the observed property
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
-     * @param {Number} properties.replaySpeed=1 the replay factor
-     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
-     * @param {Number} properties.reconnectTimeout=10000 - the time before reconnecting (in milliseconds)
-     * @param {Number} properties.batchSize=1 - the number of data to fetch
+     * @param {Number} [properties.replaySpeed=1] the replay factor
+     * @param {Number} [properties.responseFormat] the response format (e.g video/mp4)
+     * @param {Number} [properties.reconnectTimeout=10000] - the time before reconnecting (in milliseconds)
+     * @param {Number} [properties.batchSize=1] - the number of data to fetch
+     * @param {Object} [properties.customUrlParams={}] - custom parameters appended to the URL as they are
      * @param {Object} worker - DataSource worker
      */
     constructor(name, properties, worker) {
@@ -192,7 +193,6 @@ class DataSource {
 
     /**
      * Update properties
-     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
      * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec

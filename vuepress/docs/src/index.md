@@ -14,6 +14,5 @@ features:
 footer: Made by  with ❤️
 ---
 
-<LazyLoadCode path='showcase/leaflet-location.html'/>
-
+<iframe src="showcase/leaflet-location.html" style="border:none;width:500px;height: 500px" />
 

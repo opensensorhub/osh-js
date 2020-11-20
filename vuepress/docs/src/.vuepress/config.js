@@ -19,6 +19,7 @@ module.exports = {
         },
         plugins: [
             new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../showcase/dist'), to: 'showcase' }]}),
+            new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../documentation/jsdoc/build-iframe'), to: 'guide/api' }]})
         ]
     },
     /**
@@ -125,7 +126,6 @@ module.exports = {
                     collapsable: true,
                     sidebarDepth: 0,
                     children: [
-                        '/guide/api/osh/dataconnector/Ajax.md'
                     ]
                 },
             ],

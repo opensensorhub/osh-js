@@ -1,9 +1,11 @@
+// #region snippet_leaflet_location_import
 // create data source for Android phone GPS
-import SweJson from "../../../source/osh/datareceiver/SweJson.js";
-import PointMarker from "../../../source/osh/ui/styler/PointMarker.js";
-import LeafletView from "../../../source/osh/ui/view/map/LeafletView.js";
+import SweJson from "osh/datareceiver/SweJson.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
+import LeafletView from "osh/ui/view/map/LeafletView.js";
+// #endregion snippet_leaflet_location_import
 
-// #region snippet
+// #region snippet_leaflet_location_datasource
 let gpsDataSource = new SweJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
@@ -14,8 +16,9 @@ let gpsDataSource = new SweJson("android-GPS", {
   endTime: "2015-02-16T08:09:00Z",
   replaySpeed: 2
 });
-// #endregion snippet
+// #endregion snippet_leaflet_location_datasource
 
+// #region snippet_leaflet_location_marker
 // style it with a moving point marker
 let pointMarker = new PointMarker({
   locationFunc: {
@@ -31,7 +34,9 @@ let pointMarker = new PointMarker({
   icon: './images/car-location.png',
   iconAnchor: [16, 65]
 });
+// #endregion snippet_leaflet_location_marker
 
+// #region snippet_leaflet_location_view
 // create Leaflet view
 let leafletMapView = new LeafletView("leafletMap",
     [{
@@ -41,6 +46,10 @@ let leafletMapView = new LeafletView("leafletMap",
       autoZoomOnFirstMarker:true
     }
 );
+// #endregion snippet_leaflet_location_view
 
+// #region snippet_leaflet_location_connect
 // start streaming
 gpsDataSource.connect();
+// #endregion snippet_leaflet_location_connect
+

@@ -25,7 +25,7 @@
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
-    "documentation": "jsdoc -t documentation/jsdoc/template/jaguarjs-jsdoc -r source/ -d  documentation/jsdoc/build"
+    "documentation": "jsdoc -c documentation/jsdoc/template/jaguarjs-jsdoc/conf.json -t documentation/jsdoc/template/jaguarjs-jsdoc -r source/ -d  documentation/jsdoc/build"
   },
   "devDependencies": {
     "cesium": "~1.68.0",
