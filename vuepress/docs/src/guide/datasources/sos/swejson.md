@@ -41,10 +41,13 @@ The other fields are keeping as they are and are forwarded to the result object.
 
 The result is then processed through the Toolkit to be synchronized or/and displayed into the [View](../../views/index).
 
-<DocumentationLoad path="/guide/api/SweJson.html"/>
+<DocumentationLoad path="/guide/api/DataSource.html"/>
 
 ## Example
 
-<<< @/../../showcase/examples/leaflet-location/leaflet-location.js#snippet_leaflet_location_import
+<<< @/../../showcase/examples/datasource-swejson/datasource-swejson.js#snippet_datasource_swejson
 
-<<< @/../../showcase/examples/leaflet-location/leaflet-location.js#snippet_leaflet_location_datasource
+<hr class="demo-hr"/>
+
+<iframe src="../../../showcase/datasource-swejson.html" style="border:none;width:100%;height: 500px" />
+

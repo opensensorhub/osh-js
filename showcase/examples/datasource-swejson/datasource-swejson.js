@@ -1,6 +1,7 @@
 // create data source for Android phone GPS
-import SweJson from "osh/datareceiver/SweJson.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
+// #region snippet_datasource_swejson
+import SweJson from "osh/datareceiver/SweJson.js";
 
 const platformLocationDataSource = new SweJson('android-GPS', {
   protocol: 'ws',
@@ -12,6 +13,8 @@ const platformLocationDataSource = new SweJson('android-GPS', {
   endTime: '2015-12-19T21:09:19.675Z',
   replaySpeed: 1.0
 });
+
+// #endregion snippet_datasource_swejson
 
 // Data are received through Broadcast channel in a separate thread.
 // When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
@@ -29,3 +32,4 @@ locationBroadcastChannel.onmessage = (message) => {
 // start streaming onclick
 const runButtonElement = document.getElementById('run-datasource-button');
 runButtonElement.onclick = () => platformLocationDataSource.connect();
+

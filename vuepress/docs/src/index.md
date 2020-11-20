@@ -14,5 +14,3 @@ features:
 footer: Made by  with ❤️
 ---
 
-<iframe src="showcase/leaflet-location.html" style="border:none;width:500px;height: 500px" />
-

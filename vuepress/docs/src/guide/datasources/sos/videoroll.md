@@ -26,7 +26,7 @@ const dsProperties = {
     protocol: "ws",
     service: "SOS",
     observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    endpointUrl: "localhost:8181/sensorhub/sos",
     offeringID: "urn:mysos:solo:video2",
     startTime: "2015-12-19T21:04:30Z",
     endTime: "2015-12-19T21:09:19Z",
