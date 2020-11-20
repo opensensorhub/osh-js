@@ -6,6 +6,11 @@ var Normalizer = require('prismjs/plugins/normalize-whitespace/prism-normalize-w
 
 var samples = [
   {
+     name: "DataSources",
+     description: "Display the data of 3 differents datasources: Video, Gps and Orientation",
+     url: "datasources"
+  },
+  {
     name: "FOI Locations (CesiumJS)",
     description: "Display the location of several features of interest on a CesiumJS globe.",
     url: "cesium-fois"
