@@ -21,6 +21,8 @@
         width: 50%;
         height: 50%;
         min-width: 800px;
+        display: flex;
+        flex-direction: column;
     }
     label {
         font-weight: bold;
@@ -31,7 +33,6 @@
     }
 </style>
 <div class="text gps">
-  <button id="run-datasource-button">Run</button>
-  <label for="datasource-gps">GPS datasource</label>
+  <label for="datasource-gps"><button id="run-datasource-button">Run</button> GPS datasource </label>
   <textarea id="datasource-gps" disabled></textarea>
 </div>

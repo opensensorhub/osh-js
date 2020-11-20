@@ -2,7 +2,7 @@
     textarea {
         resize: none;
         height: 100%;
-        width: 100%;
+        width: 500px;
         overflow: scroll;
         white-space: pre;
         overflow-wrap: normal;
@@ -18,9 +18,11 @@
 
     .text {
         padding: 10px;
-        min-width: 1100px;
         width: 50%;
         height: 50%;
+        min-width: 800px;
+        display: flex;
+        flex-direction: column;
     }
     label {
         font-weight: bold;
@@ -31,7 +33,6 @@
     }
 </style>
 <div class="text video">
-  <button id="run-datasource-button">Run</button>
-  <label for="datasource-video">Video datasource</label>
+  <label for="datasource-video"><button id="run-datasource-button">Run</button>Video datasource(Only the 10 first bytes of the frameData binary array are displayed)</label>
   <textarea id="datasource-video" disabled></textarea>
 </div>
