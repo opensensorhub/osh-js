@@ -23,6 +23,68 @@ The DataSource parses the binary array to read the original content such as Text
 The data is then parsed and processed into the Toolkit [to be synchronized](../../datasynchronizer/index.md) or/and displayed 
 into a [View](../../views/index).
 
+## Data after parsing
+
+The data are mapped into internal Object. Each DataSource defines the properties of this object but some are common to 
+every DataSource.
+
+For the time being, two kind of message are supported: 'message' and 'data'.
+
+### Common properties
+
+Some properties are common to all DataSources. These are the DataSourceId, and the message type.
+
+```json
+{
+  type: "message",
+  dataSourceId: "123-456-4569-4545"
+}
+```
+
+### Data type *message*
+
+The data type message are useful to send some message from the DataSource to the endpoint. For example, if the connector 
+disconnects, then the dataSources can alert the view that the status of the connection has been changed.
+
+The structure of such a message is:
+
+```json
+{
+  type: "message",
+  dataSourceId: "123-456-4569-4545",
+  timestamp: 1231545456,
+  status: Status.DISCONNECTED
+}
+
+```
+### Data type *data*
+
+These are the data messages. These objects are the result of parsing the source object received by the server 
+to the internal object of the Toolkit.
+Each message contains a set of values, which in turn contains a timeStamp and an associated data.
+
+The choice to pass an array rather than a single object is due to the fact that the *batch* property of the DataSource can be used. 
+This property allows to receive a group of data rather than a single data item([see batch section](./batch.md)).
+For example, if you want to display a Graph, 
+it is often preferable to initialize it with all the data at once (for archive data) rather than updating it data by data. 
+
+The structure of such a message is:
+
+```json
+{
+    type: "data",
+    dataSourceId: "123-456-4569-4545",
+    values: [{
+      timeStamp: 1231545456,
+      data: {
+        lat: 45.2,
+        lon: 45
+      }
+   }]
+}
+
+```
+
 ## Global configuration
 
 There are global properties common to every datasource owned by the DataSource Object.
@@ -49,6 +111,13 @@ This will give the following result URL:
 http://some-url?..&customUrlParams=value1
 ```
 
+The **batchSize** property allows to receive a group of data rather than a single data item. 
+For example, if you want to display a Graph, it is often preferable to initialize it with all the data at once 
+(for archive data) rather than updating it data by data. [see batch section](./batch.md)
+
+The **reconnectTimeout** allows you to set the time before the connector tries to reconnect after being disconnected.
+
+The **timeOut** and **bufferingTime** are useful only for [data synchronization](../../datasynchronizer/general.md).
 ## Properties configuration
 
 The general datasource properties allows to define the parameters of the data you want to fetch.

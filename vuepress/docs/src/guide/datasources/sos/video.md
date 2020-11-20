@@ -16,35 +16,6 @@ These properties are members of [customUrlParams](general.md#global-configuratio
 
 *(2) Note these parameters are available only from OSH server >= 1.4.0*
 
-## Example
-
-This example defines a custom bitrate, width and height:
-```jsx
-const dsProperties = {
-    protocol: "ws",
-    service: "SOS",
-    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    endpointUrl: "localhost:8181/sensorhub/sos",
-    offeringID: "urn:mysos:solo:video2",
-    startTime: "2015-12-19T21:04:30Z",
-    endTime: "2015-12-19T21:09:19Z",
-    customUrlParams: {
-        video_bitrate: 3200,
-        width: 1280,
-        height: 720
-    },
-    responseFormat: "video/H264"
-};
-
-const videoDataSource = new Video("drone-Video", dsProperties);
-```
-
-The result URL:
-
-```http
-ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video2&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-12-19T21:04:30Z/2015-12-19T21:09:19Z&replaySpeed=1&responseFormat=video/H264&video_bitrate=3200&video_width=1280&video_height=720
-```
-
 ## Parser
 
 The underlaying stream is binary.
@@ -74,5 +45,14 @@ The next bytes are corresponding to a full NAL unit.
     } 
 }  
 ```
+
+## Example
+
+<<< @/../../showcase/examples/datasource-video/datasource-video.js#snippet_datasource_video
+
+<hr class="demo-hr"/>
+
+<iframe src="../../../showcase/datasource-video.html" style="border:none;width:100%;height: 500px" />
+
 
 

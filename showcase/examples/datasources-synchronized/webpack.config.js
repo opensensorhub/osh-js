@@ -8,10 +8,10 @@ var path = require('path');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'./datasources.js'),
+    entry: path.resolve(__dirname,'./datasources-synchronized.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.datasources.js',
+        filename: 'bundle.datasources.synchronized.js',
         path: path.resolve(__dirname, 'dist')
     },
     // Tell Webpack which directories to look in to resolve import statements.
@@ -51,7 +51,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'datasources.html'
+        index: 'datasources-synchronized.html'
     },
     devtool: 'source-map',
     plugins: [
@@ -71,8 +71,8 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: "datasources.html",
-            template: path.resolve(__dirname, 'datasources.html')
+            filename: "datasources-synchronized.html",
+            template: path.resolve(__dirname, 'datasources-synchronized.html')
         }),
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST

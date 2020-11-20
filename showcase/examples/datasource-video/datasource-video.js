@@ -1,5 +1,6 @@
 // create data source for Android phone GPS
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
+// #region snippet_datasource_video
 import Video from "osh/datareceiver/Video";
 
 const videoDataSource = new Video("drone-Video", {
@@ -34,3 +35,4 @@ videoBroadcastChannel.onmessage = (message) => {
 // start streaming onclick
 const runButtonElement = document.getElementById('run-datasource-button');
 runButtonElement.onclick = () => videoDataSource.connect();
+// #endregion snippet_datasource_video

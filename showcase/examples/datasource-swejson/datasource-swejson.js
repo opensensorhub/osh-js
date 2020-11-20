@@ -14,8 +14,6 @@ const platformLocationDataSource = new SweJson('android-GPS', {
   replaySpeed: 1.0
 });
 
-// #endregion snippet_datasource_swejson
-
 // Data are received through Broadcast channel in a separate thread.
 // When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
 // If you don't have view, or don't need, you can directly subscribe to the channel
@@ -32,4 +30,4 @@ locationBroadcastChannel.onmessage = (message) => {
 // start streaming onclick
 const runButtonElement = document.getElementById('run-datasource-button');
 runButtonElement.onclick = () => platformLocationDataSource.connect();
-
+// #endregion snippet_datasource_swejson

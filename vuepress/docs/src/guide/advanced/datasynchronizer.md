@@ -1,8 +1,4 @@
----
-id: datasynchronizer
-title: Data synchronization algorithm
-sidebar_label: Synchronization
----
+# DataSynchronizer
 
 The main role of the DataSynchronizer is to synchronize multiple data sources based on timestamps.
 

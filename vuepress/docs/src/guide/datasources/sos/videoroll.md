@@ -1,4 +1,4 @@
-# Video with Roll
+# Video with Roll <Badge text="beta (>=1.4.0)" type="warning"/>
 
 VideoDataSourceWithRoll is a specific DataSource to parse Video data with roll information.
 
@@ -17,35 +17,6 @@ These properties are members of [customUrlParams](general.md#global-configuratio
 *(1) Note that in case of the video stream, it is very important to define the **responseFormat** to activate the support of these parameters.*
 
 *(2) Note these parameters are available only from OSH server >= 1.4.0*
-
-## Example
-
-This example defines a custom bitrate, width and height:
-```jsx
-const dsProperties = {
-    protocol: "ws",
-    service: "SOS",
-    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    endpointUrl: "localhost:8181/sensorhub/sos",
-    offeringID: "urn:mysos:solo:video2",
-    startTime: "2015-12-19T21:04:30Z",
-    endTime: "2015-12-19T21:09:19Z",
-    customUrlParams: {
-        video_bitrate: 3200,
-        width: 1280,
-        height: 720
-    },
-    responseFormat: "video/H264"
-};
-
-const videoDataSourceWithRoll = new VideoWithRoll("drone-Video", dsProperties);
-```
-
-The result URL:
-
-```http
-ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video2&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-12-19T21:04:30Z/2015-12-19T21:09:19Z&replaySpeed=1&responseFormat=video/H264&video_bitrate=3200&video_width=1280&video_height=720
-```
 
 ## Parser
 
@@ -79,4 +50,32 @@ The next bytes are corresponding to a full NAL unit.
 }  
 ```
 
+## Example
+
+This example defines a custom bitrate, width and height:
+```jsx
+const dsProperties = {
+    protocol: "ws",
+    service: "SOS",
+    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+    endpointUrl: "localhost:8181/sensorhub/sos",
+    offeringID: "urn:mysos:solo:video2",
+    startTime: "2015-12-19T21:04:30Z",
+    endTime: "2015-12-19T21:09:19Z",
+    customUrlParams: {
+        video_bitrate: 3200,
+        width: 1280,
+        height: 720
+    },
+    responseFormat: "video/H264"
+};
+
+const videoDataSourceWithRoll = new VideoWithRoll("drone-Video", dsProperties);
+```
+
+The result URL:
+
+```http
+ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video2&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-12-19T21:04:30Z/2015-12-19T21:09:19Z&replaySpeed=1&responseFormat=video/H264&video_bitrate=3200&video_width=1280&video_height=720
+```
 

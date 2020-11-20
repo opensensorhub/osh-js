@@ -80,7 +80,14 @@ module.exports = {
                     collapsable: true,
                     children: [
                         '/guide/getting_started/installation.md',
-                        '/guide/getting_started/integration.md',
+                        {
+                            title: 'Integration',
+                            collapsable: true,
+                            children: [
+                                '/guide/getting_started/integration.md',
+                                '/guide/getting_started/webpack.md'
+                            ]
+                        },
                         '/guide/getting_started/usage.md'
                     ]
                 },
@@ -97,15 +104,12 @@ module.exports = {
                                 '/guide/datasources/sos/swejson.md',
                                 '/guide/datasources/sos/video.md',
                                 '/guide/datasources/sos/videoroll.md',
+                                '/guide/datasources/sos/batch.md'
                             ]
                         }
                     ]
                 },
-                {
-                    title: 'DataSynchronizer',
-                    collapsable: true,
-                    children: []
-                },
+                '/guide/datasynchronizer/general.md',
                 {
                     title: 'Views',
                     collapsable: true,
@@ -119,7 +123,9 @@ module.exports = {
                 {
                     title: 'Advanced',
                     collapsable: true,
-                    children: []
+                    children: [
+                        '/guide/advanced/datasynchronizer.md'
+                    ]
                 },
                 {
                     title: 'API',
