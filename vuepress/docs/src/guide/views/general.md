@@ -1,8 +1,4 @@
----
-id: index
-title: View
-sidebar_label: General
----
+# General
 
 The Views are components made for displaying any kind of data. Some are framework based such as Leaflet, Cesium, Openlayers, Charts.js etc.
 or pure Javascript.

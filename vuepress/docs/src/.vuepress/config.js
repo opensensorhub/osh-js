@@ -106,6 +106,15 @@ module.exports = {
                                 '/guide/datasources/sos/videoroll.md',
                                 '/guide/datasources/sos/batch_replayspeed.md'
                             ]
+                        },
+                        {
+                            title: 'SPS',
+                            collapsable: true,
+                            children: [
+                                '/guide/datasources/sos/datasink.md',
+                                '/guide/datasources/sos/foscamtasking.md',
+                                '/guide/datasources/sos/ptztasking.md'
+                            ]
                         }
                     ]
                 },
@@ -113,18 +122,77 @@ module.exports = {
                 {
                     title: 'Views',
                     collapsable: true,
-                    children: []
+                    children: [
+                        '/guide/views/general.md',
+                        {
+                            title: 'Styler',
+                            collapsable: true,
+                            children: [
+                                '/guide/views/stylers/general.md',
+                            ]
+                        },
+                        {
+                            title: 'Map',
+                            collapsable: true,
+                            children: [
+                                '/guide/views/map/general.md',
+                                '/guide/views/map/ol.md',
+                                '/guide/views/map/leaflet.md',
+                                '/guide/views/map/cesium.md',
+                            ]
+                        },
+                        '/guide/views/chart.md',
+                        '/guide/views/spectrogram.md',
+                        {
+                            title: 'Video',
+                            collapsable: true,
+                            children: [
+                                '/guide/views/video/ffmpeg.md',
+                                '/guide/views/video/mjpeg.md'
+                            ]
+                        },
+                        {
+                            title: 'Entity',
+                            collapsable: true,
+                            children: [
+                                '/guide/views/entity/entity.md',
+                            ]
+                        },
+                        {
+                            title: 'Ext',
+                            collapsable: true,
+                            children: [
+                                '/guide/views/ext/general.md',
+                                '/guide/views/ext/rangeslider.md',
+                                '/guide/views/ext/tasking.md',
+                            ]
+                        },
+                    ]
                 },
                 {
                     title: 'Vue.js components',
                     collapsable: true,
-                    children: []
+                    children: [
+                        '/guide/vuejs/general.md',
+                        '/guide/vuejs/control.md',
+                        '/guide/vuejs/menusettings.md',
+                        '/guide/vuejs/videocontrol.md',
+                    ]
                 },
                 {
                     title: 'Advanced',
                     collapsable: true,
                     children: [
-                        '/guide/advanced/datasynchronizer.md'
+                        '/guide/advanced/datasynchronizer.md',
+                        '/guide/advanced/comchannels.md',
+                        {
+                            title: 'Developers',
+                            collapsable: true,
+                            children: [
+                                '/guide/advanced/developers/datasources.md',
+                                '/guide/advanced/developers/contributing.md',
+                            ]
+                        }
                     ]
                 },
                 {

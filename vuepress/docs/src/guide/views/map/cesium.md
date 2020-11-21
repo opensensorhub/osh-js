@@ -1,8 +1,4 @@
----
-id: cesium
-title: Cesium
-sidebar_label: Cesium
----
+# Cesium
 
 
 The CesiumView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.

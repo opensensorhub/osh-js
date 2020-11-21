@@ -1,8 +1,4 @@
----
-id: projects
-title: Projects
-sidebar_label: Projects
----
+# Projects
 
 
 Many projects are involving around OpenSensorhub for the management and visualization of sensor data.

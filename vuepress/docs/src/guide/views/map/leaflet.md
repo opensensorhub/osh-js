@@ -1,13 +1,9 @@
----
-id: ol
-title: OpenLayers
-sidebar_label: OpenLayers
----
+# Leaflet
 
-The OpenLayerView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
+The LeafletView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
 This View can also display path using the corresponding [Styler](../stylers/styler).
 
-The View is based on [OpenLayers](https://openlayers.org/) framework.
+The View is based on [LeafletJs](https://leafletjs.com/) framework.
 
 ## Properties configuration
 
@@ -23,12 +19,24 @@ The object configuration defines the properties of the view.
 
 | Name | Type | Default | Description |  Mandatory
 | ---- | ---- | ------- | --------------- |  ---------
-| map | [Map](https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html) | - | can override the default map | -
 | maxZoom | Number  | 19 | the default max level zoom | -
 | autoZoomOnFirstMarker | Boolean | false | zoom onto the first created marker | -
-| initialView | [Object](#initial-view) | { } | defines some properties for the creation of the inner [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) | -
-| overlayLayers | [[TileLayer]](https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html) | [ ]  | OpenLayers objects to use as overlay layer | -
-| baseLayers | [[TileLayer]](https://openlayers.org/en/latest/apidoc/module-ol_layer_Tile-TileLayer.html)  | [[OSM]](https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html)  | OpenLayers objects to use as base layer | -
+| initialView | [Object](#initial-view) | { } | defines some properties for the creation of the inner [View](https://leafletjs.com/reference-1.7.1.html#map-setview) | -
+| overlayLayers | [Object](#overlay-layer) | { } | object to use as overlay layer, [reference](https://leafletjs.com/reference-1.7.1.html#control-layers-l-control-layers) | -
+| baseLayers |  [Object](#base-layer) | { "OSM bright" : [OSM](https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html) }  | Leaflet objects to use as base layer, [reference](https://leafletjs.com/reference-1.7.1.html#control-layers-l-control-layers) | -
+| defaultLayer | [[L.tileLayer]](https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer) | [OSM](https://www.openstreetmap.org/#map=6/46.449/2.210) | The default layer | -
+
+## BaseLayer
+
+| Key | Value
+| ---- | ----
+| String |  [L.tileLayer](https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer)
+
+## OverlayLayer
+
+| Key | Value
+| ---- | ----
+| String |  [L.tileLayer](https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer)
 
 ## Initial View
 
@@ -45,9 +53,9 @@ The initial View can be passed to override the default [View](https://openlayers
 
 ### Simple Example
 
-import LazyOlMap from './olcomp/lazyol.jsx';
+import LazyLeafletMap from './leafletcomp/lazyleaflet.jsx';
 
-<LazyOlMap/>
+<LazyLeafletMap/>
 
 #### Code
 
@@ -55,7 +63,7 @@ import LazyOlMap from './olcomp/lazyol.jsx';
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
-import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
+import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
 // create data source for Android phone GPS
 let gpsDataSource = new SweJson("android-GPS", {
@@ -88,12 +96,15 @@ let pointMarker = new PointMarker({
 	iconSize: [32, 64]
 });
 
-// create OpenLayers view
-let olView = new OpenLayerView("ol-map",
-	[{
-		styler: pointMarker,
-		name: "Android Phone GPS"
-	}]
+// create Leaflet view
+const view = new LeafletView("leaflet-single-map",
+    [{
+        styler: pointMarker,
+        name: "Android Phone GPS"
+    }],
+    {
+        autoZoomOnFirstMarker:true
+    }
 );
 
 // start streaming
@@ -101,10 +112,9 @@ gpsDataSource.connect();
 ```
 
 ### Example using custom BaseLayer, Overlay & InitialView
+import LazyLeafletMapComplex from './leafletcomp/lazyleafletcomplex.jsx';
 
-import LazyOlMapComplex from './olcomp/lazyolcomplex.jsx';
-
-<LazyOlMapComplex/>
+<LazyLeafletMapComplex/>
 
 #### Code
 
@@ -112,9 +122,7 @@ import LazyOlMapComplex from './olcomp/lazyolcomplex.jsx';
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
 import PointMarker from "osh/ui/styler/PointMarker.js";
-import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
-import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ';
+import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
 // create data source for Android phone GPS
 let gpsDataSource = new SweJson("android-GPS", {
@@ -148,41 +156,32 @@ let pointMarker = new PointMarker({
 });
 
 // CUSTOM base layer based on stadiamaps
-const baseLayer = new TileLayer({
-   source: new XYZ({
-     url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
-     tilePixelRatio: 2
-   }),
-   title: 'Stadia',
-   visible: true
-});
+const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png', {
+     maxZoom: 20,
+     attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, ' +
+      '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> ' +
+      '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+ });
 
-// CUSTOM overlay based on ESRI Sat imagery
-const overlay = new TileLayer({
-   source: new XYZ({
-     url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
-     tilePixelRatio: 2
-   }),
-   title: 'Esri Sat',
-   visible: false
-});
+ const baseLayers = {
+    "OSM Bright" : layer
+ };
 
-// create OpenLayers view
-let olView = new OpenLayerView("ol-map",
-	[{
-		styler: pointMarker,
-		name: "Android Phone GPS"
-	}],
+const view = new LeafletView("leaflet-single-baselayer-map",
+    [{
+        styler: pointMarker,
+        name: "Android Phone GPS"
+    }],
      {
         autoZoomOnFirstMarker: false,
-        watch: true,
         initialView: {
             lon: 1.42376344,
             lat: 43.61759948,
             zoom: 15
         },
-        baseLayers: [baseLayer],
-        overlayLayers: [overlay]
+        follow: true,
+        baseLayers: baseLayers,
+        defaultLayer: layer
     }
 );
 
