@@ -111,9 +111,9 @@ module.exports = {
                             title: 'SPS',
                             collapsable: true,
                             children: [
-                                '/guide/datasources/sos/datasink.md',
-                                '/guide/datasources/sos/foscamtasking.md',
-                                '/guide/datasources/sos/ptztasking.md'
+                                '/guide/datasources/sps/datasink.md',
+                                '/guide/datasources/sps/foscamtasking.md',
+                                '/guide/datasources/sps/ptztasking.md'
                             ]
                         }
                     ]
@@ -211,6 +211,7 @@ module.exports = {
      */
     plugins: [
         '@vuepress/plugin-back-to-top',
-        '@vuepress/plugin-medium-zoom'
+        '@vuepress/plugin-medium-zoom',
+        'vuepress-plugin-element-tabs'
     ]
 }

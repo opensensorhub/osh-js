@@ -16,7 +16,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "^1.5.3"
+    "vuepress": "^1.5.3",
+    "vuepress-plugin-element-tabs": "^0.2.8"
   },
   "dependencies": {
     "copy-webpack-plugin": "^6.3.0",
