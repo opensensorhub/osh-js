@@ -28,17 +28,6 @@ Now, for the same piece of code, we can create the view:
 :::
 ::::
 
-## View items
 
-The Map views are composed by view items. ViewItems allow you to associate a name and a Styler to each marker you want
- to add to the View. Thus, to visualize your data in your view, the process is:
 
- [Styler](../../stylers/styler)-> ViewItem -> View
-
-The properties of a ViewItem are:
-
-| Name | Type | Default | Description |  Mandatory
-| ---- | ---- | ------- | --------------- |  ---------
-| name | String | '' | name of the viewItem | -
-| styler | [Styler](../../stylers/styler) | - | styler composing the ViewItem | yes
 

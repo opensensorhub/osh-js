@@ -53,12 +53,12 @@
     <div class="nameContainer">
         <h4 class="name" id="OpenLayerView">
             
-            new OpenLayerView<span class="signature">(parentElementDivId, viewItems, options)</span>
+            new OpenLayerView<span class="signature">(parentElementDivId, viewItems, <span class="optional">options</span>)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line61">line 61</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line64">line 64</a>
         </div>
         
     </div>
@@ -116,6 +116,11 @@
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 The div element to attach to</td>
         </tr>
 	
@@ -138,6 +143,11 @@
             
             
             <td class="description last">
+                
+                    
+                    
+                        
+                    
                 
                 The initial view items to add
                 
@@ -230,6 +240,13 @@
             
             <td class="description last">
                 
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
                 the properties of the view
                 
 
@@ -276,11 +293,13 @@
             <td class="description last">
                 
                     
+                        <span class="optional">optional</span>
+                    
                     
                         
                     
                 
-                the map object to use</td>
+                the <a target="_blank" href="https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html">Map</a> object to use</td>
         </tr>
 	
 	
@@ -316,7 +335,7 @@
                         
                     
                 
-                </td>
+                the max zoom value</td>
         </tr>
 	
 	
@@ -338,11 +357,15 @@
             
                 <td class="default">
                 
+                    false
+                
                 </td>
             
             
             <td class="description last">
                 
+                    
+                        <span class="optional">optional</span>
                     
                     
                         
@@ -376,11 +399,104 @@
             <td class="description last">
                 
                     
+                        <span class="optional">optional</span>
+                    
                     
                         
                     
                 
-                {lon:.., lat:..}</td>
+                The initial View can be passed to override the default <a target="_blank" href="https://openlayers.org/en/latest/apidoc/module-ol_View-View.html">View</a>
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>lon</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                the corresponding longitude in EPSG:4326</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>lat</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                the corresponding latitude in EPSG:4326</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>zoom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                the default level zoom</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -407,6 +523,8 @@
             
             <td class="description last">
                 
+                    
+                        <span class="optional">optional</span>
                     
                     
                         
@@ -439,6 +557,8 @@
             
             <td class="description last">
                 
+                    
+                        <span class="optional">optional</span>
                     
                     
                         
@@ -532,7 +652,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line309">line 309</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line313">line 313</a>
         </div>
         
     </div>
@@ -791,7 +911,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line436">line 436</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line440">line 440</a>
         </div>
         
     </div>
@@ -1460,7 +1580,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line293">line 293</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line297">line 297</a>
         </div>
         
     </div>
@@ -1986,7 +2106,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line365">line 365</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line369">line 369</a>
         </div>
         
     </div>
@@ -2716,7 +2836,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line75">line 75</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line78">line 78</a>
         </div>
         
     </div>
@@ -2832,7 +2952,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line126">line 126</a>
+            <a href="osh_ui_view_map_OpenLayerView.js.html">osh/ui/view/map/OpenLayerView.js</a>, <a href="osh_ui_view_map_OpenLayerView.js.html#line129">line 129</a>
         </div>
         
     </div>
@@ -3149,7 +3269,7 @@ Note: the onResize() is called at the end of the process.
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Fri Nov 20 2020 22:21:44 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Sun Nov 22 2020 00:31:55 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

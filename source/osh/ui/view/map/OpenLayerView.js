@@ -49,13 +49,16 @@ class OpenLayerView extends View {
      * @param {Object[]} viewItems - The initial view items to add
      * @param {String} viewItems.name - The name of the view item
      * @param {Styler} viewItems.styler - The styler object representing the view item
-     * @param {Object} options - the properties of the view
-     * @param {Object} options.map - the map object to use
-     * @param {Integer} [options.maxZoom=19]
-     * @param {Boolean} options.autoZoomOnFirstMarker - auto zoom on the first added marker
-     * @param {Object} options.initialView - {lon:.., lat:..}
-     * @param {Object[]} options.overlayLayers - OpenLayers objects to use as overlay layer
-     * @param {Object[]} options.baseLayers - OpenLayers objects to use as base layer
+     * @param {Object} [options] - the properties of the view
+     * @param {Object} [options.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
+     * @param {Integer} [options.maxZoom=19] - the max zoom value
+     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [options.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
+     * @param {Object} options.initialView.lon - the corresponding longitude in EPSG:4326
+     * @param {Object} options.initialView.lat - the corresponding latitude in EPSG:4326
+     * @param {Object} options.initialView.zoom - the default level zoom
+     * @param {Object[]} [options.overlayLayers] - OpenLayers objects to use as overlay layer
+     * @param {Object[]} [options.baseLayers] - OpenLayers objects to use as base layer
      *
      */
     constructor(parentElementDivId, viewItems, options) {
@@ -205,6 +208,7 @@ class OpenLayerView extends View {
                 baseLayers = options.baseLayers;
             }
         }
+        // #region snippet_openlayerview_initial_view
         if(initialView === null) {
             // loads the default one
             initialView = new OlView({
@@ -213,7 +217,7 @@ class OpenLayerView extends View {
                 maxZoom: maxZoom
             });
         }
-
+        // #endregion snippet_openlayerview_initial_view
 
         // sets layers to map
         //create map

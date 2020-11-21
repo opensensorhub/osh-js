@@ -31,12 +31,12 @@ class View {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
+     * @param {Object[]}  [viewItems=[]] - The initial view items to add
+     * @param {String} [viewItems.name] - The name of the view item
      * @param {Styler} viewItems.styler - The styler object representing the view item
-     * @param {Object} options - the properties of the view
-     * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
-     * @param {Entity} options.entity - The entity to which the view belongs to
+     * @param {Object} [options={}] - the properties of the view
+     * @param {String} [options.dataSourceId] - The dataSource id of the dataSource providing data to the view
+     * @param {Entity} [options.entity] - The entity to which the view belongs to
      */
     constructor(parentElementDivId, viewItems, options) {
         // list of stylers
