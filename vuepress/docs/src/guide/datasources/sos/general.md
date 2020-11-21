@@ -113,11 +113,15 @@ http://some-url?..&customUrlParams=value1
 
 The **batchSize** property allows to receive a group of data rather than a single data item. 
 For example, if you want to display a Graph, it is often preferable to initialize it with all the data at once 
-(for archive data) rather than updating it data by data. [see batch section](./batch.md)
+(for archive data) rather than updating it data by data. [see batch section](./batch_replayspeed.md)
 
 The **reconnectTimeout** allows you to set the time before the connector tries to reconnect after being disconnected.
 
 The **timeOut** and **bufferingTime** are useful only for [data synchronization](../../datasynchronizer/general.md).
+
+The **replaySpeed** property allows to modify the same frequency of reception of archive data compared to their
+ original frequency.
+  
 ## Properties configuration
 
 The general datasource properties allows to define the parameters of the data you want to fetch.
