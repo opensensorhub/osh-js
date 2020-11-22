@@ -53,6 +53,7 @@ module.exports = {
         docsDir: '',
         editLinkText: '',
         lastUpdated: false,
+        logo: '/images/logo-osh.png',
         sidebar: 'auto',
         nav: [
             {
@@ -60,8 +61,8 @@ module.exports = {
                 link: '/guide/',
             },
             {
-                text: 'Config',
-                link: '/config/'
+                text: 'API',
+                link: 'http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/'
             }
         ],
         sidebar: {
@@ -193,13 +194,6 @@ module.exports = {
                                 '/guide/advanced/developers/contributing.md',
                             ]
                         }
-                    ]
-                },
-                {
-                    title: 'API',
-                    collapsable: true,
-                    sidebarDepth: 0,
-                    children: [
                     ]
                 },
             ],
