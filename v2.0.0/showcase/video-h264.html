@@ -1,15 +1,6 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <title>Video H264 Example</title>
-</head>
 <style>
     div.video-h264 {
-        width: 1280px;
-        padding: 8px;
+        width: calc(100% - 20px);
         border: 1px solid #dee2e6;
         resize: horizontal;
         overflow: hidden;
@@ -18,9 +9,10 @@
     div.video-h264 canvas {
         width: 100%;
     }
+    #video-h264-container {
+        height: calc(100% - 10px);
+    }
 </style>
-<body>
 <div id="video-h264-container"/>
-<script type="text/javascript" src="bundle.video.h264.js"></script></body>
-</html>
 
+<script type="text/javascript" src="bundle.video.h264.js"></script>

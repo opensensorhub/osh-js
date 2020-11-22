@@ -1,15 +1,17 @@
-<div id="video-mjpeg-container" style="padding:30px;"/>
+<div id="video-mjpeg-container"/>
 <style>
-    div.video-mjpeg {
-        width: 800px;
-        padding: 8px;
+    div.video-mjpeg img {
+        width: 100%;
+    }
+
+    div.video-mjpeg  {
+        width: calc(100% - 20px);
         border: 1px solid #dee2e6;
-        resize: horizontal;
         overflow: hidden;
         margin: auto;
     }
-    div.video-mjpeg img {
-        width: 100%;
+    #video-mjpeg-container {
+        height: calc(100% - 30px);
     }
 </style>
 <script type="text/javascript" src="bundle.mjpeg.js"></script>

@@ -34,6 +34,7 @@ let pointMarker = new PointMarker({
   iconSize: [32, 64]
 });
 
+// #region snippet_ol_location_view
 // create Cesium view
 let olView = new OpenLayerView("ol-map",
     [{
@@ -41,6 +42,7 @@ let olView = new OpenLayerView("ol-map",
       name: "Android Phone GPS"
     }]
 );
+// #endregion snippet_ol_location_view
 
 // start streaming
 gpsDataSource.connect();
