@@ -29,9 +29,7 @@ Here is the corresponding code that initializes the initial-view if none is pass
 
 <<< @/../../source/osh/ui/view/map/LeafletView.js#snippet_leafletview_initial_view
 
-## Examples
-
-### Simple Example
+## Example
 
 <<< @/../../showcase/examples/leaflet-location/leaflet-location.js
 
