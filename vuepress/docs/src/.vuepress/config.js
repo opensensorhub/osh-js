@@ -29,7 +29,7 @@ module.exports = {
     /**
      * Ref：https://v1.vuepress.vuejs.org/config/#description
      */
-    description: description,
+    description: 'OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors',
 
     /**
      * Extra tags to be injected to the page HTML `<head>`
@@ -61,8 +61,20 @@ module.exports = {
                 link: '/guide/',
             },
             {
+                text: 'Samples',
+                link: 'http://opensensorhub.github.io/osh-js/v2.0.0/showcase/',
+            },
+            {
                 text: 'API',
                 link: 'http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/'
+            },
+            {
+                text: 'Blog',
+                link: 'https://opensensorhub.org/'
+            },
+            {
+                text: 'Github',
+                link: 'https://github.com/opensensorhub/osh-js'
             }
         ],
         sidebar: {
