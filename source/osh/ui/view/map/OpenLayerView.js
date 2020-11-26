@@ -350,7 +350,7 @@ class OpenLayerView extends View {
             if (this.first) {
                 this.first = false;
                 this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-                this.map.getView().setZoom(19);
+                this.map.getView().setZoom(12);
             }
 
             return id;

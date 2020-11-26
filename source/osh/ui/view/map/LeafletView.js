@@ -238,14 +238,16 @@ class LeafletView extends View {
             marker.bindTooltip(properties.label, {
                 permanent: false,
                 direction: 'center',
-                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1] - 16)
             });
         }
 
-        let name = properties.hasOwnProperty("name") && properties.name != null ? properties.name : "";
+        let name = properties.hasOwnProperty("name") && properties.label != null ? properties.label : "";
         let desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
         if (name.length > 0 || desc.length > 0) {
-            marker.bindPopup(name + '<div>' + desc + '</div>');
+            marker.bindPopup(name + '<div>' + desc + '</div>',{
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
+            });
         }
 
         marker.addTo(this.map);
@@ -264,10 +266,10 @@ class LeafletView extends View {
             for (let stylerId in self.stylerToObj) {
                 if (self.stylerToObj[stylerId] === id) {
                     let styler = self.stylerIdToStyler[stylerId];
-                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                        entityId : styler.viewItem.entityId
-                    });
+                    // EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
+                    //     dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
+                    //     entityId : styler.viewItem.entityId
+                    // });
                     break;
                 }
             }
