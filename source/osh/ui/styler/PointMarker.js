@@ -79,6 +79,7 @@ class PointMarker extends Styler {
 		* @param {Function} properties.labelFunc -
 		* @param {Function} properties.labelColorFunc -
 		* @param {Function} properties.labelSizeFunc -
+	  * @param {Function} properties.idFunc - return the id
 	 	* @param {Number} [properties.zoomLevel=15] -
 		*
 		*/
@@ -97,7 +98,6 @@ class PointMarker extends Styler {
 		this.zoomLevel = 15;
 		this.color = null;
 		this.defaultToTerrainElevation = false;
-
 		this.options = {};
 
 		if(isDefined(properties.defaultToTerrainElevation)) {
@@ -196,6 +196,13 @@ class PointMarker extends Styler {
 				that.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
+		}
+
+		if (this.checkFn("idFunc")) {
+			let fn = function(rec,timeStamp,options) {
+				that.id = properties.idFunc.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.idFunc.dataSourceIds,fn);
 		}
 	}
 
