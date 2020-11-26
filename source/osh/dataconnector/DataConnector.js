@@ -21,6 +21,7 @@ import {Status} from './Status.js';
  * The DataConnector is the abstract class used to create different connectors.
  */
 class DataConnector {
+
     /**
      * @param {String} url - The full url used to connect to the data stream
      */

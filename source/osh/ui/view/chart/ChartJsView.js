@@ -30,13 +30,13 @@ class ChartJsView extends View {
      * @param {Object[]} viewItems - The initial view items to add
      * @param {String} viewItems.name - The name of the view item
      * @param {Styler} viewItems.styler - The styler object representing the view item
-     * @param {Object} options - the properties of the view
-     * @param {Object} options.datasetsOpts - chart.js dataset options
-     * @param {Object} options.gridLinesOpts - chart.js gridline options
-     * @param {Object} options.scaleLabelOpts - chart.js scaleLabel options
-     * @param {Object} options.tickOpts - chart.js tick options
-     * @param {Object} options.legendOpts - chart.js legend options
-     * @param {Number} options.maxPoints - max points to display before shifting
+     * @param {Object} [options={}] - the properties of the view
+     * @param {Object} [options.datasetsOpts] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
+     * @param {Object} [options.gridLinesOpts] - chart.js [gridline options]{@link https://www.chartjs.org/docs/latest/axes/styling.html#grid-line-configuration}
+     * @param {Object} [options.scaleLabelOpts] - chart.js [scaleLabel options]{@link https://www.chartjs.org/docs/latest/axes/labelling.html#scale-title-configuration}
+     * @param {Object} [options.tickOpts] - chart.js [tick options]{@link https://www.chartjs.org/docs/latest/axes/cartesian/#tick-configuration}
+     * @param {Object} [options.legendOpts] - chart.js [legend options]{@link https://www.chartjs.org/docs/latest/configuration/legend.html?h=legend}
+     * @param {Number} [options.maxPoints] - max points to display before shifting
      */
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);

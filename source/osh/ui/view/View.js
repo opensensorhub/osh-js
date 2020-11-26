@@ -31,19 +31,17 @@ class View {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
+     * @param {Object[]}  [viewItems=[]] - The initial view items to add
+     * @param {String} [viewItems.name] - The name of the view item
      * @param {Styler} viewItems.styler - The styler object representing the view item
-     * @param {Object} options - the properties of the view
-     * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
-     * @param {Entity} options.entity - The entity to which the view belongs to
+     * @param {Object} [options={}] - the properties of the view
+     * @param {String} [options.dataSourceId] - The dataSource id of the dataSource providing data to the view
+     * @param {Entity} [options.entity] - The entity to which the view belongs to
      */
     constructor(parentElementDivId, viewItems, options) {
         // list of stylers
-        /** @protected @const {!Styler} */
         this.stylers = [];
         this.viewItems = [];
-        /** @protected @const {!String[]} */
         this.names = {};
         this.stylerToObj = {};
         this.stylerIdToStyler = {};
@@ -56,9 +54,7 @@ class View {
         //this.divId = divId;
         this.id = "view-" + randomUUID();
 
-        /** @protected {!Entity} */
         this.entity = null;
-
         this.dataSourceId = -1;
         // sets dataSourceId
         if (isDefined(options) && isDefined(options.dataSourceId)) {
@@ -245,7 +241,7 @@ class View {
     /**
      * Set the data to the view. Each view has to handle the kind of the data separately.
      * @param {String} dataSourceId - The dataSource id of the source providing the data
-     * @param {[*]} data - The data array to set
+     * @param {any[]} data - The data array to set
      */
     setData(dataSourceId, data) {
     }

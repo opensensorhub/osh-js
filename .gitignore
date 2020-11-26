@@ -17,6 +17,9 @@ npm-debug.log
 demos/video-display/video-display-advanced-android-vuejs/
 out
 documentation/jsdoc/build/
+documentation/jsdoc/build-iframe/
+vuepress/docs/.vuepress/dist/
 **/video-display-advanced-android-vuejs/
 ../video-display-advanced-android-vuejs/
 /issues/166/
+**/*.lock

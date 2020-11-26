@@ -35,6 +35,7 @@ let pointMarker = new PointMarker({
     iconAnchor: [16, 40]
 });
 
+// #region snippet_cesium_location_view
 // create Cesium view
 let cesiumView = new CesiumView('cesium-container',
     [{
@@ -42,6 +43,7 @@ let cesiumView = new CesiumView('cesium-container',
         name: 'Android Phone GPS'
     }]
 );
+// #endregion snippet_cesium_location_view
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
 // start streaming
