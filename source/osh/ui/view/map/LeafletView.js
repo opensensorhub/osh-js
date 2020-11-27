@@ -19,6 +19,7 @@ import {isDefined, randomUUID} from "../../../utils/Utils.js";
 import EventManager from "../../../events/EventManager.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import MapView from "./MapView";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Leaflet Map object.
@@ -56,7 +57,7 @@ import 'leaflet/dist/leaflet.css';
  }]
  );
  */
-class LeafletView extends View {
+class LeafletView extends MapView {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
@@ -150,9 +151,6 @@ class LeafletView extends View {
         this.map.setView(initialView.location, initialView.zoom);
 
         //this.initLayers();
-        this.markers = {};
-        this.polylines = {};
-
     }
 
     /**
@@ -238,7 +236,7 @@ class LeafletView extends View {
             marker.bindTooltip(properties.label, {
                 permanent: false,
                 direction: 'center',
-                offset: L.point(properties.labelOffset[0], properties.labelOffset[1] - 16)
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });
         }
 
@@ -253,41 +251,7 @@ class LeafletView extends View {
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
 
-        let id = "view-marker-" + randomUUID();
-        this.markers[id] = marker;
-        let self = this;
-
-        marker._icon.id = id;
-
-        // adds onclick event
-        marker.on('click', function () {
-            let dataSourcesIds = [];
-            let entityId;
-            for (let stylerId in self.stylerToObj) {
-                if (self.stylerToObj[stylerId] === id) {
-                    let styler = self.stylerIdToStyler[stylerId];
-                    // EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-                    //     dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                    //     entityId : styler.viewItem.entityId
-                    // });
-                    break;
-                }
-            }
-        });
-        return id;
-    }
-
-    removeViewItem(viewItem) {
-        const markerId = this.stylerToObj[viewItem.styler.id];
-        super.removeViewItem(viewItem);
-        if(isDefined(markerId)) {
-            let marker = this.markers[markerId];
-            if(isDefined(marker)) {
-                this.map.removeLayer(marker);
-            }
-
-            delete this.markers[markerId];
-        }
+        return marker;
     }
 
     /**
@@ -326,10 +290,10 @@ class LeafletView extends View {
      * @param {PointMarker} styler - The styler allowing the update of the marker
      */
     updateMarker(styler) {
-        let markerId = 0;
-        if (!(styler.getId() in this.stylerToObj)) {
+        let marker = this.getMarker(styler);
+        if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-            markerId = this.addMarker({
+             const markerObject = this.addMarker({
                 lat: styler.location.y,
                 lon: styler.location.x,
                 orientation: styler.orientation.heading,
@@ -341,14 +305,13 @@ class LeafletView extends View {
                 labelSize : styler.labelSize,
                 labelOffset : styler.labelOffset,
                 name : styler.viewItem.name,
-				description : styler.viewItem.description
+                description : styler.viewItem.description
             });
-            this.stylerToObj[styler.getId()] = markerId;
-        } else {
-            markerId = this.stylerToObj[styler.getId()];
+            this.addMarkerToStyler(styler, markerObject);
         }
 
-        let marker = this.markers[markerId];
+        // get the current marker corresponding to the current markerId value of the PointMarker
+        marker = this.getMarker(styler);
         // updates position
         let lon = styler.location.x;
         let lat = styler.location.y;
@@ -367,7 +330,6 @@ class LeafletView extends View {
             }
         }
 
-
         // updates orientation
         if(isDefined(styler.orientation)) {
             marker.setRotationAngle(styler.orientation.heading);
@@ -383,6 +345,14 @@ class LeafletView extends View {
         }
     }
 
+    /**
+     * Abstract method to remove a marker from its corresponding layer.
+     * This is library dependent.
+     * @param {Object} marker - The Map marker object
+     */
+    removeFromLayer(marker) {
+        this.map.removeLayer(marker);
+    }
     /**
      * Updates the polyline associated to the styler.
      * @param {Polyline} styler - The styler allowing the update of the polyline

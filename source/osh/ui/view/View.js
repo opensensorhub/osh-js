@@ -43,7 +43,6 @@ class View {
         this.stylers = [];
         this.viewItems = [];
         this.names = {};
-        this.stylerToObj = {};
         this.stylerIdToStyler = {};
         this.lastRec = {};
         this.selectedDataSources = [];
@@ -270,7 +269,7 @@ class View {
             let styler = viewItem.styler;
             this.stylers.push(styler);
             if (viewItem.hasOwnProperty("name")) {
-                this.names[styler.getId()] = viewItem.name;
+                this.names[styler.markerId] = viewItem.name;
             }
             styler.viewItem = viewItem;
             styler.init(this);
@@ -343,8 +342,7 @@ class View {
         }
         delete this.stylerIdToStyler[viewItem.styler.id]
         this.stylers = this.stylers.filter(currentStyler => currentStyler.id !== viewItem.styler.id);
-        delete this.names[viewItem.styler.id];
-        delete this.stylerToObj[viewItem.styler.id]
+        delete this.names[viewItem.styler.markerId];
     }
 
     /**

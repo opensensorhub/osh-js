@@ -18,9 +18,7 @@ let avlDataSource = new SweJson("AVL", {
   replaySpeed: 2000
 });
 
-
-// style it with a moving point marker
-let pointMarker = new PointMarker({
+const commonConf = {
   locationFunc: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
@@ -37,7 +35,7 @@ let pointMarker = new PointMarker({
       return rec['veh-id'];
     }
   },
-  idFunc: {
+  markerIdFunc: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       return rec['veh-id'];
@@ -62,19 +60,20 @@ let pointMarker = new PointMarker({
   },
   zoomLevel: 12,
   iconAnchor: [16, 0],
-  labelOffset: [0,0]
-});
-
+  labelOffset: [0,-16],
+  labelColor: '#00fff5'
+};
 
 //Stadia_Outdoors
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
+const leafletViewItems = [{styler:  new PointMarker({...commonConf}), name: "AVL"}];
+const olViewItems = [{styler:  new PointMarker({...commonConf}), name: "AVL"}];
+const cesiumViewItems = [{styler:  new PointMarker({...commonConf}), name: "AVL"}];
+
 // create Leaflet view
-let leafletMapView = new LeafletView("leafletMap",
-    [{
-      styler: pointMarker,
-      name: "AVL"
-    }],
+const leafletMapView = new LeafletView("leafletMap",
+    leafletViewItems,
     {
       autoZoomOnFirstMarker:true,
       follow:false,
@@ -85,25 +84,20 @@ let leafletMapView = new LeafletView("leafletMap",
 );
 
 // create OL view
-new OpenLayerView("olMap",
-    [{
-      styler: pointMarker,
-      name: "AVL"
-    }],
+const olMapView = new OpenLayerView("olMap",
+    olViewItems,
     {
       autoZoomOnFirstMarker:true,
     }
 );
 
-new CesiumView('cesiumMap',
-    [{
-      styler: pointMarker,
-      name: 'AVL'
-    }]
-);
+const cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
 
 // update time
 const timeElt = document.getElementById("time");
+const loadElt = document.getElementById("load");
+const removeAllElt = document.getElementById("removeall");
+
 const bc = new BroadcastChannel(DATASOURCE_DATA_TOPIC + avlDataSource.id)
 
 bc.onmessage = (event) => {
@@ -113,5 +107,23 @@ bc.onmessage = (event) => {
     }
   }
 }
+
 // start streaming
-avlDataSource.connect();
+loadElt.onclick = () => {
+  avlDataSource.connect();
+  removeAllElt.removeAttribute("disabled");
+  loadElt.setAttribute("disabled","");
+};
+
+removeAllElt.onclick = async () => {
+  avlDataSource.disconnect();
+  removeAllElt.setAttribute("disabled", "");
+
+  // let the time to flush the data broadcast channel
+  setTimeout(() => {
+    cesiumMapView.removeViewItem(cesiumViewItems[0]);
+    olMapView.removeViewItem(olViewItems[0]);
+    leafletMapView.removeViewItem(leafletViewItems[0]);
+  }, 1000);
+};
+

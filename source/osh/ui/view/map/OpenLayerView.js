@@ -35,14 +35,15 @@ import Select from "ol/interaction/Select";
 import OSM from "ol/source/OSM";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
 import LayerSwitcher from 'ol-layerswitcher';
-import 'ol-layerswitcher/src/ol-layerswitcher.css';
+import 'ol-layerswitcher/dist/ol-layerswitcher.css';
+import MapView from "./MapView";
 
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
  * @extends View
  */
-class OpenLayerView extends View {
+class OpenLayerView extends MapView {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
@@ -76,26 +77,23 @@ class OpenLayerView extends View {
      * @param {PointMarker} styler - The styler allowing the update of the marker
      */
     updateMarker(styler) {
-        let markerId = 0;
-
-        if (!(styler.getId() in this.stylerToObj)) {
+        let marker = this.getMarker(styler);
+        if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-            markerId = this.addMarker({
+            const markerObj = this.addMarker({
                 lat: styler.location.y,
                 lon: styler.location.x,
                 orientation: styler.orientation.heading,
                 color: styler.color,
                 icon: styler.icon,
                 anchor: styler.iconAnchor,
-                name: this.names[styler.getId()]
+                name: this.names[styler.markerId]
             });
 
-            this.stylerToObj[styler.getId()] = markerId;
-        } else {
-            markerId = this.stylerToObj[styler.getId()];
+            this.addMarkerToStyler(styler, markerObj);
         }
 
-        let markerFeature = this.markers[markerId];
+        let markerFeature = this.getMarker(styler);
         // updates position
         let lon = styler.location.x;
         let lat = styler.location.y;
@@ -169,8 +167,6 @@ class OpenLayerView extends View {
         let initialView = null;
         this.first = true;
         let overlays = [];
-        this.markers = {};
-        this.polylines = {};
 
         let baseLayers = this.getDefaultLayers();
         let maxZoom = 19;
@@ -343,8 +339,6 @@ class OpenLayerView extends View {
 
             let id = "view-marker-" + randomUUID();
             markerFeature.setId(id);
-            this.markers[id] = markerFeature;
-
             this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {
@@ -353,7 +347,7 @@ class OpenLayerView extends View {
                 this.map.getView().setZoom(12);
             }
 
-            return id;
+            return markerFeature;
         }
         this.onResize();
         //TODO: exception
@@ -361,22 +355,12 @@ class OpenLayerView extends View {
     }
 
     /**
-     * Removes a view item from the view.
-     * @param {Object} viewItem - The initial view items to add
-     * @param {String} viewItem.name - The name of the view item
-     * @param {Styler} viewItem.styler - The styler object representing the view item
+     * Abstract method to remove a marker from its corresponding layer.
+     * This is library dependent.
+     * @param {Object} marker - The Map marker object
      */
-    removeViewItem(viewItem) {
-        const markerId = this.stylerToObj[viewItem.styler.id];
-        super.removeViewItem(viewItem);
-        if(isDefined(markerId)) {
-            let feature = this.markers[markerId];
-            if(isDefined(feature)) {
-                this.vectorSource.removeFeature(feature);
-            }
-
-            delete this.markers[markerId];
-        }
+    removeFromLayer(marker) {
+        this.vectorSource.removeFeature(marker);
     }
 
     /**
@@ -388,21 +372,21 @@ class OpenLayerView extends View {
     createMarkerFromStyler(styler) {
         //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
         //to the view or map to give the user more control
-        if (!(styler.getId() in this.stylerToObj)) {
-
+        let marker = this.getMarker(styler);
+        if (!isDefined(marker)) {
             let properties = {
                 lat: styler.location.y,
                 lon: styler.location.x,
                 orientation: styler.orientation.heading,
                 color: styler.color,
                 icon: styler.icon,
-                name: this.names[styler.getId()]
+                name: this.names[styler.markerId]
             }
 
             //create marker
-            let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-            let markerFeature = new Feature({
-                geometry: marker,
+            let markerPoint = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            marker = new Feature({
+                geometry: markerPoint,
                 name: 'Marker' //TODO
             });
 
@@ -414,17 +398,12 @@ class OpenLayerView extends View {
                         rotation: properties.orientation * Math.PI / 180
                     })
                 });
-                markerFeature.setStyle(iconStyle);
+                marker.setStyle(iconStyle);
             }
             let id = "view-marker-" + randomUUID();
-            markerFeature.setId(id);
-            this.markers[id] = markerFeature;
-            this.stylerToObj[styler.getId()] = id;
-            return id;
-
-        } else {
-            return this.stylerToObj[styler.getId()];
+            marker.setId(id);
         }
+        return this.getMarker(styler);
     }
 
 
