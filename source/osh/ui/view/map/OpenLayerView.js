@@ -254,21 +254,8 @@ class OpenLayerView extends MapView {
         // inits onClick events
         let select_interaction = new Select();
 
-        let self = this;
         select_interaction.getFeatures().on("add", function (e) {
             let feature = e.element; //the feature selected
-            let dataSourcesIds = [];
-            let entityId;
-            for (let stylerId in self.stylerToObj) {
-                if (self.stylerToObj[stylerId] === feature.getId()) {
-                    let styler = self.stylerIdToStyler[stylerId];
-                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                        entityId : styler.viewItem.entityId
-                    });
-                    break;
-                }
-            }
         });
 
         this.vectorSource = new VectorSource({
