@@ -45,27 +45,29 @@ class Polyline extends Styler {
 	/**
 		* Creates the Polyline
 		* @param {Object} properties
-		* @param {Object[]} properties.locations - [lat, lon]
-		* @param {String} [properties.color='red']
-		* @param {Number} [properties.weight=1]
-		* @param {Number} [properties.opacity=1]
-		* @param {Number} [properties.smoothFactor=1]
-		* @param {Number} [properties.maxPoints=10]
-		* @param {Function} properties.locationFunc -
-		* @param {Function} properties.colorFunc -
-		* @param {Function} properties.weightFunc -
-		* @param {Function} properties.opacityFunc -
-		* @param {Function} properties.smoothFactorFunc -
+		* @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
+		* @param {Number} [properties.weight=1] - defines the weight of the polyline
+	  * @param {String} [properties.color='red'] - defines the color of the polyline
+		* @param {Number} [properties.opacity=1] - defines the opacity of the polyline
+		* @param {Number} [properties.smoothFactor=1] - defines the smoothFactor of the polyline
+		* @param {Number} [properties.maxPoints=10] - defines a number max of points
+		* @param {Function} [properties.locationFunc] - defines a function to return the location
+		* @param {Function} [properties.colorFunc] - defines a function to return the color
+		* @param {Function} [properties.weightFunc] - defines a function to return the weight
+		* @param {Function} [properties.opacityFunc] - defines a function to return the opacity
+		* @param {Function} [properties.smoothFactorFunc] - defines a function to return the smoothFactor
+	  * @param {Function} [properties.polylineIdFunc] - map an id to a unique polyline
 		*/
 	constructor(properties) {
 		super(properties);
 		this.properties = properties;
-		this.locations = [];
+		this.locations = {};
 		this.color = 'red';
 		this.weight = 1;
 		this.opacity = 1;
 		this.smoothFactor = 1;
 		this.maxPoints = 10;
+		this.polylineId = 'polyline';
 
 		if(isDefined(properties.color)){
 			this.color = properties.color;
@@ -88,12 +90,23 @@ class Polyline extends Styler {
 		}
 
 		let that = this;
+		// must be first to assign correctly the first location to the right id if it is defined
+		if(isDefined(properties.polylineIdFunc)) {
+			let fn = function(rec) {
+				that.polylineId = properties.polylineIdFunc.handler(rec);
+			};
+			this.addFn(properties.polylineIdFunc.dataSourceIds,fn);
+		}
+
 		if(isDefined(properties.locationFunc)) {
 			let fn = function(rec) {
 				let loc = properties.locationFunc.handler(rec);
-				that.locations.push(loc);
-				if(that.locations.length > this.maxPoints) {
-					that.locations.shift();
+				if(!(that.polylineId in that.locations)) {
+					that.locations[that.polylineId] = [];
+				}
+				that.locations[that.polylineId].push(loc);
+				if(that.locations[that.polylineId].length > that.maxPoints) {
+					that.locations[that.polylineId].shift();
 				}
 			};
 			this.addFn(properties.locationFunc.dataSourceIds,fn);
@@ -126,6 +139,7 @@ class Polyline extends Styler {
 			};
 			this.addFn(properties.smoothFactorFunc.dataSourceIds,fn);
 		}
+
 	}
 
 	setData(dataSourceId,rec,view,options) {
@@ -139,7 +153,7 @@ class Polyline extends Styler {
 	}
 
 	clear() {
-		this.locations = [];
+		this.locations[this.polylineId] = [];
 	}
 }
 

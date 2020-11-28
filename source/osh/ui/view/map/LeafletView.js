@@ -256,19 +256,24 @@ class LeafletView extends MapView {
 
     /**
      * Add a polyline to the map.
+     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {Object[]} properties.locations - [{x, y}]
      * @param {String} properties.color
      * @param {Number} properties.weight
      * @param {Number} properties.opacity
-     * * @param {Number} properties.smoothFactor
+     * @param {Number} properties.smoothFactor
      * @return {string} the id of the new created polyline
      */
-    addPolyline(properties) {
+    addPolyline(locations, properties) {
         let polylinePoints = [];
 
-        for (let i = 0; i < properties.locations.length; i++) {
-            polylinePoints.push(new L.LatLng(properties.locations[i].y, properties.locations[i].x));
+        if(isDefined(locations) && locations.length > 0) {
+            for (let i = 0; i < locations.length; i++) {
+                polylinePoints.push(new L.LatLng(
+                    locations[i].y,
+                    locations[i].x)
+                );
+            }
         }
 
         //create path
@@ -279,10 +284,7 @@ class LeafletView extends MapView {
             smoothFactor: properties.smoothFactor
         }).addTo(this.map);
 
-        let id = "view-polyline-" + randomUUID();
-        this.polylines[id] = polyline;
-
-        return id;
+        return polyline;
     }
 
     /**
@@ -347,56 +349,43 @@ class LeafletView extends MapView {
 
     /**
      * Abstract method to remove a marker from its corresponding layer.
-     * This is library dependent.
+     * This is library dependant.
      * @param {Object} marker - The Map marker object
      */
-    removeFromLayer(marker) {
+    removeMarkerFromLayer(marker) {
         this.map.removeLayer(marker);
     }
+
+    /**
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylineFromLayer(polyline) {
+        this.map.removeLayer(polyline);
+    }
+
     /**
      * Updates the polyline associated to the styler.
      * @param {Polyline} styler - The styler allowing the update of the polyline
      */
     updatePolyline(styler) {
-        let polylineId = 0;
-
-        if (!(styler.getId() in this.stylerToObj)) {
-            // adds a new marker to the leaflet renderer
-            polylineId = this.addPolyline({
-                color: styler.color,
-                weight: styler.weight,
-                locations: styler.locations,
-                maxPoints: styler.maxPoints,
-                opacity: styler.opacity,
-                smoothFactor: styler.smoothFactor
-            });
-
-            this.stylerToObj[styler.getId()] = polylineId;
-        } else {
-            polylineId = this.stylerToObj[styler.getId()];
-        }
-
-        if (polylineId in this.polylines) {
-            let polyline = this.polylines[polylineId];
-
+        let polyline = this.getPolyline(styler);
+        if (isDefined(polyline)) {
             // removes the layer
-            this.map.removeLayer(polyline);
-
-            let polylinePoints = [];
-            for (let i = 0; i < styler.locations.length; i++) {
-                polylinePoints.push(new L.LatLng(styler.locations[i].y, styler.locations[i].x));
-            }
-
-            //create path
-            polyline = new L.Polyline(polylinePoints, {
-                color: styler.color,
-                weight: styler.weight,
-                opacity: styler.opacity,
-                smoothFactor: styler.smoothFactor
-            }).addTo(this.map);
-
-            this.polylines[polylineId] = polyline;
+           this.removePolylineFromLayer(polyline);
         }
+
+        // adds a new polyline to the leaflet renderer
+        const polylineObj = this.addPolyline(styler.locations[styler.polylineId],{
+            color: styler.color,
+            weight: styler.weight,
+            locations: styler.locations,
+            maxPoints: styler.maxPoints,
+            opacity: styler.opacity,
+            smoothFactor: styler.smoothFactor
+        });
+        this.addPolylineToStyler(styler, polylineObj);
     }
 
     attachTo(parentElement) {

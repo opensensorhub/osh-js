@@ -37,6 +37,9 @@ import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
 import LayerSwitcher from 'ol-layerswitcher';
 import 'ol-layerswitcher/dist/ol-layerswitcher.css';
 import MapView from "./MapView";
+import Stroke from "ol/style/Stroke";
+import Fill from "ol/style/Fill";
+import LineString from "ol/geom/LineString";
 
 
 /**
@@ -125,36 +128,35 @@ class OpenLayerView extends MapView {
      * @param {Polyline} styler - The styler allowing the update of the polyline
      */
     updatePolyline(styler) {
-        let polylineId = 0;
-
-        if (!(styler.getId() in this.stylerToObj)) {
-            // adds a new marker to the leaflet renderer
-            polylineId = this.addPolyline({
-                color: styler.color,
-                weight: styler.weight,
-                locations: styler.locations,
-                maxPoints: styler.maxPoints,
-                opacity: styler.opacity,
-                smoothFactor: styler.smoothFactor,
-                name: this.names[styler.getId()]
-            });
-
-            this.stylerToObj[styler.getId()] = polylineId;
-        } else {
-            polylineId = this.stylerToObj[styler.getId()];
+        let polyline = this.getPolyline(styler);
+        if (isDefined(polyline)) {
+            // removes the layer
+            this.removePolylineFromLayer(polyline);
         }
+
+        const polylineObj = this.addPolyline(styler.locations[styler.polylineId], {
+            color: styler.color,
+            weight: styler.weight,
+            locations: styler.locations,
+            maxPoints: styler.maxPoints,
+            opacity: styler.opacity,
+            smoothFactor: styler.smoothFactor,
+            name: this.names[styler.getId()]
+        });
+
+        this.addPolylineToStyler(styler, polylineObj);
 
         //TODO: handle opacity, smoothFactor, color and weight
-        if (polylineId in this.polylines) {
-            let geometry = this.polylines[polylineId];
-
-            let polylinePoints = [];
-            for (let i = 0; i < styler.locations.length; i++) {
-                polylinePoints.push(transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-            }
-
-            geometry.setCoordinates(polylinePoints);
-        }
+        // if (polylineId in this.polylines) {
+        //     let geometry = this.polylines[polylineId];
+        //
+        //     let polylinePoints = [];
+        //     for (let i = 0; i < styler.locations.length; i++) {
+        //         polylinePoints.push(transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+        //     }
+        //
+        //     geometry.setCoordinates(polylinePoints);
+        // }
     }
 
     //---------- MAP SETUP --------------//
@@ -346,8 +348,17 @@ class OpenLayerView extends MapView {
      * This is library dependent.
      * @param {Object} marker - The Map marker object
      */
-    removeFromLayer(marker) {
+    removeMarkerFromLayer(marker) {
         this.vectorSource.removeFeature(marker);
+    }
+
+    /**
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylineFromLayer(polyline) {
+        this.map.removeLayer(polyline);
     }
 
     /**
@@ -396,18 +407,18 @@ class OpenLayerView extends MapView {
 
     /**
      * Add a polyline to the map.
+     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {Object[]} properties.locations - [{x, y}]
      * @param {String} properties.color
      * @param {Number} properties.weight
      * @param {String} properties.name
      * @return {string} the id of the new created polyline
      */
-    addPolyline(properties) {
+    addPolyline(locations,properties) {
         let polylinePoints = [];
 
-        for (let i = 0; i < properties.locations.length; i++) {
-            polylinePoints.push(transform([properties.locations[i].x, properties.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+        for (let i = 0; i < locations.length; i++) {
+            polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', 'EPSG:900913'))
         }
 
         //create path
@@ -435,10 +446,8 @@ class OpenLayerView extends MapView {
         });
 
         this.map.addLayer(vectorPathLayer);
-        let id = "view-polyline-" + randomUUID();
-        this.polylines[id] = pathGeometry;
 
-        return id;
+        return vectorPathLayer;
     }
 
     onResize() {

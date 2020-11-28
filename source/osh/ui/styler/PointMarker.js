@@ -79,7 +79,7 @@ class PointMarker extends Styler {
 		* @param {Function} [properties.labelFunc] -
 		* @param {Function} [properties.labelColorFunc] -
 		* @param {Function} [properties.labelSizeFunc] -
-	  * @param {Function} [properties.markerIdFunc] - affects an id to a unique marker
+	  * @param {Function} [properties.markerIdFunc] - map an id to a unique marker
 	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
 	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
 		*
@@ -158,6 +158,15 @@ class PointMarker extends Styler {
 		}
 
 		let that = this;
+
+		// must be first to assign correctly the first location to the right id if it is defined
+		if (this.checkFn("markerIdFunc")) {
+			let fn = function(rec,timeStamp,options) {
+				that.markerId = properties.markerIdFunc.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.markerIdFunc.dataSourceIds,fn);
+		}
+
 		if (this.checkFn("locationFunc")) {
 			let fn = function(rec,timeStamp,options) {
 				that.location = properties.locationFunc.handler(rec,timeStamp,options);
@@ -198,13 +207,6 @@ class PointMarker extends Styler {
 				that.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
-		}
-
-		if (this.checkFn("markerIdFunc")) {
-			let fn = function(rec,timeStamp,options) {
-				that.markerId = properties.markerIdFunc.handler(rec,timeStamp,options);
-			};
-			this.addFn(properties.markerIdFunc.dataSourceIds,fn);
 		}
 	}
 

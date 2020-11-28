@@ -1,5 +1,6 @@
 import SweJson from 'osh/datareceiver/SweJson.js';
 import PointMarker from "osh/ui/styler/PointMarker.js";
+import Polyline from "osh/ui/styler/Polyline.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";
@@ -15,10 +16,10 @@ let avlDataSource = new SweJson("AVL", {
   observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
   startTime: "2014-03-29T07:00:12Z",
   endTime: "2014-04-29T14:26:12Z",
-  replaySpeed: 2000
+  replaySpeed: 200
 });
 
-const commonConf = {
+const commonMarkerConf = {
   locationFunc: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
@@ -64,12 +65,42 @@ const commonConf = {
   labelColor: '#00fff5'
 };
 
+const commonPolylineConf = {
+  locationFunc: {
+    dataSourceIds: [avlDataSource.getId()],
+    handler: function (rec) {
+      return {
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
+      };
+    }
+  },
+  polylineIdFunc: {
+    dataSourceIds: [avlDataSource.getId()],
+    handler: function (rec) {
+      return rec['veh-id'];
+    }
+  },
+  color: 'rgba(0,0,255,0.5)',
+  weight: 5,
+  opacity: .5,
+  smoothFactor: 1,
+  maxPoints: 200
+};
+
 //Stadia_Outdoors
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
-const leafletViewItems = [{styler:  new PointMarker({...commonConf}), name: "AVL"}];
-const olViewItems = [{styler:  new PointMarker({...commonConf}), name: "AVL"}];
-const cesiumViewItems = [{styler:  new PointMarker({...commonConf}), name: "AVL"}];
+const leafletViewItems = [
+    {styler:  new PointMarker({...commonMarkerConf}), name: "AVL"},
+    {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
+    ];
+const olViewItems = [
+  {styler:  new PointMarker({...commonMarkerConf}), name: "AVL"},
+  {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
+];
+const cesiumViewItems = [{styler:  new PointMarker({...commonMarkerConf}), name: "AVL"}];
 
 // create Leaflet view
 const leafletMapView = new LeafletView("leafletMap",
@@ -108,6 +139,8 @@ bc.onmessage = (event) => {
   }
 }
 
+avlDataSource.connect();
+
 // start streaming
 loadElt.onclick = () => {
   avlDataSource.connect();
@@ -123,7 +156,9 @@ removeAllElt.onclick = async () => {
   setTimeout(() => {
     cesiumMapView.removeViewItem(cesiumViewItems[0]);
     olMapView.removeViewItem(olViewItems[0]);
+    olMapView.removeViewItem(olViewItems[1]);
     leafletMapView.removeViewItem(leafletViewItems[0]);
-  }, 1000);
+    leafletMapView.removeViewItem(leafletViewItems[1]);
+  }, 100);
 };
 

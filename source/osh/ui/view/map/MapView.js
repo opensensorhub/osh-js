@@ -47,6 +47,19 @@ class MapView extends View {
     }
 
     /**
+     * Associate a polylineId to a Styler for a fast lookup
+     * @param {Polyline} styler - the Styler object
+     * @param {Object} polylineObject - the Map polyline object
+     */
+    addPolylineToStyler(styler, polylineObject) {
+        // associate the list of markers owning by a specific marker
+        if(!(styler.getId() in this.stylerIdToPolylines)) {
+            this.stylerIdToPolylines[styler.getId()] = {};
+        }
+        this.stylerIdToPolylines[styler.getId()][styler.polylineId] = polylineObject;
+    }
+
+    /**
      * Get the markerId associate to the Styler
      * @param {PointMarker} styler - the Styler Object
      */
@@ -58,6 +71,17 @@ class MapView extends View {
     }
 
     /**
+     * Get the markerId associate to the Styler
+     * @param {Polyline} styler - the Styler Object
+     */
+    getPolyline(styler) {
+        if(!(styler.getId() in  this.stylerIdToPolylines)) {
+            return null;
+        }
+        return this.stylerIdToPolylines[styler.getId()][styler.polylineId];
+    }
+
+    /**
      * Remove Corresponding ViewItem
      * @param {Object} viewItem - The viewItem object
      */
@@ -65,6 +89,9 @@ class MapView extends View {
         super.removeViewItem(viewItem);
         // check for marker
         this.removeMarkers(viewItem.styler);
+
+        // check for polylines
+        this.removePolylines(viewItem.styler);
     }
 
     /**
@@ -77,7 +104,7 @@ class MapView extends View {
             if(isDefined(markersMap)) {
                 for(let markerId in markersMap) {
                     const marker = markersMap[markerId];
-                    this.removeFromLayer(marker)
+                    this.removeMarkerFromLayer(marker)
                 }
             }
 
@@ -87,11 +114,37 @@ class MapView extends View {
     }
 
     /**
+     * Remove the polylines corresponding to a Polyline Styler
+     * @param {Polyline} polyline - the styler to remove the polylines from
+     */
+    removePolylines(polyline) {
+        if(isDefined(polyline.polylineId)) {
+            const polylinesMap = this.stylerIdToPolylines[polyline.id];
+            if(isDefined(polylinesMap)) {
+                for(let polylineId in polylinesMap) {
+                    const polyline = polylinesMap[polylineId];
+                    this.removePolylineFromLayer(polyline)
+                }
+            }
+
+            // remove polylines ids from Styler map
+            delete this.stylerIdToPolylines[polyline.id];
+        }
+    }
+
+    /**
      * Abstract method to remove a marker from its corresponding layer.
-     * This is library dependent.
+     * This is library dependant.
      * @param {Object} marker - The Map marker object
      */
-    removeFromLayer(marker) {}
+    removeMarkerFromLayer(marker) {}
+
+    /**
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylineFromLayer(polyline) {}
 }
 
 export default MapView;

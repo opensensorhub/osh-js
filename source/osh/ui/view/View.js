@@ -46,7 +46,6 @@ class View {
         this.lastRec = {};
         this.selectedDataSources = [];
         this.dataSources = [];
-        this.viewItemsBroadcastChannels = {};
         this.entity = null;
 
         //this.divId = divId;
@@ -279,7 +278,6 @@ class View {
                 // observes the data come in
                 let self = this;
                 const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
-                this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
                 broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
                     if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
@@ -332,8 +330,6 @@ class View {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
-                this.viewItemsBroadcastChannels[ds].close();
-                delete this.viewItemsBroadcastChannels[ds];
                 delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);

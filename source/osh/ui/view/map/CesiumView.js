@@ -321,7 +321,7 @@ class CesiumView extends MapView {
    * This is library dependent.
    * @param {Object} marker - The Map marker object
    */
-  removeFromLayer(marker) {
+  removeMarkerFromLayer(marker) {
     this.viewer.entities.remove(marker);
   }
 
