@@ -43,7 +43,6 @@ class View {
         this.stylers = [];
         this.viewItems = [];
         this.names = {};
-        this.stylerIdToStyler = {};
         this.lastRec = {};
         this.selectedDataSources = [];
         this.dataSources = [];
@@ -273,7 +272,6 @@ class View {
             }
             styler.viewItem = viewItem;
             styler.init(this);
-            this.stylerIdToStyler[styler.id] = styler;
             //for(let dataSourceId in styler.dataSourceToStylerMap) {
             let ds = styler.getDataSourcesIds();
             for (let i = 0; i < ds.length; i++) {
@@ -340,7 +338,6 @@ class View {
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
         }
-        delete this.stylerIdToStyler[viewItem.styler.id]
         this.stylers = this.stylers.filter(currentStyler => currentStyler.id !== viewItem.styler.id);
         delete this.names[viewItem.styler.markerId];
     }
