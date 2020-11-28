@@ -92,8 +92,7 @@ class WebSocketConnector extends DataConnector {
     }
 
     createReconnection() {
-        if(this.reconnectionInterval === -1) {
-            this.onReconnect();
+        if(!this.closed && this.reconnectionInterval === -1 && this.onReconnect()) {
             this.reconnectionInterval =  setInterval(function () {
                 let delta = Date.now() - this.lastReceiveTime;
                 // -1 means the WS went in error
@@ -110,11 +109,11 @@ class WebSocketConnector extends DataConnector {
      */
     disconnect() {
        super.disconnect();
-        this.init = false;
-        this.closed = true;
-        if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
-            this.ws.close();
-        }
+       this.init = false;
+       this.closed = true;
+       if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
+           this.ws.close();
+       }
     }
 
     /**
