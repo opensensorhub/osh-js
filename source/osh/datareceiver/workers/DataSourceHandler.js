@@ -109,7 +109,7 @@ class DataSourceHandler {
                     this.connector.setUrl(this.parser.buildUrl(
                         {
                             ...properties,
-                            lastTimeStamp: new Date(this.lastTimeStamp).toISOString(),
+                            lastTimeStamp: isDefined(this.lastTimeStamp) ? new Date(this.lastTimeStamp).toISOString(): properties.startTime,
                         }));
                 }
                 return true;
@@ -139,7 +139,6 @@ class DataSourceHandler {
         if(this.connector !== null) {
             this.connector.disconnect();
         }
-        this.connector = null;
     }
 
     onMessage(event) {

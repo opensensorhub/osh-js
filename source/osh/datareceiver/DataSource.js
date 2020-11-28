@@ -128,10 +128,11 @@ class DataSource {
     /**
      * Connect the dataSource then the connector will be opened as well.
      */
-    connect() {
+    async connect() {
         this.dataSourceWorker.postMessage({
             message: 'connect'
         });
+        return this.isConnected();
     }
 
     async isConnected() {
