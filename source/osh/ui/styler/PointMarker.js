@@ -65,7 +65,7 @@ class PointMarker extends Styler {
 		* Create the PointMarker
 		* @param {Object} properties
 		* @param {Number[]} properties.location - [x,y,z]
-  		* @param {Number} [properties.orientation=0] -
+  	* @param {Number} [properties.orientation=0] -
 		* @param {String} properties.icon -
 		* @param {Number[]} [properties.iconAnchor=[16,16]] -
 		* @param {Number[]} [properties.iconSize=[16,16]] -
@@ -73,14 +73,15 @@ class PointMarker extends Styler {
 		* @param {String} [properties.labelColor="#000000"] - HTML color
 		* @param {Number} [properties.labelSize=16] -
 		* @param {Number[]} [properties.labelOffset=[0,0]] -
-		* @param {Function} properties.locationFunc -
-		* @param {Function} properties.orientationFunc -
-		* @param {Function} properties.iconFunc -
-		* @param {Function} properties.labelFunc -
-		* @param {Function} properties.labelColorFunc -
-		* @param {Function} properties.labelSizeFunc -
-	  * @param {Function} properties.markerIdFunc - affects an id to a unique marker
-	 	* @param {Number} [properties.zoomLevel=15] -
+		* @param {Function} [properties.locationFunc] -
+		* @param {Function} [properties.orientationFunc] -
+		* @param {Function} [properties.iconFunc] -
+		* @param {Function} [properties.labelFunc] -
+		* @param {Function} [properties.labelColorFunc] -
+		* @param {Function} [properties.labelSizeFunc] -
+	  * @param {Function} [properties.markerIdFunc] - affects an id to a unique marker
+	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
+	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
 		*
 		*/
 	constructor(properties) {
@@ -99,7 +100,7 @@ class PointMarker extends Styler {
 		this.color = null;
 		this.defaultToTerrainElevation = false;
 		this.options = {};
-		this.markerId = this.id;
+		this.markerId = 'marker';
 
 		if(isDefined(properties.defaultToTerrainElevation)) {
 			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
