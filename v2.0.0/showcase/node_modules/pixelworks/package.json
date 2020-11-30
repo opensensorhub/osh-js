@@ -1,0 +1,44 @@
+{
+  "name": "pixelworks",
+  "version": "1.1.0",
+  "description": "Utilities for working with ImageData in Workers",
+  "main": "lib/index.js",
+  "scripts": {
+    "pretest": "eslint lib test examples",
+    "test": "karma start test/karma.conf.js --single-run",
+    "start": "karma start test/karma.conf.js",
+    "bundle": "mkdir -p dist && browserify lib/index.js --standalone pixelworks > dist/pixelworks.js",
+    "prepublish": "npm run bundle"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tschaub/pixelworks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tschaub/pixelworks/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "chai": "^3.5.0",
+    "eslint": "^2.2.0",
+    "eslint-config-tschaub": "^4.0.0",
+    "karma": "^0.13.21",
+    "karma-browserify": "^5.0.2",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-mocha": "^0.2.2",
+    "karma-sauce-launcher": "^0.3.1",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "watchify": "^3.7.0"
+  },
+  "eslintConfig": {
+    "extends": "tschaub",
+    "globals": {
+      "ImageData": false
+    },
+    "rules": {
+      "dot-notation": 0
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "package-json-merge",
+  "version": "0.0.1",
+  "description": "Simple utility to merge package json",
+  "main": "./bin/ackage-json-merge",
+  "scripts": {
+    "start": "node ./bin/package-json-merge",
+    "tslint": "tslint ./bin/package-json-merge && tslint ./bin/*.*",
+    "coverage": "node ./bin/package-json-merge ./coverage/lcov-report -o"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eromano/package-json-merge.git"
+  },
+  "keywords": [
+    "development",
+    "json",
+    "merge"
+  ],
+  "author": "Eugenio Romano <eugenioromanodeveloper@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eromano/package-json-merge.git"
+  },
+  "homepage": "https://github.com/eromano/package-json-merge.#readme",
+  "bin": {
+    "package-json-merge": "./bin/package-json-merge"
+  },
+  "dependencies": {
+    "commander": "2.9.x"
+  },
+  "devDependencies": {
+    "tslint": "5.0.0",
+    "install": "0.8.7",
+    "istanbul": "0.4.5",
+    "mocha": "3.2.0",
+    "sinon": "1.17.4",
+    "sinon-chai": "2.8.0"
+  }
+}

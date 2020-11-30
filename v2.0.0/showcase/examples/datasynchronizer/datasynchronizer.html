@@ -1,0 +1,219 @@
+<style>
+   #buffer-static, #buffer-timeout-static {
+     height: 250px;
+     margin-right: 150px;
+     overflow: auto;
+     width:600px;
+   }
+
+  #buffer-dynamic input {
+    width: 50px;
+    height: 20px;
+    margin-top:6px;
+    margin-bottom:6px;
+    text-align: center;
+    margin-right:10px;
+  }
+
+   #simulation, #select-line {
+     margin-top: 10px;
+     font-size: 16px;
+     padding: 5px 5px 5px 5px;
+     margin-right: 50px;
+   }
+
+   #select-line-label {
+     font-size: 18px;
+   }
+
+  #buffer-dynamic-data, #buffer-dynamic-errors {
+    height: 350px;
+    width: 950px;
+    overflow: auto;
+    overscroll-behavior-y: contain;
+    scroll-snap-type: y mandatory;
+  }
+
+   #buffer-dynamic-data, #buffer-dynamic-errors > div > div:last-child {
+     scroll-snap-align: end;
+   }
+
+  .container, .container-dynamic {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+   .select-none {
+     opacity: 0.5;
+   }
+  .select-this {
+    border: solid 2px brown;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .delayed {
+    font-style: italic;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .wait {
+    color: darkorange;
+  }
+   .noerror {
+     color: green;
+   }
+  #replay-factor, #duration,#replay-factor-label, #duration-label {
+    width:130px;
+    display: inline-block;
+  }
+
+  #current-time-container{
+      width:50px;
+  }
+</style>
+<div>
+  <h3>Recall the principle of the main algorithm:</h3>
+  Data records from each DS are received in a separate queue (records are added at the end of the queue)<br>
+  The DataSynchronizer loop is run with a <i>setInterval()</i> at a frequency that can be adjusted between 5 and 1000ms<br>
+  The reference time stamp (<b>TSref</b>) is the timestamp of the first data received from any DS.<br>
+  <p>The reference clock time is computed with <i>performance.now()</i> when the first data is outputted by the synchronizer (i.e. at the end of the initial buffering period).<br>
+  In each synchronizer loop, we loop through each DS and evaluate the oldest record received from it (i.e. the record at the front of the queue, if any):<br>
+    We compare the <b>𝜟TS</b> of this oldest record (diff between the DS record timestamp and <b>TSref</b>) to the <b>𝜟clock</b>
+    (diff between current <i>performance.now()</i> and the reference clock time).
+    If <b>𝜟clock</b> > <b>𝜟TS</b>, the head of this DS queue can be dispatched<br>
+    Continue evaluating the next record from this DS until the condition above returns <i>false</i><br>
+    <br><br>
+  In addition to the above existing algorithm, the idea is to also do the following:<br>
+  <ul>
+  <li>Always compute the timestamp of the latest synchronizer loop <b>TSrun</b> = <b>TSref</b> + <b>𝜟clock</b></li>
+  <li>When we receive a new record from a DS with timestamp <b>TSrec</b>, we compute its latency = <i>min</i>(<b>TSrun</b> - <b>TSrec</b> , DS_timeout) (this is computed when the data is received, not in the main loop, and stored as a variable of the queue object associated with each DS)</li>
+  <li>We regularly compute the maximum latency of all DS and compute <b>𝜟clock_adj</b>  = <b>𝜟clock</b> - <i>max_latency</i></li>
+  <li>We use <b>𝜟clock_adj</b> instead of <b>𝜟clock</b> in the comparison with <b>𝜟TS</b> in the main loop</li>
+  <li>If needed, in order to avoid abrupt changes, we can also smoothout the change of <b>𝜟clock_adj</b> over time (e.g. over 10 loops)</li>
+  </ul>
+  <br>
+  Result line example: <br><br>
+  (4) 2020-07-10T17:08:03.911Z (Absolute +1025.89ms) (delayed)   Δ +10ms  Δ +20ms Δ +20.6ms
+  <ul>
+    <li>(4) : the Dataset id</li>
+    <li>2020-07-10T17:08:03.911Z: the data timeStamp</li>
+    <li>(Absolute +1025.89ms): the absolute time from the start (using perf.now())</li>
+    <li>(delayed): the data took latency, it has been delayed</li>
+    <li>Δ +10ms: real time spent between this data and the last one</li>
+    <li>Δ +20ms: the expected time to spend between the previous and this data for a same DataSource (based on data timestamp)</li>
+    <li>Δ +20.6ms: the real time spent based on the lastData clockTime and the current ClockTime for a same DataSource:
+      <pre>
+      // real time spent
+      const delta = (clockTime - lastData.refClockTime);
+    </pre>
+    </li>
+  </ul>
+  <br>
+</div>
+<div class="container">
+  <div>
+    <p><u><b>Static DataSet:</b></u> { no timeOut, no latency }</p>
+    <div id="buffer-static"></div>
+  </div>
+  <div>
+    <p><u><b>Static DataSet:</b></u> { timeOut, no latency }</p>
+    <div id="buffer-timeout-static"></div>
+  </div>
+</div>
+<p><u><b>Dynamic DataSet: random data insert:</b></u></p>
+
+<div id="buffer-dynamic">
+  The simulation starts multiple injection of data using a random latency. Every time a data is injected into the
+  buffer, a random number &#8712; [0,1] is computed to decide if the data will get some latency. If 0, the data is sent
+  directly into the buffer, if 1, the data is sent will delay (the latency value) using a setTimeout() function.
+  <br>
+  <label for="duration" id="duration-label">Total duration(s)</label>
+  <input type="text" id="duration" name="duration" value="2" />
+  <br>
+  <label for="replay-factor" id="replay-factor-label">Replay factor</label>
+  <input type="text" id="replay-factor" name="replay-factor" value="1" />
+  <br> <br>
+  <div>
+    <b>DataSet 1 | </b>
+    <label for="freq1">Frequency(ms)</label>
+    <input type="text" id="freq1" name="freq1" value="100"/>
+    <label for="latency1">Latency(ms)</label>
+    <input type="text" id="latency1" name="latency1" value="0"/>
+    <label for="timeout1">Timeout(ms)</label>
+    <input type="text" id="timeout1" name="timeout1" value="500"/>
+    <label for="buffering1">Buffering(ms)</label>
+    <input type="text" id="buffering1" name="buffering1" value="0"/>
+  </div>
+  <div>
+    <b>DataSet 2 | </b>
+    <label for="freq2">Frequency(ms)</label>
+    <input type="text" id="freq2" name="freq2" value="200"/>
+    <label for="latency2">Latency(ms)</label>
+    <input type="text" id="latency2" name="latency2" value="100"/>
+    <label for="timeout2">Timeout(ms)</label>
+    <input type="text" id="timeout2" name="timeout2" value="500"/>
+    <label for="buffering2">Buffering(ms)</label>
+    <input type="text" id="buffering2" name="buffering2" value="0"/>
+  </div>
+  <div>
+    <b>DataSet 3 | </b>
+    <label for="freq3">Frequency(ms)</label>
+    <input type="text" id="freq3" name="freq3" value="210"/>
+    <label for="latency3">Latency(ms)</label>
+    <input type="text" id="latency3" name="latency3" value="0"/>
+    <label for="timeout3">Timeout(ms)</label>
+    <input type="text" id="timeout3" name="timeout3" value="500"/>
+    <label for="buffering3">Buffering(ms)</label>
+    <input type="text" id="buffering3" name="buffering3" value="0"/>
+  </div>
+  <div>
+    <b>DataSet 4 | </b>
+    <label for="freq4">Frequency(ms)</label>
+    <input type="text" id="freq4" name="freq4" value="120"/>
+    <label for="latency4">Latency(ms)</label>
+    <input type="text" id="latency4" name="latency4" value="0"/>
+    <label for="timeout4">Timeout(ms)</label>
+    <input type="text" id="timeout4" name="timeout4" value="250"/>
+    <label for="buffering4">Buffering(ms)</label>
+    <input type="text" id="buffering4" name="buffering4" value="0"/>
+  </div>
+  <div>
+    <b>DataSet 5 | </b>
+    <label for="freq5">Frequency(ms)</label>
+    <input type="text" id="freq5" name="freq5" value="1000"/>
+    <label for="latency5">Latency(ms)</label>
+    <input type="text" id="latency5" name="latency5" value="0"/>
+    <label for="timeout5">Timeout(ms)</label>
+    <input type="text" id="timeout5" name="timeout5" value="2000"/>
+    <label for="buffering5">Buffering(ms)</label>
+    <input type="text" id="buffering5" name="buffering5" value="0"/>
+  </div>
+  <br>
+  <button type="button" id="simulation">Start simulation</button>
+  <label id="select-line-label" for="select-line">Select a ligne:</label>
+  <select name="select-line" id="select-line" disabled>
+    <option value="-">-</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+
+  <label for="scroll">Auto scroll</label>
+  <input type="checkbox" id="scroll" name="scroll"
+         checked>
+    <label for="current-time">Current synchronized time: </label>
+  <b><span id="current-time" ></span></b>
+  <br/><br/>
+  <div class="container-dynamic">
+    <div id="buffer-dynamic-data"></div>
+    <div id="buffer-dynamic-errors"></div>
+  </div>
+</div>
+
+
