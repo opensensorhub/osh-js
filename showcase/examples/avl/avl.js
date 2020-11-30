@@ -151,6 +151,7 @@ loadElt.onclick = () => {
 removeAllElt.onclick = async () => {
   avlDataSource.disconnect();
   removeAllElt.setAttribute("disabled", "");
+  loadElt.removeAttribute("disabled");
 
   // let the time to flush the data broadcast channel
   setTimeout(() => {
