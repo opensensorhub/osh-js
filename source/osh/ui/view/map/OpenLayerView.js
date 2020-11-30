@@ -35,14 +35,18 @@ import Select from "ol/interaction/Select";
 import OSM from "ol/source/OSM";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
 import LayerSwitcher from 'ol-layerswitcher';
-import 'ol-layerswitcher/src/ol-layerswitcher.css';
+import 'ol-layerswitcher/dist/ol-layerswitcher.css';
+import MapView from "./MapView";
+import Stroke from "ol/style/Stroke";
+import Fill from "ol/style/Fill";
+import LineString from "ol/geom/LineString";
 
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
  * @extends View
  */
-class OpenLayerView extends View {
+class OpenLayerView extends MapView {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
@@ -76,26 +80,23 @@ class OpenLayerView extends View {
      * @param {PointMarker} styler - The styler allowing the update of the marker
      */
     updateMarker(styler) {
-        let markerId = 0;
-
-        if (!(styler.getId() in this.stylerToObj)) {
+        let marker = this.getMarker(styler);
+        if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-            markerId = this.addMarker({
+            const markerObj = this.addMarker({
                 lat: styler.location.y,
                 lon: styler.location.x,
                 orientation: styler.orientation.heading,
                 color: styler.color,
                 icon: styler.icon,
                 anchor: styler.iconAnchor,
-                name: this.names[styler.getId()]
+                name: this.names[styler.markerId]
             });
 
-            this.stylerToObj[styler.getId()] = markerId;
-        } else {
-            markerId = this.stylerToObj[styler.getId()];
+            this.addMarkerToStyler(styler, markerObj);
         }
 
-        let markerFeature = this.markers[markerId];
+        let markerFeature = this.getMarker(styler);
         // updates position
         let lon = styler.location.x;
         let lat = styler.location.y;
@@ -127,36 +128,35 @@ class OpenLayerView extends View {
      * @param {Polyline} styler - The styler allowing the update of the polyline
      */
     updatePolyline(styler) {
-        let polylineId = 0;
-
-        if (!(styler.getId() in this.stylerToObj)) {
-            // adds a new marker to the leaflet renderer
-            polylineId = this.addPolyline({
-                color: styler.color,
-                weight: styler.weight,
-                locations: styler.locations,
-                maxPoints: styler.maxPoints,
-                opacity: styler.opacity,
-                smoothFactor: styler.smoothFactor,
-                name: this.names[styler.getId()]
-            });
-
-            this.stylerToObj[styler.getId()] = polylineId;
-        } else {
-            polylineId = this.stylerToObj[styler.getId()];
+        let polyline = this.getPolyline(styler);
+        if (isDefined(polyline)) {
+            // removes the layer
+            this.removePolylineFromLayer(polyline);
         }
+
+        const polylineObj = this.addPolyline(styler.locations[styler.polylineId], {
+            color: styler.color,
+            weight: styler.weight,
+            locations: styler.locations,
+            maxPoints: styler.maxPoints,
+            opacity: styler.opacity,
+            smoothFactor: styler.smoothFactor,
+            name: this.names[styler.getId()]
+        });
+
+        this.addPolylineToStyler(styler, polylineObj);
 
         //TODO: handle opacity, smoothFactor, color and weight
-        if (polylineId in this.polylines) {
-            let geometry = this.polylines[polylineId];
-
-            let polylinePoints = [];
-            for (let i = 0; i < styler.locations.length; i++) {
-                polylinePoints.push(transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-            }
-
-            geometry.setCoordinates(polylinePoints);
-        }
+        // if (polylineId in this.polylines) {
+        //     let geometry = this.polylines[polylineId];
+        //
+        //     let polylinePoints = [];
+        //     for (let i = 0; i < styler.locations.length; i++) {
+        //         polylinePoints.push(transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+        //     }
+        //
+        //     geometry.setCoordinates(polylinePoints);
+        // }
     }
 
     //---------- MAP SETUP --------------//
@@ -169,8 +169,6 @@ class OpenLayerView extends View {
         let initialView = null;
         this.first = true;
         let overlays = [];
-        this.markers = {};
-        this.polylines = {};
 
         let baseLayers = this.getDefaultLayers();
         let maxZoom = 19;
@@ -258,21 +256,8 @@ class OpenLayerView extends View {
         // inits onClick events
         let select_interaction = new Select();
 
-        let self = this;
         select_interaction.getFeatures().on("add", function (e) {
             let feature = e.element; //the feature selected
-            let dataSourcesIds = [];
-            let entityId;
-            for (let stylerId in self.stylerToObj) {
-                if (self.stylerToObj[stylerId] === feature.getId()) {
-                    let styler = self.stylerIdToStyler[stylerId];
-                    EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-                        dataSourcesIds: dataSourcesIds.concat(styler.getDataSourcesIds()),
-                        entityId : styler.viewItem.entityId
-                    });
-                    break;
-                }
-            }
         });
 
         this.vectorSource = new VectorSource({
@@ -343,17 +328,15 @@ class OpenLayerView extends View {
 
             let id = "view-marker-" + randomUUID();
             markerFeature.setId(id);
-            this.markers[id] = markerFeature;
-
             this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {
                 this.first = false;
                 this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-                this.map.getView().setZoom(19);
+                this.map.getView().setZoom(12);
             }
 
-            return id;
+            return markerFeature;
         }
         this.onResize();
         //TODO: exception
@@ -361,22 +344,21 @@ class OpenLayerView extends View {
     }
 
     /**
-     * Removes a view item from the view.
-     * @param {Object} viewItem - The initial view items to add
-     * @param {String} viewItem.name - The name of the view item
-     * @param {Styler} viewItem.styler - The styler object representing the view item
+     * Abstract method to remove a marker from its corresponding layer.
+     * This is library dependent.
+     * @param {Object} marker - The Map marker object
      */
-    removeViewItem(viewItem) {
-        const markerId = this.stylerToObj[viewItem.styler.id];
-        super.removeViewItem(viewItem);
-        if(isDefined(markerId)) {
-            let feature = this.markers[markerId];
-            if(isDefined(feature)) {
-                this.vectorSource.removeFeature(feature);
-            }
+    removeMarkerFromLayer(marker) {
+        this.vectorSource.removeFeature(marker);
+    }
 
-            delete this.markers[markerId];
-        }
+    /**
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylineFromLayer(polyline) {
+        this.map.removeLayer(polyline);
     }
 
     /**
@@ -388,21 +370,21 @@ class OpenLayerView extends View {
     createMarkerFromStyler(styler) {
         //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
         //to the view or map to give the user more control
-        if (!(styler.getId() in this.stylerToObj)) {
-
+        let marker = this.getMarker(styler);
+        if (!isDefined(marker)) {
             let properties = {
                 lat: styler.location.y,
                 lon: styler.location.x,
                 orientation: styler.orientation.heading,
                 color: styler.color,
                 icon: styler.icon,
-                name: this.names[styler.getId()]
+                name: this.names[styler.markerId]
             }
 
             //create marker
-            let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-            let markerFeature = new Feature({
-                geometry: marker,
+            let markerPoint = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            marker = new Feature({
+                geometry: markerPoint,
                 name: 'Marker' //TODO
             });
 
@@ -414,34 +396,29 @@ class OpenLayerView extends View {
                         rotation: properties.orientation * Math.PI / 180
                     })
                 });
-                markerFeature.setStyle(iconStyle);
+                marker.setStyle(iconStyle);
             }
             let id = "view-marker-" + randomUUID();
-            markerFeature.setId(id);
-            this.markers[id] = markerFeature;
-            this.stylerToObj[styler.getId()] = id;
-            return id;
-
-        } else {
-            return this.stylerToObj[styler.getId()];
+            marker.setId(id);
         }
+        return this.getMarker(styler);
     }
 
 
     /**
      * Add a polyline to the map.
+     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {Object[]} properties.locations - [{x, y}]
      * @param {String} properties.color
      * @param {Number} properties.weight
      * @param {String} properties.name
      * @return {string} the id of the new created polyline
      */
-    addPolyline(properties) {
+    addPolyline(locations,properties) {
         let polylinePoints = [];
 
-        for (let i = 0; i < properties.locations.length; i++) {
-            polylinePoints.push(transform([properties.locations[i].x, properties.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+        for (let i = 0; i < locations.length; i++) {
+            polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', 'EPSG:900913'))
         }
 
         //create path
@@ -469,10 +446,8 @@ class OpenLayerView extends View {
         });
 
         this.map.addLayer(vectorPathLayer);
-        let id = "view-polyline-" + randomUUID();
-        this.polylines[id] = pathGeometry;
 
-        return id;
+        return vectorPathLayer;
     }
 
     onResize() {

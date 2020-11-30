@@ -6,16 +6,6 @@ var Normalizer = require('prismjs/plugins/normalize-whitespace/prism-normalize-w
 
 var samples = [
   {
-    name: "SweJson DataSource",
-    description: "Display the data of a SweJson DataSource",
-    url: "datasource-swejson"
-  },
-  {
-    name: "Video DataSource",
-    description: "Display the data of a Video DataSource",
-    url: "datasource-video"
-  },
-  {
     name: "FOI Locations (CesiumJS)",
     description: "Display the location of several features of interest on a CesiumJS globe.",
     url: "cesium-fois"
@@ -120,6 +110,11 @@ var samples = [
     name: 'VueJs component: Multiple Video with control',
     description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
     url: 'video-with-control-vuejs-synchronized'
+  },
+  {
+    name: 'AVL data using multiple ids',
+    description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
+    url: 'avl'
   }
 ];
 

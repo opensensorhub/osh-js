@@ -43,12 +43,9 @@ class View {
         this.stylers = [];
         this.viewItems = [];
         this.names = {};
-        this.stylerToObj = {};
-        this.stylerIdToStyler = {};
         this.lastRec = {};
         this.selectedDataSources = [];
         this.dataSources = [];
-        this.viewItemsBroadcastChannels = {};
         this.entity = null;
 
         //this.divId = divId;
@@ -270,11 +267,10 @@ class View {
             let styler = viewItem.styler;
             this.stylers.push(styler);
             if (viewItem.hasOwnProperty("name")) {
-                this.names[styler.getId()] = viewItem.name;
+                this.names[styler.markerId] = viewItem.name;
             }
             styler.viewItem = viewItem;
             styler.init(this);
-            this.stylerIdToStyler[styler.id] = styler;
             //for(let dataSourceId in styler.dataSourceToStylerMap) {
             let ds = styler.getDataSourcesIds();
             for (let i = 0; i < ds.length; i++) {
@@ -282,7 +278,6 @@ class View {
                 // observes the data come in
                 let self = this;
                 const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
-                this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
                 broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
                     if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
@@ -335,16 +330,12 @@ class View {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
             for(let ds in viewItem.styler.dataSourceToStylerMap) {
-                this.viewItemsBroadcastChannels[ds].close();
-                delete this.viewItemsBroadcastChannels[ds];
                 delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
         }
-        delete this.stylerIdToStyler[viewItem.styler.id]
         this.stylers = this.stylers.filter(currentStyler => currentStyler.id !== viewItem.styler.id);
-        delete this.names[viewItem.styler.id];
-        delete this.stylerToObj[viewItem.styler.id]
+        delete this.names[viewItem.styler.markerId];
     }
 
     /**

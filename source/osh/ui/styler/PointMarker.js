@@ -65,7 +65,7 @@ class PointMarker extends Styler {
 		* Create the PointMarker
 		* @param {Object} properties
 		* @param {Number[]} properties.location - [x,y,z]
-  		* @param {Number} [properties.orientation=0] -
+  	* @param {Number} [properties.orientation=0] -
 		* @param {String} properties.icon -
 		* @param {Number[]} [properties.iconAnchor=[16,16]] -
 		* @param {Number[]} [properties.iconSize=[16,16]] -
@@ -73,13 +73,15 @@ class PointMarker extends Styler {
 		* @param {String} [properties.labelColor="#000000"] - HTML color
 		* @param {Number} [properties.labelSize=16] -
 		* @param {Number[]} [properties.labelOffset=[0,0]] -
-		* @param {Function} properties.locationFunc -
-		* @param {Function} properties.orientationFunc -
-		* @param {Function} properties.iconFunc -
-		* @param {Function} properties.labelFunc -
-		* @param {Function} properties.labelColorFunc -
-		* @param {Function} properties.labelSizeFunc -
-	 	* @param {Number} [properties.zoomLevel=15] -
+		* @param {Function} [properties.locationFunc] -
+		* @param {Function} [properties.orientationFunc] -
+		* @param {Function} [properties.iconFunc] -
+		* @param {Function} [properties.labelFunc] -
+		* @param {Function} [properties.labelColorFunc] -
+		* @param {Function} [properties.labelSizeFunc] -
+	  * @param {Function} [properties.markerIdFunc] - map an id to a unique marker
+	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
+	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
 		*
 		*/
 	constructor(properties) {
@@ -97,8 +99,8 @@ class PointMarker extends Styler {
 		this.zoomLevel = 15;
 		this.color = null;
 		this.defaultToTerrainElevation = false;
-
 		this.options = {};
+		this.markerId = 'marker';
 
 		if(isDefined(properties.defaultToTerrainElevation)) {
 			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
@@ -156,6 +158,15 @@ class PointMarker extends Styler {
 		}
 
 		let that = this;
+
+		// must be first to assign correctly the first location to the right id if it is defined
+		if (this.checkFn("markerIdFunc")) {
+			let fn = function(rec,timeStamp,options) {
+				that.markerId = properties.markerIdFunc.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.markerIdFunc.dataSourceIds,fn);
+		}
+
 		if (this.checkFn("locationFunc")) {
 			let fn = function(rec,timeStamp,options) {
 				that.location = properties.locationFunc.handler(rec,timeStamp,options);
