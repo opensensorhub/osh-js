@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:sml="http://www.opengis.net/sensorML/1.0.1" xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sch="http://www.ascc.net/xml/schematron"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml"/>
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1"/>
+   <!-- -->
+   <include href="../../swe/data.rng">
+      <start>
+         <element name="test">
+            <oneOrMore>
+               <choice>
+                  <ref name="csml.ProfileCoverage"/>
+                  <ref name="csml.ProfileCoverageWithLocation"/>
+                  <ref name="csml.TrajectoryCoverage"/>
+                  <ref name="csml.ScanningRadarCoverage"/>
+               </choice>
+            </oneOrMore>
+         </element>
+      </start>
+   </include>
+   <!-- -->
+   <define name="csml.SampleWithLocation">
+      <a:documentation>SWE encoding of coverage sample with its position and data</a:documentation>
+      <element name="swe:DataRecord">
+         <ref name="gml.GmlObjectGroup"/>
+         <element name="swe:field">
+            <a:documentation>Sample position (coverage domain)</a:documentation>
+            <attribute name="name">
+               <value>location</value>
+            </attribute>
+            <optional>
+               <ref name="xlink.roles"/>
+            </optional>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.Vector"/>
+            </choice>
+         </element>
+         <element name="swe:field">
+            <a:documentation>Sample data (coverage range set)</a:documentation>
+            <attribute name="name">
+               <value>data</value>
+            </attribute>
+            <optional>
+               <ref name="xlink.roles"/>
+            </optional>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.AnyData"/>
+            </choice>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csml.TrajectoryCoverage">
+      <a:documentation>SWE encoding of CSML TrajectoryCoverage</a:documentation>
+      <element name="swe:DataArray">
+         <ref name="gml.GmlObjectGroup"/>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:CSML:TrajectoryCoverage</value>
+         </attribute>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <attribute name="name">
+               <value>sample</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="csml.SampleWithLocation"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csml.ProfileCoverage">
+      <a:documentation>SWE encoding of CSML ProfileCoverage with explicit sample locations</a:documentation>
+      <element name="swe:DataArray">
+         <ref name="gml.GmlObjectGroup"/>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:CSML:ProfileCoverage</value>
+         </attribute>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <attribute name="name">
+               <value>sample</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="csml.SampleWithLocation"/>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csml.ProfileCoverageWithLocation">
+      <a:documentation> SWE encoding of CSML ProfileCoverage where one or more coordinate(s) of
+         location is shared by all samples. In this case the location interleaved with each sample
+         contains only the remaining coordinates (i.e. depth or radial distance) </a:documentation>
+      <element name="swe:DataRecord">
+         <ref name="gml.GmlObjectGroup"/>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:CSML:ProfileCoverageWithLocation</value>
+         </attribute>
+         <element name="swe:field">
+            <a:documentation>Shared location (coverage domain)</a:documentation>
+            <attribute name="name">
+               <value>location</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.Vector"/>
+            </choice>
+         </element>
+         <element name="swe:field">
+            <a:documentation>Profile data</a:documentation>
+            <attribute name="name">
+               <value>profile</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="csml.ProfileCoverage"/>
+            </choice>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="csml.ScanningRadarCoverage">
+      <a:documentation> SWE encoding of CSML ScanningRadarCoverage This is in fact a profile series,
+         each of which has a direction specified in spherical coordinates. </a:documentation>
+      <element name="swe:DataArray">
+         <ref name="gml.GmlObjectGroup"/>
+         <attribute name="definition">
+            <value>urn:ogc:def:geometry:CSML:ScanningRadarCoverage</value>
+         </attribute>
+         <ref name="swe.elementCount"/>
+         <element name="swe:elementType">
+            <attribute name="name">
+               <value>radial</value>
+            </attribute>
+            <choice>
+               <ref name="xlink.href"/>
+               <element name="swe:DataRecord">
+                  <ref name="gml.GmlObjectGroup"/>
+                  <attribute name="definition">
+                     <value>urn:ogc:def:geometry:CSML:ProfileCoverageWithLocation</value>
+                  </attribute>
+                  <element name="swe:field">
+                     <a:documentation>Shared location (coverage domain)</a:documentation>
+                     <attribute name="name">
+                        <value>location</value>
+                     </attribute>
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <element name="swe.Vector">
+                           <element name="swe:coordinate">
+                              <a:documentation>Radial azimuth (coverage domain)</a:documentation>
+                              <attribute name="name">
+                                 <value>azimuth</value>
+                              </attribute>
+                              <choice>
+                                 <ref name="xlink.href"/>
+                                 <ref name="swe.Quantity"/>
+                              </choice>
+                           </element>
+                           <element name="swe:coordinate">
+                              <a:documentation>Radial elevation (coverage domain)</a:documentation>
+                              <attribute name="name">
+                                 <value>elevation</value>
+                              </attribute>
+                              <choice>
+                                 <ref name="xlink.href"/>
+                                 <ref name="swe.Quantity"/>
+                              </choice>
+                           </element>
+                        </element>
+                     </choice>
+                  </element>
+                  <element name="swe:field">
+                     <a:documentation>Radial data (coverage domain)</a:documentation>
+                     <attribute name="name">
+                        <value>profile</value>
+                     </attribute>
+                     <choice>
+                        <ref name="xlink.href"/>
+                        <element name="swe:DataArray">
+                           <ref name="gml.GmlObjectGroup"/>
+                           <attribute name="definition">
+                              <value>urn:ogc:def:geometry:CSML:ProfileCoverage</value>
+                           </attribute>
+                           <ref name="swe.elementCount"/>
+                           <element name="swe:elementType">
+                              <attribute name="name">
+                                 <value>sample</value>
+                              </attribute>
+                              <choice>
+                                 <ref name="xlink.href"/>
+                                 <ref name="csml.SampleWithLocation"/>
+                              </choice>
+                           </element>
+                           <optional>
+                              <ref name="swe.EncodedValuesGroup"/>
+                           </optional>
+                        </element>
+                     </choice>
+                  </element>
+               </element>
+            </choice>
+         </element>
+         <optional>
+            <ref name="swe.EncodedValuesGroup"/>
+         </optional>
+      </element>
+   </define>
+</grammar>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.6.0//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.6.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to='sml_editor'>
+   <inherits name='com.google.gwt.user.User'/>
+   <inherits name='com.google.gwt.xml.XML'/>
+   <inherits name="com.google.gwt.http.HTTP" />
+   <inherits name='com.sensia.RelaxNG'/>
+   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+   <entry-point class='com.sensia.swetools.editors.sensorml.client.SensorMLModule'/>
+   <stylesheet src='SensorMLEditor.css' />
+   <source path='client'/>
+   <source path='shared'/>
+   <!-- allow Super Dev Mode -->
+   <add-linker name="xsiframe"/>	
+</module>

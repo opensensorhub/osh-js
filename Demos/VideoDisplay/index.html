@@ -1,0 +1,80 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Video display</title>
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
+    <!-- vendors -->
+    <link rel="stylesheet" href="../../Toolkit/releases/v1.1/vendor/vendor.min.css"/>
+    <script type="text/javascript" src="../../Toolkit/releases/v1.1/vendor/vendor.min.js"></script>
+
+    <!-- OSH libs -->
+    <link rel="stylesheet" href="../../Toolkit/releases/v1.1/css/osh.min.css"/>
+    <script type="text/javascript" src="../../Toolkit/releases/v1.1/js/osh.min.js"></script>
+
+    <!------------ VIDEO DISPLAY ------------>
+    <link rel="stylesheet" type="text/css" href="css/video-display.css">
+    <script type="text/javascript" src="js/config-3.js"></script>
+
+    <!-- Circular Nav Menu -->
+    <link rel="stylesheet" href="css/circularNavMenu/font-awesome.min.css" />
+    <!--link rel="stylesheet" href="css/circularNavMenu/common.min.css" /-->
+    <link rel="stylesheet" href="css/circularNavMenu/circle-menu.css" />
+    <script src="js/circleMenu.min.js"></script>
+
+</head>
+
+<body onload="init()" id="body">
+<nav class="navbar navbar-default navbar-inverse ">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://www.opensensorhub.org/">
+                <img src="https://github.com/sensiasoft/sensorhub/wiki/images/sensorhub_logo_128.png"
+                     style="-webkit-animation-play-state: paused; -webkit-transition: none; transition: none; width:50px;height:50px;">
+                OpenSensorHub</a>
+        </div>
+    </div>
+</nav>
+<div id="main-container" class="main-view">
+    <div id="center-container" class="center-view"></div>
+    <div id="tasking-container" class="tasking-container"></div>
+    <div id="dialog-main-container" class="video-main-container"></div>
+    <nav class="c-circle-menu js-menu">
+        <button class="c-circle-menu__toggle js-menu-toggle">
+            <span>Toggle</span>
+        </button>
+        <ul class="c-circle-menu__items">
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="screenshot-button">
+                    <img src="images/photo.svg"  alt="">
+                </a>
+            </li>
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="2D-view-button">
+                    <img src="images/2d.svg" alt="">
+                </a>
+            </li>
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="3D-view-button">
+                    <img src="images/3d.svg" alt="">
+                </a>
+            </li>
+            <li class="c-circle-menu__item">
+                <a href="#" class="c-circle-menu__link" id="add-entity-button">
+                    <img src="images/add.svg" alt="">
+                </a>
+            </li>
+            <!-- more items here -->
+        </ul>
+        <div class="c-circle-menu__mask js-menu-mask"></div>
+    </nav>
+</div>
+<div class="rangeSlider-container">
+    <div id="rangeSlider" class="rangeSlider"></div>
+</div>
+</body>
+</html>

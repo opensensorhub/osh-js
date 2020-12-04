@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Technical - OpenSensorHub Toolkit</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Technical";
+    var mkdocs_page_input_path = "dev/technical.md";
+    var mkdocs_page_url = "/dev/technical/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-36723568-3', 'opensensorhub.org');
+      ga('send', 'pageview');
+  </script>
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <img src="../../img/logo-light.png"/>
+        <a href="../.." class="icon"> OpenSensorHub Toolkit</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Introduction</a>
+        
+    </li>
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Getting started</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../download/">Download</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../install/">How to use</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Developer Documentation</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../dev-guide/">Developer's Guide</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../architecture/">Architecture</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Technical</a>
+        
+            <ul>
+            
+                
+                    <li><a class="toctree-l4" href="#eventmanager">EventManager</a></li>
+                
+                    <li><a class="toctree-l4" href="#datareceiver">DataReceiver</a></li>
+                
+                    <li><a class="toctree-l4" href="#requests">Requests</a></li>
+                
+                    <li><a class="toctree-l4" href="#dialog">Dialog</a></li>
+                
+                    <li><a class="toctree-l4" href="#workers">Workers</a></li>
+                
+                    <li><a class="toctree-l4" href="#cesium-cesium-third-party-library">Cesium (--cesium third party library)</a></li>
+                
+                    <li><a class="toctree-l4" href="#ffmpeg-ffmpeg-third-party-library">FFMPEG (--ffmpeg third party library)</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../jsdoc/">JSdoc</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    
+        <ul class="subnav">
+	    <li><span>Tutorials</span></li>
+            
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../tutos/osh-by-example/">OSH by example</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../tutos/osh-by-example-2/">Make your own data receiver</a>
+        
+    </li>
+
+	        
+	    
+	        
+	            
+    <li class="toctree-l1 ">
+        <a class="" href="../../tutos/osh-by-example-3/">Use the discovery view</a>
+        
+    </li>
+
+	        
+	    
+        </ul>
+    
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../license/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">OpenSensorHub Toolkit</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Developer Documentation &raquo;</li>
+        
+      
+    
+    <li>Technical</li>
+    <li class="wy-breadcrumbs-aside">
+      <!--
+        
+          <a href="https://github.com/opensensorhub/" class="icon icon-github"> Edit on GitHub</a>
+        
+      -->
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="technical">Technical</h1>
+<h2 id="eventmanager">EventManager</h2>
+<p>The EventManager is handled by the <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.EventManager.html">OSH.EventManager</a> class.
+It is used through the entire Toolkit. For example, the data are sent from the data receiver to the buffer using the callback function, and the
+buffer forwards the events after processing them into the EventManager.</p>
+<p>There are then many ways to use the OSH.EventManager. As it is used through the entire Toolkit, you can send/receive on events
+directly by using the OSH.EventManager class.</p>
+<p>Most of the events are defined by <code>OSH.EventManager.EVENT</code> :</p>
+<pre><code class="javascript">OSH.EventManager.EVENT = {
+    DATA : &quot;data&quot;,
+    SYNC_DATA : &quot;syncData&quot;,
+    SELECT_VIEW : &quot;selectView&quot;,
+    CONTEXT_MENU : &quot;contextMenu&quot;,
+    SHOW_VIEW : &quot;showView&quot;,
+    CONNECT_DATASOURCE : &quot;connectDataSource&quot;,
+    DISCONNECT_DATASOURCE : &quot;disconnectDataSource&quot;,
+    DATASOURCE_UPDATE_TIME: &quot;updateDataSourceTime&quot;,
+    CURRENT_MASTER_TIME : &quot;currentMasterTime&quot;,
+    UAV_TAKEOFF : &quot;uav:takeoff&quot;,
+    UAV_GOTO: &quot;uav:goto&quot;,
+    UAV_LOOKAT : &quot;uav:lookat&quot;,
+    UAV_LAND: &quot;uav:land&quot;,
+    UAV_ORBIT: &quot;uav:orbit&quot;,
+    LOADING_START: &quot;loading:start&quot;,
+    LOADING_STOP: &quot;loading:stop&quot;,
+    ADD_VIEW_ITEM: &quot;addViewItem&quot;,
+    RESIZE:&quot;resize&quot;,
+    PTZ_SEND_REQUEST:&quot;ptzSendRequest&quot;
+};
+</code></pre>
+
+<p>In some situations, the events are postfixed by an id. For example, in the case of sending data from data receivers,
+the data is sent as a JSON object with an event <code>DATA-&lt;id&gt;</code>. </p>
+<h3 id="data">DATA</h3>
+<p>Once the data received and splitted by the data source, they are sent to the buffer as:</p>
+<pre><code class="javascript">dataSource.onData = function (data) {
+      this.buffer.push({dataSourceId: dataSource.getId(), data: data});
+
+}.bind(this);
+</code></pre>
+
+<p>We don't use message passing here to not overload Event manager. Then the buffer processes the data and sent them back to EventManager:</p>
+<pre><code class="javascript">...
+OSH.EventManager.fire(OSH.EventManager.EVENT.DATA+&quot;-&quot;+dataSourceId, {data : data});
+...
+</code></pre>
+
+<p>Every data is postfixed with its datasource id. This is to optmize the observation process.</p>
+<p>If one is interested in getting the data, it can observe the corresponding data by listening to the EventManager:</p>
+<pre><code class="javascript">...
+OSH.EventManager.observe(OSH.EventManager.EVENT.DATA + &quot;-&quot; + &lt;datasourceId&gt;, function (event) {
+...
+}
+</code></pre>
+
+<h3 id="current_master_time">CURRENT_MASTER_TIME</h3>
+<p>The <code>CURRENT_MASTER_TIME</code> allows to send the current timestamp being processed. This is sent by the buffer after processing (at the same time as the DATA event) and it is observed
+by the <code>OSH.UI.RangeSlider</code> view to move the slider cursor.</p>
+<h3 id="select_view">SELECT_VIEW</h3>
+<p>The <code>SELECT_VIEW</code> event is sent to select a view. It contains a data source id array and an entity id:</p>
+<pre><code class="javascript"> OSH.EventManager.fire(OSH.EventManager.EVENT.SELECT_VIEW,{
+    dataSourcesIds: [...],
+    entityId: [...],                    
+});
+</code></pre>
+
+<p>Every implemented view observes this event and apply the <code>css selected</code> style when the data source ids are matching. For example, if you want to select a particular view, 
+you have to send this event with the data source ids concerned.</p>
+<h3 id="context_menu">CONTEXT_MENU</h3>
+<p>The Toolkit offers the ability to create and display different types of menus. See the <a href="../architecture/#archi-context-menus">Context menus</a>. The event
+manager provides the <code>EVENT.CONTEXT_MENU</code> event to send/receive messages.
+The event is postfixed with the <code>contextMenuId</code> like:</p>
+<pre><code class="javascript">OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+&quot;-&quot;+&lt;contextMenuId&gt;,{
+...
+});
+</code></pre>
+
+<p>and it is observed by the corresponding <code>OSH.ContextMenu</code> class:</p>
+<pre><code class="javascript">OSH.EventManager.observe(OSH.EventManager.EVENT.CONTEXT_MENU+&quot;-&quot;+this.id,function(event) {
+...
+}
+</code></pre>
+
+<p>The supported actions are:</p>
+<ul>
+<li>
+<p>show: show the context menu</p>
+</li>
+<li>
+<p>hide: hide the context menu</p>
+</li>
+</ul>
+<pre><code class="javascript">OSH.EventManager.fire(OSH.EventManager.EVENT.CONTEXT_MENU+&quot;-&quot;+&lt;contextMenuId&gt;,{
+   ...  
+   action:&quot;show&quot; // or hide
+});
+</code></pre>
+
+<p><em>note: this part should be improved in a future release</em></p>
+<p>The viewItem has been designed to have a <code>contextMenuId</code> property. See the tutorial for more details about creating a Context menu <a href="../../tutos/osh-by-example/#osh-by-example-context-menu">Tutorial</a></p>
+<h3 id="connect_datasourcedisconnect_datasource">CONNECT_DATASOURCE/DISCONNECT_DATASOURCE</h3>
+<p>The current implementation allows to send Connect/disconnect event to disconnect a current running data source. It works only if your data sources have been attached to a 
+<code>OSH.DataReceiver.DataReceiverController</code>.</p>
+<pre><code class="javascript">OSH.EventManager.fire(OSH.EventManager.EVENT.CONNECT_DATASOURCE, {dataSourcesId: &lt;dataSourceId to connect&gt;});
+</code></pre>
+
+<pre><code class="javascript">OSH.EventManager.fire(OSH.EventManager.EVENT.DISCONNECT_DATASOURCE, {dataSourcesId: &lt;dataSourceId to disconnect&gt;});
+</code></pre>
+
+<h3 id="current_master_time_1">CURRENT_MASTER_TIME</h3>
+<p>This event is internally used to send event from the buffer to any component wanting get the current synchronized time. This is currenlty used by the 
+<code>OSH.UI.RangeSlider</code> view.</p>
+<h3 id="add_view_item">ADD_VIEW_ITEM</h3>
+<p>There are two ways to add a view item to your view:</p>
+<ul>
+<li>
+<p>as an array argument when you instantiate your class (See tutorials to have working examples)</p>
+</li>
+<li>
+<p>send an event through the EventManager</p>
+</li>
+</ul>
+<p>Adding a view item using the EventManager is quite simple and can be summarized as follows:</p>
+<pre><code class="javascript">...
+OSH.EventManager.fire(OSH.EventManager.EVENT.ADD_VIEW_ITEM,{viewItem:viewItem,viewId:viewId});
+...
+</code></pre>
+
+<p>You have to pass as a property of your freshly created viewItem and the viewId of the target view.</p>
+<p>If you have created a new view, the abstract <code>OSH.UI.View</code> already observe this event.</p>
+<h3 id="ptz_send_request">PTZ_SEND_REQUEST</h3>
+<p>This event allows one to send PTZ request to the <code>OSH.DataSender.DataSink</code> through the Event Manager. 
+The generic <code>OSH.UI.PtzTaskingView</code> already fire this event. If you want to use your own view:</p>
+<pre><code class="javascript"> OSH.EventManager.fire(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+&quot;-&quot;+&lt;data sender id&gt;,{
+    cmdData : {rpan:&lt;rpan&gt;,rtilt:&lt;rtitl&gt;,rzoom:&lt;rzoom&gt;,preset:&lt;preset&gt;},
+    onSuccess:function(event){console.log(&quot;Failed to send request: &quot;+event);},
+    onError:function(event){console.log(&quot;Request sent successfully: &quot;+event);}
+});
+</code></pre>
+
+<p>This is a fast way to communicate between your tasking view and the HttpConnector without taking into consideration internal processes.</p>
+<h2 id="datareceiver">DataReceiver</h2>
+<p>In theory we have to create a different data receiver for every different streams we can use. OSH provides some generic re-usable data receiver which can be used with your existing data.</p>
+<h3 id="datareceiver-json">DataReceiver JSON</h3>
+<p>Most of the time, one can use the Generic DataReceiver described above to support text-encoded data streams. In cases where the data is not textual (such as binary, audio etc..), one may need to create a custom data receiver. The way to do this is described below.</p>
+<p>The <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/OSH.DataReceiver.JSON.html">OSH.DataReceiver. JSON</a> is a generic JSON datareceiver to parse JSON response. It connects to a JSON stream and 
+parses the <em>"data"</em> and <em>"time"</em> properties.</p>
+<p>For example, for the following GetResult request:</p>
+<pre><code class="html">http://sensiasoft.net:8181/sensorhub/sos?service=SOS&amp;version=2.0&amp;request=GetResult&amp;offering=urn:mysos:offering03&amp;observedProperty=http://sensorml.com/ont/swe/property/Weather&amp;temporalFilter=phenomenonTime,now&amp;responseFormat=application/json
+</code></pre>
+
+<p><em>Note: the request contains "&amp;responseFormat=application/json" to get a json response</em></p>
+<p>the response would be:</p>
+<pre><code class="json">[
+  {&quot;time&quot;: &quot;2017-05-23T08:37:30.893Z&quot;, &quot;temperature&quot;: 22.919639646486733, &quot;pressure&quot;: 1012.3488597792292, &quot;windSpeed&quot;: 2.4516089709735143, &quot;windDirection&quot;: 318.18582382006787}
+]
+</code></pre>
+
+<p>As described in the architecture part, the data receiver has to parse the time and the data. </p>
+<p>The JSON one will also take the "time" property and create a new object containing the others fields <em>temperature</em>, <em>pressure</em>, <em>windSpeed</em>, <em>windDirection</em>.
+The result after parsing is then:</p>
+<pre><code class="json">{
+  &quot;timeStamp&quot;: &quot;2017-05-23T08:37:30.893Z&quot;,
+  &quot;data&quot;: {
+    &quot;temperature&quot; : 22.919639646486733,
+    &quot;pressure&quot;: 1012.3488597792292, 
+    &quot;windSpeed&quot;: 2.4516089709735143, 
+    &quot;windDirection&quot;: 318.18582382006787
+  }
+}
+</code></pre>
+
+<p>The timeStamp property is then used to synchronize the data and the data part contains all the data values.</p>
+<h2 id="requests">Requests</h2>
+<h3 id="sos-x2js-third-party-library">SOS (--x2js third party library)</h3>
+<p>The Toolkit provides tools to get information about your OSH server:</p>
+<ul>
+<li>
+<p>GetCapabilities</p>
+</li>
+<li>
+<p>GetResultTemplate</p>
+</li>
+<li>
+<p>GetFeatureOfInterest</p>
+</li>
+<li>
+<p>describeSensor</p>
+</li>
+</ul>
+<p>In order to achieve the call, it will make request using HttpAjaxConnector and use <code>x2js</code> to parse XML response into JSON object.
+A wrapper class class has been implemented to simplify some part of the process:</p>
+<p>First, instantiate the wrapper class:</p>
+<pre><code class="javascript">var server = new OSH.Server({
+    url:&quot;&lt;endpoint url&gt;&quot;,
+    sos: &quot;sos&quot;, // change this if different
+    sps: &quot;sps&quot;, // change this if different
+    baseUrl: &quot;sensorhub&quot; // change this if different
+});
+</code></pre>
+
+<p>Then make the appropriate calls:</p>
+<pre><code class="javascript">// GetCapabilities
+server.getCapabilities(function(jsonResp){
+    // do something
+},function(error) {
+    // do something
+});
+</code></pre>
+
+<pre><code class="javascript">// GetFeatureOfInterest
+server.getFeatureOfInterest(function(jsonResp){
+    // do something
+},function(error) {
+    // do something
+});
+</code></pre>
+
+<pre><code class="javascript">// getResultTemplate
+server.getResultTemplate(&lt;offering&gt;,&lt;observedProperty&gt;,function(jsonResp){
+    // do something
+},function(error) {
+    // do something
+});
+</code></pre>
+
+<pre><code class="javascript">// describeSensor
+server.getDescribeSensor(&lt;procedure&gt;,function(jsonResp){
+    // do something
+},function(error) {
+    // do something
+});
+</code></pre>
+
+<p>A working example can be found at <a href="https://github.com/opensensorhub/osh-js/tree/master/Toolkit/tests/server">Server test</a></p>
+<h3 id="sps">SPS</h3>
+<p>You can either get stream from SOS service or make request to SPS service. An abstract class can be inherited. It handles a part of the logic such as
+the http connector, send the request to the connector etc..
+Some implementation are available:</p>
+<ul>
+<li>
+<p><a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataSender.PtzTasking.html">OSH.DataSender.PtzTasking</a>: generic ptz tasking using rpan,rtilt,rzoom command</p>
+</li>
+<li>
+<p><code>OSH.FoscamPtzTasking</code>: send ptz request to Foscam camera</p>
+</li>
+<li>
+<p><a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.DataSender.UavMapTasking.html">OSH.DataSender.UavMapTasking</a>: send command to drone</p>
+</li>
+</ul>
+<p>To task your hardware with PTZ command, you have either to use one the generic above class or create a new one. What you need is to inherit the <code>OSH.DataSender.DataSink</code> class 
+ and override the <code>getCommandData</code>:</p>
+<pre><code class="javascript">getCommandData: function (values) {...}
+</code></pre>
+
+<p>The <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/OSH.UI.PtzTaskingView.html">OSH.UI.PtzTaskingView</a> is a generic view allowing to task any kind of component.
+It offers a control panel sending events observed by the <code>OSH.DataSender.PtzTasking</code>.
+The <code>onChange</code> function of the PtzTaskingView can be overrided by another view to add more control on the command sent:</p>
+<pre><code class="javascript">onChange: function(rpan, rtilt, rzoom,preset) {
+    OSH.EventManager.fire(OSH.EventManager.EVENT.PTZ_SEND_REQUEST+&quot;-&quot;+this.dataSenderId,{
+        cmdData : {rpan:rpan,rtilt:rtilt,rzoom:rzoom,preset:preset},
+        onSuccess:function(event){console.log(&quot;Failed to send request: &quot;+event);},
+        onError:function(event){console.log(&quot;Request sent successfully: &quot;+event);}
+    });
+}
+</code></pre>
+
+<p>The rpan, rtilt, rzoom and preset arguments are taking values from the click event. This should stay generic as much as possible and you should modify only the DataSink.
+The <code>OSH.DataSender.PtzTasking</code> offers generic rtitl, rpan, rzoom and preset parameters. But in some cases, your camera driver will not match to these values, you can 
+inherit from the <code>OSH.DataSender.PtzTasking</code> and override the getCommandData to handle and return the needed values to the abstract DataSink class.</p>
+<p>You can take a look at the <code>OSH.DataSender.FoscamPtzTasking</code> source code to get a full working example since the Foscam OSH driver is waiting for "Bottom, Top,Right, Left" 
+values instead of relative rpan/rzoom/rtilt values.</p>
+<h2 id="dialog">Dialog</h2>
+<p>The dialog window is an useful tool to display your view into floating dialog. The toolkit provides a simple and nice way to create/interact with your dialog:</p>
+<pre><code class="javascript">var someDialog    = new OSH.UI.DialogView(&lt;dialog layout div id&gt;,{
+    css: &lt;your css dialog&gt;,
+    name: &quot;DialogName&quot;,
+    show:false, // default show the dialog
+    draggable:true, // is the dialog is draggable?
+    dockable: false, // is the dialog is draggable?
+    closeable: true // is the dialog is closeable?,
+    connectionIds : dataSources // the array of attached data source
+    swapId: &lt;div id of the swap window&gt;
+});
+</code></pre>
+
+<ul>
+<li>
+<p>&lt;dialog layout div id&gt;: the div where the dialog will be attached. </p>
+</li>
+<li>
+<p>css: the dialog has a default style which can be overrided, this css will be added to the existing dialog css</p>
+</li>
+<li>
+<p>show: you can show/hide the dialog</p>
+</li>
+<li>
+<p>draggable: you would want to fix the dialog position</p>
+</li>
+<li>
+<p>dockable: the dialog can be set to div, and can be move inside this div. If you undock the dialog, it will be attached directly to the document.body and not 
+in the div anymore</p>
+</li>
+<li>
+<p>closeable: display a button to close the dialog</p>
+</li>
+<li>
+<p>connectionIds: since you can display a disconnect/connect button at the top of the dialog, this array is the link between the button and the data source concerned.
+When you click onto the disconnect button, the list of data source contains in this array will be disconnected (using DISCONNECT event of the Event Manager)</p>
+</li>
+<li>
+<p>swapId: you can swap the content of the dialog with another div (body for example)</p>
+</li>
+</ul>
+<p>To set a view into a dialog, you can specify the div id of the dialog as argument div view Id such as:</p>
+<pre><code class="javascript">var someDialog    = new OSH.UI.DialogView(&lt;dialog layout div id&gt;,{
+    css: &lt;your css dialog&gt;,
+    name: &quot;DialogName&quot;,
+    show:false, // default show the dialog
+    draggable:true, // is the dialog is draggable?
+    dockable: false, // is the dialog is draggable?
+    closeable: true // is the dialog is closeable?,
+    connectionIds : dataSources // the array of attached data source
+    swapId: &lt;div id of the swap window&gt;
+});
+
+var someView = new OSH.UI.SomeView(someDialog.popContentDiv.id, [{...}],{...});
+</code></pre>
+
+<p>Thus the view will be automatically attached to the popContentDiv which is the dialog content. The best way to do that is to use the <code>attachTo()</code> function:</p>
+<pre><code class="javascript">var someDialog    = new OSH.UI.DialogView(&lt;dialog layout div id&gt;,{
+    css: &lt;your css dialog&gt;,
+    name: &quot;DialogName&quot;,
+    show:false, // default show the dialog
+    draggable:true, // is the dialog is draggable?
+    dockable: false, // is the dialog is draggable?
+    closeable: true // is the dialog is closeable?,
+    connectionIds : dataSources // the array of attached data source
+    swapId: &lt;div id of the swap window&gt;
+});
+
+var someView = new OSH.UI.SomeView(&quot;&quot;, [{...}],{...}); // it's important here to let the div id empty !!!
+someView.attachTo(someDialog.popContentDiv.id);
+</code></pre>
+
+<p>This will automatically set the view into the dialog. Note that it is very important in that case to let the view divId empty because we don't want to attach it to something.</p>
+<h2 id="workers">Workers</h2>
+<p>The workers are pushed into a default location while they are compiled using Gulp. The default location is "js/workers".</p>
+<p>This location can be overriden using the <code>window.OSH.BASE_WORKER_URL</code> variable:</p>
+<pre><code class="javascript">window.OSH.BASE_WORKER_URL = &quot;a/b/c/d/workers&quot;;
+</code></pre>
+
+<p>Thus you have to put the workers files into the <code>a/b/c/d/workers</code> directories.</p>
+<h3 id="multidialogview">MultiDialogView</h3>
+<p>The multi dialog view is an extension of the Dialog view. It allows one to append div to an existing dialog:</p>
+<pre><code class="javascript">var multiDialog    =  new OSH.UI.MultiDialogView(&quot;&lt;some container&gt;&quot;, {
+            draggable: true,
+            css: &quot;dialog-multidialog&quot;,
+            name: &quot;Multi dialog&quot;,
+            show:true,
+            dockable: false,
+            closeable: false,
+            connectionIds : [...]
+});
+
+var someView = new OSH.UI.SomeView(&quot;&quot;, [{...}],{...}); // it's important here to let the div id empty !!!
+var someView2 = new OSH.UI.SomeView(&quot;&quot;, [{...}],{...}); // it's important here to let the div id empty !!!
+var someView3 = new OSH.UI.SomeView(&quot;&quot;, [{...}],{...}); // it's important here to let the div id empty !!!
+
+// attach the div view to the dialog
+someView.attachTo(multiDialog.popContentDiv.id);
+
+multiDialog.appendView(someView2.divId);
+multiDialog.appendView(someView3.divId);
+...
+</code></pre>
+
+<p>The someView 2 &amp; 3 will be appended to the dialog. See the <a href="http://opensensorhub.github.io/osh-js/Showcase/">Multi dialog + tasking example</a> of the Showcase</p>
+<h2 id="cesium-cesium-third-party-library">Cesium (--cesium third party library)</h2>
+<p>As we have seen, one can directly built Cesium in osh vendor using Gulp. One specific one has to take care is the Cesium global property:</p>
+<pre><code class="javascript">window.CESIUM_BASE_URL = 'vendor/';
+</code></pre>
+
+<p>Since Cesium will try to load by default the Cesium library from the <em>js</em> folder, if this one is located into another folder, you have to specify the <em>CESIUM_BASE_URL</em> to get it work. </p>
+<h2 id="ffmpeg-ffmpeg-third-party-library">FFMPEG (--ffmpeg third party library)</h2>
+<p>The FFMPEG library is a pure native Javascript library. It is used decode video frame in native javascript code.</p>
+<p><em>"The original ffmpeg.js project provides FFmpeg builds ported to JavaScript using Emscripten project. Builds are optimized for in-browser use: minimal size for faster loading, asm.js, performance tunings, etc. Though they work in Node as well."</em></p>
+<p><a href="https://github.com/sensiasoft/ffmpeg.js">Source</a></p>
+<p>By using this library, one can decode H264 video frame in the browser without using any additional plugins.
+A wrapper has been implemented within the Toolkit and provides some useful functionnalities such as:</p>
+<ul>
+<li>Define canvas size</li>
+<li>use webworker</li>
+<li>increase performance by using transferable objects</li>
+</ul>
+<p>One can use the <a href="http://opensensorhub.github.io/osh-js/Toolkit/Documentation/jsdoc/OSH.UI.FFMPEGView.html">OSH.UI.FFMPEGView</a> and build the library using --ffmpeg argument to Gulp such as:</p>
+<pre><code class="bash">$ gulp build --ffmpeg
+</code></pre>
+
+<p>There are the default options of the View:</p>
+<pre><code>dataSourceId: videoDataSource.id,
+css: &quot;&lt;your css&gt;&quot;,
+cssSelected: &quot;&lt;you css after selecting the view&gt;&quot;,
+name: &quot;&lt;view name&gt;&quot;,
+useWorker:&lt;true|false&gt;,
+useWebWorkerTransferableData: &lt;true|false&gt; // this is because you can speed up the data transfert between main script and web worker
+                                            by using transferable data. Note that can cause problems if you data is attempted to use anywhere else.
+                                            See the not below for more details(*).
+</code></pre>
+
+<p>One can use the WebWorker which increases performance significantly since the decoding part is executed into a separated thread. It is very useful if several FFmpeg View are declared at the same time.</p>
+<p>Another tip is to use the <em>useWebWorkerTransferableData</em> which allows to use transferable object directly between the main thread and the WebWorker.</p>
+<p>This property can cause trouble if you share the same data into different view because the pointer is transferred to the webworker and becomes then unavailable in the main thread.</p>
+<p>Without transferable object:</p>
+<p>Data --&gt; VIEW (data copied into)--&gt; WebWorker</p>
+<p>With transferable object:</p>
+<p>Data --&gt; VIEW (pointer transferred to)--&gt; WebWorker</p>
+<p>Not to copy the data increases the performance since transfert is much more faster.</p>
+<p>If the data is only associated to one view, you should enable this parameter.</p>
+<p><strong>External resources:</strong> </p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Transferable">https://developer.mozilla.org/en-US/docs/Web/API/Transferable</a></li>
+<li><a href="https://developer.mozilla.org/en/docs/Web/API/Worker/postMessage">https://developer.mozilla.org/en/docs/Web/API/Worker/postMessage</a></li>
+</ul>
+<p>If the webworker property is enabled, the view will also spawn a WebWorker. Since the WebWorker has to load the FFmpeg.js library separately, the worker library is placed in the <em>workers</em>
+folder built by the <em>Gulp build</em> command such as:</p>
+<pre><code class="bash">... 
+
+├── js
+│   ├── osh.js
+│   └── workers
+│       ├── ffmpeg-h264.js
+│       └── osh-UI-FFMPEGViewWorker.js
+
+...       
+</code></pre>
+
+<p>Using the WebWorker is meaning you have to keep this structure to get it work. The <em>workers</em> folder has to be right next to the <em>osh.js</em> file. The worker and the library are located at the same place.
+The worker is loaded from the view as:</p>
+<pre><code class="javascript">js/workers/osh-UI-FFMPEGViewWorker.js
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../jsdoc/" class="btn btn-neutral float-right" title="JSdoc"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../architecture/" class="btn btn-neutral" title="Architecture"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>The content of this site is licensed under a Creative Commons Zero v1.0 Universal License</p>
+    
+  </div>
+
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/opensensorhub/" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../architecture/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../jsdoc/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

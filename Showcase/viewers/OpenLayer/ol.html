@@ -1,0 +1,110 @@
+<div id="olViewerId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --x2js --leaflet --nouislider --nvd3 --ol3 --tree
+
+        <link rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="olMap" style="height:100%;width:100%"></div>
+    <script>
+
+        //---------- DATASOURCE ------------//
+        var replayFactor = 3;
+        //--Android Phone Video
+        var androidPhoneGpsDataSource = new OSH.DataReceiver.JSON("android-GPS", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:060693280a28e015-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/Location",
+            startTime: "2015-02-16T07:58:00Z",
+            endTime: "2015-02-16T08:09:00Z",
+            replaySpeed: replayFactor + "",
+            syncMasterTime: true,
+            bufferingTime: 1000,
+            timeShift: -16000
+        });
+
+        //------------- STYLER ---------//
+        var pointMarker = new OSH.UI.Styler.PointMarker({
+            location: {
+                x: 1.42376557,
+                y: 43.61758626,
+                z: 100
+            },
+            locationFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec) {
+                    return {
+                        x: rec.location.lon,
+                        y: rec.location.lat,
+                        z: rec.location.alt
+                    };
+                }
+            },
+            icon: 'images/cameralook.png',
+            iconFunc: {
+                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                handler: function (rec, timeStamp, options) {
+                    if (options.selected) {
+                        return 'images/cameralook-selected.png'
+                    } else {
+                        return 'images/cameralook.png';
+                    }
+                    ;
+                }
+            }
+        });
+
+        //------------ VIEW -----------------//
+        var olMapView = new OSH.UI.OpenLayerView("olMap",
+                [{
+                    styler: pointMarker,
+                    name: "Android Phone GPS"
+                },
+                    {
+                        styler: new OSH.UI.Styler.Polyline({
+                            locationFunc: {
+                                dataSourceIds: [androidPhoneGpsDataSource.getId()],
+                                handler: function (rec) {
+                                    return {
+                                        x: rec.location.lon,
+                                        y: rec.location.lat,
+                                        z: rec.location.alt
+                                    };
+                                }
+                            },
+                            color: 'rgba(0,0,255,0.5)',
+                            weight: 10,
+                            opacity: .5,
+                            smoothFactor: 1,
+                            maxPoints: 200
+                        }),
+                        name: "Android Phone GPS Path"
+                    }]
+        );
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : replayFactor
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(androidPhoneGpsDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+    </script>
+</div>

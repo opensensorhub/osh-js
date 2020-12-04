@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://sensorml.com/ont/ogc-eo/common/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:omv="http://omv.ontoware.org/2005/05/ontology#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:omvmmi="http://mmisw.org/ont/mmi/20081020/ontologyMetadata/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xml:base="http://sensorml.com/ont/ogc-eo/common">
+    <owl:Ontology rdf:about="">
+        <omv:uri>http://sensorml.com/ont/ogc-eo/common</omv:uri>
+        <omvmmi:hasContentCreator>Alex Robin</omvmmi:hasContentCreator>
+        <omv:hasCreator>Alex Robin</omv:hasCreator>
+        <omv:acronym>ogc-eo-common</omv:acronym>
+        <omv:version>20131010T200718</omv:version>
+        <omvmmi:origMaintainerCode>ogc-eo</omvmmi:origMaintainerCode>
+        <dc:creator>Alex Robin</dc:creator>
+        <omvmmi:creditRequired>not specified</omvmmi:creditRequired>
+        <omv:description>Common terms used within the OGC Earth Observation ontology</omv:description>
+        <dc:date>2013-10-10T20:07:18+0000</dc:date>
+        <omv:name>OGC Earth Observation Common Terms</omv:name>
+        <omvmmi:hasResourceType>parameter</omvmmi:hasResourceType>
+        <omv:creationDate>2016-02-28T23:42:42+0000</omv:creationDate>
+        <omv:keywords>ogc, eo, satellites, imagery, Earth Observation</omv:keywords>
+        <dc:description>Common terms used within the OGC Earth Observation ontology</dc:description>
+    </owl:Ontology>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/ElevationAngle">
+        <dc:title>Elevation Incidence Angle</dc:title>
+        <dc:description>Elevation component of the incidence angle (i.e. measured from zenith direction in a local vertical plane)</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/IncidenceAngle"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/MaxCoupleDelay">
+        <dc:title>Maximal Couple Delay</dc:title>
+        <dc:description>Maximum time delay between two acquisitions of a stereoscopic couple</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Orbit">
+        <dc:title>Orbit Number</dc:title>
+        <dc:description>Orbit number in the mission cycle (1 based)</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/WorstAcquisitionDate">
+        <dc:title>Worst Acquisition Date</dc:title>
+        <dc:description>Estimation of the worst acquisition date at which a cell should be covered by a validated segment</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/QualityOfService">
+        <dc:title>Quality of Service</dc:title>
+        <dc:description>Set of parameters used to describe desired or effective quality of service</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/EarliestAcquisitionDate">
+        <dc:title>Earliest Acquisition Date</dc:title>
+        <dc:description>Earliest possible date at which a cell can be covered by a segment</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Status">
+        <dc:title>Status</dc:title>
+        <dc:description>Status of a Cell or Segment within a Programming Request or Feasibility Study</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Platform">
+        <dc:title>Platform</dc:title>
+        <dc:description>The identifier of a platform to which one or more remote sensing instruments can be attached</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/GridCell">
+        <dc:title>Grid Cell</dc:title>
+        <dc:description>A sub-area of the discretized region of interest; It can have any shape even though it usually is a quadrilateral in a geographic projection. It is used to track the advancement of a coverage acquisition. One or more possible segments (attempts) can cover a cell</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/IncidenceAngle">
+        <dc:title>Incidence Angle</dc:title>
+        <dc:description>Planar angle between the zenith direction (straight up, along the local vertical) and the viewing direction of a scene</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/StartFrame">
+        <dc:title>Start Frame</dc:title>
+        <dc:description>Frame number at beginning of acquisition</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/Frame"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/SurveyPeriod">
+        <dc:title>Survey Period</dc:title>
+        <dc:description>Time range specifying the period for which the feasibility study or actual tasking is done</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Periodicity">
+        <dc:title>Periodicity</dc:title>
+        <dc:description>Desired period between two acquisitions (i.e. occurences) of a temporal series</dc:description>
+        <rdfs:seeAlso rdf:resource="http://sensors.ws/ont/OGC-EO/common/Occurences"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/RegionOfInterest">
+        <dc:title>Region of Interest</dc:title>
+        <dc:description>A region of the earth surface that the user wants imagery for, expressed as a 2D geometry</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/AcrossTrackAngle">
+        <dc:title>Across Track Pointing Angle</dc:title>
+        <dc:description>Across track component of a pointing angle (i.e. measured across the track, that is perpendicular to direction of flight)</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/PointingAngle"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/CoverageProgrammingRequest">
+        <dc:title>Coverage Programming Request</dc:title>
+        <dc:description>High level satellite programming request consisting of a region of interest, a time period and other acquisition and validation parameters. End user usually don't need to know the details of a specific satellite to be able to issue such a request.</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/AcquisitionType">
+        <dc:title>Acquisition Type</dc:title>
+        <dc:description>Specifies the type of acquisition requested (e.g. monoscopic, stereoscopic, tri-stereoscopic, etc)</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/FusionAccepted">
+        <dc:title>Fusion Accepted</dc:title>
+        <dc:description>Specifies if imagery obtained by fusing several images acquired separately and co-registered is acceptable</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Frame">
+        <dc:title>Frame Number</dc:title>
+        <dc:description>Frame number on the track according to a mission specific grid</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/PointingAngle">
+        <dc:title>Pointing Angle</dc:title>
+        <dc:description>Planar angle between the nadir direction (straight down, along the local vertical) and the pointing direction of a remote sensing instrument</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/RemainingAttempts">
+        <dc:title>Remaining Attempts</dc:title>
+        <dc:description>Number of remaining attempts to cover a grid cell</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/PointingRange">
+        <dc:title>Pointing Angle Range</dc:title>
+        <dc:description>Range of pointing angles acceptable for the acquired imagery</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Track">
+        <dc:title>Track Number</dc:title>
+        <dc:description>Ground track number according to a mission specific grid</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/AzimuthAngle">
+        <dc:title>Azimuth Incidence Angle</dc:title>
+        <dc:description>Azimuthal component of the incidence angle (i.e. measured from north in the local horizontal plane)</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/IncidenceAngle"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Segment">
+        <dc:title>Segment</dc:title>
+        <dc:description>A segment is an acquired or to-be-acquired swath region of the earth surface. It is used to track the advancement of a coverage acquisition</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/StartOrbit">
+        <dc:title>Start Orbit</dc:title>
+        <dc:description>Orbit number at beginning of acquisition</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/Orbit"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Instrument">
+        <dc:title>Instrument</dc:title>
+        <dc:description>The identifier of a remote sensing instrument that can have several modes</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/InstrumentMode">
+        <dc:title>Instrument Mode</dc:title>
+        <dc:description>A categorical value used to specify a particular instrument configuration. All possible modes should be defined by a code space</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/IncidenceRange">
+        <dc:title>Incidence Angle Range</dc:title>
+        <dc:description>Range of incidence angles acceptable for the acquired imagery</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/TimeOfInterest">
+        <dc:title>Time of Interest</dc:title>
+        <dc:description>Period(s) of time during which the user wants imagery</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/AlongTrackAngle">
+        <dc:title>Along Track Pointing Angle</dc:title>
+        <dc:description>Along track component a pointing angle (i.e. measured along the track, that is along the direction of flight)</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/PointingAngle"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/CoverageType">
+        <dc:title>Coverage Type</dc:title>
+        <dc:description>Specifies if the imagery should be acquired in one or multiple passes</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Cycle">
+        <dc:title>Orbit Cycle</dc:title>
+        <dc:description>Cycle number. Number of cycles since the launch of the satellite. A complete cycle is defined as the period necessary for the precessing orbit of a helio-synchronous satellite to come back above the same location of the earth surface</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Preview">
+        <dc:title>Preview</dc:title>
+        <dc:description>Segment preview image</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/SwathSegment">
+        <dc:title>Swath Segment</dc:title>
+        <dc:description>Set of parameters defining one of the desired acquisition swaths in a SwathProgrammingRequest</dc:description>
+        <rdfs:seeAlso rdf:resource="http://sensors.ws/ont/OGC-EO/common/SwathProgrammingRequest"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/LatestStart">
+        <dc:title>Latest Start</dc:title>
+        <dc:description>Latest start date for a temporal series of acquisitions</dc:description>
+        <rdfs:seeAlso rdf:resource="http://sensors.ws/ont/OGC-EO/common/TemporalSeriesOccurences"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/NadirGroundResolution">
+        <dc:title>Nadir Ground Resolution</dc:title>
+        <dc:description>Ground resolution of imagery obtained at nadir (straight below the instrument). For most instrument, this represents the minimum (best) resolution since the actual resolution increases with the viewing angle</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/GroundResolution"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/SwathProgrammingRequest">
+        <dc:title>Swath Programming Request</dc:title>
+        <dc:description>Low level satellite programming request consisting of one or more acquisition swaths defined by orbital parameters. This type of request requires the user to know about the orbital parameters of a particular mission and is not appropriate for multi-mission.</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/SwathSegmentList">
+        <dc:title>Swath Segment List</dc:title>
+        <dc:description>List of requested acquisition swaths</dc:description>
+        <rdfs:seeAlso rdf:resource="http://sensors.ws/ont/OGC-EO/common/SwathSegment"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/StopOrbit">
+        <dc:title>Stop Orbit</dc:title>
+        <dc:description>Orbit number at end of acquisition</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/Orbit"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/GroundResolution">
+        <dc:title>Ground Resolution</dc:title>
+        <dc:description>Distance between two contiguous pixels of remote sensed imagery when projected on the earth</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/BHRatio">
+        <dc:title>Base/Height Ratio</dc:title>
+        <dc:description>Ratio between base and height of the triangle constructed by viewing directions of the two acquisitions in a stereoscopic couple, and the local horizontal plane</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Footprint">
+        <dc:title>Ground Footprint</dc:title>
+        <dc:description>Ground footprint of a satellite acquisition, given as a Polygon geometry</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/PriorityLevel">
+        <dc:title>Priority Level</dc:title>
+        <dc:description>Priority level of a programming request</dc:description>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/PeriodicityRange">
+        <dc:title>Periodicity Range</dc:title>
+        <dc:description>Range of periodicity used to define a looser requirement for a time series periodicity</dc:description>
+        <rdfs:seeAlso rdf:resource="http://sensors.ws/ont/OGC-EO/common/Periodicity"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/StopFrame">
+        <dc:title>Stop Frame</dc:title>
+        <dc:description>Frame number at end of acquisition</dc:description>
+        <rdfs:subClassOf rdf:resource="http://sensors.ws/ont/OGC-EO/common/Frame"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://sensorml.com/ont/ogc-eo/common/Occurences">
+        <dc:title>Occurences</dc:title>
+        <dc:description>Desired number of occurences in a temporal series of acquisitions of the same area</dc:description>
+    </rdf:Description>
+</rdf:RDF>

@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns="http://sensorml.com/ont/csm/property/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:j.0="http://sensorml.com/ont/skos:"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:omv="http://omv.ontoware.org/2005/05/ontology#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:omvmmi="http://mmisw.org/ont/mmi/20081020/ontologyMetadata/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:j.1="http://sensorml.com/ont/dc:"
+    xml:base="http://sensorml.com/ont/csm/property">
+    <owl:Ontology rdf:about="">
+        <dc:creator>CSM WG</dc:creator>
+        <omv:creationDate>2016-02-28T23:43:07+0000</omv:creationDate>
+        <dc:description>Community Sensor Model parameters for precise geolocation models fro fame cameras, scanners, SAR, etc.</dc:description>
+        <omvmmi:creditRequired>not specified</omvmmi:creditRequired>
+        <dc:date>2013-10-10T19:23:48+0000</dc:date>
+        <omv:description>Community Sensor Model parameters for precise geolocation models fro fame cameras, scanners, SAR, etc.</omv:description>
+        <omvmmi:hasResourceType>parameter</omvmmi:hasResourceType>
+        <omv:name>Community Sensor Model (CSM) parameters</omv:name>
+        <omv:acronym>CSM</omv:acronym>
+        <omvmmi:hasContentCreator>Mike Botts</omvmmi:hasContentCreator>
+        <omv:hasCreator>CSM WG</omv:hasCreator>
+        <omv:keywords>CSM, geolocation, NGA, frame camera, scanner</omv:keywords>
+        <omvmmi:origMaintainerCode>csm</omvmmi:origMaintainerCode>
+        <omv:version>20131010T192348</omv:version>
+        <omv:uri>http://sensorml.com/ont/csm/property</omv:uri>
+    </owl:Ontology>
+    <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <owl:Class rdf:about="http://sensorml.com/ont/csm/property/Vocabulary">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:prefLabel>Community Sensor Model (CSM) Terms</skos:prefLabel>
+        <skos:definition>Collection of terms used by the Community Sensor Model (CSM) for defining sensor models for precise geolocation of imagery from frame cameras, scanners, SAR, and other sensors.</skos:definition>
+    </owl:Class>
+    <owl:DatatypeProperty rdf:about="http://sensorml.com/ont/skos:broader">
+        <rdfs:domain rdf:resource="http://sensorml.com/ont/csm/property/Vocabulary"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>skos:broader</rdfs:label>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:about="http://sensorml.com/ont/skos:notation">
+        <rdfs:domain rdf:resource="http://sensorml.com/ont/csm/property/Vocabulary"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>skos:notation</rdfs:label>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:about="http://sensorml.com/ont/dc:creator">
+        <rdfs:domain rdf:resource="http://sensorml.com/ont/csm/property/Vocabulary"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>dc:creator</rdfs:label>
+    </owl:DatatypeProperty>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_TYPE">
+        <j.1:creator>STANAG 7023</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Sensor Type</skos:prefLabel>
+        <skos:definition>Classification indicative of the characteristics of the collection device.</skos:definition>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_RAD">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation>k</j.0:notation>
+        <skos:prefLabel>Lens Radial Distortion Coefficients</skos:prefLabel>
+        <skos:definition>Coefficients for describing radial distortion of lenses. Coefficients are typically applied to the third, fifth, and seventh order products of the radial distance from lens center. Include k1 (mm^-2), k2 (mm^-4), and k3 (mm^-6).</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_RAD1">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>k1</j.0:notation>
+                <skos:prefLabel>Third-order Lens Radial Distortion Coefficient, k1</skos:prefLabel>
+                <skos:definition>k1 (mm^-2) coefficient for describing radial distortion of lenses. Applied to the third order product of the radial distance from lens center.</skos:definition>
+                <j.0:broader>DISTOR_RAD</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_RAD2">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>k2</j.0:notation>
+                <skos:prefLabel>Fifth-order Lens Radial Distortion Coefficient, k2</skos:prefLabel>
+                <skos:definition>k2 (mm^-4) coefficient for describing radial distortion of lenses. Applied to the fifth order product of the radial distance from lens center.</skos:definition>
+                <j.0:broader>DISTOR_RAD</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_RAD3">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>k3</j.0:notation>
+                <skos:prefLabel>Seventh-order Lens Radial Distortion Coefficient, k3</skos:prefLabel>
+                <skos:definition>k3 (mm^-6) coefficient for describing radial distortion of lenses. Applied to the seventh order product of the radial distance from lens center.</skos:definition>
+                <j.0:broader>DISTOR_RAD</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PRIN_OFFSET">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Principal Point Offset</skos:prefLabel>
+        <skos:definition>Principal point coordinate offset within the sensor array  coordinate system of the foot of the perpendicular dropped from sensor perspective center of the camera lens onto the collection array. (mm).</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PRIN_OFFSETX">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>x0</j.0:notation>
+                <skos:prefLabel>Principal Point Offset, x-axis</skos:prefLabel>
+                <skos:definition>x0: x-coordinate within the sensor array  coordinate system of the foot of the perpendicular dropped from sensor perspective center of the camera lens onto the collection array. (mm).</skos:definition>
+                <j.0:broader>PRIN_OFFSET</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PRIN_OFFSETY">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>y0</j.0:notation>
+                <skos:prefLabel>Principal Point Offset, y-axis</skos:prefLabel>
+                <skos:definition>y0: y-coordinate within the sensor array  coordinate system of the foot of the perpendicular dropped from sensor perspective center of the camera lens onto the collection array. (mm).</skos:definition>
+                <j.0:broader>PRIN_OFFSET</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/PIXEL SPACING">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/ROW_SPACING">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>dx</j.0:notation>
+                <skos:prefLabel>Row Spacing</skos:prefLabel>
+                <skos:definition>Row spacing, dx, measured at the center of the image; distance in the image plane between corresponding pixels of adjacent columns.</skos:definition>
+                <j.0:broader>PIXEL SPACING</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:prefLabel>Pixel Spacing</skos:prefLabel>
+        <skos:definition>Distance between pixels at the center of the image. Can use angular or linear measurement methods</skos:definition>
+        <j.0:notation></j.0:notation>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/COL_SPACING">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>dy</j.0:notation>
+                <skos:prefLabel>Column Spacing</skos:prefLabel>
+                <skos:definition>Column spacing, dy, measured at the center of the image; distance in the image plane between adjacent pixels within a row.</skos:definition>
+                <j.0:broader>PIXEL SPACING</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/AXIS_OFFSET">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Axis Offset</skos:prefLabel>
+        <skos:definition>Linear translation from the image upper-left corner pixel to the collection array origin (mm).</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/COL_AXIS_OFFSET">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>Cl</j.0:notation>
+                <skos:prefLabel>Column Axis Offset</skos:prefLabel>
+                <skos:definition>Cl, linear translation from the image upper-left corner pixel to the collection array origin (mm), s-axis</skos:definition>
+                <j.0:broader>AXIS_OFFSET</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/ROW_AXIS_OFFSET">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>Cs</j.0:notation>
+                <skos:prefLabel>Row Axis Offset</skos:prefLabel>
+                <skos:definition>Cs,  linear translation from the image upper-left corner pixel to the collection array origin (mm), l-axis</skos:definition>
+                <j.0:broader>AXIS_OFFSET</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_POSITION">
+        <j.1:creator>STANAG 7023</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Sensor Position</skos:prefLabel>
+        <skos:definition>The measurement (in mm) of the vector offset from the origin of the sensor mounting frame, which must be stated (e.g. gimbal, platform, or ECEF coordinate system), to the origin of the sensor perspective center, L. Offset vector describes the position of the sensor perspective center relative to a gimbal position (if any) which, in turn may be referenced to the platform coordinate system; or the offset may be given directly to the platform coordinate system, if known. Conditional in the case where a sensor may provide position information directly referenced to, say, an ECEF system.</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/X_VECTOR_COMPONENT">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Sensor Position, X Vector Component</skos:prefLabel>
+                <skos:definition>The x-axis measurement (in mm) of the vector offset from the origin of the sensor mounting frame, which must be stated, e.g. gimbal, platform, or ECEF coordinate system, to the origin of the sensor perspective center, L.</skos:definition>
+                <j.0:broader>SENSOR_POSITION</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/Y_VECTOR_COMPONENT">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Sensor Position, Y Vector Component</skos:prefLabel>
+                <skos:definition>The y-axis measurement (in mm) of the vector offset from the origin of the sensor mounting frame, which must be stated (e.g. gimbal, platform, or ECEF coordinate system), to the origin of the sensor perspective center, L.</skos:definition>
+                <j.0:broader>SENSOR_POSITION</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/Z_VECTOR_COMPONENT">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Sensor Position, Z Vector Component</skos:prefLabel>
+                <skos:definition>The z-axis measurement (in mm) of the vector offset from the origin of the sensor mounting frame, which must be stated (e.g. gimbal, platform, or ECEF coordinate system), to the origin of the sensor perspective center, L.</skos:definition>
+                <j.0:broader>SENSOR_POSITION</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/COLLECTION_START_TIME">
+        <j.1:creator>STANAG 7023</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Collection Start Time</skos:prefLabel>
+        <skos:definition>The date and time at the start of the sensor activation.</skos:definition>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/FOCAL_LENGTH_CAL">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Sensor Calibrated Focal Length (mm)</skos:prefLabel>
+        <skos:definition>Lens calibrated focal length, f, corrected effective distance from optical lens to sensor array.</skos:definition>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_AFFINE">
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_B1">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>B1</j.0:notation>
+                <skos:prefLabel>Affine Distortion Coefficients, B1</skos:prefLabel>
+                <skos:definition>Affine distortion coefficient, B1, used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+                <j.0:broader>DISTOR_AFFINE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <j.0:notation></j.0:notation>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_A1">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>A1</j.0:notation>
+                <skos:prefLabel>Affine Distortion Coefficients, A1</skos:prefLabel>
+                <skos:definition>Affine distortion coefficient, A1, used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+                <j.0:broader>DISTOR_AFFINE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:definition>Affine distortion coefficients used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+        <skos:prefLabel>Affine Distortion Coefficients</skos:prefLabel>
+        <j.1:creator>CSM_WG</j.1:creator>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_C1">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>C1</j.0:notation>
+                <skos:prefLabel>Affine Distortion Coefficients, C1</skos:prefLabel>
+                <skos:definition>Affine distortion coefficient, C1, used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+                <j.0:broader>DISTOR_AFFINE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_C2">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>C2</j.0:notation>
+                <skos:prefLabel>Affine Distortion Coefficients, C2</skos:prefLabel>
+                <skos:definition>Affine distortion coefficient, C2, used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+                <j.0:broader>DISTOR_AFFINE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_A2">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>A2</j.0:notation>
+                <skos:prefLabel>Affine Distortion Coefficients, A2</skos:prefLabel>
+                <skos:definition>Affine distortion coefficient, A2, used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+                <j.0:broader>DISTOR_AFFINE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DISTOR_B2">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>B2</j.0:notation>
+                <skos:prefLabel>Affine Distortion Coefficients, B2</skos:prefLabel>
+                <skos:definition>Affine distortion coefficient, B2, used to define scaling, rotation, skew, and shift distortions in lenses.</skos:definition>
+                <j.0:broader>DISTOR_AFFINE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_STATE">
+        <j.0:notation></j.0:notation>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_TIME">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation>t</j.0:notation>
+                <skos:prefLabel>Platform Time</skos:prefLabel>
+                <skos:definition>Time at which data about the platform state was collected.</skos:definition>
+                <j.0:broader>PLATFORM_STATE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_TRUEHDG">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Platform True-Heading at Scan Line Time</skos:prefLabel>
+                <skos:definition>Platform heading relative to true north (positive from north to east).</skos:definition>
+                <j.0:broader>PLATFORM_STATE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_PITCH">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Platform Pitch</skos:prefLabel>
+                <skos:definition>Rotation about platform local y-axis (Ya), positive nose-up; 0.0 = platform z-axis(Za) aligned to Nadir, limited to values between +/-90 degrees.</skos:definition>
+                <j.0:broader>PLATFORM_STATE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_ALTITUDE">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Platform Altitude</skos:prefLabel>
+                <skos:definition>Platform altitude (ft or m) specified above a specified reference at image acquisition time.</skos:definition>
+                <j.0:broader>PLATFORM_STATE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_GEOLOC">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Platform Geolocation</skos:prefLabel>
+                <skos:definition>The position of the platform given as latitude and longitude (radians).</skos:definition>
+                <j.0:broader>PLATFORM_STATE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/PLATFORM_ROLL">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Platform Roll</skos:prefLabel>
+                <skos:definition>Rotation about platform local x-axis (Xa). Positive port wing up (degrees).</skos:definition>
+                <j.0:broader>PLATFORM_STATE</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:prefLabel>Platform State</skos:prefLabel>
+        <skos:definition>The position, orientation, and velocity state of a platform at any particulr time.</skos:definition>
+        <j.1:creator>STANAG 7023</j.1:creator>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DECEN_LENS">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation>p</j.0:notation>
+        <skos:prefLabel>Decentering Lens Correction Coefficient</skos:prefLabel>
+        <skos:definition>Coefficients for describing rotational asymmetry within a lens system; Include p1 and p2</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DECEN_LENS1">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>p1</j.0:notation>
+                <skos:prefLabel>First Decentering Lens Correction Coefficient, p1</skos:prefLabel>
+                <skos:definition>First coefficient for describing rotational asymmetry within a lens system; (mm^-1). p1</skos:definition>
+                <j.0:broader>DECEN_LENS</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/DECEN_LENS2">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation>p2</j.0:notation>
+                <skos:prefLabel>Second Decentering Lens Correction Coefficient, p2</skos:prefLabel>
+                <skos:definition>Second coefficient for describing rotational asymmetry within a lens system; (mm^-1). p2</skos:definition>
+                <j.0:broader>DECEN_LENS</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/FRAME_PARAMS">
+        <j.1:creator></j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Frame Camera Parameters</skos:prefLabel>
+        <skos:definition>Parameters used to define the properties of a frame camera, including distortions and imperfections, required to provide precise geolocation of imagery from that sensor.</skos:definition>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_ARRAY_DIMENSIONS">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Sensor Array Dimensions</skos:prefLabel>
+        <skos:definition>The number of row and column detection elements in the sensor array.</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/NCOLS">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Number of  Columns in sensor array.</skos:prefLabel>
+                <skos:definition>The number of columns in the sensor array. (unitless)</skos:definition>
+                <j.0:broader>SENSOR_ARRAY_DIMENSIONS</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/NROWS">
+                <j.1:creator>CSM_WG</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Number of Rows in sensor array.</skos:prefLabel>
+                <skos:definition>The number of rows in the sensor array. (unitless)</skos:definition>
+                <j.0:broader>SENSOR_ARRAY_DIMENSIONS</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_ROTATION">
+        <j.1:creator>STANAG 7023</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Sensor Rotation</skos:prefLabel>
+        <skos:definition>Rotation of the sensor relative to a specified reference system.  If these rotation angles are gimbal mounting angles, this development transforms them into the required sequential Euler angles. Reference may be made to gimbal mounting or to platform reference system; but must be specified.  If these rotation angles are gimbal mounting angles, this development transforms them into the required sequential Euler angles.</skos:definition>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_ROTATION_X">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Sensor Rotation about X-axis</skos:prefLabel>
+                <skos:definition>Rotation of the sensor in the yz-plane of the sensor reference frame; positive when positive +z-axis rotates directly towards +y-axis. (radians)</skos:definition>
+                <j.0:broader>SENSOR_ROTATION</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_ROTATION_Y">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Sensor Rotation about X-axis</skos:prefLabel>
+                <skos:definition>Rotation of the sensor in the xz-plane of the sensor reference frame; positive when positive +z-axis rotates directly towards +x-axis. (radians)</skos:definition>
+                <j.0:broader>SENSOR_ROTATION</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+        <skos:narrower>
+            <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/SENSOR_ROTATION_Z">
+                <j.1:creator>STANAG 7023</j.1:creator>
+                <j.0:notation></j.0:notation>
+                <skos:prefLabel>Sensor Rotation about X-axis</skos:prefLabel>
+                <skos:definition>Rotation of the sensor in the xy-plane of the sensor reference frame; positive when positive +x-axis rotates directly towards +y-axis. (radians)</skos:definition>
+                <j.0:broader>SENSOR_ROTATION</j.0:broader>
+            </Vocabulary>
+        </skos:narrower>
+    </Vocabulary>
+    <Vocabulary rdf:about="http://sensorml.com/ont/csm/property/FOCAL_LENGTH">
+        <j.1:creator>CSM_WG</j.1:creator>
+        <j.0:notation></j.0:notation>
+        <skos:prefLabel>Sensor Focal Length</skos:prefLabel>
+        <skos:definition>f, lens focal length; effective distance from optical lens to sensor array.</skos:definition>
+    </Vocabulary>
+</rdf:RDF>

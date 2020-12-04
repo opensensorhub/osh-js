@@ -1,0 +1,83 @@
+<div id="serverViewId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --x2js --leaflet --nouislider --nvd3 --ol3 --tree
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div style="">
+        <input type="button" id="getCapButton" value="GetCapabilities" style="margin-bottom:20px;"/>
+        <input type="button" id="getFoiButton" value="GetFeatureOfInterest" style="margin-bottom:20px;"/>
+        <input type="button" id="getResultTemplateButton" value="GetResultTemplate" style="margin-bottom:20px;float:left;margin-right:10px;"/>
+        <input type="button" id="getDescribeSensor" value="describeSensor" style="margin-bottom:20px;float:left;margin-right:10px;"/>
+    </div>
+    <div style="height:100%;">
+        <textarea name="jsonDetails" id="jsonDetails" style="width:100%;height:90%;"></textarea>
+    </div>
+    <style>
+        body {
+            margin: 0;
+            height: calc(100% - 70px);
+        }
+
+        html {
+            height: 100%;
+        }
+
+        #jsonDetails {
+            width:100%;
+            height:100%
+        }
+    </style>
+    <script type="text/javascript">
+
+        var jsonResult = document.getElementById("jsonDetails");
+
+        var server = new OSH.Server({
+            url:"http://sensiasoft.net:8181",
+            sos: "sos",
+            sps: "sps",
+            baseUrl: "sensorhub"
+        });
+
+        document.getElementById("getCapButton").onclick = function() {
+            server.getCapabilities(function(jsonResp){
+                jsonResult.value = vkbeautify.json(JSON.stringify(jsonResp));
+            },function(error) {
+                jsonResult.value = vkbeautify.json(JSON.stringify(error));
+            });
+        };
+
+        document.getElementById("getFoiButton").onclick = function() {
+            server.getFeatureOfInterest(function(jsonResp){
+                jsonResult.value = vkbeautify.json(JSON.stringify(jsonResp));
+            },function(error) {
+                jsonResult.value = vkbeautify.json(JSON.stringify(error));
+            });
+        };
+
+        document.getElementById("getResultTemplateButton").onclick = function() {
+            server.getResultTemplate("urn:mysos:avl","http://www.opengis.net/def/property/OGC/0/SensorLocation", function(jsonResp){
+                jsonResult.value = vkbeautify.json(JSON.stringify(jsonResp));
+            },function(error) {
+                jsonResult.value = vkbeautify.json(JSON.stringify(error));
+            });
+        };
+
+
+        document.getElementById("getDescribeSensor").onclick = function() {
+            server.getDescribeSensor("urn:osh:sensor:avl:911:fleet",function(jsonResp){
+                jsonResult.value = vkbeautify.json(JSON.stringify(jsonResp));
+            },function(error) {
+                jsonResult.value = vkbeautify.json(JSON.stringify(error));
+            });
+        };
+    </script>
+
+    </body>
+</div>

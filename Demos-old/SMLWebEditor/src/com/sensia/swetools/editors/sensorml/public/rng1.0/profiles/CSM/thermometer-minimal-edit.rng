@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sml="http://www.opengis.net/sensorML/1.0.1" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sch="http://www.ascc.net/xml/schematron" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <sch:ns prefix="sml" uri="http://www.opengis.net/sensorML/1.0.1" />
+   <sch:ns prefix="gml" uri="http://www.opengis.net/gml" />
+   <sch:ns prefix="swe" uri="http://www.opengis.net/swe/1.0.1" />
+   <!-- -->
+   <include href="../../sml/sensorML.rng">
+      <start>
+         <ref name="wst.Thermometer" />
+      </start>
+   </include>
+   <!-- -->
+   <define name="wst.Thermometer">
+		<element name="sml:Component">
+			<element name="gml:description">
+				<data type="string">
+					<a:defaultValue>Enter a description</a:defaultValue>
+				</data>
+			</element>
+			<element name="gml:name">
+				<data type="string">
+					<a:defaultValue>Enter a name</a:defaultValue>
+				</data>
+			</element>
+			<element name="gml:identifier">
+				<attribute name="codeSpace">
+					<value>UID</value>
+				</attribute>
+				<data type="string">
+					<a:defaultValue>Enter an identifier</a:defaultValue>
+				</data>
+			</element>
+		</element>
+		<element name="sml:inputs">
+            <element name="sml:InputList">
+				<element name="sml:input">
+					<attribute name="name">
+						<value>temperature</value>
+					</attribute>
+					<element name="sml:ObservableProperty">
+						<attribute name="definition">
+							<value>http://sweet.jpl.nasa.gov/2.3/propTemperature.owl#Temperature</value>
+						</attribute>
+					</element>
+				</element>
+            </element>
+        </element>
+		<element name="sml:outputs">
+            <element name="sml:OutputList">
+				<element name="sml:output">
+					<attribute name="name">
+						<value>electricalResistance</value>
+					</attribute>
+					<element name="sml:ObservableProperty">
+						<attribute name="definition">
+							<value>http://sweet.jpl.nasa.gov/2.3/propConductivity.owl#Resistance</value>
+						</attribute>
+					</element>
+				</element>
+			</element>
+		</element>
+		<element name="sml:parameters">
+			<element name="sml:ParameterList">
+				<element name="sml:parameter">
+					<attribute name="name">
+						<value>steadyStateCalibration</value>
+					</attribute>
+					<element name="swe:DataArray">
+						<attribute name="definition">
+							<value>http://sensorml.com/ont/swe/property/calibrationCurve</value>
+						</attribute>
+						<element name="swe:elementCount">
+							<element name="swe:Count">
+								<element name="swe:value">
+									<data type="integer">
+										<param name="minExclusive">0</param>
+									</data>
+								</element>
+							</element>
+						</element>
+						<element name="swe:elementType">
+							<attribute name="name">
+								<value>calibrationCurve</value>
+							</attribute>
+							<element name="swe:DataRecord">
+								<element name="swe:label">
+									<value>Calibration Curve</value>
+								</element>
+								<element name="swe:field">
+									<attribute name="name">
+										<value>temperature</value>
+									</attribute>
+									<element name="swe:Quantity">
+										<attribute name="definition">
+											<value>http://sweet.jpl.nasa.gov/2.3/propTemperature.owl#Temperature</value>
+										</attribute>
+										<element name="swe:label">
+											<value>Temperature</value>
+										</element>
+										<element name="swe:uom">
+											<attribute name="code">
+											   <value>cel</value>
+											</attribute>
+										</element>
+									</element>
+								</element>
+								<element name="swe:field">
+									<attribute name="name">
+										<value>resistance</value>
+									</attribute>
+									<element name="swe:Quantity">
+										<attribute name="definition">
+											<value>http://sweet.jpl.nasa.gov/2.3/propConductivity.owl#Resistance</value>
+										</attribute>
+										<element name="swe:label">
+											<value>Resistance</value>
+										</element>
+										<element name="swe:uom">
+											<attribute name="code">
+											   <value>kohm</value>
+											</attribute>
+										</element>
+									</element>
+								</element>
+							</element>
+						</element>
+						<element name="swe:encoding">
+							<element name="swe:TextEncoding">
+								<attribute name="tokenSeparator">
+									<data type="string">
+										<a:defaultValue>Enter a token separator</a:defaultValue>
+									</data>
+								</attribute>
+								<attribute name="blockSeparator">
+									<data type="string">
+										<a:defaultValue>Enter a block separator</a:defaultValue>
+									</data>
+								</attribute>
+								<attribute name="decimalSeparator">
+									<data type="string">
+										<a:defaultValue>Enter a decimal separator</a:defaultValue>
+									</data>
+								</attribute>
+							</element>
+						</element>
+						<element name="swe:values">
+							<data type="string">
+								<a:defaultValue>Enter values</a:defaultValue>
+							</data>
+						</element>
+					</element>
+				</element>
+			</element>
+		</element>
+		<element name="sml:localReferenceFrame">
+			<element name="sml:SpatialFrame">
+				<attribute name="id">
+					<value>THERMOMETER_FRAME</value>
+				</attribute>	
+				<element name="sml:origin">
+					<value>origin is at the measuring tip of the thermistor</value>
+				</element>
+				<element name="sml:axis">
+					<attribute name="name">
+						<value>x</value>
+					</attribute>
+					<value>the x axis is orthogonal to z but indeterminate</value>
+				</element>
+				<element name="sml:axis">
+					<attribute name="name">
+						<value>y</value>
+					</attribute>
+					<value>the y axis is orthogonal to z but indeterminate</value>
+				</element>
+				<element name="sml:axis">
+					<attribute name="name">
+						<value>z</value>
+					</attribute>
+					<value>the z axis is along the long axis of symmetry (or shaft) of the thermistor</value>
+				</element>
+			</element>
+		</element>
+		<element name="sml:method">
+            <attribute name="xlink:href">
+               <value>http://sensorml.com/def/process/detector</value>
+            </attribute>
+        </element>
+	</define>
+</grammar>	 
+         

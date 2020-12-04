@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="aggregateTypes.rng"/>
+   <!-- -->
+   <define name="swe.DataDefinition">
+      <empty/>
+   </define>
+   <!--  -->
+   <define name="swe.DataBlockDefinition">
+      <element name="swe:DataBlockDefinition">
+         <optional>
+            <ref name="swe.objectID"/>
+         </optional>
+         <element name="swe:components">
+            <ref name="swe.dataComponentPropertyWithName"/>
+         </element>
+         <ref name="swe.encoding"/>   
+      </element>
+   </define>
+   <!-- -->
+   <define name="swe.DataStreamDefinition">
+      <element name="swe:DataStreamDefinition">
+         <optional>
+            <ref name="swe.objectID"/>
+         </optional>
+         <element name="swe:streamComponent">
+            <optional>
+               <ref name="xlink.roles"/>
+            </optional>
+            <choice>
+               <ref name="xlink.href"/>
+               <ref name="swe.DataBlockDefinition"/>
+            </choice>
+         </element>
+         <ref name="swe.streamEncoding"/>  
+      </element>
+   </define>
+</grammar>

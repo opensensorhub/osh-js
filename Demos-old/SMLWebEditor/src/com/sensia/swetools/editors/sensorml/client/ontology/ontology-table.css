@@ -1,0 +1,83 @@
+@def selectionBorderWidth 2px;
+.cellTableWidget {}
+.cellTableFirstColumn {}
+.cellTableLastColumn {}
+.cellTableFooter {}
+.cellTableHeader {}
+.cellTableCell {}
+.cellTableFirstColumnFooter {}
+.cellTableFirstColumnHeader {}
+.cellTableLastColumnFooter {}
+.cellTableLastColumnHeader {}
+.cellTableSortableHeader {}
+.cellTableSortableHeader:hover {}
+.cellTableSortedHeaderAscending {}
+.cellTableSortedHeaderDescending {}
+.cellTableEvenRow {}
+.cellTableEvenRowCell {}
+.cellTableOddRow {}
+.cellTableOddRowCell {}
+.cellTableHoveredRow {}
+.cellTableHoveredRowCell {}
+.cellTableKeyboardSelectedRow {}
+.cellTableKeyboardSelectedRowCell {}
+.cellTableSelectedRow {}
+.cellTableSelectedRowCell {}
+.cellTableKeyboardSelectedCell {}
+
+.cellTableHeader {
+padding: 0px;
+color: #545454;
+text-align: center;
+font-size: 13px;
+background-image: none;
+background-color: #cfcfcf;
+height: 25px;
+vertical-align: middle;
+font-weight: bold;
+text-shadow: 0 1px 1px rgba(255,255,255,.7);
+}
+.cellTableFirstColumnHeader {
+-moz-border-radius-topleft: 5px;
+-webkit-border-top-left-radius: 5px;
+}
+.cellTableLastColumnHeader {
+-moz-border-radius-topright: 5px;
+-webkit-border-top-right-radius: 5px;
+}
+.cellTableCell {
+padding: 4px;
+overflow: hidden;
+font-size: 12px;
+color: #454545;
+border: 1px solid #000;
+}
+.cellTableEvenRow {
+background: #ffffff;
+}
+.cellTableOddRow {
+background: #f3f7fb;
+}
+.cellTableSelectedRow {
+background: #628cd5;
+border: 1px solid #000;
+}
+.cellTableSelectedRowCell {
+border: 1px solid #000;
+}
+.cellTableHoveredRow {
+background: transparent;
+}
+.cellTableHoveredRowCell {
+border: 1px solid #000;
+}
+.cellTableKeyboardSelectedRow {
+background: #628cd5;
+border: 1px solid #000;
+}
+.cellTableKeyboardSelectedRowCell {
+border: 1px solid #000;
+}
+.cellTableKeyboardSelectedCell {
+border: 1px solid #000;
+}

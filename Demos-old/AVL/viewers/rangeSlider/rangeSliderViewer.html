@@ -1,0 +1,129 @@
+<div id="rangeSliderViewerId">
+
+<!-- Range Slider -->
+<link rel="stylesheet" href="viewers/rangeSlider/jQRangeSlider/css/classic-min.css" type="text/css" />
+<style>
+
+@media (min-width: $screen-xs) and (max-width: $screen-sm) {
+  .rangeSlider{
+      width:200px;
+      float:right;
+      margin-top:-30px;
+    }
+}
+
+@media (min-width: $screen-md) and (max-width: $screen-lg) {
+  .rangeSlider{
+      width:400px;
+      float:right;
+      margin-top:-30px;
+    }
+}
+
+.adapt-size {
+  width:85%;
+  margin-top:30px;
+  float:left;
+}
+@media (min-width: 768px) {
+  .adapt-size {
+    width:94%;
+    margin-top:30px;
+    float:left;
+  }
+}
+
+.glyphicon-custom-color {
+  color : red;
+}
+
+.ui-rangeSlider .ui-rangeSlider-innerBar {
+  height: 20px !important;
+  background: #DDD !important;
+  margin: 0px 6px 3px 6px !important;
+}
+
+.sliderCustomLabel {
+  border-left: 1px solid #f8f8f8;
+  height: 20px;
+}
+
+.ui-ruler-tick-label {
+  margin: 0 0 0 -2px;
+  background-color: #DDD;
+}
+</style>
+<script src="viewers/rangeSlider/jQRangeSlider/jQAllRangeSliders-withRuler-min.js"></script>
+<div id="slider" class="rangeSlider adapt-size"></div>
+<div style="float:right;margin-top: 28px;margin-right: 10px;">
+   <button type="button" class="btn btn-default btn-sm" id="editButton" title="Edit">
+     <span class="glyphicon glyphicon-edit" id="editValidate"></span> 
+   </button>
+</div>
+
+<script>
+function TwoDigits(val){
+    if (val < 10){
+         return "0" + val;
+    }
+    
+    return val;
+}
+
+$("#slider").dateRangeSlider({
+    bounds: {min: new Date("2014-03-29T05:00:00Z"), max: new Date("2014-03-30T04:59:53Z")},
+    enabled: false,
+    defaultValues: {min: new Date("2014-03-29T21:58:00Z"), max: new Date("2014-03-30T04:59:53Z")},
+    formatter: function(value){
+        var hours = value.getHours(),
+            minutes = value.getMinutes();
+        return TwoDigits(hours) + ":" + TwoDigits(minutes);
+    },
+    
+    scales: [{
+        first: function (value) {
+            return value;
+        },
+        end: function (value) {
+            return value;
+        },
+        next: function (value) {
+            var next = new Date(value);
+            return new Date(next.setHours(value.getHours() + 1));
+        },
+        label: function (value) {
+            if( value.getHours() %  3 == 0){
+              return (value.getHours() > 0 )?TwoDigits(value.getHours()): 0;            
+            } else {
+              return "";
+            }
+        },
+        format: function(tickContainer, tickStart, tickEnd){ 
+          tickContainer.addClass("sliderCustomLabel");
+        }
+    }]
+});
+
+$("#editButton").click(function () {
+    
+    var editValidate = $("#editValidate");
+    if(editValidate.hasClass("glyphicon-edit")){
+      $("#editValidate").removeClass("glyphicon-edit");
+      $("#editValidate").addClass("glyphicon-ok");
+      $("#editValidate").addClass("glyphicon-custom-color");
+      $('#editButton').attr("title", "validate");	
+      $("#slider").dateRangeSlider("enable");
+      $("#editButton").trigger( "change", ["edit"] );
+    } else {
+      $("#editValidate").removeClass("glyphicon-ok");
+      $("#editValidate").addClass("glyphicon-edit");
+      $("#editValidate").removeClass("glyphicon-custom-color");
+      $('#editButton').attr("title", "edit");	
+      $("#slider").dateRangeSlider("disable");
+      $("#editButton").trigger( "change", ["validate"] );
+    }    
+    return false;
+});
+</script>
+
+</div>

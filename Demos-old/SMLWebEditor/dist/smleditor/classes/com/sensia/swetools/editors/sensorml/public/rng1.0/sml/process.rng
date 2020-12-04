@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="base.rng">
+      <start>
+         <ref name="sml.ProcessGroup"/>
+      </start>
+   </include>
+   <!-- Definition of Process Model -->
+   <define name="sml.ProcessModel">
+      <element name="sml:ProcessModel">
+         <ref name="sml.ProcessHeaderGroup"/>
+         <ref name="sml.ProcessContents"/>
+         <ref name="sml.method"/>
+      </element>
+   </define>
+   <!-- Definition of Process Chains -->
+   <define name="sml.ProcessChain">
+      <element name="sml:ProcessChain">
+         <ref name="sml.ProcessHeaderGroup"/>
+         <ref name="sml.ProcessContents"/>
+         <ref name="sml.components"/>
+         <ref name="sml.connections"/>
+      </element>
+   </define>
+   <!-- Definition of DataSource  -->
+   <define name="sml.DataSource">
+      <ref name="sml.ProcessHeaderGroup"/>
+      <choice>
+         <group>
+            <element name="sml:dataDefinition">
+               <choice>
+                  <ref name="xlink.href"/>
+                  <ref name="swe.DataBlockDefinition"/>
+                  <ref name="swe.DataStreamDefinition"/>
+               </choice>
+            </element>
+            <element name="sml:values">
+               <data type="string"/>
+            </element>
+         </group>
+         <element name="sml:observationReference">
+            <optional>
+               <ref name="xlink.roles"/>
+            </optional>
+            <ref name="xlink.href"/>
+         </element>
+      </choice>
+   </define>
+   <!-- Defines the inputs, outputs, and parameters -->
+   <define name="sml.ProcessContents">
+      <optional>
+         <ref name="sml.inputs"/>
+      </optional>
+      <optional>
+         <ref name="sml.outputs"/>
+      </optional>
+      <optional>
+         <ref name="sml.parameters"/>
+      </optional>
+   </define>
+   <!-- Initial header info common to all SensorML processes -->
+   <define name="sml.ProcessHeaderGroup">
+      <ref name="sml.FeatureGroup"/>
+      <ref name="sml.MetadataGroup"/>
+   </define>
+   <!-- Process header info from GML Feature inheritance  -->
+   <define name="sml.FeatureGroup">
+      <optional>
+         <ref name="gml.id"/>
+      </optional>
+      <optional>
+         <ref name="gml.description"/>
+      </optional>
+      <optional>
+         <ref name="gml.name"/>
+      </optional>
+   </define>
+   <!-- Input list -->
+   <define name="sml.inputs">
+      <element name="sml:inputs">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:InputList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <oneOrMore>
+                  <ref name="sml.input"/>
+               </oneOrMore>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- Output list -->
+   <define name="sml.outputs">
+      <element name="sml:outputs">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:OutputList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <oneOrMore>
+                  <ref name="sml.output"/>
+               </oneOrMore>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- Parameter list -->
+   <define name="sml.parameters">
+      <element name="sml:parameters">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:ParameterList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <oneOrMore>
+                  <ref name="sml.parameter"/>
+               </oneOrMore>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- Component list -->
+   <define name="sml.components">
+      <element name="sml:components">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:ComponentList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <oneOrMore>
+                  <ref name="sml.component"/>
+               </oneOrMore>
+            </element>
+         </choice>
+      </element>
+   </define>
+   <!-- Connection lists -->
+   <define name="sml.connections">
+      <element name="sml:connections">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <element name="sml:ConnectionList">
+            <optional>
+               <ref name="gml.id"/>
+            </optional>
+            <oneOrMore>
+               <ref name="sml.connection"/>
+            </oneOrMore>
+         </element>
+      </element>
+   </define>
+   <!-- Process Method defintion -->
+   <define name="sml.method">
+      <element name="sml:method">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <ref name="xlink.href"/>
+         <!-- Note: schema allows ProcessMethod inline ... only by-reference supported here -->
+      </element>
+   </define>
+   <!-- input -->
+   <define name="sml.input">
+      <element name="sml:input">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <ref name="swe.AnyData"/>
+            <ref name="swe.ObservableProperty"/>
+         </choice>
+      </element>
+   </define>
+   <!-- output -->
+   <define name="sml.output">
+      <element name="sml:output">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <ref name="swe.AnyData"/>
+            <ref name="swe.ObservableProperty"/>
+         </choice>
+      </element>
+   </define>
+   <!-- parameter -->
+   <define name="sml.parameter">
+      <element name="sml:parameter">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <ref name="swe.AnyData"/>
+         </choice>
+      </element>
+   </define>
+   <!-- component -->
+   <define name="sml.component">
+      <element name="sml:component">
+         <ref name="swe.nameAtt"/>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <ref name="sml.ProcessGroup"/>
+         </choice>
+      </element>
+   </define>
+   <!-- connection -->
+   <define name="sml.connection">
+      <element name="sml:connection">
+         <optional>
+            <ref name="swe.nameAtt"/>
+         </optional>
+         <element name="sml:Link">
+            <element name="sml:source">
+               <attribute name="ref">
+                  <data type="token"/>
+               </attribute>
+            </element>
+            <element name="sml:destination">
+               <attribute name="ref">
+                  <data type="token"/>
+               </attribute>
+            </element>
+         </element>
+      </element>
+   </define>
+   <!-- Nonphysical Processes -->
+   <define name="sml.ProcessGroup">
+      <choice>
+         <ref name="sml.ProcessModel"/>
+         <ref name="sml.ProcessChain"/>
+         <ref name="sml.DataSource"/>
+      </choice>
+   </define>
+</grammar>

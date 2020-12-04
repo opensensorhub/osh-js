@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+   xmlns="http://relaxng.org/ns/structure/1.0"
+   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:swe="http://www.opengis.net/swe/1.0.1"
+   xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+   xmlns:ism="urn:us:gov:ic:ism:v2"
+   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+   <!-- -->
+   <include href="../swe/data.rng"/>
+   <include href="../ic/ic-ism-v2.0.rng"/>
+   <!-- -->
+   <!-- -->
+   <define name="sml.MetadataGroup">
+      <zeroOrMore>
+         <ref name="sml.keywords"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.identification"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.classification"/>
+      </zeroOrMore>
+      <optional>
+         <ref name="sml.validTime"/>
+      </optional>
+      <optional>
+         <ref name="sml.securityConstraint"/>
+      </optional>
+      <zeroOrMore>
+         <ref name="sml.legalConstraint"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.characteristics"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.capabilities"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.contact"/>
+      </zeroOrMore>
+      <zeroOrMore>
+         <ref name="sml.documentation"/>
+      </zeroOrMore>
+   </define>
+   <!-- -->
+   <define name="sml.keywords">
+      <element name="sml:keywords">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:KeywordList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <optional>
+                  <attribute name="codeSpace">
+                     <data type="anyURI"/>
+                  </attribute>
+               </optional>               
+               <oneOrMore>                  
+                  <ref name="sml.keyword"/>
+               </oneOrMore>
+            </element>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.identification">
+      <element name="sml:identification">
+        <optional>
+           <ref name="xlink.roles"/>
+        </optional>
+        <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:IdentifierList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <oneOrMore>
+                  <ref name="sml.identifier"/>
+               </oneOrMore>
+            </element>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.classification">
+      <element name="sml:classification">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <element name="sml:ClassifierList">
+               <optional>
+                  <ref name="gml.id"/>
+               </optional>
+               <oneOrMore>
+                  <ref name="sml.classifier"/>
+               </oneOrMore>
+            </element>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.keyword">
+      <element name="sml:keyword">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.identifier">
+      <element name="sml:identifier">
+         <ref name="swe.nameAtt"/>
+         <ref name="sml.Term"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.classifier">
+      <element name="sml:classifier">
+         <ref name="swe.nameAtt"/>
+         <ref name="sml.Term"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.Term">
+      <element name="sml:Term">
+         <ref name="swe.definition"/>
+         <optional>
+            <element name="sml:codeSpace">
+               <ref name="xlink.href"/>
+            </element>
+         </optional>         
+         <ref name="sml.termValue"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.termValue">
+      <element name="sml:value">
+         <data type="token">
+            <param name="minLength">1</param>
+         </data>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.validTime">
+      <a:documentation>Temporal Validity</a:documentation>
+      <element name="sml:validTime">
+         <ref name="gml.TimeGroup"/>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.securityConstraint">
+	  <element name="sml:securityConstraint">
+         <element name="sml:Security">
+            <ref name="ism.SecurityAttributesGroup"/>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.legalConstraint">
+      <element name="sml:legalConstraints">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+            <group>
+               <a:documentation>Legal Rights</a:documentation>
+               <element name="sml:Rights">
+                  <a:documentation>Legal Rights as defined in ISO 19115</a:documentation>
+                  <optional>
+                     <ref name="gml.id"/>
+                  </optional>
+                  <optional>
+                     <attribute name="privacyAct">
+                        <data type="boolean"/>
+                     </attribute>
+                  </optional>
+                  <optional>
+                     <attribute name="intellectualPropertyRights">
+                        <data type="boolean"/>
+                     </attribute>
+                  </optional>
+                  <optional>
+                     <attribute name="copyRights">
+                        <data type="boolean"/>
+                     </attribute>
+                  </optional>
+                  <ref name="sml.documentation"/>
+               </element>
+            </group>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <!-- -->
+   <define name="sml.characteristics">
+      <element name="sml:characteristics">
+         <optional>
+	   	<ref name="swe.nameAtt"/>
+         </optional>
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+		    <ref name="swe.DataRecord"/>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.capabilities">
+      <element name="sml:capabilities">
+         <optional>
+	   	<ref name="swe.nameAtt"/>
+         </optional>
+          <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+		    <ref name="swe.DataRecord"/>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.contact">
+      <element name="sml:contact">
+         <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+		    <ref name="sml.ContactList"/>
+            <ref name="sml.ResponsibleParty"/>
+            <ref name="sml.Person"/>
+         </choice>         
+      </element>
+   </define>   
+   <!-- -->
+   <define name="sml.ContactList">
+      <element name="sml:ContactList">
+         <optional>
+            <ref name="gml.id"/>
+         </optional>
+         <optional>
+            <ref name="gml.description"/>
+         </optional>
+         <oneOrMore>
+            <element name="sml:member">
+               <optional>
+                  <ref name="xlink.roles"/>
+               </optional>
+               <choice>
+                  <ref name="xlink.href"/>
+ 			      <ref name="sml.ResponsibleParty"/>
+                  <ref name="sml.Person"/>
+               </choice>
+            </element>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.Person">
+      <element name="sml:Person">
+         <optional>
+            <ref name="gml.id"/>
+         </optional>
+         <element name="sml:surname">
+            <data type="token"/>
+         </element>
+         <element name="sml:name">
+            <data type="token"/>
+         </element>
+         <element name="sml:userID">
+            <data type="token"/>
+         </element>
+         <element name="sml:affiliation">
+            <data type="token"/>
+         </element>
+         <element name="sml:phoneNumber">
+            <data type="token"/>
+         </element>
+         <element name="sml:email">
+             <data type="token"/>
+         </element>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.ResponsibleParty">
+      <element name="sml:ResponsibleParty">
+         <a:documentation>Responsible Party as defined in ISO 19115</a:documentation>
+         <optional>
+            <ref name="gml.id"/>
+         </optional>
+         <optional>
+            <element name="sml:individualName">
+               <data type="token"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:organizationName">
+               <data type="token"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:positionName">
+               <data type="token"/>
+            </element>
+         </optional>
+         <optional>
+            <element name="sml:contactInfo">
+               <optional>
+                  <element name="sml:phone">
+                     <zeroOrMore>
+                        <element name="sml:voice">
+                           <data type="token"/>
+                        </element>
+                     </zeroOrMore>
+                     <zeroOrMore>
+                        <element name="sml:facsimile">
+                           <data type="token"/>
+                        </element>
+                     </zeroOrMore>
+                  </element>
+               </optional>
+               <optional>
+                  <element name="sml:address">
+                     <zeroOrMore>
+                        <element name="sml:deliveryPoint">
+                           <data type="token"/>
+                        </element>
+                     </zeroOrMore>
+                     <optional>
+                        <element name="sml:city">
+                           <data type="token"/>
+                        </element>
+                     </optional>
+                     <optional>
+                        <element name="sml:administrativeArea">
+                           <data type="token"/>
+                        </element>
+                     </optional>
+                     <optional>
+                        <element name="sml:postalCode">
+                           <data type="token"/>
+                        </element>
+                     </optional>
+                     <optional>
+                        <element name="sml:country">
+                           <data type="token"/>
+                        </element>
+                     </optional>
+                     <optional>
+                        <element name="sml:electronicMailAddress">
+                           <data type="token"/>
+                        </element>
+                     </optional>
+                  </element>
+               </optional>
+               <optional>
+                  <ref name="sml.onlineResource"/>
+               </optional>
+               <optional>
+                  <element name="sml:hoursOfService">
+                     <data type="token"/>
+                  </element>
+               </optional>         
+               <optional>
+                  <element name="sml:contactInstructions">
+                     <data type="token"/>
+                  </element>
+               </optional>
+            </element>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.documentation">
+      <element name="sml:documentation">
+          <optional>
+            <ref name="xlink.roles"/>
+         </optional>
+         <choice>
+            <ref name="xlink.href"/>
+		    <ref name="sml.DocumentList"/>
+            <ref name="sml.Document"/>
+         </choice>         
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.DocumentList">
+      <element name="sml:DocumentList">
+         <optional>
+            <ref name="gml.id"/>
+         </optional>
+         <optional>
+            <ref name="gml.description"/>
+         </optional>
+         <oneOrMore>
+            <element name="sml:member">
+               <optional>
+                  <ref name="xlink.roles"/>
+               </optional>
+               <choice>
+                  <ref name="xlink.href"/>
+			      <ref name="sml.Document"/>
+               </choice>
+            </element>
+         </oneOrMore>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.Document">
+      <element name="sml:Document">
+         <optional>
+            <ref name="gml.id"/>
+         </optional>
+         <optional>
+            <ref name="gml.description"/>
+         </optional>
+         <optional>
+            <element name="sml:date">
+               <data type="date"/>
+            </element>
+         </optional>
+         <optional>
+            <ref name="sml.contact"/>
+         </optional>
+         <optional>
+            <element name="sml:format">
+               <data type="token"/>
+            </element>
+         </optional>
+         <optional>
+            <ref name="sml.onlineResource"/>
+         </optional>
+      </element>
+   </define>
+   <!-- -->
+   <define name="sml.onlineResource">
+      <element name="sml:onlineResource">
+         <ref name="xlink.href"/>
+      </element>
+   </define>
+</grammar>

@@ -1,0 +1,111 @@
+<div id="multiDialogId">
+    <!-- Vendor all-in-one was built with:
+
+        gulp build --broadway --cesium --ffmpeg --x2js --leaflet --nouislider --nvd3 --ol3 --tree
+
+        <li nk rel="stylesheet" href="vendor/all-in-one/vendor.css"/>
+        <script src="vendor/all-in-one/vendor.js"></script>
+
+        <link rel="stylesheet" href="css/osh.css"/>
+        <script src="js/osh.js"></script>
+     -->
+
+    <div id="multiDialogContainer" style="height:100%;width:100%"></div>
+    <style>
+        #multiDialogContainer {
+            padding:15px;
+            background:radial-gradient(rgba(161, 222, 240, 0.75), rgba(64, 129, 147, 0.75)), url(http://i.imgur.com/3JZchqt.png), url(http://i.imgur.com/9kxBTzr.jpg);
+        }
+
+
+        .video-multidialog img{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video-multidialog canvas{
+            width: inherit;
+            height:inherit;
+        }
+
+        .video-selected {
+            border-radius: 3px;
+            box-shadow: 0px 0px 0px 8px rgba(50,205,50,0.5);
+        }
+
+        .dialog-multidialog {
+            width: 350px !important;
+            height: 255px !important;
+        }
+        .video-multidialog  {
+            width: inherit;
+            height: 175px;;
+        }
+
+    </style>
+    <script>
+        var replayFactor = 2;
+
+        //---------- DATASOURCE ------------//
+        var androidPhoneVideoDataSource = new OSH.DataReceiver.VideoMjpeg("android-Video", {
+            protocol: "ws",
+            service: "SOS",
+            endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+            offeringID: "urn:android:device:060693280a28e015-sos",
+            observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
+            startTime: "2015-02-16T07:58:00Z",
+            endTime: "2015-02-16T08:09:00Z",
+            replaySpeed: replayFactor+"",
+            syncMasterTime: false,
+            bufferingTime: 200
+        });
+
+        //------------ VIEW -----------------//
+
+        // Video 1 View
+        var videoView = new OSH.UI.MjpegView("", {
+            dataSourceId: androidPhoneVideoDataSource.id,
+            css: "video-multidialog",
+            cssSelected: "video-selected",
+            name: "Android Video",
+            keepRatio: true
+        });
+
+
+        var videoDialog    =  new OSH.UI.MultiDialogView("multiDialogContainer", {
+            draggable: true,
+            css: "dialog-multidialog",
+            name: "Multi dialog",
+            show:true,
+            dockable: false,
+            closeable: false,
+            connectionIds : [androidPhoneVideoDataSource.id]
+        });
+
+        // attach the leaflet view to the dialog
+        videoView.attachTo(videoDialog.popContentDiv.id);
+
+        var ptzView = new OSH.UI.PtzTaskingView("",{});
+
+        videoDialog.appendView(ptzView.divId);
+
+        //---------------------------------------------------------------//
+        //--------------------- Creates DataProvider --------------------//
+        //---------------------------------------------------------------//
+
+        var dataProviderController = new OSH.DataReceiver.DataReceiverController({
+            replayFactor : replayFactor
+        });
+
+        // We can add a group of dataSources and set the options
+        dataProviderController.addDataSource(androidPhoneVideoDataSource);
+
+        //---------------------------------------------------------------//
+        //---------------------------- Starts ---------------------------//
+        //---------------------------------------------------------------//
+
+        // starts streaming
+        dataProviderController.connectAll();
+
+    </script>
+</div>

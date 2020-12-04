@@ -1,0 +1,412 @@
+<div id="leafletViewerId">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />	
+<style>
+
+.ui-rangeSlider .ui-rangeSlider-innerBar {
+    height: 20px !important;
+    background: #DDD !important;
+    margin: 0px 6px 3px 6px !important;
+}
+
+.sliderCustomLabel {
+  border-left:1px solid #f8f8f8;
+  height:20px;
+}
+
+.ui-ruler-tick-label {
+  margin: 0 0 0 -2px;
+  background-color: #DDD;
+}
+</style>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+
+<div id="leafletMap" style="height:100%;width:100%"></div>
+
+<script>
+var map;
+var radixTreeStatus = new RadixTree();
+var radixTreeVehId = new RadixTree();
+
+//keep the vehicle data
+var vehicleMap = new Hashtable();
+
+//keep path for each vehicle
+var pathsMap = new Hashtable();
+
+//keep last data
+var lastDataMap = new Hashtable();
+
+var avlProperties = {
+  layers: [
+      {
+        id: "fireDepartment",
+        name : "Fire department",
+        renderDiv : "#fireDepartmentId, #fireDepartmentId-1",
+        normalIcon : "icons/firemen.png",
+        eventIcon : "icons/firemen-event.png",
+        offering : "urn:mysos:avl",
+        ws : null
+      },
+      {
+        id: "fireDepartment2",
+        name : "Fire department 2",
+        renderDiv : "#fireDepartmentId2",
+        normalIcon : "icons/firemen.png",
+        eventIcon : "icons/firemen-event.png",
+        offering : "urn:mysos:avl",
+        ws : null
+      }
+  ]
+};
+
+function initmap() {
+    // set up the map
+    map = new L.Map('leafletMap');
+
+    // create the tile layer with correct attribution
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {
+        minZoom: 1,
+        maxZoom: 19,
+        attribution: osmAttrib
+    });
+    //,
+
+    map.addLayer(osm);
+    
+    //center on huntsville
+    map.setView(new L.LatLng(34.72806,-86.65698), 14);
+}
+
+var firstGps = true;
+
+function initLayerStream(avlLayer,startDateTime,endDateTime,display) {
+
+    // GPS
+    // query SOS GPS stream
+    if(typeof(avlLayer.ws) != 'undefined' && avlLayer.ws != null){
+      avlLayer.ws.close();
+    }
+    
+    avlLayer.ws = new WebSocket("ws://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering="+avlLayer.offering+"&observedProperty=http://www.opengis.net/def/property/OGC/0/SensorLocation&temporalFilter=phenomenonTime,"+startDateTime+"/"+endDateTime+"&replaySpeed=20");
+    avlLayer.ws.binaryType = 'arraybuffer';
+    avlLayer.ws.onmessage = function(event) {
+        var rec = String.fromCharCode.apply(null, new Uint8Array(event.data));
+        var tokens = rec.trim().split(",");
+
+        var date = new Date(tokens[0]);
+        var mdtId = tokens[1];
+        var unitId = tokens[2]; 
+        var vehId = tokens[3];
+        var lat = parseFloat(tokens[4]);
+        var lon = parseFloat(tokens[5]);
+        var status = tokens[6];
+        var eventId = tokens[7];
+        
+        updateSlider(date,new Date(endDateTime));
+
+        var popupContent = "<b>mtd-id : </b>"+mdtId+"</br>";
+            popupContent += "<b>veh-id : </b>"+vehId+"</br>";
+            popupContent += "<b>unit-id : </b>"+unitId+"</br>";
+            popupContent += "<b>status : </b>"+status;
+        
+        var iconTypeUrl = "";
+        
+        if(typeof(eventId) != 'undefined'){
+          if(eventId != "NONE"){
+            iconTypeUrl = avlLayer.eventIcon;
+          } else {
+            iconTypeUrl = avlLayer.normalIcon;
+          }
+        }
+        
+        if(typeof(vehId) != 'undefined'){
+          var marker;
+          var path;
+          //create and insert new vehicle into hashTable
+          if(!vehicleMap.get(avlLayer.id).containsKey(vehId)){
+            //create marker
+            var markerIcon = L.icon({
+                iconAnchor: [16, 32],
+                iconUrl: iconTypeUrl
+            });
+
+            marker = L.marker([0, 0], {
+                icon: markerIcon,
+                iconTypeUrl : iconTypeUrl
+            });
+            
+            if((typeof(display) != 'undefined' && display) || (typeof(display) == 'undefined')){
+              marker.addTo(map);
+            }
+            
+            marker.bindPopup(popupContent,{offset: new L.Point(0, -16)});
+            vehicleMap.get(avlLayer.id).put(vehId,marker);
+            
+            radixTreeVehId.insert(vehId, {key : vehId,layer : avlLayer.id});
+            
+            lastDataMap.get(avlLayer.id).put(vehId,{iconTypeUrl:iconTypeUrl,popup:popupContent});
+            
+            //create polyline (for path)
+            path = new L.Polyline([], {
+                color: 'blue',
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            
+            pathsMap.get(avlLayer.id).put(vehId,path);
+            
+            //events
+            marker.on('click', function(event){
+              //display or not the path
+              var currentPath = pathsMap.get(avlLayer.id).get(vehId);
+              if(map.hasLayer(currentPath)){
+                //remove from the map
+                map.removeLayer(currentPath);
+              } else {
+                //add to the map
+                currentPath.addTo(map);
+              }
+            });
+          } else {
+            //get existing marker
+            marker = vehicleMap.get(avlLayer.id).get(vehId);
+            //get existing path
+            path = pathsMap.get(avlLayer.id).get(vehId);
+          }
+          
+          radixTreeStatus.insert(status,{key : vehId,layer : avlLayer.id});
+          
+          //check if last if different and update if needed
+          var last = lastDataMap.get(avlLayer.id).get(vehId);
+          
+          //update icon
+         if( last.iconTypeUrl != iconTypeUrl){
+            var popup = marker.getPopup();
+            var isOpen = popup._isOpen;
+            if(isOpen){
+              marker.closePopup();
+            }
+            
+            marker.unbindPopup();
+            var markerIcon = L.icon({
+                iconAnchor: [16, 32],
+                iconUrl: iconTypeUrl
+            });
+            marker.setIcon(markerIcon);
+            
+            //need to recreate popup
+            marker.bindPopup(popupContent,{offset: new L.Point(0, -16)});
+            if(isOpen){
+               marker.openPopup();
+            }
+            marker.update();
+          } else if(last.popup != popupContent){
+             marker.getPopup().setContent(popupContent);
+             marker.getPopup().update();
+          }
+          
+          if (!isNaN(lon) && !isNaN(lat)) {
+            //update marker position
+            var newLatLng = new L.LatLng(lat, lon);
+            marker.setLatLng(newLatLng);
+
+            //get the last coordinates
+            var coords = path.getLatLngs();
+            var cLength = coords.length;
+            
+            var isSameCoords = false;
+            
+            if(cLength > 0){
+              var lastCoords = coords[cLength-1];
+              isSameCoords = (lastCoords.lat == lat) && (lastCoords.lon == lon); 
+            }
+            
+            //if the last coords is the same as the current one, don't add to the path
+            if(!isSameCoords){
+              path.addLatLng(newLatLng);
+            }
+            
+            //update path position
+            if(path.getLatLngs().length > 200){
+              console.log(path);
+               path.splice(0,1);
+            }
+            //center on view if first data
+            if(firstGps){
+               map.setView(marker.getLatLng(), map.getZoom());
+               firstGps = false;
+            }
+          }
+          
+          //update last data table
+          lastDataMap.get(avlLayer.id).put(vehId,{iconTypeUrl:iconTypeUrl,popup:popupContent});
+        }
+    }
+
+    avlLayer.ws.onerror = function(event) {
+        this.close();
+    }
+}
+
+initmap();
+
+// ----------- THIS PART INTERACTS WITH THE MAIN APP  FUNCTIONS--------//
+
+var currentLayers = avlProperties.layers;
+$.each( currentLayers, function( index, layer ) {
+  $(layer.renderDiv).change(function(){
+    if(this.checked){
+      //if layer has been previously loaded, we add only removed markers
+      if(vehicleMap.containsKey(layer.id)){
+          var values = vehicleMap.get(layer.id).values();
+          for(var i =0;i < values.length;i++){
+            values[i].addTo(map);
+          }
+      }else{
+        //create the hashtable and init web socket connection
+        vehicleMap.put(layer.id,new Hashtable());
+        pathsMap.put(layer.id,new Hashtable());
+        lastDataMap.put(layer.id,new Hashtable());
+        var dateValues = $("#slider").dateRangeSlider("values");
+        initLayerStream(layer,dateValues.min.toISOString(),dateValues.max.toISOString());
+      }
+    } else {
+      //remove marker from the map but they still exists and are updated since the socket is openned
+      var values = vehicleMap.get(layer.id).values();
+      for(var i =0;i < values.length;i++){
+        map.removeLayer(values[i]);
+      }
+    }
+  });
+});
+
+$('#filter').on("input", function() {
+  if(this.value == ''){
+   //remove all markers from all layers
+   //REMOVE MARKERS
+    var values = vehicleMap.values();
+    var value;
+    for(var i =0;i < values.length;i++){
+        //value is a layer
+        var valuesLayer =  values[i].values();
+        for(var j =0;j < valuesLayer.length;j++){
+          map.removeLayer(valuesLayer[j]);
+        }
+    }
+    
+    //REMOVE PATHS
+    values = pathsMap.values();
+    for(var i =0;i < values.length;i++){
+        //value is a layer
+        var valuesLayer =  values[i].values();
+        for(var j =0;j < valuesLayer.length;j++){
+          map.removeLayer(valuesLayer[j]);
+        }
+    }
+    
+    //add all markers to the map
+    var values = vehicleMap.values();
+    var value;
+    for(var i =0;i < values.length;i++){
+        //value is a layer
+        var valuesLayer =  values[i].values();
+        for(var j =0;j < valuesLayer.length;j++){
+          valuesLayer[j].addTo(map);
+        }
+    }
+  } else {
+    var filterByStatus = $("#filter-status").is(':checked');
+    var filterByVehId = $("#filter-veh-id").is(':checked');
+    var results = [];
+    
+    var hashset = new HashSet({replaceDuplicateKey:false});
+    if(filterByStatus) {
+      var res = radixTreeStatus.search(this.value,500000);
+      for(var i = 0;i < res.length;i++){
+        hashset.add(res[i]);
+      }
+    }
+    
+    if(filterByVehId) {
+      var res = radixTreeVehId.search(this.value,500000);
+      for(var i = 0;i < res.length;i++){
+        hashset.add(res[i]);
+      }
+    }
+    //remove all markers from all layers
+    var values = vehicleMap.values();
+    var value;
+    for(var i =0;i < values.length;i++){
+        //value is a layer
+        var valuesLayer =  values[i].values();
+        for(var j =0;j < valuesLayer.length;j++){
+          map.removeLayer(valuesLayer[j]);
+        }
+    }
+    
+    values = pathsMap.values();
+    for(var i =0;i < values.length;i++){
+        //value is a layer
+        var valuesLayer =  values[i].values();
+        for(var j =0;j < valuesLayer.length;j++){
+          map.removeLayer(valuesLayer[j]);
+        }
+    }
+    
+    values = hashset.values();
+    
+    for(var i =0;i < values.length;i++){
+      value = values[i];
+      vehicleMap.get(value.layer).get(value.key).addTo(map);
+    }
+    
+    results = null;
+    values = null;
+  }
+});
+
+
+var lock = false;
+
+$("#editButton").on("change",function (event,state) {
+  if(state == "validate"){
+    $.each( currentLayers, function( index, layer ) {
+      if(vehicleMap.containsKey(layer.id)){
+        //remove marker from the map but they still exists and are updated since the socket is openned
+        var values = vehicleMap.get(layer.id).values();
+        for(var i =0;i < values.length;i++){
+          map.removeLayer(values[i]);
+        }
+        vehicleMap.get(layer.id).clear();
+        pathsMap.get(layer.id).clear();
+        lastDataMap.get(layer.id).clear();
+        var data = $("#slider").dateRangeSlider("values");
+        
+        var isChecked = false;
+        var splitRenderDiv = layer.renderDiv.split(",");
+        if(typeof(splitRenderDiv) != 'undefined' && splitRenderDiv != null && splitRenderDiv.length > 0){
+          for(var j = 0; j < splitRenderDiv.length;j++){
+            isChecked |= $(splitRenderDiv[j]).is(":checked");
+          }
+        }
+        
+        initLayerStream(layer,data.min.toISOString(),data.max.toISOString(),isChecked);
+      }
+      lock = false;
+    });
+  } else {
+    lock = true;
+  } 
+});
+
+function updateSlider(startDate,endDate){
+   if(!lock){
+     $("#slider").dateRangeSlider("values", startDate, endDate);
+   }
+}
+</script>	
+</div>
