@@ -4,7 +4,9 @@
       <summary>
         API Reference
       </summary>
-      <iframe :src="htmlPath" class="iframe-class"/>
+      <iframe
+          :src="$withBase(htmlPath)"
+          class="iframe-class" v-if="htmlPath"/>
     </details>
   </div>
 </template>

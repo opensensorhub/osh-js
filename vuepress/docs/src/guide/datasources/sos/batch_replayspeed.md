@@ -37,4 +37,4 @@ In the case of real time, these parameters will be ignored even if they are spec
 
 <hr class="demo-hr"/>
 <br/><br/><br/>
-<iframe src="../../../showcase/chart-batch.html" style="border:none;width:100%;height: 1000px" />
+<Example path="/showcase/chart-batch.html" style="border:none;width:100%;height: 1000px" />
