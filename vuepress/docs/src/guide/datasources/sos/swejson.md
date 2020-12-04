@@ -49,5 +49,5 @@ The result is then processed through the Toolkit to be synchronized or/and displ
 
 <hr class="demo-hr"/>
 
-<iframe src="../../../showcase/datasource-swejson.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/datasource-swejson.html" style="border:none;width:100%;height: 500px" />
 

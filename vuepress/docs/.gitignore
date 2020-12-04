@@ -1,3 +1,4 @@
+build.sh
 pids
 logs
 node_modules
