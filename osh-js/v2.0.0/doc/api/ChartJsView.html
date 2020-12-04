@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenSensorHub Toolkit</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    
+    <meta name="description" content="OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provides the necessary tools to build your own web application for monitoring your sensors">
+    <meta name="theme-color" content="#af8f3e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <link rel="preload" href="/osh-js/v2.0.0/doc/assets/css/0.styles.8f56550b.css" as="style"><link rel="preload" href="/osh-js/v2.0.0/doc/assets/js/app.d1e755ab.js" as="script"><link rel="preload" href="/osh-js/v2.0.0/doc/assets/js/2.87c530b6.js" as="script"><link rel="preload" href="/osh-js/v2.0.0/doc/assets/js/28.2ebc083d.js" as="script"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/10.f2b600e9.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/11.373ae84c.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/12.033f6321.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/13.7f51f9ff.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/14.9a9dd901.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/15.18fef15b.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/16.1fe6bfd9.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/17.ccb6986f.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/18.57a903db.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/19.053c0011.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/20.01c9f896.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/21.f4b25e7d.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/22.6e6f1397.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/23.3b1da14a.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/24.8380b321.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/25.abb4a9ab.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/26.446c26d0.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/27.88ff8524.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/29.739105ca.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/3.d548550b.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/30.cac4b33d.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/31.b8fac84a.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/32.95fd1f9d.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/33.bef563ae.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/34.a79c1567.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/35.f4fd3ce4.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/36.622c4b87.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/37.fa6cca5b.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/38.2f0e48f8.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/39.9503d828.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/4.dbb28b7e.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/40.51584a42.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/41.fc42df9d.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/42.e9f8dde2.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/43.e80acdcd.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/44.0a45a50c.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/45.13b1a68a.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/46.b1ccc189.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/47.ff79a679.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/48.6deffc33.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/49.943e7860.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/5.4a787e4d.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/50.7f5438cc.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/51.4c1d4487.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/52.6b814167.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/53.29d9dcc7.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/6.7488cdbb.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/7.daa63e53.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/8.03472683.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/assets/js/9.2a2a71e9.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/bootstrap.min.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/jquery.min.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/linenumber.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/main.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/prettify/lang-css.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/prettify/prettify.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/scripts/underscore-min.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/styles/bootstrap.min.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/styles/jaguar.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/styles/prettify-jsdoc.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/guide/api/styles/prettify-tomorrow.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/2488a842bbaf9f721bd1.worker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/2523c982904505bb40c4.worker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/28f57763635344001287.worker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/9a603a227a1e1f5c1319.worker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Animation/Animation.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Animation/Animation.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Animation/AnimationViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Animation/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/BaseLayerPicker.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/BaseLayerPicker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/BaseLayerPickerViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/ProviderViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/createDefaultImageryProviderViewModels.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/createDefaultTerrainProviderViewModels.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/BaseLayerPicker/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Cesium3DTilesInspector/Cesium3DTilesInspector.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Cesium3DTilesInspector/Cesium3DTilesInspector.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Cesium3DTilesInspector/Cesium3DTilesInspectorViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/CesiumInspector/CesiumInspector.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/CesiumInspector/CesiumInspector.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/CesiumInspector/CesiumInspectorViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/CesiumWidget/CesiumWidget.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/CesiumWidget/CesiumWidget.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/CesiumWidget/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/ClockViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Command.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/FullscreenButton/FullscreenButton.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/FullscreenButton/FullscreenButton.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/FullscreenButton/FullscreenButtonViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Geocoder/Geocoder.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Geocoder/Geocoder.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Geocoder/GeocoderViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Geocoder/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/HomeButton/HomeButton.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/HomeButton/HomeButtonViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/InfoBox/InfoBox.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/InfoBox/InfoBox.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/InfoBox/InfoBoxDescription.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/InfoBox/InfoBoxViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/InspectorShared.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/NavigationHelpButton/NavigationHelpButton.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/NavigationHelpButton/NavigationHelpButton.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/NavigationHelpButton/NavigationHelpButtonViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/NavigationHelpButton/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/PerformanceWatchdog/PerformanceWatchdog.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/PerformanceWatchdog/PerformanceWatchdog.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/PerformanceWatchdog/PerformanceWatchdogViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/ProjectionPicker/ProjectionPicker.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/ProjectionPicker/ProjectionPicker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/ProjectionPicker/ProjectionPickerViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SceneModePicker/SceneModePicker.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SceneModePicker/SceneModePicker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SceneModePicker/SceneModePickerViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SelectionIndicator/SelectionIndicator.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SelectionIndicator/SelectionIndicator.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SelectionIndicator/SelectionIndicatorViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/SvgPathBindingHandler.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Timeline/Timeline.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Timeline/Timeline.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Timeline/TimelineHighlightRange.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Timeline/TimelineTrack.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Timeline/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/ToggleButtonViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/VRButton/VRButton.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/VRButton/VRButton.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/VRButton/VRButtonViewModel.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Viewer/Viewer.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Viewer/Viewer.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Viewer/viewerCesium3DTilesInspectorMixin.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Viewer/viewerCesiumInspectorMixin.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Viewer/viewerDragDropMixin.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/Viewer/viewerPerformanceWatchdogMixin.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/createCommand.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/getElement.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/lighter.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/lighterShared.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/shared.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/subscribeAndEvaluate.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Widgets/widgets.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.18b426a9fb98e4b9c010.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.2523c982904505bb40c4.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.28f57763635344001287.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.4526468227670f47fc41.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.6fe0ab5ba36ea0751d0c.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.707f4f823baf01a7c84e.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.9a603a227a1e1f5c1319.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Worker.b2ef563fd5e8478c8b0f.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/WorkerName.2488a842bbaf9f721bd1.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/WorkerName.2523c982904505bb40c4.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/WorkerName.28f57763635344001287.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/WorkerName.707f4f823baf01a7c84e.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/WorkerName.9a603a227a1e1f5c1319.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/WorkerName.f2dc52adfcea49631413.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/ArcType-29cf2197.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/AttributeCompression-6cb5b251.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/BoundingRectangle-8481a283.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/BoxGeometry-6bbe7a89.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/Cartesian2-e875d9d2.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/Check-c4f3a3fc.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/Color-9e7980a7.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/ComponentDatatype-5d3f6452.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/CoplanarPolygonGeometryLibrary-17afdb93.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/CorridorGeometryLibrary-65ac78bb.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/CylinderGeometry-a21e5e5a.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/CylinderGeometryLibrary-95411284.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipseGeometry-7d13646a.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipseGeometryLibrary-de353ee5.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipseOutlineGeometry-99f34d55.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipsoidGeodesic-19bdf744.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipsoidGeometry-3c001161.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipsoidOutlineGeometry-34ee67fd.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipsoidRhumbLine-5134246a.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EllipsoidTangentPlane-30395e74.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/EncodedCartesian3-e19aab62.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/FrustumGeometry-9dd09ba5.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/GeometryAttribute-4098b8de.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/GeometryAttributes-57608efc.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/GeometryInstance-b43ca1c5.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/GeometryOffsetAttribute-e6e9672c.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/GeometryPipeline-99c06fbd.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/IndexDatatype-e3260434.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/IntersectionTests-ef7d18d8.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/Math-d30358ed.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/OrientedBoundingBox-e6450288.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/Plane-2d882f9f.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/PolygonGeometryLibrary-0de16e21.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/PolygonPipeline-84f0d07f.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/PolylinePipeline-3852f7d2.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/PolylineVolumeGeometryLibrary-6dcd44cb.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/PrimitivePipeline-a7956312.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/RectangleGeometryLibrary-bb0e14b8.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/RuntimeError-6122571f.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/TerrainEncoding-32e7a288.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/Transforms-44592b02.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/VertexFormat-ad523db1.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/WallGeometryLibrary-73874103.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/WebGLConstants-4ae0db90.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/WebMercatorProjection-44bf888f.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/arrayRemoveDuplicates-a580a060.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/cesiumWorkerBootstrapper.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/combineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createBoxGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createBoxOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCircleGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCircleOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCoplanarPolygonGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCoplanarPolygonOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCorridorGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCorridorOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCylinderGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createCylinderOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createEllipseGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createEllipseOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createEllipsoidGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createEllipsoidOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createFrustumGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createFrustumOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createGroundPolylineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPlaneGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPlaneOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPolygonGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPolygonOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPolylineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPolylineVolumeGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createPolylineVolumeOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createRectangleGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createRectangleOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createSimplePolylineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createSphereGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createSphereOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createTaskProcessorWorker.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVectorTileGeometries.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVectorTilePoints.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVectorTilePolygons.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVectorTilePolylines.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVerticesFromGoogleEarthEnterpriseBuffer.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVerticesFromHeightmap.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createVerticesFromQuantizedTerrainMesh.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createWallGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/createWallOutlineGeometry.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/decodeDraco.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/decodeGoogleEarthEnterprisePacket.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/transcodeCRNToDXT.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/transferTypedArrayTest.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/upsampleQuantizedTerrainMesh.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/Workers/when-c2e8ef35.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.avl.location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.cesium-fois.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.cesium.location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.chart.batch.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.chart.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.datasource.swejson.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.datasource.video.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.datasources.synchronized.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.discovery.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.leaflet.location.fois.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.leaflet.location.heading.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.leaflet.location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.leaflet.location.path.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.mjpeg.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.openlayers.location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.rangeslider.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video-map-multiple-datasource-synchronizer.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video-map-multiple-datasource.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video-with-control-vuejs-synchronized.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video-with-control-vuejs.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video.h264.draping.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video.h264.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/bundle.video.h264.transferable.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/avl.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/cesium-fois.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/cesium-location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/chart-batch.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/chart.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/datasource-swejson.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/datasource-video.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/datasources-synchronized.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/discovery.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/leaflet-location-fois.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/leaflet-location-heading.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/leaflet-location-path.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/leaflet-location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/openlayers-location.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/range-slider.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-h264-draping.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-h264-transferable.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-h264.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-map-multiple-datasource-synchronizer.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-map-multiple-datasource.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-mjpeg.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-with-control-vuejs-synchronized.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/js/video-with-control-vuejs.js"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/lib/bootstrap.min.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/lib/prism.css"><link rel="prefetch" href="/osh-js/v2.0.0/doc/showcase/lib/prism.min.css">
+    <link rel="stylesheet" href="/osh-js/v2.0.0/doc/assets/css/0.styles.8f56550b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/osh-js/v2.0.0/doc/" class="home-link router-link-active"><img src="/osh-js/v2.0.0/doc/images/logo-osh.png" alt="OpenSensorHub Toolkit" class="logo"> <span class="site-name can-hide">OpenSensorHub Toolkit</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/osh-js/v2.0.0/doc/guide/" class="nav-link">
+  Guide
+</a></div><div class="nav-item"><a href="http://opensensorhub.github.io/osh-js/v2.0.0/showcase/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Samples
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  API
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="https://opensensorhub.org/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Blog
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="https://github.com/opensensorhub/osh-js" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/osh-js/v2.0.0/doc/guide/" class="nav-link">
+  Guide
+</a></div><div class="nav-item"><a href="http://opensensorhub.github.io/osh-js/v2.0.0/showcase/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Samples
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  API
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="https://opensensorhub.org/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Blog
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="https://github.com/opensensorhub/osh-js" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><html><head><meta charset="utf-8"> <title>Class: ChartJsView</title> <div class="language- extra-class"><pre><code>&lt;script src=&quot;scripts/prettify/prettify.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;scripts/prettify/lang-css.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;scripts/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;!--[if lt IE 9]&gt;
+  &lt;script src=&quot;//html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;styles/prettify-tomorrow.css&quot;&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;styles/bootstrap.min.css&quot;&gt;
+&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;styles/jaguar.css&quot;&gt;
+
+
+&lt;script&gt;
+var config = {&quot;monospaceLinks&quot;:false,&quot;cleverLinks&quot;:false,&quot;default&quot;:{&quot;outputSourceFiles&quot;:true}};
+&lt;/script&gt;
+</code></pre></div></head> <body><div id="wrap" class="clearfix"><div class="main"><h1 data-filename="ChartJsView.html" class="page-title">Class: ChartJsView</h1> <section><header><h2>
+    ChartJsView
+    </h2></header> <article><div class="container-overview"><dt><div class="nameContainer"><h4 id="ChartJsView" class="name"><div class="language- extra-class"><pre><code>        new ChartJsView&lt;span class=&quot;signature&quot;&gt;(parentElementDivId, viewItems, options)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_chart_ChartJsView.js.html&quot;&gt;osh/ui/view/chart/ChartJsView.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_chart_ChartJsView.js.html#line41&quot;&gt;line 41&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Create a View.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;parentElementDivId&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The div element to attach to&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;viewItems&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Array.&lt;Object&gt;</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The initial view items to add
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;name&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The name of the view item&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;styler&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type"><a href="Styler.html">Styler</a></span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The styler object representing the view item&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table></tr> <div class="language- extra-class"><pre><code>    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;options&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            the properties of the view
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;datasetsOpts&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            chart.js dataset options&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;gridLinesOpts&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            chart.js gridline options&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;scaleLabelOpts&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            chart.js scaleLabel options&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;tickOpts&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            chart.js tick options&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;legendOpts&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            chart.js legend options&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;maxPoints&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Number</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            max points to display before shifting&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <div class="language- extra-class"><pre><code>&lt;/tbody&gt;
+</code></pre></div></thead></table> <dl class="details"></dl></dd> <div class="language- extra-class"><pre><code>&lt;/div&gt;
+
+
+
+
+    &lt;h3 class=&quot;subsection-title&quot;&gt;Extends&lt;/h3&gt;
+
+    &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&quot;View.html&quot;&gt;View&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+
+
+
+
+
+
+
+
+
+
+
+    &lt;h3 class=&quot;subsection-title&quot;&gt;Methods&lt;/h3&gt;
+
+    &lt;dl&gt;
+</code></pre></div><dt><div class="nameContainer inherited"><h4 id="addViewItem" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#addViewItem&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        addViewItem&lt;span class=&quot;signature&quot;&gt;(viewItem)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line267&quot;&gt;line 267&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
+</code></pre></div><p>and EventManager.EVENT.SELECT_VIEW are then observed using the
+dataSource(s) contained into the styler.
+</p></dd></div><p></p> <table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;viewItem&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The initial view items to add
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;name&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The name of the view item&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;styler&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type"><a href="Styler.html">Styler</a></span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The styler object representing the view item&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table></tr> <div class="language- extra-class"><pre><code>&lt;/tbody&gt;
+</code></pre></div></thead></table> <dl class="details"></dl> <dt><div class="nameContainer inherited"><h4 id="attachTo" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#attachTo&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        attachTo&lt;span class=&quot;signature&quot;&gt;(divId)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line203&quot;&gt;line 203&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Attach the view to a specific div. If the view has already been attached to a div, it will be removed
+</code></pre></div><p>from its current parent and will be attached to new one.
+Note: the onResize() is called at the end of the process.
+</p></dd></article></section></div><p></p> <table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;divId&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The div element to attach to&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl> <dt><div class="nameContainer inherited"><h4 id="getDataSourcesId" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#getDataSourcesId&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        getDataSourcesId&lt;span class=&quot;signature&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;glyphicon glyphicon-circle-arrow-right&quot;&gt;&lt;/span&gt;&lt;span class=&quot;type-signature returnType&quot;&gt;{Array.&amp;lt;String&gt;}&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line402&quot;&gt;line 402&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Gets the list of the dataSource ids contained into the view.
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl> <div class="language- extra-class"><pre><code>&lt;h5&gt;Returns:&lt;/h5&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>    &lt;th&gt;Type&lt;/th&gt;
+    &lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+
+    &lt;tr&gt;
+        
+        &lt;td class=&quot;type&quot;&gt;
+        
+                    Array.&amp;lt;String&gt;
+                    
+                
+        &lt;/td&gt;
+        &lt;td class=&quot;description last&quot;&gt;The list of dataSource ids&lt;/td&gt;
+    &lt;/tr&gt;
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table></dd> <dt><div class="nameContainer inherited"><h4 id="getDivId" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#getDivId&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        getDivId&lt;span class=&quot;signature&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;glyphicon glyphicon-circle-arrow-right&quot;&gt;&lt;/span&gt;&lt;span class=&quot;type-signature returnType&quot;&gt;{String}&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line237&quot;&gt;line 237&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Gets the div id of the DOM element.
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl> <div class="language- extra-class"><pre><code>&lt;h5&gt;Returns:&lt;/h5&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>    &lt;th&gt;Type&lt;/th&gt;
+    &lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+
+    &lt;tr&gt;
+        
+        &lt;td class=&quot;type&quot;&gt;
+        
+                    String
+                    
+                
+        &lt;/td&gt;
+        &lt;td class=&quot;description last&quot;&gt;The div id of the view&lt;/td&gt;
+    &lt;/tr&gt;
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table></dd> <dt><div class="nameContainer inherited"><h4 id="getId" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#getId&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        getId&lt;span class=&quot;signature&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;glyphicon glyphicon-circle-arrow-right&quot;&gt;&lt;/span&gt;&lt;span class=&quot;type-signature returnType&quot;&gt;{String}&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line229&quot;&gt;line 229&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Gets the inner id of the view object.
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl> <div class="language- extra-class"><pre><code>&lt;h5&gt;Returns:&lt;/h5&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>    &lt;th&gt;Type&lt;/th&gt;
+    &lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+
+    &lt;tr&gt;
+        
+        &lt;td class=&quot;type&quot;&gt;
+        
+                    String
+                    
+                
+        &lt;/td&gt;
+        &lt;td class=&quot;description last&quot;&gt;The id of the view&lt;/td&gt;
+    &lt;/tr&gt;
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table></dd> <dt><div class="nameContainer inherited"><h4 id="hide" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#hide&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        hide&lt;span class=&quot;signature&quot;&gt;()&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line186&quot;&gt;line 186&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Hide the view
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="init" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#init&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        init&lt;span class=&quot;signature&quot;&gt;(parentElementDivId, viewItems, options)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line90&quot;&gt;line 90&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Inits the view component.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;parentElementDivId&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+        
+        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The parent html element object to attach/create the view&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;viewItems&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+        
+        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            the list of items to add&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;options&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+        
+        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            [TODO]&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="removeViewItem" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#removeViewItem&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        removeViewItem&lt;span class=&quot;signature&quot;&gt;(viewItem)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line334&quot;&gt;line 334&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Removes a view item from the view.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;viewItem&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The initial view items to add
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;name&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The name of the view item&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;styler&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type"><a href="Styler.html">Styler</a></span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The styler object representing the view item&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table></tr> <div class="language- extra-class"><pre><code>&lt;/tbody&gt;
+</code></pre></div></thead></table> <dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="removeViewItems" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#removeViewItems&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        removeViewItems&lt;span class=&quot;signature&quot;&gt;()&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line353&quot;&gt;line 353&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Removes all view item from the view.
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="reset" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#reset&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        reset&lt;span class=&quot;signature&quot;&gt;()&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line423&quot;&gt;line 423&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Calls for resetting the view.
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="selectDataView" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#selectDataView&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        selectDataView&lt;span class=&quot;signature&quot;&gt;(dataSourcesIds, entityId)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line386&quot;&gt;line 386&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Selects the view by setting the current selected entity and dataSource.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;dataSourcesIds&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The dataSource id&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;entityId&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The entity id&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="setData" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#setData&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        setData&lt;span class=&quot;signature&quot;&gt;(dataSourceId, data)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line246&quot;&gt;line 246&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Set the data to the view. Each view has to handle the kind of the data separately.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;dataSourceId&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">String</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The dataSource id of the source providing the data&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Array.&lt;any&gt;</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The data array to set&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="show" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#show&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        show&lt;span class=&quot;signature&quot;&gt;(properties)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line253&quot;&gt;line 253&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Show the view.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;properties&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            A generic object&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl></dd> <dt><div class="nameContainer"><h4 id="updateCurve" class="name"><div class="language- extra-class"><pre><code>        updateCurve&lt;span class=&quot;signature&quot;&gt;(styler, values, options)&lt;/span&gt;
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_chart_ChartJsView.js.html&quot;&gt;osh/ui/view/chart/ChartJsView.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_chart_ChartJsView.js.html#line153&quot;&gt;line 153&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;styler&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type"><a href="Curve.html">Curve</a></span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            -&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;values&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Array</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            The values values to set. Each value is composed of raw data and timeStamp&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;options&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            -&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl></dd> <div class="language- extra-class"><pre><code>    &lt;/dl&gt;
+
+
+
+
+
+    &lt;h3 class=&quot;subsection-title&quot;&gt;Events&lt;/h3&gt;
+
+    &lt;dl&gt;
+</code></pre></div><dt><div class="nameContainer inherited"><h4 id="event:beforeAddingItems" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#event:beforeAddingItems&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        beforeAddingItems
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line221&quot;&gt;line 221&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    This method is called before attaching any view items passed as arguments in the constructor of the view.
+&lt;/div&gt;
+</code></pre></div><table class="params"><thead><tr><div class="language- extra-class"><pre><code>	&lt;th&gt;Name&lt;/th&gt;
+	
+	
+	&lt;th&gt;Type&lt;/th&gt;
+	
+	
+	
+	&lt;th class=&quot;last&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+
+
+    &lt;tr&gt;
+        
+            &lt;td class=&quot;name&quot;&gt;&lt;code&gt;options&lt;/code&gt;&lt;/td&gt;
+        
+        
+        &lt;td class=&quot;type&quot;&gt;
+</code></pre></div><p><span class="param-type">Object</span></p> <div class="language- extra-class"><pre><code>        &lt;/td&gt;
+        
+        
+        
+        &lt;td class=&quot;description last&quot;&gt;
+            
+            A generic object to use&lt;/td&gt;
+    &lt;/tr&gt;
+
+
+&lt;/tbody&gt;
+</code></pre></div></tr></thead></table> <dl class="details"></dl></dd> <dt><div class="nameContainer inherited"><h4 id="event:onResize" class="name"><div class="language- extra-class"><pre><code>            &lt;span class=&quot;inherited&quot;&gt;&lt;a href=&quot;View.html#event:onResize&quot;&gt;inherited&lt;/a&gt;&lt;/span&gt;
+        
+        onResize
+    &lt;/h4&gt;
+
+    
+    &lt;div class=&quot;tag-source&quot;&gt;
+        &lt;a href=&quot;osh_ui_view_View.js.html&quot;&gt;osh/ui/view/View.js&lt;/a&gt;, &lt;a href=&quot;osh_ui_view_View.js.html#line194&quot;&gt;line 194&lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+</code></pre></div></h4></div></dt> <dd><div class="language- extra-class"><pre><code>&lt;div class=&quot;description&quot;&gt;
+    Callback called when the view is resized
+&lt;/div&gt;
+</code></pre></div><dl class="details"></dl></dd> <div class="language- extra-class"><pre><code>    &lt;/dl&gt;
+</code></pre></div> <div class="language- extra-class"><pre><code>    &lt;footer&gt;
+        Documentation generated by &lt;a target=&quot;_blank&quot; href=&quot;https://github.com/jsdoc3/jsdoc&quot;&gt;JSDoc 3.6.5&lt;/a&gt; on Thu Nov 19 2020 22:03:01 GMT+0100 (Central European Standard Time)
+    &lt;/footer&gt;
+&lt;/div&gt;
+</code></pre></div></div> <script>prettyPrint();</script> <script src="scripts/linenumber.js"></script> <script src="scripts/main.js"></script></body></html></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/osh-js/v2.0.0/doc/assets/js/app.d1e755ab.js" defer></script><script src="/osh-js/v2.0.0/doc/assets/js/2.87c530b6.js" defer></script><script src="/osh-js/v2.0.0/doc/assets/js/28.2ebc083d.js" defer></script>
+  </body>
+</html>
