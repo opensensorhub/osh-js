@@ -18,7 +18,7 @@ actionLink: /guide/
   <div class="feature">
     <ImageLoad src="/images/drone.jpeg"/>
     <h2>Data visualization</h2>
-    <p> Styling overlay using configurable stylers as well as an advanced support
+    <p> Styling overlay using configurable layers as well as an advanced support
                        for video. It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.</p>
   </div>
   <div class="feature">
