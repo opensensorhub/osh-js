@@ -24,3 +24,5 @@ vuepress/docs/.vuepress/dist/
 /issues/166/
 **/*.lock
 documentation/jsdoc/build-iframe/
+**/issues
+issues
