@@ -1,6 +1,6 @@
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {HeadingPitchRange, Math} from 'cesium';
-import PointMarker from 'osh/ui/layer/PointMarker.js';
+import PointMarker from 'osh/ui/styler/PointMarker.js';
 import Server from "osh/server/Server.js";
 
 window.CESIUM_BASE_URL = './';
@@ -43,7 +43,7 @@ server.getFeatureOfInterestById("urn:usgs:water:network", function(resp) {
             description: f.description + "<br/>" +
                 "Latitude: " + pos[0] + "°<br/>" +
                 "Longitude: " + pos[1] + "°",
-            layer: pointMarker
+            styler: pointMarker
         });
     });
 

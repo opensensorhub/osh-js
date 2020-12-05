@@ -56,7 +56,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Polyline.js.html">osh/ui/layer/Polyline.js</a>, <a href="osh_ui_layer_Polyline.js.html#line44">line 44</a>
+            <a href="osh_ui_styler_Polyline.js.html">osh/ui/styler/Polyline.js</a>, <a href="osh_ui_styler_Polyline.js.html#line44">line 44</a>
         </div>
         
     </div>
@@ -353,7 +353,7 @@
 	
         <tr>
             
-                <td class="name"><code>getLocation</code></td>
+                <td class="name"><code>locationFunc</code></td>
             
             
             <td class="type">
@@ -387,7 +387,7 @@
 	
         <tr>
             
-                <td class="name"><code>getColor</code></td>
+                <td class="name"><code>colorFunc</code></td>
             
             
             <td class="type">
@@ -421,7 +421,7 @@
 	
         <tr>
             
-                <td class="name"><code>getWeight</code></td>
+                <td class="name"><code>weightFunc</code></td>
             
             
             <td class="type">
@@ -455,7 +455,7 @@
 	
         <tr>
             
-                <td class="name"><code>getOpacity</code></td>
+                <td class="name"><code>opacityFunc</code></td>
             
             
             <td class="type">
@@ -489,7 +489,7 @@
 	
         <tr>
             
-                <td class="name"><code>getSmoothFactor</code></td>
+                <td class="name"><code>smoothFactorFunc</code></td>
             
             
             <td class="type">
@@ -523,7 +523,7 @@
 	
         <tr>
             
-                <td class="name"><code>getPolylineId</code></td>
+                <td class="name"><code>polylineIdFunc</code></td>
             
             
             <td class="type">
@@ -605,10 +605,10 @@
         
 
     
-    <pre class="prettyprint"><code>import Polyline from 'osh/ui/layer/Polyline.js';
+    <pre class="prettyprint"><code>import Polyline from 'osh/ui/styler/Polyline.js';
 
-let polylineLayer = new Polyline({
-		getLocation : {
+let polylineStyler = new Polyline({
+		locationFunc : {
 			dataSourceIds : [datasource.getId()],
 			handler : function(rec) {
 				return {
@@ -638,7 +638,7 @@ let polylineLayer = new Polyline({
         <h3 class="subsection-title">Extends</h3>
 
         <ul>
-            <li><a href="Layer.html">Layer</a></li>
+            <li><a href="Styler.html">Styler</a></li>
         </ul>
     
 
@@ -659,14 +659,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="addFn">
             
-                <span class="inherited"><a href="Layer.html#addFn">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#addFn">inherited</a></span>
             
             addFn<span class="signature">(dataSourceIds, fn)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line84">line 84</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line84">line 84</a>
         </div>
         
     </div>
@@ -800,14 +800,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="clear">
             
-                <span class="inherited"><a href="Layer.html#clear">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#clear">inherited</a></span>
             
             clear<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line61">line 61</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line61">line 61</a>
         </div>
         
     </div>
@@ -818,7 +818,7 @@ let polylineLayer = new Polyline({
     
     
     <div class="description">
-        Clear the layer.
+        Clear the styler.
     </div>
     
 
@@ -873,14 +873,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="getDataSourcesIds">
             
-                <span class="inherited"><a href="Layer.html#getDataSourcesIds">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#getDataSourcesIds">inherited</a></span>
             
             getDataSourcesIds<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;String>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line120">line 120</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line120">line 120</a>
         </div>
         
     </div>
@@ -971,14 +971,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="getId">
             
-                <span class="inherited"><a href="Layer.html#getId">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#getId">inherited</a></span>
             
             getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line68">line 68</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line68">line 68</a>
         </div>
         
     </div>
@@ -989,7 +989,7 @@ let polylineLayer = new Polyline({
     
     
     <div class="description">
-        Gets the layer id.
+        Gets the styler id.
     </div>
     
 
@@ -1056,7 +1056,7 @@ let polylineLayer = new Polyline({
                         
                     
             </td>
-            <td class="description last">the layer id</td>
+            <td class="description last">the styler id</td>
         </tr>
     
     </tbody>
@@ -1073,14 +1073,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="init">
             
-                <span class="inherited"><a href="Layer.html#init">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#init">inherited</a></span>
             
             init<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line131">line 131</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line131">line 131</a>
         </div>
         
     </div>
@@ -1091,7 +1091,7 @@ let polylineLayer = new Polyline({
     
     
     <div class="description">
-        Inits the layer.
+        Inits the styler.
     </div>
     
 
@@ -1146,14 +1146,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="select">
             
-                <span class="inherited"><a href="Layer.html#select">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#select">inherited</a></span>
             
             select<span class="signature">(dataSourceIds)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line76">line 76</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line76">line 76</a>
         </div>
         
     </div>
@@ -1264,14 +1264,14 @@ let polylineLayer = new Polyline({
     <div class="nameContainer inherited">
         <h4 class="name" id="setData">
             
-                <span class="inherited"><a href="Layer.html#setData">inherited</a></span>
+                <span class="inherited"><a href="Styler.html#setData">inherited</a></span>
             
             setData<span class="signature">(dataSourceId, rec, view, options)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_layer_Layer.js.html">osh/ui/layer/Layer.js</a>, <a href="osh_ui_layer_Layer.js.html#line102">line 102</a>
+            <a href="osh_ui_styler_Styler.js.html">osh/ui/styler/Styler.js</a>, <a href="osh_ui_styler_Styler.js.html#line102">line 102</a>
         </div>
         
     </div>
@@ -1467,7 +1467,7 @@ let polylineLayer = new Polyline({
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 05 2020 19:02:46 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 05 2020 20:25:55 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

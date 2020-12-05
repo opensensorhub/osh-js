@@ -185,13 +185,13 @@
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Layer.html">Layer</a></span>
+<span class="param-type"><a href="Styler.html">Styler</a></span>
 
 
             
@@ -201,7 +201,7 @@
             
             <td class="description last">
                 
-                The layer object representing the view item</td>
+                The styler object representing the view item</td>
         </tr>
 	
 	
@@ -283,13 +283,13 @@
 
  let cesiumMapView = new CesiumView("",
  [{
-	layer :  pointMarker,
+	styler :  pointMarker,
 	name : "Android Phone GPS",
 	entityId : androidEntity.id
  },
  {
-    layer : new Polyline({
-        getLocation : {
+    styler : new Polyline({
+        locationFunc : {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
                 return {
@@ -877,7 +877,7 @@
     <div class="description">
         Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
 and EventManager.EVENT.SELECT_VIEW are then observed using the
-dataSource(s) contained into the layer.
+dataSource(s) contained into the styler.
     </div>
     
 
@@ -970,13 +970,13 @@ dataSource(s) contained into the layer.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Layer.html">Layer</a></span>
+<span class="param-type"><a href="Styler.html">Styler</a></span>
 
 
             
@@ -986,7 +986,7 @@ dataSource(s) contained into the layer.
             
             <td class="description last">
                 
-                The layer object representing the view item</td>
+                The styler object representing the view item</td>
         </tr>
 	
 	
@@ -1921,13 +1921,13 @@ This is library dependent.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Layer.html">Layer</a></span>
+<span class="param-type"><a href="Styler.html">Styler</a></span>
 
 
             
@@ -1937,7 +1937,7 @@ This is library dependent.
             
             <td class="description last">
                 
-                The layer object representing the view item</td>
+                The styler object representing the view item</td>
         </tr>
 	
 	
@@ -2542,7 +2542,7 @@ This is library dependent.
     <div class="nameContainer">
         <h4 class="name" id="updateDrapedImage">
             
-            updateDrapedImage<span class="signature">(layer)</span>
+            updateDrapedImage<span class="signature">(styler)</span>
         </h4>
     
         
@@ -2558,7 +2558,7 @@ This is library dependent.
     
     
     <div class="description">
-        Updates the marker associated to the layer.
+        Updates the marker associated to the styler.
     </div>
     
 
@@ -2589,7 +2589,7 @@ This is library dependent.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
@@ -2605,7 +2605,7 @@ This is library dependent.
             
             <td class="description last">
                 
-                The layer allowing the update of the marker</td>
+                The styler allowing the update of the marker</td>
         </tr>
 	
 	
@@ -2658,7 +2658,7 @@ This is library dependent.
     <div class="nameContainer">
         <h4 class="name" id="updateMapMarker">
             
-            updateMapMarker<span class="signature">(layer, properties)</span>
+            updateMapMarker<span class="signature">(styler, properties)</span>
         </h4>
     
         
@@ -2674,7 +2674,7 @@ This is library dependent.
     
     
     <div class="description">
-        Updates the marker associated to the layer.
+        Updates the marker associated to the styler.
     </div>
     
 
@@ -2705,13 +2705,13 @@ This is library dependent.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Layer.html">Layer</a></span>
+<span class="param-type"><a href="Styler.html">Styler</a></span>
 
 
             
@@ -2721,7 +2721,7 @@ This is library dependent.
             
             <td class="description last">
                 
-                The layer allowing the update of the marker</td>
+                The styler allowing the update of the marker</td>
         </tr>
 	
 	
@@ -2980,7 +2980,7 @@ This is library dependent.
     <div class="nameContainer">
         <h4 class="name" id="updateMarker">
             
-            updateMarker<span class="signature">(layer, options, timeStamp)</span>
+            updateMarker<span class="signature">(styler, options, timeStamp)</span>
         </h4>
     
         
@@ -2996,7 +2996,7 @@ This is library dependent.
     
     
     <div class="description">
-        Updates the marker associated to the layer.
+        Updates the marker associated to the styler.
     </div>
     
 
@@ -3027,13 +3027,13 @@ This is library dependent.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Layer.html">Layer</a></span>
+<span class="param-type"><a href="Styler.html">Styler</a></span>
 
 
             
@@ -3043,7 +3043,7 @@ This is library dependent.
             
             <td class="description last">
                 
-                The layer allowing the update of the marker</td>
+                The styler allowing the update of the marker</td>
         </tr>
 	
 	
@@ -3645,7 +3645,7 @@ This is library dependent.
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 05 2020 19:02:46 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 05 2020 20:25:55 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>
