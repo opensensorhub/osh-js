@@ -1,10 +1,10 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
+import PointMarker from "osh/ui/layer/PointMarker.js";
 import CesiumView from "osh/ui/view/map/CesiumView.js";
 import {randomUUID} from "osh/utils/Utils.js";
-import ImageDraping from "osh/ui/styler/ImageDraping.js";
+import ImageDraping from "osh/ui/layer/ImageDraping.js";
 
 window.CESIUM_BASE_URL = './';
 
@@ -54,7 +54,7 @@ class BaseMap extends React.Component {
 // add 3D model marker to Cesium view
     let pointMarker = new PointMarker({
       label: "3DR Solo",
-      locationFunc : {
+      getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],
         handler : function(rec) {
           return {
@@ -64,7 +64,7 @@ class BaseMap extends React.Component {
           };
         }
       },
-      orientationFunc : {
+      getOrientation : {
         dataSourceIds : [platformOrientationDataSource.getId()],
         handler : function(rec) {
           return {
@@ -77,7 +77,7 @@ class BaseMap extends React.Component {
 
     // style it with a moving point marker
     let imageDrapingMarker = new ImageDraping({
-      platformLocationFunc: {
+      getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
           return {
@@ -87,7 +87,7 @@ class BaseMap extends React.Component {
           };
         }
       },
-      platformOrientationFunc: {
+      getPlatformOrientation: {
         dataSourceIds: [platformOrientationDataSource.getId()],
         handler: function (rec) {
           return {
@@ -97,7 +97,7 @@ class BaseMap extends React.Component {
           };
         }
       },
-      gimbalOrientationFunc: {
+      getGimbalOrientation: {
         dataSourceIds: [gimbalOrientationDataSource.getId()],
         handler: function (rec) {
           return {
@@ -125,10 +125,10 @@ class BaseMap extends React.Component {
         '2WfIX0QHiZcOjVaXI92stjDh4fI';
     let cesiumView = new CesiumView(this.divId,
       [{
-        styler: pointMarker,
+        layer: pointMarker,
         name: 'Solo draping marker'
       },{
-        styler: imageDrapingMarker,
+        layer: imageDrapingMarker,
         name: 'Solo draping'
       }]
     );

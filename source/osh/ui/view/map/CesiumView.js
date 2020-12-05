@@ -65,13 +65,13 @@ import MapView from "./MapView";
 
  let cesiumMapView = new CesiumView("",
  [{
-	styler :  pointMarker,
+	layer :  pointMarker,
 	name : "Android Phone GPS",
 	entityId : androidEntity.id
  },
  {
-    styler : new Polyline({
-        locationFunc : {
+    layer : new Polyline({
+        getLocation : {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
                 return {
@@ -99,7 +99,7 @@ class CesiumView extends MapView {
    * @param {String} parentElementDivId - The div element to attach to
    * @param {Object[]} viewItems - The initial view items to add
    * @param {String} viewItems.name - The name of the view item
-   * @param {Styler} viewItems.styler - The styler object representing the view item
+   * @param {Layer} viewItems.layer - The layer object representing the view item
    * @param {Object} options - the properties of the view
    *
    */
@@ -119,8 +119,8 @@ class CesiumView extends MapView {
   }
 
   /**
-   * Updates the marker associated to the styler.
-   * @param {Styler} styler - The styler allowing the update of the marker
+   * Updates the marker associated to the layer.
+   * @param {Layer} layer - The layer allowing the update of the marker
    * @param {Object} options -
    * @param {Object} options.location -
    * @param {Number} options.location.x -
@@ -136,57 +136,57 @@ class CesiumView extends MapView {
    * @param {Number} timeStamp -
    *
    */
-  updateMarker(styler,timeStamp,options) {
-    let marker = this.getMarker(styler);
+  updateMarker(layer,timeStamp,options) {
+    let marker = this.getMarker(layer);
     if (!isDefined(marker)) {
       const markerObj = this.addMarker({
-        lat : styler.location.y,
-        lon : styler.location.x,
-        alt : styler.location.z,
-        orientation : styler.orientation,
-        icon : styler.icon,
-        iconAnchor : styler.iconAnchor,
-        label : styler.label,
-        labelColor : styler.labelColor,
-        labelSize : styler.labelSize,
-        labelOffset : styler.labelOffset,
-        name : styler.viewItem.name,
-        description : styler.viewItem.description,
+        lat : layer.location.y,
+        lon : layer.location.x,
+        alt : layer.location.z,
+        orientation : layer.orientation,
+        icon : layer.icon,
+        iconAnchor : layer.iconAnchor,
+        label : layer.label,
+        labelColor : layer.labelColor,
+        labelSize : layer.labelSize,
+        labelOffset : layer.labelOffset,
+        name : layer.viewItem.name,
+        description : layer.viewItem.description,
         timeStamp: timeStamp,
         selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
       });
 
-      this.addMarkerToStyler(styler, markerObj);
+      this.addMarkerToLayer(layer, markerObj);
     }
 
-    this.updateMapMarker(styler, {
-      lat : styler.location.y,
-      lon : styler.location.x,
-      alt : styler.location.z,
-      orientation : styler.orientation,
-      icon : styler.icon,
-      label : styler.label,
-      labelColor : styler.labelColor,
-      labelSize : styler.labelSize,
+    this.updateMapMarker(layer, {
+      lat : layer.location.y,
+      lon : layer.location.x,
+      alt : layer.location.z,
+      orientation : layer.orientation,
+      icon : layer.icon,
+      label : layer.label,
+      labelColor : layer.labelColor,
+      labelSize : layer.labelSize,
       timeStamp: timeStamp,
-      defaultToTerrainElevation: styler.defaultToTerrainElevation,
+      defaultToTerrainElevation: layer.defaultToTerrainElevation,
       selected:((typeof(options.selected) !== "undefined")? options.selected : false)
     });
   }
 
   /**
-   * Updates the marker associated to the styler.
-   * @param {ImageDraping} styler - The styler allowing the update of the marker
+   * Updates the marker associated to the layer.
+   * @param {ImageDraping} layer - The layer allowing the update of the marker
    *
    */
-  updateDrapedImage(styler,timeStamp,options,snapshot) {
+  updateDrapedImage(layer,timeStamp,options,snapshot) {
 
-    const llaPos = styler.platformLocation;
+    const llaPos = layer.platformLocation;
     const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
 
     const DTR = Math.PI/180;
-    const attitude = styler.platformOrientation;
-    const gimbal = styler.gimbalOrientation;
+    const attitude = layer.platformOrientation;
+    const gimbal = layer.gimbalOrientation;
 
     ///////////////////////////////////////////////////////////////////////////////////
     // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
@@ -218,11 +218,11 @@ class CesiumView extends MapView {
 
     ////////////////////////////////////////////////////////////////////////////////////
 
-    const camProj = styler.cameraModel.camProj;
-    const camDistR = styler.cameraModel.camDistR;
-    const camDistT = styler.cameraModel.camDistT;
+    const camProj = layer.cameraModel.camProj;
+    const camDistR = layer.cameraModel.camDistR;
+    const camDistT = layer.cameraModel.camDistT;
 
-    let imgSrc = styler.imageSrc;
+    let imgSrc = layer.imageSrc;
 
     {
       // snapshot
@@ -423,8 +423,8 @@ class CesiumView extends MapView {
   }
 
   /**
-   * Updates the marker associated to the styler.
-   * @param {Styler} styler - The styler allowing the update of the marker
+   * Updates the marker associated to the layer.
+   * @param {Layer} layer - The layer allowing the update of the marker
    * @param {Object} properties -
    * @param {Object} properties.lon -
    * @param {Object} properties.lat -
@@ -434,7 +434,7 @@ class CesiumView extends MapView {
    * @param {Object} properties.defaultToTerrainElevation -
    * @param {Object} properties.selected -
    */
-  updateMapMarker(styler, properties) {
+  updateMapMarker(layer, properties) {
     const lon = properties.lon;
     const lat = properties.lat;
     let alt = properties.alt;
@@ -445,7 +445,7 @@ class CesiumView extends MapView {
     let defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
     if (!isNaN(lon) && !isNaN(lat)) {
-      let marker = this.getMarker(styler);
+      let marker = this.getMarker(layer);
 
       // get ground altitude if non specified
       if (isDefined(alt) || isNaN(alt)) {

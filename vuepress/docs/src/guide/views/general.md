@@ -22,7 +22,7 @@ This is the list of actual supported Views in the Toolkit:
 
 <DocumentationLoad path="/guide/api/View.html"/>
 
-Some Views have to use [Styler](./stylers/styler) to allow styling data.
+Some Views have to use [Layer](./layers/layer) to allow styling data.
 
 The View does by default a lot of things to manage the interactions with the DOM, but also to manage the data itself.
 It makes the best effort to facilitate the creation of new Views.
@@ -66,12 +66,12 @@ This will result in:
 
 ### View items
 
-The Map views are composed by view items. ViewItems allow you to associate a name and a Styler to each marker you want
+The Map views are composed by view items. ViewItems allow you to associate a name and a Layer to each marker you want
  to add to the View. Thus, to visualize your data in your view, the process is:
 
- [Styler](../../stylers/styler) &rarr; ViewItem &rarr; View
+ [Layer](../../layers/layer) &rarr; ViewItem &rarr; View
 
-The most important part of the view Items is the Styler. See the Styler section.
+The most important part of the view Items is the Layer. See the Layer section.
 
 ### Options
 
@@ -93,7 +93,7 @@ An entity is an object representing a group of DataSources forming a single enti
 Views are used to represent data arriving from the DataSources in different forms. The only way to retrieve this data,
  and to subscribe to the BroadcastChannel corresponding to the DataSource, whether it is synchronized or not, the data will eventually arrive on this channel.
 
-So the View takes a list of ViewItems as a parameter, containing Stylers each containing an associated DataSource.
+So the View takes a list of ViewItems as a parameter, containing Layers each containing an associated DataSource.
 
 In this way, the View subscribes to the DataSource broadcast channel at initialization and calls the abstract
  method ***setData(dataSourceId, data)*** .

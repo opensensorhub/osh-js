@@ -1,6 +1,6 @@
 import Video from "osh/datareceiver/Video.js";
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
+import PointMarker from "osh/ui/layer/PointMarker.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 
@@ -51,7 +51,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     // add 3D model marker to Cesium view
     let pointMarker = new PointMarker({
         label: "3DR Solo",
-        locationFunc: {
+        getLocation: {
             dataSourceIds: [platformLocationDataSource.getId()],
             handler: function (rec) {
                 return {
@@ -61,7 +61,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
                 };
             }
         },
-        orientationFunc: {
+        getOrientation: {
             dataSourceIds: [platformOrientationDataSource.getId()],
             handler: function (rec) {
                 return {
@@ -77,7 +77,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     // create Leaflet view
     new LeafletView(mapDivId,
         [{
-            styler: pointMarker,
+            layer: pointMarker,
             name: "3DR Drone"
         }],
         {

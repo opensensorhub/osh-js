@@ -8,8 +8,8 @@ import {
 } from "cesium";
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import ImageDraping from "osh/ui/styler/ImageDraping.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
+import ImageDraping from "osh/ui/layer/ImageDraping.js";
+import PointMarker from "osh/ui/layer/PointMarker.js";
 
 window.CESIUM_BASE_URL = './';
 
@@ -73,7 +73,7 @@ let gimbalOrientationDataSource = new SweJson('android-Heading', {
 // add 3D model marker to Cesium view
 let pointMarker = new PointMarker({
     label: "3DR Solo",
-    locationFunc : {
+    getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],
         handler : function(rec) {
             return {
@@ -83,7 +83,7 @@ let pointMarker = new PointMarker({
             };
         }
     },
-    orientationFunc : {
+    getOrientation : {
         dataSourceIds : [platformOrientationDataSource.getId()],
         handler : function(rec) {
             return {
@@ -96,7 +96,7 @@ let pointMarker = new PointMarker({
 
 // style it with a moving point marker
 let imageDrapingMarker = new ImageDraping({
-    platformLocationFunc: {
+    getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
             return {
@@ -106,7 +106,7 @@ let imageDrapingMarker = new ImageDraping({
             };
         }
     },
-    platformOrientationFunc: {
+    getPlatformOrientation: {
         dataSourceIds: [platformOrientationDataSource.getId()],
         handler: function (rec) {
             return {
@@ -116,7 +116,7 @@ let imageDrapingMarker = new ImageDraping({
             };
         }
     },
-    gimbalOrientationFunc: {
+    getGimbalOrientation: {
         dataSourceIds: [gimbalOrientationDataSource.getId()],
         handler: function (rec) {
             return {
@@ -144,10 +144,10 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczN
     '2WfIX0QHiZcOjVaXI92stjDh4fI';
 let cesiumView = new CesiumView("cesium-h264-draping-container",
   [{
-      styler: pointMarker,
+      layer: pointMarker,
       name: 'Solo draping marker'
   },{
-      styler: imageDrapingMarker,
+      layer: imageDrapingMarker,
       name: 'Solo draping'
   }]
 );

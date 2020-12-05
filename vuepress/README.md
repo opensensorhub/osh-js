@@ -1,17 +1,15 @@
-## Build showcase
-
-First build the showcase and copy the static files into doc directory:
+## Install
 
 ```bash
-yarn build-showcase
+yarn install
 ```
 
-## Build JSdoc
+## Inits dependencies
 
-Build the  JSDoc and copy the static files into doc directory:
+First build the Showcase and the documentation
 
 ```bash
-yarn doc
+yarn init-deps
 ```
 
 ## Start dev
@@ -27,5 +25,5 @@ yarn dev
 Build the dist files:
 
 ```bash
-yarn build
+yarn prod
 ```

@@ -1,7 +1,7 @@
 import SweJson from 'osh/datareceiver/SweJson.js';
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider} from 'cesium';
-import PointMarker from 'osh/ui/styler/PointMarker.js';
+import PointMarker from 'osh/ui/layer/PointMarker.js';
 
 window.CESIUM_BASE_URL = './';
 
@@ -19,7 +19,7 @@ let gpsDataSource = new SweJson('android-GPS', {
 
 // style it with a moving point marker
 let pointMarker = new PointMarker({
-    locationFunc: {
+    getLocation: {
         dataSourceIds: [gpsDataSource.getId()],
         handler: function (rec) {
             return {
@@ -39,7 +39,7 @@ let pointMarker = new PointMarker({
 // create Cesium view
 let cesiumView = new CesiumView('cesium-container',
     [{
-        styler: pointMarker,
+        layer: pointMarker,
         name: 'Android Phone GPS'
     }]
 );
