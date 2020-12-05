@@ -9,8 +9,8 @@
   },
   "repository": "/vuepress",
   "scripts": {
-    "init-deps": "yarn build-showcase && yarn doc",
-    "build-showcase": "yarn --cwd ../../showcase/ prod",
+    "init-deps": "yarn install && yarn build-showcase && yarn doc",
+    "build-showcase": "yarn install --cwd ../../showcase/ && yarn --cwd ../../showcase/ prod",
     "dev": "vuepress dev src",
     "prod": "yarn init-deps && vuepress build src",
     "doc": "jsdoc -t ../../documentation/jsdoc/template-iframe/jaguarjs-jsdoc -r ../../source/ -d  ../../documentation/jsdoc/build-iframe"
@@ -22,8 +22,11 @@
   },
   "dependencies": {
     "copy-webpack-plugin": "^6.3.0",
+    "jsdoc": "3.6.6",
     "markdown-it-include": "^2.0.0",
     "prism-themes": "^1.5.0",
+    "taffydb": "^2.7.3",
+    "underscore": "^1.12.0",
     "vuepress-plugin-auto-sidebar": "^1.5.0",
     "worker-loader": "^3.0.5"
   }
