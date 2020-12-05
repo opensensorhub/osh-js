@@ -52,7 +52,7 @@ class OpenLayerView extends MapView {
      * @param {String} parentElementDivId - The div element to attach to
      * @param {Object[]} viewItems - The initial view items to add
      * @param {String} viewItems.name - The name of the view item
-     * @param {Styler} viewItems.styler - The styler object representing the view item
+     * @param {Layer} viewItems.layer - The layer object representing the view item
      * @param {Object} [options] - the properties of the view
      * @param {Object} [options.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
      * @param {Integer} [options.maxZoom=19] - the max zoom value
@@ -76,30 +76,30 @@ class OpenLayerView extends MapView {
 
 
     /**
-     * Updates the marker associated to the styler.
-     * @param {PointMarker} styler - The styler allowing the update of the marker
+     * Updates the marker associated to the layer.
+     * @param {PointMarker} layer - The layer allowing the update of the marker
      */
-    updateMarker(styler) {
-        let marker = this.getMarker(styler);
+    updateMarker(layer) {
+        let marker = this.getMarker(layer);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
             const markerObj = this.addMarker({
-                lat: styler.location.y,
-                lon: styler.location.x,
-                orientation: styler.orientation.heading,
-                color: styler.color,
-                icon: styler.icon,
-                anchor: styler.iconAnchor,
-                name: this.names[styler.markerId]
+                lat: layer.location.y,
+                lon: layer.location.x,
+                orientation: layer.orientation.heading,
+                color: layer.color,
+                icon: layer.icon,
+                anchor: layer.iconAnchor,
+                name: this.names[layer.markerId]
             });
 
-            this.addMarkerToStyler(styler, markerObj);
+            this.addMarkerToLayer(layer, markerObj);
         }
 
-        let markerFeature = this.getMarker(styler);
+        let markerFeature = this.getMarker(layer);
         // updates position
-        let lon = styler.location.x;
-        let lat = styler.location.y;
+        let lon = layer.location.x;
+        let lat = layer.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
             let coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
@@ -107,16 +107,16 @@ class OpenLayerView extends MapView {
         }
 
         // updates orientation
-        if (styler.icon !== null) {
+        if (layer.icon !== null) {
             // updates icon
             let iconStyle = new Style({
                 image: new Icon({
                     opacity: 0.75,
-                    anchor: styler.iconAnchor,
+                    anchor: layer.iconAnchor,
                     anchorYUnits: 'pixels',
                     anchorXUnits: 'pixels',
-                    src: styler.icon,
-                    rotation: styler.orientation.heading * Math.PI / 180
+                    src: layer.icon,
+                    rotation: layer.orientation.heading * Math.PI / 180
                 })
             });
             markerFeature.setStyle(iconStyle);
@@ -124,35 +124,35 @@ class OpenLayerView extends MapView {
     }
 
     /**
-     * Updates the polyline associated to the styler.
-     * @param {Polyline} styler - The styler allowing the update of the polyline
+     * Updates the polyline associated to the layer.
+     * @param {Polyline} layer - The layer allowing the update of the polyline
      */
-    updatePolyline(styler) {
-        let polyline = this.getPolyline(styler);
+    updatePolyline(layer) {
+        let polyline = this.getPolyline(layer);
         if (isDefined(polyline)) {
             // removes the layer
             this.removePolylineFromLayer(polyline);
         }
 
-        const polylineObj = this.addPolyline(styler.locations[styler.polylineId], {
-            color: styler.color,
-            weight: styler.weight,
-            locations: styler.locations,
-            maxPoints: styler.maxPoints,
-            opacity: styler.opacity,
-            smoothFactor: styler.smoothFactor,
-            name: this.names[styler.getId()]
+        const polylineObj = this.addPolyline(layer.locations[layer.polylineId], {
+            color: layer.color,
+            weight: layer.weight,
+            locations: layer.locations,
+            maxPoints: layer.maxPoints,
+            opacity: layer.opacity,
+            smoothFactor: layer.smoothFactor,
+            name: this.names[layer.getId()]
         });
 
-        this.addPolylineToStyler(styler, polylineObj);
+        this.addPolylineToLayer(layer, polylineObj);
 
         //TODO: handle opacity, smoothFactor, color and weight
         // if (polylineId in this.polylines) {
         //     let geometry = this.polylines[polylineId];
         //
         //     let polylinePoints = [];
-        //     for (let i = 0; i < styler.locations.length; i++) {
-        //         polylinePoints.push(transform([styler.locations[i].x, styler.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+        //     for (let i = 0; i < layer.locations.length; i++) {
+        //         polylinePoints.push(transform([layer.locations[i].x, layer.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
         //     }
         //
         //     geometry.setCoordinates(polylinePoints);
@@ -364,21 +364,21 @@ class OpenLayerView extends MapView {
     /**
      *
      * @private
-     * @param styler
-     * @return {string} the id of the newly created marker, or the id of the marker if it already exists from the current styler
+     * @param layer
+     * @return {string} the id of the newly created marker, or the id of the marker if it already exists from the current layer
      */
-    createMarkerFromStyler(styler) {
+    createMarkerFromLayer(layer) {
         //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
         //to the view or map to give the user more control
-        let marker = this.getMarker(styler);
+        let marker = this.getMarker(layer);
         if (!isDefined(marker)) {
             let properties = {
-                lat: styler.location.y,
-                lon: styler.location.x,
-                orientation: styler.orientation.heading,
-                color: styler.color,
-                icon: styler.icon,
-                name: this.names[styler.markerId]
+                lat: layer.location.y,
+                lon: layer.location.x,
+                orientation: layer.orientation.heading,
+                color: layer.color,
+                icon: layer.icon,
+                name: this.names[layer.markerId]
             }
 
             //create marker
@@ -401,7 +401,7 @@ class OpenLayerView extends MapView {
             let id = "view-marker-" + randomUUID();
             marker.setId(id);
         }
-        return this.getMarker(styler);
+        return this.getMarker(layer);
     }
 
 

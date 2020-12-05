@@ -1,7 +1,7 @@
 import SweJson from 'osh/datareceiver/SweJson';
 import CesiumView from 'osh/ui/view/map/CesiumView';
 import {EllipsoidTerrainProvider} from 'cesium';
-import PointMarker from 'osh/ui/styler/PointMarker';
+import PointMarker from 'osh/ui/layer/PointMarker';
 
 window.CESIUM_BASE_URL = './';
 
@@ -21,7 +21,7 @@ let count = 0;
 
 // style it with a moving point marker
 let pointMarker = new PointMarker({
-    locationFunc: {
+    getLocation: {
         dataSourceIds: [gpsDataSource.getId()],
         handler: function (rec) {
             return {
@@ -36,14 +36,14 @@ let pointMarker = new PointMarker({
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
     label: 'car',
-    labelFunc: {
+    getLabel: {
         dataSourceIds: [gpsDataSource.getId()],
         handler : (rec) => {
            return 'test_label_Func_change_'+(count++);
         }
     },
     labelColor: '#123456',
-    labelColorFunc: {
+    getLabelColor: {
         dataSourceIds: [gpsDataSource.getId()],
         handler: function (rec) {
             return '#' + Math.floor(Math.random() * 9) +
@@ -60,7 +60,7 @@ let pointMarker = new PointMarker({
 // create Cesium view
 let cesiumView = new CesiumView('cesium-container',
     [{
-        styler: pointMarker,
+        layer: pointMarker,
         name: 'Android Phone GPS'
     }]
 );

@@ -19,19 +19,19 @@ import {
 } from 'cesium';
 
 import {isDefined} from "../../../osh/utils/Utils.js";
-import Styler from "../../../osh/ui/styler/Styler.js";
+import Layer from "../../../osh/ui/layer/Layer.js";
 
 /**
- * Nexrad Styler.
- * @extends Styler
+ * Nexrad Layer.
+ * @extends Layer
  */
-class Nexrad extends Styler {
+class Nexrad extends Layer {
 	/**
-		* Creates the Styler.
+		* Creates the Layer.
 		* @param {Object} properties
 		* @param {Number[]} properties.location - [x,y]
 		* @param {Object} radialData
-		* @param {Function} properties.locationFunc -
+		* @param {Function} properties.getLocation -
 		* @param {Function} properties.radialDataFunc -
 		*
 		*/
@@ -52,11 +52,11 @@ class Nexrad extends Styler {
 			this.radialData = properties.radialData;
 		}
 
-		if (isDefined(properties.locationFunc)) {
+		if (isDefined(properties.getLocation)) {
 			let fn = function(rec,timeStamp,options) {
-				that.location = properties.locationFunc.handler(rec,timeStamp,options);
+				that.location = properties.getLocation.handler(rec,timeStamp,options);
 			};
-			this.addFn(properties.locationFunc.dataSourceIds,fn);
+			this.addFn(properties.getLocation.dataSourceIds,fn);
 		}
 
 		if (isDefined(properties.radialDataFunc)) {

@@ -115,13 +115,13 @@ class SpectrogramView extends View {
 
     /**
      * Updates the spectrogram dataset and redraws the image
-     * @param {Spectrogram} styler
+     * @param {Spectrogram} layer
      * @param {Number} timestamp
      * @param {Object} options
      */
-    updateSpectrogram(styler, timestamp, options) {
-        // push styler data into Spectrogram Data Object
-        if (styler !== null) this.spectrogramData.push(styler.latestData);
+    updateSpectrogram(layer, timestamp, options) {
+        // push layer data into Spectrogram Data Object
+        if (layer !== null) this.spectrogramData.push(layer.latestData);
 
         // redraw
         this.draw();

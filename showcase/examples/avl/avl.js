@@ -1,6 +1,6 @@
 import SweJson from 'osh/datareceiver/SweJson.js';
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import Polyline from "osh/ui/styler/Polyline.js";
+import PointMarker from "osh/ui/layer/PointMarker.js";
+import Polyline from "osh/ui/layer/Polyline.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";
@@ -20,7 +20,7 @@ let avlDataSource = new SweJson("AVL", {
 });
 
 const commonMarkerConf = {
-  locationFunc: {
+  getLocation: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       return {
@@ -30,19 +30,19 @@ const commonMarkerConf = {
       };
     }
   },
-  labelFunc: {
+  getLabel: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       return rec['veh-id'];
     }
   },
-  markerIdFunc: {
+  getMarkerId: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       return rec['veh-id'];
     }
   },
-  iconFunc: {
+  getIcon: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       if(rec['veh-id'] === 'FE4') {
@@ -66,7 +66,7 @@ const commonMarkerConf = {
 };
 
 const commonPolylineConf = {
-  locationFunc: {
+  getLocation: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       return {
@@ -76,7 +76,7 @@ const commonPolylineConf = {
       };
     }
   },
-  polylineIdFunc: {
+  getPolylineId: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
       return rec['veh-id'];
@@ -93,14 +93,14 @@ const commonPolylineConf = {
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
 const leafletViewItems = [
-    {styler:  new PointMarker({...commonMarkerConf}), name: "AVL"},
-    {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
+    {layer:  new PointMarker({...commonMarkerConf}), name: "AVL"},
+    {layer:  new Polyline({...commonPolylineConf}), name: "AVL"},
     ];
 const olViewItems = [
-  {styler:  new PointMarker({...commonMarkerConf}), name: "AVL"},
-  {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
+  {layer:  new PointMarker({...commonMarkerConf}), name: "AVL"},
+  {layer:  new Polyline({...commonPolylineConf}), name: "AVL"},
 ];
-const cesiumViewItems = [{styler:  new PointMarker({...commonMarkerConf}), name: "AVL"}];
+const cesiumViewItems = [{layer:  new PointMarker({...commonMarkerConf}), name: "AVL"}];
 
 // create Leaflet view
 const leafletMapView = new LeafletView("leafletMap",
