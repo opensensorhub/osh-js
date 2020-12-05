@@ -24,4 +24,4 @@ To setup webpack, you can use the osh-js examples and/or read [this article](htt
 <hr class="demo-hr"/>
 <br/><br/>
 
-<iframe src="../../../showcase/cesium-location.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/cesium-location.html" style="border:none;width:100%;height: 500px" />

@@ -43,5 +43,5 @@ This example defines multiple DataSources object to synchronize:
 <hr class="demo-hr"/>
 <br/>
 <br/>
-<iframe src="../../../showcase/datasources-synchronized.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/datasources-synchronized.html" style="border:none;width:100%;height: 500px" />
 

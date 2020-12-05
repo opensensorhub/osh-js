@@ -11,29 +11,29 @@ actionLink: /guide/
 
 <div class="features">
   <div class="feature">
-     <img src="/images/data-map.jpeg"/>
+     <ImageLoad src="/images/data-map.jpeg"/>
     <h2>Mixed data</h2>
     <p> Mix Video(H265, H264, VP9, VP8), Spectrogram, ImageDraping, Nexrad, any Swe generic(GPS, Quaternion, Weather temperature)..</p>
   </div>
   <div class="feature">
-    <img src="/images/drone.jpeg"/>
+    <ImageLoad src="/images/drone.jpeg"/>
     <h2>Data visualization</h2>
     <p> Styling overlay using configurable stylers as well as an advanced support
                        for video. It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.</p>
   </div>
   <div class="feature">
-    <img src="/images/sync.jpeg"/>
+    <ImageLoad src="/images/sync.jpeg"/>
     <h2>Synchronized Temporal & Real time playback</h2>
     <p> Event based architecture suitable for real-time or playback with support of temporal
                        synchronization on multiple data stream.</p>
   </div>
   <div class="feature">
-      <img src="/images/ogc.jpg"/>
+      <ImageLoad src="/images/ogc.jpg"/>
       <h2>Support for SOS & SPS</h2>
       <p> Supports SWE JSON generic requests: GetCapabilities, GetFeatureOfInterest, GetResultTemplate, DescribeSensor</p>
   </div>
   <div class="feature">
-      <img src="/images/technos.png"/>
+      <ImageLoad src="/images/technos.png"/>
       <h2>Pure ES6 Javascript code & Vue.js components</h2>
       <p> Pure javascript framework with some extended high level frameworks/APIs:
                           <ul>
@@ -44,7 +44,7 @@ actionLink: /guide/
       </p>
   </div>
   <div class="feature">
-    <img src="/images/vuejsreact.png"/>
+    <ImageLoad src="/images/vuejsreact.png"/>
     <h2>Toolkit integration</h2>
     <p> Integrate the toolkit inside your App using pure JS code or Vue.js based components</p>
   </div>

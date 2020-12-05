@@ -52,7 +52,7 @@ The next bytes are corresponding to a full NAL unit.
 
 <hr class="demo-hr"/>
 
-<iframe src="../../../showcase/datasource-video.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/datasource-video.html" style="border:none;width:100%;height: 500px" />
 
 
 

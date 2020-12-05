@@ -36,4 +36,4 @@ Here is the corresponding code that initializes the initial-view if none is pass
 <hr class="demo-hr"/>
 <br/><br/>
 
-<iframe src="../../../showcase/leaflet-location.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/leaflet-location.html" style="border:none;width:100%;height: 500px" />

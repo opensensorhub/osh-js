@@ -34,5 +34,5 @@ When you pass one of these options to the ChartView, the properties will be merg
 <hr class="demo-hr"/>
 <br/><br/>
 
-<iframe src="../../../showcase/chart.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/chart.html" style="border:none;width:100%;height: 500px" />
 
