@@ -1,6 +1,6 @@
 import SweJson from 'osh/datareceiver/SweJson.js';
 import OpenLayerView from 'osh/ui/view/map/OpenLayerView.js';
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 import {randomUUID} from "osh/utils/Utils";
 
 
@@ -24,7 +24,7 @@ function addMarker() {
 
     let pointMarker = new PointMarker({
         label: "Marker",
-        getLocation : {
+        locationFunc : {
             dataSourceIds : [gpsDataSource.id],
             handler : function(rec) {
                 return {
@@ -40,7 +40,7 @@ function addMarker() {
     const viewItem = {
         id: randomUUID(),
         name: 'marker',
-        layer: pointMarker
+        styler: pointMarker
     };
     viewItems.push(viewItem);
 

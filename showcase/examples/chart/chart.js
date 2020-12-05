@@ -1,6 +1,6 @@
 // create data source for Android phone camera
 import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
-import Curve from "osh/ui/layer/Curve.js";
+import Curve from "osh/ui/styler/Curve.js";
 import SweJson from "osh/datareceiver/SweJson.js";
 
 let chartDataSource = new SweJson("weather", {
@@ -14,8 +14,8 @@ let chartDataSource = new SweJson("weather", {
     bufferingTime: 0
 });
 
-let windSpeedLayerCurve = new Curve({
-    getValues: {
+let windSpeedStylerCurve = new Curve({
+    valuesFunc: {
         dataSourceIds: [chartDataSource.id],
         handler: function (rec, timeStamp) {
             return {
@@ -29,7 +29,7 @@ let windSpeedLayerCurve = new Curve({
 // show it in video view
 let chartView = new ChartJsView("char-container",
     [{
-        layer: windSpeedLayerCurve,
+        styler: windSpeedStylerCurve,
         name: "WindSpeed"
     }],
     {

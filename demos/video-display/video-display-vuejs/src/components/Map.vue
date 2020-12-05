@@ -8,7 +8,7 @@
     // @ is an alias to /src
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 
 export default {
   name: "Map",
@@ -32,7 +32,7 @@ export default {
 
       // style it with a moving point marker
       let pointMarker = new PointMarker({
-        getLocation: {
+        locationFunc: {
           dataSourceIds: [gpsDataSource.getId()],
           handler: function (rec) {
             return {
@@ -49,7 +49,7 @@ export default {
       // create Leaflet view
       new LeafletView("leafletMap",
                       [{
-                        layer: pointMarker,
+                        styler: pointMarker,
                         name: "Android Phone GPS"
                       }], {
           autoZoomOnFirstMarker:true

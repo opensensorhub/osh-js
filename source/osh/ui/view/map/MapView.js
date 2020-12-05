@@ -25,60 +25,60 @@ class MapView extends View {
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems,options);
 
-        // map Layer id to array of corresponding markers
-        this.layerIdToMarkers = {};
+        // map Styler id to array of corresponding markers
+        this.stylerIdToMarkers = {};
 
-        // map Layer id to array of corresponding polylines
-        this.layerIdToPolylines= {};
+        // map Styler id to array of corresponding polylines
+        this.stylerIdToPolylines= {};
 
     }
 
     /**
-     * Associate a markerId to a Layer for a fast lookup
-     * @param {PointMarker} layer - the Layer object
+     * Associate a markerId to a Styler for a fast lookup
+     * @param {PointMarker} styler - the Styler object
      * @param {Object} markerObject - the Map marker object
      */
-    addMarkerToLayer(layer, markerObject) {
+    addMarkerToStyler(styler, markerObject) {
         // associate the list of markers owning by a specific marker
-        if(!(layer.getId() in this.layerIdToMarkers)) {
-            this.layerIdToMarkers[layer.getId()] = {};
+        if(!(styler.getId() in this.stylerIdToMarkers)) {
+            this.stylerIdToMarkers[styler.getId()] = {};
         }
-        this.layerIdToMarkers[layer.getId()][layer.markerId] = markerObject;
+        this.stylerIdToMarkers[styler.getId()][styler.markerId] = markerObject;
     }
 
     /**
-     * Associate a polylineId to a Layer for a fast lookup
-     * @param {Polyline} layer - the Layer object
+     * Associate a polylineId to a Styler for a fast lookup
+     * @param {Polyline} styler - the Styler object
      * @param {Object} polylineObject - the Map polyline object
      */
-    addPolylineToLayer(layer, polylineObject) {
+    addPolylineToStyler(styler, polylineObject) {
         // associate the list of markers owning by a specific marker
-        if(!(layer.getId() in this.layerIdToPolylines)) {
-            this.layerIdToPolylines[layer.getId()] = {};
+        if(!(styler.getId() in this.stylerIdToPolylines)) {
+            this.stylerIdToPolylines[styler.getId()] = {};
         }
-        this.layerIdToPolylines[layer.getId()][layer.polylineId] = polylineObject;
+        this.stylerIdToPolylines[styler.getId()][styler.polylineId] = polylineObject;
     }
 
     /**
-     * Get the markerId associate to the Layer
-     * @param {PointMarker} layer - the Layer Object
+     * Get the markerId associate to the Styler
+     * @param {PointMarker} styler - the Styler Object
      */
-    getMarker(layer) {
-        if(!(layer.getId() in  this.layerIdToMarkers)) {
+    getMarker(styler) {
+        if(!(styler.getId() in  this.stylerIdToMarkers)) {
             return null;
         }
-        return this.layerIdToMarkers[layer.getId()][layer.markerId];
+        return this.stylerIdToMarkers[styler.getId()][styler.markerId];
     }
 
     /**
-     * Get the markerId associate to the Layer
-     * @param {Polyline} layer - the Layer Object
+     * Get the markerId associate to the Styler
+     * @param {Polyline} styler - the Styler Object
      */
-    getPolyline(layer) {
-        if(!(layer.getId() in  this.layerIdToPolylines)) {
+    getPolyline(styler) {
+        if(!(styler.getId() in  this.stylerIdToPolylines)) {
             return null;
         }
-        return this.layerIdToPolylines[layer.getId()][layer.polylineId];
+        return this.stylerIdToPolylines[styler.getId()][styler.polylineId];
     }
 
     /**
@@ -88,19 +88,19 @@ class MapView extends View {
     removeViewItem(viewItem) {
         super.removeViewItem(viewItem);
         // check for marker
-        this.removeMarkers(viewItem.layer);
+        this.removeMarkers(viewItem.styler);
 
         // check for polylines
-        this.removePolylines(viewItem.layer);
+        this.removePolylines(viewItem.styler);
     }
 
     /**
-     * Remove the markers corresponding to a PointMarker Layer
-     * @param {PointMarker} pointMarker - the layer to remove the markers from
+     * Remove the markers corresponding to a PointMarker Styler
+     * @param {PointMarker} pointMarker - the styler to remove the markers from
      */
     removeMarkers(pointMarker) {
         if(isDefined(pointMarker.markerId)) {
-            const markersMap = this.layerIdToMarkers[pointMarker.id];
+            const markersMap = this.stylerIdToMarkers[pointMarker.id];
             if(isDefined(markersMap)) {
                 for(let markerId in markersMap) {
                     const marker = markersMap[markerId];
@@ -108,18 +108,18 @@ class MapView extends View {
                 }
             }
 
-            // remove markers ids from Layer map
-            delete this.layerIdToMarkers[pointMarker.id];
+            // remove markers ids from Styler map
+            delete this.stylerIdToMarkers[pointMarker.id];
         }
     }
 
     /**
-     * Remove the polylines corresponding to a Polyline Layer
-     * @param {Polyline} polyline - the layer to remove the polylines from
+     * Remove the polylines corresponding to a Polyline Styler
+     * @param {Polyline} polyline - the styler to remove the polylines from
      */
     removePolylines(polyline) {
         if(isDefined(polyline.polylineId)) {
-            const polylinesMap = this.layerIdToPolylines[polyline.id];
+            const polylinesMap = this.stylerIdToPolylines[polyline.id];
             if(isDefined(polylinesMap)) {
                 for(let polylineId in polylinesMap) {
                     const polyline = polylinesMap[polylineId];
@@ -127,8 +127,8 @@ class MapView extends View {
                 }
             }
 
-            // remove polylines ids from Layer map
-            delete this.layerIdToPolylines[polyline.id];
+            // remove polylines ids from Styler map
+            delete this.stylerIdToPolylines[polyline.id];
         }
     }
 
