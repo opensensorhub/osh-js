@@ -6,7 +6,7 @@
 
 <script>
 // import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 // import TileLayer from 'ol/layer/Tile';
 // import XYZ from 'ol/source/XYZ';
 // import OSM from "ol/source/OSM";
@@ -84,23 +84,23 @@ export default {
     add(item) {
       console.log('add to map',item)
 
-      let locationLayer = {
+      let locationStyler = {
         // location: {
         //   y:43.600541,
         //   x:1.4267618,
         //   z:0
         // }
       };
-      let headingLayer  = {};
+      let headingStyler  = {};
 
       let viewItem = {
         name: item.name
       };
 
       if('location' in item) {
-        locationLayer = {
-          ...locationLayer,
-          getLocation: {
+        locationStyler = {
+          ...locationStyler,
+          locationFunc: {
             dataSourceIds: [item['location'].id],
             handler: function (rec) {
               return {
@@ -114,8 +114,8 @@ export default {
         viewItem['locationId'] = item['location'].id;
       }
       if('heading' in item) {
-        headingLayer  = {
-          getOrientation : {
+        headingStyler  = {
+          orientationFunc : {
             dataSourceIds :  [item['heading'].id],
             handler : function(rec) {
               let qx = rec.orient.qx;
@@ -154,13 +154,13 @@ export default {
         icon: './images/cameralook3.png',
         iconAnchor: [13, 45],
         labelOffset: [10, 10],
-        ...locationLayer,
-        ...headingLayer
+        ...locationStyler,
+        ...headingStyler
       });
 
       viewItem = {
         ...viewItem,
-        layer: marker
+        styler: marker
       };
 
       this.view.addViewItem(viewItem);

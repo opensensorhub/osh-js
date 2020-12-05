@@ -30,13 +30,13 @@ import MapView from "./MapView";
 
  let leafletMapView = new LeafletView("",
  [{
-            layer :  pointMarker,
+            styler :  pointMarker,
             name : "Android Phone GPS",
             entityId : androidEntity.id
         },
  {
-     layer : new Polyline({
-         getLocation : {
+     styler : new Polyline({
+         locationFunc : {
              dataSourceIds : [androidPhoneGpsDataSource.getId()],
              handler : function(rec) {
                  return {
@@ -63,7 +63,7 @@ class LeafletView extends MapView {
      * @param {String} parentElementDivId - The div element to attach to
      * @param {Object[]} viewItems - The initial view items to add
      * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
+     * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} [options] - the properties of the view
      * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
      * @param {Boolean} [options.follow=false] - follow the marker
@@ -288,35 +288,35 @@ class LeafletView extends MapView {
     }
 
     /**
-     * Updates the marker associated to the layer.
-     * @param {PointMarker} layer - The layer allowing the update of the marker
+     * Updates the marker associated to the styler.
+     * @param {PointMarker} styler - The styler allowing the update of the marker
      */
-    updateMarker(layer) {
-        let marker = this.getMarker(layer);
+    updateMarker(styler) {
+        let marker = this.getMarker(styler);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
              const markerObject = this.addMarker({
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                iconAnchor: layer.iconAnchor,
-                label : layer.label,
-                labelColor : layer.labelColor,
-                labelSize : layer.labelSize,
-                labelOffset : layer.labelOffset,
-                name : layer.viewItem.name,
-                description : layer.viewItem.description
+                lat: styler.location.y,
+                lon: styler.location.x,
+                orientation: styler.orientation.heading,
+                color: styler.color,
+                icon: styler.icon,
+                iconAnchor: styler.iconAnchor,
+                label : styler.label,
+                labelColor : styler.labelColor,
+                labelSize : styler.labelSize,
+                labelOffset : styler.labelOffset,
+                name : styler.viewItem.name,
+                description : styler.viewItem.description
             });
-            this.addMarkerToLayer(layer, markerObject);
+            this.addMarkerToStyler(styler, markerObject);
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker
-        marker = this.getMarker(layer);
+        marker = this.getMarker(styler);
         // updates position
-        let lon = layer.location.x;
-        let lat = layer.location.y;
+        let lon = styler.location.x;
+        let lat = styler.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
@@ -324,7 +324,7 @@ class LeafletView extends MapView {
             if((this.first && this.autoZoomOnFirstMarker) || this.follow) {
                 const markerBounds = L.latLngBounds([newLatLng ]);
                 this.map.fitBounds(markerBounds, {
-                    maxZoom: layer.zoomLevel
+                    maxZoom: styler.zoomLevel
                 });
                 if(this.first) {
                     this.first = false;
@@ -333,15 +333,15 @@ class LeafletView extends MapView {
         }
 
         // updates orientation
-        if(isDefined(layer.orientation)) {
-            marker.setRotationAngle(layer.orientation.heading);
+        if(isDefined(styler.orientation)) {
+            marker.setRotationAngle(styler.orientation.heading);
         }
 
-        if (layer.icon !== null && marker._icon.iconUrl !== layer.icon) {
+        if (styler.icon !== null && marker._icon.iconUrl !== styler.icon) {
             // updates icon
             let markerIcon = L.icon({
-                iconAnchor: layer.iconAnchor,
-                iconUrl: layer.icon
+                iconAnchor: styler.iconAnchor,
+                iconUrl: styler.icon
             });
             marker.setIcon(markerIcon);
         }
@@ -366,26 +366,26 @@ class LeafletView extends MapView {
     }
 
     /**
-     * Updates the polyline associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the polyline
+     * Updates the polyline associated to the styler.
+     * @param {Polyline} styler - The styler allowing the update of the polyline
      */
-    updatePolyline(layer) {
-        let polyline = this.getPolyline(layer);
+    updatePolyline(styler) {
+        let polyline = this.getPolyline(styler);
         if (isDefined(polyline)) {
             // removes the layer
            this.removePolylineFromLayer(polyline);
         }
 
         // adds a new polyline to the leaflet renderer
-        const polylineObj = this.addPolyline(layer.locations[layer.polylineId],{
-            color: layer.color,
-            weight: layer.weight,
-            locations: layer.locations,
-            maxPoints: layer.maxPoints,
-            opacity: layer.opacity,
-            smoothFactor: layer.smoothFactor
+        const polylineObj = this.addPolyline(styler.locations[styler.polylineId],{
+            color: styler.color,
+            weight: styler.weight,
+            locations: styler.locations,
+            maxPoints: styler.maxPoints,
+            opacity: styler.opacity,
+            smoothFactor: styler.smoothFactor
         });
-        this.addPolylineToLayer(layer, polylineObj);
+        this.addPolylineToStyler(styler, polylineObj);
     }
 
     attachTo(parentElement) {

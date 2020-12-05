@@ -4,7 +4,7 @@ osh-js can be used with ES6 modules, plain JavaScript and module loaders.
 
 ## Visualize GPS data
 
-To visualize a data, we need to instantiate a `DataSource`, `View` and `Layer` classes  and a `HTML tag` to render the result.
+To visualize a data, we need to instantiate a `DataSource`, `View` and `Styler` classes  and a `HTML tag` to render the result.
 
 ### Create the HTML element
 
@@ -26,9 +26,9 @@ to use.
 
 <<< @/../../showcase/examples/leaflet-location/leaflet-location.js#snippet_leaflet_location_datasource
 
-### Create the Layer instance
+### Create the Styler instance
 
-The Layer is used to style dynamically your data before rendering.
+The Styler is used to style dynamically your data before rendering.
 
 <<< @/../../showcase/examples/leaflet-location/leaflet-location.js#snippet_leaflet_location_marker
 

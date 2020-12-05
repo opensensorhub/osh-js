@@ -9,9 +9,9 @@
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
   import CesiumView from "osh/ui/view/map/CesiumView.js";
   // @ is an alias to /src
-  import ImageDraping from "osh/ui/layer/ImageDraping.js";
+  import ImageDraping from "osh/ui/styler/ImageDraping.js";
   import SweJson from "osh/datareceiver/SweJson.js";
-  import PointMarker from "osh/ui/layer/PointMarker.js";
+  import PointMarker from "osh/ui/styler/PointMarker.js";
 
   export default {
     name: "Globe",
@@ -26,7 +26,7 @@
         // add 3D model marker to Cesium view
         let pointMarker = new PointMarker({
           label: "3DR Solo",
-          getLocation : {
+          locationFunc : {
             dataSourceIds : [this.platformLocationDataSource.id],
             handler : function(rec) {
               return {
@@ -36,7 +36,7 @@
               };
             }
           },
-          getOrientation : {
+          orientationFunc : {
             dataSourceIds : [this.platformOrientationDataSource.getId()],
             handler : function(rec) {
               return {
@@ -49,7 +49,7 @@
 
         // style it with a moving point marker
         let imageDrapingMarker = new ImageDraping({
-          getPlatformLocation: {
+          platformLocationFunc: {
             dataSourceIds: [this.platformLocationDataSource.getId()],
             handler: function (rec) {
               return {
@@ -59,7 +59,7 @@
               };
             }
           },
-          getPlatformOrientation: {
+          platformOrientationFunc: {
             dataSourceIds: [this.platformOrientationDataSource.getId()],
             handler: function (rec) {
               return {
@@ -69,7 +69,7 @@
               };
             }
           },
-          getGimbalOrientation: {
+          gimbalOrientationFunc: {
             dataSourceIds: [this.gimbalOrientationDataSource.getId()],
             handler: function (rec) {
               return {
@@ -95,10 +95,10 @@
             '2WfIX0QHiZcOjVaXI92stjDh4fI';
         let cesiumView = new CesiumView("cesium-container",
           [{
-            layer: pointMarker,
+            styler: pointMarker,
             name: 'Solo draping marker'
           },{
-            layer: imageDrapingMarker,
+            styler: imageDrapingMarker,
             name: 'Solo draping'
           }]
         );

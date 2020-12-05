@@ -7,7 +7,7 @@ import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
 // create Leaflet view
 let leafletMapView = new LeafletView("map-container");
 
-function onSubmit(dataSource, type, layer) {
+function onSubmit(dataSource, type, styler) {
     if(type === DiscoveryType.VIDEO_MJPEG) {
         // show it in video view
         let videoView = new MjpegView("video-mjpeg-container", {
@@ -28,16 +28,16 @@ function onSubmit(dataSource, type, layer) {
             showTime: true
         });
         dataSource.connect();
-    } else if(type === DiscoveryType.MARKER_GPS && layer !== null) {
+    } else if(type === DiscoveryType.MARKER_GPS && styler !== null) {
         leafletMapView.addViewItem({
-            layer: layer,
+            styler: styler,
             name: 'GPS'
         });
         dataSource.connect();
     } else if(type === DiscoveryType.CHART) {
         let chartView = new ChartJsView("chart-container",
           [{
-              layer: layer,
+              styler: styler,
               name: dataSource.name
           }],
           {

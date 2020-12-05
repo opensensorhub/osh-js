@@ -29,7 +29,7 @@ class ChartJsView extends View {
      * @param {String} parentElementDivId - The div element to attach to
      * @param {Object[]} viewItems - The initial view items to add
      * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
+     * @param {Styler} viewItems.styler - The styler object representing the view item
      * @param {Object} [options={}] - the properties of the view
      * @param {Object} [options.datasetsOpts] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
      * @param {Object} [options.gridLinesOpts] - chart.js [gridline options]{@link https://www.chartjs.org/docs/latest/axes/styling.html#grid-line-configuration}
@@ -146,25 +146,25 @@ class ChartJsView extends View {
 
     /**
      *
-     * @param {Curve} layer -
+     * @param {Curve} styler -
      * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
      * @param {Object} options -
      */
-    updateCurve(layer, values, options) {
-        let currentDataset = this.datasets[layer.getId()];
+    updateCurve(styler, values, options) {
+        let currentDataset = this.datasets[styler.getId()];
         if(!isDefined(currentDataset)) {
             currentDataset = {
-                label: layer.viewItem.name,
+                label: styler.viewItem.name,
                 fillColor: "rgba(220,220,0,0.2)",
                 strokeColor: "rgba(220,220,220,1)",
                 pointColor: "rgba(220,220,220,1)",
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
-                data: layer.values
+                data: styler.values
             };
             currentDataset = {...currentDataset, ...this.datasetsOpts};
-            this.datasets[layer.getId()] = currentDataset;
+            this.datasets[styler.getId()] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         }
         if(currentDataset.data.length >= this.maxPoints) {

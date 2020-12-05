@@ -16,9 +16,9 @@
 
 import Server from "../../../../osh/server/Server.js";
 import {isDefined, randomUUID, removeLastCharIfExist} from "../../../../osh/utils/Utils.js";
-import PointMarker from "../../../../osh/ui/layer/PointMarker.js";
+import PointMarker from "../../../../osh/ui/styler/PointMarker.js";
 import Video from "../../../../osh/datareceiver/Video.js";
-import Curve from "../../../../osh/ui/layer/Curve.js";
+import Curve from "../../../../osh/ui/styler/Curve.js";
 import View from "../../../../osh/ui/view/View.js";
 import DataSynchronizer from "../../../../osh/datasynchronizer/DataSynchronizer.js";
 import "../../../resources/css/discovery.css";
@@ -471,7 +471,7 @@ class DiscoveryView extends View {
         });
 
         let pointMarker = new PointMarker({
-            getLocation: {
+            locationFunc: {
                 dataSourceIds: [dataSource.id],
                 handler: function (rec) {
                     return {
@@ -482,7 +482,7 @@ class DiscoveryView extends View {
                 }
             },
             icon: 'images/cameralook.png',
-            getIcon: {
+            iconFunc: {
                 dataSourceIds: [dataSource.getId()],
                 handler: function (rec, timeStamp, options) {
                     if (options.selected) {
@@ -572,8 +572,8 @@ class DiscoveryView extends View {
             bufferingTime: 1000
         });
 
-        let layer = new Curve({
-            getValues: {
+        let styler = new Curve({
+            valuesFunc: {
                 dataSourceIds: [dataSource.getId()],
                 handler: function (rec, timeStamp) {
                     return {
@@ -584,10 +584,10 @@ class DiscoveryView extends View {
             }
         });
 
-        this.onAdd(dataSource, DiscoveryType.CHART, layer);
+        this.onAdd(dataSource, DiscoveryType.CHART, styler);
     }
 
-    onAdd(dataSource, type, layer=null) {
+    onAdd(dataSource, type, styler=null) {
 
     }
 }

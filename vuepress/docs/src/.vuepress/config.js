@@ -139,10 +139,10 @@ module.exports = {
                     children: [
                         '/guide/views/general.md',
                         {
-                            title: 'Layer',
+                            title: 'Styler',
                             collapsable: true,
                             children: [
-                                '/guide/views/layers/general.md',
+                                '/guide/views/stylers/general.md',
                             ]
                         },
                         {

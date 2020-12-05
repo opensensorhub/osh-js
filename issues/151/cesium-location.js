@@ -8,8 +8,8 @@ import {
 } from "cesium";
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import ImageDraping from "osh/ui/layer/ImageDraping.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import ImageDraping from "osh/ui/styler/ImageDraping.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 
 window.CESIUM_BASE_URL = './';
 
@@ -73,7 +73,7 @@ let count = 0;
 // add 3D model marker to Cesium view
 let pointMarker = new PointMarker({
     label: "3DR Solo",
-    getLocation : {
+    locationFunc : {
         dataSourceIds : [platformLocationDataSource.getId()],
         handler : function(rec) {
             return {
@@ -83,7 +83,7 @@ let pointMarker = new PointMarker({
             };
         }
     },
-    getOrientation : {
+    orientationFunc : {
         dataSourceIds : [platformOrientationDataSource.getId()],
         handler : function(rec) {
             return {
@@ -92,14 +92,14 @@ let pointMarker = new PointMarker({
         }
     },
     icon: "./models/Drone+06B.glb",
-    getLabel: {
+    labelFunc: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler : (rec) => {
             return 'test_label_Func_change_'+(count++);
         }
     },
     labelColor: '#123456',
-    getLabelColor: {
+    labelColorFunc: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
             return '#' + Math.floor(Math.random() * 9) +
@@ -115,7 +115,7 @@ let pointMarker = new PointMarker({
 
 // style it with a moving point marker
 let imageDrapingMarker = new ImageDraping({
-    getPlatformLocation: {
+    platformLocationFunc: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
             return {
@@ -125,7 +125,7 @@ let imageDrapingMarker = new ImageDraping({
             };
         }
     },
-    getPlatformOrientation: {
+    platformOrientationFunc: {
         dataSourceIds: [platformOrientationDataSource.getId()],
         handler: function (rec) {
             return {
@@ -135,7 +135,7 @@ let imageDrapingMarker = new ImageDraping({
             };
         }
     },
-    getGimbalOrientation: {
+    gimbalOrientationFunc: {
         dataSourceIds: [gimbalOrientationDataSource.getId()],
         handler: function (rec) {
             return {
@@ -160,10 +160,10 @@ let imageDrapingMarker = new ImageDraping({
 // create Cesium view
 let cesiumView = new CesiumView("cesium-h264-draping-container",
     [{
-        layer: pointMarker,
+        styler: pointMarker,
         name: 'Solo draping marker'
     },{
-        layer: imageDrapingMarker,
+        styler: imageDrapingMarker,
         name: 'Solo draping'
     }]
 );

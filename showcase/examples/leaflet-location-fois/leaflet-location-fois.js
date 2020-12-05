@@ -1,6 +1,6 @@
 //@ sourceURL=leaflet-location.html.js
 // create data source for Android phone GPS
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import Server from "osh/server/Server.js";
 
@@ -41,7 +41,7 @@ server.getFeatureOfInterestById("urn:usgs:water:network", function(resp) {
       description: "<hr/>" + f.description + "<br/>" +
           "Latitude: " + pos[0] + "°<br/>" +
           "Longitude: " + pos[1] + "°",
-      layer: pointMarker
+      styler: pointMarker
     });
   });
 });
