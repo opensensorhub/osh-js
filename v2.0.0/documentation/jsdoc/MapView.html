@@ -549,6 +549,25 @@
             </ul>
         </li>
     
+        <li class="item" data-name="Event">
+            <span class="title">
+                <a href="Event.html">Event</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="EventManager">
             <span class="title">
                 <a href="EventManager.html">EventManager</a>
@@ -730,41 +749,6 @@
             </ul>
         </li>
     
-        <li class="item" data-name="Layer">
-            <span class="title">
-                <a href="Layer.html">Layer</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="Layer#addFn"><a href="Layer.html#addFn">addFn</a></li>
-            
-                <li data-name="Layer#clear"><a href="Layer.html#clear">clear</a></li>
-            
-                <li data-name="Layer#getDataSourcesIds"><a href="Layer.html#getDataSourcesIds">getDataSourcesIds</a></li>
-            
-                <li data-name="Layer#getId"><a href="Layer.html#getId">getId</a></li>
-            
-                <li data-name="Layer#init"><a href="Layer.html#init">init</a></li>
-            
-                <li data-name="Layer#select"><a href="Layer.html#select">select</a></li>
-            
-                <li data-name="Layer#setData"><a href="Layer.html#setData">setData</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
         <li class="item" data-name="LeafletView">
             <span class="title">
                 <a href="LeafletView.html">LeafletView</a>
@@ -847,9 +831,9 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="MapView#addMarkerToLayer"><a href="MapView.html#addMarkerToLayer">addMarkerToLayer</a></li>
+                <li data-name="MapView#addMarkerToStyler"><a href="MapView.html#addMarkerToStyler">addMarkerToStyler</a></li>
             
-                <li data-name="MapView#addPolylineToLayer"><a href="MapView.html#addPolylineToLayer">addPolylineToLayer</a></li>
+                <li data-name="MapView#addPolylineToStyler"><a href="MapView.html#addPolylineToStyler">addPolylineToStyler</a></li>
             
                 <li data-name="MapView#addViewItem"><a href="MapView.html#addViewItem">addViewItem</a></li>
             
@@ -1481,6 +1465,41 @@
             </ul>
         </li>
     
+        <li class="item" data-name="Styler">
+            <span class="title">
+                <a href="Styler.html">Styler</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Styler#addFn"><a href="Styler.html#addFn">addFn</a></li>
+            
+                <li data-name="Styler#clear"><a href="Styler.html#clear">clear</a></li>
+            
+                <li data-name="Styler#getDataSourcesIds"><a href="Styler.html#getDataSourcesIds">getDataSourcesIds</a></li>
+            
+                <li data-name="Styler#getId"><a href="Styler.html#getId">getId</a></li>
+            
+                <li data-name="Styler#init"><a href="Styler.html#init">init</a></li>
+            
+                <li data-name="Styler#select"><a href="Styler.html#select">select</a></li>
+            
+                <li data-name="Styler#setData"><a href="Styler.html#setData">setData</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="SweJson">
             <span class="title">
                 <a href="SweJson.html">SweJson</a>
@@ -1916,9 +1935,9 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="addMarkerToLayer">
+        <h4 class="name" id="addMarkerToStyler">
             
-            addMarkerToLayer<span class="signature">(layer, markerObject)</span>
+            addMarkerToStyler<span class="signature">(styler, markerObject)</span>
         </h4>
     
         
@@ -1934,7 +1953,7 @@
     
     
     <div class="description">
-        <p>Associate a markerId to a Layer for a fast lookup</p>
+        <p>Associate a markerId to a Styler for a fast lookup</p>
     </div>
     
 
@@ -1965,7 +1984,7 @@
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
@@ -1981,7 +2000,7 @@
             
             <td class="description last">
                 
-                <p>the Layer object</p></td>
+                <p>the Styler object</p></td>
         </tr>
 	
 	
@@ -2055,9 +2074,9 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="addPolylineToLayer">
+        <h4 class="name" id="addPolylineToStyler">
             
-            addPolylineToLayer<span class="signature">(layer, polylineObject)</span>
+            addPolylineToStyler<span class="signature">(styler, polylineObject)</span>
         </h4>
     
         
@@ -2073,7 +2092,7 @@
     
     
     <div class="description">
-        <p>Associate a polylineId to a Layer for a fast lookup</p>
+        <p>Associate a polylineId to a Styler for a fast lookup</p>
     </div>
     
 
@@ -2104,7 +2123,7 @@
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
@@ -2120,7 +2139,7 @@
             
             <td class="description last">
                 
-                <p>the Layer object</p></td>
+                <p>the Styler object</p></td>
         </tr>
 	
 	
@@ -2216,7 +2235,7 @@
     <div class="description">
         <p>Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources<br>
 and EventManager.EVENT.SELECT_VIEW are then observed using the<br>
-dataSource(s) contained into the layer.</p>
+dataSource(s) contained into the styler.</p>
     </div>
     
 
@@ -2309,13 +2328,13 @@ dataSource(s) contained into the layer.</p>
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Layer.html">Layer</a></span>
+<span class="param-type"><a href="Styler.html">Styler</a></span>
 
 
             
@@ -2325,7 +2344,7 @@ dataSource(s) contained into the layer.</p>
             
             <td class="description last">
                 
-                <p>The layer object representing the view item</p></td>
+                <p>The styler object representing the view item</p></td>
         </tr>
 	
 	
@@ -2810,7 +2829,7 @@ Note: the onResize() is called at the end of the process.</p>
     <div class="nameContainer">
         <h4 class="name" id="getMarker">
             
-            getMarker<span class="signature">(layer)</span>
+            getMarker<span class="signature">(styler)</span>
         </h4>
     
         
@@ -2826,7 +2845,7 @@ Note: the onResize() is called at the end of the process.</p>
     
     
     <div class="description">
-        <p>Get the markerId associate to the Layer</p>
+        <p>Get the markerId associate to the Styler</p>
     </div>
     
 
@@ -2857,7 +2876,7 @@ Note: the onResize() is called at the end of the process.</p>
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
@@ -2873,7 +2892,7 @@ Note: the onResize() is called at the end of the process.</p>
             
             <td class="description last">
                 
-                <p>the Layer Object</p></td>
+                <p>the Styler Object</p></td>
         </tr>
 	
 	
@@ -2926,7 +2945,7 @@ Note: the onResize() is called at the end of the process.</p>
     <div class="nameContainer">
         <h4 class="name" id="getPolyline">
             
-            getPolyline<span class="signature">(layer)</span>
+            getPolyline<span class="signature">(styler)</span>
         </h4>
     
         
@@ -2942,7 +2961,7 @@ Note: the onResize() is called at the end of the process.</p>
     
     
     <div class="description">
-        <p>Get the markerId associate to the Layer</p>
+        <p>Get the markerId associate to the Styler</p>
     </div>
     
 
@@ -2973,7 +2992,7 @@ Note: the onResize() is called at the end of the process.</p>
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>styler</code></td>
             
             
             <td class="type">
@@ -2989,7 +3008,7 @@ Note: the onResize() is called at the end of the process.</p>
             
             <td class="description last">
                 
-                <p>the Layer Object</p></td>
+                <p>the Styler Object</p></td>
         </tr>
 	
 	
@@ -3397,7 +3416,7 @@ This is library dependant.</p>
     
     
     <div class="description">
-        <p>Remove the markers corresponding to a PointMarker Layer</p>
+        <p>Remove the markers corresponding to a PointMarker Styler</p>
     </div>
     
 
@@ -3444,7 +3463,7 @@ This is library dependant.</p>
             
             <td class="description last">
                 
-                <p>the layer to remove the markers from</p></td>
+                <p>the styler to remove the markers from</p></td>
         </tr>
 	
 	
@@ -3630,7 +3649,7 @@ This is library dependant.</p>
     
     
     <div class="description">
-        <p>Remove the polylines corresponding to a Polyline Layer</p>
+        <p>Remove the polylines corresponding to a Polyline Styler</p>
     </div>
     
 
@@ -3677,7 +3696,7 @@ This is library dependant.</p>
             
             <td class="description last">
                 
-                <p>the layer to remove the polylines from</p></td>
+                <p>the styler to remove the polylines from</p></td>
         </tr>
 	
 	
@@ -4598,7 +4617,7 @@ This is library dependant.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Sat Dec 05 2020 19:02:10 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Sat Dec 05 2020 20:21:53 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

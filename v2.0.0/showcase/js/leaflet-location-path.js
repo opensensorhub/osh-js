@@ -1,8 +1,8 @@
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarker from "osh/ui/styler/PointMarker.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
-import Polyline from "osh/ui/layer/Polyline.js";
+import Polyline from "osh/ui/styler/Polyline.js";
 
 let gpsDataSource = new SweJson("android-GPS", {
     protocol: "ws",
@@ -17,7 +17,7 @@ let gpsDataSource = new SweJson("android-GPS", {
 
 // style it with a moving point marker
 let pointMarker = new PointMarker({
-    getLocation: {
+    locationFunc: {
         dataSourceIds: [gpsDataSource.getId()],
         handler: function (rec) {
             return {
@@ -33,7 +33,7 @@ let pointMarker = new PointMarker({
 
 // also create a polyline with the last 200 points of the track
 let polyline = new Polyline({
-    getLocation: {
+    locationFunc: {
         dataSourceIds: [gpsDataSource.getId()],
         handler: function (rec) {
             return {
@@ -53,11 +53,11 @@ let polyline = new Polyline({
 // create Leaflet view
 let leafletMapView = new LeafletView("leafletMap",
     [{
-        layer: pointMarker,
+        styler: pointMarker,
         name: "Android Phone GPS"
     },
         {
-            layer: polyline,
+            styler: polyline,
             name: "Android Phone GPS Path"
         }], {
         autoZoomOnFirstMarker:true
