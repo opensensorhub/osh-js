@@ -9,7 +9,7 @@
   },
   "repository": "/vuepress",
   "scripts": {
-    "init-deps": "yarn build-showcase && yarn doc",
+    "init-deps": "yarn install && yarn build-showcase && yarn doc",
     "build-showcase": "yarn install --cwd ../../showcase/ && yarn --cwd ../../showcase/ prod",
     "dev": "vuepress dev src",
     "prod": "yarn init-deps && vuepress build src",

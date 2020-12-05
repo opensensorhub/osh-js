@@ -32,7 +32,7 @@ class Nexrad extends Layer {
 		* @param {Number[]} properties.location - [x,y]
 		* @param {Object} radialData
 		* @param {Function} properties.getLocation -
-		* @param {Function} properties.radialDataFunc -
+		* @param {Function} properties.getRadialData -
 		*
 		*/
 	constructor(properties) {
@@ -59,11 +59,11 @@ class Nexrad extends Layer {
 			this.addFn(properties.getLocation.dataSourceIds,fn);
 		}
 
-		if (isDefined(properties.radialDataFunc)) {
+		if (isDefined(properties.getRadialData)) {
 			let fn = function(rec,timeStamp,options) {
-				that.radialData = properties.radialDataFunc.handler(rec,timeStamp,options);
+				that.radialData = properties.getRadialData.handler(rec,timeStamp,options);
 			};
-			this.addFn(properties.radialDataFunc.dataSourceIds,fn);
+			this.addFn(properties.getRadialData.dataSourceIds,fn);
 		}
 
 		this.reflectivityColorMap = [
