@@ -6,6 +6,11 @@ import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 
+import {
+  Cartographic, Math
+} from "cesium";
+import {isDefined} from "../../../source/osh/utils/Utils";
+
 window.CESIUM_BASE_URL = './';
 
 let avlDataSource = new SweJson("AVL", {
@@ -16,8 +21,10 @@ let avlDataSource = new SweJson("AVL", {
   observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
   startTime: "2014-03-29T07:00:12Z",
   endTime: "2014-04-29T14:26:12Z",
-  replaySpeed: 200
+  replaySpeed: 15
 });
+
+const currentSelectedElt = document.getElementById("current-marker");
 
 const commonMarkerConf = {
   locationFunc: {
@@ -92,15 +99,51 @@ const commonPolylineConf = {
 //Stadia_Outdoors
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
+function clearInfos(markerId, position, positionPixels) {
+  currentSelectedElt.innerHTML = 'Current selected marker: ';
+}
+
+function updateInfos(markerId, position, positionPixels) {
+  if(!isDefined(markerId)) {
+    clearInfos();
+  } else {
+    currentSelectedElt.innerHTML = 'Current selected marker: <strong>' + markerId + '</strong>, ' + 'pos= ' + position + ', ' + 'pixel= ' + positionPixels
+  }
+}
+
 const leafletViewItems = [
-    {styler:  new PointMarker({...commonMarkerConf}), name: "AVL"},
+    {styler:  new PointMarker({
+        ...commonMarkerConf,
+        onClick: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.layerPoint),
+        onHover: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.layerPoint),
+      }), name: "AVL"},
     {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
     ];
 const olViewItems = [
-  {styler:  new PointMarker({...commonMarkerConf}), name: "AVL"},
+  {styler:  new PointMarker({
+      ...commonMarkerConf,
+      onClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.pixel),
+    }), name: "AVL"},
   {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
 ];
-const cesiumViewItems = [{styler:  new PointMarker({...commonMarkerConf}), name: "AVL"}];
+const cesiumViewItems = [{styler:  new PointMarker({
+    ...commonMarkerConf,
+    onClick: (markerId, billboard, event) =>  {
+      if(isDefined(markerId)) {
+        const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
+        const longitudeString = Math.toDegrees(
+            cartographic.longitude
+        ).toFixed(2);
+        const latitudeString = Math.toDegrees(
+            cartographic.latitude
+        ).toFixed(2);
+
+        updateInfos(markerId, longitudeString + ', ' + latitudeString, '')
+      } else {
+        clearInfos();
+      }
+    },
+  }), name: "AVL"}];
 
 // create Leaflet view
 const leafletMapView = new LeafletView("leafletMap",
