@@ -14,7 +14,15 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {assertArray, assertObject, assertPositive, assertString, hasValue, isDefined} from "../../utils/Utils.js";
+import {
+	assertArray,
+	assertFunction,
+	assertObject,
+	assertPositive,
+	assertString,
+	hasValue,
+	isDefined
+} from "../../utils/Utils.js";
 import Styler from "./Styler.js";
 
 /**
@@ -79,7 +87,9 @@ class PointMarker extends Styler {
 		* @param {Function} [properties.labelFunc] -
 		* @param {Function} [properties.labelColorFunc] -
 		* @param {Function} [properties.labelSizeFunc] -
-	  * @param {Function} [properties.markerIdFunc] - map an id to a unique marker
+	  * @param {Function} [properties.onClick] - trigger onClick marker event
+ 	  * @param {Function} [properties.onHover] - trigger onHover marker event
+ 	  * @param {Function} [properties.markerIdFunc] - map an id to a unique marker
 	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
 	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
 		*
@@ -207,6 +217,14 @@ class PointMarker extends Styler {
 				that.labelSize = properties.labelSizeFunc.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
+		}
+
+		if (isDefined(properties.onClick) && assertFunction(properties.onClick)) {
+			this.onClick = properties.onClick;
+		}
+
+		if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {
+			this.onHover = properties.onHover;
 		}
 	}
 

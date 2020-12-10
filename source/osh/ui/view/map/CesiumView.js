@@ -17,7 +17,6 @@
 
 import View from "../View.js";
 import {isDefined, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
 
 import {
   when,
@@ -48,7 +47,8 @@ import {
   HeadingPitchRoll,
   HeadingPitchRange,
   Ellipsoid, defined,
-  EncodedCartesian3, CesiumTerrainProvider
+  EncodedCartesian3, CesiumTerrainProvider,
+  ScreenSpaceEventType
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -153,10 +153,46 @@ class CesiumView extends MapView {
         name : styler.viewItem.name,
         description : styler.viewItem.description,
         timeStamp: timeStamp,
-        selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
+        id: styler.id+"$"+styler.markerId
       });
 
       this.addMarkerToStyler(styler, markerObj);
+      // Get default left click handler for when a feature is not picked on left click
+      const that = this;
+      const onClick = (movement) => {
+        // Pick a new feature
+        console.log(movement);
+        const pickedFeature = that.viewer.scene.pick(movement.position);
+        if (!isDefined(pickedFeature)) {
+          that.viewer.selectedEntity = null;
+          that.onMarkerClick(undefined,pickedFeature, styler, {})
+          return;
+        }
+        const mId = that.getMarkerId(pickedFeature.id.id);
+
+        that.viewer.selectedEntity = pickedFeature.id;
+        that.viewer.selectedEntity.name = mId;
+        that.onMarkerClick(mId,pickedFeature, styler, {})
+      };
+
+      const onHover = (movement) => {
+        // Pick a new feature
+        const pickedFeature = that.viewer.scene.pick(movement.endPosition);
+        if (!isDefined(pickedFeature)) {
+          that.viewer.selectedEntity = null;
+          that.onMarkerClick(undefined,pickedFeature, styler, {})
+          return;
+        }
+        const mId = that.getMarkerId(pickedFeature.id.id);
+
+        that.viewer.selectedEntity = pickedFeature.id;
+        that.viewer.selectedEntity.name = mId;
+        that.onMarkerClick(mId,pickedFeature, styler, {})
+      };
+
+      this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
+      this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
+
     }
 
     this.updateMapMarker(styler, {
@@ -169,8 +205,7 @@ class CesiumView extends MapView {
       labelColor : styler.labelColor,
       labelSize : styler.labelSize,
       timeStamp: timeStamp,
-      defaultToTerrainElevation: styler.defaultToTerrainElevation,
-      selected:((typeof(options.selected) !== "undefined")? options.selected : false)
+      defaultToTerrainElevation: styler.defaultToTerrainElevation
     });
   }
 
@@ -309,11 +344,6 @@ class CesiumView extends MapView {
     this.viewer.terrainProvider = new EllipsoidTerrainProvider();
     this.viewer.scene.copyGlobeDepth = true;
     this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
-
-    const self = this;
-    knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
-      //change icon
-    }.bind(this));
   }
 
   /**
@@ -334,7 +364,7 @@ class CesiumView extends MapView {
    * @param {String} properties.label - label of the tooltip
    * @param {String} properties.description - description of the marker to display into the tooltip
    * @param {Object} properties.orientation.heading - orientation of the icon in degree
-   * @return {string} the id of the new created marker
+   * @return {Entity} the new created entity
    */
   addMarker(properties) {
 
@@ -415,11 +445,8 @@ class CesiumView extends MapView {
       geom.description = properties.description;
     }
 
-    let entity = this.viewer.entities.add(geom);
-    let id = 'view-marker-'+randomUUID();
-    entity._dsid = id;
-
-    return entity;
+    geom.id = properties.id;
+    return this.viewer.entities.add(geom);
   }
 
   /**

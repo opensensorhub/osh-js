@@ -214,7 +214,9 @@ class LeafletView extends MapView {
      * @param {String} properties.description - description of the marker to display into the tooltip
      * @param {String} properties.labelOffset - offset of the label of the tooltip
      * @param {Number} properties.orientation - orientation of the icon in degree
-     * @return {string} the id of the new created marker
+     * @param {Function} properties.onClick - onClick function callback
+     * @param {String} properties.id - the id of the new created marker: styler.id$styler.markerId
+     * @return {Object} the the new created marker
      */
     addMarker(properties) {
         //create marker
@@ -248,6 +250,7 @@ class LeafletView extends MapView {
             });
         }
 
+        marker.id = properties.id;
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
 
@@ -307,9 +310,14 @@ class LeafletView extends MapView {
                 labelSize : styler.labelSize,
                 labelOffset : styler.labelOffset,
                 name : styler.viewItem.name,
-                description : styler.viewItem.description
+                description : styler.viewItem.description,
+                onClick: styler.onClick,
+                id: styler.id+"$"+styler.markerId
             });
             this.addMarkerToStyler(styler, markerObject);
+            const mId = styler.markerId; //need to freeze
+            markerObject.on('click', (event) => this.onMarkerClick(mId,markerObject, styler, event));
+            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, styler, event));
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker

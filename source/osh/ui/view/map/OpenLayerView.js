@@ -90,7 +90,8 @@ class OpenLayerView extends MapView {
                 color: styler.color,
                 icon: styler.icon,
                 anchor: styler.iconAnchor,
-                name: this.names[styler.markerId]
+                name: this.names[styler.markerId],
+                id: styler.id+"$"+styler.markerId
             });
 
             this.addMarkerToStyler(styler, markerObj);
@@ -176,7 +177,7 @@ class OpenLayerView extends MapView {
         if (isDefined(options)) {
 
             //if the user passed in a map then use that one, don't make a new one
-            if(options.map) {
+            if (options.map) {
                 this.map = options.map;
                 return;
             }
@@ -207,7 +208,7 @@ class OpenLayerView extends MapView {
             }
         }
         // #region snippet_openlayerview_initial_view
-        if(initialView === null) {
+        if (initialView === null) {
             // loads the default one
             initialView = new OlView({
                 center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
@@ -219,18 +220,18 @@ class OpenLayerView extends MapView {
 
         // sets layers to map
         //create map
-       this.map = new Map({
+        this.map = new Map({
             target: this.divId,
             controls: defaultControls().extend([
                 new FullScreen()
             ]),
-           interactions: defaultInteractions({mouseWheelZoom: false}).extend([
-               new DragRotateAndZoom(),
-               new MouseWheelZoom({
-                   constrainResolution: true, // force zooming to a integer zoom,
-                   duration: 200
-               })
-           ]),
+            interactions: defaultInteractions({mouseWheelZoom: false}).extend([
+                new DragRotateAndZoom(),
+                new MouseWheelZoom({
+                    constrainResolution: true, // force zooming to a integer zoom,
+                    duration: 200
+                })
+            ]),
             layers: [
                 new Group({
                     'title': 'Base maps',
@@ -251,7 +252,7 @@ class OpenLayerView extends MapView {
         });
         this.map.addControl(layerSwitcher);
 
-        this.map.addControl( new ZoomSlider());
+        this.map.addControl(new ZoomSlider());
 
         // inits onClick events
         let select_interaction = new Select();
@@ -273,6 +274,31 @@ class OpenLayerView extends MapView {
 
         this.map.addInteraction(select_interaction);
         this.map.updateSize();
+
+        const that = this;
+        const eventCallback = function(evt) {
+            vectorMarkerLayer.getFeatures(evt.pixel).then( (features) => {
+                const feature = isDefined(features) && features.length > 0 ? features[0] : undefined;
+                if(isDefined(feature)) {
+                    const mId = that.getMarkerId(feature.getId());
+                    if(!isDefined(mId)) {
+                        return;
+                    }
+                    const sId = that.getStylerId(feature.getId());
+                    if(!isDefined(sId)) {
+                        return;
+                    }
+                    const styler = that.getStyler(sId);
+                    if(!isDefined(styler)) {
+                        return;
+                    }
+                    that.onMarkerClick(mId, feature, styler, evt);
+                }
+            });
+        };
+
+        this.map.on('click', eventCallback);
+        this.map.on('pointermove', eventCallback);
     }
 
     /**
@@ -293,7 +319,8 @@ class OpenLayerView extends MapView {
      * @param {Number} properties.lat
      * @param {String} properties.icon - path of the icon
      * @param {Number} properties.orientation - orientation in degree
-     * @return {String} the id of the new created marker
+     * @param {String} properties.id - the id of the new created marker: styler.id$styler.markerId
+     * @return {Object} the new marker object
      */
     addMarker(properties) {
         //create marker
@@ -325,9 +352,7 @@ class OpenLayerView extends MapView {
                 markerFeature.setStyle(iconStyle);
             }
 
-
-            let id = "view-marker-" + randomUUID();
-            markerFeature.setId(id);
+            markerFeature.setId(properties.id);
             this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {
