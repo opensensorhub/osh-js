@@ -85,6 +85,11 @@ var samples = [
     description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
     url: "video-h264"
   },
+    {
+        name: "H264 Video using WebCodecAPI",
+        description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
+        url: "video-h264-webcodec-api"
+    },
   {
     name: "H264 Image draping Video",
     description: "Display an H264 video in a simple DIV using our FFMPEG-JS decoder and drap the decoded frame onto the terrain.",
