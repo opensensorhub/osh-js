@@ -179,15 +179,11 @@ class CesiumView extends MapView {
         // Pick a new feature
         const pickedFeature = that.viewer.scene.pick(movement.endPosition);
         if (!isDefined(pickedFeature)) {
-          that.viewer.selectedEntity = null;
-          that.onMarkerClick(undefined,pickedFeature, styler, {})
+          that.onMarkerHover(undefined,pickedFeature, styler, {})
           return;
         }
         const mId = that.getMarkerId(pickedFeature.id.id);
-
-        that.viewer.selectedEntity = pickedFeature.id;
-        that.viewer.selectedEntity.name = mId;
-        that.onMarkerClick(mId,pickedFeature, styler, {})
+        that.onMarkerHover(mId,pickedFeature, styler, {})
       };
 
       this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
