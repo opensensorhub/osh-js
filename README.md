@@ -95,9 +95,9 @@ You can add any external dependencies using *npm*. For example, if you attempt t
 some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
 ## Documentation
-The documentation can be found [here](http://opensensorhub.github.io/osh-js/v2.0.0/doc).
+Official Website: [here](http://opensensorhub.github.io/osh-js/v2.0.0/doc).
 
-The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/documentation/jsdoc/)
+JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/documentation/jsdoc/)
 
 ## Live Showcase
 
