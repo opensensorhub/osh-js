@@ -14,7 +14,6 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import EventManager from "osh/events/EventManager";
 import {isDefined, randomUUID} from "../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.worker.js';
 import {DATA_SYNCHRONIZER_TOPIC} from "../Constants.js";
@@ -23,8 +22,8 @@ class DataSynchronizer {
     /**
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
-     * @param {Number} properties.replaySpeed - replaySpeed value
-     * @param {Number} properties.intervalRate - interval in which data is played
+     * @param {Number} [properties.replaySpeed=1] - replaySpeed value
+     * @param {Number} [properties.intervalRate=5] - interval in which data is played (in milliseconds)
      * @param {DataSource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {

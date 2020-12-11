@@ -2,7 +2,7 @@ import SweJson from 'osh/datareceiver/SweJson.js';
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import LeafletView from 'osh/ui/view/map/LeafletView.js';
 import OpenLayerView from 'osh/ui/view/map/OpenLayerView.js';
-import PointMarker from "osh/ui/styler/PointMarker.js";
+import PointMarker from "osh/ui/layer/PointMarker.js";
 import {randomUUID} from "osh/utils/Utils";
 
 window.CESIUM_BASE_URL = './';
@@ -32,7 +32,7 @@ function createViewItem() {
 
     let pointMarker = new PointMarker({
         label: "Marker",
-        locationFunc : {
+        getLocation : {
             dataSourceIds : [gpsDataSource.id],
             handler : function(rec) {
                 return {
@@ -48,7 +48,7 @@ function createViewItem() {
     const viewItem = {
         id: randomUUID(),
         name: 'marker',
-        styler: pointMarker
+        layer: pointMarker
     };
     viewItems.push(viewItem);
 

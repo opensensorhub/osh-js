@@ -8,7 +8,7 @@
   // @ is an alias to /src
   import LeafletView from "osh/ui/view/map/LeafletView.js";
   import SweJson from "osh/datareceiver/SweJson.js";
-  import PointMarker from "osh/ui/styler/PointMarker.js";
+  import PointMarker from "osh/ui/layer/PointMarker.js";
 
   export default {
     name: "Map",
@@ -45,7 +45,7 @@
         // add 3D model marker to Cesium view
         let pointMarker = new PointMarker({
           label: "3DR Solo",
-          locationFunc : {
+          getLocation : {
             dataSourceIds : [platformLocationDataSource.getId()],
             handler : function(rec) {
               return {
@@ -55,7 +55,7 @@
               };
             }
           },
-          orientationFunc : {
+          getOrientation : {
             dataSourceIds : [platformOrientationDataSource.getId()],
             handler : function(rec) {
               return {
@@ -70,7 +70,7 @@
         // create Leaflet view
         new LeafletView("leafletMap",
           [{
-            styler: pointMarker,
+            layer: pointMarker,
             name: "Android Phone GPS"
           }]
         );

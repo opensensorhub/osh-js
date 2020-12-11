@@ -1,0 +1,168 @@
+/**
+ * Custom Styles here.
+ *
+ * ref：https://v1.vuepress.vuejs.org/config/#index-styl
+ */
+
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+div[class*="language-"] {
+    background-color: white;
+}
+.theme-default-content pre code, .theme-default-content pre[class*="language-"] code {
+    color: rgb(57, 58, 52);
+}
+.token.property, .token.class-name, .token.constant, .token.symbol {
+    color: rgb(57, 58, 52);
+}
+.token.boolean, .token.number, .token.function {
+    color: rgb(215, 58, 73);
+}
+.token.boolean, .token.number {
+    color: rgb(54, 172, 170) !important;
+}
+
+.token.string, .token.char, .token.attr-value, .token.regex, .token.variable {
+    color: rgb(227, 17, 108);
+}
+.token.string {
+    color: #e3116c !important;
+}
+
+.theme-default-content code {
+ font-size: 15.2px;
+  line-height: 22px;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: rgb(57, 58, 52);
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+    font-size: 15.2px;
+    line-height: 22px;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: rgb(57, 58, 52);
+    -webkit-font-smoothing antialiased;
+    -webkit-tap-highlight-color rgba(0, 0, 0, 0);
+	color: rgb(57, 58, 52);
+	background-color: white;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: rgb(57, 58, 52);
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: rgb(0,0,159);
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: rgb(0, 164, 219);
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: rgb(57, 58, 52);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+}
+
+.token.keyword {
+	color: rgb(0,0,159);
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+
+.demo-hr {
+    border:none;
+    width: 60%;margin-left: auto;margin-right: auto;
+    box-shadow: 0 5px 5px -5px #333;
+    border-bottom: 1px solid #646464;
+    height: 50px;
+    opacity:0.7;
+}

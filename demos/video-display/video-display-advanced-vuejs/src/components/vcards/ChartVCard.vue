@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import Curve from "osh/ui/styler/Curve";
+  import Curve from "osh/ui/layer/Curve";
   import ChartJsView from "osh/ui/view/chart/ChartJsView";
   import {randomUUID} from "osh/utils/Utils";
 
@@ -28,8 +28,8 @@
     },
     mounted() {
         // build chart
-        let windSpeedStylerCurve = new Curve({
-          valuesFunc: {
+        let windSpeedLayerCurve = new Curve({
+          getValues: {
             dataSourceIds: [this.dataSource.id],
             handler: function (rec, timeStamp) {
               return {
@@ -43,7 +43,7 @@
         // show it in video view
         new ChartJsView(this.id,
           [{
-            styler: windSpeedStylerCurve,
+            layer: windSpeedLayerCurve,
             name: "WindSpeed"
           }],
           {

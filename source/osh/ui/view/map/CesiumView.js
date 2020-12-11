@@ -54,6 +54,7 @@ import {
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+import MapView from "./MapView";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
@@ -64,13 +65,13 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 
  let cesiumMapView = new CesiumView("",
  [{
-	styler :  pointMarker,
+	layer :  pointMarker,
 	name : "Android Phone GPS",
 	entityId : androidEntity.id
  },
  {
-    styler : new Polyline({
-        locationFunc : {
+    layer : new Polyline({
+        getLocation : {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
                 return {
@@ -91,14 +92,14 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
  }]
  );
  */
-class CesiumView extends View {
+class CesiumView extends MapView {
 
   /**
    * Create a View.
    * @param {String} parentElementDivId - The div element to attach to
    * @param {Object[]} viewItems - The initial view items to add
    * @param {String} viewItems.name - The name of the view item
-   * @param {Styler} viewItems.styler - The styler object representing the view item
+   * @param {Layer} viewItems.layer - The layer object representing the view item
    * @param {Object} options - the properties of the view
    *
    */
@@ -118,8 +119,8 @@ class CesiumView extends View {
   }
 
   /**
-   * Updates the marker associated to the styler.
-   * @param {Styler} styler - The styler allowing the update of the marker
+   * Updates the marker associated to the layer.
+   * @param {Layer} layer - The layer allowing the update of the marker
    * @param {Object} options -
    * @param {Object} options.location -
    * @param {Number} options.location.x -
@@ -135,60 +136,57 @@ class CesiumView extends View {
    * @param {Number} timeStamp -
    *
    */
-  updateMarker(styler,timeStamp,options) {
-    var markerId = 0;
-
-    if (!(styler.getId() in this.stylerToObj)) {
-      markerId = this.addMarker({
-        lat : styler.location.y,
-        lon : styler.location.x,
-        alt : styler.location.z,
-        orientation : styler.orientation,
-        icon : styler.icon,
-        iconAnchor : styler.iconAnchor,
-        label : styler.label,
-        labelColor : styler.labelColor,
-        labelSize : styler.labelSize,
-        labelOffset : styler.labelOffset,
-        name : styler.viewItem.name,
-        description : styler.viewItem.description,
+  updateMarker(layer,timeStamp,options) {
+    let marker = this.getMarker(layer);
+    if (!isDefined(marker)) {
+      const markerObj = this.addMarker({
+        lat : layer.location.y,
+        lon : layer.location.x,
+        alt : layer.location.z,
+        orientation : layer.orientation,
+        icon : layer.icon,
+        iconAnchor : layer.iconAnchor,
+        label : layer.label,
+        labelColor : layer.labelColor,
+        labelSize : layer.labelSize,
+        labelOffset : layer.labelOffset,
+        name : layer.viewItem.name,
+        description : layer.viewItem.description,
         timeStamp: timeStamp,
         selected: ((typeof(options.selected) !== "undefined")? options.selected : false)
       });
 
-      this.stylerToObj[styler.getId()] = markerId;
-    } else {
-      markerId = this.stylerToObj[styler.getId()];
+      this.addMarkerToLayer(layer, markerObj);
     }
 
-    this.updateMapMarker(markerId, {
-      lat : styler.location.y,
-      lon : styler.location.x,
-      alt : styler.location.z,
-      orientation : styler.orientation,
-      icon : styler.icon,
-      label : styler.label,
-      labelColor : styler.labelColor,
-      labelSize : styler.labelSize,
+    this.updateMapMarker(layer, {
+      lat : layer.location.y,
+      lon : layer.location.x,
+      alt : layer.location.z,
+      orientation : layer.orientation,
+      icon : layer.icon,
+      label : layer.label,
+      labelColor : layer.labelColor,
+      labelSize : layer.labelSize,
       timeStamp: timeStamp,
-      defaultToTerrainElevation: styler.defaultToTerrainElevation,
+      defaultToTerrainElevation: layer.defaultToTerrainElevation,
       selected:((typeof(options.selected) !== "undefined")? options.selected : false)
     });
   }
 
   /**
-   * Updates the marker associated to the styler.
-   * @param {ImageDraping} styler - The styler allowing the update of the marker
+   * Updates the marker associated to the layer.
+   * @param {ImageDraping} layer - The layer allowing the update of the marker
    *
    */
-  updateDrapedImage(styler,timeStamp,options,snapshot) {
+  updateDrapedImage(layer,timeStamp,options,snapshot) {
 
-    const llaPos = styler.platformLocation;
+    const llaPos = layer.platformLocation;
     const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
 
     const DTR = Math.PI/180;
-    const attitude = styler.platformOrientation;
-    const gimbal = styler.gimbalOrientation;
+    const attitude = layer.platformOrientation;
+    const gimbal = layer.gimbalOrientation;
 
     ///////////////////////////////////////////////////////////////////////////////////
     // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
@@ -220,11 +218,11 @@ class CesiumView extends View {
 
     ////////////////////////////////////////////////////////////////////////////////////
 
-    const camProj = styler.cameraModel.camProj;
-    const camDistR = styler.cameraModel.camDistR;
-    const camDistT = styler.cameraModel.camDistT;
+    const camProj = layer.cameraModel.camProj;
+    const camDistR = layer.cameraModel.camDistR;
+    const camDistT = layer.cameraModel.camDistT;
 
-    let imgSrc = styler.imageSrc;
+    let imgSrc = layer.imageSrc;
 
     {
       // snapshot
@@ -290,7 +288,6 @@ class CesiumView extends View {
 
   //---------- MAP SETUP --------------//
   beforeAddingItems(options) {
-    this.markers = {};
     this.first = true;
 
     const imageryProviders = createDefaultImageryProviderViewModels();
@@ -316,52 +313,16 @@ class CesiumView extends View {
     const self = this;
     knockout.getObservable(this.viewer, '_selectedEntity').subscribe(function(entity) {
       //change icon
-      if (defined(entity)) {
-        let dataSrcIds = [];
-        let entityId;
-        for (let stylerId in self.stylerToObj) {
-          if(self.stylerToObj[stylerId] === entity._dsid) {
-            for(let i=0;i < self.stylers.length;i++) {
-              if(self.stylers[i].getId() === stylerId) {
-                dataSrcIds = dataSrcIds.concat(self.stylers[i].getDataSourcesIds());
-                entityId = self.stylers[i].viewItem.entityId;
-                break;
-              }
-            }
-          }
-        }
-
-        EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
-          dataSourcesIds: dataSrcIds,
-          entityId: entityId
-        });
-      } else {
-        EventManager.fire(EventManager.EVENT.SELECT_VIEW, {
-          dataSourcesIds: [],
-          entityId: null
-        });
-      }
     }.bind(this));
   }
 
   /**
-   * Removes a view item from the view.
-   * @param {Object} viewItem - The initial view items to add
-   * @param {String} viewItem.name - The name of the view item
-   * @param {Styler} viewItem.styler - The styler object representing the view item
+   * Abstract method to remove a marker from its corresponding layer.
+   * This is library dependent.
+   * @param {Object} marker - The Map marker object
    */
-  removeViewItem(viewItem) {
-    const markerId = this.stylerToObj[viewItem.styler.id];
-    super.removeViewItem(viewItem);
-
-    if(isDefined(markerId)) {
-      let marker = this.markers[markerId];
-      if(isDefined(marker)) {
-        this.viewer.entities.remove(marker);
-      }
-
-      delete this.markers[markerId];
-    }
+  removeMarkerFromLayer(marker) {
+    this.viewer.entities.remove(marker);
   }
 
   /**
@@ -457,15 +418,13 @@ class CesiumView extends View {
     let entity = this.viewer.entities.add(geom);
     let id = 'view-marker-'+randomUUID();
     entity._dsid = id;
-    this.markers[id] = entity;
 
-
-    return id;
+    return entity;
   }
 
   /**
-   * Updates the marker associated to the styler.
-   * @param {String} id - The styler allowing the update of the marker
+   * Updates the marker associated to the layer.
+   * @param {Layer} layer - The layer allowing the update of the marker
    * @param {Object} properties -
    * @param {Object} properties.lon -
    * @param {Object} properties.lat -
@@ -475,7 +434,7 @@ class CesiumView extends View {
    * @param {Object} properties.defaultToTerrainElevation -
    * @param {Object} properties.selected -
    */
-  updateMapMarker(id, properties) {
+  updateMapMarker(layer, properties) {
     const lon = properties.lon;
     const lat = properties.lat;
     let alt = properties.alt;
@@ -486,7 +445,7 @@ class CesiumView extends View {
     let defaultToTerrainElevation = properties.defaultToTerrainElevation;
 
     if (!isNaN(lon) && !isNaN(lat)) {
-      var marker =  this.markers[id];
+      let marker = this.getMarker(layer);
 
       // get ground altitude if non specified
       if (isDefined(alt) || isNaN(alt)) {

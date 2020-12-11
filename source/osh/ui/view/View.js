@@ -31,34 +31,27 @@ class View {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Styler} viewItems.styler - The styler object representing the view item
-     * @param {Object} options - the properties of the view
-     * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
-     * @param {Entity} options.entity - The entity to which the view belongs to
+     * @param {Object[]}  [viewItems=[]] - The initial view items to add
+     * @param {String} [viewItems.name] - The name of the view item
+     * @param {Layer} viewItems.layer - The layer object representing the view item
+     * @param {Object} [options={}] - the properties of the view
+     * @param {String} [options.dataSourceId] - The dataSource id of the dataSource providing data to the view
+     * @param {Entity} [options.entity] - The entity to which the view belongs to
      */
     constructor(parentElementDivId, viewItems, options) {
-        // list of stylers
-        /** @protected @const {!Styler} */
-        this.stylers = [];
+        // list of layers
+        this.layers = [];
         this.viewItems = [];
-        /** @protected @const {!String[]} */
         this.names = {};
-        this.stylerToObj = {};
-        this.stylerIdToStyler = {};
         this.lastRec = {};
         this.selectedDataSources = [];
         this.dataSources = [];
-        this.viewItemsBroadcastChannels = {};
         this.entity = null;
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
 
-        /** @protected {!Entity} */
         this.entity = null;
-
         this.dataSourceId = -1;
         // sets dataSourceId
         if (isDefined(options) && isDefined(options.dataSourceId)) {
@@ -245,7 +238,7 @@ class View {
     /**
      * Set the data to the view. Each view has to handle the kind of the data separately.
      * @param {String} dataSourceId - The dataSource id of the source providing the data
-     * @param {[*]} data - The data array to set
+     * @param {any[]} data - The data array to set
      */
     setData(dataSourceId, data) {
     }
@@ -263,30 +256,28 @@ class View {
     /**
      * Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
      * and EventManager.EVENT.SELECT_VIEW are then observed using the
-     * dataSource(s) contained into the styler.
+     * dataSource(s) contained into the layer.
      * @param {Object} viewItem - The initial view items to add
      * @param {String} viewItem.name - The name of the view item
-     * @param {Styler} viewItem.styler - The styler object representing the view item
+     * @param {Layer} viewItem.layer - The layer object representing the view item
      */
     addViewItem(viewItem) {
         this.viewItems.push(viewItem);
-        if (viewItem.hasOwnProperty("styler")) {
-            let styler = viewItem.styler;
-            this.stylers.push(styler);
+        if (viewItem.hasOwnProperty("layer")) {
+            let layer = viewItem.layer;
+            this.layers.push(layer);
             if (viewItem.hasOwnProperty("name")) {
-                this.names[styler.getId()] = viewItem.name;
+                this.names[layer.markerId] = viewItem.name;
             }
-            styler.viewItem = viewItem;
-            styler.init(this);
-            this.stylerIdToStyler[styler.id] = styler;
-            //for(let dataSourceId in styler.dataSourceToStylerMap) {
-            let ds = styler.getDataSourcesIds();
+            layer.viewItem = viewItem;
+            layer.init(this);
+            //for(let dataSourceId in layer.dataSourceToLayerMap) {
+            let ds = layer.getDataSourcesIds();
             for (let i = 0; i < ds.length; i++) {
                 const dataSourceId = ds[i];
                 // observes the data come in
                 let self = this;
                 const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
-                this.viewItemsBroadcastChannels[dataSourceId] = broadcastChannel;
                 broadcastChannel.onmessage = (event) => {
                     // skip data reset events for now
                     if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
@@ -300,9 +291,9 @@ class View {
                         selected = (self.selectedDataSources.indexOf(dataSourceId) > -1);
                     }
 
-                    //TODO: maybe done into the styler?
+                    //TODO: maybe done into the layer?
                     if(event.data.type === EventType.DATA) {
-                        styler.setData(dataSourceId, event.data, self, {
+                        layer.setData(dataSourceId, event.data, self, {
                             selected: selected
                         });
                         self.lastRec[dataSourceId] = event.data;
@@ -319,7 +310,7 @@ class View {
                     }
 
                     if (dataSourceId in self.lastRec) {
-                        styler.setData(dataSourceId, self.lastRec[dataSourceId], self, {
+                        layer.setData(dataSourceId, self.lastRec[dataSourceId], self, {
                             selected: selected
                         });
                     }
@@ -333,22 +324,18 @@ class View {
      * Removes a view item from the view.
      * @param {Object} viewItem - The initial view items to add
      * @param {String} viewItem.name - The name of the view item
-     * @param {Styler} viewItem.styler - The styler object representing the view item
+     * @param {Layer} viewItem.layer - The layer object representing the view item
      */
     removeViewItem(viewItem) {
         if(this.viewItems.includes(viewItem)) {
             // 1) remove from STYLER fn
-            for(let ds in viewItem.styler.dataSourceToStylerMap) {
-                this.viewItemsBroadcastChannels[ds].close();
-                delete this.viewItemsBroadcastChannels[ds];
+            for(let ds in viewItem.layer.dataSourceToLayerMap) {
                 delete this.lastRec[ds];
             }
             this.viewItems = this.viewItems.filter(currentViewItem => currentViewItem !== viewItem);
         }
-        delete this.stylerIdToStyler[viewItem.styler.id]
-        this.stylers = this.stylers.filter(currentStyler => currentStyler.id !== viewItem.styler.id);
-        delete this.names[viewItem.styler.id];
-        delete this.stylerToObj[viewItem.styler.id]
+        this.layers = this.layers.filter(currentLayer => currentLayer.id !== viewItem.layer.id);
+        delete this.names[viewItem.layer.markerId];
     }
 
     /**
@@ -409,12 +396,12 @@ class View {
             res.push(this.dataSourceId);
         }
 
-        // check for stylers
+        // check for layers
         for (let i = 0; i < this.viewItems.length; i++) {
             let viewItem = this.viewItems[i];
-            if (viewItem.hasOwnProperty("styler")) {
-                let styler = viewItem.styler;
-                res = res.concat(styler.getDataSourcesIds());
+            if (viewItem.hasOwnProperty("layer")) {
+                let layer = viewItem.layer;
+                res = res.concat(layer.getDataSourcesIds());
             }
         }
 

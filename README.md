@@ -6,7 +6,7 @@ It is pure javascript framework and does not require third party libraries. A se
 Leaflet, OpenLayer, Cesium, Chart.js etc..
 
 It's an event based architecture suitable for real-time or playback. It allows one to make temporal synchronization or multiple data stream. It provides a styling overlay using 
-configurable stylers as well as an advanced support for video (H264/MJPEG). It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.
+configurable layers as well as an advanced support for video (H264/MJPEG). It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.
 
 Moreover, it offers support for SOS & SPS services, discovery function, uses the HTTP or WebSocket API.
 Several modules already exist to allow one to setup quickly an application such as Orientation, DataSourceChart, Video, Map etc..
