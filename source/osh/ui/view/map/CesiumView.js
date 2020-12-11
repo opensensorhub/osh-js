@@ -157,39 +157,6 @@ class CesiumView extends MapView {
       });
 
       this.addMarkerToStyler(styler, markerObj);
-      // Get default left click handler for when a feature is not picked on left click
-      const that = this;
-      const onClick = (movement) => {
-        // Pick a new feature
-        const pickedFeature = that.viewer.scene.pick(movement.position);
-        if (!isDefined(pickedFeature)) {
-          that.viewer.selectedEntity = null;
-          that.onMarkerClick(undefined,undefined, styler, {})
-          return;
-        }
-        const mId = that.getMarkerId(pickedFeature.id.id);
-
-        that.viewer.selectedEntity = pickedFeature.id;
-        that.viewer.selectedEntity.name = mId;
-        pickedFeature.pixel = movement.position;
-        that.onMarkerClick(mId,pickedFeature, styler, {})
-      };
-
-      const onHover = (movement) => {
-        // Pick a new feature
-        const pickedFeature = that.viewer.scene.pick(movement.endPosition);
-        if (!isDefined(pickedFeature)) {
-          that.onMarkerHover(undefined,pickedFeature, styler, {})
-          return;
-        }
-        const mId = that.getMarkerId(pickedFeature.id.id);
-        pickedFeature.pixel = movement.endPosition;
-        that.onMarkerHover(mId,pickedFeature, styler, {})
-      };
-
-      this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
-      this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
-
     }
 
     this.updateMapMarker(styler, {
@@ -341,6 +308,59 @@ class CesiumView extends MapView {
     this.viewer.terrainProvider = new EllipsoidTerrainProvider();
     this.viewer.scene.copyGlobeDepth = true;
     this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
+
+    // inits callbacks
+    // Get default left click handler for when a feature is not picked on left click
+    const that = this;
+    const onClick = (movement) => {
+      // Pick a new feature
+      const pickedFeature = that.viewer.scene.pick(movement.position);
+      if (!isDefined(pickedFeature)) {
+        return;
+      }
+      const mId = that.getMarkerId(pickedFeature.id.id);
+      if (!isDefined(mId)) {
+        return;
+      }
+      const sId = that.getStylerId(pickedFeature.id.id);
+      if (!isDefined(sId)) {
+        return;
+      }
+      const styler = that.getStyler(sId);
+      if (!isDefined(styler)) {
+        return;
+      }
+
+      that.viewer.selectedEntity = pickedFeature.id;
+      that.viewer.selectedEntity.name = mId;
+      pickedFeature.pixel = movement.position;
+      that.onMarkerClick(mId,pickedFeature, styler, {})
+    };
+
+    const onHover = (movement) => {
+      const pickedFeature = that.viewer.scene.pick(movement.endPosition);
+      if (!isDefined(pickedFeature)) {
+        return;
+      }
+      const mId = that.getMarkerId(pickedFeature.id.id);
+      if (!isDefined(mId)) {
+        return;
+      }
+      const sId = that.getStylerId(pickedFeature.id.id);
+      if (!isDefined(sId)) {
+        return;
+      }
+      const styler = that.getStyler(sId);
+      if (!isDefined(styler)) {
+        return;
+      }
+      pickedFeature.pixel = movement.endPosition;
+      that.onMarkerHover(mId,pickedFeature, styler, {})
+    };
+
+    this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
+    this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
+
   }
 
   /**
