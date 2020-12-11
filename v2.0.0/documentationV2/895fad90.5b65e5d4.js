@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[31],{89:function(s){s.exports=JSON.parse('{"allTagsPath":"/osh-js/v2.0.0/documentationV2/blog/tags","slug":"docusaurus","name":"docusaurus","count":3,"permalink":"/osh-js/v2.0.0/documentationV2/blog/tags/docusaurus"}')}}]);

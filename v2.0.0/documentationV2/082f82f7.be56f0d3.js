@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{65:function(o){o.exports=JSON.parse('{"allTagsPath":"/osh-js/v2.0.0/documentationV2/blog/tags","slug":"facebook","name":"facebook","count":1,"permalink":"/osh-js/v2.0.0/documentationV2/blog/tags/facebook"}')}}]);
