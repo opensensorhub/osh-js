@@ -23,7 +23,7 @@ import MapView from "./MapView";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Leaflet Map object.
- * @extends View
+ * @extends MapView
  * @example
 
  import LeafletView from 'osh/ui/view/map/LeafletView.js';

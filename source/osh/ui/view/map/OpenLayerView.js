@@ -44,7 +44,7 @@ import LineString from "ol/geom/LineString";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
- * @extends View
+ * @extends MapView
  */
 class OpenLayerView extends MapView {
     /**

@@ -58,7 +58,7 @@ import MapView from "./MapView";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
- * @extends View
+ * @extends MapView
  * @example
 
  import CesiumView from 'osh/ui/view/map/CesiumView.js';
