@@ -87,7 +87,7 @@ class PointMarker extends Styler {
 		* @param {Function} [properties.labelFunc] -
 		* @param {Function} [properties.labelColorFunc] -
 		* @param {Function} [properties.labelSizeFunc] -
-	  * @param {Function} [properties.onClick] - trigger onClick marker event
+	  * @param {Function} [properties.onLeftClick] - trigger onLeftClick marker event
 	  * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
 	  * @param {Function} [properties.onHover] - trigger onHover marker event
  	  * @param {Function} [properties.markerIdFunc] - map an id to a unique marker
@@ -220,8 +220,8 @@ class PointMarker extends Styler {
 			this.addFn(properties.labelSizeFunc.dataSourceIds,fn);
 		}
 
-		if (isDefined(properties.onClick) && assertFunction(properties.onClick)) {
-			this.onClick = properties.onClick;
+		if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {
+			this.onLeftClick = properties.onLeftClick;
 		}
 
 		if (isDefined(properties.onRightClick) && assertFunction(properties.onRightClick)) {

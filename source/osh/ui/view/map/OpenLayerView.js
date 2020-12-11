@@ -254,7 +254,7 @@ class OpenLayerView extends MapView {
         this.map.addControl(layerSwitcher);
         this.map.addControl(new ZoomSlider());
 
-        // inits onClick events
+        // inits onLeftClick events
         // select interaction working on "click"
         const selectClick = new Select({
             condition: click,
@@ -312,7 +312,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(styler)) {
                     return;
                 }
-                that.onMarkerClick(mId, feature, styler, e);
+                that.onMarkerLeftClick(mId, feature, styler, e);
             }
         });
 

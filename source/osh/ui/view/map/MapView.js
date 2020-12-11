@@ -162,15 +162,15 @@ class MapView extends View {
     removePolylineFromLayer(polyline) {}
 
     /**
-     * Method to call onClick Styler method if exists
+     * Method to call onLeftClick Styler method if exists
      * @param {String} markerId - the Styler markerId
      * @param {Object} markerObject - the View marker object
      * @param {PointMarker} styler - the Styler object
      * @param {Object} event - the original Map View event
      */
-    onMarkerClick(markerId, markerObject, styler, event) {
-        if (isDefined(styler.onClick)) {
-            styler.onClick.call(styler,markerId, markerObject, event);
+    onMarkerLeftClick(markerId, markerObject, styler, event) {
+        if (isDefined(styler.onLeftClick)) {
+            styler.onLeftClick.call(styler,markerId, markerObject, event);
         }
     }
 

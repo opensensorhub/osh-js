@@ -38,7 +38,7 @@ let avlDataSource = new SweJson("AVL", {
 //Stadia_Outdoors
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
-// method used to display information about the event reported by the Styler: onClick & onHover
+// method used to display information about the event reported by the Styler: onLeftClick & onHover
 function updateInfos(markerId, position, positionPixels) {
   currentSelectedElt.innerHTML = 'Current selected marker: <strong>' + markerId + '</strong>, ' + 'pos= ' + position + ', ' + 'pixel= ' + positionPixels
 }
@@ -142,15 +142,15 @@ const commonPolylineConf = {
 };
 
 // creates leaflet Styler (PointMarker)
-// Gets the common conf and add onClick & onHover callback to update infos
+// Gets the common conf and add onLeftClick & onHover callback to update infos
 const leafletViewItems = [
     {styler:  new PointMarker({
         ...commonMarkerConf,
-        onClick: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.containerPoint),
+        onLeftClick: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.containerPoint),
         onRightClick: (markerId, billboard, event) => {
             console.log(event);
             const rect = document.getElementById('leafletMap').getBoundingClientRect();
-            showPopup(event.containerPoint.x + rect.left, event.containerPoint.y + rect.top + 15, markerId);
+            showPopup(event.containerPoint.x + rect.left, event.containerPoint.y + rect.top + 15, 'some content '+markerId);
         },
         onHover: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.containerPoint),
       }), name: "AVL"},
@@ -160,13 +160,13 @@ const leafletViewItems = [
 let leafletMapView, olMapView, cesiumMapView;
 
 // creates OL Styler (PointMarker)
-// Gets the common conf and add onClick & onHover callback to update infos
+// Gets the common conf and add onLeftClick & onHover callback to update infos
 const olViewItems = [{styler:  new PointMarker({
       ...commonMarkerConf,
-      onClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
+      onLeftClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
       onRightClick: (markerId, billboard, event) => {
           const rect = document.getElementById('olMap').getBoundingClientRect();
-          showPopup(event.mapBrowserEvent.pixel[0] + rect.left, event.mapBrowserEvent.pixel[1] + rect.top, markerId);
+          showPopup(event.mapBrowserEvent.pixel[0] + rect.left, event.mapBrowserEvent.pixel[1] + rect.top, 'some content '+markerId);
       },
       onHover: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
     }), name: "AVL"},
@@ -174,10 +174,10 @@ const olViewItems = [{styler:  new PointMarker({
 ];
 
 // creates Cesium Styler (PointMarker)
-// Gets the common conf and add onClick & onHover callback to update infos
+// Gets the common conf and add onLeftClick & onHover callback to update infos
 const cesiumViewItems = [{styler:  new PointMarker({
     ...commonMarkerConf,
-    onClick: (markerId, billboard, event) =>  {
+    onLeftClick: (markerId, billboard, event) =>  {
         // transform into LonLat to display into info panel
         const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
         const longitudeString = Math.toDegrees(
@@ -191,7 +191,7 @@ const cesiumViewItems = [{styler:  new PointMarker({
     },
     onRightClick: (markerId, billboard, event) => {
         const rect = document.getElementById('cesiumMap').getBoundingClientRect();
-        showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content');
+        showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content '+markerId);
     },
     onHover: (markerId, billboard, event) =>  {
       // transform into LonLat to display into info panel

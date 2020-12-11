@@ -214,7 +214,7 @@ class LeafletView extends MapView {
      * @param {String} properties.description - description of the marker to display into the tooltip
      * @param {String} properties.labelOffset - offset of the label of the tooltip
      * @param {Number} properties.orientation - orientation of the icon in degree
-     * @param {Function} properties.onClick - onClick function callback
+     * @param {Function} properties.onLeftClick - onLeftClick function callback
      * @param {String} properties.id - the id of the new created marker: styler.id$styler.markerId
      * @return {Object} the the new created marker
      */
@@ -311,13 +311,13 @@ class LeafletView extends MapView {
                 labelOffset : styler.labelOffset,
                 name : styler.viewItem.name,
                 description : styler.viewItem.description,
-                onClick: styler.onClick,
+                onLeftClick: styler.onLeftClick,
                 id: styler.id+"$"+styler.markerId,
-                showPopup: !isDefined(styler.onClick)
+                showPopup: !isDefined(styler.onLeftClick)
             });
             this.addMarkerToStyler(styler, markerObject);
             const mId = styler.markerId; //need to freeze
-            markerObject.on('click', (event) => this.onMarkerClick(mId,markerObject, styler, event));
+            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, styler, event));
             markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, styler, event));
             markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, styler, event));
         }

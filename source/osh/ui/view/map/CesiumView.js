@@ -334,7 +334,7 @@ class CesiumView extends MapView {
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerClick(mId,pickedFeature, styler, {})
+      that.onMarkerLeftClick(mId,pickedFeature, styler, {})
     };
 
     const onRightClick = (movement) => {
