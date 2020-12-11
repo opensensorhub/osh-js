@@ -220,6 +220,9 @@ class MapView extends View {
      * @return {null|String} the marker id
      */
     getMarkerId(id) {
+        if(!isDefined(id)) {
+            return null;
+        }
         const split = id.split('$');
 
         if(isDefined(split) && split.length === 2) {

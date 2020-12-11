@@ -40,6 +40,7 @@ import MapView from "./MapView";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import LineString from "ol/geom/LineString";
+import {click, pointerMove} from "ol/events/condition";
 
 
 /**
@@ -251,14 +252,60 @@ class OpenLayerView extends MapView {
             groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
         });
         this.map.addControl(layerSwitcher);
-
         this.map.addControl(new ZoomSlider());
 
         // inits onClick events
-        let select_interaction = new Select();
+        // select interaction working on "click"
+        var selectClick = new Select({
+            condition: click,
+            style: null
+        });
 
-        select_interaction.getFeatures().on("add", function (e) {
-            let feature = e.element; //the feature selected
+        // select interaction working on "pointermove"
+        var selectPointerMove = new Select({
+            condition: pointerMove,
+            style: null
+        });
+
+        this.map.addInteraction(selectClick);
+        this.map.addInteraction(selectPointerMove);
+        const that = this;
+        selectClick.on('select', function (e) {
+            if(e.selected.length > 0 ) {
+                let feature = e.selected[0]; //the feature selected
+                const mId = that.getMarkerId(feature.getId());
+                if (!isDefined(mId)) {
+                    return;
+                }
+                const sId = that.getStylerId(feature.getId());
+                if (!isDefined(sId)) {
+                    return;
+                }
+                const styler = that.getStyler(sId);
+                if (!isDefined(styler)) {
+                    return;
+                }
+                that.onMarkerClick(mId, feature, styler, e);
+            }
+        });
+
+        selectPointerMove.on('select', function (e) {
+            if(e.selected.length > 0 ) {
+                let feature = e.selected[0]; //the feature selected
+                const mId = that.getMarkerId(feature.getId());
+                if (!isDefined(mId)) {
+                    return;
+                }
+                const sId = that.getStylerId(feature.getId());
+                if (!isDefined(sId)) {
+                    return;
+                }
+                const styler = that.getStyler(sId);
+                if (!isDefined(styler)) {
+                    return;
+                }
+                that.onMarkerHover(mId, feature, styler, e);
+            }
         });
 
         this.vectorSource = new VectorSource({
@@ -271,55 +318,7 @@ class OpenLayerView extends MapView {
         });
 
         this.map.addLayer(vectorMarkerLayer);
-
-        this.map.addInteraction(select_interaction);
         this.map.updateSize();
-
-        const that = this;
-        const onClick = (evt) => {
-            vectorMarkerLayer.getFeatures(evt.pixel).then( (features) => {
-                const feature = isDefined(features) && features.length > 0 ? features[0] : undefined;
-                if(isDefined(feature)) {
-                    const mId = that.getMarkerId(feature.getId());
-                    if(!isDefined(mId)) {
-                        return;
-                    }
-                    const sId = that.getStylerId(feature.getId());
-                    if(!isDefined(sId)) {
-                        return;
-                    }
-                    const styler = that.getStyler(sId);
-                    if(!isDefined(styler)) {
-                        return;
-                    }
-                    that.onMarkerClick(mId, feature, styler, evt);
-                }
-            });
-        };
-
-        const onHover = (evt) => {
-            vectorMarkerLayer.getFeatures(evt.pixel).then( (features) => {
-                const feature = isDefined(features) && features.length > 0 ? features[0] : undefined;
-                if(isDefined(feature)) {
-                    const mId = that.getMarkerId(feature.getId());
-                    if(!isDefined(mId)) {
-                        return;
-                    }
-                    const sId = that.getStylerId(feature.getId());
-                    if(!isDefined(sId)) {
-                        return;
-                    }
-                    const styler = that.getStyler(sId);
-                    if(!isDefined(styler)) {
-                        return;
-                    }
-                    that.onMarkerHover(mId, feature, styler, evt);
-                }
-            });
-        };
-
-        this.map.on('click', onClick);
-        this.map.on('pointermove', onHover);
     }
 
     /**

@@ -104,17 +104,9 @@ const commonPolylineConf = {
 //Stadia_Outdoors
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
-function clearInfos(markerId, position, positionPixels) {
-  currentSelectedElt.innerHTML = 'Current selected marker: ';
-}
-
 // method used to display information about the event reported by the Styler: onClick & onHover
 function updateInfos(markerId, position, positionPixels) {
-  if(!isDefined(markerId)) {
-    clearInfos();
-  } else {
-    currentSelectedElt.innerHTML = 'Current selected marker: <strong>' + markerId + '</strong>, ' + 'pos= ' + position + ', ' + 'pixel= ' + positionPixels
-  }
+  currentSelectedElt.innerHTML = 'Current selected marker: <strong>' + markerId + '</strong>, ' + 'pos= ' + position + ', ' + 'pixel= ' + positionPixels
 }
 
 // creates leaflet Styler (PointMarker)
@@ -133,8 +125,8 @@ const leafletViewItems = [
 const olViewItems = [
   {styler:  new PointMarker({
       ...commonMarkerConf,
-      onClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.pixel),
-      onHover: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.pixel),
+      onClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
+      onHover: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
     }), name: "AVL"},
   {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
 ];
@@ -144,7 +136,6 @@ const olViewItems = [
 const cesiumViewItems = [{styler:  new PointMarker({
     ...commonMarkerConf,
     onClick: (markerId, billboard, event) =>  {
-      if(isDefined(markerId) && isDefined(billboard)) {
         // transform into LonLat to display into info panel
         const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
         const longitudeString = Math.toDegrees(
@@ -155,25 +146,18 @@ const cesiumViewItems = [{styler:  new PointMarker({
         ).toFixed(2);
 
         updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
-      } else {
-        clearInfos();
-      }
     },
     onHover: (markerId, billboard, event) =>  {
-      if(isDefined(markerId) && isDefined(billboard)) {
-        // transform into LonLat to display into info panel
-        const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-        const longitudeString = Math.toDegrees(
-            cartographic.longitude
-        ).toFixed(2);
-        const latitudeString = Math.toDegrees(
-            cartographic.latitude
-        ).toFixed(2);
+      // transform into LonLat to display into info panel
+      const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
+      const longitudeString = Math.toDegrees(
+          cartographic.longitude
+      ).toFixed(2);
+      const latitudeString = Math.toDegrees(
+          cartographic.latitude
+      ).toFixed(2);
 
-        updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
-      } else {
-        clearInfos();
-      }
+      updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
     },
   }), name: "AVL"}];
 
