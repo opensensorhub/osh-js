@@ -155,7 +155,9 @@ const leafletViewItems = [
             onHover: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint),
         }), name: "AVL"
     },
-    {styler: new Polyline({...commonPolylineConf}), name: "AVL"},
+    {
+        styler: new Polyline({...commonPolylineConf}), name: "AVL"
+    },
 ];
 
 let leafletMapView, olMapView, cesiumMapView;
@@ -173,7 +175,9 @@ const olViewItems = [{
         onHover: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
     }), name: "AVL"
 },
-    {styler: new Polyline({...commonPolylineConf}), name: "AVL"},
+    {
+        styler: new Polyline({...commonPolylineConf}), name: "AVL"
+    },
 ];
 
 // creates Cesium Styler (PointMarker)
