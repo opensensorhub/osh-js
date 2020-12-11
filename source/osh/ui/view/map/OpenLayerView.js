@@ -276,7 +276,7 @@ class OpenLayerView extends MapView {
         this.map.updateSize();
 
         const that = this;
-        const eventCallback = function(evt) {
+        const onClick = (evt) => {
             vectorMarkerLayer.getFeatures(evt.pixel).then( (features) => {
                 const feature = isDefined(features) && features.length > 0 ? features[0] : undefined;
                 if(isDefined(feature)) {
@@ -297,8 +297,29 @@ class OpenLayerView extends MapView {
             });
         };
 
-        this.map.on('click', eventCallback);
-        this.map.on('pointermove', eventCallback);
+        const onHover = (evt) => {
+            vectorMarkerLayer.getFeatures(evt.pixel).then( (features) => {
+                const feature = isDefined(features) && features.length > 0 ? features[0] : undefined;
+                if(isDefined(feature)) {
+                    const mId = that.getMarkerId(feature.getId());
+                    if(!isDefined(mId)) {
+                        return;
+                    }
+                    const sId = that.getStylerId(feature.getId());
+                    if(!isDefined(sId)) {
+                        return;
+                    }
+                    const styler = that.getStyler(sId);
+                    if(!isDefined(styler)) {
+                        return;
+                    }
+                    that.onMarkerHover(mId, feature, styler, evt);
+                }
+            });
+        };
+
+        this.map.on('click', onClick);
+        this.map.on('pointermove', onHover);
     }
 
     /**
