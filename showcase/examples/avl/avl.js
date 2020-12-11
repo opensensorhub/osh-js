@@ -13,6 +13,7 @@ import {isDefined} from "../../../source/osh/utils/Utils";
 
 window.CESIUM_BASE_URL = './';
 
+const currentSelectedElt = document.getElementById("current-marker");
 let avlDataSource = new SweJson("AVL", {
   protocol: "ws",
   service: "SOS",
@@ -23,8 +24,6 @@ let avlDataSource = new SweJson("AVL", {
   endTime: "2014-04-29T14:26:12Z",
   replaySpeed: 15
 });
-
-const currentSelectedElt = document.getElementById("current-marker");
 
 const commonMarkerConf = {
   locationFunc: {
@@ -129,7 +128,7 @@ const olViewItems = [
 const cesiumViewItems = [{styler:  new PointMarker({
     ...commonMarkerConf,
     onClick: (markerId, billboard, event) =>  {
-      if(isDefined(markerId)) {
+      if(isDefined(markerId) && isDefined(billboard)) {
         const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
         const longitudeString = Math.toDegrees(
             cartographic.longitude
@@ -138,13 +137,13 @@ const cesiumViewItems = [{styler:  new PointMarker({
             cartographic.latitude
         ).toFixed(2);
 
-        updateInfos(markerId, longitudeString + ', ' + latitudeString, '')
+        updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
       } else {
         clearInfos();
       }
     },
     onHover: (markerId, billboard, event) =>  {
-      if(isDefined(markerId)) {
+      if(isDefined(markerId) && isDefined(billboard)) {
         const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
         const longitudeString = Math.toDegrees(
             cartographic.longitude
@@ -153,7 +152,7 @@ const cesiumViewItems = [{styler:  new PointMarker({
             cartographic.latitude
         ).toFixed(2);
 
-        updateInfos(markerId, longitudeString + ', ' + latitudeString, '')
+        updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
       } else {
         clearInfos();
       }

@@ -48,7 +48,7 @@ import {
   HeadingPitchRange,
   Ellipsoid, defined,
   EncodedCartesian3, CesiumTerrainProvider,
-  ScreenSpaceEventType
+  ScreenSpaceEventType, SceneTransforms
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -161,17 +161,17 @@ class CesiumView extends MapView {
       const that = this;
       const onClick = (movement) => {
         // Pick a new feature
-        console.log(movement);
         const pickedFeature = that.viewer.scene.pick(movement.position);
         if (!isDefined(pickedFeature)) {
           that.viewer.selectedEntity = null;
-          that.onMarkerClick(undefined,pickedFeature, styler, {})
+          that.onMarkerClick(undefined,undefined, styler, {})
           return;
         }
         const mId = that.getMarkerId(pickedFeature.id.id);
 
         that.viewer.selectedEntity = pickedFeature.id;
         that.viewer.selectedEntity.name = mId;
+        pickedFeature.pixel = movement.position;
         that.onMarkerClick(mId,pickedFeature, styler, {})
       };
 
@@ -183,6 +183,7 @@ class CesiumView extends MapView {
           return;
         }
         const mId = that.getMarkerId(pickedFeature.id.id);
+        pickedFeature.pixel = movement.endPosition;
         that.onMarkerHover(mId,pickedFeature, styler, {})
       };
 
