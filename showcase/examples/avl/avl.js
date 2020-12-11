@@ -24,7 +24,7 @@ let avlDataSource = new SweJson("AVL", {
   observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
   startTime: "2014-03-29T07:00:12Z",
   endTime: "2014-04-29T14:26:12Z",
-  replaySpeed: 15
+  replaySpeed: 200
 });
 
 // Create a common configuration for markers. This one can be shared between stylers
