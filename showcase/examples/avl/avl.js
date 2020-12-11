@@ -162,7 +162,7 @@ const cesiumViewItems = [{styler:  new PointMarker({
   }), name: "AVL"}];
 
 // create Leaflet view
-new LeafletView("leafletMap",
+const leafletMapView = new LeafletView("leafletMap",
     leafletViewItems,
     {
       autoZoomOnFirstMarker:true,
@@ -174,14 +174,14 @@ new LeafletView("leafletMap",
 );
 
 // create OL view
-new OpenLayerView("olMap",
+const olMapView = new OpenLayerView("olMap",
     olViewItems,
     {
       autoZoomOnFirstMarker:true,
     }
 );
 
-new CesiumView('cesiumMap', cesiumViewItems);
+const cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
 
 // update time
 const timeElt = document.getElementById("time");
@@ -224,6 +224,6 @@ removeAllElt.onclick = async () => {
     olMapView.removeViewItem(olViewItems[1]);
     leafletMapView.removeViewItem(leafletViewItems[0]);
     leafletMapView.removeViewItem(leafletViewItems[1]);
-  }, 100);
+  }, 800);
 };
 
