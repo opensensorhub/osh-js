@@ -143,6 +143,21 @@ const cesiumViewItems = [{styler:  new PointMarker({
         clearInfos();
       }
     },
+    onHover: (markerId, billboard, event) =>  {
+      if(isDefined(markerId)) {
+        const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
+        const longitudeString = Math.toDegrees(
+            cartographic.longitude
+        ).toFixed(2);
+        const latitudeString = Math.toDegrees(
+            cartographic.latitude
+        ).toFixed(2);
+
+        updateInfos(markerId, longitudeString + ', ' + latitudeString, '')
+      } else {
+        clearInfos();
+      }
+    },
   }), name: "AVL"}];
 
 // create Leaflet view
