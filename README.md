@@ -101,7 +101,7 @@ The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/docum
 
 ## Live Showcase
 
-[Showcase](http://opensensorhub.github.io/osh-js/latest/showcase)
+[Showcase](http://opensensorhub.github.io/osh-js/dev/showcase)
 
 ## Live Demos
 
