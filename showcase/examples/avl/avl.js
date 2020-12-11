@@ -9,11 +9,14 @@ import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {
   Cartographic, Math
 } from "cesium";
-import {isDefined} from "../../../source/osh/utils/Utils";
 
 window.CESIUM_BASE_URL = './';
 
 const currentSelectedElt = document.getElementById("current-marker");
+
+/**************************************************************/
+/********************* DataSources ***************************/
+/************************************************************/
 
 // setup DataSource. The datasource contains multiple ids.
 let avlDataSource = new SweJson("AVL", {
@@ -24,81 +27,12 @@ let avlDataSource = new SweJson("AVL", {
   observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
   startTime: "2014-03-29T07:00:12Z",
   endTime: "2014-04-29T14:26:12Z",
-  replaySpeed: 200
+  replaySpeed: 15
 });
 
-// Create a common configuration for markers. This one can be shared between stylers
-const commonMarkerConf = {
-  locationFunc: {
-    dataSourceIds: [avlDataSource.getId()],
-    handler: function (rec) {
-      return {
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
-      };
-    }
-  },
-  labelFunc: {
-    dataSourceIds: [avlDataSource.getId()],
-    handler: function (rec) {
-      return rec['veh-id'];
-    }
-  },
-  markerIdFunc: {
-    dataSourceIds: [avlDataSource.getId()],
-    handler: function (rec) {
-      return rec['veh-id'];
-    }
-  },
-  iconFunc: {
-    dataSourceIds: [avlDataSource.getId()],
-    handler: function (rec) {
-      // change the icon depending on the id name contained in this record
-      if(rec['veh-id'] === 'FE4') {
-        return './images/firemen1.png';
-      } else if(rec['veh-id'] === 'FR6') {
-        return './images/firemen2.png';
-      } else if(rec['veh-id'] === 'FL12') {
-        return './images/firemen3.png';
-      } else if(rec['veh-id'] === 'FE12') {
-        return './images/firemen4.png';
-      } else if(rec['veh-id'] === 'FL11') {
-        return './images/firemen5.png';
-      }
-      else return './images/firemen.png';
-    }
-  },
-  zoomLevel: 12,
-  iconAnchor: [16, 0],
-  labelOffset: [0,-16],
-  labelColor: '#00fff5'
-};
-
-// Create a common configuration for polylines. This one can be shared between stylers
-const commonPolylineConf = {
-  locationFunc: {
-    dataSourceIds: [avlDataSource.getId()],
-    handler: function (rec) {
-      return {
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
-      };
-    }
-  },
-  polylineIdFunc: {
-    dataSourceIds: [avlDataSource.getId()],
-    handler: function (rec) {
-      return rec['veh-id'];
-    }
-  },
-  color: 'rgba(0,0,255,0.5)',
-  weight: 5,
-  opacity: .5,
-  smoothFactor: 1,
-  maxPoints: 200
-};
+/**************************************************************/
+/********************* Common functions **********************/
+/************************************************************/
 
 // use stadia layer to display OSM base map
 //Stadia_Outdoors
@@ -109,23 +43,131 @@ function updateInfos(markerId, position, positionPixels) {
   currentSelectedElt.innerHTML = 'Current selected marker: <strong>' + markerId + '</strong>, ' + 'pos= ' + position + ', ' + 'pixel= ' + positionPixels
 }
 
+const popupElt = document.getElementById("popup");
+
+function showPopup(x, y, content) {
+    const padding = 10;
+    popupElt.setAttribute("style", "left:"+(x+padding)+";top:"+(y+padding)+"; display:block !important; width:100px; height:50px");
+    popupElt.innerText = content;
+}
+
+function hidePopup(x, y, content) {
+    popupElt.setAttribute('style', 'display:none;');
+    popupElt.innerText = '';
+}
+
+// disable contextmenu
+document.body.oncontextmenu=() => false;
+
+// hide popup if anywhere we click
+document.body.onclick = () => {
+ hidePopup();
+};
+
+/**************************************************************/
+/********************* VIEW ITEMS & Stylers ******************/
+/************************************************************/
+
+// Create a common configuration for markers. This one can be shared between stylers
+const commonMarkerConf = {
+    locationFunc: {
+        dataSourceIds: [avlDataSource.getId()],
+        handler: function (rec) {
+            return {
+                x: rec.location.lon,
+                y: rec.location.lat,
+                z: rec.location.alt
+            };
+        }
+    },
+    labelFunc: {
+        dataSourceIds: [avlDataSource.getId()],
+        handler: function (rec) {
+            return rec['veh-id'];
+        }
+    },
+    markerIdFunc: {
+        dataSourceIds: [avlDataSource.getId()],
+        handler: function (rec) {
+            return rec['veh-id'];
+        }
+    },
+    iconFunc: {
+        dataSourceIds: [avlDataSource.getId()],
+        handler: function (rec) {
+            // change the icon depending on the id name contained in this record
+            if(rec['veh-id'] === 'FE4') {
+                return './images/firemen1.png';
+            } else if(rec['veh-id'] === 'FR6') {
+                return './images/firemen2.png';
+            } else if(rec['veh-id'] === 'FL12') {
+                return './images/firemen3.png';
+            } else if(rec['veh-id'] === 'FE12') {
+                return './images/firemen4.png';
+            } else if(rec['veh-id'] === 'FL11') {
+                return './images/firemen5.png';
+            }
+            else return './images/firemen.png';
+        }
+    },
+    zoomLevel: 12,
+    iconAnchor: [16, 0],
+    labelOffset: [0,-16],
+    labelColor: '#00fff5'
+};
+
+// Create a common configuration for polylines. This one can be shared between stylers
+const commonPolylineConf = {
+    locationFunc: {
+        dataSourceIds: [avlDataSource.getId()],
+        handler: function (rec) {
+            return {
+                x: rec.location.lon,
+                y: rec.location.lat,
+                z: rec.location.alt
+            };
+        }
+    },
+    polylineIdFunc: {
+        dataSourceIds: [avlDataSource.getId()],
+        handler: function (rec) {
+            return rec['veh-id'];
+        }
+    },
+    color: 'rgba(0,0,255,0.5)',
+    weight: 5,
+    opacity: .5,
+    smoothFactor: 1,
+    maxPoints: 200
+};
+
 // creates leaflet Styler (PointMarker)
 // Gets the common conf and add onClick & onHover callback to update infos
 const leafletViewItems = [
     {styler:  new PointMarker({
         ...commonMarkerConf,
-        onClick: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.layerPoint),
-        onHover: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.layerPoint),
+        onClick: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.containerPoint),
+        onRightClick: (markerId, billboard, event) => {
+            console.log(event);
+            const rect = document.getElementById('leafletMap').getBoundingClientRect();
+            showPopup(event.containerPoint.x + rect.left, event.containerPoint.y + rect.top + 15, markerId);
+        },
+        onHover: (markerId, markerObject, event) =>  updateInfos(markerId,event.latlng, event.containerPoint),
       }), name: "AVL"},
     {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
     ];
 
+let leafletMapView, olMapView, cesiumMapView;
+
 // creates OL Styler (PointMarker)
 // Gets the common conf and add onClick & onHover callback to update infos
-const olViewItems = [
-  {styler:  new PointMarker({
+const olViewItems = [{styler:  new PointMarker({
       ...commonMarkerConf,
       onClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
+      onRightClick: (markerId, billboard, event) => {
+          const rect = document.getElementById('olMap').getBoundingClientRect();
+          showPopup(event.mapBrowserEvent.pixel[0] + rect.left, event.mapBrowserEvent.pixel[1] + rect.top, markerId);
+      },
       onHover: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
     }), name: "AVL"},
   {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
@@ -145,7 +187,11 @@ const cesiumViewItems = [{styler:  new PointMarker({
             cartographic.latitude
         ).toFixed(2);
 
-        updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
+        updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel);
+    },
+    onRightClick: (markerId, billboard, event) => {
+        const rect = document.getElementById('cesiumMap').getBoundingClientRect();
+        showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content');
     },
     onHover: (markerId, billboard, event) =>  {
       // transform into LonLat to display into info panel
@@ -161,8 +207,12 @@ const cesiumViewItems = [{styler:  new PointMarker({
     },
   }), name: "AVL"}];
 
+/**************************************************************/
+/*************************** VIEWS ***************************/
+/************************************************************/
+
 // create Leaflet view
-const leafletMapView = new LeafletView("leafletMap",
+leafletMapView = new LeafletView("leafletMap",
     leafletViewItems,
     {
       autoZoomOnFirstMarker:true,
@@ -174,14 +224,18 @@ const leafletMapView = new LeafletView("leafletMap",
 );
 
 // create OL view
-const olMapView = new OpenLayerView("olMap",
+olMapView = new OpenLayerView("olMap",
     olViewItems,
     {
       autoZoomOnFirstMarker:true,
     }
 );
 
-const cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
+cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
+
+/**************************************************************/
+/********************* Update UI  ****************************/
+/************************************************************/
 
 // update time
 const timeElt = document.getElementById("time");

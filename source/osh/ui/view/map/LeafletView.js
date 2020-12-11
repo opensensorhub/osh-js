@@ -318,6 +318,7 @@ class LeafletView extends MapView {
             this.addMarkerToStyler(styler, markerObject);
             const mId = styler.markerId; //need to freeze
             markerObject.on('click', (event) => this.onMarkerClick(mId,markerObject, styler, event));
+            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, styler, event));
             markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, styler, event));
         }
 

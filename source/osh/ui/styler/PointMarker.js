@@ -88,7 +88,8 @@ class PointMarker extends Styler {
 		* @param {Function} [properties.labelColorFunc] -
 		* @param {Function} [properties.labelSizeFunc] -
 	  * @param {Function} [properties.onClick] - trigger onClick marker event
- 	  * @param {Function} [properties.onHover] - trigger onHover marker event
+	  * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
+	  * @param {Function} [properties.onHover] - trigger onHover marker event
  	  * @param {Function} [properties.markerIdFunc] - map an id to a unique marker
 	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
 	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
@@ -221,6 +222,10 @@ class PointMarker extends Styler {
 
 		if (isDefined(properties.onClick) && assertFunction(properties.onClick)) {
 			this.onClick = properties.onClick;
+		}
+
+		if (isDefined(properties.onRightClick) && assertFunction(properties.onRightClick)) {
+			this.onRightClick = properties.onRightClick;
 		}
 
 		if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {

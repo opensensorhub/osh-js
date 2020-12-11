@@ -337,6 +337,31 @@ class CesiumView extends MapView {
       that.onMarkerClick(mId,pickedFeature, styler, {})
     };
 
+    const onRightClick = (movement) => {
+      // Pick a new feature
+      const pickedFeature = that.viewer.scene.pick(movement.position);
+      if (!isDefined(pickedFeature)) {
+        return;
+      }
+      const mId = that.getMarkerId(pickedFeature.id.id);
+      if (!isDefined(mId)) {
+        return;
+      }
+      const sId = that.getStylerId(pickedFeature.id.id);
+      if (!isDefined(sId)) {
+        return;
+      }
+      const styler = that.getStyler(sId);
+      if (!isDefined(styler)) {
+        return;
+      }
+
+      that.viewer.selectedEntity = pickedFeature.id;
+      that.viewer.selectedEntity.name = mId;
+      pickedFeature.pixel = movement.position;
+      that.onMarkerRightClick(mId,pickedFeature, styler, {})
+    };
+
     const onHover = (movement) => {
       const pickedFeature = that.viewer.scene.pick(movement.endPosition);
       if (!isDefined(pickedFeature)) {
@@ -359,6 +384,7 @@ class CesiumView extends MapView {
     };
 
     this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
+    this.viewer.screenSpaceEventHandler.setInputAction(onRightClick, ScreenSpaceEventType.RIGHT_CLICK);
     this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
 
   }

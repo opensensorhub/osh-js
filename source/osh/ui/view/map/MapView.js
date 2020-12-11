@@ -175,6 +175,19 @@ class MapView extends View {
     }
 
     /**
+     * Method to call onRightClick Styler method if exists
+     * @param {String} markerId - the Styler markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} styler - the Styler object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerRightClick(markerId, markerObject, styler, event) {
+        if (isDefined(styler.onRightClick)) {
+            styler.onRightClick.call(styler,markerId, markerObject, event);
+        }
+    }
+
+    /**
      * Method to call onMove Styler method if exists
      * @param {String} markerId - the Styler markerId
      * @param {Object} markerObject - the View marker object

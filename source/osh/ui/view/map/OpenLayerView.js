@@ -256,20 +256,47 @@ class OpenLayerView extends MapView {
 
         // inits onClick events
         // select interaction working on "click"
-        var selectClick = new Select({
+        const selectClick = new Select({
             condition: click,
             style: null
         });
 
+        const selectRightClick = new Select({
+            condition: function(e) {
+                return (e.type === 'contextmenu');
+            },
+            style: null
+        });
+
         // select interaction working on "pointermove"
-        var selectPointerMove = new Select({
+        const selectPointerMove = new Select({
             condition: pointerMove,
             style: null
         });
 
         this.map.addInteraction(selectClick);
+        this.map.addInteraction(selectRightClick);
         this.map.addInteraction(selectPointerMove);
         const that = this;
+
+        selectRightClick.on('select', function (e) {
+            if(e.selected.length > 0 ) {
+                let feature = e.selected[0]; //the feature selected
+                const mId = that.getMarkerId(feature.getId());
+                if (!isDefined(mId)) {
+                    return;
+                }
+                const sId = that.getStylerId(feature.getId());
+                if (!isDefined(sId)) {
+                    return;
+                }
+                const styler = that.getStyler(sId);
+                if (!isDefined(styler)) {
+                    return;
+                }
+                that.onMarkerRightClick(mId, feature, styler, e);
+            }
+        });
         selectClick.on('select', function (e) {
             if(e.selected.length > 0 ) {
                 let feature = e.selected[0]; //the feature selected
