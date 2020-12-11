@@ -14,6 +14,8 @@ import {isDefined} from "../../../source/osh/utils/Utils";
 window.CESIUM_BASE_URL = './';
 
 const currentSelectedElt = document.getElementById("current-marker");
+
+// setup DataSource. The datasource contains multiple ids.
 let avlDataSource = new SweJson("AVL", {
   protocol: "ws",
   service: "SOS",
@@ -25,6 +27,7 @@ let avlDataSource = new SweJson("AVL", {
   replaySpeed: 15
 });
 
+// Create a common configuration for markers. This one can be shared between stylers
 const commonMarkerConf = {
   locationFunc: {
     dataSourceIds: [avlDataSource.getId()],
@@ -51,6 +54,7 @@ const commonMarkerConf = {
   iconFunc: {
     dataSourceIds: [avlDataSource.getId()],
     handler: function (rec) {
+      // change the icon depending on the id name contained in this record
       if(rec['veh-id'] === 'FE4') {
         return './images/firemen1.png';
       } else if(rec['veh-id'] === 'FR6') {
@@ -71,6 +75,7 @@ const commonMarkerConf = {
   labelColor: '#00fff5'
 };
 
+// Create a common configuration for polylines. This one can be shared between stylers
 const commonPolylineConf = {
   locationFunc: {
     dataSourceIds: [avlDataSource.getId()],
@@ -95,6 +100,7 @@ const commonPolylineConf = {
   maxPoints: 200
 };
 
+// use stadia layer to display OSM base map
 //Stadia_Outdoors
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
@@ -102,6 +108,7 @@ function clearInfos(markerId, position, positionPixels) {
   currentSelectedElt.innerHTML = 'Current selected marker: ';
 }
 
+// method used to display information about the event reported by the Styler: onClick & onHover
 function updateInfos(markerId, position, positionPixels) {
   if(!isDefined(markerId)) {
     clearInfos();
@@ -110,6 +117,8 @@ function updateInfos(markerId, position, positionPixels) {
   }
 }
 
+// creates leaflet Styler (PointMarker)
+// Gets the common conf and add onClick & onHover callback to update infos
 const leafletViewItems = [
     {styler:  new PointMarker({
         ...commonMarkerConf,
@@ -118,17 +127,25 @@ const leafletViewItems = [
       }), name: "AVL"},
     {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
     ];
+
+// creates OL Styler (PointMarker)
+// Gets the common conf and add onClick & onHover callback to update infos
 const olViewItems = [
   {styler:  new PointMarker({
       ...commonMarkerConf,
       onClick: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.pixel),
+      onHover: (markerId, feature, event) =>  updateInfos(markerId,feature.getGeometry().getCoordinates(), event.pixel),
     }), name: "AVL"},
   {styler:  new Polyline({...commonPolylineConf}), name: "AVL"},
 ];
+
+// creates Cesium Styler (PointMarker)
+// Gets the common conf and add onClick & onHover callback to update infos
 const cesiumViewItems = [{styler:  new PointMarker({
     ...commonMarkerConf,
     onClick: (markerId, billboard, event) =>  {
       if(isDefined(markerId) && isDefined(billboard)) {
+        // transform into LonLat to display into info panel
         const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
         const longitudeString = Math.toDegrees(
             cartographic.longitude
@@ -144,6 +161,7 @@ const cesiumViewItems = [{styler:  new PointMarker({
     },
     onHover: (markerId, billboard, event) =>  {
       if(isDefined(markerId) && isDefined(billboard)) {
+        // transform into LonLat to display into info panel
         const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
         const longitudeString = Math.toDegrees(
             cartographic.longitude
@@ -160,7 +178,7 @@ const cesiumViewItems = [{styler:  new PointMarker({
   }), name: "AVL"}];
 
 // create Leaflet view
-const leafletMapView = new LeafletView("leafletMap",
+new LeafletView("leafletMap",
     leafletViewItems,
     {
       autoZoomOnFirstMarker:true,
@@ -172,14 +190,14 @@ const leafletMapView = new LeafletView("leafletMap",
 );
 
 // create OL view
-const olMapView = new OpenLayerView("olMap",
+new OpenLayerView("olMap",
     olViewItems,
     {
       autoZoomOnFirstMarker:true,
     }
 );
 
-const cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
+new CesiumView('cesiumMap', cesiumViewItems);
 
 // update time
 const timeElt = document.getElementById("time");
@@ -196,21 +214,26 @@ bc.onmessage = (event) => {
   }
 }
 
+// connect AVL datasource
 avlDataSource.connect();
 
-// start streaming
+// connect AVL datasource manually
 loadElt.onclick = () => {
   avlDataSource.connect();
   removeAllElt.removeAttribute("disabled");
   loadElt.setAttribute("disabled","");
 };
 
+// disconnect AVL datasource manually and remove Markers/polylines from the View
 removeAllElt.onclick = async () => {
   avlDataSource.disconnect();
   removeAllElt.setAttribute("disabled", "");
   loadElt.removeAttribute("disabled");
 
   // let the time to flush the data broadcast channel
+  // we need to wait a little because the disconnect() datasource function is not synchronous
+  // if markers are deleted too early, the connection may continue to send data back to the views which
+  // will result in the re-creation of markers. This is asynchronous because the WebSocket connector is launched from a WebWorker.
   setTimeout(() => {
     cesiumMapView.removeViewItem(cesiumViewItems[0]);
     olMapView.removeViewItem(olViewItems[0]);
