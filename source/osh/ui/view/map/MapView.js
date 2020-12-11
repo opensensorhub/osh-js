@@ -162,7 +162,7 @@ class MapView extends View {
     removePolylineFromLayer(polyline) {}
 
     /**
-     * Methode to call onClick Styler method if exists
+     * Method to call onClick Styler method if exists
      * @param {String} markerId - the Styler markerId
      * @param {Object} markerObject - the View marker object
      * @param {PointMarker} styler - the Styler object
@@ -175,7 +175,7 @@ class MapView extends View {
     }
 
     /**
-     * Methode to call onMove Styler method if exists
+     * Method to call onMove Styler method if exists
      * @param {String} markerId - the Styler markerId
      * @param {Object} markerObject - the View marker object
      * @param {PointMarker} styler - the Styler object
@@ -188,7 +188,7 @@ class MapView extends View {
     }
 
     /**
-     * Methode to call onHover Styler method if exists
+     * Method to call onHover Styler method if exists
      * @param {String} markerId - the Styler markerId
      * @param {Object} markerObject - the View marker object
      * @param {PointMarker} styler - the Styler object
