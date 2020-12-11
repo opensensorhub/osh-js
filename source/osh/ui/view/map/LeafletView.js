@@ -244,7 +244,7 @@ class LeafletView extends MapView {
 
         let name = properties.hasOwnProperty("name") && properties.label != null ? properties.label : "";
         let desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
-        if (name.length > 0 || desc.length > 0) {
+        if (properties.showPopup && (name.length > 0 || desc.length > 0)) {
             marker.bindPopup(name + '<div>' + desc + '</div>',{
                 offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });
@@ -312,7 +312,8 @@ class LeafletView extends MapView {
                 name : styler.viewItem.name,
                 description : styler.viewItem.description,
                 onClick: styler.onClick,
-                id: styler.id+"$"+styler.markerId
+                id: styler.id+"$"+styler.markerId,
+                showPopup: !isDefined(styler.onClick)
             });
             this.addMarkerToStyler(styler, markerObject);
             const mId = styler.markerId; //need to freeze
