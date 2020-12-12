@@ -92,7 +92,7 @@ class OpenLayerView extends MapView {
                 icon: layer.icon,
                 anchor: layer.iconAnchor,
                 name: this.names[layer.markerId],
-                id: styler.id+"$"+styler.markerId
+                id: layer.id+"$"+layer.markerId
             });
 
             this.addMarkerToLayer(layer, markerObj);
@@ -286,15 +286,15 @@ class OpenLayerView extends MapView {
                 if (!isDefined(mId)) {
                     return;
                 }
-                const sId = that.getStylerId(feature.getId());
+                const sId = that.getLayerId(feature.getId());
                 if (!isDefined(sId)) {
                     return;
                 }
-                const styler = that.getStyler(sId);
-                if (!isDefined(styler)) {
+                const layer = that.getLayer(sId);
+                if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerRightClick(mId, feature, styler, e);
+                that.onMarkerRightClick(mId, feature, layer, e);
             }
         });
         selectClick.on('select', function (e) {
@@ -304,15 +304,15 @@ class OpenLayerView extends MapView {
                 if (!isDefined(mId)) {
                     return;
                 }
-                const sId = that.getStylerId(feature.getId());
+                const sId = that.getLayerId(feature.getId());
                 if (!isDefined(sId)) {
                     return;
                 }
-                const styler = that.getStyler(sId);
-                if (!isDefined(styler)) {
+                const layer = that.getLayer(sId);
+                if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerLeftClick(mId, feature, styler, e);
+                that.onMarkerLeftClick(mId, feature, layer, e);
             }
         });
 
@@ -323,15 +323,15 @@ class OpenLayerView extends MapView {
                 if (!isDefined(mId)) {
                     return;
                 }
-                const sId = that.getStylerId(feature.getId());
+                const sId = that.getLayerId(feature.getId());
                 if (!isDefined(sId)) {
                     return;
                 }
-                const styler = that.getStyler(sId);
-                if (!isDefined(styler)) {
+                const layer = that.getLayer(sId);
+                if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerHover(mId, feature, styler, e);
+                that.onMarkerHover(mId, feature, layer, e);
             }
         });
 
@@ -366,7 +366,7 @@ class OpenLayerView extends MapView {
      * @param {Number} properties.lat
      * @param {String} properties.icon - path of the icon
      * @param {Number} properties.orientation - orientation in degree
-     * @param {String} properties.id - the id of the new created marker: styler.id$styler.markerId
+     * @param {String} properties.id - the id of the new created marker: layer.id$layer.markerId
      * @return {Object} the new marker object
      */
     addMarker(properties) {

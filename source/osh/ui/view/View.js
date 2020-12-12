@@ -283,9 +283,9 @@ class View {
                     if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
                         return;
                     }
-                    //TODO: maybe done into the styler?
+                    //TODO: maybe done into the layer?
                     if(event.data.type === EventType.DATA) {
-                        styler.setData(dataSourceId, event.data, self);
+                        layer.setData(dataSourceId, event.data, self);
                         self.lastRec[dataSourceId] = event.data;
                     }
                 };

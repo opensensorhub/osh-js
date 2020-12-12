@@ -23,7 +23,7 @@ import {
 	hasValue,
 	isDefined
 } from "../../utils/Utils.js";
-import Styler from "./Layer.js";
+import Layer from "./Layer.js";
 
 /**
  * @extends Layer

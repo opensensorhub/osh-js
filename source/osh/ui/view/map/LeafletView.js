@@ -215,7 +215,7 @@ class LeafletView extends MapView {
      * @param {String} properties.labelOffset - offset of the label of the tooltip
      * @param {Number} properties.orientation - orientation of the icon in degree
      * @param {Function} properties.onLeftClick - onLeftClick function callback
-     * @param {String} properties.id - the id of the new created marker: styler.id$styler.markerId
+     * @param {String} properties.id - the id of the new created marker: layer.id$layer.markerId
      * @return {Object} the the new created marker
      */
     addMarker(properties) {
@@ -310,10 +310,10 @@ class LeafletView extends MapView {
                 labelSize : layer.labelSize,
                 labelOffset : layer.labelOffset,
                 name : layer.viewItem.name,
-                description : layer.viewItem.description
-                 onLeftClick: styler.onLeftClick,
-                 id: styler.id+"$"+styler.markerId,
-                 showPopup: !isDefined(styler.onLeftClick)
+                description : layer.viewItem.description,
+                 onLeftClick: layer.onLeftClick,
+                 id: layer.id+"$"+layer.markerId,
+                 showPopup: !isDefined(layer.onLeftClick)
             });
             this.addMarkerToLayer(layer, markerObject);
             const mId = layer.markerId; //need to freeze

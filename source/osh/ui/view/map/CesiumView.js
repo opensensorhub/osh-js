@@ -153,7 +153,7 @@ class CesiumView extends MapView {
         name : layer.viewItem.name,
         description : layer.viewItem.description,
         timeStamp: timeStamp,
-        id: styler.id+"$"+styler.markerId
+        id: layer.id+"$"+layer.markerId
       });
 
       this.addMarkerToLayer(layer, markerObj);
@@ -169,7 +169,7 @@ class CesiumView extends MapView {
       labelColor : layer.labelColor,
       labelSize : layer.labelSize,
       timeStamp: timeStamp,
-      defaultToTerrainElevation: styler.defaultToTerrainElevation
+      defaultToTerrainElevation: layer.defaultToTerrainElevation
     });
   }
 
@@ -322,19 +322,19 @@ class CesiumView extends MapView {
       if (!isDefined(mId)) {
         return;
       }
-      const sId = that.getStylerId(pickedFeature.id.id);
+      const sId = that.getLayerId(pickedFeature.id.id);
       if (!isDefined(sId)) {
         return;
       }
-      const styler = that.getStyler(sId);
-      if (!isDefined(styler)) {
+      const layer = that.getLayer(sId);
+      if (!isDefined(layer)) {
         return;
       }
 
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerLeftClick(mId,pickedFeature, styler, {})
+      that.onMarkerLeftClick(mId,pickedFeature, layer, {})
     };
 
     const onRightClick = (movement) => {
@@ -347,19 +347,19 @@ class CesiumView extends MapView {
       if (!isDefined(mId)) {
         return;
       }
-      const sId = that.getStylerId(pickedFeature.id.id);
+      const sId = that.getLayerId(pickedFeature.id.id);
       if (!isDefined(sId)) {
         return;
       }
-      const styler = that.getStyler(sId);
-      if (!isDefined(styler)) {
+      const layer = that.getLayer(sId);
+      if (!isDefined(layer)) {
         return;
       }
 
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerRightClick(mId,pickedFeature, styler, {})
+      that.onMarkerRightClick(mId,pickedFeature, layer, {})
     };
 
     const onHover = (movement) => {
@@ -371,16 +371,16 @@ class CesiumView extends MapView {
       if (!isDefined(mId)) {
         return;
       }
-      const sId = that.getStylerId(pickedFeature.id.id);
+      const sId = that.getLayerId(pickedFeature.id.id);
       if (!isDefined(sId)) {
         return;
       }
-      const styler = that.getStyler(sId);
-      if (!isDefined(styler)) {
+      const layer = that.getLayer(sId);
+      if (!isDefined(layer)) {
         return;
       }
       pickedFeature.pixel = movement.endPosition;
-      that.onMarkerHover(mId,pickedFeature, styler, {})
+      that.onMarkerHover(mId,pickedFeature, layer, {})
     };
 
     this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
