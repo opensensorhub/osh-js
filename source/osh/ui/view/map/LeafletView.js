@@ -214,7 +214,9 @@ class LeafletView extends MapView {
      * @param {String} properties.description - description of the marker to display into the tooltip
      * @param {String} properties.labelOffset - offset of the label of the tooltip
      * @param {Number} properties.orientation - orientation of the icon in degree
-     * @return {string} the id of the new created marker
+     * @param {Function} properties.onLeftClick - onLeftClick function callback
+     * @param {String} properties.id - the id of the new created marker: styler.id$styler.markerId
+     * @return {Object} the the new created marker
      */
     addMarker(properties) {
         //create marker
@@ -242,12 +244,13 @@ class LeafletView extends MapView {
 
         let name = properties.hasOwnProperty("name") && properties.label != null ? properties.label : "";
         let desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
-        if (name.length > 0 || desc.length > 0) {
+        if (properties.showPopup && (name.length > 0 || desc.length > 0)) {
             marker.bindPopup(name + '<div>' + desc + '</div>',{
                 offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });
         }
 
+        marker.id = properties.id;
         marker.addTo(this.map);
         marker.setRotationAngle(properties.orientation);
 
@@ -307,9 +310,16 @@ class LeafletView extends MapView {
                 labelSize : styler.labelSize,
                 labelOffset : styler.labelOffset,
                 name : styler.viewItem.name,
-                description : styler.viewItem.description
+                description : styler.viewItem.description,
+                onLeftClick: styler.onLeftClick,
+                id: styler.id+"$"+styler.markerId,
+                showPopup: !isDefined(styler.onLeftClick)
             });
             this.addMarkerToStyler(styler, markerObject);
+            const mId = styler.markerId; //need to freeze
+            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, styler, event));
+            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, styler, event));
+            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, styler, event));
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker

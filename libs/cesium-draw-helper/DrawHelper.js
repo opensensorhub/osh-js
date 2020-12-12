@@ -204,7 +204,7 @@ var DrawHelper = (function() {
     });
 
 //    Cesium.Polygon.prototype.setStrokeStyle = setStrokeStyle;
-//    
+//
 //    Cesium.Polygon.prototype.drawOutline = drawOutline;
 //
 
@@ -746,7 +746,7 @@ var DrawHelper = (function() {
                     callbacks.onDoubleClick(getIndex());
                 });
             }
-            if(callbacks.onClick) {
+            if(callbacks.onLeftClick) {
                 setListener(billboard, 'leftClick', function(position) {
                     callbacks.onClick(getIndex());
                 });
