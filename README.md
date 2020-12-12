@@ -97,7 +97,7 @@ some OpenLayer features, don't forget to install OpenLayer as node module depend
 ## Documentation
 Official Website: [here](http://opensensorhub.github.io/osh-js/latest/site).
 
-JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/documentation/jsdoc/)
+JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/jsdoc/)
 
 ## Live Showcase
 
