@@ -283,39 +283,12 @@ class View {
                     if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
                         return;
                     }
-                    // we check selected dataSource only when the selected entity is not set
-                    let selected = false;
-                    if (isDefined(self.selectedEntity)) {
-                        selected = (viewItem.entityId === self.selectedEntity);
-                    } else {
-                        selected = (self.selectedDataSources.indexOf(dataSourceId) > -1);
-                    }
-
-                    //TODO: maybe done into the layer?
+                    //TODO: maybe done into the styler?
                     if(event.data.type === EventType.DATA) {
-                        layer.setData(dataSourceId, event.data, self, {
-                            selected: selected
-                        });
+                        styler.setData(dataSourceId, event.data, self);
                         self.lastRec[dataSourceId] = event.data;
                     }
                 };
-
-                EventManager.observe(EventManager.EVENT.SELECT_VIEW, (event) => {
-                    // we check selected dataSource only when the selected entity is not set
-                    let selected = false;
-                    if (isDefined(event.entityId)) {
-                        selected = (viewItem.entityId === event.entityId);
-                    } else {
-                        selected = (event.dataSourcesIds.indexOf(dataSourceId) > -1);
-                    }
-
-                    if (dataSourceId in self.lastRec) {
-                        layer.setData(dataSourceId, self.lastRec[dataSourceId], self, {
-                            selected: selected
-                        });
-                    }
-                }, this.divId);
-
             }
         }
     }

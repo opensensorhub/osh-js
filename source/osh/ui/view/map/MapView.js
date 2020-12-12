@@ -82,6 +82,21 @@ class MapView extends View {
     }
 
     /**
+     * Get the Styler associated to its id
+     * @param {String} stylerId - the id of the Styler
+     * @return {Styler} - the corresponding styler, null otherwise
+     */
+    getStyler(stylerId) {
+        // find corresponding styler
+        for (let currentStyler of this.stylers) {
+            if (currentStyler.id === stylerId) {
+                return currentStyler;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Remove Corresponding ViewItem
      * @param {Object} viewItem - The viewItem object
      */
@@ -145,6 +160,89 @@ class MapView extends View {
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Method to call onLeftClick Styler method if exists
+     * @param {String} markerId - the Styler markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} styler - the Styler object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerLeftClick(markerId, markerObject, styler, event) {
+        if (isDefined(styler.onLeftClick)) {
+            styler.onLeftClick.call(styler,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Method to call onRightClick Styler method if exists
+     * @param {String} markerId - the Styler markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} styler - the Styler object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerRightClick(markerId, markerObject, styler, event) {
+        if (isDefined(styler.onRightClick)) {
+            styler.onRightClick.call(styler,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Method to call onMove Styler method if exists
+     * @param {String} markerId - the Styler markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} styler - the Styler object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerMove(markerId, markerObject, styler, event) {
+        if (isDefined(styler.onMove)) {
+            styler.onMove.call(styler,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Method to call onHover Styler method if exists
+     * @param {String} markerId - the Styler markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} styler - the Styler object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerHover(markerId, markerObject, styler, event) {
+        if (isDefined(styler.onHover)) {
+            styler.onHover.call(styler,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Gets the the Styler id from  a concatenated id
+     * @param {String} id - the concatenated such as stylerId$markerId
+     * @return {null|String} the Styler id
+     */
+    getStylerId(id) {
+        const split = id.split('$');
+
+        if(isDefined(split) && split.length === 2) {
+           return  split[0];
+        }
+        return null;
+    }
+
+    /**
+     * Gets the the Marker id from  a concatenated id
+     * @param {String} id - the concatenated such as stylerId$markerId
+     * @return {null|String} the marker id
+     */
+    getMarkerId(id) {
+        if(!isDefined(id)) {
+            return null;
+        }
+        const split = id.split('$');
+
+        if(isDefined(split) && split.length === 2) {
+            return  split[1];
+        }
+        return null;
+    }
 }
 
 export default MapView;
