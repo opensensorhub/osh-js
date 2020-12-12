@@ -17,9 +17,10 @@
 import MapView from "./MapView";
 import mapboxgl from 'mapbox-gl';
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
-import {IconLayer} from '@deck.gl/layers';
+import {IconLayer, ScatterplotLayer} from '@deck.gl/layers';
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import {BASEMAP} from '@deck.gl/carto';
+import {TileLayer} from '@deck.gl/geo-layers';
 
 
 /**
@@ -54,51 +55,24 @@ class DeckGlView extends MapView {
      * @private
      */
     initMap(options) {
-        const mapElt = document.createElement('div');
-        mapElt.setAttribute('id', randomUUID());
-        mapElt.setAttribute('style','width:100%;height:100%;');
-        let domNode = document.getElementById(this.divId);
-        domNode.appendChild(mapElt);
-
         const INITIAL_VIEW_STATE = {
-            latitude: 0,
-            longitude: 0,
-            zoom: 0,
-            bearing: 0,
-            pitch: 0
+            latitude: 37.8,
+            longitude: -122.45,
+            zoom: 15
         };
 
-        const MAP_STYLE = BASEMAP.VOYAGER;
-
-        const map = new mapboxgl.Map({
-            container: mapElt.id,
-            style: MAP_STYLE,
-            width: '100%',
-            height: '100%',
-            // Note: deck.gl will be in charge of interaction and event handling
-            interactive: true,
-            center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
-            zoom: INITIAL_VIEW_STATE.zoom,
-            bearing: INITIAL_VIEW_STATE.bearing,
-            pitch: INITIAL_VIEW_STATE.pitch
-        });
-        map.on('load', function () {
-            map.resize();
-        });
-
-        const canvasElt = document.createElement('canvas');
-        canvasElt.setAttribute('id', randomUUID());
-
-        domNode.appendChild(canvasElt);
-
-        this.deckgl = new Deck({
-            canvas: canvasElt.id,
-            width: '100%',
-            height: '100%',
+        const deckgl = new Deck({
             initialViewState: INITIAL_VIEW_STATE,
             controller: true,
-            layers: [],
-            views: [new MapViewDeck()],
+            layers: [
+                new ScatterplotLayer({
+                    data: [
+                        {position: [-122.45, 37.8], color: [255, 0, 0], radius: 100}
+                    ],
+                    getColor: d => d.color,
+                    getRadius: d => d.radius
+                })
+            ]
         });
 
         this.dataChunks = [];
@@ -109,38 +83,67 @@ class DeckGlView extends MapView {
      * @param {PointMarker} layer - The layer allowing the update of the marker
      */
     updateMarker(layer) {
-        let marker = this.getMarker(layer);
+        /*let marker = this.getMarker(layer);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
             // const markerObject = this.addMarker(layer);
             // this.addMarkerToLayer(layer, markerObject);
-            const ICON_MAPPING = {
-                marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
-            };
             this.dataChunks.push( {"coordinates":[28.96,13.66033],"name":"Al Zarnkh","class":"LL5","mass":"700","year":2001});
-
-            const layers = this.dataChunks.map((chunk, chunkIndex) => new IconLayer({
-                id: layer.markerId,
-                data: chunk,
-                pickable: true,
-                // iconAtlas and iconMapping are required
-                // getIcon: return a string
-                iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
-                iconMapping: ICON_MAPPING,
-                getIcon: d => 'marker',
-                sizeScale: 15,
-                getPosition: d => console.log(d),
-                getSize: d => 5,
-                getColor: d => [Math.sqrt(d.exits), 140, 0]
-            }));
 
             console.log('ici')
             // this.addMarkerToLayer(layer, iconLayer);
-            this.deckgl.setProps({layers});
         }
+        const ICON_MAPPING = {
+            marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+        };
+        const DATA_URL =
+            'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json'; // eslint-disable-line
+
+        const l = new IconLayer({
+            id: 'icon-layer',
+            data: DATA_URL,
+            pickable: true,
+            // iconAtlas and iconMapping are required
+            // getIcon: return a string
+            iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+            iconMapping: ICON_MAPPING,
+            getIcon: d => 'marker',
+
+            sizeScale: 15,
+            getPosition: d => d.coordinates,
+            getSize: d => 5,
+            getColor: d => [Math.sqrt(d.exits), 140, 0]
+        });
+        this.deckgl.setProps({layers: [l]});
 
         // get the current marker corresponding to the current markerId value of the PointMarker
-        marker = this.getMarker(layer);
+        marker = this.getMarker(layer);*/
+        // this.onNewDataArrive([
+        //     {
+        //         position: [layer.location.x, layer.location.y],
+        //     }]);
+    }
+
+    onNewDataArrive(chunk) {
+        this.dataChunks.push(chunk);
+        this.render();
+    }
+
+    render() {
+
+        const layers = this.dataChunks.map((chunk, chunkIndex) => new ScatterplotLayer({
+            // Important: each layer must have a consistent & unique id
+            id: `chunk-${chunkIndex}`,
+            // If we have 10 100,000-row chunks already loaded and a new one arrive,
+            // the first 10 layers will see no prop change
+            // only the 11th layer's buffers need to be generated
+            data: chunk,
+            getPosition: d => d.position, // [longitude, latitude] tuple
+            getFillColor: [255, 0, 0],
+            radiusMinPixels: 10,
+        }));
+
+        this.deckgl.setProps({layers});
     }
 
     /**
