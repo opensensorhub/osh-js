@@ -42,7 +42,7 @@ module.exports = {
         ['meta', {name: 'apple-mobile-web-app-status-bar-style', content: 'black'}]
     ],
     dest: 'dist',
-    base: '/osh-js/v2.0.0/doc/',
+    base: '/osh-js/dev/site/',
     /**
      * Theme configuration, here is the default theme configuration for VuePress.
      *
