@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: osh/ui/view/entity/EntityTreeView.js</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    <!--?js= this.partial('navigation.tmpl', this) ?-->
+    <div class="main">
+        <h1 class="page-title" data-filename="osh_ui_view_entity_EntityTreeView.js.html">Source: osh/ui/view/entity/EntityTreeView.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import View from "../View.js";
+import {isDefined} from "../../../utils/Utils.js";
+import {createTree} from "../../../../../libs/tree/tree.js";
+import "../../../../../libs/tree/tree.css";
+
+/**
+ * This class is in charge of displaying the entities in a tree structure.
+ * @extends View
+ * @example
+ import EntityTreeView from 'osh/ui/view/entity/EntityTreeView.js';
+ import EntityTreeView from 'osh/entity/Entity.js';
+
+ let entityTreeView = new EntityTreeView(divId,
+     [{
+        entity : new Entity('android entity',[dataSource]),
+        path: "Sensors/Toulouse",
+        treeIcon : "images/android_icon.png"
+     }],
+     {
+         css: "tree-container"
+     }
+ );
+ */
+class EntityTreeView extends View {
+    /**
+     * Create a View.
+     * @param {String} parentElementDivId - The div element to attach to
+     * @param {Object[]} entityItems - The initial view items to add
+     * @param {Object} options - the properties of the view
+     *
+     */
+    constructor(parentElementDivId,entityItems,options) {
+        super(parentElementDivId,[],options);
+        this.entityItems = entityItems;
+        this.initTree(options);
+    }
+
+    /**
+     * @private
+     */
+    initTree(options) {
+        this.tree = createTree(this.divId,'white',null);
+
+        // iterates over entities to create treeNode
+        for(let i = 0;i &lt; this.entityItems.length;i++) {
+            let currentItem = this.entityItems[i];
+            let entity = currentItem.entity;
+            let path = currentItem.path;
+            let treeIcon = currentItem.treeIcon;
+
+            if(path.endsWith("/")) {
+                path = path.substring(0,path.length-1);
+            }
+
+            // create intermediary folders or append to them as needed
+            let folder = path.split("/");
+            let nbNodes = folder.length;
+            let currentNode = this.tree;
+            let pos = 0;
+            while(nbNodes > 0) {
+                let existingChildNode = null;
+
+                // scan child nodes to see if folder already exists
+                for (let n=0; n&lt;currentNode.childNodes.length; n++) {
+                    let node = currentNode.childNodes[n];
+                    if (node.text === folder[pos]) {
+                        existingChildNode = node;
+                        break;
+                    }
+                }
+
+                // if folder already exists, just use it as parent in next iteration
+                // otherwise create a new node to use as new parent
+                if (existingChildNode == null) {
+                    if (currentNode === this.tree) {
+                        currentNode = this.tree.createNode(folder[pos], false, '', this.tree, null, null);
+                    } else {
+                        currentNode = currentNode.createChildNode(folder[pos], false, '', null, null);
+                    }
+                } else {
+                    currentNode = existingChildNode;
+                }
+
+                pos++;
+                nbNodes--;
+            }
+
+            let entityNode;
+            if(currentNode === this.tree) {
+                entityNode = this.tree.createNode(entity.getName(),false,treeIcon,this.tree);
+            } else {
+                entityNode = currentNode.createChildNode(entity.getName(),false,treeIcon,entity);
+            }
+            currentItem.node = entityNode;
+        }
+
+        //Rendering the tree
+        this.tree.drawTree();
+    }
+
+    selectDataView(dataSourcesIds, entityId) {
+
+        // when an entity is selected we find the corresponding node in the tree
+        // we expand all its ancestors and we mark it as selected
+        if (isDefined(entityId)) {
+            for(let i = 0;i &lt; this.entityItems.length;i++) {
+                let currentItem = this.entityItems[i];
+                if (currentItem.entity.getId() === entityId) {
+                    this.tree.selectNode(currentItem.node, false);
+                    let node = currentItem.node.parent;
+                    while (node !== this.tree) {
+                        this.tree.expandNode(node);
+                        node = node.parent;
+                    }
+                    currentItem.node.elementLi.scrollIntoViewIfNeeded(true);
+                }
+
+            }
+        }
+    }
+}
+export default  EntityTreeView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 12 2020 10:50:52 GMT+0100 (Central European Standard Time)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
