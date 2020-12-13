@@ -18,7 +18,7 @@ import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
 import mapboxgl from 'mapbox-gl';
 import {ScatterplotLayer, TextLayer, IconLayer} from '@deck.gl/layers';
-import {randomUUID} from "../../../utils/Utils";
+import {isDefined, randomUUID} from "../../../utils/Utils";
 
 
 /**
@@ -33,6 +33,10 @@ class DeckGlView extends MapView {
      * @param {String} viewItems.name - The name of the view item
      * @param {Layer} viewItems.layer - The layer object representing the view item
      * @param {Object} [options] - the properties of the view
+     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [options.mapboxProps] - the properties of the [Mapbox Map]{@link https://docs.mapbox.com/mapbox-gl-js/api/map/} object
+     * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
+     *
      *
      */
     constructor(parentElementDivId, viewItems, options) {
@@ -42,6 +46,11 @@ class DeckGlView extends MapView {
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
         this.layers = {};
+        this.first = true;
+        this.autoZoomOnFirstMarker = false;
+        if(isDefined(options.autoZoomOnFirstMarker)) {
+            this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
+        }
     }
 
     beforeAddingItems(options) {
@@ -87,7 +96,7 @@ class DeckGlView extends MapView {
             DARK_MATTER: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
         };
 
-        const map = new mapboxgl.Map({
+        let mapboxProps = {
             container: mapElt.id,
             style: BASEMAP.VOYAGER,
             // Note: deck.gl will be in charge of interaction and event handling
@@ -96,8 +105,19 @@ class DeckGlView extends MapView {
             zoom: INITIAL_VIEW_STATE.zoom,
             bearing: INITIAL_VIEW_STATE.bearing,
             pitch: INITIAL_VIEW_STATE.pitch
-        });
-        this.deckgl = new Deck({
+        };
+
+        // overrides default conf by user defined one
+        if(isDefined(options.mapboxProps)) {
+            mapboxProps = {
+                ...mapboxProps,
+                ...options.mapboxProps
+            };
+        }
+
+        const map = new mapboxgl.Map(mapboxProps);
+
+        let deckProps = {
             canvas: canvasElt.id,
             width: '100%',
             height: '100%',
@@ -112,9 +132,18 @@ class DeckGlView extends MapView {
                 });
             },
             getTooltip: d => d.object &&  d.object.tooltip,
-            layers: [
-            ]
-        });
+            layers: []
+        };
+
+        // overrides default conf by user defined one
+        if(isDefined(options.deckProps)) {
+            deckProps = {
+                ...deckProps,
+                ...options.deckProps
+            };
+        }
+
+        this.deckgl = new Deck(deckProps);
     }
 
     /**
@@ -130,19 +159,34 @@ class DeckGlView extends MapView {
                 position: [layer.location.x, layer.location.y],
                 icon: {
                     url: layer.icon,
-                    height: 64,
-                    width:  32
+                    height: layer.iconSize[1],
+                    width:  layer.iconSize[0],
+                    anchorX: layer.iconAnchor[0],
+                    anchorY: layer.iconAnchor[1]
                 },
                 tooltip: layer.label
             }],
             pickable: true,
             getIcon: d => d.icon,
-            sizeScale: 15,
             getPosition: d => d.position,
-            getSize: d => 5
+            getSize: d => Math.max(d.icon.width, d.icon.height)
         });
 
-        this.deckgl.setProps({layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]])});
+        const props = {
+            layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]])
+        };
+
+        if(this.first && this.autoZoomOnFirstMarker) {
+            this.first = false;
+            // Zoom to the object
+            props.initialViewState = {
+                longitude: layer.location.x,
+                latitude: layer.location.y,
+                zoom: layer.zoomLevel
+            };
+        }
+
+        this.deckgl.setProps(props);
     }
 }
 

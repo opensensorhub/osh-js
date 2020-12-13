@@ -26,8 +26,10 @@ let pointMarker = new PointMarker({
     }
   },
   icon: './images/car-location.png',
+  iconSize: [32,64],
   iconAnchor: [16, 65],
-  label: 'GPS Toulouse'
+  label: 'GPS Toulouse',
+  zoomLevel: 16
 });
 
 // create Leaflet view
@@ -36,7 +38,16 @@ let deckglMapView = new DeckGlView("container",
       layer: pointMarker,
       name: "Android Phone GPS"
     }], {
-      autoZoomOnFirstMarker:true
+      deckProps: {
+        initialViewState: {
+          longitude: 1.42376344,
+          latitude: 43.6175984,
+          zoom: 12,
+          bearing: 0,
+          pitch: 0
+        }
+      },
+      autoZoomOnFirstMarker: true
     }
 );
 
