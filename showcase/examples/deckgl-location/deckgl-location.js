@@ -26,11 +26,12 @@ let pointMarker = new PointMarker({
     }
   },
   icon: './images/car-location.png',
-  iconAnchor: [16, 65]
+  iconAnchor: [16, 65],
+  label: 'GPS Toulouse'
 });
 
 // create Leaflet view
-let deckglMapView = new DeckGlView("deckglMap",
+let deckglMapView = new DeckGlView("container",
     [{
       layer: pointMarker,
       name: "Android Phone GPS"
