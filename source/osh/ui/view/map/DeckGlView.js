@@ -15,9 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import MapView from "./MapView";
-import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
+import {Deck} from '@deck.gl/core';
 import mapboxgl from 'mapbox-gl';
-import {ScatterplotLayer, TextLayer, IconLayer} from '@deck.gl/layers';
+import {IconLayer} from '@deck.gl/layers';
 import {isDefined, randomUUID} from "../../../utils/Utils";
 
 
@@ -122,9 +122,6 @@ class DeckGlView extends MapView {
             width: '100%',
             height: '100%',
             controller: true,
-            views: [
-                new MapViewDeck()
-            ],
             onViewStateChange: ({viewState}) => {
                 map.jumpTo({
                     center: [viewState.longitude, viewState.latitude],
