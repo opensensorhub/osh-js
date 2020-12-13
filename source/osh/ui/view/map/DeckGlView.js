@@ -85,7 +85,7 @@ class DeckGlView extends MapView {
         const INITIAL_VIEW_STATE = {
             longitude: 0,
             latitude: 0,
-            zoom: 1,
+            zoom: 12,
             bearing: 0,
             pitch: 0
         };
@@ -121,8 +121,10 @@ class DeckGlView extends MapView {
             canvas: canvasElt.id,
             width: '100%',
             height: '100%',
-            initialViewState: INITIAL_VIEW_STATE,
             controller: true,
+            views: [
+                new MapViewDeck()
+            ],
             onViewStateChange: ({viewState}) => {
                 map.jumpTo({
                     center: [viewState.longitude, viewState.latitude],

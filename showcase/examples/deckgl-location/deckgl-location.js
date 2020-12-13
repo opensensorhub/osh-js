@@ -39,13 +39,12 @@ let deckglMapView = new DeckGlView("container",
       name: "Android Phone GPS"
     }], {
       deckProps: {
-        initialViewState: {
-          longitude: 1.42376344,
-          latitude: 43.6175984,
-          zoom: 12,
-          bearing: 0,
-          pitch: 0
-        }
+      },
+      mapboxProps: {
+        center: [1.42376344, 43.6175984],
+        zoom: 16,
+        bearing: 0,
+        pitch: 0
       },
       autoZoomOnFirstMarker: true
     }
