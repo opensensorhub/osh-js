@@ -17,7 +17,7 @@
 import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
 import {IconLayer} from '@deck.gl/layers';
-import {isDefined, randomUUID} from "../../../utils/Utils";
+import {hex2rgb, isDefined, randomUUID} from "../../../utils/Utils";
 import {BitmapLayer, PathLayer} from '@deck.gl/layers';
 import {TileLayer} from '@deck.gl/geo-layers';
 import '../../../resources/css/deck.css';
@@ -139,26 +139,6 @@ class DeckGlView extends MapView {
         const id = layer.id+'$'+layer.markerId;
 
         // in deck we create a new layer everytime => reactive programming
-       /* const iconLayer = new IconLayer({
-            id: id,
-            data: [{
-                position: [layer.location.x, layer.location.y],
-                icon: {
-                    url: layer.icon,
-                    height: layer.iconSize[1],
-                    width: layer.iconSize[0],
-                    anchorX: layer.iconAnchor[0],
-                    anchorY: layer.iconAnchor[1]
-                },
-                sizeScale: layer.iconScale,
-                tooltip: layer.label
-            }],
-            pickable: true,
-            sizeScale: layer.iconScale,
-            getIcon: d => d.icon,
-            getPosition: d => d.position,
-            sizeMinPixels: Math.min(layer.iconSize[0], layer.iconSize[1]) * layer.iconScale
-        });*/
         const iconLayer = new IconLayer({
             id: id,
             data: [{
@@ -182,8 +162,8 @@ class DeckGlView extends MapView {
             getIcon: d => 'marker',
             sizeScale: layer.iconScale,
             getPosition: d => d.position,
-            getSize: d => 5,
-            getColor: d => [0, 150, 22]
+            getSize: d => layer.iconScale,
+            getColor: d =>  hex2rgb(layer.color)
         });
 
         // is going to create or update the current entry into the layer map

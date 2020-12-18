@@ -125,7 +125,7 @@ const deckViewItems = [
   {
     layer:  new PointMarker({
       ...commonMarkerConf,
-      iconScale: 15
+      iconScale: 7
     }),
     name: "AVL"
   },

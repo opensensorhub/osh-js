@@ -36,6 +36,13 @@ export function hasValue(v) {
 }
 
 /**
+ Global helper method to transform hex color into RGBA
+ */
+export function hex2rgb(hex){
+    const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+    return [r, g, b];
+}
+/**
  Global helper method to test if a letiable or object attribute is of a particular type
  */
 export function hasType(v, expectedType) {

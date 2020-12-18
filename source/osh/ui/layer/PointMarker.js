@@ -99,7 +99,7 @@ class PointMarker extends Layer {
 		this.labelSize = 16;
 		this.labelOffset = [0,0];
 		this.zoomLevel = 15;
-		this.color = null;
+		this.color = '#000000';
 		this.defaultToTerrainElevation = false;
 		this.options = {};
 		this.markerId = 'marker';
