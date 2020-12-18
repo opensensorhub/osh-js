@@ -93,7 +93,7 @@ class PointMarker extends Layer {
 		this.icon = null;
 		this.iconAnchor = [16,16];
 		this.iconSize = [16,16];
-		this.iconScale = 1;
+		this.iconScale = 10;
 		this.label = null;
 		this.labelColor = "#000000";
 		this.labelSize = 16;
