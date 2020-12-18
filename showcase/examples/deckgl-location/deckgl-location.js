@@ -63,8 +63,6 @@ let deckglMapView = new DeckGlView("container",
     ], {
       deckProps: {
         initialViewState: {
-          // longitude: -122.4 ,
-          // latitude:  37.7,
           longitude: 1.42376344,
           latitude:  43.6175984,
           zoom: 15,
