@@ -41,7 +41,6 @@
     "@deck.gl/core": "^8.3.6",
     "@deck.gl/layers": "^8.3.6",
     "@math.gl/web-mercator": "^3.3.2",
-    "deck.gl": "^8.3.0",
-    "mapbox-gl": "1.13.0"
+    "deck.gl": "^8.3.0"
   }
 }

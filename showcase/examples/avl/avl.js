@@ -4,6 +4,7 @@ import Polyline from "osh/ui/layer/Polyline.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";
+import DeckGlView from "osh/ui/view/map/DeckGlView";
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 
 window.CESIUM_BASE_URL = './';
@@ -62,6 +63,7 @@ const commonMarkerConf = {
   zoomLevel: 12,
   iconAnchor: [16, 0],
   labelOffset: [0,-16],
+  iconSize: [32, 37],
   labelColor: '#00fff5'
 };
 
@@ -72,7 +74,7 @@ const commonPolylineConf = {
       return {
         x: rec.location.lon,
         y: rec.location.lat,
-        z: rec.location.alt
+        z: 0
       };
     }
   },
@@ -93,14 +95,46 @@ const commonPolylineConf = {
 const layer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png');
 
 const leafletViewItems = [
-    {layer:  new PointMarker({...commonMarkerConf}), name: "AVL"},
-    {layer:  new Polyline({...commonPolylineConf}), name: "AVL"},
-    ];
-const olViewItems = [
-  {layer:  new PointMarker({...commonMarkerConf}), name: "AVL"},
-  {layer:  new Polyline({...commonPolylineConf}), name: "AVL"},
+  {
+    layer:  new PointMarker({...commonMarkerConf}),
+    name: "AVL"
+  },
+  {
+    layer:  new Polyline({...commonPolylineConf}),
+    name: "AVL"
+  },
 ];
-const cesiumViewItems = [{layer:  new PointMarker({...commonMarkerConf}), name: "AVL"}];
+const olViewItems = [
+  {
+    layer:  new PointMarker({...commonMarkerConf}),
+    name: "AVL"
+  },
+  {
+    layer:  new Polyline({...commonPolylineConf}),
+    name: "AVL"
+  },
+];
+const cesiumViewItems = [
+    {
+      layer:  new PointMarker({...commonMarkerConf}),
+      name: "AVL"
+    }
+];
+
+const deckViewItems = [
+  {
+    layer:  new PointMarker({
+      ...commonMarkerConf
+    }),
+    name: "AVL"},
+  {
+    layer: new Polyline({
+      ...commonPolylineConf,
+      color: [255, 102, 0, 127]
+    }),
+    name: "AVL"
+  },
+];
 
 // create Leaflet view
 const leafletMapView = new LeafletView("leafletMap",
@@ -123,6 +157,13 @@ const olMapView = new OpenLayerView("olMap",
 );
 
 const cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
+
+const deckView = new DeckGlView('deckMap',
+    deckViewItems,
+    {
+      autoZoomOnFirstMarker:true,
+    }
+);
 
 // update time
 const timeElt = document.getElementById("time");

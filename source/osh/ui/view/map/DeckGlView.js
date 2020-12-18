@@ -44,7 +44,7 @@ class DeckGlView extends MapView {
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
         this.autoZoomOnFirstMarker = false;
-        if(isDefined(options.autoZoomOnFirstMarker)) {
+        if(isDefined(options) && isDefined(options.autoZoomOnFirstMarker)) {
             this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
         }
     }
@@ -78,7 +78,7 @@ class DeckGlView extends MapView {
         // https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}
         // https://c.tile.openstreetmap.org/{z}/{x}/{y}.png
         this.deckLayers = {};
-        if(isDefined(options.deckProps) && isDefined(options.deckProps.layers)) {
+        if(isDefined(options) && isDefined(options.deckProps) && isDefined(options.deckProps.layers)) {
             for(let i =0;i <options.deckProps.layers.length;i++) {
                 const id = options.deckProps.layers[i].id? options.deckProps.layers[i].id : 'base_'+id;
                 this.deckLayers[id] = options.deckProps.layers[i];
@@ -124,7 +124,7 @@ class DeckGlView extends MapView {
         };
 
         // overrides default conf by user defined one
-        if(isDefined(options.deckProps)) {
+        if(isDefined(options) && isDefined(deckProps)) {
             deckProps = {
                 ...deckProps,
                 ...options.deckProps
@@ -153,12 +153,14 @@ class DeckGlView extends MapView {
                     anchorX: layer.iconAnchor[0],
                     anchorY: layer.iconAnchor[1]
                 },
+                sizeScale: layer.iconScale,
                 tooltip: layer.label
             }],
             pickable: true,
+            sizeScale: layer.iconScale,
             getIcon: d => d.icon,
             getPosition: d => d.position,
-            sizeMinPixels: Math.min(layer.iconSize[0], layer.iconSize[1])
+            sizeMinPixels: Math.min(layer.iconSize[0], layer.iconSize[1]) * layer.iconScale
         });
 
         const props = {
@@ -177,6 +179,7 @@ class DeckGlView extends MapView {
                 zoom: layer.zoomLevel
             };
         }
+
         this.deckgl.setProps(props);
     }
 
@@ -186,7 +189,7 @@ class DeckGlView extends MapView {
      */
     updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
-        const path = layer.locations.polyline.map((coordinate) => {
+        const path = layer.locations[layer.polylineId].map((coordinate) => {
             return [coordinate.x, coordinate.y, coordinate.z]
         });
 
@@ -200,6 +203,7 @@ class DeckGlView extends MapView {
         ];
 
         this.deckLayers[id] = new PathLayer({
+            id: id,
             data: PATH_DATA,
             widthUnits: 'pixels',
             widthMinPixels: 5,
