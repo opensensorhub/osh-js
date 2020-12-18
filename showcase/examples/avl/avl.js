@@ -124,7 +124,8 @@ const cesiumViewItems = [
 const deckViewItems = [
   {
     layer:  new PointMarker({
-      ...commonMarkerConf
+      ...commonMarkerConf,
+      iconScale: 15
     }),
     name: "AVL"
   },
