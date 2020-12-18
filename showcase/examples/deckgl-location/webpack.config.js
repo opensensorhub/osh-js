@@ -51,7 +51,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'deckgl-location.html'
+        index: 'deckgl-location.html',
     },
     devtool: 'source-map',
     plugins: [

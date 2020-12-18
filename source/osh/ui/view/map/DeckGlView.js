@@ -16,10 +16,10 @@
 
 import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
-import mapboxgl from 'mapbox-gl';
-import {ScatterplotLayer, TextLayer, IconLayer} from '@deck.gl/layers';
+import {IconLayer} from '@deck.gl/layers';
 import {isDefined, randomUUID} from "../../../utils/Utils";
-
+import {BitmapLayer} from '@deck.gl/layers';
+import {TileLayer} from '@deck.gl/geo-layers';
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Deck.gl Map object.
@@ -34,6 +34,8 @@ class DeckGlView extends MapView {
      * @param {Layer} viewItems.layer - The layer object representing the view item
      * @param {Object} [options] - the properties of the view
      * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [options.mapboxProps] - the properties of the [Mapbox Map]{@link https://docs.mapbox.com/mapbox-gl-js/api/map/} object
+     * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
      *
      */
     constructor(parentElementDivId, viewItems, options) {
@@ -42,7 +44,10 @@ class DeckGlView extends MapView {
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
-        this.layers = {};
+        this.autoZoomOnFirstMarker = false;
+        if(isDefined(options.autoZoomOnFirstMarker)) {
+            this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
+        }
     }
 
     beforeAddingItems(options) {
@@ -56,74 +61,84 @@ class DeckGlView extends MapView {
      * @private
      */
     initMap(options) {
-        this.autoZoomOnFirstMarker = false;
-
-        if (isDefined(options)) {
-            // checks autoZoom
-            if (isDefined(options.autoZoomOnFirstMarker)) {
-                this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
-            }
-        }
-        const mapElt = document.createElement('div');
-        mapElt.setAttribute('id', randomUUID());
-        mapElt.setAttribute('style','width:100%;height:100%;position:absolute;');
+        this.INITIAL_VIEW_STATE = {
+            longitude: 0,
+            latitude: 0,
+            zoom: 2,
+            bearing: 0,
+            pitch: 0
+        };
 
         const canvasElt = document.createElement('canvas');
         canvasElt.setAttribute('id', randomUUID());
-        canvasElt.setAttribute('style','width:100%;height:100%;position:absolute;');
+        canvasElt.setAttribute('style', 'width:100%;height:100%;position:absolute;');
 
         const containerElt = document.createElement('div');
         containerElt.setAttribute('id', randomUUID());
-        containerElt.setAttribute('style','width:100%;height:100%;position:fixed;');
+        containerElt.setAttribute('style', 'width:100%;height:100%;position:fixed;');
 
-        containerElt.appendChild(mapElt);
         containerElt.appendChild(canvasElt);
 
         let domNode = document.getElementById(this.divId);
         domNode.appendChild(containerElt);
 
-        const INITIAL_VIEW_STATE = {
-            longitude: 0,
-            latitude: 0,
-            zoom: 1,
-            bearing: 0,
-            pitch: 0
-        };
+        //https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}
+        //'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        this.deckLayers = {};
+        if(isDefined(options.deckProps) && isDefined(options.deckProps.layers)) {
+            for(let i =0;i <options.deckProps.layers.length;i++) {
+                const id = options.deckProps.layers[i].id? options.deckProps.layers[i].id : 'base_'+id;
+                this.deckLayers[id] = options.deckProps.layers[i];
+            }
+        } else {
+            this.deckLayers = {
+                base: new TileLayer({
+                    id: 'base',
+                    // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
+                    data: 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    minZoom: 0,
+                    maxZoom: 19,
+                    tileSize: 256,
 
-        const BASEMAP = {
-            VOYAGER: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
-            POSITRON: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-            DARK_MATTER: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-        };
+                    renderSubLayers: props => {
+                        const {
+                            bbox: {west, south, east, north}
+                        } = props.tile;
 
-        this.map = new mapboxgl.Map({
-            container: mapElt.id,
-            style: BASEMAP.VOYAGER,
-            // Note: deck.gl will be in charge of interaction and event handling
-            interactive: false,
-            center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
-            zoom: INITIAL_VIEW_STATE.zoom,
-            bearing: INITIAL_VIEW_STATE.bearing,
-            pitch: INITIAL_VIEW_STATE.pitch
-        });
-        this.deckgl = new Deck({
+                        return new BitmapLayer(props, {
+                            data: null,
+                            image: props.data,
+                            bounds: [west, south, east, north]
+                        });
+                    }
+                })
+            };
+        }
+
+        let deckProps = {
             canvas: canvasElt.id,
             width: '100%',
             height: '100%',
-            initialViewState: INITIAL_VIEW_STATE,
             controller: true,
+            views: [new MapViewDeck()],
+            initialViewState: this.INITIAL_VIEW_STATE,
             onViewStateChange: ({viewState}) => {
-                this.map.flyTo({
-                    center: [viewState.longitude, viewState.latitude],
-                    zoom: viewState.zoom,
-                    bearing: viewState.bearing,
-                    pitch: viewState.pitch
-                });
             },
             getTooltip: d => d.object &&  d.object.tooltip,
-            layers: [
-            ]
-        });
+            layers: Object.keys(this.deckLayers).map((key) => {
+                return [Number(key), this.deckLayers[key]];
+            })
+        };
+
+        // overrides default conf by user defined one
+        if(isDefined(options.deckProps)) {
+            deckProps = {
+                ...deckProps,
+                ...options.deckProps
+            };
+        }
+
+        this.deckgl = new Deck(deckProps);
     }
 
     /**
@@ -133,7 +148,7 @@ class DeckGlView extends MapView {
     updateMarker(layer) {
         const id = layer.id+'$'+layer.markerId;
 
-        this.layers[id] = new IconLayer({
+        this.deckLayers[id] = new IconLayer({
             id: id,
             data: [{
                 position: [layer.location.x, layer.location.y],
@@ -142,7 +157,7 @@ class DeckGlView extends MapView {
                     height: layer.iconSize[1],
                     width:  layer.iconSize[0],
                     anchorX: layer.iconAnchor[0],
-                    anchorY: layer.iconAnchor[1],
+                    anchorY: layer.iconAnchor[1]
                 },
                 tooltip: layer.label
             }],
@@ -152,15 +167,24 @@ class DeckGlView extends MapView {
             sizeMinPixels: Math.min(layer.iconSize[0], layer.iconSize[1])
         });
 
-        if(this.autoZoomOnFirstMarker) {
-            this.deckgl.setProps({
-                layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]]),
-                viewState:
+        const props = {
+            layers: Object.keys(this.deckLayers).map((key) => {
+                return [Number(key), this.deckLayers[key]];
+            })
+        };
 
-            });
-        } else {
-            this.deckgl.setProps({layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]])});
+        if(this.autoZoomOnFirstMarker) {
+            this.autoZoomOnFirstMarker = false;
+            // Zoom to the object
+            props.initialViewState = {
+                ...this.INITIAL_VIEW_STATE,
+                longitude: layer.location.x,
+                latitude: layer.location.y,
+                zoom: layer.zoomLevel
+            };
         }
+
+        this.deckgl.setProps(props);
     }
 }
 

@@ -2,6 +2,8 @@
 import SweJson from "osh/datareceiver/SweJson.js";
 import PointMarker from "osh/ui/layer/PointMarker.js";
 import DeckGlView from "osh/ui/view/map/DeckGlView.js";
+import {TileLayer} from '@deck.gl/geo-layers';
+import {BitmapLayer} from '@deck.gl/layers';
 
 let gpsDataSource = new SweJson("android-GPS", {
   protocol: "ws",
@@ -37,7 +39,36 @@ let deckglMapView = new DeckGlView("container",
       layer: pointMarker,
       name: "Android Phone GPS"
     }], {
-      autoZoomOnFirstMarker:true
+      deckProps: {
+        layers: [
+          new TileLayer({
+            // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
+            data: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            minZoom: 0,
+            maxZoom: 19,
+            tileSize: 256,
+
+            renderSubLayers: props => {
+              const {
+                bbox: {west, south, east, north}
+              } = props.tile;
+
+              return new BitmapLayer(props, {
+                data: null,
+                image: props.data,
+                bounds: [west, south, east, north]
+              });
+            }
+          })
+        ]
+      },
+      mapboxProps: {
+        center: [1.42376344, 43.6175984],
+        zoom: 2,
+        bearing: 0,
+        pitch: 0
+      },
+      autoZoomOnFirstMarker: true
     }
 );
 
