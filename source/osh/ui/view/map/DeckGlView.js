@@ -18,7 +18,7 @@ import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
 import {IconLayer} from '@deck.gl/layers';
 import {isDefined, randomUUID} from "../../../utils/Utils";
-import {BitmapLayer} from '@deck.gl/layers';
+import {BitmapLayer, PathLayer} from '@deck.gl/layers';
 import {TileLayer} from '@deck.gl/geo-layers';
 
 /**
@@ -34,7 +34,6 @@ class DeckGlView extends MapView {
      * @param {Layer} viewItems.layer - The layer object representing the view item
      * @param {Object} [options] - the properties of the view
      * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [options.mapboxProps] - the properties of the [Mapbox Map]{@link https://docs.mapbox.com/mapbox-gl-js/api/map/} object
      * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
      *
      */
@@ -73,17 +72,11 @@ class DeckGlView extends MapView {
         canvasElt.setAttribute('id', randomUUID());
         canvasElt.setAttribute('style', 'width:100%;height:100%;position:absolute;');
 
-        const containerElt = document.createElement('div');
-        containerElt.setAttribute('id', randomUUID());
-        containerElt.setAttribute('style', 'width:100%;height:100%;position:fixed;');
-
-        containerElt.appendChild(canvasElt);
-
         let domNode = document.getElementById(this.divId);
-        domNode.appendChild(containerElt);
+        domNode.appendChild(canvasElt);
 
-        //https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}
-        //'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        // https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}
+        // https://c.tile.openstreetmap.org/{z}/{x}/{y}.png
         this.deckLayers = {};
         if(isDefined(options.deckProps) && isDefined(options.deckProps.layers)) {
             for(let i =0;i <options.deckProps.layers.length;i++) {
@@ -170,7 +163,7 @@ class DeckGlView extends MapView {
 
         const props = {
             layers: Object.keys(this.deckLayers).map((key) => {
-                return [Number(key), this.deckLayers[key]];
+                return [this.deckLayers[key]];
             })
         };
 
@@ -184,6 +177,42 @@ class DeckGlView extends MapView {
                 zoom: layer.zoomLevel
             };
         }
+        this.deckgl.setProps(props);
+    }
+
+    /**
+     * Updates the marker associated to the layer.
+     * @param {Polyline} layer - The layer allowing the update of the marker
+     */
+    updatePolyline(layer) {
+        const id = layer.id+'$'+layer.polylineId;
+        const path = layer.locations.polyline.map((coordinate) => {
+            return [coordinate.x, coordinate.y, coordinate.z]
+        });
+
+        const PATH_DATA =[
+            {
+                weight: layer.weight,
+                "name": layer.id,
+                "color": layer.color,
+                "path": path
+            }
+        ];
+
+        this.deckLayers[id] = new PathLayer({
+            data: PATH_DATA,
+            widthUnits: 'pixels',
+            widthMinPixels: 5,
+            getPath: d => d.path,
+            getColor: d => d.color,
+            getWidth: d => d.weight
+        });
+
+        const props = {
+            layers: Object.keys(this.deckLayers).map((key) => {
+                return [this.deckLayers[key]];
+            })
+        };
 
         this.deckgl.setProps(props);
     }

@@ -1,6 +1,7 @@
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
 import PointMarker from "osh/ui/layer/PointMarker.js";
+import Polyline from "osh/ui/layer/Polyline.js";
 import DeckGlView from "osh/ui/view/map/DeckGlView.js";
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
@@ -33,17 +34,40 @@ let pointMarker = new PointMarker({
   label: 'GPS Toulouse'
 });
 
+let polyline = new Polyline({
+  getLocation: {
+    dataSourceIds: [gpsDataSource.getId()],
+    handler: function (rec) {
+      return {
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: 0
+      };
+    }
+  },
+  color: [255, 102, 0, 127],
+  weight: 2,
+  maxPoints: 200
+});
+
 // create Leaflet view
 let deckglMapView = new DeckGlView("container",
     [{
       layer: pointMarker,
       name: "Android Phone GPS"
-    }], {
+    },
+      {
+        layer: polyline,
+        name: "Android Phone GPS"
+      }
+    ], {
       deckProps: {
         initialViewState: {
+          // longitude: -122.4 ,
+          // latitude:  37.7,
           longitude: 1.42376344,
           latitude:  43.6175984,
-          zoom: 12,
+          zoom: 15,
           bearing: 0,
           pitch: 20
         },
@@ -66,10 +90,10 @@ let deckglMapView = new DeckGlView("container",
                 bounds: [west, south, east, north]
               });
             }
-          })
+          }),
         ]
       },
-      autoZoomOnFirstMarker: true
+      autoZoomOnFirstMarker: false
     }
 );
 
