@@ -24,13 +24,14 @@ let pointMarker = new PointMarker({
       return {
         x: rec.location.lon,
         y: rec.location.lat,
-        z: rec.location.alt
+        z: 0
       };
     }
   },
   icon: './images/car-location.png',
-  iconAnchor: [16, 128],
-  iconSize: [64, 128],
+  iconAnchor: [16, 64],
+  iconSize: [32, 65],
+  iconScale: 10,
   label: 'GPS Toulouse'
 });
 
