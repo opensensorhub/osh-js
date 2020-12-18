@@ -40,6 +40,13 @@ let deckglMapView = new DeckGlView("container",
       name: "Android Phone GPS"
     }], {
       deckProps: {
+        initialViewState: {
+          longitude: 1.42376344,
+          latitude:  43.6175984,
+          zoom: 12,
+          bearing: 0,
+          pitch: 20
+        },
         layers: [
           new TileLayer({
             // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
@@ -61,12 +68,6 @@ let deckglMapView = new DeckGlView("container",
             }
           })
         ]
-      },
-      mapboxProps: {
-        center: [1.42376344, 43.6175984],
-        zoom: 2,
-        bearing: 0,
-        pitch: 0
       },
       autoZoomOnFirstMarker: true
     }

@@ -138,6 +138,7 @@ class DeckGlView extends MapView {
             };
         }
 
+        this.INITIAL_VIEW_STATE = deckProps.initialViewState;
         this.deckgl = new Deck(deckProps);
     }
 
