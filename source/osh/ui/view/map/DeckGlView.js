@@ -18,7 +18,7 @@ import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
 import mapboxgl from 'mapbox-gl';
 import {ScatterplotLayer, TextLayer, IconLayer} from '@deck.gl/layers';
-import {randomUUID} from "../../../utils/Utils";
+import {isDefined, randomUUID} from "../../../utils/Utils";
 
 
 /**
@@ -33,6 +33,7 @@ class DeckGlView extends MapView {
      * @param {String} viewItems.name - The name of the view item
      * @param {Layer} viewItems.layer - The layer object representing the view item
      * @param {Object} [options] - the properties of the view
+     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
      *
      */
     constructor(parentElementDivId, viewItems, options) {
@@ -55,6 +56,14 @@ class DeckGlView extends MapView {
      * @private
      */
     initMap(options) {
+        this.autoZoomOnFirstMarker = false;
+
+        if (isDefined(options)) {
+            // checks autoZoom
+            if (isDefined(options.autoZoomOnFirstMarker)) {
+                this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
+            }
+        }
         const mapElt = document.createElement('div');
         mapElt.setAttribute('id', randomUUID());
         mapElt.setAttribute('style','width:100%;height:100%;position:absolute;');
@@ -87,7 +96,7 @@ class DeckGlView extends MapView {
             DARK_MATTER: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
         };
 
-        const map = new mapboxgl.Map({
+        this.map = new mapboxgl.Map({
             container: mapElt.id,
             style: BASEMAP.VOYAGER,
             // Note: deck.gl will be in charge of interaction and event handling
@@ -104,7 +113,7 @@ class DeckGlView extends MapView {
             initialViewState: INITIAL_VIEW_STATE,
             controller: true,
             onViewStateChange: ({viewState}) => {
-                map.jumpTo({
+                this.map.flyTo({
                     center: [viewState.longitude, viewState.latitude],
                     zoom: viewState.zoom,
                     bearing: viewState.bearing,
@@ -130,19 +139,28 @@ class DeckGlView extends MapView {
                 position: [layer.location.x, layer.location.y],
                 icon: {
                     url: layer.icon,
-                    height: 64,
-                    width:  32
+                    height: layer.iconSize[1],
+                    width:  layer.iconSize[0],
+                    anchorX: layer.iconAnchor[0],
+                    anchorY: layer.iconAnchor[1],
                 },
                 tooltip: layer.label
             }],
             pickable: true,
             getIcon: d => d.icon,
-            sizeScale: 15,
             getPosition: d => d.position,
-            getSize: d => 5
+            sizeMinPixels: Math.min(layer.iconSize[0], layer.iconSize[1])
         });
 
-        this.deckgl.setProps({layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]])});
+        if(this.autoZoomOnFirstMarker) {
+            this.deckgl.setProps({
+                layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]]),
+                viewState:
+
+            });
+        } else {
+            this.deckgl.setProps({layers: Object.keys(this.layers).map((key) => [Number(key), this.layers[key]])});
+        }
     }
 }
 

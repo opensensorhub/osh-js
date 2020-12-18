@@ -26,7 +26,8 @@ let pointMarker = new PointMarker({
     }
   },
   icon: './images/car-location.png',
-  iconAnchor: [16, 65],
+  iconAnchor: [16, 128],
+  iconSize: [64, 128],
   label: 'GPS Toulouse'
 });
 
