@@ -71,6 +71,32 @@ class MapView extends View {
     }
 
     /**
+     * Get all markers contained in this view
+     */
+    getMarkers() {
+        const array = [];
+        for(let id in this.layerIdToMarkers) {
+            for(let markerId in this.layerIdToMarkers[id]) {
+                array.push(this.layerIdToMarkers[id][markerId])
+            }
+        }
+        return array;
+    }
+
+    /**
+     * Get all marker contained in this view
+     */
+    getPolylines() {
+        const array = [];
+        for(let id in this.layerIdToPolylines) {
+            for(let polylineId in this.layerIdToPolylines[id]) {
+                array.push(this.layerIdToPolylines[id][polylineId])
+            }
+        }
+        return array;
+    }
+
+    /**
      * Get the markerId associate to the Layer
      * @param {Polyline} layer - the Layer Object
      */

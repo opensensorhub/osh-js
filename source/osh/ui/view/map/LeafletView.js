@@ -14,9 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
-import {isDefined, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
+import {isDefined} from "../../../utils/Utils.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapView from "./MapView";

@@ -126,7 +126,8 @@ const deckViewItems = [
     layer:  new PointMarker({
       ...commonMarkerConf
     }),
-    name: "AVL"},
+    name: "AVL"
+  },
   {
     layer: new Polyline({
       ...commonPolylineConf,
@@ -194,13 +195,18 @@ removeAllElt.onclick = async () => {
   removeAllElt.setAttribute("disabled", "");
   loadElt.removeAttribute("disabled");
 
-  // let the time to flush the data broadcast channel
+  // let some delay to flush the data broadcast channel
   setTimeout(() => {
     cesiumMapView.removeViewItem(cesiumViewItems[0]);
+
     olMapView.removeViewItem(olViewItems[0]);
     olMapView.removeViewItem(olViewItems[1]);
+
     leafletMapView.removeViewItem(leafletViewItems[0]);
     leafletMapView.removeViewItem(leafletViewItems[1]);
+
+    deckView.removeViewItem(deckViewItems[0]);
+    deckView.removeViewItem(deckViewItems[1]);
   }, 100);
 };
 

@@ -14,9 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
 import {isDefined, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
 import 'ol/css.js';
 import 'ol/ol.css';
 import {Map, View as OlView} from 'ol';

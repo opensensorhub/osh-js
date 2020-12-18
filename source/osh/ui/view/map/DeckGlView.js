@@ -20,6 +20,7 @@ import {IconLayer} from '@deck.gl/layers';
 import {isDefined, randomUUID} from "../../../utils/Utils";
 import {BitmapLayer, PathLayer} from '@deck.gl/layers';
 import {TileLayer} from '@deck.gl/geo-layers';
+import '../../../resources/css/deck.css';
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Deck.gl Map object.
@@ -70,42 +71,40 @@ class DeckGlView extends MapView {
 
         const canvasElt = document.createElement('canvas');
         canvasElt.setAttribute('id', randomUUID());
-        canvasElt.setAttribute('style', 'width:100%;height:100%;position:absolute;');
+        canvasElt.setAttribute('style', 'width:100%;height:100%;position:relative;');
 
         let domNode = document.getElementById(this.divId);
         domNode.appendChild(canvasElt);
 
         // https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}
         // https://c.tile.openstreetmap.org/{z}/{x}/{y}.png
-        this.deckLayers = {};
+        this.deckLayers = [];
         if(isDefined(options) && isDefined(options.deckProps) && isDefined(options.deckProps.layers)) {
             for(let i =0;i <options.deckProps.layers.length;i++) {
                 const id = options.deckProps.layers[i].id? options.deckProps.layers[i].id : 'base_'+id;
-                this.deckLayers[id] = options.deckProps.layers[i];
+                this.deckLayers.push(options.deckProps.layers[i]);
             }
         } else {
-            this.deckLayers = {
-                base: new TileLayer({
-                    id: 'base',
-                    // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
-                    data: 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    minZoom: 0,
-                    maxZoom: 19,
-                    tileSize: 256,
+            this.deckLayers.push(new TileLayer({
+                id: 'base',
+                // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
+                data: 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                minZoom: 0,
+                maxZoom: 19,
+                tileSize: 256,
 
-                    renderSubLayers: props => {
-                        const {
-                            bbox: {west, south, east, north}
-                        } = props.tile;
+                renderSubLayers: props => {
+                    const {
+                        bbox: {west, south, east, north}
+                    } = props.tile;
 
-                        return new BitmapLayer(props, {
-                            data: null,
-                            image: props.data,
-                            bounds: [west, south, east, north]
-                        });
-                    }
-                })
-            };
+                    return new BitmapLayer(props, {
+                        data: null,
+                        image: props.data,
+                        bounds: [west, south, east, north]
+                    });
+                }
+            }))
         }
 
         let deckProps = {
@@ -117,10 +116,7 @@ class DeckGlView extends MapView {
             initialViewState: this.INITIAL_VIEW_STATE,
             onViewStateChange: ({viewState}) => {
             },
-            getTooltip: d => d.object &&  d.object.tooltip,
-            layers: Object.keys(this.deckLayers).map((key) => {
-                return [Number(key), this.deckLayers[key]];
-            })
+            layers: this.deckLayers
         };
 
         // overrides default conf by user defined one
@@ -142,14 +138,15 @@ class DeckGlView extends MapView {
     updateMarker(layer) {
         const id = layer.id+'$'+layer.markerId;
 
-        this.deckLayers[id] = new IconLayer({
+        // in deck we create a new layer everytime => reactive programming
+        const iconLayer = new IconLayer({
             id: id,
             data: [{
                 position: [layer.location.x, layer.location.y],
                 icon: {
                     url: layer.icon,
                     height: layer.iconSize[1],
-                    width:  layer.iconSize[0],
+                    width: layer.iconSize[0],
                     anchorX: layer.iconAnchor[0],
                     anchorY: layer.iconAnchor[1]
                 },
@@ -163,16 +160,15 @@ class DeckGlView extends MapView {
             sizeMinPixels: Math.min(layer.iconSize[0], layer.iconSize[1]) * layer.iconScale
         });
 
-        const props = {
-            layers: Object.keys(this.deckLayers).map((key) => {
-                return [this.deckLayers[key]];
-            })
-        };
+        // is going to create or update the current entry into the layer map
+        this.addMarkerToLayer(layer, iconLayer);
+
+        const extraProps = {};
 
         if(this.autoZoomOnFirstMarker) {
             this.autoZoomOnFirstMarker = false;
             // Zoom to the object
-            props.initialViewState = {
+            extraProps.initialViewState = {
                 ...this.INITIAL_VIEW_STATE,
                 longitude: layer.location.x,
                 latitude: layer.location.y,
@@ -180,7 +176,7 @@ class DeckGlView extends MapView {
             };
         }
 
-        this.deckgl.setProps(props);
+        this.render(extraProps);
     }
 
     /**
@@ -202,7 +198,7 @@ class DeckGlView extends MapView {
             }
         ];
 
-        this.deckLayers[id] = new PathLayer({
+        const pathLayer = new PathLayer({
             id: id,
             data: PATH_DATA,
             widthUnits: 'pixels',
@@ -212,13 +208,46 @@ class DeckGlView extends MapView {
             getWidth: d => d.weight
         });
 
-        const props = {
-            layers: Object.keys(this.deckLayers).map((key) => {
-                return [this.deckLayers[key]];
-            })
-        };
+        this.addPolylineToLayer(layer, pathLayer);
 
-        this.deckgl.setProps(props);
+        this.render({});
+    }
+
+    /**
+     * Override super method to render() at the end
+     * @param {Object} marker - The Map marker object
+     */
+    removeMarker(marker) {
+        super.removeMarkers(marker);
+        this.render({});
+    }
+
+    /**
+     * Override super method to render() at the end
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylines(polyline) {
+        super.removePolylines(polyline);
+        this.render({});
+    }
+
+    /**
+     * Inner method to render in the order the different deck.gl layers
+     * @private
+     * @param {Object} extraProps - Extra deck props
+     */
+    render(extraProps) {
+        const markers = this.getMarkers();
+        const polylines = this.getPolylines();
+
+        // draw in order base -> polylines -> markers
+        const props = {
+            layers: [...this.deckLayers,...polylines,...markers]
+        };
+        this.deckgl.setProps({
+            ...extraProps,
+            ...props
+        });
     }
 }
 
