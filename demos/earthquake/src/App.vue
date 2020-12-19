@@ -3,7 +3,7 @@
     <v-app id="inspire">
       <v-app id="inspire">
         <Map
-        :datasource="datasource"></Map>
+            :datasource="datasource"></Map>
       </v-app>
     </v-app>
   </div>
@@ -36,7 +36,7 @@ export default {
       name: 'EQ',
       protocol: 'topic',
       topicName: TOPIC_NAME,
-      batchSize: 50
+      batchSize: 5000
     });
 
     let worker = new Worker();

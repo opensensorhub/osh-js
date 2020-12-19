@@ -5,15 +5,14 @@
 </template>
 
 <script>
-import DeckGlView from "osh/ui/view/map/DeckGlView.js";
 import {
   TileLayer
 } from '@deck.gl/geo-layers';
 import {
   BitmapLayer
 } from '@deck.gl/layers';
-import PointMarker from "osh/ui/layer/PointMarker.js";
-import {randomUUID} from "../../../../source/osh/utils/Utils";
+import PointMarkers from "../js/PointMarkers";
+import DeckGlViewOptimized from "../js/DeckGlViewOptimized";
 
 
 export default {
@@ -28,20 +27,13 @@ export default {
     datasource(datasource, oldvalue) {
       this.view.addViewItem({
         name: 'EQ',
-        layer: new PointMarker({
-          getMarkerId: {
+        layer: new PointMarkers({
+          getValues: {
             dataSourceIds: [datasource.getId()],
-            handler: function(rec) {
-              return randomUUID();
-            }
-          },
-          getLocation: {
-            dataSourceIds: [datasource.getId()],
-            handler: function(rec) {
+            handler: function(rec, timestamp) {
               return {
-                x: rec.longitude,
-                y: rec.latitude,
-                z: 0
+                ...rec,
+                timestamp: timestamp
               };
             }
           },
@@ -78,7 +70,7 @@ export default {
     }
  },
   mounted() {
-    this.view = new DeckGlView("map",
+    this.view = new DeckGlViewOptimized("map",
         [],
         {
           deckProps: {

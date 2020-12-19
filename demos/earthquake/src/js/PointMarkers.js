@@ -14,24 +14,24 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import {isDefined} from "osh/utils/Utils";
+import PointMarker from "../../../../source/osh/ui/layer/PointMarker";
+import Layer from "../../../../source/osh/ui/layer/Layer";
 import {
 	assertArray,
 	assertFunction,
 	assertObject,
 	assertPositive,
 	assertString,
-	hasValue,
-	isDefined
-} from "../../utils/Utils.js";
-import Layer from "./Layer.js";
+	hasValue
+} from "../../../../source/osh/utils/Utils";
 
 /**
  * @extends Layer
  * @example
  *
- * import PointMarker from 'osh/ui/layer/PointMarker.js';
  *
- * let pointMarker = new PointMarker({
+ * let pointMarker = new PointMarkers({
         location : {
             x : 1.42376557,
             y : 43.61758626,
@@ -68,38 +68,39 @@ import Layer from "./Layer.js";
         }
     });
  */
-class PointMarker extends Layer {
+class PointMarkers extends Layer {
 	/**
-		* Create the PointMarker
-		* @param {Object} properties
-	  * @param {Number} [properties.batch=false] -
-		* @param {Number[]} properties.location - [x,y,z]
-  	* @param {Number} [properties.orientation=0] -
-		* @param {String} properties.icon -
-	  * @param {String} [properties.iconScale=1] - the icon scale size
-	  * @param {String} [properties.iconColor="#000000"] - the icon color
-		* @param {Number[]} [properties.iconAnchor=[16,16]] -
-		* @param {Number[]} [properties.iconSize=[16,16]] -
-		* @param {String} properties.label -
-		* @param {String} [properties.labelColor="#000000"] - HTML color
-		* @param {Number} [properties.labelSize=16] -
-		* @param {Number[]} [properties.labelOffset=[0,0]] -
-		* @param {Function} [properties.getLocation] -
-		* @param {Function} [properties.getOrientation] -
-		* @param {Function} [properties.getIcon] -
-	  * @param {Function} [properties.getIconColor] -
-	  * @param {Function} [properties.getIconScale] -
-		* @param {Function} [properties.getLabel] -
-		* @param {Function} [properties.getLabelColor] -
-		* @param {Function} [properties.getLabelSize] -
-	  * @param {Function} [properties.onLeftClick] - trigger onLeftClick marker event
-	  * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
-	  * @param {Function} [properties.onHover] - trigger onHover marker event
-	  * @param {Function} [properties.getMarkerId] - map an id to a unique marker
-	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
-	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
-		*
-		*/
+	 * Create the PointMarker
+	 * @param {Object} properties
+	 * @param {Number} [properties.batch=false] -
+	 * @param {Number[]} properties.location - [x,y,z]
+	 * @param {Number} [properties.orientation=0] -
+	 * @param {String} properties.icon -
+	 * @param {String} [properties.iconScale=1] - the icon scale size
+	 * @param {String} [properties.iconColor="#000000"] - the icon color
+	 * @param {Number[]} [properties.iconAnchor=[16,16]] -
+	 * @param {Number[]} [properties.iconSize=[16,16]] -
+	 * @param {String} properties.label -
+	 * @param {String} [properties.labelColor="#000000"] - HTML color
+	 * @param {Number} [properties.labelSize=16] -
+	 * @param {Number[]} [properties.labelOffset=[0,0]] -
+	 * @param {Function} [properties.getLocation] -
+	 * @param {Function} [properties.getOrientation] -
+	 * @param {Function} [properties.getIcon] -
+	 * @param {Function} [properties.getIconColor] -
+	 * @param {Function} [properties.getIconScale] -
+	 * @param {Function} [properties.getLabel] -
+	 * @param {Function} [properties.getLabelColor] -
+	 * @param {Function} [properties.getLabelSize] -
+	 * @param {Function} [properties.onLeftClick] - trigger onLeftClick marker event
+	 * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
+	 * @param {Function} [properties.onHover] - trigger onHover marker event
+	 * @param {Function} [properties.getMarkerId] - map an id to a unique marker
+	 * @param {Number} [properties.zoomLevel=15] - Set the default zoom level
+	 * @param {Function} [properties.getValues] -
+	 * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
+	 *
+	 */
 	constructor(properties) {
 		super(properties);
 		this.properties = properties;
@@ -119,6 +120,7 @@ class PointMarker extends Layer {
 		this.defaultToTerrainElevation = false;
 		this.options = {};
 		this.markerId = 'marker';
+		this.values = [];
 
 		if(isDefined(properties.defaultToTerrainElevation)) {
 			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
@@ -251,6 +253,14 @@ class PointMarker extends Layer {
 			this.addFn(properties.getLabelSize.dataSourceIds,fn);
 		}
 
+		if (isDefined(properties.getValues)) {
+			let fn = function (rec, timeStamp, options) {
+				let value = properties.getValues.handler(rec, timeStamp, options);
+				that.values.push(value);
+			};
+			this.addFn(properties.getValues.dataSourceIds, fn);
+		}
+
 		if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {
 			this.onLeftClick = properties.onLeftClick;
 		}
@@ -272,9 +282,10 @@ class PointMarker extends Layer {
 	}
 
 	setData(dataSourceId,rec,view,options) {
-		if (super.setData(dataSourceId,rec,view,options)) {
-			if (isDefined(view) && this.location !== null) {
-				view.updateMarker(this, rec.timeStamp, options);
+		if (super.setData(dataSourceId, rec, view, options)) {
+			if (isDefined(view)) {
+				view.updateMarkers(this, this.values, options);
+				this.values = [];
 				return true;
 			}
 		}
@@ -282,4 +293,4 @@ class PointMarker extends Layer {
 	}
 }
 
-export default PointMarker;
+export default PointMarkers;

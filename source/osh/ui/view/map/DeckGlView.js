@@ -190,6 +190,16 @@ class DeckGlView extends MapView {
     }
 
     /**
+     *
+     * @param {Curve} layer -
+     * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
+     * @param {Object} options -
+     */
+    updateMarkers(layer, values, options) {
+
+    }
+
+    /**
      * Updates the marker associated to the layer.
      * @param {Polyline} layer - The layer allowing the update of the marker
      */
