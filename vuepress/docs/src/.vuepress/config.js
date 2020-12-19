@@ -63,11 +63,11 @@ module.exports = {
             },
             {
                 text: 'Samples',
-                link: 'http://opensensorhub.github.io/osh-js/v2.0.0/showcase/',
+                link: 'http://opensensorhub.github.io/osh-js/dev/showcase/',
             },
             {
                 text: 'API',
-                link: 'http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/'
+                link: 'http://opensensorhub.github.io/osh-js/dev/jsdoc/'
             },
             {
                 text: 'Blog',
