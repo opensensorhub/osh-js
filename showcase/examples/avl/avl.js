@@ -223,6 +223,12 @@ const deckViewItems = [
         layer:  new PointMarker({
             ...commonMarkerConf,
             iconScale: 7,
+            onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
+            onLeftClick: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
+            onRightClick: (markerId, pickingInfo, event) => {
+                const rect = document.getElementById('deckMap').getBoundingClientRect();
+                showPopup(pickingInfo.pixel[0] + rect.left, pickingInfo.pixel[1] + rect.top, 'some content ' + markerId);
+            }
         }),
         name: "AVL"
     },

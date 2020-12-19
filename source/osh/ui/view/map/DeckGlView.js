@@ -138,6 +138,7 @@ class DeckGlView extends MapView {
     updateMarker(layer) {
         const id = layer.id+'$'+layer.markerId;
 
+        const mId = layer.markerId;
         // in deck we create a new layer everytime => reactive programming
         const iconLayer = new IconLayer({
             id: id,
@@ -163,7 +164,10 @@ class DeckGlView extends MapView {
             sizeScale: layer.iconScale,
             getPosition: d => d.position,
             getSize: d => layer.iconScale,
-            getColor: d =>  hex2rgb(layer.color)
+            getColor: d =>  hex2rgb(layer.color),
+            onHover: (info, event) => this.onMarkerHover(mId,info, layer, event),
+            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, layer, event) :
+                this.onMarkerRightClick(mId,info, layer, event)
         });
 
         // is going to create or update the current entry into the layer map
