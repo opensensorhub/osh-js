@@ -5,6 +5,7 @@ import LeafletView from "osh/ui/view/map/LeafletView.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
+import DeckGlView from "osh/ui/view/map/DeckGlView";
 
 import {
     Cartographic, Math
@@ -70,7 +71,7 @@ document.body.onclick = () => {
 
 // Create a common configuration for markers. This one can be shared between stylers
 const commonMarkerConf = {
-  getLocation: {
+    getLocation: {
         dataSourceIds: [avlDataSource.getId()],
         handler: function (rec) {
             return {
@@ -80,19 +81,19 @@ const commonMarkerConf = {
             };
         }
     },
-  getLabel: {
+    getLabel: {
         dataSourceIds: [avlDataSource.getId()],
         handler: function (rec) {
             return rec['veh-id'];
         }
     },
-  getMarkerId: {
+    getMarkerId: {
         dataSourceIds: [avlDataSource.getId()],
         handler: function (rec) {
             return rec['veh-id'];
         }
     },
-  getIcon: {
+    getIcon: {
         dataSourceIds: [avlDataSource.getId()],
         handler: function (rec) {
             // change the icon depending on the id name contained in this record
@@ -112,12 +113,13 @@ const commonMarkerConf = {
     zoomLevel: 12,
     iconAnchor: [16, 0],
     labelOffset: [0, -16],
+    iconSize: [32, 37],
     labelColor: '#00fff5'
 };
 
 // Create a common configuration for polylines. This one can be shared between stylers
 const commonPolylineConf = {
-  getLocation: {
+    getLocation: {
         dataSourceIds: [avlDataSource.getId()],
         handler: function (rec) {
             return {
@@ -127,7 +129,7 @@ const commonPolylineConf = {
             };
         }
     },
-  getPolylineId: {
+    getPolylineId: {
         dataSourceIds: [avlDataSource.getId()],
         handler: function (rec) {
             return rec['veh-id'];
@@ -144,7 +146,7 @@ const commonPolylineConf = {
 // Gets the common conf and add onLeftClick & onHover callback to update infos
 const leafletViewItems = [
     {
-      layer: new PointMarker({
+        layer: new PointMarker({
             ...commonMarkerConf,
             onLeftClick: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint),
             onRightClick: (markerId, billboard, event) => {
@@ -156,7 +158,7 @@ const leafletViewItems = [
         }), name: "AVL"
     },
     {
-      layer: new Polyline({...commonPolylineConf}), name: "AVL"
+        layer: new Polyline({...commonPolylineConf}), name: "AVL"
     },
 ];
 
@@ -165,7 +167,7 @@ let leafletMapView, olMapView, cesiumMapView;
 // creates OL Styler (PointMarker)
 // Gets the common conf and add onLeftClick & onHover callback to update infos
 const olViewItems = [{
-  layer: new PointMarker({
+    layer: new PointMarker({
         ...commonMarkerConf,
         onLeftClick: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
         onRightClick: (markerId, billboard, event) => {
@@ -176,14 +178,14 @@ const olViewItems = [{
     }), name: "AVL"
 },
     {
-      layer: new Polyline({...commonPolylineConf}), name: "AVL"
+        layer: new Polyline({...commonPolylineConf}), name: "AVL"
     },
 ];
 
 // creates Cesium Styler (PointMarker)
 // Gets the common conf and add onLeftClick & onHover callback to update infos
 const cesiumViewItems = [{
-  layer: new PointMarker({
+    layer: new PointMarker({
         ...commonMarkerConf,
         onLeftClick: (markerId, billboard, event) => {
             // transform into LonLat to display into info panel
@@ -216,6 +218,29 @@ const cesiumViewItems = [{
     }), name: "AVL"
 }];
 
+const deckViewItems = [
+    {
+        layer:  new PointMarker({
+            ...commonMarkerConf,
+            iconScale: 7,
+            onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
+            onLeftClick: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
+            onRightClick: (markerId, pickingInfo, event) => {
+                const rect = document.getElementById('deckMap').getBoundingClientRect();
+                showPopup(pickingInfo.pixel[0] + rect.left, pickingInfo.pixel[1] + rect.top, 'some content ' + markerId);
+            }
+        }),
+        name: "AVL"
+    },
+    {
+        layer: new Polyline({
+            ...commonPolylineConf,
+            color: [255, 102, 0, 127]
+        }),
+        name: "AVL"
+    },
+];
+
 /**************************************************************/
 /*************************** VIEWS ***************************/
 /************************************************************/
@@ -241,6 +266,13 @@ olMapView = new OpenLayerView("olMap",
 );
 
 cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
+
+const deckView = new DeckGlView('deckMap',
+    deckViewItems,
+    {
+        autoZoomOnFirstMarker:true,
+    }
+);
 
 /**************************************************************/
 /********************* Update UI  ****************************/
@@ -283,10 +315,14 @@ removeAllElt.onclick = async () => {
     // will result in the re-creation of markers. This is asynchronous because the WebSocket connector is launched from a WebWorker.
     setTimeout(() => {
         cesiumMapView.removeViewItem(cesiumViewItems[0]);
+
         olMapView.removeViewItem(olViewItems[0]);
         olMapView.removeViewItem(olViewItems[1]);
+
         leafletMapView.removeViewItem(leafletViewItems[0]);
         leafletMapView.removeViewItem(leafletViewItems[1]);
-    }, 800);
-};
 
+        deckView.removeViewItem(deckViewItems[0]);
+        deckView.removeViewItem(deckViewItems[1]);
+    }, 100);
+};
