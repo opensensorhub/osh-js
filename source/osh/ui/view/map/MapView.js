@@ -35,6 +35,7 @@ class MapView extends View {
 
     /**
      * Associate a markerId to a Layer for a fast lookup
+     * @protected
      * @param {PointMarker} layer - the Layer object
      * @param {Object} markerObject - the Map marker object
      */
@@ -48,6 +49,7 @@ class MapView extends View {
 
     /**
      * Associate a polylineId to a Layer for a fast lookup
+     * @protected
      * @param {Polyline} layer - the Layer object
      * @param {Object} polylineObject - the Map polyline object
      */
@@ -61,6 +63,7 @@ class MapView extends View {
 
     /**
      * Get the markerId associate to the Layer
+     * @protected
      * @param {PointMarker} layer - the Layer Object
      */
     getMarker(layer) {
@@ -72,6 +75,7 @@ class MapView extends View {
 
     /**
      * Get all markers contained in this view
+     * @protected
      */
     getMarkers() {
         const array = [];
@@ -85,6 +89,7 @@ class MapView extends View {
 
     /**
      * Get all marker contained in this view
+     * @protected
      */
     getPolylines() {
         const array = [];
@@ -98,6 +103,7 @@ class MapView extends View {
 
     /**
      * Get the markerId associate to the Layer
+     * @protected
      * @param {Polyline} layer - the Layer Object
      */
     getPolyline(layer) {
@@ -161,6 +167,7 @@ class MapView extends View {
     /**
      * Abstract method to remove a marker from its corresponding layer.
      * This is library dependant.
+     * @protected
      * @param {Object} marker - The Map marker object
      */
     removeMarkerFromLayer(marker) {}
@@ -168,6 +175,7 @@ class MapView extends View {
     /**
      * Abstract method to remove a polyline from its corresponding layer.
      * This is library dependant.
+     * @protected
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}

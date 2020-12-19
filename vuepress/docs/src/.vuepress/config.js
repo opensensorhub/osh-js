@@ -42,7 +42,7 @@ module.exports = {
         ['meta', {name: 'apple-mobile-web-app-status-bar-style', content: 'black'}]
     ],
     dest: 'dist',
-    base: '/osh-js/v2.0.0/doc/',
+    base: '/osh-js/dev/site/',
     /**
      * Theme configuration, here is the default theme configuration for VuePress.
      *
@@ -153,6 +153,7 @@ module.exports = {
                                 '/guide/views/map/ol.md',
                                 '/guide/views/map/leaflet.md',
                                 '/guide/views/map/cesium.md',
+                                '/guide/views/map/deckgl.md',
                             ]
                         },
                         '/guide/views/chart.md',
