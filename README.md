@@ -95,9 +95,9 @@ You can add any external dependencies using *npm*. For example, if you attempt t
 some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
 ## Documentation
-The documentation can be found [here](http://opensensorhub.github.io/osh-js/Documentation/index.html).
+The documentation can be found [here](http://opensensorhub.github.io/osh-js/dev/site/index.html).
 
-The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/documentation/jsdoc/)
+The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/dev/jsdoc/)
 
 ## Live Showcase
 
@@ -105,10 +105,10 @@ The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/docum
 
 ## Live Demos
 
-[Video display Vuejs](http://opensensorhub.github.io/osh-js/latest/demos/video-display-vuejs/)
+[Video display Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/video-display-vuejs/)
 
-[Video advanced display Vuejs](http://opensensorhub.github.io/osh-js/latest/demos/video-display-advanced-vuejs/)
+[Video advanced display Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/video-display-advanced-vuejs/)
 
-[3dr solo UAV in react](http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-react/)
+[3dr solo UAV in react](http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-react/)
 
-[3dr solo UAV in Vuejs](http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-vuejs/)
+[3dr solo UAV in Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-vuejs/)

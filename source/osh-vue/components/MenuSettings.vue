@@ -52,7 +52,7 @@ export default {
     }
   },
   methods: {
-    onClick(item) {
+    onLeftClick(item) {
       this.$emit('settingsEvent', item);
       this.show = false;
     },

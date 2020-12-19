@@ -38,6 +38,7 @@ import MapView from "./MapView";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import LineString from "ol/geom/LineString";
+import {click, pointerMove} from "ol/events/condition";
 
 
 /**
@@ -88,7 +89,8 @@ class OpenLayerView extends MapView {
                 color: layer.color,
                 icon: layer.icon,
                 anchor: layer.iconAnchor,
-                name: this.names[layer.markerId]
+                name: this.names[layer.markerId],
+                id: layer.id+"$"+layer.markerId
             });
 
             this.addMarkerToLayer(layer, markerObj);
@@ -174,7 +176,7 @@ class OpenLayerView extends MapView {
         if (isDefined(options)) {
 
             //if the user passed in a map then use that one, don't make a new one
-            if(options.map) {
+            if (options.map) {
                 this.map = options.map;
                 return;
             }
@@ -205,7 +207,7 @@ class OpenLayerView extends MapView {
             }
         }
         // #region snippet_openlayerview_initial_view
-        if(initialView === null) {
+        if (initialView === null) {
             // loads the default one
             initialView = new OlView({
                 center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
@@ -217,18 +219,18 @@ class OpenLayerView extends MapView {
 
         // sets layers to map
         //create map
-       this.map = new Map({
+        this.map = new Map({
             target: this.divId,
             controls: defaultControls().extend([
                 new FullScreen()
             ]),
-           interactions: defaultInteractions({mouseWheelZoom: false}).extend([
-               new DragRotateAndZoom(),
-               new MouseWheelZoom({
-                   constrainResolution: true, // force zooming to a integer zoom,
-                   duration: 200
-               })
-           ]),
+            interactions: defaultInteractions({mouseWheelZoom: false}).extend([
+                new DragRotateAndZoom(),
+                new MouseWheelZoom({
+                    constrainResolution: true, // force zooming to a integer zoom,
+                    duration: 200
+                })
+            ]),
             layers: [
                 new Group({
                     'title': 'Base maps',
@@ -248,14 +250,87 @@ class OpenLayerView extends MapView {
             groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
         });
         this.map.addControl(layerSwitcher);
+        this.map.addControl(new ZoomSlider());
 
-        this.map.addControl( new ZoomSlider());
+        // inits onLeftClick events
+        // select interaction working on "click"
+        const selectClick = new Select({
+            condition: click,
+            style: null
+        });
 
-        // inits onClick events
-        let select_interaction = new Select();
+        const selectRightClick = new Select({
+            condition: function(e) {
+                return (e.type === 'contextmenu');
+            },
+            style: null
+        });
 
-        select_interaction.getFeatures().on("add", function (e) {
-            let feature = e.element; //the feature selected
+        // select interaction working on "pointermove"
+        const selectPointerMove = new Select({
+            condition: pointerMove,
+            style: null
+        });
+
+        this.map.addInteraction(selectClick);
+        this.map.addInteraction(selectRightClick);
+        this.map.addInteraction(selectPointerMove);
+        const that = this;
+
+        selectRightClick.on('select', function (e) {
+            if(e.selected.length > 0 ) {
+                let feature = e.selected[0]; //the feature selected
+                const mId = that.getMarkerId(feature.getId());
+                if (!isDefined(mId)) {
+                    return;
+                }
+                const sId = that.getLayerId(feature.getId());
+                if (!isDefined(sId)) {
+                    return;
+                }
+                const layer = that.getLayer(sId);
+                if (!isDefined(layer)) {
+                    return;
+                }
+                that.onMarkerRightClick(mId, feature, layer, e);
+            }
+        });
+        selectClick.on('select', function (e) {
+            if(e.selected.length > 0 ) {
+                let feature = e.selected[0]; //the feature selected
+                const mId = that.getMarkerId(feature.getId());
+                if (!isDefined(mId)) {
+                    return;
+                }
+                const sId = that.getLayerId(feature.getId());
+                if (!isDefined(sId)) {
+                    return;
+                }
+                const layer = that.getLayer(sId);
+                if (!isDefined(layer)) {
+                    return;
+                }
+                that.onMarkerLeftClick(mId, feature, layer, e);
+            }
+        });
+
+        selectPointerMove.on('select', function (e) {
+            if(e.selected.length > 0 ) {
+                let feature = e.selected[0]; //the feature selected
+                const mId = that.getMarkerId(feature.getId());
+                if (!isDefined(mId)) {
+                    return;
+                }
+                const sId = that.getLayerId(feature.getId());
+                if (!isDefined(sId)) {
+                    return;
+                }
+                const layer = that.getLayer(sId);
+                if (!isDefined(layer)) {
+                    return;
+                }
+                that.onMarkerHover(mId, feature, layer, e);
+            }
         });
 
         this.vectorSource = new VectorSource({
@@ -268,8 +343,6 @@ class OpenLayerView extends MapView {
         });
 
         this.map.addLayer(vectorMarkerLayer);
-
-        this.map.addInteraction(select_interaction);
         this.map.updateSize();
     }
 
@@ -291,7 +364,8 @@ class OpenLayerView extends MapView {
      * @param {Number} properties.lat
      * @param {String} properties.icon - path of the icon
      * @param {Number} properties.orientation - orientation in degree
-     * @return {String} the id of the new created marker
+     * @param {String} properties.id - the id of the new created marker: layer.id$layer.markerId
+     * @return {Object} the new marker object
      */
     addMarker(properties) {
         //create marker
@@ -323,9 +397,7 @@ class OpenLayerView extends MapView {
                 markerFeature.setStyle(iconStyle);
             }
 
-
-            let id = "view-marker-" + randomUUID();
-            markerFeature.setId(id);
+            markerFeature.setId(properties.id);
             this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {

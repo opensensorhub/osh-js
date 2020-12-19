@@ -14,7 +14,15 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {assertArray, assertObject, assertPositive, assertString, hasValue, isDefined} from "../../utils/Utils.js";
+import {
+	assertArray,
+	assertFunction,
+	assertObject,
+	assertPositive,
+	assertString,
+	hasValue,
+	isDefined
+} from "../../utils/Utils.js";
 import Layer from "./Layer.js";
 
 /**
@@ -80,6 +88,9 @@ class PointMarker extends Layer {
 		* @param {Function} [properties.getLabel] -
 		* @param {Function} [properties.getLabelColor] -
 		* @param {Function} [properties.getLabelSize] -
+	  * @param {Function} [properties.onLeftClick] - trigger onLeftClick marker event
+	  * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
+	  * @param {Function} [properties.onHover] - trigger onHover marker event
 	  * @param {Function} [properties.getMarkerId] - map an id to a unique marker
 	 	* @param {Number} [properties.zoomLevel=15] - Set the default zoom level
 	  * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
@@ -214,6 +225,18 @@ class PointMarker extends Layer {
 				that.labelSize = properties.getLabelSize.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getLabelSize.dataSourceIds,fn);
+		}
+
+		if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {
+			this.onLeftClick = properties.onLeftClick;
+		}
+
+		if (isDefined(properties.onRightClick) && assertFunction(properties.onRightClick)) {
+			this.onRightClick = properties.onRightClick;
+		}
+
+		if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {
+			this.onHover = properties.onHover;
 		}
 	}
 

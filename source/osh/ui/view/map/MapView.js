@@ -114,6 +114,21 @@ class MapView extends View {
     }
 
     /**
+     * Get the Layer associated to its id
+     * @param {String} layerId - the id of the Layer
+     * @return {Layer} - the corresponding layer, null otherwise
+     */
+    getLayer(layerId) {
+        // find corresponding layer
+        for (let currentLayer of this.layers) {
+            if (currentLayer.id === layerId) {
+                return currentLayer;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Remove Corresponding ViewItem
      * @param {Object} viewItem - The viewItem object
      */
@@ -179,6 +194,89 @@ class MapView extends View {
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Method to call onLeftClick Layer method if exists
+     * @param {String} markerId - the Layer markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} layer - the Layer object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerLeftClick(markerId, markerObject, layer, event) {
+        if (isDefined(layer.onLeftClick)) {
+            layer.onLeftClick.call(layer,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Method to call onRightClick Layer method if exists
+     * @param {String} markerId - the Layer markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} layer - the Layer object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerRightClick(markerId, markerObject, layer, event) {
+        if (isDefined(layer.onRightClick)) {
+            layer.onRightClick.call(layer,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Method to call onMove Layer method if exists
+     * @param {String} markerId - the Layer markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} layer - the Layer object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerMove(markerId, markerObject, layer, event) {
+        if (isDefined(layer.onMove)) {
+            layer.onMove.call(layer,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Method to call onHover Layer method if exists
+     * @param {String} markerId - the Layer markerId
+     * @param {Object} markerObject - the View marker object
+     * @param {PointMarker} layer - the Layer object
+     * @param {Object} event - the original Map View event
+     */
+    onMarkerHover(markerId, markerObject, layer, event) {
+        if (isDefined(layer.onHover)) {
+            layer.onHover.call(layer,markerId, markerObject, event);
+        }
+    }
+
+    /**
+     * Gets the the Layer id from  a concatenated id
+     * @param {String} id - the concatenated such as layerId$markerId
+     * @return {null|String} the Layer id
+     */
+    getLayerId(id) {
+        const split = id.split('$');
+
+        if(isDefined(split) && split.length === 2) {
+           return  split[0];
+        }
+        return null;
+    }
+
+    /**
+     * Gets the the Marker id from  a concatenated id
+     * @param {String} id - the concatenated such as layerId$markerId
+     * @return {null|String} the marker id
+     */
+    getMarkerId(id) {
+        if(!isDefined(id)) {
+            return null;
+        }
+        const split = id.split('$');
+
+        if(isDefined(split) && split.length === 2) {
+            return  split[1];
+        }
+        return null;
+    }
 }
 
 export default MapView;
