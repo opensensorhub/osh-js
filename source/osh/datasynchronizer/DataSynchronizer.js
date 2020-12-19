@@ -84,7 +84,7 @@ class DataSynchronizer {
             dataSource.setDataSynchronizer(this);
             dataSource.properties.replaySpeed = this.replaySpeed;
         } catch(ex) {
-            console.warn("Cannot set the synchronizer to this DataSource");
+            console.error("Cannot set the synchronizer to this DataSource", ex);
         }
         return obj;
     }
