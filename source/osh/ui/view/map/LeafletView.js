@@ -14,16 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
-import {isDefined, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
+import {isDefined} from "../../../utils/Utils.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapView from "./MapView";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Leaflet Map object.
- * @extends View
+ * @extends MapView
  * @example
 
  import LeafletView from 'osh/ui/view/map/LeafletView.js';

@@ -75,6 +75,7 @@ class PointMarker extends Layer {
 		* @param {Number[]} properties.location - [x,y,z]
   	* @param {Number} [properties.orientation=0] -
 		* @param {String} properties.icon -
+	  * @param {String} [properties.iconScale=1] - the icon scale size
 		* @param {Number[]} [properties.iconAnchor=[16,16]] -
 		* @param {Number[]} [properties.iconSize=[16,16]] -
 		* @param {String} properties.label -
@@ -103,12 +104,13 @@ class PointMarker extends Layer {
 		this.icon = null;
 		this.iconAnchor = [16,16];
 		this.iconSize = [16,16];
+		this.iconScale = 10;
 		this.label = null;
 		this.labelColor = "#000000";
 		this.labelSize = 16;
 		this.labelOffset = [0,0];
 		this.zoomLevel = 15;
-		this.color = null;
+		this.color = '#000000';
 		this.defaultToTerrainElevation = false;
 		this.options = {};
 		this.markerId = 'marker';
@@ -140,6 +142,11 @@ class PointMarker extends Layer {
 		if (hasValue(properties.iconSize)) {
 			assertArray(properties.iconSize, "iconSize");
 			this.iconSize = properties.iconSize;
+		}
+
+		if (hasValue(properties.iconScale)) {
+			assertPositive(properties.iconScale, "iconScale");
+			this.iconScale = properties.iconScale;
 		}
 
 		if (hasValue(properties.label)) {

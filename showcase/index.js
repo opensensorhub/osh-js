@@ -16,6 +16,11 @@ var samples = [
     url: "cesium-location"
   },
   {
+    name: "Moving Location (Deck.gl)",
+    description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
+    url: "deckgl-location"
+  },
+  {
     name: "Simple Chart (Chart.js)",
     description: "Display a chart with time series of weather measurements.",
     url: "chart"

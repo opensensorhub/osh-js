@@ -153,6 +153,7 @@ module.exports = {
                                 '/guide/views/map/ol.md',
                                 '/guide/views/map/leaflet.md',
                                 '/guide/views/map/cesium.md',
+                                '/guide/views/map/deckgl.md',
                             ]
                         },
                         '/guide/views/chart.md',

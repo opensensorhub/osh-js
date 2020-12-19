@@ -14,9 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
 import {isDefined, randomUUID} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
 import 'ol/css.js';
 import 'ol/ol.css';
 import {Map, View as OlView} from 'ol';
@@ -45,7 +43,7 @@ import {click, pointerMove} from "ol/events/condition";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
- * @extends View
+ * @extends MapView
  */
 class OpenLayerView extends MapView {
     /**
