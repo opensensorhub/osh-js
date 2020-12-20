@@ -16,15 +16,14 @@
 
 
 import DeckGlView from "osh/ui/view/map/DeckGlView";
-import {HexagonLayer} from '@deck.gl/aggregation-layers';
-import {AmbientLight, LightingEffect, PointLight} from "@deck.gl/core";
-import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
-import {isDefined, randomUUID} from "../../../../source/osh/utils/Utils";
+import {randomUUID} from "../../../../source/osh/utils/Utils";
+import {ColumnLayer} from '@deck.gl/layers';
+
 /**
- * This class is in charge of displaying GPS/orientation data by adding a marker to the Deck.gl Map object.
- * @extends MapView
+ * This class is in charge of displaying Earthquake data using Deck.gl column layer
+ * @extends DeckGlView
  */
-class DeckGlViewHexagon extends DeckGlView {
+class DeckGlViewColumn extends DeckGlView {
     /**
      * Create a View.
      * @param {String} parentElementDivId - The div element to attach to
@@ -38,20 +37,23 @@ class DeckGlViewHexagon extends DeckGlView {
      */
     constructor(parentElementDivId, viewItems, options) {
         super(parentElementDivId, viewItems, options);
-        this.batchId = 0;
-        this.hexagonLayers = [];
+
+        this.colorRange = [
+            [255, 195, 0],
+            [255, 169, 0],
+            [255, 148, 0],
+            [255, 139, 0],
+            [255, 122, 0],
+            [255, 73, 0],
+            [255,44, 0],
+            [205,18,0],
+            [125,0,0]
+        ];
+
+        this.columnLayers = [];
     }
 
     setData(dataSourceId, values) {
-        const colorRange = [
-            [1, 152, 189],
-            [73, 227, 206],
-            [216, 254, 181],
-            [254, 237, 177],
-            [254, 173, 84],
-            [209, 55, 78]
-        ];
-
         const material = {
             ambient: 0.64,
             diffuse: 0.6,
@@ -59,25 +61,30 @@ class DeckGlViewHexagon extends DeckGlView {
             specularColor: [51, 51, 51]
         };
 
-        const layer = new HexagonLayer({
+        const layer = new ColumnLayer({
             id: randomUUID(),
             data: values,
-            extruded: true,
-            getPosition: d => [d.data.longitude, d.data.latitude],
-            colorRange,
-            pickable: true,
-            elevationRange: [100, 5000],
-            elevationScale:  1000 ,
-            radius: 10000,
-            upperPercentile:100,
-            coverage:1,
-            onClick: this.onClick,
             material,
+            diskResolution: 20,
+            radius: 10000,
+            extruded: true,
+            pickable: true,
+            autoHighlight:true,
+            highlightColor: [46, 204, 113 ],
+            getPosition: d => [d.data.longitude, d.data.latitude],
+            getFillColor: d => this.colorRange[parseInt(d.data.mag)],
+            getLineColor: [0, 0, 0],
+            getElevation: d => Math.exp(d.data.mag),
+            coverage: 1,
+            elevationScale: 1000,
             transitions: {
-                elevationScale: 3000
+                getLineColor: 10000,
+                getLineWidth: 10000,
+                getElevation: 10000
             }
         });
-        this.hexagonLayers.push(layer);
+
+        this.columnLayers.push(layer);
         this.render({});
         this.onRender(values);
     }
@@ -88,7 +95,7 @@ class DeckGlViewHexagon extends DeckGlView {
 
     render(extraProps) {
         const props = {
-            layers: [...this.deckLayers,...this.hexagonLayers]
+            layers: [...this.deckLayers,...this.columnLayers]
         };
         this.deckgl.setProps({
             ...extraProps,
@@ -97,4 +104,4 @@ class DeckGlViewHexagon extends DeckGlView {
     }
 }
 
-export default DeckGlViewHexagon;
+export default DeckGlViewColumn;

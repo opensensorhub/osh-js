@@ -8,9 +8,13 @@
       <v-data-table
           :headers="headers"
           :items="items"
-          :items-per-page="5"
+          :items-per-page="1"
           class="elevation-1"
-          height="205"
+          hide-default-footer
+          disable-pagination
+          disable-filtering
+          disable-sort
+          height="70"
           dark
           dense
       >
@@ -49,32 +53,40 @@ export default {
         { text: 'Depth', value: 'depth' },
         { text: 'Time', value: 'time' },
       ],
-      items: []
+      items: [],
+      colorMap: [
+          '#ffc300',
+          '#ffa900',
+          '#ff9400',
+          '#ff8b00',
+          '#ff7a00',
+          '#ff4900',
+          '#ff2c00',
+          '#cd1200',
+          '#7d0000'
+      ]
     }
   },
   watch: {
     infos(newValue, oldValue) {
-      this.items = newValue;
+      if(newValue === null) {
+        this.items = [];
+      } else {
+        this.items = [newValue];
+      }
     }
  },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-    dateFormat(date) {
-      return new Date(Date.parse(date)).toISOString();
-    },
-    getColor (eq) {
-      if (eq.mag > 7.5) return 'red'
-      else if (eq > 5.0) return 'orange'
-      else return 'green'
-    }
+    dateFormat(date) { return new Date(Date.parse(date)).toISOString() },
+    getColor(eq) { return this.colorMap[parseInt(eq)] }
   }
 }
 </script>
 
 <style scoped>
 .content {
-  height: 280px;
+  height: 82px;
   font-size: 16px;
 }
 

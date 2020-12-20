@@ -12,7 +12,7 @@ import {
   BitmapLayer
 } from '@deck.gl/layers';
 import PointMarkers from "../js/PointMarkers";
-import DeckGlViewOptimized from "../js/DeckGlViewOptimized";
+import DeckGlViewBatch from "../js/DeckGlViewBatch";
 
 
 export default {
@@ -70,7 +70,7 @@ export default {
     }
  },
   mounted() {
-    this.view = new DeckGlViewOptimized("map",
+    this.view = new DeckGlViewBatch("map",
         [],
         {
           deckProps: {
