@@ -87,6 +87,14 @@ module.exports = env => {
           ]
         },
         {
+          test: /\.scss$/,
+          use: [
+            'vue-style-loader',
+            'css-loader',
+            'sass-loader'
+          ]
+        },
+        {
           test: /\.worker\.js$/,
           use: {loader: 'worker-loader'}
         }

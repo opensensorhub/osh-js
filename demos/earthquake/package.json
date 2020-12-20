@@ -8,8 +8,11 @@
     "dev": "webpack-dev-server --host 127.0.0.1 --config webpack.config.js --mode development --watch --env.NODE_ENV=development"
   },
   "dependencies": {
+    "@deck.gl/aggregation-layers": "^8.3.11",
+    "@deck.gl/carto": "^8.3.11",
     "@deck.gl/core": "^8.3.6",
     "@deck.gl/layers": "^8.3.6",
+    "@deck.gl/react": "^8.3.11",
     "@loaders.gl/core": "^2.3.7",
     "@loaders.gl/csv": "^2.3.7",
     "@math.gl/web-mercator": "^3.3.2",

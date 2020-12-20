@@ -12,7 +12,7 @@
 <script>
 
 import './assets/app.css';
-import Map from './components/Map.vue';
+import Map from './components/MapHexagon.vue';
 import Worker from './workers/csvloader.worker.js';
 import EQDataSource from "./js/EQDataSource";
 
@@ -36,7 +36,7 @@ export default {
       name: 'EQ',
       protocol: 'topic',
       topicName: TOPIC_NAME,
-      batchSize: 5000
+      batchSize: 10000
     });
 
     let worker = new Worker();
