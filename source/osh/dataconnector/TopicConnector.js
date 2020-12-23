@@ -31,7 +31,9 @@ class TopicConnector extends DataConnector {
                 this.broadcastChannel.close();
                 this.init = false;
                 this.lastReceiveTime = -1;
+                this.opened = false;
             };
+            this.opened = true;
 
             //init the reconnect handler
             if (this.interval === -1) {
@@ -66,6 +68,7 @@ class TopicConnector extends DataConnector {
         if (removeInterval) {
             clearInterval(this.interval);
         }
+        this.opened = false;
     }
 
     /**
@@ -93,6 +96,10 @@ class TopicConnector extends DataConnector {
      */
     close() {
         this.disconnect();
+    }
+
+    isConnected() {
+        return this.broadcastChannel !== null && this.opened;
     }
 }
 

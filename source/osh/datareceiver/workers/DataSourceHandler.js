@@ -1,6 +1,6 @@
 import WebSocketConnector from "../../dataconnector/WebSocketConnector.js";
 import Ajax from "../../dataconnector/Ajax.js";
-import {isDefined} from "../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../utils/Utils.js";
 import TopicConnector from "../../dataconnector/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../dataconnector/Status";
@@ -24,6 +24,7 @@ class DataSourceHandler {
             this.connector.disconnect();
             this.connector = null;
         }
+
         this.broadcastChannel = new BroadcastChannel(topic);
 
         const properties = JSON.parse(propertiesStr);

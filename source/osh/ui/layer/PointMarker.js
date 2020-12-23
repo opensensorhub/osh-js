@@ -72,10 +72,12 @@ class PointMarker extends Layer {
 	/**
 		* Create the PointMarker
 		* @param {Object} properties
+	  * @param {Number} [properties.batch=false] -
 		* @param {Number[]} properties.location - [x,y,z]
   	* @param {Number} [properties.orientation=0] -
 		* @param {String} properties.icon -
 	  * @param {String} [properties.iconScale=1] - the icon scale size
+	  * @param {String} [properties.iconColor="#000000"] - the icon color
 		* @param {Number[]} [properties.iconAnchor=[16,16]] -
 		* @param {Number[]} [properties.iconSize=[16,16]] -
 		* @param {String} properties.label -
@@ -85,6 +87,8 @@ class PointMarker extends Layer {
 		* @param {Function} [properties.getLocation] -
 		* @param {Function} [properties.getOrientation] -
 		* @param {Function} [properties.getIcon] -
+	  * @param {Function} [properties.getIconColor] -
+	  * @param {Function} [properties.getIconScale] -
 		* @param {Function} [properties.getLabel] -
 		* @param {Function} [properties.getLabelColor] -
 		* @param {Function} [properties.getLabelSize] -
@@ -105,6 +109,7 @@ class PointMarker extends Layer {
 		this.iconAnchor = [16,16];
 		this.iconSize = [16,16];
 		this.iconScale = 10;
+		this.iconColor = "#000000";
 		this.label = null;
 		this.labelColor = "#000000";
 		this.labelSize = 16;
@@ -147,6 +152,11 @@ class PointMarker extends Layer {
 		if (hasValue(properties.iconScale)) {
 			assertPositive(properties.iconScale, "iconScale");
 			this.iconScale = properties.iconScale;
+		}
+
+		if (hasValue(properties.iconColor)) {
+			assertString(properties.iconColor, "iconColor");
+			this.iconColor = properties.iconColor;
 		}
 
 		if (hasValue(properties.label)) {
@@ -204,6 +214,20 @@ class PointMarker extends Layer {
 				that.icon = properties.getIcon.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getIcon.dataSourceIds,fn);
+		}
+
+		if (this.checkFn("getIconColor")) {
+			let fn = function(rec,timeStamp,options) {
+				that.iconColor = properties.getIconColor.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.getIconColor.dataSourceIds,fn);
+		}
+
+		if (this.checkFn("getIconScale")) {
+			let fn = function(rec,timeStamp,options) {
+				that.iconScale = properties.getIconScale.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.getIconScale.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getLabel")) {

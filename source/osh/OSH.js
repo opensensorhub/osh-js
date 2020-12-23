@@ -1,5 +1,4 @@
 export const VERSION = '2.0.0';
-export { default as  Buffer } from './datasynchronizer/Buffer.js';
 export { default as  Ajax } from './dataconnector/Ajax.js';
 export { default as  DataConnector } from './dataconnector/DataConnector.js';
 export { default as  WebSocketConnector } from './dataconnector/WebSocketConnector.js';

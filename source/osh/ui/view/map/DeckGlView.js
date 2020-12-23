@@ -157,14 +157,14 @@ class DeckGlView extends MapView {
                     anchorY:  layer.iconAnchor[1],
                     width: layer.iconSize[0],
                     height: layer.iconSize[1],
-                    mask: false
+                    mask: layer.iconColor !== '#000000'
                 }
             },
             getIcon: d => 'marker',
             sizeScale: layer.iconScale,
             getPosition: d => d.position,
             getSize: d => layer.iconScale,
-            getColor: d =>  hex2rgb(layer.color),
+            getColor: d =>  hex2rgb(layer.iconColor),
             onHover: (info, event) => this.onMarkerHover(mId,info, layer, event),
             onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, layer, event) :
                 this.onMarkerRightClick(mId,info, layer, event)
@@ -187,6 +187,16 @@ class DeckGlView extends MapView {
         }
 
         this.render(extraProps);
+    }
+
+    /**
+     *
+     * @param {Curve} layer -
+     * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
+     * @param {Object} options -
+     */
+    updateMarkers(layer, values, options) {
+
     }
 
     /**
