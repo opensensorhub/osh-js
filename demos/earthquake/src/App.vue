@@ -3,7 +3,12 @@
     <v-app id="inspire">
       <v-app id="inspire">
         <Map
-            :datasource="datasource"></Map>
+            :datasource="datasource">
+        </Map>
+        <TimeRangeSlider
+          class="time-range-slider"
+          :loaded="loaded"
+        />
       </v-app>
     </v-app>
   </div>
@@ -15,18 +20,20 @@ import './assets/app.css';
 import Map from './components/MapColumn.vue';
 import Worker from './workers/csvloader.worker.js';
 import EQDataSource from "./js/EQDataSource";
+import TimeRangeSlider from './components/TimeRangeSlider';
 
 export default {
   name: 'App',
   components: {
-    Map
+    Map, TimeRangeSlider
   },
   props: {
     source: String,
   },
   data: function () {
     return {
-      datasource: null
+      datasource: null,
+      loaded: false
     }
   },
   mounted() {
@@ -45,10 +52,21 @@ export default {
       topic: TOPIC_NAME
     });
 
+    const that = this;
+    worker.onmessage = (event) => {
+      if(event.data.message === 'done'){
+        that.loaded = true;
+      }
+    }
     this.datasource.connect();
   },
 }
 </script>
 
 <style>
+.time-range-slider {
+  z-index: 99999;
+  position: absolute;
+  bottom: 0;
+}
 </style>

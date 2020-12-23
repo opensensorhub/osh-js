@@ -11,10 +11,11 @@ self.onmessage = (event) => {
 }
 
 async function load(){
-    const NB_FILES = 252;
+    const NB_FILES = 250;
     let count = 0;
     for(let i=1;i <= NB_FILES;i++) {
-        const data = await LoadLoadersGL('/data/earthquakes.'+i+'.csv', CSVLoader).then(data => {
+        const data = await LoadLoadersGL('./data/earthquakes.'+i+'.csv', CSVLoader).then(data => {
+        // const data = await LoadLoadersGL('/data/earthquakes.'+i+'.csv', CSVLoader).then(data => {
             for(let j=0;j < data.length;j++) {
                 try {
                     if (data[j].time !== null) {
@@ -29,5 +30,8 @@ async function load(){
             // console.log(((count++)*100/NB_FILES)+'%');
         });
     }
+    self.postMessage({
+        message: 'done'
+    });
     console.log('done');
 }

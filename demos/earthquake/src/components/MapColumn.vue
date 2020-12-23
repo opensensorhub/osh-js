@@ -44,6 +44,7 @@ import {
 } from '@deck.gl/layers';
 import DeckGlViewColumn from "../js/DeckGlViewColumn";
 import HoverInfo from "./HoverInfo";
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: "MapColumn",
@@ -114,14 +115,28 @@ export default {
             autoZoomOnFirstMarker: false
           }
       );
-      this.view.onRender = (values) => {
+      this.view.onRender = (layer, values) => {
         this.count += values.length;
+        // dispatch to TimeRange
+        this.$store.dispatch('addData',{
+          layer: layer,
+          values: values
+        });
       }
+    },
+    filteredIndexes(newValue, oldValue) {
+      this.view.renderFilter(newValue);
     }
   },
   mounted() {
   },
+  computed: {
+    filteredIndexes() { return this.$store.state.filteredAll; }
+  },
   methods: {
+    ...mapActions(['addData']
+    ),
+
     nFormatter(num, digits) {
       const si = [
         {value: 1, symbol: ""},
@@ -157,7 +172,7 @@ export default {
 .count {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 2px;
   z-index: 99999;
   background-color: rgb(41, 50, 60);
   padding: 12px 16px 4px;
@@ -166,12 +181,12 @@ export default {
 
 .hover-info {
   position: absolute;
-  left: 0;
-  bottom: 0px;
-  width: 520px;
+  right: 0;
+  top: 2px;
+  width: 415px;
   z-index: 99999;
   background-color: rgb(41, 50, 60);
-  padding: 12px 16px 4px;
+  padding: 4px 4px 0px;
   color: ghostwhite;
 }
 </style>

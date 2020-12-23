@@ -14,7 +14,7 @@
           disable-pagination
           disable-filtering
           disable-sort
-          height="70"
+          height="65"
           dark
           dense
       >
@@ -22,7 +22,7 @@
           <v-chip
               :color="getColor(item.mag)"
               dark
-              small
+              x-small
           >
             {{ item.mag }}
           </v-chip>
@@ -86,16 +86,25 @@ export default {
 
 <style scoped>
 .content {
-  height: 82px;
-  font-size: 16px;
+  height: 75px;
 }
 
 .hoverInfo-title{
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>
 <style lang="scss">
 $data-table-border-radius :  0px !default;
 </style>
 <style>
+
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+.v-data-table > .v-data-table__wrapper > table > thead > tr > th,
+.v-data-table > .v-data-table__wrapper > table > tfoot > tr > th,
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
+  font-size: 10px !important;
+}
+.v-data-table {
+  border-radius: 0px !important;
+}
 </style>

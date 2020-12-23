@@ -51,6 +51,8 @@ class DeckGlViewColumn extends DeckGlView {
         ];
 
         this.columnLayers = [];
+        this.min = -1;
+        this.max = -1;
     }
 
     setData(dataSourceId, values) {
@@ -85,17 +87,37 @@ class DeckGlViewColumn extends DeckGlView {
         });
 
         this.columnLayers.push(layer);
-        this.render({});
-        this.onRender(values);
+        this.render(this.columnLayers,{});
+        this.onRender(layer,values);
     }
 
     onClick(event) {}
 
-    onRender(data) {}
+    /**
+     * Filter the current layers based on time range
+     * @param {Object} props - define properties of the filtering
+     * @param {Number} props.start - start time
+     * @param {Number} props.end - end time
+     * @param {string[]} props.idx - list of matching deck layer id
+     */
+    renderFilter(props) {
+        const filteredColumnLayer = [];
+        for(let i=0;i < this.columnLayers.length;i++) {
+           filteredColumnLayer.push(this.columnLayers[i].clone({
+               visible:(props.idx.indexOf(this.columnLayers[i].id) >= 0)
+           }));
+        }
+        this.min = props.start;
+        this.max = props.start;
+        this.render(filteredColumnLayer,{});
 
-    render(extraProps) {
+    }
+
+    onRender(layer, data) {}
+
+    render(columnLayers, extraProps) {
         const props = {
-            layers: [...this.deckLayers,...this.columnLayers]
+            layers: [...this.deckLayers,...columnLayers]
         };
         this.deckgl.setProps({
             ...extraProps,

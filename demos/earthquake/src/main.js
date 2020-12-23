@@ -3,12 +3,14 @@ import App from './App.vue'
 
 // In index.lib
 import Vuetify from 'vuetify'
+import store from './store'
 import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify);
 
 Vue.config.productionTip = false;
 new Vue({
+  store,
   vuetify: new Vuetify({
     theme: {
       themes: {
