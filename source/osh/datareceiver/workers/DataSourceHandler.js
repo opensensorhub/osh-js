@@ -4,6 +4,7 @@ import {isDefined, randomUUID} from "../../utils/Utils.js";
 import TopicConnector from "../../dataconnector/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../dataconnector/Status";
+import FileConnector from "../../dataconnector/FileConnector";
 
 class DataSourceHandler {
 
@@ -75,31 +76,28 @@ class DataSourceHandler {
             ...properties,
             timeShift: this.timeShift
         });
+
         // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) {
             this.connector = new WebSocketConnector(url);
-            // connects the callback
-            this.connector.onMessage = this.onMessage.bind(this);
-            // set the reconnectTimeout
-            this.connector.setReconnectTimeout(this.reconnectTimeout);
         } else if (properties.protocol.startsWith('http')) {
             this.connector = new Ajax(url);
             this.connector.responseType = 'arraybuffer';
-            // connects the callback
-            this.connector.onMessage = this.onMessage.bind(this);
-            // set the reconnectTimeout
-            this.connector.setReconnectTimeout(this.reconnectTimeout);
         } else if (properties.protocol.startsWith('topic')) {
             this.connector = new TopicConnector(url);
-            // connects the callback
-            this.connector.onMessage = this.onMessage.bind(this);
-            // set the reconnectTimeout
-            this.connector.setReconnectTimeout(this.reconnectTimeout);
+        } else if (properties.protocol.startsWith('file')) {
+            this.connector = new FileConnector(url,properties);
         }
 
         const lastStartTimeCst = this.parser.lastStartTime;
         const lastProperties = properties;
         if (this.connector !== null) {
+            // set the reconnectTimeout
+            this.connector.setReconnectTimeout(this.reconnectTimeout);
+
+            // connects the callback
+            this.connector.onMessage = this.onMessage.bind(this);
+
             // bind change connection STATUS
             this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
 
@@ -142,17 +140,27 @@ class DataSourceHandler {
         }
     }
 
-    onMessage(event) {
-        const timeStamp = this.parser.parseTimeStamp(event) + this.timeShift;
-        const data = this.parser.parseData(event);
+    async onMessage(event) {
+        const timeStamp = await Promise.resolve(this.parser.parseTimeStamp(event) + this.timeShift);
+        const data      = await Promise.resolve(this.parser.parseData(event));
 
-        this.values.push({
-            data: data,
-            timeStamp: timeStamp
-        });
+        // check if data is array
+        if (Array.isArray(data)) {
+            for(let i=0;i < data.length;i++) {
+                this.values.push({
+                    data: data[i],
+                    timeStamp: timeStamp
+                });
+            }
+        } else {
+            this.values.push({
+                data: data,
+                timeStamp: timeStamp
+            });
+        }
         this.lastTimeStamp = timeStamp;
 
-        if(isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+        if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
             this.flush();
         }
     }
@@ -163,7 +171,7 @@ class DataSourceHandler {
      */
     onChangeStatus(status) {
         if(status === Status.DISCONNECTED) {
-            this.flush();
+            this.flushAll();
         }
 
         this.broadcastChannel.postMessage({
@@ -198,11 +206,21 @@ class DataSourceHandler {
         this.connect();
     }
 
+    flushAll() {
+        while(this.values.length > 0) {
+            this.flush();
+        }
+    }
+
     flush() {
+        let nbElements = this.values.length;
+        if (isDefined(this.batchSize) && this.values.length > this.batchSize) {
+            nbElements = this.batchSize;
+        }
         this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,
             type: EventType.DATA,
-            values: this.values.splice(0, this.values.length)
+            values: this.values.splice(0, nbElements)
         });
     }
 

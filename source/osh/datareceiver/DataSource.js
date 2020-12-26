@@ -16,6 +16,7 @@
 
 import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC} from "../Constants";
+import {Status} from "../dataconnector/Status";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -122,6 +123,19 @@ class DataSource {
     disconnect() {
         this.dataSourceWorker.postMessage({
             message: 'disconnect'
+        });
+    }
+
+    /**
+     * Trigger when the datasource is disconnected for some reason.
+     */
+    onDisconnect() {
+        return new Promise(resolve => {
+            new BroadcastChannel(DATASOURCE_DATA_TOPIC+this.id).onmessage = (event) => {
+                if(event.data.status === Status.DISCONNECTED) {
+                    resolve();
+                }
+            }
         });
     }
 
