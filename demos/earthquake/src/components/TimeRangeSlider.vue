@@ -29,6 +29,7 @@
 import HistogramSlider from 'vue-histogram-slider';
 import 'vue-histogram-slider/dist/histogram-slider.css';
 import InfiniteLoading from 'vue-infinite-loading';
+import {isDefined} from "../../../../source/osh/utils/Utils";
 
 export default {
   name: "TimeRangeSlider",
@@ -70,7 +71,9 @@ export default {
       const d = [];
       for(let idx in nv) {
         for(let value of nv[idx].values) {
-          d.push(new Date(value).valueOf());
+          if(isDefined(value)) {
+            d.push(new Date(value).valueOf());
+          }
         }
       }
       d.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());

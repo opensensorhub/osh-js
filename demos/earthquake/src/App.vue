@@ -18,9 +18,8 @@
 
 import './assets/app.css';
 import Map from './components/MapColumn.vue';
-import Worker from './workers/csvloader.worker.js';
-import EQDataSource from "./js/EQDataSource";
 import TimeRangeSlider from './components/TimeRangeSlider';
+import File from 'osh/datareceiver/File';
 
 export default {
   name: 'App',
@@ -37,28 +36,27 @@ export default {
     }
   },
   mounted() {
-    const TOPIC_NAME = 'eq-topic-data';
 
-    this.datasource = new EQDataSource('EQ data',{
-      name: 'EQ',
-      protocol: 'topic',
-      topicName: TOPIC_NAME,
-      batchSize: 5000
-    });
+    const NB_FILES = 250;
+    const files = [];
 
-    let worker = new Worker();
-    worker.postMessage({
-      message: 'load',
-      topic: TOPIC_NAME
-    });
-
-    const that = this;
-    worker.onmessage = (event) => {
-      if(event.data.message === 'done'){
-        that.loaded = true;
-      }
+    for(let i=1;i <= NB_FILES;i++) {
+      files.push('./data/earthquakes.' + i + '.csv');
     }
+
+    this.datasource = new File('EQ data',{
+      protocol: 'file',
+      paths: files,
+      batchSize: 5000,
+      customUrlParams: {
+        timeField: 'time'
+      }
+    });
+
     this.datasource.connect();
+
+    this.datasource.onDisconnect().then(() => this.loaded = true);
+
   },
 }
 </script>
