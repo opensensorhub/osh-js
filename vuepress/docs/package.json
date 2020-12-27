@@ -13,7 +13,7 @@
     "build-showcase": "yarn install --cwd ../../showcase/ && yarn --cwd ../../showcase/ prod",
     "dev": "vuepress dev src",
     "prod": "yarn init-deps && vuepress build src",
-    "doc": "jsdoc -t ../../documentation/jsdoc/template-iframe/jaguarjs-jsdoc -r ../../source/ -d  ../../documentation/jsdoc/build-iframe"
+    "doc": "rm -fr ../../documentation/jsdoc/build-iframe; jsdoc -t ../../documentation/jsdoc/template-iframe/jaguarjs-jsdoc -r ../../source/ -d  ../../documentation/jsdoc/build-iframe"
   },
   "license": "MIT",
   "devDependencies": {

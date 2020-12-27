@@ -110,6 +110,7 @@ module.exports = {
                     collapsable: true,
                     children: [
                         '/guide/datasources/general.md',
+                        '/guide/connector/general.md',
                         {
                             title: 'SOS',
                             collapsable: true,
@@ -128,6 +129,13 @@ module.exports = {
                                 '/guide/datasources/sps/datasink.md',
                                 '/guide/datasources/sps/foscamtasking.md',
                                 '/guide/datasources/sps/ptztasking.md'
+                            ]
+                        },
+                        {
+                            title: 'Others',
+                            collapsable: true,
+                            children: [
+                                '/guide/datasources/others/file.md',
                             ]
                         }
                     ]

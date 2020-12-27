@@ -20,7 +20,7 @@ import FileWorker from './workers/File.worker.js';
 
 
 /**
- * This datasource provides generic parsing for File input.
+ * This datasource provides generic parsing for File input. It is agnostic of the content of the file.
  *
  * @extends DataSource
  * @example
@@ -28,7 +28,7 @@ import FileWorker from './workers/File.worker.js';
  *
  * let earthquakeDatasource = new File("EQ", {
     protocol: "file",
-    endpointUrl: "./data/earthquake.1.csv"
+    paths: ["./data/earthquake.1.csv"]
   });
  */
 
@@ -40,7 +40,10 @@ class File extends DataSource {
      * @param {String[]} properties.paths the file paths
      */
     constructor(name, properties) {
-        super(name, { ...properties }, new FileWorker());
+        super(name, {
+            ...properties,
+            protocol: 'file'
+        }, new FileWorker());
     }
 }
 

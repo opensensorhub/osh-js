@@ -1,6 +1,25 @@
 import DataConnector from "./DataConnector";
 import {Status} from "./Status";
 
+/**
+ * Defines the FileConnector to read a File content
+ * @extends DataConnector
+ * @example
+ * import FileConnector from 'osh/dataconnector/FileConnector.js';
+ *
+ * let paths = ['path1','path2]...];
+ * let connector = new FileConnector(paths);
+ *
+ * // connect
+ * connector.connect();
+ *
+ * // disconnect
+ * connector.disconnect();
+ *
+ * // close
+ * connector.close();
+ *
+ */
 class FileConnector extends DataConnector {
     /**
      * @param (string[]) paths - list of file paths

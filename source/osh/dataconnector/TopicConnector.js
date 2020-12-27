@@ -1,5 +1,23 @@
 import DataConnector from "./DataConnector";
 
+/**
+ * Defines the FileConnector to read a File content
+ * @extends DataConnector
+ * @example
+ * import FileConnector from 'osh/dataconnector/TopicConnector.js';
+ *
+ * let connector = new TopicConnector(<topic_name>);
+ *
+ * // connect
+ * connector.connect();
+ *
+ * // disconnect
+ * connector.disconnect();
+ *
+ * // close
+ * connector.close();
+ *
+ */
 class TopicConnector extends DataConnector {
     /**
      *
