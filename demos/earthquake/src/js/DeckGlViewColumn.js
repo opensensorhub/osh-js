@@ -56,39 +56,41 @@ class DeckGlViewColumn extends DeckGlView {
     }
 
     setData(dataSourceId, values) {
-        const material = {
-            ambient: 0.64,
-            diffuse: 0.6,
-            shininess: 32,
-            specularColor: [51, 51, 51]
-        };
+        if(values.length > 0 ) {
+            const material = {
+                ambient: 0.64,
+                diffuse: 0.6,
+                shininess: 32,
+                specularColor: [51, 51, 51]
+            };
 
-        const layer = new ColumnLayer({
-            id: randomUUID(),
-            data: values,
-            material,
-            diskResolution: 20,
-            radius: 10000,
-            extruded: true,
-            pickable: true,
-            autoHighlight:true,
-            highlightColor: [46, 204, 113 ],
-            getPosition: d => [d.data.longitude, d.data.latitude],
-            getFillColor: d => this.colorRange[parseInt(d.data.mag)],
-            getLineColor: [0, 0, 0],
-            getElevation: d => Math.exp(d.data.mag),
-            coverage: 1,
-            elevationScale: 1000,
-            transitions: {
-                getLineColor: 10000,
-                getLineWidth: 10000,
-                getElevation: 10000
-            }
-        });
+            const layer = new ColumnLayer({
+                id: randomUUID(),
+                data: values,
+                material,
+                diskResolution: 20,
+                radius: 10000,
+                extruded: true,
+                pickable: true,
+                autoHighlight: true,
+                highlightColor: [46, 204, 113],
+                getPosition: d => [d.data.longitude, d.data.latitude],
+                getFillColor: d => this.colorRange[parseInt(d.data.mag)],
+                getLineColor: [0, 0, 0],
+                getElevation: d => Math.exp(d.data.mag),
+                coverage: 1,
+                elevationScale: 1000,
+                transitions: {
+                    getLineColor: 10000,
+                    getLineWidth: 10000,
+                    getElevation: 10000
+                }
+            });
 
-        this.columnLayers.push(layer);
-        this.render(this.columnLayers,{});
-        this.onRender(layer,values);
+            this.columnLayers.push(layer);
+            this.render(this.columnLayers, {});
+            this.onRender(layer, values);
+        }
     }
 
     onClick(event) {}

@@ -1,6 +1,7 @@
 import {isDefined} from "../../utils/Utils";
 
 class DataSourceParser {
+
     /**
      * Builds the full url.
      * @protected

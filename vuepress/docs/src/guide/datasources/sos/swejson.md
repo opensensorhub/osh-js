@@ -41,7 +41,7 @@ The other fields are keeping as they are and are forwarded to the result object.
 
 The result is then processed through the Toolkit to be synchronized or/and displayed into the [View](../../views/index).
 
-<DocumentationLoad path="/guide/api/DataSource.html"/>
+<DocumentationLoad path="/guide/api/SweJson.html"/>
 
 ## Example
 
