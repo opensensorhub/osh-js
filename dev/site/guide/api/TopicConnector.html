@@ -39,6 +39,8 @@
     TopicConnector
     </h2>
     
+        <div class="class-description">Defines the FileConnector to read a File content</div>
+    
 </header>
 
 <article>
@@ -56,7 +58,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line8">line 8</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line21">line 21</a>
         </div>
         
     </div>
@@ -150,6 +152,25 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>import FileConnector from 'osh/dataconnector/TopicConnector.js';
+
+let connector = new TopicConnector(<topic_name>);
+
+// connect
+connector.connect();
+
+// disconnect
+connector.disconnect();
+
+// close
+connector.close();</code></pre>
+    
+
+    
 </dd>
 
     
@@ -157,6 +178,12 @@
 
     
 
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        <ul>
+            <li><a href="DataConnector.html">DataConnector</a></li>
+        </ul>
     
 
     
@@ -173,6 +200,124 @@
         <dl>
             
 <dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="checkStatus">
+            
+                <span class="inherited"><a href="DataConnector.html#checkStatus">inherited</a></span>
+            
+            checkStatus<span class="signature">(status)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line103">line 103</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Check a change of the status and call the corresponding callbacks if necessary
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>status</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Status">Status</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                the currentStatus</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <div class="nameContainer">
         <h4 class="name" id="close">
             
@@ -181,7 +326,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line94">line 94</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line115">line 115</a>
         </div>
         
     </div>
@@ -252,7 +397,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line18">line 18</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line36">line 36</a>
         </div>
         
     </div>
@@ -323,7 +468,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line53">line 53</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line73">line 73</a>
         </div>
         
     </div>
@@ -394,7 +539,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line61">line 61</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line81">line 81</a>
         </div>
         
     </div>
@@ -502,6 +647,474 @@
         
             
 <dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getId">
+            
+                <span class="inherited"><a href="DataConnector.html#getId">inherited</a></span>
+            
+            getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line60">line 60</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        The data connector default id.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="getUrl">
+            
+                <span class="inherited"><a href="DataConnector.html#getUrl">inherited</a></span>
+            
+            getUrl<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line68">line 68</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        The stream url.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="onChangeStatus">
+            
+                <span class="inherited"><a href="DataConnector.html#onChangeStatus">inherited</a></span>
+            
+            onChangeStatus<span class="signature">(status)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line95">line 95</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Called when the connection STATUS changes
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>status</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Status">Status</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                the new status</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="onConnect">
+            
+                <span class="inherited"><a href="DataConnector.html#onConnect">inherited</a></span>
+            
+            onConnect<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line119">line 119</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Called when the connector has been connected
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="onDisconnect">
+            
+                <span class="inherited"><a href="DataConnector.html#onDisconnect">inherited</a></span>
+            
+            onDisconnect<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line112">line 112</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Called when the connector has been disconnected
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <div class="nameContainer">
         <h4 class="name" id="reconnect">
             
@@ -510,7 +1123,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line74">line 74</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line95">line 95</a>
         </div>
         
     </div>
@@ -529,6 +1142,237 @@
     
     
     
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="setReconnectTimeout">
+            
+                <span class="inherited"><a href="DataConnector.html#setReconnectTimeout">inherited</a></span>
+            
+            setReconnectTimeout<span class="signature">(timeout)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line76">line 76</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the reconnection timeout
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>timeout</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                delay in milliseconds before reconnecting dataSource</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="setUrl">
+            
+                <span class="inherited"><a href="DataConnector.html#setUrl">inherited</a></span>
+            
+            setUrl<span class="signature">(url)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_dataconnector_DataConnector.js.html">osh/dataconnector/DataConnector.js</a>, <a href="osh_dataconnector_DataConnector.js.html#line52">line 52</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the url
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -589,7 +1433,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line88">line 88</a>
+            <a href="osh_dataconnector_TopicConnector.js.html">osh/dataconnector/TopicConnector.js</a>, <a href="osh_dataconnector_TopicConnector.js.html#line109">line 109</a>
         </div>
         
     </div>
@@ -702,7 +1546,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 19 2020 13:28:31 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>
