@@ -45,12 +45,8 @@ export default {
     }
 
     this.datasource = new File('EQ data',{
-      protocol: 'file',
       paths: files,
-      batchSize: 5000,
-      customUrlParams: {
-        timeField: 'time'
-      }
+      batchSize: 5000
     });
 
     this.datasource.connect();
