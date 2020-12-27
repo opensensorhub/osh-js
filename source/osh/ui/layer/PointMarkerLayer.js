@@ -29,9 +29,9 @@ import Layer from "./Layer.js";
  * @extends Layer
  * @example
  *
- * import PointMarker from 'osh/ui/layer/PointMarker.js';
+ * import PointMarkerLayer from 'osh/ui/layer/PointMarkerLayer.js';
  *
- * let pointMarker = new PointMarker({
+ * let pointMarkerLayer = new PointMarkerLayer({
         location : {
             x : 1.42376557,
             y : 43.61758626,
@@ -68,11 +68,10 @@ import Layer from "./Layer.js";
         }
     });
  */
-class PointMarker extends Layer {
+class PointMarkerLayer extends Layer {
 	/**
 		* Create the PointMarker
 		* @param {Object} properties
-	  * @param {Number} [properties.batch=false] -
 		* @param {Number[]} properties.location - [x,y,z]
   	* @param {Number} [properties.orientation=0] -
 		* @param {String} properties.icon -
@@ -102,151 +101,153 @@ class PointMarker extends Layer {
 		*/
 	constructor(properties) {
 		super(properties);
+		this.type = 'marker';
+
 		this.properties = properties;
-		this.location = null;
-		this.orientation = {heading:0};
-		this.icon = null;
-		this.iconAnchor = [16,16];
-		this.iconSize = [16,16];
-		this.iconScale = 10;
-		this.iconColor = "#000000";
-		this.label = null;
-		this.labelColor = "#000000";
-		this.labelSize = 16;
-		this.labelOffset = [0,0];
-		this.zoomLevel = 15;
-		this.color = '#000000';
-		this.defaultToTerrainElevation = false;
-		this.options = {};
-		this.markerId = 'marker';
+		this.props.location = null;
+		this.props.orientation = {heading:0};
+		this.props.icon = null;
+		this.props.iconAnchor = [16,16];
+		this.props.iconSize = [16,16];
+		this.props.iconScale = 10;
+		this.props.iconColor = "#000000";
+		this.props.label = null;
+		this.props.labelColor = "#000000";
+		this.props.labelSize = 16;
+		this.props.labelOffset = [0,0];
+		this.props.zoomLevel = 15;
+		this.props.color = '#000000';
+		this.props.defaultToTerrainElevation = false;
+		this.props.options = {};
+		this.props.markerId = 'marker';
 
 		if(isDefined(properties.defaultToTerrainElevation)) {
-			this.defaultToTerrainElevation = properties.defaultToTerrainElevation;
+			this.props.defaultToTerrainElevation = properties.defaultToTerrainElevation;
 		}
 
 		if (hasValue(properties.location)) {
 			assertObject(properties.location, "location");
-			this.location = properties.location;
+			this.props.location = properties.location;
 		}
 
 		if (hasValue(properties.orientation)) {
 			assertObject(properties.orientation, "orientation");
-			this.orientation = properties.orientation;
+			this.props.orientation = properties.orientation;
 		}
 
 		if (hasValue(properties.icon)) {
 			assertString(properties.icon, "icon");
-			this.icon = properties.icon;
+			this.props.icon = properties.icon;
 		}
 
 		if (hasValue(properties.iconAnchor)) {
 			assertArray(properties.iconAnchor, "iconAnchor");
-			this.iconAnchor = properties.iconAnchor;
+			this.props.iconAnchor = properties.iconAnchor;
 		}
 
 		if (hasValue(properties.iconSize)) {
 			assertArray(properties.iconSize, "iconSize");
-			this.iconSize = properties.iconSize;
+			this.props.iconSize = properties.iconSize;
 		}
 
 		if (hasValue(properties.iconScale)) {
 			assertPositive(properties.iconScale, "iconScale");
-			this.iconScale = properties.iconScale;
+			this.props.iconScale = properties.iconScale;
 		}
 
 		if (hasValue(properties.iconColor)) {
 			assertString(properties.iconColor, "iconColor");
-			this.iconColor = properties.iconColor;
+			this.props.iconColor = properties.iconColor;
 		}
 
 		if (hasValue(properties.label)) {
 			assertString(properties.label, "label");
-			this.label = properties.label;
+			this.props.label = properties.label;
 		}
 
 		if (hasValue(properties.labelColor)) {
 			assertString(properties.labelColor, "labelColor");
-			this.labelColor = properties.labelColor;
+			this.props.labelColor = properties.labelColor;
 		}
 
 		if (hasValue(properties.labelSize)) {
 			assertPositive(properties.labelSize, "labelSize");
-			this.labelSize = properties.labelSize;
+			this.props.labelSize = properties.labelSize;
 		}
 
 		if (hasValue(properties.labelOffset)) {
 			assertArray(properties.labelOffset, "labelOffset");
-			this.labelOffset = properties.labelOffset;
+			this.props.labelOffset = properties.labelOffset;
 		}
 
 
 		if (hasValue(properties.zoomLevel)) {
 			assertPositive(properties.zoomLevel, "zoomLevel");
-			this.zoomLevel = properties.zoomLevel;
+			this.props.zoomLevel = properties.zoomLevel;
 		}
 
-		let that = this;
+		const that = this;
 
 		// must be first to assign correctly the first location to the right id if it is defined
 		if (this.checkFn("getMarkerId")) {
 			let fn = function(rec,timeStamp,options) {
-				that.markerId = properties.getMarkerId.handler(rec,timeStamp,options);
+				that.props.markerId = properties.getMarkerId.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getMarkerId.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getLocation")) {
 			let fn = function(rec,timeStamp,options) {
-				that.location = properties.getLocation.handler(rec,timeStamp,options);
+				that.props.location = properties.getLocation.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getLocation.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getOrientation")) {
 			let fn = function(rec,timeStamp,options) {
-				that.orientation = properties.getOrientation.handler(rec,timeStamp,options);
+				that.props.orientation = properties.getOrientation.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getOrientation.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getIcon")) {
 			let fn = function(rec,timeStamp,options) {
-				that.icon = properties.getIcon.handler(rec,timeStamp,options);
+				that.props.icon = properties.getIcon.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getIcon.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getIconColor")) {
 			let fn = function(rec,timeStamp,options) {
-				that.iconColor = properties.getIconColor.handler(rec,timeStamp,options);
+				that.props.iconColor = properties.getIconColor.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getIconColor.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getIconScale")) {
 			let fn = function(rec,timeStamp,options) {
-				that.iconScale = properties.getIconScale.handler(rec,timeStamp,options);
+				that.props.iconScale = properties.getIconScale.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getIconScale.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getLabel")) {
 			let fn = function(rec,timeStamp,options) {
-				that.label = properties.getLabel.handler(rec,timeStamp,options);
+				that.props.label = properties.getLabel.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getLabel.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getLabelColor")) {
 			let fn = function(rec,timeStamp,options) {
-				that.labelColor = properties.getLabelColor.handler(rec,timeStamp,options);
+				that.props.labelColor = properties.getLabelColor.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getLabelColor.dataSourceIds,fn);
 		}
 
 		if (this.checkFn("getLabelSize")) {
 			let fn = function(rec,timeStamp,options) {
-				that.labelSize = properties.getLabelSize.handler(rec,timeStamp,options);
+				that.props.labelSize = properties.getLabelSize.handler(rec,timeStamp,options);
 			};
 			this.addFn(properties.getLabelSize.dataSourceIds,fn);
 		}
@@ -263,23 +264,6 @@ class PointMarker extends Layer {
 			this.onHover = properties.onHover;
 		}
 	}
-
-	init(view) {
-		super.init(view);
-		if (isDefined(view) && this.location !== null) {
-			view.updateMarker(this,0,{});
-		}
-	}
-
-	setData(dataSourceId,rec,view,options) {
-		if (super.setData(dataSourceId,rec,view,options)) {
-			if (isDefined(view) && this.location !== null) {
-				view.updateMarker(this, rec.timeStamp, options);
-				return true;
-			}
-		}
-		return false;
-	}
 }
 
-export default PointMarker;
+export default PointMarkerLayer;

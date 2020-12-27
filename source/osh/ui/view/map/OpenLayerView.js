@@ -76,7 +76,7 @@ class OpenLayerView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarker} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer} layer - The layer allowing the update of the marker
      */
     updateMarker(layer) {
         let marker = this.getMarker(layer);

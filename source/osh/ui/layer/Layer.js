@@ -23,12 +23,34 @@ import EventManager from "../../events/EventManager.js";
 class Layer {
     /**
      *
-     * @param {Object[]} jsonProperties - contains a list of Functions
+     * @param {Object} properties - contains a list of properties
+     * @param {string} properties.name - default name
+     * @param {string} properties.description - default description
+     * @param {string} properties.dataSourceId - default dataSourceId
      */
-    constructor(jsonProperties) {
-        this.properties = jsonProperties;
+    constructor(properties) {
+        this.properties = properties;
         this.id = "layer-" + randomUUID();
         this.dataSourceToLayerMap = {};
+        this.data = [];
+
+        this.props = {};
+        this.props.name = '';
+        this.props.description = '';
+        this.props.dataSourceId = '';
+
+
+        if(isDefined(properties.name)) {
+            this.props.name = properties.name;
+        }
+        if(isDefined(properties.description)) {
+            this.props.description = properties.description;
+        }
+
+        if(isDefined(properties.dataSourceId)) {
+            this.props.dataSourceId = properties.dataSourceId;
+        }
+
         this.initEvents();
     }
 
@@ -94,22 +116,22 @@ class Layer {
     /**
      *
      * @param dataSourceId
-     * @param rec
-     * @param view
+     * @param {Object[]} records
      * @param options
-     * @return {Boolean}
      */
-    setData(dataSourceId, rec, view, options) {
+    setData(dataSourceId, records, options) {
+        // store data into data props
+        this.data = [];
         if (dataSourceId in this.dataSourceToLayerMap) {
             let fnArr = this.dataSourceToLayerMap[dataSourceId];
             for (let i = 0; i < fnArr.length; i++) {
-                for(let j=0;j < rec.values.length;j++) {
-                    fnArr[i](rec.values[j].data, rec.values[j].timeStamp, options);
+                for(let j=0;j < records.length;j++) {
+                    fnArr[i](records[j].data, records[j].timeStamp, options);
+                    this.data.push({
+                        ...this.props
+                    });
                 }
             }
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -122,6 +144,9 @@ class Layer {
         for (let i in this.dataSourceToLayerMap) {
             res.push(i);
         }
+        if(isDefined(this.props.dataSourceId)) {
+            res.push(this.props.dataSourceId);
+        }
         return res;
     }
 
@@ -129,6 +154,17 @@ class Layer {
      * Inits the layer.
      */
     init() {
+    }
+
+    /**
+     * Clone current layer properties
+     * @return {Object} a shallow copy of current properties
+     */
+    getProps() {
+        return {
+            type: this.type,
+            values: this.data
+        }
     }
 }
 

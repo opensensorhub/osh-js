@@ -36,16 +36,19 @@ import CanvasView from "./CanvasView";
 class FFMPEGView extends CanvasView {
     /**
      * Create a View.
-     * @param {String} divId - The div element to attach to
-     * @param {Object} options - the properties of the view
-     * @param {Number} [options.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
-     * @param {Boolean} [options.directPlay=false] - Enable or ignore the framerate play
-     * @param {Boolean} [options.showTime=false] - Enable or ignore the show timestamp text onto the canvas
-     * @param {Boolean} [options.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
-     * @param {String} [options.codec='h264'] - Video codec
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {string} properties.container - The div element to attach to
+     * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+     * @param {boolean} properties.visible - set the default behavior of the visibility of the view
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Number} [properties.framerate=29.67] - The framerate to play 1s/framerate and get smooth display
+     * @param {Boolean} [properties.directPlay=false] - Enable or ignore the framerate play
+     * @param {Boolean} [properties.showTime=false] - Enable or ignore the show timestamp text onto the canvas
+     * @param {Boolean} [properties.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
+     * @param {String} [properties.codec='h264'] - Video codec
      */
-    constructor(divId, options) {
-        super(divId, options);
+    constructor(properties) {
+        super(properties);
 
         this.directPlay = false;
         this.codec = 'h264';
@@ -62,7 +65,8 @@ class FFMPEGView extends CanvasView {
         return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
-    setData(dataSourceId, values) {
+    setData(dataSourceId, data) {
+        const values = data.data;
         for(let i=0; i < values.length;i++) {
             if (!this.skipFrame) {
                 if (this.decodeWorker == null) {
@@ -77,19 +81,6 @@ class FFMPEGView extends CanvasView {
             }
         }
     }
-
-    selectDataView(dataSourceIds, entityId) {
-        let elt = document.getElementById(this.divId);
-        // if(isDefined(elt)) {
-        //     if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entity) &&
-        //         this.entity.getId() === entityId)) {
-        //         elt.setAttribute("class", this.css + " " + this.cssSelected);
-        //     } else {
-        //         elt.setAttribute("class", this.css);
-        //     }
-        // }
-    }
-
 
     /**
      * Reset the view by drawing no data array into the YUV canvas.

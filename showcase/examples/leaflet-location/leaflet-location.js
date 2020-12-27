@@ -1,7 +1,7 @@
 // #region snippet_leaflet_location_import
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 // #endregion snippet_leaflet_location_import
 
@@ -20,7 +20,7 @@ let gpsDataSource = new SweJson("android-GPS", {
 
 // #region snippet_leaflet_location_marker
 // style it with a moving point marker
-let pointMarker = new PointMarker({
+let pointMarkerLayer = new PointMarkerLayer({
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
@@ -32,20 +32,19 @@ let pointMarker = new PointMarker({
     }
   },
   icon: './images/car-location.png',
-  iconAnchor: [16, 65]
+  iconAnchor: [16, 65],
+  name: 'Car',
+  description: 'GPS car Toulouse'
 });
 // #endregion snippet_leaflet_location_marker
 
 // #region snippet_leaflet_location_view
 // create Leaflet view
-let leafletMapView = new LeafletView("leafletMap",
-    [{
-      layer: pointMarker,
-      name: "Android Phone GPS"
-    }], {
+let leafletMapView = new LeafletView({
+      container: 'leafletMap',
+      layers: [pointMarkerLayer],
       autoZoomOnFirstMarker:true
-    }
-);
+});
 // #endregion snippet_leaflet_location_view
 
 // #region snippet_leaflet_location_connect

@@ -58,20 +58,18 @@ import MapView from "./MapView";
 class LeafletView extends MapView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Boolean} [options.follow=false] - follow the marker
-     * @param {Object} [options.initialView] - Sets the view of the map (geographical center and zoom) with the given animation options. [See details]{@link https://leafletjs.com/reference-1.7.1.html#map-setview}
-     * @param {Object[]} [options.overlayLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as overlay layer
-     * @param {Object[]} [options.baseLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as base layer
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Boolean} [properties.follow=false] - follow the marker
+     * @param {Object} [properties.initialView] - Sets the view of the map (geographical center and zoom) with the given animation options. [See details]{@link https://leafletjs.com/reference-1.7.1.html#map-setview}
+     * @param {Object[]} [properties.overlayLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as overlay layer
+     * @param {Object[]} [properties.baseLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as base layer
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super(properties);
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -288,9 +286,19 @@ class LeafletView extends MapView {
         return polyline;
     }
 
+    setData(dataSourceId, data) {
+        const values = data.values;
+        for(let i=0;i < values.length;i++) {
+            const d = values[i];
+            if(data.type === 'marker') {
+                this.updateMarker(d);
+            }
+        }
+    }
+
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarker} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer} layer - The layer allowing the update of the marker
      */
     updateMarker(layer) {
         let marker = this.getMarker(layer);
@@ -307,11 +315,11 @@ class LeafletView extends MapView {
                 labelColor : layer.labelColor,
                 labelSize : layer.labelSize,
                 labelOffset : layer.labelOffset,
-                name : layer.viewItem.name,
-                description : layer.viewItem.description,
-                 onLeftClick: layer.onLeftClick,
-                 id: layer.id+"$"+layer.markerId,
-                 showPopup: !isDefined(layer.onLeftClick)
+                name : layer.name,
+                description : layer.description,
+                onLeftClick: layer.onLeftClick,
+                id: layer.id+"$"+layer.markerId,
+                showPopup: !isDefined(layer.onLeftClick)
             });
             this.addMarkerToLayer(layer, markerObject);
             const mId = layer.markerId; //need to freeze

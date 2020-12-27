@@ -36,15 +36,15 @@ class MapView extends View {
     /**
      * Associate a markerId to a Layer for a fast lookup
      * @protected
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} markerObject - the Map marker object
      */
     addMarkerToLayer(layer, markerObject) {
         // associate the list of markers owning by a specific marker
-        if(!(layer.getId() in this.layerIdToMarkers)) {
-            this.layerIdToMarkers[layer.getId()] = {};
+        if(!(layer.id in this.layerIdToMarkers)) {
+            this.layerIdToMarkers[layer.id] = {};
         }
-        this.layerIdToMarkers[layer.getId()][layer.markerId] = markerObject;
+        this.layerIdToMarkers[layer.id][layer.markerId] = markerObject;
     }
 
     /**
@@ -55,22 +55,22 @@ class MapView extends View {
      */
     addPolylineToLayer(layer, polylineObject) {
         // associate the list of markers owning by a specific marker
-        if(!(layer.getId() in this.layerIdToPolylines)) {
-            this.layerIdToPolylines[layer.getId()] = {};
+        if(!(layer.id in this.layerIdToPolylines)) {
+            this.layerIdToPolylines[layer.id] = {};
         }
-        this.layerIdToPolylines[layer.getId()][layer.polylineId] = polylineObject;
+        this.layerIdToPolylines[layer.id][layer.polylineId] = polylineObject;
     }
 
     /**
      * Get the markerId associate to the Layer
      * @protected
-     * @param {PointMarker} layer - the Layer Object
+     * @param {PointMarkerLayer} layer - the Layer Object
      */
     getMarker(layer) {
-        if(!(layer.getId() in  this.layerIdToMarkers)) {
+        if(!(layer.id in  this.layerIdToMarkers)) {
             return null;
         }
-        return this.layerIdToMarkers[layer.getId()][layer.markerId];
+        return this.layerIdToMarkers[layer.id][layer.markerId];
     }
 
     /**
@@ -107,10 +107,10 @@ class MapView extends View {
      * @param {Polyline} layer - the Layer Object
      */
     getPolyline(layer) {
-        if(!(layer.getId() in  this.layerIdToPolylines)) {
+        if(!(layer.id in  this.layerIdToPolylines)) {
             return null;
         }
-        return this.layerIdToPolylines[layer.getId()][layer.polylineId];
+        return this.layerIdToPolylines[layer.id][layer.polylineId];
     }
 
     /**
@@ -143,7 +143,7 @@ class MapView extends View {
 
     /**
      * Remove the markers corresponding to a PointMarker Layer
-     * @param {PointMarker} pointMarker - the layer to remove the markers from
+     * @param {PointMarkerLayer} pointMarker - the layer to remove the markers from
      */
     removeMarkers(pointMarker) {
         if(isDefined(pointMarker.markerId)) {
@@ -199,7 +199,7 @@ class MapView extends View {
      * Method to call onLeftClick Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerLeftClick(markerId, markerObject, layer, event) {
@@ -212,7 +212,7 @@ class MapView extends View {
      * Method to call onRightClick Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerRightClick(markerId, markerObject, layer, event) {
@@ -225,7 +225,7 @@ class MapView extends View {
      * Method to call onMove Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerMove(markerId, markerObject, layer, event) {
@@ -238,7 +238,7 @@ class MapView extends View {
      * Method to call onHover Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerHover(markerId, markerObject, layer, event) {
