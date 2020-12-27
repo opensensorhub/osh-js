@@ -113,4 +113,4 @@ The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/dev/jsdoc/)
 
 [3dr solo UAV in Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-vuejs/)
 
-[Earthquakes based on Vue.js & Deck.gl](http://opensensorhub.github.io/osh-js/dev/demos/earthquakes/index.html)
+[Earthquakes based on Vue.js & Deck.gl](http://opensensorhub.github.io/osh-js/dev/demos/earthquake/)
