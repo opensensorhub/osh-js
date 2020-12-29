@@ -263,6 +263,8 @@ class PointMarkerLayer extends Layer {
 		if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {
 			this.props.onHover = properties.onHover;
 		}
+
+		this.saveState();
 	}
 }
 

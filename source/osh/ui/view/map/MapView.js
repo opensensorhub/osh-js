@@ -33,18 +33,28 @@ class MapView extends View {
 
     }
 
+    setData(dataSourceId, data) {
+        const values = data.values;
+        for(let i=0;i < values.length;i++) {
+            const d = values[i];
+            if(data.type === 'marker') {
+                this.updateMarker(d);
+            }
+        }
+    }
     /**
      * Associate a markerId to a Layer for a fast lookup
      * @protected
-     * @param {PointMarkerLayer} layer - the Layer object
+     * @param {PointMarkerLayer.props} layer - the Layer object
      * @param {Object} markerObject - the Map marker object
      */
-    addMarkerToLayer(layer, markerObject) {
+    addMarkerToLayer(props, markerObject) {
+        const currentLayer = this.getLayer(props);
         // associate the list of markers owning by a specific marker
-        if(!(layer.id in this.layerIdToMarkers)) {
-            this.layerIdToMarkers[layer.id] = {};
+        if(!(props.id in this.layerIdToMarkers)) {
+            this.layerIdToMarkers[props.id] = {};
         }
-        this.layerIdToMarkers[layer.id][layer.markerId] = markerObject;
+        this.layerIdToMarkers[props.id][props.markerId] = markerObject;
     }
 
     /**
@@ -64,13 +74,13 @@ class MapView extends View {
     /**
      * Get the markerId associate to the Layer
      * @protected
-     * @param {PointMarkerLayer} layer - the Layer Object
+     * @param {PointMarkerLayer.props} props - the Layer Object
      */
-    getMarker(layer) {
-        if(!(layer.id in  this.layerIdToMarkers)) {
+    getMarker(props) {
+        if(!(props.id in  this.layerIdToMarkers)) {
             return null;
         }
-        return this.layerIdToMarkers[layer.id][layer.markerId];
+        return this.layerIdToMarkers[props.id][props.markerId];
     }
 
     /**
@@ -121,7 +131,7 @@ class MapView extends View {
     getLayer(layerId) {
         // find corresponding layer
         for (let currentLayer of this.layers) {
-            if (currentLayer.id === layerId) {
+            if (currentLayer.props.id === layerId) {
                 return currentLayer;
             }
         }
@@ -129,25 +139,25 @@ class MapView extends View {
     }
 
     /**
-     * Remove Corresponding ViewItem
-     * @param {Object} viewItem - The viewItem object
+     * Remove Corresponding Layer
+     * @param {Layer} layer - The layer object
      */
-    removeViewItem(viewItem) {
-        super.removeViewItem(viewItem);
+    removeAllFromLayer(layer) {
+        super.removeAllFromLayer(layer);
         // check for marker
-        this.removeMarkers(viewItem.layer);
+        this.removeMarkers(layer);
 
         // check for polylines
-        this.removePolylines(viewItem.layer);
+        this.removePolylines(layer);
     }
 
     /**
      * Remove the markers corresponding to a PointMarker Layer
-     * @param {PointMarkerLayer} pointMarker - the layer to remove the markers from
+     * @param {PointMarkerLayer} layer - the layer to remove the markers from
      */
-    removeMarkers(pointMarker) {
-        if(isDefined(pointMarker.markerId)) {
-            const markersMap = this.layerIdToMarkers[pointMarker.id];
+    removeMarkers(layer) {
+        if(isDefined(layer.props.markerId)) {
+            const markersMap = this.layerIdToMarkers[layer.props.id];
             if(isDefined(markersMap)) {
                 for(let markerId in markersMap) {
                     const marker = markersMap[markerId];
@@ -156,7 +166,7 @@ class MapView extends View {
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToMarkers[pointMarker.id];
+            delete this.layerIdToMarkers[layer.props.id];
         }
     }
 

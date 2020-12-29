@@ -277,16 +277,6 @@ class LeafletView extends MapView {
         return polyline;
     }
 
-    setData(dataSourceId, data) {
-        const values = data.values;
-        for(let i=0;i < values.length;i++) {
-            const d = values[i];
-            if(data.type === 'marker') {
-                this.updateMarker(d);
-            }
-        }
-    }
-
     /**
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker

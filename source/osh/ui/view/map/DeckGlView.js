@@ -133,45 +133,45 @@ class DeckGlView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarkerLayer} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(layer) {
-        const id = layer.id+'$'+layer.markerId;
+    updateMarker(props) {
+        const id = props.id+'$'+props.markerId;
 
-        const mId = layer.markerId;
+        const mId = props.markerId;
         // in deck we create a new layer everytime => reactive programming
         const iconLayer = new IconLayer({
             id: id,
             data: [{
-                position: [layer.location.x, layer.location.y]
+                position: [props.location.x, props.location.y]
             }],
             pickable: true,
             // iconAtlas and iconMapping are required
             // getIcon: return a string
-            iconAtlas: layer.icon,
+            iconAtlas: props.icon,
             iconMapping: {
                 marker: {
                     x:0,
                     y:0,
-                    anchorX:  layer.iconAnchor[0],
-                    anchorY:  layer.iconAnchor[1],
-                    width: layer.iconSize[0],
-                    height: layer.iconSize[1],
-                    mask: layer.iconColor !== '#000000'
+                    anchorX:  props.iconAnchor[0],
+                    anchorY:  props.iconAnchor[1],
+                    width: props.iconSize[0],
+                    height: props.iconSize[1],
+                    mask: props.iconColor !== '#000000'
                 }
             },
             getIcon: d => 'marker',
-            sizeScale: layer.iconScale,
+            sizeScale: props.iconScale,
             getPosition: d => d.position,
-            getSize: d => layer.iconScale,
-            getColor: d =>  hex2rgb(layer.iconColor),
-            onHover: (info, event) => this.onMarkerHover(mId,info, layer, event),
-            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, layer, event) :
-                this.onMarkerRightClick(mId,info, layer, event)
+            getSize: d => props.iconScale,
+            getColor: d =>  hex2rgb(props.iconColor),
+            onHover: (info, event) => this.onMarkerHover(mId,info, props, event),
+            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, props, event) :
+                this.onMarkerRightClick(mId,info, props, event)
         });
 
         // is going to create or update the current entry into the layer map
-        this.addMarkerToLayer(layer, iconLayer);
+        this.addMarkerToLayer(props, iconLayer);
 
         const extraProps = {};
 
@@ -180,9 +180,9 @@ class DeckGlView extends MapView {
             // Zoom to the object
             extraProps.initialViewState = {
                 ...this.INITIAL_VIEW_STATE,
-                longitude: layer.location.x,
-                latitude: layer.location.y,
-                zoom: layer.zoomLevel
+                longitude: props.location.x,
+                latitude: props.location.y,
+                zoom: props.zoomLevel
             };
         }
 

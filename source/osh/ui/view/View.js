@@ -230,22 +230,22 @@ class View {
      * Removes a Layer from the view.
      * @param {Layer} layer - The layer object
      */
-    removeLayer(layer) {
+    removeAllFromLayer(layer) {
         if(this.layers.includes(layer)) {
             // 1) remove from STYLER fn
             for(let ds in layer.dataSourceToLayerMap) {
                 delete this.lastRec[ds];
             }
+            layer.reset();
         }
-        this.layers = this.layers.filter(currentLayer => currentLayer.id !== layer.id);
     }
 
     /**
      * Removes all view item from the view.
      */
-    removeLayers() {
+    removeAllFromLayers() {
         for(let layer of this.layers) {
-            this.removeLayer(layer);
+            this.removeAllFromLayer(layer);
         }
     }
 

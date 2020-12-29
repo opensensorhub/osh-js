@@ -30,15 +30,13 @@ class Layer {
      */
     constructor(properties) {
         this.properties = properties;
-        this.id = "layer-" + randomUUID();
         this.dataSourceToLayerMap = {};
         this.data = [];
-
         this.props = {};
+        this.props.id = "layer-" + randomUUID();
         this.props.name = '';
         this.props.description = '';
         this.props.dataSourceId = '';
-
 
         if(isDefined(properties.name)) {
             this.props.name = properties.name;
@@ -54,6 +52,13 @@ class Layer {
         this.initEvents();
     }
 
+    saveState() {
+        this.initialState = {...this.props};
+    }
+
+    restoreState() {
+        this.props = {...this.initialState};
+    }
     /**
      * @private
      * @param funcName
@@ -165,6 +170,13 @@ class Layer {
             type: this.type,
             values: this.data
         }
+    }
+
+    /**
+     * Reset to default Layer values
+     */
+    reset() {
+        this.restoreState();
     }
 }
 

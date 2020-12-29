@@ -76,30 +76,30 @@ class OpenLayerView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarkerLayer} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(layer) {
-        let marker = this.getMarker(layer);
+    updateMarker(props) {
+        let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
             const markerObj = this.addMarker({
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                anchor: layer.iconAnchor,
-                name: this.names[layer.markerId],
-                id: layer.id+"$"+layer.markerId
+                lat: props.location.y,
+                lon: props.location.x,
+                orientation: props.orientation.heading,
+                color: props.color,
+                icon: props.icon,
+                anchor: props.iconAnchor,
+                name: props.name,
+                id: props.id+"$"+props.markerId
             });
 
-            this.addMarkerToLayer(layer, markerObj);
+            this.addMarkerToLayer(props, markerObj);
         }
 
-        let markerFeature = this.getMarker(layer);
+        let markerFeature = this.getMarker(props);
         // updates position
-        let lon = layer.location.x;
-        let lat = layer.location.y;
+        let lon = props.location.x;
+        let lat = props.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
             let coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
@@ -107,16 +107,16 @@ class OpenLayerView extends MapView {
         }
 
         // updates orientation
-        if (layer.icon !== null) {
+        if (props.icon !== null) {
             // updates icon
             let iconStyle = new Style({
                 image: new Icon({
                     opacity: 0.75,
-                    anchor: layer.iconAnchor,
+                    anchor: props.iconAnchor,
                     anchorYUnits: 'pixels',
                     anchorXUnits: 'pixels',
-                    src: layer.icon,
-                    rotation: layer.orientation.heading * Math.PI / 180
+                    src: props.icon,
+                    rotation: props.orientation.heading * Math.PI / 180
                 })
             });
             markerFeature.setStyle(iconStyle);
@@ -292,7 +292,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerRightClick(mId, feature, layer, e);
+                that.onMarkerRightClick(mId, feature, layer.props, e);
             }
         });
         selectClick.on('select', function (e) {
@@ -310,7 +310,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerLeftClick(mId, feature, layer, e);
+                that.onMarkerLeftClick(mId, feature, layer.props, e);
             }
         });
 
@@ -329,7 +329,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerHover(mId, feature, layer, e);
+                that.onMarkerHover(mId, feature, layer.props, e);
             }
         });
 

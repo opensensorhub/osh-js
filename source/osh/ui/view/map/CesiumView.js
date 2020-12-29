@@ -120,56 +120,40 @@ class CesiumView extends MapView {
 
   /**
    * Updates the marker associated to the layer.
-   * @param {Layer} layer - The layer allowing the update of the marker
-   * @param {Object} options -
-   * @param {Object} options.location -
-   * @param {Number} options.location.x -
-   * @param {Number} options.location.y -
-   * @param {Number} options.location.z -
-   * @param {Number} options.orientation -
-   * @param {String} options.icon -
-   * @param {Number[]} options.iconAnchor - [OffsetX, OffsetY] ex: [10,10]
-   * @param {String} options.label -
-   * @param {String} options.labelColor -
-   * @param {Number} options.labelOffset -
-   * @param {Boolean} options.selected -
-   * @param {Number} timeStamp -
-   *
+   * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
    */
-  updateMarker(layer,timeStamp,options) {
-    let marker = this.getMarker(layer);
+  updateMarker(props) {
+    let marker = this.getMarker(props);
     if (!isDefined(marker)) {
       const markerObj = this.addMarker({
-        lat : layer.location.y,
-        lon : layer.location.x,
-        alt : layer.location.z,
-        orientation : layer.orientation,
-        icon : layer.icon,
-        iconAnchor : layer.iconAnchor,
-        label : layer.label,
-        labelColor : layer.labelColor,
-        labelSize : layer.labelSize,
-        labelOffset : layer.labelOffset,
-        name : layer.viewItem.name,
-        description : layer.viewItem.description,
-        timeStamp: timeStamp,
-        id: layer.id+"$"+layer.markerId
+        lat : props.location.y,
+        lon : props.location.x,
+        alt : props.location.z,
+        orientation : props.orientation,
+        icon : props.icon,
+        iconAnchor : props.iconAnchor,
+        label : props.label,
+        labelColor : props.labelColor,
+        labelSize : props.labelSize,
+        labelOffset : props.labelOffset,
+        name : props.name,
+        description : props.description,
+        id: props.id+"$"+props.markerId
       });
 
-      this.addMarkerToLayer(layer, markerObj);
+      this.addMarkerToLayer(props, markerObj);
     }
 
-    this.updateMapMarker(layer, {
-      lat : layer.location.y,
-      lon : layer.location.x,
-      alt : layer.location.z,
-      orientation : layer.orientation,
-      icon : layer.icon,
-      label : layer.label,
-      labelColor : layer.labelColor,
-      labelSize : layer.labelSize,
-      timeStamp: timeStamp,
-      defaultToTerrainElevation: layer.defaultToTerrainElevation
+    this.updateMapMarker(props, {
+      lat : props.location.y,
+      lon : props.location.x,
+      alt : props.location.z,
+      orientation : props.orientation,
+      icon : props.icon,
+      label : props.label,
+      labelColor : props.labelColor,
+      labelSize : props.labelSize,
+      defaultToTerrainElevation: props.defaultToTerrainElevation
     });
   }
 
@@ -334,7 +318,7 @@ class CesiumView extends MapView {
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerLeftClick(mId,pickedFeature, layer, {})
+      that.onMarkerLeftClick(mId,pickedFeature, layer.props, {})
     };
 
     const onRightClick = (movement) => {
@@ -359,7 +343,7 @@ class CesiumView extends MapView {
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerRightClick(mId,pickedFeature, layer, {})
+      that.onMarkerRightClick(mId,pickedFeature, layer.props, {})
     };
 
     const onHover = (movement) => {
@@ -380,7 +364,7 @@ class CesiumView extends MapView {
         return;
       }
       pickedFeature.pixel = movement.endPosition;
-      that.onMarkerHover(mId,pickedFeature, layer, {})
+      that.onMarkerHover(mId,pickedFeature, layer.props, {})
     };
 
     this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
