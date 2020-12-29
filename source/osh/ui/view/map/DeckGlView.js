@@ -38,15 +38,15 @@ class DeckGlView extends MapView {
      * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super(properties);
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
         this.autoZoomOnFirstMarker = false;
-        if(isDefined(options) && isDefined(options.autoZoomOnFirstMarker)) {
-            this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
+        if(isDefined(properties) && isDefined(properties.autoZoomOnFirstMarker)) {
+            this.autoZoomOnFirstMarker = properties.autoZoomOnFirstMarker;
         }
     }
 

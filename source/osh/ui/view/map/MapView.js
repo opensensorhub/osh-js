@@ -22,8 +22,8 @@ import {isDefined} from "../../../utils/Utils";
  * @extends View
  */
 class MapView extends View {
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems,options);
+    constructor(properties) {
+        super(properties);
 
         // map Layer id to array of corresponding markers
         this.layerIdToMarkers = {};
