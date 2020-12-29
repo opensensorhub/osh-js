@@ -253,15 +253,15 @@ class PointMarkerLayer extends Layer {
 		}
 
 		if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {
-			this.onLeftClick = properties.onLeftClick;
+			this.props.onLeftClick = properties.onLeftClick;
 		}
 
 		if (isDefined(properties.onRightClick) && assertFunction(properties.onRightClick)) {
-			this.onRightClick = properties.onRightClick;
+			this.props.onRightClick = properties.onRightClick;
 		}
 
 		if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {
-			this.onHover = properties.onHover;
+			this.props.onHover = properties.onHover;
 		}
 	}
 }

@@ -124,13 +124,13 @@ class Layer {
         this.data = [];
         if (dataSourceId in this.dataSourceToLayerMap) {
             let fnArr = this.dataSourceToLayerMap[dataSourceId];
-            for (let i = 0; i < fnArr.length; i++) {
-                for(let j=0;j < records.length;j++) {
+            for(let j=0;j < records.length;j++) {
+                for (let i = 0; i < fnArr.length; i++) {
                     fnArr[i](records[j].data, records[j].timeStamp, options);
-                    this.data.push({
-                        ...this.props
-                    });
                 }
+                this.data.push({
+                    ...this.props
+                });
             }
         }
     }
