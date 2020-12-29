@@ -201,17 +201,7 @@ class LeafletView extends MapView {
 
     /**
      * Add a marker to the map.
-     * @param {Object} properties
-     * @param {Number} properties.lon
-     * @param {Number} properties.lat
-     * @param {String} properties.icon - the icon path
-     * @param {Integer[]} properties.iconAnchor - offset of the icon ex:[10,10]
-     * @param {String} properties.label - label of the tooltip
-     * @param {String} properties.description - description of the marker to display into the tooltip
-     * @param {String} properties.labelOffset - offset of the label of the tooltip
-     * @param {Number} properties.orientation - orientation of the icon in degree
-     * @param {Function} properties.onLeftClick - onLeftClick function callback
-     * @param {String} properties.id - the id of the new created marker: layer.id$layer.markerId
+     * @param {PointMarkerLayer.properties} properties - the layer properties
      * @return {Object} the the new created marker
      */
     addMarker(properties) {
@@ -220,14 +210,15 @@ class LeafletView extends MapView {
         if (properties.icon !== null) {
             let markerIcon = L.icon({
                 iconAnchor: properties.iconAnchor,
-                iconUrl: properties.icon
+                iconUrl: properties.icon,
+                iconSize: properties.iconSize
             });
 
-            marker = L.marker([properties.lat, properties.lon], {
+            marker = L.marker([properties.location.y, properties.location.x], {
                 icon: markerIcon
             });
         } else {
-            marker = L.marker([properties.lat, properties.lon]);
+            marker = L.marker([properties.location.y, properties.location.x]);
         }
 
         if (properties.label !== null) {
@@ -240,15 +231,15 @@ class LeafletView extends MapView {
 
         let name = properties.hasOwnProperty("name") && properties.label != null ? properties.label : "";
         let desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
-        if (properties.showPopup && (name.length > 0 || desc.length > 0)) {
+        if (!isDefined(properties.onLeftClick) && (name.length > 0 || desc.length > 0)) {
             marker.bindPopup(name + '<div>' + desc + '</div>',{
                 offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });
         }
 
-        marker.id = properties.id;
+        marker.id = properties.id+"$"+properties.markerId;
         marker.addTo(this.map);
-        marker.setRotationAngle(properties.orientation);
+        marker.setRotationAngle(properties.orientation.heading);
 
         return marker;
     }
@@ -298,42 +289,26 @@ class LeafletView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarkerLayer} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(layer) {
-        let marker = this.getMarker(layer);
+    updateMarker(props) {
+        let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-             const markerObject = this.addMarker({
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                iconAnchor: layer.iconAnchor,
-                label : layer.label,
-                labelColor : layer.labelColor,
-                labelSize : layer.labelSize,
-                labelOffset : layer.labelOffset,
-                name : layer.name,
-                description : layer.description,
-                onLeftClick: layer.onLeftClick,
-                id: layer.id+"$"+layer.markerId,
-                showPopup: !isDefined(layer.onLeftClick)
-            });
-            this.addMarkerToLayer(layer, markerObject);
-            const mId = layer.markerId; //need to freeze
-            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, layer, event));
-            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, layer, event));
-            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, layer, event));
+             const markerObject = this.addMarker(props);
+            this.addMarkerToLayer(props, markerObject);
+            const mId = props.markerId; //need to freeze
+            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, props, event));
+            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, props, event));
+            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, props, event));
 
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker
-        marker = this.getMarker(layer);
+        marker = this.getMarker(props);
         // updates position
-        let lon = layer.location.x;
-        let lat = layer.location.y;
+        let lon = props.location.x;
+        let lat = props.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
@@ -341,7 +316,7 @@ class LeafletView extends MapView {
             if((this.first && this.autoZoomOnFirstMarker) || this.follow) {
                 const markerBounds = L.latLngBounds([newLatLng ]);
                 this.map.fitBounds(markerBounds, {
-                    maxZoom: layer.zoomLevel
+                    maxZoom: props.zoomLevel
                 });
                 if(this.first) {
                     this.first = false;
@@ -350,15 +325,15 @@ class LeafletView extends MapView {
         }
 
         // updates orientation
-        if(isDefined(layer.orientation)) {
-            marker.setRotationAngle(layer.orientation.heading);
+        if(isDefined(props.orientation)) {
+            marker.setRotationAngle(props.orientation.heading);
         }
 
-        if (layer.icon !== null && marker._icon.iconUrl !== layer.icon) {
+        if (props.icon !== null && marker._icon.iconUrl !== props.icon) {
             // updates icon
             let markerIcon = L.icon({
-                iconAnchor: layer.iconAnchor,
-                iconUrl: layer.icon
+                iconAnchor: props.iconAnchor,
+                iconUrl: props.icon
             });
             marker.setIcon(markerIcon);
         }
