@@ -349,25 +349,25 @@ class LeafletView extends MapView {
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the polyline
+     * @param {Polyline.props} props - The layer properties allowing the update of the polyline
      */
-    updatePolyline(layer) {
-        let polyline = this.getPolyline(layer);
+    updatePolyline(props) {
+        let polyline = this.getPolyline(props);
         if (isDefined(polyline)) {
             // removes the layer
            this.removePolylineFromLayer(polyline);
         }
 
         // adds a new polyline to the leaflet renderer
-        const polylineObj = this.addPolyline(layer.locations[layer.polylineId],{
-            color: layer.color,
-            weight: layer.weight,
-            locations: layer.locations,
-            maxPoints: layer.maxPoints,
-            opacity: layer.opacity,
-            smoothFactor: layer.smoothFactor
+        const polylineObj = this.addPolyline(props.locations[props.polylineId],{
+            color: props.color,
+            weight: props.weight,
+            locations: props.locations,
+            maxPoints: props.maxPoints,
+            opacity: props.opacity,
+            smoothFactor: props.smoothFactor
         });
-        this.addPolylineToLayer(layer, polylineObj);
+        this.addPolylineToLayer(props, polylineObj);
     }
 
     attachTo(parentElement) {

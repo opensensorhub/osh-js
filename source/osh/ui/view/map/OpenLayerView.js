@@ -125,26 +125,26 @@ class OpenLayerView extends MapView {
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the polyline
+     * @param {Polyline.props} props - The layer allowing the update of the polyline
      */
-    updatePolyline(layer) {
-        let polyline = this.getPolyline(layer);
+    updatePolyline(props) {
+        let polyline = this.getPolyline(props);
         if (isDefined(polyline)) {
             // removes the layer
             this.removePolylineFromLayer(polyline);
         }
 
-        const polylineObj = this.addPolyline(layer.locations[layer.polylineId], {
-            color: layer.color,
-            weight: layer.weight,
-            locations: layer.locations,
-            maxPoints: layer.maxPoints,
-            opacity: layer.opacity,
-            smoothFactor: layer.smoothFactor,
-            name: this.names[layer.getId()]
+        const polylineObj = this.addPolyline(props.locations[props.polylineId], {
+            color: props.color,
+            weight: props.weight,
+            locations: props.locations,
+            maxPoints: props.maxPoints,
+            opacity: props.opacity,
+            smoothFactor: props.smoothFactor,
+            name: props.name
         });
 
-        this.addPolylineToLayer(layer, polylineObj);
+        this.addPolylineToLayer(props, polylineObj);
 
         //TODO: handle opacity, smoothFactor, color and weight
         // if (polylineId in this.polylines) {

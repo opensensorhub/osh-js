@@ -39,6 +39,8 @@ class MapView extends View {
             const d = values[i];
             if(data.type === 'marker') {
                 this.updateMarker(d);
+            } else if(data.type === 'polyline') {
+                this.updatePolyline(d);
             }
         }
     }
@@ -60,15 +62,15 @@ class MapView extends View {
     /**
      * Associate a polylineId to a Layer for a fast lookup
      * @protected
-     * @param {Polyline} layer - the Layer object
+     * @param {Polyline.props} layer - the Layer object
      * @param {Object} polylineObject - the Map polyline object
      */
-    addPolylineToLayer(layer, polylineObject) {
+    addPolylineToLayer(props, polylineObject) {
         // associate the list of markers owning by a specific marker
-        if(!(layer.id in this.layerIdToPolylines)) {
-            this.layerIdToPolylines[layer.id] = {};
+        if(!(props.id in this.layerIdToPolylines)) {
+            this.layerIdToPolylines[props.id] = {};
         }
-        this.layerIdToPolylines[layer.id][layer.polylineId] = polylineObject;
+        this.layerIdToPolylines[props.id][props.polylineId] = polylineObject;
     }
 
     /**
@@ -114,13 +116,13 @@ class MapView extends View {
     /**
      * Get the markerId associate to the Layer
      * @protected
-     * @param {Polyline} layer - the Layer Object
+     * @param {Polyline.props} layer - the Layer Object
      */
-    getPolyline(layer) {
-        if(!(layer.id in  this.layerIdToPolylines)) {
+    getPolyline(props) {
+        if(!(props.id in  this.layerIdToPolylines)) {
             return null;
         }
-        return this.layerIdToPolylines[layer.id][layer.polylineId];
+        return this.layerIdToPolylines[props.id][props.polylineId];
     }
 
     /**
@@ -175,8 +177,8 @@ class MapView extends View {
      * @param {Polyline} polyline - the layer to remove the polylines from
      */
     removePolylines(polyline) {
-        if(isDefined(polyline.polylineId)) {
-            const polylinesMap = this.layerIdToPolylines[polyline.id];
+        if(isDefined(polyline.props.polylineId)) {
+            const polylinesMap = this.layerIdToPolylines[polyline.props.id];
             if(isDefined(polylinesMap)) {
                 for(let polylineId in polylinesMap) {
                     const polyline = polylinesMap[polylineId];
@@ -185,7 +187,7 @@ class MapView extends View {
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToPolylines[polyline.id];
+            delete this.layerIdToPolylines[polyline.props.id];
         }
     }
 
