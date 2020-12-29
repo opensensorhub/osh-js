@@ -287,15 +287,9 @@ removeAllElt.onclick = async () => {
     // if markers are deleted too early, the connection may continue to send data back to the views which
     // will result in the re-creation of markers. This is asynchronous because the WebSocket connector is launched from a WebWorker.
     setTimeout(() => {
-        // cesiumMapView.removeViewItem(cesiumViewItems[0]);
-
-        // olMapView.removeViewItem(olViewItems[0]);
-        // olMapView.removeViewItem(olViewItems[1]);
-
-        leafletMapView.removeViewItem(leafletViewItems[0]);
-        leafletMapView.removeViewItem(leafletViewItems[1]);
-
-        // deckView.removeViewItem(deckViewItems[0]);
-        // deckView.removeViewItem(deckViewItems[1]);
+        leafletMapView.removeAllFromLayers();
+        olMapView.removeAllFromLayers();
+        deckView.removeAllFromLayers();
+        cesiumMapView.removeAllFromLayers();
     }, 100);
 };
