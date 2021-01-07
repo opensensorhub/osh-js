@@ -15,14 +15,14 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import Layer from "./Layer.js";
-import {isDefined} from "../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../utils/Utils.js";
 
 /**
  * @extends Layer
  */
-class Curve extends Layer {
+class CurveLayer extends Layer {
     /**
-     * Create the Curve
+     * Create the CurveLayer
      * @param {Object} properties -
      * @param {String} [properties.xLabel=""] -
      * @param {String} [properties.yLabel=""] -
@@ -37,67 +37,56 @@ class Curve extends Layer {
      */
     constructor(properties) {
         super(properties);
-        this.xLabel = "";
-        this.yLabel = "";
-        this.color = "#000000";
-        this.stroke = 1;
-        // this.x = 0;
-        // this.y = [];
-
-        this.values = [];
-
-        let that = this;
+        this.type = 'curve';
+        this.props.xLabel = "";
+        this.props.yLabel = "";
+        this.props.color = "#000000";
+        this.props.stroke = 1;
+        this.props.curveId = randomUUID();
+        this.props.x = 0;
+        this.props.y = 0;
 
         if (isDefined(properties.stroke)) {
-            this.stroke = properties.stroke;
+            this.props.stroke = properties.stroke;
         }
 
         if (isDefined(properties.color)) {
-            this.color = properties.color;
+            this.props.color = properties.color;
         }
 
         if (isDefined(properties.x)) {
-            this.x = properties.x;
+            this.props.x = properties.x;
         }
 
         if (isDefined(properties.y)) {
-            this.y = properties.y;
+            this.props.y = properties.y;
         }
 
+        const that = this;
         if (isDefined(properties.getStroke)) {
             let fn = function (rec, timeStamp, options) {
-                that.stroke = properties.getStroke.handler(rec, timeStamp, options);
+                that.props.stroke = properties.getStroke.handler(rec, timeStamp, options);
             };
             this.addFn(properties.getStroke.dataSourceIds, fn);
         }
 
         if (isDefined(properties.getColor)) {
             let fn = function (rec, timeStamp, options) {
-                that.color = properties.getColor.handler(rec, timeStamp, options);
+                that.props.color = properties.getColor.handler(rec, timeStamp, options);
             };
             this.addFn(properties.getColor.dataSourceIds, fn);
         }
 
         if (isDefined(properties.getValues)) {
             let fn = function (rec, timeStamp, options) {
-                let value = properties.getValues.handler(rec, timeStamp, options);
-                // that.x = values.x;
-                // that.y = values.y;
-                that.values.push(value);
+                let values = properties.getValues.handler(rec, timeStamp, options);
+                that.props.x = values.x;
+                that.props.y = values.y;
             };
             this.addFn(properties.getValues.dataSourceIds, fn);
         }
-    }
 
-    setData(dataSourceId, rec, view, options) {
-        if (super.setData(dataSourceId, rec, view, options)) {
-            //if(typeof(view) != "undefined" && view.hasOwnProperty('updateMarker')){
-            if (isDefined(view)) {
-                view.updateCurve(this, this.values, options);
-                return true;
-            }
-        }
-        return false;
+        this.saveState();
     }
 }
-export default Curve;
+export default CurveLayer;

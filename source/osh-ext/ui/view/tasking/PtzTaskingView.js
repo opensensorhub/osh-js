@@ -17,7 +17,6 @@
 import View from "../../../../osh/ui/view/View.js";
 import {isDefined, randomUUID} from "../../../../osh/utils/Utils.js";
 import "../../../resources/css/tasking.css";
-import EventManager from "../../../../osh/events/EventManager.js";
 
 export const htmlTaskingComponent=`
         <div class=\"ptz-zoom\">

@@ -16,7 +16,6 @@
 
 import View from "../View.js";
 import {isDefined} from "../../../utils/Utils.js";
-import EventManager from "../../../events/EventManager.js";
 
 /**
  * @extends View
@@ -77,12 +76,6 @@ class MjpegView extends View {
 
     // adds listener
     let self = this;
-    EventManager.observeDiv(this.divId,"click",(event) => {
-      EventManager.fire(EventManager.EVENT.SELECT_VIEW,{
-        dataSourcesIds: [self.dataSourceId],
-        entityId : self.entityId
-      });
-    });
   }
 
   setData(dataSourceId,values) {

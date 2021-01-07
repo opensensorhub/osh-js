@@ -16,7 +16,6 @@
 
 
 import DataSink from './DataSink.js';
-import EventManager from '../events/EventManager.js';
 
 /**
  * @extends DataSink
@@ -27,19 +26,19 @@ class UavMapTasking extends DataSink {
         super(name, properties);
 
         let that = this;
-        EventManager.observe(EventManager.EVENT.UAV_TAKEOFF, (event) => that.connector.sendRequest(that.buildTakeOffRequest()));
-
-        EventManager.observe(EventManager.EVENT.UAV_GOTO, (event) =>
-            that.connector.sendRequest(that.buildGotoRequest({lat: event.geoLat, lon: event.geoLon})));
-
-        EventManager.observe(EventManager.EVENT.UAV_ORBIT, (event) =>
-            that.connector.sendRequest(that.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10})));
-
-        EventManager.observe(EventManager.EVENT.UAV_LOOKAT, (event) =>
-            that.connector.sendRequest(that.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon})));
-
-        EventManager.observe(EventManager.EVENT.UAV_LAND, (event) =>
-            that.connector.sendRequest(that.buildLandRequest({lat: event.geoLat, lon: event.geoLon})));
+        // EventManager.observe(EventManager.EVENT.UAV_TAKEOFF, (event) => that.connector.sendRequest(that.buildTakeOffRequest()));
+        //
+        // EventManager.observe(EventManager.EVENT.UAV_GOTO, (event) =>
+        //     that.connector.sendRequest(that.buildGotoRequest({lat: event.geoLat, lon: event.geoLon})));
+        //
+        // EventManager.observe(EventManager.EVENT.UAV_ORBIT, (event) =>
+        //     that.connector.sendRequest(that.buildOrbitRequest({lat: event.geoLat, lon: event.geoLon, radius: 10})));
+        //
+        // EventManager.observe(EventManager.EVENT.UAV_LOOKAT, (event) =>
+        //     that.connector.sendRequest(that.buildLookAtRequest({lat: event.geoLat, lon: event.geoLon})));
+        //
+        // EventManager.observe(EventManager.EVENT.UAV_LAND, (event) =>
+        //     that.connector.sendRequest(that.buildLandRequest({lat: event.geoLat, lon: event.geoLon})));
     }
 
 

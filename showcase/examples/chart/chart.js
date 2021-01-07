@@ -1,6 +1,6 @@
 // create data source for Android phone camera
 import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
-import Curve from "osh/ui/layer/Curve.js";
+import CurveLayer from "osh/ui/layer/CurveLayer.js";
 import SweJson from "osh/datareceiver/SweJson.js";
 
 let chartDataSource = new SweJson("weather", {
@@ -14,7 +14,7 @@ let chartDataSource = new SweJson("weather", {
     bufferingTime: 0
 });
 
-let windSpeedLayerCurve = new Curve({
+let windSpeedLayerCurve = new CurveLayer({
     getValues: {
         dataSourceIds: [chartDataSource.id],
         handler: function (rec, timeStamp) {
@@ -27,44 +27,40 @@ let windSpeedLayerCurve = new Curve({
 });
 
 // show it in video view
-let chartView = new ChartJsView("char-container",
-    [{
-        layer: windSpeedLayerCurve,
-        name: "WindSpeed"
-    }],
-    {
-        name: "WindSpeed/Pressure chart",
-        yLabel: 'Wind Speed (m/s)',
-        xLabel: 'Time',
-        css: "chart-view",
-        tickOpts: {
-            maxTicksLimit: 10,
-            fontColor: 'gray',
-        },
-        gridLinesOpts: {
-            color: 'lightgray'
-        },
-        scaleLabelOpts: {
-            fontColor: 'gray',
-            padding:1
-        },
-        datasetsOpts: {
-            borderColor: '#a3a3a3',
-            borderWidth:1,
-            backgroundColor: 'rgba(188,221,255,0.5)'
-        },
-        legendOpts: {
-            labels: {
-                fontColor: "gray",
-                fontSize: 14
-            }
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
+let chartView = new ChartJsView({
+    container: 'char-container',
+    layers: [ windSpeedLayerCurve],
+    name: "WindSpeed/Pressure chart",
+    yLabel: 'Wind Speed (m/s)',
+    xLabel: 'Time',
+    css: "chart-view",
+    tickOpts: {
+        maxTicksLimit: 10,
+        fontColor: 'gray',
+    },
+    gridLinesOpts: {
+        color: 'lightgray'
+    },
+    scaleLabelOpts: {
+        fontColor: 'gray',
+        padding:1
+    },
+    datasetsOpts: {
+        borderColor: '#a3a3a3',
+        borderWidth:1,
+        backgroundColor: 'rgba(188,221,255,0.5)'
+    },
+    legendOpts: {
+        labels: {
+            fontColor: "gray",
+            fontSize: 14
         }
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
     }
-);
+});
 
 // start streaming
 chartDataSource.connect();

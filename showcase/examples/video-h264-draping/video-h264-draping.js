@@ -9,7 +9,7 @@ import {
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 import ImageDraping from "osh/ui/layer/ImageDraping.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 
 window.CESIUM_BASE_URL = './';
 
@@ -71,7 +71,7 @@ let gimbalOrientationDataSource = new SweJson('android-Heading', {
 });
 
 // add 3D model marker to Cesium view
-let pointMarker = new PointMarker({
+let pointMarker = new PointMarkerLayer({
     label: "3DR Solo",
     getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],

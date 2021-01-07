@@ -29,13 +29,11 @@ import '../../../resources/css/deck.css';
 class DeckGlView extends MapView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.deckProps={}] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
      *
      */
     constructor(properties) {
@@ -187,16 +185,6 @@ class DeckGlView extends MapView {
         }
 
         this.render(extraProps);
-    }
-
-    /**
-     *
-     * @param {Curve} layer -
-     * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
-     * @param {Object} options -
-     */
-    updateMarkers(layer, values, options) {
-
     }
 
     /**

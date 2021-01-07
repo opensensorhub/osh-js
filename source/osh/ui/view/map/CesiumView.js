@@ -70,7 +70,7 @@ import MapView from "./MapView";
 	entityId : androidEntity.id
  },
  {
-    layer : new Polyline({
+    layer : new PolylineLayer({
         getLocation : {
             dataSourceIds : [androidPhoneGpsDataSource.getId()],
             handler : function(rec) {
@@ -96,15 +96,14 @@ class CesiumView extends MapView {
 
   /**
    * Create a View.
-   * @param {String} parentElementDivId - The div element to attach to
-   * @param {Object[]} viewItems - The initial view items to add
-   * @param {String} viewItems.name - The name of the view item
-   * @param {Layer} viewItems.layer - The layer object representing the view item
-   * @param {Object} options - the properties of the view
+   * @param {Object} [properties={}] - the properties of the view
+   * @param {String} properties.container - The div element to attach to
+   * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+   * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
    *
    */
-  constructor(parentElementDivId, viewItems, properties) {
-    super(parentElementDivId, viewItems, properties);
+  constructor(properties) {
+    super(properties);
 
     let cssClass = document.getElementById(this.divId).className;
     document.getElementById(this.divId).setAttribute("class", cssClass + " " + this.css);

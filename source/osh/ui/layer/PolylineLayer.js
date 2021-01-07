@@ -21,9 +21,9 @@ import { isDefined } from "../../utils/Utils.js";
  * @extends Layer
  * @example
  *
- * import Polyline from 'osh/ui/layer/Polyline.js';
+ * import PolylineLayer from 'osh/ui/layer/PolylineLayer.js';
  *
- * let polylineLayer = new Polyline({
+ * let polylineLayer = new PolylineLayer({
 		getLocation : {
 			dataSourceIds : [datasource.getId()],
 			handler : function(rec) {
@@ -41,9 +41,9 @@ import { isDefined } from "../../utils/Utils.js";
 		maxPoints : 200
 	});
  */
-class Polyline extends Layer {
+class PolylineLayer extends Layer {
 	/**
-		* Creates the Polyline
+		* Creates the PolylineLayer
 		* @param {Object} properties
 		* @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
 		* @param {Number} [properties.weight=1] - defines the weight of the polyline
@@ -149,4 +149,4 @@ class Polyline extends Layer {
 	}
 }
 
-export default Polyline;
+export default PolylineLayer;

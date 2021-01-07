@@ -48,24 +48,23 @@ import {click, pointerMove} from "ol/events/condition";
 class OpenLayerView extends MapView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Object} [options.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
-     * @param {Integer} [options.maxZoom=19] - the max zoom value
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [options.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
-     * @param {Object} options.initialView.lon - the corresponding longitude in EPSG:4326
-     * @param {Object} options.initialView.lat - the corresponding latitude in EPSG:4326
-     * @param {Object} options.initialView.zoom - the default level zoom
-     * @param {Object[]} [options.overlayLayers] - OpenLayers objects to use as overlay layer
-     * @param {Object[]} [options.baseLayers] - OpenLayers objects to use as base layer
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
+     * @param {Number} [properties.maxZoom=19] - the max zoom value
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
+     * @param {Object} properties.initialView.lon - the corresponding longitude in EPSG:4326
+     * @param {Object} properties.initialView.lat - the corresponding latitude in EPSG:4326
+     * @param {Object} properties.initialView.zoom - the default level zoom
+     * @param {Object[]} [properties.overlayLayers] - OpenLayers objects to use as overlay layer
+     * @param {Object[]} [properties.baseLayers] - OpenLayers objects to use as base layer
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super(properties);
     }
 
     beforeAddingItems(options) {

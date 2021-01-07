@@ -1,6 +1,6 @@
 import SweJson from 'osh/datareceiver/SweJson.js';
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import Polyline from "osh/ui/layer/Polyline.js";
+import Polyline from "osh/ui/layer/PolylineLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";

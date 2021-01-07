@@ -103,7 +103,6 @@ class PointMarkerLayer extends Layer {
 		super(properties);
 		this.type = 'marker';
 
-		this.properties = properties;
 		this.props.location = null;
 		this.props.orientation = {heading:0};
 		this.props.icon = null;

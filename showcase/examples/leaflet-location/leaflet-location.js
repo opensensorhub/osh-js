@@ -32,6 +32,7 @@ let pointMarkerLayer = new PointMarkerLayer({
     }
   },
   icon: './images/car-location.png',
+  iconSize: [32, 64],
   iconAnchor: [16, 65],
   name: 'Car',
   description: 'GPS car Toulouse'
@@ -41,9 +42,9 @@ let pointMarkerLayer = new PointMarkerLayer({
 // #region snippet_leaflet_location_view
 // create Leaflet view
 let leafletMapView = new LeafletView({
-      container: 'leafletMap',
-      layers: [pointMarkerLayer],
-      autoZoomOnFirstMarker:true
+    container: 'leafletMap',
+    layers: [pointMarkerLayer],
+    autoZoomOnFirstMarker:true
 });
 // #endregion snippet_leaflet_location_view
 

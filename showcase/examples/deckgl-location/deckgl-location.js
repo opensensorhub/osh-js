@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
-import Polyline from "osh/ui/layer/Polyline.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
+import PolylineLayer from "osh/ui/layer/PolylineLayer.js";
 import DeckGlView from "osh/ui/view/map/DeckGlView.js";
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
@@ -17,7 +17,7 @@ let gpsDataSource = new SweJson("android-GPS", {
   replaySpeed: 2
 });
 
-let pointMarker = new PointMarker({
+let pointMarker = new PointMarkerLayer({
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
@@ -35,7 +35,7 @@ let pointMarker = new PointMarker({
   label: 'GPS Toulouse'
 });
 
-let polyline = new Polyline({
+let polyline = new PolylineLayer({
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
@@ -48,20 +48,14 @@ let polyline = new Polyline({
   },
   color: [255, 102, 0, 127],
   weight: 2,
-  maxPoints: 200
+  maxPoints: 200,
+  name: "Android Phone GPS"
 });
 
 // create Leaflet view
-let deckglMapView = new DeckGlView("container",
-    [{
-      layer: pointMarker,
-      name: "Android Phone GPS"
-    },
-      {
-        layer: polyline,
-        name: "Android Phone GPS"
-      }
-    ], {
+let deckglMapView = new DeckGlView({
+      container: "container",
+      layers: [pointMarker, polyline],
       deckProps: {
         initialViewState: {
           longitude: 1.42376344,

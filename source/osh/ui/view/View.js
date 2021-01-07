@@ -18,7 +18,6 @@
  * The abstract object to represent a view.
  */
 import {assertArray, assertString, isDefined, randomUUID} from '../../utils/Utils.js';
-import EventManager from '../../events/EventManager.js';
 import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
 import {Status} from "../../dataconnector/Status.js";
@@ -91,7 +90,8 @@ class View {
 
         let observer = new MutationObserver((mutations) => {
             mutations.forEach(function (mutation) {
-                // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too? You might want to remove the attribute condition) Is display set to 'none'?
+                // Was it the style attribute that changed? (Maybe a classname or other attribute change could do this too?
+                // You might want to remove the attribute condition) Is display set to 'none'?
                 if (mutation.attributeName === 'style') {
                     that.onResize();
                 }

@@ -15,7 +15,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {assertArray, assertFunction, hasValue, isDefined, randomUUID} from "../../utils/Utils.js";
-import EventManager from "../../events/EventManager.js";
 
 /**
  * This class is in charge of defining a Layer object.
@@ -78,8 +77,6 @@ class Layer {
      * @private
      */
     initEvents() {
-        var that = this;
-        EventManager.observe(EventManager.EVENT.DATASOURCE_UPDATE_TIME, (event) => that.clear());
     }
 
     /**

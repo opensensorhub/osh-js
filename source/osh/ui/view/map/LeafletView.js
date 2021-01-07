@@ -33,7 +33,7 @@ import MapView from "./MapView";
             entityId : androidEntity.id
         },
  {
-     layer : new Polyline({
+     layer : new PolylineLayer({
          getLocation : {
              dataSourceIds : [androidPhoneGpsDataSource.getId()],
              handler : function(rec) {
@@ -239,7 +239,9 @@ class LeafletView extends MapView {
 
         marker.id = properties.id+"$"+properties.markerId;
         marker.addTo(this.map);
-        marker.setRotationAngle(properties.orientation.heading);
+        if(properties.hasOwnProperty(properties.orientation)) {
+            marker.setRotationAngle(properties.orientation.heading);
+        }
 
         return marker;
     }
@@ -349,7 +351,7 @@ class LeafletView extends MapView {
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline.props} props - The layer properties allowing the update of the polyline
+     * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
      */
     updatePolyline(props) {
         let polyline = this.getPolyline(props);

@@ -173,7 +173,7 @@ class MapView extends View {
     }
 
     /**
-     * Remove the polylines corresponding to a Polyline Layer
+     * Remove the polylines corresponding to a PolylineLayer Layer
      * @param {Polyline} polyline - the layer to remove the polylines from
      */
     removePolylines(polyline) {
