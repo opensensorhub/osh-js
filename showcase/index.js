@@ -31,11 +31,6 @@ var samples = [
         "to get data in batch",
     url: "chart-batch"
   },
-  // {
-  //   name: "Discovery (form)",
-  //   description: "Display a Form helping to choose the correct DataSource depending on the offering.",
-  //   url: "discovery"
-  // },
   {
     name: "Moving Location (Leaflet)",
     description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",

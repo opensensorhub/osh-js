@@ -88,8 +88,9 @@ class WebCodecView extends CanvasView {
         return canvasElement;
     }
 
-    setData(dataSourceId, values) {
-        for (let i = 0; i < values.length; i++) {
+    setData(dataSourceId, data) {
+        const values = data.data;
+        for(let i=0; i < values.length;i++) {
             if (!this.skipFrame) {
                 const value = values.shift();
                 let pktData = value.data.frameData;

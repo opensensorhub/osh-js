@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import Curve from "osh/ui/layer/Curve";
+  import CurveLayer from "osh/ui/layer/CurveLayer";
   import ChartJsView from "osh/ui/view/chart/ChartJsView";
   import {randomUUID} from "osh/utils/Utils";
 

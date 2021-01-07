@@ -35,20 +35,19 @@ var videoView = new MjpegView("containerId", {
 class MjpegView extends View {
   /**
    * Create a View.
-   * @param {String} parentElementDivId - The div element to attach to
-   * @param {Object} options - the properties of the view
-   * @param {String} options.dataSourceId - The dataSource id of the dataSource providing data to the view
-   * @param {String} options.entityId - The entity id to which the view belongs to
-   * @param {String} options.showTime - Display or not the time onto the view
-   * @param {String} options.rotation - Allow to define a rotation in degree
+   * @param {Object} [properties={}] - the properties of the view
+   * @param {string} properties.container - The div element to attach to
+   * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+   * @param {String} properties.showTime - Display or not the time onto the view
+   * @param {String} properties.rotation - Allow to define a rotation in degree
    *
    */
-  constructor(parentElementDivId,options) {
-    super(parentElementDivId,[],options);
+  constructor(properties) {
+    super(properties);
 
     // create timestamp slot
     this.timeStamp = null;
-    if (isDefined(options.showTime) && options.showTime) {
+    if (isDefined(properties.showTime) && properties.showTime) {
         this.timeStamp = document.createElement("div");
         this.timeStamp.setAttribute("class", "video-time");
         document.getElementById(this.divId).appendChild(this.timeStamp);
@@ -60,8 +59,8 @@ class MjpegView extends View {
 
     // rotation option
     this.rotation = 0;
-    if (typeof(options) != "undefined" && typeof(options.rotation) != "undefined") {
-        this.rotation = options.rotation*Math.PI/180;
+    if (typeof(properties) != "undefined" && typeof(properties.rotation) != "undefined") {
+        this.rotation = properties.rotation*Math.PI/180;
         this.canvas = document.createElement('canvas');
         this.canvas.width = 640;
         this.canvas.height = 480;
@@ -73,14 +72,13 @@ class MjpegView extends View {
         // appends <img> tag to <div>
         document.getElementById(this.divId).appendChild(this.imgTag);
     }
-
-    // adds listener
-    let self = this;
   }
 
-  setData(dataSourceId,values) {
+  setData(dataSourceId,data) {
+      const values = data.data;
       for(let i=0; i < values.length;i++) {
           const value = values.shift();
+
           let imgBlob = new Blob([value.data.frameData]);
           let url = window.URL.createObjectURL(imgBlob);
 

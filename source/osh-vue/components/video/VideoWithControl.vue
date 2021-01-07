@@ -51,6 +51,7 @@
   import {randomUUID} from "osh/utils/Utils.js";
   import Control from '../Control.vue';
   import VideoControl from './VideoControl.vue';
+  import DataLayer from "osh/ui/layer/DataLayer";
 
   export default {
     name: "Video",
@@ -134,15 +135,20 @@
           this.view.destroy();
         }
 
-        this.view = new FFMPEGView(id, {
-          dataSourceId: this.dataSource.id,
+        this.view = new FFMPEGView({
+          container: id,
           css: "video-h264",
           name: "Android Video",
           framerate: this.framerate,
           codec: this.codec,
           directPlay: false,
           showStats: this.showStats,
-          showTime: this.showTime
+          showTime: this.showTime,
+          layers: [
+            new DataLayer({
+              dataSourceId: this.dataSource.id
+            })
+          ]
         });
       }
     }
