@@ -37,7 +37,10 @@ class DeckGlView extends MapView {
      *
      */
     constructor(properties) {
-        super(properties);
+        super({
+            ...properties,
+            supportedLayers: ['marker', 'polyline']
+        });
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);

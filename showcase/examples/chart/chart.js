@@ -23,7 +23,8 @@ let windSpeedLayerCurve = new CurveLayer({
                 y: rec.windSpeed
             };
         }
-    }
+    },
+    name: 'Wind Speed (m/s)'
 });
 
 // show it in video view

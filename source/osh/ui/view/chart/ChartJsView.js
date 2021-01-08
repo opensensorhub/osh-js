@@ -38,7 +38,10 @@ class ChartJsView extends View {
      * @param {Object} [properties.options] - chart.js [context configuration options]{@link https://www.chartjs.org/docs/latest/configuration}
      */
     constructor(properties) {
-        super(properties);
+        super({
+            ...properties,
+            supportedLayers: ['curve']
+        });
 
         let xLabel = 'Time';
         let yLabel = 'Values';

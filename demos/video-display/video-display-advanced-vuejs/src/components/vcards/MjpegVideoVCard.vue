@@ -15,6 +15,7 @@
 <script>
   import MjpegView from "osh/ui/view/video/MjpegView";
   import {randomUUID} from "osh/utils/Utils";
+  import DataLayer from "../../../../../../source/osh/ui/layer/DataLayer";
 
   export default {
     name: "MjpegVideoVCard",
@@ -28,12 +29,17 @@
     mounted() {
       // build video
       // show it in video view
-      new MjpegView(this.id, {
-        dataSourceId: this.dataSource.id,
+      new MjpegView({
+        container: this.id,
         css: "video-mjpeg",
         name: "Android Video",
         keepRatio: true,
-        showTime: true
+        showTime: true,
+        layers: [
+          new DataLayer({
+            dataSourceId: this.dataSource.id
+          })
+        ]
       });
     }
   }

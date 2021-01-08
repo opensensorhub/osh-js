@@ -16,7 +16,6 @@
                 :selection-type="selectionType"
                 selected-color="#ef7245"
                 selectable
-                item-disabled="locked"
                 dark
                 return-object
                 open-all
@@ -197,6 +196,7 @@
       onSelect(nodes) {
         let bIds = [];
         if (Array.isArray(nodes)) {
+          console.log(nodes)
           for (let i = 0; i < nodes.length; i++) {
             bIds.push(nodes[i].dataSource.id);
           }

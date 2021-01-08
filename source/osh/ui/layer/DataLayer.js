@@ -20,6 +20,7 @@ class DataLayer extends Layer {
 
     constructor(properties) {
         super(properties);
+        this.type = 'data';
     }
 
     setData(dataSourceId, records, options) {
@@ -32,8 +33,8 @@ class DataLayer extends Layer {
      */
     getProps() {
         return {
-            ...this.props,
-            data: this.props.data
+            type: this.type,
+            values: this.props.data
         }
     }
 }

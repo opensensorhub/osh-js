@@ -8,7 +8,7 @@ import {
 } from "cesium";
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import ImageDraping from "osh/ui/layer/ImageDraping.js";
+import ImageDraping from "osh/ui/layer/ImageDrapingLayer.js";
 import PointMarker from "osh/ui/layer/PointMarker.js";
 
 window.CESIUM_BASE_URL = './';

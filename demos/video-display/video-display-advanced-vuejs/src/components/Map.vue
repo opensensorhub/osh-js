@@ -7,7 +7,7 @@
 <script>
     // @ is an alias to /src
 import LeafletView from "osh/ui/view/map/LeafletView.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 
 export default {
   name: "Map",
@@ -19,7 +19,7 @@ export default {
   methods: {
     init() {
       // style it with a moving point marker
-      let marker = new PointMarker({
+      let markerLayer = new PointMarkerLayer({
         getLocation: {
           dataSourceIds: [this.locationDataSource.getId()],
           handler: function (rec) {
@@ -62,19 +62,18 @@ export default {
           }
         },
         icon: './images/car-topview.png',
-        iconAnchor: [16, 32],
-        zoomLevel: 17
+        iconAnchor: [16, 16],
+        iconSize: [16,32],
+        zoomLevel: 17,
+        name: "Android Phone GPS"
       });
       // create Leaflet view
-      this.view = new LeafletView("map",
-        [{
-          layer: marker,
-          name: "Android Phone GPS"
-        }],
-        {
+      this.view = new LeafletView({
+          container: "map",
+          layers: [markerLayer],
           follow: true,
           autoZoomOnFirstMarker:true
-        });
+      });
     },
   }
 };

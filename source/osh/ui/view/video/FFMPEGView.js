@@ -48,7 +48,10 @@ class FFMPEGView extends CanvasView {
      * @param {String} [properties.codec='h264'] - Video codec
      */
     constructor(properties) {
-        super(properties);
+        super({
+            ...properties,
+            supportedLayers: ['data']
+        });
 
         this.directPlay = false;
         this.codec = 'h264';
@@ -66,7 +69,7 @@ class FFMPEGView extends CanvasView {
     }
 
     setData(dataSourceId, data) {
-        const values = data.data;
+        const values = data.values;
         for(let i=0; i < values.length;i++) {
             if (!this.skipFrame) {
                 if (this.decodeWorker == null) {

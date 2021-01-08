@@ -3,6 +3,7 @@ import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same ti
 
 import VideoH264 from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
+import DataLayer from "osh/ui/layer/DataLayer.js";
 
 export class SoloVideoComponent extends React.Component {
   constructor(props) {
@@ -26,13 +27,18 @@ export class SoloVideoComponent extends React.Component {
     });
 
     // show it in video view using FFMPEG JS decoder
-    let videoView = new FFMPEGView(this.divId, {
-      dataSourceId: videoDataSource.id,
+    let videoView = new FFMPEGView({
+      container: this.divId,
       css: "video-h264",
       name: "UAV Video",
       directPlay: true,
       showTime: true,
-      showStats: true
+      showStats: true,
+      layers: [
+        new DataLayer({
+          dataSourceId: videoDataSource.id
+        })
+      ]
     });
 
     // start streaming

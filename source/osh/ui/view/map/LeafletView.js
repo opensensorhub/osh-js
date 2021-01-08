@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../../utils/Utils.js";
+import {isDefined, assert, assertDefined} from "../../../utils/Utils.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapView from "./MapView";
@@ -69,7 +69,10 @@ class LeafletView extends MapView {
      *
      */
     constructor(properties) {
-        super(properties);
+        super({
+            ...properties,
+            supportedLayers: ['marker','draping', 'polyline']
+        });
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -205,6 +208,7 @@ class LeafletView extends MapView {
      * @return {Object} the the new created marker
      */
     addMarker(properties) {
+        assertDefined(properties.location,'location');
         //create marker
         let marker = null;
         if (properties.icon !== null) {

@@ -17,7 +17,15 @@
 /**
  * The abstract object to represent a view.
  */
-import {assertArray, assertString, isDefined, randomUUID} from '../../utils/Utils.js';
+import {
+    assertArray,
+    assertBoolean,
+    assertDefined,
+    assertString,
+    assertTrue,
+    isDefined,
+    randomUUID
+} from '../../utils/Utils.js';
 import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
 import {Status} from "../../dataconnector/Status.js";
@@ -29,6 +37,7 @@ class View {
      * @param {Object} [properties={}] - the properties of the view
      * @param {string} properties.container - The div element to attach to
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+     * @param {string[]} properties.supportedLayers - List the supported layers of this View. It is corresponding to the the 'type' Layer property
      * @param {boolean} properties.visible - set the default behavior of the visibility of the view
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
@@ -45,6 +54,12 @@ class View {
         if (isDefined(properties) && isDefined(properties.css)) {
             this.css = properties.css;
         }
+
+        assertDefined(properties && properties.supportedLayers, 'supportedLayers');
+        assertArray(properties.supportedLayers, 'supportedLayers');
+        assertTrue(properties.supportedLayers.length > 0, 'supportedLayers.length === 0');
+
+        this.supportedLayers = properties.supportedLayers;
 
         // inits the view before adding the viewItem
         this.init(properties);
@@ -192,6 +207,7 @@ class View {
      * @param {Layer} layer - The layer object
      */
     addLayer(layer) {
+        assertTrue(this.supportedLayers.includes(layer.type), 'this layer is not supported: '+layer.type+', should be '+this.supportedLayers);
         this.layers.push(layer);
 
         let ds = layer.getDataSourcesIds();

@@ -12,6 +12,7 @@
 import DialogDrag from 'vue-dialog-drag';
 import Video from 'osh/datareceiver/Video.js';
 import MjpegView from 'osh/ui/view/video/MjpegView.js';
+import DataLayer from "osh/ui/layer/DataLayer";
 
 export default {
   name: "Video",
@@ -33,12 +34,17 @@ export default {
     });
 
     // show it in video view
-    let videoView = new MjpegView("video-container", {
-      dataSourceId: videoDataSource.id,
+    let videoView = new MjpegView({
+      container: "video-container",
       css: "video-mjpeg",
       name: "Android Video",
       keepRatio: true,
-      showTime: true
+      showTime: true,
+      layers: [
+        new DataLayer({
+          dataSourceId: videoDataSource.id
+        })
+      ]
     });
 
     // start streaming

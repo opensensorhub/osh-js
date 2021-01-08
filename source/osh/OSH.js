@@ -16,9 +16,9 @@ export { default as  SWEXmlStreamParser  } from './parsers/SWEXmlStreamParser.js
 export { default as  Server } from './server/Server.js';
 export { default as  Layer } from './ui/layer/Layer.js';
 export { default as  Curve } from './ui/layer/CurveLayer.js';
-export { default as  ImageDraping } from './ui/layer/ImageDraping.js';
+export { default as  ImageDraping } from './ui/layer/ImageDrapingLayer.js';
 export { default as  PointMarker } from './ui/layer/PointMarker.js';
-export { default as  PolylineLayer } from './ui/layer/PolylineLayerLayer.js';
+export { default as  PolylineLayer } from './ui/layer/PolylineLayer.js';
 export { default as  ChartJsView } from './ui/view/chart/ChartJsView.js';
 export { default as  CesiumView } from './ui/view/map/CesiumView.js';
 export { default as  OpenLayerView } from './ui/view/map/OpenLayerView.js';

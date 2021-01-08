@@ -16,7 +16,7 @@
 
 
 import DeckGlView from "osh/ui/view/map/DeckGlView";
-import {randomUUID} from "../../../../source/osh/utils/Utils";
+import {randomUUID} from "osh/utils/Utils";
 import {ColumnLayer} from '@deck.gl/layers';
 
 /**
@@ -26,17 +26,18 @@ import {ColumnLayer} from '@deck.gl/layers';
 class DeckGlViewColumn extends DeckGlView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.deckProps={}] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super({
+            ...properties,
+            supportedLayers: ['data']
+        });
 
         this.colorRange = [
             [255, 195, 0],
@@ -55,7 +56,8 @@ class DeckGlViewColumn extends DeckGlView {
         this.max = -1;
     }
 
-    setData(dataSourceId, values) {
+    setData(dataSourceId, data) {
+        const values = data.values;
         if(values.length > 0 ) {
             const material = {
                 ambient: 0.64,

@@ -32,14 +32,21 @@ import DecodeWorker from './workers/webapi.decode.worker.js';
 class WebCodecView extends CanvasView {
     /**
      * Create a View.
-     * @param {String} divId - The div element to attach to
-     * @param {Object} options - the properties of the view
-     * @param {Boolean} [options.showTime=false] - Enable or ignore the show timestamp text onto the canvas
-     * @param {Boolean} [options.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
-     * @param {String} [options.codec='h264'] - Video codec
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {string} properties.container - The div element to attach to
+     * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+     * @param {boolean} properties.visible - set the default behavior of the visibility of the view
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.showTime=false] - Enable or ignore the show timestamp text onto the canvas
+     * @param {Boolean} [properties.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
+     * @param {String} [properties.codec='h264'] - Video codec
      */
-    constructor(divId, options) {
-        super(divId, options);
+    constructor(properties) {
+        super({
+            ...properties,
+            supportedLayers: ['data']
+        });
+
         this.codec = 'h264';
 
         this.canvasElt = this.createCanvas(this.width, this.height, 'transform: scaleY(-1)');
@@ -89,7 +96,7 @@ class WebCodecView extends CanvasView {
     }
 
     setData(dataSourceId, data) {
-        const values = data.data;
+        const values = data.values;
         for(let i=0; i < values.length;i++) {
             if (!this.skipFrame) {
                 const value = values.shift();

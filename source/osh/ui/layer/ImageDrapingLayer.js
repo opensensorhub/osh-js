@@ -20,9 +20,9 @@ import Layer from "./Layer.js";
 /**
  * @extends Layer
  * @example
- import ImageDraping from 'osh/ui/layer/ImageDraping.js';
+ import ImageDrapingLayer from 'osh/ui/layer/ImageDrapingLayer.js';
 
- let imageDrapingMarker = new ImageDraping({
+ let imageDrapingLayer = new ImageDrapingLayer({
       getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
@@ -65,7 +65,7 @@ import Layer from "./Layer.js";
       imageSrc: videoCanvas
     });
  */
-class ImageDraping extends Layer {
+class ImageDrapingLayer extends Layer {
     /**
      * @param {Object} properties
      * @param {Number[]} properties.location - [x,y]
@@ -88,91 +88,72 @@ class ImageDraping extends Layer {
      */
     constructor(properties) {
         super(properties);
-        this.properties = properties;
-        this.cameraModel = null;
-        this.imageSrc = null;
-        this.getSnapshot = null;
-        this.platformLocation = null;
-        this.platformOrientation = null;
-        this.gimbalOrientation = null;
+        this.type = 'draping';
 
-        this.options = {};
-        var that = this;
+        this.properties = properties;
+        this.props.cameraModel = null;
+        this.props.imageSrc = null;
+        this.props.getSnapshot = null;
+        this.props.platformLocation = null;
+        this.props.platformOrientation = null;
+        this.props.gimbalOrientation = null;
+
+        const that = this;
 
         if (isDefined(properties.platformLocation)) {
-            this.platformLocation = properties.platformLocation;
+            this.props.platformLocation = properties.platformLocation;
         }
 
         if (isDefined(properties.platformOrientation)) {
-            this.platformOrientation = properties.platformOrientation;
+            this.props.platformOrientation = properties.platformOrientation;
         }
 
         if (isDefined(properties.gimbalOrientation)) {
-            this.gimbalOrientation = properties.gimbalOrientation;
+            this.props.gimbalOrientation = properties.gimbalOrientation;
         }
 
         if (isDefined(properties.cameraModel)) {
-            this.cameraModel = properties.cameraModel;
+            this.props.cameraModel = properties.cameraModel;
         }
 
         if (isDefined(properties.imageSrc)) {
-            this.imageSrc = properties.imageSrc;
+            this.props.imageSrc = properties.imageSrc;
         }
 
         if (isDefined(properties.getPlatformLocation)) {
             let fn = function (rec, timeStamp, options) {
-                that.platformLocation = properties.getPlatformLocation.handler(rec, timeStamp, options);
+                that.props.platformLocation = properties.getPlatformLocation.handler(rec, timeStamp, options);
             };
             this.addFn(properties.getPlatformLocation.dataSourceIds, fn);
         }
 
         if (isDefined(properties.getPlatformOrientation)) {
             let fn = function (rec, timeStamp, options) {
-                that.platformOrientation = properties.getPlatformOrientation.handler(rec, timeStamp, options);
+                that.props.platformOrientation = properties.getPlatformOrientation.handler(rec, timeStamp, options);
             };
             this.addFn(properties.getPlatformOrientation.dataSourceIds, fn);
         }
 
         if (isDefined(properties.getGimbalOrientation)) {
             let fn = function (rec, timeStamp, options) {
-                that.gimbalOrientation = properties.getGimbalOrientation.handler(rec, timeStamp, options);
+                that.props.gimbalOrientation = properties.getGimbalOrientation.handler(rec, timeStamp, options);
             };
             this.addFn(properties.getGimbalOrientation.dataSourceIds, fn);
         }
 
         if (isDefined(properties.getCameraModel)) {
             let fn = function (rec, timeStamp, options) {
-                that.cameraModel = properties.getCameraModel.handler(rec, timeStamp, options);
+                that.props.cameraModel = properties.getCameraModel.handler(rec, timeStamp, options);
             };
             this.addFn(properties.getCameraModel.dataSourceIds, fn);
         }
 
         if (isDefined(properties.getSnapshot)) {
-            this.getSnapshot = properties.getSnapshot;
+            this.props.getSnapshot = properties.getSnapshot;
         }
-    }
 
-    setData(dataSourceId, rec, view, options) {
-        if (super.setData(dataSourceId, rec, view, options)) {
-
-            let enabled = true;
-            let snapshot = false;
-            if (this.getSnapshot !== null) {
-                snapshot = this.getSnapshot();
-            }
-
-            if (isDefined(view) && enabled &&
-              this.platformLocation !== null &&
-              this.platformOrientation !== null &&
-              this.gimbalOrientation !== null &&
-              this.cameraModel !== null &&
-              this.imageSrc !== null) {
-                view.updateDrapedImage(this, rec.timeStamp, options, snapshot);
-                return true;
-            }
-        }
-        return false;
+        this.saveState();
     }
 }
 
-export default  ImageDraping;
+export default  ImageDrapingLayer;

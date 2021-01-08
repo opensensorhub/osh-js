@@ -43,7 +43,10 @@ class MjpegView extends View {
    *
    */
   constructor(properties) {
-    super(properties);
+      super({
+          ...properties,
+          supportedLayers: ['data']
+      });
 
     // create timestamp slot
     this.timeStamp = null;
@@ -75,7 +78,7 @@ class MjpegView extends View {
   }
 
   setData(dataSourceId,data) {
-      const values = data.data;
+      const values = data.values;
       for(let i=0; i < values.length;i++) {
           const value = values.shift();
 

@@ -144,7 +144,7 @@ samples.forEach(s => {
 
     const iframeId = randomUUID();
     const iframe = document.createElement("iframe");
-    iframe.setAttribute("style","width:calc(100% - 50px);height:100%;border:none;");
+    iframe.setAttribute("style","width:100%;height:100%;border:none;padding:10px");
     iframe.setAttribute("id", iframeId);
     iframe.setAttribute("src",s.url+'.html');
     // iframe.onload = function() {

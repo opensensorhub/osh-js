@@ -41,9 +41,12 @@ class MapView extends View {
                 this.updateMarker(d);
             } else if(data.type === 'polyline') {
                 this.updatePolyline(d);
+            } else if(data.type === 'draping') {
+                this.updateDrapedImage(d);
             }
         }
     }
+
     /**
      * Associate a markerId to a Layer for a fast lookup
      * @protected

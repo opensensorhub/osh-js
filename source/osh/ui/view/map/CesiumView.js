@@ -103,7 +103,10 @@ class CesiumView extends MapView {
    *
    */
   constructor(properties) {
-    super(properties);
+    super({
+      ...properties,
+      supportedLayers: ['marker','draping', 'polyline']
+    });
 
     let cssClass = document.getElementById(this.divId).className;
     document.getElementById(this.divId).setAttribute("class", cssClass + " " + this.css);
@@ -122,6 +125,11 @@ class CesiumView extends MapView {
    * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
    */
   updateMarker(props) {
+    // for the first data, we can receive the orientation before the first location point
+    if(!isDefined(props.location)) {
+      return;
+    }
+
     let marker = this.getMarker(props);
     if (!isDefined(marker)) {
       const markerObj = this.addMarker({
@@ -157,42 +165,48 @@ class CesiumView extends MapView {
   }
 
   /**
-   * Updates the marker associated to the layer.
-   * @param {ImageDraping} layer - The layer allowing the update of the marker
-   *
+   * Updates the image draping associated to the layer.
+   * @param {ImageDraping.props} props - The layer properties allowing the update of the image draping
    */
-  updateDrapedImage(layer,timeStamp,options,snapshot) {
+  updateDrapedImage(props) {
 
-    const llaPos = layer.platformLocation;
-    const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
+    if(!isDefined(props.platformLocation)) {
+      return;
+    }
 
+    const llaPos = props.platformLocation;
     const DTR = Math.PI/180;
-    const attitude = layer.platformOrientation;
-    const gimbal = layer.gimbalOrientation;
+    const attitude = props.platformOrientation;
+    const gimbal = props.gimbalOrientation;
 
     ///////////////////////////////////////////////////////////////////////////////////
     // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
     ///////////////////////////////////////////////////////////////////////////////////
+    const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
     const nedTransform = Transforms.northEastDownToFixedFrame(camPos);
     const camRot = new Matrix3();
     Matrix4.getMatrix3(nedTransform, camRot);
     const rotM = new Matrix3();
 
-    // UAV heading, pitch, roll (given in NED frame)
-    const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
-    Matrix3.multiply(camRot, uavHeading, camRot);
-    const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
-    Matrix3.multiply(camRot, uavPitch, camRot);
-    const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
-    Matrix3.multiply(camRot, uavRoll, camRot);
+    if(isDefined(attitude)) {
+      // UAV heading, pitch, roll (given in NED frame)
+      const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
+      Matrix3.multiply(camRot, uavHeading, camRot);
+      const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
+      Matrix3.multiply(camRot, uavPitch, camRot);
+      const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
+      Matrix3.multiply(camRot, uavRoll, camRot);
+    }
 
     // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
-    const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
-    Matrix3.multiply(camRot, gimbalYaw, camRot);
-    const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
-    Matrix3.multiply(camRot, gimbalRoll, camRot);
-    const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
-    Matrix3.multiply(camRot, gimbalPitch, camRot);
+    if(isDefined(gimbal)) {
+      const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
+      Matrix3.multiply(camRot, gimbalYaw, camRot);
+      const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
+      Matrix3.multiply(camRot, gimbalRoll, camRot);
+      const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
+      Matrix3.multiply(camRot, gimbalPitch, camRot);
+    }
 
     // transform to camera frame
     var img2cam = Matrix3.fromRotationZ(90 * DTR, rotM);
@@ -200,15 +214,19 @@ class CesiumView extends MapView {
 
     ////////////////////////////////////////////////////////////////////////////////////
 
-    const camProj = layer.cameraModel.camProj;
-    const camDistR = layer.cameraModel.camDistR;
-    const camDistT = layer.cameraModel.camDistT;
+    const camProj = props.cameraModel.camProj;
+    const camDistR = props.cameraModel.camDistR;
+    const camDistT = props.cameraModel.camDistT;
 
-    let imgSrc = layer.imageSrc;
+    let imgSrc = props.imageSrc;
 
     {
+      let snapshot = false;
+      if (props.getSnapshot !== null) {
+        snapshot = props.getSnapshot();
+      }
       // snapshot
-      if (snapshot) {
+      if (props.snapshot) {
         var ctx = this.captureCanvas.getContext('2d');
         ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
         imgSrc = this.captureCanvas;
@@ -298,7 +316,7 @@ class CesiumView extends MapView {
     const onClick = (movement) => {
       // Pick a new feature
       const pickedFeature = that.viewer.scene.pick(movement.position);
-      if (!isDefined(pickedFeature)) {
+      if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
         return;
       }
       const mId = that.getMarkerId(pickedFeature.id.id);
@@ -323,7 +341,7 @@ class CesiumView extends MapView {
     const onRightClick = (movement) => {
       // Pick a new feature
       const pickedFeature = that.viewer.scene.pick(movement.position);
-      if (!isDefined(pickedFeature)) {
+      if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
         return;
       }
       const mId = that.getMarkerId(pickedFeature.id.id);
@@ -347,7 +365,7 @@ class CesiumView extends MapView {
 
     const onHover = (movement) => {
       const pickedFeature = that.viewer.scene.pick(movement.endPosition);
-      if (!isDefined(pickedFeature)) {
+      if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
         return;
       }
       const mId = that.getMarkerId(pickedFeature.id.id);
@@ -400,8 +418,8 @@ class CesiumView extends MapView {
     }
     const isModel = imgIcon.endsWith(".glb");
     const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
-    const fillColor = properties.labelColor;
-    const labelSize = properties.labelSize;
+    const fillColor = properties.labelColor || '#FFFFFF';
+    const labelSize = properties.labelSize || 16;
     const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
     const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
@@ -412,11 +430,15 @@ class CesiumView extends MapView {
         Color.fromCssColorString(properties.color) : Color.YELLOW;
 
     var geom;
+    let lonLatAlt = [0,0,0];
+    if(isDefined(properties.location)) {
+      lonLatAlt = [properties.location.x, properties.location.y, properties.location.z || 0]
+    }
     if (isModel) {
       geom = {
         name: name,
         description: desc,
-        position : Cartesian3.fromDegrees(0, 0, 0),
+        position : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
         label: {
           text: label,
           font: labelSize + 'px sans-serif',
@@ -435,14 +457,14 @@ class CesiumView extends MapView {
       };
     } else {
       let rot = 0;
-      if (properties.orientation !== 'undefined') {
+      if (isDefined(properties.orientation) && isDefined(properties.orientation.heading)) {
         rot = properties.orientation.heading;
       }
 
       geom = {
         name: name,
         description: desc,
-        position : Cartesian3.fromDegrees(0, 0, 0),
+        position : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
         label: {
           text: label,
           font: labelSize + 'px sans-serif',

@@ -46,7 +46,10 @@ class RangeSliderView extends View {
     * @param {Object} properties.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
 		*/
   constructor(properties) {
-    super(properties);
+    super({
+      ...properties,
+      supportedLayers: ['data']
+    });
 
     this.slider = document.createElement("div");
     this.slider.setAttribute("class", "osh-rangeslider-slider");
@@ -189,7 +192,7 @@ class RangeSliderView extends View {
   }
 
   setData(dataSourceId, data) {
-    const values = data.data;
+    const values = data.values;
     for(let i=0; i < values.length;i++) {
       if (this.dataSourcesId.length === 0 && !this.update) {
         for (let i = 0; i < values.length; i++) {

@@ -12,6 +12,7 @@
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 import DialogDrag from 'vue-dialog-drag'
+import DataLayer from "../../../../../source/osh/ui/layer/DataLayer";
 
 export default {
   name: "Video",
@@ -21,13 +22,18 @@ export default {
   props: ['videoDataSource'],
   mounted() {
       // show it in video view using FFMPEG JS decoder
-      let videoView = new FFMPEGView("video-container", {
-          dataSourceId: this.videoDataSource.id,
-          css: "video-h264",
-          name: "UAV Video",
-          framerate:25,
-          showTime: true,
-          showStats: true
+      let videoView = new FFMPEGView({
+        container: "video-container",
+        css: "video-h264",
+        name: "UAV Video",
+        framerate:25,
+        showTime: true,
+        showStats: true,
+        layers: [
+          new DataLayer({
+            dataSourceId: this.videoDataSource.id
+          })
+        ]
       });
   }
 }
