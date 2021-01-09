@@ -190,65 +190,65 @@ class PointMarkerLayer extends Layer {
 		// must be first to assign correctly the first location to the right id if it is defined
 		if (this.checkFn("getMarkerId")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.markerId = properties.getMarkerId.handler(rec,timeStamp,options);
+				that.props.markerId = that.getFunc('getMarkerId')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getMarkerId.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getMarkerId'),fn);
 		}
 
 		if (this.checkFn("getLocation")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.location = properties.getLocation.handler(rec,timeStamp,options);
+				that.props.location = that.getFunc('getLocation')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getLocation.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getLocation'),fn);
 		}
 
 		if (this.checkFn("getOrientation")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.orientation = properties.getOrientation.handler(rec,timeStamp,options);
+				that.props.orientation = that.getFunc('getOrientation')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getOrientation.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getOrientation'),fn);
 		}
 
 		if (this.checkFn("getIcon")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.icon = properties.getIcon.handler(rec,timeStamp,options);
+				that.props.icon = that.getFunc('getIcon')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getIcon.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getIcon'),fn);
 		}
 
 		if (this.checkFn("getIconColor")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.iconColor = properties.getIconColor.handler(rec,timeStamp,options);
+				that.props.iconColor = that.getFunc('getIconColor')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getIconColor.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getIconColor'),fn);
 		}
 
 		if (this.checkFn("getIconScale")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.iconScale = properties.getIconScale.handler(rec,timeStamp,options);
+				that.props.iconScale = that.getFunc('getIconScale')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getIconScale.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getIconScale'),fn);
 		}
 
 		if (this.checkFn("getLabel")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.label = properties.getLabel.handler(rec,timeStamp,options);
+				that.props.label = that.getFunc('getLabel')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getLabel.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getLabel'),fn);
 		}
 
 		if (this.checkFn("getLabelColor")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.labelColor = properties.getLabelColor.handler(rec,timeStamp,options);
+				that.props.labelColor = that.getFunc('getLabelColor')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getLabelColor.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getLabelColor'),fn);
 		}
 
 		if (this.checkFn("getLabelSize")) {
 			let fn = function(rec,timeStamp,options) {
-				that.props.labelSize = properties.getLabelSize.handler(rec,timeStamp,options);
+				that.props.labelSize = that.getFunc('getLabelSize')(rec,timeStamp,options);
 			};
-			this.addFn(properties.getLabelSize.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getLabelSize'),fn);
 		}
 
 		if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {

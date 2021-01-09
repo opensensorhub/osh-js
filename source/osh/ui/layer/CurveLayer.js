@@ -65,25 +65,25 @@ class CurveLayer extends Layer {
         const that = this;
         if (isDefined(properties.getStroke)) {
             let fn = function (rec, timeStamp, options) {
-                that.props.stroke = properties.getStroke.handler(rec, timeStamp, options);
+                that.props.stroke = that.getFunc('getStroke')(rec,timeStamp,options);
             };
-            this.addFn(properties.getStroke.dataSourceIds, fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getStroke'), fn);
         }
 
         if (isDefined(properties.getColor)) {
             let fn = function (rec, timeStamp, options) {
-                that.props.color = properties.getColor.handler(rec, timeStamp, options);
+                that.props.color = that.getFunc('getColor')(rec,timeStamp,options);
             };
-            this.addFn(properties.getColor.dataSourceIds, fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getColor'), fn);
         }
 
         if (isDefined(properties.getValues)) {
             let fn = function (rec, timeStamp, options) {
-                let values = properties.getValues.handler(rec, timeStamp, options);
-                that.props.x = values.x;
-                that.props.y = values.y;
+                const {x, y} = that.getFunc('getValues')(rec,timeStamp,options);
+                that.props.x = x;
+                that.props.y = y;
             };
-            this.addFn(properties.getValues.dataSourceIds, fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getValues'), fn);
         }
 
         this.saveState();

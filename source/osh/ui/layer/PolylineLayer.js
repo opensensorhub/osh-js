@@ -94,14 +94,14 @@ class PolylineLayer extends Layer {
 		// must be first to assign correctly the first location to the right id if it is defined
 		if(isDefined(properties.getPolylineId)) {
 			let fn = function(rec) {
-				that.props.polylineId = properties.getPolylineId.handler(rec);
+				that.props.polylineId = that.getFunc('getPolylineId')(rec);
 			};
-			this.addFn(properties.getPolylineId.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getPolylineId'),fn);
 		}
 
 		if(isDefined(properties.getLocation)) {
 			let fn = function(rec) {
-				let loc = properties.getLocation.handler(rec);
+				let loc = that.getFunc('getLocation')(rec);
 				if(!(that.props.polylineId in that.props.locations)) {
 					that.props.locations[that.props.polylineId] = [];
 				}
@@ -110,35 +110,35 @@ class PolylineLayer extends Layer {
 					that.props.locations[that.props.polylineId].shift();
 				}
 			};
-			this.addFn(properties.getLocation.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getLocation'),fn);
 		}
 
 		if(isDefined(properties.getColor)) {
 			let fn = function(rec) {
-				that.props.color = properties.getColor.handler(rec);
+				that.props.color = that.getFunc('getColor')(rec);
 			};
-			this.addFn(properties.getColor.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
 		}
 
 		if(isDefined(properties.getWeight)) {
 			let fn = function(rec) {
-				that.props.weight = properties.getWeight.handler(rec);
+				that.props.weight = that.getFunc('getWeight')(rec);
 			};
-			this.addFn(properties.getWeight.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getWeight'),fn);
 		}
 
 		if(isDefined(properties.getOpacity)) {
 			let fn = function(rec) {
-				that.props.opacity = properties.getOpacity.handler(rec);
+				that.props.opacity = that.getFunc('getOpacity')(rec);
 			};
-			this.addFn(properties.getOpacity.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
 		}
 
 		if(isDefined(properties.getSmoothFactor)) {
 			let fn = function(rec) {
-				that.props.smoothFactor = properties.getSmoothFactor.handler(rec);
+				that.props.smoothFactor = that.getFunc('getSmoothFactor')(rec);
 			};
-			this.addFn(properties.getSmoothFactor.dataSourceIds,fn);
+			this.addFn(that.getDataSourcesIdsByProperty('getSmoothFactor'),fn);
 		}
 
 		this.saveState();

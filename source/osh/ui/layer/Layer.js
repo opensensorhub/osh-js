@@ -14,7 +14,15 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {assertArray, assertFunction, hasValue, isDefined, randomUUID} from "../../utils/Utils.js";
+import {
+    assertArray,
+    assertDefined,
+    assertFunction,
+    hasValue,
+    isDefined,
+    isFunction,
+    randomUUID
+} from "../../utils/Utils.js";
 
 /**
  * This class is in charge of defining a Layer object.
@@ -58,6 +66,10 @@ class Layer {
     restoreState() {
         this.props = {...this.initialState};
     }
+    getFunc(funcName) {
+        return this.properties[funcName].handler || this.properties[funcName];
+    }
+
     /**
      * @private
      * @param funcName
@@ -65,12 +77,17 @@ class Layer {
      */
     checkFn(funcName) {
         let func = this.properties[funcName];
-        let isSet = hasValue(func);
-        if (isSet) {
-            assertArray(func.dataSourceIds, funcName + ".dataSourceIds");
-            assertFunction(func.handler, funcName + ".handler");
+        if(isFunction(func)) {
+            assertDefined(this.properties.dataSourceId, 'dataSourceId');
+            return true;
+        } else {
+            let isSet = hasValue(func);
+            if (isSet) {
+                assertArray(func.dataSourceIds, funcName + ".dataSourceIds");
+                assertFunction(func.handler, funcName + ".handler");
+            }
+            return isSet;
         }
-        return isSet;
     }
 
     /**
@@ -150,6 +167,10 @@ class Layer {
             res.push(this.props.dataSourceId);
         }
         return res;
+    }
+
+    getDataSourcesIdsByProperty(name) {
+        return this.properties[name].dataSourceIds ||  [this.properties.dataSourceId];
     }
 
     /**
