@@ -144,11 +144,14 @@ samples.forEach(s => {
 
     const iframeId = randomUUID();
     const iframe = document.createElement("iframe");
-    iframe.setAttribute("style","width:100%;height:100%;border:none;padding:10px");
+      iframe.setAttribute("class","iframe-example");
+    iframe.setAttribute("style","width:100%;height:100%;border:none;padding:0px");
     iframe.setAttribute("id", iframeId);
     iframe.setAttribute("src",s.url+'.html');
-    // iframe.onload = function() {
-    //     let $body = $('body',iframe.contentWindow.document);
+    iframe.onload = function() {
+        let $body = $('body', iframe.contentWindow.document);
+        $body.css('margin', '0');
+    }
     //     $body.load("" + s.url+'.html');
     // };
 
