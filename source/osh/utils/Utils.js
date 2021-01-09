@@ -26,7 +26,6 @@ export function isDefined(v) {
     return typeof (v) !== 'undefined' && v !== null;
 }
 
-
 /**
  Global helper method to test if a letiable or object attribute has a value,
  that is it is defined and non null
@@ -81,6 +80,12 @@ export function assertDefined(v, letName = 'letiable') {
     return v;
 }
 
+export function assertTrue(v, letName = 'letiable') {
+    if (!isDefined(v) || !v) {
+        throw letName;
+    }
+    return v;
+}
 /**
  Assert that a letiable or object attribute is defined and non-null
  **/
@@ -164,7 +169,7 @@ export function assertHasValue(v, letName = 'letiable') {
  * @return {String}
  */
 export function randomUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });

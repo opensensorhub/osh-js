@@ -1,10 +1,10 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import CesiumView from "osh/ui/view/map/CesiumView.js";
 import {randomUUID} from "osh/utils/Utils.js";
-import ImageDraping from "osh/ui/layer/ImageDraping.js";
+import ImageDrapingLayer from "osh/ui/layer/ImageDrapingLayer.js";
 
 window.CESIUM_BASE_URL = './';
 
@@ -52,7 +52,7 @@ class BaseMap extends React.Component {
     });
 
 // add 3D model marker to Cesium view
-    let pointMarker = new PointMarker({
+    let pointMarkerLayer = new PointMarkerLayer({
       label: "3DR Solo",
       getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],
@@ -72,11 +72,12 @@ class BaseMap extends React.Component {
           };
         }
       },
-      icon: "./models/Drone+06B.glb"
+      icon: "./models/Drone+06B.glb",
+      name: 'Solo draping marker'
     });
 
     // style it with a moving point marker
-    let imageDrapingMarker = new ImageDraping({
+    let imageDrapingLayer = new ImageDrapingLayer({
       getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
@@ -116,22 +117,19 @@ class BaseMap extends React.Component {
       },
       icon: 'images/car-location.png',
       iconAnchor: [16, 40],
-      imageSrc: videoCanvas
+      imageSrc: videoCanvas,
+      name: 'Solo draping'
     });
 
     // create Cesium view
     Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
         'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
         '2WfIX0QHiZcOjVaXI92stjDh4fI';
-    let cesiumView = new CesiumView(this.divId,
-      [{
-        layer: pointMarker,
-        name: 'Solo draping marker'
-      },{
-        layer: imageDrapingMarker,
-        name: 'Solo draping'
-      }]
-    );
+    let cesiumView = new CesiumView({
+      container: this.divId,
+      layers: [pointMarkerLayer, imageDrapingLayer],
+    });
+
     cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
     cesiumView.viewer.scene.logarithmicDepthBuffer = false;
     cesiumView.viewer.camera.setView({

@@ -15,7 +15,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import View from "../../../../osh/ui/view/View.js";
-import EventManager from "../../../../osh/events/EventManager.js";
 import {isDefined} from "../../../../osh/utils/Utils.js";
 import "../../../resources/css/noUISlider.css";
 import * as noUiSlider from 'nouislider';
@@ -37,17 +36,20 @@ import * as wNumb from 'wnumb';
 class RangeSliderView extends View {
 	/**
 		* Create the discoveryView
-		* @param {string} parentElementDivId The div element to attach to
-		* @param {Object} options - The properties defining the view
-		* @param {Number} options.startTime - The start time
-		* @param {Number} options.endTime - The end time
-		* @param {String} options.dataSourcesId - The dataSource id which are sync with master time
-    * @param {String} options.dataSourceId - The dataSource id which is not sync with master time
-    * @param {Boolean} options.disabled - disabled the range slider
-    * @param {Object} options.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
+   * @param {Object} [properties={}] - the properties of the view
+   * @param {String} properties.container - The div element to attach to
+   * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+		* @param {Number} properties.startTime - The start time
+		* @param {Number} properties.endTime - The end time
+		* @param {String} properties.dataSourcesId - The dataSource id which are sync with master time
+    * @param {Boolean} properties.disabled - disabled the range slider
+    * @param {Object} properties.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
 		*/
-  constructor(parentElementDivId, options) {
-    super(parentElementDivId, [], options);
+  constructor(properties) {
+    super({
+      ...properties,
+      supportedLayers: ['data']
+    });
 
     this.slider = document.createElement("div");
     this.slider.setAttribute("class", "osh-rangeslider-slider");
@@ -61,29 +63,29 @@ class RangeSliderView extends View {
     this.dataSynchonizer = null;
     this.options = {};
 
-    if (isDefined(options)) {
-      if (isDefined(options.startTime)) {
-        startTime = new Date(options.startTime).getTime();
+    if (isDefined(properties)) {
+      if (isDefined(properties.startTime)) {
+        startTime = new Date(properties.startTime).getTime();
       }
 
-      if (isDefined(options.endTime)) {
-        this.endTime = new Date(options.endTime).getTime();
+      if (isDefined(properties.endTime)) {
+        this.endTime = new Date(properties.endTime).getTime();
       }
 
-      if (isDefined(options.dataSourcesId)) {
-        this.dataSourcesId = options.dataSourcesId;
+      if (isDefined(properties.dataSourcesId)) {
+        this.dataSourcesId = properties.dataSourcesId;
       }
 
-      if (isDefined(options.dataSynchronizer)) {
-        this.dataSynchonizer = options.dataSynchronizer;
+      if (isDefined(properties.dataSynchronizer)) {
+        this.dataSynchonizer = properties.dataSynchronizer;
       }
 
-      if(isDefined(options.options)) {
-        this.options = options.options;
+      if(isDefined(properties.options)) {
+        this.options = properties.options;
       }
 
-      if(isDefined(options.disabled)) {
-        this.slider.setAttribute('disabled', options.disabled);
+      if(isDefined(properties.disabled)) {
+        this.slider.setAttribute('disabled', properties.disabled);
       }
     }
 
@@ -189,10 +191,13 @@ class RangeSliderView extends View {
     this.slider.removeAttribute('disabled');
   }
 
-  setData(dataSourceId, values) {
+  setData(dataSourceId, data) {
+    const values = data.values;
+    for(let i=0; i < values.length;i++) {
       if (this.dataSourcesId.length === 0 && !this.update) {
-        for(let i=0;i < values.length;i++) {
+        for (let i = 0; i < values.length; i++) {
           this.slider.noUiSlider.set([values[i].timeStamp]);
+        }
       }
     }
   }

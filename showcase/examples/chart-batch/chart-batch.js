@@ -1,11 +1,11 @@
 // create data source for Android phone camera
 import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
-import Curve from "osh/ui/layer/Curve.js";
+import CurveLayer from "osh/ui/layer/CurveLayer.js";
 import SweJson from "osh/datareceiver/SweJson.js";
 
 function createChart(dataSource, divId, title) {
 
-    let windSpeedLayerCurve = new Curve({
+    let windSpeedLayerCurve = new CurveLayer({
         getValues: {
             dataSourceIds: [dataSource.id],
             handler: function (rec, timeStamp) {
@@ -14,52 +14,49 @@ function createChart(dataSource, divId, title) {
                     y: rec.windSpeed
                 };
             }
-        }
+        },
+        name: "WindSpeed"
     });
 
 // show it in video view
-    let chartView = new ChartJsView(divId,
-        [{
-            layer: windSpeedLayerCurve,
-            name: "WindSpeed"
-        }],
-        {
-            name: "WindSpeed/Pressure chart",
-            yLabel: 'Wind Speed (m/s)',
-            xLabel: 'Time',
-            css: "chart-view",
-            tickOpts: {
-                maxTicksLimit: 10,
-                fontColor: 'gray',
-            },
-            gridLinesOpts: {
-                color: 'lightgray'
-            },
-            scaleLabelOpts: {
-                fontColor: 'gray',
-                padding:1
-            },
-            datasetsOpts: {
-                borderColor: '#a3a3a3',
-                borderWidth:1,
-                backgroundColor: 'rgba(188,221,255,0.5)'
-            },
-            legendOpts: {
-                labels: {
-                    fontColor: "gray",
-                    fontSize: 14
-                }
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                title: {
-                    display: true,
-                    text: title
-                }
+    let chartView = new ChartJsView({
+        container: divId,
+        layers: [windSpeedLayerCurve],
+        name: "WindSpeed/Pressure chart",
+        yLabel: 'Wind Speed (m/s)',
+        xLabel: 'Time',
+        css: "chart-view",
+        tickOpts: {
+            maxTicksLimit: 10,
+            fontColor: 'gray',
+        },
+        gridLinesOpts: {
+            color: 'lightgray'
+        },
+        scaleLabelOpts: {
+            fontColor: 'gray',
+            padding:1
+        },
+        datasetsOpts: {
+            borderColor: '#a3a3a3',
+            borderWidth:1,
+            backgroundColor: 'rgba(188,221,255,0.5)'
+        },
+        legendOpts: {
+            labels: {
+                fontColor: "gray",
+                fontSize: 14
+            }
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: title
             }
         }
-    );
+    });
 }
 
 // #region snippet_chart_batch

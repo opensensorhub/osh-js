@@ -15,7 +15,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSink from './DataSink.js';
-import EventManager from '../events/EventManager.js';
 
 /**
  * @extends DataSink
@@ -26,8 +25,8 @@ class PtzTasking extends DataSink {
         super(name, properties);
 
         let that = this;
-        EventManager.observe(EventManager.EVENT.PTZ_SEND_REQUEST + "-" + this.id, (event) =>
-            that.connector.sendRequest(that.buildRequest(that.getCommandData(event.cmdData))));
+        // EventManager.observe(EventManager.EVENT.PTZ_SEND_REQUEST + "-" + this.id, (event) =>
+        //     that.connector.sendRequest(that.buildRequest(that.getCommandData(event.cmdData))));
     }
 
     // to override by specific vendor dataSender

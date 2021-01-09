@@ -24,8 +24,7 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
-    "showcase": "webpack-dev-server --config webpack.config.js --mode development --watch",
-    "showcase-prod": "webpack --config webpack.config.js --mode production"
+    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
@@ -39,6 +38,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "ol": "^6.2.1"
+    "ol": "^6.2.1",
+    "ol-layerswitcher": "3.8.1"
   }
 }

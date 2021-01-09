@@ -8,8 +8,9 @@ import {
 } from "cesium";
 import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import ImageDraping from "osh/ui/layer/ImageDraping.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import ImageDrapingLayer from "osh/ui/layer/ImageDrapingLayer.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
+import DataLayer from 'osh/ui/layer/DataLayer';
 
 window.CESIUM_BASE_URL = './';
 
@@ -25,13 +26,18 @@ let videoDataSource = new Video("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView("video-h264-draping-container", {
-    dataSourceId: videoDataSource.id,
+let videoView = new FFMPEGView({
+    container: 'video-h264-draping-container',
     css: "video-h264",
     name: "UAV Video",
     framerate:25,
     showTime: true,
-    showStats: true
+    showStats: true,
+    layers: [
+        new DataLayer({
+            dataSourceId: videoDataSource.id
+        })
+    ]
 });
 
 let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
@@ -71,7 +77,7 @@ let gimbalOrientationDataSource = new SweJson('android-Heading', {
 });
 
 // add 3D model marker to Cesium view
-let pointMarker = new PointMarker({
+let pointMarkerLayer = new PointMarkerLayer({
     label: "3DR Solo",
     getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],
@@ -91,11 +97,12 @@ let pointMarker = new PointMarker({
             };
         }
     },
-    icon: "./models/Drone+06B.glb"
+    icon: "./models/Drone+06B.glb",
+    name: 'Solo draping marker'
 });
 
 // style it with a moving point marker
-let imageDrapingMarker = new ImageDraping({
+let imageDrapingLayer = new ImageDrapingLayer({
     getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
         handler: function (rec) {
@@ -135,22 +142,20 @@ let imageDrapingMarker = new ImageDraping({
     },
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
-    imageSrc: videoCanvas
+    imageSrc: videoCanvas,
+    name: 'Solo draping'
 });
 
 // create Cesium view
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
     'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
     '2WfIX0QHiZcOjVaXI92stjDh4fI';
-let cesiumView = new CesiumView("cesium-h264-draping-container",
-  [{
-      layer: pointMarker,
-      name: 'Solo draping marker'
-  },{
-      layer: imageDrapingMarker,
-      name: 'Solo draping'
-  }]
-);
+
+let cesiumView = new CesiumView({
+    container: 'cesium-h264-draping-container',
+    layers: [pointMarkerLayer, imageDrapingLayer]
+});
+
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 cesiumView.viewer.scene.logarithmicDepthBuffer = false;
 cesiumView.viewer.camera.setView({

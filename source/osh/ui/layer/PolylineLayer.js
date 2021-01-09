@@ -21,9 +21,9 @@ import { isDefined } from "../../utils/Utils.js";
  * @extends Layer
  * @example
  *
- * import Polyline from 'osh/ui/layer/Polyline.js';
+ * import PolylineLayer from 'osh/ui/layer/PolylineLayer.js';
  *
- * let polylineLayer = new Polyline({
+ * let polylineLayer = new PolylineLayer({
 		getLocation : {
 			dataSourceIds : [datasource.getId()],
 			handler : function(rec) {
@@ -41,9 +41,9 @@ import { isDefined } from "../../utils/Utils.js";
 		maxPoints : 200
 	});
  */
-class Polyline extends Layer {
+class PolylineLayer extends Layer {
 	/**
-		* Creates the Polyline
+		* Creates the PolylineLayer
 		* @param {Object} properties
 		* @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
 		* @param {Number} [properties.weight=1] - defines the weight of the polyline
@@ -60,40 +60,41 @@ class Polyline extends Layer {
 		*/
 	constructor(properties) {
 		super(properties);
+		this.type = 'polyline';
 		this.properties = properties;
-		this.locations = {};
-		this.color = 'red';
-		this.weight = 1;
-		this.opacity = 1;
-		this.smoothFactor = 1;
-		this.maxPoints = 10;
-		this.polylineId = 'polyline';
+		this.props.locations = {};
+		this.props.color = 'red';
+		this.props.weight = 1;
+		this.props.opacity = 1;
+		this.props.smoothFactor = 1;
+		this.props.maxPoints = 10;
+		this.props.polylineId = 'polyline';
 
 		if(isDefined(properties.color)){
-			this.color = properties.color;
+			this.props.color = properties.color;
 		}
 
 		if(isDefined(properties.weight)){
-			this.weight = properties.weight;
+			this.props.weight = properties.weight;
 		}
 
 		if(isDefined(properties.opacity)){
-			this.opacity = properties.opacity;
+			this.props.opacity = properties.opacity;
 		}
 
 		if(isDefined(properties.smoothFactor)){
-			this.smoothFactor = properties.smoothFactor;
+			this.props.smoothFactor = properties.smoothFactor;
 		}
 
 		if(isDefined(properties.maxPoints)){
-			this.maxPoints = properties.maxPoints;
+			this.props.maxPoints = properties.maxPoints;
 		}
 
 		let that = this;
 		// must be first to assign correctly the first location to the right id if it is defined
 		if(isDefined(properties.getPolylineId)) {
 			let fn = function(rec) {
-				that.polylineId = properties.getPolylineId.handler(rec);
+				that.props.polylineId = properties.getPolylineId.handler(rec);
 			};
 			this.addFn(properties.getPolylineId.dataSourceIds,fn);
 		}
@@ -101,12 +102,12 @@ class Polyline extends Layer {
 		if(isDefined(properties.getLocation)) {
 			let fn = function(rec) {
 				let loc = properties.getLocation.handler(rec);
-				if(!(that.polylineId in that.locations)) {
-					that.locations[that.polylineId] = [];
+				if(!(that.props.polylineId in that.props.locations)) {
+					that.props.locations[that.props.polylineId] = [];
 				}
-				that.locations[that.polylineId].push(loc);
-				if(that.locations[that.polylineId].length > that.maxPoints) {
-					that.locations[that.polylineId].shift();
+				that.props.locations[that.props.polylineId].push(loc);
+				if(that.props.locations[that.props.polylineId].length > that.props.maxPoints) {
+					that.props.locations[that.props.polylineId].shift();
 				}
 			};
 			this.addFn(properties.getLocation.dataSourceIds,fn);
@@ -114,47 +115,38 @@ class Polyline extends Layer {
 
 		if(isDefined(properties.getColor)) {
 			let fn = function(rec) {
-				that.color = properties.getColor.handler(rec);
+				that.props.color = properties.getColor.handler(rec);
 			};
 			this.addFn(properties.getColor.dataSourceIds,fn);
 		}
 
 		if(isDefined(properties.getWeight)) {
 			let fn = function(rec) {
-				that.weight = properties.getWeight.handler(rec);
+				that.props.weight = properties.getWeight.handler(rec);
 			};
 			this.addFn(properties.getWeight.dataSourceIds,fn);
 		}
 
 		if(isDefined(properties.getOpacity)) {
 			let fn = function(rec) {
-				that.opacity = properties.getOpacity.handler(rec);
+				that.props.opacity = properties.getOpacity.handler(rec);
 			};
 			this.addFn(properties.getOpacity.dataSourceIds,fn);
 		}
 
 		if(isDefined(properties.getSmoothFactor)) {
 			let fn = function(rec) {
-				that.smoothFactor = properties.getSmoothFactor.handler(rec);
+				that.props.smoothFactor = properties.getSmoothFactor.handler(rec);
 			};
 			this.addFn(properties.getSmoothFactor.dataSourceIds,fn);
 		}
 
-	}
-
-	setData(dataSourceId,rec,view,options) {
-		if(super.setData(dataSourceId,rec,view,options)) {
-			if(isDefined(view) && typeof view.updatePolyline === 'function'){
-				view.updatePolyline(this);
-				return true;
-			}
-		}
-		return false;
+		this.saveState();
 	}
 
 	clear() {
-		this.locations[this.polylineId] = [];
+		this.props.locations[this.props.polylineId] = [];
 	}
 }
 
-export default Polyline;
+export default PolylineLayer;

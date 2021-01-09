@@ -31,11 +31,6 @@ var samples = [
         "to get data in batch",
     url: "chart-batch"
   },
-  // {
-  //   name: "Discovery (form)",
-  //   description: "Display a Form helping to choose the correct DataSource depending on the offering.",
-  //   url: "discovery"
-  // },
   {
     name: "Moving Location (Leaflet)",
     description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
@@ -149,11 +144,14 @@ samples.forEach(s => {
 
     const iframeId = randomUUID();
     const iframe = document.createElement("iframe");
-    iframe.setAttribute("style","width:calc(100% - 50px);height:100%;border:none;");
+      iframe.setAttribute("class","iframe-example");
+    iframe.setAttribute("style","width:100%;height:100%;border:none;padding:0px");
     iframe.setAttribute("id", iframeId);
     iframe.setAttribute("src",s.url+'.html');
-    // iframe.onload = function() {
-    //     let $body = $('body',iframe.contentWindow.document);
+    iframe.onload = function() {
+        let $body = $('body', iframe.contentWindow.document);
+        $body.css('margin', '0');
+    }
     //     $body.load("" + s.url+'.html');
     // };
 

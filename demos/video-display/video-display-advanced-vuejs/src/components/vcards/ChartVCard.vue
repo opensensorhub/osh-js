@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import Curve from "osh/ui/layer/Curve";
+  import CurveLayer from "osh/ui/layer/CurveLayer";
   import ChartJsView from "osh/ui/view/chart/ChartJsView";
   import {randomUUID} from "osh/utils/Utils";
 
@@ -28,7 +28,7 @@
     },
     mounted() {
         // build chart
-        let windSpeedLayerCurve = new Curve({
+        let windSpeedLayerCurve = new CurveLayer({
           getValues: {
             dataSourceIds: [this.dataSource.id],
             handler: function (rec, timeStamp) {
@@ -37,16 +37,14 @@
                 y: rec.windSpeed
               };
             }
-          }
+          },
+          name: "WindSpeed"
         });
 
         // show it in video view
-        new ChartJsView(this.id,
-          [{
-            layer: windSpeedLayerCurve,
-            name: "WindSpeed"
-          }],
-          {
+        new ChartJsView({
+            container: this.id,
+            layers: [windSpeedLayerCurve],
             name: "WindSpeed/Pressure chart",
             yLabel: 'Wind Speed (m/s)',
             xLabel: 'Time',

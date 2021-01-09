@@ -22,8 +22,8 @@ import {isDefined} from "../../../utils/Utils";
  * @extends View
  */
 class MapView extends View {
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems,options);
+    constructor(properties) {
+        super(properties);
 
         // map Layer id to array of corresponding markers
         this.layerIdToMarkers = {};
@@ -33,44 +33,59 @@ class MapView extends View {
 
     }
 
+    setData(dataSourceId, data) {
+        const values = data.values;
+        for(let i=0;i < values.length;i++) {
+            const d = values[i];
+            if(data.type === 'marker') {
+                this.updateMarker(d);
+            } else if(data.type === 'polyline') {
+                this.updatePolyline(d);
+            } else if(data.type === 'draping') {
+                this.updateDrapedImage(d);
+            }
+        }
+    }
+
     /**
      * Associate a markerId to a Layer for a fast lookup
      * @protected
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer.props} layer - the Layer object
      * @param {Object} markerObject - the Map marker object
      */
-    addMarkerToLayer(layer, markerObject) {
+    addMarkerToLayer(props, markerObject) {
+        const currentLayer = this.getLayer(props);
         // associate the list of markers owning by a specific marker
-        if(!(layer.getId() in this.layerIdToMarkers)) {
-            this.layerIdToMarkers[layer.getId()] = {};
+        if(!(props.id in this.layerIdToMarkers)) {
+            this.layerIdToMarkers[props.id] = {};
         }
-        this.layerIdToMarkers[layer.getId()][layer.markerId] = markerObject;
+        this.layerIdToMarkers[props.id][props.markerId] = markerObject;
     }
 
     /**
      * Associate a polylineId to a Layer for a fast lookup
      * @protected
-     * @param {Polyline} layer - the Layer object
+     * @param {Polyline.props} layer - the Layer object
      * @param {Object} polylineObject - the Map polyline object
      */
-    addPolylineToLayer(layer, polylineObject) {
+    addPolylineToLayer(props, polylineObject) {
         // associate the list of markers owning by a specific marker
-        if(!(layer.getId() in this.layerIdToPolylines)) {
-            this.layerIdToPolylines[layer.getId()] = {};
+        if(!(props.id in this.layerIdToPolylines)) {
+            this.layerIdToPolylines[props.id] = {};
         }
-        this.layerIdToPolylines[layer.getId()][layer.polylineId] = polylineObject;
+        this.layerIdToPolylines[props.id][props.polylineId] = polylineObject;
     }
 
     /**
      * Get the markerId associate to the Layer
      * @protected
-     * @param {PointMarker} layer - the Layer Object
+     * @param {PointMarkerLayer.props} props - the Layer Object
      */
-    getMarker(layer) {
-        if(!(layer.getId() in  this.layerIdToMarkers)) {
+    getMarker(props) {
+        if(!(props.id in  this.layerIdToMarkers)) {
             return null;
         }
-        return this.layerIdToMarkers[layer.getId()][layer.markerId];
+        return this.layerIdToMarkers[props.id][props.markerId];
     }
 
     /**
@@ -104,13 +119,13 @@ class MapView extends View {
     /**
      * Get the markerId associate to the Layer
      * @protected
-     * @param {Polyline} layer - the Layer Object
+     * @param {Polyline.props} layer - the Layer Object
      */
-    getPolyline(layer) {
-        if(!(layer.getId() in  this.layerIdToPolylines)) {
+    getPolyline(props) {
+        if(!(props.id in  this.layerIdToPolylines)) {
             return null;
         }
-        return this.layerIdToPolylines[layer.getId()][layer.polylineId];
+        return this.layerIdToPolylines[props.id][props.polylineId];
     }
 
     /**
@@ -121,7 +136,7 @@ class MapView extends View {
     getLayer(layerId) {
         // find corresponding layer
         for (let currentLayer of this.layers) {
-            if (currentLayer.id === layerId) {
+            if (currentLayer.props.id === layerId) {
                 return currentLayer;
             }
         }
@@ -129,25 +144,25 @@ class MapView extends View {
     }
 
     /**
-     * Remove Corresponding ViewItem
-     * @param {Object} viewItem - The viewItem object
+     * Remove Corresponding Layer
+     * @param {Layer} layer - The layer object
      */
-    removeViewItem(viewItem) {
-        super.removeViewItem(viewItem);
+    removeAllFromLayer(layer) {
+        super.removeAllFromLayer(layer);
         // check for marker
-        this.removeMarkers(viewItem.layer);
+        this.removeMarkers(layer);
 
         // check for polylines
-        this.removePolylines(viewItem.layer);
+        this.removePolylines(layer);
     }
 
     /**
      * Remove the markers corresponding to a PointMarker Layer
-     * @param {PointMarker} pointMarker - the layer to remove the markers from
+     * @param {PointMarkerLayer} layer - the layer to remove the markers from
      */
-    removeMarkers(pointMarker) {
-        if(isDefined(pointMarker.markerId)) {
-            const markersMap = this.layerIdToMarkers[pointMarker.id];
+    removeMarkers(layer) {
+        if(isDefined(layer.props.markerId)) {
+            const markersMap = this.layerIdToMarkers[layer.props.id];
             if(isDefined(markersMap)) {
                 for(let markerId in markersMap) {
                     const marker = markersMap[markerId];
@@ -156,17 +171,17 @@ class MapView extends View {
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToMarkers[pointMarker.id];
+            delete this.layerIdToMarkers[layer.props.id];
         }
     }
 
     /**
-     * Remove the polylines corresponding to a Polyline Layer
+     * Remove the polylines corresponding to a PolylineLayer Layer
      * @param {Polyline} polyline - the layer to remove the polylines from
      */
     removePolylines(polyline) {
-        if(isDefined(polyline.polylineId)) {
-            const polylinesMap = this.layerIdToPolylines[polyline.id];
+        if(isDefined(polyline.props.polylineId)) {
+            const polylinesMap = this.layerIdToPolylines[polyline.props.id];
             if(isDefined(polylinesMap)) {
                 for(let polylineId in polylinesMap) {
                     const polyline = polylinesMap[polylineId];
@@ -175,7 +190,7 @@ class MapView extends View {
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToPolylines[polyline.id];
+            delete this.layerIdToPolylines[polyline.props.id];
         }
     }
 
@@ -199,7 +214,7 @@ class MapView extends View {
      * Method to call onLeftClick Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerLeftClick(markerId, markerObject, layer, event) {
@@ -212,7 +227,7 @@ class MapView extends View {
      * Method to call onRightClick Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerRightClick(markerId, markerObject, layer, event) {
@@ -225,7 +240,7 @@ class MapView extends View {
      * Method to call onMove Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerMove(markerId, markerObject, layer, event) {
@@ -238,7 +253,7 @@ class MapView extends View {
      * Method to call onHover Layer method if exists
      * @param {String} markerId - the Layer markerId
      * @param {Object} markerObject - the View marker object
-     * @param {PointMarker} layer - the Layer object
+     * @param {PointMarkerLayer} layer - the Layer object
      * @param {Object} event - the original Map View event
      */
     onMarkerHover(markerId, markerObject, layer, event) {

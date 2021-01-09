@@ -20,35 +20,36 @@ class Spectrogram extends Layer {
     constructor(properties) {
         super(properties);
 
-        this.latestData = null;
-        this.xLabel = 'Time';
-        this.yLabel = 'Frequency (Hz)';
-        this.zLabel = 'Amplitude (dB)';
+        this.type = 'spectrogram';
+        this.props.latestData = null;
+        this.props.xLabel = 'Time';
+        this.props.yLabel = 'Frequency (Hz)';
+        this.props.zLabel = 'Amplitude (dB)';
         // Currently using chromatic scales from d3-scale-chromatic
         // TODO: Allow custom color sets
-        this.colors = 'interpolateOrRd';
-        this.powerRange = [-80, 250];
+        this.props.colors = 'interpolateOrRd';
+        this.props.powerRange = [-80, 250];
 
         let self = this;
 
         if (isDefined(properties.xLabel)) {
-            this.xLabel = properties.xLabel;
+            this.props.xLabel = properties.xLabel;
         }
 
         if (isDefined(properties.yLabel)) {
-            this.yLabel = properties.yLabel;
+            this.props.yLabel = properties.yLabel;
         }
 
         if (isDefined(properties.zLabel)) {
-            this.zLabel = properties.zLabel;
+            this.props.zLabel = properties.zLabel;
         }
 
         if (isDefined(properties.colors)) {
-            this.colors = properties.colors;
+            this.props.colors = properties.colors;
         }
 
         if (isDefined(properties.colorRange)) {
-            this.colorRange = properties.colorRange;
+            this.props.colorRange = properties.colorRange;
         }
 
         if (isDefined(properties.getValues)) {
@@ -56,23 +57,13 @@ class Spectrogram extends Layer {
                 let values = properties.getValues.handler(rec, timeStamp, options);
 
                 if (Array.isArray(values)) {
-                    self.latestData = values;
+                    self.props.latestData = values;
                 } else {
-                    self.latestData = [values];
+                    self.props.latestData = [values];
                 }
             };
             this.addFn(properties.getValues.dataSourceIds, fn);
         }
-    }
-
-    setData(dataSourceId, rec, view, options) {
-        if (super.setData(dataSourceId, rec, view, options)) {
-            if (isDefined(view)) {
-                view.updateSpectrogram(this, rec.timestamp, options);
-                return true;
-            }
-        }
-        return false;
     }
 }
 

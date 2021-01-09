@@ -4,11 +4,14 @@ import {isDefined} from "../../../utils/Utils";
 class CanvasView extends View {
     /**
      * Create a View.
-     * @param {String} divId - The div element to attach to
-     * @param {Object} options - the properties of the view
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {string} properties.container - The div element to attach to
+     * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+     * @param {boolean} properties.visible - set the default behavior of the visibility of the view
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
-    constructor(divId, options) {
-        super(divId, [], options);
+    constructor(properties) {
+        super(properties);
 
         this.fps = 0;
         this.width = "1920";
@@ -26,25 +29,25 @@ class CanvasView extends View {
 
         this.framerate = 29.67;
 
-        if (isDefined(options)) {
-            if (isDefined(options.framerate)) {
-                this.framerate = options.framerate;
+        if (isDefined(properties)) {
+            if (isDefined(properties.framerate)) {
+                this.framerate = properties.framerate;
             }
 
-            if (isDefined(options.directPlay)) {
-                this.directPlay = options.directPlay;
+            if (isDefined(properties.directPlay)) {
+                this.directPlay = properties.directPlay;
             }
 
-            if (isDefined(options.codec)) {
-                this.codec = options.codec;
+            if (isDefined(properties.codec)) {
+                this.codec = properties.codec;
             }
 
-            if (isDefined(options.showTime)) {
-                this.showTime = options.showTime;
+            if (isDefined(properties.showTime)) {
+                this.showTime = properties.showTime;
             }
 
-            if (isDefined(options.showStats)) {
-                this.showStats = options.showStats;
+            if (isDefined(properties.showStats)) {
+                this.showStats = properties.showStats;
             }
         }
 

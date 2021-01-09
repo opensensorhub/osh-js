@@ -24,12 +24,11 @@ class SpectrogramView extends View {
 
     /**
      *
-     * @param parentElementDivID
-     * @param viewItems
-     * @param options
+     * @param {Object} [properties={}] - the properties of the view
+*    * @param {String} properties.isSim - Enable simulation mode
      */
-    constructor(parentElementDivID, viewItems, options) {
-        super(parentElementDivID, viewItems, options);
+    constructor(properties) {
+        super(properties);
 
         // Data Vars
         this.spectrogramData = [];
@@ -99,8 +98,8 @@ class SpectrogramView extends View {
             .attr('transform', 'translate(' + (this.xOffset) + ',' + (0) + ')')
             .call(this.initYAxis);
 
-        if (options.hasOwnProperty('isSim')) {
-            this.isSim = options.isSim;
+        if (properties.hasOwnProperty('isSim')) {
+            this.isSim = properties.isSim;
         }
 
         if (this.isSim) {
@@ -113,13 +112,21 @@ class SpectrogramView extends View {
         }
     }
 
+    setData(dataSourceId, data) {
+        const values = data.values;
+        for(let i=0;i < values.length;i++) {
+            const d = values[i];
+            if(data.type === 'spectrogram') {
+                this.updateSpectrogram(d);
+            }
+        }
+    }
+
     /**
-     * Updates the spectrogram dataset and redraws the image
-     * @param {Spectrogram} layer
-     * @param {Number} timestamp
-     * @param {Object} options
+     * Updates the spectrogram data and redraw.
+     * @param {Spectogram.props} props - The layer properties allowing the update of the spectrogram
      */
-    updateSpectrogram(layer, timestamp, options) {
+    updateSpectrogram(data) {
         // push layer data into Spectrogram Data Object
         if (layer !== null) this.spectrogramData.push(layer.latestData);
 

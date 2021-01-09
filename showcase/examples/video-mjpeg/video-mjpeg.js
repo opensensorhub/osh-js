@@ -1,5 +1,6 @@
 import Video from 'osh/datareceiver/Video.js';
 import MjpegView from 'osh/ui/view/video/MjpegView.js';
+import DataLayer from "osh/ui/layer/DataLayer";
 
 // create data source for Android phone camera
 let videoDataSource = new Video("android-Video", {
@@ -14,12 +15,17 @@ let videoDataSource = new Video("android-Video", {
 });
 
 // show it in video view
-let videoView = new MjpegView("video-mjpeg-container", {
-    dataSourceId: videoDataSource.id,
+let videoView = new MjpegView({
+    container: "video-mjpeg-container",
     css: "video-mjpeg",
     name: "Android Video",
     keepRatio: true,
-    showTime: true
+    showTime: true,
+    layers: [
+        new DataLayer({
+            dataSourceId: videoDataSource.id
+        })
+    ]
 });
 
 // start streaming

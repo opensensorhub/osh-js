@@ -44,7 +44,8 @@ import {
 } from '@deck.gl/layers';
 import DeckGlViewColumn from "../js/DeckGlViewColumn";
 import HoverInfo from "./HoverInfo";
-import { mapState, mapActions } from 'vuex'
+import {mapState, mapActions} from 'vuex'
+import DataLayer from "../../../../source/osh/ui/layer/DataLayer";
 
 export default {
   name: "MapColumn",
@@ -59,10 +60,8 @@ export default {
   },
   watch: {
     datasource(datasource, oldvalue) {
-      this.view = new DeckGlViewColumn("map",
-          [],
-          {
-            dataSourceId: datasource.id,
+      this.view = new DeckGlViewColumn({
+            container: "map",
             deckProps: {
               onClick: event => {
                 this.clicked = event.layer !== null;
@@ -112,13 +111,18 @@ export default {
                 }),
               ]
             },
-            autoZoomOnFirstMarker: false
+            autoZoomOnFirstMarker: false,
+            layers: [
+              new DataLayer({
+                dataSourceId: datasource.id
+              })
+            ]
           }
       );
       this.view.onRender = (layer, values) => {
         this.count += values.length;
         // dispatch to TimeRange
-        this.$store.dispatch('addData',{
+        this.$store.dispatch('addData', {
           layer: layer,
           values: values
         });
@@ -131,7 +135,9 @@ export default {
   mounted() {
   },
   computed: {
-    filteredIndexes() { return this.$store.state.filteredAll; }
+    filteredIndexes() {
+      return this.$store.state.filteredAll;
+    }
   },
   methods: {
     ...mapActions(['addData']
@@ -195,6 +201,7 @@ export default {
   color: unset;
   cursor: crosshair !important;
 }
+
 .legend {
   display: flex;
   position: absolute;
@@ -204,6 +211,7 @@ export default {
   right: 0px;
   z-index: 1;
 }
+
 .legend-meaning {
   display: flex;
   flex-direction: column;
@@ -237,9 +245,11 @@ export default {
   color: white;
   transition: opacity 0.2s linear;
 }
+
 .legend:hover > div.legend-meaning > * {
   opacity: 1;
 }
+
 .legend-colors > div {
   flex-shrink: 0;
   flex-grow: 1;
@@ -247,6 +257,7 @@ export default {
   display: grid;
   align-items: self-end;
 }
+
 #deckgl-overlay {
   cursor: crosshair !important;
 }

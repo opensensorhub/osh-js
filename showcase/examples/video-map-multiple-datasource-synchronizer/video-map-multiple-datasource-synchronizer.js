@@ -1,9 +1,10 @@
 import Video from "osh/datareceiver/Video.js";
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
 import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import DataLayer from "osh/ui/layer/DataLayer";
 
 const REPLAY_FACTOR = 1.0;
 
@@ -40,17 +41,23 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     });
 
     // show it in video view using FFMPEG JS decoder
-    let videoView = new FFMPEGView(videoDivId, {
-        dataSourceId: videoDataSource.id,
+    let videoView = new FFMPEGView({
+        container: videoDivId,
         css: "video-h264",
         name: "UAV Video",
         framerate: 25,
         showTime: true,
-        showStats: true
+        showStats: true,
+        layers: [
+            new DataLayer({
+                dataSourceId: videoDataSource.id
+            })
+        ]
     });
 
     // add 3D model marker to Cesium view
-    let pointMarker = new PointMarker({
+    let pointMarker = new PointMarkerLayer({
+        name: "3DR Drone",
         label: "3DR Solo",
         getLocation: {
             dataSourceIds: [platformLocationDataSource.getId()],
@@ -72,20 +79,17 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         },
         zoomLevel: 18,
         icon: './images/drone.png',
+        iconSize: [128,128],
         iconAnchor: [64,112]
     });
 
     // create Leaflet view
-    new LeafletView(mapDivId,
-        [{
-            layer: pointMarker,
-            name: "3DR Drone"
-        }],
-        {
-            autoZoomOnFirstMarker: true,
-            follow:true
-        }
-    );
+    new LeafletView({
+        container: mapDivId,
+        layers: [pointMarker],
+        autoZoomOnFirstMarker: true,
+        follow:true
+    });
 
     const dataSynchronizer = new DataSynchronizer({
         replaySpeed: REPLAY_FACTOR,

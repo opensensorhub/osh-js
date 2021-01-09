@@ -1,6 +1,6 @@
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
 
 // create data source for Android phone GPS
@@ -16,7 +16,7 @@ let gpsDataSource = new SweJson("android-GPS", {
 });
 
 // style it with a moving point marker
-let pointMarker = new PointMarker({
+let pointMarker = new PointMarkerLayer({
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
@@ -31,17 +31,17 @@ let pointMarker = new PointMarker({
   },
   icon: 'images/car-location.png',
   iconAnchor: [16, 64],
-  iconSize: [32, 64]
+  iconSize: [32, 64],
+  name: "Android Phone GPS"
 });
 
 // #region snippet_ol_location_view
 // create Cesium view
-let olView = new OpenLayerView("ol-map",
-    [{
-      layer: pointMarker,
-      name: "Android Phone GPS"
-    }]
-);
+let olView = new OpenLayerView({
+  container: 'ol-map',
+  layers: [pointMarker],
+  autoZoomOnFirstMarker: true
+});
 // #endregion snippet_ol_location_view
 
 // start streaming
