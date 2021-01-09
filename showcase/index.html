@@ -103,15 +103,18 @@
         border-radius: 0;
     }
 
-    .btn-outline-secondary:hover {
+    .btn-outline-secondary:hover,.btn-outline-secondary:not(:disabled):not(.disabled):active {
         color: #fff;
         background-color: #ff7031;
         border-color: #ff7031;
     }
 
+    .btn-outline-secondary:focus,.btn-outline-secondary:not(:disabled):not(.disabled):active:focus {
+        box-shadow: 0 0 0 0.2rem rgba(108,117,125,.0);
+    }
     .card-img-top {
       border-radius: 0;
-      padding: 0.5rem 0.5rem 0 0.5rem;
+      padding: 0;
     }
 
     .fullscreen-bg {
