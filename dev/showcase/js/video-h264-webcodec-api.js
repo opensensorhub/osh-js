@@ -1,5 +1,6 @@
 import Video from 'osh/datareceiver/Video.js';
 import WebCodecView from 'osh/ui/view/video/WebCodecView.js';
+import DataLayer from "osh/ui/layer/DataLayer";
 
 // create data source for UAV camera
 let videoDataSource = new Video("drone-Video", {
@@ -14,12 +15,17 @@ let videoDataSource = new Video("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new WebCodecView("video-h264-container", {
-  dataSourceId: videoDataSource.id,
+let videoView = new WebCodecView({
+  container: 'video-h264-container',
   css: "video-h264",
   name: "UAV Video",
   showTime: true,
-  showStats: true
+  showStats: true,
+  layers: [
+    new DataLayer({
+      dataSourceId: videoDataSource.id
+    })
+  ]
 });
 
 // start streaming

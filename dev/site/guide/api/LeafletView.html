@@ -53,7 +53,7 @@
     <div class="nameContainer">
         <h4 class="name" id="LeafletView">
             
-            new LeafletView<span class="signature">(parentElementDivId, viewItems, <span class="optional">options</span>)</span>
+            new LeafletView<span class="signature">(<span class="optional">properties</span>)</span>
         </h4>
     
         
@@ -90,77 +90,7 @@
 		<th>Type</th>
 		
 		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>parentElementDivId</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                The div element to attach to</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItems</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                The initial view items to add
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
+		<th>Default</th>
 		
 		
 		<th class="last">Description</th>
@@ -172,59 +102,7 @@
 	
         <tr>
             
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The name of the view item</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Layer.html">Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The layer object representing the view item</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>properties</code></td>
             
             
             <td class="type">
@@ -236,6 +114,12 @@
             
             </td>
             
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
             
             
             <td class="description last">
@@ -268,6 +152,74 @@
 	</thead>
 	
 	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>container</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The div element to attach to</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>layers</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Object></span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                The initial layers to add</td>
+        </tr>
+	
 	
 	
         <tr>
@@ -503,7 +455,7 @@
             entityId : androidEntity.id
         },
  {
-     layer : new Polyline({
+     layer : new PolylineLayer({
          getLocation : {
              dataSourceIds : [androidPhoneGpsDataSource.getId()],
              handler : function(rec) {
@@ -556,6 +508,124 @@
         <dl>
             
 <dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="addLayer">
+            
+                <span class="inherited"><a href="View.html#addLayer">inherited</a></span>
+            
+            addLayer<span class="signature">(layer)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line209">line 209</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Layer.html">Layer</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The layer object</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <div class="nameContainer">
         <h4 class="name" id="addMarker">
             
@@ -564,7 +634,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line219">line 219</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line210">line 210</a>
         </div>
         
     </div>
@@ -612,7 +682,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">PointMarkerLayer.properties</span>
 
 
             
@@ -622,259 +692,7 @@
             
             <td class="description last">
                 
-                
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>lon</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                </td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>lat</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                </td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>icon</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the icon path</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>iconAnchor</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Integer></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                offset of the icon ex:[10,10]</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>label</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                label of the tooltip</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>description</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                description of the marker to display into the tooltip</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>labelOffset</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                offset of the label of the tooltip</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>orientation</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                orientation of the icon in degree</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>onLeftClick</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                onLeftClick function callback</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the id of the new created marker: layer.id$layer.markerId</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
+                the layer properties</td>
         </tr>
 	
 	
@@ -963,7 +781,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line42">line 42</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line56">line 56</a>
         </div>
         
     </div>
@@ -1011,7 +829,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type">PointMarkerLayer.props</span>
 
 
             
@@ -1102,7 +920,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line268">line 268</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line263">line 263</a>
         </div>
         
     </div>
@@ -1386,7 +1204,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line56">line 56</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line71">line 71</a>
         </div>
         
     </div>
@@ -1434,7 +1252,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Polyline.html">Polyline</a></span>
+<span class="param-type">Polyline.props</span>
 
 
             
@@ -1518,194 +1336,6 @@
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="addViewItem">
-            
-                <span class="inherited"><a href="View.html#addViewItem">inherited</a></span>
-            
-            addViewItem<span class="signature">(viewItem)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line264">line 264</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
-and EventManager.EVENT.SELECT_VIEW are then observed using the
-dataSource(s) contained into the layer.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItem</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The initial view items to add
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The name of the view item</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Layer.html">Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The layer object representing the view item</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
         <h4 class="name" id="attachTo">
             
                 <span class="inherited"><a href="View.html#attachTo">inherited</a></span>
@@ -1715,7 +1345,7 @@ dataSource(s) contained into the layer.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line200">line 200</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line150">line 150</a>
         </div>
         
     </div>
@@ -1835,7 +1465,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line366">line 366</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line272">line 272</a>
         </div>
         
     </div>
@@ -1935,7 +1565,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line158">line 158</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line159">line 159</a>
         </div>
         
     </div>
@@ -2037,7 +1667,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line234">line 234</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line184">line 184</a>
         </div>
         
     </div>
@@ -2139,7 +1769,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line226">line 226</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line176">line 176</a>
         </div>
         
     </div>
@@ -2241,7 +1871,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line121">line 121</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line136">line 136</a>
         </div>
         
     </div>
@@ -2388,7 +2018,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line255">line 255</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line270">line 270</a>
         </div>
         
     </div>
@@ -2533,12 +2163,12 @@ Note: the onResize() is called at the end of the process.
             
                 <span class="inherited"><a href="MapView.html#getMarker">inherited</a></span>
             
-            <span class="type-signature ">protected</span>getMarker<span class="signature">(layer)</span>
+            <span class="type-signature ">protected</span>getMarker<span class="signature">(props)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line69">line 69</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line84">line 84</a>
         </div>
         
     </div>
@@ -2580,13 +2210,13 @@ Note: the onResize() is called at the end of the process.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>props</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type">PointMarkerLayer.props</span>
 
 
             
@@ -2656,7 +2286,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line269">line 269</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line284">line 284</a>
         </div>
         
     </div>
@@ -2806,7 +2436,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line80">line 80</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line95">line 95</a>
         </div>
         
     </div>
@@ -2879,7 +2509,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line109">line 109</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line124">line 124</a>
         </div>
         
     </div>
@@ -2927,7 +2557,7 @@ Note: the onResize() is called at the end of the process.
             <td class="type">
             
                 
-<span class="param-type"><a href="Polyline.html">Polyline</a></span>
+<span class="param-type">Polyline.props</span>
 
 
             
@@ -2997,7 +2627,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line94">line 94</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line109">line 109</a>
         </div>
         
     </div>
@@ -3070,7 +2700,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line183">line 183</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line133">line 133</a>
         </div>
         
     </div>
@@ -3134,155 +2764,6 @@ Note: the onResize() is called at the end of the process.
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="init">
-            
-                <span class="inherited"><a href="View.html#init">inherited</a></span>
-            
-            init<span class="signature">(parentElementDivId, viewItems, options)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line87">line 87</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Inits the view component.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>parentElementDivId</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The parent html element object to attach/create the view</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItems</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the list of items to add</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                [TODO]</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
         <h4 class="name" id="onMarkerHover">
             
                 <span class="inherited"><a href="MapView.html#onMarkerHover">inherited</a></span>
@@ -3292,7 +2773,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line244">line 244</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line259">line 259</a>
         </div>
         
     </div>
@@ -3386,7 +2867,7 @@ Note: the onResize() is called at the end of the process.
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type"><a href="PointMarkerLayer.html">PointMarkerLayer</a></span>
 
 
             
@@ -3479,7 +2960,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line205">line 205</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line220">line 220</a>
         </div>
         
     </div>
@@ -3573,7 +3054,7 @@ Note: the onResize() is called at the end of the process.
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type"><a href="PointMarkerLayer.html">PointMarkerLayer</a></span>
 
 
             
@@ -3666,7 +3147,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line231">line 231</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line246">line 246</a>
         </div>
         
     </div>
@@ -3760,7 +3241,7 @@ Note: the onResize() is called at the end of the process.
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type"><a href="PointMarkerLayer.html">PointMarkerLayer</a></span>
 
 
             
@@ -3853,7 +3334,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line218">line 218</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line233">line 233</a>
         </div>
         
     </div>
@@ -3947,7 +3428,7 @@ Note: the onResize() is called at the end of the process.
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type"><a href="PointMarkerLayer.html">PointMarkerLayer</a></span>
 
 
             
@@ -4030,6 +3511,197 @@ Note: the onResize() is called at the end of the process.
         
             
 <dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="removeAllFromLayer">
+            
+                <span class="inherited"><a href="MapView.html#removeAllFromLayer">inherited</a></span>
+            
+            removeAllFromLayer<span class="signature">(layer)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line150">line 150</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Remove Corresponding Layer
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Layer.html">Layer</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                The layer object</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="removeAllFromLayers">
+            
+                <span class="inherited"><a href="View.html#removeAllFromLayers">inherited</a></span>
+            
+            removeAllFromLayers<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line262">line 262</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Removes all view item from the view.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <div class="nameContainer">
         <h4 class="name" id="removeMarkerFromLayer">
             
@@ -4038,7 +3710,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line364">line 364</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line343">line 343</a>
         </div>
         
     </div>
@@ -4152,12 +3824,12 @@ This is library dependant.
             
                 <span class="inherited"><a href="MapView.html#removeMarkers">inherited</a></span>
             
-            removeMarkers<span class="signature">(pointMarker)</span>
+            removeMarkers<span class="signature">(layer)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line148">line 148</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line163">line 163</a>
         </div>
         
     </div>
@@ -4199,13 +3871,13 @@ This is library dependant.
 	
         <tr>
             
-                <td class="name"><code>pointMarker</code></td>
+                <td class="name"><code>layer</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type"><a href="PointMarkerLayer.html">PointMarkerLayer</a></span>
 
 
             
@@ -4273,7 +3945,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line373">line 373</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line352">line 352</a>
         </div>
         
     </div>
@@ -4392,7 +4064,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line167">line 167</a>
+            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line182">line 182</a>
         </div>
         
     </div>
@@ -4403,7 +4075,7 @@ This is library dependant.
     
     
     <div class="description">
-        Remove the polylines corresponding to a Polyline Layer
+        Remove the polylines corresponding to a PolylineLayer Layer
     </div>
     
 
@@ -4440,7 +4112,7 @@ This is library dependant.
             <td class="type">
             
                 
-<span class="param-type"><a href="Polyline.html">Polyline</a></span>
+<span class="param-type">Polyline</span>
 
 
             
@@ -4501,197 +4173,6 @@ This is library dependant.
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="removeViewItem">
-            
-                <span class="inherited"><a href="MapView.html#removeViewItem">inherited</a></span>
-            
-            removeViewItem<span class="signature">(viewItem)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line135">line 135</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Remove Corresponding ViewItem
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItem</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The viewItem object</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
-        <h4 class="name" id="removeViewItems">
-            
-                <span class="inherited"><a href="View.html#removeViewItems">inherited</a></span>
-            
-            removeViewItems<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line317">line 317</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Removes all view item from the view.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
         <h4 class="name" id="reset">
             
                 <span class="inherited"><a href="View.html#reset">inherited</a></span>
@@ -4701,7 +4182,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line387">line 387</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line287">line 287</a>
         </div>
         
     </div>
@@ -4765,147 +4246,6 @@ This is library dependant.
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="selectDataView">
-            
-                <span class="inherited"><a href="View.html#selectDataView">inherited</a></span>
-            
-            selectDataView<span class="signature">(dataSourcesIds, entityId)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line350">line 350</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Selects the view by setting the current selected entity and dataSource.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>dataSourcesIds</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The dataSource id</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>entityId</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The entity id</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
         <h4 class="name" id="setData">
             
                 <span class="inherited"><a href="View.html#setData">inherited</a></span>
@@ -4915,7 +4255,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line243">line 243</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line193">line 193</a>
         </div>
         
     </div>
@@ -5056,7 +4396,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line250">line 250</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line200">line 200</a>
         </div>
         
     </div>
@@ -5167,12 +4507,12 @@ This is library dependant.
     <div class="nameContainer">
         <h4 class="name" id="updateMarker">
             
-            updateMarker<span class="signature">(layer)</span>
+            updateMarker<span class="signature">(props)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line295">line 295</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line290">line 290</a>
         </div>
         
     </div>
@@ -5214,13 +4554,13 @@ This is library dependant.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>props</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="PointMarker.html">PointMarker</a></span>
+<span class="param-type">PointMarkerLayer.props</span>
 
 
             
@@ -5230,7 +4570,7 @@ This is library dependant.
             
             <td class="description last">
                 
-                The layer allowing the update of the marker</td>
+                The layer properties allowing the update of the marker</td>
         </tr>
 	
 	
@@ -5283,12 +4623,12 @@ This is library dependant.
     <div class="nameContainer">
         <h4 class="name" id="updatePolyline">
             
-            updatePolyline<span class="signature">(layer)</span>
+            updatePolyline<span class="signature">(props)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line381">line 381</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line360">line 360</a>
         </div>
         
     </div>
@@ -5330,13 +4670,13 @@ This is library dependant.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>props</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Polyline.html">Polyline</a></span>
+<span class="param-type">PolylineLayer.props</span>
 
 
             
@@ -5346,7 +4686,7 @@ This is library dependant.
             
             <td class="description last">
                 
-                The layer allowing the update of the polyline</td>
+                The layer properties allowing the update of the polyline</td>
         </tr>
 	
 	
@@ -5414,7 +4754,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line218">line 218</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line168">line 168</a>
         </div>
         
     </div>
@@ -5532,7 +4872,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line191">line 191</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line141">line 141</a>
         </div>
         
     </div>
@@ -5605,7 +4945,7 @@ This is library dependant.
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Jan 09 2021 12:15:17 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

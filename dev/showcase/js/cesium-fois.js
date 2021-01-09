@@ -1,6 +1,5 @@
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {HeadingPitchRange, Math} from 'cesium';
-import PointMarker from 'osh/ui/layer/PointMarker.js';
 import Server from "osh/server/Server.js";
 
 window.CESIUM_BASE_URL = './';
@@ -12,7 +11,7 @@ let server = new Server({
 });
 
 // create Cesium view
-let cesiumView = new CesiumView("cesium-container", []);
+let cesiumView = new CesiumView({container: "cesium-container"});
 cesiumView.first = false; // don't zoom on first item added
 
 // retrieve list of features of interest from server (async call)
@@ -24,26 +23,22 @@ server.getFeatureOfInterestById("urn:usgs:water:network", function(resp) {
 
         // parse location from GML
         let pos = f.shape.pos.split(" ");
-        let pointMarker = new PointMarker({
+        // add marker to Leaflet map
+        cesiumView.addMarker({
+            name: f.name,
+            description: f.description + "<br/>" +
+                "Latitude: " + pos[0] + "°<br/>" +
+                "Longitude: " + pos[1] + "°",
             location: {
                 x: parseFloat(pos[1]),
                 y: parseFloat(pos[0])
             },
             icon: 'images/marker-icon.png',
             iconAnchor: [12, 41],
-            /*label: f.id,
+            label: f.id,
             labelColor: '#ffffff',
             labelSize: 28,
-            labelOffset: [0, 10],*/
-        });
-
-        // add marker to Leaflet map
-        cesiumView.addViewItem({
-            name: f.name,
-            description: f.description + "<br/>" +
-                "Latitude: " + pos[0] + "°<br/>" +
-                "Longitude: " + pos[1] + "°",
-            layer: pointMarker
+            labelOffset: [0, 10],
         });
     });
 

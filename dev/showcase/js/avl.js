@@ -1,6 +1,6 @@
 import SweJson from 'osh/datareceiver/SweJson.js';
-import PointMarker from "osh/ui/layer/PointMarker.js";
-import Polyline from "osh/ui/layer/Polyline.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
+import Polyline from "osh/ui/layer/PolylineLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 import OpenLayerView from "osh/ui/view/map/OpenLayerView";
@@ -28,7 +28,7 @@ let avlDataSource = new SweJson("AVL", {
     observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
     startTime: "2014-03-29T07:00:12Z",
     endTime: "2014-04-29T14:26:12Z",
-    replaySpeed: 15
+    replaySpeed: 200
 });
 
 /**************************************************************/
@@ -66,7 +66,7 @@ document.body.onclick = () => {
 };
 
 /**************************************************************/
-/********************* VIEW ITEMS & Stylers ******************/
+/********************* Layers ******************/
 /************************************************************/
 
 // Create a common configuration for markers. This one can be shared between stylers
@@ -142,85 +142,96 @@ const commonPolylineConf = {
     maxPoints: 200
 };
 
-// creates leaflet Layer (PointMarker)
-// Gets the common conf and add onLeftClick & onHover callback to update infos
-const leafletViewItems = [
-    {
-        layer: new PointMarker({
+let leafletMapView, olMapView, cesiumMapView;
+
+/**************************************************************/
+/*************************** VIEWS ***************************/
+/************************************************************/
+
+// create Leaflet view
+leafletMapView = new LeafletView({
+    container: 'leafletMap',
+    autoZoomOnFirstMarker: true,
+    follow: false,
+    baseLayers: {
+        "OSM Bright": layer
+    },
+    layers: [
+        new PointMarkerLayer({
             ...commonMarkerConf,
             onLeftClick: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint),
             onRightClick: (markerId, billboard, event) => {
-                console.log(event);
                 const rect = document.getElementById('leafletMap').getBoundingClientRect();
                 showPopup(event.containerPoint.x + rect.left, event.containerPoint.y + rect.top + 15, 'some content ' + markerId);
             },
-            onHover: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint),
-        }), name: "AVL"
-    },
-    {
-        layer: new Polyline({...commonPolylineConf}), name: "AVL"
-    },
-];
+            onHover: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint)
+        }),
+        new Polyline({...commonPolylineConf})
+    ]
+});
 
-let leafletMapView, olMapView, cesiumMapView;
+// create OL view
+olMapView = new OpenLayerView({
+    container: 'olMap',
+    autoZoomOnFirstMarker: true,
+    layers: [
+        // creates OL Layers
+        // Gets the common conf and add onLeftClick & onHover callback to update infos
+        new PointMarkerLayer({
+            ...commonMarkerConf,
+            onLeftClick: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
+            onRightClick: (markerId, billboard, event) => {
+                const rect = document.getElementById('olMap').getBoundingClientRect();
+                showPopup(event.mapBrowserEvent.pixel[0] + rect.left, event.mapBrowserEvent.pixel[1] + rect.top, 'some content ' + markerId);
+            },
+            onHover: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
+        }),
+        new Polyline({...commonPolylineConf})
+    ]
+});
 
-// creates OL Styler (PointMarker)
-// Gets the common conf and add onLeftClick & onHover callback to update infos
-const olViewItems = [{
-    layer: new PointMarker({
-        ...commonMarkerConf,
-        onLeftClick: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
-        onRightClick: (markerId, billboard, event) => {
-            const rect = document.getElementById('olMap').getBoundingClientRect();
-            showPopup(event.mapBrowserEvent.pixel[0] + rect.left, event.mapBrowserEvent.pixel[1] + rect.top, 'some content ' + markerId);
-        },
-        onHover: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
-    }), name: "AVL"
-},
-    {
-        layer: new Polyline({...commonPolylineConf}), name: "AVL"
-    },
-];
+cesiumMapView = new CesiumView({
+    container: 'cesiumMap',
+    layers: [
+        new PointMarkerLayer({
+            ...commonMarkerConf,
+            onLeftClick: (markerId, billboard, event) => {
+                // transform into LonLat to display into info panel
+                const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
+                const longitudeString = Math.toDegrees(
+                    cartographic.longitude
+                ).toFixed(2);
+                const latitudeString = Math.toDegrees(
+                    cartographic.latitude
+                ).toFixed(2);
 
-// creates Cesium Styler (PointMarker)
-// Gets the common conf and add onLeftClick & onHover callback to update infos
-const cesiumViewItems = [{
-    layer: new PointMarker({
-        ...commonMarkerConf,
-        onLeftClick: (markerId, billboard, event) => {
-            // transform into LonLat to display into info panel
-            const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-            const longitudeString = Math.toDegrees(
-                cartographic.longitude
-            ).toFixed(2);
-            const latitudeString = Math.toDegrees(
-                cartographic.latitude
-            ).toFixed(2);
+                updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel);
+            },
+            onRightClick: (markerId, billboard, event) => {
+                const rect = document.getElementById('cesiumMap').getBoundingClientRect();
+                showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
+            },
+            onHover: (markerId, billboard, event) => {
+                // transform into LonLat to display into info panel
+                const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
+                const longitudeString = Math.toDegrees(
+                    cartographic.longitude
+                ).toFixed(2);
+                const latitudeString = Math.toDegrees(
+                    cartographic.latitude
+                ).toFixed(2);
 
-            updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel);
-        },
-        onRightClick: (markerId, billboard, event) => {
-            const rect = document.getElementById('cesiumMap').getBoundingClientRect();
-            showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
-        },
-        onHover: (markerId, billboard, event) => {
-            // transform into LonLat to display into info panel
-            const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-            const longitudeString = Math.toDegrees(
-                cartographic.longitude
-            ).toFixed(2);
-            const latitudeString = Math.toDegrees(
-                cartographic.latitude
-            ).toFixed(2);
+                updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
+            }
+        })
+    ]
+});
 
-            updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
-        },
-    }), name: "AVL"
-}];
-
-const deckViewItems = [
-    {
-        layer:  new PointMarker({
+const deckView = new DeckGlView({
+    container: 'deckMap',
+    autoZoomOnFirstMarker:true,
+    layers: [
+        new PointMarkerLayer({
             ...commonMarkerConf,
             iconScale: 7,
             onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
@@ -230,49 +241,12 @@ const deckViewItems = [
                 showPopup(pickingInfo.pixel[0] + rect.left, pickingInfo.pixel[1] + rect.top, 'some content ' + markerId);
             }
         }),
-        name: "AVL"
-    },
-    {
-        layer: new Polyline({
+        new Polyline({
             ...commonPolylineConf,
             color: [255, 102, 0, 127]
-        }),
-        name: "AVL"
-    },
-];
-
-/**************************************************************/
-/*************************** VIEWS ***************************/
-/************************************************************/
-
-// create Leaflet view
-leafletMapView = new LeafletView("leafletMap",
-    leafletViewItems,
-    {
-        autoZoomOnFirstMarker: true,
-        follow: false,
-        baseLayers: {
-            "OSM Bright": layer
-        }
-    }
-);
-
-// create OL view
-olMapView = new OpenLayerView("olMap",
-    olViewItems,
-    {
-        autoZoomOnFirstMarker: true,
-    }
-);
-
-cesiumMapView = new CesiumView('cesiumMap', cesiumViewItems);
-
-const deckView = new DeckGlView('deckMap',
-    deckViewItems,
-    {
-        autoZoomOnFirstMarker:true,
-    }
-);
+        })
+    ]
+});
 
 /**************************************************************/
 /********************* Update UI  ****************************/
@@ -293,8 +267,7 @@ bc.onmessage = (event) => {
     }
 }
 
-// connect AVL datasource
-avlDataSource.connect();
+removeAllElt.setAttribute("disabled", "");
 
 // connect AVL datasource manually
 loadElt.onclick = () => {
@@ -314,15 +287,9 @@ removeAllElt.onclick = async () => {
     // if markers are deleted too early, the connection may continue to send data back to the views which
     // will result in the re-creation of markers. This is asynchronous because the WebSocket connector is launched from a WebWorker.
     setTimeout(() => {
-        cesiumMapView.removeViewItem(cesiumViewItems[0]);
-
-        olMapView.removeViewItem(olViewItems[0]);
-        olMapView.removeViewItem(olViewItems[1]);
-
-        leafletMapView.removeViewItem(leafletViewItems[0]);
-        leafletMapView.removeViewItem(leafletViewItems[1]);
-
-        deckView.removeViewItem(deckViewItems[0]);
-        deckView.removeViewItem(deckViewItems[1]);
+        leafletMapView.removeAllFromLayers();
+        olMapView.removeAllFromLayers();
+        deckView.removeAllFromLayers();
+        cesiumMapView.removeAllFromLayers();
     }, 100);
 };

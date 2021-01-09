@@ -51,7 +51,7 @@
     <div class="nameContainer">
         <h4 class="name" id="ChartJsView">
             
-            new ChartJsView<span class="signature">(parentElementDivId, viewItems, <span class="optional">options</span>)</span>
+            new ChartJsView<span class="signature">(<span class="optional">properties</span>)</span>
         </h4>
     
         
@@ -100,139 +100,7 @@
 	
         <tr>
             
-                <td class="name"><code>parentElementDivId</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                The div element to attach to</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItems</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                The initial view items to add
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The name of the view item</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>layer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Layer.html">Layer</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The layer object representing the view item</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>properties</code></td>
             
             
             <td class="type">
@@ -274,12 +142,82 @@
 		<th>Type</th>
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
 	</thead>
 	
 	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>container</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                The div element to attach to</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>layers</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Object></span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                The initial layers to add</td>
+        </tr>
+	
 	
 	
         <tr>
@@ -296,6 +234,10 @@
             
             </td>
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">
@@ -327,6 +269,10 @@
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
                 
@@ -356,6 +302,10 @@
             
             </td>
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">
@@ -387,6 +337,10 @@
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
                 
@@ -416,6 +370,10 @@
             
             </td>
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">
@@ -447,6 +405,10 @@
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
                 
@@ -458,6 +420,40 @@
                     
                 
                 max points to display before shifting</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                chart.js <a target="_blank" href="https://www.chartjs.org/docs/latest/configuration">context configuration options</a></td>
         </tr>
 	
 	
@@ -538,16 +534,16 @@
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="addViewItem">
+        <h4 class="name" id="addLayer">
             
-                <span class="inherited"><a href="View.html#addViewItem">inherited</a></span>
+                <span class="inherited"><a href="View.html#addLayer">inherited</a></span>
             
-            addViewItem<span class="signature">(viewItem)</span>
+            addLayer<span class="signature">(layer)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line264">line 264</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line209">line 209</a>
         </div>
         
     </div>
@@ -558,9 +554,7 @@
     
     
     <div class="description">
-        Adds a viewItem to the view. A broadcastChannel is going to listen the new dataSources
-and EventManager.EVENT.SELECT_VIEW are then observed using the
-dataSource(s) contained into the layer.
+        Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
     </div>
     
 
@@ -587,68 +581,6 @@ dataSource(s) contained into the layer.
 	</thead>
 	
 	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItem</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The initial view items to add
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The name of the view item</td>
-        </tr>
-	
 	
 	
         <tr>
@@ -669,13 +601,7 @@ dataSource(s) contained into the layer.
             
             <td class="description last">
                 
-                The layer object representing the view item</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
+                The layer object</td>
         </tr>
 	
 	
@@ -735,7 +661,7 @@ dataSource(s) contained into the layer.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line200">line 200</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line150">line 150</a>
         </div>
         
     </div>
@@ -855,7 +781,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line366">line 366</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line272">line 272</a>
         </div>
         
     </div>
@@ -957,7 +883,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line234">line 234</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line184">line 184</a>
         </div>
         
     </div>
@@ -1059,7 +985,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line226">line 226</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line176">line 176</a>
         </div>
         
     </div>
@@ -1161,7 +1087,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line183">line 183</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line133">line 133</a>
         </div>
         
     </div>
@@ -1225,16 +1151,16 @@ Note: the onResize() is called at the end of the process.
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="init">
+        <h4 class="name" id="removeAllFromLayer">
             
-                <span class="inherited"><a href="View.html#init">inherited</a></span>
+                <span class="inherited"><a href="View.html#removeAllFromLayer">inherited</a></span>
             
-            init<span class="signature">(parentElementDivId, viewItems, options)</span>
+            removeAllFromLayer<span class="signature">(layer)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line87">line 87</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line249">line 249</a>
         </div>
         
     </div>
@@ -1245,7 +1171,7 @@ Note: the onResize() is called at the end of the process.
     
     
     <div class="description">
-        Inits the view component.
+        Removes a Layer from the view.
     </div>
     
 
@@ -1272,217 +1198,6 @@ Note: the onResize() is called at the end of the process.
 	</thead>
 	
 	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>parentElementDivId</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The parent html element object to attach/create the view</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItems</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the list of items to add</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                [TODO]</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
-        <h4 class="name" id="removeViewItem">
-            
-                <span class="inherited"><a href="View.html#removeViewItem">inherited</a></span>
-            
-            removeViewItem<span class="signature">(viewItem)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line302">line 302</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Removes a view item from the view.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewItem</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The initial view items to add
-                
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The name of the view item</td>
-        </tr>
-	
 	
 	
         <tr>
@@ -1503,13 +1218,7 @@ Note: the onResize() is called at the end of the process.
             
             <td class="description last">
                 
-                The layer object representing the view item</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-            </td>
+                The layer object</td>
         </tr>
 	
 	
@@ -1560,16 +1269,16 @@ Note: the onResize() is called at the end of the process.
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="removeViewItems">
+        <h4 class="name" id="removeAllFromLayers">
             
-                <span class="inherited"><a href="View.html#removeViewItems">inherited</a></span>
+                <span class="inherited"><a href="View.html#removeAllFromLayers">inherited</a></span>
             
-            removeViewItems<span class="signature">()</span>
+            removeAllFromLayers<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line317">line 317</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line262">line 262</a>
         </div>
         
     </div>
@@ -1642,7 +1351,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line387">line 387</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line287">line 287</a>
         </div>
         
     </div>
@@ -1706,147 +1415,6 @@ Note: the onResize() is called at the end of the process.
             
 <dt>
     <div class="nameContainer inherited">
-        <h4 class="name" id="selectDataView">
-            
-                <span class="inherited"><a href="View.html#selectDataView">inherited</a></span>
-            
-            selectDataView<span class="signature">(dataSourcesIds, entityId)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line350">line 350</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Selects the view by setting the current selected entity and dataSource.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>dataSourcesIds</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The dataSource id</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>entityId</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The entity id</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer inherited">
         <h4 class="name" id="setData">
             
                 <span class="inherited"><a href="View.html#setData">inherited</a></span>
@@ -1856,7 +1424,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line243">line 243</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line193">line 193</a>
         </div>
         
     </div>
@@ -1997,7 +1565,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line250">line 250</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line200">line 200</a>
         </div>
         
     </div>
@@ -2108,12 +1676,12 @@ Note: the onResize() is called at the end of the process.
     <div class="nameContainer">
         <h4 class="name" id="updateCurve">
             
-            updateCurve<span class="signature">(layer, values, options)</span>
+            updateCurve<span class="signature">(props)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_chart_ChartJsView.js.html">osh/ui/view/chart/ChartJsView.js</a>, <a href="osh_ui_view_chart_ChartJsView.js.html#line153">line 153</a>
+            <a href="osh_ui_view_chart_ChartJsView.js.html">osh/ui/view/chart/ChartJsView.js</a>, <a href="osh_ui_view_chart_ChartJsView.js.html#line158">line 158</a>
         </div>
         
     </div>
@@ -2122,6 +1690,10 @@ Note: the onResize() is called at the end of the process.
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Updates the curve associated to the layer.
+    </div>
     
 
     
@@ -2151,13 +1723,13 @@ Note: the onResize() is called at the end of the process.
 	
         <tr>
             
-                <td class="name"><code>layer</code></td>
+                <td class="name"><code>props</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="Curve.html">Curve</a></span>
+<span class="param-type">Array.&lt;Curve.props></span>
 
 
             
@@ -2167,53 +1739,7 @@ Note: the onResize() is called at the end of the process.
             
             <td class="description last">
                 
-                -</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>values</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                The values values to set. Each value is composed of raw data and timeStamp</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                -</td>
+                The layer properties allowing the update of the curve</td>
         </tr>
 	
 	
@@ -2281,7 +1807,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line218">line 218</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line168">line 168</a>
         </div>
         
     </div>
@@ -2399,7 +1925,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line191">line 191</a>
+            <a href="osh_ui_view_View.js.html">osh/ui/view/View.js</a>, <a href="osh_ui_view_View.js.html#line141">line 141</a>
         </div>
         
     </div>
@@ -2472,7 +1998,7 @@ Note: the onResize() is called at the end of the process.
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Jan 09 2021 12:15:16 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

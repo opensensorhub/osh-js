@@ -65,24 +65,25 @@ import '../../../resources/css/deck.css';
 class DeckGlView extends MapView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [options.deckProps] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.deckProps={}] - the properties of the [Deck]{@link https://deck.gl/docs/api-reference/core/deck} object
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super({
+            ...properties,
+            supportedLayers: ['marker', 'polyline']
+        });
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
         this.autoZoomOnFirstMarker = false;
-        if(isDefined(options) &amp;&amp; isDefined(options.autoZoomOnFirstMarker)) {
-            this.autoZoomOnFirstMarker = options.autoZoomOnFirstMarker;
+        if(isDefined(properties) &amp;&amp; isDefined(properties.autoZoomOnFirstMarker)) {
+            this.autoZoomOnFirstMarker = properties.autoZoomOnFirstMarker;
         }
     }
 
@@ -169,45 +170,45 @@ class DeckGlView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarker} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(layer) {
-        const id = layer.id+'$'+layer.markerId;
+    updateMarker(props) {
+        const id = props.id+'$'+props.markerId;
 
-        const mId = layer.markerId;
+        const mId = props.markerId;
         // in deck we create a new layer everytime => reactive programming
         const iconLayer = new IconLayer({
             id: id,
             data: [{
-                position: [layer.location.x, layer.location.y]
+                position: [props.location.x, props.location.y]
             }],
             pickable: true,
             // iconAtlas and iconMapping are required
             // getIcon: return a string
-            iconAtlas: layer.icon,
+            iconAtlas: props.icon,
             iconMapping: {
                 marker: {
                     x:0,
                     y:0,
-                    anchorX:  layer.iconAnchor[0],
-                    anchorY:  layer.iconAnchor[1],
-                    width: layer.iconSize[0],
-                    height: layer.iconSize[1],
-                    mask: layer.iconColor !== '#000000'
+                    anchorX:  props.iconAnchor[0],
+                    anchorY:  props.iconAnchor[1],
+                    width: props.iconSize[0],
+                    height: props.iconSize[1],
+                    mask: props.iconColor !== '#000000'
                 }
             },
             getIcon: d => 'marker',
-            sizeScale: layer.iconScale,
+            sizeScale: props.iconScale,
             getPosition: d => d.position,
-            getSize: d => layer.iconScale,
-            getColor: d =>  hex2rgb(layer.iconColor),
-            onHover: (info, event) => this.onMarkerHover(mId,info, layer, event),
-            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, layer, event) :
-                this.onMarkerRightClick(mId,info, layer, event)
+            getSize: d => props.iconScale,
+            getColor: d =>  hex2rgb(props.iconColor),
+            onHover: (info, event) => this.onMarkerHover(mId,info, props, event),
+            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, props, event) :
+                this.onMarkerRightClick(mId,info, props, event)
         });
 
         // is going to create or update the current entry into the layer map
-        this.addMarkerToLayer(layer, iconLayer);
+        this.addMarkerToLayer(props, iconLayer);
 
         const extraProps = {};
 
@@ -216,23 +217,13 @@ class DeckGlView extends MapView {
             // Zoom to the object
             extraProps.initialViewState = {
                 ...this.INITIAL_VIEW_STATE,
-                longitude: layer.location.x,
-                latitude: layer.location.y,
-                zoom: layer.zoomLevel
+                longitude: props.location.x,
+                latitude: props.location.y,
+                zoom: props.zoomLevel
             };
         }
 
         this.render(extraProps);
-    }
-
-    /**
-     *
-     * @param {Curve} layer -
-     * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
-     * @param {Object} options -
-     */
-    updateMarkers(layer, values, options) {
-
     }
 
     /**
@@ -320,7 +311,7 @@ export default DeckGlView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Jan 09 2021 12:15:16 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

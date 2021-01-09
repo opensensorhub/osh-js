@@ -62,20 +62,22 @@ import 'chart.js/dist/Chart.min.css';
 class ChartJsView extends View {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options={}] - the properties of the view
-     * @param {Object} [options.datasetsOpts] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
-     * @param {Object} [options.gridLinesOpts] - chart.js [gridline options]{@link https://www.chartjs.org/docs/latest/axes/styling.html#grid-line-configuration}
-     * @param {Object} [options.scaleLabelOpts] - chart.js [scaleLabel options]{@link https://www.chartjs.org/docs/latest/axes/labelling.html#scale-title-configuration}
-     * @param {Object} [options.tickOpts] - chart.js [tick options]{@link https://www.chartjs.org/docs/latest/axes/cartesian/#tick-configuration}
-     * @param {Object} [options.legendOpts] - chart.js [legend options]{@link https://www.chartjs.org/docs/latest/configuration/legend.html?h=legend}
-     * @param {Number} [options.maxPoints] - max points to display before shifting
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Object} [properties.datasetsOpts] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
+     * @param {Object} [properties.gridLinesOpts] - chart.js [gridline options]{@link https://www.chartjs.org/docs/latest/axes/styling.html#grid-line-configuration}
+     * @param {Object} [properties.scaleLabelOpts] - chart.js [scaleLabel options]{@link https://www.chartjs.org/docs/latest/axes/labelling.html#scale-title-configuration}
+     * @param {Object} [properties.tickOpts] - chart.js [tick options]{@link https://www.chartjs.org/docs/latest/axes/cartesian/#tick-configuration}
+     * @param {Object} [properties.legendOpts] - chart.js [legend options]{@link https://www.chartjs.org/docs/latest/configuration/legend.html?h=legend}
+     * @param {Number} [properties.maxPoints] - max points to display before shifting
+     * @param {Object} [properties.options] - chart.js [context configuration options]{@link https://www.chartjs.org/docs/latest/configuration}
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super({
+            ...properties,
+            supportedLayers: ['curve']
+        });
 
         let xLabel = 'Time';
         let yLabel = 'Values';
@@ -87,33 +89,32 @@ class ChartJsView extends View {
         this.legendOpts = {};
         this.options = {};
 
-        if (isDefined(options)) {
-            if(options.hasOwnProperty('options')){
-                this.options = options.options;
+        if (isDefined(properties)) {
+            if(properties.hasOwnProperty('options')){
+                this.options = properties.options;
+            }
+            if(properties.hasOwnProperty('datasetsOpts')){
+                this.datasetsOpts = properties.datasetsOpts;
             }
 
-            if(options.hasOwnProperty('datasetsOpts')){
-                this.datasetsOpts = options.datasetsOpts;
+            if(properties.hasOwnProperty('gridLinesOpts')){
+                this.gridLinesOpts = properties.gridLinesOpts;
             }
 
-            if(options.hasOwnProperty('gridLinesOpts')){
-                this.gridLinesOpts = options.gridLinesOpts;
+            if(properties.hasOwnProperty('scaleLabelOpts')){
+                this.scaleLabelOpts = properties.scaleLabelOpts;
             }
 
-            if(options.hasOwnProperty('scaleLabelOpts')){
-                this.scaleLabelOpts = options.scaleLabelOpts;
+            if(properties.hasOwnProperty('tickOpts')){
+                this.tickOpts = properties.tickOpts;
             }
 
-            if(options.hasOwnProperty('tickOpts')){
-                this.tickOpts = options.tickOpts;
+            if(properties.hasOwnProperty('legendOpts')){
+                this.legendOpts = properties.legendOpts;
             }
 
-            if(options.hasOwnProperty('legendOpts')){
-                this.legendOpts = options.legendOpts;
-            }
-
-            if (options.hasOwnProperty('maxPoints')) {
-                this.maxPoints = options.maxPoints;
+            if (properties.hasOwnProperty('maxPoints')) {
+                this.maxPoints = properties.maxPoints;
             }
         }
 
@@ -180,28 +181,36 @@ class ChartJsView extends View {
         this.datasets = {};
     }
 
+    setData(dataSourceId, data) {
+        if(data.type === 'curve') {
+            this.updateCurve(data.values);
+        }
+    }
+
     /**
-     *
-     * @param {Curve} layer -
-     * @param {Array} values - The values values to set. Each value is composed of raw data and timeStamp
-     * @param {Object} options -
+     * Updates the curve associated to the layer.
+     * @param {Curve.props[]} props - The layer properties allowing the update of the curve
      */
-    updateCurve(layer, values, options) {
-        let currentDataset = this.datasets[layer.getId()];
+    updateCurve(props) {
+        let currentDataset = this.datasets[props.curveId];
+        const values = props.map(item => ({'x': item.x, 'y': item.y}));
+
         if(!isDefined(currentDataset)) {
             currentDataset = {
-                label: layer.viewItem.name,
+                label: props[0].name,
                 fillColor: "rgba(220,220,0,0.2)",
                 strokeColor: "rgba(220,220,220,1)",
                 pointColor: "rgba(220,220,220,1)",
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
-                data: layer.values
+                data: values
             };
             currentDataset = {...currentDataset, ...this.datasetsOpts};
-            this.datasets[layer.getId()] = currentDataset;
+            this.datasets[props.curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
+        } else {
+            values.forEach(value => this.datasets[props.curveId].data.push(value));
         }
         if(currentDataset.data.length >= this.maxPoints) {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
@@ -232,7 +241,7 @@ export default ChartJsView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Jan 09 2021 12:15:16 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

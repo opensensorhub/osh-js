@@ -50,7 +50,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../../utils/Utils.js";
+import {isDefined, assert, assertDefined} from "../../../utils/Utils.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapView from "./MapView";
@@ -69,7 +69,7 @@ import MapView from "./MapView";
             entityId : androidEntity.id
         },
  {
-     layer : new Polyline({
+     layer : new PolylineLayer({
          getLocation : {
              dataSourceIds : [androidPhoneGpsDataSource.getId()],
              handler : function(rec) {
@@ -94,20 +94,21 @@ import MapView from "./MapView";
 class LeafletView extends MapView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Boolean} [options.follow=false] - follow the marker
-     * @param {Object} [options.initialView] - Sets the view of the map (geographical center and zoom) with the given animation options. [See details]{@link https://leafletjs.com/reference-1.7.1.html#map-setview}
-     * @param {Object[]} [options.overlayLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as overlay layer
-     * @param {Object[]} [options.baseLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as base layer
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Boolean} [properties.follow=false] - follow the marker
+     * @param {Object} [properties.initialView] - Sets the view of the map (geographical center and zoom) with the given animation options. [See details]{@link https://leafletjs.com/reference-1.7.1.html#map-setview}
+     * @param {Object[]} [properties.overlayLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as overlay layer
+     * @param {Object[]} [properties.baseLayers] - [L.tileLayer]{@link https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer} objects to use as base layer
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super({
+            ...properties,
+            supportedLayers: ['marker','draping', 'polyline']
+        });
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
@@ -239,33 +240,25 @@ class LeafletView extends MapView {
 
     /**
      * Add a marker to the map.
-     * @param {Object} properties
-     * @param {Number} properties.lon
-     * @param {Number} properties.lat
-     * @param {String} properties.icon - the icon path
-     * @param {Integer[]} properties.iconAnchor - offset of the icon ex:[10,10]
-     * @param {String} properties.label - label of the tooltip
-     * @param {String} properties.description - description of the marker to display into the tooltip
-     * @param {String} properties.labelOffset - offset of the label of the tooltip
-     * @param {Number} properties.orientation - orientation of the icon in degree
-     * @param {Function} properties.onLeftClick - onLeftClick function callback
-     * @param {String} properties.id - the id of the new created marker: layer.id$layer.markerId
+     * @param {PointMarkerLayer.properties} properties - the layer properties
      * @return {Object} the the new created marker
      */
     addMarker(properties) {
+        assertDefined(properties.location,'location');
         //create marker
         let marker = null;
         if (properties.icon !== null) {
             let markerIcon = L.icon({
                 iconAnchor: properties.iconAnchor,
-                iconUrl: properties.icon
+                iconUrl: properties.icon,
+                iconSize: properties.iconSize
             });
 
-            marker = L.marker([properties.lat, properties.lon], {
+            marker = L.marker([properties.location.y, properties.location.x], {
                 icon: markerIcon
             });
         } else {
-            marker = L.marker([properties.lat, properties.lon]);
+            marker = L.marker([properties.location.y, properties.location.x]);
         }
 
         if (properties.label !== null) {
@@ -278,15 +271,17 @@ class LeafletView extends MapView {
 
         let name = properties.hasOwnProperty("name") &amp;&amp; properties.label != null ? properties.label : "";
         let desc = properties.hasOwnProperty("description") &amp;&amp; properties.description != null ? properties.description : "";
-        if (properties.showPopup &amp;&amp; (name.length > 0 || desc.length > 0)) {
+        if (!isDefined(properties.onLeftClick) &amp;&amp; (name.length > 0 || desc.length > 0)) {
             marker.bindPopup(name + '&lt;div>' + desc + '&lt;/div>',{
                 offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
             });
         }
 
-        marker.id = properties.id;
+        marker.id = properties.id+"$"+properties.markerId;
         marker.addTo(this.map);
-        marker.setRotationAngle(properties.orientation);
+        if(properties.hasOwnProperty(properties.orientation)) {
+            marker.setRotationAngle(properties.orientation.heading);
+        }
 
         return marker;
     }
@@ -326,42 +321,26 @@ class LeafletView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarker} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(layer) {
-        let marker = this.getMarker(layer);
+    updateMarker(props) {
+        let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-             const markerObject = this.addMarker({
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                iconAnchor: layer.iconAnchor,
-                label : layer.label,
-                labelColor : layer.labelColor,
-                labelSize : layer.labelSize,
-                labelOffset : layer.labelOffset,
-                name : layer.viewItem.name,
-                description : layer.viewItem.description,
-                 onLeftClick: layer.onLeftClick,
-                 id: layer.id+"$"+layer.markerId,
-                 showPopup: !isDefined(layer.onLeftClick)
-            });
-            this.addMarkerToLayer(layer, markerObject);
-            const mId = layer.markerId; //need to freeze
-            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, layer, event));
-            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, layer, event));
-            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, layer, event));
+             const markerObject = this.addMarker(props);
+            this.addMarkerToLayer(props, markerObject);
+            const mId = props.markerId; //need to freeze
+            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, props, event));
+            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, props, event));
+            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, props, event));
 
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker
-        marker = this.getMarker(layer);
+        marker = this.getMarker(props);
         // updates position
-        let lon = layer.location.x;
-        let lat = layer.location.y;
+        let lon = props.location.x;
+        let lat = props.location.y;
 
         if (!isNaN(lon) &amp;&amp; !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
@@ -369,7 +348,7 @@ class LeafletView extends MapView {
             if((this.first &amp;&amp; this.autoZoomOnFirstMarker) || this.follow) {
                 const markerBounds = L.latLngBounds([newLatLng ]);
                 this.map.fitBounds(markerBounds, {
-                    maxZoom: layer.zoomLevel
+                    maxZoom: props.zoomLevel
                 });
                 if(this.first) {
                     this.first = false;
@@ -378,15 +357,15 @@ class LeafletView extends MapView {
         }
 
         // updates orientation
-        if(isDefined(layer.orientation)) {
-            marker.setRotationAngle(layer.orientation.heading);
+        if(isDefined(props.orientation)) {
+            marker.setRotationAngle(props.orientation.heading);
         }
 
-        if (layer.icon !== null &amp;&amp; marker._icon.iconUrl !== layer.icon) {
+        if (props.icon !== null &amp;&amp; marker._icon.iconUrl !== props.icon) {
             // updates icon
             let markerIcon = L.icon({
-                iconAnchor: layer.iconAnchor,
-                iconUrl: layer.icon
+                iconAnchor: props.iconAnchor,
+                iconUrl: props.icon
             });
             marker.setIcon(markerIcon);
         }
@@ -412,25 +391,25 @@ class LeafletView extends MapView {
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the polyline
+     * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
      */
-    updatePolyline(layer) {
-        let polyline = this.getPolyline(layer);
+    updatePolyline(props) {
+        let polyline = this.getPolyline(props);
         if (isDefined(polyline)) {
             // removes the layer
            this.removePolylineFromLayer(polyline);
         }
 
         // adds a new polyline to the leaflet renderer
-        const polylineObj = this.addPolyline(layer.locations[layer.polylineId],{
-            color: layer.color,
-            weight: layer.weight,
-            locations: layer.locations,
-            maxPoints: layer.maxPoints,
-            opacity: layer.opacity,
-            smoothFactor: layer.smoothFactor
+        const polylineObj = this.addPolyline(props.locations[props.polylineId],{
+            color: props.color,
+            weight: props.weight,
+            locations: props.locations,
+            maxPoints: props.maxPoints,
+            opacity: props.opacity,
+            smoothFactor: props.smoothFactor
         });
-        this.addPolylineToLayer(layer, polylineObj);
+        this.addPolylineToLayer(props, polylineObj);
     }
 
     attachTo(parentElement) {
@@ -528,7 +507,7 @@ export default  LeafletView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Jan 09 2021 12:15:16 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>

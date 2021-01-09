@@ -2,7 +2,7 @@
 
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 
 let replaySpeed = 2;
@@ -32,7 +32,8 @@ let attitudeDataSource = new SweJson("android-Att", {
 });
 
 // style it with a moving point marker
-let pointMarker = new PointMarker({
+let pointMarker = new PointMarkerLayer({
+  name: "Android Phone GPS",
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
@@ -75,18 +76,16 @@ let pointMarker = new PointMarker({
     }
   },
   icon: 'images/car-topview.png',
+  iconSize: [16,32],
   iconAnchor: [16, 30]
 });
 
 // create Leaflet view
-let leafletMapView = new LeafletView("leafletMap",
-    [{
-      layer: pointMarker,
-      name: "Android Phone GPS"
-    }], {
-      autoZoomOnFirstMarker:true
-    }
-);
+let leafletMapView = new LeafletView({
+    container: 'leafletMap',
+    layers: [pointMarker],
+    autoZoomOnFirstMarker:true
+});
 
 // start streaming
 attitudeDataSource.connect();

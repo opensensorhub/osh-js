@@ -84,24 +84,26 @@ import {click, pointerMove} from "ol/events/condition";
 class OpenLayerView extends MapView {
     /**
      * Create a View.
-     * @param {String} parentElementDivId - The div element to attach to
-     * @param {Object[]} viewItems - The initial view items to add
-     * @param {String} viewItems.name - The name of the view item
-     * @param {Layer} viewItems.layer - The layer object representing the view item
-     * @param {Object} [options] - the properties of the view
-     * @param {Object} [options.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
-     * @param {Integer} [options.maxZoom=19] - the max zoom value
-     * @param {Boolean} [options.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [options.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
-     * @param {Object} options.initialView.lon - the corresponding longitude in EPSG:4326
-     * @param {Object} options.initialView.lat - the corresponding latitude in EPSG:4326
-     * @param {Object} options.initialView.zoom - the default level zoom
-     * @param {Object[]} [options.overlayLayers] - OpenLayers objects to use as overlay layer
-     * @param {Object[]} [options.baseLayers] - OpenLayers objects to use as base layer
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {String} properties.container - The div element to attach to
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
+     * @param {Number} [properties.maxZoom=19] - the max zoom value
+     * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+     * @param {Object} [properties.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
+     * @param {Object} properties.initialView.lon - the corresponding longitude in EPSG:4326
+     * @param {Object} properties.initialView.lat - the corresponding latitude in EPSG:4326
+     * @param {Object} properties.initialView.zoom - the default level zoom
+     * @param {Object[]} [properties.overlayLayers] - OpenLayers objects to use as overlay layer
+     * @param {Object[]} [properties.baseLayers] - OpenLayers objects to use as base layer
      *
      */
-    constructor(parentElementDivId, viewItems, options) {
-        super(parentElementDivId, viewItems, options);
+    constructor(properties) {
+        super({
+            ...properties,
+            supportedLayers: ['marker', 'polyline']
+        });
     }
 
     beforeAddingItems(options) {
@@ -112,30 +114,30 @@ class OpenLayerView extends MapView {
 
     /**
      * Updates the marker associated to the layer.
-     * @param {PointMarker} layer - The layer allowing the update of the marker
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(layer) {
-        let marker = this.getMarker(layer);
+    updateMarker(props) {
+        let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
             const markerObj = this.addMarker({
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                anchor: layer.iconAnchor,
-                name: this.names[layer.markerId],
-                id: layer.id+"$"+layer.markerId
+                lat: props.location.y,
+                lon: props.location.x,
+                orientation: props.orientation.heading,
+                color: props.color,
+                icon: props.icon,
+                anchor: props.iconAnchor,
+                name: props.name,
+                id: props.id+"$"+props.markerId
             });
 
-            this.addMarkerToLayer(layer, markerObj);
+            this.addMarkerToLayer(props, markerObj);
         }
 
-        let markerFeature = this.getMarker(layer);
+        let markerFeature = this.getMarker(props);
         // updates position
-        let lon = layer.location.x;
-        let lat = layer.location.y;
+        let lon = props.location.x;
+        let lat = props.location.y;
 
         if (!isNaN(lon) &amp;&amp; !isNaN(lat)) {
             let coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
@@ -143,16 +145,16 @@ class OpenLayerView extends MapView {
         }
 
         // updates orientation
-        if (layer.icon !== null) {
+        if (props.icon !== null) {
             // updates icon
             let iconStyle = new Style({
                 image: new Icon({
                     opacity: 0.75,
-                    anchor: layer.iconAnchor,
+                    anchor: props.iconAnchor,
                     anchorYUnits: 'pixels',
                     anchorXUnits: 'pixels',
-                    src: layer.icon,
-                    rotation: layer.orientation.heading * Math.PI / 180
+                    src: props.icon,
+                    rotation: props.orientation.heading * Math.PI / 180
                 })
             });
             markerFeature.setStyle(iconStyle);
@@ -161,26 +163,26 @@ class OpenLayerView extends MapView {
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the polyline
+     * @param {Polyline.props} props - The layer allowing the update of the polyline
      */
-    updatePolyline(layer) {
-        let polyline = this.getPolyline(layer);
+    updatePolyline(props) {
+        let polyline = this.getPolyline(props);
         if (isDefined(polyline)) {
             // removes the layer
             this.removePolylineFromLayer(polyline);
         }
 
-        const polylineObj = this.addPolyline(layer.locations[layer.polylineId], {
-            color: layer.color,
-            weight: layer.weight,
-            locations: layer.locations,
-            maxPoints: layer.maxPoints,
-            opacity: layer.opacity,
-            smoothFactor: layer.smoothFactor,
-            name: this.names[layer.getId()]
+        const polylineObj = this.addPolyline(props.locations[props.polylineId], {
+            color: props.color,
+            weight: props.weight,
+            locations: props.locations,
+            maxPoints: props.maxPoints,
+            opacity: props.opacity,
+            smoothFactor: props.smoothFactor,
+            name: props.name
         });
 
-        this.addPolylineToLayer(layer, polylineObj);
+        this.addPolylineToLayer(props, polylineObj);
 
         //TODO: handle opacity, smoothFactor, color and weight
         // if (polylineId in this.polylines) {
@@ -328,7 +330,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerRightClick(mId, feature, layer, e);
+                that.onMarkerRightClick(mId, feature, layer.props, e);
             }
         });
         selectClick.on('select', function (e) {
@@ -346,7 +348,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerLeftClick(mId, feature, layer, e);
+                that.onMarkerLeftClick(mId, feature, layer.props, e);
             }
         });
 
@@ -365,7 +367,7 @@ class OpenLayerView extends MapView {
                 if (!isDefined(layer)) {
                     return;
                 }
-                that.onMarkerHover(mId, feature, layer, e);
+                that.onMarkerHover(mId, feature, layer.props, e);
             }
         });
 
@@ -577,7 +579,7 @@ export default  OpenLayerView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Dec 27 2020 14:46:37 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Jan 09 2021 12:15:16 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>
