@@ -165,20 +165,12 @@ module.exports = {
                             ]
                         },
                         '/guide/views/chart.md',
-                        '/guide/views/spectrogram.md',
                         {
                             title: 'Video',
                             collapsable: true,
                             children: [
                                 '/guide/views/video/ffmpeg.md',
                                 '/guide/views/video/mjpeg.md'
-                            ]
-                        },
-                        {
-                            title: 'Entity',
-                            collapsable: true,
-                            children: [
-                                '/guide/views/entity/entity.md',
                             ]
                         },
                         {

@@ -8,3 +8,20 @@ For example, the data can be displayed as:
 - line
 - map point
 - ...
+
+## Use
+
+There are two types of properties of a layer:
+- static properties
+- dynamic properties
+
+Static properties are defined at creation and cannot be modified. Depending on the property, it can be a number, 
+a string, an object etc.
+
+Dynamic properties are defined as a function. Thus, each data can be modified individually by going through these functions.
+
+The function can take two forms:
+- the simple form as an arrow function ([example here](../map/leaflet.md#example))
+- the complex form defining a dataSource and a separate handler
+
+Thus, for a given layer, we can define a dataSourceId for the entire layer or define a specific dataSourceId for each function.

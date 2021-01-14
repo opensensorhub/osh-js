@@ -16,9 +16,6 @@ This is the list of actual supported Views in the Toolkit:
     - [MJPEG](./video/mjpeg)  native osh view
     - [FFMPEG](./video/ffmpeg) native osh view based on emscripten 2.0 & FFMPEG.js 4.3
     - VideCodecApi native osh view
-- [Entity](./entity/entity)  native osh view
-- [Tasking](./ext/tasking)  native osh view       
-- [Spectrogram](./spectrogram)  native osh view          
 
 <DocumentationLoad path="/guide/api/View.html"/>
 
@@ -33,14 +30,13 @@ First, it provides properties common to all Views.
 
 The View class is super class to provide common properties to other subclasses.
 These properties are as follows:
-- divId
-- ViewItems
-- Options
+- container
+- css
+- layers
 
+### container
 
-### DivId
-
-The DivId is the id on which the view will be attached. A new child element will be created in the DOM and will 
+The container is the id on which the view will be attached. A new child element will be created in the DOM and will 
 be attached to the element corresponding to the id passed as parameter.
 
 Note that this class is DOM Ready, so the document needs to be loaded before being used. 
@@ -51,9 +47,9 @@ The View will therefore have a new auto-generated id (UUID) as identifier and wi
 ```
 
 ```js
-const viewItems = [...];
-const options = {...};
-const myCustomView = new CustomView('container', viewItems, options);
+const myCustomView = new CustomView({
+    container: 'container'
+});
 ```
 
 This will result in:
@@ -64,36 +60,17 @@ This will result in:
 </div>
 ```
 
-### View items
+### Layers
 
-The Map views are composed by view items. ViewItems allow you to associate a name and a Layer to each marker you want
- to add to the View. Thus, to visualize your data in your view, the process is:
-
- [Layer](../../layers/layer) &rarr; ViewItem &rarr; View
-
-The most important part of the view Items is the Layer. See the Layer section.
-
-### Options
-
-#### DataSourceId
-
-The view can directly listen to a single DataSourceId or an array of DataSource. 
-::: warning
-Deprecated in the last version
-:::
-
-#### Entity
-
-An entity is an object representing a group of DataSources forming a single entity.
-
-<DocumentationLoad path="/guide/api/Entity.html"/>
+The Map views are composed by [Layers](./layers/general.md). The Layer allows to apply a particular style to each 
+data that the view should display, it can be a point on a map, a polyline, a chart curve, a frame video etc...
 
 ## Data handling
 
 Views are used to represent data arriving from the DataSources in different forms. The only way to retrieve this data,
  and to subscribe to the BroadcastChannel corresponding to the DataSource, whether it is synchronized or not, the data will eventually arrive on this channel.
 
-So the View takes a list of ViewItems as a parameter, containing Layers each containing an associated DataSource.
+So the View takes a list of Layers as a parameter each containing an or several associated DataSource.
 
 In this way, the View subscribes to the DataSource broadcast channel at initialization and calls the abstract
  method ***setData(dataSourceId, data)*** .
