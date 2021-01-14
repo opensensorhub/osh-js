@@ -71,44 +71,23 @@ document.body.onclick = () => {
 
 // Create a common configuration for markers. This one can be shared between stylers
 const commonMarkerConf = {
-    getLocation: {
-        dataSourceIds: [avlDataSource.getId()],
-        handler: function (rec) {
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat,
-                z: rec.location.alt
-            };
-        }
-    },
-    getLabel: {
-        dataSourceIds: [avlDataSource.getId()],
-        handler: function (rec) {
-            return rec['veh-id'];
-        }
-    },
-    getMarkerId: {
-        dataSourceIds: [avlDataSource.getId()],
-        handler: function (rec) {
-            return rec['veh-id'];
-        }
-    },
-    getIcon: {
-        dataSourceIds: [avlDataSource.getId()],
-        handler: function (rec) {
-            // change the icon depending on the id name contained in this record
-            if (rec['veh-id'] === 'FE4') {
-                return './images/firemen1.png';
-            } else if (rec['veh-id'] === 'FR6') {
-                return './images/firemen2.png';
-            } else if (rec['veh-id'] === 'FL12') {
-                return './images/firemen3.png';
-            } else if (rec['veh-id'] === 'FE12') {
-                return './images/firemen4.png';
-            } else if (rec['veh-id'] === 'FL11') {
-                return './images/firemen5.png';
-            } else return './images/firemen.png';
-        }
+    dataSourceId: avlDataSource.id,
+    getLocation: (rec) => ({ x: rec.location.lon, y: rec.location.lat, z: rec.location.alt }),
+    getLabel: (rec) => rec['veh-id'],
+    getMarkerId: (rec) => rec['veh-id'],
+    getIcon: (rec) => {
+        // change the icon depending on the id name contained in this record
+        if (rec['veh-id'] === 'FE4') {
+            return './images/firemen1.png';
+        } else if (rec['veh-id'] === 'FR6') {
+            return './images/firemen2.png';
+        } else if (rec['veh-id'] === 'FL12') {
+            return './images/firemen3.png';
+        } else if (rec['veh-id'] === 'FE12') {
+            return './images/firemen4.png';
+        } else if (rec['veh-id'] === 'FL11') {
+            return './images/firemen5.png';
+        } else return './images/firemen.png';
     },
     zoomLevel: 12,
     iconAnchor: [16, 0],
@@ -119,22 +98,9 @@ const commonMarkerConf = {
 
 // Create a common configuration for polylines. This one can be shared between stylers
 const commonPolylineConf = {
-    getLocation: {
-        dataSourceIds: [avlDataSource.getId()],
-        handler: function (rec) {
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat,
-                z: rec.location.alt
-            };
-        }
-    },
-    getPolylineId: {
-        dataSourceIds: [avlDataSource.getId()],
-        handler: function (rec) {
-            return rec['veh-id'];
-        }
-    },
+    dataSourceId: avlDataSource.id,
+    getLocation: (rec) => ({ x: rec.location.lon, y: rec.location.lat, z: rec.location.alt }),
+    getPolylineId: (rec) =>  rec['veh-id'],
     color: 'rgba(0,0,255,0.5)',
     weight: 5,
     opacity: .5,

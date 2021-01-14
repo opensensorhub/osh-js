@@ -21,16 +21,12 @@ let gpsDataSource = new SweJson("android-GPS", {
 // #region snippet_leaflet_location_marker
 // style it with a moving point marker
 let pointMarkerLayer = new PointMarkerLayer({
-  getLocation: {
-    dataSourceIds: [gpsDataSource.getId()],
-    handler: function (rec) {
-      return {
+  dataSourceId: gpsDataSource.id,
+  getLocation: (rec) => ({
         x: rec.location.lon,
         y: rec.location.lat,
         z: rec.location.alt
-      };
-    }
-  },
+  }),
   icon: './images/car-location.png',
   iconSize: [32, 64],
   iconAnchor: [16, 65],

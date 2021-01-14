@@ -18,16 +18,12 @@ let gpsDataSource = new SweJson("android-GPS", {
 });
 
 let pointMarker = new PointMarkerLayer({
-  getLocation: {
-    dataSourceIds: [gpsDataSource.getId()],
-    handler: function (rec) {
-      return {
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: 0
-      };
-    }
-  },
+  dataSourceId: gpsDataSource.id,
+  getLocation: (rec) => ({
+      x: rec.location.lon,
+      y: rec.location.lat,
+      z: 0
+  }),
   icon: './images/car-location.png',
   iconAnchor: [16, 64],
   iconSize: [32, 65],
@@ -36,15 +32,13 @@ let pointMarker = new PointMarkerLayer({
 });
 
 let polyline = new PolylineLayer({
-  getLocation: {
-    dataSourceIds: [gpsDataSource.getId()],
-    handler: function (rec) {
+  dataSourceId: gpsDataSource.id,
+  getLocation: (rec) => {
       return {
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: 0
-      };
-    }
+          x: rec.location.lon,
+          y: rec.location.lat,
+          z: 0
+      }
   },
   color: [255, 102, 0, 127],
   weight: 2,
