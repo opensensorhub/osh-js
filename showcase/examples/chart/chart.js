@@ -23,20 +23,6 @@ let windSpeedLayerCurve = new CurveLayer({
     name: 'Wind Speed (m/s)'
 });
 
-/*
-let windSpeedLayerCurve = new CurveLayer({
-    getValues: {
-        dataSourceIds: [chartDataSource.id],
-        handler: function(rec, timeStamp) {
-            return {
-                x: timeStamp,
-                y: rec.windSpeed
-            };
-        }
-    },
-    name: 'Wind Speed (m/s)'
-});
-*/
 // show it in video view
 let chartView = new ChartJsView({
     container: 'char-container',
