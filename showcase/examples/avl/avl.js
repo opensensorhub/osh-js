@@ -72,11 +72,7 @@ document.body.onclick = () => {
 // Create a common configuration for markers. This one can be shared between stylers
 const commonMarkerConf = {
     dataSourceId: avlDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
-    }),
+    getLocation: (rec) => ({ x: rec.location.lon, y: rec.location.lat, z: rec.location.alt }),
     getLabel: (rec) => rec['veh-id'],
     getMarkerId: (rec) => rec['veh-id'],
     getIcon: (rec) => {
@@ -103,11 +99,7 @@ const commonMarkerConf = {
 // Create a common configuration for polylines. This one can be shared between stylers
 const commonPolylineConf = {
     dataSourceId: avlDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
-    }),
+    getLocation: (rec) => ({ x: rec.location.lon, y: rec.location.lat, z: rec.location.alt }),
     getPolylineId: (rec) =>  rec['veh-id'],
     color: 'rgba(0,0,255,0.5)',
     weight: 5,

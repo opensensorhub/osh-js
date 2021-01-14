@@ -37,7 +37,7 @@ class Layer {
      */
     constructor(properties) {
         this.properties = properties;
-        this.dataSourceToLayerMap = {};
+        this.dataSourcesToFn = undefined;
         this.data = [];
         this.props = {};
         this.props.id = "layer-" + randomUUID();
@@ -123,12 +123,15 @@ class Layer {
      * @param {Function} fn - the function to add
      */
     addFn(dataSourceIds, fn) {
+        if (!isDefined(this.dataSourcesToFn)) {
+            this.dataSourcesToFn = {};
+        }
         for (let i = 0; i < dataSourceIds.length; i++) {
             let dataSourceId = dataSourceIds[i];
-            if (!isDefined(this.dataSourceToLayerMap[dataSourceId])) {
-                this.dataSourceToLayerMap[dataSourceId] = [];
+            if (!isDefined(this.dataSourcesToFn[dataSourceId])) {
+                this.dataSourcesToFn[dataSourceId] = [];
             }
-            this.dataSourceToLayerMap[dataSourceId].push(fn);
+            this.dataSourcesToFn[dataSourceId].push(fn);
         }
     }
 
@@ -141,8 +144,8 @@ class Layer {
     setData(dataSourceId, records, options) {
         // store data into data props
         this.data = [];
-        if (dataSourceId in this.dataSourceToLayerMap) {
-            let fnArr = this.dataSourceToLayerMap[dataSourceId];
+        if (dataSourceId in this.dataSourcesToFn) {
+            let fnArr = this.dataSourcesToFn[dataSourceId];
             for(let j=0;j < records.length;j++) {
                 for (let i = 0; i < fnArr.length; i++) {
                     fnArr[i](records[j].data, records[j].timeStamp, options);
@@ -159,14 +162,16 @@ class Layer {
      * @return {String[]} The list of dataSource ids
      */
     getDataSourcesIds() {
-        let res = [];
-        for (let i in this.dataSourceToLayerMap) {
-            res.push(i);
+        if(isDefined(this.dataSourcesToFn)) {
+            let res = [];
+            for (let i in this.dataSourcesToFn) {
+                res.push(i);
+            }
+            return res;
+        } else {
+            assertDefined(this.properties.dataSourceId, 'dataSourceId must be defined');
+            return [this.properties.dataSourceId];
         }
-        if(isDefined(this.props.dataSourceId)) {
-            res.push(this.props.dataSourceId);
-        }
-        return res;
     }
 
     getDataSourcesIdsByProperty(name) {

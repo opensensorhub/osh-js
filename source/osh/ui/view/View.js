@@ -249,7 +249,7 @@ class View {
     removeAllFromLayer(layer) {
         if(this.layers.includes(layer)) {
             // 1) remove from STYLER fn
-            for(let ds in layer.dataSourceToLayerMap) {
+            for(let ds in layer.dataSourcesToFn) {
                 delete this.lastRec[ds];
             }
             layer.reset();
