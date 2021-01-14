@@ -6,15 +6,11 @@ import SweJson from "osh/datareceiver/SweJson.js";
 function createChart(dataSource, divId, title) {
 
     let windSpeedLayerCurve = new CurveLayer({
-        getValues: {
-            dataSourceIds: [dataSource.id],
-            handler: function (rec, timeStamp) {
-                return {
-                    x: timeStamp,
-                    y: rec.windSpeed
-                };
-            }
-        },
+        dataSourceId: dataSource.id,
+        getValues:  (rec, timeStamp) => ({
+            x: timeStamp,
+            y: rec.windSpeed
+        }),
         name: "WindSpeed"
     });
 

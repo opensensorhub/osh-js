@@ -10,18 +10,14 @@ let chartDataSource = new SweJson("weather", {
     offeringID: "urn:mysos:offering03",
     observedProperty: "http://sensorml.com/ont/swe/property/Weather",
     startTime: "now",
-    endTime: "2055-01-01Z",
-    bufferingTime: 0
+    endTime: "2055-01-01Z"
 });
-
 let windSpeedLayerCurve = new CurveLayer({
-    getValues: {
-        dataSourceIds: [chartDataSource.id],
-        handler: function (rec, timeStamp) {
-            return {
-                x: timeStamp,
-                y: rec.windSpeed
-            };
+    dataSourceId: chartDataSource.id,
+    getValues: (rec, timeStamp) => {
+        return {
+            x: timeStamp,
+            y: rec.windSpeed
         }
     },
     name: 'Wind Speed (m/s)'

@@ -19,15 +19,11 @@ let gpsDataSource = new SweJson('android-GPS', {
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-    getLocation: {
-        dataSourceIds: [gpsDataSource.getId()],
-        handler: function (rec) {
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat
-            };
-        }
-    },
+    dataSourceId: gpsDataSource.id,
+    getLocation: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat
+    }),
     orientation: {
         heading: 0
     },
