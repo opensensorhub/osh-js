@@ -23,12 +23,17 @@ import {isDefined} from "../../../utils/Utils.js";
  *
 import MjpegView from 'osh/ui/view/video/MjpegView.js';
 
-var videoView = new MjpegView("containerId", {
-    dataSourceId: datasource.id,
-    entity : entity,
-    css: "video",
-    cssSelected: "video-selected",
-    name: "Video"
+ let videoView = new MjpegView({
+  container: 'container',
+  css: 'video-h264',
+  name: 'UAV Video',
+  showTime: true,
+  showStats: true,
+  layers: [
+      new DataLayer({
+        dataSourceId: videoDataSource.id
+      })
+  ]
 });
  */
 

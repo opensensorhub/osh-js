@@ -23,13 +23,18 @@ import CanvasView from "./CanvasView";
  *
  import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
 
- let videoView = new FFMPEGView("videoContainer-id", {
-    dataSourceId: videoDataSource.id,
-    css: "video",
-    cssSelected: "video-selected",
-    name: "Video",
-    framerate: 25,
-    directPlay: false
+ let videoView = new FFMPEGView({
+  container: 'video-h264-container',
+  css: 'video-h264',
+  name: 'UAV Video',
+  framerate:25,
+  showTime: true,
+  showStats: true,
+  layers: [
+      new DataLayer({
+        dataSourceId: videoDataSource.id
+      })
+  ]
 });
  */
 

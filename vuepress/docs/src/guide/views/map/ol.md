@@ -31,6 +31,12 @@ Here is the corresponding code that initializes the initial-view if none is pass
 
 <<< @/../../source/osh/ui/view/map/OpenLayerView.js#snippet_openlayerview_initial_view
 
+## Supported layers
+
+The view supports type layers:
+- marker
+- polyline
+
 ## Example
 
 <<< @/../../showcase/examples/openlayers-location/openlayers-location.js

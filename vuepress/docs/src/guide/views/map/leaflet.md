@@ -8,6 +8,12 @@ The View is based on [LeafletJs](https://leafletjs.com/) framework.
 <br/>
 <DocumentationLoad path="/guide/api/LeafletView.html"/>
 
+## Supported layers
+
+The view supports type layers:
+- marker
+- polyline
+
 ## Properties configuration
 
 The ***initialView*** defines some properties for the creation of the inner

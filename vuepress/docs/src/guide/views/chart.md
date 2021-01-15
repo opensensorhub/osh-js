@@ -27,6 +27,11 @@ The ***maxPoint*** property will shift the data over the time so that the maximu
 
 When you pass one of these options to the ChartView, the properties will be merged with the defaults.
 
+## Supported layers
+
+The view supports type layers:
+- curve
+
 ## Example
 
 <<< @/../../showcase/examples/chart/chart.js

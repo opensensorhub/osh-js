@@ -17,6 +17,12 @@ window.CESIUM_BASE_URL = './';
 
 To setup webpack, you can use the osh-js examples and/or read [this article](https://cesium.com/docs/tutorials/cesium-and-webpack/).
 
+## Supported layers
+
+The view supports type layers:
+- marker
+- draping
+
 ## Example
 
 <<< @/../../showcase/examples/cesium-location/cesium-location.js

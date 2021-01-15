@@ -26,34 +26,25 @@ import MapView from "./MapView";
 
  import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
- let leafletMapView = new LeafletView("",
- [{
-            layer :  pointMarker,
-            name : "Android Phone GPS",
-            entityId : androidEntity.id
-        },
- {
-     layer : new PolylineLayer({
-         getLocation : {
-             dataSourceIds : [androidPhoneGpsDataSource.getId()],
-             handler : function(rec) {
-                 return {
-                     x : rec.lon,
-                     y : rec.lat,
-                     z : rec.alt
-                 };
-             }
-         },
-         color : 'rgba(0,0,255,0.5)',
-         weight : 10,
-         opacity : .5,
-         smoothFactor : 1,
-         maxPoints : 200
-     }),
-     name : "Android Phone GPS Path",
-     entityId : androidEntity.id
- }]
- );
+ let leafletMapView = new LeafletView({
+	container: 'leafletMap',
+	layers: [
+	  new PointMarkerLayer({
+      dataSourceId: gpsDataSource.id,
+      getLocation: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
+      }),
+      icon: './images/car-location.png',
+      iconSize: [32, 64],
+      iconAnchor: [16, 65],
+      name: 'Car',
+      description: 'GPS car Toulouse'
+    })
+  ],
+	autoZoomOnFirstMarker: true
+});
  */
 class LeafletView extends MapView {
     /**
