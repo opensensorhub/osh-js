@@ -95,22 +95,4 @@ You can add any external dependencies using *npm*. For example, if you attempt t
 some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
 ## Documentation
-The documentation can be found [here](http://opensensorhub.github.io/osh-js/dev/site/index.html).
-
-The JSDoc can be found [here](http://opensensorhub.github.io/osh-js/dev/jsdoc/)
-
-## Live Showcase
-
-[Showcase](http://opensensorhub.github.io/osh-js/dev/showcase)
-
-## Live Demos
-
-[Video display Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/video-display-vuejs/)
-
-[Video advanced display Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/video-display-advanced-vuejs/)
-
-[3dr solo UAV in react](http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-react/)
-
-[3dr solo UAV in Vuejs](http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-vuejs/)
-
-[Earthquakes based on Vue.js & Deck.gl](http://opensensorhub.github.io/osh-js/dev/demos/earthquake/)
+The official website: [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/dev/site/)
