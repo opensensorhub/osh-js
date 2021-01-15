@@ -60,10 +60,24 @@ This will result in:
 </div>
 ```
 
-### Layers
+### layers
 
 The Map views are composed by [Layers](./layers/general.md). The Layer allows to apply a particular style to each 
 data that the view should display, it can be a point on a map, a polyline, a chart curve, a frame video etc...
+
+#### Supported layers
+
+Each view supports one or more layer types, the internal constructor of the view has a property to define which layer
+types are supported or not. Native OSH views already define this property.
+
+If we try to add a layer that is not supported by a view, an exception will be thrown.
+
+The types are defined as follows:
+- marker
+- polyline
+- curve
+- data
+- draping
 
 ## Data handling
 

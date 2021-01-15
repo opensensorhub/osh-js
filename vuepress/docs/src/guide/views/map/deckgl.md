@@ -22,6 +22,12 @@ OpenStreetMap server.
 It is possible to override this by defining a TileLayer object in **deckprops**, which will display this default TileLayer
 instead of the OSM TileLayer.
 
+## Supported layers
+
+The view supports type layers:
+- marker
+- polyline
+
 ## Example
 
 <<< @/../../showcase/examples/deckgl-location/deckgl-location.js

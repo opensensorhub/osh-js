@@ -63,34 +63,26 @@ import MapView from "./MapView";
 
  import CesiumView from 'osh/ui/view/map/CesiumView.js';
 
- let cesiumMapView = new CesiumView("",
- [{
-	layer :  pointMarker,
-	name : "Android Phone GPS",
-	entityId : androidEntity.id
- },
- {
-    layer : new PolylineLayer({
-        getLocation : {
-            dataSourceIds : [androidPhoneGpsDataSource.getId()],
-            handler : function(rec) {
-                return {
-                    x : rec.lon,
-                    y : rec.lat,
-                    z : rec.alt
-                };
-            }
-        },
-        color : 'rgba(0,0,255,0.5)',
-        weight : 10,
-        opacity : .5,
-        smoothFactor : 1,
-        maxPoints : 200
-    }),
-    name : "Android Phone GPS Path",
-    entityId : androidEntity.id
- }]
- );
+ // style it with a moving point marker
+ let pointMarker = new PointMarkerLayer({
+	dataSourceId: gpsDataSource.id,
+	getLocation: (rec) => ({
+		x: rec.location.lon,
+		y: rec.location.lat
+	}),
+	orientation: {
+		heading: 0
+	},
+	icon: 'images/car-location.png',
+	iconAnchor: [16, 40]
+});
+
+ // #region snippet_cesium_location_view
+ // create Cesium view
+ let cesiumView = new CesiumView({
+	container: 'cesium-container',
+	layers: [pointMarker]
+});
  */
 class CesiumView extends MapView {
 
@@ -105,7 +97,7 @@ class CesiumView extends MapView {
   constructor(properties) {
     super({
       ...properties,
-      supportedLayers: ['marker','draping', 'polyline']
+      supportedLayers: ['marker','draping']
     });
 
     let cssClass = document.getElementById(this.divId).className;

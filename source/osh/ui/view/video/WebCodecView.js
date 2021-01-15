@@ -21,11 +21,15 @@ import DecodeWorker from './workers/webapi.decode.worker.js';
  *
  import WebCodecView from 'osh/ui/view/video/WebCodecView.js';
 
- let videoView = new WebCodecView("videoContainer-id", {
-    dataSourceId: videoDataSource.id,
-    css: "video",
-    cssSelected: "video-selected",
-    name: "Video"
+ let videoView = new WebCodecView({
+  container: 'video-h264-container',
+  css: 'video-h264',
+  name: 'UAV Video',
+  layers: [
+      new DataLayer({
+        dataSourceId: videoDataSource.id
+      })
+  ]
 });
  */
 

@@ -170,7 +170,8 @@ module.exports = {
                             collapsable: true,
                             children: [
                                 '/guide/views/video/ffmpeg.md',
-                                '/guide/views/video/mjpeg.md'
+                                '/guide/views/video/mjpeg.md',
+                                '/guide/views/video/videocodec.md',
                             ]
                         },
                         {
