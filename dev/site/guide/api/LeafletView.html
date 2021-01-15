@@ -58,7 +58,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line58">line 58</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line49">line 49</a>
         </div>
         
     </div>
@@ -448,34 +448,25 @@
     
     <pre class="prettyprint"><code>import LeafletView from 'osh/ui/view/map/LeafletView.js';
 
- let leafletMapView = new LeafletView("",
- [{
-            layer :  pointMarker,
-            name : "Android Phone GPS",
-            entityId : androidEntity.id
-        },
- {
-     layer : new PolylineLayer({
-         getLocation : {
-             dataSourceIds : [androidPhoneGpsDataSource.getId()],
-             handler : function(rec) {
-                 return {
-                     x : rec.lon,
-                     y : rec.lat,
-                     z : rec.alt
-                 };
-             }
-         },
-         color : 'rgba(0,0,255,0.5)',
-         weight : 10,
-         opacity : .5,
-         smoothFactor : 1,
-         maxPoints : 200
-     }),
-     name : "Android Phone GPS Path",
-     entityId : androidEntity.id
- }]
- );</code></pre>
+ let leafletMapView = new LeafletView({
+	container: 'leafletMap',
+	layers: [
+	  new PointMarkerLayer({
+      dataSourceId: gpsDataSource.id,
+      getLocation: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
+      }),
+      icon: './images/car-location.png',
+      iconSize: [32, 64],
+      iconAnchor: [16, 65],
+      name: 'Car',
+      description: 'GPS car Toulouse'
+    })
+  ],
+	autoZoomOnFirstMarker: true
+});</code></pre>
     
 
     
@@ -634,7 +625,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line210">line 210</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line201">line 201</a>
         </div>
         
     </div>
@@ -920,7 +911,7 @@
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line263">line 263</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line254">line 254</a>
         </div>
         
     </div>
@@ -1565,7 +1556,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line159">line 159</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line150">line 150</a>
         </div>
         
     </div>
@@ -3710,7 +3701,7 @@ Note: the onResize() is called at the end of the process.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line343">line 343</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line334">line 334</a>
         </div>
         
     </div>
@@ -3945,7 +3936,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line352">line 352</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line343">line 343</a>
         </div>
         
     </div>
@@ -4512,7 +4503,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line290">line 290</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line281">line 281</a>
         </div>
         
     </div>
@@ -4628,7 +4619,7 @@ This is library dependant.
     
         
         <div class="tag-source">
-            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line360">line 360</a>
+            <a href="osh_ui_view_map_LeafletView.js.html">osh/ui/view/map/LeafletView.js</a>, <a href="osh_ui_view_map_LeafletView.js.html#line351">line 351</a>
         </div>
         
     </div>
@@ -4945,7 +4936,7 @@ This is library dependant.
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Jan 14 2021 22:32:34 GMT+0100 (Central European Standard Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 10:09:33 GMT+0100 (Central European Standard Time)
         </footer>
     </div>
 </div>
