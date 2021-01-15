@@ -65,8 +65,8 @@ class OpenLayerView extends MapView {
      */
     constructor(properties) {
         super({
-            ...properties,
-            supportedLayers: ['marker', 'polyline']
+            supportedLayers: ['marker', 'polyline'],
+            ...properties
         });
     }
 

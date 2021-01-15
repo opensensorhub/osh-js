@@ -47,8 +47,8 @@ class WebCodecView extends CanvasView {
      */
     constructor(properties) {
         super({
-            ...properties,
-            supportedLayers: ['data']
+            supportedLayers: ['data'],
+            ...properties
         });
 
         this.codec = 'h264';

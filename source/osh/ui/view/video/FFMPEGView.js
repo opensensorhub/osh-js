@@ -54,8 +54,8 @@ class FFMPEGView extends CanvasView {
      */
     constructor(properties) {
         super({
-            ...properties,
-            supportedLayers: ['data']
+            supportedLayers: ['data'],
+            ...properties
         });
 
         this.directPlay = false;

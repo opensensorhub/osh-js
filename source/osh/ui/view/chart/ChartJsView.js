@@ -39,8 +39,8 @@ class ChartJsView extends View {
      */
     constructor(properties) {
         super({
-            ...properties,
-            supportedLayers: ['curve']
+            supportedLayers: ['curve'],
+            ...properties
         });
 
         let xLabel = 'Time';

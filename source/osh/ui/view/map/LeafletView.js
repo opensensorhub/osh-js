@@ -61,8 +61,8 @@ class LeafletView extends MapView {
      */
     constructor(properties) {
         super({
+            supportedLayers: ['marker','draping', 'polyline'],
             ...properties,
-            supportedLayers: ['marker','draping', 'polyline']
         });
 
         let cssClass = document.getElementById(this.divId).className;

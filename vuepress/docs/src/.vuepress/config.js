@@ -63,7 +63,15 @@ module.exports = {
             },
             {
                 text: 'Samples',
-                link: 'http://opensensorhub.github.io/osh-js/dev/showcase/',
+                ariaLabel: 'Samples',
+                items: [
+                    { text: 'Showcase', link: 'http://opensensorhub.github.io/osh-js/dev/showcase/' },
+                    { text: 'Vue.js Video', link: 'http://opensensorhub.github.io/osh-js/dev/demos/video-display-vuejs/' },
+                    { text: 'Vue.js  advanced', link: 'http://opensensorhub.github.io/osh-js/dev/demos/video-display-advanced-vuejs/' },
+                    { text: 'React UAV', link: 'http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-react' },
+                    { text: 'Vue.js UAV', link: 'http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-vuejs' },
+                    { text: 'Earthquakes Deck.gl', link: 'http://opensensorhub.github.io/osh-js/dev/demos/earthquake' },
+                ]
             },
             {
                 text: 'API',

@@ -96,8 +96,8 @@ class CesiumView extends MapView {
    */
   constructor(properties) {
     super({
-      ...properties,
-      supportedLayers: ['marker','draping']
+      supportedLayers: ['marker','draping'],
+      ...properties
     });
 
     let cssClass = document.getElementById(this.divId).className;

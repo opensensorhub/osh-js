@@ -49,8 +49,8 @@ class MjpegView extends View {
    */
   constructor(properties) {
       super({
-          ...properties,
-          supportedLayers: ['data']
+          supportedLayers: ['data'],
+          ...properties
       });
 
     // create timestamp slot
