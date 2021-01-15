@@ -155,13 +155,6 @@ module.exports = {
                     children: [
                         '/guide/views/general.md',
                         {
-                            title: 'Layer',
-                            collapsable: true,
-                            children: [
-                                '/guide/views/layers/general.md',
-                            ]
-                        },
-                        {
                             title: 'Map',
                             collapsable: true,
                             children: [
@@ -191,6 +184,17 @@ module.exports = {
                                 '/guide/views/ext/tasking.md',
                             ]
                         },
+                    ]
+                },
+                {
+                    title: 'Layers',
+                    collapsable: true,
+                    children: [
+                        '/guide/layers/general.md',
+                        '/guide/layers/marker.md',
+                        '/guide/layers/polyline.md',
+                        '/guide/layers/curve.md',
+                        '/guide/layers/draping.md',
                     ]
                 },
                 {

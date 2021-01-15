@@ -29,6 +29,7 @@ let pointMarker = new PointMarkerLayer({
     name: "Android Phone GPS"
 });
 
+// #region snippet_leaflet_location_polyline
 // also create a polyline with the last 200 points of the track
 let polyline = new PolylineLayer({
     dataSourceId: gpsDataSource.id,
@@ -44,6 +45,8 @@ let polyline = new PolylineLayer({
     maxPoints: 200,
     name: "Android Phone GPS Path"
 });
+
+// #endregion snippet_leaflet_location_polyline
 
 // create Leaflet view
 let leafletMapView = new LeafletView({

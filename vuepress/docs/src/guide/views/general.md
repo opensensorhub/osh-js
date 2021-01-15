@@ -62,7 +62,7 @@ This will result in:
 
 ### layers
 
-The Map views are composed by [Layers](./layers/general.md). The Layer allows to apply a particular style to each 
+The Map views are composed by [Layers](../layers/general.md). The Layer allows to apply a particular style to each 
 data that the view should display, it can be a point on a map, a polyline, a chart curve, a frame video etc...
 
 #### Supported layers

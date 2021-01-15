@@ -101,7 +101,8 @@ let pointMarkerLayer = new PointMarkerLayer({
     name: 'Solo draping marker'
 });
 
-// style it with a moving point marker
+// #region snippet_image_draping_layer
+// style it with an image draping
 let imageDrapingLayer = new ImageDrapingLayer({
     getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
@@ -145,6 +146,7 @@ let imageDrapingLayer = new ImageDrapingLayer({
     imageSrc: videoCanvas,
     name: 'Solo draping'
 });
+// #endregion snippet_image_draping_layer
 
 // create Cesium view
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
