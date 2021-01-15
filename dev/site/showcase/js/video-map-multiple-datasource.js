@@ -54,6 +54,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         ]
     });
 
+    // #region snippet_multiple_layer_datasources
     // add 3D model marker to Cesium view
     let pointMarker = new PointMarkerLayer({
         name: "3DR Drone",
@@ -81,6 +82,8 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         iconSize: [128,128],
         iconAnchor: [70, 98]
     });
+
+    // #endregion snippet_multiple_layer_datasources
 
     // create Leaflet view
     new LeafletView({

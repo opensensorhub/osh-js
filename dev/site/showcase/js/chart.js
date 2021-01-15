@@ -12,6 +12,8 @@ let chartDataSource = new SweJson("weather", {
     startTime: "now",
     endTime: "2055-01-01Z"
 });
+
+// #region snippet_curve_layer
 let windSpeedLayerCurve = new CurveLayer({
     dataSourceId: chartDataSource.id,
     getValues: (rec, timeStamp) => {
@@ -22,6 +24,7 @@ let windSpeedLayerCurve = new CurveLayer({
     },
     name: 'Wind Speed (m/s)'
 });
+// #endregion snippet_curve_layer
 
 // show it in video view
 let chartView = new ChartJsView({
