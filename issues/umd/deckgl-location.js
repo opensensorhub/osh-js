@@ -1,5 +1,3 @@
-import * as L from 'leaflet';
-
 // create data source for Android phone GPS
 let gpsDataSource = new OSH.SweJson("android-GPS", {
   protocol: "ws",
@@ -29,7 +27,7 @@ window.CESIUM_BASE_URL = './';
 let leafletView = new OSH.LeafletView({
       container: "container",
       layers: [pointMarker],
-      autoZoomOnFirstMarker: false
+      autoZoomOnFirstMarker: true
     }
 );
 
