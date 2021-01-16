@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/index.js"],"names":["default","MapboxLayer"],"mappings":"AAAA,SAAQA,OAAO,IAAIC,WAAnB,QAAqC,gBAArC","sourcesContent":["export {default as MapboxLayer} from './mapbox-layer';\n"],"file":"index.js"}
