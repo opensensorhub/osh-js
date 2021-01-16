@@ -19,7 +19,7 @@ module.exports = {
         // Needed to compile multiline strings in Cesium
         sourcePrefix: '',
     },
-    externals: ['leaflet'],
+    // externals: ['leaflet','cesium','chart.js', 'ol', 'ol-layerswitcher','nouislider','wnumb'],
     amd: {
         // Enable webpack-friendly use of require in Cesium
         toUrlUndefined: true
@@ -105,9 +105,9 @@ module.exports = {
             {from: 'source/osh/resources/images', to: DIR_OUTPUT + '/images'},
             {from: 'source/', to: DIR_OUTPUT + '/source'},
             {from: 'libs/', to: DIR_OUTPUT+ '/libs'},
-            // { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: DIR_OUTPUT + '/Workers' },
-            // { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: DIR_OUTPUT + '/Assets' },
-            // { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: DIR_OUTPUT + '/Widgets' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: DIR_OUTPUT + '/Workers' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: DIR_OUTPUT + '/Assets' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: DIR_OUTPUT + '/Widgets' },
         ])
     ]
 };
