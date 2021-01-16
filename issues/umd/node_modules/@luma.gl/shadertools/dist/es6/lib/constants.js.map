@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/lib/constants.js"],"names":["VERTEX_SHADER","FRAGMENT_SHADER"],"mappings":"AAAA,OAAO,MAAMA,aAAa,GAAG,IAAtB;AACP,OAAO,MAAMC,eAAe,GAAG,IAAxB","sourcesContent":["export const VERTEX_SHADER = 'vs';\nexport const FRAGMENT_SHADER = 'fs';\n"],"file":"constants.js"}
