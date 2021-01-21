@@ -1,4 +1,4 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
+import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
 import OpenLayerView from 'osh/ui/view/map/OpenLayerView.js';
 import PointMarker from "osh/ui/layer/PointMarker.js";
 import {randomUUID} from "osh/utils/Utils";
@@ -11,7 +11,7 @@ const totalElt = document.getElementById("total");
 const viewItems = [];
 
 function addMarker() {
-    let gpsDataSource = new SweJson('android-GPS', {
+    let gpsDataSource = new SosGetResultJson('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

@@ -6,7 +6,7 @@ There are properties to control the playback stream, server version, data connec
 
 **osh-js** comes with built-in datasource types:
 
-- [SweJson](swejson.md)
+- [SosGetResultJson](swejson.md)
 - [Video](video.md)
 - [VideoWithRoll](videoroll.md)
 

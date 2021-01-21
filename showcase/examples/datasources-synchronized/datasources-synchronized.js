@@ -3,15 +3,15 @@ import {displayLocation, displayVideo, displayOrientation} from './display-value
 
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
-import SweJson from "osh/datareceiver/SweJson.js";
-import Video from "osh/datareceiver/Video";
+import SweJson from "osh/datareceiver/SosGetResultJson.js";
+import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo";
 import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
 const REPLAY_SPEED = 1.0;
 
-const videoDataSource = new Video("drone-Video", {
+const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

@@ -9,10 +9,9 @@
 </template>
 
 <script>
-import Video from "osh/datareceiver/Video.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 import DialogDrag from 'vue-dialog-drag'
-import DataLayer from "../../../../../source/osh/ui/layer/DataLayer";
+import DataLayer from "osh/ui/layer/DataLayer";
 
 export default {
   name: "Video",

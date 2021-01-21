@@ -16,16 +16,16 @@
 
 
 import DataSource from './DataSource.js';
-import SweJsonWorker from './workers/SweJson.worker.js';
+import SosGetResultJsonWorker from './workers/SosGetResultJson.worker.js';
 
 /**
  * This datasource provides generic parsing for JSON response.
  *
  * @extends DataSource
  * @example
- * import SweJson from 'osh/datareceiver/SweJson.js';
+ * import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
  *
- * let androidPhoneGpsDataSource = new SweJson("android-GPS", {
+ * let androidPhoneGpsDataSource = new SosGetResultJson("android-GPS", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -39,7 +39,7 @@ import SweJsonWorker from './workers/SweJson.worker.js';
   });
  */
 
-class SweJson extends DataSource {
+class SosGetResultJson extends DataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
@@ -62,8 +62,8 @@ class SweJson extends DataSource {
             timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             ...properties
-        }, new SweJsonWorker());
+        }, new SosGetResultJsonWorker());
     }
 }
 
-export default SweJson;
+export default SosGetResultJson;

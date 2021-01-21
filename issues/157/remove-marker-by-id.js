@@ -1,4 +1,4 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
+import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import LeafletView from 'osh/ui/view/map/LeafletView.js';
 import OpenLayerView from 'osh/ui/view/map/OpenLayerView.js';
@@ -19,7 +19,7 @@ const totalElt = document.getElementById("total");
 const viewItems = [];
 
 function createViewItem() {
-    let gpsDataSource = new SweJson('android-GPS', {
+    let gpsDataSource = new SosGetResultJson('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

@@ -1,4 +1,4 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
+import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
@@ -36,7 +36,7 @@ let videoView = new FFMPEGView("video-h264-draping-container", {
 let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
 
 // create data source for Android phone GPS
-let platformLocationDataSource = new SweJson('android-GPS', {
+let platformLocationDataSource = new SosGetResultJson('android-GPS', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -47,7 +47,7 @@ let platformLocationDataSource = new SweJson('android-GPS', {
     replaySpeed: 1
 });
 
-let platformOrientationDataSource = new SweJson('android-Heading', {
+let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -58,7 +58,7 @@ let platformOrientationDataSource = new SweJson('android-Heading', {
     replaySpeed: 1
 });
 
-let gimbalOrientationDataSource = new SweJson('android-Heading', {
+let gimbalOrientationDataSource = new SosGetResultJson('android-Heading', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

@@ -51,9 +51,9 @@ The Topic connector is used to listen to a BroadcastChannel given a specific top
 Example:
 
 ```js
-import SweJson from 'osh/datareceiver/SweJson';
+import SosGetResultJson from 'osh/datareceiver/SosGetResultJson';
 
-new SweJson('Example',{
+new SosGetResultJson('Example',{
   replaySpeed: 1.0,
   name: 'Example',
   protocol: 'topic',

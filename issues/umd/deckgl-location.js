@@ -1,5 +1,5 @@
 // create data source for Android phone GPS
-let gpsDataSource = new OSH.SweJson("android-GPS", {
+let gpsDataSource = new OSH.SosGetResultJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
