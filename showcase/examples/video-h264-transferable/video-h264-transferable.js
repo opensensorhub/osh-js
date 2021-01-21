@@ -1,9 +1,9 @@
-import Video from 'osh/datareceiver/Video.js';
+import SosGetResultVideo from 'osh/datareceiver/SosGetResultVideo.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
 import DataLayer from 'osh/ui/layer/DataLayer';
 //
 // // create data source for UAV camera
-let videoDataSource = new Video("drone-Video", {
+let videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

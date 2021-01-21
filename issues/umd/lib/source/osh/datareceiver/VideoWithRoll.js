@@ -15,16 +15,16 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSource from "./DataSource";
-import VideoWithRollWorker from './workers/VideoWithRoll.worker.js';
+import SosGetResultVideoWithRollWorker from './workers/SosGetResultVideoWithRoll.worker.js';
 
 /**
  * This datasource provides parsing to H264 raw data with roll.
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import VideoWithRoll from 'osh/datareceiver/VideoWithRoll.js';
+ * import SosGetResultVideoWithRoll from 'osh/datareceiver/SosGetResultVideoWithRoll.js';
  *
- * var videoDataSource = new VideoWithRoll("H264 video ", {
+ * var videoDataSource = new SosGetResultVideoWithRoll("H264 video ", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -36,7 +36,7 @@ import VideoWithRollWorker from './workers/VideoWithRoll.worker.js';
         bufferingTime: 1000
   });
  */
-class VideoWithRoll extends DataSource {
+class SosGetResultVideoWithRoll extends DataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
@@ -64,8 +64,8 @@ class VideoWithRoll extends DataSource {
             timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             ...properties
-        }, new VideoWithRollWorker());
+        }, new SosGetResultVideoWithRollWorker());
     }
 }
 
-export default  VideoWithRoll;
+export default  SosGetResultVideoWithRoll;

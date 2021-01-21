@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 // #region snippet_datasource_swejson
-import SweJson from "osh/datareceiver/SweJson.js";
+import SweJson from "osh/datareceiver/SosGetResultJson.js";
 
 const platformLocationDataSource = new SweJson('android-GPS', {
   protocol: 'ws',

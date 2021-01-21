@@ -17,7 +17,7 @@
 <script>
     // @ is an alias to /src
     import Video from 'osh-vue/components/video/VideoWithControl.vue';
-    import VideoOsh from "osh/datareceiver/Video.js";
+    import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
 
     export default {
         components: {
@@ -31,7 +31,7 @@
         beforeMount() {
             // setup video
             // create data source for UAV camera
-            this.dataSource = new VideoOsh("drone-Video", {
+            this.dataSource = new SosGetResultVideo("drone-Video", {
                 protocol: 'ws',
                 service: 'SOS',
                 endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

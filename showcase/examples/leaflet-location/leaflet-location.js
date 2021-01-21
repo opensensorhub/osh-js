@@ -1,12 +1,12 @@
 // #region snippet_leaflet_location_import
 // create data source for Android phone GPS
-import SweJson from "osh/datareceiver/SweJson.js";
+import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 // #endregion snippet_leaflet_location_import
 
 // #region snippet_leaflet_location_datasource
-let gpsDataSource = new SweJson("android-GPS", {
+let gpsDataSource = new SosGetResultJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

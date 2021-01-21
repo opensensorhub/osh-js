@@ -1,6 +1,6 @@
-# Video
+# SosGetResultVideo
 
-VideoDataSource is a specific DataSource to parse Video data.
+SosGetResultVideo is a specific DataSource to parse Video data.
 
 The class inherits directly from [DataSource](general.md).
 
@@ -10,7 +10,7 @@ There are specific properties for this DataSource.
 
 These properties are members of [customUrlParams](general.md#global-configuration).
 
-<DocumentationLoad path="/guide/api/Video.html"/>
+<DocumentationLoad path="/guide/api/SosGetResultVideo.html"/>
 
 *(1) Note that in case of the video stream, it is very important to define the **responseFormat** to activate the support of these parameters.*
 

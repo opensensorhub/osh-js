@@ -4,7 +4,7 @@ export { default as  DataConnector } from './dataconnector/DataConnector.js';
 export { default as  WebSocketConnector } from './dataconnector/WebSocketConnector.js';
 export { default as  DataSynchronizer } from './datasynchronizer/DataSynchronizer.js';
 export { default as  DataSource } from './datareceiver/DataSource.js';
-export { default as  SweJson } from './datareceiver/SweJson.js';
+export { default as  SosGetResultJson } from './datareceiver/SosGetResultJson.js';
 export { default as  OrientationQuaternion  } from '../osh-ext/datareceiver/OrientationQuaternion.js';
 export { default as  Video } from './datareceiver/Video.js';
 export { default as  DataSenderController } from './datasender/DataSenderController.js';

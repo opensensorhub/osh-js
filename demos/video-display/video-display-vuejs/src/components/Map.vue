@@ -7,7 +7,7 @@
 <script>
     // @ is an alias to /src
 import LeafletView from "osh/ui/view/map/LeafletView.js";
-import SweJson from "osh/datareceiver/SweJson.js";
+import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 
 export default {
@@ -19,7 +19,7 @@ export default {
 
   methods: {
     init() {
-      let gpsDataSource = new SweJson("android-GPS", {
+      let gpsDataSource = new SosGetResultJson("android-GPS", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

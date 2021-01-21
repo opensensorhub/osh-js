@@ -1,6 +1,6 @@
 import DataSourceParser from "./DataSourceParser";
 
-class SweJsonParser extends DataSourceParser {
+class SosGetResultJsonParser extends DataSourceParser {
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
      * @param {String} data - the data to parse
@@ -46,4 +46,4 @@ class SweJsonParser extends DataSourceParser {
     }
 }
 
-export default SweJsonParser;
+export default SosGetResultJsonParser;

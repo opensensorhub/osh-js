@@ -1,7 +1,7 @@
 // create data source for Android phone camera
 import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
 import CurveLayer from "osh/ui/layer/CurveLayer.js";
-import SweJson from "osh/datareceiver/SweJson.js";
+import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
 
 function createChart(dataSource, divId, title) {
 
@@ -68,27 +68,27 @@ const genericOpts = {
 };
 
 
-let chartDataSource0 = new SweJson("weather0", {
+let chartDataSource0 = new SosGetResultJson("weather0", {
     ...genericOpts,
     replaySpeed: 1,
     batchSize: 10
 });
 
-let chartDataSource1 = new SweJson("weather1", {
+let chartDataSource1 = new SosGetResultJson("weather1", {
     ...genericOpts,
     replaySpeed: 1
 });
 
-let chartDataSource2 = new SweJson("weather2", {
+let chartDataSource2 = new SosGetResultJson("weather2", {
     ...genericOpts,
     batchSize: 1000
 });
 
-let chartDataSource3 = new SweJson("weather3", {
+let chartDataSource3 = new SosGetResultJson("weather3", {
     ...genericOpts
 });
 
-let chartDataSource4 = new SweJson("weather4", {
+let chartDataSource4 = new SosGetResultJson("weather4", {
     ...genericOpts,
     startTime: "now",
     endTime: "2055-01-01Z"

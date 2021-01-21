@@ -1,7 +1,7 @@
 import DataSourceHandler from './DataSourceHandler.js';
-import VideoWithRollParser from "../parsers/VideoWithRoll.parser";
+import SosGetResultVideoWithRollParser from "../parsers/SosGetResultVideoWithRoll.parser";
 
-const dataSourceHandler = new DataSourceHandler(new VideoWithRollParser());
+const dataSourceHandler = new DataSourceHandler(new SosGetResultVideoWithRollParser());
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);

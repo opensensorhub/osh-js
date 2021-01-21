@@ -37,7 +37,7 @@
 <script>
 // @ is an alias to /src
 import Video from 'osh-vue/components/video/VideoWithControl.vue';
-import VideoOsh from 'osh/datareceiver/Video.js';
+import SosGetResultVideo from 'osh/datareceiver/SosGetResultVideo.js';
 import DataSynchronizer from 'osh/datasynchronizer/DataSynchronizer.js';
 
 export default {
@@ -54,7 +54,7 @@ export default {
   beforeMount() {
     // setup video
     // create data source for UAV camera
-    this.dataSource0 = new VideoOsh("drone-Video", {
+    this.dataSource0 = new SosGetResultVideo("drone-Video", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -67,7 +67,7 @@ export default {
       bufferingTime: 500
     });
 
-    this.dataSource1 = new VideoOsh("drone-Video1", {
+    this.dataSource1 = new SosGetResultVideo("drone-Video1", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -80,7 +80,7 @@ export default {
       bufferingTime: 500
     });
 
-    this.dataSource2 = new VideoOsh("drone-Video2", {
+    this.dataSource2 = new SosGetResultVideo("drone-Video2", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

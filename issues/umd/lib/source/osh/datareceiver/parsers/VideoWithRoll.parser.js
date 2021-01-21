@@ -1,6 +1,6 @@
 import VideoParser from "./Video.parser";
 
-class VideoWithRollParser extends VideoParser {
+class SosGetResultVideoWithRollParser extends VideoParser {
     /**
      * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
      * @param {ArrayBuffer} data - the data to parse
@@ -15,4 +15,4 @@ class VideoWithRollParser extends VideoParser {
     }
 }
 
-export default  VideoWithRollParser;
+export default  SosGetResultVideoWithRollParser;
