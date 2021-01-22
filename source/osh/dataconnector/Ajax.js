@@ -16,6 +16,7 @@
 
 import DataConnector from './DataConnector.js';
 import {isDefined} from '../utils/Utils.js';
+import {Status} from './Status.js';
 
 /**
  * Defines the AjaxConnector to connect to a remote server by making AjaxRequest.
@@ -86,18 +87,20 @@ class Ajax extends DataConnector {
                 if (xmlhttp.response) {
                     self.onMessage(xmlhttp.response);
                 }
+                self.checkStatus(Status.DISCONNECTED);
             };
             xmlhttp.ontimeout = (e) => {
                 console.log("Timeout");
+                self.checkStatus(Status.DISCONNECTED);
             };
-
+            self.checkStatus(Status.CONNECTED);
             xmlhttp.send(null);
         } else {
             xmlhttp.open("POST", this.getUrl(), true);
             xmlhttp.setRequestHeader('Content-Type', 'text/xml');
 
             xmlhttp.send(request);
-
+            self.checkStatus(Status.CONNECTED);
             xmlhttp.onreadystatechange = () => {
                 if (xmlhttp.readyState < 4) {
                     // while waiting response from server
@@ -107,6 +110,7 @@ class Ajax extends DataConnector {
                     } else {
                         self.onError("");
                     }
+                    self.checkStatus(Status.DISCONNECTED);
                 }
             };
         }
@@ -136,6 +140,10 @@ class Ajax extends DataConnector {
      */
     connect() {
         this.sendRequest(null);
+    }
+
+    isConnected() {
+        return false;
     }
 }
 export default Ajax;

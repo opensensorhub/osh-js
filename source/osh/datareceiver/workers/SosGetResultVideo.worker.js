@@ -1,7 +1,7 @@
 import SosGetResultVideoParser from '../parsers/SosGetResultVideo.parser.js';
-import DataSourceHandler from './DataSourceHandler.js';
+import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
 
-const dataSourceHandler = new DataSourceHandler(new SosGetResultVideoParser());
+const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultVideoParser());
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);

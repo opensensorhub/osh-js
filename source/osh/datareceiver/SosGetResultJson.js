@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import DataSource from './DataSource.js';
+import TimeSeriesDataSource from './TimeSeriesDataSource.js';
 import SosGetResultJsonWorker from './workers/SosGetResultJson.worker.js';
 
 /**
@@ -39,7 +39,7 @@ import SosGetResultJsonWorker from './workers/SosGetResultJson.worker.js';
   });
  */
 
-class SosGetResultJson extends DataSource {
+class SosGetResultJson extends TimeSeriesDataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties

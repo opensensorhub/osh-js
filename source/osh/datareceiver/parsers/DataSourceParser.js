@@ -33,34 +33,10 @@ class DataSourceParser {
         url += properties.endpointUrl + "?";
 
         // adds service
-        url += "service=" + properties.service + "&";
+        url += "service=" + properties.service;
 
         // adds version
-        url += "version=2.0&";
-
-        // adds request
-        url += "request=GetResult&";
-
-        // adds offering
-        url += "offering=" + properties.offeringID + "&";
-
-        // adds feature of interest urn
-        if (properties.foiURN && properties.foiURN !== '') {
-            url += 'featureOfInterest=' + properties.foiURN + '&';
-        }
-
-        // adds observedProperty
-        url += "observedProperty=" + properties.observedProperty + "&";
-
-        // adds temporalFilter
-        const stTime = (isDefined(properties.lastTimeStamp)) ? properties.lastTimeStamp :  properties.startTime;
-        this.lastStartTime = properties.startTime;
-        let endTime = properties.endTime;
-        url += "temporalFilter=phenomenonTime," + stTime+ "/" + endTime + "&";
-        if (properties.replaySpeed) {
-            // adds replaySpeed
-            url += "replaySpeed=" + properties.replaySpeed;
-        }
+        url += "&version=2.0&";
 
         // adds responseFormat (optional)
         if (properties.responseFormat) {

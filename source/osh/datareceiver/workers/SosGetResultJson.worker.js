@@ -1,7 +1,7 @@
 import SosGetResultJsonParser from '../parsers/SosGetResultJson.parser';
-import DataSourceHandler from './DataSourceHandler.js';
+import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
 
-const dataSourceHandler = new DataSourceHandler(new SosGetResultJsonParser());
+const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultJsonParser());
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);

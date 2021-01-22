@@ -1,6 +1,6 @@
 import WebSocketConnector from "../../dataconnector/WebSocketConnector.js";
 import Ajax from "../../dataconnector/Ajax.js";
-import {isDefined, randomUUID} from "../../utils/Utils.js";
+import {isDefined} from "../../utils/Utils.js";
 import TopicConnector from "../../dataconnector/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../dataconnector/Status";
@@ -11,9 +11,6 @@ class DataSourceHandler {
     constructor(parser) {
         this.parser = parser;
         this.connector = null;
-        this.lastTimeStamp = null;
-        this.lastStartTime = 'now';
-        this.timeShift = 0;
         this.reconnectTimeout = 1000 * 10; // 10 secs
         this.values = [];
     }
@@ -82,15 +79,13 @@ class DataSourceHandler {
             this.connector = new WebSocketConnector(url);
         } else if (properties.protocol.startsWith('http')) {
             this.connector = new Ajax(url);
-            this.connector.responseType = 'arraybuffer';
+            this.connector.responseType = properties.responseType || 'arraybuffer';
         } else if (properties.protocol.startsWith('topic')) {
             this.connector = new TopicConnector(url);
         } else if (properties.protocol.startsWith('file')) {
             this.connector = new FileConnector(url,properties);
         }
 
-        const lastStartTimeCst = this.parser.lastStartTime;
-        const lastProperties = properties;
         if (this.connector !== null) {
             // set the reconnectTimeout
             this.connector.setReconnectTimeout(this.reconnectTimeout);
@@ -100,19 +95,6 @@ class DataSourceHandler {
 
             // bind change connection STATUS
             this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
-
-            this.connector.onReconnect = () => {
-                // if not real time, preserve last timestamp to reconnect at the last time received
-                // for that, we update the URL with the new last time received
-                if (lastStartTimeCst !== 'now') {
-                    this.connector.setUrl(this.parser.buildUrl(
-                        {
-                            ...properties,
-                            lastTimeStamp: isDefined(this.lastTimeStamp) ? new Date(this.lastTimeStamp).toISOString(): properties.startTime,
-                        }));
-                }
-                return true;
-            }
         }
     }
 
@@ -141,26 +123,27 @@ class DataSourceHandler {
     }
 
     async onMessage(event) {
-        const timeStamp = await Promise.resolve(this.parser.parseTimeStamp(event) + this.timeShift);
-        const data      = await Promise.resolve(this.parser.parseData(event));
+        const data   = await Promise.resolve(this.parser.parseData(event));
 
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
                 this.values.push({
-                    data: data[i],
-                    timeStamp: timeStamp
+                    data: data[i]
                 });
+                if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+                    this.flush();
+                }
             }
         } else {
             this.values.push({
-                data: data,
-                timeStamp: timeStamp
+                data: data
             });
         }
-        this.lastTimeStamp = timeStamp;
-
-        if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+        // because parseData is ASYNC, the connector can finish before the parsing method. In that case, we have to flushALl data
+        if (!this.isConnected()) {
+            this.flushAll();
+        } else if (isDefined(this.batchSize) && this.values.length !== 0 && this.values.length >= this.batchSize) {
             this.flush();
         }
     }
@@ -181,26 +164,12 @@ class DataSourceHandler {
         });
     }
 
-    getLastTimeStamp() {
-        return this.lastTimeStamp;
-    }
-
-    updateUrl(properties) {
+    updateProperties(properties) {
         this.disconnect();
-
-        let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
-
-        if(properties.hasOwnProperty('startTime')) {
-            lastTimestamp = properties.startTime;
-        } else if(this.properties.startTime === 'now'){
-            //handle RealTime
-            lastTimestamp = 'now';
-        }
 
         this.createDataConnector({
             ...this.properties,
-            ...properties,
-            lastTimeStamp: lastTimestamp
+            ...properties
         });
 
         this.connect();
@@ -224,6 +193,10 @@ class DataSourceHandler {
         });
     }
 
+    isConnected() {
+        return (this.connector === null)? false: this.connector.isConnected();
+    };
+
     handleMessage(message, worker) {
         if(message.message === 'init') {
             this.createConnector(message.properties, message.topic, message.id);
@@ -233,18 +206,12 @@ class DataSourceHandler {
             this.disconnect();
         } else if (message.message === 'topic') {
             this.setTopic(message.topic);
-        } else if (message.message === 'last-timestamp') {
-            const lastTimeStamp = this.getLastTimeStamp();
-            worker.postMessage({
-                message: 'last-timestamp',
-                data: lastTimeStamp
-            })
-        }  else if (message.message === 'update-url') {
-            this.updateUrl(message.data);
+        } else if (message.message === 'update-url') {
+            this.updateProperties(message.data);
         } else if (message.message === 'is-connected') {
             worker.postMessage({
                 message: 'is-connected',
-                data: (this.connector === null)? false: this.connector.isConnected()
+                data: this.isConnected()
             })
         }
     }

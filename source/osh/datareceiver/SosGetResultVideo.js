@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSource from './DataSource.js';
+import TimeSeriesDataSource from './TimeSeriesDataSource.js';
 import SosGetResultVideoWorker from "./workers/SosGetResultVideo.worker.js";
 
 /**
@@ -36,7 +36,7 @@ import SosGetResultVideoWorker from "./workers/SosGetResultVideo.worker.js";
         bufferingTime: 1000
   });
  */
-class SosGetResultVideo extends DataSource {
+class SosGetResultVideo extends TimeSeriesDataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties

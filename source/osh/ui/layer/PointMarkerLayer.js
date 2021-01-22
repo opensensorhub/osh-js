@@ -84,6 +84,8 @@ class PointMarkerLayer extends Layer {
 		* @param {Number} [properties.labelSize=16] -
 		* @param {Number[]} [properties.labelOffset=[0,0]] -
 		* @param {Function} [properties.getLocation] -
+	  * @param {Function} [properties.getName] -
+	  * @param {Function} [properties.getDescription] -
 		* @param {Function} [properties.getOrientation] -
 		* @param {Function} [properties.getIcon] -
 	  * @param {Function} [properties.getIconColor] -
@@ -207,6 +209,20 @@ class PointMarkerLayer extends Layer {
 				that.props.orientation = that.getFunc('getOrientation')(rec,timeStamp,options);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getOrientation'),fn);
+		}
+
+		if (this.checkFn("getName")) {
+			let fn = function(rec,timeStamp,options) {
+				that.props.name = that.getFunc('getName')(rec,timeStamp,options);
+			};
+			this.addFn(that.getDataSourcesIdsByProperty('getName'),fn);
+		}
+
+		if (this.checkFn("getDescription")) {
+			let fn = function(rec,timeStamp,options) {
+				that.props.description = that.getFunc('getDescription')(rec,timeStamp,options);
+			};
+			this.addFn(that.getDataSourcesIdsByProperty('getDescription'),fn);
 		}
 
 		if (this.checkFn("getIcon")) {

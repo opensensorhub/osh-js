@@ -1,6 +1,6 @@
-import DataSourceParser from "./DataSourceParser";
+import TimeSeriesParser from "./TimeSeriesParser.parser";
 
-class SosGetResultJsonParser extends DataSourceParser {
+class SosGetResultJsonParser extends TimeSeriesParser {
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
      * @param {String} data - the data to parse
@@ -38,6 +38,23 @@ class SosGetResultJsonParser extends DataSourceParser {
         return result;
     }
 
+    /**
+     * Builds the full url.
+     * @protected
+     * @param {Object} properties
+     * @param {String} properties.protocol the connector protocol
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.offeringID the offeringID
+     * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.startTime the start time (ISO format)
+     * @param {String} properties.endTime the end time (ISO format)
+     * @param {Number} properties.replaySpeed the replay factor
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
+     * @param {Object} properties.customUrlParams - the encoding options
+     * @return {String} the full url
+     */
     buildUrl(properties) {
         return super.buildUrl({
             ...properties,
