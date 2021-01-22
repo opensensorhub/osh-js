@@ -1,47 +1,56 @@
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
-import {HeadingPitchRange, Math} from 'cesium';
-import Server from "osh/server/Server.js";
+import SosGetFois from 'osh/datareceiver/SosGetFois';
+import {
+    Rectangle
+} from 'cesium';
+import PointMarkerLayer from 'osh/ui/layer/PointMarkerLayer';
 
 window.CESIUM_BASE_URL = './';
 
-let server = new Server({
-    url: "http://sensiasoft.net:8181",
-    sos: "sos",
-    baseUrl: "sensorhub"
+// create data source for Fois
+let sosGetFois = new SosGetFois('fois', {
+    protocol: 'http',
+    service: 'SOS',
+    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    batchSize: 50,
+    foiURN: 'urn:usgs:water:network'
 });
 
 // create Cesium view
-let cesiumView = new CesiumView({container: "cesium-container"});
-cesiumView.first = false; // don't zoom on first item added
-
-// retrieve list of features of interest from server (async call)
-//$loading = $("<p style='position:absolute; color:white; top:20; left:20; z-index:1000'>Loading...</p>");
-server.getFeatureOfInterestById("urn:usgs:water:network", function(resp) {
-
-    // render each feature with a marker
-    resp.GetFeatureOfInterestResponse.featureMember.forEach(function(f) {
-
-        // parse location from GML
-        let pos = f.shape.pos.split(" ");
-        // add marker to Leaflet map
-        cesiumView.addMarker({
-            name: f.name,
-            description: f.description + "<br/>" +
-                "Latitude: " + pos[0] + "°<br/>" +
-                "Longitude: " + pos[1] + "°",
-            location: {
-                x: parseFloat(pos[1]),
-                y: parseFloat(pos[0])
+let cesiumView = new CesiumView({
+    container: "cesium-container",
+    autoZoomOnFirstMarker: true,
+    layers: [
+        new PointMarkerLayer({
+            dataSourceId: sosGetFois.id,
+            getLocation: (f) => {
+                let pos = f.shape.pos.split(" ");
+                return {
+                    x: parseFloat(pos[1]),
+                    y: parseFloat(pos[0])
+                }
             },
+            getName: (f) => f.name,
+            getDescription:(f) => {
+                let pos = f.shape.pos.split(" ");
+                return  f.description + "<br/>" +
+                "Latitude: " + pos[0] + "°<br/>" +
+                "Longitude: " + pos[1] + "°"
+            },
+            getMarkerId:(f) => f.id,
             icon: 'images/marker-icon.png',
             iconAnchor: [12, 41],
-            label: f.id,
-            labelColor: '#ffffff',
+            getLabel: (f) =>  f.id,
+            labelColor: '#000000',
             labelSize: 28,
             labelOffset: [0, 10],
-        });
-    });
-
-    // zoom to all created markers
-    cesiumView.viewer.zoomTo(cesiumView.viewer.entities, new HeadingPitchRange(Math.toRadians(0), Math.toRadians(-90), 5e5));
+        })
+    ]
 });
+
+cesiumView.viewer.camera.flyTo({
+    destination : Rectangle.fromDegrees(-84.299417,38.967509,-64.194437,46.731941)
+});
+
+sosGetFois.connect();
+
