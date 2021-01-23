@@ -1,9 +1,9 @@
 // create data source for Android phone GPS
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
 // #region snippet_datasource_video
-import Video from "osh/datareceiver/Video";
+import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo";
 
-const videoDataSource = new Video("drone-Video", {
+const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

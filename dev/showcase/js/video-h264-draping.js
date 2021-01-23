@@ -1,4 +1,4 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
+import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
@@ -6,7 +6,7 @@ import {
     Cartesian3,
     Cartesian2, Ion
 } from "cesium";
-import Video from "osh/datareceiver/Video.js";
+import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 import ImageDrapingLayer from "osh/ui/layer/ImageDrapingLayer.js";
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
@@ -14,7 +14,7 @@ import DataLayer from 'osh/ui/layer/DataLayer';
 
 window.CESIUM_BASE_URL = './';
 
-let videoDataSource = new Video("drone-Video", {
+let videoDataSource = new SosGetResultVideo("drone-Video", {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -43,7 +43,7 @@ let videoView = new FFMPEGView({
 let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
 
 // create data source for Android phone GPS
-let platformLocationDataSource = new SweJson('android-GPS', {
+let platformLocationDataSource = new SosGetResultJson('android-GPS', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -54,7 +54,7 @@ let platformLocationDataSource = new SweJson('android-GPS', {
     replaySpeed: 1
 });
 
-let platformOrientationDataSource = new SweJson('android-Heading', {
+let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -65,7 +65,7 @@ let platformOrientationDataSource = new SweJson('android-Heading', {
     replaySpeed: 1
 });
 
-let gimbalOrientationDataSource = new SweJson('android-Heading', {
+let gimbalOrientationDataSource = new SosGetResultJson('android-Heading', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

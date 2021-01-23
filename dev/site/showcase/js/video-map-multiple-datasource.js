@@ -1,5 +1,5 @@
-import Video from "osh/datareceiver/Video.js";
-import SweJson from "osh/datareceiver/SweJson.js";
+import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
+import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
@@ -8,7 +8,7 @@ import DataLayer from "osh/ui/layer/DataLayer";
 const REPLAY_FACTOR = 1.0;
 
 function createView(videoDivId, mapDivId, startTime,endTime ) {
-    const videoDataSource = new Video("drone-Video", {
+    const videoDataSource = new SosGetResultVideo("drone-Video", {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -18,7 +18,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         endTime: endTime,
         replaySpeed: REPLAY_FACTOR
     });
-    const platformLocationDataSource = new SweJson('android-GPS', {
+    const platformLocationDataSource = new SosGetResultJson('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -28,7 +28,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         endTime: endTime,
         replaySpeed: REPLAY_FACTOR
     });
-    const platformOrientationDataSource = new SweJson('android-Heading', {
+    const platformOrientationDataSource = new SosGetResultJson('android-Heading', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

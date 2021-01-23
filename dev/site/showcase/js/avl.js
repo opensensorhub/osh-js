@@ -1,4 +1,4 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
+import SweJson from 'osh/datareceiver/SosGetResultJson.js';
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import Polyline from "osh/ui/layer/PolylineLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
