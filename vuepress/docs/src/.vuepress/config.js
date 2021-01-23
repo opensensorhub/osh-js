@@ -127,7 +127,8 @@ module.exports = {
                                 '/guide/datasources/sos/swejson.md',
                                 '/guide/datasources/sos/video.md',
                                 '/guide/datasources/sos/videoroll.md',
-                                '/guide/datasources/sos/batch_replayspeed.md'
+                                '/guide/datasources/sos/sosgetfois.md',
+                                '/guide/datasources/sos/batch_replayspeed.md',
                             ]
                         },
                         {

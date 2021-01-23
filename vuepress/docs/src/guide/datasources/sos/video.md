@@ -2,7 +2,7 @@
 
 SosGetResultVideo is a specific DataSource to parse Video data.
 
-The class inherits directly from [DataSource](general.md).
+The class inherits directly from [TimeSeriesDataSource](general.md).
 
 There are specific properties for this DataSource.
 

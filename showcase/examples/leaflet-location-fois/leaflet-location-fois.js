@@ -1,4 +1,3 @@
-//@ sourceURL=leaflet-location.html.js
 // create data source for Android phone GPS
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
@@ -27,7 +26,6 @@ let leafletView = new LeafletView({
                     y: parseFloat(pos[0])
                 }
             },
-            getName: (f) => f.name,
             getDescription:(f) => {
                 let pos = f.shape.pos.split(" ");
                 return  f.description + "<br/>" +

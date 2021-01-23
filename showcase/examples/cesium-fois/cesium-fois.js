@@ -1,3 +1,4 @@
+// #region snippet_cesium_fois
 import CesiumView from 'osh/ui/view/map/CesiumView.js';
 import SosGetFois from 'osh/datareceiver/SosGetFois';
 import {
@@ -30,7 +31,6 @@ let cesiumView = new CesiumView({
                     y: parseFloat(pos[0])
                 }
             },
-            getName: (f) => f.name,
             getDescription:(f) => {
                 let pos = f.shape.pos.split(" ");
                 return  f.description + "<br/>" +
@@ -41,7 +41,7 @@ let cesiumView = new CesiumView({
             icon: 'images/marker-icon.png',
             iconAnchor: [12, 41],
             getLabel: (f) =>  f.id,
-            labelColor: '#000000',
+            labelColor: '#ffffff',
             labelSize: 28,
             labelOffset: [0, 10],
         })
@@ -54,3 +54,4 @@ cesiumView.viewer.camera.flyTo({
 
 sosGetFois.connect();
 
+// #endregion snippet_cesium_fois
