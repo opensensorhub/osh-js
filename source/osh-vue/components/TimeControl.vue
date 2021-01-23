@@ -25,23 +25,27 @@
 import RangeSlider from 'osh-ext/ui/view/rangeslider/RangeSliderView.js';
 import {randomUUID} from 'osh/utils/Utils.js';
 import * as wNumb from 'wnumb';
-import {isDefined} from "../../osh/utils/Utils";
-import VideoControl from "./video/VideoControl.vue";
+import {isDefined} from "osh/utils/Utils";
+import DataLayer from "osh/ui/layer/DataLayer";
 
 export default {
-  name: "Control",
-  components: {VideoControl},
+  name: "TimeControl",
+  components: {},
   props: {
     dataSource: {
       type: Object
     },
     backward: {
       type: Number,
-      default: () => 5
+      default: () => 5000 // 5sec
     },
     forward: {
       type: Number,
-      default: () => 5
+      default: () => 5000 // 5sec
+    },
+    debounce: {
+      type: Number,
+      default: () => 150
     }
   },
   data() {
@@ -63,8 +67,13 @@ export default {
     const dataSourceObject = this.getDataSourceObject();
 
     if (this.showDataSourceActions) {
-      let rangeSlider = new RangeSlider(this.id, {
-        dataSourceId: this.dataSource.id,
+      let rangeSlider = new RangeSlider({
+        container: this.id,
+        layers: [
+          new DataLayer({
+            dataSourceId: this.dataSource.id
+          })
+        ],
         startTime: this.dataSource.properties.startTime,
         endTime: this.dataSource.properties.endTime,
         refreshRate: 1,
@@ -104,6 +113,7 @@ export default {
         const stTime = isDefined(startTime)? new Date(parseInt(startTime)).toISOString(): dataSourceObject.getStartTime();
         const ndTime = isDefined(endTime)? new Date(parseInt(endTime)).toISOString(): dataSourceObject.getEndTime();
 
+        rangeSlider.debounce(this.debounce);
         dataSourceObject.setTimeRange(stTime,ndTime,dataSourceObject.getReplaySpeed());
       };
 
@@ -118,11 +128,11 @@ export default {
 
 
       fastBackwardButton.onclick = () => {
-        currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
         // reset parameters
         dataSourceObject.getCurrentTime().then(time => {
+          rangeSlider.debounce(this.debounce);
           dataSourceObject.setTimeRange(
-              new Date(parseInt(time - that.backward * 1000)).toISOString(),
+              new Date(parseInt(time - that.backward)).toISOString(),
               dataSourceObject.getEndTime(),
               dataSourceObject.getReplaySpeed()
           );
@@ -132,11 +142,12 @@ export default {
 
       }
       fastForwardButton.onclick = () => {
-        currentTimeElement.innerText = that.parseDate(dataSourceObject.getStartTime());
         // reset parameters
         dataSourceObject.getCurrentTime().then(time => {
+          rangeSlider.debounce(this.debounce);
+          console.log(new Date(parseInt(time)).toISOString(), new Date(parseInt(time + that.forward)).toISOString());
           dataSourceObject.setTimeRange(
-              new Date(parseInt(time + that.forward * 1000)).toISOString(),
+              new Date(parseInt(time + that.forward)).toISOString(),
               dataSourceObject.getEndTime(),
               dataSourceObject.getReplaySpeed()
           );
@@ -154,6 +165,7 @@ export default {
           } else {
             pause = false;
             dataSourceObject.getCurrentTime().then(time => {
+              rangeSlider.debounce(this.debounce);
               dataSourceObject.setTimeRange(
                   new Date(parseInt(time)).toISOString(),
                   dataSourceObject.getEndTime(),

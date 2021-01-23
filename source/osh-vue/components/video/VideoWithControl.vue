@@ -49,7 +49,7 @@
 <script>
   import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
   import {randomUUID} from "osh/utils/Utils.js";
-  import Control from '../Control.vue';
+  import Control from '../TimeControl.vue';
   import VideoControl from './VideoControl.vue';
   import DataLayer from "osh/ui/layer/DataLayer";
 

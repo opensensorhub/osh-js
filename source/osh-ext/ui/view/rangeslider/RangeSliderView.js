@@ -194,16 +194,23 @@ class RangeSliderView extends View {
   setData(dataSourceId, data) {
     const values = data.values;
     for(let i=0; i < values.length;i++) {
-      if (this.dataSourcesId.length === 0 && !this.update) {
-        for (let i = 0; i < values.length; i++) {
-          this.slider.noUiSlider.set([values[i].timeStamp]);
+      if(!this.debounced) {
+        if (this.dataSourcesId.length === 0 && !this.update) {
+          for (let i = 0; i < values.length; i++) {
+            this.slider.noUiSlider.set([values[i].timeStamp]);
+          }
         }
+      } else {
+        break;
       }
     }
   }
 
+  debounce(timeMillis) {
+    this.debounced = true;
+    setTimeout(() => this.debounced = false, timeMillis);
+  }
   onChange(startTime, endTime) {
-
   }
 
   destroy() {
