@@ -18,10 +18,18 @@ import DataSource from "./DataSource";
 import SosGetResultJsonWorker from "./workers/SosGetFois.worker.js";
 
 class SosGetFois extends DataSource {
+
+    /**
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.foiURN the specific procedure id
+     * @param {Number} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
+     */
     constructor(name, properties) {
         super(name, {
-            timeShift:0,
-            reconnectTimeout: 1000 * 5, // default if not defined into properties
             batchSize: 10,
             ...properties,
             responseType: 'application/xml',
