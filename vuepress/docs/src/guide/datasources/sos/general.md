@@ -19,7 +19,8 @@ Each DataSource provides an inner parser which defines how to parse the data.
 The DataSource uses a DataConnector which instantiates a WebSocket or HTTP connection to get results from the server.
 In case of GetResult request, it is preferable to use a WebSocket because it will keep a persistent connection between the client and the server.
 
-The data is in the form of an **arrayBuffer** as defined into the [WebSocket Specification](https://html.spec.whatwg.org/multipage/web-sockets.html#network).
+For the case of using a WebSocket connector, the data is in the form of an **arrayBuffer** as defined into the 
+[WebSocket Specification](https://html.spec.whatwg.org/multipage/web-sockets.html#network).
 
 The DataSource parses the binary array to read the original content such as Text, Json, other binary data(video frames) etc.
 
@@ -33,7 +34,7 @@ Indeed, it mainly concerns the `GetResult` request.
 The data are mapped into internal Object. Each DataSource defines the properties of this object but some are common to
 every DataSource.
 
-For the time being, two kind of message are supported: 'message' and 'data'.
+For the time being, two kind of message are supported: `message` and `data`.
 
 ## DataSource
 
@@ -136,7 +137,7 @@ To create a new datasource type, see the [developer docs](../../advanced/develop
 
 This datasource allows to request the server with the notion of time. The temporal synchronization of the data is then possible for all DataSources inheriting it.
 
-After the parsing, the data can be synchronized using [the DataSynchronizer](../../datasynchronizer/index.md) or/and displayed
+After the parsing, the data can be synchronized using [the DataSynchronizer](../../datasynchronizer/general.md) or/and displayed
 into a [View](../../views/index).
 
 
