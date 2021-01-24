@@ -123,29 +123,31 @@ class DataSourceHandler {
     }
 
     async onMessage(event) {
-        const data   = await Promise.resolve(this.parser.parseData(event));
-
-        // check if data is array
-        if (Array.isArray(data)) {
-            for(let i=0;i < data.length;i++) {
-                this.values.push({
-                    data: data[i]
-                });
-                if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
-                    this.flush();
+        function callbackOnData(data) {
+            // check if data is array
+            if (Array.isArray(data)) {
+                for(let i=0;i < data.length;i++) {
+                    this.values.push({
+                        data: data[i]
+                    });
+                    if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+                        this.flush();
+                    }
                 }
+            } else {
+                this.values.push({
+                    data: data
+                });
             }
-        } else {
-            this.values.push({
-                data: data
-            });
+            // because parseData is ASYNC, the connector can finish before the parsing method. In that case, we have to flushALl data
+            if (!this.isConnected()) {
+                this.flushAll();
+            } else if (isDefined(this.batchSize) && this.values.length !== 0 && this.values.length >= this.batchSize) {
+                console.log('ici1');
+                this.flush();
+            }
         }
-        // because parseData is ASYNC, the connector can finish before the parsing method. In that case, we have to flushALl data
-        if (!this.isConnected()) {
-            this.flushAll();
-        } else if (isDefined(this.batchSize) && this.values.length !== 0 && this.values.length >= this.batchSize) {
-            this.flush();
-        }
+        await Promise.resolve(this.parser.parseData(event, callbackOnData.bind(this)));
     }
 
     /**

@@ -23,8 +23,9 @@ class SWEXmlStreamParser {
      *
      * @param {String} xml -
      */
-    constructor(xml='undefined') {
+    constructor(xml='undefined', fnCbNodeName = 'undefined') {
         this.originalXml = xml;
+        this.fnCbNodeName = fnCbNodeName;
     }
 
     /**
@@ -79,6 +80,7 @@ class SWEXmlStreamParser {
     toJson() {
         var options = {};
         var S = this.originalXml;
+        const that = this;
         var pos = options.pos || 0;
 
         var openBracket = "<";
@@ -133,6 +135,9 @@ class SWEXmlStreamParser {
                         continue;
                     }
                     var child = parseNode();
+                    if(that.fnCbNodeName !== 'undefined') {
+                        that.fnCbNodeName(child);
+                    }
                     var childName = child.type;
                     if (childName === 'type') // don't override special 'type' attribute!
                         continue;
@@ -240,7 +245,6 @@ class SWEXmlStreamParser {
                         node[name] = value;
                 }
                 pos++;
-
             }
 
             // optional parsing of children

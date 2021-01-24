@@ -6,6 +6,7 @@ class SosGetFoisParser extends DataSourceParser {
     /**
      * Extract data from the message. The message is in XML format following the OGC specification
      * @param {Object} data - the data to parse
+     * @param {Function} [fnConsumer=undefined] - a function to consume the data continually
      * @return {Object} the parsed data
      * @example
         <?xml version='1.0' encoding='UTF-8'?>
@@ -29,13 +30,22 @@ class SosGetFoisParser extends DataSourceParser {
             </sos:featureMember>
         </sos:GetFeatureOfInterestResponse>
      */
-    async parseData(data) {
-        let sweXmlParser = new SWEXmlStreamParser(data);
-        sweXmlParser.setXml(data);
-        const json =  sweXmlParser.toJson();
-        assertDefined(json.GetFeatureOfInterestResponse,'json.GetFeatureOfInterestResponse does not exist');
-        assertDefined(json.GetFeatureOfInterestResponse.featureMember,'json.GetFeatureOfInterestResponse.featureMember does not exist');
-        return json.GetFeatureOfInterestResponse.featureMember;
+    async parseData(data, fnConsumer) {
+        if(isDefined(fnConsumer)) {
+            let sweXmlParser = new SWEXmlStreamParser(data, (node) => {
+                if(node.type === 'SF_SpatialSamplingFeature') {
+                    fnConsumer(node);
+                }
+            });
+            sweXmlParser.toJson();
+        } else {
+            // return in one block
+            let sweXmlParser = new SWEXmlStreamParser(data);
+            const json =  sweXmlParser.toJson();
+            assertDefined(json.GetFeatureOfInterestResponse,'json.GetFeatureOfInterestResponse does not exist');
+            assertDefined(json.GetFeatureOfInterestResponse.featureMember,'json.GetFeatureOfInterestResponse.featureMember does not exist');
+            return json.GetFeatureOfInterestResponse.featureMember;
+        }
     }
 
     /**

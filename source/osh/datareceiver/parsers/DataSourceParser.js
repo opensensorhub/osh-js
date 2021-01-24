@@ -1,6 +1,6 @@
 import {isDefined} from "../../utils/Utils";
 
-class DataSourceParser {
+class DataSourceParser extends ReadableStream {
 
     /**
      * Builds the full url.
