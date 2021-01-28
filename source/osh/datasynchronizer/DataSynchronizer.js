@@ -45,7 +45,8 @@ class DataSynchronizer {
         }
         this.initWorker(properties.dataSources, this.intervalRate);
 
-        this.properties = properties;
+        this.properties = {};
+        this.properties.replaySpeed = this.replaySpeed;
     }
 
     /**

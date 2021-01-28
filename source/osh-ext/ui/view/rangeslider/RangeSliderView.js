@@ -177,7 +177,7 @@ class RangeSliderView extends View {
 
     this.slider.noUiSlider.on("end", function (values, handle) {
       that.change(values[0], values[1]);
-      setTimeout(() => that.update = false, 1000);
+      setTimeout(() => that.update = false, 2000);
     });
   }
 
@@ -196,15 +196,16 @@ class RangeSliderView extends View {
   }
 
   setData(dataSourceId, data) {
-    // const values = data.values;
-    // for(let i=0; i < values.length;i++) {
-    //   if(!this.update) {
-    //     this.slider.noUiSlider.set([values[i].timeStamp]);
-    //   }
-    // }
+    const values = data.values;
+    for(let i=0; i < values.length;i++) {
+      if(!this.update) {
+        this.slider.noUiSlider.set([values[i].timeStamp]);
+      }
+    }
   }
 
   change(startTime, endTime) {
+    console.log('setRange')
     this.dataSourceObject.setTimeRange(new Date(parseInt(startTime)).toISOString(),
         new Date(parseInt(endTime)).toISOString(), this.dataSourceObject.properties.replaySpeed);
     this.onChange(startTime, endTime);
@@ -213,13 +214,6 @@ class RangeSliderView extends View {
   onChange(startTime, endTime) {
   }
 
-  destroy() {
-    super.destroy();
-
-    if(isDefined(this.interval)) {
-      clearInterval(this.interval);
-    }
-  }
 }
 
 export default RangeSliderView;

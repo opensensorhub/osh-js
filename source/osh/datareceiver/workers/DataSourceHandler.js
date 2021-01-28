@@ -169,6 +169,7 @@ class DataSourceHandler {
         });
 
         this.connect();
+
     }
 
     flushAll() {
