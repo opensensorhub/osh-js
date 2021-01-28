@@ -51,6 +51,8 @@ class RangeSliderView extends View {
       supportedLayers: ['data']
     });
 
+    this.lastChangeTimestamp = 0;
+
     this.slider = document.createElement("div");
     this.slider.setAttribute("class", "osh-rangeslider-slider");
     document.getElementById(this.divId).appendChild(this.slider);
@@ -62,6 +64,7 @@ class RangeSliderView extends View {
     this.multi = false;
     this.dataSynchonizer = null;
     this.options = {};
+    this.update = false;
 
     if (isDefined(properties)) {
       if (isDefined(properties.startTime)) {
@@ -160,13 +163,17 @@ class RangeSliderView extends View {
     const that = this;
     //noUi-handle noUi-handle-lower
     // start->update->end
-    this.slider.noUiSlider.on("slide", function (values, handle) {
-      that.update = true;
-    });
+    // this.slider.noUiSlider.on("slide", function (values, handle) {
+    //   that.update = true;
+    // });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
       that.onChange(values[0], values[1]);
       that.update = false;
+    });
+
+    this.slider.noUiSlider.on('start',(event) => {
+      that.update = true;
     });
 
     if (this.dataSynchonizer !== null) {
@@ -176,6 +183,7 @@ class RangeSliderView extends View {
         });
       },100);
     }
+
   }
   /**
    * Deactivate the timeline bar
@@ -193,10 +201,15 @@ class RangeSliderView extends View {
 
   setData(dataSourceId, data) {
     const values = data.values;
+    let perfNow;
     for(let i=0; i < values.length;i++) {
-      if (this.dataSourcesId.length === 0 && !this.update) {
         for (let i = 0; i < values.length; i++) {
-          this.slider.noUiSlider.set([values[i].timeStamp]);
+          if (!this.update) {
+          perfNow = performance.now();
+          if(perfNow - this.lastChangeTimestamp > 1000) {
+            this.slider.noUiSlider.set([values[i].timeStamp]);
+            this.lastChangeTimestamp = perfNow;
+          }
         }
       }
     }
