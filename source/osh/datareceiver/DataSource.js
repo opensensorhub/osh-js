@@ -46,19 +46,15 @@ class DataSource {
     constructor(name, properties, worker) {
         this.id = "DataSource-" + randomUUID();
         this.name = name;
-        this.properties = {
-            fetch: 1, // default value if not defined
-            ...properties
-        }
+        this.properties = properties;
         this.dataSourceWorker = worker;
         this.currentRunningProperties = {};
-        this.topicId = DATASOURCE_DATA_TOPIC + this.id;
         this.initDataSource(properties);
     }
 
     /**
      * Inits the datasource with the constructor properties.
-     * @private
+     * @protected
      * @param properties
      */
     initDataSource(properties) {

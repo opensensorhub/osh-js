@@ -58,9 +58,9 @@ class RangeSliderView extends View {
     let startTime = new Date().getTime();
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 
+    this.update = false;
     this.multi = false;
     this.dataSourceObject = null;
-    this.smoothUpdateValue = 200;
     this.options = {};
 
     if (isDefined(properties)) {
@@ -168,22 +168,19 @@ class RangeSliderView extends View {
     //noUi-handle noUi-handle-lower
     // start->update->end
     this.slider.noUiSlider.on("start", function (values, handle) {
-      that.skipUpdate(true);
+      that.update = true;
     });
 
     this.slider.noUiSlider.on("slide", function (values, handle) {
-      that.skipUpdate(true);
+      that.update = true;
     });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
       that.change(values[0], values[1]);
-      that.skipUpdate(false);
+      setTimeout(() => that.update = false, 1000);
     });
   }
 
-  skipUpdate(skip) {
-    setTimeout(() => this.update = skip, this.smoothUpdateValue) ;
-  }
   /**
    * Deactivate the timeline bar
    */
@@ -199,17 +196,17 @@ class RangeSliderView extends View {
   }
 
   setData(dataSourceId, data) {
-    const values = data.values;
-    for(let i=0; i < values.length;i++) {
-      if(!this.update) {
-        this.slider.noUiSlider.set([values[i].timeStamp]);
-      }
-    }
+    // const values = data.values;
+    // for(let i=0; i < values.length;i++) {
+    //   if(!this.update) {
+    //     this.slider.noUiSlider.set([values[i].timeStamp]);
+    //   }
+    // }
   }
 
   change(startTime, endTime) {
     this.dataSourceObject.setTimeRange(new Date(parseInt(startTime)).toISOString(),
-        new Date(parseInt(endTime)).toISOString(), this.dataSourceObject.replaySpeed);
+        new Date(parseInt(endTime)).toISOString(), this.dataSourceObject.properties.replaySpeed);
     this.onChange(startTime, endTime);
   }
 

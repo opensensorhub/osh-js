@@ -45,7 +45,6 @@ class TimeSeriesDataSource extends DataSource{
      */
     constructor(name, properties, worker) {
         super(name,properties ,worker);
-
         this.dataSynchronizer = null;
     }
 
@@ -54,6 +53,20 @@ class TimeSeriesDataSource extends DataSource{
         this.dataSourceWorker.postMessage({
             message: 'topic',
             topic: DATA_SYNCHRONIZER_TOPIC+this.dataSynchronizer.id,
+            timeTopic: this.getTimeTopicId()
+        });
+    }
+
+    /**
+     * Inits the datasource with the constructor properties.
+     * @protected
+     * @param properties
+     */
+    initDataSource(properties) {
+        super.initDataSource(properties);
+        this.dataSourceWorker.postMessage({
+            message: 'topic',
+            topic: this.getTopicId(),
             timeTopic: this.getTimeTopicId()
         });
     }
