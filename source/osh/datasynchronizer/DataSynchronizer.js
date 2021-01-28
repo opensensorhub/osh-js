@@ -16,7 +16,7 @@
 
 import {isDefined, randomUUID} from "../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.worker.js';
-import {DATA_SYNCHRONIZER_TOPIC} from "../Constants.js";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
 
 class DataSynchronizer {
     /**
@@ -64,8 +64,8 @@ class DataSynchronizer {
             dataSources: dataSourcesForWorker,
             replaySpeed: this.replaySpeed,
             intervalRate: intervalRate,
-            dataSynchronizerId:this.id,
-            topic: DATA_SYNCHRONIZER_TOPIC+this.id
+            dataTopic: this.getTopicId(),
+            timeTopic: this.getTimeTopicId(),
         });
     }
 
@@ -167,6 +167,7 @@ class DataSynchronizer {
      * @param {Number} replaySpeed - the replay speed
      */
     setTimeRange(startTime, endTime, replaySpeed) {
+        this.reset();
         for(let ds of this.dataSources) {
             ds.setTimeRange(startTime, endTime, replaySpeed);
         }
@@ -212,6 +213,14 @@ class DataSynchronizer {
         }
 
         return promise;
+    }
+
+    getTopicId() {
+        return DATA_SYNCHRONIZER_TOPIC+this.id;
+    }
+
+    getTimeTopicId() {
+        return TIME_SYNCHRONIZER_TOPIC+this.id;
     }
 }
 export default  DataSynchronizer;

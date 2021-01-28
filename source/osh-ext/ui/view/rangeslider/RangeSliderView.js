@@ -41,7 +41,7 @@ class RangeSliderView extends View {
    * @param {Object[]}  [properties.layers=[]] - The initial layers to add
 		* @param {Number} properties.startTime - The start time
 		* @param {Number} properties.endTime - The end time
-		* @param {String} properties.dataSourcesId - The dataSource id which are sync with master time
+		* @param {String} properties.dataSource - The dataSourceObject
     * @param {Boolean} properties.disabled - disabled the range slider
     * @param {Object} properties.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
 		*/
@@ -58,9 +58,9 @@ class RangeSliderView extends View {
     let startTime = new Date().getTime();
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 
-    this.dataSourcesId = [];
     this.multi = false;
-    this.dataSynchonizer = null;
+    this.dataSourceObject = null;
+    this.smoothUpdateValue = 200;
     this.options = {};
 
     if (isDefined(properties)) {
@@ -72,12 +72,12 @@ class RangeSliderView extends View {
         this.endTime = new Date(properties.endTime).getTime();
       }
 
-      if (isDefined(properties.dataSourcesId)) {
-        this.dataSourcesId = properties.dataSourcesId;
+      if (isDefined(properties.dataSynchronizer)) {
+        this.dataSourceObject = properties.dataSynchronizer;
       }
 
-      if (isDefined(properties.dataSynchronizer)) {
-        this.dataSynchonizer = properties.dataSynchronizer;
+      if (isDefined(properties.dataSource)) {
+        this.dataSourceObject = properties.dataSource;
       }
 
       if(isDefined(properties.options)) {
@@ -133,6 +133,14 @@ class RangeSliderView extends View {
     });
 
     this.createEvents();
+
+    // listen for BC
+    const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
+    bc.onmessage = (message) => {
+      if(!this.update) {
+        this.slider.noUiSlider.set([message.data.timestamp]);
+      }
+    }
   }
 
   createActivateButton() {
@@ -153,29 +161,28 @@ class RangeSliderView extends View {
       }
     });
     document.getElementById(this.divId).appendChild(activateButtonDiv);
-
   }
 
   createEvents() {
     const that = this;
     //noUi-handle noUi-handle-lower
     // start->update->end
+    this.slider.noUiSlider.on("start", function (values, handle) {
+      that.skipUpdate(true);
+    });
+
     this.slider.noUiSlider.on("slide", function (values, handle) {
-      that.update = true;
+      that.skipUpdate(true);
     });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
-      that.onChange(values[0], values[1]);
-      that.update = false;
+      that.change(values[0], values[1]);
+      that.skipUpdate(false);
     });
+  }
 
-    if (this.dataSynchonizer !== null) {
-      this.interval = setInterval(async ()=> {
-        this.dataSynchonizer.getCurrentTime().then(time => {
-          this.slider.noUiSlider.set([time]);
-        });
-      },100);
-    }
+  skipUpdate(skip) {
+    setTimeout(() => this.update = skip, this.smoothUpdateValue) ;
   }
   /**
    * Deactivate the timeline bar
@@ -194,22 +201,18 @@ class RangeSliderView extends View {
   setData(dataSourceId, data) {
     const values = data.values;
     for(let i=0; i < values.length;i++) {
-      if(!this.debounced) {
-        if (this.dataSourcesId.length === 0 && !this.update) {
-          for (let i = 0; i < values.length; i++) {
-            this.slider.noUiSlider.set([values[i].timeStamp]);
-          }
-        }
-      } else {
-        break;
+      if(!this.update) {
+        this.slider.noUiSlider.set([values[i].timeStamp]);
       }
     }
   }
 
-  debounce(timeMillis) {
-    this.debounced = true;
-    setTimeout(() => this.debounced = false, timeMillis);
+  change(startTime, endTime) {
+    this.dataSourceObject.setTimeRange(new Date(parseInt(startTime)).toISOString(),
+        new Date(parseInt(endTime)).toISOString(), this.dataSourceObject.replaySpeed);
+    this.onChange(startTime, endTime);
   }
+
   onChange(startTime, endTime) {
   }
 

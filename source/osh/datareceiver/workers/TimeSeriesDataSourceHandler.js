@@ -8,6 +8,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         this.lastTimeStamp = null;
         this.lastStartTime = 'now';
         this.timeShift = 0;
+        this.timeBroadcastChannel = null;
     }
 
     /**
@@ -56,6 +57,11 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
 
         if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
             this.flush();
+            if(this.timeBroadcastChannel !== null) {
+                this.timeBroadcastChannel.postMessage({
+                    timestamp: this.lastTimeStamp
+                });
+            }
         }
     }
 
@@ -93,7 +99,17 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
                 message: 'last-timestamp',
                 data: lastTimeStamp
             })
+        } else if (message.message === 'topic') {
+            this.setTimeTopic(message.timeTopic);
+            super.setTopic(message.topic);
         }
+    }
+
+    setTimeTopic(timeTopic) {
+        if(this.timeBroadcastChannel !== null) {
+            this.timeBroadcastChannel.close();
+        }
+        this.timeBroadcastChannel = new BroadcastChannel(timeTopic);
     }
 }
 export default TimeSeriesDataSourceHandler;

@@ -124,7 +124,7 @@
           startTime: "2015-02-16T07:58:32Z",
           endTime: "2015-02-16T08:09:00Z",
           timeOut: 100,
-          bufferingTime: 100,
+          bufferingTime: 200,
           timeShift: -16000,
           replaySpeed: 2
         }),

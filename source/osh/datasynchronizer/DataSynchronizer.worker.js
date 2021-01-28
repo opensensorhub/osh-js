@@ -10,6 +10,7 @@ let dataSourceBroadCastChannel = null;
 self.currentTime = -1;
 
 const dataSources = {};
+let timeBroadcastChannel = null;
 
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
@@ -21,7 +22,7 @@ self.onmessage = (event) => {
         dataSynchronizerAlgo.onData = onData;
         init = true;
         addDataSources(event.data.dataSources);
-        initBroadcastChannel(event.data.topic);
+        initBroadcastChannel(event.data.dataTopic, event.data.timeTopic);
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(event.data.message === 'current-time') {
@@ -43,8 +44,8 @@ self.onmessage = (event) => {
     }
 }
 
-function initBroadcastChannel(topic) {
-    dataSourceBroadCastChannel = new BroadcastChannel(topic);
+function initBroadcastChannel(dataTopic, timeTopic) {
+    dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
     dataSourceBroadCastChannel.onmessage = (event) => {
         if(event.data.type === EventType.DATA) {
             for(let i=0; i < event.data.values.length;i++) {
@@ -59,6 +60,9 @@ function initBroadcastChannel(topic) {
             bcChannels[dataSourceId].postMessage(event.data);
         }
     }
+
+    timeBroadcastChannel = new BroadcastChannel(timeTopic);
+
 }
 
 /**
@@ -89,6 +93,10 @@ function onData(dataSourceId, data) {
             type: EventType.DATA
         }
     );
+
+    timeBroadcastChannel.postMessage({
+        timestamp: data.timeStamp
+    });
 }
 
 

@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSource from "./DataSource";
-import {DATA_SYNCHRONIZER_TOPIC} from "../Constants";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
 import {isDefined} from "../utils/Utils";
 
 /**
@@ -53,7 +53,8 @@ class TimeSeriesDataSource extends DataSource{
         this.dataSynchronizer = dataSynchronizer;
         this.dataSourceWorker.postMessage({
             message: 'topic',
-            topic: DATA_SYNCHRONIZER_TOPIC+this.dataSynchronizer.id
+            topic: DATA_SYNCHRONIZER_TOPIC+this.dataSynchronizer.id,
+            timeTopic: this.getTimeTopicId()
         });
     }
 
@@ -139,6 +140,11 @@ class TimeSeriesDataSource extends DataSource{
      */
     updateProperties(properties) {
         super.updateProperties(properties);
+    }
+
+
+    getTimeTopicId() {
+        return DATASOURCE_TIME_TOPIC + this.id;
     }
 }
 
