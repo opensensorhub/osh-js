@@ -65,7 +65,7 @@
     "chart.js": "2.9.3",
     "fs-extra": "^9.0.0",
     "leaflet": "1.6.0",
-    "nouislider": "14.2.0",
+    "nouislider": "14.4.0",
     "ol": "6.2.1",
     "ol-layerswitcher": "3.8.1",
     "strip-ansi": "6.0.0",
