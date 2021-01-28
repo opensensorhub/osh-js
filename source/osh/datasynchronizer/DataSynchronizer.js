@@ -44,6 +44,8 @@ class DataSynchronizer {
             this.intervalRate = properties.intervalRate;
         }
         this.initWorker(properties.dataSources, this.intervalRate);
+
+        this.properties = properties;
     }
 
     /**
