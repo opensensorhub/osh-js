@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
   },
   "dependencies": {
@@ -25,7 +26,7 @@
     "less": "3.11.1",
     "less-loader": "6.0.0",
     "node-sass": "4.14.0",
-    "nouislider": "^14.5.0",
+    "nouislider": "14.4.0",
     "patch-package": "6.2.2",
     "sass-loader": "8.0.2",
     "style-loader": "1.2.0",

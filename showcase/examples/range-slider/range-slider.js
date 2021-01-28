@@ -1,8 +1,7 @@
 import RangeSlider from "osh-ext/ui/view/rangeslider/RangeSliderView.js";
 import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import DataLayer from "../../../source/osh/ui/layer/DataLayer";
-import {isDefined} from "../../../source/osh/utils/Utils";
+import DataLayer from "osh/ui/layer/DataLayer";
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {
