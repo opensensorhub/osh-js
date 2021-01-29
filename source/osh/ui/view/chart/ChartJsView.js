@@ -156,7 +156,7 @@ class ChartJsView extends View {
      * @param {Curve.props[]} props - The layer properties allowing the update of the curve
      */
     updateCurve(props) {
-        let currentDataset = this.datasets[props.curveId];
+        let currentDataset = this.datasets[props[0].curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
 
         if(!isDefined(currentDataset)) {
@@ -171,10 +171,10 @@ class ChartJsView extends View {
                 data: values
             };
             currentDataset = {...currentDataset, ...this.datasetsOpts};
-            this.datasets[props.curveId] = currentDataset;
+            this.datasets[props[0].curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         } else {
-            values.forEach(value => this.datasets[props.curveId].data.push(value));
+            values.forEach(value => this.datasets[props[0].curveId].data.push(value));
         }
         if(currentDataset.data.length >= this.maxPoints) {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
@@ -188,6 +188,15 @@ class ChartJsView extends View {
         if(currentDataset.data.length > this.maxPoints) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();
+        }
+    }
+
+    reset() {
+        super.reset();
+        for(let dataset in this.datasets) {
+            this.datasets[dataset].data = [];
+            this.chart.data.labels = [];
+            this.chart.update();
         }
     }
 }
