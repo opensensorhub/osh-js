@@ -205,7 +205,6 @@ class RangeSliderView extends View {
   }
 
   change(startTime, endTime) {
-    console.log('setRange')
     this.dataSourceObject.setTimeRange(new Date(parseInt(startTime)).toISOString(),
         new Date(parseInt(endTime)).toISOString(), this.dataSourceObject.properties.replaySpeed);
     this.onChange(startTime, endTime);
