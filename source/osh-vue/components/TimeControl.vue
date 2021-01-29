@@ -4,6 +4,12 @@
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <div class="datasource-actions">
+          <a :id="'history-btn-'+this.id" class="control-btn" v-if="showDataSourceActions && !history" @click="toggleHistory">
+            <i class="fa fa-history"></i>
+          </a>
+          <a :id="'history-btn-'+this.id" class="control-btn clicked" v-else-if="showDataSourceActions" @click="toggleHistory">
+            <i class="fa fa-history"></i>
+          </a>
           <a :id="'fast-back-btn-'+this.id" class="control-btn" v-if="showDataSourceActions"> <i
               class="fa fa-fast-backward"></i></a>
           <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause" v-if="showDataSourceActions"><i
@@ -12,9 +18,22 @@
               class="fa fa-fast-forward"></i></a>
         </div>
         <div class="time">
-          <span :id="'current-time-'+this.id"></span>
-          <span v-if="showDataSourceActions">/</span>
-          <span :id="'end-time-'+this.id" v-if="showDataSourceActions"></span>
+          <slot v-if="history">
+            <span :id="'current-time-'+this.id"></span>
+            <span>/</span>
+            <span :id="'end-time-'+this.id" v-if="showDataSourceActions"></span>
+          </slot>
+          <slot v-else>
+            <span :id="'current-time-'+this.id"></span>
+            <v-chip
+                x-small
+                class="ma-2"
+                color="red"
+                text-color="white"
+            >
+              LIVE
+            </v-chip>
+          </slot>
         </div>
       </div>
     </div>
@@ -26,7 +45,6 @@ import RangeSlider from 'osh-ext/ui/view/rangeslider/RangeSliderView.js';
 import {randomUUID} from 'osh/utils/Utils.js';
 import * as wNumb from 'wnumb';
 import {isDefined} from "osh/utils/Utils";
-import DataLayer from "osh/ui/layer/DataLayer";
 
 export default {
   name: "TimeControl",
@@ -48,12 +66,22 @@ export default {
     return {
       id: randomUUID(),
       event: null,
-      showDataSourceActions: true
+      showDataSourceActions: true,
+      history: true,
+      lastStartTime: null,
+      lastEndTime: null,
     };
   },
   watch: {
     event(newValue) {
       this.$emit('event', newValue);
+    },
+    history() {
+      if(isDefined(this.startTime)) {
+        const dataSourceObject = this.getDataSourceObject();
+        dataSourceObject.setTimeRange(this.startTime, this.endTime, dataSourceObject.getReplaySpeed());
+        this.$emit('event', 'slide');
+      }
     }
   },
   beforeMount() {
@@ -93,26 +121,34 @@ export default {
 
       rangeSlider.activate();
 
-      const that = this;
-      const currentTimeElement = document.getElementById("current-time-" + this.id);
-      const endTimeElement = document.getElementById("end-time-" + this.id);
-
-      currentTimeElement.innerText = this.parseDate(this.dataSource.properties.startTime);
-      if (isDefined(endTimeElement)) {
-        endTimeElement.innerText = this.parseDate(this.dataSource.properties.endTime);
+      rangeSlider.onChange = (startTime, endTime) => {
+        this.$emit('event', 'slide');
       }
+      const that = this;
+      // save the times after creating the component
+      this.lastStartTime = this.startTime;
+      this.lastEndTime = this.endTime;
 
-      rangeSlider.slider.noUiSlider.on('set', () => {
-        const date = parseInt(rangeSlider.slider.noUiSlider.get());
-        currentTimeElement.innerText = that.parseDate(date);
-      });
+      this.history = this.startTime !== 'now';
+
+      const timeDsBroadcastchannel = new BroadcastChannel(dataSourceObject.getTimeTopicId());
+      timeDsBroadcastchannel.onmessage = (event) => {
+        const currentTimeElement = document.getElementById("current-time-" + this.id);
+        const endTimeElement = document.getElementById("end-time-" + this.id);
+        if(isDefined(currentTimeElement)) {
+          currentTimeElement.innerText = this.parseDate(event.data.timestamp);
+
+        }
+        if(isDefined(endTimeElement)) {
+          endTimeElement.innerText = this.endTime || this.getDataSourceObject().getEndTime();
+        }
+      };
 
       const pauseButton = document.getElementById("pause-btn-" + this.id);
       // const playButton = document.getElementById("play-btn");
       const fastBackwardButton = document.getElementById("fast-back-btn-" + this.id);
       const fastForwardButton = document.getElementById("fast-forward-btn-" + this.id);
       let pause = false;
-
 
       fastBackwardButton.onclick = () => {
         // reset parameters
@@ -139,7 +175,6 @@ export default {
           this.on('play');
         });
       }
-
       pauseButton.onclick = async () => {
           if (!pause) {
             pause = true;
@@ -159,6 +194,7 @@ export default {
             });
         }
       }
+
     } else {
       // REAL TIME
       // get time from DS
@@ -179,6 +215,22 @@ export default {
       return (isDefined(this.dataSource.dataSynchronizer)) ? this.dataSource.dataSynchronizer :
           this.dataSource;
     },
+    async toggleHistory() {
+      if(this.startTime === 'now') {
+        this.startTime = this.lastStartTime;
+        this.endTime = this.lastEndTime;
+      } else {
+        const dsStTime = await this.getDataSourceObject().getCurrentTime();
+        const dsEndTime = this.getDataSourceObject().getEndTime();
+
+        this.lastStartTime = new Date(parseInt(dsStTime)).toISOString();
+        this.lastEndTime = dsEndTime;
+        this.startTime = 'now';
+        this.endTime = "2055-01-01T00:00:00Z";
+      }
+      this.history = !this.history;
+    },
+
     on(eventName) {
       this.$emit('event', eventName);
       if (eventName === 'pause') {
@@ -301,6 +353,11 @@ export default {
 
 .control .buttons {
   color: lightgray;
+}
+
+.control-btn.clicked {
+  cursor: pointer;
+  color: #00B5B8;
 }
 
 .control-btn:hover {

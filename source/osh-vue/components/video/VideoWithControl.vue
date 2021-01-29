@@ -4,13 +4,13 @@
       <div :id="id" class="video-container">
       </div>
       <div class="video-control-container" >
-        <Control
+        <TimeControl
             :dataSource="dataSource"
             :showDataSourceActions="true"
             @event='onControlEvent'
             :backward=5
             :forward=5
-        ></Control>
+        ></TimeControl>
         <VideoMenuSettings
             :dataSource="dataSource"
             :resolutions="resolutions"
@@ -28,10 +28,10 @@
         <div :id="id" class="dialog-container video-container">
         </div>
         <div class="video-control-container">
-          <Control
+          <TimeControl
               :dataSource="dataSource"
               @event='onControlEvent'
-          ></Control>
+          ></TimeControl>
           <VideoMenuSettings
               :dataSource="dataSource"
               :resolutions="resolutions"
@@ -49,14 +49,14 @@
 <script>
   import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
   import {randomUUID} from "osh/utils/Utils.js";
-  import Control from '../TimeControl.vue';
+  import TimeControl from '../TimeControl.vue';
   import VideoMenuSettings from './VideoMenuSettings.vue';
   import DataLayer from "osh/ui/layer/DataLayer";
 
   export default {
     name: "Video",
     components: {
-      Control,
+      TimeControl,
       VideoMenuSettings
     },
     props: {
