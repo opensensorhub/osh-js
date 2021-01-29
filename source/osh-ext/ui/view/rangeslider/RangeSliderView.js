@@ -176,7 +176,7 @@ class RangeSliderView extends View {
     });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
-      that.change(values[0], values[1]);
+      that.change(values[0], values[1] || that.endTime);
       setTimeout(() => that.update = false, 2000);
     });
   }

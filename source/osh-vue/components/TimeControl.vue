@@ -42,10 +42,6 @@ export default {
     forward: {
       type: Number,
       default: () => 5000 // 5sec
-    },
-    debounce: {
-      type: Number,
-      default: () => 150
     }
   },
   data() {
@@ -65,18 +61,20 @@ export default {
   },
   mounted() {
     const dataSourceObject = this.getDataSourceObject();
-
     if (this.showDataSourceActions) {
+      let dataSourceObj = {};
+
+      if(isDefined(this.dataSource.dataSynchronizer)) {
+        dataSourceObj.dataSynchronizer = this.dataSource.dataSynchronizer;
+      } else {
+        dataSourceObj.dataSource = this.dataSource;
+      }
+
       let rangeSlider = new RangeSlider({
         container: this.id,
-        layers: [
-          new DataLayer({
-            dataSourceId: this.dataSource.id
-          })
-        ],
         startTime: this.dataSource.properties.startTime,
         endTime: this.dataSource.properties.endTime,
-        refreshRate: 1,
+        ...dataSourceObj,
         options: {
           start: [this.dataSource.properties.startTime],
           behaviour: "none",
@@ -109,17 +107,6 @@ export default {
         currentTimeElement.innerText = that.parseDate(date);
       });
 
-      rangeSlider.onChange = function (startTime, endTime) {
-        const stTime = isDefined(startTime)? new Date(parseInt(startTime)).toISOString(): dataSourceObject.getStartTime();
-        const ndTime = isDefined(endTime)? new Date(parseInt(endTime)).toISOString(): dataSourceObject.getEndTime();
-
-        rangeSlider.debounce(this.debounce);
-        dataSourceObject.setTimeRange(stTime,ndTime,dataSourceObject.getReplaySpeed());
-      };
-
-      rangeSlider.slider.noUiSlider.on('start', () => this.on('start'));
-      rangeSlider.slider.noUiSlider.on('end', () => this.on('end'));
-
       const pauseButton = document.getElementById("pause-btn-" + this.id);
       // const playButton = document.getElementById("play-btn");
       const fastBackwardButton = document.getElementById("fast-back-btn-" + this.id);
@@ -130,9 +117,8 @@ export default {
       fastBackwardButton.onclick = () => {
         // reset parameters
         dataSourceObject.getCurrentTime().then(time => {
-          rangeSlider.debounce(this.debounce);
           dataSourceObject.setTimeRange(
-              new Date(parseInt(time - that.backward)).toISOString(),
+              new Date(parseInt(time - that.backward * 1000)).toISOString(),
               dataSourceObject.getEndTime(),
               dataSourceObject.getReplaySpeed()
           );
@@ -144,10 +130,8 @@ export default {
       fastForwardButton.onclick = () => {
         // reset parameters
         dataSourceObject.getCurrentTime().then(time => {
-          rangeSlider.debounce(this.debounce);
-          console.log(new Date(parseInt(time)).toISOString(), new Date(parseInt(time + that.forward)).toISOString());
           dataSourceObject.setTimeRange(
-              new Date(parseInt(time + that.forward)).toISOString(),
+              new Date(parseInt(time + that.forward * 1000)).toISOString(),
               dataSourceObject.getEndTime(),
               dataSourceObject.getReplaySpeed()
           );
@@ -165,7 +149,6 @@ export default {
           } else {
             pause = false;
             dataSourceObject.getCurrentTime().then(time => {
-              rangeSlider.debounce(this.debounce);
               dataSourceObject.setTimeRange(
                   new Date(parseInt(time)).toISOString(),
                   dataSourceObject.getEndTime(),

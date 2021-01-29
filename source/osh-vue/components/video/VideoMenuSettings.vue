@@ -16,7 +16,7 @@ import {isDefined, randomUUID} from "../../../osh/utils/Utils";
 import MenuSettings from "../MenuSettings.vue";
 
 export default {
-  name: "VideoControl",
+  name: "VideoMenuSettings",
   components: {MenuSettings},
   props: {
     dataSource: {

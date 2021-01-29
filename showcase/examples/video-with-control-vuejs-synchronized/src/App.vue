@@ -29,7 +29,7 @@
           :showTime="true"
           :frameRate=30
           class="video-container-vue2"
-      >
+        >
       </Video>
     </div>
   </div>
@@ -54,7 +54,7 @@ export default {
   beforeMount() {
     // setup video
     // create data source for UAV camera
-    this.dataSource0 = new SosGetResultVideo("drone-Video", {
+    const dataSource0 = new SosGetResultVideo("drone-Video", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -67,7 +67,7 @@ export default {
       bufferingTime: 500
     });
 
-    this.dataSource1 = new SosGetResultVideo("drone-Video1", {
+    const dataSource1 = new SosGetResultVideo("drone-Video1", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -80,7 +80,7 @@ export default {
       bufferingTime: 500
     });
 
-    this.dataSource2 = new SosGetResultVideo("drone-Video2", {
+    const dataSource2 = new SosGetResultVideo("drone-Video2", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -96,9 +96,13 @@ export default {
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1,
       intervalRate: 5,
-      dataSources: [this.dataSource0, this.dataSource1, this.dataSource2]
+      dataSources: [dataSource0, dataSource1, dataSource2]
     })
+
     dataSynchronizer.connect();
+    this.dataSource0 = dataSource0;
+    this.dataSource1 = dataSource1;
+    this.dataSource2 = dataSource2;
   }
 };
 </script>

@@ -11,13 +11,13 @@
             :backward=5
             :forward=5
         ></Control>
-        <VideoControl
+        <VideoMenuSettings
             :dataSource="dataSource"
             :resolutions="resolutions"
             :codec="codec"
             @expand='toggleDialog'
             :expand='false'
-        ></VideoControl>
+        ></VideoMenuSettings>
       </div>
     </slot>
     <slot name="modal" dark="true" max-width="1280" width="1280" v-else>
@@ -32,7 +32,7 @@
               :dataSource="dataSource"
               @event='onControlEvent'
           ></Control>
-          <VideoControl
+          <VideoMenuSettings
               :dataSource="dataSource"
               :resolutions="resolutions"
               :codec="codec"
@@ -40,7 +40,7 @@
               @expand='toggleDialog'
               :backward=5
               :forward=5
-          ></VideoControl>
+          ></VideoMenuSettings>
         </div>
       </v-dialog>
     </slot>
@@ -50,17 +50,20 @@
   import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
   import {randomUUID} from "osh/utils/Utils.js";
   import Control from '../TimeControl.vue';
-  import VideoControl from './VideoControl.vue';
+  import VideoMenuSettings from './VideoMenuSettings.vue';
   import DataLayer from "osh/ui/layer/DataLayer";
 
   export default {
     name: "Video",
     components: {
       Control,
-      VideoControl
+      VideoMenuSettings
     },
     props: {
       dataSource: {
+        type: Object
+      },
+      dataSynchronizer: {
         type: Object
       },
       codec: {
