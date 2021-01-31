@@ -158,7 +158,6 @@ class ChartJsView extends View {
     updateCurve(props) {
         let currentDataset = this.datasets[props[0].curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
-
         if(!isDefined(currentDataset)) {
             currentDataset = {
                 label: props[0].name,
@@ -193,11 +192,11 @@ class ChartJsView extends View {
 
     reset() {
         super.reset();
-        for(let dataset in this.datasets) {
-            this.datasets[dataset].data = [];
-            this.chart.data.labels = [];
-            this.chart.update();
+        this.chart.data.labels = [];
+        for(let dataset of this.chart.data.datasets) {
+            dataset.data = [];
         }
+        this.chart.update();
     }
 }
 

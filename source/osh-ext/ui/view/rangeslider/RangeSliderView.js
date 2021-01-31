@@ -42,6 +42,7 @@ class RangeSliderView extends View {
 		* @param {Number} properties.startTime - The start time
 		* @param {Number} properties.endTime - The end time
 		* @param {String} properties.dataSource - The dataSourceObject
+    * @param {Number} [properties.debounce=0] - Debounce time after updating the slider
     * @param {Boolean} properties.disabled - disabled the range slider
     * @param {Object} properties.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
 		*/
@@ -61,6 +62,7 @@ class RangeSliderView extends View {
     this.update = false;
     this.multi = false;
     this.dataSourceObject = null;
+    this.debounce = 0;
     this.options = {};
 
     if (isDefined(properties)) {
@@ -78,6 +80,10 @@ class RangeSliderView extends View {
 
       if (isDefined(properties.dataSource)) {
         this.dataSourceObject = properties.dataSource;
+      }
+
+      if (isDefined(properties.debounce)) {
+        this.debounce = parseInt(properties.debounce);
       }
 
       if(isDefined(properties.options)) {
@@ -101,22 +107,6 @@ class RangeSliderView extends View {
       }),
       behaviour: 'drag',
       connect: true,
-      tooltips: [
-        wNumb({
-          decimals: 1,
-          edit: function (value) {
-            let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-            return date.split("T")[1].split("Z")[0].split(".")[0];
-          }
-        }),
-        wNumb({
-          decimals: 1,
-          edit: function (value) {
-            let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-            return date.split("T")[1].split("Z")[0].split(".")[0];
-          }
-        })
-      ],
       pips: {
         mode: 'positions',
         values: [5, 25, 50, 75],
@@ -139,6 +129,7 @@ class RangeSliderView extends View {
     bc.onmessage = (message) => {
       if(!this.update) {
         this.slider.noUiSlider.set([message.data.timestamp]);
+        this.onChange(message.data.timestamp, this.endTime, 'data');
       }
     }
   }
@@ -176,8 +167,8 @@ class RangeSliderView extends View {
     });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
-      that.change(values[0], values[1] || that.endTime);
-      setTimeout(() => that.update = false, 2000);
+      that.change(parseInt(values[0]), parseInt(values[1]) || parseInt(that.endTime));
+      setTimeout(() => that.update = false, that.debounce);
     });
   }
 
@@ -205,12 +196,12 @@ class RangeSliderView extends View {
   }
 
   change(startTime, endTime) {
-    this.dataSourceObject.setTimeRange(new Date(parseInt(startTime)).toISOString(),
-        new Date(parseInt(endTime)).toISOString(), this.dataSourceObject.properties.replaySpeed);
-    this.onChange(startTime, endTime);
+    this.dataSourceObject.setTimeRange(new Date(startTime).toISOString(),
+        new Date(endTime).toISOString(), this.dataSourceObject.properties.replaySpeed);
+    this.onChange(startTime, endTime, 'slide');
   }
 
-  onChange(startTime, endTime) {
+  onChange(startTime, endTime, type) {
   }
 
 }

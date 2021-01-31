@@ -408,3 +408,12 @@ export function removeLastCharIfExist(value) {
     return value.substring(0, value.length - 1);
 }
 
+/**
+ * Round off number to nearest 0.5
+ * @param {Number} num - The number to round off
+ * @return {number} The rounded number
+ */
+export function roundHalf(num) {
+    return Math.round(num*2)/2;
+}
+

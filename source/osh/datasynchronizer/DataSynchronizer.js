@@ -168,11 +168,12 @@ class DataSynchronizer {
      * @param {String} startTime - the startTime (in date ISO)
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
+     * @param {boolean} reconnect - reconnect if was connected
      */
-    setTimeRange(startTime, endTime, replaySpeed) {
+    setTimeRange(startTime, endTime, replaySpeed ,reconnect= false) {
         this.reset();
         for(let ds of this.dataSources) {
-            ds.setTimeRange(startTime, endTime, replaySpeed);
+            ds.setTimeRange(startTime, endTime, replaySpeed, reconnect);
         }
     }
 

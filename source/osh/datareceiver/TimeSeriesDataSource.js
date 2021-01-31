@@ -76,13 +76,15 @@ class TimeSeriesDataSource extends DataSource{
      * @param {String} startTime - the startTime (in date ISO)
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
+     * @param {boolean} reconnect - reconnect if was connected
      */
-    setTimeRange(startTime, endTime, replaySpeed) {
+    setTimeRange(startTime, endTime, replaySpeed, reconnect= false) {
         this.updateProperties({
             ...this.currentRunningProperties,
             startTime: startTime,
             endTime: endTime,
-            replaySpeed: replaySpeed
+            replaySpeed: replaySpeed,
+            reconnect : reconnect
         });
     }
 

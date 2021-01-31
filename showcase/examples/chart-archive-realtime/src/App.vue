@@ -17,7 +17,7 @@
 import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
 import CurveLayer from "osh/ui/layer/CurveLayer.js";
 import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import TimeControl from 'osh-vue/components/TimeControl.vue';
+import TimeControl from 'osh-vue/components/TimeController.vue';
 
 export default {
   components: {
@@ -38,10 +38,10 @@ export default {
       endpointUrl: "localhost:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering03",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: "2021-01-29T14:28:55.937Z",
-      endTime: "2021-01-29T14:30:55.175Z",
+      startTime: (new Date(Date.now() - 10 * 1000).toISOString()), // get the last minute of archive data
+      endTime: (new Date(Date.now()).toISOString()),
       batchSize: 1,
-      replaySpeed: 3
+      replaySpeed: 2
     });
 
 // #region snippet_curve_layer
@@ -114,9 +114,8 @@ body {
   padding: 0px;
 }
 
-.osh-view {
-  margin: auto;
-  display: flex;
+#container  {
+  margin-bottom: 10px;
 }
 
 .control {

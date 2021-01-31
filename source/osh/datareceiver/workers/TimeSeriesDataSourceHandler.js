@@ -87,7 +87,9 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             lastTimeStamp: lastTimestamp
         });
 
-        this.connect();
+        if(isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {
+            this.connect();
+        }
     }
 
     handleMessage(message, worker) {
