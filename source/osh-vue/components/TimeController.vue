@@ -75,21 +75,24 @@ export default {
       history: true,
       lastStartTime: null,
       lastEndTime: null,
-      pause: false,
       dataSourceObject: null,
-      connected: true
+      connected: true,
+      startTime: null,
+      endTime: null
     };
   },
   watch: {
     event(newValue) {
       this.$emit('event', newValue);
     },
-    history() {
-      if(isDefined(this.startTime)) {
-        const dataSourceObject = this.getDataSourceObject();
-        dataSourceObject.setTimeRange(this.startTime, this.endTime, dataSourceObject.getReplaySpeed(), !this.history);
-        this.$emit('event', 'slide');
-      }
+    startTime() {
+      const currentTimeElement = document.getElementById("current-time-" + this.id);
+      currentTimeElement.innerText = this.parseDate(this.startTime);
+    },
+    endTime(){
+      const endTimeElement = document.getElementById("end-time-" + this.id);
+      console.log(endTimeElement, this.endTime);
+      endTimeElement.innerText = this.parseDate(this.endTime);
     }
   },
   beforeMount() {
@@ -98,6 +101,9 @@ export default {
   async mounted() {
     this.dataSourceObject = this.getDataSourceObject();
     this.connected = await this.dataSourceObject.isConnected();
+    this.startTime = new Date(await this.dataSourceObject.getStartTime()).getTime();
+    this.endTime = new Date(await this.dataSourceObject.getEndTime()).getTime();
+
     let dataSourceObj = {};
 
     if(isDefined(this.dataSource.dataSynchronizer)) {
@@ -108,8 +114,8 @@ export default {
 
     let rangeSlider = new RangeSlider({
       container: this.id,
-      startTime: this.dataSource.properties.startTime,
-      endTime: this.dataSource.properties.endTime,
+      startTime: this.startTime,
+      endTime: this.endTime,
       ...dataSourceObj,
       options: {
       }
@@ -118,19 +124,14 @@ export default {
     rangeSlider.activate();
 
     rangeSlider.onChange = (startTime, endTime, type) => {
-      const currentTimeElement = document.getElementById("current-time-" + this.id);
-      currentTimeElement.innerText = this.parseDate(startTime);
+      this.startTime = startTime;
       if(this.history) {
-        const endTimeElement = document.getElementById("end-time-" + this.id);
-        endTimeElement.innerText = this.parseDate(endTime);
-        this.lastStartTime = startTime;
-        this.lastEndTime = endTime;
+        this.endTime = endTime;
       }
       this.$emit('event', type);
     }
+
     // save the times after creating the component
-    this.lastStartTime = this.startTime;
-    this.lastEndTime = this.endTime;
     this.history = this.startTime !== 'now';
 
     // listen for datasource status
@@ -149,42 +150,33 @@ export default {
     doFastBackward() {
       // reset parameters
       const that = this;
-      this.dataSourceObject.getCurrentTime().then(time => {
-        this.dataSourceObject.setTimeRange(
-            new Date(parseInt(time - that.backward * 1000)).toISOString(),
-            that.dataSourceObject.getEndTime(),
-            that.dataSourceObject.getReplaySpeed(),
-            true
-        );
-        this.on('backward');
-      });
+      this.dataSourceObject.setTimeRange(
+          new Date(parseInt(this.startTime - that.backward * 1000)).toISOString(),
+          that.dataSourceObject.getEndTime(),
+          that.dataSourceObject.getReplaySpeed(),
+          true
+      );
+      this.on('backward');
     },
     doFastForward() {
       // reset parameters
       const that = this;
-      this.dataSourceObject.getCurrentTime().then(time => {
-        this.dataSourceObject.setTimeRange(
-            new Date(parseInt(time + that.forward * 1000)).toISOString(),
-            this.dataSourceObject.getEndTime(),
-            this.dataSourceObject.getReplaySpeed(),
-            true
-        );
-        this.on('forward');
-      });
+      this.dataSourceObject.setTimeRange(
+          new Date(parseInt(this.startTime + that.forward * 1000)).toISOString(),
+          this.dataSourceObject.getEndTime(),
+          this.dataSourceObject.getReplaySpeed(),
+          true);
+      this.on('forward');
     },
     doPause() {
-      if (!this.pause) {
-        this.pause = true;
-        this.dataSourceObject.disconnect();
-        //save current time
-        this.on('pause');
-      }
+      this.dataSourceObject.disconnect();
+      //save current time
+      this.on('pause');
     },
     doPlay() {
-      this.pause = false;
       this.dataSourceObject.setTimeRange(
-          new Date(this.lastStartTime).toISOString(),
-          new Date(this.lastEndTime).toISOString(),
+          new Date(this.startTime).toISOString(),
+          new Date(this.endTime).toISOString(),
           this.dataSourceObject.getReplaySpeed(),
           true
       );
@@ -195,14 +187,25 @@ export default {
           this.dataSource;
     },
     async toggleHistory() {
-      if(this.startTime === 'now') {
+      this.history = !this.history;
+
+      if(this.history) {
         this.startTime = this.lastStartTime;
         this.endTime = this.lastEndTime;
       } else {
+        this.lastStartTime = this.startTime;
+        this.lastEndTime = this.endTime;
+
         this.startTime = 'now';
-        this.endTime = "2055-01-01T00:00:00Z";
+        this.endTime = new Date("2055-01-01T00:00:00Z").getTime();
       }
-      this.history = !this.history;
+
+      this.dataSourceObject.setTimeRange(
+          new Date(this.startTime).toISOString(),
+          new Date(this.endTime).toISOString(),
+          this.dataSourceObject.getReplaySpeed(),
+          !this.history);
+      this.$emit('event', 'slide');
     },
 
     on(eventName) {
