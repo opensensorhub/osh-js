@@ -131,7 +131,10 @@ class ChartJsView extends View {
                             },
                             ticks: {
                                 maxTicksLimit:5,
-                                ...this.tickOpts
+                                ...this.tickOpts,
+                               callback: (label, index, values) => {
+                                    return this.parseDate(values[0].value);
+                                }
                             },
                             gridLines: this.gridLinesOpts,
                         }],
@@ -149,6 +152,16 @@ class ChartJsView extends View {
         if(data.type === 'curve') {
             this.updateCurve(data.values);
         }
+    }
+
+    parseDate(intTimeStamp) {
+        const date = new Date(intTimeStamp);
+        return this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+            + this.withLeadingZeros(date.getUTCSeconds());
+    }
+
+    withLeadingZeros(dt) {
+        return (dt < 10 ? '0' : '') + dt;
     }
 
     /**
