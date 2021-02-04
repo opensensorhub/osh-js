@@ -60,7 +60,6 @@ class RangeSliderView extends View {
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 
     this.update = false;
-    this.multi = false;
     this.dataSourceObject = null;
     this.debounce = 0;
     this.options = {};
@@ -107,6 +106,7 @@ class RangeSliderView extends View {
       }),
       behaviour: 'drag',
       connect: true,
+      animate: true,
       pips: {
         mode: 'positions',
         values: [5, 25, 50, 75],
@@ -129,7 +129,7 @@ class RangeSliderView extends View {
     bc.onmessage = (message) => {
       if(!this.update) {
         this.slider.noUiSlider.set([message.data.timestamp]);
-        this.onChange(message.data.timestamp, this.endTime, 'data');
+        this.onChange(message.data.timestamp, parseInt(this.slider.noUiSlider.get()[1]), 'data');
       }
     }
   }
@@ -193,6 +193,14 @@ class RangeSliderView extends View {
         this.slider.noUiSlider.set([values[i].timeStamp]);
       }
     }
+  }
+
+  setStartTime(timestamp) {
+    this.slider.noUiSlider.set([timestamp]);
+  }
+
+  setTime(startTimestamp, endTimestamp) {
+    this.slider.noUiSlider.set([startTimestamp, endTimestamp]);
   }
 
   change(startTime, endTime) {
