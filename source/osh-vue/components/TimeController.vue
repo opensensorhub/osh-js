@@ -66,6 +66,9 @@ export default {
     forward: {
       type: Number,
       default: () => 5000 // 5sec
+    },
+    parseTime: {
+      type: Function
     }
   },
   data() {
@@ -87,22 +90,39 @@ export default {
     },
     startTime() {
       const currentTimeElement = document.getElementById("current-time-" + this.id);
-      currentTimeElement.innerText = this.parseDate(this.startTime);
+      currentTimeElement.innerText = this.parseTime(this.startTime);
     },
-    endTime(){
+    endTime() {
       const endTimeElement = document.getElementById("end-time-" + this.id);
-      console.log(endTimeElement, this.endTime);
-      endTimeElement.innerText = this.parseDate(this.endTime);
-    }
+      if(isDefined(endTimeElement)) {
+        endTimeElement.innerText = this.parseTime(this.endTime);
+      }
+    },
   },
   beforeMount() {
     this.history = this.dataSource.properties.startTime !== 'now';
+    if(!isDefined(this.parseTime)) {
+      this.parseTime = this.parseDate;
+    }
+  },
+  updated() {
+    const currentTimeElement = document.getElementById("current-time-" + this.id);
+    currentTimeElement.innerText = this.parseTime(this.startTime);
+
+    const endTimeElement = document.getElementById("end-time-" + this.id);
+    if(isDefined(endTimeElement)) {
+      endTimeElement.innerText = this.parseTime(this.endTime);
+    }
   },
   async mounted() {
     this.dataSourceObject = this.getDataSourceObject();
     this.connected = await this.dataSourceObject.isConnected();
-    this.startTime = new Date(await this.dataSourceObject.getStartTime()).getTime();
-    this.endTime = new Date(await this.dataSourceObject.getEndTime()).getTime();
+
+    const minTime = this.dataSourceObject.getMinTime();
+    const maxTime = this.dataSourceObject.getEndTime();
+
+    this.startTime = minTime === 'now' ? new Date(Date.now()).toISOString() : minTime;
+    this.endTime = maxTime === 'now' ?  new Date(Date.now()).toISOString() : maxTime;
 
     let dataSourceObj = {};
 
@@ -112,7 +132,7 @@ export default {
       dataSourceObj.dataSource = this.dataSource;
     }
 
-    let rangeSlider = new RangeSlider({
+    this.rangeSlider = new RangeSlider({
       container: this.id,
       startTime: this.startTime,
       endTime: this.endTime,
@@ -121,13 +141,16 @@ export default {
       }
     });
 
-    rangeSlider.activate();
+    this.rangeSlider.activate();
 
-    rangeSlider.onChange = (startTime, endTime, type) => {
+    this.rangeSlider.onChange = (startTime, endTime, type) => {
       this.startTime = startTime;
       if(this.history) {
+        this.lastStartTime = startTime;
+        this.lastEndTime = endTime;
         this.endTime = endTime;
       }
+
       this.$emit('event', type);
     }
 
@@ -161,19 +184,24 @@ export default {
     doFastForward() {
       // reset parameters
       const that = this;
-      this.dataSourceObject.setTimeRange(
-          new Date(parseInt(this.startTime + that.forward * 1000)).toISOString(),
-          this.dataSourceObject.getEndTime(),
-          this.dataSourceObject.getReplaySpeed(),
-          true);
-      this.on('forward');
+      const forwardTime = parseInt(this.startTime + that.forward * 1000);
+      if(forwardTime < this.endTime) {
+        this.dataSourceObject.setTimeRange(
+            new Date(forwardTime).toISOString(),
+            this.dataSourceObject.getEndTime(),
+            this.dataSourceObject.getReplaySpeed(),
+            true);
+        this.on('forward');
+      }
     },
     doPause() {
+      this.connected = false;
       this.dataSourceObject.disconnect();
       //save current time
       this.on('pause');
     },
     doPlay() {
+      this.connected = true;
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
@@ -192,6 +220,9 @@ export default {
       if(this.history) {
         this.startTime = this.lastStartTime;
         this.endTime = this.lastEndTime;
+
+        // reset slider position at the last history position
+        this.rangeSlider.setTime(this.startTime, this.endTime);
       } else {
         this.lastStartTime = this.startTime;
         this.lastEndTime = this.endTime;
@@ -201,11 +232,17 @@ export default {
       }
 
       this.dataSourceObject.setTimeRange(
-          new Date(this.startTime).toISOString(),
+          this.startTime !== 'now'? new Date(this.startTime).toISOString(): 'now',
           new Date(this.endTime).toISOString(),
           this.dataSourceObject.getReplaySpeed(),
           !this.history);
       this.$emit('event', 'slide');
+
+      if(!this.history) {
+        this.rangeSlider.deactivate();
+      } else {
+        this.rangeSlider.activate();
+      }
     },
 
     on(eventName) {
@@ -213,8 +250,10 @@ export default {
     },
     parseDate(intTimeStamp) {
       const date = new Date(intTimeStamp);
-      return this.withLeadingZeros(date.getHours()) + ":" + this.withLeadingZeros(date.getMinutes()) + ":"
-          + this.withLeadingZeros(date.getSeconds());
+      return '('+this.withLeadingZeros(date.getUTCFullYear()) + '-'+this.withLeadingZeros(date.getUTCMonth())
+          + '-'+this.withLeadingZeros(date.getUTCDay())
+          + ') '+ this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+          + this.withLeadingZeros(date.getUTCSeconds());
     },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
@@ -255,10 +294,6 @@ export default {
   height: 3px;
 }
 
-.noUi-connects {
-  border-radius: 0px;
-}
-
 .control .noUi-target {
   background: #FAFAFA;
   border-radius: unset;
@@ -266,44 +301,15 @@ export default {
   box-shadow: unset;
 }
 
-/** remove pips **/
-.control .noUi-pips {
-  display: none;
-}
-
 /** reduce handles **/
-.control .noUi-horizontal .noUi-handle {
-  height: 10px;
-  width: 10px;
-  top: -4px;
-  right: -4px;
-}
-
-.control .noUi-active {
-  box-shadow: unset;
-}
-
-.control .noUi-handle {
-  border-radius: 50%;
-  background: #FFF;
-  border: 2px solid #00B5B8;
-}
-
-.control .noUi-handle:active {
-  box-shadow: none;
-  background-color: rgba(5, 107, 166, 0.6);
-  border-radius: 50%;
-  border: 2px solid #00B5B8;
-}
-
-.control .noUi-handle:after, .noUi-handle:before {
-  display: none;
-}
 
 .noUi-horizontal {
   width: 100%;
 }
 
+.control .fa-history {
+  font-size: 19px;
+}
 /*.control .noUi-horizontal .noUi-handle-lower .noUi-tooltip {*/
 /*  display: none;*/
 /*}*/
@@ -343,7 +349,16 @@ export default {
 .control .buttons .actions {
   display: flex;
   align-items: center;
-  padding: 10px 10px 10px 10px;
+  padding: 45px 5px 5px 0px;
+}
+
+.control .noUi-pips-horizontal {
+  padding: 0px 0;
+}
+
+.noUi-value-horizontal {
+  -webkit-transform: translate(-50%,80%);
+  transform: translate(-50%,80%);
 }
 
 .control .buttons .time {
@@ -358,5 +373,22 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.control .noUi-handle:after, .noUi-handle:before {
+  background: #989898;
+}
+.control .noUi-horizontal .noUi-handle {
+  width: 20px;
+  height: 25px;
+  right: -10px;
+  top: -12px;
+}
+
+.control .noUi-handle:after, .noUi-handle:before {
+  left: 5px;
+}
+.control .noUi-handle:after, .noUi-handle:after {
+  left: 10px;
 }
 </style>
