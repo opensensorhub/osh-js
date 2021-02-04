@@ -157,6 +157,28 @@ class DataSynchronizer {
     }
 
     /**
+     * Gets the minTime of the first DataSource objet
+     * @returns {String} - startTime as ISO date
+     */
+    getMinTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return isDefined(this.dataSources[0].properties.minTime) ? this.dataSources[0].properties.minTime : this.dataSources[0].properties.startTime;
+    }
+
+    /**
+     * Gets the maxTime of the first DataSource objet
+     * @returns {String} - endTime as ISO date
+     */
+    getMaxTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return isDefined(this.dataSources[0].properties.maxTime) ? this.dataSources[0].properties.maxTime : this.dataSources[0].properties.endTime;
+    }
+
+    /**
      * Gets the replaySpeed
      * @returns {Number} - the replay speed
      */

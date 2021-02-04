@@ -16,7 +16,7 @@
 
 import DataSource from "./DataSource";
 import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
-import {isDefined} from "../utils/Utils";
+import {assertDefined, isDefined} from "../utils/Utils";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -36,6 +36,8 @@ class TimeSeriesDataSource extends DataSource{
      * @param {String} properties.observedProperty the observed property
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
+     * @param {String} [properties.minTime=properties.startTime] the min range time (ISO format)
+     * @param {String} [properties.maxTime=properties.endTime] the max range time (ISO format)
      * @param {Number} [properties.replaySpeed=1] the replay factor
      * @param {Number} [properties.responseFormat] the response format (e.g video/mp4)
      * @param {Number} [properties.reconnectTimeout=10000] - the time before reconnecting (in milliseconds)
@@ -45,6 +47,11 @@ class TimeSeriesDataSource extends DataSource{
      */
     constructor(name, properties, worker) {
         super(name,properties ,worker);
+
+        assertDefined(properties,'Some properties must be defined');
+        assertDefined(properties.startTime,'startTime must must be defined');
+        assertDefined(properties.endTime,'startTime must must be defined');
+
         this.dataSynchronizer = null;
     }
 
@@ -102,6 +109,22 @@ class TimeSeriesDataSource extends DataSource{
      */
     getEndTime() {
         return this.properties.endTime;
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as ISO date
+     */
+    getMinTime() {
+        return isDefined(this.properties.minTime) ? this.properties.minTime : this.properties.startTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getMaxTime() {
+        return isDefined(this.properties.maxTime) ? this.properties.maxTime : this.properties.endTime;
     }
 
     /**
