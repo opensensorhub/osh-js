@@ -2,14 +2,14 @@
   <div id="app">
     <div id="container">
     </div>
-    <TimeControl
+    <TimeController
         :dataSource="dataSource"
-        :showDataSourceActions="true"
         @event='onControlEvent'
         :backward=5
         :forward=5
+        :parseTime='parseTime'
         v-if="dataSource"
-    ></TimeControl>
+    ></TimeController>
   </div>
 </template>
 <script>
@@ -17,11 +17,11 @@
 import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
 import CurveLayer from "osh/ui/layer/CurveLayer.js";
 import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import TimeControl from 'osh-vue/components/TimeController.vue';
+import TimeController from 'osh-vue/components/TimeController.vue';
 
 export default {
   components: {
-    TimeControl
+    TimeController
   },
   data: function () {
     return {
@@ -39,7 +39,7 @@ export default {
       offeringID: "urn:mysos:offering03",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
       startTime: (new Date(Date.now() - 10 * 1000).toISOString()), // get the last minute of archive data
-      endTime: (new Date(Date.now()).toISOString()),
+      endTime: 'now',
       batchSize: 1,
       replaySpeed: 2
     });
@@ -104,6 +104,16 @@ export default {
         this.view.reset();
       }
     },
+    parseTime(timestamp) {
+      const date = new Date(timestamp);
+      return '('+this.withLeadingZeros(date.getUTCFullYear()) + '-'+this.withLeadingZeros(date.getUTCMonth())
+          + '-'+this.withLeadingZeros(date.getUTCDay())
+          + ') '+ this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+          + this.withLeadingZeros(date.getUTCSeconds());
+    },
+    withLeadingZeros(dt) {
+      return (dt < 10 ? '0' : '') + dt;
+    }
   }
 };
 </script>
