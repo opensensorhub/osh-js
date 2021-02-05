@@ -60,6 +60,7 @@ class WebSocketConnector extends DataConnector {
             //creates Web Socket
             this.ws = new WebSocket(this.getUrl());
             this.ws.binaryType = 'arraybuffer';
+            this.checkStatus(Status.CONNECTING);
             this.ws.onmessage = function (event) {
                 this.checkAndClearReconnection();
                 this.checkStatus(Status.CONNECTED);
