@@ -5,8 +5,15 @@
       <div class="actions"> <!-- Next Page Buttons -->
         <slot v-if="history">
           <div class="datasource-actions" >
-            <a :id="'history-btn-'+this.id" class="control-btn clicked" @click="toggleHistory">
+            <a :id="'history-btn-'+this.id" class="control-btn clicked history" @click="toggleHistory">
               <i class="fa fa-history"></i>
+            </a>
+            <a :id="'speed-minus-btn-'+this.id" class="control-btn control-speed-minus" @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="decSpeed">
+              <i class="fa fa-minus"></i>
+            </a>
+            <span class="control-speed-content"><v-chip :id="speedId">{{speed.toFixed(2)}}x</v-chip></span>
+            <a :id="'speed-plus-btn-'+this.id" class="control-btn control-speed-plus"  @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="incSpeed">
+              <i class="fa fa-plus"></i>
             </a>
             <a :id="'fast-back-btn-'+this.id" class="control-btn" @click="doFastBackward"> <i
                 class="fa fa-fast-backward"></i></a>
@@ -16,8 +23,6 @@
                 class="fa fa-play" @click="doPlay"></i></a>
             <a :id="'fast-forward-btn-'+this.id" class="control-btn" @click="doFastForward"> <i
                 class="fa fa-fast-forward"></i></a>
-          </div>
-          <div class="time">
             <span :id="'current-time-'+this.id"></span>
             <span>/</span>
             <span :id="'end-time-'+this.id"></span>
@@ -25,21 +30,19 @@
         </slot>
         <slot v-else>
           <div class="datasource-actions" >
-            <a :id="'history-btn-'+this.id" class="control-btn" @click="toggleHistory">
+            <a :id="'history-btn-'+this.id" class="control-btn history" @click="toggleHistory">
               <i class="fa fa-history"></i>
             </a>
           </div>
-          <div class="time">
-            <span :id="'current-time-'+this.id"></span>
-            <v-chip
-                x-small
-                class="ma-2"
-                color="red"
-                text-color="white"
-            >
-              LIVE
-            </v-chip>
-          </div>
+          <span :id="'current-time-'+this.id"></span>
+          <v-chip
+              x-small
+              class="ma-2 live"
+              color="red"
+              text-color="white"
+          >
+            LIVE
+          </v-chip>
         </slot>
       </div>
     </div>
@@ -74,6 +77,7 @@ export default {
   data() {
     return {
       id: randomUUID(),
+      speedId: randomUUID(),
       event: null,
       history: true,
       lastStartTime: null,
@@ -81,7 +85,9 @@ export default {
       dataSourceObject: null,
       connected: true,
       startTime: null,
-      endTime: null
+      endTime: null,
+      speed: 1.0,
+      interval:false
     };
   },
   watch: {
@@ -90,14 +96,23 @@ export default {
     },
     startTime() {
       const currentTimeElement = document.getElementById("current-time-" + this.id);
-      currentTimeElement.innerText = this.parseTime(this.startTime);
+      currentTimeElement.innerHTML = this.parseTime(this.startTime);
     },
     endTime() {
       const endTimeElement = document.getElementById("end-time-" + this.id);
       if(isDefined(endTimeElement)) {
-        endTimeElement.innerText = this.parseTime(this.endTime);
+        endTimeElement.innerHTML = this.parseTime(this.endTime);
       }
     },
+    speed() {
+      this.dataSourceObject.setTimeRange(
+          new Date(this.startTime).toISOString(),
+          new Date(this.endTime).toISOString(),
+          this.speed,
+          true
+      );
+      this.on('replaySpeed');
+    }
   },
   beforeMount() {
     this.history = this.dataSource.properties.startTime !== 'now';
@@ -107,17 +122,17 @@ export default {
   },
   updated() {
     const currentTimeElement = document.getElementById("current-time-" + this.id);
-    currentTimeElement.innerText = this.parseTime(this.startTime);
+    currentTimeElement.innerHTML = this.parseTime(this.startTime);
 
     const endTimeElement = document.getElementById("end-time-" + this.id);
     if(isDefined(endTimeElement)) {
-      endTimeElement.innerText = this.parseTime(this.endTime);
+      endTimeElement.innerHTML = this.parseTime(this.endTime);
     }
   },
   async mounted() {
     this.dataSourceObject = this.getDataSourceObject();
     this.connected = await this.dataSourceObject.isConnected();
-
+    this.speed = this.dataSourceObject.getReplaySpeed();
     const minTime = this.dataSourceObject.getMinTime();
     const maxTime = this.dataSourceObject.getEndTime();
 
@@ -162,6 +177,7 @@ export default {
     bc.onmessage = (event) => {
       if (event.data.type === "status") {
         if(event.data.status === STATUS.DISCONNECTED) {
+          console.log('status disconnected')
           this.connected = false;
         }
       } else if(event.data.type === 'data') {
@@ -172,24 +188,22 @@ export default {
   methods: {
     doFastBackward() {
       // reset parameters
-      const that = this;
       this.dataSourceObject.setTimeRange(
-          new Date(parseInt(this.startTime - that.backward * 1000)).toISOString(),
-          that.dataSourceObject.getEndTime(),
-          that.dataSourceObject.getReplaySpeed(),
+          new Date(parseInt(this.startTime - this.backward * 1000)).toISOString(),
+          new Date(this.endTime).toISOString(),
+          this.speed,
           true
       );
       this.on('backward');
     },
     doFastForward() {
       // reset parameters
-      const that = this;
-      const forwardTime = parseInt(this.startTime + that.forward * 1000);
+      const forwardTime = parseInt(this.startTime + this.forward * 1000);
       if(forwardTime < this.endTime) {
         this.dataSourceObject.setTimeRange(
             new Date(forwardTime).toISOString(),
-            this.dataSourceObject.getEndTime(),
-            this.dataSourceObject.getReplaySpeed(),
+            this.endTime,
+            this.speed,
             true);
         this.on('forward');
       }
@@ -205,7 +219,7 @@ export default {
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
-          this.dataSourceObject.getReplaySpeed(),
+          this.speed,
           true
       );
       this.on('play');
@@ -234,7 +248,7 @@ export default {
       this.dataSourceObject.setTimeRange(
           this.startTime !== 'now'? new Date(this.startTime).toISOString(): 'now',
           new Date(this.endTime).toISOString(),
-          this.dataSourceObject.getReplaySpeed(),
+          this.speed,
           !this.history);
       this.$emit('event', 'slide');
 
@@ -244,7 +258,39 @@ export default {
         this.rangeSlider.activate();
       }
     },
-
+    incSpeed() {
+      if(!this.interval){
+        this.interval = setInterval(() => {
+          if(this.speed > 10.0) {
+            this.speed += 1.0;
+          } else {
+            this.speed += 0.1;
+          }
+        }, 70)
+      }
+      // this.speed += 0.2;
+    },
+    decSpeed() {
+      if(this.speed >= 0.0) {
+        if(!this.interval){
+          this.interval = setInterval(() => {
+            if(this.speed <= 0.1) {
+              this.stopSpeed();
+            } else {
+              if(this.speed > 10.0) {
+                this.speed -= 1.0;
+              } else {
+                this.speed -= 0.1;
+              }
+            }
+          }, 70)
+        }
+      }
+    },
+    stopSpeed(){
+      clearInterval(this.interval)
+      this.interval = false
+    },
     on(eventName) {
       this.$emit('event', eventName);
     },
@@ -267,6 +313,8 @@ export default {
   width: 100%;
   position: relative;
   bottom: 0px;
+  font-family: Sans-Serif;
+  background: linear-gradient(to bottom,rgba(116,117,119,.8) 0,rgba(58,68,82,.8) 11%,rgba(46,50,56,.8) 46%,rgba(53,53,53,.8) 81%,rgba(53,53,53,.8) 100%);
 }
 
 .control a {
@@ -294,6 +342,9 @@ export default {
   height: 3px;
 }
 
+.control .history {
+  margin-right: 10px;
+}
 .control .noUi-target {
   background: #FAFAFA;
   border-radius: unset;
@@ -307,21 +358,15 @@ export default {
   width: 100%;
 }
 
+.control .control-speed-plus {
+  margin-right: 30px;
+}
 .control .fa-history {
   font-size: 19px;
 }
-/*.control .noUi-horizontal .noUi-handle-lower .noUi-tooltip {*/
-/*  display: none;*/
-/*}*/
-
 .control button svg, .control a svg {
   width: 30px;
 }
-
-/*.control .ytp-time-display {*/
-/*  width: 150px;*/
-/*  float: right;*/
-/*}*/
 
 .control .buttons {
   color: lightgray;
@@ -337,13 +382,21 @@ export default {
   color: #00B5B8;
 }
 
+.control {
+  background-color: #3d3d3d !important;
+}
 .control-btn:active {
   color: #00B5B8;
 }
 
-.control .time {
-  float: right;
+.control .live {
   margin-left:10px;
+}
+
+.control .live > span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #00B5B8;
 }
 
 .control .buttons .actions {
@@ -378,6 +431,17 @@ export default {
 .control .noUi-handle:after, .noUi-handle:before {
   background: #989898;
 }
+
+.control .v-chip.v-size--default {
+  height: 18px;
+  top: -2px;
+  font-size: 13px; /* according to font-family: sans-serif */
+  padding-top: 1px; /* according to font-family: sans-serif */
+}
+.control .control-speed-content {
+  margin-right: 10px;
+  font-weight: 700;
+}
 .control .noUi-horizontal .noUi-handle {
   width: 20px;
   height: 25px;
@@ -390,5 +454,13 @@ export default {
 }
 .control .noUi-handle:after, .noUi-handle:after {
   left: 10px;
+}
+
+.control .noUi-connect {
+  background: rgba(0,0,0,0.25);
+}
+.control .noUi-connects {
+  height: 34px;
+  top: -15px;
 }
 </style>
