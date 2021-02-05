@@ -38,7 +38,7 @@ export default {
       endpointUrl: "localhost:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering03",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 10 * 1000).toISOString()), // get the last minute of archive data
+      startTime: (new Date(Date.now() - 60 * 1000).toISOString()), // get the last minute of archive data
       endTime: 'now',
       batchSize: 1,
       replaySpeed: 2
@@ -100,16 +100,16 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
-      if(eventName === 'forward' || eventName === 'backward' || eventName === 'slide') {
+      if(eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed') {
         this.view.reset();
       }
     },
     parseTime(timestamp) {
       const date = new Date(timestamp);
-      return '('+this.withLeadingZeros(date.getUTCFullYear()) + '-'+this.withLeadingZeros(date.getUTCMonth())
+      return '<i><small>('+this.withLeadingZeros(date.getUTCFullYear()) + '-'+this.withLeadingZeros(date.getUTCMonth())
           + '-'+this.withLeadingZeros(date.getUTCDay())
-          + ') '+ this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-          + this.withLeadingZeros(date.getUTCSeconds());
+          + ')</small></i> <strong>'+ this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+          + this.withLeadingZeros(date.getUTCSeconds())+ '</strong>';
     },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
@@ -122,15 +122,13 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0px;
+  background: aliceblue;
 }
 
 #container  {
   margin-bottom: 10px;
 }
 
-.control {
-  background-color: teal;
-}
 #container {
   width:100%;
   height:500px;
