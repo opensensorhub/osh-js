@@ -24,7 +24,7 @@
             <a :id="'fast-forward-btn-'+this.id" class="control-btn" @click="doFastForward"> <i
                 class="fa fa-fast-forward"></i></a>
             <span :id="'current-time-'+this.id"></span>
-            <span>/</span>
+            <span style="padding:0 10px 0 10px">/</span>
             <span :id="'end-time-'+this.id"></span>
           </div>
         </slot>
