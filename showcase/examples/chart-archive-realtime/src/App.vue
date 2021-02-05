@@ -38,12 +38,14 @@ export default {
       endpointUrl: "localhost:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering03",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000).toISOString()), // get the last minute of archive data
-      endTime: 'now',
-      // startTime: 'now',
-      // endTime: '2055-01-01T00:00:00Z',
+      // startTime: (new Date(Date.now() - 60 * 1000).toISOString()), // get the last minute of archive data
+      // endTime: 'now',
+      startTime: 'now',
+      endTime: '2055-01-01T00:00:00Z',
       batchSize: 1,
-      replaySpeed: 2
+      replaySpeed: 2,
+      minTime: (new Date(Date.now() - 60 * 1000).toISOString()),
+      maxTime: (new Date(Date.now()).toISOString())
     });
 
 // #region snippet_curve_layer
