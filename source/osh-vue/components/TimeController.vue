@@ -54,6 +54,7 @@ import RangeSlider from 'osh-ext/ui/view/rangeslider/RangeSliderView.js';
 import {randomUUID} from 'osh/utils/Utils.js';
 import {isDefined} from "osh/utils/Utils";
 import {Status as STATUS} from "../../osh/dataconnector/Status";
+import {assertBoolean, assertDefined, assertTrue} from "../../osh/utils/Utils";
 
 export default {
   name: "TimeControl",
@@ -89,7 +90,8 @@ export default {
       minTime: null,
       maxTime: null,
       speed: 1.0,
-      interval:false
+      interval:false,
+      rangeSlider:null
     };
   },
   watch: {
@@ -134,66 +136,76 @@ export default {
   async mounted() {
     this.dataSourceObject = this.getDataSourceObject();
     this.connected = await this.dataSourceObject.isConnected();
-    this.speed = this.dataSourceObject.getReplaySpeed();
     let minTime = this.dataSourceObject.getMinTime();
     let maxTime = this.dataSourceObject.getMaxTime();
 
-
-    if(isDefined(minTime)) {
-      this.startTime = new Date(minTime).getTime();
-    } else {
-      this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
-          new Date(Date.now()).getTime():  new Date(this.dataSourceObject.getStartTime()).getTime() ;
-    }
-    this.minTime = this.startTime;
-
-    if(isDefined(maxTime)) {
-      this.endTime = new Date(maxTime).getTime();
-    } else {
-      this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
-          new Date(Date.now()).getTime():  new Date(this.dataSourceObject.getEndTime()).getTime() ;
-    }
-    this.maxTime = this.endTime;
-
-    let dataSourceObj = {};
-
-    if(isDefined(this.dataSource.dataSynchronizer)) {
-      dataSourceObj.dataSynchronizer = this.dataSource.dataSynchronizer;
-    } else {
-      dataSourceObj.dataSource = this.dataSource;
-    }
-
-    this.rangeSlider = new RangeSlider({
-      container: this.id,
-      startTime: this.startTime,
-      endTime: this.endTime,
-      ...dataSourceObj,
-      options: {
+    if(((isDefined(minTime)  && isDefined(maxTime)) || this.dataSourceObject.getStartTime() !== 'now' )) {
+      this.speed = this.dataSourceObject.getReplaySpeed();
+      if (isDefined(minTime)) {
+        this.startTime = new Date(minTime).getTime();
+      } else {
+        this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
+            new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getStartTime()).getTime();
       }
-    });
+      this.minTime = this.startTime;
 
-    this.rangeSlider.activate();
+      if (isDefined(maxTime)) {
+        this.endTime = new Date(maxTime).getTime();
+      } else {
+        this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
+            new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getEndTime()).getTime();
+      }
+      this.maxTime = this.endTime;
 
-    this.rangeSlider.onChange = (startTime, endTime, type) => {
-      this.startTime = startTime;
-      if(this.history) {
-        this.lastStartTime = startTime;
-        this.lastEndTime = endTime;
-        this.endTime = endTime;
+      let dataSourceObj = {};
+
+      if (isDefined(this.dataSource.dataSynchronizer)) {
+        dataSourceObj.dataSynchronizer = this.dataSource.dataSynchronizer;
+      } else {
+        dataSourceObj.dataSource = this.dataSource;
       }
 
-      this.$emit('event', type);
-    }
+      this.rangeSlider = new RangeSlider({
+        container: this.id,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        ...dataSourceObj,
+        options: {}
+      });
 
-    // save the times after creating the component
-    this.history = this.startTime !== 'now';
+      this.rangeSlider.activate();
+
+      this.rangeSlider.onChange = (startTime, endTime, type) => {
+        this.startTime = startTime;
+        if (this.history) {
+          this.lastStartTime = startTime;
+          this.lastEndTime = endTime;
+          this.endTime = endTime;
+        }
+
+        this.$emit('event', type);
+      }
+
+      // save the times after creating the component
+      this.history = this.startTime !== 'now';
+    } else {
+      this.history = false;
+
+      // disabled the history button
+      const historyButton = document.getElementById("history-btn-"+this.id);
+      historyButton.setAttribute('disabled','');
+      // listen for BC
+      const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
+      bc.onmessage = (message) => {
+        this.startTime = message.data.timestamp;
+      }
+    }
 
     // listen for datasource status
     const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
     bc.onmessage = (event) => {
       if (event.data.type === "status") {
         if(event.data.status === STATUS.DISCONNECTED) {
-          console.log('status disconnected')
           this.connected = false;
         }
       } else if(event.data.type === 'data') {
@@ -250,6 +262,9 @@ export default {
           this.dataSource;
     },
     async toggleHistory() {
+      if(!isDefined(this.rangeSlider)){
+        return;
+      }
       this.history = !this.history;
 
       if(this.history) {
@@ -366,6 +381,11 @@ export default {
 /** reduce bar size **/
 .control .noUi-horizontal {
   height: 3px;
+}
+
+.control a[disabled] {
+  color: gray;
+  pointer-events: none;
 }
 
 .control .history {
