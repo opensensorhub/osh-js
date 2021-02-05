@@ -185,6 +185,19 @@ class DataSynchronizer {
     getReplaySpeed() {
         return this.replaySpeed;
     }
+
+    /**
+     * Sets the replaySpeed
+     */
+    setReplaySpeed(replaySpeed) {
+        this.replaySpeed = replaySpeed;
+        this.properties.replaySpeed = replaySpeed;
+        this.synchronizerWorker.postMessage({
+            message: 'replay-speed',
+            replaySpeed: replaySpeed,
+        });
+    }
+
     /**
      * Sets the data source time range
      * @param {String} startTime - the startTime (in date ISO)
@@ -193,6 +206,9 @@ class DataSynchronizer {
      * @param {boolean} reconnect - reconnect if was connected
      */
     setTimeRange(startTime, endTime, replaySpeed ,reconnect= false) {
+        if(this.replaySpeed !== replaySpeed) {
+            this.setReplaySpeed(replaySpeed);
+        }
         this.reset();
         for(let ds of this.dataSources) {
             ds.setTimeRange(startTime, endTime, replaySpeed, reconnect);
@@ -247,6 +263,18 @@ class DataSynchronizer {
 
     getTimeTopicId() {
         return TIME_SYNCHRONIZER_TOPIC+this.id;
+    }
+
+    /**
+     * Connect the dataSource then the connector will be opened as well.
+     */
+    async isConnected() {
+        for(let ds of this.dataSources) {
+            if(await ds.isConnected()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 export default  DataSynchronizer;

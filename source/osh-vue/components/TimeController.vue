@@ -63,6 +63,9 @@ export default {
     dataSource: {
       type: Object
     },
+    dataSynchronizer: {
+      type: Object
+    },
     backward: {
       type: Number,
       default: () => 5000 // 5sec
@@ -119,7 +122,10 @@ export default {
     }
   },
   beforeMount() {
-    this.history = this.dataSource.properties.startTime !== 'now';
+    this.dataSourceObject = this.getDataSourceObject();
+    assertDefined(this.dataSourceObject, 'either dataSource properties or dataSynchronizer must be defined');
+
+    this.history = this.dataSourceObject.getStartTime() !== 'now';
     if(!isDefined(this.parseTime)) {
       this.parseTime = this.parseDate;
     }
@@ -134,7 +140,6 @@ export default {
     }
   },
   async mounted() {
-    this.dataSourceObject = this.getDataSourceObject();
     this.connected = await this.dataSourceObject.isConnected();
     let minTime = this.dataSourceObject.getMinTime();
     let maxTime = this.dataSourceObject.getMaxTime();
@@ -159,8 +164,8 @@ export default {
 
       let dataSourceObj = {};
 
-      if (isDefined(this.dataSource.dataSynchronizer)) {
-        dataSourceObj.dataSynchronizer = this.dataSource.dataSynchronizer;
+      if (isDefined(this.dataSynchronizer)) {
+        dataSourceObj.dataSynchronizer = this.dataSynchronizer;
       } else {
         dataSourceObj.dataSource = this.dataSource;
       }
@@ -258,8 +263,7 @@ export default {
       this.on('play');
     },
     getDataSourceObject() {
-      return (isDefined(this.dataSource.dataSynchronizer)) ? this.dataSource.dataSynchronizer :
-          this.dataSource;
+      return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
     },
     async toggleHistory() {
       if(!isDefined(this.rangeSlider)){

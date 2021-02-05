@@ -34,6 +34,10 @@ self.onmessage = (event) => {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.reset();
         }
+    } else if(event.data.message === 'replay-speed') {
+        if(dataSynchronizerAlgo !== null) {
+            dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
+        }
     } else if(event.data.message === 'data') {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.push(event.data.dataSourceId, {
