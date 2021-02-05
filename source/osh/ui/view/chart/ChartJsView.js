@@ -16,7 +16,7 @@
 
 
 import View from "../View.js";
-import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import {hex2rgb, isDefined, randomUUID} from "../../../utils/Utils.js";
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
 
@@ -172,14 +172,14 @@ class ChartJsView extends View {
         let currentDataset = this.datasets[props[0].curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
         if(!isDefined(currentDataset)) {
+            let lineColor = props[0].color;
+            if(lineColor.startsWith('#')) {
+                const rgb = hex2rgb(lineColor);
+                lineColor = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.5)';
+            }
             currentDataset = {
                 label: props[0].name,
-                fillColor: "rgba(220,220,0,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
+                backgroundColor: lineColor,
                 data: values
             };
             currentDataset = {...currentDataset, ...this.datasetsOpts};
@@ -197,6 +197,7 @@ class ChartJsView extends View {
         } else {
             this.chart.update();
         }
+
         if(currentDataset.data.length > this.maxPoints) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();
