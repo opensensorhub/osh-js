@@ -120,7 +120,12 @@ var samples = [
     name: 'AVL data using multiple ids',
     description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
     url: 'avl'
-  }
+  },
+  {
+    name: "Chart with Time controller (Chart.js)",
+    description: "Display a chart with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime"
+  },
 ];
 
 // load sample cards

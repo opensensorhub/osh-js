@@ -5,8 +5,8 @@
     <TimeController
         :dataSource="dataSource"
         @event='onControlEvent'
-        :backward=5
-        :forward=5
+        :backward=5000
+        :forward=5000
         :parseTime='parseTime'
         v-if="dataSource"
     ></TimeController>
