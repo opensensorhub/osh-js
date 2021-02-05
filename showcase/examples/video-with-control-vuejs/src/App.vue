@@ -69,6 +69,6 @@ body {
   height: 100%;
 }
 #app {
-  max-width: 600px;
+  max-width: 100%;
 }
 </style>

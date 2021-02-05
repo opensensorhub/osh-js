@@ -90,8 +90,14 @@ for(let i=0;i < directories.length;i++) {
         }
     }
     currentPlugin.push(new CopyWebpackPlugin([
-        {from: path.resolve(__dirname, './' + example + '/'+directories[i]+'.js'), to: 'js'},
+        {from: path.resolve(__dirname, './' + example + '/'+directories[i]+'.js'), to: 'js'}
     ]));
+
+    if (fs.existsSync( path.resolve(__dirname, './' + example + '/src/App.vue'))) {
+        currentPlugin.push(new CopyWebpackPlugin([
+            {from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue'},
+        ]));
+    }
 
     delete config.devServer;
     delete config.resolve;
