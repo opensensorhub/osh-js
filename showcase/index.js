@@ -126,6 +126,11 @@ var samples = [
     description: "Display a chart with time series of weather measurements and time controller.",
     url: "chart-archive-realtime"
   },
+  {
+    name: "Chart with Time controller and Synchronizer (Chart.js)",
+    description: "Display a chart with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime-synchronized"
+  },
 ];
 
 // load sample cards
