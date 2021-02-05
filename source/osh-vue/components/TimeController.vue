@@ -86,6 +86,8 @@ export default {
       connected: true,
       startTime: null,
       endTime: null,
+      minTime: null,
+      maxTime: null,
       speed: 1.0,
       interval:false
     };
@@ -133,11 +135,25 @@ export default {
     this.dataSourceObject = this.getDataSourceObject();
     this.connected = await this.dataSourceObject.isConnected();
     this.speed = this.dataSourceObject.getReplaySpeed();
-    const minTime = this.dataSourceObject.getMinTime();
-    const maxTime = this.dataSourceObject.getEndTime();
+    let minTime = this.dataSourceObject.getMinTime();
+    let maxTime = this.dataSourceObject.getMaxTime();
 
-    this.startTime = minTime === 'now' ? new Date(Date.now()).toISOString() : minTime;
-    this.endTime = maxTime === 'now' ?  new Date(Date.now()).toISOString() : maxTime;
+
+    if(isDefined(minTime)) {
+      this.startTime = new Date(minTime).getTime();
+    } else {
+      this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
+          new Date(Date.now()).getTime():  new Date(this.dataSourceObject.getStartTime()).getTime() ;
+    }
+    this.minTime = this.startTime;
+
+    if(isDefined(maxTime)) {
+      this.endTime = new Date(maxTime).getTime();
+    } else {
+      this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
+          new Date(Date.now()).getTime():  new Date(this.dataSourceObject.getEndTime()).getTime() ;
+    }
+    this.maxTime = this.endTime;
 
     let dataSourceObj = {};
 
@@ -188,21 +204,26 @@ export default {
   methods: {
     doFastBackward() {
       // reset parameters
-      this.dataSourceObject.setTimeRange(
-          new Date(parseInt(this.startTime - this.backward * 1000)).toISOString(),
-          new Date(this.endTime).toISOString(),
-          this.speed,
-          true
-      );
-      this.on('backward');
+      const backwardTime = parseInt(this.startTime - this.backward);
+      if(backwardTime > this.minTime) {
+        this.startTime = backwardTime;
+        this.dataSourceObject.setTimeRange(
+            new Date(backwardTime).toISOString(),
+            new Date(this.endTime).toISOString(),
+            this.speed,
+            true
+        );
+        this.on('backward');
+      }
     },
     doFastForward() {
       // reset parameters
-      const forwardTime = parseInt(this.startTime + this.forward * 1000);
-      if(forwardTime < this.endTime) {
+      const forwardTime = parseInt(this.startTime + this.forward);
+      if(forwardTime < this.maxTime) {
+        this.startTime = new Date(forwardTime).getTime();
         this.dataSourceObject.setTimeRange(
-            new Date(forwardTime).toISOString(),
-            this.endTime,
+            new Date(this.startTime).toISOString(),
+            new Date(this.endTime).toISOString(),
             this.speed,
             true);
         this.on('forward');
@@ -245,18 +266,23 @@ export default {
         this.endTime = new Date("2055-01-01T00:00:00Z").getTime();
       }
 
-      this.dataSourceObject.setTimeRange(
-          this.startTime !== 'now'? new Date(this.startTime).toISOString(): 'now',
-          new Date(this.endTime).toISOString(),
-          this.speed,
-          !this.history);
-      this.$emit('event', 'slide');
-
       if(!this.history) {
+        this.dataSourceObject.setTimeRange(
+            'now',
+            new Date("2055-01-01T00:00:00Z").toISOString(),
+            this.speed,
+            true);
         this.rangeSlider.deactivate();
       } else {
+        this.dataSourceObject.setTimeRange(
+            new Date(this.startTime).toISOString(),
+            new Date(this.endTime).toISOString(),
+            this.speed,
+            false);
         this.rangeSlider.activate();
       }
+
+      this.$emit('event', 'slide');
     },
     incSpeed() {
       if(!this.interval){

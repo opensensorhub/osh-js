@@ -116,7 +116,7 @@ class TimeSeriesDataSource extends DataSource{
      * @returns {String} - startTime as ISO date
      */
     getMinTime() {
-        return isDefined(this.properties.minTime) ? this.properties.minTime : this.properties.startTime;
+        return this.properties.minTime;
     }
 
     /**
@@ -124,7 +124,7 @@ class TimeSeriesDataSource extends DataSource{
      * @returns {String} - endTime as ISO date
      */
     getMaxTime() {
-        return isDefined(this.properties.maxTime) ? this.properties.maxTime : this.properties.endTime;
+        return this.properties.maxTime;
     }
 
     /**
