@@ -9,22 +9,22 @@
               <i class="fa fa-history"></i>
             </a>
             <div class="control-speed">
-              <a :id="'speed-minus-btn-'+this.id" class="control-btn " @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="decSpeed">
+              <a :id="'speed-minus-btn-'+this.id" class="control-btn "  @mouseup="stopSpeed" @mousedown="decSpeed">
                 <i class="fa fa-minus"></i>
               </a>
               <span class="control-speed-content"><v-chip :id="speedId">{{speed.toFixed(2)}}x</v-chip></span>
-              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="incSpeed">
+              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseup="stopSpeed" @mousedown="incSpeed">
                 <i class="fa fa-plus"></i>
               </a>
             </div>
             <div class="control-back-for">
-              <a :id="'fast-back-btn-'+this.id" class="control-btn"  @mouseleave="stopBackward" @mouseup="stopBackward" @mousedown="doBackward"> <i
+              <a :id="'fast-back-btn-'+this.id" class="control-btn"  @mouseup="stopBackward" @mousedown="doBackward"> <i
                   class="fa fa-fast-backward"></i></a>
               <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"  v-if="connected" @click="doPause"><i
                   class="fa fa-pause"></i></a>
               <a :id="'play-btn-'+this.id" class="control-btn control-btn-play"  v-else><i
                   class="fa fa-play" @click="doPlay"></i></a>
-              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseleave="stopForward" @mouseup="stopForward" @mousedown="doFastForward"> <i
+              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseup="stopForward" @mousedown="doFastForward"> <i
                   class="fa fa-fast-forward"></i></a>
             </div>
             <div class="control-time">
@@ -100,7 +100,8 @@ export default {
       maxTime: null,
       speed: 1.0,
       interval:false,
-      rangeSlider:null
+      rangeSlider:null,
+      bcTime: null
     };
   },
   watch: {
@@ -143,70 +144,40 @@ export default {
 
     if(((isDefined(minTime)  && isDefined(maxTime)) || this.dataSourceObject.getStartTime() !== 'now' )) {
       this.speed = this.dataSourceObject.getReplaySpeed();
-      if (isDefined(minTime)) {
-        this.startTime = new Date(minTime).getTime();
+
+      if(this.dataSourceObject.getStartTime() === 'now') {
+        this.startTime = 'now';
+        this.endTime = this.dataSourceObject.getEndTime();
+        this.minTime = new Date(minTime).getTime();;
+        this.maxTime = new Date(maxTime).getTime();;
+        this.lastStartTime = this.minTime;
+        this.lastEndTime = this.maxTime;
       } else {
-        this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
-            new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getStartTime()).getTime();
-      }
-      this.minTime = this.startTime;
-
-      if (isDefined(maxTime)) {
-        this.endTime = new Date(maxTime).getTime();
-      } else {
-        this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
-            new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getEndTime()).getTime();
-      }
-      this.maxTime = this.endTime;
-
-      let dataSourceObj = {};
-
-      if (isDefined(this.dataSynchronizer)) {
-        dataSourceObj.dataSynchronizer = this.dataSynchronizer;
-      } else {
-        dataSourceObj.dataSource = this.dataSource;
-      }
-
-      this.rangeSlider = new RangeSlider({
-        container: this.id,
-        startTime: this.startTime,
-        endTime: this.endTime,
-        ...dataSourceObj,
-        options: {}
-      });
-
-      this.rangeSlider.activate();
-
-      this.rangeSlider.onChange = (startTime, endTime, type) => {
-        if(!this.interval) {
-          this.startTime = startTime;
-          if (this.history) {
-            this.lastStartTime = startTime;
-            this.lastEndTime = endTime;
-            this.endTime = endTime;
-          }
-
-          this.$emit('event', type);
+        if (isDefined(minTime)) {
+          this.startTime = new Date(minTime).getTime();
+        } else {
+          this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
+              new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getStartTime()).getTime();
         }
-      }
+        this.minTime = this.startTime;
 
+        if (isDefined(maxTime)) {
+          this.endTime = new Date(maxTime).getTime();
+        } else {
+          this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
+              new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getEndTime()).getTime();
+        }
+        this.maxTime = this.endTime;
+      }
       // save the times after creating the component
       this.history = this.startTime !== 'now';
     } else {
       this.history = false;
-
-      // disabled the history button
-      const historyButton = document.getElementById("history-btn-"+this.id);
-      historyButton.setAttribute('disabled','');
-      // listen for BC
-      const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
-      bc.onmessage = (message) => {
-        if(!this.interval) {
-          this.startTime = message.data.timestamp;
-        }
-      }
     }
 
+    if(this.dataSourceObject.getStartTime() === 'now') {
+      this.createTimeBc();
+    }
     // listen for datasource status
     const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
     bc.onmessage = (event) => {
@@ -218,8 +189,66 @@ export default {
         this.connected = true;
       }
     }
+
+    this.createRangeSlider();
   },
   methods: {
+    createTimeBc() {
+      // listen for BC
+      this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
+      this.bcTime.onmessage = (message) => {
+        if(!this.interval) {
+          this.startTime = message.data.timestamp;
+        }
+      }
+    },
+    disableRangeSlider() {
+      if(isDefined(this.rangeSlider)) {
+        this.rangeSlider.deactivate();
+      }
+      this.bcTime.close();
+    },
+    enableRangeSlider() {
+      if(isDefined(this.rangeSlider)) {
+        this.rangeSlider.setTime(this.startTime, this.endTime);
+        this.rangeSlider.activate();
+      }
+    },
+    createRangeSlider() {
+      if(!this.rangeSlider)  {
+        let dataSourceObj = {};
+
+        if (isDefined(this.dataSynchronizer)) {
+          dataSourceObj.dataSynchronizer = this.dataSynchronizer;
+        } else {
+          dataSourceObj.dataSource = this.dataSource;
+        }
+
+        this.rangeSlider = new RangeSlider({
+          container: this.id,
+          startTime: this.minTime,
+          endTime: this.maxTime,
+          ...dataSourceObj,
+          options: {}
+        });
+
+        this.rangeSlider.onChange = (startTime, endTime, type) => {
+          if (!this.interval) {
+            this.startTime = startTime;
+            if (this.history) {
+              this.lastStartTime = startTime;
+              this.lastEndTime = endTime;
+              this.endTime = endTime;
+            }
+
+            this.$emit('event', type);
+          }
+        }
+      }
+      if(!this.history) {
+        this.disableRangeSlider();
+      }
+    },
     doBackward() {
       if(!this.interval) {
         this.interval = setInterval(() => {
@@ -277,18 +306,15 @@ export default {
       return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
     },
     async toggleHistory() {
-      if(!isDefined(this.rangeSlider)){
-        return;
-      }
       this.history = !this.history;
 
       if(this.history) {
         this.startTime = this.lastStartTime;
         this.endTime = this.lastEndTime;
+        this.enableRangeSlider();
 
-        // reset slider position at the last history position
-        this.rangeSlider.setTime(this.startTime, this.endTime);
       } else {
+        this.disableRangeSlider();
         this.lastStartTime = this.startTime;
         this.lastEndTime = this.endTime;
 
@@ -302,14 +328,12 @@ export default {
             new Date("2055-01-01T00:00:00Z").toISOString(),
             this.speed,
             true);
-        this.rangeSlider.deactivate();
       } else {
         this.dataSourceObject.setTimeRange(
             new Date(this.startTime).toISOString(),
             new Date(this.endTime).toISOString(),
             this.speed,
             false);
-        this.rangeSlider.activate();
       }
 
       this.$emit('event', 'slide');
