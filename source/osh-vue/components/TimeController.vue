@@ -18,13 +18,13 @@
               </a>
             </div>
             <div class="control-back-for">
-              <a :id="'fast-back-btn-'+this.id" class="control-btn" @click="doFastBackward"> <i
+              <a :id="'fast-back-btn-'+this.id" class="control-btn"  @mouseleave="stopBackward" @mouseup="stopBackward" @mousedown="doBackward"> <i
                   class="fa fa-fast-backward"></i></a>
               <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"  v-if="connected" @click="doPause"><i
                   class="fa fa-pause"></i></a>
               <a :id="'play-btn-'+this.id" class="control-btn control-btn-play"  v-else><i
                   class="fa fa-play" @click="doPlay"></i></a>
-              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @click="doFastForward"> <i
+              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseleave="stopForward" @mouseup="stopForward" @mousedown="doFastForward"> <i
                   class="fa fa-fast-forward"></i></a>
             </div>
             <div class="control-time">
@@ -116,15 +116,6 @@ export default {
       if(isDefined(endTimeElement)) {
         endTimeElement.innerHTML = this.parseTime(this.endTime);
       }
-    },
-    speed() {
-      this.dataSourceObject.setTimeRange(
-          new Date(this.startTime).toISOString(),
-          new Date(this.endTime).toISOString(),
-          this.speed,
-          true
-      );
-      this.on('replaySpeed');
     }
   },
   beforeMount() {
@@ -187,14 +178,16 @@ export default {
       this.rangeSlider.activate();
 
       this.rangeSlider.onChange = (startTime, endTime, type) => {
-        this.startTime = startTime;
-        if (this.history) {
-          this.lastStartTime = startTime;
-          this.lastEndTime = endTime;
-          this.endTime = endTime;
-        }
+        if(!this.interval) {
+          this.startTime = startTime;
+          if (this.history) {
+            this.lastStartTime = startTime;
+            this.lastEndTime = endTime;
+            this.endTime = endTime;
+          }
 
-        this.$emit('event', type);
+          this.$emit('event', type);
+        }
       }
 
       // save the times after creating the component
@@ -208,7 +201,9 @@ export default {
       // listen for BC
       const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
       bc.onmessage = (message) => {
-        this.startTime = message.data.timestamp;
+        if(!this.interval) {
+          this.startTime = message.data.timestamp;
+        }
       }
     }
 
@@ -225,31 +220,46 @@ export default {
     }
   },
   methods: {
-    doFastBackward() {
-      // reset parameters
-      const backwardTime = parseInt(this.startTime - this.backward);
-      if(backwardTime > this.minTime) {
-        this.startTime = backwardTime;
-        this.dataSourceObject.setTimeRange(
-            new Date(backwardTime).toISOString(),
-            new Date(this.endTime).toISOString(),
-            this.speed,
-            true
-        );
-        this.on('backward');
+    doBackward() {
+      if(!this.interval) {
+        this.interval = setInterval(() => {
+          const backwardTime = parseInt(this.startTime - this.backward);
+          if (backwardTime > this.minTime) {
+            this.startTime = backwardTime;
+          }
+        }, 70);
       }
     },
+    stopBackward(){
+      clearInterval(this.interval)
+      this.interval = false;
+
+      this.updateTime();
+      this.on('backward');
+    },
+    updateTime() {
+      this.dataSourceObject.setTimeRange(
+          new Date(this.startTime).toISOString(),
+          new Date(this.endTime).toISOString(),
+          this.speed,
+          true
+      );
+    },
+    stopForward(){
+      clearInterval(this.interval)
+      this.interval = false;
+
+      this.updateTime();
+      this.on('forward');
+    },
     doFastForward() {
-      // reset parameters
-      const forwardTime = parseInt(this.startTime + this.forward);
-      if(forwardTime < this.maxTime) {
-        this.startTime = new Date(forwardTime).getTime();
-        this.dataSourceObject.setTimeRange(
-            new Date(this.startTime).toISOString(),
-            new Date(this.endTime).toISOString(),
-            this.speed,
-            true);
-        this.on('forward');
+      if(!this.interval) {
+        this.interval = setInterval(() => {
+          const forwardTime = parseInt(this.startTime + this.forward);
+          if(forwardTime < this.maxTime) {
+            this.startTime = new Date(forwardTime).getTime();
+          }
+        }, 70);
       }
     },
     doPause() {
@@ -260,12 +270,7 @@ export default {
     },
     doPlay() {
       this.connected = true;
-      this.dataSourceObject.setTimeRange(
-          new Date(this.startTime).toISOString(),
-          new Date(this.endTime).toISOString(),
-          this.speed,
-          true
-      );
+      this.updateTime();
       this.on('play');
     },
     getDataSourceObject() {
@@ -317,7 +322,7 @@ export default {
           } else {
             this.speed += 0.1;
           }
-        }, 70)
+        }, 70);
       }
       // this.speed += 0.2;
     },
@@ -340,7 +345,10 @@ export default {
     },
     stopSpeed(){
       clearInterval(this.interval)
-      this.interval = false
+      this.interval = false;
+
+      this.updateTime();
+      this.on('replaySpeed');
     },
     on(eventName) {
       this.$emit('event', eventName);
