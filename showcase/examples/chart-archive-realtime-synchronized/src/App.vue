@@ -139,10 +139,13 @@ export default {
     },
     parseTime(timestamp) {
       const date = new Date(timestamp);
-      return '<i><small>(' + this.withLeadingZeros(date.getUTCFullYear()) + '-' + this.withLeadingZeros(date.getUTCMonth())
-          + '-' + this.withLeadingZeros(date.getUTCDay())
-          + ')</small></i> <strong>' + this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-          + this.withLeadingZeros(date.getUTCSeconds()) + '</strong>';
+      const smallDate =  this.withLeadingZeros(date.getUTCFullYear()) + '-' + this.withLeadingZeros(date.getUTCMonth())
+          + '-' + this.withLeadingZeros(date.getUTCDay());
+
+      const smallTime =  this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+          + this.withLeadingZeros(date.getUTCSeconds());
+
+      return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate+ ')</small></i></div></div>';
     },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
@@ -151,19 +154,20 @@ export default {
 };
 </script>
 <style>
-body {
+body, html {
   overflow-x: hidden;
   margin: 0;
   padding: 0px;
   background: aliceblue;
-}
-
-#container {
-  margin-bottom: 10px;
-}
-
-#container {
   width: 100%;
-  height: 500px;
+  height: 100%;
+}
+
+#container {
+  height: 80%;
+}
+#app {
+  width: inherit;
+  height: inherit;
 }
 </style>
