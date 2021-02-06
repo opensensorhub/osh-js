@@ -8,24 +8,30 @@
             <a :id="'history-btn-'+this.id" class="control-btn clicked history" @click="toggleHistory">
               <i class="fa fa-history"></i>
             </a>
-            <a :id="'speed-minus-btn-'+this.id" class="control-btn control-speed-minus" @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="decSpeed">
-              <i class="fa fa-minus"></i>
-            </a>
-            <span class="control-speed-content"><v-chip :id="speedId">{{speed.toFixed(2)}}x</v-chip></span>
-            <a :id="'speed-plus-btn-'+this.id" class="control-btn control-speed-plus"  @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="incSpeed">
-              <i class="fa fa-plus"></i>
-            </a>
-            <a :id="'fast-back-btn-'+this.id" class="control-btn" @click="doFastBackward"> <i
-                class="fa fa-fast-backward"></i></a>
-            <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"  v-if="connected" @click="doPause"><i
-                class="fa fa-pause"></i></a>
-            <a :id="'play-btn-'+this.id" class="control-btn control-btn-play"  v-else><i
-                class="fa fa-play" @click="doPlay"></i></a>
-            <a :id="'fast-forward-btn-'+this.id" class="control-btn" @click="doFastForward"> <i
-                class="fa fa-fast-forward"></i></a>
-            <span :id="'current-time-'+this.id"></span>
-            <span style="padding:0 10px 0 10px">/</span>
-            <span :id="'end-time-'+this.id"></span>
+            <div class="control-speed">
+              <a :id="'speed-minus-btn-'+this.id" class="control-btn " @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="decSpeed">
+                <i class="fa fa-minus"></i>
+              </a>
+              <span class="control-speed-content"><v-chip :id="speedId">{{speed.toFixed(2)}}x</v-chip></span>
+              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseleave="stopSpeed" @mouseup="stopSpeed" @mousedown="incSpeed">
+                <i class="fa fa-plus"></i>
+              </a>
+            </div>
+            <div class="control-back-for">
+              <a :id="'fast-back-btn-'+this.id" class="control-btn" @click="doFastBackward"> <i
+                  class="fa fa-fast-backward"></i></a>
+              <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"  v-if="connected" @click="doPause"><i
+                  class="fa fa-pause"></i></a>
+              <a :id="'play-btn-'+this.id" class="control-btn control-btn-play"  v-else><i
+                  class="fa fa-play" @click="doPlay"></i></a>
+              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @click="doFastForward"> <i
+                  class="fa fa-fast-forward"></i></a>
+            </div>
+            <div class="control-time">
+              <span :id="'current-time-'+this.id"></span>
+              <span style="padding:0 10px 0 10px">/</span>
+              <span :id="'end-time-'+this.id"></span>
+            </div>
           </div>
         </slot>
         <slot v-else>
@@ -339,12 +345,15 @@ export default {
     on(eventName) {
       this.$emit('event', eventName);
     },
-    parseDate(intTimeStamp) {
-      const date = new Date(intTimeStamp);
-      return '('+this.withLeadingZeros(date.getUTCFullYear()) + '-'+this.withLeadingZeros(date.getUTCMonth())
-          + '-'+this.withLeadingZeros(date.getUTCDay())
-          + ') '+ this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+    parseDate(timestamp) {
+      const date = new Date(timestamp);
+      const smallDate =  this.withLeadingZeros(date.getUTCFullYear()) + '-' + this.withLeadingZeros(date.getUTCMonth())
+          + '-' + this.withLeadingZeros(date.getUTCDay());
+
+      const smallTime =  this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
           + this.withLeadingZeros(date.getUTCSeconds());
+
+      return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate+ ')</small></i></div></div>';
     },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
@@ -374,6 +383,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-left: 10px;
+  width: 50%;
+  max-width: 450px;
 }
 
 .control .control-btn {
@@ -387,14 +398,31 @@ export default {
   height: 3px;
 }
 
+.control .box-time  small {
+  font-size: 60%;
+}
+.control .box-time {
+  display: flex;
+  flex-direction: column;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  line-height: 15px;
+}
+
+.control .control-back-for {
+  display: flex;
+}
+
+.control .control-time {
+  display: flex;
+}
+
 .control a[disabled] {
   color: gray;
   pointer-events: none;
 }
 
-.control .history {
-  margin-right: 10px;
-}
 .control .noUi-target {
   background: #FAFAFA;
   border-radius: unset;
@@ -408,9 +436,6 @@ export default {
   width: 100%;
 }
 
-.control .control-speed-plus {
-  margin-right: 30px;
-}
 .control .fa-history {
   font-size: 19px;
 }
