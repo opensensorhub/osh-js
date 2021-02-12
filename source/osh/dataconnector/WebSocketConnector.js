@@ -65,9 +65,9 @@ class WebSocketConnector extends DataConnector {
                 this.checkAndClearReconnection();
                 this.checkStatus(Status.CONNECTED);
                 this.lastReceiveTime = Date.now();
-
                 //callback data on message received
                 if (event.data.byteLength > 0) {
+                    console.log('received data')
                     this.onMessage(event.data);
                 }
             }.bind(this);

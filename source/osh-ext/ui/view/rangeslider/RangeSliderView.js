@@ -63,6 +63,7 @@ class RangeSliderView extends View {
     this.dataSourceObject = null;
     this.debounce = 0;
     this.options = {};
+    this.sliding = false;
 
     if (isDefined(properties)) {
       if (isDefined(properties.startTime)) {
@@ -160,15 +161,29 @@ class RangeSliderView extends View {
     // start->update->end
     this.slider.noUiSlider.on("start", function (values, handle) {
       that.update = true;
+      that.sliding = true;
+      const st = parseInt(values[0]);
+      const end = parseInt(values[1]) || parseInt(that.endTime);
+      that.onChange(st, end, 'start');
     });
 
     this.slider.noUiSlider.on("slide", function (values, handle) {
+      that.sliding = true;
       that.update = true;
+      const st = parseInt(values[0]);
+      const end = parseInt(values[1]) || parseInt(that.endTime);
+      that.onChange(st, end, 'slide');
     });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
-      that.change(parseInt(values[0]), parseInt(values[1]) || parseInt(that.endTime));
-      setTimeout(() => that.update = false, that.debounce);
+      if(that.sliding) {
+        that.sliding = false;
+        const st = parseInt(values[0]);
+        const end = parseInt(values[1]) || parseInt(that.endTime);
+        that.onChange(st, end, 'end');
+        // that.update = false;
+        setTimeout(() => that.update = false, that.debounce);
+      }
     });
   }
 
@@ -203,13 +218,11 @@ class RangeSliderView extends View {
     this.slider.noUiSlider.set([startTimestamp, endTimestamp]);
   }
 
-  change(startTime, endTime) {
-    this.dataSourceObject.setTimeRange(new Date(startTime).toISOString(),
-        new Date(endTime).toISOString(), this.dataSourceObject.properties.replaySpeed);
-    this.onChange(startTime, endTime, 'slide');
-  }
-
   onChange(startTime, endTime, type) {
+    if(type === 'end') {
+      this.dataSourceObject.setTimeRange(new Date(startTime).toISOString(),
+                                    new Date(endTime).toISOString(), endTime.dataSourceObject.properties.replaySpeed);
+    }
   }
 
 }

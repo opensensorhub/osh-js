@@ -7,7 +7,6 @@
         @event='onControlEvent'
         :backward=5000
         :forward=5000
-        :parseTime='parseTime'
         v-if="dataSource"
     ></TimeController>
   </div>
@@ -35,13 +34,11 @@ export default {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-      offeringID: "urn:mysos:offering03",
+      offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: 'now',
-      endTime: '2055-01-01T00:00:00Z',
-      batchSize: 1,
-      replaySpeed: 2,
-      minTime: (new Date(Date.now() - 60 * 1000).toISOString()),
+      startTime: (new Date(Date.now() - 60 * 1000 * 10 * 1).toISOString()),
+      endTime: (new Date(Date.now()).toISOString()),
+      minTime: (new Date(Date.now() - 60 * 1000 * 10 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString())
     });
 
@@ -101,37 +98,29 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
-      if(eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed') {
+      if(eventName === 'forward' || eventName === 'backward' || eventName === 'end' || eventName === 'replaySpeed' ) {
+        console.log('reset')
         this.view.reset();
       }
-    },
-    parseTime(timestamp) {
-      const date = new Date(timestamp);
-      return '<i><small>('+this.withLeadingZeros(date.getUTCFullYear()) + '-'+this.withLeadingZeros(date.getUTCMonth())
-          + '-'+this.withLeadingZeros(date.getUTCDay())
-          + ')</small></i> <strong>'+ this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-          + this.withLeadingZeros(date.getUTCSeconds())+ '</strong>';
-    },
-    withLeadingZeros(dt) {
-      return (dt < 10 ? '0' : '') + dt;
     }
   }
 };
 </script>
 <style>
-body {
+body, html {
   overflow-x: hidden;
   margin: 0;
   padding: 0px;
   background: aliceblue;
-}
-
-#container  {
-  margin-bottom: 10px;
+  width: 100%;
+  height: 100%;
 }
 
 #container {
-  width:100%;
-  height:500px;
+  height: 80%;
+}
+#app {
+  width: inherit;
+  height: inherit;
 }
 </style>

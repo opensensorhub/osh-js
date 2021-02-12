@@ -4,15 +4,17 @@
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <slot v-if="history">
-          <div class="datasource-actions" >
+          <div class="datasource-actions">
             <a :id="'history-btn-'+this.id" class="control-btn clicked history" @click="toggleHistory">
               <i class="fa fa-history"></i>
             </a>
-            <div class="control-speed">
+            <div class="control-speed" v-if="activateSpeedControl">
               <a :id="'speed-minus-btn-'+this.id" class="control-btn "  @mouseup="stopSpeed" @mousedown="decSpeed">
                 <i class="fa fa-minus"></i>
               </a>
-              <span class="control-speed-content"><v-chip :id="speedId">{{speed.toFixed(2)}}x</v-chip></span>
+              <span class="control-speed-content">
+                <v-chip :id="speedId">{{speed > 0 ? speed.toFixed(2)+'x': 'none'}}</v-chip>
+              </span>
               <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseup="stopSpeed" @mousedown="incSpeed">
                 <i class="fa fa-plus"></i>
               </a>
@@ -21,16 +23,16 @@
               <a :id="'fast-back-btn-'+this.id" class="control-btn"  @mouseup="stopBackward" @mousedown="doBackward"> <i
                   class="fa fa-fast-backward"></i></a>
               <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"  v-if="connected" @click="doPause"><i
-                  class="fa fa-pause"></i></a>
+                  class="fa fa-pause" v-if="activateSpeedControl"></i></a>
               <a :id="'play-btn-'+this.id" class="control-btn control-btn-play"  v-else><i
-                  class="fa fa-play" @click="doPlay"></i></a>
+                  class="fa fa-play" @click="doPlay" v-if="activateSpeedControl"></i></a>
               <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseup="stopForward" @mousedown="doFastForward"> <i
                   class="fa fa-fast-forward"></i></a>
             </div>
             <div class="control-time">
-              <span :id="'current-time-'+this.id"></span>
+              <span :id="'current-time-'+this.id" v-html=parseTime(startTime)></span>
               <span style="padding:0 10px 0 10px">/</span>
-              <span :id="'end-time-'+this.id"></span>
+              <span :id="'end-time-'+this.id" v-html=parseTime(endTime)></span>
             </div>
           </div>
         </slot>
@@ -98,6 +100,7 @@ export default {
       endTime: null,
       minTime: null,
       maxTime: null,
+      activateSpeedControl: true,
       speed: 1.0,
       interval:false,
       rangeSlider:null,
@@ -107,16 +110,6 @@ export default {
   watch: {
     event(newValue) {
       this.$emit('event', newValue);
-    },
-    startTime() {
-      const currentTimeElement = document.getElementById("current-time-" + this.id);
-      currentTimeElement.innerHTML = this.parseTime(this.startTime);
-    },
-    endTime() {
-      const endTimeElement = document.getElementById("end-time-" + this.id);
-      if(isDefined(endTimeElement)) {
-        endTimeElement.innerHTML = this.parseTime(this.endTime);
-      }
     }
   },
   beforeMount() {
@@ -128,22 +121,19 @@ export default {
       this.parseTime = this.parseDate;
     }
   },
-  updated() {
-    const currentTimeElement = document.getElementById("current-time-" + this.id);
-    currentTimeElement.innerHTML = this.parseTime(this.startTime);
-
-    const endTimeElement = document.getElementById("end-time-" + this.id);
-    if(isDefined(endTimeElement)) {
-      endTimeElement.innerHTML = this.parseTime(this.endTime);
-    }
-  },
   async mounted() {
+
     this.connected = await this.dataSourceObject.isConnected();
     let minTime = this.dataSourceObject.getMinTime();
     let maxTime = this.dataSourceObject.getMaxTime();
 
     if(((isDefined(minTime)  && isDefined(maxTime)) || this.dataSourceObject.getStartTime() !== 'now' )) {
-      this.speed = this.dataSourceObject.getReplaySpeed();
+      if(isDefined(this.dataSourceObject.replaySpeed)) {
+        this.speed = this.dataSourceObject.replaySpeed;
+      } else {
+        this.speed = 0.0;
+        this.activateSpeedControl= false;
+      }
 
       if(this.dataSourceObject.getStartTime() === 'now') {
         this.startTime = 'now';
@@ -206,7 +196,9 @@ export default {
       if(isDefined(this.rangeSlider)) {
         this.rangeSlider.deactivate();
       }
-      this.bcTime.close();
+      if(isDefined(this.bcTime)) {
+        this.bcTime.close();
+      }
     },
     enableRangeSlider() {
       if(isDefined(this.rangeSlider)) {
@@ -228,11 +220,12 @@ export default {
           container: this.id,
           startTime: this.minTime,
           endTime: this.maxTime,
+          debounce: 200,
           ...dataSourceObj,
           options: {}
         });
 
-        this.rangeSlider.onChange = (startTime, endTime, type) => {
+        this.rangeSlider.onChange = (startTime, endTime, event) => {
           if (!this.interval) {
             this.startTime = startTime;
             if (this.history) {
@@ -241,7 +234,10 @@ export default {
               this.endTime = endTime;
             }
 
-            this.$emit('event', type);
+            this.$emit('event', event);
+          }
+          if(event === 'end') {
+             this.doPlay();
           }
         }
       }
@@ -255,6 +251,7 @@ export default {
           const backwardTime = parseInt(this.startTime - this.backward);
           if (backwardTime > this.minTime) {
             this.startTime = backwardTime;
+            this.rangeSlider.setStartTime(backwardTime);
           }
         }, 70);
       }
@@ -267,6 +264,7 @@ export default {
       this.on('backward');
     },
     updateTime() {
+      console.log(this.speed)
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
@@ -287,6 +285,7 @@ export default {
           const forwardTime = parseInt(this.startTime + this.forward);
           if(forwardTime < this.maxTime) {
             this.startTime = new Date(forwardTime).getTime();
+            this.rangeSlider.setStartTime(forwardTime);
           }
         }, 70);
       }
@@ -328,6 +327,7 @@ export default {
             new Date("2055-01-01T00:00:00Z").toISOString(),
             this.speed,
             true);
+
       } else {
         this.dataSourceObject.setTimeRange(
             new Date(this.startTime).toISOString(),
@@ -336,7 +336,7 @@ export default {
             false);
       }
 
-      this.$emit('event', 'slide');
+      this.$emit('event', 'end');
     },
     incSpeed() {
       if(!this.interval){
@@ -348,20 +348,15 @@ export default {
           }
         }, 70);
       }
-      // this.speed += 0.2;
     },
     decSpeed() {
       if(this.speed >= 0.0) {
         if(!this.interval){
           this.interval = setInterval(() => {
-            if(this.speed <= 0.1) {
-              this.stopSpeed();
+            if(this.speed > 10.0) {
+              this.speed -= 1.0;
             } else {
-              if(this.speed > 10.0) {
-                this.speed -= 1.0;
-              } else {
-                this.speed -= 0.1;
-              }
+              this.speed -= 0.1;
             }
           }, 70)
         }

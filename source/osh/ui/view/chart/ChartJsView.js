@@ -90,6 +90,7 @@ class ChartJsView extends View {
 
         const { maxTicksLimit } = this.tickOpts || 5;
         this.maxPoints = maxTicksLimit;
+        this.resetting = false;
 
         this.chart = new Chart(
             ctx, {
@@ -99,6 +100,7 @@ class ChartJsView extends View {
                     datasets: []
                 },
                 options : {
+                    responsiveAnimationDuration: 0,
                     legend: {
                         ...this.legendOpts
                     },
@@ -132,8 +134,8 @@ class ChartJsView extends View {
                             ticks: {
                                 maxTicksLimit:5,
                                 ...this.tickOpts,
-                               callback: (label, index, values) => {
-                                    return this.parseDate(values[0].value);
+                                callback: (label, index, values) => {
+                                    return this.parseDate(values[index].value);
                                 }
                             },
                             gridLines: this.gridLinesOpts,
@@ -149,6 +151,7 @@ class ChartJsView extends View {
     }
 
     setData(dataSourceId, data) {
+        console.log('chart.js received')
         if(data.type === 'curve') {
             this.updateCurve(data.values);
         }
@@ -169,9 +172,14 @@ class ChartJsView extends View {
      * @param {Curve.props[]} props - The layer properties allowing the update of the curve
      */
     updateCurve(props) {
+        if(this.resetting) {
+            return;
+        }
         let currentDataset = this.datasets[props[0].curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
+        let create = false;
         if(!isDefined(currentDataset)) {
+            create = true;
             let lineColor = props[0].color;
             if(lineColor.startsWith('#')) {
                 const rgb = hex2rgb(lineColor);
@@ -186,31 +194,32 @@ class ChartJsView extends View {
             this.datasets[props[0].curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         } else {
-            values.forEach(value => this.datasets[props[0].curveId].data.push(value));
+            values.forEach(value => {
+                this.datasets[props[0].curveId].data.push(value);
+            });
         }
-        if(currentDataset.data.length >= this.maxPoints) {
+        if((currentDataset.data.length > this.maxPoints + 2) || create) {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
         }
-        this.chart.data.labels.push(currentDataset.data[currentDataset.data.length-1].x);
-        if(currentDataset.data.length > 1) {
-            this.chart.update(0);
-        } else {
-            this.chart.update();
-        }
 
-        if(currentDataset.data.length > this.maxPoints) {
+        if((currentDataset.data.length > this.maxPoints + 2) || create) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();
         }
+        this.chart.update();
     }
 
     reset() {
+        this.resetting = true;
+        // this.chart.stop();
         super.reset();
+        this.datasets = {};
+        this.chart.data.datasets = [];
         this.chart.data.labels = [];
-        for(let dataset of this.chart.data.datasets) {
-            dataset.data = [];
-        }
-        this.chart.update();
+        this.chart.update(0);
+        this.resetting = false;
+        // this.chart.data.datasets = [];
+        // this.chart.update();
     }
 }
 

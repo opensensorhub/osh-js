@@ -86,11 +86,17 @@ class TimeSeriesDataSource extends DataSource{
      * @param {boolean} reconnect - reconnect if was connected
      */
     setTimeRange(startTime, endTime, replaySpeed, reconnect= false) {
+        let replay = {};
+        if(isDefined(replaySpeed)) {
+            replay =  {
+                replaySpeed: replaySpeed
+            }
+        }
         this.updateProperties({
             ...this.currentRunningProperties,
             startTime: startTime,
             endTime: endTime,
-            replaySpeed: replaySpeed,
+           ...replay,
             reconnect : reconnect
         });
     }
