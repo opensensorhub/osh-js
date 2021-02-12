@@ -40,8 +40,7 @@ export default {
       startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString()),
-      replaySpeed: 1.5
+      maxTime: (new Date(Date.now()).toISOString())
     });
 
 // #region snippet_curve_layer
@@ -101,6 +100,7 @@ export default {
   methods: {
     onControlEvent(eventName) {
       if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
+          || eventName === 'replaySpeed'
           || (eventName === 'play' && (!isDefined(this.dataSource.properties.replaySpeed)))) {
         this.view.reset();
       }

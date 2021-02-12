@@ -61,13 +61,17 @@ class WebSocketConnector extends DataConnector {
             this.ws = new WebSocket(this.getUrl());
             this.ws.binaryType = 'arraybuffer';
             this.checkStatus(Status.CONNECTING);
-            this.ws.onmessage = function (event) {
+            console.warn('WebSocket stream connecting');
+            this.ws.onopen = function(event) {
                 this.checkAndClearReconnection();
                 this.checkStatus(Status.CONNECTED);
+                console.warn('WebSocket stream connected');
+            }.bind(this);
+
+            this.ws.onmessage = function (event) {
                 this.lastReceiveTime = Date.now();
                 //callback data on message received
                 if (event.data.byteLength > 0) {
-                    console.log('received data')
                     this.onMessage(event.data);
                 }
             }.bind(this);

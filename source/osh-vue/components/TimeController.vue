@@ -1,32 +1,32 @@
 <template>
-  <div class="control">
-    <div :id="id"></div>
+  <div :id="'control-component-'+this.id" class="control">
+    <div :id="id" class="range"></div>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <slot v-if="history">
-          <div class="datasource-actions">
-            <a :id="'history-btn-'+this.id" class="control-btn clicked history" @click="toggleHistory">
+          <div class="datasource-actions history">
+            <a :id="'history-btn-'+this.id" class="control-btn clicked" @click="toggleHistory">
               <i class="fa fa-history"></i>
             </a>
             <div class="control-speed" v-if="activateSpeedControl">
-              <a :id="'speed-minus-btn-'+this.id" class="control-btn "  @mouseup="stopSpeed" @mousedown="decSpeed">
+              <a :id="'speed-minus-btn-'+this.id" class="control-btn "  @mouseup="stopSpeed"  @mouseleave="stopSpeed" @mousedown="decSpeed">
                 <i class="fa fa-minus"></i>
               </a>
               <span class="control-speed-content">
                 <v-chip :id="speedId">{{speed > 0 ? speed.toFixed(2)+'x': 'none'}}</v-chip>
               </span>
-              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseup="stopSpeed" @mousedown="incSpeed">
+              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseup="stopSpeed" @mouseleave="stopSpeed" @mousedown="incSpeed">
                 <i class="fa fa-plus"></i>
               </a>
             </div>
             <div class="control-back-for">
-              <a :id="'fast-back-btn-'+this.id" class="control-btn"  @mouseup="stopBackward" @mousedown="doBackward"> <i
+              <a :id="'fast-back-btn-'+this.id" class="control-btn"  @mouseup="stopBackward"  @mouseleave="stopBackward" @mousedown="doBackward"> <i
                   class="fa fa-fast-backward"></i></a>
               <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause"  v-if="connected" @click="doPause"><i
-                  class="fa fa-pause" v-if="activateSpeedControl"></i></a>
+                  class="fa fa-pause" ></i></a>
               <a :id="'play-btn-'+this.id" class="control-btn control-btn-play"  v-else><i
-                  class="fa fa-play" @click="doPlay" v-if="activateSpeedControl"></i></a>
-              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseup="stopForward" @mousedown="doFastForward"> <i
+                  class="fa fa-play" @click="doPlay" ></i></a>
+              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseup="stopForward" @mouseleave="stopForward" @mousedown="doFastForward"> <i
                   class="fa fa-fast-forward"></i></a>
             </div>
             <div class="control-time">
@@ -37,12 +37,12 @@
           </div>
         </slot>
         <slot v-else>
-          <div class="datasource-actions" >
+          <div class="datasource-actions live" >
             <a :id="'history-btn-'+this.id" class="control-btn history" @click="toggleHistory">
               <i class="fa fa-history"></i>
             </a>
           </div>
-          <span :id="'current-time-'+this.id"></span>
+          <span :id="'current-time-'+this.id" v-if="realtime" v-html=parseTime(realtime)></span>
           <v-chip
               x-small
               class="ma-2 live"
@@ -92,12 +92,11 @@ export default {
       speedId: randomUUID(),
       event: null,
       history: true,
-      lastStartTime: null,
-      lastEndTime: null,
       dataSourceObject: null,
       connected: true,
       startTime: null,
       endTime: null,
+      realtime: null,
       minTime: null,
       maxTime: null,
       activateSpeedControl: true,
@@ -128,8 +127,8 @@ export default {
     let maxTime = this.dataSourceObject.getMaxTime();
 
     if(((isDefined(minTime)  && isDefined(maxTime)) || this.dataSourceObject.getStartTime() !== 'now' )) {
-      if(isDefined(this.dataSourceObject.replaySpeed)) {
-        this.speed = this.dataSourceObject.replaySpeed;
+      if(isDefined(this.dataSourceObject.properties.replaySpeed)) {
+        this.speed = this.dataSourceObject.properties.replaySpeed;
       } else {
         this.speed = 0.0;
         this.activateSpeedControl= false;
@@ -138,10 +137,8 @@ export default {
       if(this.dataSourceObject.getStartTime() === 'now') {
         this.startTime = 'now';
         this.endTime = this.dataSourceObject.getEndTime();
-        this.minTime = new Date(minTime).getTime();;
-        this.maxTime = new Date(maxTime).getTime();;
-        this.lastStartTime = this.minTime;
-        this.lastEndTime = this.maxTime;
+        this.minTime = new Date(minTime).getTime();
+        this.maxTime = new Date(maxTime).getTime();
       } else {
         if (isDefined(minTime)) {
           this.startTime = new Date(minTime).getTime();
@@ -165,45 +162,39 @@ export default {
       this.history = false;
     }
 
-    if(this.dataSourceObject.getStartTime() === 'now') {
-      this.createTimeBc();
-    }
+    this.createTimeBc();
     // listen for datasource status
     const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
     bc.onmessage = (event) => {
       if (event.data.type === "status") {
         if(event.data.status === STATUS.DISCONNECTED) {
           this.connected = false;
+        } else  if(event.data.status === STATUS.CONNECTED) {
+          this.connected = true;
         }
-      } else if(event.data.type === 'data') {
-        this.connected = true;
       }
     }
 
     this.createRangeSlider();
   },
   methods: {
-    createTimeBc() {
-      // listen for BC
-      this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
-      this.bcTime.onmessage = (message) => {
-        if(!this.interval) {
-          this.startTime = message.data.timestamp;
-        }
-      }
-    },
-    disableRangeSlider() {
-      if(isDefined(this.rangeSlider)) {
-        this.rangeSlider.deactivate();
-      }
+    destroyBc() {
       if(isDefined(this.bcTime)) {
         this.bcTime.close();
       }
     },
-    enableRangeSlider() {
-      if(isDefined(this.rangeSlider)) {
-        this.rangeSlider.setTime(this.startTime, this.endTime);
-        this.rangeSlider.activate();
+    createTimeBc() {
+      // listen for BC
+      this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
+      this.bcTime.onmessage = (message) => {
+        if(this.history) {
+          if (!this.interval && this.speed > 0.0 && !this.sliding) {
+            this.startTime = message.data.timestamp;
+            this.rangeSlider.setStartTime(this.startTime, this.endTime);
+          }
+        } else {
+          this.realtime =  message.data.timestamp;
+        }
       }
     },
     createRangeSlider() {
@@ -221,16 +212,20 @@ export default {
           startTime: this.minTime,
           endTime: this.maxTime,
           debounce: 200,
-          ...dataSourceObj,
           options: {}
         });
 
+        this.sliding = false;
         this.rangeSlider.onChange = (startTime, endTime, event) => {
+          if(event === 'slide') {
+            this.sliding = true;
+          } else if(event === 'end') {
+            this.sliding = false;
+          }
+
           if (!this.interval) {
             this.startTime = startTime;
             if (this.history) {
-              this.lastStartTime = startTime;
-              this.lastEndTime = endTime;
               this.endTime = endTime;
             }
 
@@ -240,9 +235,6 @@ export default {
              this.doPlay();
           }
         }
-      }
-      if(!this.history) {
-        this.disableRangeSlider();
       }
     },
     doBackward() {
@@ -257,14 +249,15 @@ export default {
       }
     },
     stopBackward(){
-      clearInterval(this.interval)
-      this.interval = false;
+      if(this.interval) {
+        clearInterval(this.interval)
+        this.interval = false;
 
-      this.updateTime();
-      this.on('backward');
+        this.updateTime();
+        this.on('backward');
+      }
     },
     updateTime() {
-      console.log(this.speed)
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
@@ -273,12 +266,15 @@ export default {
       );
     },
     stopForward(){
-      clearInterval(this.interval)
-      this.interval = false;
+      if(this.interval) {
+        clearInterval(this.interval)
+        this.interval = false;
 
-      this.updateTime();
-      this.on('forward');
+        this.updateTime();
+        this.on('forward');
+      }
     },
+
     doFastForward() {
       if(!this.interval) {
         this.interval = setInterval(() => {
@@ -293,12 +289,14 @@ export default {
     doPause() {
       this.connected = false;
       this.dataSourceObject.disconnect();
+      this.destroyBc();
       //save current time
       this.on('pause');
     },
     doPlay() {
       this.connected = true;
       this.updateTime();
+      this.createTimeBc();
       this.on('play');
     },
     getDataSourceObject() {
@@ -307,35 +305,21 @@ export default {
     async toggleHistory() {
       this.history = !this.history;
 
-      if(this.history) {
-        this.startTime = this.lastStartTime;
-        this.endTime = this.lastEndTime;
-        this.enableRangeSlider();
-
-      } else {
-        this.disableRangeSlider();
-        this.lastStartTime = this.startTime;
-        this.lastEndTime = this.endTime;
-
-        this.startTime = 'now';
-        this.endTime = new Date("2055-01-01T00:00:00Z").getTime();
-      }
-
       if(!this.history) {
         this.dataSourceObject.setTimeRange(
             'now',
             new Date("2055-01-01T00:00:00Z").toISOString(),
             this.speed,
             true);
-
+        document.getElementById(this.id).style.display = 'none';
       } else {
         this.dataSourceObject.setTimeRange(
             new Date(this.startTime).toISOString(),
             new Date(this.endTime).toISOString(),
             this.speed,
             false);
+        document.getElementById(this.id).style.display = 'block';
       }
-
       this.$emit('event', 'end');
     },
     incSpeed() {
@@ -350,24 +334,26 @@ export default {
       }
     },
     decSpeed() {
-      if(this.speed >= 0.0) {
+      if(this.speed > 0.1) {
         if(!this.interval){
           this.interval = setInterval(() => {
             if(this.speed > 10.0) {
               this.speed -= 1.0;
             } else {
-              this.speed -= 0.1;
+              this.speed = this.speed - 0.1 <= 0 ? 0.1 : this.speed - 0.1;
             }
           }, 70)
         }
       }
     },
     stopSpeed(){
-      clearInterval(this.interval)
-      this.interval = false;
+      if(this.interval) {
+        clearInterval(this.interval)
+        this.interval = false;
 
-      this.updateTime();
-      this.on('replaySpeed');
+        this.updateTime();
+        this.on('replaySpeed');
+      }
     },
     on(eventName) {
       this.$emit('event', eventName);
@@ -486,6 +472,8 @@ export default {
 
 .control {
   background-color: #3d3d3d !important;
+  margin: 15px 0 0 0;
+  padding: 0 0 5px 0;
 }
 .control-btn:active {
   color: #00B5B8;
@@ -493,6 +481,7 @@ export default {
 
 .control .live {
   margin-left:10px;
+  top: -1px;
 }
 
 .control .live > span {
@@ -565,4 +554,15 @@ export default {
   height: 34px;
   top: -15px;
 }
+
+.control .noUi-horizontal {
+  height: 0px;
+}
+
+.control .datasource-actions.live {
+  justify-content: unset;
+  align-items: unset;
+  width: unset;
+}
+
 </style>

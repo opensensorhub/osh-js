@@ -19,6 +19,7 @@ import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
 import TimeController from 'osh-vue/components/TimeController.vue';
 
 import DataSynchronizer from 'osh/datasynchronizer/DataSynchronizer';
+import {isDefined} from "../../../../source/osh/utils/Utils";
 
 export default {
   components: {
@@ -36,16 +37,15 @@ export default {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-      offeringID: "urn:mysos:offering03",
+      offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
       startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       endTime: (new Date(Date.now()).toISOString()),
-      batchSize: 1,
-      replaySpeed: 2,
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
       bufferingTime: 100,
-      timeOut: 100
+      timeOut: 100,
+      replaySpeed: 2.0
     });
 
     let chartDataSource2 = new SosGetResultJson("weather", {
@@ -54,14 +54,13 @@ export default {
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       endTime: (new Date(Date.now()).toISOString()),
-      batchSize: 1,
-      replaySpeed: 2,
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      bufferingTime: 50,
-      timeOut: 100
+      bufferingTime: 100,
+      timeOut: 100,
+      replaySpeed: 2.0
     });
 
     this.view = new ChartJsView({
@@ -133,7 +132,9 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
-      if (eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed') {
+      if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
+          || eventName === 'replaySpeed'
+          || (eventName === 'play' && (!isDefined(this.dataSynchronizer.properties.replaySpeed)))) {
         this.view.reset();
       }
     },

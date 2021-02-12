@@ -105,7 +105,7 @@ class ChartJsView extends View {
                         ...this.legendOpts
                     },
                     animation: {
-                        duration: 1000
+                        duration: 0
                     },
                     spanGaps: true,
                     scales: {
@@ -151,7 +151,6 @@ class ChartJsView extends View {
     }
 
     setData(dataSourceId, data) {
-        console.log('chart.js received')
         if(data.type === 'curve') {
             this.updateCurve(data.values);
         }

@@ -130,6 +130,12 @@ var samples = [
     code: 'vue/App.vue'
   },
   {
+    name: "Chart with Time controller (Chart.js) in batch mode",
+    description: "Display a chart using full batch mode with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime-batch",
+    code: 'vue/App.vue'
+  },
+  {
     name: "Chart with Time controller and Synchronizer (Chart.js)",
     description: "Display a chart with time series of weather measurements and time controller.",
     url: "chart-archive-realtime-synchronized",

@@ -125,12 +125,14 @@ class RangeSliderView extends View {
 
     this.createEvents();
 
-    // listen for BC
-    const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
-    bc.onmessage = (message) => {
-      if(!this.update) {
-        this.slider.noUiSlider.set([message.data.timestamp]);
-        this.onChange(message.data.timestamp, parseInt(this.slider.noUiSlider.get()[1]), 'data');
+    if(isDefined(this.dataSourceObject)) {
+      // listen for BC
+      const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
+      bc.onmessage = (message) => {
+        if (!this.update) {
+          this.slider.noUiSlider.set([message.data.timestamp]);
+          this.onChange(message.data.timestamp, parseInt(this.slider.noUiSlider.get()[1]), 'data');
+        }
       }
     }
   }
@@ -211,11 +213,15 @@ class RangeSliderView extends View {
   }
 
   setStartTime(timestamp) {
-    this.slider.noUiSlider.set([timestamp]);
+    if(!this.update) {
+      this.slider.noUiSlider.set([timestamp]);
+    }
   }
 
   setTime(startTimestamp, endTimestamp) {
-    this.slider.noUiSlider.set([startTimestamp, endTimestamp]);
+    if(!this.update) {
+      this.slider.noUiSlider.set([startTimestamp, endTimestamp]);
+    }
   }
 
   onChange(startTime, endTime, type) {

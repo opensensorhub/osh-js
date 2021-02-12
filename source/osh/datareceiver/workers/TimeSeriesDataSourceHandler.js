@@ -55,9 +55,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         }
         this.lastTimeStamp = timeStamp;
 
-        if(this.parser.lastStartTime === 'now') {
-            this.flush();
-        } else if ((isDefined(this.batchSize) && this.values.length >= this.batchSize)) {
+        if(this.parser.lastStartTime === 'now' || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
             this.flush();
             if(this.timeBroadcastChannel !== null) {
                 this.timeBroadcastChannel.postMessage({
