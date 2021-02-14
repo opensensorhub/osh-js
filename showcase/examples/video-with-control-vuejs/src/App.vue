@@ -4,8 +4,7 @@
     <TimeController
         :dataSource="dataSource"
         @event='onControlEvent'
-        :backward=5000
-        :forward=5000
+        :skipTimeStep="'60s'"
         v-if="dataSource "
     ></TimeController>
   </div>
