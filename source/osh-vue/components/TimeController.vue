@@ -9,13 +9,13 @@
               <i class="fa fa-history"></i>
             </a>
             <div class="control-speed" v-if="activateSpeedControl">
-              <a :id="'speed-minus-btn-'+this.id" class="control-btn "  @mouseup="stopSpeed"  @mouseleave="stopSpeed" @mousedown="decSpeed">
+              <a :id="'speed-minus-btn-'+this.id" class="control-btn "  @mouseup="stopSpeed"  @mouseleave="stopSpeed" @click="decSpeed" @mousedown="decSpeedDown">
                 <i class="fa fa-minus"></i>
               </a>
               <span class="control-speed-content">
                 <v-chip :id="speedId">{{speed > 0 ? speed.toFixed(2)+'x': 'none'}}</v-chip>
               </span>
-              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseup="stopSpeed" @mouseleave="stopSpeed" @mousedown="incSpeed">
+              <a :id="'speed-plus-btn-'+this.id" class="control-btn"  @mouseup="stopSpeed" @mouseleave="stopSpeed" @click="incSpeed" @mousedown="incSpeedDown" >
                 <i class="fa fa-plus"></i>
               </a>
             </div>
@@ -62,7 +62,7 @@ import RangeSlider from 'osh-ext/ui/view/rangeslider/RangeSliderView.js';
 import {randomUUID} from 'osh/utils/Utils.js';
 import {isDefined} from "osh/utils/Utils";
 import {Status as STATUS} from "../../osh/dataconnector/Status";
-import {assertBoolean, assertDefined, assertTrue} from "../../osh/utils/Utils";
+import {assertDefined, throttle, debounce} from "../../osh/utils/Utils";
 
 export default {
   name: "TimeControl",
@@ -74,13 +74,17 @@ export default {
     dataSynchronizer: {
       type: Object
     },
-    backward: {
-      type: Number,
-      default: () => 5000 // 5sec
+    skipTimeStep: {
+      type: String,
+      default: () => '5s' // 5sec
     },
-    forward: {
+    replaySpeedStep: {
       type: Number,
-      default: () => 5000 // 5sec
+      default: () => 0.1
+    },
+    debounce: {
+      type: Number,
+      default: () => 800 // 800ms
     },
     parseTime: {
       type: Function
@@ -103,7 +107,8 @@ export default {
       speed: 1.0,
       interval:false,
       rangeSlider:null,
-      bcTime: null
+      bcTime: null,
+      skipTime: 0
     };
   },
   watch: {
@@ -162,6 +167,18 @@ export default {
       this.history = false;
     }
 
+    // compute skip time
+    if((this.skipTimeStep.endsWith('s'))){
+      // time in second
+      this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length-1)) * 1000;
+      console.log(this.skipTime)
+    } else if(this.skipTimeStep.endsWith('%')){
+      // compute percent on the whole period
+      const totalTime = this.maxTime - this.minTime;
+      const percent =  parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length-1));
+      this.skipTime = percent *  totalTime / 100;
+    }
+
     this.createTimeBc();
     // listen for datasource status
     const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
@@ -176,6 +193,10 @@ export default {
     }
 
     this.createRangeSlider();
+
+    this.updateTimeDebounce = debounce(this.updateTime.bind(this),this.debounce);
+    this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this),this.debounce);
+
   },
   methods: {
     destroyBc() {
@@ -188,14 +209,17 @@ export default {
       this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
       this.bcTime.onmessage = (message) => {
         if(this.history) {
-          if (!this.interval && this.speed > 0.0 && !this.sliding) {
-            this.startTime = message.data.timestamp;
-            this.rangeSlider.setStartTime(this.startTime, this.endTime);
+          if (!this.interval && this.speed > 0.0 && !this.update) {
+            this.setStartTime(message.data.timestamp);
           }
         } else {
           this.realtime =  message.data.timestamp;
         }
       }
+    },
+    setStartTime(timestamp) {
+      this.startTime = timestamp;
+      this.rangeSlider.setStartTime(this.startTime, this.endTime);
     },
     createRangeSlider() {
       if(!this.rangeSlider)  {
@@ -215,12 +239,12 @@ export default {
           options: {}
         });
 
-        this.sliding = false;
+        this.update = false;
         this.rangeSlider.onChange = (startTime, endTime, event) => {
           if(event === 'slide') {
-            this.sliding = true;
+            this.update = true;
           } else if(event === 'end') {
-            this.sliding = false;
+            this.update = false;
           }
 
           if (!this.interval) {
@@ -240,10 +264,10 @@ export default {
     doBackward() {
       if(!this.interval) {
         this.interval = setInterval(() => {
-          const backwardTime = parseInt(this.startTime - this.backward);
+          const backwardTime = parseInt(this.startTime - this.skipTime);
           if (backwardTime > this.minTime) {
             this.startTime = backwardTime;
-            this.rangeSlider.setStartTime(backwardTime);
+            this.setRangeSliderStartTimeThrottle(backwardTime);
           }
         }, 70);
       }
@@ -252,36 +276,45 @@ export default {
       if(this.interval) {
         clearInterval(this.interval)
         this.interval = false;
-
-        this.updateTime();
-        this.on('backward');
+        this.update = true;
+        this.updateTimeDebounce('backward');
       }
     },
-    updateTime() {
+    updateTime(event) {
+      this.update = false;
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
           this.speed,
           true
       );
+      this.on(event);
     },
+    updateTimeDebounce() {
+
+    },
+
+    setRangeSliderStartTime(timestamp) {
+      this.rangeSlider.setStartTime(timestamp);
+    },
+
+    setRangeSliderStartTimeThrottle() {},
     stopForward(){
       if(this.interval) {
         clearInterval(this.interval)
         this.interval = false;
-
-        this.updateTime();
-        this.on('forward');
+        this.update = true;
+        this.updateTimeDebounce('forward');
       }
     },
 
     doFastForward() {
       if(!this.interval) {
         this.interval = setInterval(() => {
-          const forwardTime = parseInt(this.startTime + this.forward);
+          const forwardTime = parseInt(this.startTime + this.skipTime);
           if(forwardTime < this.maxTime) {
             this.startTime = new Date(forwardTime).getTime();
-            this.rangeSlider.setStartTime(forwardTime);
+            this.setRangeSliderStartTimeThrottle(forwardTime);
           }
         }, 70);
       }
@@ -322,37 +355,52 @@ export default {
       }
       this.$emit('event', 'end');
     },
-    incSpeed() {
+    incSpeed(){
+      if(this.speed > 10.0) {
+        this.speed += this.replaySpeedStep * 10.0;
+      } else {
+        this.speed += this.replaySpeedStep;
+      }
+    },
+    incSpeedDown() {
       if(!this.interval){
-        this.interval = setInterval(() => {
-          if(this.speed > 10.0) {
-            this.speed += 1.0;
-          } else {
-            this.speed += 0.1;
-          }
-        }, 70);
+        this.incSpeedTimeout = setTimeout(() => {
+          this.interval = setInterval(this.incSpeed, 70);
+        },200);
       }
     },
     decSpeed() {
+      let laterSpeed;
+      if(this.speed > 10.0) {
+        laterSpeed = this.speed - this.replaySpeedStep * 10.0;
+      } else {
+        laterSpeed = this.speed - this.replaySpeedStep;
+      }
+      if(laterSpeed >= 0.1) {
+        this.speed = laterSpeed;
+      } else if(this.speed !== 0.1){
+        this.speed = 0.1
+      }
+    },
+    decSpeedDown() {
       if(this.speed > 0.1) {
         if(!this.interval){
-          this.interval = setInterval(() => {
-            if(this.speed > 10.0) {
-              this.speed -= 1.0;
-            } else {
-              this.speed = this.speed - 0.1 <= 0 ? 0.1 : this.speed - 0.1;
-            }
-          }, 70)
+          this.incSpeedTimeout = setTimeout(() => {
+            this.interval = setInterval(this.decSpeed, 70);
+          },200);
         }
       }
     },
     stopSpeed(){
-      if(this.interval) {
-        clearInterval(this.interval)
-        this.interval = false;
-
-        this.updateTime();
-        this.on('replaySpeed');
+      if(this.interval || isDefined(this.incSpeedTimeout)) {
+        if(this.interval) {
+          clearInterval(this.interval)
+          this.interval = false;
+        } else {
+          clearTimeout(this.incSpeedTimeout);
+          this.incSpeedTimeout = null;
+        }
+        this.updateTimeDebounce('end');
       }
     },
     on(eventName) {
@@ -396,8 +444,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-left: 10px;
-  width: 50%;
-  max-width: 450px;
+  width: 450px;
 }
 
 .control .control-btn {
@@ -411,6 +458,9 @@ export default {
   height: 3px;
 }
 
+.control .control-back-for{
+  width: 80px;
+}
 .control .box-time  small {
   font-size: 60%;
 }
@@ -559,6 +609,9 @@ export default {
   height: 0px;
 }
 
+.control .control-time{
+  width: 150px;
+}
 .control .datasource-actions.live {
   justify-content: unset;
   align-items: unset;
