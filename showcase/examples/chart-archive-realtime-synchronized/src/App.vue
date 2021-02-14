@@ -5,8 +5,7 @@
     <TimeController
         :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
-        :backward=5000
-        :forward=5000
+        :skipTimeStep="'60s'"
         :parseTime='parseTime'
         v-if="dataSynchronizer"
     ></TimeController>
