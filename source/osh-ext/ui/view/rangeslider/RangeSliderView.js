@@ -107,7 +107,7 @@ class RangeSliderView extends View {
       }),
       behaviour: 'drag',
       connect: true,
-      animate: true,
+      animate: false,
       pips: {
         mode: 'positions',
         values: [5, 25, 50, 75],
@@ -227,7 +227,7 @@ class RangeSliderView extends View {
   onChange(startTime, endTime, type) {
     if(type === 'end') {
       this.dataSourceObject.setTimeRange(new Date(startTime).toISOString(),
-                                    new Date(endTime).toISOString(), endTime.dataSourceObject.properties.replaySpeed);
+                                    new Date(endTime).toISOString(), this.dataSourceObject.properties.replaySpeed, true);
     }
   }
 
