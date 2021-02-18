@@ -1,29 +1,25 @@
-(function() {
-    var counter = 0;
-    var numbered;
-    var source = document.getElementsByClassName('prettyprint source');
+/*global document */
+(() => {
+    const source = document.getElementsByClassName('prettyprint source linenums');
+    let i = 0;
+    let lineNumber = 0;
+    let lineId;
+    let lines;
+    let totalLines;
+    let anchorHash;
 
     if (source && source[0]) {
-        var linenums = config.linenums;
+        anchorHash = document.location.hash.substring(1);
+        lines = source[0].getElementsByTagName('li');
+        totalLines = lines.length;
 
-        if (linenums) {
-            source = source[0].getElementsByTagName('ol')[0];
-
-            numbered = Array.prototype.slice.apply(source.children);
-            numbered = numbered.map(function(item) {
-                counter++;
-                item.id = 'line' + counter;
-            });
-        } else {
-            source = source[0].getElementsByTagName('code')[0];
-
-            numbered = source.innerHTML.split('\n');
-            numbered = numbered.map(function(item) {
-                counter++;
-                return '<span id="line' + counter + '"></span>' + item;
-            });
-
-            source.innerHTML = numbered.join('\n');
+        for (; i < totalLines; i++) {
+            lineNumber++;
+            lineId = `line${lineNumber}`;
+            lines[i].id = lineId;
+            if (lineId === anchorHash) {
+                lines[i].className += ' selected';
+            }
         }
     }
 })();
