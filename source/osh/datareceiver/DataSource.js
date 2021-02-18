@@ -46,10 +46,7 @@ class DataSource {
     constructor(name, properties, worker) {
         this.id = "DataSource-" + randomUUID();
         this.name = name;
-        this.properties = {
-            fetch: 1, // default value if not defined
-            ...properties
-        }
+        this.properties = properties;
         this.dataSourceWorker = worker;
         this.currentRunningProperties = {};
         this.initDataSource(properties);
@@ -57,7 +54,7 @@ class DataSource {
 
     /**
      * Inits the datasource with the constructor properties.
-     * @private
+     * @protected
      * @param properties
      */
     initDataSource(properties) {
@@ -65,7 +62,7 @@ class DataSource {
             message: 'init',
             id: this.id,
             properties: JSON.stringify(properties),
-            topic: DATASOURCE_DATA_TOPIC+this.id
+            topic: this.getTopicId()
         });
     }
 
@@ -84,7 +81,7 @@ class DataSource {
      */
     onDisconnect() {
         return new Promise(resolve => {
-            new BroadcastChannel(DATASOURCE_DATA_TOPIC+this.id).onmessage = (event) => {
+            new BroadcastChannel(this.getTopicId()).onmessage = (event) => {
                 if(event.data.status === Status.DISCONNECTED) {
                     resolve();
                 }
@@ -174,6 +171,10 @@ class DataSource {
         if(this.dataSourceWorker !== null) {
             this.dataSourceWorker.terminate();
         }
+    }
+
+    getTopicId() {
+        return DATASOURCE_DATA_TOPIC + this.id;
     }
 }
 

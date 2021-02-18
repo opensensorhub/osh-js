@@ -16,7 +16,7 @@
 
 
 import View from "../View.js";
-import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import {hex2rgb, isDefined, randomUUID} from "../../../utils/Utils.js";
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
 
@@ -90,6 +90,7 @@ class ChartJsView extends View {
 
         const { maxTicksLimit } = this.tickOpts || 5;
         this.maxPoints = maxTicksLimit;
+        this.resetting = false;
 
         this.chart = new Chart(
             ctx, {
@@ -99,11 +100,12 @@ class ChartJsView extends View {
                     datasets: []
                 },
                 options : {
+                    responsiveAnimationDuration: 0,
                     legend: {
                         ...this.legendOpts
                     },
                     animation: {
-                        duration: 1000
+                        duration: 0
                     },
                     spanGaps: true,
                     scales: {
@@ -131,7 +133,10 @@ class ChartJsView extends View {
                             },
                             ticks: {
                                 maxTicksLimit:5,
-                                ...this.tickOpts
+                                ...this.tickOpts,
+                                callback: (label, index, values) => {
+                                    return this.parseDate(values[index].value);
+                                }
                             },
                             gridLines: this.gridLinesOpts,
                         }],
@@ -151,44 +156,69 @@ class ChartJsView extends View {
         }
     }
 
+    parseDate(intTimeStamp) {
+        const date = new Date(intTimeStamp);
+        return this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
+            + this.withLeadingZeros(date.getUTCSeconds());
+    }
+
+    withLeadingZeros(dt) {
+        return (dt < 10 ? '0' : '') + dt;
+    }
+
     /**
      * Updates the curve associated to the layer.
      * @param {Curve.props[]} props - The layer properties allowing the update of the curve
      */
     updateCurve(props) {
-        let currentDataset = this.datasets[props.curveId];
+        if(this.resetting) {
+            return;
+        }
+        let currentDataset = this.datasets[props[0].curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
-
+        let create = false;
         if(!isDefined(currentDataset)) {
+            create = true;
+            let lineColor = props[0].color;
+            if(lineColor.startsWith('#')) {
+                const rgb = hex2rgb(lineColor);
+                lineColor = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.5)';
+            }
             currentDataset = {
                 label: props[0].name,
-                fillColor: "rgba(220,220,0,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
+                backgroundColor: lineColor,
                 data: values
             };
             currentDataset = {...currentDataset, ...this.datasetsOpts};
-            this.datasets[props.curveId] = currentDataset;
+            this.datasets[props[0].curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         } else {
-            values.forEach(value => this.datasets[props.curveId].data.push(value));
+            values.forEach(value => {
+                this.datasets[props[0].curveId].data.push(value);
+            });
         }
-        if(currentDataset.data.length >= this.maxPoints) {
+        if((currentDataset.data.length > this.maxPoints + 2) || create) {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
         }
-        this.chart.data.labels.push(currentDataset.data[currentDataset.data.length-1].x);
-        if(currentDataset.data.length > 1) {
-            this.chart.update(0);
-        } else {
-            this.chart.update();
-        }
-        if(currentDataset.data.length > this.maxPoints) {
+
+        if((currentDataset.data.length > this.maxPoints + 2) || create) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();
         }
+        this.chart.update();
+    }
+
+    reset() {
+        this.resetting = true;
+        // this.chart.stop();
+        super.reset();
+        this.datasets = {};
+        this.chart.data.datasets = [];
+        this.chart.data.labels = [];
+        this.chart.update(0);
+        this.resetting = false;
+        // this.chart.data.datasets = [];
+        // this.chart.update();
     }
 }
 

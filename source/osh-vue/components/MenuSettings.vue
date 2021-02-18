@@ -35,6 +35,10 @@ item = {
   title: 'title'
 }
  */
+/**
+ * @module osh-vue/MenuSettings
+ * @desc MenuSettings component to control video scaling options
+ */
 export default {
   name: "VideoMenuSettings",
   components: {},

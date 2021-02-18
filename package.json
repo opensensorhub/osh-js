@@ -26,7 +26,7 @@
   "scripts": {
     "postinstall": "patch-package",
     "build": "webpack --config webpack.config.js --mode production",
-    "documentation": "jsdoc -c documentation/jsdoc/template/jaguarjs-jsdoc/conf.json -t documentation/jsdoc/template/jaguarjs-jsdoc -r source/ -d  documentation/jsdoc/build",
+    "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/  all",
     "vuepress": "yarn install && yarn  --cwd vuepress/docs prod"
   },
   "devDependencies": {
@@ -58,7 +58,7 @@
     "deck.gl": "^8.3.0",
     "leaflet": "^1.6.0",
     "wnumb": "^1.2.0",
-    "nouislider": "14.2.0",
+    "nouislider": "14.4.0",
     "cesium": "~1.68.0",
     "ol": "^6.2.1",
     "ol-layerswitcher": "3.8.1"

@@ -16,7 +16,7 @@
 
 import {isDefined, randomUUID} from "../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.worker.js';
-import {DATA_SYNCHRONIZER_TOPIC} from "../Constants.js";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
 
 class DataSynchronizer {
     /**
@@ -44,6 +44,9 @@ class DataSynchronizer {
             this.intervalRate = properties.intervalRate;
         }
         this.initWorker(properties.dataSources, this.intervalRate);
+
+        this.properties = {};
+        this.properties.replaySpeed = this.replaySpeed;
     }
 
     /**
@@ -64,8 +67,8 @@ class DataSynchronizer {
             dataSources: dataSourcesForWorker,
             replaySpeed: this.replaySpeed,
             intervalRate: intervalRate,
-            dataSynchronizerId:this.id,
-            topic: DATA_SYNCHRONIZER_TOPIC+this.id
+            dataTopic: this.getTopicId(),
+            timeTopic: this.getTimeTopicId(),
         });
     }
 
@@ -154,21 +157,61 @@ class DataSynchronizer {
     }
 
     /**
+     * Gets the minTime of the first DataSource objet
+     * @returns {String} - startTime as ISO date
+     */
+    getMinTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return isDefined(this.dataSources[0].properties.minTime) ? this.dataSources[0].properties.minTime : this.dataSources[0].properties.startTime;
+    }
+
+    /**
+     * Gets the maxTime of the first DataSource objet
+     * @returns {String} - endTime as ISO date
+     */
+    getMaxTime() {
+        if(this.dataSources.length === 0) {
+            throw 'dataSource array is empty';
+        }
+        return isDefined(this.dataSources[0].properties.maxTime) ? this.dataSources[0].properties.maxTime : this.dataSources[0].properties.endTime;
+    }
+
+    /**
      * Gets the replaySpeed
      * @returns {Number} - the replay speed
      */
     getReplaySpeed() {
         return this.replaySpeed;
     }
+
+    /**
+     * Sets the replaySpeed
+     */
+    setReplaySpeed(replaySpeed) {
+        this.replaySpeed = replaySpeed;
+        this.properties.replaySpeed = replaySpeed;
+        this.synchronizerWorker.postMessage({
+            message: 'replay-speed',
+            replaySpeed: replaySpeed,
+        });
+    }
+
     /**
      * Sets the data source time range
      * @param {String} startTime - the startTime (in date ISO)
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
+     * @param {boolean} reconnect - reconnect if was connected
      */
-    setTimeRange(startTime, endTime, replaySpeed) {
+    setTimeRange(startTime, endTime, replaySpeed ,reconnect= false) {
+        if(this.replaySpeed !== replaySpeed) {
+            this.setReplaySpeed(replaySpeed);
+        }
+        this.reset();
         for(let ds of this.dataSources) {
-            ds.setTimeRange(startTime, endTime, replaySpeed);
+            ds.setTimeRange(startTime, endTime, replaySpeed, reconnect);
         }
     }
 
@@ -212,6 +255,26 @@ class DataSynchronizer {
         }
 
         return promise;
+    }
+
+    getTopicId() {
+        return DATA_SYNCHRONIZER_TOPIC+this.id;
+    }
+
+    getTimeTopicId() {
+        return TIME_SYNCHRONIZER_TOPIC+this.id;
+    }
+
+    /**
+     * Connect the dataSource then the connector will be opened as well.
+     */
+    async isConnected() {
+        for(let ds of this.dataSources) {
+            if(await ds.isConnected()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 export default  DataSynchronizer;

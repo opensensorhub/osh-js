@@ -15,8 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSource from "./DataSource";
-import {DATA_SYNCHRONIZER_TOPIC} from "../Constants";
-import {isDefined} from "../utils/Utils";
+import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
+import {assertDefined, isDefined} from "../utils/Utils";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -36,6 +36,8 @@ class TimeSeriesDataSource extends DataSource{
      * @param {String} properties.observedProperty the observed property
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
+     * @param {String} [properties.minTime=properties.startTime] the min range time (ISO format)
+     * @param {String} [properties.maxTime=properties.endTime] the max range time (ISO format)
      * @param {Number} [properties.replaySpeed=1] the replay factor
      * @param {Number} [properties.responseFormat] the response format (e.g video/mp4)
      * @param {Number} [properties.reconnectTimeout=10000] - the time before reconnecting (in milliseconds)
@@ -46,6 +48,10 @@ class TimeSeriesDataSource extends DataSource{
     constructor(name, properties, worker) {
         super(name,properties ,worker);
 
+        assertDefined(properties,'Some properties must be defined');
+        assertDefined(properties.startTime,'startTime must must be defined');
+        assertDefined(properties.endTime,'startTime must must be defined');
+
         this.dataSynchronizer = null;
     }
 
@@ -53,7 +59,22 @@ class TimeSeriesDataSource extends DataSource{
         this.dataSynchronizer = dataSynchronizer;
         this.dataSourceWorker.postMessage({
             message: 'topic',
-            topic: DATA_SYNCHRONIZER_TOPIC+this.dataSynchronizer.id
+            topic: DATA_SYNCHRONIZER_TOPIC+this.dataSynchronizer.id,
+            timeTopic: this.getTimeTopicId()
+        });
+    }
+
+    /**
+     * Inits the datasource with the constructor properties.
+     * @protected
+     * @param properties
+     */
+    initDataSource(properties) {
+        super.initDataSource(properties);
+        this.dataSourceWorker.postMessage({
+            message: 'topic',
+            topic: this.getTopicId(),
+            timeTopic: this.getTimeTopicId()
         });
     }
 
@@ -62,13 +83,21 @@ class TimeSeriesDataSource extends DataSource{
      * @param {String} startTime - the startTime (in date ISO)
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
+     * @param {boolean} reconnect - reconnect if was connected
      */
-    setTimeRange(startTime, endTime, replaySpeed) {
+    setTimeRange(startTime, endTime, replaySpeed, reconnect= false) {
+        let replay = {};
+        if(isDefined(replaySpeed)) {
+            replay =  {
+                replaySpeed: replaySpeed
+            }
+        }
         this.updateProperties({
             ...this.currentRunningProperties,
             startTime: startTime,
             endTime: endTime,
-            replaySpeed: replaySpeed
+           ...replay,
+            reconnect : reconnect
         });
     }
 
@@ -86,6 +115,22 @@ class TimeSeriesDataSource extends DataSource{
      */
     getEndTime() {
         return this.properties.endTime;
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as ISO date
+     */
+    getMinTime() {
+        return this.properties.minTime;
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    getMaxTime() {
+        return this.properties.maxTime;
     }
 
     /**
@@ -139,6 +184,11 @@ class TimeSeriesDataSource extends DataSource{
      */
     updateProperties(properties) {
         super.updateProperties(properties);
+    }
+
+
+    getTimeTopicId() {
+        return DATASOURCE_TIME_TOPIC + this.id;
     }
 }
 

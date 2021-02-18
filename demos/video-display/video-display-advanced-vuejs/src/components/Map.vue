@@ -71,7 +71,7 @@ export default {
       this.view = new LeafletView({
           container: "map",
           layers: [markerLayer],
-          follow: true,
+          follow: false,
           autoZoomOnFirstMarker:true
       });
     },

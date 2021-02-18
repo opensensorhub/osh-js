@@ -27,10 +27,6 @@ class DataSourceHandler {
 
         const properties = JSON.parse(propertiesStr);
 
-        if (isDefined(properties.fetch)) {
-            this.fetch = properties.fetch;
-        }
-
         if (isDefined(properties.timeShift)) {
             this.timeShift = properties.timeShift;
         }
@@ -103,7 +99,7 @@ class DataSourceHandler {
      * @param {String} topic - the topic to listen
      */
     setTopic(topic) {
-        if(this.broadcastChannel !== null) {
+        if(isDefined(this.broadcastChannel)) {
             this.broadcastChannel.close();
         }
         this.broadcastChannel = new BroadcastChannel(topic);
@@ -173,6 +169,7 @@ class DataSourceHandler {
         });
 
         this.connect();
+
     }
 
     flushAll() {

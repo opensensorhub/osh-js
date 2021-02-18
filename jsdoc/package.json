@@ -1,0 +1,38 @@
+{
+  "name": "jsdoc-vue",
+  "version": "1.0.0",
+  "description": "A jsdoc plugin that parses *.vue files.",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf dist dist-iframe",
+    "all": "yarn doc && yarn doc-iframe",
+    "doc": "jsdoc -c .jsdoc.js",
+    "doc-iframe": "jsdoc -c .jsdoc-iframe.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QingWei-Li/jsdoc-vue.git"
+  },
+  "keywords": [
+    "vue",
+    "jsdoc"
+  ],
+  "xo": {
+    "space": true
+  },
+  "author": "qingwei-li",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "s"
+  },
+  "homepage": "",
+  "peerDependencies": {
+    "vue-template-compiler": "*"
+  },
+  "devDependencies": {
+    "jaguarjs-jsdoc": "^1.1.0",
+    "jsdoc": "^3.6.6",
+    "jsdoc-vuejs": "2.2.3",
+    "vue-template-compiler": "2.5.21"
+  }
+}

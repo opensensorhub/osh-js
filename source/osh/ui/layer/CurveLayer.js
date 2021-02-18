@@ -26,7 +26,7 @@ class CurveLayer extends Layer {
      * @param {Object} properties -
      * @param {String} [properties.xLabel=""] -
      * @param {String} [properties.yLabel=""] -
-     * @param {String} [properties.color="#000000"] -
+     * @param {String} [properties.color="#000000"] - color in hex or rgba value
      * @param {Number} [properties.stroke=1] -
      * @param {Number} [properties.x=0] -
      * @param {Number} [properties.y=[]] -

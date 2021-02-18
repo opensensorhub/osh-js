@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
   },
   "devDependencies": {

@@ -8,6 +8,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         this.lastTimeStamp = null;
         this.lastStartTime = 'now';
         this.timeShift = 0;
+        this.timeBroadcastChannel = null;
     }
 
     /**
@@ -54,8 +55,13 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         }
         this.lastTimeStamp = timeStamp;
 
-        if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
+        if(this.parser.lastStartTime === 'now' || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
             this.flush();
+            if(this.timeBroadcastChannel !== null) {
+                this.timeBroadcastChannel.postMessage({
+                    timestamp: this.lastTimeStamp
+                });
+            }
         }
     }
 
@@ -81,7 +87,9 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             lastTimeStamp: lastTimestamp
         });
 
-        this.connect();
+        if(isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {
+            this.connect();
+        }
     }
 
     handleMessage(message, worker) {
@@ -93,7 +101,17 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
                 message: 'last-timestamp',
                 data: lastTimeStamp
             })
+        } else if (message.message === 'topic') {
+            this.setTimeTopic(message.timeTopic);
+            super.setTopic(message.topic);
         }
+    }
+
+    setTimeTopic(timeTopic) {
+        if(this.timeBroadcastChannel !== null) {
+            this.timeBroadcastChannel.close();
+        }
+        this.timeBroadcastChannel = new BroadcastChannel(timeTopic);
     }
 }
 export default TimeSeriesDataSourceHandler;

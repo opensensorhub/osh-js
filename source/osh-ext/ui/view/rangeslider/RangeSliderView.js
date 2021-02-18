@@ -41,7 +41,8 @@ class RangeSliderView extends View {
    * @param {Object[]}  [properties.layers=[]] - The initial layers to add
 		* @param {Number} properties.startTime - The start time
 		* @param {Number} properties.endTime - The end time
-		* @param {String} properties.dataSourcesId - The dataSource id which are sync with master time
+		* @param {String} properties.dataSource - The dataSourceObject
+    * @param {Number} [properties.debounce=0] - Debounce time after updating the slider
     * @param {Boolean} properties.disabled - disabled the range slider
     * @param {Object} properties.dataSynchronizer - a data synchronizer to get current data time for this set of datasources
 		*/
@@ -51,8 +52,6 @@ class RangeSliderView extends View {
       supportedLayers: ['data']
     });
 
-    this.lastChangeTimestamp = 0;
-
     this.slider = document.createElement("div");
     this.slider.setAttribute("class", "osh-rangeslider-slider");
     document.getElementById(this.divId).appendChild(this.slider);
@@ -60,11 +59,11 @@ class RangeSliderView extends View {
     let startTime = new Date().getTime();
     this.endTime = new Date("2055-01-01T00:00:00Z").getTime(); //01/01/2055
 
-    this.dataSourcesId = [];
-    this.multi = false;
-    this.dataSynchonizer = null;
-    this.options = {};
     this.update = false;
+    this.dataSourceObject = null;
+    this.debounce = 0;
+    this.options = {};
+    this.sliding = false;
 
     if (isDefined(properties)) {
       if (isDefined(properties.startTime)) {
@@ -75,12 +74,16 @@ class RangeSliderView extends View {
         this.endTime = new Date(properties.endTime).getTime();
       }
 
-      if (isDefined(properties.dataSourcesId)) {
-        this.dataSourcesId = properties.dataSourcesId;
+      if (isDefined(properties.dataSynchronizer)) {
+        this.dataSourceObject = properties.dataSynchronizer;
       }
 
-      if (isDefined(properties.dataSynchronizer)) {
-        this.dataSynchonizer = properties.dataSynchronizer;
+      if (isDefined(properties.dataSource)) {
+        this.dataSourceObject = properties.dataSource;
+      }
+
+      if (isDefined(properties.debounce)) {
+        this.debounce = parseInt(properties.debounce);
       }
 
       if(isDefined(properties.options)) {
@@ -104,22 +107,7 @@ class RangeSliderView extends View {
       }),
       behaviour: 'drag',
       connect: true,
-      tooltips: [
-        wNumb({
-          decimals: 1,
-          edit: function (value) {
-            let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-            return date.split("T")[1].split("Z")[0].split(".")[0];
-          }
-        }),
-        wNumb({
-          decimals: 1,
-          edit: function (value) {
-            let date = new Date(parseInt(value)).toISOString().replace(".000Z", "Z");
-            return date.split("T")[1].split("Z")[0].split(".")[0];
-          }
-        })
-      ],
+      animate: false,
       pips: {
         mode: 'positions',
         values: [5, 25, 50, 75],
@@ -136,6 +124,17 @@ class RangeSliderView extends View {
     });
 
     this.createEvents();
+
+    if(isDefined(this.dataSourceObject)) {
+      // listen for BC
+      const bc = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
+      bc.onmessage = (message) => {
+        if (!this.update) {
+          this.slider.noUiSlider.set([message.data.timestamp]);
+          this.onChange(message.data.timestamp, parseInt(this.slider.noUiSlider.get()[1]), 'data');
+        }
+      }
+    }
   }
 
   createActivateButton() {
@@ -156,35 +155,40 @@ class RangeSliderView extends View {
       }
     });
     document.getElementById(this.divId).appendChild(activateButtonDiv);
-
   }
 
   createEvents() {
     const that = this;
     //noUi-handle noUi-handle-lower
     // start->update->end
-    // this.slider.noUiSlider.on("slide", function (values, handle) {
-    //   that.update = true;
-    // });
+    this.slider.noUiSlider.on("start", function (values, handle) {
+      that.update = true;
+      that.sliding = true;
+      const st = parseInt(values[0]);
+      const end = parseInt(values[1]) || parseInt(that.endTime);
+      that.onChange(st, end, 'start');
+    });
+
+    this.slider.noUiSlider.on("slide", function (values, handle) {
+      that.sliding = true;
+      that.update = true;
+      const st = parseInt(values[0]);
+      const end = parseInt(values[1]) || parseInt(that.endTime);
+      that.onChange(st, end, 'slide');
+    });
 
     this.slider.noUiSlider.on("end", function (values, handle) {
-      that.onChange(values[0], values[1]);
-      that.update = false;
+      if(that.sliding) {
+        that.sliding = false;
+        const st = parseInt(values[0]);
+        const end = parseInt(values[1]) || parseInt(that.endTime);
+        that.onChange(st, end, 'end');
+        // that.update = false;
+        setTimeout(() => that.update = false, that.debounce);
+      }
     });
-
-    this.slider.noUiSlider.on('start',(event) => {
-      that.update = true;
-    });
-
-    if (this.dataSynchonizer !== null) {
-      this.interval = setInterval(async ()=> {
-        this.dataSynchonizer.getCurrentTime().then(time => {
-          this.slider.noUiSlider.set([time]);
-        });
-      },100);
-    }
-
   }
+
   /**
    * Deactivate the timeline bar
    */
@@ -201,31 +205,32 @@ class RangeSliderView extends View {
 
   setData(dataSourceId, data) {
     const values = data.values;
-    let perfNow;
     for(let i=0; i < values.length;i++) {
-        for (let i = 0; i < values.length; i++) {
-          if (!this.update) {
-          perfNow = performance.now();
-          if(perfNow - this.lastChangeTimestamp > 1000) {
-            this.slider.noUiSlider.set([values[i].timeStamp]);
-            this.lastChangeTimestamp = perfNow;
-          }
-        }
+      if(!this.update) {
+        this.slider.noUiSlider.set([values[i].timeStamp]);
       }
     }
   }
 
-  onChange(startTime, endTime) {
-
-  }
-
-  destroy() {
-    super.destroy();
-
-    if(isDefined(this.interval)) {
-      clearInterval(this.interval);
+  setStartTime(timestamp) {
+    if(!this.update) {
+      this.slider.noUiSlider.set([timestamp]);
     }
   }
+
+  setTime(startTimestamp, endTimestamp) {
+    if(!this.update) {
+      this.slider.noUiSlider.set([startTimestamp, endTimestamp]);
+    }
+  }
+
+  onChange(startTime, endTime, type) {
+    if(type === 'end') {
+      this.dataSourceObject.setTimeRange(new Date(startTime).toISOString(),
+                                    new Date(endTime).toISOString(), this.dataSourceObject.properties.replaySpeed, true);
+    }
+  }
+
 }
 
 export default RangeSliderView;

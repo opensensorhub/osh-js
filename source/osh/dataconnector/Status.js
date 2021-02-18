@@ -4,6 +4,7 @@
  * @enum {{name: string}}
  */
 export const Status = {
+    CONNECTING: "connecting",
     CONNECTED:  "connected",
     DISCONNECTED: "disconnected"
 };

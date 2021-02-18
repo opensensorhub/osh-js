@@ -19,7 +19,7 @@ module.exports = {
         },
         plugins: [
             new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../showcase/dist'), to: 'showcase' }]}),
-            new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../documentation/jsdoc/build-iframe'), to: 'guide/api' }]})
+            new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../jsdoc/dist-iframe'), to: 'guide/api' }]})
         ]
     },
     /**
@@ -203,9 +203,7 @@ module.exports = {
                     collapsable: true,
                     children: [
                         '/guide/vuejs/general.md',
-                        '/guide/vuejs/control.md',
-                        '/guide/vuejs/menusettings.md',
-                        '/guide/vuejs/videocontrol.md',
+                        '/guide/vuejs/timecontroller.md',
                     ]
                 },
                 {

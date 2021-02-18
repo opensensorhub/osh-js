@@ -109,18 +109,38 @@ var samples = [
   {
     name: 'VueJs component: Video with control',
     description: 'Display a video using forward/pause/play/backward control',
-    url: 'video-with-control-vuejs'
+    url: 'video-with-control-vuejs',
+    code: 'vue/App.vue'
   },
   {
     name: 'VueJs component: Multiple Video with control',
     description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
-    url: 'video-with-control-vuejs-synchronized'
+    url: 'video-with-control-vuejs-synchronized',
+    code: 'vue/App.vue'
   },
   {
     name: 'AVL data using multiple ids',
     description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
     url: 'avl'
-  }
+  },
+  {
+    name: "Chart with Time controller (Chart.js)",
+    description: "Display a chart with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime",
+    code: 'vue/App.vue'
+  },
+  {
+    name: "Chart with Time controller (Chart.js) in batch mode",
+    description: "Display a chart using full batch mode with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime-batch",
+    code: 'vue/App.vue'
+  },
+  {
+    name: "Chart with Time controller and Synchronizer (Chart.js)",
+    description: "Display a chart with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime-synchronized",
+    code: 'vue/App.vue'
+  },
 ];
 
 // load sample cards
@@ -178,39 +198,16 @@ $("#src-button").button().on("click", e => {
     return;
   }
 
-  fetch('js'+'/'+currentSample.url+'.js')
+  let url = 'js'+'/'+currentSample.url+'.js';
+  if(currentSample.code) {
+      url = currentSample.code;
+  }
+
+  fetch(url)
     .then( r => r.text() )
     .then( srcString => {
       $("#src-code").empty();
-      let html = Prism.highlight(
-        beautify(srcString, {
-          "indent_size": 2,
-          "indent_char": " ",
-          "indent_with_tabs": true,
-          "editorconfig": false,
-          "eol": "\n",
-          "end_with_newline": false,
-          "indent_level": 0,
-          "preserve_newlines": true,
-          "max_preserve_newlines": 10,
-          "space_in_paren": false,
-          "space_in_empty_paren": false,
-          "jslint_happy": false,
-          "space_after_anon_function": false,
-          "space_after_named_function": false,
-          "brace_style": "collapse",
-          "unindent_chained_methods": false,
-          "break_chained_methods": false,
-          "keep_array_indentation": false,
-          "unescape_strings": false,
-          "wrap_line_length": 0,
-          "e4x": false,
-          "comma_first": false,
-          "operator_position": "before-newline",
-          "indent_empty_lines": false,
-          "templating": ["auto"]
-        }),
-        Prism.languages.javascript, 'javascript');
+      let html = Prism.highlight(srcString, Prism.languages.javascript);
       $("#sample-area").hide();
       $("#pre-code").removeClass("hide");
       $("#pre-code").addClass("show");
