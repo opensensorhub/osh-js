@@ -26,6 +26,7 @@ class SosGetResultVideoWithRollParser extends SosGetResultVideoParser {
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
+     * @param {String} properties.foiId the foiId
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
      * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
      * @param {Object} properties.customUrlParams - the encoding options
@@ -36,7 +37,13 @@ class SosGetResultVideoWithRollParser extends SosGetResultVideoParser {
      * @return {String} the full url
      */
     buildUrl(properties) {
-        return super.buildUrl(properties);
+        let url = super.buildUrl(properties);
+
+        // adds feature of interest urn
+        if (properties.foiId && properties.of !== '') {
+            url += '&featureOfInterest=' + properties.foiId;
+        }
+        return url;
     }
 }
 

@@ -45,7 +45,7 @@ class SosGetFoisParser extends DataSourceParser {
      * @param {String} properties.protocol the connector protocol
      * @param {String} properties.endpointUrl the endpoint url
      * @param {String} properties.service the service
-     * @param {String} properties.foiURN the foi URN
+     * @param {String} properties.procedureId the foi procedure id
      * @param {String} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
      * @return {String} the full url
      */
@@ -58,8 +58,8 @@ class SosGetFoisParser extends DataSourceParser {
         url += "&request=GetFeatureOfInterest";
 
         // adds foiURN if any
-        if(isDefined(properties.foiURN)) {
-            url += '&procedure='+properties.foiURN;
+        if(isDefined(properties.procedureId)) {
+            url += '&procedure='+properties.procedureId;
         }
         return url;
     }

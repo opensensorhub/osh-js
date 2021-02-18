@@ -47,6 +47,7 @@ class SosGetResultJsonParser extends TimeSeriesParser {
      * @param {String} properties.service the service
      * @param {String} properties.offeringID the offeringID
      * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.foiId the foiId
      * @param {String} properties.startTime the start time (ISO format)
      * @param {String} properties.endTime the end time (ISO format)
      * @param {Number} properties.replaySpeed the replay factor
@@ -56,10 +57,16 @@ class SosGetResultJsonParser extends TimeSeriesParser {
      * @return {String} the full url
      */
     buildUrl(properties) {
-        return super.buildUrl({
+        let url = super.buildUrl({
             ...properties,
             responseFormat: 'application/json'
         });
+
+         // adds feature of interest urn
+        if (properties.foiId && properties.of !== '') {
+            url += '&featureOfInterest=' + properties.foiId;
+        }
+        return url;
     }
 }
 

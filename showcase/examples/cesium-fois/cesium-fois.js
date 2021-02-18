@@ -14,7 +14,7 @@ let sosGetFois = new SosGetFois('fois', {
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
     batchSize: 50,
-    foiURN: 'urn:usgs:water:network'
+    procedureId: 'urn:usgs:water:network'
 });
 
 // create Cesium view
