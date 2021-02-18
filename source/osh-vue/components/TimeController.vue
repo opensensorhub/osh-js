@@ -64,6 +64,17 @@ import {isDefined} from "osh/utils/Utils";
 import {Status as STATUS} from "../../osh/dataconnector/Status";
 import {assertDefined, throttle, debounce} from "../../osh/utils/Utils";
 
+/**
+ * @module osh-vue/TimeController
+ * @desc TimeController component to control timeline of the datasources
+ * @vue-prop {DataSource}  [dataSource] - DataSource object
+ * @vue-prop {DataSynchronizer} [dataSynchronizer] - DataSynchronizer object
+ * @vue-prop {String} [skipTimeStep='5s'] Time to skip backward/forward. In seconds or percent of the total time
+ * @vue-prop {Number} [replaySpeedStep=0.1] Time to decrease/increase replay speed value
+ * @vue-prop {Number} [debounce=800] Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
+ * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.
+ * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'] - Emit event's name after time change
+ */
 export default {
   name: "TimeControl",
   components: {},
@@ -170,7 +181,7 @@ export default {
     // compute skip time
     if((this.skipTimeStep.endsWith('s'))){
       // time in second
-      this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length-1)) * 1000;
+      this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length-1));
       console.log(this.skipTime)
     } else if(this.skipTimeStep.endsWith('%')){
       // compute percent on the whole period
@@ -256,7 +267,7 @@ export default {
             this.$emit('event', event);
           }
           if(event === 'end') {
-             this.doPlay();
+            this.doPlay();
           }
         }
       }

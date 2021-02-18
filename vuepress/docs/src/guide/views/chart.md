@@ -4,7 +4,6 @@ The Chart view allows the data to be displayed as a Chart using the [Chart.js](h
 
 For the moment, the view only supports the [Line](https://www.chartjs.org/docs/latest/charts/line.html) chart type.
 
-<br/>
 <DocumentationLoad path="/guide/api/ChartJsView.html"/>
 
 ## Properties configuration

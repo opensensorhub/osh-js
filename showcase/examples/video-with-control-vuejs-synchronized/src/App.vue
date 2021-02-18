@@ -44,7 +44,7 @@ export default {
       endTime: '2015-12-19T21:09:19.675Z',
       replaySpeed: 1,
       timeOut: 1000,
-      bufferingTime: 500
+      bufferingTime: 1000
     });
 
     const dataSource1 = new SosGetResultVideo("drone-Video1", {
@@ -57,7 +57,7 @@ export default {
       endTime: '2015-12-19T21:09:19.675Z',
       replaySpeed: 1,
       timeOut: 1000,
-      bufferingTime: 500
+      bufferingTime: 1000
     });
 
     const dataSource2 = new SosGetResultVideo("drone-Video2", {
@@ -70,7 +70,7 @@ export default {
       endTime: '2015-12-19T21:09:19.675Z',
       replaySpeed: 1,
       timeOut: 1000,
-      bufferingTime: 500
+      bufferingTime: 1000
     });
 
     this.views.push(new FFMPEGView({
