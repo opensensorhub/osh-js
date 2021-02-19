@@ -72,6 +72,14 @@
   display: flex;
 }
 div.video-h264 canvas {
-  width: 100%;
+  height: 80%;
+  width: 80%;
+}
+#app > .control {
+  width: 80%;
+}
+#app {
+  padding-top: 0px;
+  height: 0px;
 }
 </style>

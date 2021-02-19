@@ -32,7 +32,7 @@ export default {
   },
   mounted() {
 
-    let chartDataSource1 = new SosGetResultJson("weather", {
+    const opts = {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -45,21 +45,14 @@ export default {
       bufferingTime: 100,
       timeOut: 100,
       replaySpeed: 2.0
+    };
+
+    let chartDataSource1 = new SosGetResultJson("weather", {
+      ...opts
     });
 
     let chartDataSource2 = new SosGetResultJson("weather", {
-      protocol: "ws",
-      service: "SOS",
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-      offeringID: "urn:mysos:offering04",
-      observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString()),
-      bufferingTime: 100,
-      timeOut: 100,
-      replaySpeed: 2.0
+      ...opts
     });
 
     this.view = new ChartJsView({
