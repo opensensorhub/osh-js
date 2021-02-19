@@ -105,9 +105,10 @@ class DataSynchronizer {
      * @param dataSource
      */
     createDataSourceForWorker(dataSource) {
+        console.log(dataSource)
         const obj = {
-            bufferingTime: dataSource.bufferingTime || 0,
-            timeOut: dataSource.timeOut || 0,
+            bufferingTime: dataSource.properties.bufferingTime || 0,
+            timeOut: dataSource.properties.timeOut || 0,
             id: dataSource.id
         };
         // bind dataSource data onto dataSynchronizer data

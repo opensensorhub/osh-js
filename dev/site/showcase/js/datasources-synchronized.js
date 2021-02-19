@@ -1,15 +1,18 @@
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
-import {displayLocation, displayVideo, displayOrientation} from './display-values';
+import {displayLocation, displayVideo, displayOrientation, displayError} from './display-values';
 
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SosGetResultJson.js";
 import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo";
 import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import {TIME_SYNCHRONIZER_TOPIC} from "../../../source/osh/Constants";
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 4.0;
+const BUFFERING_TIME = 500;
+const TIMEOUT = 1000;
 
 const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',
@@ -19,7 +22,9 @@ const videoDataSource = new SosGetResultVideo("drone-Video", {
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED
+  replaySpeed: REPLAY_SPEED,
+  bufferingTime: BUFFERING_TIME,
+  timeOut: TIMEOUT
 });
 const platformLocationDataSource = new SweJson('android-GPS', {
   protocol: 'ws',
@@ -29,7 +34,9 @@ const platformLocationDataSource = new SweJson('android-GPS', {
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED
+  replaySpeed: REPLAY_SPEED,
+  bufferingTime: BUFFERING_TIME,
+  timeOut: TIMEOUT
 });
 const platformOrientationDataSource = new SweJson('android-Heading', {
   protocol: 'ws',
@@ -39,7 +46,9 @@ const platformOrientationDataSource = new SweJson('android-Heading', {
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED
+  replaySpeed: REPLAY_SPEED,
+  bufferingTime: BUFFERING_TIME,
+  timeOut: TIMEOUT
 });
 
 const dataSynchronizer = new DataSynchronizer({
@@ -58,6 +67,7 @@ dataSynchronizer.connect();
 const videoBroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource.id);
 const gpsBroadcastChannel       = new BroadcastChannel(DATASOURCE_DATA_TOPIC + platformLocationDataSource.id);
 const orientBroadcastChannel    = new BroadcastChannel(DATASOURCE_DATA_TOPIC + platformOrientationDataSource.id);
+const syncTimeBroadcastChannel  = new BroadcastChannel(TIME_SYNCHRONIZER_TOPIC + dataSynchronizer.id);
 
 gpsBroadcastChannel.onmessage = (message) => {
   if(message.data.type === 'data') {
@@ -75,6 +85,10 @@ videoBroadcastChannel.onmessage = (message) => {
   if(message.data.type === 'data') {
     displayVideo(message.data.values);
   }
+}
+
+syncTimeBroadcastChannel.onmessage = (message) => {
+    displayError(message.data.timestamp);
 }
 
 // start streaming
