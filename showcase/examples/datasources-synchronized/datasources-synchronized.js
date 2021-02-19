@@ -9,7 +9,9 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 4.0;
+const BUFFERING_TIME = 2000;
+const TIMEOUT = 10000;
 
 const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',
@@ -19,7 +21,9 @@ const videoDataSource = new SosGetResultVideo("drone-Video", {
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED
+  replaySpeed: REPLAY_SPEED,
+  bufferingTime: BUFFERING_TIME,
+  timeOut: TIMEOUT
 });
 const platformLocationDataSource = new SweJson('android-GPS', {
   protocol: 'ws',
@@ -29,7 +33,9 @@ const platformLocationDataSource = new SweJson('android-GPS', {
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED
+  replaySpeed: REPLAY_SPEED,
+  bufferingTime: BUFFERING_TIME,
+  timeOut: TIMEOUT
 });
 const platformOrientationDataSource = new SweJson('android-Heading', {
   protocol: 'ws',
@@ -39,7 +45,9 @@ const platformOrientationDataSource = new SweJson('android-Heading', {
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED
+  replaySpeed: REPLAY_SPEED,
+  bufferingTime: BUFFERING_TIME,
+  timeOut: TIMEOUT
 });
 
 const dataSynchronizer = new DataSynchronizer({

@@ -1,14 +1,18 @@
 const locationDivElement        = document.getElementById('datasource-gps');
 const orientationDivElement     = document.getElementById('datasource-orientation');
 const videoDivElement           = document.getElementById('datasource-video');
+const errorDivElement           = document.getElementById('error');
 
 const lastLocationDivElement    = document.getElementById('last-gps');
 const lastOrientationDivElement = document.getElementById('last-orient');
 const lastVideoDivElement       = document.getElementById('last-video');
+const currentTimeDivElement       = document.getElementById('current-time');
 
 let locationCount = 0;
 let orientCount = 0;
 let videoCount = 0;
+
+let lastTimestamp = 0;
 
 export function displayLocation(values) {
     if(++locationCount%100 === 0) {
@@ -18,6 +22,8 @@ export function displayLocation(values) {
     }
 
     lastLocationDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Location';
+    currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
+    displayError(values);
 }
 
 export  function displayOrientation(values) {
@@ -27,6 +33,8 @@ export  function displayOrientation(values) {
         orientationDivElement.value += JSON.stringify(values) + '\n';
     }
     lastOrientationDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Orientation';
+    currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
+    displayError(values);
 }
 
 export function displayVideo(values) {
@@ -41,4 +49,14 @@ export function displayVideo(values) {
         }
     }
     lastVideoDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Video';
+    currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
+    displayError(values);
+}
+
+export function displayError(values) {
+    if(values[values.length-1].timeStamp < lastTimestamp) {
+        errorDivElement.value += new Date(values[values.length-1].timeStamp).toISOString() + ' < ' +
+                                                        new Date(lastTimestamp).toISOString()+ '\n';
+    }
+    lastTimestamp = values[values.length-1].timeStamp;
 }

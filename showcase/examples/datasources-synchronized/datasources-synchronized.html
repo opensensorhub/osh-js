@@ -40,11 +40,21 @@
       margin: auto;
       align-content: center;
     }
+
+    .error, .error > textarea {
+        color: red;
+    }
+    hr {
+        border-top: 1px dotted red;
+        width: 100%;
+    }
 </style>
 <div class="container-last">
   <span id="last-gps"></span>
   <span id="last-orient"></span>
   <span id="last-video"></span>
+  <hr>
+  <span id="current-time"></span>
 </div>
 <div class="container">
   <div class="text gps">
@@ -58,5 +68,9 @@
   <div class="text video">
     <label for="datasource-video">Video datasource(Only the 10 first elements of the frameData binary array are displayed)</label>
     <textarea id="datasource-video" disabled></textarea>
+  </div>
+  <div class="text error">
+    <label for="error">Wrong timestamps</label>
+    <textarea id="error" disabled></textarea>
   </div>
 </div>
