@@ -1,17 +1,18 @@
 import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
-import {displayLocation, displayVideo, displayOrientation} from './display-values';
+import {displayLocation, displayVideo, displayOrientation, displayError} from './display-values';
 
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
 import SweJson from "osh/datareceiver/SosGetResultJson.js";
 import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo";
 import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import {TIME_SYNCHRONIZER_TOPIC} from "../../../source/osh/Constants";
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
 const REPLAY_SPEED = 4.0;
-const BUFFERING_TIME = 2000;
-const TIMEOUT = 10000;
+const BUFFERING_TIME = 500;
+const TIMEOUT = 1000;
 
 const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',
@@ -66,6 +67,7 @@ dataSynchronizer.connect();
 const videoBroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource.id);
 const gpsBroadcastChannel       = new BroadcastChannel(DATASOURCE_DATA_TOPIC + platformLocationDataSource.id);
 const orientBroadcastChannel    = new BroadcastChannel(DATASOURCE_DATA_TOPIC + platformOrientationDataSource.id);
+const syncTimeBroadcastChannel  = new BroadcastChannel(TIME_SYNCHRONIZER_TOPIC + dataSynchronizer.id);
 
 gpsBroadcastChannel.onmessage = (message) => {
   if(message.data.type === 'data') {
@@ -83,6 +85,10 @@ videoBroadcastChannel.onmessage = (message) => {
   if(message.data.type === 'data') {
     displayVideo(message.data.values);
   }
+}
+
+syncTimeBroadcastChannel.onmessage = (message) => {
+    displayError(message.data.timestamp);
 }
 
 // start streaming

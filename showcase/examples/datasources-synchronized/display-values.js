@@ -23,7 +23,6 @@ export function displayLocation(values) {
 
     lastLocationDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Location';
     currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
-    displayError(values);
 }
 
 export  function displayOrientation(values) {
@@ -34,7 +33,6 @@ export  function displayOrientation(values) {
     }
     lastOrientationDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Orientation';
     currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
-    displayError(values);
 }
 
 export function displayVideo(values) {
@@ -50,13 +48,11 @@ export function displayVideo(values) {
     }
     lastVideoDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Video';
     currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
-    displayError(values);
 }
 
-export function displayError(values) {
-    if(values[values.length-1].timeStamp < lastTimestamp) {
-        errorDivElement.value += new Date(values[values.length-1].timeStamp).toISOString() + ' < ' +
-                                                        new Date(lastTimestamp).toISOString()+ '\n';
+export function displayError(timestamp) {
+    if(timestamp < lastTimestamp) {
+        errorDivElement.value += new Date(timestamp).toISOString() + ' < ' + new Date(lastTimestamp).toISOString()+ '\n';
     }
-    lastTimestamp = values[values.length-1].timeStamp;
+    lastTimestamp = timestamp;
 }
