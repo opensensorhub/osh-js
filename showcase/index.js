@@ -110,13 +110,13 @@ var samples = [
     name: 'VueJs component: Video with control',
     description: 'Display a video using forward/pause/play/backward control',
     url: 'video-with-control-vuejs',
-    code: 'vue/App.vue'
+    code: 'vue/App_examples/video-with-control-vuejs.vue'
   },
   {
     name: 'VueJs component: Multiple Video with control',
     description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
     url: 'video-with-control-vuejs-synchronized',
-    code: 'vue/App.vue'
+    code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
   },
   {
     name: 'AVL data using multiple ids',
@@ -127,19 +127,19 @@ var samples = [
     name: "Chart with Time controller (Chart.js)",
     description: "Display a chart with time series of weather measurements and time controller.",
     url: "chart-archive-realtime",
-    code: 'vue/App.vue'
+    code: 'vue/App_examples/chart-archive-realtime.vue'
   },
   {
     name: "Chart with Time controller (Chart.js) in batch mode",
     description: "Display a chart using full batch mode with time series of weather measurements and time controller.",
     url: "chart-archive-realtime-batch",
-    code: 'vue/App.vue'
+    code: 'vue/App_examples/chart-archive-realtime-batch.vue'
   },
   {
     name: "Chart with Time controller and Synchronizer (Chart.js)",
     description: "Display a chart with time series of weather measurements and time controller.",
     url: "chart-archive-realtime-synchronized",
-    code: 'vue/App.vue'
+    code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
   },
 ];
 

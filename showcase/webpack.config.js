@@ -96,7 +96,7 @@ for(let i=0;i < directories.length;i++) {
 
     if (fs.existsSync( path.resolve(__dirname, './' + example + '/src/App.vue'))) {
         currentPlugin.push(new CopyWebpackPlugin([
-            {from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue'},
+            {from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue/App_' + example+'.vue' },
         ]));
     }
 

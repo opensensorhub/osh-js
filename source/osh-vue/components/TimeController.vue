@@ -181,8 +181,7 @@ export default {
     // compute skip time
     if((this.skipTimeStep.endsWith('s'))){
       // time in second
-      this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length-1));
-      console.log(this.skipTime)
+      this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length-1)) * 1000;
     } else if(this.skipTimeStep.endsWith('%')){
       // compute percent on the whole period
       const totalTime = this.maxTime - this.minTime;
