@@ -46,15 +46,13 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
-import {isDefined, randomUUID} from "../../../utils/Utils.js";
+import {isDefined} from "../../../utils/Utils.js";
 
 import {
   when,
   Cartographic,
   Cartesian3,
   Cartesian2,
-  knockout,
   Color,
   HorizontalOrigin,
   VerticalOrigin,
@@ -77,9 +75,11 @@ import {
   NearFarScalar,
   HeadingPitchRoll,
   HeadingPitchRange,
-  Ellipsoid, defined,
-  EncodedCartesian3, CesiumTerrainProvider,
-  ScreenSpaceEventType, SceneTransforms
+  Ellipsoid,
+  EncodedCartesian3,
+  ScreenSpaceEventType,
+  CallbackProperty,
+  ColorGeometryInstanceAttribute,
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -127,7 +127,7 @@ class CesiumView extends MapView {
    */
   constructor(properties) {
     super({
-      supportedLayers: ['marker','draping'],
+      supportedLayers: ['marker','draping','polyline'],
       ...properties
     });
 
@@ -189,7 +189,7 @@ class CesiumView extends MapView {
 
   /**
    * Updates the image draping associated to the layer.
-   * @param {ImageDraping.props} props - The layer properties allowing the update of the image draping
+   * @param {ImageDrapingLayer.props} props - The layer properties allowing the update of the image draping
    */
   updateDrapedImage(props) {
 
@@ -358,7 +358,7 @@ class CesiumView extends MapView {
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerLeftClick(mId,pickedFeature, layer.props, {})
+      that.onMarkerLeftClick(mId,pickedFeature, layer.props, {});
     };
 
     const onRightClick = (movement) => {
@@ -383,7 +383,7 @@ class CesiumView extends MapView {
       that.viewer.selectedEntity = pickedFeature.id;
       that.viewer.selectedEntity.name = mId;
       pickedFeature.pixel = movement.position;
-      that.onMarkerRightClick(mId,pickedFeature, layer.props, {})
+      that.onMarkerRightClick(mId,pickedFeature, layer.props, {});
     };
 
     const onHover = (movement) => {
@@ -404,7 +404,7 @@ class CesiumView extends MapView {
         return;
       }
       pickedFeature.pixel = movement.endPosition;
-      that.onMarkerHover(mId,pickedFeature, layer.props, {})
+      that.onMarkerHover(mId,pickedFeature, layer.props, {});
     };
 
     this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
@@ -455,7 +455,7 @@ class CesiumView extends MapView {
     var geom;
     let lonLatAlt = [0,0,0];
     if(isDefined(properties.location)) {
-      lonLatAlt = [properties.location.x, properties.location.y, properties.location.z || 0]
+      lonLatAlt = [properties.location.x, properties.location.y, properties.location.z || 0];
     }
     if (isModel) {
       geom = {
@@ -521,6 +521,65 @@ class CesiumView extends MapView {
   }
 
   /**
+   * Abstract method to remove a polyline from its corresponding layer.
+   * This is library dependent.
+   * @param {Object} polyline - The Map marker object
+   */
+  removePolylineFromLayer(polyline) {
+    this.viewer.entities.remove(polyline);
+  }
+
+  /**
+   * Add a polyline to the map.
+   * @param {locations} locations - the coordinates [{x, y}]
+   * @param {Object} properties
+   * @param {String} properties.type
+   * @param {String} properties.color
+   * @param {Number} properties.weight
+   * @param {Number} properties.opacity
+   * @param {Number} properties.smoothFactor
+   * @return {Object} the new created polyline
+   */
+  addPolyline(locations, properties) {
+
+    let that = this;
+
+    let entity = this.viewer.entities.add({
+      polyline: {
+        positions: new CallbackProperty(function (time, result) {
+          let locations = [];
+          let polylineLayer = that.getLayer(properties.id);
+          if (polylineLayer) {
+            locations = polylineLayer.props.locations[properties.polylineId];
+          }
+
+          return locations.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat();
+        }, false),
+        width: properties.weight,
+        material: new Color.fromCssColorString(properties.color),
+        clampToGround: (properties.clampToGround) ? properties.clampToGround : true
+      }
+    });
+
+    entity._dsid = properties.id;
+
+    return entity;
+  }
+
+  /**
+   * Updates a polyline, if one does not exist it is added to the view
+   * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
+   */
+  updatePolyline(props) {
+    let polyline = this.getPolyline(props);
+    if(!isDefined(polyline)) {
+      const polylineObj = this.addPolyline([], props);
+
+      this.addPolylineToLayer(props, polylineObj);
+    }
+  }
+
+  /**
    * Updates the marker associated to the layer.
    * @param {Layer} layer - The layer allowing the update of the marker
    * @param {Object} properties -
@@ -558,12 +617,11 @@ class CesiumView extends MapView {
 
       // update orientation
       if (isDefined(orient)) {
-        const DTR = Math.PI/180.;
+        const DTR = Math.PI/180.0;
         const heading = orient.heading;
         const pitch = 0.0;
-        const roll = 0.0;
-        const quat = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU
-        marker.orientation = quat;
+        // const roll = 0.0;
+        marker.orientation = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading*DTR, /*roll*DTR*/0.0, pitch*DTR)); // inverse roll and pitch to go from NED to ENU;
         if (marker.billboard)
           marker.billboard.rotation = Math.toRadians(heading);
       }

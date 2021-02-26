@@ -189,6 +189,10 @@ cesiumMapView = new CesiumView({
 
                 updateInfos(markerId, longitudeString + ', ' + latitudeString, billboard.pixel)
             }
+        }),
+        new Polyline({
+            ...commonPolylineConf,
+            clampToGround: true
         })
     ]
 });

@@ -569,7 +569,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line607">line 607</a>
+        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line665">line 665</a>
     </li></ul></dd>
     
 
@@ -1242,6 +1242,329 @@
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addPolyline"><span class="type-signature"></span>addPolyline<span class="signature">(locations, properties)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Add a polyline to the map.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>locations</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">locations</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the coordinates [{x, y}]</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>smoothFactor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line512">line 512</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the new created polyline
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -4332,7 +4655,7 @@ This is library dependent.
     
 
     
-    <h4 class="name" id="removePolylineFromLayer"><span class="type-signature">(protected) </span>removePolylineFromLayer<span class="signature">(polyline)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="removePolylineFromLayer"><span class="type-signature"></span>removePolylineFromLayer<span class="signature">(polyline)</span><span class="type-signature"></span></h4>
     
 
     
@@ -4341,7 +4664,7 @@ This is library dependent.
 
 <div class="description">
     Abstract method to remove a polyline from its corresponding layer.
-This is library dependant.
+This is library dependent.
 </div>
 
 
@@ -4393,7 +4716,7 @@ This is library dependant.
 
             
 
-            <td class="description last">The Map polyline object</td>
+            <td class="description last">The Map marker object</td>
         </tr>
 
     
@@ -4439,7 +4762,7 @@ This is library dependant.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="osh_ui_view_map_MapView.js.html">osh/ui/view/map/MapView.js</a>, <a href="osh_ui_view_map_MapView.js.html#line211">line 211</a>
+        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line497">line 497</a>
     </li></ul></dd>
     
 
@@ -5067,7 +5390,7 @@ This is library dependant.
             <td class="type">
             
                 
-<span class="param-type">ImageDraping.props</span>
+<span class="param-type">ImageDrapingLayer.props</span>
 
 
             
@@ -5465,7 +5788,7 @@ This is library dependant.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line504">line 504</a>
+        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line563">line 563</a>
     </li></ul></dd>
     
 
@@ -5603,6 +5926,143 @@ This is library dependant.
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line119">line 119</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updatePolyline"><span class="type-signature"></span>updatePolyline<span class="signature">(props)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Updates a polyline, if one does not exist it is added to the view
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PolylineLayer.props</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The layer properties allowing the update of the polyline</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="osh_ui_view_map_CesiumView.js.html">osh/ui/view/map/CesiumView.js</a>, <a href="osh_ui_view_map_CesiumView.js.html#line542">line 542</a>
     </li></ul></dd>
     
 
