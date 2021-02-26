@@ -47,7 +47,8 @@ import {
   Ellipsoid,
   EncodedCartesian3,
   ScreenSpaceEventType,
-  CallbackProperty
+  CallbackProperty,
+  ColorGeometryInstanceAttribute,
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -109,20 +110,6 @@ class CesiumView extends MapView {
     this.captureCanvas = document.createElement('canvas');
     this.captureCanvas.width = 640;
     this.captureCanvas.height = 480;
-  }
-
-  /**
-   * Updates a polyline, if one does not exist it is added to the view
-   * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
-   */
-  updatePolyline(props) {
-
-    let polyline = this.getPolyline(props);
-    if(!isDefined(polyline)) {
-      const polylineObj = this.addPolyline([], props);
-
-      this.addPolylineToLayer(props, polylineObj);
-    }
   }
 
   /**
@@ -532,9 +519,10 @@ class CesiumView extends MapView {
           let locations = [];
           let polylineLayer = that.getLayer(properties.id);
           if (polylineLayer) {
-            locations = polylineLayer.props.locations.polyline;
+            locations = polylineLayer.props.locations[properties.polylineId];
           }
-          return locations;
+
+          return locations.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat();
         }, false),
         width: properties.weight,
         material: new Color.fromCssColorString(properties.color),
@@ -545,6 +533,19 @@ class CesiumView extends MapView {
     entity._dsid = properties.id;
 
     return entity;
+  }
+
+  /**
+   * Updates a polyline, if one does not exist it is added to the view
+   * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
+   */
+  updatePolyline(props) {
+    let polyline = this.getPolyline(props);
+    if(!isDefined(polyline)) {
+      const polylineObj = this.addPolyline([], props);
+
+      this.addPolylineToLayer(props, polylineObj);
+    }
   }
 
   /**
