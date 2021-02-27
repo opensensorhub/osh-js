@@ -1,6 +1,5 @@
 import SosGetResultVideo from 'osh/datareceiver/SosGetResultVideo.js';
 import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
-import DataLayer from 'osh/ui/layer/DataLayer';
 //
 // // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {
@@ -22,11 +21,7 @@ let videoView = new FFMPEGView({
   framerate:25,
   showTime: true,
   showStats: true,
-  layers: [
-    new DataLayer({
-      dataSourceId: videoDataSource.id
-    })
-  ]
+  dataSourceId: videoDataSource.id
 });
 
 // start streaming
@@ -46,11 +41,7 @@ destroyButton.onclick = () => {
     name: "UAV Video",
     framerate: 25,
     showTime: true,
-    layers: [
-      new DataLayer({
-        dataSourceId: videoDataSource.id
-      })
-    ]
+    dataSourceId: videoDataSource.id
   });
 };
 

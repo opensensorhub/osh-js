@@ -3,7 +3,6 @@ import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh/ui/view/map/LeafletView.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView";
-import DataLayer from "osh/ui/layer/DataLayer";
 
 const REPLAY_FACTOR = 1.0;
 
@@ -47,11 +46,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         framerate: 25,
         showTime: true,
         showStats: true,
-        layers: [
-            new DataLayer({
-                dataSourceId: videoDataSource.id
-            })
-        ]
+        dataSourceId: videoDataSource.id
     });
 
     // #region snippet_multiple_layer_datasources

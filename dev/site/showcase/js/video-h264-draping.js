@@ -10,7 +10,6 @@ import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
 import ImageDrapingLayer from "osh/ui/layer/ImageDrapingLayer.js";
 import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import DataLayer from 'osh/ui/layer/DataLayer';
 
 window.CESIUM_BASE_URL = './';
 
@@ -33,11 +32,7 @@ let videoView = new FFMPEGView({
     framerate:25,
     showTime: true,
     showStats: true,
-    layers: [
-        new DataLayer({
-            dataSourceId: videoDataSource.id
-        })
-    ]
+    dataSourceId: videoDataSource.id
 });
 
 let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];

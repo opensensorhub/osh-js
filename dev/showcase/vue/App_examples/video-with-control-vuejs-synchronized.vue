@@ -71,11 +71,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      layers: [
-        new DataLayer({
-          dataSourceId: dataSource0 .id
-        })
-      ]
+      dataSourceId: dataSource0.id
     }));
 
     this.views.push(new FFMPEGView({
@@ -85,11 +81,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      layers: [
-        new DataLayer({
-          dataSourceId: dataSource1 .id
-        })
-      ]
+      dataSourceId: dataSource1.id
     }));
 
     this.views.push(new FFMPEGView({
@@ -99,11 +91,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      layers: [
-        new DataLayer({
-          dataSourceId: dataSource2 .id
-        })
-      ]
+      dataSourceId: dataSource2.id
     }));
 
     this.views.push(new FFMPEGView({
@@ -113,11 +101,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      layers: [
-        new DataLayer({
-          dataSourceId: dataSource3 .id
-        })
-      ]
+      dataSourceId: dataSource3.id
     }));
 
     this.dataSynchronizer = new DataSynchronizer({

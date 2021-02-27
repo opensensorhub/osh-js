@@ -47,11 +47,7 @@
           framerate: 25,
           showTime: true,
           showStats: true,
-          layers: [
-            new DataLayer({
-              dataSourceId: ds .id
-            })
-          ]
+          dataSourceId: ds.id
         });
 
         this.dataSource = ds;

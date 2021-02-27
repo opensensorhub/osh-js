@@ -43,8 +43,7 @@ let polyline = new PolylineLayer({
     opacity: .5,
     smoothFactor: 1,
     maxPoints: 200,
-    name: "Android Phone GPS Path",
-    clampToGround: true
+    name: "Android Phone GPS Path"
 });
 
 // #endregion snippet_leaflet_location_polyline
