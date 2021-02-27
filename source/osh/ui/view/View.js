@@ -30,6 +30,7 @@ import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
 import {Status} from "../../dataconnector/Status.js";
 import {EventType} from "../../event/EventType.js";
+import DataLayer from "../layer/DataLayer";
 
 class View {
     /**
@@ -91,14 +92,23 @@ class View {
 
         this.beforeAddingItems(properties);
 
-        if (isDefined(properties) && isDefined(properties.layers)) {
-            for (let i = 0; i < properties.layers.length; i++) {
-                this.addLayer(properties.layers[i]);
+        if(isDefined(properties)) {
+            if (isDefined(properties.layers)) {
+                for (let i = 0; i < properties.layers.length; i++) {
+                    this.addLayer(properties.layers[i]);
+                }
             }
-        }
 
-        if (isDefined(properties) && isDefined(properties.visible)) {
-            document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
+            if(isDefined(properties.dataSourceId)) {
+                this.addLayer(new DataLayer({
+                    dataSourceId: properties.dataSourceId
+                }));
+            }
+
+            if (isDefined(properties.visible)) {
+                document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
+            }
+
         }
         const that = this;
         // observes the event associated to the dataSourceId

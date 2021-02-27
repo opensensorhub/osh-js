@@ -1,8 +1,6 @@
 import RangeSlider from "osh-ext/ui/view/rangeslider/RangeSliderView.js";
 import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
 import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import DataLayer from "osh/ui/layer/DataLayer";
-
 // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {
     protocol: "ws",
@@ -15,10 +13,6 @@ let videoDataSource = new SosGetResultVideo("drone-Video", {
     replaySpeed: 1
 });
 
-const dataLayer =  new DataLayer({
-    dataSourceId: videoDataSource.id
-});
-
 // show it in video view using FFMPEG JS decoder
 let videoView = new FFMPEGView({
     container: "video-container",
@@ -27,7 +21,7 @@ let videoView = new FFMPEGView({
     framerate:25,
     showTime: true,
     showStats: true,
-    layers: [dataLayer]
+    dataSourceId: videoDataSource.id
 });
 
 let rangeSlider = new RangeSlider({

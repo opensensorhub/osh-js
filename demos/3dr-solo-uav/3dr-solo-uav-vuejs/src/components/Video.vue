@@ -28,11 +28,7 @@ export default {
         framerate:25,
         showTime: true,
         showStats: true,
-        layers: [
-          new DataLayer({
-            dataSourceId: this.videoDataSource.id
-          })
-        ]
+        dataSourceId: this.videoDataSource.id
       });
   }
 }
