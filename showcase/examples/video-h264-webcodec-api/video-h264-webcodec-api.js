@@ -1,6 +1,5 @@
 import SosGetResultVideo from 'osh/datareceiver/SosGetResultVideo.js';
 import WebCodecView from 'osh/ui/view/video/WebCodecView.js';
-import DataLayer from "osh/ui/layer/DataLayer";
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {
@@ -21,11 +20,7 @@ let videoView = new WebCodecView({
   name: "UAV Video",
   showTime: true,
   showStats: true,
-  layers: [
-    new DataLayer({
-      dataSourceId: videoDataSource.id
-    })
-  ]
+  dataSourceId: videoDataSource.id
 });
 
 // start streaming

@@ -35,11 +35,7 @@
         name: "Android Video",
         keepRatio: true,
         showTime: true,
-        layers: [
-          new DataLayer({
-            dataSourceId: this.dataSource.id
-          })
-        ]
+        dataSourceId: this.dataSource.id
       });
     }
   }

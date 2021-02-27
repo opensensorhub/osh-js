@@ -40,11 +40,7 @@ export default {
       name: "Android Video",
       keepRatio: true,
       showTime: true,
-      layers: [
-        new DataLayer({
-          dataSourceId: videoDataSource.id
-        })
-      ]
+      dataSourceId: videoDataSource.id
     });
 
     // start streaming

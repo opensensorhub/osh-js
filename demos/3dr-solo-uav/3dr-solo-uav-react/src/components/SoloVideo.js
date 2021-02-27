@@ -34,11 +34,7 @@ export class SoloVideoComponent extends React.Component {
       directPlay: true,
       showTime: true,
       showStats: true,
-      layers: [
-        new DataLayer({
-          dataSourceId: videoDataSource.id
-        })
-      ]
+      dataSourceId: videoDataSource.id
     });
 
     // start streaming
