@@ -144,6 +144,7 @@ export default {
     await this.init();
   },
   async init() {
+    assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     if(!this.init) {
 
       this.connected = await this.dataSourceObject.isConnected();
