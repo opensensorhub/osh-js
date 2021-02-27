@@ -128,13 +128,13 @@ export default {
     }
   },
   beforeMount() {
-    this.dataSourceObject = this.getDataSourceObject();
-    assertDefined(this.dataSourceObject, 'either dataSource properties or dataSynchronizer must be defined');
-
-    this.history = this.dataSourceObject.getStartTime() !== 'now';
     if(!isDefined(this.parseTime)) {
       this.parseTime = this.parseDate;
     }
+    assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
+    this.dataSourceObject = this.getDataSourceObject();
+    this.history = this.dataSourceObject.getStartTime() !== 'now';
+
   },
   async mounted() {
 
