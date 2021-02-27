@@ -16,6 +16,11 @@ var samples = [
     url: "cesium-location"
   },
   {
+    name: "Moving Location  + path (CesiumJS)",
+    description: "Display a moving marker and a polyline on a CesiumJS map, showing both the current location of a vehicle and the historical track.",
+    url: "cesium-location-path"
+  },
+  {
     name: "Moving Location (Deck.gl)",
     description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
     url: "deckgl-location"
