@@ -138,87 +138,87 @@ export default {
 
   },
   async updated() {
-    await this.init();
+    await this.initComp();
   },
   async mounted() {
-    await this.init();
-  },
-  async init() {
-    assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
-    if(!this.init) {
-
-      this.connected = await this.dataSourceObject.isConnected();
-      let minTime = this.dataSourceObject.getMinTime();
-      let maxTime = this.dataSourceObject.getMaxTime();
-
-      if (((isDefined(minTime) && isDefined(maxTime)) || this.dataSourceObject.getStartTime() !== 'now')) {
-        if (isDefined(this.dataSourceObject.properties.replaySpeed)) {
-          this.speed = this.dataSourceObject.properties.replaySpeed;
-        } else {
-          this.speed = 0.0;
-          this.activateSpeedControl = false;
-        }
-
-        if (this.dataSourceObject.getStartTime() === 'now') {
-          this.startTime = 'now';
-          this.endTime = this.dataSourceObject.getEndTime();
-          this.minTime = new Date(minTime).getTime();
-          this.maxTime = new Date(maxTime).getTime();
-        } else {
-          if (isDefined(minTime)) {
-            this.startTime = new Date(minTime).getTime();
-          } else {
-            this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
-                new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getStartTime()).getTime();
-          }
-          this.minTime = this.startTime;
-
-          if (isDefined(maxTime)) {
-            this.endTime = new Date(maxTime).getTime();
-          } else {
-            this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
-                new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getEndTime()).getTime();
-          }
-          this.maxTime = this.endTime;
-        }
-        // save the times after creating the component
-        this.history = this.startTime !== 'now';
-      } else {
-        this.history = false;
-      }
-
-      // compute skip time
-      if ((this.skipTimeStep.endsWith('s'))) {
-        // time in second
-        this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
-      } else if (this.skipTimeStep.endsWith('%')) {
-        // compute percent on the whole period
-        const totalTime = this.maxTime - this.minTime;
-        const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
-        this.skipTime = percent * totalTime / 100;
-      }
-
-      this.createTimeBc();
-      // listen for datasource status
-      const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
-      bc.onmessage = (event) => {
-        if (event.data.type === "status") {
-          if (event.data.status === STATUS.DISCONNECTED) {
-            this.connected = false;
-          } else if (event.data.status === STATUS.CONNECTED) {
-            this.connected = true;
-          }
-        }
-      }
-
-      this.createRangeSlider();
-
-      this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
-      this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
-      init = true;
-    }
+    await this.initComp();
   },
   methods: {
+    async initComp() {
+      assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
+      if(!this.init) {
+
+        this.connected = await this.dataSourceObject.isConnected();
+        let minTime = this.dataSourceObject.getMinTime();
+        let maxTime = this.dataSourceObject.getMaxTime();
+
+        if (((isDefined(minTime) && isDefined(maxTime)) || this.dataSourceObject.getStartTime() !== 'now')) {
+          if (isDefined(this.dataSourceObject.properties.replaySpeed)) {
+            this.speed = this.dataSourceObject.properties.replaySpeed;
+          } else {
+            this.speed = 0.0;
+            this.activateSpeedControl = false;
+          }
+
+          if (this.dataSourceObject.getStartTime() === 'now') {
+            this.startTime = 'now';
+            this.endTime = this.dataSourceObject.getEndTime();
+            this.minTime = new Date(minTime).getTime();
+            this.maxTime = new Date(maxTime).getTime();
+          } else {
+            if (isDefined(minTime)) {
+              this.startTime = new Date(minTime).getTime();
+            } else {
+              this.startTime = this.dataSourceObject.getStartTime() === 'now' ?
+                  new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getStartTime()).getTime();
+            }
+            this.minTime = this.startTime;
+
+            if (isDefined(maxTime)) {
+              this.endTime = new Date(maxTime).getTime();
+            } else {
+              this.endTime = this.dataSourceObject.getEndTime() === 'now' ?
+                  new Date(Date.now()).getTime() : new Date(this.dataSourceObject.getEndTime()).getTime();
+            }
+            this.maxTime = this.endTime;
+          }
+          // save the times after creating the component
+          this.history = this.startTime !== 'now';
+        } else {
+          this.history = false;
+        }
+
+        // compute skip time
+        if ((this.skipTimeStep.endsWith('s'))) {
+          // time in second
+          this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
+        } else if (this.skipTimeStep.endsWith('%')) {
+          // compute percent on the whole period
+          const totalTime = this.maxTime - this.minTime;
+          const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
+          this.skipTime = percent * totalTime / 100;
+        }
+
+        this.createTimeBc();
+        // listen for datasource status
+        const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
+        bc.onmessage = (event) => {
+          if (event.data.type === "status") {
+            if (event.data.status === STATUS.DISCONNECTED) {
+              this.connected = false;
+            } else if (event.data.status === STATUS.CONNECTED) {
+              this.connected = true;
+            }
+          }
+        }
+
+        this.createRangeSlider();
+
+        this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
+        this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
+        this.init = true;
+      }
+    },
     destroyBc() {
       if(isDefined(this.bcTime)) {
         this.bcTime.close();
