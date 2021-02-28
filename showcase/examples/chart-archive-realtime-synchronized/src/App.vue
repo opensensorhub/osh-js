@@ -8,6 +8,7 @@
         :skipTimeStep="'60s'"
         :parseTime='parseTime'
         v-if="dataSynchronizer"
+        :key="key"
     ></TimeController>
   </div>
 </template>
@@ -27,7 +28,8 @@ export default {
   data: function () {
     return {
       dataSynchronizer: null,
-      view: null
+      view: null,
+      key: 0
     }
   },
   mounted() {
@@ -115,9 +117,17 @@ export default {
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
       intervalRate: 5,
-      dataSources: [chartDataSource1, chartDataSource2]
+      dataSources: []
     })
 
+    const that = this;
+    setTimeout(() => {
+      dataSynchronizer.addDataSource(chartDataSource1);
+      dataSynchronizer.addDataSource(chartDataSource2);
+      dataSynchronizer.reset();
+      dataSynchronizer.connect();
+      that.key = 1;
+    },5000);
 // connects each DataSource
     dataSynchronizer.connect();
     this.dataSynchronizer = dataSynchronizer;

@@ -94,8 +94,8 @@ class DataSynchronizer {
     }
 
      /**
-      * Adds a new DataSource object to the list of datasources to synchronize.
-      * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
+     * Adds a new DataSource object to the list of datasources to synchronize.
+     * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
      * @param {DataSource} dataSource - the new datasource to add
      *
      */
