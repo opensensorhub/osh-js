@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/protocol/TopicConnector.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Ajax.html">Ajax</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="File.html">File</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="Nexrad.html">Nexrad</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="PtzTaskingView.html">PtzTaskingView</a></li><li><a href="RangeSliderView.html">RangeSliderView</a></li><li><a href="Server.html">Server</a></li><li><a href="SosGetFois.html">SosGetFois</a></li><li><a href="SosGetResultJson.html">SosGetResultJson</a></li><li><a href="SosGetResultVideo.html">SosGetResultVideo</a></li><li><a href="SosGetResultVideoWithRoll.html">SosGetResultVideoWithRoll</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="TimeSeriesDataSource.html">TimeSeriesDataSource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#Status">Status</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: core/protocol/TopicConnector.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import DataConnector from "./DataConnector";
+
+/**
+ * Defines the FileConnector to read a File content
+ * @extends DataConnector
+ * @example
+ * import FileConnector from 'core/protocol/TopicConnector.js';
+ *
+ * let protocol = new TopicConnector(&lt;topic_name>);
+ *
+ * // connect
+ * protocol.connect();
+ *
+ * // disconnect
+ * protocol.disconnect();
+ *
+ * // close
+ * protocol.close();
+ *
+ */
+class TopicConnector extends DataConnector {
+    /**
+     *
+     * @param properties -
+     */
+    constructor(properties) {
+        super(properties);
+        this.lastReceiveTime = -1;
+        this.interval = -1;
+        this.broadcastChannel = null;
+    }
+
+    /**
+     * Connect to the broadcastChannel.
+     */
+    connect() {
+        if (this.broadcastChannel === null) {
+            //creates broadcastChannel
+            this.broadcastChannel = new BroadcastChannel(this.getUrl());
+            this.broadcastChannel.onmessage =  (event)  => {
+                this.lastReceiveTime = Date.now();
+                //callback data on message received
+                this.onMessage(event.data.data);
+            };
+
+            // closes socket if any errors occur
+            this.broadcastChannel.onerror =  (event) => {
+                console.error('BroadcastChannel stream error: ' + event);
+                this.broadcastChannel.close();
+                this.init = false;
+                this.lastReceiveTime = -1;
+                this.opened = false;
+            };
+            this.opened = true;
+
+            //init the reconnect handler
+            if (this.interval === -1) {
+                this.interval = setInterval(function () {
+                    let delta = Date.now() - this.lastReceiveTime;
+                    // -1 means the WS went in error
+                    if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
+                        console.warn(`trying to reconnect after ${this.reconnectTimeout} ..`);
+                        this.reconnect();
+                    }
+                }.bind(this), this.reconnectTimeout);
+            }
+        }
+    }
+
+    /**
+     * Disconnects the websocket.
+     */
+    disconnect() {
+        this.fullDisconnect(true);
+    }
+
+    /**
+     * Fully disconnect the websocket connection by sending a close message to the webWorker.
+     * @param {Boolean} removeInterval  - force removing the interval
+     */
+    fullDisconnect(removeInterval) {
+        if (this.broadcastChannel != null) {
+            this.broadcastChannel.close();
+            this.broadcastChannel = null;
+        }
+        if (removeInterval) {
+            clearInterval(this.interval);
+        }
+        this.opened = false;
+    }
+
+    /**
+     * Try to reconnect if the connexion if closed
+     */
+    reconnect() {
+        this.onReconnect();
+        if (this.init) {
+            this.fullDisconnect(false);
+        }
+        this.connect();
+
+    }
+
+    /**
+     * The onMessage method used by the websocket to callback the data
+     * @param data the callback data
+     * @event
+     */
+    onMessage(data) {
+    }
+
+    /**
+     * Closes the webSocket.
+     */
+    close() {
+        this.disconnect();
+    }
+
+    isConnected() {
+        return this.broadcastChannel !== null &amp;&amp; this.opened;
+    }
+}
+
+export default TopicConnector;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

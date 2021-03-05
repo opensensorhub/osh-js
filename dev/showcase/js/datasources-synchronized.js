@@ -1,12 +1,12 @@
-import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
+import {DATASOURCE_DATA_TOPIC} from 'osh/core/Constants';
 import {displayLocation, displayVideo, displayOrientation, displayError} from './display-values';
 
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
-import SweJson from "osh/datareceiver/SosGetResultJson.js";
-import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo";
-import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
-import {TIME_SYNCHRONIZER_TOPIC} from "../../../source/osh/Constants";
+import SweJson from 'osh/core/datasource/SosGetResultJson.js';
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo';
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
+import {TIME_SYNCHRONIZER_TOPIC} from 'osh/core/Constants';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';

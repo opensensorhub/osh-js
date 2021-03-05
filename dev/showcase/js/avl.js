@@ -1,11 +1,11 @@
-import SweJson from 'osh/datareceiver/SosGetResultJson.js';
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import Polyline from "osh/ui/layer/PolylineLayer.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
-import OpenLayerView from "osh/ui/view/map/OpenLayerView";
-import CesiumView from 'osh/ui/view/map/CesiumView.js';
-import DeckGlView from "osh/ui/view/map/DeckGlView";
+import SweJson from 'osh/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import Polyline from 'osh/core/ui/layer/PolylineLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
+import {DATASOURCE_DATA_TOPIC} from 'osh/core/Constants';
+import OpenLayerView from 'osh/core/ui/view/map/OpenLayerView';
+import CesiumView from 'osh/core/ui/view/map/CesiumView.js';
+import DeckGlView from 'osh/core/ui/view/map/DeckGlView';
 
 import {
     Cartographic, Math
@@ -255,7 +255,7 @@ removeAllElt.onclick = async () => {
     // let the time to flush the data broadcast channel
     // we need to wait a little because the disconnect() datasource function is not synchronous
     // if markers are deleted too early, the connection may continue to send data back to the views which
-    // will result in the re-creation of markers. This is asynchronous because the WebSocket connector is launched from a WebWorker.
+    // will result in the re-creation of markers. This is asynchronous because the WebSocket protocol is launched from a WebWorker.
     setTimeout(() => {
         leafletMapView.removeAllFromLayers();
         olMapView.removeAllFromLayers();

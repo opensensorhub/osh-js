@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/datasource/parsers/SosGetResultVideoWithRoll.parser.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Ajax.html">Ajax</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="File.html">File</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="Nexrad.html">Nexrad</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="PtzTaskingView.html">PtzTaskingView</a></li><li><a href="RangeSliderView.html">RangeSliderView</a></li><li><a href="Server.html">Server</a></li><li><a href="SosGetFois.html">SosGetFois</a></li><li><a href="SosGetResultJson.html">SosGetResultJson</a></li><li><a href="SosGetResultVideo.html">SosGetResultVideo</a></li><li><a href="SosGetResultVideoWithRoll.html">SosGetResultVideoWithRoll</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="TimeSeriesDataSource.html">TimeSeriesDataSource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#Status">Status</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: core/datasource/parsers/SosGetResultVideoWithRoll.parser.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import SosGetResultVideoParser from "./SosGetResultVideo.parser";
+
+class SosGetResultVideoWithRollParser extends SosGetResultVideoParser {
+    /**
+     * Extract data from the message. The H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length.
+     * @param {ArrayBuffer} data - the data to parse
+     * @return {Uint8Array} the parsed data
+     */
+    parseData(data) {
+        return {
+            // H264 NAL unit starts at offset 14 after 8-bytes time stamp, 2-bytes roll value, and 4-bytes frame length
+            frameData: new Uint8Array(data, 14),
+            roll: new DataView(data).getInt16(8, false)
+        }
+    }
+
+    /**
+     * Builds the full url.
+     * @protected
+     * @param {Object} properties
+     * @param {String} properties.protocol the protocol protocol
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.offeringID the offeringID
+     * @param {String} properties.observedProperty the observed property
+     * @param {String} properties.startTime the start time (ISO format)
+     * @param {String} properties.endTime the end time (ISO format)
+     * @param {Number} properties.replaySpeed the replay factor
+     * @param {String} properties.foiId the foiId
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
+     * @param {Object} properties.customUrlParams - the encoding options
+     * @param {Number} properties.customUrlParams.video_bitrate - define a custom bitrate (in b/s)
+     * @param {Number} properties.customUrlParams.video_scale - define a custom scale, 0.0 &lt; value &lt; 1.0
+     * @param {Number} properties.customUrlParams.video_width - define a custom width
+     * @param {Number} properties.customUrlParams.video_height - define a custom height
+     * @return {String} the full url
+     */
+    buildUrl(properties) {
+        let url = super.buildUrl(properties);
+
+        // adds feature of interest urn
+        if (properties.foiId &amp;&amp; properties.of !== '') {
+            url += '&amp;featureOfInterest=' + properties.foiId;
+        }
+        return url;
+    }
+}
+
+export default  SosGetResultVideoWithRollParser;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
