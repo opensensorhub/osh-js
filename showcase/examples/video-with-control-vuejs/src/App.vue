@@ -11,10 +11,10 @@
 </template>
 <script>
     // @ is an alias to /src
-    import TimeController from 'osh-vue/components/TimeController.vue';
-    import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
-    import FFMPEGView from "osh/ui/view/video/FFMPEGView";
-    import DataLayer from "osh/ui/layer/DataLayer";
+    import TimeController from 'vue/components/TimeController.vue';
+    import SosGetResultVideo from "core/datasource/SosGetResultVideo.js";
+    import FFMPEGView from "core/ui/view/video/FFMPEGView";
+    import DataLayer from "core/ui/layer/DataLayer";
 
     export default {
         components: {

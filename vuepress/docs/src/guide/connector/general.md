@@ -51,7 +51,7 @@ The Topic connector is used to listen to a BroadcastChannel given a specific top
 Example:
 
 ```js
-import SosGetResultJson from 'osh/datareceiver/SosGetResultJson';
+import SosGetResultJson from 'core/datasource/SosGetResultJson';
 
 new SosGetResultJson('Example',{
   replaySpeed: 1.0,
@@ -67,7 +67,7 @@ The File connector is used to read a file.
 It uses the [loaders.gl](https://loaders.gl/) library to parse different file types
 
 ```js
-import File from 'osh/datareceiver/File';
+import File from 'core/datasource/File';
 
 new File('Example',{
   name: 'Example',

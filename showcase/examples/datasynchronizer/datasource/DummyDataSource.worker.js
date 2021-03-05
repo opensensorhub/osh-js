@@ -1,4 +1,4 @@
-import DataSourceHandler from "../../../../source/osh/datareceiver/workers/DataSourceHandler";
+import DataSourceHandler from "../../../../source/core/datasource/workers/DataSourceHandler";
 import DummyParser from "./DummyParser";
 
 const dataSourceHandler = new DataSourceHandler(new DummyParser());

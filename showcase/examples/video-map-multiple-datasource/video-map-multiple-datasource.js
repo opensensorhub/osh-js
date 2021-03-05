@@ -1,8 +1,8 @@
-import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView";
+import SosGetResultVideo from "core/datasource/SosGetResultVideo.js";
+import SosGetResultJson from "core/datasource/SosGetResultJson.js";
+import PointMarkerLayer from "core/ui/layer/PointMarkerLayer.js";
+import LeafletView from "core/ui/view/map/LeafletView.js";
+import FFMPEGView from "core/ui/view/video/FFMPEGView";
 
 const REPLAY_FACTOR = 1.0;
 

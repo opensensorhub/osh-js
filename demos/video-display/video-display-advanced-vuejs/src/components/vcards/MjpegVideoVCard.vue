@@ -13,9 +13,9 @@
 </template>
 
 <script>
-  import MjpegView from "osh/ui/view/video/MjpegView";
-  import {randomUUID} from "osh/utils/Utils";
-  import DataLayer from "../../../../../../source/osh/ui/layer/DataLayer";
+  import MjpegView from "../../../../../../source/core/ui/view/video/MjpegView";
+  import {randomUUID} from "../../../../../../source/core/utils/Utils";
+  import DataLayer from "../../../../../../source/core/ui/layer/DataLayer";
 
   export default {
     name: "MjpegVideoVCard",

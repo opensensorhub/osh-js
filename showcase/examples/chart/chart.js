@@ -1,7 +1,8 @@
 // create data source for Android phone camera
-import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
-import CurveLayer from "osh/ui/layer/CurveLayer.js";
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
+import ChartJsView from "core/ui/view/chart/ChartJsView.js";
+import CurveLayer from "core/ui/layer/CurveLayer.js";
+import SosGetResultJson from "core/datasource/SosGetResultJson.js";
+import View from "core/ui/view/View.js"
 
 let chartDataSource = new SosGetResultJson("weather", {
     protocol: "ws",

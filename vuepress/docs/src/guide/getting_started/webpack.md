@@ -119,13 +119,13 @@ Then setup your npm configuration file:
 ***package.json***
 ```json
 {
-  "name": "osh-js",
+  "name": "core-js",
   "version": "1.3.3",
   "description": "OSH javascript Toolkit",
-  "main": "osh.js",
+  "main": "core.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/opensensorhub/osh-js.git"
+    "url": "git+https://github.com/opensensorhub/core-js.git"
   },
   "keywords": [
     "OSH",
@@ -140,9 +140,9 @@ Then setup your npm configuration file:
   "author": "OSH community",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/opensensorhub/osh-js/issues"
+    "url": "https://github.com/opensensorhub/core-js/issues"
   },
-  "homepage": "https://github.com/opensensorhub/osh-js#readme",
+  "homepage": "https://github.com/opensensorhub/core-js#readme",
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.js --host 127.0.0.1 --mode development --watch",
     "prod": "webpack --config webpack.config.js --mode production"

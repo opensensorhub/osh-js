@@ -1,8 +1,8 @@
 // create data source for Android phone GPS
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import PolylineLayer from "osh/ui/layer/PolylineLayer.js";
-import DeckGlView from "osh/ui/view/map/DeckGlView.js";
+import SosGetResultJson from "core/datasource/SosGetResultJson.js";
+import PointMarkerLayer from "core/ui/layer/PointMarkerLayer.js";
+import PolylineLayer from "core/ui/layer/PolylineLayer.js";
+import DeckGlView from "core/ui/view/map/DeckGlView.js";
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
 

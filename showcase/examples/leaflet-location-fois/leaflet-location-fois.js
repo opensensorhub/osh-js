@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import SosGetFois from "osh/datareceiver/SosGetFois";
+import PointMarkerLayer from "core/ui/layer/PointMarkerLayer.js";
+import LeafletView from "core/ui/view/map/LeafletView.js";
+import SosGetFois from "core/datasource/SosGetFois";
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {

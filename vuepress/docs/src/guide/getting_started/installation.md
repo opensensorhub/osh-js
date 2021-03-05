@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dm/osh-js.svg?style=flat-square&maxAge=600)](https://www.npmjs.com/package/osh-js)
 
 ```sh
-npm install osh-js 
+npm install core-js 
 ```
 
 ### CDNJS

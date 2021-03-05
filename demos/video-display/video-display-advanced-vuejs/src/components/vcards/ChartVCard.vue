@@ -13,9 +13,9 @@
 </template>
 
 <script>
-  import CurveLayer from "osh/ui/layer/CurveLayer";
-  import ChartJsView from "osh/ui/view/chart/ChartJsView";
-  import {randomUUID} from "osh/utils/Utils";
+  import CurveLayer from "../../../../../../source/core/ui/layer/CurveLayer";
+  import ChartJsView from "../../../../../../source/core/ui/view/chart/ChartJsView";
+  import {randomUUID} from "../../../../../../source/core/utils/Utils";
 
   export default {
     name: "VCardViewElement",

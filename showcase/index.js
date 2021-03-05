@@ -1,4 +1,4 @@
-import {randomUUID} from "../source/osh/utils/Utils";
+import {randomUUID} from "../source/core/utils/Utils";
 
 const Prism = require('prismjs');
 const beautify = require('js-beautify').js;

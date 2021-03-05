@@ -1,6 +1,6 @@
-import Video from 'osh/datareceiver/Video.js';
-import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
-import MjpegView from  'osh/ui/view/video/MjpegView.js';
+import Video from 'core/datasource/Video.js';
+import FFMPEGView from 'core/ui/view/video/FFMPEGView.js';
+import MjpegView from  'core/ui/view/video/MjpegView.js';
 
 
 // create data source for UAV camera

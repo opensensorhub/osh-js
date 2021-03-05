@@ -1,7 +1,7 @@
-import SosGetResultJson from 'osh/datareceiver/SosGetResultJson';
-import CesiumView from 'osh/ui/view/map/CesiumView';
+import SosGetResultJson from 'core/datasource/SosGetResultJson';
+import CesiumView from 'core/ui/view/map/CesiumView';
 import {EllipsoidTerrainProvider} from 'cesium';
-import PointMarker from 'osh/ui/layer/PointMarker';
+import PointMarker from 'core/ui/layer/PointMarker';
 
 window.CESIUM_BASE_URL = './';
 

@@ -1,15 +1,15 @@
-import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
-import CesiumView from 'osh/ui/view/map/CesiumView.js';
+import SosGetResultJson from 'core/datasource/SosGetResultJson.js';
+import CesiumView from 'core/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
     Matrix3,
     Cartesian3,
     Cartesian2
 } from "cesium";
-import Video from "osh/datareceiver/Video.js";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import ImageDraping from "osh/ui/layer/ImageDrapingLayer.js";
-import PointMarker from "osh/ui/layer/PointMarker.js";
+import Video from "core/datasource/Video.js";
+import FFMPEGView from "core/ui/view/video/FFMPEGView.js";
+import ImageDraping from "core/ui/layer/ImageDrapingLayer.js";
+import PointMarker from "core/ui/layer/PointMarker.js";
 
 window.CESIUM_BASE_URL = './';
 

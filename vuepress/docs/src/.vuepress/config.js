@@ -42,7 +42,7 @@ module.exports = {
         ['meta', {name: 'apple-mobile-web-app-status-bar-style', content: 'black'}]
     ],
     dest: 'dist',
-    base: '/osh-js/dev/site/',
+    base: '/core-js/dev/site/',
     /**
      * Theme configuration, here is the default theme configuration for VuePress.
      *
@@ -54,7 +54,7 @@ module.exports = {
         docsDir: '',
         editLinkText: '',
         lastUpdated: false,
-        logo: '/images/logo-osh.png',
+        logo: '/images/logo-core.png',
         sidebar: 'auto',
         nav: [
             {
@@ -118,7 +118,7 @@ module.exports = {
                     collapsable: true,
                     children: [
                         '/guide/datasources/general.md',
-                        '/guide/connector/general.md',
+                        '/guide/protocol/general.md',
                         {
                             title: 'SOS',
                             collapsable: true,
@@ -149,7 +149,7 @@ module.exports = {
                         }
                     ]
                 },
-                '/guide/datasynchronizer/general.md',
+                '/guide/timesync/general.md',
                 {
                     title: 'Views',
                     collapsable: true,
@@ -210,7 +210,7 @@ module.exports = {
                     title: 'Advanced',
                     collapsable: true,
                     children: [
-                        '/guide/advanced/datasynchronizer.md',
+                        '/guide/advanced/timesync.md',
                         '/guide/advanced/comchannels.md',
                         {
                             title: 'Developers',

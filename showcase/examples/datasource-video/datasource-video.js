@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import {DATASOURCE_DATA_TOPIC} from "osh/Constants";
+import {DATASOURCE_DATA_TOPIC} from "core/Constants";
 // #region snippet_datasource_video
-import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo";
+import SosGetResultVideo from "core/datasource/SosGetResultVideo";
 
 const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',

@@ -24,10 +24,12 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
-    "postinstall": "patch-package",
     "build": "webpack --config webpack.config.js --mode production",
     "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/  all",
-    "vuepress": "yarn install && yarn  --cwd vuepress/docs prod"
+    "vuepress": "yarn install && yarn  --cwd vuepress/docs prod",
+    "copy-css": "shx cp -fr source/core/resources/css build/osh-js/css",
+    "transpile": "shx rm -rf build/osh-js && shx mkdir -p build/osh-js && shx cp -rf source/ build/osh-js/source && tsc --project config/tsconfig-build.json",
+    "build-package": "npm run transpile && npm run copy-css && node config/prepare-package"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
@@ -39,6 +41,7 @@
     "moment": "^2.24.0",
     "npm-install-webpack-plugin": "^4.0.5",
     "null-loader": "^3.0.0",
+    "patch-package": "^6.2.2",
     "strip-ansi": "^6.0.0",
     "style-loader": "^1.1.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
@@ -47,20 +50,11 @@
     "webpack-cli": "^3.3.11",
     "webpack-node-externals": "^1.7.2",
     "worker-loader": "^2.0.0",
-    "worker-plugin": "^4.0.2",
-    "patch-package": "^6.2.2"
+    "worker-plugin": "^4.0.2"
   },
   "dependencies": {
-    "chart.js": "^2.9.3",
-    "@deck.gl/core": "^8.3.6",
-    "@deck.gl/layers": "^8.3.6",
-    "@math.gl/web-mercator": "^3.3.2",
-    "deck.gl": "^8.3.0",
-    "leaflet": "^1.6.0",
+    "shx": "^0.3.3",
     "wnumb": "^1.2.0",
-    "nouislider": "14.4.0",
-    "cesium": "~1.68.0",
-    "ol": "^6.2.1",
-    "ol-layerswitcher": "3.8.1"
+    "typescript": "^4.0.2"
   }
 }
