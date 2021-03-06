@@ -2,8 +2,8 @@
 import {startStatic} from './static-dataset';
 import {startStaticWithTimeout} from './static-dataset-timeout';
 import {startDynamicWithTimeout} from './dynamic-datatset-timeout';
-import {isDefined} from "../../../source/core/utils/Utils";
-import {DATASOURCE_DATA_TOPIC} from "../../../source/core/Constants";
+import {isDefined} from 'osh/core/utils/Utils';
+import {DATASOURCE_DATA_TOPIC} from 'osh/core/Constants';
 
 const selectorMapping= {
   '1': 'one',

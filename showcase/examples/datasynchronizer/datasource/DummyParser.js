@@ -1,5 +1,4 @@
-import DataSourceParser from "../../../../source/core/datasource/parsers/DataSourceParser";
-import {randomUUID} from "../../../../source/core/utils/Utils";
+import DataSourceParser from 'osh/core/datasource/parsers/DataSourceParser';
 
 class DummyParser extends DataSourceParser {
 

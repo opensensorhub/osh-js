@@ -9,9 +9,8 @@
 </template>
 
 <script>
-import FFMPEGView from "../../../../../source/core/ui/view/video/FFMPEGView.js";
+import FFMPEGView from "osh/core/ui/view/video/FFMPEGView.js";
 import DialogDrag from 'vue-dialog-drag'
-import DataLayer from "../../../../../source/core/ui/layer/DataLayer";
 
 export default {
   name: "Video",

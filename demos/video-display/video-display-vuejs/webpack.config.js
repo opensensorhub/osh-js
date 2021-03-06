@@ -39,12 +39,10 @@ module.exports = env => {
     resolve: {
       modules: [
         path.resolve(__dirname, 'node_modules'),
-        path.resolve(__dirname, '../../../source')
 
       ],
       alias: {
-        'osh': path.resolve(__dirname, '../../../source/core'),
-        'ext': path.resolve(__dirname, '../../../source/ext'),
+        'osh': path.resolve(__dirname, '../../../source'),
         'vue$': 'vue/dist/vue.esm.js',
       },
       extensions: ['*', '.js', '.vue', '.json']

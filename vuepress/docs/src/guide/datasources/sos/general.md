@@ -2,7 +2,7 @@
 
 The DataSource is the entry point defining some properties about the kind of data you want to display and how to connect to it.
 
-There are properties to control the playback stream, server version, data connector, buffering, and some other network options.
+There are properties to control the playback stream, server version, protocols, buffering, and some other network options.
 
 **osh-js** comes with built-in datasource types:
 
@@ -137,7 +137,7 @@ To create a new datasource type, see the [developer docs](../../advanced/develop
 
 This datasource allows to request the server with the notion of time. The temporal synchronization of the data is then possible for all DataSources inheriting it.
 
-After the parsing, the data can be synchronized using [the DataSynchronizer](../../datasynchronizer/general.md) or/and displayed
+After the parsing, the data can be synchronized using [the DataSynchronizer](../../timesync/general.md) or/and displayed
 into a [View](../../views/index).
 
 
@@ -182,7 +182,7 @@ const timeSeriesDataSource = {
     replaySpeed: 1.5
 };
 ```
-The **timeOut** and **bufferingTime** are useful only for [data synchronization](../../datasynchronizer/general.md).
+The **timeOut** and **bufferingTime** are useful only for [data synchronization](../../timesync/general.md).
 
 The **replaySpeed** property allows to modify the same frequency of reception of archive data compared to their
 original frequency.

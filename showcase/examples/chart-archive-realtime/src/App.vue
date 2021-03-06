@@ -13,11 +13,11 @@
 </template>
 <script>
 // @ is an alias to /src
-import ChartJsView from "core/ui/view/chart/ChartJsView.js";
-import CurveLayer from "core/ui/layer/CurveLayer.js";
-import SosGetResultJson from "core/datasource/SosGetResultJson.js";
-import TimeController from 'vue/components/TimeController.vue';
-import {isDefined} from "../../../../source/core/utils/Utils";
+import ChartJsView from 'osh/core/ui/view/chart/ChartJsView.js';
+import CurveLayer from 'osh/core/ui/layer/CurveLayer.js';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import TimeController from 'osh/vue/components/TimeController.vue';
+import {isDefined} from 'osh/core/utils/Utils.js';
 
 export default {
   components: {

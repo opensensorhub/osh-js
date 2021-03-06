@@ -1,5 +1,5 @@
-import SosGetResultVideo from 'core/datasource/SosGetResultVideo.js';
-import MjpegView from 'core/ui/view/video/MjpegView.js';
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import MjpegView from 'osh/core/ui/view/video/MjpegView.js';
 
 // create data source for Android phone camera
 let videoDataSource = new SosGetResultVideo("android-Video", {

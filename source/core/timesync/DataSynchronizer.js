@@ -23,7 +23,7 @@ class DataSynchronizer {
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
      * @param {Number} [properties.replaySpeed=1] - replaySpeed value
-     * @param {Number} [properties.intervalRate=5] - interval in which data is played (in milliseconds)
+     * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
      * @param {DataSource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
@@ -35,15 +35,15 @@ class DataSynchronizer {
         this.id = randomUUID();
         this.dataSources = [];
         this.replaySpeed = 1;
-        this.intervalRate = 5;
+        this.timerResolution = 5;
 
         if(isDefined(properties.replaySpeed)) {
             this.replaySpeed = properties.replaySpeed;
         }
-        if(isDefined(properties.intervalRate)) {
-            this.intervalRate = properties.intervalRate;
+        if(isDefined(properties.timerResolution)) {
+            this.timerResolution = properties.timerResolution;
         }
-        this.initWorker(properties.dataSources, this.intervalRate);
+        this.initWorker(properties.dataSources, this.timerResolution);
 
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
@@ -52,7 +52,7 @@ class DataSynchronizer {
     /**
      * @private
      */
-    initWorker(dataSources, intervalRate) {
+    initWorker(dataSources, timerResolution) {
         // build object for Worker because DataSource is not clonable
         const dataSourcesForWorker = [];
         for(let dataSource of dataSources) {
@@ -66,7 +66,7 @@ class DataSynchronizer {
             message: 'init',
             dataSources: dataSourcesForWorker,
             replaySpeed: this.replaySpeed,
-            intervalRate: intervalRate,
+            timerResolution: timerResolution,
             dataTopic: this.getTopicId(),
             timeTopic: this.getTimeTopicId(),
         });

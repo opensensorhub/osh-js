@@ -74,7 +74,7 @@ class View {
 
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
-        this.elementDiv.setAttribute("class", this.css+" core-view");
+        this.elementDiv.setAttribute("class", this.css+" osh-view");
         this.divId = this.id;
 
         let parentDivId = (isDefined(properties.container)? properties.container : document.body);

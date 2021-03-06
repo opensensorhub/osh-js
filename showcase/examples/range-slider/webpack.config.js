@@ -20,8 +20,10 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../../source')
-        ]
+        ],
+        alias: {
+            'osh': path.resolve(__dirname, '../../../source')
+        }
     },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes

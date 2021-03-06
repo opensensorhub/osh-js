@@ -33,7 +33,7 @@ The initial View can be passed to override the default [View](https://leafletjs.
 
 Here is the corresponding code that initializes the initial-view if none is passed in parameter:
 
-<<< @/../../source/osh/ui/view/map/LeafletView.js#snippet_leafletview_initial_view
+<<< @/../../source/core/ui/view/map/LeafletView.js#snippet_leafletview_initial_view
 
 ## Example
 

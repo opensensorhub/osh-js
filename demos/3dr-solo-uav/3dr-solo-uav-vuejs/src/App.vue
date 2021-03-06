@@ -14,9 +14,9 @@
   // @ is an alias to /src
 import Globe from './components/Globe.vue';
 import Video from './components/Video.vue';
-import SosGetResultVideo from "../../../../source/core/datasource/SosGetResultVideo.js";
-import SosGetResultJson from "../../../../source/core/datasource/SosGetResultJson.js";
-import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
+import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
+import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+import DataSynchronizer from "osh/core/timesync/DataSynchronizer";
 
   export default {
   components: {

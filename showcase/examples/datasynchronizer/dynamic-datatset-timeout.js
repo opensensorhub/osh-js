@@ -1,10 +1,10 @@
 // dynamic part
-import {startDataSet} from "./datasynchronizer";
+import {startDataSet} from './datasynchronizer';
 import DataInjectorWorker from './DataInjector.worker';
-import DataSynchronizer from "core/timesync/DataSynchronizer";
-import {DATA_SYNCHRONIZER_TOPIC} from "core/Constants";
-import DummyDataSource from "./datasource/DummyDataSource";
-import {randomUUID} from "core/utils/Utils";
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
+import {DATA_SYNCHRONIZER_TOPIC} from 'osh/core/Constants';
+import DummyDataSource from './datasource/DummyDataSource';
+import {randomUUID} from 'osh/core/utils/Utils';
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
@@ -63,7 +63,7 @@ export function startDynamicWithTimeout(cbFinish) {
     const timeSync = new DataSynchronizer({
         replaySpeed: replaySpeed,
         dataSources:  dataSources,
-        intervalRate: 5
+        timerResolution: 5
     });
 
     const currentTimeBroadCastChannel = new BroadcastChannel(DATA_SYNCHRONIZER_TOPIC+timeSync.id);

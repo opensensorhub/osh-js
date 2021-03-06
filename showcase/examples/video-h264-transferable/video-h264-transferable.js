@@ -1,5 +1,5 @@
-import SosGetResultVideo from 'core/datasource/SosGetResultVideo.js';
-import FFMPEGView from 'core/ui/view/video/FFMPEGView.js';
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView.js';
 //
 // // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {

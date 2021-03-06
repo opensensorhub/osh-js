@@ -25,6 +25,12 @@ There are properties owned by the DataSynchronizer Object.
 
 <DocumentationLoad path="/guide/api/DataSynchronizer.html"/>
 
+The ***timerResolution*** allows you to define the refresh rate of the synchronization algorithm.
+
+The algorithm uses a function to check the state of its buffer to know if a data is candidate to be sent to the views. 
+This function is timed by a time interval that can be changed during the construction of the DataSynchronizer object 
+using the ***timerResolution*** property.
+
 **Note For further details about how the algorithm works, see [Advanced section](../advanced/datasynchronizer.md)*
 
 ## Channels
@@ -33,6 +39,10 @@ The *DataSynchronizer* will receive the data through
  [*BroadcastChannel*(s)](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API) 
  and send back the result through the same 
 channel(s).
+
+It also returns a time synchronization data defined by `TIME_SYNCHRONIZER_TOPIC` + `<id_of_synchronizer>`.
+
+The `TIME_SYNCHRONIZER_TOPIC` constant is defined from the constant package `'osh/core/Constants'`
 
 ## Example
 

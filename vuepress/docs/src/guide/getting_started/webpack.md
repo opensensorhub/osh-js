@@ -57,8 +57,10 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../source')
-        ]
+        ],
+        alias: {
+            'osh': path.resolve(__dirname, '../source') // OSH source directory
+        }
     },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes
@@ -119,13 +121,13 @@ Then setup your npm configuration file:
 ***package.json***
 ```json
 {
-  "name": "core-js",
+  "name": "osh-js",
   "version": "1.3.3",
   "description": "OSH javascript Toolkit",
-  "main": "core.js",
+  "main": "osh.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/opensensorhub/core-js.git"
+    "url": "git+https://github.com/opensensorhub/osh-js.git"
   },
   "keywords": [
     "OSH",
@@ -140,9 +142,9 @@ Then setup your npm configuration file:
   "author": "OSH community",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/opensensorhub/core-js/issues"
+    "url": "https://github.com/opensensorhub/osh-js/issues"
   },
-  "homepage": "https://github.com/opensensorhub/core-js#readme",
+  "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.js --host 127.0.0.1 --mode development --watch",
     "prod": "webpack --config webpack.config.js --mode production"

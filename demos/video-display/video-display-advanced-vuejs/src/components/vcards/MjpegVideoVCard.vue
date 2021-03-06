@@ -4,7 +4,7 @@
             color="#385F73"
             dark
     >
-      <v-card-title class="headline">
+      <v-card-title class="tiny">
         {{ title }}
       </v-card-title>
       <v-container :id="id"></v-container>
@@ -13,9 +13,8 @@
 </template>
 
 <script>
-  import MjpegView from "../../../../../../source/core/ui/view/video/MjpegView";
-  import {randomUUID} from "../../../../../../source/core/utils/Utils";
-  import DataLayer from "../../../../../../source/core/ui/layer/DataLayer";
+  import MjpegView from "osh/core/ui/view/video/MjpegView";
+  import {randomUUID} from "osh/core/utils/Utils";
 
   export default {
     name: "MjpegVideoVCard",
@@ -55,5 +54,12 @@
   }
   .container > div.video-mjpeg img {
     width: 100%;
+  }
+  .tiny {
+    line-height: 1.5;
+    font-size: 14px!important;
+    padding: 0 0 0 8px !important;
+    color: lightgray;
+    border-bottom: solid 1px lightslategrey;
   }
 </style>

@@ -40,10 +40,10 @@ module.exports = env => {
     resolve: {
       modules: [
         path.resolve(__dirname, 'node_modules'),
-        path.resolve(__dirname, '../../source')
       ],
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
+        'osh': path.resolve(__dirname, '../../source')
       },
       extensions: ['*', '.js', '.vue', '.json']
     },
@@ -113,7 +113,7 @@ module.exports = env => {
       new CopyWebpackPlugin([
         {from: path.resolve(__dirname, 'public/images'), to: 'images'},
         {from: path.resolve(__dirname, 'public/data'), to: 'data'},
-        {from: path.resolve(__dirname, 'lib/core-js/source'), to: 'lib/core-js/source'}
+        {from: path.resolve(__dirname, 'lib/osh-js/source'), to: 'lib/osh-js/source'}
       ]),
       new Dotenv({
         path: (env.NODE_ENV === 'production') ? path.resolve(__dirname, '.env.production') :

@@ -3,16 +3,15 @@
             id="drag-window-1"
             title="Video MJPEG"
             class="resizable"
-            :options="{ width:350,top:100,left:2 }">
+            :options="{ width:450, top:100,left:2 }">
         <div id="video-container"></div>
     </dialog-drag>
 </template>
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import SosGetResultVideo from '../../../../../source/core/datasource/SosGetResultVideo.js';
-import MjpegView from '../../../../../source/core/ui/view/video/MjpegView.js';
-import DataLayer from "../../../../../source/core/ui/layer/DataLayer";
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import MjpegView from 'osh/core/ui/view/video/MjpegView.js';
 
 export default {
   name: "Video",
@@ -68,10 +67,28 @@ export default {
         border-radius: 4px;
         box-shadow: 0 0 7px #000000;
     }
-    .dialog-drag .dialog-body {
-        padding:0;
+    .dialog-drag .dialog-header {
+      color: #fff;
+      font-size: .9em;
+      padding: .25em 3em .25em 1em;
+      position: relative;
+      text-align: left;
+      width: auto;
+      background-color: #232323cc;
     }
 
+    .osh-view .video-time {
+      color: #FFFFFF;
+      padding-left:15px;
+    }
+    .dialog-drag .dialog-body {
+        padding:0;
+
+    }
+
+    .dialog-drag {
+      background-color: #232323cc;
+    }
     .video-mjpeg {
         width: 100%;
         margin-bottom:5px;

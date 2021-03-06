@@ -26,7 +26,7 @@ const dataSource = new DataSource({...});
 ### Bundlers (Webpack, Rollup, etc.)
 
 ```javascript
-import { DataSource } from 'core-js.js';
+import { DataSource } from 'osh-js.js';
 
 const dataSource = new DataSource({...});
 ```

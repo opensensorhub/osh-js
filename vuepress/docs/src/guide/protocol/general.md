@@ -1,6 +1,6 @@
-# Connectors
+# Protocols
 
- Connectors define how DataSources should connect to retrieve their data. The main properties passed in the
+Protocols define how DataSources should connect to retrieve their data. The main properties passed in the
  DataSource are used, and even depend on the connector used.
 
 Connectors are created and used inside WebWorker so that the main thread is not blocked.
@@ -28,7 +28,7 @@ These connectors have some common properties and some more specific ones
 <DocumentationLoad path="/guide/api/DataConnector.html"/>
 
 
-## WebSocket connector: '***ws***'
+## WebSocket protocol: '***ws***'
 
 The WebSocket connector is used to open a connection to a WebSocket feed.
 
@@ -37,21 +37,21 @@ depend on the SOS standard that the OSH server needs to retrieve the data.
 
 [See an example](/guide/datasources/sos/swejson.html#example)
 
-## HTTP connector: '***http***'
+## HTTP protocol: '***http***'
 
 The HTTP connector is used to open a connection to a HTTP feed.
 
 Within the Toolkit, some options of the dataSources allow to define the remote address of the server, some properties
 depend on the SOS standard that the OSH server needs to retrieve the data.
 
-## Topic connector: '***topic***'
+## Topic protocol: '***topic***'
 
 The Topic connector is used to listen to a BroadcastChannel given a specific topic name.
 
 Example:
 
 ```js
-import SosGetResultJson from 'core/datasource/SosGetResultJson';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson';
 
 new SosGetResultJson('Example',{
   replaySpeed: 1.0,
@@ -60,14 +60,14 @@ new SosGetResultJson('Example',{
   topicName: 'channel-test'
 });
 ```
-## File connector: '***file***'
+## File protocol: '***file***'
 
 The File connector is used to read a file.
 
 It uses the [loaders.gl](https://loaders.gl/) library to parse different file types
 
 ```js
-import File from 'core/datasource/File';
+import File from 'osh/core/datasource/File';
 
 new File('Example',{
   name: 'Example',

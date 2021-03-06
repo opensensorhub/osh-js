@@ -4,7 +4,7 @@
             color="#385F73"
             dark
     >
-      <v-card-title class="headline">
+      <v-card-title class="tiny">
         {{ title }}
       </v-card-title>
       <v-container :id="id"></v-container>
@@ -13,9 +13,9 @@
 </template>
 
 <script>
-  import CurveLayer from "../../../../../../source/core/ui/layer/CurveLayer";
-  import ChartJsView from "../../../../../../source/core/ui/view/chart/ChartJsView";
-  import {randomUUID} from "../../../../../../source/core/utils/Utils";
+  import CurveLayer from "osh/core/ui/layer/CurveLayer";
+  import ChartJsView from "osh/core/ui/view/chart/ChartJsView";
+  import {randomUUID} from "osh/core/utils/Utils";
 
   export default {
     name: "VCardViewElement",

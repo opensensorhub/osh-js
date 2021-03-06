@@ -1,4 +1,4 @@
-import DataSource from "core/datasource/DataSource.js";
+import DataSource from 'osh/core/datasource/DataSource.js';
 import DummyDataSourceWorker from './DummyDataSource.worker.js';
 
 class DummyDataSource extends DataSource {

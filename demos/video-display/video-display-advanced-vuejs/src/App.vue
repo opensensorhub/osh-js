@@ -93,10 +93,10 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SosGetResultJson from "../../../../source/core/datasource/SosGetResultJson.js";
-  import SosGetResultVideo from "../../../../source/core/datasource/SosGetResultVideo.js";
-  import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer.js";
-  import {isDefined} from "../../../../source/core/utils/Utils";
+  import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+  import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
+  import DataSynchronizer from "osh/core/timesync/DataSynchronizer.js";
+  import {isDefined} from "osh/core/utils/Utils";
 
   export default {
     components: {
@@ -245,18 +245,6 @@
 
   .v-content {
     background-color: #363636;
-  }
-
-  .v-application .headline, .v-application .title {
-    line-height: 1px;
-    font-family: Roboto,sans-serif!important;
-    border-bottom: solid 1px #69696982;
-  }
-
-  .v-application .headline {
-    font-size: 1.0rem!important;
-    font-weight: 400;
-    letter-spacing: normal!important;
   }
 
 </style>

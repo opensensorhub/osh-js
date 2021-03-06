@@ -6,10 +6,10 @@ var path = require('path');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'timesync.js'),
+    entry: path.resolve(__dirname,'datasynchronizer.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.timesync.js',
+        filename: 'bundle.datasynchronizer.js',
         path: path.resolve(__dirname, 'dist')
     },
     node: {
@@ -22,8 +22,10 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../../source')
-        ]
+        ],
+        alias: {
+            'osh': path.resolve(__dirname, '../../../source')
+        }
     },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes
@@ -52,7 +54,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'timesync.html'
+        index: 'datasynchronizer.html'
     },
     devtool: 'eval-source-map',
     plugins: [
@@ -72,8 +74,8 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: 'timesync.html',
-            template: path.resolve(__dirname, 'timesync.html')
+            filename: 'datasynchronizer.html',
+            template: path.resolve(__dirname, 'datasynchronizer.html')
         })
     ]
 };
