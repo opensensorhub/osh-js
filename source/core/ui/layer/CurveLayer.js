@@ -40,7 +40,7 @@ class CurveLayer extends Layer {
         this.type = 'curve';
         this.props.xLabel = "";
         this.props.yLabel = "";
-        this.props.color = "#000000";
+        this.props.color = "#399ca5";
         this.props.stroke = 1;
         this.props.curveId = randomUUID();
         this.props.x = 0;

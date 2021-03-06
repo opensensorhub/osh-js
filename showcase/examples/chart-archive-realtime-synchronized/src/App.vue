@@ -86,30 +86,29 @@ export default {
           name: 'Wind Speed 2 (m/s)'
         })
       ],
-      name: "WindSpeed/Pressure chart",
-      yLabel: 'Wind Speed (m/s)',
-      xLabel: 'Time',
       css: "chart-view",
-      tickOpts: {
-        maxTicksLimit: 10,
-        fontColor: 'gray',
-      },
-      gridLinesOpts: {
-        color: 'lightgray'
-      },
-      scaleLabelOpts: {
-        fontColor: 'gray',
-        padding: 1
-      },
-      legendOpts: {
-        labels: {
-          fontColor: "gray",
-          fontSize: 14
+      chartjsProps: {
+        chartProps: {
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                labelString: "Wind Speed (m/s)"
+              },
+              ticks: {
+                maxTicksLimit: 10
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                labelString: "Time"
+              },
+              ticks: {
+                maxTicksLimit: 20
+              }
+            }],
+          },
+          maintainAspectRatio: false
         }
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
       }
     });
 
@@ -168,6 +167,7 @@ body, html {
 
 #container {
   height: 80%;
+  margin-bottom: 50px;
 }
 #app {
   width: inherit;

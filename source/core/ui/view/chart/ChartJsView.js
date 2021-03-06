@@ -16,7 +16,7 @@
 
 
 import View from "../View.js";
-import {hex2rgb, isDefined, randomUUID} from "../../../utils/Utils.js";
+import {hex2rgb, isDefined, merge, randomUUID} from "../../../utils/Utils.js";
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
 
@@ -29,13 +29,9 @@ class ChartJsView extends View {
      * @param {Object} [properties={}] - the properties of the view
      * @param {String} properties.container - The div element to attach to
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
-     * @param {Object} [properties.datasetsOpts] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
-     * @param {Object} [properties.gridLinesOpts] - chart.js [gridline options]{@link https://www.chartjs.org/docs/latest/axes/styling.html#grid-line-configuration}
-     * @param {Object} [properties.scaleLabelOpts] - chart.js [scaleLabel options]{@link https://www.chartjs.org/docs/latest/axes/labelling.html#scale-title-configuration}
-     * @param {Object} [properties.tickOpts] - chart.js [tick options]{@link https://www.chartjs.org/docs/latest/axes/cartesian/#tick-configuration}
-     * @param {Object} [properties.legendOpts] - chart.js [legend options]{@link https://www.chartjs.org/docs/latest/configuration/legend.html?h=legend}
-     * @param {Number} [properties.maxPoints] - max points to display before shifting
-     * @param {Object} [properties.options] - chart.js [context configuration options]{@link https://www.chartjs.org/docs/latest/configuration}
+     * @param {Object} [properties.chartjsProps={}] - Properties which can override the default framework ones
+     * @param {Object} [properties.chartjsProps.datasetsProps={}] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
+     * @param {Object} [properties.chartjsProps.chartProps={}] - chart.js [context configuration options]{@link https://www.chartjs.org/docs/latest/configuration}
      */
     constructor(properties) {
         super({
@@ -43,54 +39,79 @@ class ChartJsView extends View {
             ...properties
         });
 
-        let xLabel = 'Time';
-        let yLabel = 'Values';
-
-        this.datasetsOpts = {};
-        this.gridLinesOpts = {};
-        this.tickOpts = {};
-        this.scaleLabelOpts = {};
-        this.legendOpts = {};
-        this.options = {};
+        this.datasetsProps = {};
+        this.chartProps = {};
 
         if (isDefined(properties)) {
-            if(properties.hasOwnProperty('options')){
-                this.options = properties.options;
-            }
-            if(properties.hasOwnProperty('datasetsOpts')){
-                this.datasetsOpts = properties.datasetsOpts;
-            }
+            if(properties.hasOwnProperty('chartjsProps')){
+                if(properties.chartjsProps.hasOwnProperty('datasetsProps')){
+                    this.datasetsProps = properties.chartjsProps.datasetsProps;
+                }
 
-            if(properties.hasOwnProperty('gridLinesOpts')){
-                this.gridLinesOpts = properties.gridLinesOpts;
-            }
-
-            if(properties.hasOwnProperty('scaleLabelOpts')){
-                this.scaleLabelOpts = properties.scaleLabelOpts;
-            }
-
-            if(properties.hasOwnProperty('tickOpts')){
-                this.tickOpts = properties.tickOpts;
-            }
-
-            if(properties.hasOwnProperty('legendOpts')){
-                this.legendOpts = properties.legendOpts;
-            }
-
-            if (properties.hasOwnProperty('maxPoints')) {
-                this.maxPoints = properties.maxPoints;
+                if(properties.chartjsProps.hasOwnProperty('chartProps')){
+                    this.chartProps = properties.chartjsProps.chartProps;
+                }
             }
         }
-
         let domNode = document.getElementById(this.divId);
 
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
         domNode.appendChild(ctx);
 
-        const { maxTicksLimit } = this.tickOpts || 5;
-        this.maxPoints = maxTicksLimit;
         this.resetting = false;
+
+        // #region snippet_chartjsview_default_chartprops
+        let chartProps = {
+            responsiveAnimationDuration: 0,
+            animation: {
+                duration: 0
+            },
+            spanGaps: true,
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Values'
+                    },
+                    ticks: {
+                        maxTicksLimit: 5
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
+                    },
+                    type: 'time',
+                    time: {
+                        unit: 'second',
+                    },
+                    ticks: {
+                        maxTicksLimit:5,
+                        callback: (label, index, values) => {
+                            return this.parseDate(values[index].value);
+                        }
+                    }
+                }],
+            },
+            responsive: true,
+            maintainAspectRatio: true,
+        };
+
+        let datasetsProps = {
+            borderColor: '#a3a3a3',
+            borderWidth:1,
+            backgroundColor: 'rgba(188,221,255,0.1)'
+        };
+
+        // #endregion snippet_chartjsview_default_chartprops
+
+        merge(chartProps,this.chartProps);
+        merge(datasetsProps,this.datasetsProps);
+
+        this.datasetsProps = datasetsProps;
+        this.maxPoints = chartProps.scales.xAxes[0].ticks.maxTicksLimit;
 
         this.chart = new Chart(
             ctx, {
@@ -99,52 +120,7 @@ class ChartJsView extends View {
                 data: {
                     datasets: []
                 },
-                options : {
-                    responsiveAnimationDuration: 0,
-                    legend: {
-                        ...this.legendOpts
-                    },
-                    animation: {
-                        duration: 0
-                    },
-                    spanGaps: true,
-                    scales: {
-                        yAxes: [{
-                            scaleLabel: {
-                                display: true,
-                                labelString: yLabel,
-                                ...this.scaleLabelOpts,
-                            },
-                            ticks: {
-                                maxTicksLimit:5,
-                                ...this.tickOpts
-                            },
-                            gridLines: this.gridLinesOpts,
-                        }],
-                        xAxes: [{
-                            scaleLabel: {
-                                display: true,
-                                labelString: xLabel,
-                                ...this.scaleLabelOpts,
-                            },
-                            type: 'time',
-                            time: {
-                                unit: 'second',
-                            },
-                            ticks: {
-                                maxTicksLimit:5,
-                                ...this.tickOpts,
-                                callback: (label, index, values) => {
-                                    return this.parseDate(values[index].value);
-                                }
-                            },
-                            gridLines: this.gridLinesOpts,
-                        }],
-                    },
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    ...this.options
-                }
+                options : chartProps
             });
 
         this.datasets = {};
@@ -189,7 +165,7 @@ class ChartJsView extends View {
                 backgroundColor: lineColor,
                 data: values
             };
-            currentDataset = {...currentDataset, ...this.datasetsOpts};
+            currentDataset = {...this.datasetsProps, ...currentDataset};
             this.datasets[props[0].curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
         } else {

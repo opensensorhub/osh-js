@@ -45,29 +45,41 @@
         new ChartJsView({
             container: this.id,
             layers: [windSpeedLayerCurve],
-            name: "WindSpeed/Pressure chart",
-            yLabel: 'Wind Speed (m/s)',
-            xLabel: 'Time',
             css: "chart-view",
-            gridLinesOpts: {
-              color: '#FFF'
-            },
-            tickOpts: {
-              fontColor: '#FFF',
-              maxTicksLimit: 4
-            },
-            scaleLabelOpts: {
-              fontColor: '#FFF',
-              padding:1
-            },
-            datasetsOpts: {
-              borderColor: '#a3a3a3',
-              borderWidth:1
-            },
-            legendOpts: {
-              labels: {
-                fontColor: "white",
-                fontSize: 14
+            chartjsProps: {
+              chartProps: {
+                legend: {
+                  labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: '#ffffff'
+                  }
+                },
+                scales: {
+                  yAxes: [{
+                    scaleLabel: {
+                      labelString: "Wind Speed (m/s)",
+                      fontColor: '#ffffff'
+                    },
+                    ticks: {
+                      maxTicksLimit: 5,
+                      fontColor: '#a5a5a5'
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      labelString: "Time",
+                      fontColor: '#ffffff'
+                    },
+                    ticks: {
+                      maxTicksLimit: 20,
+                      fontColor: '#a5a5a5'
+                    }
+                  }]
+                },
+                maintainAspectRatio: false
+              },
+              datasetsProps: {
+                backgroundColor: 'rgb(0,255,247, 0.1)'
               }
             }
           }
