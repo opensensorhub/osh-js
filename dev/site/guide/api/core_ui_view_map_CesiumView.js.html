@@ -77,6 +77,7 @@ import {
   ScreenSpaceEventType,
   CallbackProperty,
   ColorGeometryInstanceAttribute,
+  Scene
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -120,6 +121,8 @@ class CesiumView extends MapView {
    * @param {String} properties.container - The div element to attach to
    * @param {Object[]}  [properties.layers=[]] - The initial layers to add
    * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
+   * @param {Object} [properties.cesiumProps={}] - Properties which can override the default framework ones
+   * @param {Object} [properties.cesiumProps.viewerProps={}] - the properties of the [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
    *
    */
   constructor(properties) {
@@ -310,8 +313,10 @@ class CesiumView extends MapView {
   beforeAddingItems(options) {
     this.first = true;
 
+    // #region snippet_cesiumview_default_cesiumprops_viewer_props
+
     const imageryProviders = createDefaultImageryProviderViewModels();
-    this.viewer = new Viewer(this.divId, {
+    let viewerProps = {
       baseLayerPicker: true,
       imageryProviderViewModels: imageryProviders,
       selectedImageryProviderViewModel: imageryProviders[6],
@@ -323,10 +328,21 @@ class CesiumView extends MapView {
       fullscreenButton: false,
       showRenderLoopErrors: true,
       animation: false,
-      scene3DOnly: true // for draw layer
-    });
+      scene3DOnly: true, // for draw layer
+      terrainProvider: new EllipsoidTerrainProvider(),
+    };
+    // #endregion snippet_cesiumview_default_cesiumprops_viewer_props
 
-    this.viewer.terrainProvider = new EllipsoidTerrainProvider();
+    if (isDefined(options)) {
+      if (options.hasOwnProperty('cesiumProps') &amp;&amp; options.cesiumProps.hasOwnProperty('viewerProps')) {
+        viewerProps = {
+          ...viewerProps,
+          ...options.cesiumProps.viewerProps
+        };
+      }
+    }
+
+    this.viewer = new Viewer(this.divId, viewerProps);
     this.viewer.scene.copyGlobeDepth = true;
     this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 

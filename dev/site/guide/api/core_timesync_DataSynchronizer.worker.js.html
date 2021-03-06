@@ -45,7 +45,7 @@ self.onmessage = (event) => {
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
             event.data.dataSources,
             event.data.replaySpeed,
-            event.data.intervalRate
+            event.data.timerResolution
         );
         dataSynchronizerAlgo.onData = onData;
         init = true;

@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <div id="container">
-    </div>
+    <div id="container"></div>
     <TimeController
         :dataSource="dataSource"
         @event='onControlEvent'
@@ -59,35 +58,32 @@ export default {
     this.view = new ChartJsView({
       container: 'container',
       layers: [windSpeedLayerCurve],
-      name: "WindSpeed/Pressure chart",
-      yLabel: 'Wind Speed (m/s)',
-      xLabel: 'Time',
       css: "chart-view",
-      tickOpts: {
-        maxTicksLimit: 10,
-        fontColor: 'gray',
-      },
-      gridLinesOpts: {
-        color: 'lightgray'
-      },
-      scaleLabelOpts: {
-        fontColor: 'gray',
-        padding: 1
-      },
-      datasetsOpts: {
-        borderColor: '#a3a3a3',
-        borderWidth: 1,
-        backgroundColor: 'rgba(188,221,255,0.5)'
-      },
-      legendOpts: {
-        labels: {
-          fontColor: "gray",
-          fontSize: 14
+      chartjsProps: {
+        chartProps: {
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                labelString: "Wind Speed (m/s)"
+              },
+              ticks: {
+                maxTicksLimit: 5
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                labelString: "Time"
+              },
+              ticks: {
+                maxTicksLimit: 20
+              }
+            }],
+          },
+          maintainAspectRatio: false
+        },
+        datasetsProps: {
+          backgroundColor: 'rgba(141,242,246, 0.1)'
         }
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
       }
     });
 
@@ -119,6 +115,7 @@ body, html {
 
 #container {
   height: 80%;
+  margin-bottom: 50px;
 }
 #app {
   width: inherit;

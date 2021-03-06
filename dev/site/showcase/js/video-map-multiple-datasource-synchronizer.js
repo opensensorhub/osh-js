@@ -88,7 +88,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
 
     const dataSynchronizer = new DataSynchronizer({
         replaySpeed: REPLAY_FACTOR,
-        intervalRate: 5,
+        timerResolution: 5,
         dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
     })
     dataSynchronizer.connect();

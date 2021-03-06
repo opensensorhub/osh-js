@@ -53,7 +53,7 @@ const platformOrientationDataSource = new SweJson('android-Heading', {
 
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: REPLAY_SPEED,
-  intervalRate: 5,
+  timerResolution: 5,
   dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
 })
 

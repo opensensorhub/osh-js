@@ -18,39 +18,35 @@ function createChart(dataSource, divId, title) {
     let chartView = new ChartJsView({
         container: divId,
         layers: [windSpeedLayerCurve],
-        name: "WindSpeed/Pressure chart",
-        yLabel: 'Wind Speed (m/s)',
-        xLabel: 'Time',
         css: "chart-view",
-        tickOpts: {
-            maxTicksLimit: 10,
-            fontColor: 'gray',
-        },
-        gridLinesOpts: {
-            color: 'lightgray'
-        },
-        scaleLabelOpts: {
-            fontColor: 'gray',
-            padding:1
-        },
-        datasetsOpts: {
-            borderColor: '#a3a3a3',
-            borderWidth:1,
-            backgroundColor: 'rgba(188,221,255,0.5)'
-        },
-        legendOpts: {
-            labels: {
-                fontColor: "gray",
-                fontSize: 14
-            }
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: title
-            }
+        chartjsProps: {
+            datasetsProps: {
+                backgroundColor: 'rgba(141,242,246, 0.1)'
+            },
+            chartProps: {
+                title: {
+                    display: true,
+                    text: title
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            labelString: "Wind Speed (m/s)"
+                        },
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            labelString: "Time"
+                        },
+                        ticks: {
+                            maxTicksLimit: 20
+                        }
+                    }],
+                }
+            },
         }
     });
 }

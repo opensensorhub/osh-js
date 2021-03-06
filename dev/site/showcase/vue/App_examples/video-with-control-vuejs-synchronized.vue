@@ -105,7 +105,7 @@ export default {
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1,
-      intervalRate: 5,
+      timerResolution: 5,
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();
