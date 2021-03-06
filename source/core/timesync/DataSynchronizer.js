@@ -277,7 +277,7 @@ class DataSynchronizer {
      */
     async isConnected() {
         for(let ds of this.dataSources) {
-            if(await ds.isConnected()) {
+            if(!(await ds.isConnected())) {
                 return false;
             }
         }
