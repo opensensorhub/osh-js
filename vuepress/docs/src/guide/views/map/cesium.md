@@ -24,11 +24,37 @@ The view supports type layers:
 - draping
 - polyline
 
+## Properties configuration
+
+You can override the [default viewer properties](https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer)
+using the ***cesiumProps.viewerProps*** object.
+
+The default viewer properties are:
+
+```javascript
+const imageryProviders = createDefaultImageryProviderViewModels();
+let viewerProps = {
+  baseLayerPicker: true,
+  imageryProviderViewModels: imageryProviders,
+  selectedImageryProviderViewModel: imageryProviders[6],
+  timeline: false,
+  homeButton: false,
+  navigationInstructionsInitiallyVisible: false,
+  navigationHelpButton: false,
+  geocoder: true,
+  fullscreenButton: false,
+  showRenderLoopErrors: true,
+  animation: false,
+  scene3DOnly: true, // for draw layer
+  terrainProvider: new EllipsoidTerrainProvider(),
+};
+```
+
 ## Example
 
-<<< @/../../showcase/examples/cesium-location/cesium-location.js
+<<< @/../../showcase/examples/cesium-location-opts/cesium-location-opts.js
 
 <hr class="demo-hr"/>
 <br/><br/>
 
-<Example path="/showcase/cesium-location.html" style="border:none;width:100%;height: 500px" />
+<Example path="/showcase/cesium-location-opts.html" style="border:none;width:100%;height: 500px" />

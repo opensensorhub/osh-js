@@ -16,6 +16,11 @@ var samples = [
     url: "cesium-location"
   },
   {
+    name: "Moving Location with custom viewer properties(CesiumJS)",
+    description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle and define some custom cesium viewer properties.",
+    url: "cesium-location-opts"
+  },
+  {
     name: "Moving Location  + path (CesiumJS)",
     description: "Display a moving marker and a polyline on a CesiumJS map, showing both the current location of a vehicle and the historical track.",
     url: "cesium-location-path"
