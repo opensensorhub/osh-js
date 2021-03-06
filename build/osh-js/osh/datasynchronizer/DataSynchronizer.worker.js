@@ -21,7 +21,7 @@ var dataSources = {};
 var timeBroadcastChannel = null;
 self.onmessage = function (event) {
     if (event.data.message === 'init') {
-        dataSynchronizerAlgo = new DataSynchronizerAlgo(event.data.dataSources, event.data.replaySpeed, event.data.intervalRate);
+        dataSynchronizerAlgo = new DataSynchronizerAlgo(event.data.dataSources, event.data.replaySpeed, event.data.timerResolution);
         dataSynchronizerAlgo.onData = onData;
         init = true;
         addDataSources(event.data.dataSources);

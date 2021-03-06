@@ -2,13 +2,13 @@ import {isDefined} from "../utils/Utils.js";
 import {Status} from "../dataconnector/Status.js";
 
 class DataSynchronizerAlgo {
-    constructor(dataSources, replaySpeed = 1, intervalRate = 5) {
+    constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
         this.dataSourceMap = {};
         this.bufferingTime = 1000;
         this.startBufferingTime = -1;
         this.tsRun = 0;
         this.replaySpeed = replaySpeed;
-        this.intervalRate = intervalRate;
+        this.timerResolution = timerResolution;
         let maxBufferingTime = -1;
 
         for (let ds of dataSources) {
@@ -71,7 +71,7 @@ class DataSynchronizerAlgo {
             // 1) return the oldest data if any
             while (this.computeNextData(tsRef, clockTimeRef)) ;
 
-        }, this.intervalRate);
+        }, this.timerResolution);
     }
 
     /**

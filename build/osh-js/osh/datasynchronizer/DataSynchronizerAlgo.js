@@ -1,15 +1,15 @@
 import { isDefined } from "../utils/Utils.js";
 import { Status } from "../dataconnector/Status.js";
 var DataSynchronizerAlgo = /** @class */ (function () {
-    function DataSynchronizerAlgo(dataSources, replaySpeed, intervalRate) {
+    function DataSynchronizerAlgo(dataSources, replaySpeed, timerResolution) {
         if (replaySpeed === void 0) { replaySpeed = 1; }
-        if (intervalRate === void 0) { intervalRate = 5; }
+        if (timerResolution === void 0) { timerResolution = 5; }
         this.dataSourceMap = {};
         this.bufferingTime = 1000;
         this.startBufferingTime = -1;
         this.tsRun = 0;
         this.replaySpeed = replaySpeed;
-        this.intervalRate = intervalRate;
+        this.timerResolution = timerResolution;
         var maxBufferingTime = -1;
         for (var _i = 0, dataSources_1 = dataSources; _i < dataSources_1.length; _i++) {
             var ds = dataSources_1[_i];
@@ -67,7 +67,7 @@ var DataSynchronizerAlgo = /** @class */ (function () {
             // 1) return the oldest data if any
             while (_this.computeNextData(tsRef, clockTimeRef))
                 ;
-        }, this.intervalRate);
+        }, this.timerResolution);
     };
     /**
      * Compute the next data if any. We return only 1 value for this iteration. If there are multiple values to return,
