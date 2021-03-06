@@ -1,9 +1,9 @@
-import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView";
-import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
+import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView';
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
 
 const REPLAY_FACTOR = 1.0;
 
@@ -88,7 +88,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
 
     const dataSynchronizer = new DataSynchronizer({
         replaySpeed: REPLAY_FACTOR,
-        intervalRate: 5,
+        timerResolution: 5,
         dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
     })
     dataSynchronizer.connect();

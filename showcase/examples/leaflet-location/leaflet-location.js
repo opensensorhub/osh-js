@@ -1,8 +1,8 @@
 // #region snippet_leaflet_location_import
 // create data source for Android phone GPS
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
 // #endregion snippet_leaflet_location_import
 
 // #region snippet_leaflet_location_datasource

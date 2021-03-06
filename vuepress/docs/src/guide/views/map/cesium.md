@@ -22,6 +22,7 @@ To setup webpack, you can use the osh-js examples and/or read [this article](htt
 The view supports type layers:
 - marker
 - draping
+- polyline
 
 ## Example
 

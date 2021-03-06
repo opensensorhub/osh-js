@@ -17,8 +17,8 @@
 </template>
 <script>
 // @ is an alias to /src
-import Video from 'osh-vue/components/video/VideoWithControl.vue';
-import VideoOsh from "osh/datareceiver/VideoWithRoll.js";
+import Video from 'vue/components/video/VideoWithControl.vue';
+import VideoOsh from "core/datasource/VideoWithRoll.js";
 
 export default {
   components: {

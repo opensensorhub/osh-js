@@ -1,10 +1,10 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import PointMarkerLayer from "osh/ui/layer/PointMarkerLayer.js";
-import CesiumView from "osh/ui/view/map/CesiumView.js";
-import {randomUUID} from "osh/utils/Utils.js";
-import ImageDrapingLayer from "osh/ui/layer/ImageDrapingLayer.js";
+import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
+import CesiumView from "osh/core/ui/view/map/CesiumView.js";
+import {randomUUID} from "osh/core/utils/Utils.js";
+import ImageDrapingLayer from "osh/core/ui/layer/ImageDrapingLayer.js";
 
 window.CESIUM_BASE_URL = './';
 

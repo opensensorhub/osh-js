@@ -1,9 +1,9 @@
-import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
-import CesiumView from 'osh/ui/view/map/CesiumView.js';
-import LeafletView from 'osh/ui/view/map/LeafletView.js';
-import OpenLayerView from 'osh/ui/view/map/OpenLayerView.js';
-import PointMarker from "osh/ui/layer/PointMarker.js";
-import {randomUUID} from "osh/utils/Utils";
+import SosGetResultJson from 'core/datasource/SosGetResultJson.js';
+import CesiumView from 'core/ui/view/map/CesiumView.js';
+import LeafletView from 'core/ui/view/map/LeafletView.js';
+import OpenLayerView from 'core/ui/view/map/OpenLayerView.js';
+import PointMarker from "core/ui/layer/PointMarker.js";
+import {randomUUID} from "core/utils/Utils";
 
 window.CESIUM_BASE_URL = './';
 

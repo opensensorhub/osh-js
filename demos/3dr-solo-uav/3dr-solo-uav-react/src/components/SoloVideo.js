@@ -1,9 +1,9 @@
 import * as React from "react";
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
-import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-import DataLayer from "osh/ui/layer/DataLayer.js";
+import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
+import FFMPEGView from "osh/core/ui/view/video/FFMPEGView.js";
+import DataLayer from "osh/core/ui/layer/DataLayer.js";
 
 export class SoloVideoComponent extends React.Component {
   constructor(props) {

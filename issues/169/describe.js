@@ -1,4 +1,4 @@
-import Server from 'osh/server/Server.js';
+import Server from 'core/server/Server.js';
 
 const server = new Server({
     url: "http://sensiasoft.net:8181" ,
@@ -7,6 +7,6 @@ const server = new Server({
 });
 
 const describeElt = document.getElementById('describe');
-server.getDescribeSensorAsJson('urn:osh:sensor:simgps:d136b6ea', (describe)=> {
+server.getDescribeSensorAsJson('urn:core:sensor:simgps:d136b6ea', (describe)=> {
     describeElt.innerText = JSON.stringify(describe, null,2);
 });

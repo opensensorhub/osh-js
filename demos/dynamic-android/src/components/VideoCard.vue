@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Video from 'osh-vue/components/video/VideoWithControl.vue';
+import Video from 'vue/components/video/VideoWithControl.vue';
 
 export default {
   name: "VideoCard",

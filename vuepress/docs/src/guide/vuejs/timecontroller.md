@@ -32,7 +32,8 @@ For each forward, backward, replay speed and slide action of the slider, a recon
 automatically performed and an event is launched with the name of the action that has just been performed as the value.
 
 When switching to real time, the reconnection is also automatic. On the other hand, when switching from real time to
-replay, the last replay parameters are reloaded but the reconnection is not automatic. It is then necessary either to perform an action or to click on the play button.
+replay, the last replay parameters are reloaded but the reconnection is not automatic.
+It is then necessary either to perform an action or to click on the play button.
 :::
 
 ## Example

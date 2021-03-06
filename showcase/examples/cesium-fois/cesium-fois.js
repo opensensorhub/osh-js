@@ -1,10 +1,10 @@
 // #region snippet_cesium_fois
-import CesiumView from 'osh/ui/view/map/CesiumView.js';
-import SosGetFois from 'osh/datareceiver/SosGetFois';
+import CesiumView from 'osh/core/ui/view/map/CesiumView.js';
+import SosGetFois from 'osh/core/datasource/SosGetFois';
 import {
     Rectangle
 } from 'cesium';
-import PointMarkerLayer from 'osh/ui/layer/PointMarkerLayer';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer';
 
 window.CESIUM_BASE_URL = './';
 

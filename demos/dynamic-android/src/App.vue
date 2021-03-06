@@ -18,10 +18,10 @@ import Map from './components/Map.vue';
 import './assets/app.css';
 import VideoContainer from "./components/VideoContainer";
 import Worker from './workers/check.offering.worker.js';
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import SosGetResultVideo from "osh/datareceiver/SosGetResultVideo.js";
-import SosGetResultVideoWithRoll from "osh/datareceiver/SosGetResultVideoWithRoll.js";
-import DataSynchronizer from 'osh/datasynchronizer/DataSynchronizer.js';
+import SosGetResultJson from "core/datasource/SosGetResultJson.js";
+import SosGetResultVideo from "core/datasource/SosGetResultVideo.js";
+import SosGetResultVideoWithRoll from "core/datasource/SosGetResultVideoWithRoll.js";
+import DataSynchronizer from 'core/timesync/DataSynchronizer.js';
 
 export default {
   name: 'App',

@@ -1,7 +1,7 @@
-import SosGetResultVideo from 'osh/datareceiver/SosGetResultVideo.js';
-import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
-import FoscamPtzTasking from "osh/datasender/FoscamPtzTasking.js";
-import PtzTaskingView from "osh-ext/ui/view/tasking/PtzTaskingView.js";
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView.js';
+import FoscamPtzTasking from 'osh/core/datapush/FoscamPtzTasking.js';
+import PtzTaskingView from 'osh/ext/ui/view/tasking/PtzTaskingView.js';
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {

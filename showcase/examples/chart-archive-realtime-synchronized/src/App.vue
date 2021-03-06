@@ -13,13 +13,13 @@
   </div>
 </template>
 <script>
-import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
-import CurveLayer from "osh/ui/layer/CurveLayer.js";
-import SosGetResultJson from "osh/datareceiver/SosGetResultJson.js";
-import TimeController from 'osh-vue/components/TimeController.vue';
+import ChartJsView from 'osh/core/ui/view/chart/ChartJsView.js';
+import CurveLayer from 'osh/core/ui/layer/CurveLayer.js';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import TimeController from 'osh/vue/components/TimeController.vue';
 
-import DataSynchronizer from 'osh/datasynchronizer/DataSynchronizer';
-import {isDefined} from "../../../../source/osh/utils/Utils";
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
+import {isDefined} from 'osh/core/utils/Utils';
 
 export default {
   components: {
@@ -116,7 +116,7 @@ export default {
 // start streaming
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
-      intervalRate: 5,
+      timerResolution: 5,
       dataSources: []
     })
 

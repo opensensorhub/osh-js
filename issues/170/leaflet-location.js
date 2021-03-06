@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
-import PointMarker from "osh/ui/layer/PointMarker.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
+import SosGetResultJson from 'core/datasource/SosGetResultJson.js';
+import PointMarker from "core/ui/layer/PointMarker.js";
+import LeafletView from "core/ui/view/map/LeafletView.js";
 
 let gpsDataSource = new SosGetResultJson("android-GPS", {
   protocol: "ws",

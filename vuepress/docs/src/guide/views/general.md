@@ -76,7 +76,6 @@ The types are defined as follows:
 - marker
 - polyline
 - curve
-- data
 - draping
 
 ## Data handling

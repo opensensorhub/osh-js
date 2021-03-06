@@ -1,5 +1,5 @@
 // create data source for Android phone GPS
-import DataSynchronizer from "../../../source/osh/datasynchronizer/DataSynchronizer";
+import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 import {startDataSet} from './datasynchronizer';
 
 export function startStaticWithTimeout() {
@@ -104,7 +104,7 @@ export function startStaticWithTimeout() {
         },
     ];
 // static with TimeOut
-    const dataSynchronizerWithTimeout = new DataSynchronizer({
+    const timeSyncWithTimeout = new DataSynchronizer({
         replaySpeed: 1,
         dataSources: [{
             id: '1b',
@@ -133,7 +133,7 @@ export function startStaticWithTimeout() {
 
     for (let i = 0; i < dataSet.length; i++) {
         let event = dataSet[i];
-        dataSynchronizerWithTimeout.push(event.dataSourceId, event.data);
+        timeSyncWithTimeout.push(event.dataSourceId, event.data);
     }
     const expectedResults = [{
         d0 : 10,
@@ -181,6 +181,6 @@ export function startStaticWithTimeout() {
         null, expectedResults, ['1b','2b','3b']);
 
     setTimeout(() => {
-        dataSynchronizerWithTimeout.terminate();
+        timeSyncWithTimeout.terminate();
     },1000 * 15);
 }

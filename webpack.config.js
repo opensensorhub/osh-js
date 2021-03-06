@@ -8,7 +8,7 @@ const DIR_OUTPUT = path.resolve(__dirname, 'issues/umd/lib');
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: './source/osh/OSH.js',
+    entry: './source/core/OSH.js',
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
         filename: 'main.js',
@@ -99,10 +99,10 @@ module.exports = {
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-            {from: 'source/osh-ext/resources/css', to: DIR_OUTPUT + '/css'},
-            {from: 'source/osh-ext/resources/images', to: DIR_OUTPUT + '/images'},
-            {from: 'source/osh/resources/css', to: DIR_OUTPUT + '/css'},
-            {from: 'source/osh/resources/images', to: DIR_OUTPUT + '/images'},
+            {from: 'source/ext/resources/css', to: DIR_OUTPUT + '/css'},
+            {from: 'source/ext/resources/images', to: DIR_OUTPUT + '/images'},
+            {from: 'source/core/resources/css', to: DIR_OUTPUT + '/css'},
+            {from: 'source/core/resources/images', to: DIR_OUTPUT + '/images'},
             {from: 'source/', to: DIR_OUTPUT + '/source'},
             {from: 'libs/', to: DIR_OUTPUT+ '/libs'},
             { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: DIR_OUTPUT + '/Workers' },

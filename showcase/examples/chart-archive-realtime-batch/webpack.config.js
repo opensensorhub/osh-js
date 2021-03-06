@@ -17,8 +17,10 @@ const config = {
   resolve: {
     modules: [
       path.resolve(__dirname, 'node_modules'),
-      path.resolve(__dirname, '../../../source')
-    ]
+    ],
+    alias: {
+      'osh': path.resolve(__dirname, '../../../source')
+    }
   },
   node: {
     fs: 'empty'

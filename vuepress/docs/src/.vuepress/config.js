@@ -118,7 +118,7 @@ module.exports = {
                     collapsable: true,
                     children: [
                         '/guide/datasources/general.md',
-                        '/guide/connector/general.md',
+                        '/guide/protocol/general.md',
                         {
                             title: 'SOS',
                             collapsable: true,
@@ -149,7 +149,7 @@ module.exports = {
                         }
                     ]
                 },
-                '/guide/datasynchronizer/general.md',
+                '/guide/timesync/general.md',
                 {
                     title: 'Views',
                     collapsable: true,

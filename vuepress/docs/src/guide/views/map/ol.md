@@ -29,7 +29,7 @@ The initial View can be passed to override the default [View](https://openlayers
 
 Here is the corresponding code that initializes the initial-view if none is passed in parameter:
 
-<<< @/../../source/osh/ui/view/map/OpenLayerView.js#snippet_openlayerview_initial_view
+<<< @/../../source/core/ui/view/map/OpenLayerView.js#snippet_openlayerview_initial_view
 
 ## Supported layers
 

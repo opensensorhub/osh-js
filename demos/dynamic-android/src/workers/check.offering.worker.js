@@ -1,5 +1,5 @@
-import Server from "osh/server/Server.js";
-import {isDefined} from "osh/utils/Utils.js";
+import Server from "core/server/Server.js";
+import {isDefined} from "core/utils/Utils.js";
 
 self.serverData = {};
 self.items = {};

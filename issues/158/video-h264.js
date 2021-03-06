@@ -1,5 +1,5 @@
-import Video from 'osh/datareceiver/Video.js';
-import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
+import Video from 'core/datasource/Video.js';
+import FFMPEGView from 'core/ui/view/video/FFMPEGView.js';
 
 const warningArea = document.getElementById('console-output');
 
