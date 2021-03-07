@@ -2,7 +2,7 @@
 import CesiumView from 'osh/core/ui/view/map/CesiumView.js';
 import SosGetFois from 'osh/core/datasource/SosGetFois';
 import {
-    Rectangle
+    Cartesian3
 } from 'cesium';
 import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer';
 
@@ -49,9 +49,16 @@ let cesiumView = new CesiumView({
 });
 
 cesiumView.viewer.camera.flyTo({
-    destination : Rectangle.fromDegrees(-84.299417,38.967509,-64.194437,46.731941)
+    destination : new Cartesian3(1488411.6251324203,-5268449.4730327735, 4043539.7085447963),
+    orientation: {
+        direction : new  Cartesian3(-0.3390959920603357,0.8747561701406432,0.3461438298879394),
+        up : new Cartesian3(0.040665571671700686, -0.3539702229711658, 0.9343721916508201),
+    }
 });
 
 sosGetFois.connect();
 
 // #endregion snippet_cesium_fois
+
+const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[7];
