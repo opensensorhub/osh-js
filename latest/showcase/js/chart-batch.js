@@ -1,65 +1,54 @@
 // create data source for Android phone camera
-import ChartJsView from "osh/ui/view/chart/ChartJsView.js";
-import Curve from "osh/ui/styler/Curve.js";
-import SweJson from "osh/datareceiver/SweJson.js";
+import ChartJsView from 'osh/core/ui/view/chart/ChartJsView.js';
+import CurveLayer from 'osh/core/ui/layer/CurveLayer.js';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
 
 function createChart(dataSource, divId, title) {
 
-    let windSpeedStylerCurve = new Curve({
-        valuesFunc: {
-            dataSourceIds: [dataSource.id],
-            handler: function (rec, timeStamp) {
-                return {
-                    x: timeStamp,
-                    y: rec.windSpeed
-                };
-            }
-        }
+    let windSpeedLayerCurve = new CurveLayer({
+        dataSourceId: dataSource.id,
+        getValues:  (rec, timeStamp) => ({
+            x: timeStamp,
+            y: rec.windSpeed
+        }),
+        name: "WindSpeed"
     });
 
 // show it in video view
-    let chartView = new ChartJsView(divId,
-        [{
-            styler: windSpeedStylerCurve,
-            name: "WindSpeed"
-        }],
-        {
-            name: "WindSpeed/Pressure chart",
-            yLabel: 'Wind Speed (m/s)',
-            xLabel: 'Time',
-            css: "chart-view",
-            tickOpts: {
-                maxTicksLimit: 10,
-                fontColor: 'gray',
+    let chartView = new ChartJsView({
+        container: divId,
+        layers: [windSpeedLayerCurve],
+        css: "chart-view",
+        chartjsProps: {
+            datasetsProps: {
+                backgroundColor: 'rgba(141,242,246, 0.1)'
             },
-            gridLinesOpts: {
-                color: 'lightgray'
-            },
-            scaleLabelOpts: {
-                fontColor: 'gray',
-                padding:1
-            },
-            datasetsOpts: {
-                borderColor: '#a3a3a3',
-                borderWidth:1,
-                backgroundColor: 'rgba(188,221,255,0.5)'
-            },
-            legendOpts: {
-                labels: {
-                    fontColor: "gray",
-                    fontSize: 14
-                }
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
+            chartProps: {
                 title: {
                     display: true,
                     text: title
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            labelString: "Wind Speed (m/s)"
+                        },
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            labelString: "Time"
+                        },
+                        ticks: {
+                            maxTicksLimit: 20
+                        }
+                    }],
                 }
-            }
+            },
         }
-    );
+    });
 }
 
 // #region snippet_chart_batch
@@ -75,27 +64,27 @@ const genericOpts = {
 };
 
 
-let chartDataSource0 = new SweJson("weather0", {
+let chartDataSource0 = new SosGetResultJson("weather0", {
     ...genericOpts,
     replaySpeed: 1,
     batchSize: 10
 });
 
-let chartDataSource1 = new SweJson("weather1", {
+let chartDataSource1 = new SosGetResultJson("weather1", {
     ...genericOpts,
     replaySpeed: 1
 });
 
-let chartDataSource2 = new SweJson("weather2", {
+let chartDataSource2 = new SosGetResultJson("weather2", {
     ...genericOpts,
     batchSize: 1000
 });
 
-let chartDataSource3 = new SweJson("weather3", {
+let chartDataSource3 = new SosGetResultJson("weather3", {
     ...genericOpts
 });
 
-let chartDataSource4 = new SweJson("weather4", {
+let chartDataSource4 = new SosGetResultJson("weather4", {
     ...genericOpts,
     startTime: "now",
     endTime: "2055-01-01Z"

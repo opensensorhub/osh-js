@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ext/datasource/Nexrad.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Ajax.html">Ajax</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="File.html">File</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="Nexrad.html">Nexrad</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="PtzTaskingView.html">PtzTaskingView</a></li><li><a href="RangeSliderView.html">RangeSliderView</a></li><li><a href="Server.html">Server</a></li><li><a href="SosGetFois.html">SosGetFois</a></li><li><a href="SosGetResultJson.html">SosGetResultJson</a></li><li><a href="SosGetResultVideo.html">SosGetResultVideo</a></li><li><a href="SosGetResultVideoWithRoll.html">SosGetResultVideoWithRoll</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="TimeSeriesDataSource.html">TimeSeriesDataSource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#Status">Status</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: ext/datasource/Nexrad.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2012-2020 Sensia Software LLC. All Rights Reserved.
+
+ Author: Alex Robin &lt;alex.robin@sensiasoftware.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import DataSource from '../../core/datasource/DataSource.js';
+
+/**
+ * This datasource provides parsing to DataSource Nexrad.
+ * @extends DataSource
+ */
+class Nexrad extends DataSource {
+
+    /**
+     * Extracts timestamp from the message. The timestamp is the first token got from split(',')
+     * @param {String} data - the data to parse
+     * @return {number} the extracted timestamp
+     */
+    parseTimeStamp(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        this.lastTimeStamp = new Date(tokens[0]).getTime();
+        return this.lastTimeStamp;
+    }
+
+    /**
+     * Extracts data from the message.
+     * @param {Object} data the data to parse
+     * @return {Object} the parsed data
+     */
+    parseData(data) {
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        let tokens = rec.trim().split(",");
+        let el = parseFloat(tokens[2]);
+        let az = parseFloat(tokens[3]);
+
+        let rangeToCenterOfFirstRefGate = parseFloat(tokens[4]);
+        let refGateSize = parseFloat(tokens[5]);
+        let numRefGates = parseInt(tokens[6]);
+
+        let rangeToCenterOfFirstVelGate = parseFloat(tokens[7]);
+        let velGateSize = parseFloat(tokens[8]);
+        let numVelGates = parseInt(tokens[9]);
+
+        let rangeToCenterOfFirstSwGate = parseFloat(tokens[10]);
+        let swGateSize = parseFloat(tokens[11]);
+        let numSwGates = parseInt(tokens[12]);
+
+        let i = 13;
+
+        let refData = [];
+        for (let count = 0; count &lt; numRefGates; count++) {
+            refData.push(parseFloat(tokens[i++]));
+        }
+
+        let velData = [];
+        for (let count = 0; count &lt; numVelGates; count++) {
+            velData.push(parseFloat(tokens[i++]));
+        }
+
+        let swData = [];
+        for (let count = 0; count &lt; numSwGates; count++) {
+            swData.push(parseFloat(tokens[i++]));
+        }
+
+        return {
+            elevation: el,
+            azimuth: az,
+            rangeToCenterOfFirstRefGate: rangeToCenterOfFirstRefGate,
+            refGateSize: refGateSize,
+            rangeToCenterOfFirstVelGate: rangeToCenterOfFirstVelGate,
+            velGateSize: velGateSize,
+            rangeToCenterOfFirstSwGate: rangeToCenterOfFirstSwGate,
+            swGateSize: swGateSize,
+            reflectivity: refData,
+            velocity: velData,
+            spectrumWidth: swData
+        };
+    }
+}
+export default Nexrad;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

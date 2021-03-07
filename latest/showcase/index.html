@@ -35,6 +35,7 @@
       padding: 0px 10px 10px 10px;
       margin: 0 !important;
       overflow: auto;
+      display:none;
     }
 
     #sample-area {
@@ -82,12 +83,48 @@
     }
 
     .card {
-      border-radius: 0.7em;
+      border-radius: 0;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23) !important;
+      transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    }
+
+    .card:hover {
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22) !important;
+    }
+
+    .btn-group {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23) !important;
+        border-radius: 0;
+    }
+
+    .btn-outline-secondary {
+        border-color: #FFFFFF;
+    }
+    .btn-group-sm>.btn, .btn-sm {
+        border-radius: 0;
+    }
+
+    .btn-outline-secondary:hover,.btn-outline-secondary:not(:disabled):not(.disabled):active {
+        color: #fff;
+        background-color: #ff7031;
+        border-color: #ff7031;
+    }
+
+    .btn-outline-secondary:focus,.btn-outline-secondary:not(:disabled):not(.disabled):active:focus {
+        box-shadow: 0 0 0 0.2rem rgba(108,117,125,.0);
+    }
+
+    .modal-backdrop.show {
+        opacity: 0.75;
+    }
+
+    button:focus {
+        outline: 0;
     }
 
     .card-img-top {
-      border-radius: 1em;
-      padding: 0.5rem 0.5rem 0 0.5rem;
+      border-radius: 0;
+      padding: 0;
     }
 
     .fullscreen-bg {
@@ -147,7 +184,6 @@
       .fullscreen-bg video {
         display: none;
       }
-
     }
   </style>
 

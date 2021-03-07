@@ -1,104 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Class: DataSource</title>
-    
-    
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <script src="scripts/jquery.min.js"></script>
+    <title>JSDoc: Class: DataSource</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
-
-    
-    <script>
-    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true}};
-    </script>
-    
-
-    
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
+
 <body>
-<div id="wrap" class="clearfix">
-    <!--?js= this.partial('navigation.tmpl', this) ?-->
-    <div class="main">
-        <h1 class="page-title" data-filename="DataSource.html">Class: DataSource</h1>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Class: DataSource</h1>
+
         
+
 
 
 
 <section>
 
 <header>
-    <h2>
-    DataSource
-    </h2>
     
-        <div class="class-description">The DataSource is the abstract class used to create different datasources.</div>
+        <h2><span class="attribs"><span class="type-signature"></span></span>DataSource<span class="signature">(name, properties, worker)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">The DataSource is the abstract class used to create different datasources.</div>
+        
     
 </header>
 
 <article>
     <div class="container-overview">
     
+        
 
     
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="DataSource">
-            
-            new DataSource<span class="signature">(name, properties, worker)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line24">line 24</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
+    <h2>Constructor</h2>
     
 
     
+    <h4 class="name" id="DataSource"><span class="type-signature"></span>new DataSource<span class="signature">(name, properties, worker)</span><span class="type-signature"></span></h4>
     
+
     
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>name</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -107,21 +96,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the datasource name</td>
+
+            <td class="description last">the datasource name</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>properties</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -130,39 +119,44 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the datasource properties
+
+            <td class="description last">the datasource properties
+                <h6>Properties</h6>
                 
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Default</th>
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>timeShift</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -171,7 +165,19 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -179,26 +185,17 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                fix some problem with some android devices with some timestamp shift to 16 sec</td>
+
+            <td class="description last">fix some problem with some android devices with some timestamp shift to 16 sec</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>bufferingTime</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -207,7 +204,17 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -215,24 +222,17 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                defines the time during the data has to be buffered. Useful only when used with DataSynchronizer</td>
+
+            <td class="description last">defines the time during the data has to be buffered. Useful only when used with DataSynchronizer</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>timeOut</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -241,7 +241,19 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -249,26 +261,17 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                defines the limit time before data has to be skipped. Useful only when used with DataSynchronizer</td>
+
+            <td class="description last">defines the limit time before data has to be skipped. Useful only when used with DataSynchronizer</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>protocol</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -277,30 +280,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
+
+            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>endpointUrl</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -309,30 +315,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                the endpoint url</td>
+
+            <td class="description last">the endpoint url</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>service</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -341,30 +350,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                the service</td>
+
+            <td class="description last">the service</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>offeringID</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -373,30 +385,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                the offeringID</td>
+
+            <td class="description last">the offeringID</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>observedProperty</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -405,30 +420,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                the observed property</td>
+
+            <td class="description last">the observed property</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>startTime</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -437,30 +455,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                the start time (ISO format)</td>
+
+            <td class="description last">the start time (ISO format)</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>endTime</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -469,30 +490,33 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                the end time (ISO format)</td>
+
+            <td class="description last">the end time (ISO format)</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>replaySpeed</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -501,7 +525,19 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -509,26 +545,17 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                the replay factor</td>
+
+            <td class="description last">the replay factor</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>responseFormat</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -537,32 +564,35 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                the response format (e.g video/mp4)</td>
+
+            <td class="description last">the response format (e.g video/mp4)</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>reconnectTimeout</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -571,7 +601,19 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -579,26 +621,17 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                the time before reconnecting (in milliseconds)</td>
+
+            <td class="description last">the time before reconnecting (in milliseconds)</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>batchSize</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -607,7 +640,19 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -615,26 +660,17 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                the number of data to fetch</td>
+
+            <td class="description last">the number of data to fetch</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>customUrlParams</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -643,7 +679,19 @@
 
             
             </td>
+
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
             
                 <td class="default">
                 
@@ -651,32 +699,24 @@
                 
                 </td>
             
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                custom parameters appended to the URL as they are</td>
+
+            <td class="description last">custom parameters appended to the URL as they are</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
+
             </td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>worker</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -685,84 +725,87 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                DataSource worker</td>
+
+            <td class="description last">DataSource worker</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line25">line 25</a>
+    </li></ul></dd>
     
+
     
+
+    
+
     
 </dl>
 
-    
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
     </div>
 
     
-        <h3 class="subsection-title">Subclasses</h3>
-        <ul>
-          <li><a href="Nexrad.html">Nexrad</a>
-            
-          </li>
-        
-          <li><a href="OrientationQuaternion.html">OrientationQuaternion</a>
-            
-          </li>
-        
-          <li><a href="SweJson.html">SweJson</a>
-            
-          </li>
-        
-          <li><a href="Video.html">Video</a>
-            
-          </li>
-        
-          <li><a href="VideoWithRoll.html">VideoWithRoll</a>
-            
-          </li>
-        </ul>
+
     
 
     
@@ -778,889 +821,698 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="connect">
-            
-            <span class="type-signature ">async</span>connect<span class="signature">()</span>
-        </h4>
-    
         
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line131">line 131</a>
-        </div>
-        
-    </div>
+            
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Connect the dataSource then the connector will be opened as well.
-    </div>
     
 
     
+    <h4 class="name" id="connect"><span class="type-signature">(async) </span>connect<span class="signature">()</span><span class="type-signature"></span></h4>
     
+
     
-    
-    
-    
-    
+
+
+
+<div class="description">
+    Connect the dataSource then the protocol will be opened as well.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line95">line 95</a>
+    </li></ul></dd>
     
+
     
+
+    
+
     
 </dl>
 
-    
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="disconnect">
-            
-            disconnect<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line122">line 122</a>
-        </div>
-        
-    </div>
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Disconnect the dataSource then the connector will be closed as well.
-    </div>
     
 
     
+    <h4 class="name" id="disconnect"><span class="type-signature"></span>disconnect<span class="signature">()</span><span class="type-signature"></span></h4>
     
+
     
-    
-    
-    
-    
+
+
+
+<div class="description">
+    Disconnect the dataSource then the protocol will be closed as well.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line73">line 73</a>
+    </li></ul></dd>
     
+
     
+
+    
+
     
 </dl>
 
-    
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="getEndTime">
-            
-            getEndTime<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line107">line 107</a>
-        </div>
-        
-    </div>
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Gets the endTime
-    </div>
     
 
     
+    <h4 class="name" id="getId"><span class="type-signature"></span>getId<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
+
     
-    
-    
-    
-    
+
+
+
+<div class="description">
+    Gets the datasource id.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line125">line 125</a>
+    </li></ul></dd>
     
+
     
+
+    
+
     
 </dl>
 
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
 
 
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">- endTime as ISO date</td>
-        </tr>
-    
-    </tbody>
-</table>
 
-    
-    
-    
-</dd>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
 
         
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="getId">
-            
-            getId<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
+<div class="param-desc">
+    the datasource id
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
         
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line183">line 183</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Gets the datasource id.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">the datasource id</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="getName">
-            
-            getName<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line191">line 191</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Gets the datasource name.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">the datasource name</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="getReplaySpeed">
-            
-            getReplaySpeed<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line115">line 115</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Gets the endTime
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">- endTime as ISO date</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="getStartTime">
-            
-            getStartTime<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line99">line 99</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Gets the startTime
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">- startTime as ISO date</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="setTimeRange">
-            
-            setTimeRange<span class="signature">(startTime, endTime, replaySpeed)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line86">line 86</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Sets the data source time range
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>startTime</code></td>
-            
-            
-            <td class="type">
-            
-                
 <span class="param-type">String</span>
 
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the startTime (in date ISO)</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the startTime (in date ISO)</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>replaySpeed</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the replay speed</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    </dd>
 </dl>
 
     
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+
+
 
         
             
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="updateUrl">
-            
-            updateUrl<span class="signature">(name, properties)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="osh_datareceiver_DataSource.js.html">osh/datareceiver/DataSource.js</a>, <a href="osh_datareceiver_DataSource.js.html#line213">line 213</a>
-        </div>
-        
-    </div>
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Update properties
-    </div>
     
 
     
+    <h4 class="name" id="getName"><span class="type-signature"></span>getName<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
-    
-    
-    
-        
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
+    
+
+
+
+<div class="description">
+    Gets the datasource name.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line133">line 133</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the datasource name
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">String</span>
 
 
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
             
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the datasource name</td>
-        </tr>
-	
-	
-	
+
+    
+
+    
+    <h4 class="name" id="initDataSource"><span class="type-signature">(protected) </span>initDataSource<span class="signature">(properties)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Inits the datasource with the constructor properties.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>properties</code></td>
             
+
+            <td class="type">
             
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="onDisconnect"><span class="type-signature"></span>onDisconnect<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Trigger when the datasource is disconnected for some reason.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line82">line 82</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateProperties"><span class="type-signature"></span>updateProperties<span class="signature">(name, properties)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Update properties
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the datasource name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
             <td class="type">
             
                 
@@ -1669,37 +1521,40 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the datasource properties
+
+            <td class="description last">the datasource properties
+                <h6>Properties</h6>
                 
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>timeShift</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1708,21 +1563,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                fix some problem with some android devices with some timestamp shift to 16 sec</td>
+
+            <td class="description last">fix some problem with some android devices with some timestamp shift to 16 sec</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>bufferingTime</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1731,21 +1586,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                defines the time during the data has to be buffered</td>
+
+            <td class="description last">defines the time during the data has to be buffered</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>timeOut</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1754,21 +1609,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                defines the limit time before data has to be skipped</td>
+
+            <td class="description last">defines the limit time before data has to be skipped</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>protocol</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1777,21 +1632,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
+
+            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>endpointUrl</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1800,21 +1655,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the endpoint url</td>
+
+            <td class="description last">the endpoint url</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>service</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1823,21 +1678,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the service</td>
+
+            <td class="description last">the service</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>offeringID</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1846,21 +1701,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the offeringID</td>
+
+            <td class="description last">the offeringID</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>observedProperty</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1869,90 +1724,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the observed property</td>
+
+            <td class="description last">the observed property</td>
         </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>startTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
 
+    
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the start time (ISO format)</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the end time (ISO format)</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>replaySpeed</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                the replay speed</td>
-        </tr>
-	
-	
-	
         <tr>
             
                 <td class="name"><code>responseFormat</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1961,21 +1747,21 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the response format (e.g video/mp4)</td>
+
+            <td class="description last">the response format (e.g video/mp4)</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>reconnectTimeout</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1984,65 +1770,90 @@
 
             
             </td>
+
             
+
             
-            
-            <td class="description last">
-                
-                the timeout before reconnecting</td>
+
+            <td class="description last">the timeout before reconnecting</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
+
             </td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_DataSource.js.html">core/datasource/DataSource.js</a>, <a href="core_datasource_DataSource.js.html#line152">line 152</a>
+    </li></ul></dd>
     
+
     
+
+    
+
     
 </dl>
 
-    
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
 
-        </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -2055,16 +1866,12 @@
 
 
 
-
-        
-
-        <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sat Dec 12 2020 10:50:52 GMT+0100 (Central European Standard Time)
-        </footer>
     </div>
 </div>
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
-<script src="scripts/main.js"></script>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
 </body>
 </html>

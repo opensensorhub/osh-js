@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ext/ui/layer/Nexrad.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Ajax.html">Ajax</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="File.html">File</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="Nexrad.html">Nexrad</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="PtzTaskingView.html">PtzTaskingView</a></li><li><a href="RangeSliderView.html">RangeSliderView</a></li><li><a href="Server.html">Server</a></li><li><a href="SosGetFois.html">SosGetFois</a></li><li><a href="SosGetResultJson.html">SosGetResultJson</a></li><li><a href="SosGetResultVideo.html">SosGetResultVideo</a></li><li><a href="SosGetResultVideoWithRoll.html">SosGetResultVideoWithRoll</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="TimeSeriesDataSource.html">TimeSeriesDataSource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#Status">Status</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: ext/ui/layer/Nexrad.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2020 Sensia Software LLC. All Rights Reserved.
+
+ Author: Alex Robin &lt;alex.robin@sensiasoft.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import {
+	Cartesian3,
+} from 'cesium';
+
+import {isDefined} from "../../../core/utils/Utils.js";
+import Layer from "../../../core/ui/layer/Layer.js";
+
+/**
+ * Nexrad Layer.
+ * @extends Layer
+ */
+class Nexrad extends Layer {
+	/**
+		* Creates the Layer.
+		* @param {Object} properties
+		* @param {Number[]} properties.location - [x,y]
+		* @param {Object} radialData
+		* @param {Function} properties.getLocation -
+		* @param {Function} properties.getRadialData -
+		*
+		*/
+	constructor(properties) {
+		super(properties);
+		this.properties = properties;
+		this.location = null;
+		this.radialData = null;
+
+		this.options = {};
+
+		let that = this;
+		if (isDefined(properties.location)){
+			this.location = properties.location;
+		}
+
+		if (isDefined(properties.radialData)){
+			this.radialData = properties.radialData;
+		}
+
+		if (isDefined(properties.getLocation)) {
+			let fn = function(rec,timeStamp,options) {
+				that.location = properties.getLocation.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.getLocation.dataSourceIds,fn);
+		}
+
+		if (isDefined(properties.getRadialData)) {
+			let fn = function(rec,timeStamp,options) {
+				that.radialData = properties.getRadialData.handler(rec,timeStamp,options);
+			};
+			this.addFn(properties.getRadialData.dataSourceIds,fn);
+		}
+
+		this.reflectivityColorMap = [
+			Cesium.Color.fromBytes(100, 100, 100),
+			Cesium.Color.fromBytes(204, 255, 255),
+			Cesium.Color.fromBytes(204, 153, 204),
+			Cesium.Color.fromBytes(153, 102, 153),
+			Cesium.Color.fromBytes(102,  51, 102),
+			Cesium.Color.fromBytes(204, 204, 153),
+			Cesium.Color.fromBytes(153, 153, 102),
+			Cesium.Color.fromBytes(100, 100, 100),
+			Cesium.Color.fromBytes(  4, 233, 231),
+			Cesium.Color.fromBytes(  1, 159, 244),
+			Cesium.Color.fromBytes(  3,   0, 244),
+			Cesium.Color.fromBytes(  2, 253,   2),
+			Cesium.Color.fromBytes(  1, 197,   1),
+			Cesium.Color.fromBytes(  0, 142,   0),
+			Cesium.Color.fromBytes(253, 248,   2),
+			Cesium.Color.fromBytes(229, 188,   0),
+			Cesium.Color.fromBytes(253, 149,   0),
+			Cesium.Color.fromBytes(253,   0,   0),
+			Cesium.Color.fromBytes(212,   0,   0),
+			Cesium.Color.fromBytes(188,   0,   0),
+			Cesium.Color.fromBytes(248,   0, 253),
+			Cesium.Color.fromBytes(152,  84, 198),
+			Cesium.Color.fromBytes(253, 253, 253)
+		];
+
+		this.pointCollection = new Cesium.PointPrimitiveCollection();
+		this.radialCount = 0;
+	}
+
+	setData(dataSourceId,rec,view,options) {
+		if (super.setData(dataSourceId,rec,view,options)) {
+			if (isDefined(view)) {
+
+				let DTR = Math.PI/180;
+
+				// keep only first elevation
+				if (rec.data.elevation > 0.7) {
+					return false;
+				}
+
+				// draw directly in Cesium view
+				let radarLoc = Cesium.Cartesian3.fromDegrees(this.location.x, this.location.y, this.location.z);
+				let quat = Cesium.Transforms.headingPitchRollQuaternion(radarLoc, (rec.data.azimuth-90)*DTR, rec.data.elevation*DTR, 0.0);
+				let rotM = Cesium.Matrix3.fromQuaternion(quat);
+
+				let points = new Cesium.PointPrimitiveCollection();
+				let dist0 = rec.data.rangeToCenterOfFirstRefGate;
+				let step = rec.data.refGateSize;
+				for (let i=0; i&lt;rec.data.reflectivity.length; i++) {
+
+					let val = rec.data.reflectivity[i];
+
+					// skip points that are out of range
+					if (val &lt; -32 || val > 94.5) {
+						continue;
+					}
+
+					let gatePos = new Cesium.Cartesian3(dist0 + i*step, 0, 0);
+					Cesium.Matrix3.multiplyByVector(rotM, gatePos, gatePos);
+
+					// apply color map and add point to collection
+					this.pointCollection.add({
+						position : Cesium.Cartesian3.add(radarLoc, gatePos, gatePos),
+						color : this.getReflectivityColor(val),
+						pixelSize : 3
+					});
+				}
+
+				this.radialCount++;
+				if (this.radialCount === 100) {
+					view.viewer.scene.primitives.add(this.pointCollection);
+					this.pointCollection = new Cesium.PointPrimitiveCollection();
+					this.radialCount = 0;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * @private
+	 */
+	getReflectivityColor(val) {
+		let index = Math.floor((val + 30) / 5) + 1;
+		return this.reflectivityColorMap[index];
+	}
+}
+
+export default Nexrad;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

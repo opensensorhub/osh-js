@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/timesync/DataSynchronizerAlgo.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="Ajax.html">Ajax</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="File.html">File</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="Nexrad.html">Nexrad</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="PtzTaskingView.html">PtzTaskingView</a></li><li><a href="RangeSliderView.html">RangeSliderView</a></li><li><a href="Server.html">Server</a></li><li><a href="SosGetFois.html">SosGetFois</a></li><li><a href="SosGetResultJson.html">SosGetResultJson</a></li><li><a href="SosGetResultVideo.html">SosGetResultVideo</a></li><li><a href="SosGetResultVideoWithRoll.html">SosGetResultVideoWithRoll</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="TimeSeriesDataSource.html">TimeSeriesDataSource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#Status">Status</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: core/timesync/DataSynchronizerAlgo.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {isDefined} from "../utils/Utils.js";
+import {Status} from "../protocol/Status.js";
+
+class DataSynchronizerAlgo {
+    constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
+        this.dataSourceMap = {};
+        this.bufferingTime = 1000;
+        this.startBufferingTime = -1;
+        this.tsRun = 0;
+        this.replaySpeed = replaySpeed;
+        this.timerResolution = timerResolution;
+        let maxBufferingTime = -1;
+
+        for (let ds of dataSources) {
+            this.addDataSource(ds);
+            maxBufferingTime = ds.bufferingTime > maxBufferingTime ? ds.bufferingTime : maxBufferingTime;
+        }
+        if (maxBufferingTime !== -1) {
+            this.bufferingTime = maxBufferingTime;
+        }
+    }
+
+    push(dataSourceId, data) {
+        const ds = this.dataSourceMap[dataSourceId];
+        if (ds.status === Status.DISCONNECTED) {
+            return;
+        }
+
+        if (this.startBufferingTime === -1) {
+            this.startBufferingTime = performance.now();
+            // start iterating on data after bufferingTime
+            setTimeout(() => this.processData(), this.bufferingTime);
+        }
+
+        let latency = 0;
+        if (this.tsRun > 0) {
+            latency = this.tsRun - data.timeStamp;
+        }
+        ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
+        ds.dataBuffer.push(data);
+    }
+
+    reset() {
+        this.close();
+        for (let currentDsId in this.dataSourceMap) {
+            const currentDs = this.dataSourceMap[currentDsId];
+            currentDs.dataBuffer = [];
+        }
+        this.startBufferingTime = -1;
+    }
+
+    processData() {
+        let tsRef = -1;
+        let clockTimeRef = performance.now();
+
+        // get reference start timestamp
+        // the reference start timestamp should the oldest one
+        let currentDs;
+        for (let currentDsId in this.dataSourceMap) {
+            currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.status === Status.DISCONNECTED) {
+                continue;
+            }
+            if (currentDs.dataBuffer.length > 0) {
+                tsRef = (tsRef === -1 || currentDs.dataBuffer[0].timeStamp &lt; tsRef) ? currentDs.dataBuffer[0].timeStamp :
+                    tsRef;
+            }
+        }
+
+        this.interval = setInterval(() => {
+            // 1) return the oldest data if any
+            while (this.computeNextData(tsRef, clockTimeRef)) ;
+
+        }, this.timerResolution);
+    }
+
+    /**
+     * Compute the next data if any. We return only 1 value for this iteration. If there are multiple values to return,
+     * we return only the oldest one.
+     * @param tsRef - the timestamp of the first data
+     * @param refClockTime - the absolute diff time really spent
+     */
+    computeNextData(tsRef, refClockTime) {
+        let currentDs;
+        let currentDsToShift = null;
+
+        // compute max latency
+        let maxLatency = 0;
+        let minLatency = 0;
+        for (let currentDsId in this.dataSourceMap) {
+            currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.status === Status.DISCONNECTED) {
+                continue;
+            }
+            if (currentDs.latency > 0) {
+                let latency = Math.min(currentDs.latency, currentDs.timeOut);
+                maxLatency = (latency > maxLatency) ? latency : maxLatency;
+                minLatency = (currentDs.latency &lt; minLatency) ? currentDs.latency : minLatency;
+            }
+        }
+
+        const dClock = performance.now() - refClockTime;
+        this.tsRun = tsRef + dClock;
+
+        // compute next data to return
+        for (let currentDsId in this.dataSourceMap) {
+            currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.status === Status.DISCONNECTED) {
+                continue;
+            }
+            if (currentDs.dataBuffer.length > 0) {
+                const dTs = currentDs.dataBuffer[0].timeStamp - tsRef;
+                const dClockAdj = dClock - maxLatency;
+                // we use an intermediate object to store the data to shift because we want to return the oldest one
+                // only
+                if (dTs &lt;= dClockAdj * this.replaySpeed) {
+                    // no other one to compare
+                    if (currentDsToShift === null) {
+                        currentDsToShift = currentDs;
+                    } else {
+                        // take the oldest data
+                        currentDsToShift = (currentDsToShift.dataBuffer[0].timeStamp &lt; currentDs.dataBuffer[0].timeStamp) ?
+                            currentDsToShift : currentDs;
+                    }
+                }
+            }
+        }
+
+        // finally pop the data from DS queue
+        if (currentDsToShift !== null) {
+            let rec = currentDsToShift.dataBuffer.shift();
+
+            // add latency flag to data record before we dispatch it
+            // this is relative latency in millis compared to the DS with the lowest latency
+            // so it is accurate even if local device time is not set properly
+            rec['@latency'] = currentDs.latency - minLatency;
+
+            this.onData(currentDsToShift.id, rec);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Add dataSource to be synchronized
+     * @param {DataSource} dataSource - the dataSource to synchronize
+     */
+    addDataSource(dataSource) {
+        this.dataSourceMap[dataSource.id] = {
+            bufferingTime: dataSource.bufferingTime,
+            timeOut: dataSource.timeOut || 0,
+            dataBuffer: [],
+            startBufferingTime: -1,
+            id: dataSource.id,
+            timedOut: false,
+            name: dataSource.name || dataSource.id,
+            latency: 0,
+            status: Status.DISCONNECTED //MEANING Enabled, 0 = Disabled
+        };
+    }
+
+    onData(dataSourceId, data) {
+    }
+
+    /**
+     * Change the dataSource status
+     * @param {Status} status - the new status
+     * @param {String} dataSourceId - the corresponding dataSource id
+     */
+    setStatus(dataSourceId, status) {
+        if (dataSourceId in this.dataSourceMap) {
+            this.dataSourceMap[dataSourceId].status = status;
+            if (status === Status.DISCONNECTED) {
+                // reset latency and buffer
+                this.dataSourceMap[dataSourceId].latency = 0;
+                this.dataSourceMap[dataSourceId].dataBuffer = [];
+            }
+
+            console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
+        }
+    }
+
+    close() {
+        if (isDefined(this.interval)) {
+            clearInterval(this.interval);
+            console.log("Data synchronizer terminated successfully");
+        }
+    }
+}
+
+export default DataSynchronizerAlgo;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

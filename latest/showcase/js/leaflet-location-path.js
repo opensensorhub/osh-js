@@ -1,10 +1,10 @@
 // create data source for Android phone GPS
-import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import Polyline from "osh/ui/styler/Polyline.js";
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
+import PolylineLayer from 'osh/core/ui/layer/PolylineLayer.js';
 
-let gpsDataSource = new SweJson("android-GPS", {
+let gpsDataSource = new SosGetResultJson("android-GPS", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -16,53 +16,44 @@ let gpsDataSource = new SweJson("android-GPS", {
 });
 
 // style it with a moving point marker
-let pointMarker = new PointMarker({
-    locationFunc: {
-        dataSourceIds: [gpsDataSource.getId()],
-        handler: function (rec) {
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat,
-                z: rec.location.alt
-            };
-        }
-    },
+let pointMarker = new PointMarkerLayer({
+    dataSourceId: gpsDataSource.id,
+    getLocation: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
+    }),
     icon: './images/car-location.png',
-    iconAnchor: [16, 65]
+    iconSize: [32,64],
+    iconAnchor: [16, 56],
+    name: "Android Phone GPS"
 });
 
+// #region snippet_leaflet_location_polyline
 // also create a polyline with the last 200 points of the track
-let polyline = new Polyline({
-    locationFunc: {
-        dataSourceIds: [gpsDataSource.getId()],
-        handler: function (rec) {
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat,
-                z: rec.location.alt
-            };
-        }
-    },
+let polyline = new PolylineLayer({
+    dataSourceId: gpsDataSource.id,
+    getLocation: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
+    }),
     color: 'rgba(0,0,255,0.5)',
     weight: 10,
     opacity: .5,
     smoothFactor: 1,
-    maxPoints: 200
+    maxPoints: 200,
+    name: "Android Phone GPS Path"
 });
 
+// #endregion snippet_leaflet_location_polyline
+
 // create Leaflet view
-let leafletMapView = new LeafletView("leafletMap",
-    [{
-        styler: pointMarker,
-        name: "Android Phone GPS"
-    },
-        {
-            styler: polyline,
-            name: "Android Phone GPS Path"
-        }], {
-        autoZoomOnFirstMarker:true
-    }
-);
+let leafletMapView = new LeafletView({
+    container: 'leafletMap',
+    layers: [pointMarker, polyline],
+    autoZoomOnFirstMarker:true
+});
 
 // start streaming
 gpsDataSource.connect();

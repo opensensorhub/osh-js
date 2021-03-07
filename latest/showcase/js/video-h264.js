@@ -1,8 +1,7 @@
-import Video from 'osh/datareceiver/Video.js';
-import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
-
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView.js';
 // create data source for UAV camera
-let videoDataSource = new Video("drone-Video", {
+let videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -14,13 +13,14 @@ let videoDataSource = new Video("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView("video-h264-container", {
-  dataSourceId: videoDataSource.id,
-  css: "video-h264",
-  name: "UAV Video",
+let videoView = new FFMPEGView({
+  container: 'video-h264-container',
+  css: 'video-h264',
+  name: 'UAV Video',
   framerate:25,
   showTime: true,
-  showStats: true
+  showStats: true,
+  dataSourceId: videoDataSource.id
 });
 
 // start streaming
