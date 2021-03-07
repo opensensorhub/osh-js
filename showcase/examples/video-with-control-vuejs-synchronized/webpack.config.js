@@ -17,8 +17,10 @@ const config = {
   resolve: {
     modules: [
       path.resolve(__dirname, 'node_modules'),
-      path.resolve(__dirname, '../../../source')
-    ]
+    ],
+    alias: {
+      'osh': path.resolve(__dirname, '../../../source')
+    }
   },
   node: {
     fs: 'empty'
@@ -55,6 +57,13 @@ const config = {
         use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000,
+    hot: true,
+    index: 'video-with-control-vuejs-synchronized.html'
   },
   optimization: {
     splitChunks: {

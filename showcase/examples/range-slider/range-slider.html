@@ -1,6 +1,15 @@
-<div id="video-container"></div>
-<div id="rangeSlider"></div>
+<div id="container">
+  <div id="video-container"></div>
+  <div id="rangeSlider"></div>
+</div>
 <style>
+    #container {
+        right: auto;
+        left: auto;
+        margin: auto;
+        width: 753px;
+        height:80%;
+    }
     .noUi-value-horizontal {
         -webkit-transform: translate(-50%,50%);
         transform: translate(-76%,50%) rotate(-45deg);
@@ -82,12 +91,14 @@
     }
 
     #rangeSlider  {
-      width: 965px;
+      width: 100%;
+      margin-top:15px;
     }
     div.video-h264 {
-        width: 912px;
+        width: calc(100% - 52px);
+        height: calc(100% - 90px);
         padding: 0px;
-        border: 1px solid #dee2e6;
+        border: 1px solid #414141;
         overflow: hidden;
     }
 

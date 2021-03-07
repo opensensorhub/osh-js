@@ -1,4 +1,4 @@
-import {randomUUID} from "../source/osh/utils/Utils";
+import {randomUUID} from "../source/core/utils/Utils";
 
 const Prism = require('prismjs');
 const beautify = require('js-beautify').js;
@@ -16,6 +16,21 @@ var samples = [
     url: "cesium-location"
   },
   {
+    name: "Moving Location with custom viewer properties(CesiumJS)",
+    description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle and define some custom cesium viewer properties.",
+    url: "cesium-location-opts"
+  },
+  {
+    name: "Moving Location  + path (CesiumJS)",
+    description: "Display a moving marker and a polyline on a CesiumJS map, showing both the current location of a vehicle and the historical track.",
+    url: "cesium-location-path"
+  },
+  {
+    name: "Moving Location (Deck.gl)",
+    description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
+    url: "deckgl-location"
+  },
+  {
     name: "Simple Chart (Chart.js)",
     description: "Display a chart with time series of weather measurements.",
     url: "chart"
@@ -26,11 +41,6 @@ var samples = [
         "to get data in batch",
     url: "chart-batch"
   },
-  // {
-  //   name: "Discovery (form)",
-  //   description: "Display a Form helping to choose the correct DataSource depending on the offering.",
-  //   url: "discovery"
-  // },
   {
     name: "Moving Location (Leaflet)",
     description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
@@ -85,6 +95,11 @@ var samples = [
     description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
     url: "video-h264"
   },
+    {
+        name: "H264 Video using WebCodecAPI",
+        description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
+        url: "video-h264-webcodec-api"
+    },
   {
     name: "H264 Image draping Video",
     description: "Display an H264 video in a simple DIV using our FFMPEG-JS decoder and drap the decoded frame onto the terrain.",
@@ -104,18 +119,38 @@ var samples = [
   {
     name: 'VueJs component: Video with control',
     description: 'Display a video using forward/pause/play/backward control',
-    url: 'video-with-control-vuejs'
+    url: 'video-with-control-vuejs',
+    code: 'vue/App_examples/video-with-control-vuejs.vue'
   },
   {
     name: 'VueJs component: Multiple Video with control',
     description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
-    url: 'video-with-control-vuejs-synchronized'
+    url: 'video-with-control-vuejs-synchronized',
+    code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
   },
   {
     name: 'AVL data using multiple ids',
     description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
     url: 'avl'
-  }
+  },
+  {
+    name: "Chart with Time controller (Chart.js)",
+    description: "Display a chart with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime",
+    code: 'vue/App_examples/chart-archive-realtime.vue'
+  },
+  {
+    name: "Chart with Time controller (Chart.js) in batch mode",
+    description: "Display a chart using full batch mode with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime-batch",
+    code: 'vue/App_examples/chart-archive-realtime-batch.vue'
+  },
+  {
+    name: "Chart with Time controller and Synchronizer (Chart.js)",
+    description: "Display a chart with time series of weather measurements and time controller.",
+    url: "chart-archive-realtime-synchronized",
+    code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
+  },
 ];
 
 // load sample cards
@@ -139,11 +174,14 @@ samples.forEach(s => {
 
     const iframeId = randomUUID();
     const iframe = document.createElement("iframe");
-    iframe.setAttribute("style","width:calc(100% - 50px);height:100%;border:none;");
+      iframe.setAttribute("class","iframe-example");
+    iframe.setAttribute("style","width:100%;height:100%;border:none;padding:0px");
     iframe.setAttribute("id", iframeId);
     iframe.setAttribute("src",s.url+'.html');
-    // iframe.onload = function() {
-    //     let $body = $('body',iframe.contentWindow.document);
+    iframe.onload = function() {
+        let $body = $('body', iframe.contentWindow.document);
+        $body.css('margin', '0');
+    }
     //     $body.load("" + s.url+'.html');
     // };
 
@@ -158,6 +196,7 @@ samples.forEach(s => {
 
 $("#close-button").button().on("click", e => {
     $("#sample-area").empty();
+    $("#pre-code").addClass("hide");
 });
 // setup handler to show code in popup
 $("#src-button").button().on("click", e => {
@@ -170,39 +209,16 @@ $("#src-button").button().on("click", e => {
     return;
   }
 
-  fetch('js'+'/'+currentSample.url+'.js')
+  let url = 'js'+'/'+currentSample.url+'.js';
+  if(currentSample.code) {
+      url = currentSample.code;
+  }
+
+  fetch(url)
     .then( r => r.text() )
     .then( srcString => {
       $("#src-code").empty();
-      let html = Prism.highlight(
-        beautify(srcString, {
-          "indent_size": 2,
-          "indent_char": " ",
-          "indent_with_tabs": true,
-          "editorconfig": false,
-          "eol": "\n",
-          "end_with_newline": false,
-          "indent_level": 0,
-          "preserve_newlines": true,
-          "max_preserve_newlines": 10,
-          "space_in_paren": false,
-          "space_in_empty_paren": false,
-          "jslint_happy": false,
-          "space_after_anon_function": false,
-          "space_after_named_function": false,
-          "brace_style": "collapse",
-          "unindent_chained_methods": false,
-          "break_chained_methods": false,
-          "keep_array_indentation": false,
-          "unescape_strings": false,
-          "wrap_line_length": 0,
-          "e4x": false,
-          "comma_first": false,
-          "operator_position": "before-newline",
-          "indent_empty_lines": false,
-          "templating": ["auto"]
-        }),
-        Prism.languages.javascript, 'javascript');
+      let html = Prism.highlight(srcString, Prism.languages.javascript);
       $("#sample-area").hide();
       $("#pre-code").removeClass("hide");
       $("#pre-code").addClass("show");

@@ -21,8 +21,10 @@ module.exports = {
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, '../../../source')
-        ]
+        ],
+        alias: {
+            'osh': path.resolve(__dirname, '../../../source')
+        }
     },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes
@@ -80,7 +82,7 @@ module.exports = {
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-        {from: path.resolve(__dirname,'../../../source/osh-ext/resources/images/tasking'), to: 'images'},
+        {from: path.resolve(__dirname,'../../../source/ext/resources/images/tasking'), to: 'images'},
         ])
     ]
 };

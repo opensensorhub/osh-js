@@ -1,47 +1,49 @@
-//@ sourceURL=leaflet-location.html.js
 // create data source for Android phone GPS
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import Server from "osh/server/Server.js";
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
+import SosGetFois from 'osh/core/datasource/SosGetFois';
 
-let server = new Server({
-  url: "http://sensiasoft.net:8181",
-  sos: "sos",
-  baseUrl: "sensorhub"
+// create data source for Fois
+let sosGetFois = new SosGetFois('fois', {
+    protocol: 'http',
+    service: 'SOS',
+    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    batchSize: 50,
+    foiURN: 'urn:usgs:water:network'
 });
 
 // create Leaflet view
-let leafletMapView = new LeafletView("leafletMap", []);
-leafletMapView.first = false; // don't zoom on first item added
-leafletMapView.map.setView(new L.LatLng(42.8, -76), 8);
-
-// show loading spinner
-// retrieve list of features of interest from server (async call)
-server.getFeatureOfInterestById("urn:usgs:water:network", function(resp) {
-
-  // render each feature with a marker
-  resp.GetFeatureOfInterestResponse.featureMember.forEach(function (f) {
-
-    // parse location from GML
-    var pos = f.shape.pos.split(" ");
-    var pointMarker = new PointMarker({
-      location: {
-        x: parseFloat(pos[1]),
-        y: parseFloat(pos[0])
-      },
-      icon: 'images/marker-icon.png',
-      iconAnchor: [12, 41],
-      /*label: f.id,
-      labelOffset: [0, -14]*/
-    });
-
-    // add marker to Leaflet map
-    leafletMapView.addViewItem({
-      name: f.name,
-      description: "<hr/>" + f.description + "<br/>" +
-          "Latitude: " + pos[0] + "°<br/>" +
-          "Longitude: " + pos[1] + "°",
-      styler: pointMarker
-    });
-  });
+let leafletView = new LeafletView({
+    container: "leafletMap",
+    autoZoomOnFirstMarker: false,
+    layers: [
+        new PointMarkerLayer({
+            dataSourceId: sosGetFois.id,
+            getLocation: (f) => {
+                let pos = f.shape.pos.split(" ");
+                return {
+                    x: parseFloat(pos[1]),
+                    y: parseFloat(pos[0])
+                }
+            },
+            getDescription:(f) => {
+                let pos = f.shape.pos.split(" ");
+                return  f.description + "<br/>" +
+                    "Latitude: " + pos[0] + "°<br/>" +
+                    "Longitude: " + pos[1] + "°"
+            },
+            getMarkerId:(f) => f.id,
+            icon: 'images/marker-icon.png',
+            iconAnchor: [12, 41],
+            getLabel: (f) =>  f.id,
+            labelColor: '#000000',
+            labelSize: 28,
+            labelOffset: [0, 10],
+            iconSize: [25,41]
+        })
+    ]
 });
+
+leafletView.map.setView(new L.LatLng(42.406025,-76.060832), 7);
+
+sosGetFois.connect();

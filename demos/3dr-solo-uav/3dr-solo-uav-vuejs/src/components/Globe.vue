@@ -7,11 +7,10 @@
 <script>
   window.CESIUM_BASE_URL = './';
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-  import CesiumView from "osh/ui/view/map/CesiumView.js";
+  import CesiumView from "../../../../../source/core/ui/view/map/CesiumView.js";
   // @ is an alias to /src
-  import ImageDraping from "osh/ui/styler/ImageDraping.js";
-  import SweJson from "osh/datareceiver/SweJson.js";
-  import PointMarker from "osh/ui/styler/PointMarker.js";
+  import ImageDrapingLayer from "osh/core/ui/layer/ImageDrapingLayer.js";
+  import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
 
   export default {
     name: "Globe",
@@ -24,9 +23,9 @@
       init() {
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         // add 3D model marker to Cesium view
-        let pointMarker = new PointMarker({
+        let pointMarkerLayer = new PointMarkerLayer({
           label: "3DR Solo",
-          locationFunc : {
+          getLocation : {
             dataSourceIds : [this.platformLocationDataSource.id],
             handler : function(rec) {
               return {
@@ -36,7 +35,7 @@
               };
             }
           },
-          orientationFunc : {
+          getOrientation : {
             dataSourceIds : [this.platformOrientationDataSource.getId()],
             handler : function(rec) {
               return {
@@ -48,8 +47,8 @@
         });
 
         // style it with a moving point marker
-        let imageDrapingMarker = new ImageDraping({
-          platformLocationFunc: {
+        let imageDrapingLayer = new ImageDrapingLayer({
+          getPlatformLocation: {
             dataSourceIds: [this.platformLocationDataSource.getId()],
             handler: function (rec) {
               return {
@@ -59,7 +58,7 @@
               };
             }
           },
-          platformOrientationFunc: {
+          getPlatformOrientation: {
             dataSourceIds: [this.platformOrientationDataSource.getId()],
             handler: function (rec) {
               return {
@@ -69,7 +68,7 @@
               };
             }
           },
-          gimbalOrientationFunc: {
+          getGimbalOrientation: {
             dataSourceIds: [this.gimbalOrientationDataSource.getId()],
             handler: function (rec) {
               return {
@@ -93,15 +92,10 @@
         Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
             'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
             '2WfIX0QHiZcOjVaXI92stjDh4fI';
-        let cesiumView = new CesiumView("cesium-container",
-          [{
-            styler: pointMarker,
-            name: 'Solo draping marker'
-          },{
-            styler: imageDrapingMarker,
-            name: 'Solo draping'
-          }]
-        );
+        let cesiumView = new CesiumView({
+          container: "cesium-container",
+          layers: [pointMarkerLayer, imageDrapingLayer]
+        });
         cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
         cesiumView.viewer.scene.logarithmicDepthBuffer = false;
         cesiumView.viewer.camera.setView({

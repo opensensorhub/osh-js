@@ -1,8 +1,9 @@
 import * as React from "react";
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
-import VideoH264 from "osh/datareceiver/Video.js";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
+import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
+import FFMPEGView from "osh/core/ui/view/video/FFMPEGView.js";
+import DataLayer from "osh/core/ui/layer/DataLayer.js";
 
 export class SoloVideoComponent extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ export class SoloVideoComponent extends React.Component {
   componentDidMount() {
     // setup video
     // create data source for UAV camera
-    let videoDataSource = new VideoH264("drone-Video", {
+    let videoDataSource = new SosGetResultVideo("drone-Video", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -26,13 +27,14 @@ export class SoloVideoComponent extends React.Component {
     });
 
     // show it in video view using FFMPEG JS decoder
-    let videoView = new FFMPEGView(this.divId, {
-      dataSourceId: videoDataSource.id,
+    let videoView = new FFMPEGView({
+      container: this.divId,
       css: "video-h264",
       name: "UAV Video",
       directPlay: true,
       showTime: true,
-      showStats: true
+      showStats: true,
+      dataSourceId: videoDataSource.id
     });
 
     // start streaming

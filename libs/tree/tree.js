@@ -2,8 +2,8 @@
 // p_div: ID of the div where the tree will be rendered;
 // p_backColor: Background color of the region where the tree is being rendered;
 // p_contextMenu: Object containing all the context menus. Set null for no context menu;
-import {randomUUID} from "../../source/osh/utils/Utils.js";
-import EventManager from "../../source/osh/events/EventManager.js";
+import {randomUUID} from "../../source/core/utils/Utils.js";
+import EventManager from "../../source/core/events/EventManager.js";
 import './tree.css';
 
 export function createTree(p_div, p_backColor, p_contextMenu) {

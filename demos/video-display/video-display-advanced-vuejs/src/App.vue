@@ -16,7 +16,6 @@
                 :selection-type="selectionType"
                 selected-color="#ef7245"
                 selectable
-                item-disabled="locked"
                 dark
                 return-object
                 open-all
@@ -94,10 +93,10 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SweJson from "osh/datareceiver/SweJson.js";
-  import Video from "osh/datareceiver/Video.js";
-  import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer.js";
-  import {isDefined} from "../../../../source/osh/utils/Utils";
+  import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+  import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
+  import DataSynchronizer from "osh/core/timesync/DataSynchronizer.js";
+  import {isDefined} from "osh/core/utils/Utils";
 
   export default {
     components: {
@@ -116,7 +115,7 @@
         selectionIds: [],
         dataSources: {},
         items: [],
-        locationDataSource: new SweJson("android-GPS", {
+        locationDataSource: new SosGetResultJson("android-GPS", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -125,11 +124,11 @@
           startTime: "2015-02-16T07:58:32Z",
           endTime: "2015-02-16T08:09:00Z",
           timeOut: 100,
-          bufferingTime: 100,
+          bufferingTime: 200,
           timeShift: -16000,
           replaySpeed: 2
         }),
-        headingDataSource: new SweJson("android-Att", {
+        headingDataSource: new SosGetResultJson("android-Att", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -141,7 +140,7 @@
           bufferingTime: 100,
           replaySpeed: 2
         }),
-        videoDataSource: new Video("android-Video", {
+        videoDataSource: new SosGetResultVideo("android-Video", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -153,7 +152,7 @@
           bufferingTime: 100,
           replaySpeed: 2
         }),
-        weatherDataSource: new SweJson("weather", {
+        weatherDataSource: new SosGetResultJson("weather", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -197,6 +196,7 @@
       onSelect(nodes) {
         let bIds = [];
         if (Array.isArray(nodes)) {
+          console.log(nodes)
           for (let i = 0; i < nodes.length; i++) {
             bIds.push(nodes[i].dataSource.id);
           }
@@ -245,18 +245,6 @@
 
   .v-content {
     background-color: #363636;
-  }
-
-  .v-application .headline, .v-application .title {
-    line-height: 1px;
-    font-family: Roboto,sans-serif!important;
-    border-bottom: solid 1px #69696982;
-  }
-
-  .v-application .headline {
-    font-size: 1.0rem!important;
-    font-weight: 400;
-    letter-spacing: normal!important;
   }
 
 </style>

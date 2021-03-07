@@ -6,9 +6,9 @@
 
 <script>
     // @ is an alias to /src
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
+import LeafletView from "osh/core/ui/view/map/LeafletView.js";
+import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
 
 export default {
   name: "Map",
@@ -19,7 +19,7 @@ export default {
 
   methods: {
     init() {
-      let gpsDataSource = new SweJson("android-GPS", {
+      let gpsDataSource = new SosGetResultJson("android-GPS", {
         protocol: "ws",
         service: "SOS",
         endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -31,8 +31,8 @@ export default {
       });
 
       // style it with a moving point marker
-      let pointMarker = new PointMarker({
-        locationFunc: {
+      let pointMarkerLayer = new PointMarkerLayer({
+        getLocation: {
           dataSourceIds: [gpsDataSource.getId()],
           handler: function (rec) {
             return {
@@ -43,18 +43,17 @@ export default {
           }
         },
         icon: './images/car-location.png',
-        iconAnchor: [16, 65]
+        iconSize: [32, 64],
+        iconAnchor: [16, 65],
+        name: "Android Phone GPS"
       });
 
       // create Leaflet view
-      new LeafletView("leafletMap",
-                      [{
-                        styler: pointMarker,
-                        name: "Android Phone GPS"
-                      }], {
-          autoZoomOnFirstMarker:true
-          }
-      );
+      new LeafletView({
+        container: "leafletMap",
+        layers: [pointMarkerLayer],
+        autoZoomOnFirstMarker: true
+      });
 
       // start streaming
       gpsDataSource.connect();

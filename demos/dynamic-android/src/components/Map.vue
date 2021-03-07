@@ -5,12 +5,12 @@
 </template>
 
 <script>
-// import OpenLayerView from "osh/ui/view/map/OpenLayerView.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
+// import OpenLayerView from "core/ui/view/map/OpenLayerView.js";
+import PointMarker from "core/ui/layer/PointMarker.js";
 // import TileLayer from 'ol/layer/Tile';
 // import XYZ from 'ol/source/XYZ';
 // import OSM from "ol/source/OSM";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
+import LeafletView from "core/ui/view/map/LeafletView.js";
 
 export default {
   name: "Map",
@@ -84,23 +84,23 @@ export default {
     add(item) {
       console.log('add to map',item)
 
-      let locationStyler = {
+      let locationLayer = {
         // location: {
         //   y:43.600541,
         //   x:1.4267618,
         //   z:0
         // }
       };
-      let headingStyler  = {};
+      let headingLayer  = {};
 
       let viewItem = {
         name: item.name
       };
 
       if('location' in item) {
-        locationStyler = {
-          ...locationStyler,
-          locationFunc: {
+        locationLayer = {
+          ...locationLayer,
+          getLocation: {
             dataSourceIds: [item['location'].id],
             handler: function (rec) {
               return {
@@ -114,8 +114,8 @@ export default {
         viewItem['locationId'] = item['location'].id;
       }
       if('heading' in item) {
-        headingStyler  = {
-          orientationFunc : {
+        headingLayer  = {
+          getOrientation : {
             dataSourceIds :  [item['heading'].id],
             handler : function(rec) {
               let qx = rec.orient.qx;
@@ -154,13 +154,13 @@ export default {
         icon: './images/cameralook3.png',
         iconAnchor: [13, 45],
         labelOffset: [10, 10],
-        ...locationStyler,
-        ...headingStyler
+        ...locationLayer,
+        ...headingLayer
       });
 
       viewItem = {
         ...viewItem,
-        styler: marker
+        layer: marker
       };
 
       this.view.addViewItem(viewItem);

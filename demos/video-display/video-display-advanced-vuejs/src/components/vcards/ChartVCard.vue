@@ -4,7 +4,7 @@
             color="#385F73"
             dark
     >
-      <v-card-title class="headline">
+      <v-card-title class="tiny">
         {{ title }}
       </v-card-title>
       <v-container :id="id"></v-container>
@@ -13,9 +13,9 @@
 </template>
 
 <script>
-  import Curve from "osh/ui/styler/Curve";
-  import ChartJsView from "osh/ui/view/chart/ChartJsView";
-  import {randomUUID} from "osh/utils/Utils";
+  import CurveLayer from "osh/core/ui/layer/CurveLayer";
+  import ChartJsView from "osh/core/ui/view/chart/ChartJsView";
+  import {randomUUID} from "osh/core/utils/Utils";
 
   export default {
     name: "VCardViewElement",
@@ -28,8 +28,8 @@
     },
     mounted() {
         // build chart
-        let windSpeedStylerCurve = new Curve({
-          valuesFunc: {
+        let windSpeedLayerCurve = new CurveLayer({
+          getValues: {
             dataSourceIds: [this.dataSource.id],
             handler: function (rec, timeStamp) {
               return {
@@ -37,39 +37,49 @@
                 y: rec.windSpeed
               };
             }
-          }
+          },
+          name: "WindSpeed"
         });
 
         // show it in video view
-        new ChartJsView(this.id,
-          [{
-            styler: windSpeedStylerCurve,
-            name: "WindSpeed"
-          }],
-          {
-            name: "WindSpeed/Pressure chart",
-            yLabel: 'Wind Speed (m/s)',
-            xLabel: 'Time',
+        new ChartJsView({
+            container: this.id,
+            layers: [windSpeedLayerCurve],
             css: "chart-view",
-            gridLinesOpts: {
-              color: '#FFF'
-            },
-            tickOpts: {
-              fontColor: '#FFF',
-              maxTicksLimit: 4
-            },
-            scaleLabelOpts: {
-              fontColor: '#FFF',
-              padding:1
-            },
-            datasetsOpts: {
-              borderColor: '#a3a3a3',
-              borderWidth:1
-            },
-            legendOpts: {
-              labels: {
-                fontColor: "white",
-                fontSize: 14
+            chartjsProps: {
+              chartProps: {
+                legend: {
+                  labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: '#ffffff'
+                  }
+                },
+                scales: {
+                  yAxes: [{
+                    scaleLabel: {
+                      labelString: "Wind Speed (m/s)",
+                      fontColor: '#ffffff'
+                    },
+                    ticks: {
+                      maxTicksLimit: 5,
+                      fontColor: '#a5a5a5'
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      labelString: "Time",
+                      fontColor: '#ffffff'
+                    },
+                    ticks: {
+                      maxTicksLimit: 20,
+                      fontColor: '#a5a5a5'
+                    }
+                  }]
+                },
+                maintainAspectRatio: false
+              },
+              datasetsProps: {
+                backgroundColor: 'rgb(0,255,247, 0.1)'
               }
             }
           }

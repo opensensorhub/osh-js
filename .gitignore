@@ -23,8 +23,12 @@ vuepress/docs/.vuepress/dist/
 ../video-display-advanced-android-vuejs/
 /issues/166/
 **/*.lock
-documentation/jsdoc/build-iframe
+jsdoc/dist
+jsdoc/dist-iframe
+**/jsdoc/dist
+**/jsdoc/dist-iframe
 **/issues
 issues
 **/documentation/jsdoc/build-iframe
 documentation/jsdoc/build-iframe
+issues/

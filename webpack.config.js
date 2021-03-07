@@ -4,19 +4,22 @@ let CopyWebpackPlugin = require('copy-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 var path = require('path');
 
+const DIR_OUTPUT = path.resolve(__dirname, 'issues/umd/lib');
+
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: './source/osh/OSH.js',
+    entry: './source/core/OSH.js',
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: '[name].js',
+        filename: 'main.js',
         library: 'OSH',
-        libraryTarget: 'umd',
-        globalObject: 'this',
-        path: path.resolve(__dirname, 'dist/build'),
+        // libraryTarget: 'umd',
+        // globalObject: 'this',
+        path: DIR_OUTPUT,
         // Needed to compile multiline strings in Cesium
-        sourcePrefix: ''
+        sourcePrefix: '',
     },
+    // externals: ['leaflet','cesium','chart.js', 'ol', 'ol-layerswitcher','nouislider','wnumb'],
     amd: {
         // Enable webpack-friendly use of require in Cesium
         toUrlUndefined: true
@@ -96,16 +99,15 @@ module.exports = {
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-            {from: 'libs/tree/images/tree', to: 'images'},
-            {from: 'source/osh-ext/resources/css', to: 'css'},
-            {from: 'source/osh-ext/resources/images', to: 'images'},
-            {from: 'source/osh/resources/css', to: 'css'},
-            {from: 'source/osh/resources/images', to: 'images'},
-            {from: 'source/', to: '../source'},
-            {from: 'libs/', to: '../libs'},
-            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
-            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
-            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
+            {from: 'source/ext/resources/css', to: DIR_OUTPUT + '/css'},
+            {from: 'source/ext/resources/images', to: DIR_OUTPUT + '/images'},
+            {from: 'source/core/resources/css', to: DIR_OUTPUT + '/css'},
+            {from: 'source/core/resources/images', to: DIR_OUTPUT + '/images'},
+            {from: 'source/', to: DIR_OUTPUT + '/source'},
+            {from: 'libs/', to: DIR_OUTPUT+ '/libs'},
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: DIR_OUTPUT + '/Workers' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: DIR_OUTPUT + '/Assets' },
+            { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: DIR_OUTPUT + '/Widgets' },
         ])
     ]
 };

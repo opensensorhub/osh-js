@@ -1,10 +1,10 @@
-# Video with Roll <Badge text="beta (>=1.4.0)" type="warning"/>
+# SosGetResultVideoWithRoll <Badge text="beta (>=1.4.0)" type="warning"/>
 
 VideoDataSourceWithRoll is a specific DataSource to parse Video data with roll information.
 
 Roll gives the angle of the camera allowing the View to re-orient the Y-axis depending on the angle.
 
-The class inherits directly from [VideoDataSource](video.md).
+The class inherits directly from [SosGetResultVideo](video.md).
 
 There are specific properties for this DataSource.
 
@@ -12,7 +12,7 @@ There are specific properties for this DataSource.
 
 These properties are members of [customUrlParams](general.md#global-configuration).
 
-<DocumentationLoad path="/guide/api/VideoWithRoll.html"/>
+<DocumentationLoad path="/guide/api/SosGetResultVideoWithRoll.html"/>
 
 *(1) Note that in case of the video stream, it is very important to define the **responseFormat** to activate the support of these parameters.*
 
@@ -70,7 +70,7 @@ const dsProperties = {
     responseFormat: "video/H264"
 };
 
-const videoDataSourceWithRoll = new VideoWithRoll("drone-Video", dsProperties);
+const videoDataSourceWithRoll = new SosGetResultVideoWithRoll("drone-Video", dsProperties);
 ```
 
 The result URL:

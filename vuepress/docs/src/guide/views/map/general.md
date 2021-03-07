@@ -1,12 +1,12 @@
 # General
 
 The map views are a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
-This View can also display path using the corresponding [Styler](../stylers/styler).
+This View can also display path using the corresponding [Layer](../layers/layer).
 
 ## Example
 
 The code is pretty similar between each view. Depending on what we want to display, we can have the same code or add
-options specific to a View, for example, the ImageDraping to the Cesium one.
+options specific to a View, for example, the ImageDrapingLayer to the Cesium one.
 
 Here is an example of common and specific code for the View:
 
