@@ -196,6 +196,7 @@ samples.forEach(s => {
 
 $("#close-button").button().on("click", e => {
     $("#sample-area").empty();
+    $("#pre-code").addClass("hide");
 });
 // setup handler to show code in popup
 $("#src-button").button().on("click", e => {
