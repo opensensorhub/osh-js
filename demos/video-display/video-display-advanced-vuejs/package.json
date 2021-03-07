@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "patch-package",
     "prod": "webpack --config webpack.config.js --mode production",
     "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "patch-package": "^6.2.2",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.3.0"
@@ -27,7 +29,7 @@
     "less": "^3.11.1",
     "less-loader": "^6.0.0",
     "node-sass": "^4.14.0",
-    "nouislider": "^14.6.0",
+    "nouislider": "14.4.0",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.0",
     "vue-loader": "^15.9.1",

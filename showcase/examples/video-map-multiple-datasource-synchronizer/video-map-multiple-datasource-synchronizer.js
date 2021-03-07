@@ -1,14 +1,14 @@
-import Video from "osh/datareceiver/Video.js";
-import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
-import FFMPEGView from "osh/ui/view/video/FFMPEGView";
-import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
+import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView';
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
 
 const REPLAY_FACTOR = 1.0;
 
 function createView(videoDivId, mapDivId, startTime,endTime ) {
-    const videoDataSource = new Video("drone-Video", {
+    const videoDataSource = new SosGetResultVideo("drone-Video", {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -18,7 +18,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         endTime: endTime,
         replaySpeed: REPLAY_FACTOR
     });
-    const platformLocationDataSource = new SweJson('android-GPS', {
+    const platformLocationDataSource = new SosGetResultJson('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -28,7 +28,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         endTime: endTime,
         replaySpeed: REPLAY_FACTOR
     });
-    const platformOrientationDataSource = new SweJson('android-Heading', {
+    const platformOrientationDataSource = new SosGetResultJson('android-Heading', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -40,19 +40,21 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     });
 
     // show it in video view using FFMPEG JS decoder
-    let videoView = new FFMPEGView(videoDivId, {
-        dataSourceId: videoDataSource.id,
+    let videoView = new FFMPEGView({
+        container: videoDivId,
         css: "video-h264",
         name: "UAV Video",
         framerate: 25,
         showTime: true,
-        showStats: true
+        showStats: true,
+        dataSourceId: videoDataSource.id
     });
 
     // add 3D model marker to Cesium view
-    let pointMarker = new PointMarker({
+    let pointMarker = new PointMarkerLayer({
+        name: "3DR Drone",
         label: "3DR Solo",
-        locationFunc: {
+        getLocation: {
             dataSourceIds: [platformLocationDataSource.getId()],
             handler: function (rec) {
                 return {
@@ -62,7 +64,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
                 };
             }
         },
-        orientationFunc: {
+        getOrientation: {
             dataSourceIds: [platformOrientationDataSource.getId()],
             handler: function (rec) {
                 return {
@@ -72,24 +74,21 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         },
         zoomLevel: 18,
         icon: './images/drone.png',
+        iconSize: [128,128],
         iconAnchor: [64,112]
     });
 
     // create Leaflet view
-    new LeafletView(mapDivId,
-        [{
-            styler: pointMarker,
-            name: "3DR Drone"
-        }],
-        {
-            autoZoomOnFirstMarker: true,
-            follow:true
-        }
-    );
+    new LeafletView({
+        container: mapDivId,
+        layers: [pointMarker],
+        autoZoomOnFirstMarker: true,
+        follow:true
+    });
 
     const dataSynchronizer = new DataSynchronizer({
         replaySpeed: REPLAY_FACTOR,
-        intervalRate: 5,
+        timerResolution: 5,
         dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
     })
     dataSynchronizer.connect();

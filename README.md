@@ -5,7 +5,7 @@ OpenSensorHub Web Client toolkit allows you to visualize data from OSH. It provi
 It is pure javascript framework and does not require third party libraries. A set of external libraries is also available to easily build some part of your views such as
 Leaflet, OpenLayer, Cesium, Chart.js etc..
 
-It's an event based architecture suitable for real-time or playback. It allows one to make temporal synchronization or multiple data stream. It provides a styling overlay using
+It's an event based architecture suitable for real-time or playback. It allows one to make temporal synchronization or multiple data stream. It provides a styling overlay using 
 configurable layers as well as an advanced support for video (H264/MJPEG). It has been designed to integrate any map engines such as Lealfet, OpenLayer or Cesium.
 
 Moreover, it offers support for SOS & SPS services, discovery function, uses the HTTP or WebSocket API.
@@ -95,20 +95,4 @@ You can add any external dependencies using *npm*. For example, if you attempt t
 some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
 ## Documentation
-Official Website: [here](http://opensensorhub.github.io/osh-js/latest/site).
-
-JSDoc can be found [here](http://opensensorhub.github.io/osh-js/latest/jsdoc/)
-
-## Live Showcase
-
-[Showcase](http://opensensorhub.github.io/osh-js/latest/showcase)
-
-## Live Demos
-
-[Video display Vuejs](http://opensensorhub.github.io/osh-js/latest/demos/video-display-vuejs/)
-
-[Video advanced display Vuejs](http://opensensorhub.github.io/osh-js/latest/demos/video-display-advanced-vuejs/)
-
-[3dr solo UAV in react](http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-react/)
-
-[3dr solo UAV in Vuejs](http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-vuejs/)
+The official website: [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/dev/site/)

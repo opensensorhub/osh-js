@@ -14,11 +14,9 @@
   // @ is an alias to /src
 import Globe from './components/Globe.vue';
 import Video from './components/Video.vue';
-import VideoH264 from "osh/datareceiver/Video.js";
-import ImageDraping from "osh/ui/styler/ImageDraping.js";
-import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
+import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
+import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+import DataSynchronizer from "osh/core/timesync/DataSynchronizer";
 
   export default {
   components: {
@@ -27,7 +25,7 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
   },
     data: function () {
       return {
-        videoDataSource: new VideoH264("drone-Video", {
+        videoDataSource: new SosGetResultVideo("drone-Video", {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -37,7 +35,7 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        platformLocationDataSource: new SweJson('android-GPS', {
+        platformLocationDataSource: new SosGetResultJson('android-GPS', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -47,7 +45,7 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        platformOrientationDataSource: new SweJson('android-Heading', {
+        platformOrientationDataSource: new SosGetResultJson('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -57,7 +55,7 @@ import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        gimbalOrientationDataSource: new SweJson('android-Heading', {
+        gimbalOrientationDataSource: new SosGetResultJson('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

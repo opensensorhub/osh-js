@@ -4,7 +4,7 @@
             color="#385F73"
             dark
     >
-      <v-card-title class="headline">
+      <v-card-title class="tiny">
         {{ title }}
       </v-card-title>
       <v-container :id="id"></v-container>
@@ -13,8 +13,8 @@
 </template>
 
 <script>
-  import MjpegView from "osh/ui/view/video/MjpegView";
-  import {randomUUID} from "osh/utils/Utils";
+  import MjpegView from "osh/core/ui/view/video/MjpegView";
+  import {randomUUID} from "osh/core/utils/Utils";
 
   export default {
     name: "MjpegVideoVCard",
@@ -28,12 +28,13 @@
     mounted() {
       // build video
       // show it in video view
-      new MjpegView(this.id, {
-        dataSourceId: this.dataSource.id,
+      new MjpegView({
+        container: this.id,
         css: "video-mjpeg",
         name: "Android Video",
         keepRatio: true,
-        showTime: true
+        showTime: true,
+        dataSourceId: this.dataSource.id
       });
     }
   }
@@ -53,5 +54,12 @@
   }
   .container > div.video-mjpeg img {
     width: 100%;
+  }
+  .tiny {
+    line-height: 1.5;
+    font-size: 14px!important;
+    padding: 0 0 0 8px !important;
+    color: lightgray;
+    border-bottom: solid 1px lightslategrey;
   }
 </style>

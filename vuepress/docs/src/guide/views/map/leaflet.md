@@ -1,12 +1,18 @@
 # Leaflet
 
 The LeafletView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
-This View can also display path using the corresponding [Styler](../stylers/styler).
+This View can also display path using the corresponding [Layer](../layers/layer).
 
 The View is based on [LeafletJs](https://leafletjs.com/) framework.
 
 <br/>
 <DocumentationLoad path="/guide/api/LeafletView.html"/>
+
+## Supported layers
+
+The view supports type layers:
+- marker
+- polyline
 
 ## Properties configuration
 
@@ -27,7 +33,7 @@ The initial View can be passed to override the default [View](https://leafletjs.
 
 Here is the corresponding code that initializes the initial-view if none is passed in parameter:
 
-<<< @/../../source/osh/ui/view/map/LeafletView.js#snippet_leafletview_initial_view
+<<< @/../../source/core/ui/view/map/LeafletView.js#snippet_leafletview_initial_view
 
 ## Example
 

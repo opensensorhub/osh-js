@@ -1,60 +1,40 @@
 <template>
   <div id="app">
     <div id="container">
-      <Video
-          :modal="true"
-          :dataSource="dataSource0"
-          :options="{top: '50', left: '50'}"
-          :showStats="true"
-          :showTime="true"
-          :frameRate=30
-          class="video-container-vue0"
-      >
-      </Video>
-      <Video
-          :modal="true"
-          :dataSource="dataSource1"
-          :options="{top: '50', left: '50'}"
-          :showStats="true"
-          :showTime="true"
-          :frameRate=30
-          class="video-container-vue1"
-      >
-      </Video>
-      <Video
-          :modal="true"
-          :dataSource="dataSource2"
-          :options="{top: '50', left: '50'}"
-          :showStats="true"
-          :showTime="true"
-          :frameRate=30
-          class="video-container-vue2"
-      >
-      </Video>
+      <div id="container0"></div>
+      <div id="container1"></div>
+      <div id="container2"></div>
+      <div id="container3"></div>
     </div>
+    <TimeController
+        :dataSynchronizer="dataSynchronizer"
+        @event='onControlEvent'
+        :skipTimeStep="'1%'"
+        v-if="dataSynchronizer"
+    ></TimeController>
   </div>
 </template>
 <script>
 // @ is an alias to /src
-import Video from 'osh-vue/components/video/VideoWithControl.vue';
-import VideoOsh from 'osh/datareceiver/Video.js';
-import DataSynchronizer from 'osh/datasynchronizer/DataSynchronizer.js';
+import TimeController from 'osh/vue/components/TimeController.vue';
+import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
+import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView';
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
 
 export default {
   components: {
-    Video
+    TimeController
   },
   data: function () {
     return {
-      dataSource0: null,
-      dataSource1: null,
-      dataSource2: null
+      dataSynchronizer: null,
+      views: []
     }
   },
-  beforeMount() {
+  mounted() {
     // setup video
     // create data source for UAV camera
-    this.dataSource0 = new VideoOsh("drone-Video", {
+    const opts = {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -64,81 +44,110 @@ export default {
       endTime: '2015-12-19T21:09:19.675Z',
       replaySpeed: 1,
       timeOut: 1000,
-      bufferingTime: 500
+      bufferingTime: 1000
+    };
+
+    const dataSource0 = new SosGetResultVideo("drone-Video", {
+      ...opts
     });
 
-    this.dataSource1 = new VideoOsh("drone-Video1", {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1,
-      timeOut: 1000,
-      bufferingTime: 500
+    const dataSource1 = new SosGetResultVideo("drone-Video1", {
+      ...opts
     });
 
-    this.dataSource2 = new VideoOsh("drone-Video2", {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1,
-      timeOut: 1000,
-      bufferingTime: 500
+    const dataSource2 = new SosGetResultVideo("drone-Video2", {
+      ...opts
     });
 
-    const dataSynchronizer = new DataSynchronizer({
+    const dataSource3 = new SosGetResultVideo("drone-Video3", {
+      ...opts
+    });
+
+    this.views.push(new FFMPEGView({
+      container: 'container0',
+      css: 'video-h264',
+      name: 'UAV Video',
+      framerate: 25,
+      showTime: true,
+      showStats: true,
+      dataSourceId: dataSource0.id
+    }));
+
+    this.views.push(new FFMPEGView({
+      container: 'container1',
+      css: 'video-h264',
+      name: 'UAV Video',
+      framerate: 25,
+      showTime: true,
+      showStats: true,
+      dataSourceId: dataSource1.id
+    }));
+
+    this.views.push(new FFMPEGView({
+      container: 'container2',
+      css: 'video-h264',
+      name: 'UAV Video',
+      framerate: 25,
+      showTime: true,
+      showStats: true,
+      dataSourceId: dataSource2.id
+    }));
+
+    this.views.push(new FFMPEGView({
+      container: 'container3',
+      css: 'video-h264',
+      name: 'UAV Video',
+      framerate: 25,
+      showTime: true,
+      showStats: true,
+      dataSourceId: dataSource3.id
+    }));
+
+    this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1,
-      intervalRate: 5,
-      dataSources: [this.dataSource0, this.dataSource1, this.dataSource2]
-    })
-    dataSynchronizer.connect();
+      timerResolution: 5,
+      dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
+    });
+    this.dataSynchronizer.connect();
+  },
+  methods: {
+    onControlEvent(eventName) {
+      if (eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed') {
+        for(let view of this.views) {
+          view.reset();
+        }
+      }
+    }
   }
 };
 </script>
 <style>
-body {
+body, html {
   overflow-x: hidden;
   margin: 0;
   padding: 0px;
-}
-
-.video-container {
-  margin: auto;
-  height: inherit;
-  width: inherit;
-}
-
-.osh-view {
-  margin: auto;
-  display: flex;
-}
-
-.main-video {
+  background: aliceblue;
   width: 100%;
   height: 100%;
 }
 
-#app {
-  max-width: 100%;
-}
-
 #container {
-  width: 800px;
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  flex-flow: wrap;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
-.main-video {
-  width: 350px;
-  margin:20px;
+#container > div {
+  margin: 5px;
+  width: 45%;
+}
+#app {
+  width: inherit;
+  height: inherit;
+  padding-top: 0px;
+}
+
+div.video-h264 canvas {
+  width: 100%;
 }
 </style>

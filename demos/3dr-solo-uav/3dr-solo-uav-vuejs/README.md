@@ -59,7 +59,7 @@ Add a OSH  alias so we can reference it in our app code:
       path.resolve(__dirname, '../../../source')
     ],
     alias: {
-      'osh': path.resolve(__dirname, '../../../source/osh'),
+      'core': path.resolve(__dirname, '../../../source/core'),
       'vue$': 'vue/dist/vue.esm.js',
     },
     extensions: ['*', '.lib', '.vue', '.json']

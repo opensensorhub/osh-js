@@ -18,10 +18,10 @@ import Map from './components/Map.vue';
 import './assets/app.css';
 import VideoContainer from "./components/VideoContainer";
 import Worker from './workers/check.offering.worker.js';
-import SweJson from "osh/datareceiver/SweJson.js";
-import Video from "osh/datareceiver/Video.js";
-import VideoWithRoll from "osh/datareceiver/VideoWithRoll.js";
-import DataSynchronizer from 'osh/datasynchronizer/DataSynchronizer.js';
+import SosGetResultJson from "core/datasource/SosGetResultJson.js";
+import SosGetResultVideo from "core/datasource/SosGetResultVideo.js";
+import SosGetResultVideoWithRoll from "core/datasource/SosGetResultVideoWithRoll.js";
+import DataSynchronizer from 'core/timesync/DataSynchronizer.js';
 
 export default {
   name: 'App',
@@ -67,7 +67,7 @@ export default {
       //   item.startTime = '2020-08-13T19:28:50.052Z';
       // }
       if(item.location) {
-        mapItem['location'] = new SweJson("android-GPS", {
+        mapItem['location'] = new SosGetResultJson("android-GPS", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: process.env.HOST + "/sensorhub/sos",
@@ -81,7 +81,7 @@ export default {
         });
         dataSources.push(mapItem['location']);
         if (item.heading) {
-          mapItem['heading'] = new SweJson("android-Att", {
+          mapItem['heading'] = new SosGetResultJson("android-Att", {
             protocol: "ws",
             service: "SOS",
             endpointUrl: process.env.HOST + "/sensorhub/sos",
@@ -119,9 +119,9 @@ export default {
         };
         let videoDataSource;
         if (item.roll) {
-          videoDataSource = new VideoWithRoll(item.name, videoProperties);
+          videoDataSource = new SosGetResultVideoWithRoll(item.name, videoProperties);
         } else {
-          videoDataSource = new Video(item.name, videoProperties);
+          videoDataSource = new SosGetResultVideo(item.name, videoProperties);
         }
         dataSources.push(videoDataSource);
         // add to videos

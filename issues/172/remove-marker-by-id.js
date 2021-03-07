@@ -1,7 +1,7 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
-import CesiumView from 'osh/ui/view/map/CesiumView.js';
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import {randomUUID} from "osh/utils/Utils";
+import SosGetResultJson from 'core/datasource/SosGetResultJson.js';
+import CesiumView from 'core/ui/view/map/CesiumView.js';
+import PointMarker from "core/ui/layer/PointMarker.js";
+import {randomUUID} from "core/utils/Utils";
 
 window.CESIUM_BASE_URL = './';
 
@@ -12,7 +12,7 @@ const totalElt = document.getElementById("total");
 const viewItems = [];
 
 function addMarker() {
-    let gpsDataSource = new SweJson('android-GPS', {
+    let gpsDataSource = new SosGetResultJson('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -25,7 +25,7 @@ function addMarker() {
 
     let pointMarker = new PointMarker({
         label: "Marker",
-        locationFunc : {
+        getLocation : {
             dataSourceIds : [gpsDataSource.id],
             handler : function(rec) {
                 return {
@@ -41,7 +41,7 @@ function addMarker() {
     const viewItem = {
         id: randomUUID(),
         name: 'marker',
-        styler: pointMarker
+        layer: pointMarker
     };
     viewItems.push(viewItem);
 

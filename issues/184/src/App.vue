@@ -17,8 +17,8 @@
 </template>
 <script>
 // @ is an alias to /src
-import Video from 'osh-vue/components/video/VideoWithControl.vue';
-import VideoOsh from "osh/datareceiver/VideoWithRoll.js";
+import Video from 'vue/components/video/VideoWithControl.vue';
+import VideoOsh from "core/datasource/VideoWithRoll.js";
 
 export default {
   components: {
@@ -36,15 +36,15 @@ export default {
       protocol: 'ws',
       service: 'SOS',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      endpointUrl: '192.168.2.146:8082/sensorhub/sos',
+      endpointUrl: '127.0.0.1:8082/sensorhub/sos',
 
       // offeringID: 'realtime-android',
       // startTime: 'now',
       // endTime: '2055-01-01',
       //
       offeringID: 'replay-android',
-      startTime: '2020-08-16T11:31:11.444Z',
-      endTime: '2020-08-16T11:32:06.773Z',
+      startTime: '2020-09-27T11:17:28.870Z',
+      endTime: '2020-09-27T11:18:11.079Z',
       replaySpeed: 1,
       reconnectionTimeout: 1000
     });

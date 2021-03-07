@@ -1,10 +1,10 @@
 // dynamic part
-import {startDataSet} from "./datasynchronizer";
+import {startDataSet} from './datasynchronizer';
 import DataInjectorWorker from './DataInjector.worker';
-import DataSynchronizer from "osh/datasynchronizer/DataSynchronizer";
-import {DATA_SYNCHRONIZER_TOPIC} from "osh/Constants";
-import DummyDataSource from "./datasource/DummyDataSource";
-import {randomUUID} from "osh/utils/Utils";
+import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
+import {DATA_SYNCHRONIZER_TOPIC} from 'osh/core/Constants';
+import DummyDataSource from './datasource/DummyDataSource';
+import {randomUUID} from 'osh/core/utils/Utils';
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");
@@ -60,16 +60,16 @@ export function startDynamicWithTimeout(cbFinish) {
         })
     ];
 
-    const dataSynchronizer = new DataSynchronizer({
+    const timeSync = new DataSynchronizer({
         replaySpeed: replaySpeed,
         dataSources:  dataSources,
-        intervalRate: 5
+        timerResolution: 5
     });
 
-    const currentTimeBroadCastChannel = new BroadcastChannel(DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id);
-    console.log('listen for currentTime',DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id)
+    const currentTimeBroadCastChannel = new BroadcastChannel(DATA_SYNCHRONIZER_TOPIC+timeSync.id);
+    console.log('listen for currentTime',DATA_SYNCHRONIZER_TOPIC+timeSync.id)
     currentTimeBroadCastChannel.onmessage = async (event) => {
-      eltCurrentTime.innerText = new Date(await dataSynchronizer.getCurrentTime()).toISOString();
+      eltCurrentTime.innerText = new Date(await timeSync.getCurrentTime()).toISOString();
     };
 
     startDataSet(eltDynamic, 100, eltDynamicErrors, [],
@@ -80,35 +80,35 @@ export function startDynamicWithTimeout(cbFinish) {
         parseInt(document.getElementById("freq1").value),
         parseInt(document.getElementById("latency1").value),
         replaySpeed,
-        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
+        DATA_SYNCHRONIZER_TOPIC+timeSync.id
         );
     addDataInjection(
         dataSources[1],
         parseInt(document.getElementById("freq2").value),
         parseInt(document.getElementById("latency2").value),
         replaySpeed,
-        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
+        DATA_SYNCHRONIZER_TOPIC+timeSync.id
     );
     addDataInjection(
         dataSources[2],
         parseInt(document.getElementById("freq3").value),
         parseInt(document.getElementById("latency3").value),
         replaySpeed,
-        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
+        DATA_SYNCHRONIZER_TOPIC+timeSync.id
     );
     addDataInjection(
         dataSources[3],
         parseInt(document.getElementById("freq4").value),
         parseInt(document.getElementById("latency4").value),
         replaySpeed,
-        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
+        DATA_SYNCHRONIZER_TOPIC+timeSync.id
         );
     addDataInjection(
         dataSources[4],
         parseInt(document.getElementById("freq5").value),
         parseInt(document.getElementById("latency5").value),
         replaySpeed,
-        DATA_SYNCHRONIZER_TOPIC+dataSynchronizer.id
+        DATA_SYNCHRONIZER_TOPIC+timeSync.id
     );
 
     function addDataInjection(dummyDataSource, freq, latency = 0,replaySpeed, topic) {
@@ -127,7 +127,7 @@ export function startDynamicWithTimeout(cbFinish) {
         setTimeout(() => {
             console.log('calling terminate..');
             dataInjector.terminate();
-            dataSynchronizer.terminate();
+            timeSync.terminate();
             cbFinish();
         }, duration);
     }

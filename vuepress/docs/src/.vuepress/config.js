@@ -19,7 +19,7 @@ module.exports = {
         },
         plugins: [
             new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../showcase/dist'), to: 'showcase' }]}),
-            new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../documentation/jsdoc/build-iframe'), to: 'guide/api' }]})
+            new CopyWebpackPlugin({patterns: [{ from:  path.resolve(__dirname,'../../../../jsdoc/dist-iframe'), to: 'guide/api' }]})
         ]
     },
     /**
@@ -42,7 +42,7 @@ module.exports = {
         ['meta', {name: 'apple-mobile-web-app-status-bar-style', content: 'black'}]
     ],
     dest: 'dist',
-    base: '/osh-js/latest/site/',
+    base: '/osh-js/dev/site/',
     /**
      * Theme configuration, here is the default theme configuration for VuePress.
      *
@@ -63,11 +63,19 @@ module.exports = {
             },
             {
                 text: 'Samples',
-                link: 'http://opensensorhub.github.io/osh-js/v2.0.0/showcase/',
+                ariaLabel: 'Samples',
+                items: [
+                    { text: 'Showcase', link: 'http://opensensorhub.github.io/osh-js/dev/showcase/' },
+                    { text: 'Vue.js Video', link: 'http://opensensorhub.github.io/osh-js/dev/demos/video-display-vuejs/' },
+                    { text: 'Vue.js  advanced', link: 'http://opensensorhub.github.io/osh-js/dev/demos/video-display-advanced-vuejs/' },
+                    { text: 'React UAV', link: 'http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-react' },
+                    { text: 'Vue.js UAV', link: 'http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-vuejs' },
+                    { text: 'Earthquakes Deck.gl', link: 'http://opensensorhub.github.io/osh-js/dev/demos/earthquake' },
+                ]
             },
             {
                 text: 'API',
-                link: 'http://opensensorhub.github.io/osh-js/v2.0.0/documentation/jsdoc/'
+                link: 'http://opensensorhub.github.io/osh-js/dev/jsdoc/'
             },
             {
                 text: 'Blog',
@@ -110,6 +118,7 @@ module.exports = {
                     collapsable: true,
                     children: [
                         '/guide/datasources/general.md',
+                        '/guide/protocol/general.md',
                         {
                             title: 'SOS',
                             collapsable: true,
@@ -118,7 +127,8 @@ module.exports = {
                                 '/guide/datasources/sos/swejson.md',
                                 '/guide/datasources/sos/video.md',
                                 '/guide/datasources/sos/videoroll.md',
-                                '/guide/datasources/sos/batch_replayspeed.md'
+                                '/guide/datasources/sos/sosgetfois.md',
+                                '/guide/datasources/sos/batch_replayspeed.md',
                             ]
                         },
                         {
@@ -129,22 +139,22 @@ module.exports = {
                                 '/guide/datasources/sps/foscamtasking.md',
                                 '/guide/datasources/sps/ptztasking.md'
                             ]
+                        },
+                        {
+                            title: 'Others',
+                            collapsable: true,
+                            children: [
+                                '/guide/datasources/others/file.md',
+                            ]
                         }
                     ]
                 },
-                '/guide/datasynchronizer/general.md',
+                '/guide/timesync/general.md',
                 {
                     title: 'Views',
                     collapsable: true,
                     children: [
                         '/guide/views/general.md',
-                        {
-                            title: 'Styler',
-                            collapsable: true,
-                            children: [
-                                '/guide/views/stylers/general.md',
-                            ]
-                        },
                         {
                             title: 'Map',
                             collapsable: true,
@@ -153,23 +163,17 @@ module.exports = {
                                 '/guide/views/map/ol.md',
                                 '/guide/views/map/leaflet.md',
                                 '/guide/views/map/cesium.md',
+                                '/guide/views/map/deckgl.md',
                             ]
                         },
                         '/guide/views/chart.md',
-                        '/guide/views/spectrogram.md',
                         {
                             title: 'Video',
                             collapsable: true,
                             children: [
                                 '/guide/views/video/ffmpeg.md',
-                                '/guide/views/video/mjpeg.md'
-                            ]
-                        },
-                        {
-                            title: 'Entity',
-                            collapsable: true,
-                            children: [
-                                '/guide/views/entity/entity.md',
+                                '/guide/views/video/mjpeg.md',
+                                '/guide/views/video/videocodec.md',
                             ]
                         },
                         {
@@ -184,13 +188,22 @@ module.exports = {
                     ]
                 },
                 {
+                    title: 'Layers',
+                    collapsable: true,
+                    children: [
+                        '/guide/layers/general.md',
+                        '/guide/layers/marker.md',
+                        '/guide/layers/polyline.md',
+                        '/guide/layers/curve.md',
+                        '/guide/layers/draping.md',
+                    ]
+                },
+                {
                     title: 'Vue.js components',
                     collapsable: true,
                     children: [
                         '/guide/vuejs/general.md',
-                        '/guide/vuejs/control.md',
-                        '/guide/vuejs/menusettings.md',
-                        '/guide/vuejs/videocontrol.md',
+                        '/guide/vuejs/timecontroller.md',
                     ]
                 },
                 {

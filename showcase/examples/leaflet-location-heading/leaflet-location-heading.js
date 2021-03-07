@@ -1,14 +1,14 @@
 //@ sourceURL=leaflet-location.html.js
 
 // create data source for Android phone GPS
-import SweJson from "osh/datareceiver/SweJson.js";
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
 
 let replaySpeed = 2;
 
 // create data source for Android phone GPS
-let gpsDataSource = new SweJson("android-GPS", {
+let gpsDataSource = new SosGetResultJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -20,7 +20,7 @@ let gpsDataSource = new SweJson("android-GPS", {
 });
 
 // create data source for Android phone orientation
-let attitudeDataSource = new SweJson("android-Att", {
+let attitudeDataSource = new SosGetResultJson("android-Att", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -32,8 +32,9 @@ let attitudeDataSource = new SweJson("android-Att", {
 });
 
 // style it with a moving point marker
-let pointMarker = new PointMarker({
-  locationFunc: {
+let pointMarker = new PointMarkerLayer({
+  name: "Android Phone GPS",
+  getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
       return {
@@ -43,7 +44,7 @@ let pointMarker = new PointMarker({
       };
     }
   },
-  orientationFunc : {
+  getOrientation : {
     dataSourceIds : [attitudeDataSource.getId()],
     handler : function(rec) {
       let qx = rec.orient.qx;
@@ -75,18 +76,16 @@ let pointMarker = new PointMarker({
     }
   },
   icon: 'images/car-topview.png',
+  iconSize: [16,32],
   iconAnchor: [16, 30]
 });
 
 // create Leaflet view
-let leafletMapView = new LeafletView("leafletMap",
-    [{
-      styler: pointMarker,
-      name: "Android Phone GPS"
-    }], {
-      autoZoomOnFirstMarker:true
-    }
-);
+let leafletMapView = new LeafletView({
+    container: 'leafletMap',
+    layers: [pointMarker],
+    autoZoomOnFirstMarker:true
+});
 
 // start streaming
 attitudeDataSource.connect();

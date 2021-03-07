@@ -1,12 +1,12 @@
-import SweJson from 'osh/datareceiver/SweJson.js';
-import CesiumView from 'osh/ui/view/map/CesiumView.js';
+import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
+import CesiumView from 'osh/core/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider} from 'cesium';
-import PointMarker from 'osh/ui/styler/PointMarker.js';
+import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
 
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
-let gpsDataSource = new SweJson('android-GPS', {
+let gpsDataSource = new SosGetResultJson('android-GPS', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -18,16 +18,12 @@ let gpsDataSource = new SweJson('android-GPS', {
 });
 
 // style it with a moving point marker
-let pointMarker = new PointMarker({
-    locationFunc: {
-        dataSourceIds: [gpsDataSource.getId()],
-        handler: function (rec) {
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat
-            };
-        }
-    },
+let pointMarker = new PointMarkerLayer({
+    dataSourceId: gpsDataSource.id,
+    getLocation: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat
+    }),
     orientation: {
         heading: 0
     },
@@ -37,12 +33,11 @@ let pointMarker = new PointMarker({
 
 // #region snippet_cesium_location_view
 // create Cesium view
-let cesiumView = new CesiumView('cesium-container',
-    [{
-        styler: pointMarker,
-        name: 'Android Phone GPS'
-    }]
-);
+let cesiumView = new CesiumView({
+    container: 'cesium-container',
+    layers: [pointMarker]
+});
+
 // #endregion snippet_cesium_location_view
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 

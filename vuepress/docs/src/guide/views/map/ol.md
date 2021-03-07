@@ -1,7 +1,7 @@
 # OpenLayers
 
 The OpenLayerView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
-This View can also display path using the corresponding [Styler](../stylers/styler).
+This View can also display path using the corresponding [Layer](../layers/layer).
 
 The View is based on [OpenLayers](https://openlayers.org/) framework.
 
@@ -29,7 +29,13 @@ The initial View can be passed to override the default [View](https://openlayers
 
 Here is the corresponding code that initializes the initial-view if none is passed in parameter:
 
-<<< @/../../source/osh/ui/view/map/OpenLayerView.js#snippet_openlayerview_initial_view
+<<< @/../../source/core/ui/view/map/OpenLayerView.js#snippet_openlayerview_initial_view
+
+## Supported layers
+
+The view supports type layers:
+- marker
+- polyline
 
 ## Example
 

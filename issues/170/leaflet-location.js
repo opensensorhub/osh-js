@@ -1,9 +1,9 @@
 // create data source for Android phone GPS
-import SweJson from 'osh/datareceiver/SweJson.js';
-import PointMarker from "osh/ui/styler/PointMarker.js";
-import LeafletView from "osh/ui/view/map/LeafletView.js";
+import SosGetResultJson from 'core/datasource/SosGetResultJson.js';
+import PointMarker from "core/ui/layer/PointMarker.js";
+import LeafletView from "core/ui/view/map/LeafletView.js";
 
-let gpsDataSource = new SweJson("android-GPS", {
+let gpsDataSource = new SosGetResultJson("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -16,7 +16,7 @@ let gpsDataSource = new SweJson("android-GPS", {
 
 // style it with a moving point marker
 let pointMarker = new PointMarker({
-  locationFunc: {
+  getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {
       return {
@@ -39,7 +39,7 @@ let pointMarker = new PointMarker({
 // create Leaflet view
 let leafletMapView = new LeafletView("leafletMap",
     [{
-      styler: pointMarker,
+      layer: pointMarker,
       name: "Android Phone GPS"
     }],
     {
