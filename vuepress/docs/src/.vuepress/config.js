@@ -42,7 +42,7 @@ module.exports = {
         ['meta', {name: 'apple-mobile-web-app-status-bar-style', content: 'black'}]
     ],
     dest: 'dist',
-    base: '/osh-js/dev/site/',
+    base: '/osh-js/latest/site/',
     /**
      * Theme configuration, here is the default theme configuration for VuePress.
      *
@@ -65,17 +65,17 @@ module.exports = {
                 text: 'Samples',
                 ariaLabel: 'Samples',
                 items: [
-                    { text: 'Showcase', link: 'http://opensensorhub.github.io/osh-js/dev/showcase/' },
-                    { text: 'Vue.js Video', link: 'http://opensensorhub.github.io/osh-js/dev/demos/video-display-vuejs/' },
-                    { text: 'Vue.js  advanced', link: 'http://opensensorhub.github.io/osh-js/dev/demos/video-display-advanced-vuejs/' },
-                    { text: 'React UAV', link: 'http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-react' },
-                    { text: 'Vue.js UAV', link: 'http://opensensorhub.github.io/osh-js/dev/demos/3dr-solo-uav-vuejs' },
-                    { text: 'Earthquakes Deck.gl', link: 'http://opensensorhub.github.io/osh-js/dev/demos/earthquake' },
+                    { text: 'Showcase', link: 'http://opensensorhub.github.io/osh-js/latest/showcase/' },
+                    { text: 'Vue.js Video', link: 'http://opensensorhub.github.io/osh-js/latest/demos/video-display-vuejs/' },
+                    { text: 'Vue.js  advanced', link: 'http://opensensorhub.github.io/osh-js/latest/demos/video-display-advanced-vuejs/' },
+                    { text: 'React UAV', link: 'http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-react' },
+                    { text: 'Vue.js UAV', link: 'http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-vuejs' },
+                    { text: 'Earthquakes Deck.gl', link: 'http://opensensorhub.github.io/osh-js/latest/demos/earthquake' },
                 ]
             },
             {
                 text: 'API',
-                link: 'http://opensensorhub.github.io/osh-js/dev/jsdoc/'
+                link: 'http://opensensorhub.github.io/osh-js/latest/jsdoc/'
             },
             {
                 text: 'Blog',
@@ -229,6 +229,7 @@ module.exports = {
     /**
      * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
      */
+
     plugins: [
         '@vuepress/plugin-back-to-top',
         '@vuepress/plugin-medium-zoom',
