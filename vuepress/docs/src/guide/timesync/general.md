@@ -42,7 +42,7 @@ channel(s).
 
 It also returns a time synchronization data defined by `TIME_SYNCHRONIZER_TOPIC` + `<id_of_synchronizer>`.
 
-The `TIME_SYNCHRONIZER_TOPIC` constant is defined from the constant package `'osh-jscore/Constants'`
+The `TIME_SYNCHRONIZER_TOPIC` constant is defined from the constant package `'osh-js/core/Constants'`
 
 ## Example
 

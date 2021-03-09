@@ -25,7 +25,7 @@
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
-    "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/  all",
+    "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/ install && yarn  --cwd jsdoc/  all",
     "vuepress": "yarn install && yarn  --cwd vuepress/docs prod",
     "transpile": "shx rm -rf build && shx mkdir -p build && shx cp -rf source/ build && tsc --project config/tsconfig-build.json && cp -fr source/vue ./build/vue",
     "copy-package-resources": "cp -fr source/core/resources ./build/core/resources && cp -fr source/ext/resources ./build/ext/resources",
@@ -53,7 +53,8 @@
     "worker-plugin": "^4.0.2",
     "shx": "^0.3.3",
     "wnumb": "^1.2.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "jsdoc-vuejs": "^3.0.9"
   },
   "dependencies": {
   }

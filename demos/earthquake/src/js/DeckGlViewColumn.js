@@ -15,8 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import DeckGlView from "osh-jscore/ui/view/map/DeckGlView";
-import {randomUUID} from "osh-jscore/utils/Utils";
+import DeckGlView from "osh-js/core/ui/view/map/DeckGlView";
+import {randomUUID} from "osh-js/core/utils/Utils";
 import {ColumnLayer} from '@deck.gl/layers';
 
 /**
