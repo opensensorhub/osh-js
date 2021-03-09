@@ -61,7 +61,7 @@ import MapView from "./MapView";
  * @extends MapView
  * @example
 
- import CesiumView from 'osh/ui/view/map/CesiumView.js';
+ import CesiumView from 'osh-js/ui/view/map/CesiumView.js';
 
  // style it with a moving point marker
  let pointMarker = new PointMarkerLayer({

@@ -20,7 +20,7 @@ import Layer from "./Layer.js";
 /**
  * @extends Layer
  * @example
- import ImageDrapingLayer from 'osh/ui/layer/ImageDrapingLayer.js';
+ import ImageDrapingLayer from 'osh-js/ui/layer/ImageDrapingLayer.js';
 
  let imageDrapingLayer = new ImageDrapingLayer({
       getPlatformLocation: {

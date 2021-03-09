@@ -1,8 +1,8 @@
 {
   "name": "osh-js",
-  "version": "1.3.3",
+  "version": "2.0.0",
   "description": "OSH javascript Toolkit",
-  "main": "osh.js",
+  "main": "./core/OSH",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/opensensorhub/osh-js.git"
@@ -27,9 +27,9 @@
     "build": "webpack --config webpack.config.js --mode production",
     "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/  all",
     "vuepress": "yarn install && yarn  --cwd vuepress/docs prod",
-    "copy-css": "shx cp -fr source/core/resources/css build/osh-js/css",
-    "transpile": "shx rm -rf build/osh-js && shx mkdir -p build/osh-js && shx cp -rf source/ build/osh-js/source && tsc --project config/tsconfig-build.json",
-    "build-package": "npm run transpile && npm run copy-css && node config/prepare-package"
+    "transpile": "shx rm -rf build && shx mkdir -p build && shx cp -rf source/ build && tsc --project config/tsconfig-build.json && cp -fr source/vue ./build/vue",
+    "copy-package-resources": "cp -fr source/core/resources ./build/core/resources && cp -fr source/ext/resources ./build/ext/resources",
+    "build-package": "npm run transpile && node config/prepare-package && npm run copy-package-resources"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
@@ -50,11 +50,11 @@
     "webpack-cli": "^3.3.11",
     "webpack-node-externals": "^1.7.2",
     "worker-loader": "^2.0.0",
-    "worker-plugin": "^4.0.2"
-  },
-  "dependencies": {
+    "worker-plugin": "^4.0.2",
     "shx": "^0.3.3",
     "wnumb": "^1.2.0",
     "typescript": "^4.0.2"
+  },
+  "dependencies": {
   }
 }

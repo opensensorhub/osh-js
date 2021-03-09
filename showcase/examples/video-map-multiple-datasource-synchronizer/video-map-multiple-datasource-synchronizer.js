@@ -1,9 +1,9 @@
-import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
-import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
-import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
-import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView';
-import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
+import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const REPLAY_FACTOR = 1.0;
 

@@ -18,8 +18,8 @@ import {
 	Cartesian3,
 } from 'cesium';
 
-import {isDefined} from "../../../osh/utils/Utils.js";
-import Layer from "../../../osh/ui/layer/Layer.js";
+import {isDefined} from "../../../osh-js/utils/Utils.js";
+import Layer from "../../../osh-js/ui/layer/Layer.js";
 
 /**
  * Nexrad Layer.

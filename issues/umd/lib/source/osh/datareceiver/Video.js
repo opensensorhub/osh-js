@@ -22,7 +22,7 @@ import VideoWorker from "./workers/Video.worker.js";
  * Data: ArrayBuffer
  * @extends DataSource
  * @example
- * import Video from 'osh/datareceiver/Video.js';
+ * import Video from 'osh-js/datareceiver/Video.js';
  *
  * var videoDataSource = new Video("H264 video ", {
         protocol: "ws",

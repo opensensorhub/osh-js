@@ -9,8 +9,8 @@
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
   import CesiumView from "../../../../../source/core/ui/view/map/CesiumView.js";
   // @ is an alias to /src
-  import ImageDrapingLayer from "osh/core/ui/layer/ImageDrapingLayer.js";
-  import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
+  import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
+  import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
 
   export default {
     name: "Globe",

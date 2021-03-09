@@ -23,9 +23,9 @@
 
 <script>
 import RangeSlider from 'osh-ext/ui/view/rangeslider/RangeSliderView.js';
-import {randomUUID} from 'osh/utils/Utils.js';
+import {randomUUID} from 'osh-js/utils/Utils.js';
 import * as wNumb from 'wnumb';
-import {isDefined} from "../../osh/utils/Utils";
+import {isDefined} from "../../osh-js/utils/Utils";
 import VideoControl from "./video/VideoControl.vue";
 
 export default {

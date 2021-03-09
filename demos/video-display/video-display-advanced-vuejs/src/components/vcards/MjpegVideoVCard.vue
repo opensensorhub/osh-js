@@ -13,8 +13,8 @@
 </template>
 
 <script>
-  import MjpegView from "osh/core/ui/view/video/MjpegView";
-  import {randomUUID} from "osh/core/utils/Utils";
+  import MjpegView from "osh-js/core/ui/view/video/MjpegView";
+  import {randomUUID} from "osh-js/core/utils/Utils";
 
   export default {
     name: "MjpegVideoVCard",

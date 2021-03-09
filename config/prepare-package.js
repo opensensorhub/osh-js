@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const pkg = require('../package.json');
 
-const buildDir = path.resolve(__dirname, '../build/core-js');
+const buildDir = path.resolve(__dirname, '../build');
 
 // update the version number in util.js
 
