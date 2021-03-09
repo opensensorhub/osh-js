@@ -301,8 +301,8 @@ class CesiumView extends MapView {
       showRenderLoopErrors: true,
       animation: false,
       scene3DOnly: true, // for draw layer
-      terrainProvider: new EllipsoidTerrainProvider(),
     };
+
     // #endregion snippet_cesiumview_default_cesiumprops_viewer_props
 
     if (isDefined(options)) {
@@ -315,6 +315,8 @@ class CesiumView extends MapView {
     }
 
     this.viewer = new Viewer(this.divId, viewerProps);
+
+    this.viewer.terrainProvider = new EllipsoidTerrainProvider();
     this.viewer.scene.copyGlobeDepth = true;
     this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 
