@@ -28,7 +28,7 @@ OpenSensorHub can be built using Gradle either from the command line or within E
 
 Refer to the [Developer's Guide](http://docs.opensensorhub.org/latest/dev-guide/#building-with-eclipse) for instructions on how to setup your development environment in Eclipse.
 
-You can also find useful information in the [Javadocs](http://docs.opensensorhub.org/dev/javadoc/) and Design Documentation on the [Wiki](../../wiki/Home). 
+You can also find useful information in the [Javadocs](http://docs.opensensorhub.org/latest/javadoc/) and Design Documentation on the [Wiki](../../wiki/Home). 
 
 Several sensor driver examples are also available in the source code to help you get started.
 
