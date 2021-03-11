@@ -24,7 +24,7 @@ import MapView from "./MapView";
  * @extends MapView
  * @example
 
- import LeafletView from 'osh/ui/view/map/LeafletView.js';
+ import LeafletView from 'osh-js/ui/view/map/LeafletView.js';
 
  let leafletMapView = new LeafletView({
 	container: 'leafletMap',

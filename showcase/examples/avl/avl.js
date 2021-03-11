@@ -1,11 +1,11 @@
-import SweJson from 'osh/core/datasource/SosGetResultJson.js';
-import PointMarkerLayer from 'osh/core/ui/layer/PointMarkerLayer.js';
-import Polyline from 'osh/core/ui/layer/PolylineLayer.js';
-import LeafletView from 'osh/core/ui/view/map/LeafletView.js';
-import {DATASOURCE_DATA_TOPIC} from 'osh/core/Constants';
-import OpenLayerView from 'osh/core/ui/view/map/OpenLayerView';
-import CesiumView from 'osh/core/ui/view/map/CesiumView.js';
-import DeckGlView from 'osh/core/ui/view/map/DeckGlView';
+import SweJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
+import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
+import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView';
+import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
+import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
 
 import {
     Cartographic, Math

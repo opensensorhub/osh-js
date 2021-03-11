@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../../../../osh/ui/view/View.js";
-import {isDefined, randomUUID} from "../../../../osh/utils/Utils.js";
+import View from "../../../../osh-js/ui/view/View.js";
+import {isDefined, randomUUID} from "../../../../osh-js/utils/Utils.js";
 import "../../../resources/css/tasking.css";
 
 export const htmlTaskingComponent=`

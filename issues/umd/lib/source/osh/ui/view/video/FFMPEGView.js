@@ -21,7 +21,7 @@ import CanvasView from "./CanvasView";
  * @extends CanvasView
  * @example
  *
- import FFMPEGView from 'osh/ui/view/video/FFMPEGView.js';
+ import FFMPEGView from 'osh-js/ui/view/video/FFMPEGView.js';
 
  let videoView = new FFMPEGView({
   container: 'video-h264-container',

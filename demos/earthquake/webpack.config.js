@@ -43,7 +43,7 @@ module.exports = env => {
       ],
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
-        'osh': path.resolve(__dirname, '../../source')
+        'osh-js': path.resolve(__dirname, '../../source')
       },
       extensions: ['*', '.js', '.vue', '.json']
     },

@@ -4,16 +4,16 @@
     <TimeController
         :dataSource="dataSource"
         @event='onControlEvent'
-        :skipTimeStep="'60s'"
+        :skipTimeStep="'10s'"
         v-if="dataSource "
     ></TimeController>
   </div>
 </template>
 <script>
     // @ is an alias to /src
-    import TimeController from 'osh/vue/components/TimeController.vue';
-    import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
-    import FFMPEGView from 'osh/core/ui/view/video/FFMPEGView';
+    import TimeController from 'osh-js/vue/components/TimeController.vue';
+    import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+    import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
 
     export default {
         components: {

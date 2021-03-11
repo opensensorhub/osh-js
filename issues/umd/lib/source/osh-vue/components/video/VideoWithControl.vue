@@ -47,11 +47,11 @@
   </div>
 </template>
 <script>
-  import FFMPEGView from "osh/ui/view/video/FFMPEGView.js";
-  import {randomUUID} from "osh/utils/Utils.js";
+  import FFMPEGView from "osh-js/ui/view/video/FFMPEGView.js";
+  import {randomUUID} from "osh-js/utils/Utils.js";
   import Control from '../Control.vue';
   import VideoControl from './VideoControl.vue';
-  import DataLayer from "osh/ui/layer/DataLayer";
+  import DataLayer from "osh-js/ui/layer/DataLayer";
 
   export default {
     name: "Video",

@@ -45,7 +45,7 @@ import {
 import DeckGlViewColumn from "../js/DeckGlViewColumn";
 import HoverInfo from "./HoverInfo";
 import {mapState, mapActions} from 'vuex'
-import DataLayer from "osh/core/ui/layer/DataLayer";
+import DataLayer from "osh-js/core/ui/layer/DataLayer";
 
 export default {
   name: "MapColumn",

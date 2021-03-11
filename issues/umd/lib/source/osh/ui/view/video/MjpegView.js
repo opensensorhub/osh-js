@@ -21,7 +21,7 @@ import {isDefined} from "../../../utils/Utils.js";
  * @extends View
  * @example
  *
-import MjpegView from 'osh/ui/view/video/MjpegView.js';
+import MjpegView from 'osh-js/ui/view/video/MjpegView.js';
 
  let videoView = new MjpegView({
   container: 'container',

@@ -19,7 +19,7 @@
 import './assets/app.css';
 import Map from './components/MapColumn.vue';
 import TimeRangeSlider from './components/TimeRangeSlider';
-import File from 'osh/core/datasource/File';
+import File from 'osh-js/core/datasource/File';
 
 export default {
   name: 'App',

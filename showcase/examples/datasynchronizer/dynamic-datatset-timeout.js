@@ -1,10 +1,10 @@
 // dynamic part
 import {startDataSet} from './datasynchronizer';
 import DataInjectorWorker from './DataInjector.worker';
-import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
-import {DATA_SYNCHRONIZER_TOPIC} from 'osh/core/Constants';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {DATA_SYNCHRONIZER_TOPIC} from 'osh-js/core/Constants';
 import DummyDataSource from './datasource/DummyDataSource';
-import {randomUUID} from 'osh/core/utils/Utils';
+import {randomUUID} from 'osh-js/core/utils/Utils';
 
 const eltDynamic = document.getElementById("buffer-dynamic-data");
 const eltDynamicErrors = document.getElementById("buffer-dynamic-errors");

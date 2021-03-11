@@ -1,4 +1,4 @@
-import DataSourceParser from 'osh/core/datasource/parsers/DataSourceParser';
+import DataSourceParser from 'osh-js/core/datasource/parsers/DataSourceParser';
 
 class DummyParser extends DataSourceParser {
 

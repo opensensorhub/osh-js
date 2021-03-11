@@ -29,7 +29,7 @@
 import HistogramSlider from 'vue-histogram-slider';
 import 'vue-histogram-slider/dist/histogram-slider.css';
 import InfiniteLoading from 'vue-infinite-loading';
-import {isDefined} from "osh/core/utils/Utils";
+import {isDefined} from "osh-js/core/utils/Utils";
 
 export default {
   name: "TimeRangeSlider",

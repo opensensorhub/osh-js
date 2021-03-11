@@ -30,7 +30,7 @@ module.exports = {
             path.resolve(__dirname, 'node_modules'),
         ],
         alias: {
-            'osh': path.resolve(__dirname, '../../../source')
+            'osh-js': path.resolve(__dirname, '../../../source')
         }
     },
     amd: {

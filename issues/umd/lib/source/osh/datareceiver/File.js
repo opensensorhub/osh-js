@@ -24,7 +24,7 @@ import FileWorker from './workers/File.worker.js';
  *
  * @extends DataSource
  * @example
- * import File from 'osh/datareceiver/File.js';
+ * import File from 'osh-js/datareceiver/File.js';
  *
  * let earthquakeDatasource = new File("EQ", {
     protocol: "file",
