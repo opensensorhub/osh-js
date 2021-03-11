@@ -1,5 +1,5 @@
-import SosGetResultVideo from 'osh/core/datasource/SosGetResultVideo.js';
-import WebCodecView from 'osh/core/ui/view/video/WebCodecView.js';
+import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import WebCodecView from 'osh-js/core/ui/view/video/WebCodecView.js';
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResultVideo("drone-Video", {
