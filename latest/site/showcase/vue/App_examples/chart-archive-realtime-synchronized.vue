@@ -13,13 +13,13 @@
   </div>
 </template>
 <script>
-import ChartJsView from 'osh/core/ui/view/chart/ChartJsView.js';
-import CurveLayer from 'osh/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh/core/datasource/SosGetResultJson.js';
-import TimeController from 'osh/vue/components/TimeController.vue';
+import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
+import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
+import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import TimeController from 'osh-js/vue/components/TimeController.vue';
 
-import DataSynchronizer from 'osh/core/timesync/DataSynchronizer';
-import {isDefined} from 'osh/core/utils/Utils';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {isDefined} from 'osh-js/core/utils/Utils';
 
 export default {
   components: {
