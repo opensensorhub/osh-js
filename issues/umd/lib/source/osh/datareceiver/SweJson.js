@@ -23,7 +23,7 @@ import SosGetResultJsonWorker from './workers/SosGetResultJson.worker.js';
  *
  * @extends DataSource
  * @example
- * import SosGetResultJson from 'osh/datareceiver/SosGetResultJson.js';
+ * import SosGetResultJson from 'osh-js/datareceiver/SosGetResultJson.js';
  *
  * let androidPhoneGpsDataSource = new SosGetResultJson("android-GPS", {
     protocol: "ws",

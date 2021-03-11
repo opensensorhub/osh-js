@@ -21,12 +21,12 @@ Refer to the [Documentation Site](http://docs.opensensorhub.org/) for instructio
 
 ### Building
 
-OpenSensorHub can be built using Gradle either from the command line or within Eclipse. Please see the [Developer's Guide](http://docs.opensensorhub.org/dev/dev-guide/#building-from-source) for detailed instructions.
+OpenSensorHub can be built using Gradle either from the command line or within Eclipse. Please see the [Developer's Guide](http://docs.opensensorhub.org/latest/dev-guide/#building-from-source) for detailed instructions.
 
 
 ### Contributing
 
-Refer to the [Developer's Guide](http://docs.opensensorhub.org/dev/dev-guide/#building-with-eclipse) for instructions on how to setup your development environment in Eclipse.
+Refer to the [Developer's Guide](http://docs.opensensorhub.org/latest/dev-guide/#building-with-eclipse) for instructions on how to setup your development environment in Eclipse.
 
 You can also find useful information in the [Javadocs](http://docs.opensensorhub.org/dev/javadoc/) and Design Documentation on the [Wiki](../../wiki/Home). 
 

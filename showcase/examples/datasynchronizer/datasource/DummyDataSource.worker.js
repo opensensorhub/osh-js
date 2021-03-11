@@ -1,4 +1,4 @@
-import DataSourceHandler from 'osh/core/datasource/workers/DataSourceHandler';
+import DataSourceHandler from 'osh-js/core/datasource/workers/DataSourceHandler';
 import DummyParser from './DummyParser';
 
 const dataSourceHandler = new DataSourceHandler(new DummyParser());

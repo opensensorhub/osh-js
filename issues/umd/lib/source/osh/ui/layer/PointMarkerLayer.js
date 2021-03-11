@@ -29,7 +29,7 @@ import Layer from "./Layer.js";
  * @extends Layer
  * @example
  *
- * import PointMarkerLayer from 'osh/ui/layer/PointMarkerLayer.js';
+ * import PointMarkerLayer from 'osh-js/ui/layer/PointMarkerLayer.js';
  *
  * let pointMarkerLayer = new PointMarkerLayer({
         location : {

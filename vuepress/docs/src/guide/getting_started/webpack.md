@@ -59,7 +59,7 @@ module.exports = {
             path.resolve(__dirname, 'node_modules'),
         ],
         alias: {
-            'osh': path.resolve(__dirname, '../source') // OSH source directory
+            'osh-js': path.resolve(__dirname, '../source') // OSH source directory
         }
     },
     // These rules tell Webpack how to process different module types.

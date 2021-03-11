@@ -21,7 +21,7 @@ import { isDefined } from "../../utils/Utils.js";
  * @extends Layer
  * @example
  *
- * import PolylineLayer from 'osh/ui/layer/PolylineLayer.js';
+ * import PolylineLayer from 'osh-js/ui/layer/PolylineLayer.js';
  *
  * let polylineLayer = new PolylineLayer({
 		getLocation : {

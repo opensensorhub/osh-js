@@ -19,7 +19,7 @@ import DecodeWorker from './workers/webapi.decode.worker.js';
  * @extends CanvasView
  * @example
  *
- import WebCodecView from 'osh/ui/view/video/WebCodecView.js';
+ import WebCodecView from 'osh-js/ui/view/video/WebCodecView.js';
 
  let videoView = new WebCodecView({
   container: 'video-h264-container',

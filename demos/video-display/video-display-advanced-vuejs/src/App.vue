@@ -93,10 +93,10 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
-  import SosGetResultVideo from "osh/core/datasource/SosGetResultVideo.js";
-  import DataSynchronizer from "osh/core/timesync/DataSynchronizer.js";
-  import {isDefined} from "osh/core/utils/Utils";
+  import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
+  import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo.js";
+  import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
+  import {isDefined} from "osh-js/core/utils/Utils";
 
   export default {
     components: {

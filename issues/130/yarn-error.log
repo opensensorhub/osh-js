@@ -2,7 +2,7 @@ Arguments:
   /home/nevro/.nvm/versions/node/v8.17.0/bin/node /usr/bin/yarn dev
 
 PATH: 
-  /home/nevro/.nvm/versions/node/v8.17.0/bin:/home/nevro/Progs/progs-local/git-repo/OSH/osh-js/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/home/nevro/.gem/ruby/2.7.0/bin
+  /home/nevro/.nvm/versions/node/v8.17.0/bin:/home/nevro/Progs/progs-local/git-repo/osh-js/osh-js/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/opt/cuda/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/home/nevro/.gem/ruby/2.7.0/bin
 
 Yarn version: 
   1.22.4
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  SyntaxError: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/issues/130/package.json: Unexpected token } in JSON at position 636
+  SyntaxError: /home/nevro/Progs/progs-local/git-repo/osh-js/osh-js/issues/130/package.json: Unexpected token } in JSON at position 636
       at JSON.parse (<anonymous>)
       at /usr/lib/node_modules/yarn/lib/cli.js:1625:59
       at Generator.next (<anonymous>)

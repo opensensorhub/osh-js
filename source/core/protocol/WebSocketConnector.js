@@ -22,7 +22,7 @@ import {Status} from './Status.js';
  * Defines the WebSocketConnector to connect to a remote server by creating a WebSocket channel.
  * @extends DataConnector
  * @example
- * import WebSocketConnector from 'osh/dataconnector/WebSocketConnector.js';
+ * import WebSocketConnector from 'osh-js/dataconnector/WebSocketConnector.js';
  *
  * let url = ...;
  * let connector = new WebSocketConnector(url);

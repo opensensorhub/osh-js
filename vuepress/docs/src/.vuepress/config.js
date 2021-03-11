@@ -65,7 +65,7 @@ module.exports = {
                 text: 'Samples',
                 ariaLabel: 'Samples',
                 items: [
-                    { text: 'Showcase', link: 'http://opensensorhub.github.io/osh-js/latest/showcase/' },
+                    { text: 'Showcase', link: 'http://opensensorhub.github.io/osh-js/latest/latest/' },
                     { text: 'Vue.js Video', link: 'http://opensensorhub.github.io/osh-js/latest/demos/video-display-vuejs/' },
                     { text: 'Vue.js  advanced', link: 'http://opensensorhub.github.io/osh-js/latest/demos/video-display-advanced-vuejs/' },
                     { text: 'React UAV', link: 'http://opensensorhub.github.io/osh-js/latest/demos/3dr-solo-uav-react' },
@@ -229,7 +229,6 @@ module.exports = {
     /**
      * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
      */
-
     plugins: [
         '@vuepress/plugin-back-to-top',
         '@vuepress/plugin-medium-zoom',

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {isDefined, randomUUID} from "../../../osh/utils/Utils";
+import {isDefined, randomUUID} from "../../../osh-js/utils/Utils";
 import MenuSettings from "../MenuSettings.vue";
 
 export default {
