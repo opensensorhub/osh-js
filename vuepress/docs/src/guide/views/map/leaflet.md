@@ -25,7 +25,7 @@ The ***overlayLayers*** are [L.tileLayer](https://leafletjs.com/reference-1.7.1.
 The ***baseLayers*** are [L.tileLayer](https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer)
  Leaflet objects to use as base layer.
  
-The default [OSM](https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html) layer is provided
+The default [OSM](https://openlayers.org/en/dev/apidoc/module-ol_source_OSM-OSM.html) layer is provided
  
 ## Initial View
 
