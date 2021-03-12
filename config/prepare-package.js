@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const pkg = require('../package.json');
 
-const buildDir = path.resolve(__dirname, '../build');
+const buildDir = path.resolve(__dirname, '../build/osh-js');
 
 // update the version number in util.js
 

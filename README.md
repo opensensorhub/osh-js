@@ -10,27 +10,27 @@ configurable layers as well as an advanced support for video (H264/MJPEG). It ha
 
 Moreover, it offers support for SOS & SPS services, discovery function, uses the HTTP or WebSocket API.
 Several modules already exist to allow one to setup quickly an application such as Orientation, DataSourceChart, Video, Map etc..
- 
-Please report all problems related to the SensorHub software including documentation errors via the [GitHub Issue Tracker](https://github.com/opensensorhub) 
+
+Please report all problems related to the SensorHub software including documentation errors via the [GitHub Issue Tracker](https://github.com/opensensorhub)
 of the [osh-js](https://github.com/opensensorhub/osh-js) repository.
 
 ## Features
 - Supports for data parsing:
-    - Video (with roll) data with codecs H265, H264, VP9, VP8
-    - Any Swe generic JSON such as GPS, Quaternion etc.
-    - Spectrogram, ImageDraping, Nexrad
+  - Video (with roll) data with codecs H265, H264, VP9, VP8
+  - Any Swe generic JSON such as GPS, Quaternion etc.
+  - Spectrogram, ImageDraping, Nexrad
 - Supports for data Synchronization
 - Supports WebSocket and HttpRequest Connector
 - Supports SWE JSON generic requests:
-    - GetCapabilities
-    - GetFeatureOfInterest
-    - GetResultTemplate
-    - DescribeSensor
+  - GetCapabilities
+  - GetFeatureOfInterest
+  - GetResultTemplate
+  - DescribeSensor
 - Supports some dedicated visualizer:
-    - OpenLayer, Leaflet or Cesium for Map data
-    - FFMPeg for Video 
-    - Chart
-    - Spectrogram
+  - OpenLayer, Leaflet or Cesium for Map data
+  - FFMPeg for Video
+  - Chart
+  - Spectrogram
 - Supports for Vue.js components
 ## Installation
 ### Releases
@@ -38,7 +38,7 @@ of the [osh-js](https://github.com/opensensorhub/osh-js) repository.
 Binary and Source distributions archives can be downloaded directly from the [Releases Section](https://github.com/opensensorhub/osh-js/releases) of our GitHub account.
 
 The release contains a vendor directory (needed for some pre-coded views), the minified osh-js library and its corresponding stylesheet.
-You can use both the all-in-one vendor minified script(vendor.js & vendor.css) or the separate ones. 
+You can use both the all-in-one vendor minified script(vendor.js & vendor.css) or the separate ones.
 
 You can import the source directory directly into your APP application and refer to it. The Toolkit is ES6 compliant.
 
@@ -74,7 +74,7 @@ $ npm run prod
 ### Cesium
 
 If you use the CesiumView, don't forget to install the corresponding npm package 'cesium'.
-Moreover, you can apply a path to fix texture issue while using image draping. The patch is 
+Moreover, you can apply a path to fix texture issue while using image draping. The patch is
 located into the patches directory. To apply the patch,you can use *patch-package*:
 
 ```sh
@@ -91,8 +91,8 @@ package.json:
   },
 ```
 
-You can add any external dependencies using *npm*. For example, if you attempt to use 
+You can add any external dependencies using *npm*. For example, if you attempt to use
 some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
 ## Documentation
-The official website: [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/dev/site/)
+The official website: [http://opensensorhub.github.io/osh-js/latest/site/](http://opensensorhub.github.io/osh-js/latest/site/)
