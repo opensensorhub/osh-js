@@ -33,6 +33,7 @@
     "jaguarjs-jsdoc": "^1.1.0",
     "jsdoc": "^3.6.6",
     "jsdoc-vuejs": "2.2.3",
-    "vue-template-compiler": "2.5.21"
+    "vue-template-compiler": "2.5.21",
+    "jsdoc-vuejs": "^3.0.9"
   }
 }

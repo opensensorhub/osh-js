@@ -79,6 +79,11 @@ var samples = [
     url: "video-map-multiple-datasource"
   },
   {
+    name: "Z-Index ordering",
+    description: "Display a moving marker on an Leaflet, DeckGl,Cesium and Openlayers map using a z-Index between markers",
+    url: "zIndex-location-path"
+  },
+  {
     name: "DataSource Synchronized",
     description: "Display the data of 3 differents kind of datasources(Video, Gps and Orientation) using time synchronization algorithm",
     url: "datasources-synchronized"

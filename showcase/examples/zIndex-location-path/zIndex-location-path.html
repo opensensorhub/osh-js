@@ -1,0 +1,51 @@
+<style>
+    body, html {
+      background-color: rgb(36, 39, 48);
+    }
+    .leaflet-container {
+        height: 100%;
+    }
+    #olMap, #leafletMap {
+        flex: auto;
+        padding: 10px;
+        min-width: 450px;
+        width: calc(50% - 50px);
+        flex-grow: 1;
+        border:solid 1px lightgrey;
+        border-radius: 2px;
+        margin: 5px;
+    }
+    #cesiumMap {
+        flex: auto;
+        padding: 10px;
+        flex-grow: 1;
+        border:solid 1px lightgrey;
+        border-radius: 2px;
+        margin: 5px;
+        width: calc(50% - 50px);
+    }
+    #deckMap {
+        flex: auto;
+        padding: 10px;
+        width: calc(50% - 50px);
+        flex-grow: 1;
+        border:solid 1px lightgrey;
+        border-radius: 2px;
+        margin: 5px;
+    }
+    #container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: calc(50% - 35px);
+    }
+    #deckgl-overlay {
+        position: relative!important;
+    }
+</style>
+<div id="container">
+  <div id="leafletMap"></div>
+  <div id="olMap"></div>
+  <div id="cesiumMap"></div>
+  <div id="deckMap"></div>
+</div>
