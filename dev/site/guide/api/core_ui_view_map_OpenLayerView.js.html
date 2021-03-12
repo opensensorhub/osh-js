@@ -56,7 +56,7 @@ import VectorSource from "ol/source/Vector.js";
 import VectorLayer from "ol/layer/Vector.js";
 import Point from 'ol/geom/Point.js';
 import Feature from 'ol/Feature.js';
-import {Icon, Style} from 'ol/style.js';
+import {Icon, Style, Text} from 'ol/style.js';
 import Select from "ol/interaction/Select";
 import OSM from "ol/source/OSM";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
@@ -112,16 +112,7 @@ class OpenLayerView extends MapView {
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-            const markerObj = this.addMarker({
-                lat: props.location.y,
-                lon: props.location.x,
-                orientation: props.orientation.heading,
-                color: props.color,
-                icon: props.icon,
-                anchor: props.iconAnchor,
-                name: props.name,
-                id: props.id+"$"+props.markerId
-            });
+            const markerObj = this.addMarker(props);
 
             this.addMarkerToLayer(props, markerObj);
         }
@@ -147,7 +138,13 @@ class OpenLayerView extends MapView {
                     anchorXUnits: 'pixels',
                     src: props.icon,
                     rotation: props.orientation.heading * Math.PI / 180
-                })
+                }),
+                text: new Text({
+                    text: props.label,
+                    offsetX: props.labelOffset[0],
+                    offsetY: props.labelOffset[1],
+                }),
+                zIndex: props.zIndex
             });
             markerFeature.setStyle(iconStyle);
         }
@@ -372,6 +369,8 @@ class OpenLayerView extends MapView {
             source: this.vectorSource,
         });
 
+        vectorMarkerLayer.setZIndex(1);
+
         this.map.addLayer(vectorMarkerLayer);
         this.map.updateSize();
     }
@@ -400,39 +399,35 @@ class OpenLayerView extends MapView {
     addMarker(properties) {
         //create marker
         if(isDefined(this.map) &amp;&amp;  this.map !== null) {
-            let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            let marker = new Point(transform([properties.location.x, properties.location.y], 'EPSG:4326', 'EPSG:900913'));
             let markerFeature = new Feature({
                 geometry: marker,
                 name: 'Marker' //TODO
             });
-
-            let style = {
-                symbol: {
-                    symbolType: 'image',
-                    size: [16, 16],
-                    color: 'lightyellow',
-                    rotateWithView: false,
-                    offset: [0, 9]
-                }
-            };
 
             if (isDefined(properties.icon) &amp;&amp; properties.icon !== null) {
                 let iconStyle = new Style({
                     image: new Icon({
                         opacity: 0.75,
                         src: properties.icon,
-                        rotation: properties.orientation * Math.PI / 180
+                        rotation: properties.orientation.heading * Math.PI / 180
                     }),
+                    zIndex: properties.zIndex,
+                    text: new Text({
+                        text: properties.label,
+                        offsetX: properties.labelOffset[0],
+                        offsetY: properties.labelOffset[1],
+                    })
                 });
                 markerFeature.setStyle(iconStyle);
             }
 
-            markerFeature.setId(properties.id);
+            markerFeature.setId(properties.id+"$"+properties.markerId);
             this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {
                 this.first = false;
-                this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+                this.map.getView().setCenter(transform([properties.location.x, properties.location.y], 'EPSG:4326', 'EPSG:900913'));
                 this.map.getView().setZoom(12);
             }
 
@@ -460,50 +455,6 @@ class OpenLayerView extends MapView {
     removePolylineFromLayer(polyline) {
         this.map.removeLayer(polyline);
     }
-
-    /**
-     *
-     * @private
-     * @param layer
-     * @return {string} the id of the newly created marker, or the id of the marker if it already exists from the current layer
-     */
-    createMarkerFromLayer(layer) {
-        //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
-        //to the view or map to give the user more control
-        let marker = this.getMarker(layer);
-        if (!isDefined(marker)) {
-            let properties = {
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                name: this.names[layer.markerId]
-            }
-
-            //create marker
-            let markerPoint = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-            marker = new Feature({
-                geometry: markerPoint,
-                name: 'Marker' //TODO
-            });
-
-            if (properties.icon !== null) {
-                let iconStyle = new Style({
-                    image: new Icon({
-                        opacity: 0.75,
-                        src: properties.icon,
-                        rotation: properties.orientation * Math.PI / 180
-                    })
-                });
-                marker.setStyle(iconStyle);
-            }
-            let id = "view-marker-" + randomUUID();
-            marker.setId(id);
-        }
-        return this.getMarker(layer);
-    }
-
 
     /**
      * Add a polyline to the map.
@@ -545,6 +496,7 @@ class OpenLayerView extends MapView {
             })
         });
 
+        vectorPathLayer.setZIndex(0);
         this.map.addLayer(vectorPathLayer);
 
         return vectorPathLayer;

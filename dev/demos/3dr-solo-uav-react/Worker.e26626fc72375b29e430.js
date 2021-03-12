@@ -92,7 +92,7 @@
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/utils/Utils.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/utils/Utils.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -650,7 +650,7 @@ function merge(target, source) {
   return target;
 }
 ;
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/datasource/parsers/DataSourceParser.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/parsers/DataSourceParser.js
 
 
 class DataSourceParser_DataSourceParser {
@@ -708,7 +708,7 @@ class DataSourceParser_DataSourceParser {
 }
 
 /* harmony default export */ var parsers_DataSourceParser = (DataSourceParser_DataSourceParser);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/datasource/parsers/TimeSeriesParser.parser.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/parsers/TimeSeriesParser.parser.js
 
 
 
@@ -755,7 +755,7 @@ class TimeSeriesParser_parser_TimeSeriesParserParser extends parsers_DataSourceP
 }
 
 /* harmony default export */ var TimeSeriesParser_parser = (TimeSeriesParser_parser_TimeSeriesParserParser);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/datasource/parsers/SosGetResultJson.parser.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/parsers/SosGetResultJson.parser.js
 
 
 class SosGetResultJson_parser_SosGetResultJsonParser extends TimeSeriesParser_parser {
@@ -831,7 +831,7 @@ class SosGetResultJson_parser_SosGetResultJsonParser extends TimeSeriesParser_pa
 }
 
 /* harmony default export */ var SosGetResultJson_parser = (SosGetResultJson_parser_SosGetResultJsonParser);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/protocol/Status.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/protocol/Status.js
 /**
  * Enum for connection status.
  * @readonly
@@ -842,7 +842,7 @@ const Status = {
   CONNECTED: "connected",
   DISCONNECTED: "disconnected"
 };
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/protocol/DataConnector.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/protocol/DataConnector.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -970,7 +970,7 @@ class DataConnector_DataConnector {
 }
 
 /* harmony default export */ var protocol_DataConnector = (DataConnector_DataConnector);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/protocol/WebSocketConnector.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/protocol/WebSocketConnector.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -1112,7 +1112,7 @@ class WebSocketConnector_WebSocketConnector extends protocol_DataConnector {
 }
 
 /* harmony default export */ var protocol_WebSocketConnector = (WebSocketConnector_WebSocketConnector);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/protocol/Ajax.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/protocol/Ajax.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -1269,7 +1269,7 @@ class Ajax_Ajax extends protocol_DataConnector {
 }
 
 /* harmony default export */ var protocol_Ajax = (Ajax_Ajax);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/protocol/TopicConnector.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/protocol/TopicConnector.js
 
 /**
  * Defines the FileConnector to read a File content
@@ -1404,12 +1404,12 @@ class TopicConnector_TopicConnector extends protocol_DataConnector {
 }
 
 /* harmony default export */ var protocol_TopicConnector = (TopicConnector_TopicConnector);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/event/EventType.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/event/EventType.js
 const EventType = {
   DATA: 'data',
   STATUS: 'status'
 };
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/protocol/FileConnector.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/protocol/FileConnector.js
 
 
 /**
@@ -1468,7 +1468,7 @@ class FileConnector_FileConnector extends protocol_DataConnector {
 }
 
 /* harmony default export */ var protocol_FileConnector = (FileConnector_FileConnector);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/datasource/workers/DataSourceHandler.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/workers/DataSourceHandler.js
 
 
 
@@ -1685,7 +1685,7 @@ class DataSourceHandler_DataSourceHandler {
 }
 
 /* harmony default export */ var workers_DataSourceHandler = (DataSourceHandler_DataSourceHandler);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/datasource/workers/TimeSeriesDataSourceHandler.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/workers/TimeSeriesDataSourceHandler.js
 
 
 
@@ -1803,7 +1803,7 @@ class TimeSeriesDataSourceHandler_TimeSeriesDataSourceHandler extends workers_Da
 }
 
 /* harmony default export */ var workers_TimeSeriesDataSourceHandler = (TimeSeriesDataSourceHandler_TimeSeriesDataSourceHandler);
-// CONCATENATED MODULE: /home/nevro/progs/git-repo/OSH/osh-js/source/core/datasource/workers/SosGetResultJson.worker.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/workers/SosGetResultJson.worker.js
 
 
 
