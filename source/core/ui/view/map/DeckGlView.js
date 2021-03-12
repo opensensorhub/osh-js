@@ -144,7 +144,7 @@ class DeckGlView extends MapView {
         const iconLayer = new IconLayer({
             id: id,
             data: [{
-                position: [props.location.x, props.location.y]
+                position: [props.location.x, props.location.y, 1]
             }],
             pickable: true,
             // iconAtlas and iconMapping are required
@@ -168,7 +168,8 @@ class DeckGlView extends MapView {
             getColor: d =>  hex2rgb(props.iconColor),
             onHover: (info, event) => this.onMarkerHover(mId,info, props, event),
             onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, props, event) :
-                this.onMarkerRightClick(mId,info, props, event)
+                this.onMarkerRightClick(mId,info, props, event),
+            zIndex: props.zIndex
         });
 
         // is going to create or update the current entry into the layer map
@@ -197,7 +198,7 @@ class DeckGlView extends MapView {
     updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
         const path = layer.locations[layer.polylineId].map((coordinate) => {
-            return [coordinate.x, coordinate.y, coordinate.z]
+            return [coordinate.x, coordinate.y, 1]
         });
 
         const PATH_DATA =[
@@ -252,6 +253,8 @@ class DeckGlView extends MapView {
         const polylines = this.getPolylines();
 
         // draw in order base -> polylines -> markers
+        markers.sort((a,b) => (a.props.zIndex > b.props.zIndex) ? 1 : ((b.props.zIndex > a.props.zIndex) ? -1 : 0))
+
         const props = {
             layers: [...this.deckLayers,...polylines,...markers]
         };

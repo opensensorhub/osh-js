@@ -140,7 +140,8 @@ class CesiumView extends MapView {
         labelOffset : props.labelOffset,
         name : props.name,
         description : props.description,
-        id: props.id+"$"+props.markerId
+        id: props.id+"$"+props.markerId,
+        zIndex: props.zIndex
       });
 
       this.addMarkerToLayer(props, markerObj);
@@ -493,7 +494,7 @@ class CesiumView extends MapView {
           verticalOrigin: VerticalOrigin.TOP,
           pixelOffset : iconOffset,
           pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-          eyeOffset : new Cartesian3(0, 0, -1) // make sure icon always displays in front
+          eyeOffset : new Cartesian3(0, 0, -1  * properties.zIndex) // make sure icon always displays in front
         }
       };
     }

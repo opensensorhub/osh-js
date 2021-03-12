@@ -232,6 +232,7 @@ class LeafletView extends MapView {
             });
         }
 
+        marker.setZIndexOffset(properties.zIndex);
         marker.id = properties.id+"$"+properties.markerId;
         marker.addTo(this.map);
         if(properties.hasOwnProperty(properties.orientation)) {
@@ -324,6 +325,7 @@ class LeafletView extends MapView {
             });
             marker.setIcon(markerIcon);
         }
+        marker.setZIndexOffset(props.zIndex);
     }
 
     /**

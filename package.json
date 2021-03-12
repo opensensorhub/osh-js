@@ -25,7 +25,7 @@
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
-    "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/  all",
+    "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/ install && yarn  --cwd jsdoc/  all",
     "vuepress": "yarn install && yarn  --cwd vuepress/docs prod",
     "copy-resources": "shx cp -fr source/core/resources build/osh-js/core/resources && shx cp -fr source/ext/resources build/osh-js/ext/resources && shx cp -fr source/vue/resources build/osh-js/vue/resources",
     "copy-vue": "shx cp -fr source/vue build/osh-js/vue",
