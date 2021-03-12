@@ -30,8 +30,8 @@ class ChartJsView extends View {
      * @param {String} properties.container - The div element to attach to
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      * @param {Object} [properties.chartjsProps={}] - Properties which can override the default framework ones
-     * @param {Object} [properties.chartjsProps.datasetsProps={}] - chart.js [dataset options]{@link https://www.chartjs.org/docs/dev/charts/line.html#dataset-properties}.
-     * @param {Object} [properties.chartjsProps.chartProps={}] - chart.js [context configuration options]{@link https://www.chartjs.org/docs/dev/configuration}
+     * @param {Object} [properties.chartjsProps.datasetsProps={}] - chart.js [dataset options]{@link https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties}.
+     * @param {Object} [properties.chartjsProps.chartProps={}] - chart.js [context configuration options]{@link https://www.chartjs.org/docs/latest/configuration}
      */
     constructor(properties) {
         super({

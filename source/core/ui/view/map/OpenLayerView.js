@@ -52,10 +52,10 @@ class OpenLayerView extends MapView {
      * @param {String} properties.container - The div element to attach to
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [properties.map] - the [Map]{@link https://openlayers.org/en/dev/apidoc/module-ol_Map-Map.html} object to use
+     * @param {Object} [properties.map] - the [Map]{@link https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html} object to use
      * @param {Number} [properties.maxZoom=19] - the max zoom value
      * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [properties.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/dev/apidoc/module-ol_View-View.html}
+     * @param {Object} [properties.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
      * @param {Object} properties.initialView.lon - the corresponding longitude in EPSG:4326
      * @param {Object} properties.initialView.lat - the corresponding latitude in EPSG:4326
      * @param {Object} properties.initialView.zoom - the default level zoom
