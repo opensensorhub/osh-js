@@ -232,3 +232,9 @@ $("#src-button").button().on("click", e => {
     });
 });
 
+$("#shared-button").button().on("click", e => {
+
+  let url = currentSample.url+'.html';
+  const win = window.open(url, '_blank');
+  win.focus();
+});
