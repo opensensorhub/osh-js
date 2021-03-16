@@ -72,7 +72,7 @@ class ChartJsView extends View {
                 yAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Values'
+                        labelString: isDefined(properties.yLabel) ? properties.yLabel : 'Values'
                     },
                     ticks: {
                         maxTicksLimit: 5
@@ -81,7 +81,7 @@ class ChartJsView extends View {
                 xAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Time'
+                        labelString: isDefined(properties.xLabel) ? properties.xLabel : 'Time'
                     },
                     type: 'time',
                     time: {
