@@ -593,7 +593,7 @@ class CesiumView extends MapView {
 
       // get ground altitude if non specified
       if (!isDefined(alt) || isNaN(alt)) {
-        alt = this.getAltitude(lat, lon);
+        alt = this.getGroundAltitude(lat, lon);
         if (alt > 1)
           alt += 0.3;
       }
@@ -662,7 +662,7 @@ class CesiumView extends MapView {
    *
    * @private
    */
-  getAltitude(lat, lon) {
+  getGroundAltitude(lat, lon) {
     var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
     var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
 
