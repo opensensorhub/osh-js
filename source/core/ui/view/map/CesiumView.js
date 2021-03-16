@@ -592,7 +592,7 @@ class CesiumView extends MapView {
       let marker = this.getMarker(layer);
 
       // get ground altitude if non specified
-      if (isDefined(alt) || isNaN(alt)) {
+      if (!isDefined(alt) || isNaN(alt)) {
         alt = this.getAltitude(lat, lon);
         if (alt > 1)
           alt += 0.3;
