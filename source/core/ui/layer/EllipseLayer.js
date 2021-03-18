@@ -13,8 +13,8 @@
  Author: Nicolas Garay <nic.garay@botts-inc.com>
 
  ******************************* END LICENSE BLOCK ***************************/
-import Layer from "include/osh-js/source/core/ui/layer/Layer.js";
-import {hasValue, randomUUID} from "include/osh-js/source/core/utils/Utils.js";
+import Layer from "./Layer";
+import {hasValue} from "../../utils/Utils";
 
 /**
  * Creates a layer container for Ellipses
