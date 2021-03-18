@@ -78,9 +78,9 @@ class EllipseLayer extends Layer {
         if (this.checkFn('getId')) {
             let fn = function(rec, timeStamp, options) {
                 that.props.ellipseId =
-                    that.getFunc('getEllipseId')(rec, timeStamp, options);
+                    that.getFunc('getId')(rec, timeStamp, options);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getEllipseId'),fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getId'),fn);
         }
 
         if (this.checkFn('getEllipse')) {
