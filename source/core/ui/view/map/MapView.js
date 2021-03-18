@@ -31,6 +31,9 @@ class MapView extends View {
         // map Layer id to array of corresponding polylines
         this.layerIdToPolylines= {};
 
+        // map Layer id to array of corresponding ellipses
+        this.layerIdToEllipses = {};
+
     }
 
     setData(dataSourceId, data) {
@@ -43,6 +46,8 @@ class MapView extends View {
                 this.updatePolyline(d);
             } else if(data.type === 'draping') {
                 this.updateDrapedImage(d);
+            } else if(data.type === 'ellipse') {
+                this.updateEllipse(d);
             }
         }
     }
@@ -77,6 +82,20 @@ class MapView extends View {
     }
 
     /**
+     * Associate a ellipseId to a Layer for a fast lookup
+     * @protected
+     * @param {Polyline.props} layer - the Layer object
+     * @param {Object} polylineObject - the Map polyline object
+     */
+    addEllipseToLayer(props, ellipseObject) {
+        // associate the list of markers owning by a specific marker
+        if(!(props.id in this.layerIdToEllipses)) {
+            this.layerIdToEllipses[props.id] = {};
+        }
+        this.layerIdToEllipses[props.id][props.ellipseId] = ellipseObject;
+    }
+
+    /**
      * Get the markerId associate to the Layer
      * @protected
      * @param {PointMarkerLayer.props} props - the Layer Object
@@ -96,7 +115,7 @@ class MapView extends View {
         const array = [];
         for(let id in this.layerIdToMarkers) {
             for(let markerId in this.layerIdToMarkers[id]) {
-                array.push(this.layerIdToMarkers[id][markerId])
+                array.push(this.layerIdToMarkers[id][markerId]);
             }
         }
         return array;
@@ -110,7 +129,7 @@ class MapView extends View {
         const array = [];
         for(let id in this.layerIdToPolylines) {
             for(let polylineId in this.layerIdToPolylines[id]) {
-                array.push(this.layerIdToPolylines[id][polylineId])
+                array.push(this.layerIdToPolylines[id][polylineId]);
             }
         }
         return array;
@@ -126,6 +145,51 @@ class MapView extends View {
             return null;
         }
         return this.layerIdToPolylines[props.id][props.polylineId];
+    }
+
+    /**
+     * Get the ellipseId associate to the Layer
+     * @protected
+     * @param {Ellipse.props} layer - the Layer Object
+     */
+    getEllipse(props) {
+        if(!(props.id in  this.layerIdToEllipses)) {
+            return null;
+        }
+        return this.layerIdToEllipses[props.id][props.ellipseId];
+    }
+
+    /**
+     * Get all marker contained in this view
+     * @protected
+     */
+    getEllipses() {
+        const array = [];
+        for(let id in this.layerIdToEllipses) {
+            for(let ellipseId in this.layerIdToEllipses[id]) {
+                array.push(this.layerIdToEllipses[id][ellipseId]);
+            }
+        }
+        return array;
+    }
+
+    /**
+     * Remove the ellipses corresponding to a EllipseLayer Layer
+     * @param {Ellipse} ellipse - the layer to remove the ellipses from
+     */
+    removeEllipse(ellipse) {
+        if(isDefined(ellipse.props.ellipseId)) {
+            const ellipsesMap = this.layerIdToEllipses[ellipse.props.id];
+            if(isDefined(ellipsesMap)) {
+                for(let ellipseId in ellipsesMap) {
+                    const ellipse = ellipsesMap[ellipseId];
+                    this.removeEllipseFromLayer(ellipse);
+                }
+            }
+
+            // remove ellipses ids from Layer map
+            delete this.layerIdToEllipses[ellipse.props.id];
+        }
     }
 
     /**
@@ -166,7 +230,7 @@ class MapView extends View {
             if(isDefined(markersMap)) {
                 for(let markerId in markersMap) {
                     const marker = markersMap[markerId];
-                    this.removeMarkerFromLayer(marker)
+                    this.removeMarkerFromLayer(marker);
                 }
             }
 
@@ -185,7 +249,7 @@ class MapView extends View {
             if(isDefined(polylinesMap)) {
                 for(let polylineId in polylinesMap) {
                     const polyline = polylinesMap[polylineId];
-                    this.removePolylineFromLayer(polyline)
+                    this.removePolylineFromLayer(polyline);
                 }
             }
 
@@ -209,6 +273,14 @@ class MapView extends View {
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Abstract method to remove a ellipse from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} ellipse - The Map ellipse object
+     */
+    removeEllipseFromLayer(ellipse) {}
 
     /**
      * Method to call onLeftClick Layer method if exists

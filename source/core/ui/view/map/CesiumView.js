@@ -99,7 +99,7 @@ class CesiumView extends MapView {
    */
   constructor(properties) {
     super({
-      supportedLayers: ['marker','draping','polyline'],
+      supportedLayers: ['marker','draping','polyline', 'ellipse'],
       ...properties
     });
 
@@ -563,6 +563,87 @@ class CesiumView extends MapView {
       const polylineObj = this.addPolyline([], props);
 
       this.addPolylineToLayer(props, polylineObj);
+    }
+  }
+
+  /**
+   * Abstract method to remove a ellipse from its corresponding layer.
+   * This is library dependent.
+   * @param {Object} ellipse - The Ellipse object
+   */
+  removeEllipseFromLayer(ellipse) {
+    this.viewer.entities.remove(ellipse);
+  }
+
+  /**
+   * Add a ellipse to the map.
+   * @param {locations} ellipse - the ellipse parameters
+   *            {
+   *                location: {
+   *                    x: lon,
+   *                    y: lat,
+   *                    z: alt
+   *                },
+   *                semiMajorAxis: semiMajorAxis,
+   *                semiMinorAxis: semiMinorAxis,
+   *                angle: rotationAngle;
+   *            }
+   * @param {Object} properties
+   * @return {Object} the new created ellipse
+   */
+  addEllipse(ellipse, properties) {
+
+    let that = this;
+
+    let entity = this.viewer.entities.add({
+      position: new CallbackProperty(function (time, result) {
+          let ellipseLayer = that.getLayer(properties.id);
+          if (ellipseLayer) {
+            ellipse = ellipseLayer.props.ellipses[properties.ellipseId];
+          }
+          return Cartesian3.fromDegrees(ellipse.location.x, ellipse.location.y, ellipse.location.z);
+        }, false),
+      ellipse: {
+        semiMinorAxis: new CallbackProperty(function (time, result) {
+            let ellipseLayer = that.getLayer(properties.id);
+            if (ellipseLayer) {
+              ellipse = ellipseLayer.props.ellipses[properties.ellipseId];
+            }
+            return ellipse.semiMinorAxis;
+          }, false),
+        semiMajorAxis: new CallbackProperty(function (time, result) {
+            let ellipseLayer = that.getLayer(properties.id);
+            if (ellipseLayer) {
+              ellipse = ellipseLayer.props.ellipses[properties.ellipseId];
+            }
+            return ellipse.semiMajorAxis;
+          }, false),
+        rotation: new CallbackProperty(function (time, result) {
+            let ellipseLayer = that.getLayer(properties.id);
+            if (ellipseLayer) {
+              ellipse = ellipseLayer.props.ellipses[properties.ellipseId];
+            }
+            return Math.toRadians(ellipse.angle);
+          }, false),
+        material: new Color.fromCssColorString(properties.color),
+      }
+    });
+
+    entity._dsid = properties.id;
+
+    return entity;
+  }
+
+  /**
+   * Updates a ellipse, if one does not exist it is added to the view
+   * @param {EllipseLayer.props} props - The layer properties allowing the update of the ellipse
+   */
+  updateEllipse(props) {
+    let ellipse = this.getEllipse(props);
+    if(!isDefined(ellipse)) {
+      const polylineObj = this.addEllipse({}, props);
+
+      this.addEllipseToLayer(props, polylineObj);
     }
   }
 
