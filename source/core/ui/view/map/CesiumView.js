@@ -544,7 +544,7 @@ class CesiumView extends MapView {
         }, false),
         width: properties.weight,
         material: new Color.fromCssColorString(properties.color),
-        clampToGround: (properties.clampToGround) ? properties.clampToGround : true
+        clampToGround: isDefined(properties.clampToGround) ? properties.clampToGround : true
       }
     });
 
