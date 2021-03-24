@@ -27,9 +27,6 @@ jsdoc/dist
 jsdoc/dist-iframe
 **/jsdoc/dist
 **/jsdoc/dist-iframe
-**/issues
-issues
 **/documentation/jsdoc/build-iframe
-issues/
 build
 
