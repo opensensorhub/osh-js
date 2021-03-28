@@ -30,11 +30,7 @@ import CanvasView from "./CanvasView";
   framerate:25,
   showTime: true,
   showStats: true,
-  layers: [
-      new DataLayer({
-        dataSourceId: videoDataSource.id
-      })
-  ]
+ dataSourceId: videoDataSource.id
 });
  */
 

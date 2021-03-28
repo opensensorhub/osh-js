@@ -28,7 +28,7 @@ class AudioParser extends TimeSeriesParser {
             sampleRate: new DataView(data).getUint32(8, false),
             nbSamples: new DataView(data).getUint32(12, false),
             pktLength: new DataView(data).getUint32(16, false),
-            frameData: new Uint8Array(data, 20, data.byteLength - 20)
+            frameData: new Uint8Array(data.slice(20,data.byteLength))
         }
     }
 
