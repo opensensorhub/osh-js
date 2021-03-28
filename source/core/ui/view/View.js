@@ -72,6 +72,7 @@ class View {
      */
     init(properties) {
 
+        this.properties = properties;
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
         this.elementDiv.setAttribute("class", this.css+" osh-view");

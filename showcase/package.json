@@ -58,22 +58,23 @@
     "webpack-cli": "3.3.11",
     "webpack-dev-server": "3.10.3",
     "webpack-merge": "4.2.2",
-    "worker-loader": "2.0.0"
+    "worker-loader": "2.0.0",
+    "worklet-loader": "^1.0.0"
   },
   "dependencies": {
+    "@deck.gl/core": "^8.3.6",
+    "@deck.gl/layers": "^8.3.6",
+    "@math.gl/web-mercator": "^3.3.2",
     "cesium": "~1.68.0",
     "chart.js": "2.9.3",
+    "deck.gl": "^8.3.0",
     "fs-extra": "^9.0.0",
     "leaflet": "1.6.0",
+    "mapbox-gl": "1.13.0",
     "nouislider": "14.4.0",
     "ol": "6.2.1",
     "ol-layerswitcher": "3.8.1",
     "strip-ansi": "6.0.0",
-    "wnumb": "1.2.0",
-    "@deck.gl/core": "^8.3.6",
-    "@deck.gl/layers": "^8.3.6",
-    "@math.gl/web-mercator": "^3.3.2",
-    "deck.gl": "^8.3.0",
-    "mapbox-gl": "1.13.0"
+    "wnumb": "1.2.0"
   }
 }

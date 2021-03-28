@@ -156,6 +156,11 @@ var samples = [
     url: "chart-archive-realtime-synchronized",
     code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
   },
+  {
+    name: "Audio WebCodec/WebApi decoding",
+    description: "Listen audio stream using WebCodec/WebApi",
+    url: "audio"
+  },
 ];
 
 // load sample cards
