@@ -50,10 +50,14 @@ class AudioView extends View {
 
    initDecoder() {
        try {
-           // this.decoder = new WebCodec(this.properties);
-           this.decoder = new WebAudioApi(this.properties);
+           this.decoder = new WebCodec(this.properties);
+           console.warn('using WebCodec for audio decoding');
        }catch (error) {
            this.decoder = new WebAudioApi(this.properties);
+           console.warn('using WebAudioApi for audio decoding');
+       }
+       this.decoder.onDecodedBuffer = (decodedBuffer) => {
+           this.onDecodedBuffer(decodedBuffer);
        }
     }
 
@@ -65,6 +69,13 @@ class AudioView extends View {
 
     reset() {
         this.decoder.reset();
+    }
+
+    onDecodedBuffer(decodedBuffer){
+    }
+
+    getCurrentTime() {
+        return this.decoder.getCurrentTime();
     }
 }
 export default AudioView;
@@ -138,6 +149,16 @@ class WebAudioApi {
     reset() {
 
     }
+
+    onDecodedBuffer(decodedBuffer){}
+
+    getCurrentTime() {
+        if(this.audioCtx === null){
+            return 0;
+        }
+        return this.audioCtx.currentTime;
+    }
+
 }
 
 class WebCodec {
@@ -146,6 +167,7 @@ class WebCodec {
         this.deltaInc = 0;
         this.init = false;
         this.key = true;
+        this.audioCtx = null;
 
         try {
             // check for supported webcodec
@@ -157,6 +179,8 @@ class WebCodec {
                     source.connect(this.audioCtx.destination);
                     source.start(this.deltaInc);
                     this.deltaInc += buffer.duration;
+
+                    this.onDecodedBuffer(decodedSample.buffer);
                 },
                 error: (error) => {
                     console.error(error);
@@ -204,4 +228,16 @@ class WebCodec {
             this.init = false;
         }
     }
+
+    onDecodedBuffer(decodedBuffer){
+        console.log('decoded')
+    }
+
+    getCurrentTime() {
+        if(this.audioCtx === null){
+            return 0;
+        }
+        return this.audioCtx.currentTime;
+    }
+
 }
