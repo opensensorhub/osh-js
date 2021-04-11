@@ -1,0 +1,50 @@
+<style>
+    #description {
+        margin-left:10px;
+    }
+
+    .audio-css > canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    .audio-css.osh-view {
+        width: 250px;
+        height: 100px;
+    }
+    .audio-css > canvas {
+        padding: 25px;
+    }
+
+    .audio-chart-css.osh-view {
+        width: 800px;
+        height: 500px;
+    }
+
+    .canvas-cont {
+        display: flex;
+    }
+    .canvas-cont * {
+        margin-left: 20px;
+    }
+</style>
+<div id="description">
+  <p>
+    New APIs are being released such as the WebCodec API and allow more flexible support for video streaming.
+  </p>
+  <p>This experimental version can be used in chrome >= 86 and with the 'Experimental Web Platform features' flag enabled.</p>
+  <p>Details of the API can be found here: https://github.com/WICG/web-codecs and here https://wicg.github.io/web-codecs/.</p>
+
+  <p>This new API allows, among other things, to decode Video frames using Hardware acceleration.</p>
+
+</div>
+<button id="listen">Listen</button>
+<br><br>
+<div id="audio-chart-time-container"></div>
+<p><strong>Bar chart = Frequency domain</strong></p>
+<p><strong>Sin wave =  Time domain</strong></p>
+<div class="canvas-cont">
+  <div id="audio-canvas-time-container"></div>
+  <div id="audio-canvas-frequency-container"></div>
+</div>
+<script type="text/javascript" src="bundle.audio.js"></script>
