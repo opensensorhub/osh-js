@@ -1,16 +1,13 @@
-import AudioView from "./AudioView";
-
-class AudioCanvas extends AudioView {
+class AudioCanvas  {
     constructor(properties) {
-        super(properties);
-        this.initCanvas();
+        this.initCanvas(properties);
     }
 
     // abstract
     draw(decodedSample) {}
 
-    initCanvas() {
-        let domNode = document.getElementById(this.divId);
+    initCanvas(properties) {
+        let domNode = properties.nodeElement;
         const bounds = domNode.getBoundingClientRect();
 
         this.canvas = document.createElement("canvas");

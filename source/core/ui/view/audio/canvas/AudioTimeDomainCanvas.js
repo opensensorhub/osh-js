@@ -2,14 +2,11 @@ import AudioCanvas from "./AudioCanvas";
 
 class AudioTimeDomainCanvas extends AudioCanvas {
     constructor(properties) {
-            super({
-                ...properties,
-                domain: 'time'
-            });
+        super(properties);
     }
 
     draw(decodedSample) {
-        const dataArray = decodedSample.dataDomainArray;
+        const dataArray = decodedSample.dataTimeDomainArray;
         try {
 
             const WIDTH = this.canvas.width;

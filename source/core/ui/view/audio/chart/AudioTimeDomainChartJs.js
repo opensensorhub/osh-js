@@ -1,16 +1,9 @@
-import AudioView from "./AudioView";
 import {hex2rgb, isDefined, merge, randomUUID} from "../../../utils/Utils";
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
 
-class AudioTimeDomainChartJs extends AudioView {
+class AudioTimeDomainChartJs {
     constructor(properties) {
-        super({
-                ...properties,
-                domain: 'time'
-            }
-        );
-
         this.initTimeChart(properties);
     }
 
@@ -30,7 +23,7 @@ class AudioTimeDomainChartJs extends AudioView {
             }
         }
 
-        let domNode = document.getElementById(this.divId);
+        let domNode = document.getElementById(properties.divId);
 
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
@@ -166,7 +159,6 @@ class AudioTimeDomainChartJs extends AudioView {
     reset() {
         this.resetting = true;
         this.chart.stop();
-        super.reset();
         this.chart.data.datasets[0].data = [];
         this.chart.data.labels = [];
         this.chart.update(0);

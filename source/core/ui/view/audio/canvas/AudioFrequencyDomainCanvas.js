@@ -2,14 +2,11 @@ import AudioCanvas from "./AudioCanvas";
 
 class AudioFrequencyDomainCanvas extends AudioCanvas {
     constructor(properties) {
-        super({
-            ...properties,
-            domain: 'frequency'
-        });
+        super(properties);
     }
 
     draw(decodedSample) {
-        const dataArray = decodedSample.dataDomainArray;
+        const dataArray = decodedSample.dataFreqDomainArray;
         try {
             const WIDTH = this.canvas.width;
             const HEIGHT = this.canvas.height * 1.5;

@@ -1,3 +1,5 @@
+import {isDefined} from "../../../utils/Utils";
+
 class WebCodecApi {
     constructor(properties) {
         // time audio position
@@ -6,7 +8,8 @@ class WebCodecApi {
         this.key = true;
         this.audioCtx = null;
 
-        this.analyzer = null;
+        this.analyzerTime = null;
+        this.analyzerFreq = null;
         this.startTime = 0;
         this.properties = properties;
 
@@ -18,29 +21,34 @@ class WebCodecApi {
                     let source = this.audioCtx.createBufferSource();
 
                     source.buffer = buffer;
-                    if(this.analyzer) {
-                        source.connect(this.analyzer);/*.connect(this.audioCtx.destination);*/
-                    } else {
-                        source.connect(this.audioCtx.destination);
+
+                    let node = source;
+
+                    if(this.analyzerTime !== null) {
+                        node = node.connect(this.analyzerTime);
                     }
+
+                    if(this.analyzerFreq !== null) {
+                        node = node.connect(this.analyzerFreq);
+                    }
+
+                    node.connect(this.audioCtx.destination);
 
                     // Connect the source to be analysed
                     source.start(this.deltaInc);
                     this.deltaInc += buffer.duration;
 
-                    let dataDomainArray;
+                    let dataTimeDomainArray, dataFreqDomainArray;
 
-                    if(properties.domain === 'time') {
-                        dataDomainArray = new Float32Array(this.analyzer.fftSize);
-                        this.analyzer.getFloatTimeDomainData(dataDomainArray);
-                    } else if(properties.domain === 'frequency') {
-                        dataDomainArray = new Float32Array(this.analyzer.frequencyBinCount);
-                        this.analyzer.getFloatFrequencyData(dataDomainArray);
-                    }
+                    dataTimeDomainArray = new Float32Array(this.analyzerTime.fftSize);
+                    this.analyzerTime.getFloatTimeDomainData(dataTimeDomainArray);
+                    dataFreqDomainArray = new Float32Array(this.analyzerFreq.frequencyBinCount);
+                    this.analyzerFreq.getFloatFrequencyData(dataFreqDomainArray);
 
                     this.onDecodedBuffer({
                         buffer: decodedSample.buffer,
-                        dataDomainArray: dataDomainArray,
+                        dataTimeDomainArray: dataTimeDomainArray,
+                        dataFreqDomainArray: dataFreqDomainArray,
                         timestamp: this.startTime+this.deltaInc*1000
                     });
                 },
@@ -70,14 +78,15 @@ class WebCodecApi {
                 sampleRate: data.sampleRate
             });
 
-            if(this.properties.domain === 'time') {
-                this.analyzer = this.audioCtx.createAnalyser();
-                this.analyzer.fftSize = 1024;
-            } else if(this.properties.domain === 'frequency') {
-                this.analyzer = this.audioCtx.createAnalyser();
-                this.analyzer.fftSize = 32;
+            if(isDefined(this.properties.frequencyDomainVisualization)) {
+                this.analyzerFreq = this.audioCtx.createAnalyser();
+                this.analyzerFreq.fftSize = this.properties.frequencyDomainVisualization.fftSize;
             }
 
+            if(isDefined(this.properties.timeDomainVisualization)) {
+                this.analyzerTime = this.audioCtx.createAnalyser();
+                this.analyzerTime.fftSize = this.properties.timeDomainVisualization.fftSize;
+            }
             this.init = true;
             this.startTime = timestamp;
         }
