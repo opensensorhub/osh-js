@@ -51,7 +51,7 @@ class AudioView extends View {
 
    initDecoder() {
        try {
-           this.decoder = new WebAudioApi(this.properties);
+           this.decoder = new WebCodecApi(this.properties);
            console.warn('using WebCodec for audio decoding');
        }catch (error) {
            this.decoder = new WebAudioApi(this.properties);
