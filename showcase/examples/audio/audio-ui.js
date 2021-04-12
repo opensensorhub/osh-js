@@ -29,6 +29,10 @@ var wavesurfer = WaveSurfer.create({
   minPxPerSec: 1
 });
 
+wavesurfer.on('ready', function () {
+  wavesurfer.play();
+});
+
 document.getElementById("listen").onclick = () => {
   if(audioDataSource !== null) {
     audioDataSource.disconnect();
@@ -42,19 +46,9 @@ document.getElementById("listen").onclick = () => {
 
   let deltaInc = 0;
   audioView.onDecodedBuffer = function (decodedBuffer) {
-    if(deltaInc == 0) {
-      wavesurfer.loadDecodedBuffer(decodedBuffer);
-      wavesurfer.play(deltaInc, decodedBuffer.duration);
-      deltaInc += decodedBuffer.duration;
-      console.log(deltaInc);
-    }
+      // wavesurfer.loadDecodedBuffer(decodedBuffer);
+      // console.log(decodedBuffer);
   }
 
-  setInterval(() => {
-    if(isDefined(audioView)) {
-      // console.log(audioView.getCurrentTime());
-      // wavesurfer.setCurrentTime(audioView.getCurrentTime());
-    }
-  }, 200, 150);
   audioDataSource.connect();
 }

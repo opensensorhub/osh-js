@@ -40,6 +40,7 @@
     "worklet-loader": "^1.0.0"
   },
   "dependencies": {
+    "chart.js": "^2.9.3",
     "wavesurfer.js": "^4.6.0"
   }
 }
