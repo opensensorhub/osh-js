@@ -40,10 +40,15 @@ class WebCodecApi {
 
                     let dataTimeDomainArray, dataFreqDomainArray;
 
-                    dataTimeDomainArray = new Float32Array(this.analyzerTime.fftSize);
-                    this.analyzerTime.getFloatTimeDomainData(dataTimeDomainArray);
-                    dataFreqDomainArray = new Float32Array(this.analyzerFreq.frequencyBinCount);
-                    this.analyzerFreq.getFloatFrequencyData(dataFreqDomainArray);
+                    if(this.analyzerTime !== null) {
+                        dataTimeDomainArray = new Float32Array(this.analyzerTime.fftSize);
+                        this.analyzerTime.getFloatTimeDomainData(dataTimeDomainArray);
+                    }
+
+                    if(this.analyzerFreq !== null) {
+                        dataFreqDomainArray = new Float32Array(this.analyzerFreq.frequencyBinCount);
+                        this.analyzerFreq.getFloatFrequencyData(dataFreqDomainArray);
+                    }
 
                     this.onDecodedBuffer({
                         buffer: decodedSample.buffer,
