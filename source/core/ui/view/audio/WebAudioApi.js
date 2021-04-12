@@ -36,9 +36,7 @@ class WebAudioApi {
             })
             this.init = true;
             this.startTime = timestamp;
-            setTimeout(() => {
-                this.workletNode.connect(this.audioCtx.destination);
-            }, 2000);
+            this.workletNode.connect(this.audioCtx.destination);
         }
 
         if(this.count === 0) {
