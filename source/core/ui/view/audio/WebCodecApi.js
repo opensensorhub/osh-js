@@ -24,6 +24,7 @@ class WebCodecApi {
 
                     let node = source;
 
+                    node = node.connect(this.gainNode);
                     if(this.analyzerTime !== null) {
                         node = node.connect(this.analyzerTime);
                     }
@@ -50,12 +51,18 @@ class WebCodecApi {
                         this.analyzerFreq.getFloatFrequencyData(dataFreqDomainArray);
                     }
 
-                    this.onDecodedBuffer({
+                    const decoded =  {
                         buffer: decodedSample.buffer,
                         dataTimeDomainArray: dataTimeDomainArray,
                         dataFreqDomainArray: dataFreqDomainArray,
                         timestamp: this.startTime+this.deltaInc*1000
-                    });
+                    };
+
+                    this.onDecodedBuffer(decoded);
+
+                    source.onended = () => {
+                        this.onEnded(decoded);
+                    }
                 },
                 error: (error) => {
                     console.error(error);
@@ -92,6 +99,9 @@ class WebCodecApi {
                 this.analyzerTime = this.audioCtx.createAnalyser();
                 this.analyzerTime.fftSize = this.properties.timeDomainVisualization.fftSize;
             }
+            this.gainNode = this.audioCtx.createGain();
+            this.gainNode.gain.setValueAtTime(this.properties.gain,0);
+
             this.init = true;
             this.startTime = timestamp;
         }
@@ -117,6 +127,10 @@ class WebCodecApi {
 
     onDecodedBuffer(decodedBuffer){
         console.log('decoded')
+    }
+
+    onEnded(decodedBuffer){
+        console.log('ended')
     }
 
     getCurrentTime() {

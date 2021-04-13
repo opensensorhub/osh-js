@@ -15,6 +15,7 @@ import WebAudioApi from "./WebAudioApi";
 import {isDefined} from "../../../utils/Utils";
 import AudioTimeDomainCanvas from "./canvas/AudioTimeDomainCanvas";
 import AudioFrequencyDomainCanvas from "./canvas/AudioFrequencyDomainCanvas";
+import AudioTimeDomainChartJs from "./chart/AudioTimeDomainChartJs";
 
 /**
  * This class is in charge of listening Audio using either default native WebAPI or compatible WebCodec(if supported)
@@ -39,16 +40,14 @@ class AudioView extends View {
      * @param {string} properties.flush - Number of elements to concatenate before flushing (for WebAudioApi only)
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
      * @param {boolean} properties.visible - set the default behavior of the visibility of the view
-     * @param {Object} properties.domain - set the default domain object properties
-     * @param {string} [properties.domain.visualization=[time]] - set the domain type 'time | frequency'
-     * @param {string} [properties.domain.view=chart] - set the view type 'canvas | chart'
-     * @param {number} [properties.domain.fftSize=1024] - set the fftSize to pass to the AudioSourceBuffer
+     * @param {number} properties.gain - set the gain to be applied to the input  before its propagation to the output
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
     constructor(properties) {
         super({
             flush: 2,
             supportedLayers: ['data'],
+            gain: 1.0,
             ...properties,
             visible: true
         });
@@ -70,7 +69,13 @@ class AudioView extends View {
        if(isDefined(this.views.timeDomainVisualization)) {
            if(this.views.timeDomainVisualization.type === 'canvas') {
                this.views.timeDomainVisualization.view = new AudioTimeDomainCanvas({
-                   nodeElement: this.elementDiv
+                   nodeElement: this.elementDiv,
+                   ...this.views.timeDomainVisualization
+               });
+           } else if(this.views.timeDomainVisualization.type === 'chart') {
+               this.views.timeDomainVisualization.view = new AudioTimeDomainChartJs({
+                   nodeElement: this.elementDiv,
+                   ...this.views.timeDomainVisualization
                });
            }
        }
@@ -78,7 +83,8 @@ class AudioView extends View {
        if(isDefined(this.views.frequencyDomainVisualization)) {
            if(this.views.frequencyDomainVisualization.type === 'canvas') {
                this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainCanvas({
-                   nodeElement: this.elementDiv
+                   nodeElement: this.elementDiv,
+                   ...this.views.frequencyDomainVisualization
                });
            }
        }
@@ -101,6 +107,15 @@ class AudioView extends View {
            }
            this.onDecodedBuffer(decodedSample);
        }
+       this.decoder.onEnded = (decodedSample) => {
+           if(isDefined(this.views.frequencyDomainVisualization)) {
+               this.views.frequencyDomainVisualization.view.onended(decodedSample);
+           }
+           if(isDefined(this.views.timeDomainVisualization)) {
+               this.views.timeDomainVisualization.view.onended(decodedSample);
+           }
+           this.onEnded(decodedSample);
+       }
     }
 
     draw(decodedSample) {
@@ -120,6 +135,8 @@ class AudioView extends View {
     onDecodedBuffer(decodedBuffer){
     }
 
+    onEnded(decodedBuffer){
+    }
     getCurrentTime() {
         return this.decoder.getCurrentTime();
     }

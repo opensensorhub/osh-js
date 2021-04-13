@@ -2,14 +2,19 @@ import AudioCanvas from "./AudioCanvas";
 
 class AudioFrequencyDomainCanvas extends AudioCanvas {
     constructor(properties) {
-        super(properties);
+        super({
+            props: {
+                barWidth:10
+            },
+            ...properties
+        });
     }
 
     draw(decodedSample) {
         const dataArray = decodedSample.dataFreqDomainArray;
         try {
             const WIDTH = this.canvas.width;
-            const HEIGHT = this.canvas.height * 1.5;
+            const HEIGHT = this.canvas.height;
 
             this.canvasCtx.fillStyle = 'rgb(200, 200, 200)';
             this.canvasCtx.fillStyle = 'rgb(0, 0, 0)';
@@ -17,7 +22,7 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
 
             // let  barWidth = (WIDTH / bufferLength) * 2.5;
             // TODO: handle too small WIDTH
-            let barWidth = 10;
+            let barWidth = this.properties.props.barWidth;
             let spaceWidth = (WIDTH / (dataArray.length+1)) - barWidth;
             let barHeight;
             let x = barWidth;

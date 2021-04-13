@@ -2,7 +2,12 @@ import AudioCanvas from "./AudioCanvas";
 
 class AudioTimeDomainCanvas extends AudioCanvas {
     constructor(properties) {
-        super(properties);
+        super({
+            props: {
+                barWidth:10
+            },
+            ...properties
+        });
     }
 
     draw(decodedSample) {
