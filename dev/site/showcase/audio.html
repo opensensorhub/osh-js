@@ -2,6 +2,37 @@
     #description {
         margin-left:10px;
     }
+
+    .audio-css > canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    .audio-css.osh-view {
+        width: 600px;
+        height: 400px;
+    }
+
+    canvas.audio-css-canvas {
+        width: 600px;
+        height: 100px;
+    }
+
+    .audio-css > canvas {
+        padding: 25px;
+    }
+
+    .audio-chart-css.osh-view {
+        width: 800px;
+        height: 500px;
+    }
+
+    .canvas-cont {
+        display: flex;
+    }
+    .canvas-cont * {
+        margin-left: 20px;
+    }
 </style>
 <div id="description">
   <p>
@@ -11,7 +42,16 @@
   <p>Details of the API can be found here: https://github.com/WICG/web-codecs and here https://wicg.github.io/web-codecs/.</p>
 
   <p>This new API allows, among other things, to decode Video frames using Hardware acceleration.</p>
+
 </div>
-<button id="listen">Listen</button>
-<div id="audio-container"/>
+<button id="listen">Listen 1.0x</button>
+<button id="listen11">Listen 1.1x</button>
+<br><br>
+<div id="audio-chart-time-container"></div>
+<p><strong>Bar chart = Frequency domain</strong></p>
+<p><strong>Sin wave =  Time domain</strong></p>
+<div class="canvas-cont">
+  <div id="audio-canvas-time-container"></div>
+  <div id="audio-canvas-frequency-container"></div>
+</div>
 <script type="text/javascript" src="bundle.audio.js"></script>
