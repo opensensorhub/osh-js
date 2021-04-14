@@ -16,8 +16,8 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
             const WIDTH = this.canvas.width;
             const HEIGHT = this.canvas.height;
 
-            this.canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-            this.canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+            this.canvasCtx.fillStyle = 'rgba(221,221,221,0.8)';
+            this.canvasCtx.fillStyle = 'rgb(255,255,255)';
             this.canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
             // let  barWidth = (WIDTH / bufferLength) * 2.5;
@@ -31,11 +31,20 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
                 barHeight = dataArray[i] * -1;
                 barHeight = HEIGHT * barHeight / 100;
 
-                this.canvasCtx.fillStyle = 'rgb(200,200,200)';
+                this.canvasCtx.fillStyle = 'rgb(215,215,215)';
                 this.canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth, HEIGHT );
+
+                this.canvasCtx.fillStyle = 'rgba(34,34,34,0.8)';
+                this.canvasCtx.beginPath();
+                this.canvasCtx.rect(x, HEIGHT - barHeight, barWidth, HEIGHT );
+                this.canvasCtx.stroke();
 
                 x += barWidth + spaceWidth;
             }
+
+            this.canvasCtx.fillStyle = 'rgba(198,198,198,0.8)';
+            this.canvasCtx.fillRect(0, 0, 1, HEIGHT);
+            this.canvasCtx.fillRect(0, HEIGHT-1, WIDTH, 1);
         }catch (error) {
             console.error(error);
         }
