@@ -185,7 +185,7 @@ class AudioTimeDomainChartJs {
         });
 
         if((this.dataset.data.length > this.maxPoints )) {
-            this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
+            this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[3];
         }
 
         if((this.dataset.data.length > this.maxPoints )) {
@@ -229,6 +229,7 @@ class AudioTimeDomainChartJs {
             this.positionDataset.data[0].x = time;
             this.positionDataset.data[1].x = time;
         }
+        // this.chart.update(0);
     }
 
     reset() {

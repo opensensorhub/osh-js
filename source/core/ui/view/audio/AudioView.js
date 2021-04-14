@@ -16,6 +16,7 @@ import {isDefined} from "../../../utils/Utils";
 import AudioTimeDomainCanvas from "./canvas/AudioTimeDomainCanvas";
 import AudioFrequencyDomainCanvas from "./canvas/AudioFrequencyDomainCanvas";
 import AudioTimeDomainChartJs from "./chart/AudioTimeDomainChartJs";
+import AudioFrequencyDomainChartJs from "./chart/AudioFrequencyDomainChartJs";
 
 /**
  * This class is in charge of listening Audio using either default native WebAPI or compatible WebCodec(if supported)
@@ -86,6 +87,11 @@ class AudioView extends View {
                    nodeElement: this.elementDiv,
                    ...this.views.frequencyDomainVisualization
                });
+           } else if(this.views.frequencyDomainVisualization.type === 'chart') {
+               this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainChartJs({
+                   nodeElement: this.elementDiv,
+                   ...this.views.frequencyDomainVisualization
+               });
            }
        }
     }
@@ -139,6 +145,10 @@ class AudioView extends View {
     }
     getCurrentTime() {
         return this.decoder.getCurrentTime();
+    }
+
+    setGain(gainValue) {
+        this.decoder.setGain(gainValue);
     }
 }
 export default AudioView;

@@ -28,12 +28,12 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
             let x = barWidth;
 
             for(let i = 0; i < dataArray.length; i++) {
-                barHeight = dataArray[i]  + 128;
+                barHeight = dataArray[i] * -1;
+                barHeight = HEIGHT * barHeight / 100;
 
-                this.canvasCtx.fillStyle = 'rgb(' + barHeight*2+ ',200,200)';
-                this.canvasCtx.fillRect(x, HEIGHT - barHeight , barWidth, barHeight );
+                this.canvasCtx.fillStyle = 'rgb(200,200,200)';
+                this.canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth, HEIGHT );
 
-                // console.log(HEIGHT - barHeight / 2, barWidth, barHeight / 2)
                 x += barWidth + spaceWidth;
             }
         }catch (error) {

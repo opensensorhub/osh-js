@@ -11,8 +11,12 @@ class WebCodecApi {
         this.analyzerTime = null;
         this.analyzerFreq = null;
         this.startTime = 0;
-        this.properties = properties;
+        this.properties = {
+            output: true,
+            ...properties
+        };
 
+        this.gain = this.properties.gain;
         try {
             // check for supported webcodec
             this.audioDecoder = new AudioDecoder({
@@ -33,7 +37,10 @@ class WebCodecApi {
                         node = node.connect(this.analyzerFreq);
                     }
 
-                    node.connect(this.audioCtx.destination);
+                    // play sound
+                    if(this.properties.output) {
+                        node.connect(this.audioCtx.destination);
+                    }
 
                     // Connect the source to be analysed
                     source.start(this.deltaInc);
@@ -100,7 +107,7 @@ class WebCodecApi {
                 this.analyzerTime.fftSize = this.properties.timeDomainVisualization.fftSize;
             }
             this.gainNode = this.audioCtx.createGain();
-            this.gainNode.gain.setValueAtTime(this.properties.gain,0);
+            this.gainNode.gain.setValueAtTime(this.gain,0);
 
             this.init = true;
             this.startTime = timestamp;
@@ -138,6 +145,14 @@ class WebCodecApi {
             return 0;
         }
         return this.audioCtx.currentTime;
+    }
+
+    setGain(value) {
+        if(isDefined(this.gainNode)) {
+            this.gainNode.gain.setValueAtTime(value, 0);
+        } else {
+            this.gain = value;
+        }
     }
 }
 

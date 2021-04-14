@@ -19,8 +19,9 @@ let audioDataSource = new SosGetResultAudio("alex-audio", {
 let audioView = new AudioView({
   name: "Audio",
   css: 'audio-css',
+  container: 'audio-chart-container',
   dataSourceId: audioDataSource.id,
-  gain:10,
+  gain: 3,
   timeDomainVisualization: {
     type: 'chart',
     fftSize: 1024,
@@ -52,16 +53,47 @@ let audioView = new AudioView({
           pointRadius: 0.1,
           borderColor: 'rgba(0,0,0,0.5)',
           backgroundColor: 'rgba(255,195,100,0.2)',
-          barThickness: 5,
+          barThickness: 2,
           borderWidth: 1
         },
         datasetsMinMaxProps: {
           pointRadius: 0.0,
           backgroundColor: 'rgba(0,139,141,1.0)',
-          barThickness: 5,
+          barThickness: 2,
           borderWidth: 1
         }
       }
+    }
+  },
+  frequencyDomainVisualization: {
+    type: 'chart',
+    fftSize: 32,
+    props: {
+      css: 'audio-css-frequency',
+      chartjsProps: {
+        datasetsProps: {
+          borderColor: 'rgba(0,0,0,0.5)',
+          backgroundColor: 'rgba(210,210,210,0.8)',
+          barThickness: 20,
+          borderWidth: 1
+        },
+      }
+    }
+  }
+});
+
+let audioCanvasView = new AudioView({
+  name: "Audio",
+  css: 'audio-css',
+  container: 'audio-canvas-container',
+  dataSourceId: audioDataSource.id,
+  gain: 3,
+  output:false,
+  timeDomainVisualization: {
+    type: 'canvas',
+    fftSize: 1024,
+    props: {
+      css: 'audio-time-canvas'
     }
   },
   frequencyDomainVisualization: {
@@ -69,7 +101,7 @@ let audioView = new AudioView({
     fftSize: 32,
     props: {
       barWidth:20,
-      css: 'audio-css-canvas'
+      css: 'audio-freq-canvas'
     }
   }
 });
@@ -78,6 +110,9 @@ document.getElementById("listen").onclick = () => {
   audioDataSource.connect();
 }
 
-document.getElementById("listen11").onclick = () => {
-  audioDataSource.connect();
+const inputChartElt = document.getElementById("input-range-chart");
+inputChartElt.onchange = (event) => {
+  document.getElementById("range-value-chart").innerText = inputChartElt.value;
+  audioView.setGain(parseInt(inputChartElt.value));
+  audioCanvasView.setGain(parseInt(inputChartElt.value));
 }
