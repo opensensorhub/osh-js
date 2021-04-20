@@ -157,8 +157,8 @@ var samples = [
     code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
   },
   {
-    name: "Audio WebCodec/WebApi decoding",
-    description: "Listen audio stream using WebCodec/WebApi",
+    name: "Audio WebCodec/FFmpeg.js decoding",
+    description: "Listen audio stream using WebCodec/FFmpeg.js",
     url: "audio"
   },
 ];
