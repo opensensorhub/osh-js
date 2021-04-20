@@ -17,6 +17,7 @@ import AudioTimeDomainCanvas from "./canvas/AudioTimeDomainCanvas";
 import AudioFrequencyDomainCanvas from "./canvas/AudioFrequencyDomainCanvas";
 import AudioTimeDomainChartJs from "./chart/AudioTimeDomainChartJs";
 import AudioFrequencyDomainChartJs from "./chart/AudioFrequencyDomainChartJs";
+import FfmpegAudio from "./FfmpegAudio";
 
 /**
  * This class is in charge of listening Audio using either default native WebAPI or compatible WebCodec(if supported)
@@ -101,8 +102,8 @@ class AudioView extends View {
            this.decoder = new WebCodecApi(this.properties);
            console.warn('using WebCodec for audio decoding');
        }catch (error) {
-           this.decoder = new WebAudioApi(this.properties);
-           console.warn('using WebAudioApi for audio decoding');
+           this.decoder = new FfmpegAudio(this.properties);
+           console.warn('using FfmpegAudio for audio decoding');
        }
        this.decoder.onDecodedBuffer = (decodedSample) => {
            if(isDefined(this.views.frequencyDomainVisualization)) {
