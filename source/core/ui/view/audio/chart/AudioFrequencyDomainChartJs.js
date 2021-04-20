@@ -27,6 +27,11 @@ class AudioFrequencyDomainChartJs {
 
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
+
+        const bounds = domNode.getBoundingClientRect();
+        ctx.setAttribute("width", bounds.width);
+        ctx.setAttribute("height", bounds.height);
+
         domNode.appendChild(ctx);
 
         this.resetting = false;
@@ -52,13 +57,12 @@ class AudioFrequencyDomainChartJs {
                 yAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Amplitude (db)',
+                        labelString: 'Amplitude (dB)',
                     },
                     ticks: {
                         min: -100,
                         max: 0,
-                        beginAtZero: true,
-                        reverse: true
+                        beginAtZero: true
                     },
                 }],
                 xAxes: [{
@@ -134,11 +138,11 @@ class AudioFrequencyDomainChartJs {
         if(this.chart.data.labels.length ===0) {
             this.buildLabels(decodedSample);
             for(let i=0;i < dataArray.length;i++) {
-                this.dataset.data.push(dataArray[i]);
+                this.dataset.data.push([-100, dataArray[i]]);
             }
         } else {
             for(let i=0;i < dataArray.length;i++) {
-                this.dataset.data[i] = dataArray[i];
+                this.dataset.data[i][1] = dataArray[i];
             }
         }
         this.chart.update(0);

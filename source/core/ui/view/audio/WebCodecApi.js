@@ -8,8 +8,10 @@ class WebCodecApi {
         this.key = true;
         this.audioCtx = null;
 
-        this.analyzerTime = null;
-        this.analyzerFreq = null;
+        this.analyzerTimeNode = null;
+        this.analyzerFreqNode = null;
+        this.gainNode = null;
+
         this.startTime = 0;
         this.properties = {
             output: true,
@@ -29,12 +31,12 @@ class WebCodecApi {
                     let node = source;
 
                     node = node.connect(this.gainNode);
-                    if(this.analyzerTime !== null) {
-                        node = node.connect(this.analyzerTime);
+                    if(this.analyzerTimeNode !== null) {
+                        node = node.connect(this.analyzerTimeNode);
                     }
 
-                    if(this.analyzerFreq !== null) {
-                        node = node.connect(this.analyzerFreq);
+                    if(this.analyzerFreqNode !== null) {
+                        node = node.connect(this.analyzerFreqNode);
                     }
 
                     // play sound
@@ -48,14 +50,14 @@ class WebCodecApi {
 
                     let dataTimeDomainArray, dataFreqDomainArray;
 
-                    if(this.analyzerTime !== null) {
-                        dataTimeDomainArray = new Float32Array(this.analyzerTime.fftSize);
-                        this.analyzerTime.getFloatTimeDomainData(dataTimeDomainArray);
+                    if(this.analyzerTimeNode !== null) {
+                        dataTimeDomainArray = new Float32Array(this.analyzerTimeNode.fftSize);
+                        this.analyzerTimeNode.getFloatTimeDomainData(dataTimeDomainArray);
                     }
 
-                    if(this.analyzerFreq !== null) {
-                        dataFreqDomainArray = new Float32Array(this.analyzerFreq.frequencyBinCount);
-                        this.analyzerFreq.getFloatFrequencyData(dataFreqDomainArray);
+                    if(this.analyzerFreqNode !== null) {
+                        dataFreqDomainArray = new Float32Array(this.analyzerFreqNode.frequencyBinCount);
+                        this.analyzerFreqNode.getFloatFrequencyData(dataFreqDomainArray);
                     }
 
                     const decoded =  {
@@ -98,13 +100,13 @@ class WebCodecApi {
             });
 
             if(isDefined(this.properties.frequencyDomainVisualization)) {
-                this.analyzerFreq = this.audioCtx.createAnalyser();
-                this.analyzerFreq.fftSize = this.properties.frequencyDomainVisualization.fftSize;
+                this.analyzerFreqNode = this.audioCtx.createAnalyser();
+                this.analyzerFreqNode.fftSize = this.properties.frequencyDomainVisualization.fftSize;
             }
 
             if(isDefined(this.properties.timeDomainVisualization)) {
-                this.analyzerTime = this.audioCtx.createAnalyser();
-                this.analyzerTime.fftSize = this.properties.timeDomainVisualization.fftSize;
+                this.analyzerTimeNode = this.audioCtx.createAnalyser();
+                this.analyzerTimeNode.fftSize = this.properties.timeDomainVisualization.fftSize;
             }
             this.gainNode = this.audioCtx.createGain();
             this.gainNode.gain.setValueAtTime(this.gain,0);

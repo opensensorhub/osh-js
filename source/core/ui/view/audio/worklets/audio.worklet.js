@@ -13,13 +13,14 @@ class AudioPlayer extends AudioWorkletProcessor {
   }
 
   process(inputs, [[ outLeft, outRight ]], { audioSrcIndex }) {
-    if(this.audioBuffers.length > 2) {
+    if(this.audioBuffers.length > 0) {
       for (let i = 0; i < outLeft.length; i++, this.readIdx++) {
        // copy 128 samples from decodedAudio to outputs channels
         if (this.readIdx >= this.audioBuffers[0].length) {
           // SHIFT
           this.readIdx = 0;
           this.audioBuffers.shift();
+          this.port.postMessage({});
           // this.readIdx = 0;
           if(this.audioBuffers.length === 0) {
             break;

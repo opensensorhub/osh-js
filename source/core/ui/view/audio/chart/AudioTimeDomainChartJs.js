@@ -32,6 +32,10 @@ class AudioTimeDomainChartJs {
 
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
+        const bounds = domNode.getBoundingClientRect();
+        ctx.setAttribute("width", bounds.width);
+        ctx.setAttribute("height", bounds.height);
+
         domNode.appendChild(ctx);
 
         this.resetting = false;
@@ -185,7 +189,7 @@ class AudioTimeDomainChartJs {
         });
 
         if((this.dataset.data.length > this.maxPoints )) {
-            this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[3];
+            this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
         }
 
         if((this.dataset.data.length > this.maxPoints )) {
@@ -197,7 +201,7 @@ class AudioTimeDomainChartJs {
             this.minDataset.data.shift();
             this.maxDataset.data.shift();
         }
-        this.chart.update();
+        this.chart.update(0);
     }
     onended(decodedSample) {
         if(this.resetting) {

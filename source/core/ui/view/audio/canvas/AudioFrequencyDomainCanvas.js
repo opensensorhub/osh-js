@@ -28,7 +28,7 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
             let x = barWidth;
 
             for(let i = 0; i < dataArray.length; i++) {
-                barHeight = dataArray[i] * -1;
+                barHeight = 100 - dataArray[i] * -1;
                 barHeight = HEIGHT * barHeight / 100;
 
                 this.canvasCtx.fillStyle = 'rgb(215,215,215)';
