@@ -20,7 +20,6 @@ let audioView = new AudioView({
   container: 'audio-chart-container',
   dataSource: audioDataSource,
   gain: 3,
-  flush: 3,
   timeDomainVisualization: {
     type: 'chart',
     fftSize: 1024,
