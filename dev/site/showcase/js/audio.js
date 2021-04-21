@@ -10,8 +10,6 @@ let audioDataSource = new SosGetResultAudio("alex-audio", {
   observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
   startTime: "2021-04-12T10:48:45Z",
   endTime: "2021-04-12T10:49:45Z",
-  // startTime: "2021-03-24T09:56:10Z",
-  // endTime: "2021-03-24T09:56:30Z",
   replaySpeed: 1.0,
   bufferingTime: 1000
 });
@@ -20,12 +18,13 @@ let audioView = new AudioView({
   name: "Audio",
   css: 'audio-css',
   container: 'audio-chart-container',
-  dataSourceId: audioDataSource.id,
+  dataSource: audioDataSource,
   gain: 3,
   timeDomainVisualization: {
     type: 'chart',
     fftSize: 1024,
     props: {
+      css: 'audio-css-time',
       chartjsProps: {
         chartProps: {
           scales: {
@@ -86,7 +85,7 @@ let audioCanvasView = new AudioView({
   name: "Audio",
   css: 'audio-css',
   container: 'audio-canvas-container',
-  dataSourceId: audioDataSource.id,
+  dataSource: audioDataSource,
   gain: 3,
   output:false,
   timeDomainVisualization: {

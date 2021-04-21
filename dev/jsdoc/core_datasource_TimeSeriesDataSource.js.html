@@ -169,7 +169,13 @@ class TimeSeriesDataSource extends DataSource{
      * @returns {String} - endTime as ISO date
      */
     getReplaySpeed() {
-        return isDefined(this.properties.replaySpeed) ? this.properties.replaySpeed : 1;
+        if(isDefined(this.currentRunningProperties) &amp;&amp; isDefined(this.currentRunningProperties.replaySpeed) ){
+            return this.currentRunningProperties.replaySpeed;
+        } else if(isDefined(this.properties.replaySpeed)){
+            return this.properties.replaySpeed;
+        } else {
+            return 1.0;
+        }
     }
 
     async getCurrentTime() {
