@@ -35,6 +35,9 @@ class FfmpegAudio {
     onDecodedBuffer(decodedBuffer){
         console.log('decoded')
     }
+    reset() {
+
+    }
 }
 
 export default FfmpegAudio;

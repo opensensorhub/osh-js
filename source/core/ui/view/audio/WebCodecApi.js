@@ -50,6 +50,7 @@ class WebCodecApi {
 
     reset() {
         if(this.init) {
+            this.audioDecoder.close();
             this.init = false;
         }
     }

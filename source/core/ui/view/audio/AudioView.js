@@ -255,6 +255,15 @@ class AudioView extends View {
             if (isDefined(this.views.timeDomainVisualization)) {
                 this.views.timeDomainVisualization.view.reset();
             }
+            if(isDefined(this.analyzerFreqNode)) {
+                this.analyzerFreqNode.disconnect();
+            }
+            if(isDefined(this.analyzerTimeNode)) {
+                this.analyzerTimeNode.disconnect();
+            }
+            if(isDefined(this.gainNode)) {
+                this.gainNode.disconnect();
+            }
             this.audioCtx.close();
             this.isInitContext = false;
         }
