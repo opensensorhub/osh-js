@@ -155,7 +155,6 @@ class AudioTimeDomainChartJs {
         this.chart.data.datasets.push(this.maxDataset);
         this.chart.data.datasets.push(this.dataset);
 
-
     }
     parseDate(intTimeStamp) {
         const date = new Date(intTimeStamp);
@@ -235,8 +234,8 @@ class AudioTimeDomainChartJs {
     reset() {
         this.resetting = true;
         this.chart.stop();
-        this.chart.data.datasets[0].data = [];
         this.chart.data.labels = [];
+        this.chart.data.datasets.forEach( d => d.data = []);
         this.chart.update(0);
         this.resetting = false;
         // this.chart.data.datasets = [];

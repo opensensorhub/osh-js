@@ -160,12 +160,12 @@ class AudioView extends View {
         let replaySpeed = 1.0;
 
         if(isDefined(this.properties.dataSource)) {
-            replaySpeed = this.properties.dataSource.properties.replaySpeed;
+            replaySpeed = this.properties.dataSource.getReplaySpeed();
         }
         let source = this.audioCtx.createBufferSource();
         source.buffer = audioBuffer;
-        source.detune.value = replaySpeed * 100;
-        // source.playbackRate.value = replaySpeed;
+        source.detune.value = replaySpeed  * 100;
+        // source.playbackRate.value = replaySpeed * 1000;
 
         let node = source;
 
@@ -249,6 +249,13 @@ class AudioView extends View {
     reset() {
         this.decoder.reset();
         if (this.isInitContext) {
+            if (isDefined(this.views.frequencyDomainVisualization)) {
+                this.views.frequencyDomainVisualization.view.reset();
+            }
+            if (isDefined(this.views.timeDomainVisualization)) {
+                this.views.timeDomainVisualization.view.reset();
+            }
+            this.audioCtx.close();
             this.isInitContext = false;
         }
     }
