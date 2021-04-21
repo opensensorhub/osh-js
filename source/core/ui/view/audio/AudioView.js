@@ -43,6 +43,9 @@ class AudioView extends View {
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
      * @param {boolean} properties.visible - set the default behavior of the visibility of the view
      * @param {number} properties.gain - set the gain to be applied to the input  before its propagation to the output
+     * @param {string} [properties.codec='aac'] - the audio codec
+     * @param {boolean} [properties.output=true] - define if the sound is playing on the output
+     * @param {DataSource} properties.dataSource - the dataSource object
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
     constructor(properties) {
@@ -51,11 +54,14 @@ class AudioView extends View {
             gain: 1.0,
             output: true,
             codec: 'aac',
+            dataSourceId: properties.dataSource.id,
             ...properties,
             visible: true
         });
         this.isInitContext = false;
         this.initViews();
+        this.initPlaybackRate();
+
     }
 
     initViews() {
@@ -148,9 +154,19 @@ class AudioView extends View {
         this.decoder.onDecodedBuffer = this.onDecodedBuffer.bind(this);
     }
 
+    initPlaybackRate() {
+
+    }
     onDecodedBuffer(audioBuffer) {
+        let replaySpeed = 1.0;
+
+        if(isDefined(this.properties.dataSource)) {
+            replaySpeed = this.properties.dataSource.properties.replaySpeed;
+        }
         let source = this.audioCtx.createBufferSource();
         source.buffer = audioBuffer;
+        source.detune.value = replaySpeed * 100;
+        // source.playbackRate.value = replaySpeed;
 
         let node = source;
 
@@ -191,14 +207,26 @@ class AudioView extends View {
             timestamp: this.startTime + this.deltaInc * 1000
         };
 
-        if (isDefined(this.views.frequencyDomainVisualization)) {
-            this.views.frequencyDomainVisualization.view.draw(decoded);
-        }
-        if (isDefined(this.views.timeDomainVisualization)) {
-            this.views.timeDomainVisualization.view.draw(decoded);
+
+        if(replaySpeed === 1.0) {
+            if (isDefined(this.views.frequencyDomainVisualization)) {
+                this.views.frequencyDomainVisualization.view.draw(decoded);
+            }
+            if (isDefined(this.views.timeDomainVisualization)) {
+                this.views.timeDomainVisualization.view.draw(decoded);
+            }
         }
 
         source.onended = (event) => {
+            if(replaySpeed !== 1.0) {
+                if (isDefined(this.views.frequencyDomainVisualization)) {
+                    this.views.frequencyDomainVisualization.view.draw(decoded);
+                }
+                if (isDefined(this.views.timeDomainVisualization)) {
+                    this.views.timeDomainVisualization.view.draw(decoded);
+                }
+            }
+
             if (isDefined(this.views.frequencyDomainVisualization)) {
                 this.views.frequencyDomainVisualization.view.onended(decoded);
             }
