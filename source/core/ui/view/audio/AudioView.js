@@ -47,111 +47,203 @@ class AudioView extends View {
      */
     constructor(properties) {
         super({
-            flush: 2,
             supportedLayers: ['data'],
             gain: 1.0,
+            output: true,
+            codec: 'aac',
             ...properties,
             visible: true
         });
+        this.isInitContext = false;
         this.initViews();
-        this.initDecoder();
     }
 
-   initViews() {
-       this.views = {};
+    initViews() {
+        this.views = {};
 
-       if(isDefined(this.properties.timeDomainVisualization)) {
-           this.views.timeDomainVisualization = this.properties.timeDomainVisualization;
-       }
+        if (isDefined(this.properties.timeDomainVisualization)) {
+            this.views.timeDomainVisualization = this.properties.timeDomainVisualization;
+        }
 
-       if(isDefined(this.properties.frequencyDomainVisualization)) {
-           this.views.frequencyDomainVisualization = this.properties.frequencyDomainVisualization;
-       }
+        if (isDefined(this.properties.frequencyDomainVisualization)) {
+            this.views.frequencyDomainVisualization = this.properties.frequencyDomainVisualization;
+        }
 
-       if(isDefined(this.views.timeDomainVisualization)) {
-           if(this.views.timeDomainVisualization.type === 'canvas') {
-               this.views.timeDomainVisualization.view = new AudioTimeDomainCanvas({
-                   nodeElement: this.elementDiv,
-                   ...this.views.timeDomainVisualization
-               });
-           } else if(this.views.timeDomainVisualization.type === 'chart') {
-               this.views.timeDomainVisualization.view = new AudioTimeDomainChartJs({
-                   nodeElement: this.elementDiv,
-                   ...this.views.timeDomainVisualization
-               });
-           }
-       }
+        if (isDefined(this.views.timeDomainVisualization)) {
+            if (this.views.timeDomainVisualization.type === 'canvas') {
+                this.views.timeDomainVisualization.view = new AudioTimeDomainCanvas({
+                    nodeElement: this.elementDiv,
+                    ...this.views.timeDomainVisualization
+                });
+            } else if (this.views.timeDomainVisualization.type === 'chart') {
+                this.views.timeDomainVisualization.view = new AudioTimeDomainChartJs({
+                    nodeElement: this.elementDiv,
+                    ...this.views.timeDomainVisualization
+                });
+            }
+        }
 
-       if(isDefined(this.views.frequencyDomainVisualization)) {
-           if(this.views.frequencyDomainVisualization.type === 'canvas') {
-               this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainCanvas({
-                   nodeElement: this.elementDiv,
-                   ...this.views.frequencyDomainVisualization
-               });
-           } else if(this.views.frequencyDomainVisualization.type === 'chart') {
-               this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainChartJs({
-                   nodeElement: this.elementDiv,
-                   ...this.views.frequencyDomainVisualization
-               });
-           }
-       }
+        if (isDefined(this.views.frequencyDomainVisualization)) {
+            if (this.views.frequencyDomainVisualization.type === 'canvas') {
+                this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainCanvas({
+                    nodeElement: this.elementDiv,
+                    ...this.views.frequencyDomainVisualization
+                });
+            } else if (this.views.frequencyDomainVisualization.type === 'chart') {
+                this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainChartJs({
+                    nodeElement: this.elementDiv,
+                    ...this.views.frequencyDomainVisualization
+                });
+            }
+        }
     }
 
-   initDecoder() {
-       try {
-           this.decoder = new WebCodecApi(this.properties);
-           console.warn('using WebCodec for audio decoding');
-       }catch (error) {
-           this.decoder = new FfmpegAudio(this.properties);
-           console.warn('using FfmpegAudio for audio decoding');
-       }
-       this.decoder.onDecodedBuffer = (decodedSample) => {
-           if(isDefined(this.views.frequencyDomainVisualization)) {
-               this.views.frequencyDomainVisualization.view.draw(decodedSample);
-           }
-           if(isDefined(this.views.timeDomainVisualization)) {
-               this.views.timeDomainVisualization.view.draw(decodedSample);
-           }
-           this.onDecodedBuffer(decodedSample);
-       }
-       this.decoder.onEnded = (decodedSample) => {
-           if(isDefined(this.views.frequencyDomainVisualization)) {
-               this.views.frequencyDomainVisualization.view.onended(decodedSample);
-           }
-           if(isDefined(this.views.timeDomainVisualization)) {
-               this.views.timeDomainVisualization.view.onended(decodedSample);
-           }
-           this.onEnded(decodedSample);
-       }
+    initAudioContext(sampleRate,timestamp) {
+        // time audio position
+        this.deltaInc = 0.2;
+        this.key = true;
+        this.audioCtx = null;
+
+        this.analyzerTimeNode = null;
+        this.analyzerFreqNode = null;
+        this.gainNode = null;
+
+        this.startTime = 0;
+        this.gain = this.properties.gain;
+
+        let AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.audioCtx = new AudioContext({
+            sampleRate: sampleRate,
+            latencyHint: 'interactive'
+        });
+
+        if (isDefined(this.properties.frequencyDomainVisualization)) {
+            this.analyzerFreqNode = this.audioCtx.createAnalyser();
+            this.analyzerFreqNode.fftSize = this.properties.frequencyDomainVisualization.fftSize;
+        }
+
+        if (isDefined(this.properties.timeDomainVisualization)) {
+            this.analyzerTimeNode = this.audioCtx.createAnalyser();
+            this.analyzerTimeNode.fftSize = this.properties.timeDomainVisualization.fftSize;
+        }
+        this.gainNode = this.audioCtx.createGain();
+        this.gainNode.gain.setValueAtTime(this.gain, 0);
+
+        this.startTime = timestamp;
+        this.deltaInc = 0.1;
+        this.isInitContext = true;
     }
 
-    draw(decodedSample) {
-
+    initDecoder() {
+        try {
+            this.decoder = new WebCodecApi({
+                ...this.properties,
+                audioCtx: this.audioCtx
+            });
+            console.warn('using WebCodec for audio decoding');
+        } catch (error) {
+            this.decoder = new FfmpegAudio(this.properties);
+            console.warn('using FfmpegAudio for audio decoding');
+        }
+        this.decoder.onDecodedBuffer = this.onDecodedBuffer.bind(this);
     }
 
-    async setData(dataSourceId, data) {
+    onDecodedBuffer(audioBuffer) {
+        let source = this.audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+
+        let node = source;
+
+        node = node.connect(this.gainNode);
+        if (this.analyzerTimeNode !== null) {
+            node = node.connect(this.analyzerTimeNode);
+        }
+
+        if (this.analyzerFreqNode !== null) {
+            node = node.connect(this.analyzerFreqNode);
+        }
+
+        // play sound
+        if (this.properties.output) {
+            node.connect(this.audioCtx.destination);
+        }
+
+        // Connect the source to be analysed
+        source.start(this.deltaInc);
+        this.deltaInc += audioBuffer.duration;
+
+        let dataTimeDomainArray, dataFreqDomainArray;
+
+        if (this.analyzerTimeNode !== null) {
+            dataTimeDomainArray = new Float32Array(this.analyzerTimeNode.fftSize);
+            this.analyzerTimeNode.getFloatTimeDomainData(dataTimeDomainArray);
+        }
+
+        if (this.analyzerFreqNode !== null) {
+            dataFreqDomainArray = new Float32Array(this.analyzerFreqNode.frequencyBinCount);
+            this.analyzerFreqNode.getFloatFrequencyData(dataFreqDomainArray);
+        }
+
+        const decoded = {
+            buffer: audioBuffer,
+            dataTimeDomainArray: dataTimeDomainArray,
+            dataFreqDomainArray: dataFreqDomainArray,
+            timestamp: this.startTime + this.deltaInc * 1000
+        };
+
+        if (isDefined(this.views.frequencyDomainVisualization)) {
+            this.views.frequencyDomainVisualization.view.draw(decoded);
+        }
+        if (isDefined(this.views.timeDomainVisualization)) {
+            this.views.timeDomainVisualization.view.draw(decoded);
+        }
+
+        source.onended = (event) => {
+            if (isDefined(this.views.frequencyDomainVisualization)) {
+                this.views.frequencyDomainVisualization.view.onended(decoded);
+            }
+            if (isDefined(this.views.timeDomainVisualization)) {
+                this.views.timeDomainVisualization.view.onended(decoded);
+            }
+        }
+    }
+
+    setData(dataSourceId, data) {
         for (let value of data.values) {
-            await this.decoder.decode(value.data,value.timeStamp);
+            if (!this.isInitContext) {
+                this.initAudioContext(value.data.sampleRate,value.timeStamp);
+                this.initDecoder();
+            }
+
+            this.decoder.decode(value.data, value.timeStamp);
         }
     }
 
     reset() {
         this.decoder.reset();
+        if (this.isInitContext) {
+            this.isInitContext = false;
+        }
     }
 
-    onDecodedBuffer(decodedBuffer){
-    }
-
-    onEnded(decodedBuffer){
-    }
     getCurrentTime() {
-        return this.decoder.getCurrentTime();
+        if (this.audioCtx === null) {
+            return 0;
+        }
+        return this.audioCtx.currentTime;
     }
 
-    setGain(gainValue) {
-        this.decoder.setGain(gainValue);
+    setGain(value) {
+        if (isDefined(this.gainNode)) {
+            this.gainNode.gain.setValueAtTime(value, 0);
+        } else {
+            this.gain = value;
+        }
     }
+
+    draw(decodedSample) {}
 }
+
 export default AudioView;
 
 
