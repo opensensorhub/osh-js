@@ -172,6 +172,7 @@ class AudioTimeDomainChartJs {
     }
 
     draw(decodedSample) {
+
         if(this.resetting) {
             return;
         }
@@ -193,7 +194,6 @@ class AudioTimeDomainChartJs {
         }
 
         if((this.dataset.data.length > this.maxPoints )) {
-            this.chart.data.labels.shift();
             this.chart.data.labels.shift();
             this.dataset.data.shift();
             this.dataset.data.shift();
