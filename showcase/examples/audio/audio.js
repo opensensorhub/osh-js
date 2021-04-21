@@ -18,8 +18,8 @@ let audioView = new AudioView({
   name: "Audio",
   css: 'audio-css',
   container: 'audio-chart-container',
-  dataSourceId: audioDataSource.id,
-  gain: 1,
+  dataSource: audioDataSource,
+  gain: 3,
   flush: 3,
   timeDomainVisualization: {
     type: 'chart',
@@ -85,7 +85,7 @@ let audioCanvasView = new AudioView({
   name: "Audio",
   css: 'audio-css',
   container: 'audio-canvas-container',
-  dataSourceId: audioDataSource.id,
+  dataSource: audioDataSource,
   gain: 3,
   output:false,
   timeDomainVisualization: {
