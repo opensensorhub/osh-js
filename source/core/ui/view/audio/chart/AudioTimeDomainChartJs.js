@@ -32,9 +32,7 @@ class AudioTimeDomainChartJs {
 
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
-        const bounds = domNode.getBoundingClientRect();
-        ctx.setAttribute("width", bounds.width);
-        ctx.setAttribute("height", bounds.height);
+        ctx.setAttribute("class", properties.props.css);
 
         domNode.appendChild(ctx);
 
@@ -63,7 +61,6 @@ class AudioTimeDomainChartJs {
                         labelString: 'Amplitude'
                     },
                     ticks: {
-                        maxTicksLimit: 5,
                         min: -1.0,
                         max: 1.0
                     },
@@ -79,7 +76,6 @@ class AudioTimeDomainChartJs {
                         unit: 'second',
                     },
                     ticks: {
-                        maxTicksLimit: 20,
                         callback: (label, index, values) => {
                             return this.parseDate(values[index].value);
                         }

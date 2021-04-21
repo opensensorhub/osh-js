@@ -27,10 +27,7 @@ class AudioFrequencyDomainChartJs {
 
         let ctx = document.createElement("canvas");
         ctx.setAttribute("id", randomUUID());
-
-        const bounds = domNode.getBoundingClientRect();
-        ctx.setAttribute("width", bounds.width);
-        ctx.setAttribute("height", bounds.height);
+        ctx.setAttribute("class", properties.props.css);
 
         domNode.appendChild(ctx);
 

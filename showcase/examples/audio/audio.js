@@ -24,6 +24,7 @@ let audioView = new AudioView({
     type: 'chart',
     fftSize: 1024,
     props: {
+      css: 'audio-css-time',
       chartjsProps: {
         chartProps: {
           scales: {

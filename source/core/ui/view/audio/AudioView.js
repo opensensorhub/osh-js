@@ -11,7 +11,6 @@
 
 import View from "../View.js";
 import WebCodecApi from "./WebCodecApi";
-import WebAudioApi from "./WebAudioApi";
 import {isDefined} from "../../../utils/Utils";
 import AudioTimeDomainCanvas from "./canvas/AudioTimeDomainCanvas";
 import AudioFrequencyDomainCanvas from "./canvas/AudioFrequencyDomainCanvas";
