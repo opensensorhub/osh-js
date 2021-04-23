@@ -10,8 +10,13 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import View from "../View.js";
-import AudioPlayerWorklet from './worklets/audio.worklet.js'
-import AudioPlayer from "../../../../../issues/354/hello-audio-worklet/processor.worklet";
+import WebCodecApi from "./WebCodecApi";
+import {isDefined} from "../../../utils/Utils";
+import AudioTimeDomainCanvas from "./canvas/AudioTimeDomainCanvas";
+import AudioFrequencyDomainCanvas from "./canvas/AudioFrequencyDomainCanvas";
+import AudioTimeDomainChartJs from "./chart/AudioTimeDomainChartJs";
+import AudioFrequencyDomainChartJs from "./chart/AudioFrequencyDomainChartJs";
+import FfmpegAudio from "./FfmpegAudio";
 
 /**
  * This class is in charge of listening Audio using either default native WebAPI or compatible WebCodec(if supported)
@@ -33,211 +38,273 @@ class AudioView extends View {
      * Create a View.
      * @param {Object} [properties={}] - the properties of the view
      * @param {string} properties.container - The div element to attach to
-     * @param {string} properties.flush - Number of elements to concatenate before flushing
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
-     * @param {boolean} properties.visible - set the default behavior of the visibility of the view
+     * @param {boolean} [properties.visible=true] - set the default behavior of the visibility of the view
+     * @param {number} [properties.gain=1] - set the gain to be applied to the input  before its propagation to the output
+     * @param {string} [properties.codec='aac'] - the audio codec
+     * @param {boolean} [properties.output=true] - define if the sound is playing on the output
+     * @param {DataSource} properties.dataSource - the dataSource object
+     * @param {Object} properties.timeDomainVisualization - the time domain visualization subview
+     * @param {string} properties.timeDomainVisualization.type - the type of view to create 'chart' | 'canvas'. Chart use chart.js library and canvas is pure HTML5 canvas visualization.
+     * @param {number} properties.timeDomainVisualization.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+     * @param {Object} properties.timeDomainVisualization.props - the time domain visualization properties depending on the type
+     * @param {Object} properties.timeDomainVisualization.props.css - the css applied to the created DOM element
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps - (type 'chart')
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.frequencyDomainVisualization - the frequency domain visualization subview
+     * @param {string} properties.frequencyDomainVisualization.type - the type of view to create 'chart' | 'canvas'. Chart use chart.js library and canvas is pure HTML5 canvas visualization.
+     * @param {number} properties.frequencyDomainVisualization.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+     * @param {Object} properties.frequencyDomainVisualization.props - the frequency domain visualization properties depending on the type
+     * @param {Object} properties.frequencyDomainVisualization.props.css - the css applied to the created DOM element
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps - (type 'chart')
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} [properties.frequencyDomainVisualization.props.barWidth=10] - (type 'canvas') canvas bar width
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
     constructor(properties) {
         super({
-            flush: 2,
             supportedLayers: ['data'],
-            ...properties
+            gain: 1.0,
+            output: true,
+            codec: 'aac',
+            dataSourceId: properties.dataSource.id,
+            ...properties,
+            visible: true
         });
+        this.isInitContext = false;
+        this.views = {};
+        this.initViews();
+        this.initPlaybackRate();
 
-        this.initDecoder();
     }
 
-   initDecoder() {
-       try {
-           this.decoder = new WebCodec(this.properties);
-           console.warn('using WebCodec for audio decoding');
-       }catch (error) {
-           this.decoder = new WebAudioApi(this.properties);
-           console.warn('using WebAudioApi for audio decoding');
-       }
-       this.decoder.onDecodedBuffer = (decodedBuffer) => {
-           this.onDecodedBuffer(decodedBuffer);
-       }
-    }
+    initViews() {
+        if (isDefined(this.properties.timeDomainVisualization)) {
+            this.views.timeDomainVisualization = this.properties.timeDomainVisualization;
+        }
 
-    async setData(dataSourceId, data) {
-        for (let value of data.values) {
-            await this.decoder.decode(value.data);
+        if (isDefined(this.properties.frequencyDomainVisualization)) {
+            this.views.frequencyDomainVisualization = this.properties.frequencyDomainVisualization;
+        }
+
+        if (isDefined(this.views.timeDomainVisualization)) {
+            if (this.views.timeDomainVisualization.type === 'canvas') {
+                this.views.timeDomainVisualization.view = new AudioTimeDomainCanvas({
+                    nodeElement: this.elementDiv,
+                    ...this.views.timeDomainVisualization
+                });
+            } else if (this.views.timeDomainVisualization.type === 'chart') {
+                this.views.timeDomainVisualization.view = new AudioTimeDomainChartJs({
+                    nodeElement: this.elementDiv,
+                    ...this.views.timeDomainVisualization
+                });
+            }
+        }
+
+        if (isDefined(this.views.frequencyDomainVisualization)) {
+            if (this.views.frequencyDomainVisualization.type === 'canvas') {
+                this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainCanvas({
+                    nodeElement: this.elementDiv,
+                    ...this.views.frequencyDomainVisualization
+                });
+            } else if (this.views.frequencyDomainVisualization.type === 'chart') {
+                this.views.frequencyDomainVisualization.view = new AudioFrequencyDomainChartJs({
+                    nodeElement: this.elementDiv,
+                    ...this.views.frequencyDomainVisualization
+                });
+            }
         }
     }
 
-    reset() {
-        this.decoder.reset();
-    }
-
-    onDecodedBuffer(decodedBuffer){
-    }
-
-    getCurrentTime() {
-        return this.decoder.getCurrentTime();
-    }
-}
-export default AudioView;
-
-// fallback version
-class WebAudioApi {
-    constructor(properties) {
-        let AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioCtx = new AudioContext();
+    initAudioContext(sampleRate,timestamp) {
         // time audio position
-        this.deltaInc = 0;
-
-        // the current audio buffer to read, can be a concatenation of multiple decoded audio buffers
-        this.audioBuffer = null;
-        // define the size of the audiobuffer to concatenate
-        this.flushLimit = properties.flush;
-        // current count used for flushing
-        this.count = 0;
-        this.init = false;
-    }
-
-    concat(buffer1, buffer2){
-        const tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
-
-        tmp.set(new Uint8Array(buffer1), 0);
-        tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
-
-        return tmp.buffer;
-    }
-
-    async decode(data) {
-        if (!this.init) {
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)({
-                latencyHint: 'playback',
-                sampleRate: data.sampleRate,
-            });
-            this.audioCtx.resume();
-            await this.audioCtx.audioWorklet.addModule(AudioPlayer);
-
-            this.workletNode = new AudioWorkletNode(this.audioCtx, 'audio-player', {
-                outputChannelCount: [1]  // mono
-            })
-            this.workletNode.connect(this.audioCtx.destination);
-            this.init = true;
-        }
-
-        if(this.count === 0) {
-            this.audioBuffer = data.frameData.buffer;
-        } else {
-            this.audioBuffer = this.concat(this.audioBuffer, data.frameData.buffer);
-        }
-
-        if(this.count >= this.flushLimit) {
-            await this.flush();
-            this.count = 0;
-        } else {
-            this.count++;
-        }
-    }
-
-    async flush() {
-        try {
-            let audioBufferChunk = await this.audioCtx.decodeAudioData(this.audioBuffer);
-            let buf = audioBufferChunk.getChannelData(0).buffer;
-            this.workletNode.port.postMessage({data: buf}, [buf]);
-        }catch (e){
-            console.error(e);
-        }
-    }
-
-    reset() {
-
-    }
-
-    onDecodedBuffer(decodedBuffer){}
-
-    getCurrentTime() {
-        if(this.audioCtx === null){
-            return 0;
-        }
-        return this.audioCtx.currentTime;
-    }
-
-}
-
-class WebCodec {
-    constructor(properties) {
-        // time audio position
-        this.deltaInc = 0;
-        this.init = false;
-        this.key = true;
+        this.deltaInc = 0.2;
         this.audioCtx = null;
 
+        this.analyzerTimeNode = null;
+        this.analyzerFreqNode = null;
+        this.gainNode = null;
+
+        this.gain = this.properties.gain;
+
+        let AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.audioCtx = new AudioContext({
+            sampleRate: sampleRate,
+            latencyHint: 'interactive'
+        });
+
+        if (isDefined(this.properties.frequencyDomainVisualization)) {
+            this.analyzerFreqNode = this.audioCtx.createAnalyser();
+            this.analyzerFreqNode.fftSize = this.properties.frequencyDomainVisualization.fftSize;
+        }
+
+        if (isDefined(this.properties.timeDomainVisualization)) {
+            this.analyzerTimeNode = this.audioCtx.createAnalyser();
+            this.analyzerTimeNode.fftSize = this.properties.timeDomainVisualization.fftSize;
+        }
+        this.gainNode = this.audioCtx.createGain();
+        this.gainNode.gain.setValueAtTime(this.gain, 0);
+
+        this.startTime = timestamp;
+        this.isInitContext = true;
+    }
+
+    initDecoder() {
         try {
-            // check for supported webcodec
-            this.audioDecoder = new AudioDecoder({
-                output: (decodedSample) => {
-                    const buffer = decodedSample.buffer;
-                    let source = this.audioCtx.createBufferSource();
-                    source.buffer = buffer;
-                    source.connect(this.audioCtx.destination);
-                    source.start(this.deltaInc);
-                    this.deltaInc += buffer.duration;
-
-                    this.onDecodedBuffer(decodedSample.buffer);
-                },
-                error: (error) => {
-                    console.error(error);
-                }
+            this.decoder = new WebCodecApi({
+                ...this.properties,
+                audioCtx: this.audioCtx
             });
+            console.warn('using WebCodec for audio decoding');
+        } catch (error) {
+            this.decoder = new FfmpegAudio(this.properties);
+            console.warn('using FfmpegAudio for audio decoding');
+        }
+        this.decoder.onDecodedBuffer = this.onDecodedBuffer.bind(this);
+    }
+
+    initPlaybackRate() {
+
+    }
+    onDecodedBuffer(audioBuffer) {
+        let replaySpeed = 1.0;
+
+        if(isDefined(this.properties.dataSource)) {
+            replaySpeed = this.properties.dataSource.getReplaySpeed();
+        }
+        let source = this.audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.detune.value = replaySpeed  * 100;
+        // source.playbackRate.value = replaySpeed * 1000;
+
+        let node = source;
+
+        node = node.connect(this.gainNode);
+        if (this.analyzerTimeNode !== null) {
+            node = node.connect(this.analyzerTimeNode);
+        }
+
+        if (this.analyzerFreqNode !== null) {
+            node = node.connect(this.analyzerFreqNode);
+        }
+
+        // play sound
+        if (this.properties.output) {
+            node.connect(this.audioCtx.destination);
+        }
+
+        // Connect the source to be analysed
+        source.start(this.deltaInc);
+        this.deltaInc += audioBuffer.duration;
+
+        let dataTimeDomainArray, dataFreqDomainArray;
+
+        if (this.analyzerTimeNode !== null) {
+            dataTimeDomainArray = new Float32Array(this.analyzerTimeNode.fftSize);
+            this.analyzerTimeNode.getFloatTimeDomainData(dataTimeDomainArray);
+        }
+
+        if (this.analyzerFreqNode !== null) {
+            dataFreqDomainArray = new Float32Array(this.analyzerFreqNode.frequencyBinCount);
+            this.analyzerFreqNode.getFloatFrequencyData(dataFreqDomainArray);
+        }
+
+        const decoded = {
+            buffer: audioBuffer,
+            dataTimeDomainArray: dataTimeDomainArray,
+            dataFreqDomainArray: dataFreqDomainArray,
+            timestamp: this.startTime + this.deltaInc * 1000
+        };
 
 
-        } catch (e) {
-            // WebCodec is not supported
-            throw new Error('WebCodec is not supported');
+        if(replaySpeed === 1.0) {
+            if (isDefined(this.views.frequencyDomainVisualization)) {
+                this.views.frequencyDomainVisualization.view.draw(decoded);
+            }
+            if (isDefined(this.views.timeDomainVisualization)) {
+                this.views.timeDomainVisualization.view.draw(decoded);
+            }
+        }
+
+        source.onended = (event) => {
+            if(replaySpeed !== 1.0) {
+                if (isDefined(this.views.frequencyDomainVisualization)) {
+                    this.views.frequencyDomainVisualization.view.draw(decoded);
+                }
+                if (isDefined(this.views.timeDomainVisualization)) {
+                    this.views.timeDomainVisualization.view.draw(decoded);
+                }
+            }
+
+            if (isDefined(this.views.frequencyDomainVisualization)) {
+                this.views.frequencyDomainVisualization.view.onended(decoded);
+            }
+            if (isDefined(this.views.timeDomainVisualization)) {
+                this.views.timeDomainVisualization.view.onended(decoded);
+            }
         }
     }
 
-    async decode(data) {
-        if (!this.init) {
-            let AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.audioCtx = new AudioContext({
-                sampleRate: data.sampleRate,
-                latencyHint: 'interactive'
-            });
+    setData(dataSourceId, data) {
+        for (let value of data.values) {
+            if (!this.isInitContext) {
+                this.initAudioContext(value.data.sampleRate,value.timeStamp);
+                this.initDecoder();
+            }
 
-            await this.audioDecoder.configure({
-                codec: 'mp4a.40.2',
-                numberOfChannels: 1,
-                sampleRate: data.sampleRate
-            });
-            this.init = true;
-        }
-
-        const chunk = new EncodedAudioChunk({
-            type:  this.key? "key" : "delta",
-            data: data.frameData.buffer,
-            timestamp: 0
-        });
-
-        try {
-            this.audioDecoder.decode(chunk);
-        } catch (error) {
-            console.error(error);
+            this.decoder.decode(value.data, value.timeStamp);
         }
     }
 
     reset() {
-        if(this.init) {
-            this.init = false;
+        super.reset();
+        if(isDefined(this.decoder)) {
+            this.decoder.reset();
+        }
+        if (this.isInitContext) {
+            if (isDefined(this.views.frequencyDomainVisualization)) {
+                this.views.frequencyDomainVisualization.view.reset();
+            }
+            if (isDefined(this.views.timeDomainVisualization)) {
+                this.views.timeDomainVisualization.view.reset();
+            }
+            if(isDefined(this.analyzerFreqNode)) {
+                this.analyzerFreqNode.disconnect();
+            }
+            if(isDefined(this.analyzerTimeNode)) {
+                this.analyzerTimeNode.disconnect();
+            }
+            if(isDefined(this.gainNode)) {
+                this.gainNode.disconnect();
+            }
+            this.audioCtx.close();
+            this.isInitContext = false;
         }
     }
 
-    onDecodedBuffer(decodedBuffer){
-        console.log('decoded')
-    }
-
     getCurrentTime() {
-        if(this.audioCtx === null){
+        if (this.audioCtx === null) {
             return 0;
         }
         return this.audioCtx.currentTime;
     }
 
+    setGain(value) {
+        if (isDefined(this.gainNode)) {
+            this.gainNode.gain.setValueAtTime(value, 0);
+        } else {
+            this.gain = value;
+        }
+    }
+
+    draw(decodedSample) {}
 }
+
+export default AudioView;
+
+
+

@@ -127,6 +127,7 @@ module.exports = {
                                 '/guide/datasources/sos/swejson.md',
                                 '/guide/datasources/sos/video.md',
                                 '/guide/datasources/sos/videoroll.md',
+                                '/guide/datasources/sos/audio.md',
                                 '/guide/datasources/sos/sosgetfois.md',
                                 '/guide/datasources/sos/batch_replayspeed.md',
                             ]
@@ -174,6 +175,13 @@ module.exports = {
                                 '/guide/views/video/ffmpeg.md',
                                 '/guide/views/video/mjpeg.md',
                                 '/guide/views/video/videocodec.md',
+                            ]
+                        },
+                        {
+                            title: 'Audio',
+                            collapsable: true,
+                            children: [
+                                '/guide/views/audio/audio.md'
                             ]
                         },
                         {

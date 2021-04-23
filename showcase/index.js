@@ -157,9 +157,15 @@ var samples = [
     code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
   },
   {
-    name: "Audio WebCodec/WebApi decoding",
-    description: "Listen audio stream using WebCodec/WebApi",
+    name: "Audio WebCodec/FFmpeg.js decoding",
+    description: "Listen audio stream using WebCodec/FFmpeg.js",
     url: "audio"
+  },
+  {
+    name: "Audio WebCodec/FFmpeg.js decoding with time controller",
+    description: "Listen audio stream using WebCodec/FFmpeg.js with time controller",
+    url: 'audio-with-control-vuejs',
+    code: 'vue/App_examples/audio-with-control-vuejs.vue'
   },
 ];
 

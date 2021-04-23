@@ -20,6 +20,7 @@ class AudioPlayer extends AudioWorkletProcessor {
           // SHIFT
           this.readIdx = 0;
           this.audioBuffers.shift();
+          this.port.postMessage({});
           // this.readIdx = 0;
           if(this.audioBuffers.length === 0) {
             break;
