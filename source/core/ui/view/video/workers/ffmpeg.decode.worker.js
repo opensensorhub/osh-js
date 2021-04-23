@@ -1,4 +1,4 @@
-import Module from './ffmpeg-h264.js';
+import Module from '../../ffmpeg/ffmpeg-h264.js';
 import {FFMPEG_VIEW_DECODE_TOPIC} from "../../../../Constants";
 
 let instance = {
