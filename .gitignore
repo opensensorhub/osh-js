@@ -22,7 +22,7 @@ vuepress/docs/.vuepress/dist/
 **/video-display-advanced-android-vuejs/
 ../video-display-advanced-android-vuejs/
 /issues/166/
-/issues/354/
+/issues/
 **/*.lock
 jsdoc/dist
 jsdoc/dist-iframe
