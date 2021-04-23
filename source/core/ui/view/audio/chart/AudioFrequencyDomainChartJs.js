@@ -33,7 +33,7 @@ class AudioFrequencyDomainChartJs {
 
         this.resetting = false;
         this.pos = 0;
-        // #region snippet_chartjsview_default_chartprops
+        // #region snippet_audiochartjsview_default_chartprops
         let chartProps = {
             events: [],
             responsiveAnimationDuration: 0,
@@ -80,7 +80,7 @@ class AudioFrequencyDomainChartJs {
             fill: false
         };
 
-        // #endregion snippet_chartjsview_default_chartprops
+        // #endregion snippet_audiochartjsview_default_chartprops
 
         merge(chartProps,this.chartProps);
         merge(datasetsProps,this.datasetsProps);

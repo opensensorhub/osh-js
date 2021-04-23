@@ -111,7 +111,11 @@ class AudioTimeDomainChartJs {
                 options : chartProps,
                 plugins: []
             });
+        this.initDatasets();
+    }
 
+    initDatasets() {
+        // #region snippet_audiochartjsview_default_chartprops
         this.dataset = {
             label: 'Time domain',
             backgroundColor: 'rgba(200,200,200,0.4)',
@@ -149,13 +153,14 @@ class AudioTimeDomainChartJs {
             borderWidth: 1.0,
             type: 'line'
         };
+        // #endregion snippet_audiochartjsview_default_chartprops
 
         this.chart.data.datasets.push(this.positionDataset);
         this.chart.data.datasets.push(this.minDataset);
         this.chart.data.datasets.push(this.maxDataset);
         this.chart.data.datasets.push(this.dataset);
-
     }
+
     parseDate(intTimeStamp) {
         const date = new Date(intTimeStamp);
         return this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
@@ -167,7 +172,6 @@ class AudioTimeDomainChartJs {
     }
 
     draw(decodedSample) {
-
         if(this.resetting) {
             return;
         }
@@ -235,7 +239,7 @@ class AudioTimeDomainChartJs {
         this.resetting = true;
         this.chart.stop();
         this.chart.data.labels = [];
-        this.chart.data.datasets.forEach( d => d.data = []);
+        this.chart.data.datasets.forEach( dataset => dataset.data = []);
         this.chart.update(0);
         this.resetting = false;
         // this.chart.data.datasets = [];
