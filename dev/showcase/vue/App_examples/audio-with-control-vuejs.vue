@@ -14,6 +14,7 @@
     import TimeController from 'osh-js/vue/components/TimeController.vue';
     import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
     import AudioView from 'osh-js/core/ui/view/audio/AudioView';
+    import {debounce, throttle} from 'osh-js/core/utils/Utils';
 
     export default {
         components: {
@@ -111,10 +112,10 @@
       },
       methods: {
         onControlEvent(eventName) {
-          if (eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed') {
-            this.view.reset();
+          if (eventName === 'forward' || eventName === 'backward' || eventName === 'end' || eventName === 'replaySpeed') {
+            this.view.reset()
           }
-        }
+        },
       }
     };
 </script>

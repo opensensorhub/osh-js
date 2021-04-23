@@ -66,13 +66,31 @@ class AudioView extends View {
      * Create a View.
      * @param {Object} [properties={}] - the properties of the view
      * @param {string} properties.container - The div element to attach to
-     * @param {string} properties.flush - Number of elements to concatenate before flushing (for WebAudioApi only)
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
-     * @param {boolean} properties.visible - set the default behavior of the visibility of the view
-     * @param {number} properties.gain - set the gain to be applied to the input  before its propagation to the output
+     * @param {boolean} [properties.visible=true] - set the default behavior of the visibility of the view
+     * @param {number} [properties.gain=1] - set the gain to be applied to the input  before its propagation to the output
      * @param {string} [properties.codec='aac'] - the audio codec
      * @param {boolean} [properties.output=true] - define if the sound is playing on the output
      * @param {DataSource} properties.dataSource - the dataSource object
+     * @param {Object} properties.timeDomainVisualization - the time domain visualization subview
+     * @param {string} properties.timeDomainVisualization.type - the type of view to create 'chart' | 'canvas'. Chart use chart.js library and canvas is pure HTML5 canvas visualization.
+     * @param {number} properties.timeDomainVisualization.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+     * @param {Object} properties.timeDomainVisualization.props - the time domain visualization properties depending on the type
+     * @param {Object} properties.timeDomainVisualization.props.css - the css applied to the created DOM element
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps - (type 'chart')
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.timeDomainVisualization.props.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.frequencyDomainVisualization - the frequency domain visualization subview
+     * @param {string} properties.frequencyDomainVisualization.type - the type of view to create 'chart' | 'canvas'. Chart use chart.js library and canvas is pure HTML5 canvas visualization.
+     * @param {number} properties.frequencyDomainVisualization.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+     * @param {Object} properties.frequencyDomainVisualization.props - the frequency domain visualization properties depending on the type
+     * @param {Object} properties.frequencyDomainVisualization.props.css - the css applied to the created DOM element
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps - (type 'chart')
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.frequencyDomainVisualization.props.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} [properties.frequencyDomainVisualization.props.barWidth=10] - (type 'canvas') canvas bar width
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
     constructor(properties) {
@@ -86,14 +104,13 @@ class AudioView extends View {
             visible: true
         });
         this.isInitContext = false;
+        this.views = {};
         this.initViews();
         this.initPlaybackRate();
 
     }
 
     initViews() {
-        this.views = {};
-
         if (isDefined(this.properties.timeDomainVisualization)) {
             this.views.timeDomainVisualization = this.properties.timeDomainVisualization;
         }
@@ -134,14 +151,12 @@ class AudioView extends View {
     initAudioContext(sampleRate,timestamp) {
         // time audio position
         this.deltaInc = 0.2;
-        this.key = true;
         this.audioCtx = null;
 
         this.analyzerTimeNode = null;
         this.analyzerFreqNode = null;
         this.gainNode = null;
 
-        this.startTime = 0;
         this.gain = this.properties.gain;
 
         let AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -163,7 +178,6 @@ class AudioView extends View {
         this.gainNode.gain.setValueAtTime(this.gain, 0);
 
         this.startTime = timestamp;
-        this.deltaInc = 0.1;
         this.isInitContext = true;
     }
 
@@ -275,7 +289,10 @@ class AudioView extends View {
     }
 
     reset() {
-        this.decoder.reset();
+        super.reset();
+        if(isDefined(this.decoder)) {
+            this.decoder.reset();
+        }
         if (this.isInitContext) {
             if (isDefined(this.views.frequencyDomainVisualization)) {
                 this.views.frequencyDomainVisualization.view.reset();
