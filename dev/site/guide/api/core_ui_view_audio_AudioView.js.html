@@ -189,7 +189,12 @@ class AudioView extends View {
             });
             console.warn('using WebCodec for audio decoding');
         } catch (error) {
-            this.decoder = new FfmpegAudio(this.properties);
+            this.decoder = new FfmpegAudio(
+                {
+                    ...this.properties,
+                    audioCtx: this.audioCtx
+                }
+            );
             console.warn('using FfmpegAudio for audio decoding');
         }
         this.decoder.onDecodedBuffer = this.onDecodedBuffer.bind(this);
