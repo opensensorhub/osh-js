@@ -80,6 +80,14 @@ class CanvasView extends View {
             if (isDefined(properties.showStats)) {
                 this.showStats = properties.showStats;
             }
+
+            if (isDefined(properties.width)) {
+                this.width = properties.width+"";
+            }
+
+            if (isDefined(properties.height)) {
+                this.height = properties.height+"";
+            }
         }
 
         let domNode = document.getElementById(this.divId);
