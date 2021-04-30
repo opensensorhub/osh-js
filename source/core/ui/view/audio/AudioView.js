@@ -122,7 +122,7 @@ class AudioView extends View {
 
     initAudioContext(sampleRate,timestamp) {
         // time audio position
-        this.deltaInc = 0.2;
+        this.deltaInc = 0.1;
         this.audioCtx = null;
 
         this.analyzerTimeNode = null;

@@ -167,6 +167,12 @@ var samples = [
     url: 'audio-with-control-vuejs',
     code: 'vue/App_examples/audio-with-control-vuejs.vue'
   },
+  {
+    name: "Audio & Video WebCodec/FFmpeg.js decoding with time controller",
+    description: "Listen audio stream using WebCodec/FFmpeg.js with time controller and associated Video",
+    url: 'audio-video-synchronized-with-control-vuejs',
+    code: 'vue/App_examples/  audio-video-synchronized-with-control-vuejs.vue'
+  },
 ];
 
 // load sample cards
