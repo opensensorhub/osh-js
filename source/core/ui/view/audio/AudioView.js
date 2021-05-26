@@ -10,13 +10,14 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import View from "../View.js";
-import WebCodecApi from "./WebCodecApi";
 import {isDefined} from "../../../utils/Utils";
 import AudioTimeDomainCanvas from "./canvas/AudioTimeDomainCanvas";
 import AudioFrequencyDomainCanvas from "./canvas/AudioFrequencyDomainCanvas";
 import AudioTimeDomainChartJs from "./chart/AudioTimeDomainChartJs";
 import AudioFrequencyDomainChartJs from "./chart/AudioFrequencyDomainChartJs";
-import FfmpegAudio from "./FfmpegAudio";
+import FfmpegAudio from "./decoder/FfmpegAudio";
+import WebCodecApi from "./decoder/WebCodecApi";
+
 
 /**
  * This class is in charge of listening Audio using either default native WebAPI or compatible WebCodec(if supported)

@@ -1,5 +1,5 @@
 import AudioPlayer from  './worklets/audio.worklet';
-import {isDefined} from "../../../utils/Utils";
+import {isDefined} from "../../../../utils/Utils";
 
 class WebAudioApi {
     constructor(properties) {

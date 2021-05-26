@@ -1,4 +1,4 @@
-import Module from '../../ffmpeg/ffmpeg-h264.js';
+import Module from '../../../ffmpeg/ffmpeg-h264.js';
 
 let instance = {
     ready: new Promise(resolve => {
