@@ -99,7 +99,7 @@ class CesiumView extends MapView {
    */
   constructor(properties) {
     super({
-      supportedLayers: ['marker','draping','polyline'],
+      supportedLayers: ['marker','draping','polyline', 'ellipse'],
       ...properties
     });
 
@@ -120,6 +120,7 @@ class CesiumView extends MapView {
    * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
    */
   updateMarker(props) {
+
     // for the first data, we can receive the orientation before the first location point
     if(!isDefined(props.location)) {
       return;
@@ -508,6 +509,150 @@ class CesiumView extends MapView {
   }
 
   /**
+   * Removes an ellipse
+   * @param ellipse The ellipse to remove
+   */
+  removeEllipseFromLayer(ellipse) {
+    this.viewer.entities.remove(ellipse);
+  }
+
+  /**
+   * Add an Ellipse to the view
+   * @param properties
+   * @param properties.id The id of the ellipse
+   * @param properties.center [] The ellipse's center point in the fixed frame.
+   * @param properties.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
+   * @param properties.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
+   * @param properties.height {Number} 0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.
+   * @param properties.extrudedHeight {Number} optionalThe distance in meters between the ellipse's extruded face and the ellipsoid surface.
+   * @param properties.rotation {Number} 0.0 optionalThe angle of rotation counter-clockwise from north.
+   * @param properties.stRotation {Number} 0.0 optionalThe rotation of the texture coordinates counter-clockwise from north.
+   * @param properties.granularity {Number}	CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.
+   * @param properties.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
+   * @param properties.color The color of the ellipse
+   * @returns {Entity}
+   */
+  addEllipse(properties) {
+
+    let center = [0, 0, 0];
+    if(isDefined(properties.center)) {
+      center = properties.center;
+    }
+    let ellipseObj = {
+      name: (properties.hasOwnProperty('name')) ? properties.name : "Ellipse " + properties.id,
+      ellipse: {
+        center: center.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat(),
+        semiMajorAxis:	properties.semiMajorAxis,
+        semiMinorAxis:	properties.semiMinorAxis,
+        height:	properties.height,
+        extrudedHeight:	properties.extrudedHeight,
+        rotation: properties.rotation,
+        stRotation:	properties.stRotation,
+        granularity: properties.granularity,
+        clampToGround: (properties.hasOwnProperty('clampToGround')) ? properties.clampToGround : true,
+        material: new Color.fromCssColorString(properties.color),
+      }
+    };
+
+    ellipseObj.id = properties.id;
+    return this.viewer.entities.add(ellipseObj);
+  }
+
+  /**
+   * Updates an Ellipse if it exists or adds a new one to the view
+   * @param props
+   * @param props.id The id of the ellipse
+   * @param props.center [] The ellipse's center point in the fixed frame.
+   * @param props.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
+   * @param props.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
+   * @param props.height {Number} 0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.
+   * @param props.extrudedHeight {Number} optionalThe distance in meters between the ellipse's extruded face and the ellipsoid surface.
+   * @param props.rotation {Number} 0.0 optionalThe angle of rotation counter-clockwise from north.
+   * @param props.stRotation {Number} 0.0 optionalThe rotation of the texture coordinates counter-clockwise from north.
+   * @param props.granularity {Number}	CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.
+   * @param props.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
+   * @param props.color The color of the ellipse
+   */
+  updateEllipse(props) {
+
+    if(!isDefined(props.center)) {
+      return;
+    }
+
+    let ellipse = this.getEllipse(props);
+    if (!isDefined(ellipse)) {
+      const ellipseObj = this.addEllipse({
+        id: props.id+"$"+props.ellipseId,
+        center: props.center[props.ellipseId],
+        semiMajorAxis: props.semiMajorAxis[props.ellipseId],
+        semiMinorAxis: props.semiMinorAxis[props.ellipseId],
+        height:	props.height[props.ellipseId],
+        extrudedHeight:	props.extrudedHeight[props.ellipseId],
+        rotation: props.rotation[props.ellipseId],
+        stRotation:	props.stRotation[props.ellipseId],
+        granularity: props.granularity[props.ellipseId],
+        clampToGround: props.clampToGround[props.ellipseId],
+        color: props.color[props.ellipseId]
+      });
+
+      this.addEllipseToLayer(props, ellipseObj);
+    }
+
+    this.updateEllipseObj(props, {
+      center: props.center[props.ellipseId],
+      semiMajorAxis: props.semiMajorAxis[props.ellipseId],
+      semiMinorAxis: props.semiMinorAxis[props.ellipseId],
+      height: props.height[props.ellipseId],
+      extrudedHeight: props.extrudedHeight[props.ellipseId],
+      rotation: props.rotation[props.ellipseId],
+      stRotation: props.stRotation[props.ellipseId],
+      color: props.color[props.ellipseId]
+    });
+  }
+
+  /**
+   * Updates an Ellipse properties
+   * @param layer The layer containing the ellipse
+   * @param properties
+   * @param properties.center [] The ellipse's center point in the fixed frame.
+   * @param properties.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
+   * @param properties.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
+   * @param properties.height {Number} 0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.
+   * @param properties.extrudedHeight {Number} optionalThe distance in meters between the ellipse's extruded face and the ellipsoid surface.
+   * @param properties.rotation {Number} 0.0 optionalThe angle of rotation counter-clockwise from north.
+   * @param properties.stRotation {Number} 0.0 optionalThe rotation of the texture coordinates counter-clockwise from north.
+   * @param properties.granularity {Number}	CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.
+   * @param properties.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
+   * @param properties.color The color of the ellipse
+   */
+  updateEllipseObj(layer, properties) {
+    const center = properties.center;
+    const semiMajorAxis = properties.semiMajorAxis;
+    const semiMinorAxis = properties.semiMinorAxis;
+    const height = properties.height;
+    const extrudedHeight = properties.extrudedHeight;
+    const rotation = properties.rotation;
+    const stRotation = properties.stRotation;
+    const color = properties.color;
+
+    if (isDefined(center)) {
+      let ellipseObj = this.getEllipse(layer);
+      ellipseObj.ellipse.center = center.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat();
+      ellipseObj.ellipse.semiMajorAxis = semiMajorAxis;
+      ellipseObj.ellipse.semiMinorAxis = semiMinorAxis;
+      ellipseObj.ellipse.height = height;
+      ellipseObj.ellipse.extrudedHeight = extrudedHeight;
+      ellipseObj.ellipse.rotation = rotation;
+      ellipseObj.ellipse.stRotation = stRotation;
+      ellipseObj.ellipse.material = new Color.fromCssColorString(color);
+
+      if (properties.selected) {
+        this.viewer.selectedEntity = ellipseObj;
+      }
+    }
+  }
+
+  /**
    * Abstract method to remove a polyline from its corresponding layer.
    * This is library dependent.
    * @param {Object} polyline - The Map marker object
@@ -518,51 +663,83 @@ class CesiumView extends MapView {
 
   /**
    * Add a polyline to the map.
-   * @param {locations} locations - the coordinates [{x, y}]
    * @param {Object} properties
-   * @param {String} properties.type
+   * @param {String} properties.id
+   * @param {[]} properties.locations
    * @param {String} properties.color
    * @param {Number} properties.weight
-   * @param {Number} properties.opacity
-   * @param {Number} properties.smoothFactor
    * @return {Object} the new created polyline
    */
-  addPolyline(locations, properties) {
+  addPolyline(properties) {
 
-    let that = this;
-
-    let entity = this.viewer.entities.add({
+    let locations = [[0, 0, 0],[0,0,0]];
+    if(isDefined(properties.locations)) {
+      locations = properties.locations;
+    }
+    let polylineObj = {
+      name: (properties.hasOwnProperty('name')) ? properties.name : "PolyLine " + properties.id,
       polyline: {
-        positions: new CallbackProperty(function (time, result) {
-          let locations = [];
-          let polylineLayer = that.getLayer(properties.id);
-          if (polylineLayer) {
-            locations = polylineLayer.props.locations[properties.polylineId];
-          }
-
-          return locations.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat();
-        }, false),
+        positions: locations.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat(),
         width: properties.weight,
         material: new Color.fromCssColorString(properties.color),
-        clampToGround: (properties.clampToGround) ? properties.clampToGround : true
+        clampToGround: (properties.hasOwnProperty('clampToGround')) ? properties.clampToGround : true
       }
-    });
+    };
 
-    entity._dsid = properties.id;
-
-    return entity;
+    polylineObj.id = properties.id;
+    return this.viewer.entities.add(polylineObj);
   }
 
   /**
-   * Updates a polyline, if one does not exist it is added to the view
-   * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
+   * Updates a given polyline, or adds it if it does not currently exist
+   * @param props The properties containing the updated data
    */
   updatePolyline(props) {
+
+    if(!isDefined(props.locations)) {
+      return;
+    }
+
     let polyline = this.getPolyline(props);
-    if(!isDefined(polyline)) {
-      const polylineObj = this.addPolyline([], props);
+    if (!isDefined(polyline)) {
+      const polylineObj = this.addPolyline({
+        id: props.id+"$"+props.polylineId,
+        locations: props.locations[props.polylineId],
+        color: props.color,
+        weight: props.weight,
+      });
 
       this.addPolylineToLayer(props, polylineObj);
+    }
+
+    this.updatePolylineObj(props, {
+      locations: props.locations[props.polylineId],
+      color: props.color,
+      weight: props.weight,
+    });
+  }
+
+  /**
+   * Updates the actual polyline properties for the polyline from
+   * the given layer
+   * @param layer The polyline layer
+   * @param properties The properties to update the polyline on
+   * the given layer
+   */
+  updatePolylineObj(layer, properties) {
+    const locations = properties.locations;
+    const color = properties.color;
+    const weight = properties.weight;
+
+    if (isDefined(locations)) {
+      let polylineObj = this.getPolyline(layer);
+      polylineObj.polyline.positions = locations.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat();
+      polylineObj.polyline.width = weight;
+      polylineObj.polyline.material = new Color.fromCssColorString(color);
+
+      if (properties.selected) {
+        this.viewer.selectedEntity = polylineObj;
+      }
     }
   }
 
