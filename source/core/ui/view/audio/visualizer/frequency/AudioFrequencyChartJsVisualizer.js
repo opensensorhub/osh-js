@@ -1,9 +1,27 @@
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
-import {isDefined, merge, randomUUID} from "../../../../utils/Utils";
+import {isDefined, merge, randomUUID} from "../../../../../utils/Utils";
+import AudioChartVisualizer from "../AudioChartVisualizer";
 
-class AudioFrequencyDomainChartJs {
+/**
+ * Class to visualize audio frequency using Chart.js framework
+ * @param {Object} [properties={}] - the properties of the view
+ * @param {string} properties.container - The div element to attach to
+ * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+ * @param {number} properties.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+ * @param {Object} properties.chartJsProps - (type 'chart')
+ * @param {Object} properties.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+ * @param {Object} properties.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+ * @param {Object} properties.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+ */
+class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
     constructor(properties) {
+        super({
+            fftSize: 32,
+            ...properties,
+            type: 'frequency',
+            format: 'float'
+        });
         this.initFrequencyChart(properties);
     }
 
@@ -12,24 +30,16 @@ class AudioFrequencyDomainChartJs {
         this.chartProps = {};
 
         if (isDefined(properties)) {
-            if(properties.props.hasOwnProperty('chartjsProps')){
-                if(properties.props.chartjsProps.hasOwnProperty('datasetsProps')){
-                    this.datasetsProps = properties.props.chartjsProps.datasetsProps;
+            if(properties.hasOwnProperty('chartjsProps')){
+                if(properties.chartjsProps.hasOwnProperty('datasetsProps')){
+                    this.datasetsProps = properties.chartjsProps.datasetsProps;
                 }
 
-                if(properties.props.chartjsProps.hasOwnProperty('chartProps')){
-                    this.chartProps = properties.props.chartjsProps.chartProps;
+                if(properties.chartjsProps.hasOwnProperty('chartProps')){
+                    this.chartProps = properties.chartjsProps.chartProps;
                 }
             }
         }
-
-        let domNode = properties.nodeElement;
-
-        let ctx = document.createElement("canvas");
-        ctx.setAttribute("id", randomUUID());
-        ctx.setAttribute("class", properties.props.css);
-
-        domNode.appendChild(ctx);
 
         this.resetting = false;
         this.pos = 0;
@@ -88,7 +98,7 @@ class AudioFrequencyDomainChartJs {
         this.datasetsProps = datasetsProps;
 
         this.chart = new Chart(
-            ctx, {
+            this.canvas, {
                 labels:[''],
                 type: 'bar',
                 data: {
@@ -110,8 +120,9 @@ class AudioFrequencyDomainChartJs {
     buildLabels(decodedSample) {
         const labels = [];
 
-        let step = decodedSample.buffer.sampleRate / 2 / decodedSample.dataFreqDomainArray.length;
+        const dataArray = decodedSample[this.properties.type][this.properties.format];
 
+        let step = decodedSample.buffer.sampleRate / 2 / dataArray.length;
         let nbStep = decodedSample.buffer.sampleRate / 2 / step;
 
         let value;
@@ -131,7 +142,7 @@ class AudioFrequencyDomainChartJs {
         if(this.resetting) {
             return;
         }
-        const dataArray = decodedSample.dataFreqDomainArray;
+        const dataArray = decodedSample[this.properties.type][this.properties.format];
         if(this.chart.data.labels.length ===0) {
             this.buildLabels(decodedSample);
             for(let i=0;i < dataArray.length;i++) {
@@ -145,18 +156,6 @@ class AudioFrequencyDomainChartJs {
         this.chart.update(0);
     }
 
-    onended() {}
-    reset() {
-        this.resetting = true;
-        this.chart.stop();
-        this.chart.data.labels = [];
-        this.chart.data.datasets.forEach( d => d.data = []);
-        this.chart.update(0);
-        this.resetting = false;
-        // this.chart.data.datasets = [];
-        // this.chart.update();
-    }
-
 }
 
-export default AudioFrequencyDomainChartJs;
+export default AudioFrequencyChartJsVisualizer;
