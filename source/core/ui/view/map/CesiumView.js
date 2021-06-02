@@ -520,6 +520,7 @@ class CesiumView extends MapView {
    * Add an Ellipse to the view
    * @param properties
    * @param properties.id The id of the ellipse
+   * @param properties.name The assigned name of the ellipse
    * @param properties.position [] The ellipse's center point in the fixed frame.
    * @param properties.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
    * @param properties.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
@@ -541,7 +542,7 @@ class CesiumView extends MapView {
     }
     let ellipseObj = {
       position: Cartesian3.fromDegrees(position.x,position.y, position.z),
-      name: (properties.hasOwnProperty('name')) ? properties.name : "Ellipse " + properties.id,
+      name: isDefined(properties.name) ? properties.name : "Ellipse " + properties.id,
       ellipse: {
         semiMajorAxis:	properties.semiMajorAxis,
         semiMinorAxis:	properties.semiMinorAxis,
@@ -551,7 +552,7 @@ class CesiumView extends MapView {
         stRotation:	properties.stRotation,
         granularity: properties.granularity,
         clampToGround: isDefined(properties.clampToGround) ? properties.clampToGround : true,
-        material: new Color.fromAlpha(Color.fromCssColorString(properties.color), isDefined(properties.transparency) ? properties.transparency : 0.5)
+        material: Color.fromAlpha(Color.fromCssColorString(properties.color), isDefined(properties.transparency) ? properties.transparency : 0.5)
       }
     };
 
@@ -651,7 +652,7 @@ class CesiumView extends MapView {
       ellipseObj.ellipse.extrudedHeight = extrudedHeight;
       ellipseObj.ellipse.rotation = rotation;
       ellipseObj.ellipse.stRotation = stRotation;
-      ellipseObj.ellipse.material = new Color.fromAlpha(Color.fromCssColorString(color), alpha);
+      ellipseObj.ellipse.material = Color.fromAlpha(Color.fromCssColorString(color), alpha);
 
       if (properties.selected) {
         this.viewer.selectedEntity = ellipseObj;
