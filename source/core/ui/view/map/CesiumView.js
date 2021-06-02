@@ -520,7 +520,7 @@ class CesiumView extends MapView {
    * Add an Ellipse to the view
    * @param properties
    * @param properties.id The id of the ellipse
-   * @param properties.center [] The ellipse's center point in the fixed frame.
+   * @param properties.position [] The ellipse's center point in the fixed frame.
    * @param properties.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
    * @param properties.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
    * @param properties.height {Number} 0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.
@@ -530,18 +530,19 @@ class CesiumView extends MapView {
    * @param properties.granularity {Number}	CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.
    * @param properties.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
    * @param properties.color The color of the ellipse
+   * @param properties.transparency The level of transparency or alpha value
    * @returns {Entity}
    */
   addEllipse(properties) {
 
-    let center = [0, 0, 0];
-    if(isDefined(properties.center)) {
-      center = properties.center;
+    let position = [0, 0, 0];
+    if(isDefined(properties.position)) {
+      position = properties.position;
     }
     let ellipseObj = {
+      position: Cartesian3.fromDegrees(position.x,position.y, position.z),
       name: (properties.hasOwnProperty('name')) ? properties.name : "Ellipse " + properties.id,
       ellipse: {
-        center: Cartesian3.fromDegrees(center.x,center.y, center.z),
         semiMajorAxis:	properties.semiMajorAxis,
         semiMinorAxis:	properties.semiMinorAxis,
         height:	properties.height,
@@ -549,8 +550,8 @@ class CesiumView extends MapView {
         rotation: properties.rotation,
         stRotation:	properties.stRotation,
         granularity: properties.granularity,
-        clampToGround: (properties.hasOwnProperty('clampToGround')) ? properties.clampToGround : true,
-        material: new Color.fromCssColorString(properties.color),
+        clampToGround: isDefined(properties.clampToGround) ? properties.clampToGround : true,
+        material: new Color.fromAlpha(Color.fromCssColorString(properties.color), isDefined(properties.transparency) ? properties.transparency : 0.5)
       }
     };
 
@@ -563,7 +564,7 @@ class CesiumView extends MapView {
    * @param props
    * @param props.ellipseId
    * @param props.id The id of the ellipse
-   * @param props.center [] The ellipse's center point in the fixed frame.
+   * @param props.position [] The ellipse's center point in the fixed frame.
    * @param props.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
    * @param props.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
    * @param props.height {Number} 0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.
@@ -572,11 +573,12 @@ class CesiumView extends MapView {
    * @param props.stRotation {Number} 0.0 optionalThe rotation of the texture coordinates counter-clockwise from north.
    * @param props.granularity {Number}	CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.
    * @param props.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
+   * @param props.transparency The level of transparency or alpha value
    * @param props.color The color of the ellipse
    */
   updateEllipse(props) {
 
-    if(!isDefined(props.center)) {
+    if(!isDefined(props.position)) {
       return;
     }
 
@@ -584,7 +586,7 @@ class CesiumView extends MapView {
     if (!isDefined(ellipse)) {
       const ellipseObj = this.addEllipse({
         id: props.id+"$"+props.ellipseId,
-        center: props.center,
+        position: props.position,
         semiMajorAxis: props.semiMajorAxis,
         semiMinorAxis: props.semiMinorAxis,
         height:	props.height,
@@ -593,21 +595,23 @@ class CesiumView extends MapView {
         stRotation:	props.stRotation,
         granularity: props.granularity,
         clampToGround: props.clampToGround,
-        color: props.color
+        color: props.color,
+        transparency: props.transparency
       });
 
       this.addEllipseToLayer(props, ellipseObj);
     }
 
     this.updateEllipseObj(props, {
-      center: props.center,
+      position: props.position,
       semiMajorAxis: props.semiMajorAxis,
       semiMinorAxis: props.semiMinorAxis,
       height: props.height,
       extrudedHeight: props.extrudedHeight,
       rotation: props.rotation,
       stRotation: props.stRotation,
-      color: props.color
+      color: props.color,
+      transparency: props.transparency
     });
   }
 
@@ -615,7 +619,7 @@ class CesiumView extends MapView {
    * Updates an Ellipse properties
    * @param layer The layer containing the ellipse
    * @param properties
-   * @param properties.center [] The ellipse's center point in the fixed frame.
+   * @param properties.position [] The ellipse's center point in the fixed frame.
    * @param properties.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
    * @param properties.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
    * @param properties.height {Number} 0.0 optional The distance in meters between the ellipse and the ellipsoid surface.
@@ -624,10 +628,11 @@ class CesiumView extends MapView {
    * @param properties.stRotation {Number} 0.0 optional The rotation of the texture coordinates counter-clockwise from north.
    * @param properties.granularity {Number}	CesiumMath.RADIANS_PER_DEGREE optional The angular distance between points on the ellipse in radians.
    * @param properties.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
+   * @param properties.transparency The level of transparency or alpha value
    * @param properties.color The color of the ellipse
    */
   updateEllipseObj(layer, properties) {
-    const center = properties.center;
+    const position = properties.position;
     const semiMajorAxis = properties.semiMajorAxis;
     const semiMinorAxis = properties.semiMinorAxis;
     const height = isDefined(properties.height) ? properties.height : 0.0;
@@ -635,17 +640,18 @@ class CesiumView extends MapView {
     const rotation = isDefined(properties.rotation) ? properties.rotation : 0.0;
     const stRotation = isDefined(properties.stRotation) ? properties.stRotation : 0.0;
     const color = properties.color;
+    const alpha = isDefined(properties.transparency) ? properties.transparency : 0.5;
 
-    if (isDefined(center)) {
+    if (isDefined(position)) {
       let ellipseObj = this.getEllipse(layer);
-      ellipseObj.ellipse.center = Cartesian3.fromDegrees(center.x,center.y, center.z);
+      ellipseObj.position = Cartesian3.fromDegrees(position.x,position.y, position.z);
       ellipseObj.ellipse.semiMajorAxis = semiMajorAxis;
       ellipseObj.ellipse.semiMinorAxis = semiMinorAxis;
       ellipseObj.ellipse.height = height;
       ellipseObj.ellipse.extrudedHeight = extrudedHeight;
       ellipseObj.ellipse.rotation = rotation;
       ellipseObj.ellipse.stRotation = stRotation;
-      ellipseObj.ellipse.material = new Color.fromCssColorString(color);
+      ellipseObj.ellipse.material = new Color.fromAlpha(Color.fromCssColorString(color), alpha);
 
       if (properties.selected) {
         this.viewer.selectedEntity = ellipseObj;
