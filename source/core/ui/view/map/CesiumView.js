@@ -541,7 +541,7 @@ class CesiumView extends MapView {
     let ellipseObj = {
       name: (properties.hasOwnProperty('name')) ? properties.name : "Ellipse " + properties.id,
       ellipse: {
-        center: center.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat(),
+        center: Cartesian3.fromDegrees(center.x,center.y, center.z),
         semiMajorAxis:	properties.semiMajorAxis,
         semiMinorAxis:	properties.semiMinorAxis,
         height:	properties.height,
@@ -638,7 +638,7 @@ class CesiumView extends MapView {
 
     if (isDefined(center)) {
       let ellipseObj = this.getEllipse(layer);
-      ellipseObj.ellipse.center = center.map(element => Cartesian3.fromDegrees(element.x,element.y, element.z)).flat();
+      ellipseObj.ellipse.center = Cartesian3.fromDegrees(center.x,center.y, center.z);
       ellipseObj.ellipse.semiMajorAxis = semiMajorAxis;
       ellipseObj.ellipse.semiMinorAxis = semiMinorAxis;
       ellipseObj.ellipse.height = height;
