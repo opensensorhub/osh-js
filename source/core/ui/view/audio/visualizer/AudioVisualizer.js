@@ -7,7 +7,10 @@ class AudioVisualizer {
             throw new TypeError("Cannot construct AudioVisualizer instances directly");
         }
         assertDefined(properties.container,'container must be defined in constructor argument');
-        this.properties = properties;
+        this.properties = {
+            css: '',
+            ...properties
+        };
         this.id = randomUUID();
     }
 
@@ -24,6 +27,8 @@ class AudioVisualizer {
             format: this.properties.format
         };
     }
+
+    reset() {}
 }
 
 

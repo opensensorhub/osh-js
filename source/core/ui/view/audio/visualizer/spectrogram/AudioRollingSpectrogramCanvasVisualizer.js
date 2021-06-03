@@ -1,26 +1,35 @@
-import {isDefined, randomUUID} from "../../../../utils/Utils";
-import AudioTimeDomainChartJs from "../chart/AudioTimeDomainChartJs";
+import {isDefined, randomUUID} from "../../../../../utils/Utils";
+import AudioVisualizer from "../AudioVisualizer";
 
-class AudioSpectrogram {
+class AudioRollingSpectrogramCanvasVisualizer extends AudioVisualizer {
+
     constructor(properties) {
+        super({
+            fftSize: 1024,
+            ...properties,
+            type: 'frequency',
+            format: 'byte'
+        });
         this.initFrequencySpectrogram(properties);
     }
 
     initFrequencySpectrogram(properties) {
 
-        let domNode = properties.nodeElement;
+        let domNode = document.getElementById(properties.container);
+        const bounds = domNode.getBoundingClientRect();
 
         let canvas = document.createElement("canvas");
         canvas.setAttribute("id", randomUUID());
-        canvas.setAttribute("class", properties.props.css);
-        canvas.setAttribute("width", "1024");
-        canvas.setAttribute("height", "1024");
+        canvas.setAttribute("class", properties.css);
+        canvas.setAttribute("width", bounds.width);
+        canvas.setAttribute("height", bounds.height);
 
         domNode.appendChild(canvas);
 
-        this.bufferSize = 1024;
-        this.height = canvas.height;
-        this.width  = canvas.width;
+        this.clearThreshold = 250;
+        this.width = bounds.width;
+        this.height = 256;
+
         this.x = 0;
 
         this.ctx = canvas.getContext('2d');
@@ -30,20 +39,43 @@ class AudioSpectrogram {
         this.data32 = new Uint32Array(this.buf);
         this.data = this.imageData.data;
         this.buf8 = new Uint8ClampedArray(this.buf);
+
+        this.animate();
+
     }
 
-    draw(decodedSample) {
-        const length = decodedSample.dataFreqDomainArray.length;
+    animate() {
+        this.requestId = requestAnimationFrame(() => this.animate());
+        this.render();
+   }
 
-        const dataBuffer = new Float32Array(length);
-        // Reverse the direction, making lower frequencies on the bottom.
-        for (var i = length - 1; i >= 0; i--) {
-            dataBuffer[i] = (decodedSample.dataFreqDomainArray[length - 1 - i])* -1 / 255.0 ;
+    render() {
+        const time = performance.now();
+        if(time - this.lastTime > this.clearThreshold) {
+            this.DATA = null;
         }
-        const colorData = this.colorizeData(dataBuffer)
+
+        if(isDefined(this.DATA)) {
+            this.update_geometry();
+        }
+    }
+
+    update_geometry() {
+        const colorData = this.colorizeData(this.DATA)
         this.addColumn(colorData);
         this.imageData.data.set(this.buf8);
         this.ctx.putImageData(this.imageData, 0, 0);
+    }
+
+    draw(decodedSample) {
+        const data =  decodedSample[this.properties.type][this.properties.format];
+        const length = data.length;
+
+        this.DATA = new Float32Array(length);
+        // Reverse the direction, making lower frequencies on the bottom.
+        for (var i = length - 1; i >= 0; i--) {
+            this.DATA[i] = (data[length - 1 - i]) / 255.0 ;
+        }
     }
 
     setPixel(x, y, red, green, blue, alpha) {
@@ -95,16 +127,17 @@ class AudioSpectrogram {
     }
 
     colorizeData(data) {
-        console.log(data);
-        const colorData = new Uint8Array(4 * this.bufferSize / 2);
+        const colorData = new Uint8Array( this.properties.fftSize * 2);
         for(let i = 0, n = data.length; i < n; i++) {
             colorData.set(this.color(data[i]), i * 4);
         }
 
         return colorData;
     }
-    onended() {}
+    onended() {
+        this.lastTime = performance.now();
+    }
     reset() {}
 }
 
-export default AudioSpectrogram;
+export default AudioRollingSpectrogramCanvasVisualizer;

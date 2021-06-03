@@ -13,25 +13,28 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
             type: 'frequency',
             format: 'byte'
         });
+        this.count = 0;
         this.initFrequencySpectrogram();
     }
 
     initFrequencySpectrogram() {
         const domNode = document.getElementById(this.properties.container);
 
+        const bounds = domNode.getBoundingClientRect();
         this.clearThreshold = 250;
-        let display_width = 512;
-        let display_height = 256;
+        let display_width = bounds.width;
+        let display_height = bounds.height;
         let frequency_samples = this.properties.fftSize / 4;
 
         let requestId;
         let camera, scene, renderer;
         let heights, mesh;
-        let time_samples = this.properties.fftSize / 2 ;
+        let time_samples = this.properties.fftSize;
         let n_vertices = (frequency_samples + 1) * (time_samples + 1);
 
-        camera = new THREE.PerspectiveCamera(20, display_width / display_height, 1, 1000);
-        camera.position.z = 70;
+        let ratio = (display_width > display_height) ?  display_width / display_height :  display_height / display_width;
+        camera = new THREE.PerspectiveCamera(27, ratio , 1, 1000);
+        camera.position.z = 64;
         scene = new THREE.Scene();
         let geometry = new THREE.BufferGeometry();
 
@@ -39,9 +42,10 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
         heights = [];
         let vertices = [];
 
-        // number of time samples
-        let xsize = 40;
+        let xsize = 35;
         let ysize = 20;
+
+        // number of time samples
         let xsegments = time_samples;
         let ysegments = frequency_samples;
         let xhalfSize = xsize / 2;
@@ -52,27 +56,28 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
         let ybase = Math.E;
 
         // generate vertices and color data for a simple grid geometry
-        for (let i = 0; i <= xsegments; i++) {
-            let y = (i * xsegmentSize) - xhalfSize;
-            for (let j = 0; j <= ysegments; j++) {
-                let powr = (ysegments - j) / ysegments * ypow_max
+
+        for (let i = 0; i <= xsegments; i ++ ) {
+            let y = ( i * xsegmentSize ) - xhalfSize;
+            for ( let j = 0; j <= ysegments; j ++ ) {
+                let powr = (ysegments-j)/ysegments*ypow_max
                 let x = -Math.pow(ybase, powr) + yhalfSize + 1;
-                vertices.push(y, x, 0);
+                vertices.push( y, x, 0);
                 heights.push(0);
             }
         }
 
         // generate indices (data for element array buffer)
-        for (let i = 0; i < xsegments; i++) {
-            for (let j = 0; j < ysegments; j++) {
-                let a = i * (ysegments + 1) + (j + 1);
-                let b = i * (ysegments + 1) + j;
-                let c = (i + 1) * (ysegments + 1) + j;
-                let d = (i + 1) * (ysegments + 1) + (j + 1);
 
+        for (let i = 0; i < xsegments; i ++ ) {
+            for ( let j = 0; j < ysegments; j ++ ) {
+                let a = i * ( ysegments + 1 ) + ( j + 1 );
+                let b = i * ( ysegments + 1 ) + j;
+                let c = ( i + 1 ) * ( ysegments + 1 ) + j;
+                let d = ( i + 1 ) * ( ysegments + 1 ) + ( j + 1 );
                 // generate two faces (triangles) per iteration
-                indices.push(a, b, d); // face one
-                indices.push(b, c, d); // face two
+                indices.push( a, b, d ); // face one
+                indices.push( b, c, d ); // face two
             }
         }
 
@@ -111,7 +116,19 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
         //
         mesh.geometry.computeFaceNormals();
         mesh.geometry.computeVertexNormals();
-        //TODO: window.addEventListener('resize', onWindowResize, false);
+
+        const that = this;
+        window.addEventListener('resize', () => {
+            const domNode = document.getElementById(that.properties.container);
+            const bounds = domNode.getBoundingClientRect();
+
+            that.display_width = bounds.width;
+            that.display_height = bounds.height;
+            that.camera.aspect = that.display_width / that.display_height;
+            that.camera.updateProjectionMatrix();
+
+            that.renderer.setSize( that.display_width, that.display_height);
+        }, false);
         // Initialize Audio stuff
 
         this.renderer = renderer;

@@ -26,7 +26,7 @@ let audioView = new AudioView({
  container: 'audio-chart-container',
  dataSource: audioDataSource,
  gain: 5,
- playSound: false
+ playSound: true
 });
 
 const audioCanvasFrequencyVisualizer = new AudioFrequencyCanvasVisualizer({
