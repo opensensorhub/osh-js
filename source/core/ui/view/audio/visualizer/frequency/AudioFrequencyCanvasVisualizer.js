@@ -1,17 +1,26 @@
-import AudioCanvas from "./AudioCanvas";
+import AudioCanvasVisualizer from "../AudioCanvasVisualizer";
 
-class AudioFrequencyDomainCanvas extends AudioCanvas {
+/**
+ * Class to visualize audio frequency using Native canvas drawing
+ * @param {Object} [properties={}] - the properties of the view
+ * @param {number} properties.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+ * @param {Object} [properties.barWidth=10] - bar width
+ * @param {string} properties.container - The div element to attach to
+ * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+ */
+class AudioFrequencyCanvasVisualizer extends AudioCanvasVisualizer {
     constructor(properties) {
         super({
-            props: {
-                barWidth:10
-            },
-            ...properties
+            barWidth:10,
+            fftSize: 32,
+            ...properties,
+            type: 'frequency',
+            format: 'float'
         });
     }
 
     draw(decodedSample) {
-        const dataArray = decodedSample.dataFreqDomainArray;
+        const dataArray = decodedSample[this.properties.type][this.properties.format];
         try {
             const WIDTH = this.canvas.width;
             const HEIGHT = this.canvas.height;
@@ -22,7 +31,7 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
 
             // let  barWidth = (WIDTH / bufferLength) * 2.5;
             // TODO: handle too small WIDTH
-            let barWidth = this.properties.props.barWidth;
+            let barWidth = this.properties.barWidth;
             let spaceWidth = (WIDTH / (dataArray.length+1)) - barWidth;
             let barHeight;
             let x = barWidth;
@@ -51,4 +60,4 @@ class AudioFrequencyDomainCanvas extends AudioCanvas {
     }
 }
 
-export default AudioFrequencyDomainCanvas;
+export default AudioFrequencyCanvasVisualizer;

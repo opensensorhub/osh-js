@@ -1,9 +1,27 @@
 import Chart from 'chart.js';
 import 'chart.js/dist/Chart.min.css';
-import {isDefined, merge, randomUUID} from "../../../../utils/Utils";
+import {isDefined, merge, randomUUID} from "../../../../../utils/Utils";
+import AudioChartVisualizer from "../AudioChartVisualizer";
 
-class AudioTimeDomainChartJs {
+/**
+ * Class to visualize audio time domain using Chart.js framework
+ * @param {Object} [properties={}] - the properties of the view
+ * @param {number} properties.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get time domain data.
+ * @param {string} properties.container - The div element to attach to
+ * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+ * @param {Object} properties.chartJsProps - (type 'chart')
+ * @param {Object} properties.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+ * @param {Object} properties.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+ * @param {Object} properties.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+ */
+class AudioTimeDomainChartJs extends AudioChartVisualizer {
     constructor(properties) {
+        super({
+            fftSize: 1024,
+            ...properties,
+            type: 'time',
+            format: 'float'
+        });
         this.initTimeChart(properties);
     }
 
@@ -13,28 +31,20 @@ class AudioTimeDomainChartJs {
         this.datasetsMinMaxProps = {};
 
         if (isDefined(properties)) {
-            if(properties.props.hasOwnProperty('chartjsProps')){
-                if(properties.props.chartjsProps.hasOwnProperty('datasetsProps')){
-                    this.datasetsProps = properties.props.chartjsProps.datasetsProps;
+            if(properties.hasOwnProperty('chartjsProps')){
+                if(properties.chartjsProps.hasOwnProperty('datasetsProps')){
+                    this.datasetsProps = properties.chartjsProps.datasetsProps;
                 }
 
-                if(properties.props.chartjsProps.hasOwnProperty('datasetsMinMaxProps')){
-                    this.datasetsMinMaxProps = properties.props.chartjsProps.datasetsMinMaxProps;
+                if(properties.chartjsProps.hasOwnProperty('datasetsMinMaxProps')){
+                    this.datasetsMinMaxProps = properties.chartjsProps.datasetsMinMaxProps;
                 }
 
-                if(properties.props.chartjsProps.hasOwnProperty('chartProps')){
-                    this.chartProps = properties.props.chartjsProps.chartProps;
+                if(properties.chartjsProps.hasOwnProperty('chartProps')){
+                    this.chartProps = properties.chartjsProps.chartProps;
                 }
             }
         }
-
-        let domNode = properties.nodeElement;
-
-        let ctx = document.createElement("canvas");
-        ctx.setAttribute("id", randomUUID());
-        ctx.setAttribute("class", properties.props.css);
-
-        domNode.appendChild(ctx);
 
         this.resetting = false;
         this.pos = 0;
@@ -102,7 +112,7 @@ class AudioTimeDomainChartJs {
         this.maxPoints = chartProps.scales.xAxes[0].ticks.maxTicksLimit;
 
         this.chart = new Chart(
-            ctx, {
+            this.canvas, {
                 labels:[],
                 type: 'bar',
                 data: {
@@ -161,22 +171,14 @@ class AudioTimeDomainChartJs {
         this.chart.data.datasets.push(this.dataset);
     }
 
-    parseDate(intTimeStamp) {
-        const date = new Date(intTimeStamp);
-        return this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-            + this.withLeadingZeros(date.getUTCSeconds());
-    }
-
-    withLeadingZeros(dt) {
-        return (dt < 10 ? '0' : '') + dt;
-    }
-
     draw(decodedSample) {
         if(this.resetting) {
             return;
         }
-        const minValue = Math.min(...decodedSample.dataTimeDomainArray);
-        const maxValue = Math.max(...decodedSample.dataTimeDomainArray);
+        const dataArray = decodedSample[this.properties.type][this.properties.format];
+
+        const minValue = Math.min(...dataArray);
+        const maxValue = Math.max(...dataArray);
 
         const time = decodedSample.timestamp;
         this.dataset.data.push({
@@ -206,8 +208,10 @@ class AudioTimeDomainChartJs {
         if(this.resetting) {
             return;
         }
-        const minValue = Math.min(...decodedSample.dataTimeDomainArray);
-        const maxValue = Math.max(...decodedSample.dataTimeDomainArray);
+        const dataArray = decodedSample[this.properties.type][this.properties.format];
+
+        const minValue = Math.min(...dataArray);
+        const maxValue = Math.max(...dataArray);
 
         const time = decodedSample.timestamp;
         this.minDataset.data.push({
@@ -233,17 +237,6 @@ class AudioTimeDomainChartJs {
             this.positionDataset.data[1].x = time;
         }
         // this.chart.update(0);
-    }
-
-    reset() {
-        this.resetting = true;
-        this.chart.stop();
-        this.chart.data.labels = [];
-        this.chart.data.datasets.forEach( dataset => dataset.data = []);
-        this.chart.update(0);
-        this.resetting = false;
-        // this.chart.data.datasets = [];
-        // this.chart.update();
     }
 
 }
