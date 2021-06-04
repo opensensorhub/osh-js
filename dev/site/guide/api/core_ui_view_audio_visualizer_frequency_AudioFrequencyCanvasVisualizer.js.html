@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import AudioCanvasVisualizer from "../AudioCanvasVisualizer";
+
+/**
+ * Class to visualize audio frequency using Native canvas drawing
+ * @param {Object} [properties={}] - the properties of the view
+ * @param {number} properties.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+ * @param {Object} [properties.barWidth=10] - bar width
+ * @param {string} properties.container - The div element to attach to
+ * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
+ */
+class AudioFrequencyCanvasVisualizer extends AudioCanvasVisualizer {
+    constructor(properties) {
+        super({
+            barWidth:10,
+            fftSize: 32,
+            ...properties,
+            type: 'frequency',
+            format: 'float'
+        });
+    }
+
+    draw(decodedSample) {
+        const dataArray = decodedSample[this.properties.type][this.properties.format];
+        try {
+            const WIDTH = this.canvas.width;
+            const HEIGHT = this.canvas.height;
+
+            this.canvasCtx.fillStyle = 'rgba(221,221,221,0.8)';
+            this.canvasCtx.fillStyle = 'rgb(255,255,255)';
+            this.canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            // let  barWidth = (WIDTH / bufferLength) * 2.5;
+            // TODO: handle too small WIDTH
+            let barWidth = this.properties.barWidth;
+            let spaceWidth = (WIDTH / (dataArray.length+1)) - barWidth;
+            let barHeight;
+            let x = barWidth;
+
+            for(let i = 0; i &lt; dataArray.length; i++) {
+                barHeight = 100 - dataArray[i] * -1;
+                barHeight = HEIGHT * barHeight / 100;
+
+                this.canvasCtx.fillStyle = 'rgb(215,215,215)';
+                this.canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth, HEIGHT );
+
+                this.canvasCtx.fillStyle = 'rgba(34,34,34,0.8)';
+                this.canvasCtx.beginPath();
+                this.canvasCtx.rect(x, HEIGHT - barHeight, barWidth, HEIGHT );
+                this.canvasCtx.stroke();
+
+                x += barWidth + spaceWidth;
+            }
+
+            this.canvasCtx.fillStyle = 'rgba(198,198,198,0.8)';
+            this.canvasCtx.fillRect(0, 0, 1, HEIGHT);
+            this.canvasCtx.fillRect(0, HEIGHT-1, WIDTH, 1);
+        }catch (error) {
+            console.error(error);
+        }
+    }
+}
+
+export default AudioFrequencyCanvasVisualizer;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

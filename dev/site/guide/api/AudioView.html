@@ -155,115 +155,6 @@
 
         <tr>
             
-                <td class="name"><code>container</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The div element to attach to</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>css</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The css classes to set, can be multiple if separate by spaces</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>visible</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last">set the default behavior of the visibility of the view</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>gain</code></td>
             
 
@@ -291,7 +182,7 @@
             
                 <td class="default">
                 
-                    1
+                    1.0
                 
                 </td>
             
@@ -342,7 +233,7 @@
 
         <tr>
             
-                <td class="name"><code>output</code></td>
+                <td class="name"><code>playSound</code></td>
             
 
             <td class="type">
@@ -410,667 +301,6 @@
             
 
             <td class="description last">the dataSource object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>timeDomainVisualization</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the time domain visualization subview
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the type of view to create 'chart' | 'canvas'. Chart use chart.js library and canvas is pure HTML5 canvas visualization.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fftSize</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>props</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the time domain visualization properties depending on the type
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>css</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the css applied to the created DOM element</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>chartJsProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart')
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>chartProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart') <a href="https://www.chartjs.org/docs/2.9.4/configuration">context configuration options</a></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>datasetsProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart')  <a href="https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties">dataset options</a></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>datasetsMinMaxProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart')  <a href="https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties">dataset options</a></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>frequencyDomainVisualization</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the frequency domain visualization subview
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the type of view to create 'chart' | 'canvas'. Chart use chart.js library and canvas is pure HTML5 canvas visualization.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fftSize</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>props</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the frequency domain visualization properties depending on the type
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>css</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the css applied to the created DOM element</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>chartJsProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">(type 'chart')
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>chartProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart') <a href="https://www.chartjs.org/docs/2.9.4/configuration">context configuration options</a></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>datasetsProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart')  <a href="https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties">dataset options</a></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>datasetsMinMaxProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(type 'chart')  <a href="https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties">dataset options</a></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>barWidth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    10
-                
-                </td>
-            
-
-            <td class="description last">(type 'canvas') canvas bar width</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -1157,7 +387,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_audio_AudioView.js.html">core/ui/view/audio/AudioView.js</a>, <a href="core_ui_view_audio_AudioView.js.html#line35">line 35</a>
+        <a href="core_ui_view_audio_AudioView.js.html">core/ui/view/audio/AudioView.js</a>, <a href="core_ui_view_audio_AudioView.js.html#line31">line 31</a>
     </li></ul></dd>
     
 
@@ -1224,6 +454,76 @@
 
     
 
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="visualizersMap%5Bundefined%5D"><span class="type-signature"></span>visualizersMap[undefined]<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Module is {
+    analyzer: <analyzer_instance>,
+    type: 'time' | 'frequency',
+    format: 'byte' | 'float'
+}
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_AudioView.js.html">core/ui/view/audio/AudioView.js</a>, <a href="core_ui_view_audio_AudioView.js.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
     
 
     
