@@ -150,13 +150,10 @@ class Layer {
                 for (let i = 0; i < fnArr.length; i++) {
                     fnArr[i](records[j].data, records[j].timeStamp, options);
                 }
-                // this.data.push({
-                //     ...this.props
-                // });
+                this.data.push({
+                    ...this.props
+                });
             }
-            this.data.push({
-                ...this.props
-            });
         }
     }
 
