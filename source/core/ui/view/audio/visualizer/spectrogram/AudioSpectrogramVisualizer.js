@@ -33,7 +33,7 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
         let n_vertices = (frequency_samples + 1) * (time_samples + 1);
 
         let ratio = (display_width > display_height) ?  display_width / display_height :  display_height / display_width;
-        camera = new THREE.PerspectiveCamera(27, ratio , 1, 1000);
+        camera = new THREE.PerspectiveCamera(20, ratio , 1, 1000);
         camera.position.z = 64;
         scene = new THREE.Scene();
         let geometry = new THREE.BufferGeometry();
@@ -56,7 +56,6 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
         let ybase = Math.E;
 
         // generate vertices and color data for a simple grid geometry
-
         for (let i = 0; i <= xsegments; i ++ ) {
             let y = ( i * xsegmentSize ) - xhalfSize;
             for ( let j = 0; j <= ysegments; j ++ ) {
@@ -68,7 +67,6 @@ class AudioSpectrogramVisualizer extends AudioVisualizer {
         }
 
         // generate indices (data for element array buffer)
-
         for (let i = 0; i < xsegments; i ++ ) {
             for ( let j = 0; j < ysegments; j ++ ) {
                 let a = i * ( ysegments + 1 ) + ( j + 1 );

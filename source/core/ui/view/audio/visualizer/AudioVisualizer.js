@@ -21,6 +21,7 @@ class AudioVisualizer {
     createAnalyzer(audioCtx) {
         const analyzerNode = audioCtx.createAnalyser();
         analyzerNode.fftSize = this.properties.fftSize;
+        analyzerNode.smoothingTimeConstant = 0.5;
         return {
             analyzer: analyzerNode,
             type: this.properties.type,

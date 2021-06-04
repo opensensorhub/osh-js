@@ -55,7 +55,7 @@
           css: 'audio-css',
           container: 'audio-chart-container',
           dataSource: audioDataSource,
-          gain: 10,
+          gain: 1,
           playSound: true
         });
 

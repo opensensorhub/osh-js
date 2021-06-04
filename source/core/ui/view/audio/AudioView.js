@@ -194,12 +194,16 @@ class AudioView extends View {
             visualizer.draw(decoded);
         }
 
+        this.onEndedDecodedBuffer(decoded);
+
         source.onended = (event) => {
             for (let visualizer of this.visualizers) {
                 visualizer.onended(decoded);
             }
         }
     }
+
+    onEndedDecodedBuffer(audioBuffer) {}
 
     setData(dataSourceId, data) {
         for (let value of data.values) {
