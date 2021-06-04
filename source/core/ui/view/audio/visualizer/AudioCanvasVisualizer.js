@@ -1,6 +1,8 @@
-class AudioCanvas  {
+import AudioVisualizer from "./AudioVisualizer";
+
+class AudioCanvasVisualizer extends AudioVisualizer {
     constructor(properties) {
-        this.properties = properties;
+        super(properties);
         this.initCanvas(properties);
     }
 
@@ -10,12 +12,13 @@ class AudioCanvas  {
     onended(decodedSample) {}
 
     initCanvas(properties) {
-        let domNode = properties.nodeElement;
+        const domNode = document.getElementById(properties.container);
         this.canvas = document.createElement("canvas");
 
-        if(this.properties.props.hasOwnProperty('css')) {
-            this.canvas.setAttribute("class",this.properties.props.css);
+        if(this.properties.hasOwnProperty('css')) {
+            this.canvas.setAttribute("class",this.properties.css);
         }
+
         const bounds = domNode.getBoundingClientRect();
         this.canvas.setAttribute("width", bounds.width);
         this.canvas.setAttribute("height", bounds.height);
@@ -24,4 +27,4 @@ class AudioCanvas  {
     }
 }
 
-export default AudioCanvas;
+export default AudioCanvasVisualizer;
