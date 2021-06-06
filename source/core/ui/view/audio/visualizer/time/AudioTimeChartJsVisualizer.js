@@ -5,16 +5,18 @@ import AudioChartVisualizer from "../AudioChartVisualizer";
 
 /**
  * Class to visualize audio time domain using Chart.js framework
- * @param {Object} [properties={}] - the properties of the view
- * @param {number} properties.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get time domain data.
- * @param {string} properties.container - The div element to attach to
- * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
- * @param {Object} properties.chartJsProps - (type 'chart')
- * @param {Object} properties.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
- * @param {Object} properties.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
- * @param {Object} properties.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
  */
-class AudioTimeDomainChartJs extends AudioChartVisualizer {
+class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
+    /*
+     * @param {Object} [properties={}] - the properties of the view
+     * @param {number} [properties.fftSize=1024] - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get time domain data.
+     * @param {string} properties.container - The div element to attach to
+     * @param {string} [properties.css=''] - The css classes to set, can be multiple if separate by spaces
+     * @param {Object} properties.chartJsProps - (type 'chart')
+     * @param {Object} properties.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
+     * @param {Object} properties.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} properties.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     */
     constructor(properties) {
         super({
             fftSize: 1024,
@@ -241,4 +243,4 @@ class AudioTimeDomainChartJs extends AudioChartVisualizer {
 
 }
 
-export default AudioTimeDomainChartJs;
+export default AudioTimeChartJsVisualizer;

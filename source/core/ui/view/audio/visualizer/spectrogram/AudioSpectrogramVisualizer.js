@@ -1,11 +1,21 @@
-import {isDefined, randomUUID} from "../../../../../utils/Utils";
+import {isDefined} from "../../../../../utils/Utils";
 import * as THREE from './three/three.module.js';
 
 import ColorVS from "./three/shaders/ColorVS.js";
 import ColorFS from "./three/shaders/ColorFS.js";
 import AudioVisualizer from "../AudioVisualizer";
 
+/**
+ * Class to visualize audio as spectrogram using Three.js framework.
+ * This implementation uses Shaders and is based on https://calebgannon.com/2021/01/09/spectrogram-with-three-js-and-glsl-shaders/
+ */
 class AudioSpectrogramVisualizer extends AudioVisualizer {
+    /*
+     * @param {Object} [properties={}] - the properties of the visualizer
+     * @param {string} properties.container - The div element to attach to
+     * @param {string} [properties.css=''] - The css classes to set, can be multiple if separate by spaces
+     * @param {number} [properties.fftSize=2048] - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency/time domain data.
+     */
     constructor(properties) {
         super({
             fftSize: 2048,

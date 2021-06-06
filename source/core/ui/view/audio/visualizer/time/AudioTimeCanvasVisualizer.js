@@ -2,12 +2,14 @@ import AudioCanvasVisualizer from "../AudioCanvasVisualizer";
 
 /**
  * Class to visualize audio time domain using Native canvas drawing
- * @param {Object} [properties={}] - the properties of the view
- * @param {number} properties.fftSize - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get time domain data.
- * @param {string} properties.container - The div element to attach to
- * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
  */
 class AudioTimeCanvasVisualizer extends AudioCanvasVisualizer {
+    /*
+     * @param {Object} [properties={}] - the properties of the visualizer
+     * @param {number} [properties.fftSize=1024] - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get time domain data.
+     * @param {string} properties.container - The div element to attach to
+     * @param {string} [properties.css=''] - The css classes to set, can be multiple if separate by spaces
+     */
     constructor(properties) {
         super({
             fftSize: 1024,

@@ -22,7 +22,6 @@ import WebCodecApi from "./decoder/WebCodecApi";
  import AudioView from 'core/ui/view/audio/AudioView.js';
 
  let audioView = new AudioView({
-  container: 'audio-container',
   name: 'Audio',
   dataSourceId: audioDatasource.id
 });
