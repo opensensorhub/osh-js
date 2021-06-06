@@ -109,6 +109,10 @@ export default {
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();
+
+    dataSource0.disconnect();
+
+    setTimeout(() => dataSource0.connect(),5000);
   },
   methods: {
     onControlEvent(eventName) {
@@ -144,10 +148,10 @@ body, html {
 #app {
   width: inherit;
   height: inherit;
-  padding-top: 0px;
+  padding: 50px;
 }
 
 div.video-h264 canvas {
-  width: 100%;
+  width: 60%;
 }
 </style>

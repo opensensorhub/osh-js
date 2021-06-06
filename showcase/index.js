@@ -89,6 +89,11 @@ var samples = [
     url: "datasources-synchronized"
   },
   {
+    name: "Multiple Video DataSource Synchronized",
+    description: "Display the data of 3 differents video datasources using time synchronization algorithm",
+    url: "multi-datasources-synchronized"
+  },
+  {
     name: "Moving Location + Heading + Video (Leaflet)",
     description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
         "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +

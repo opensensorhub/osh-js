@@ -99,7 +99,8 @@ function onData(dataSourceId, data) {
     );
 
     timeBroadcastChannel.postMessage({
-        timestamp: data.timeStamp
+        timestamp: data.timeStamp,
+        dataSourceId: dataSourceId
     });
 }
 
