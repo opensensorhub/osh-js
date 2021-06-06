@@ -144,10 +144,10 @@ body, html {
 #app {
   width: inherit;
   height: inherit;
-  padding-top: 0px;
+  padding: 50px;
 }
 
 div.video-h264 canvas {
-  width: 100%;
+  width: 60%;
 }
 </style>
