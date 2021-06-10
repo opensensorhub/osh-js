@@ -109,6 +109,12 @@ export default {
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();
+
+    dataSource0.disconnect();
+    dataSource1.disconnect();
+    setTimeout(() => dataSource0.connect(),3000);
+    setTimeout(() => dataSource1.connect(),3000);
+
   },
   methods: {
     onControlEvent(eventName) {
