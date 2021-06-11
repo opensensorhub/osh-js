@@ -139,6 +139,12 @@ var samples = [
     code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
   },
   {
+    name: 'VueJs component: Multiple Video data with control',
+    description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
+    url: 'videodata-with-control-vuejs-synchronized',
+    code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
+  },
+  {
     name: 'AVL data using multiple ids',
     description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
     url: 'avl'
