@@ -22,7 +22,7 @@
           <textarea id="datasource-video2" disabled></textarea>
         </div>
         <div class="text error">
-          <label for="error">Wrong timestamps</label>
+          <label for="error">Wrong timestamps (CurrentTimestamp < LastTimestamp)</label>
           <textarea id="error" disabled></textarea>
         </div>
       </div>
@@ -41,6 +41,7 @@ import TimeController from 'osh-js/vue/components/TimeController.vue';
 import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {DATASOURCE_DATA_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "osh-js/core/Constants";
+import {EventType} from "osh-js/core/event/EventType";
 
 export default {
   components: {
@@ -49,7 +50,9 @@ export default {
   data: function () {
     return {
       dataSynchronizer: null,
-      views: []
+      views: [],
+      waitForTimeChangedEvent: false,
+      lastTimestamp: 0
     }
   },
   mounted() {
@@ -58,8 +61,8 @@ export default {
     const START_TIME = '2015-12-19T21:04:29.231Z';
     const END_TIME = '2015-12-19T21:09:19.675Z';
     const REPLAY_SPEED = 6.2;
-    const BUFFERING_TIME = 1000;
-    const TIMEOUT = 500;
+    const BUFFERING_TIME = 1500;
+    const TIMEOUT = 1000;
 
     const videoDataSource0 = new SosGetResultVideo("Video 0", {
       protocol: 'ws',
@@ -107,7 +110,13 @@ export default {
     })
 
 // connects each DataSource
-    this.dataSynchronizer.connect();
+//     this.dataSynchronizer.connect();
+    videoDataSource0.connect();
+    videoDataSource1.connect();
+    // setTimeout(() => videoDataSource1.connect(),700);
+    videoDataSource2.connect();
+    // setTimeout(() => videoDataSource0.connect(),3000);
+    // setTimeout(() => videoDataSource1.connect(),3000);
 
 // Data are received through Broadcast channel in a separate thread.
 // When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
@@ -126,10 +135,6 @@ export default {
     let video0Count = 0;
     let video1Count = 0;
     let video2Count = 0;
-
-    let lastTimestamp = 0;
-
-    const MAX_TEXTAERA_NUMBER = 20;
 
     function displayVideo0(values) {
       video0Count += values.length;
@@ -165,7 +170,7 @@ export default {
     const that = this;
 
     function displayError(dataSourceId, timestamp) {
-      if (timestamp < lastTimestamp) {
+      if (timestamp < that.lastTimestamp) {
         // get DS name
         let name = '';
         for (let i = 0; i < that.dataSynchronizer.dataSources.length; i++) {
@@ -175,13 +180,12 @@ export default {
         }
         errorCount++;
         if (errorCount % 200 === 0) {
-          errorDivElement.value = new Date(timestamp).toISOString() + ' < ' + new Date(lastTimestamp).toISOString() + ' ' + name + '\n';
+          errorDivElement.value = new Date(timestamp).toISOString() + ' < ' + new Date(that.lastTimestamp).toISOString() + ' ' + name + '\n';
         } else {
-          errorDivElement.value += new Date(timestamp).toISOString() + ' < ' + new Date(lastTimestamp).toISOString() + ' ' + name + '\n';
+          errorDivElement.value += new Date(timestamp).toISOString() + ' < ' + new Date(that.lastTimestamp).toISOString() + ' ' + name + '\n';
         }
       }
-      lastTimestamp = timestamp;
-
+      that.lastTimestamp = timestamp;
       errorDivElement.scrollTop = errorDivElement.scrollHeight;
 
     }
@@ -194,36 +198,50 @@ export default {
 
 
     video0BroadcastChannel.onmessage = (message) => {
+      if(this.waitForTimeChangedEvent) {
+        return;
+      }
+
       if (message.data.type === 'data') {
         displayVideo0(message.data.values);
       }
     }
 
     video1BroadcastChannel.onmessage = (message) => {
+      if(this.waitForTimeChangedEvent) {
+        return;
+      }
       if (message.data.type === 'data') {
         displayVideo1(message.data.values);
       }
     }
 
     video2BroadcastChannel.onmessage = (message) => {
+      if(this.waitForTimeChangedEvent) {
+          return;
+      }
       if (message.data.type === 'data') {
         displayVideo2(message.data.values);
       }
     }
 
     syncTimeBroadcastChannel.onmessage = (message) => {
+      if(this.waitForTimeChangedEvent) {
+        if(message.data.type ===  EventType.DATA) {
+          console.warn('Skip data, old version');
+        } else if(message.data.type ===  EventType.TIME_CHANGED) {
+          this.waitForTimeChangedEvent = false;
+        }
+        return;
+      }
       displayError(message.data.dataSourceId, message.data.timestamp);
     }
-
-    // videoDataSource0.disconnect();
-    // videoDataSource1.disconnect();
-    // setTimeout(() => videoDataSource0.connect(),3000);
-    // setTimeout(() => videoDataSource1.connect(),3000);
 
   },
   methods: {
     onControlEvent(eventName) {
-      if (eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed') {
+      if (eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed' || eventName === 'pause') {
+        this.waitForTimeChangedEvent = true;
         this.lastTimestamp = 0;
       }
     }
