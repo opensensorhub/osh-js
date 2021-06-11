@@ -42,9 +42,9 @@ export default {
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: '2015-12-19T21:04:29.231Z',
       endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1,
-      timeOut: 1000,
-      bufferingTime: 1000
+      replaySpeed: 2.6,
+      timeOut: 1500,
+      bufferingTime: 1500
     };
 
     const dataSource0 = new SosGetResultVideo("drone-Video", {
@@ -104,17 +104,11 @@ export default {
     }));
 
     this.dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 1,
+      replaySpeed: 2.6,
       timerResolution: 5,
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();
-
-    dataSource0.disconnect();
-    dataSource1.disconnect();
-    setTimeout(() => dataSource0.connect(),3000);
-    setTimeout(() => dataSource1.connect(),3000);
-
   },
   methods: {
     onControlEvent(eventName) {
@@ -144,16 +138,19 @@ body, html {
 }
 
 #container > div {
-  margin: 5px;
-  width: 45%;
+  width: calc(40% - 10px);
 }
 #app {
   width: inherit;
   height: inherit;
-  padding: 50px;
+  padding: 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 div.video-h264 canvas {
-  width: 60%;
+  width: 100%;
 }
 </style>
