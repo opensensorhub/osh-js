@@ -3,11 +3,6 @@
     <div :id="id" class="range"></div>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
-        <div class="out-of-sync" v-if="outOfSync.length > 0">
-          <a :id="'out-of-sync-btn-'+this.id" class="control-btn out-of-sync">
-            <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="outOfSync"></i>
-          </a>
-        </div>
         <slot v-if="history">
           <div class="datasource-actions history">
             <a :id="'history-btn-'+this.id" class="control-btn clicked" @click="toggleHistory">
@@ -43,6 +38,11 @@
               <span style="padding:0 10px 0 10px">/</span>
               <span :id="'end-time-'+this.id" v-html=parseTime(endTime)></span>
             </div>
+          </div>
+          <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
+            <a :id="'out-of-sync-btn-'+this.id" class="control-btn out-of-sync">
+              <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
+            </a>
           </div>
         </slot>
         <slot v-else>
@@ -132,7 +132,8 @@ export default {
       skipTime: 0,
       init: false,
       lastSynchronizedTimestamp: -1,
-      outOfSync: []
+      outOfSync: {},
+      version: 0
     };
   },
   watch: {
@@ -228,6 +229,8 @@ export default {
 
         this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
         this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
+        this.version = await this.dataSourceObject.getVersion();
+        this.displayConsoleWarningIncompatibleVersionThrottle =  throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
         this.init = true;
       }
     },
@@ -236,23 +239,44 @@ export default {
         this.bcTime.close();
       }
     },
+    destroyTimeBc() {
+      this.bcTime.close();
+    },
+    displayConsoleWarningIncompatibleVersionThrottle() {
+
+    },
+    displayConsoleWarningIncompatibleVersion() {
+      console.warn('Incompatible data version');
+    },
     createTimeBc() {
       // listen for BC
       this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
-      this.bcTime.onmessage = (message) => {
+      this.bcTime.onmessage =  (message) => {
         if (this.history) {
           if (!this.interval && this.speed > 0.0 && !this.update) {
             // consider here datasynchronizer sends data in time order
             if (isDefined(this.dataSynchronizer)) {
-              const index = this.outOfSync.indexOf(message.data.dataSourceId);
+             if(message.data.version !== this.version) {
+               this.displayConsoleWarningIncompatibleVersionThrottle();
+               return;
+             }
+              const contains = message.data.dataSourceId in this.outOfSync;
               if (message.data.timestamp < this.lastSynchronizedTimestamp) {
-                if (index < 0) {
-                  this.outOfSync.push(message.data.dataSourceId);
+                if (!contains) {
+                  if(isDefined(this.dataSynchronizer)) {
+                    this.dataSynchronizer.dataSources.forEach(datasource => {
+                      if(datasource.id === message.data.dataSourceId) {
+                        this.outOfSync[datasource.id] = datasource;
+                      }
+                    });
+                  } else {
+                    this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
+                  }
                 }
                 return;
-              } else if (index > -1) {
+              } else if (contains) {
                 // check that the datasource is not out of sync anymore
-                this.outOfSync.splice(index, 1);
+                delete this.outOfSync[message.data.dataSourceId];
               }
             }
             this.lastSynchronizedTimestamp = message.data.timestamp;
@@ -268,8 +292,7 @@ export default {
     setStartTime(timestamp) {
       this.startTime = timestamp;
       this.rangeSlider.setStartTime(this.startTime, this.endTime);
-    }
-    ,
+    },
     createRangeSlider() {
       if (!this.rangeSlider) {
         let dataSourceObj = {};
@@ -332,17 +355,19 @@ export default {
       }
     }
     ,
-    updateTime(event) {
-      this.update = false;
+    async updateTime(event) {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
-      this.outOfSync = [];
+      this.outOfSync = {};
+      this.version = this.dataSourceObject.getVersion();
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
           this.speed,
           true
       );
+      this.update = false;
+
       this.on(event);
     }
     ,
@@ -384,16 +409,13 @@ export default {
     doPause() {
       this.connected = false;
       this.dataSourceObject.disconnect();
-      this.destroyBc();
       //save current time
       this.on('pause');
     }
     ,
     doPlay() {
+      this.updateTime('play');
       this.connected = true;
-      this.updateTime();
-      this.createTimeBc();
-      this.on('play');
     }
     ,
     getDataSourceObject() {
@@ -487,10 +509,16 @@ export default {
           + this.withLeadingZeros(date.getUTCSeconds());
 
       return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
-    }
-    ,
+    },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
+    },
+    renderOutOfSync() {
+      let content = '';
+      for(let key in this.outOfSync) {
+        content += this.outOfSync[key].name + ' is out of sync\n';
+      }
+      return content;
     }
   }
 }

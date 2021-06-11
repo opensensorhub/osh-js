@@ -36,6 +36,7 @@ class DataSynchronizer {
         this.dataSources = [];
         this.replaySpeed = 1;
         this.timerResolution = 5;
+        this.version = -Number.MAX_SAFE_INTEGER;
 
         if(isDefined(properties.replaySpeed)) {
             this.replaySpeed = properties.replaySpeed;
@@ -69,6 +70,7 @@ class DataSynchronizer {
             timerResolution: timerResolution,
             dataTopic: this.getTopicId(),
             timeTopic: this.getTimeTopicId(),
+            version: this.version
         });
     }
 
@@ -77,7 +79,6 @@ class DataSynchronizer {
      * @param dataSource
      */
     createDataSourceForWorker(dataSource) {
-        console.log(dataSource)
         const obj = {
             bufferingTime: dataSource.properties.bufferingTime || 0,
             timeOut: dataSource.properties.timeOut || 0,
@@ -141,6 +142,14 @@ class DataSynchronizer {
         }
     }
 
+    updateVersion() {
+        if(this.synchronizerWorker !== null) {
+            this.synchronizerWorker.postMessage({
+                message: 'update-version',
+                version: this.version++
+            });
+        }
+    }
     /**
      * Gets the startTime of the first DataSource objet
      * @returns {String} - startTime as ISO date
@@ -217,7 +226,7 @@ class DataSynchronizer {
             this.setReplaySpeed(replaySpeed);
         }
         this.reset();
-        for(let ds of this.dataSources) {
+        for (let ds of this.dataSources) {
             ds.setTimeRange(startTime, endTime, replaySpeed, reconnect);
         }
     }
@@ -226,6 +235,7 @@ class DataSynchronizer {
      * Resets reference time
      */
     reset() {
+        this.updateVersion();
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.postMessage({
                 message: 'reset'
@@ -262,6 +272,10 @@ class DataSynchronizer {
         }
 
         return promise;
+    }
+
+    getVersion() {
+        return this.version;
     }
 
     getTopicId() {

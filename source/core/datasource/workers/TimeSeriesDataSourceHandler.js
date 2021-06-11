@@ -44,13 +44,15 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             for(let i=0;i < data.length;i++) {
                 this.values.push({
                     data: data[i],
-                    timeStamp: timeStamp
+                    timeStamp: timeStamp,
+                    version: this.version
                 });
             }
         } else {
             this.values.push({
                 data: data,
-                timeStamp: timeStamp
+                timeStamp: timeStamp,
+                version: this.version
             });
         }
         this.lastTimeStamp = timeStamp;
@@ -81,6 +83,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             lastTimestamp = 'now';
         }
 
+        this.version++;
         this.createDataConnector({
             ...this.properties,
             ...properties,
