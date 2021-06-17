@@ -13,7 +13,6 @@ const dataSources = {};
 let timeBroadcastChannel = null;
 let topicTime;
 let topicData;
-self.version = 0;
 
 self.onmessage = (event) => {
     if(event.data.message === 'init') {
@@ -27,7 +26,6 @@ self.onmessage = (event) => {
         addDataSources(event.data.dataSources);
         topicData = event.data.dataTopic;
         topicTime = event.data.timeTopic;
-        self.version = event.data.version;
         initBroadcastChannel(topicData,topicTime );
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
@@ -40,9 +38,10 @@ self.onmessage = (event) => {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.reset();
         }
-    }  else if(event.data.message === 'update-version') {
-        self.version = event.data.version;
-    } else if(event.data.message === 'replay-speed') {
+        timeBroadcastChannel.postMessage({
+            type: EventType.TIME_CHANGED
+        });
+    }  else if(event.data.message === 'replay-speed') {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
         }
@@ -104,15 +103,15 @@ function onData(dataSourceId, data) {
     self.currentTime = data.timeStamp;
     bcChannels[dataSourceId].postMessage({
             values: [data],
-            dataSourceId,
+            dataSourceId:dataSourceId,
             type: EventType.DATA
         }
     );
 
     timeBroadcastChannel.postMessage({
         timestamp: data.timeStamp,
-        version: self.version,
-        dataSourceId: dataSourceId
+        dataSourceId: dataSourceId,
+        type: EventType.DATA
     });
 }
 

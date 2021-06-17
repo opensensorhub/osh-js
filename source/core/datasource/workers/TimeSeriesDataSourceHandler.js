@@ -1,5 +1,6 @@
 import {isDefined} from "../../utils/Utils.js";
 import DataSourceHandler from "./DataSourceHandler";
+import {EventType} from "../../event/EventType";
 
 class TimeSeriesDataSourceHandler extends DataSourceHandler{
 
@@ -73,6 +74,11 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
 
     updateProperties(properties) {
         this.disconnect();
+
+        this.broadcastChannel.postMessage({
+            dataSourceId: this.dataSourceId,
+            type: EventType.TIME_CHANGED
+        });
 
         let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
 

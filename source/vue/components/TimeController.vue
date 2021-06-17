@@ -73,6 +73,7 @@ import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/protocol/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {TIME_SYNCHRONIZER_TOPIC} from "../../core/Constants";
+import {EventType} from "../../core/event/EventType";
 
 /**
  * @module osh-vue/TimeController
@@ -133,7 +134,7 @@ export default {
       init: false,
       lastSynchronizedTimestamp: -1,
       outOfSync: {},
-      version: 0
+      waitForTimeChangedEvent: false
     };
   },
   watch: {
@@ -229,7 +230,6 @@ export default {
 
         this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
         this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
-        this.version = await this.dataSourceObject.getVersion();
         this.displayConsoleWarningIncompatibleVersionThrottle =  throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
         this.init = true;
       }
@@ -253,13 +253,18 @@ export default {
       this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
       this.bcTime.onmessage =  (message) => {
         if (this.history) {
+          if(this.waitForTimeChangedEvent) {
+            if(message.data.type ===  EventType.DATA) {
+              this.displayConsoleWarningIncompatibleVersionThrottle();
+            } else if(message.data.type ===  EventType.TIME_CHANGED) {
+              this.waitForTimeChangedEvent = false;
+            }
+            return;
+          }
+
           if (!this.interval && this.speed > 0.0 && !this.update) {
             // consider here datasynchronizer sends data in time order
             if (isDefined(this.dataSynchronizer)) {
-             if(message.data.version !== this.version) {
-               this.displayConsoleWarningIncompatibleVersionThrottle();
-               return;
-             }
               const contains = message.data.dataSourceId in this.outOfSync;
               if (message.data.timestamp < this.lastSynchronizedTimestamp) {
                 if (!contains) {
@@ -314,6 +319,7 @@ export default {
         this.update = false;
         this.rangeSlider.onChange = (startTime, endTime, event) => {
           if (event === 'slide') {
+            this.waitForTimeChanged = true;
             this.update = true;
           } else if (event === 'end') {
             this.update = false;
@@ -325,7 +331,7 @@ export default {
               this.endTime = endTime;
             }
 
-            this.$emit('event', event);
+           this.on(event);
           }
           if (event === 'end') {
             this.doPlay();
@@ -359,14 +365,14 @@ export default {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
-      this.version = this.dataSourceObject.getVersion();
+      this.waitForTimeChangedEvent = true;
+      this.update = false;
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
           this.speed,
           true
       );
-      this.update = false;
 
       this.on(event);
     }
@@ -408,6 +414,7 @@ export default {
     ,
     doPause() {
       this.connected = false;
+      this.waitForTimeChangedEvent = true;
       this.dataSourceObject.disconnect();
       //save current time
       this.on('pause');

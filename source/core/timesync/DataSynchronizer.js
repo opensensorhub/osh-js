@@ -36,7 +36,6 @@ class DataSynchronizer {
         this.dataSources = [];
         this.replaySpeed = 1;
         this.timerResolution = 5;
-        this.version = -Number.MAX_SAFE_INTEGER;
 
         if(isDefined(properties.replaySpeed)) {
             this.replaySpeed = properties.replaySpeed;
@@ -69,8 +68,7 @@ class DataSynchronizer {
             replaySpeed: this.replaySpeed,
             timerResolution: timerResolution,
             dataTopic: this.getTopicId(),
-            timeTopic: this.getTimeTopicId(),
-            version: this.version
+            timeTopic: this.getTimeTopicId()
         });
     }
 
@@ -142,14 +140,6 @@ class DataSynchronizer {
         }
     }
 
-    updateVersion() {
-        if(this.synchronizerWorker !== null) {
-            this.synchronizerWorker.postMessage({
-                message: 'update-version',
-                version: this.version++
-            });
-        }
-    }
     /**
      * Gets the startTime of the first DataSource objet
      * @returns {String} - startTime as ISO date
@@ -235,7 +225,6 @@ class DataSynchronizer {
      * Resets reference time
      */
     reset() {
-        this.updateVersion();
         if(this.synchronizerWorker !== null) {
             this.synchronizerWorker.postMessage({
                 message: 'reset'
@@ -272,10 +261,6 @@ class DataSynchronizer {
         }
 
         return promise;
-    }
-
-    getVersion() {
-        return this.version;
     }
 
     getTopicId() {

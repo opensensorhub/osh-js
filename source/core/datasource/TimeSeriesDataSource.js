@@ -190,6 +190,7 @@ class TimeSeriesDataSource extends DataSource{
      */
     updateProperties(properties) {
         super.updateProperties(properties);
+
     }
 
 
