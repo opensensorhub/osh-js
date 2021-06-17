@@ -58,17 +58,21 @@ export default {
   mounted() {
     // setup video
     // create data source for UAV camera
-    const START_TIME = '2015-12-19T21:04:29.231Z';
-    const END_TIME = '2015-12-19T21:09:19.675Z';
+    // const START_TIME = '2015-12-19T21:04:29.231Z';
+    // const END_TIME = '2015-12-19T21:09:19.675Z';
+    const START_TIME = '2021-06-12T14:46:38.664Z';
+    const END_TIME = '2021-06-12T14:46:40.664Z';
     const REPLAY_SPEED = 6.2;
-    const BUFFERING_TIME = 1500;
+    const BUFFERING_TIME = 200;
     const TIMEOUT = 1000;
 
     const videoDataSource0 = new SosGetResultVideo("Video 0", {
       protocol: 'ws',
       service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
+      // endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      // offeringID: 'urn:mysos:solo:video2',
+      endpointUrl: 'localhost:8181/sensorhub/sos',
+      offeringID: 'urn:android:device:9d31c07640c760a7-sos',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
@@ -80,8 +84,8 @@ export default {
     const videoDataSource1 = new SosGetResultVideo("Video 1", {
       protocol: 'ws',
       service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
+      endpointUrl: 'localhost:8181/sensorhub/sos',
+      offeringID: 'urn:android:device:9d31c07640c760a7-sos',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
@@ -93,8 +97,8 @@ export default {
     const videoDataSource2 = new SosGetResultVideo("Video 2", {
       protocol: 'ws',
       service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
+      endpointUrl: 'localhost:8181/sensorhub/sos',
+      offeringID: 'urn:android:device:9d31c07640c760a7-sos',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
