@@ -13,6 +13,7 @@ class DataSourceHandler {
         this.connector = null;
         this.reconnectTimeout = 1000 * 10; // 10 secs
         this.values = [];
+        this.version = -Number.MAX_SAFE_INTEGER;
     }
 
     createConnector(propertiesStr, topic, dataSourceId) {
@@ -125,7 +126,8 @@ class DataSourceHandler {
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
                 this.values.push({
-                    data: data[i]
+                    data: data[i],
+                    version: this.version
                 });
                 if (isDefined(this.batchSize) && this.values.length >= this.batchSize) {
                     this.flush();
@@ -133,7 +135,8 @@ class DataSourceHandler {
             }
         } else {
             this.values.push({
-                data: data
+                data: data,
+                version: this.version
             });
         }
         // because parseData is ASYNC, the protocol can finish before the parsing method. In that case, we have to flushALl data
@@ -168,8 +171,8 @@ class DataSourceHandler {
             ...properties
         });
 
+        this.version++;
         this.connect();
-
     }
 
     flushAll() {

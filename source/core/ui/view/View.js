@@ -231,11 +231,7 @@ class View {
             broadcastChannel.onmessage = (event) => {
                 // skip data reset events for now
                 if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
-                    return;
-                }
-                if (event.data.message && event.data.message === 'reset' ||
-                    (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) ) {
-                    self.reset(); // on data stream reset
+                    self.reset(); // on data stream disconnection
                     return;
                 }
                 if(event.data.type === EventType.DATA) {

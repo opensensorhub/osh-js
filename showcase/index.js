@@ -89,6 +89,11 @@ var samples = [
     url: "datasources-synchronized"
   },
   {
+    name: "Multiple Video DataSource Synchronized",
+    description: "Display the data of 3 differents video datasources using time synchronization algorithm",
+    url: "multi-datasources-synchronized"
+  },
+  {
     name: "Moving Location + Heading + Video (Leaflet)",
     description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
         "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
@@ -132,6 +137,12 @@ var samples = [
     description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
     url: 'video-with-control-vuejs-synchronized',
     code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
+  },
+  {
+    name: 'VueJs component: Multiple Video data with control',
+    description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
+    url: 'videodata-with-control-vuejs-synchronized',
+    code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
   },
   {
     name: 'AVL data using multiple ids',
