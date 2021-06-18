@@ -366,6 +366,7 @@ export default {
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
+      this.on('time-changed');
       this.update = false;
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
@@ -418,6 +419,7 @@ export default {
       this.dataSourceObject.disconnect();
       //save current time
       this.on('pause');
+      this.on('time-changed');
     }
     ,
     doPlay() {

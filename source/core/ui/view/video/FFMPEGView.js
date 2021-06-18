@@ -91,7 +91,7 @@ class FFMPEGView extends CanvasView {
      * @override
      */
     reset() {
-        if(this.decodeWorker !== null) {
+        if(isDefined(this.decodeWorker)) {
             this.decodeWorker.terminate();
             this.decodeWorker = null;
         }
