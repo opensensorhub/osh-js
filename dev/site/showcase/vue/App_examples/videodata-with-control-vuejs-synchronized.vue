@@ -58,21 +58,17 @@ export default {
   mounted() {
     // setup video
     // create data source for UAV camera
-    // const START_TIME = '2015-12-19T21:04:29.231Z';
-    // const END_TIME = '2015-12-19T21:09:19.675Z';
-    const START_TIME = '2021-06-12T14:46:38.664Z';
-    const END_TIME = '2021-06-12T14:46:40.664Z';
+    const START_TIME = '2015-12-19T21:04:29.231Z';
+    const END_TIME = '2015-12-19T21:09:19.675Z';
     const REPLAY_SPEED = 6.2;
-    const BUFFERING_TIME = 200;
-    const TIMEOUT = 1000;
+    const BUFFERING_TIME = 1000;
+    const TIMEOUT = 500;
 
     const videoDataSource0 = new SosGetResultVideo("Video 0", {
       protocol: 'ws',
       service: 'SOS',
-      // endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      // offeringID: 'urn:mysos:solo:video2',
-      endpointUrl: 'localhost:8181/sensorhub/sos',
-      offeringID: 'urn:android:device:9d31c07640c760a7-sos',
+      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
@@ -84,8 +80,8 @@ export default {
     const videoDataSource1 = new SosGetResultVideo("Video 1", {
       protocol: 'ws',
       service: 'SOS',
-      endpointUrl: 'localhost:8181/sensorhub/sos',
-      offeringID: 'urn:android:device:9d31c07640c760a7-sos',
+      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
@@ -97,8 +93,8 @@ export default {
     const videoDataSource2 = new SosGetResultVideo("Video 2", {
       protocol: 'ws',
       service: 'SOS',
-      endpointUrl: 'localhost:8181/sensorhub/sos',
-      offeringID: 'urn:android:device:9d31c07640c760a7-sos',
+      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
@@ -113,18 +109,15 @@ export default {
       dataSources: [videoDataSource0, videoDataSource1, videoDataSource2]
     })
 
-// connects each DataSource
-//     this.dataSynchronizer.connect();
-    videoDataSource0.connect();
-    videoDataSource1.connect();
-    // setTimeout(() => videoDataSource1.connect(),700);
-    videoDataSource2.connect();
-    // setTimeout(() => videoDataSource0.connect(),3000);
-    // setTimeout(() => videoDataSource1.connect(),3000);
+  // connects each DataSource
+  //     this.dataSynchronizer.connect();
+    setTimeout(() => videoDataSource0.connect(),700);
+    setTimeout(() => videoDataSource1.connect(),1800);
+    setTimeout(() => videoDataSource2.connect(),1900);
 
-// Data are received through Broadcast channel in a separate thread.
-// When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
-// If you don't have view, or don't need, you can directly subscribe to the channel
+  // Data are received through Broadcast channel in a separate thread.
+  // When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
+  // If you don't have view, or don't need, you can directly subscribe to the channel
 
     const video0DivElement = document.getElementById('datasource-video0');
     const video1DivElement = document.getElementById('datasource-video1');
@@ -145,7 +138,6 @@ export default {
       video0DivElement.value = video0Count;
 
       lastVideo0DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 0';
-      currentTimeDivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Current';
 
       video0DivElement.scrollTop = video0DivElement.scrollHeight;
     }
@@ -155,7 +147,6 @@ export default {
       video1DivElement.value = video1Count;
 
       lastVideo1DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 1';
-      currentTimeDivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Current';
 
       video1DivElement.scrollTop = video1DivElement.scrollHeight;
     }
@@ -165,8 +156,6 @@ export default {
       video2DivElement.value = video2Count;
 
       lastVideo2DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 2';
-      currentTimeDivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Current';
-
       video2DivElement.scrollTop = video2DivElement.scrollHeight;
     }
 
@@ -188,8 +177,10 @@ export default {
         } else {
           errorDivElement.value += new Date(timestamp).toISOString() + ' < ' + new Date(that.lastTimestamp).toISOString() + ' ' + name + '\n';
         }
+      } else {
+        currentTimeDivElement.innerText = new Date(timestamp).toISOString() + ' - Current';
+        that.lastTimestamp = timestamp;
       }
-      that.lastTimestamp = timestamp;
       errorDivElement.scrollTop = errorDivElement.scrollHeight;
 
     }
@@ -200,41 +191,30 @@ export default {
 
     const syncTimeBroadcastChannel = new BroadcastChannel(TIME_SYNCHRONIZER_TOPIC + this.dataSynchronizer.id);
 
-
     video0BroadcastChannel.onmessage = (message) => {
-      if(this.waitForTimeChangedEvent) {
-        return;
-      }
-
       if (message.data.type === 'data') {
         displayVideo0(message.data.values);
       }
     }
 
     video1BroadcastChannel.onmessage = (message) => {
-      if(this.waitForTimeChangedEvent) {
-        return;
-      }
       if (message.data.type === 'data') {
         displayVideo1(message.data.values);
       }
     }
 
     video2BroadcastChannel.onmessage = (message) => {
-      if(this.waitForTimeChangedEvent) {
-          return;
-      }
       if (message.data.type === 'data') {
         displayVideo2(message.data.values);
       }
     }
 
     syncTimeBroadcastChannel.onmessage = (message) => {
-      if(this.waitForTimeChangedEvent) {
+      if(that.waitForTimeChangedEvent) {
         if(message.data.type ===  EventType.DATA) {
           console.warn('Skip data, old version');
         } else if(message.data.type ===  EventType.TIME_CHANGED) {
-          this.waitForTimeChangedEvent = false;
+          that.waitForTimeChangedEvent = false;
         }
         return;
       }
@@ -244,7 +224,7 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
-      if (eventName === 'forward' || eventName === 'backward' || eventName === 'slide' || eventName === 'replaySpeed' || eventName === 'pause') {
+      if (eventName === 'time-changed') {
         this.waitForTimeChangedEvent = true;
         this.lastTimestamp = 0;
       }
