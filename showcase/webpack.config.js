@@ -73,8 +73,7 @@ let directories = ['cesium-fois',
     'video-h264','video-h264-draping','video-h264-webcodec-api', 'video-h264-transferable','video-mjpeg', 'video-with-control-vuejs',
     'video-with-control-vuejs-synchronized','videodata-with-control-vuejs-synchronized', 'video-map-multiple-datasource', 'video-map-multiple-datasource-synchronizer',
     'avl','datasources-synchronized', 'multi-datasources-synchronized','datasource-swejson','datasource-video', 'deckgl-location', 'chart-archive-realtime',
-    'chart-archive-realtime-batch', 'chart-archive-realtime-synchronized','audio', 'audio-with-control-vuejs','datasource-audio'];
-
+    'chart-archive-realtime-batch', 'chart-archive-realtime-synchronized','audio', 'audio-with-control-vuejs','datasource-audio', 'audio-video-synchronized-with-control-vuejs'];
 
 const plug= {};
 

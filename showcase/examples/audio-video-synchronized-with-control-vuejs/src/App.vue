@@ -4,13 +4,14 @@
       <div id="chart-frequency"></div>
       <div id="chart-time" ></div>
       <div id="spectrogram"></div>
+      <div id="container-video"></div>
     </div>
     <div class="footer">
       <TimeController
-          :dataSource="dataSource"
+          :dataSynchronizer="dataSynchronizer"
           @event='onControlEvent'
           :skipTimeStep="'10s'"
-          v-if="dataSource "
+          v-if="dataSynchronizer"
       ></TimeController>
     </div>
   </div>
@@ -19,38 +20,65 @@
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
     import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
+    import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView";
+    import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+    import SosGetResultVideoWithRoll from "osh-js/core/datasource/SosGetResultVideoWithRoll";
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+
     export default {
         components: {
           TimeController
         },
         data: function () {
             return {
-                dataSource: null
+              dataSynchronizer: null,
+              views: []
             }
         },
         beforeMount() {
         },
       mounted() {
-        // setup video
-        // create data source for UAV camera
-        let audioDataSource = new SosGetResultAudio("alex-audio", {
+
+        const opts = {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
-          observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
           replaySpeed: 1.0,
           bufferingTime: 1000
+        };
+
+        // setup video
+        const videoDataSource = new SosGetResultVideoWithRoll("Live and archive data from Android Sensors [Nexus5X]", {
+          ...opts,
+          observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame"
         });
 
-        this.view = new AudioView({
+        // setup audio
+        const audioDataSource = new SosGetResultAudio("Live and archive data from Android Sensors [Nexus5X]", {
+          ...opts,
+          observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame"
+        });
+
+        this.views.push(new FFMPEGView({
+          container: 'container-video',
+          css: 'video-h264',
+          name: 'UAV Video',
+          framerate: 25,
+          showTime: true,
+          showStats: true,
+          width:800,
+          height:600,
+          dataSourceId: videoDataSource.id
+        }));
+
+        const audioView = new AudioView({
           name: "Audio",
           css: 'audio-css',
           container: 'audio-chart-container',
@@ -119,58 +147,54 @@
           fftSize: 2048,
           container: 'spectrogram'
         });
-        this.view.addVisualizer(audioChartFrequencyVisualizer);
-        this.view.addVisualizer(audioChartTimeVisualizer);
-        this.view.addVisualizer(audioSpectrogramVisualizer);
+        audioView.addVisualizer(audioChartFrequencyVisualizer);
+        audioView.addVisualizer(audioChartTimeVisualizer);
+        audioView.addVisualizer(audioSpectrogramVisualizer);
 
-        this.dataSource = audioDataSource;
+        this.dataSynchronizer = new DataSynchronizer({
+          replaySpeed: 1,
+          timerResolution: 5,
+          dataSources: [videoDataSource, audioDataSource]
+        });
+
+        this.views.push(audioView);
       },
-
       methods: {
         onControlEvent(eventName) {
-          if (eventName === 'forward' || eventName === 'backward' || eventName === 'end' || eventName === 'replaySpeed') {
-            this.view.reset()
+          if (eventName === 'time-changed') {
+            for(let view of this.views) {
+              view.reset();
+            }
           }
         },
       }
     };
 </script>
 <style>
-
 .visualizer {
   display: flex;
   flex-wrap: wrap;
   height: 100%;
   justify-content: space-around ;
 }
-#chart-frequency, #chart-time{
+
+#chart-frequency, #chart-time, #spectrogram, #container-video{
   width: 45%;
   height: 35%;
+  border: solid 1px #797979;
+  text-align: center;
 }
-canvas.audio-canvas {
-  width: 100%;
+
+div.video-h264 canvas {
+  width: auto;
+  background-color: green;
   height: 100%;
 }
 
-#app > .control {
-  width: 100%;
-  margin-top:70px;
-}
-
-#app {
-  padding: 20px;
-  height: 0px;
-}
-#spectrogram {
-  width: 100%;
-  height: 35%;
-}
-.audio-canvas, #spectrogram > canvas{
-  border: solid 1px #535353;
-}
 .footer {
   position: absolute;
   width: 95%;
   bottom: 20px;
+  left: 20px;
 }
 </style>
