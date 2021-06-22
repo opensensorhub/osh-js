@@ -156,9 +156,7 @@ canvas.audio-canvas {
   width: 100%;
   margin-top:70px;
 }
-.audio-canvas, #spectrogram > canvas{
-  border: solid 1px #535353;
-}
+
 #app {
   padding: 20px;
   height: 0px;
@@ -166,6 +164,9 @@ canvas.audio-canvas {
 #spectrogram {
   width: 100%;
   height: 35%;
+}
+.audio-canvas, #spectrogram > canvas{
+  border: solid 1px #535353;
 }
 .footer {
   position: absolute;
