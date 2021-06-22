@@ -183,8 +183,8 @@ class AudioView extends View {
         }
         let source = this.audioCtx.createBufferSource();
         source.buffer = audioBuffer;
-        source.detune.value = replaySpeed  * 100;
-        // source.playbackRate.value = replaySpeed * 1000;
+        // source.detune.value = replaySpeed  * 100;
+        source.playbackRate.value = replaySpeed;
 
         let node = source;
 
