@@ -1,26 +1,33 @@
 <template>
   <div id="app">
-    <div class="container-osh" >
-      <div id="container-audio" class="container-audio"></div>
-      <div id="container-video" class="container-video"></div>
+    <div class="visualizer">
+      <div id="chart-frequency"></div>
+      <div id="chart-time" ></div>
+      <div id="spectrogram"></div>
+      <div id="container-video"></div>
     </div>
-    <TimeController
-        :dataSynchronizer="dataSynchronizer"
-        @event='onControlEvent'
-        :skipTimeStep="'10s'"
-        v-if="dataSynchronizer "
-    ></TimeController>
+    <div class="footer">
+      <TimeController
+          :dataSynchronizer="dataSynchronizer"
+          @event='onControlEvent'
+          :skipTimeStep="'10s'"
+          v-if="dataSynchronizer"
+      ></TimeController>
+    </div>
   </div>
 </template>
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
     import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
-    import AudioView from 'osh-js/core/ui/view/audio/AudioView';
-    import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo";
     import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView";
     import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
     import SosGetResultVideoWithRoll from "osh-js/core/datasource/SosGetResultVideoWithRoll";
+    import AudioView from "osh-js/core/ui/view/audio/AudioView";
+    import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
+    import AudioFrequencyChartJsVisualizer
+      from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
+    import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
 
     export default {
         components: {
@@ -71,114 +78,123 @@
           dataSourceId: videoDataSource.id
         }));
 
-        this.views.push(new AudioView({
+        const audioView = new AudioView({
           name: "Audio",
           css: 'audio-css',
-          container: 'container-audio',
+          container: 'audio-chart-container',
           dataSource: audioDataSource,
-          gain: 5,
-          timeDomainVisualization: {
-            type: 'chart',
-            fftSize: 1024,
-            props: {
-              css: 'audio-css-time',
-              chartjsProps: {
-                chartProps: {
-                  scales: {
-                    yAxes: [{
-                      scaleLabel: {
-                        labelString: "Amplitude"
-                      },
-                      ticks: {
-                        maxTicksLimit: 5
-                      }
-                    }],
-                    xAxes: [{
-                      scaleLabel: {
-                        labelString: "Time"
-                      },
-                      ticks: {
-                        maxTicksLimit: 130,
-                        beginAtZero: true
-                      }
-                    }],
+          gain: 1,
+          playSound: true
+        });
+
+        const audioChartFrequencyVisualizer = new AudioFrequencyChartJsVisualizer({
+          css: 'audio-canvas',
+          fftSize: 32,
+          container: 'chart-frequency',
+          chartjsProps: {
+            datasetsProps: {
+              borderColor: 'rgba(0,0,0,0.5)',
+              backgroundColor: 'rgba(210,210,210,0.8)',
+              barThickness: 20,
+              borderWidth: 1
+            },
+          }
+        });
+
+        const audioChartTimeVisualizer = new AudioTimeChartJsVisualizer({
+          css: 'audio-canvas',
+          fftSize: 1024,
+          container: 'chart-time',
+          chartjsProps: {
+            chartProps: {
+              scales: {
+                yAxes: [{
+                  scaleLabel: {
+                    labelString: "Amplitude"
+                  },
+                  ticks: {
+                    maxTicksLimit: 5
                   }
-                },
-                datasetsProps: {
-                  pointRadius: 0.1,
-                  borderColor: 'rgba(0,0,0,0.5)',
-                  backgroundColor: 'rgba(255,195,100,0.2)',
-                  barThickness: 2,
-                  borderWidth: 1
-                },
-                datasetsMinMaxProps: {
-                  pointRadius: 0.0,
-                  backgroundColor: 'rgba(0,139,141,1.0)',
-                  barThickness: 2,
-                  borderWidth: 1
-                }
-              }
-            }
-          },
-          frequencyDomainVisualization: {
-            type: 'chart',
-            fftSize: 32,
-            props: {
-              css: 'audio-css-frequency',
-              chartjsProps: {
-                datasetsProps: {
-                  borderColor: 'rgba(0,0,0,0.5)',
-                  backgroundColor: 'rgba(210,210,210,0.8)',
-                  barThickness: 20,
-                  borderWidth: 1
-                },
-              }
+                }],
+                xAxes: [{
+                  scaleLabel: {
+                    labelString: "Time"
+                  },
+                  ticks: {
+                    maxTicksLimit: 130,
+                    beginAtZero: true
+                  }
+                }],
+              },
+              maintainAspectRatio: false
+            },
+            datasetsProps: {
+              pointRadius: 0.1,
+              borderColor: 'rgba(0,0,0,0.5)',
+              backgroundColor: 'rgba(255,195,100,0.2)',
+              barThickness: 2,
+              borderWidth: 1
+            },
+            datasetsMinMaxProps: {
+              pointRadius: 0.0,
+              backgroundColor: 'rgba(0,139,141,1.0)',
+              barThickness: 2,
+              borderWidth: 1
             }
           }
-        }));
+        });
+        const audioSpectrogramVisualizer = new AudioSpectrogramVisualizer({
+          fftSize: 2048,
+          container: 'spectrogram'
+        });
+        audioView.addVisualizer(audioChartFrequencyVisualizer);
+        audioView.addVisualizer(audioChartTimeVisualizer);
+        audioView.addVisualizer(audioSpectrogramVisualizer);
+
         this.dataSynchronizer = new DataSynchronizer({
           replaySpeed: 1,
           timerResolution: 5,
           dataSources: [videoDataSource, audioDataSource]
         });
+
+        this.views.push(audioView);
       },
       methods: {
         onControlEvent(eventName) {
-          if (eventName === 'forward' || eventName === 'backward' || eventName === 'end' || eventName === 'replaySpeed') {
-            this.view.reset()
+          if (eventName === 'time-changed') {
+            for(let view of this.views) {
+              view.reset();
+            }
           }
         },
       }
     };
 </script>
 <style>
-  #app {
-    padding: 20px;
-  }
+.visualizer {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  justify-content: space-around ;
+}
 
-  .container-osh {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
+#chart-frequency, #chart-time, #spectrogram, #container-video{
+  width: 45%;
+  height: 35%;
+  border: solid 1px #797979;
+  text-align: center;
+}
 
-  .container-osh > .container-audio {
-    width: 40%;
-  }
+div.video-h264 canvas {
+  width: auto;
+  background-color: green;
+  height: 100%;
+}
 
-  .container-osh > .container-video {
-    width: 55%;
-  }
-
-  div.video-h264 {
-    max-height: 600px;
-  }
-
-  div.video-h264 canvas {
-    width: auto;
-    margin-top:50px;
-    border: solid 1px lightgrey;
-    background-color: green;
-    height: 60%;
-  }
+.footer {
+  position: absolute;
+  width: 95%;
+  bottom: 20px;
+  left: 20px;
+}
 </style>
