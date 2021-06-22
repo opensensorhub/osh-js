@@ -10,6 +10,8 @@ If the browser does not support WebCodec API, It will use as fallback the lib ff
 The lib is based on FFMPEG.js which is a port of the native FFMPEG C++ library using [emscripten](https://emscripten.org/).
 [More information: https://github.com/mdhsl/ffmpeg.js](https://github.com/mdhsl/ffmpeg.js)
 
+The view is composed of a decoder (either WebCodec API or FFMPEG.js) and one or more audio viewers: equalizer, spectrogram etc.
+
 <br/>
 <DocumentationLoad path="/guide/api/AudioView.html"/>
 
@@ -18,7 +20,7 @@ The lib is based on FFMPEG.js which is a port of the native FFMPEG C++ library u
 The view supports type layers:
 - data
 
-## Decoding
+## Docoders
 
 The view will use the decoder that is supported by the browser, either the one of the WebCodecApi or the one of the Ffmpeg.js lib.
 By default, the 'aac' codec is used. 
@@ -33,38 +35,43 @@ It is necessary to activate the options in chrome as indicated on [https://githu
 The decoding is processed frame by frame using the library ffmpeg.js following this principle
 [https://ffmpeg.org/doxygen/3.3/decode__audio_8c_source.html](https://ffmpeg.org/doxygen/3.3/decode__audio_8c_source.html).
 
-## Time & Frequency domain visualization
+## Visualizers
 
-The view allows to visualize the audio data in frequency and time. The two options timeDomainVisualization and
-frequencyDomainVisualization allow to define which visualization should be created.
-The view will create and use the nodes of the WebAudioApi to make the necessary transformations using an
-AnalyzerNode [https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode).
+The view allows to visualize the audio data in frequency and time. 
 
-The parameter `fftSize` is passed to the analyzer to be used to determine the frequency domain.
+One or more visualizers can be added to the audio view. The audio view is responsible for decoding the data and then forwarding the decoded AudioBuffer to all visualizers.
+Each will then display the data independently. The audio view does not have an anchor in the DOM, it is the visualizers that must be added on a div of the application.
 
-By default, two types of visualization are possible. One is based on the `chart.js` library and the other based on a pure HTML5 canvas.
+To do this, we will use the **container** parameter of the constructor.
 
-## Chart.js properties configuration
+<DocumentationLoad path="/guide/api/AudioVisualizer.html"/>
 
-This View is highly configurable. Chart.js is built using a property object. This object can be directly passed, in part or in full,
-depending on what you want to configure, to the ChartView which will in turn forward it to the Deck object.
+There are several audio visualizers provided by default and grouped by type: time, frequency or spectrogram. Each group can have several implementations: chart.js, pure HTML5 canvas, three.js etc.
 
-The ***chartjsProps*** allows to modify the native chart.js properties by passing a global chart
-[configuration object](https://www.chartjs.org/docs/dev/configuration) into the ***chartProps***
-or/and a ***datasetsProps*** to modify the native [datasets properties](https://www.chartjs.org/docs/dev/charts/line.html#dataset-properties).
+Here is the list:
 
-Then a deep merge is processed and passed as a properties object of the Chart.js object.
-When you pass one of these options to the ChartView, the properties will be merged with the defaults.
+Frequency:
+- AudioFrequencyCanvasVisualizer
+    <DocumentationLoad path="/guide/api/AudioFrequencyCanvasVisualizer.html"/>
+  
 
-The default ***chartProps*** are:
+- AudioFrequencyChartJsVisualizer
+  <DocumentationLoad path="/guide/api/AudioFrequencyChartJsVisualizer.html"/>
+  
+Time:
 
-for time:
+- AudioTimeCanvasVisualizer
+  <DocumentationLoad path="/guide/api/AudioTimeCanvasVisualizer.html"/>
+  
+- AudioTimeChartJsVisualizer
+  <DocumentationLoad path="/guide/api/AudioTimeChartJsVisualizer.html"/>
 
-<<< @/../../source/core/ui/view/audio/chart/AudioTimeDomainChartJs.js#snippet_audiochartjsview_default_chartprops
 
-for frequency:
+Spectrogram:
 
-<<< @/../../source/core/ui/view/audio/chart/AudioFrequencyDomainChartJs.js#snippet_audiochartjsview_default_chartprops
+- AudioSpectrogramVisualizer
+  <DocumentationLoad path="/guide/api/AudioSpectrogramVisualizer.html"/>
+
 
 ## Example
 

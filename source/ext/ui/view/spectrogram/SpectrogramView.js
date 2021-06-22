@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from '../View.js';
+import View from '../../../../core/ui/view/View.js';
 import * as d3 from 'd3/dist/d3.js';
 
 /**
@@ -28,7 +28,12 @@ class SpectrogramView extends View {
 *    * @param {String} properties.isSim - Enable simulation mode
      */
     constructor(properties) {
-        super(properties);
+        super({
+            supportedLayers: ['data'],
+            dataSourceId: properties.dataSource.id,
+            ...properties,
+            visible: true
+        });
 
         // Data Vars
         this.spectrogramData = [];
@@ -47,7 +52,6 @@ class SpectrogramView extends View {
             let tickVal = i * interval;
             this.tickArray.push(tickVal);
         }
-
 
         // Layout Vars
         let thisDiv = document.getElementById(this.divId);
@@ -186,6 +190,7 @@ class SpectrogramView extends View {
             freqCounter += 400;
         }
 
+        console.log(tempDataArr)
         return tempDataArr;
     }
 

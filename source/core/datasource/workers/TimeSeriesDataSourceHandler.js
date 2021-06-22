@@ -1,5 +1,6 @@
 import {isDefined} from "../../utils/Utils.js";
 import DataSourceHandler from "./DataSourceHandler";
+import {EventType} from "../../event/EventType";
 
 class TimeSeriesDataSourceHandler extends DataSourceHandler{
 
@@ -44,13 +45,15 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             for(let i=0;i < data.length;i++) {
                 this.values.push({
                     data: data[i],
-                    timeStamp: timeStamp
+                    timeStamp: timeStamp,
+                    version: this.version
                 });
             }
         } else {
             this.values.push({
                 data: data,
-                timeStamp: timeStamp
+                timeStamp: timeStamp,
+                version: this.version
             });
         }
         this.lastTimeStamp = timeStamp;
@@ -72,6 +75,11 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     updateProperties(properties) {
         this.disconnect();
 
+        this.broadcastChannel.postMessage({
+            dataSourceId: this.dataSourceId,
+            type: EventType.TIME_CHANGED
+        });
+
         let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
 
         if(properties.hasOwnProperty('startTime')) {
@@ -81,6 +89,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             lastTimestamp = 'now';
         }
 
+        this.version++;
         this.createDataConnector({
             ...this.properties,
             ...properties,
