@@ -144,15 +144,17 @@ class Layer {
     setData(dataSourceId, records, options) {
         // store data into data props
         this.data = [];
-        if (dataSourceId in this.dataSourcesToFn) {
-            let fnArr = this.dataSourcesToFn[dataSourceId];
-            for(let j=0;j < records.length;j++) {
-                for (let i = 0; i < fnArr.length; i++) {
-                    fnArr[i](records[j].data, records[j].timeStamp, options);
+        if(isDefined(this.dataSourcesToFn)) {
+            if (dataSourceId in this.dataSourcesToFn) {
+                let fnArr = this.dataSourcesToFn[dataSourceId];
+                for (let j = 0; j < records.length; j++) {
+                    for (let i = 0; i < fnArr.length; i++) {
+                        fnArr[i](records[j].data, records[j].timeStamp, options);
+                    }
+                    this.data.push({
+                        ...this.props
+                    });
                 }
-                this.data.push({
-                    ...this.props
-                });
             }
         }
     }

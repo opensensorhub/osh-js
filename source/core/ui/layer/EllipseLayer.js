@@ -17,14 +17,14 @@ class EllipseLayer extends Layer {
         super(properties);
         this.type = 'ellipse';
         this.properties = properties;
-        this.position = {};
-        this.semiMajorAxis = null;
-        this.semiMinorAxis = null;
-        this.rotation = null;
-        this.clampToGround = false;
-        this.color = 'red';
-        this.ellipseId = 'ellipse';
-        this.name = '';
+        this.props.position = {};
+        this.props.semiMajorAxis = null;
+        this.props.semiMinorAxis = null;
+        this.props.rotation = null;
+        this.props.clampToGround = false;
+        this.props.color = 'red';
+        this.props.ellipseId = 'ellipse';
+        this.props.name = '';
 
 
         if (isDefined(properties.name)){
@@ -110,6 +110,7 @@ class EllipseLayer extends Layer {
             this.addFn(that.getDataSourcesIdsByProperty('getColor'), fn);
         }
 
+        this.saveState();
     }
 }
 export default EllipseLayer;
