@@ -11,8 +11,44 @@
 import Layer from "./Layer.js";
 import {isDefined} from "../../utils/Utils";
 
+/**
+ * @extends Layer
+ * @example
+ *
+ * import EllipseLayer from 'osh-js/core/ui/layer/EllipseLayer';
+ *
+ * let ellipse = new EllipseLayer({
+        dataSourceId: gpsDataSource.id,
+        getPosition: (rec) => ({
+            x: rec.location.lon,
+            y: rec.location.lat,
+            z: rec.location.alt
+        }),
+        color: 'rgba(255,74,22, 0.5)',
+        semiMinorAxis: 100,
+        semiMajorAxis: 200,
+        name: "Android Phone GPS Path"
+    });
+ */
 class EllipseLayer extends Layer {
 
+    /**
+     * Creates the EllipseLayer
+     * @param {Object} properties
+     * @param {Object[]} [properties.position] - defines the default location of the ellipse [lat, lon, alt]
+     * @param {Number} [properties.semiMajorAxis=null] - defines the semi-major axis of the ellipse
+     * @param {Number} [properties.semiMinorAxis=null] - defines the semi-minor axis of the ellipse
+     * @param {Number} [properties.rotation=null] - defines the rotation of the ellipse counter-clockwise from north.
+     * @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
+     * @param {String} [properties.color='red'] - defines the color property of the ellipse
+     * @param {Function} [properties.getPosition] - defines a function to return the location
+     * @param {Function} [properties.getColor] - defines a function to return the color
+     * @param {Function} [properties.getSemiMajorAxis] - defines a function to return the semiMajorAxis
+     * @param {Function} [properties.getSemiMinorAxis] - defines a function to return the semiMinorAxis
+     * @param {Function} [properties.getHeight] - defines a function to return the height of the ellipse above the ellipsoid
+     * @param {Function} [properties.getRotation] - defines a function to return the rotation of the ellipse
+     * @param {Function} [properties.getEllipseID] - map an id to a unique ellipse
+     */
     constructor(properties) {
         super(properties);
         this.type = 'ellipse';
