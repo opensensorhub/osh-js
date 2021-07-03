@@ -510,6 +510,621 @@
     
 
     
+    <h4 class="name" id="addEllipse"><span class="type-signature"></span>addEllipse<span class="signature">(properties)</span><span class="type-signature"> &rarr; {Entity}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Add an Ellipse to the view
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The id of the ellipse</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The assigned name of the ellipse</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">[] The ellipse's center point in the fixed frame.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>semiMajorAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The length of the ellipse's semi-major axis in meters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>semiMinorAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The length of the ellipse's semi-minor axis in meters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>extrudedHeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">optionalThe distance in meters between the ellipse's extruded face and the ellipsoid surface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optionalThe angle of rotation counter-clockwise from north.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stRotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optionalThe rotation of the texture coordinates counter-clockwise from north.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>granularity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clampToGround</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Flag to indicate if ellipse needs to be clamped to ground</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The color of the ellipse</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>transparency</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The level of transparency or alpha value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line537">line 537</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Entity</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addEllipseToLayer"><span class="type-signature">(protected) </span>addEllipseToLayer<span class="signature">(layer, ellipseObject)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Associate a ellipseId to a Layer for a fast lookup
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Ellipse.props</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Layer object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ellipseObject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Map ellipse object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="MapView.html#addEllipseToLayer">MapView#addEllipseToLayer</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line89">line 89</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="addImageryProvider"><span class="type-signature"></span>addImageryProvider<span class="signature">(type, url, layers, imageFormat, options)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
@@ -674,7 +1289,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line683">line 683</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line868">line 868</a>
     </li></ul></dd>
     
 
@@ -1135,7 +1750,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line423">line 423</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line424">line 424</a>
     </li></ul></dd>
     
 
@@ -1322,7 +1937,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line56">line 56</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -1358,7 +1973,7 @@
     
 
     
-    <h4 class="name" id="addPolyline"><span class="type-signature"></span>addPolyline<span class="signature">(locations, properties)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="addPolyline"><span class="type-signature"></span>addPolyline<span class="signature">(properties)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -1398,29 +2013,6 @@
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>locations</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">locations</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the coordinates [{x, y}]</td>
-        </tr>
-
     
 
         <tr>
@@ -1467,13 +2059,36 @@
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>id</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>locations</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Number></span>
 
 
             
@@ -1514,52 +2129,6 @@
         <tr>
             
                 <td class="name"><code>weight</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>smoothFactor</code></td>
             
 
             <td class="type">
@@ -1623,7 +2192,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line530">line 530</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line681">line 681</a>
     </li></ul></dd>
     
 
@@ -1810,7 +2379,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line71">line 71</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -2220,6 +2789,241 @@ Note: the onResize() is called at the end of the process.
     
 
     
+    <h4 class="name" id="getEllipse"><span class="type-signature">(protected) </span>getEllipse<span class="signature">(layer)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the ellipse associate to the Layer
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Ellipse.props</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Layer Object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="MapView.html#getEllipse">MapView#getEllipse</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line168">line 168</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getEllipsoids"><span class="type-signature">(protected) </span>getEllipsoids<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get all ellpsoids contained in this view
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="MapView.html#getEllipsoids">MapView#getEllipsoids</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line141">line 141</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="getId"><span class="type-signature"></span>getId<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
@@ -2441,7 +3245,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line136">line 136</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line192">line 192</a>
     </li></ul></dd>
     
 
@@ -2605,7 +3409,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line270">line 270</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line345">line 345</a>
     </li></ul></dd>
     
 
@@ -2772,7 +3576,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line84">line 84</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line102">line 102</a>
     </li></ul></dd>
     
 
@@ -2914,7 +3718,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line284">line 284</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line359">line 359</a>
     </li></ul></dd>
     
 
@@ -3032,7 +3836,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line95">line 95</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -3076,7 +3880,7 @@ Note: the onResize() is called at the end of the process.
 
 
 <div class="description">
-    Get the markerId associate to the Layer
+    Get the ellipse associate to the Layer
 </div>
 
 
@@ -3118,7 +3922,7 @@ Note: the onResize() is called at the end of the process.
             <td class="type">
             
                 
-<span class="param-type">Polyline.props</span>
+<span class="param-type">Ellipse.props</span>
 
 
             
@@ -3174,7 +3978,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line124">line 124</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line156">line 156</a>
     </li></ul></dd>
     
 
@@ -3218,7 +4022,7 @@ Note: the onResize() is called at the end of the process.
 
 
 <div class="description">
-    Get all marker contained in this view
+    Get all polylines contained in this view
 </div>
 
 
@@ -3267,7 +4071,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line109">line 109</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line127">line 127</a>
     </li></ul></dd>
     
 
@@ -3571,7 +4375,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line259">line 259</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line334">line 334</a>
     </li></ul></dd>
     
 
@@ -3782,7 +4586,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line220">line 220</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line295">line 295</a>
     </li></ul></dd>
     
 
@@ -3993,7 +4797,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line246">line 246</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line321">line 321</a>
     </li></ul></dd>
     
 
@@ -4204,7 +5008,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line233">line 233</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line308">line 308</a>
     </li></ul></dd>
     
 
@@ -4346,7 +5150,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line150">line 150</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line206">line 206</a>
     </li></ul></dd>
     
 
@@ -4440,6 +5244,280 @@ Note: the onResize() is called at the end of the process.
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="core_ui_view_View.js.html">core/ui/view/View.js</a>, <a href="core_ui_view_View.js.html#line269">line 269</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="removeEllipseFromLayer"><span class="type-signature"></span>removeEllipseFromLayer<span class="signature">(ellipse)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Removes an ellipse
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ellipse</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ellipse to remove</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line515">line 515</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="removeEllipsoids"><span class="type-signature"></span>removeEllipsoids<span class="signature">(ellipse)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Remove the ellipsoids corresponding to a EllipseLayer Layer
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ellipse</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Ellipse</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the layer to remove the ellipsoids from</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="MapView.html#removeEllipsoids">MapView#removeEllipsoids</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -4582,7 +5660,7 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line408">line 408</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line409">line 409</a>
     </li></ul></dd>
     
 
@@ -4724,7 +5802,7 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line163">line 163</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line219">line 219</a>
     </li></ul></dd>
     
 
@@ -4867,7 +5945,7 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line515">line 515</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line668">line 668</a>
     </li></ul></dd>
     
 
@@ -5009,7 +6087,7 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line182">line 182</a>
+        <a href="core_ui_view_map_MapView.js.html">core/ui/view/map/MapView.js</a>, <a href="core_ui_view_map_MapView.js.html#line257">line 257</a>
     </li></ul></dd>
     
 
@@ -5546,7 +6624,853 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line167">line 167</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line168">line 168</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateEllipse"><span class="type-signature"></span>updateEllipse<span class="signature">(props)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Updates an Ellipse if it exists or adds a new one to the view
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ellipseId</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The id of the ellipse</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">[] The ellipse's center point in the fixed frame.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>semiMajorAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The length of the ellipse's semi-major axis in meters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>semiMinorAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The length of the ellipse's semi-minor axis in meters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optionalThe distance in meters between the ellipse and the ellipsoid surface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>extrudedHeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">optionalThe distance in meters between the ellipse's extruded face and the ellipsoid surface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optionalThe angle of rotation counter-clockwise from north.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stRotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optionalThe rotation of the texture coordinates counter-clockwise from north.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>granularity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">CesiumMath.RADIANS_PER_DEGREE optionalThe angular distance between points on the ellipse in radians.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clampToGround</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Flag to indicate if ellipse needs to be clamped to ground</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>transparency</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The level of transparency or alpha value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The color of the ellipse</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line580">line 580</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateEllipseObj"><span class="type-signature"></span>updateEllipseObj<span class="signature">(layer, properties)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Updates an Ellipse properties
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The layer containing the ellipse</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">[] The ellipse's center point in the fixed frame.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>semiMajorAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The length of the ellipse's semi-major axis in meters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>semiMinorAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The length of the ellipse's semi-minor axis in meters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optional The distance in meters between the ellipse and the ellipsoid surface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>extrudedHeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">optional The distance in meters between the ellipse's extruded face and the ellipsoid surface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optional The angle of rotation counter-clockwise from north.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stRotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">0.0 optional The rotation of the texture coordinates counter-clockwise from north.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>granularity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">CesiumMath.RADIANS_PER_DEGREE optional The angular distance between points on the ellipse in radians.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clampToGround</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Flag to indicate if ellipse needs to be clamped to ground</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>transparency</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The level of transparency or alpha value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The color of the ellipse</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line635">line 635</a>
     </li></ul></dd>
     
 
@@ -5893,7 +7817,7 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line581">line 581</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line766">line 766</a>
     </li></ul></dd>
     
 
@@ -6074,7 +7998,7 @@ This is library dependent.
 
 
 <div class="description">
-    Updates a polyline, if one does not exist it is added to the view
+    Updates a given polyline, or adds it if it does not currently exist
 </div>
 
 
@@ -6115,18 +8039,13 @@ This is library dependent.
 
             <td class="type">
             
-                
-<span class="param-type">PolylineLayer.props</span>
-
-
-            
             </td>
 
             
 
             
 
-            <td class="description last">The layer properties allowing the update of the polyline</td>
+            <td class="description last">The properties containing the updated data</td>
         </tr>
 
     
@@ -6167,7 +8086,159 @@ This is library dependent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line560">line 560</a>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line705">line 705</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updatePolylineObj"><span class="type-signature"></span>updatePolylineObj<span class="signature">(layer, properties)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Updates the actual polyline properties for the polyline from
+the given layer
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The polyline layer</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The properties to update the polyline on
+the given layer</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_map_CesiumView.js.html">core/ui/view/map/CesiumView.js</a>, <a href="core_ui_view_map_CesiumView.js.html#line737">line 737</a>
     </li></ul></dd>
     
 

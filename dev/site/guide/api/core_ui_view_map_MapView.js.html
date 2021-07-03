@@ -59,6 +59,8 @@ class MapView extends View {
         // map Layer id to array of corresponding polylines
         this.layerIdToPolylines= {};
 
+        // map Layer id to array of corresponding polylines
+        this.layerIdToEllipsoids= {};
     }
 
     setData(dataSourceId, data) {
@@ -71,6 +73,8 @@ class MapView extends View {
                 this.updatePolyline(d);
             } else if(data.type === 'draping') {
                 this.updateDrapedImage(d);
+            } else if(data.type === 'ellipse') {
+                this.updateEllipse(d);
             }
         }
     }
@@ -105,6 +109,20 @@ class MapView extends View {
     }
 
     /**
+     * Associate a ellipseId to a Layer for a fast lookup
+     * @protected
+     * @param {Ellipse.props} layer - the Layer object
+     * @param {Object} ellipseObject - the Map ellipse object
+     */
+    addEllipseToLayer(props, ellipseObject) {
+        // associate the list of markers owning by a specific marker
+        if(!(props.id in this.layerIdToEllipsoids)) {
+            this.layerIdToEllipsoids[props.id] = {};
+        }
+        this.layerIdToEllipsoids[props.id][props.ellipseId] = ellipseObject;
+    }
+
+    /**
      * Get the markerId associate to the Layer
      * @protected
      * @param {PointMarkerLayer.props} props - the Layer Object
@@ -124,28 +142,66 @@ class MapView extends View {
         const array = [];
         for(let id in this.layerIdToMarkers) {
             for(let markerId in this.layerIdToMarkers[id]) {
-                array.push(this.layerIdToMarkers[id][markerId])
+                array.push(this.layerIdToMarkers[id][markerId]);
             }
         }
         return array;
     }
 
     /**
-     * Get all marker contained in this view
+     * Get all polylines contained in this view
      * @protected
      */
     getPolylines() {
         const array = [];
         for(let id in this.layerIdToPolylines) {
             for(let polylineId in this.layerIdToPolylines[id]) {
-                array.push(this.layerIdToPolylines[id][polylineId])
+                array.push(this.layerIdToPolylines[id][polylineId]);
             }
         }
         return array;
     }
 
     /**
-     * Get the markerId associate to the Layer
+     * Get all ellpsoids contained in this view
+     * @protected
+     */
+    getEllipsoids() {
+        const array = [];
+        for(let id in this.layerIdToEllipsoids) {
+            for(let ellipseId in this.layerIdToEllipsoids[id]) {
+                array.push(this.layerIdToEllipsoids[id][ellipseId]);
+            }
+        }
+        return array;
+    }
+
+    /**
+     * Get the ellipse associate to the Layer
+     * @protected
+     * @param {Ellipse.props} layer - the Layer Object
+     */
+    getPolyline(props) {
+        if(!(props.id in  this.layerIdToEllipsoids)) {
+            return null;
+        }
+        return this.layerIdToEllipsoids[props.id][props.ellipseId];
+    }
+
+    /**
+     * Get the ellipse associate to the Layer
+     * @protected
+     * @param {Ellipse.props} layer - the Layer Object
+     */
+    getEllipse(props) {
+        if(!(props.id in  this.layerIdToEllipsoids)) {
+            return null;
+        }
+        return this.layerIdToEllipsoids[props.id][props.ellipseId];
+    }
+
+    /**
+     * Get the polyline associate to the Layer
      * @protected
      * @param {Polyline.props} layer - the Layer Object
      */
@@ -194,12 +250,31 @@ class MapView extends View {
             if(isDefined(markersMap)) {
                 for(let markerId in markersMap) {
                     const marker = markersMap[markerId];
-                    this.removeMarkerFromLayer(marker)
+                    this.removeMarkerFromLayer(marker);
                 }
             }
 
             // remove markers ids from Layer map
             delete this.layerIdToMarkers[layer.props.id];
+        }
+    }
+
+    /**
+     * Remove the ellipsoids corresponding to a EllipseLayer Layer
+     * @param {Ellipse} ellipse - the layer to remove the ellipsoids from
+     */
+    removeEllipsoids(ellipse) {
+        if(isDefined(ellipse.props.polylineId)) {
+            const ellipseMap = this.layerIdToEllipsoids[ellipse.props.id];
+            if(isDefined(ellipseMap)) {
+                for(let ellipseId in ellipseMap) {
+                    const ellipse = ellipseMap[ellipseId];
+                    this.removeEllipseFromLayer(ellipse);
+                }
+            }
+
+            // remove polylines ids from Layer map
+            delete this.layerIdToEllipsoids[polyline.props.id];
         }
     }
 
@@ -213,7 +288,7 @@ class MapView extends View {
             if(isDefined(polylinesMap)) {
                 for(let polylineId in polylinesMap) {
                     const polyline = polylinesMap[polylineId];
-                    this.removePolylineFromLayer(polyline)
+                    this.removePolylineFromLayer(polyline);
                 }
             }
 
