@@ -45,20 +45,20 @@ class PolylineLayer extends Layer {
 	/**
 		* Creates the PolylineLayer
 		* @param {Object} properties
-		* @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
-		* @param {Number} [properties.weight=1] - defines the weight of the polyline
-	  * @param {String} [properties.color='red'] - defines the color of the polyline
+	 	* @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
+	 	* @param {Number} [properties.weight=1] - defines the weight of the polyline
+	  	* @param {String} [properties.color='red'] - defines the color of the polyline
 		* @param {Number} [properties.opacity=1] - defines the opacity of the polyline
 		* @param {Number} [properties.smoothFactor=1] - defines the smoothFactor of the polyline
 		* @param {Number} [properties.maxPoints=10] - defines a number max of points
-	  * @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
+	  	* @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
 		* @param {Function} [properties.getLocation] - defines a function to return the location
 		* @param {Function} [properties.getColor] - defines a function to return the color
 		* @param {Function} [properties.getWeight] - defines a function to return the weight
 		* @param {Function} [properties.getOpacity] - defines a function to return the opacity
 		* @param {Function} [properties.getSmoothFactor] - defines a function to return the smoothFactor
-	  * @param {Function} [properties.getPolylineId] - map an id to a unique polyline
-		*/
+	  	* @param {Function} [properties.getPolylineId] - map an id to a unique polyline
+	 */
 	constructor(properties) {
 		super(properties);
 		this.type = 'polyline';
