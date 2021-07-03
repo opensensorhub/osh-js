@@ -92,7 +92,7 @@ class MapboxView extends MapView {
         let lon = props.location.x;
         let lat = props.location.y;
 
-        markerFeature.setLngLat([lon, lat])
+        markerFeature.setLngLat([lon, lat]).setRotation(props.orientation.heading)
     }
 
     /**
@@ -114,81 +114,45 @@ class MapboxView extends MapView {
         }
 
         let polylineFeature = this.getPolyline(props);
+        const id = polylineFeature.id;
 
-        const mercatorArrays = [];
-        let currentLonLat;
+        const locs = [];
         for(let i=0;i < props.locations.polyline.length;i++) {
-            currentLonLat = MercatorCoordinate.fromLngLat({
-                lng: props.locations.polyline[i].x,
-                lat: props.locations.polyline[i].y
-            });
-            mercatorArrays.push(currentLonLat.x, currentLonLat.y);
+            locs.push([props.locations.polyline[i].x, props.locations.polyline[i].y]);
         }
+        polylineFeature.features[0].geometry.coordinates = locs;
 
-        polylineFeature.onAdd = function (map, gl) {
-            // create GLSL source for vertex shader
-            var vertexSource =
-                '' +
-                'uniform mat4 u_matrix;' +
-                'attribute vec2 a_pos;' +
-                'void main() {' +
-                '    gl_Position = u_matrix * vec4(a_pos, 0.0, 1.0);' +
-                '}';
-
-            // create GLSL source for fragment shader
-            var fragmentSource =
-                '' +
-                'void main() {' +
-                '    gl_FragColor = vec4(0.0, 0.0, 1.0, 0.8);' +
-                '}';
-
-            // create a vertex shader
-            var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-            gl.shaderSource(vertexShader, vertexSource);
-            gl.compileShader(vertexShader);
-
-            // create a fragment shader
-            var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-            gl.shaderSource(fragmentShader, fragmentSource);
-            gl.compileShader(fragmentShader);
-
-            // link the two shaders into a WebGL program
-            this.program = gl.createProgram();
-            gl.attachShader(this.program, vertexShader);
-            gl.attachShader(this.program, fragmentShader);
-            gl.linkProgram(this.program);
-
-            this.aPos = gl.getAttribLocation(this.program, 'a_pos');
-        };
-
-        polylineFeature.render = function (gl, matrix) {
-            gl.useProgram(this.program);
-
-            // create and initialize a WebGLBuffer to store vertex and color data
-            this.buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-
-            gl.bufferData(
-                gl.ARRAY_BUFFER,
-                new Float32Array(mercatorArrays),
-                gl.STATIC_DRAW
-            );
-
-            gl.uniformMatrix4fv(
-                gl.getUniformLocation(this.program, 'u_matrix'),
-                false,
-                matrix
-            );
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-            gl.enableVertexAttribArray(this.aPos);
-            gl.vertexAttribPointer(this.aPos, 2, gl.FLOAT, false, 0, 0);
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            gl.drawArrays(gl.LINE_STRIP, 0, mercatorArrays.length/2);
-
-            // call render()
-            that.map.triggerRepaint();
-        };
+        // check if layer changed
+        let invalidateLayer  = false;
+        const layer = this.map.getLayer(id);
+        if(layer) {
+            let newLayer = {
+                'id': id,
+                'type': 'line',
+                'source': layer.id,
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-color': props.color,
+                    'line-width': props.weight,
+                    'line-opacity': props.opacity
+                }
+            };
+            if (layer.paint["line-color"] !== newLayer.paint["line-color"]) {
+                invalidateLayer = true;
+            } else if (layer.paint["line-width"] !== newLayer.paint["line-weight"]) {
+                invalidateLayer = true;
+            } else if (layer.paint["line-opacity"] !== newLayer.paint["line-opacity"]) {
+                invalidateLayer = true;
+            }
+            if (invalidateLayer) {
+                this.map.removeLayer(id);
+                this.map.addLayer(newLayer);
+            }
+            this.map.getSource(id).setData(polylineFeature);
+        }
     }
 
     /**
@@ -221,8 +185,17 @@ class MapboxView extends MapView {
             name = properties.label;
         }
 
-        const marker = new Marker()
+        const el = document.createElement('div');
+        el.className = 'marker';
+        el.style.backgroundImage = `url(${properties.icon})`;
+        el.style.width = properties.iconSize[0] + 'px';
+        el.style.height = properties.iconSize[1] + 'px';
+        el.style.backgroundSize = '100%';
+        const marker = new Marker({
+            element: el
+        })
             .setLngLat([properties.location.x, properties.location.y])
+            .setRotation(properties.orientation.heading)
             .setPopup(new Popup().setHTML(`<strong>${name}</strong>`))
             .addTo(this.map);
 
@@ -231,8 +204,8 @@ class MapboxView extends MapView {
             this.map.flyTo({
                 center: [properties.location.x, properties.location.y],
                 zoom: properties.zoomLevel,
-                speed: 2.0,
-                curve: 1,
+                speed: 3.5,
+                curve: 2,
                 easing(t) {
                     return t;
                 }
@@ -265,6 +238,13 @@ class MapboxView extends MapView {
             // map is not loaded yet
             return;
         }
+        const id = polyline.id;
+        if (this.map.getLayer(id)) {
+            this.map.removeLayer(id);
+        }
+        if(this.map.getSource(id)) {
+            this.map.removeSource(id);
+        }
     }
 
     /**
@@ -281,73 +261,43 @@ class MapboxView extends MapView {
             // map is not loaded yet
             return;
         }
-        // create a custom style layer to implement the WebGL content
-        var highlightLayer = {
-            id: properties.id+"$"+properties.polylineId,
-            type: 'custom',
+        const id = properties.id+"$"+properties.polylineId;
 
-            // method called when the layer is added to the map
-            // https://docs.mapbox.com/mapbox-gl-js/api/#styleimageinterface#onadd
-            onAdd: function (map, gl) {
-                // create GLSL source for vertex shader
-                var vertexSource =
-                    '' +
-                    'uniform mat4 u_matrix;' +
-                    'attribute vec2 a_pos;' +
-                    'void main() {' +
-                    '    gl_Position = u_matrix * vec4(a_pos, 0.0, 1.0);' +
-                    '}';
-
-                // create GLSL source for fragment shader
-                var fragmentSource =
-                    '' +
-                    'void main() {' +
-                    '    gl_FragColor = vec4(0.0, 0.0, 1.0, 0.8);' +
-                    '}';
-
-                // create a vertex shader
-                var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-                gl.shaderSource(vertexShader, vertexSource);
-                gl.compileShader(vertexShader);
-
-                // create a fragment shader
-                var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-                gl.shaderSource(fragmentShader, fragmentSource);
-                gl.compileShader(fragmentShader);
-
-                // link the two shaders into a WebGL program
-                this.program = gl.createProgram();
-                gl.attachShader(this.program, vertexShader);
-                gl.attachShader(this.program, fragmentShader);
-                gl.linkProgram(this.program);
-
-                this.aPos = gl.getAttribLocation(this.program, 'a_pos');
-            },
-
-            // method fired on each animation frame
-            // https://docs.mapbox.com/mapbox-gl-js/api/#map.event:render
-            render: function (gl, matrix) {
-                gl.useProgram(this.program);
-
-                // create and initialize a WebGLBuffer to store vertex and color data
-                this.buffer = gl.createBuffer();
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-
-                gl.uniformMatrix4fv(
-                    gl.getUniformLocation(this.program, 'u_matrix'),
-                    false,
-                    matrix
-                );
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-                gl.enableVertexAttribArray(this.aPos);
-                gl.vertexAttribPointer(this.aPos, 2, gl.FLOAT, false, 0, 0);
-                gl.enable(gl.BLEND);
-                gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-                gl.drawArrays(gl.LINES, 0, 2);
-            }
+        const geojson = {
+            'id': id,
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': [[0, 0]]
+                    }
+                }
+            ]
         };
-       this.map.addLayer(highlightLayer, 'building');
-        return highlightLayer;
+
+        this.map.addSource(id, {
+            'type': 'geojson',
+            'data': geojson
+        });
+
+        // add the line which will be modified in the animation
+        this.map.addLayer({
+            'id': id,
+            'type': 'line',
+            'source':  properties.id+"$"+properties.polylineId,
+            'layout': {
+                'line-cap': 'round',
+                'line-join': 'round'
+            },
+            'paint': {
+                'line-color': properties.color,
+                'line-width': properties.weight,
+                'line-opacity': properties.opacity
+            }
+        });
+        return geojson;
     }
 
     onResize() {

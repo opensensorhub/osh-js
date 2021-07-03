@@ -68,6 +68,11 @@ var samples = [
     url: "openlayers-location"
   },
   {
+    name: "Moving Location + Path + Heading (Mapbox)",
+    description: "Display a moving marker and a polyline on a Mapbox map, showing both the current location of a vehicle and the historical track.",
+    url: "mapbox-location-path-heading"
+  },
+  {
     name: "Range slider (noUiSlider)",
     description: "Display a time bar to change dynamically the time period.",
     url: "range-slider"
@@ -105,11 +110,11 @@ var samples = [
     description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
     url: "video-h264"
   },
-    {
-        name: "H264 Video using WebCodecAPI",
-        description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
-        url: "video-h264-webcodec-api"
-    },
+  {
+      name: "H264 Video using WebCodecAPI",
+      description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
+      url: "video-h264-webcodec-api"
+  },
   {
     name: "H264 Image draping Video",
     description: "Display an H264 video in a simple DIV using our FFMPEG-JS decoder and drap the decoded frame onto the terrain.",
@@ -182,7 +187,7 @@ var samples = [
     name: "Audio & Video WebCodec/FFmpeg.js decoding with time controller",
     description: "Listen audio stream using WebCodec/FFmpeg.js with time controller and associated Video",
     url: 'audio-video-synchronized-with-control-vuejs',
-    code: 'vue/App_examples/  audio-video-synchronized-with-control-vuejs.vue'
+    code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
   },
 ];
 
