@@ -673,7 +673,7 @@ class CesiumView extends MapView {
    * Add a polyline to the map.
    * @param {Object} properties
    * @param {String} properties.id
-   * @param {[]} properties.locations
+   * @param {Number[]} properties.locations
    * @param {String} properties.color
    * @param {Number} properties.weight
    * @return {Object} the new created polyline
