@@ -31,9 +31,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Nexrad<span class="signature">(properties, radialData)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Nexrad<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Nexrad Layer.</div>
+            <div class="class-description">This datasource provides parsing to DataSource Nexrad.</div>
         
     
 </header>
@@ -48,190 +48,19 @@
     
 
     
-    <h4 class="name" id="Nexrad"><span class="type-signature"></span>new Nexrad<span class="signature">(properties, radialData)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Nexrad"><span class="type-signature"></span>new Nexrad<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
-<div class="description">
-    Creates the Layer.
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>properties</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>location</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">[x,y]</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>radialData</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties.getLocation</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">-</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>properties.getRadialData</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">-</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -267,7 +96,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ext_ui_layer_Nexrad.js.html">ext/ui/layer/Nexrad.js</a>, <a href="ext_ui_layer_Nexrad.js.html#line28">line 28</a>
+        <a href="ext_datasource_Nexrad.js.html">ext/datasource/Nexrad.js</a>, <a href="ext_datasource_Nexrad.js.html#line23">line 23</a>
     </li></ul></dd>
     
 
@@ -307,7 +136,7 @@
 
 
     <ul>
-        <li><a href="Layer.html">Layer</a></li>
+        <li><a href="DataSource.html">DataSource</a></li>
     </ul>
 
 
@@ -2719,9 +2548,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Nexrad<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Nexrad<span class="signature">(properties, radialData)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">This datasource provides parsing to DataSource Nexrad.</div>
+            <div class="class-description">Nexrad Layer.</div>
         
     
 </header>
@@ -2736,19 +2565,190 @@
     
 
     
-    <h4 class="name" id="Nexrad"><span class="type-signature"></span>new Nexrad<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Nexrad"><span class="type-signature"></span>new Nexrad<span class="signature">(properties, radialData)</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
+<div class="description">
+    Creates the Layer.
+</div>
 
 
 
 
 
 
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>location</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">[x,y]</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>radialData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties.getLocation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">-</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties.getRadialData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">-</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -2784,7 +2784,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ext_datasource_Nexrad.js.html">ext/datasource/Nexrad.js</a>, <a href="ext_datasource_Nexrad.js.html#line23">line 23</a>
+        <a href="ext_ui_layer_Nexrad.js.html">ext/ui/layer/Nexrad.js</a>, <a href="ext_ui_layer_Nexrad.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -2824,7 +2824,7 @@
 
 
     <ul>
-        <li><a href="DataSource.html">DataSource</a></li>
+        <li><a href="Layer.html">Layer</a></li>
     </ul>
 
 
