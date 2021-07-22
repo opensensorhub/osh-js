@@ -1,7 +1,7 @@
 # Leaflet
 
 The LeafletView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
-This View can also display path using the corresponding [Layer](../layers/layer).
+This View can also display path using the corresponding [Layer](../../layers/general).
 
 The View is based on [LeafletJs](https://leafletjs.com/) framework.
 
