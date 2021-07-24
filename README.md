@@ -107,5 +107,6 @@ or
 $ ENV=latest yarn vuepress
 ```
 
-The official website (latest): [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/latest/site/)
+The official website (latest): [http://opensensorhub.github.io/osh-js/latest/site/](http://opensensorhub.github.io/osh-js/latest/site/)
+
 The official website (development): [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/dev/site/)
