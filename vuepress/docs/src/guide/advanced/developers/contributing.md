@@ -100,3 +100,18 @@ cp -fr $CURRENT/vuepress/docs/dist $DIR/site
 First change version contained into the package.json.
 
 Then you have to build the content of the NPM by running the target `build-package`.
+
+Finally, go to the output directory and run *npm publish*. Make sure that the version in the package.json is the right one.
+
+Build dist directory:
+
+```shell
+$ yarn build-package
+```
+
+Check version and publish NPM:
+
+```shell
+$ cd ./build/osh-js && cat package.json | grep version
+$ npm publish
+```
