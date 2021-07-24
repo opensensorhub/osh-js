@@ -12,7 +12,7 @@
     "init-deps": "yarn install && yarn build-showcase && yarn doc",
     "build-showcase": "yarn install --cwd ../../showcase/ && rm -fr ../../showcase/dist && yarn --cwd ../../showcase/ prod",
     "dev": "vuepress dev src",
-    "prod": "yarn init-deps && vuepress build src ",
+    "prod": "yarn init-deps && vuepress build src",
     "doc": "yarn  --cwd ../../ documentation"
   },
   "license": "MIT",

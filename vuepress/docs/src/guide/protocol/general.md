@@ -71,7 +71,7 @@ import File from 'osh-js/core/datasource/File';
 
 new File('Example',{
   name: 'Example',
-  paths: ['http://opensensorhub.github.io/osh-js/latest/demos/earthquakes/data/earthquakes.1.csv']
+  paths: ['http://opensensorhub.github.io/osh-js/dev/demos/earthquakes/data/earthquakes.1.csv']
 });
 ```
 *Note: By default, the DataSource File object defines the 'file' protocol.

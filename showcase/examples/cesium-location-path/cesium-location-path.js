@@ -3,6 +3,7 @@ import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider} from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
+import EllipseLayer from "osh-js/core/ui/layer/EllipseLayer";
 
 window.CESIUM_BASE_URL = './';
 
@@ -48,11 +49,24 @@ let polyline = new PolylineLayer({
     name: "Android Phone GPS Path"
 });
 
+let ellipse = new EllipseLayer({
+    dataSourceId: gpsDataSource.id,
+    getPosition: (rec) => ({
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
+    }),
+    color: 'rgba(255,74,22, 0.5)',
+    semiMinorAxis: 100,
+    semiMajorAxis: 200,
+    name: "Android Phone GPS Path"
+});
+
 // #region snippet_cesium_location_view
 // create Cesium view
 let cesiumView = new CesiumView({
     container: 'cesium-container',
-    layers: [pointMarker, polyline],
+    layers: [pointMarker, polyline, ellipse],
 });
 
 // #endregion snippet_cesium_location_view

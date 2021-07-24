@@ -68,7 +68,7 @@ class DataSynchronizer {
             replaySpeed: this.replaySpeed,
             timerResolution: timerResolution,
             dataTopic: this.getTopicId(),
-            timeTopic: this.getTimeTopicId(),
+            timeTopic: this.getTimeTopicId()
         });
     }
 
@@ -77,7 +77,6 @@ class DataSynchronizer {
      * @param dataSource
      */
     createDataSourceForWorker(dataSource) {
-        console.log(dataSource)
         const obj = {
             bufferingTime: dataSource.properties.bufferingTime || 0,
             timeOut: dataSource.properties.timeOut || 0,
@@ -217,7 +216,7 @@ class DataSynchronizer {
             this.setReplaySpeed(replaySpeed);
         }
         this.reset();
-        for(let ds of this.dataSources) {
+        for (let ds of this.dataSources) {
             ds.setTimeRange(startTime, endTime, replaySpeed, reconnect);
         }
     }

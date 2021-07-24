@@ -30,11 +30,7 @@ import CanvasView from "./CanvasView";
   framerate:25,
   showTime: true,
   showStats: true,
-  layers: [
-      new DataLayer({
-        dataSourceId: videoDataSource.id
-      })
-  ]
+ dataSourceId: videoDataSource.id
 });
  */
 
@@ -50,6 +46,8 @@ class FFMPEGView extends CanvasView {
      * @param {Boolean} [properties.directPlay=false] - Enable or ignore the framerate play
      * @param {Boolean} [properties.showTime=false] - Enable or ignore the show timestamp text onto the canvas
      * @param {Boolean} [properties.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
+     * @param {Number} [properties.width=1920] - Set the default canvas width
+     * @param {Number} [properties.height=1080] - Set the default canvas height
      * @param {String} [properties.codec='h264'] - Video codec
      */
     constructor(properties) {
@@ -95,7 +93,7 @@ class FFMPEGView extends CanvasView {
      * @override
      */
     reset() {
-        if(this.decodeWorker !== null) {
+        if(isDefined(this.decodeWorker)) {
             this.decodeWorker.terminate();
             this.decodeWorker = null;
         }

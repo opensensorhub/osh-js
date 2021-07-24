@@ -1,0 +1,55 @@
+{
+  "type": "DataRecord",
+  "definition": "urn:osh:audio:wav:sampleArray",
+  "label": "WavRecord",
+  "description": "Array of Wav files samples",
+  "fields": [
+    {
+      "name": "IsoTime",
+      "type": "Time",
+      "definition": "http://www.opengis.net/def/property/OGC/0/SamplingTime",
+      "referenceFrame": "http://www.opengis.net/def/trs/BIPM/0/UTC",
+      "label": "Sampling Time",
+      "uom": {
+        "href": "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"
+      }
+    },
+    {
+      "name": "julainTimeMs",
+      "type": "Time",
+      "definition": "http://www.opengis.net/def/property/OGC/0/SamplingTime",
+      "referenceFrame": "sampleTime",
+      "label": "Sample Julioan Time",
+      "description": "Time in microseconds since start of file/stream",
+      "uom": {
+        "code": "us"
+      }
+    },
+    {
+      "name": "samplingRate",
+      "type": "Quantity",
+      "definition": "http://www.opengis.net/def/property/OGC/0/SamplingRate",
+      "description": "Sampling Rate",
+      "uom": {
+        "code": "Hz"
+      }
+    },
+    {
+      "name": "amplitudeArray",
+      "type": "DataArray",
+      "elementCount": {
+        "type": "Count",
+        "value": 256
+      },
+      "elementType": {
+        "name": "amplitude",
+        "type": "Quantity",
+        "definition": "http://www.opengis.net/def/property/OGC/0/Amplitude",
+        "description": "Amplitude of Sample",
+        "uom": {
+          "code": "db"
+        }
+      }
+    }
+  ]
+}

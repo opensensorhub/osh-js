@@ -28,7 +28,7 @@ import VectorSource from "ol/source/Vector.js";
 import VectorLayer from "ol/layer/Vector.js";
 import Point from 'ol/geom/Point.js';
 import Feature from 'ol/Feature.js';
-import {Icon, Style} from 'ol/style.js';
+import {Icon, Style, Text} from 'ol/style.js';
 import Select from "ol/interaction/Select";
 import OSM from "ol/source/OSM";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
@@ -56,9 +56,6 @@ class OpenLayerView extends MapView {
      * @param {Number} [properties.maxZoom=19] - the max zoom value
      * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
      * @param {Object} [properties.initialView] - The initial View can be passed to override the default [View]{@link https://openlayers.org/en/latest/apidoc/module-ol_View-View.html}
-     * @param {Object} properties.initialView.lon - the corresponding longitude in EPSG:4326
-     * @param {Object} properties.initialView.lat - the corresponding latitude in EPSG:4326
-     * @param {Object} properties.initialView.zoom - the default level zoom
      * @param {Object[]} [properties.overlayLayers] - OpenLayers objects to use as overlay layer
      * @param {Object[]} [properties.baseLayers] - OpenLayers objects to use as base layer
      *
@@ -84,16 +81,7 @@ class OpenLayerView extends MapView {
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-            const markerObj = this.addMarker({
-                lat: props.location.y,
-                lon: props.location.x,
-                orientation: props.orientation.heading,
-                color: props.color,
-                icon: props.icon,
-                anchor: props.iconAnchor,
-                name: props.name,
-                id: props.id+"$"+props.markerId
-            });
+            const markerObj = this.addMarker(props);
 
             this.addMarkerToLayer(props, markerObj);
         }
@@ -104,7 +92,7 @@ class OpenLayerView extends MapView {
         let lat = props.location.y;
 
         if (!isNaN(lon) && !isNaN(lat)) {
-            let coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:900913');
+            let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
             markerFeature.getGeometry().setCoordinates(coordinates);
         }
 
@@ -119,7 +107,13 @@ class OpenLayerView extends MapView {
                     anchorXUnits: 'pixels',
                     src: props.icon,
                     rotation: props.orientation.heading * Math.PI / 180
-                })
+                }),
+                text: new Text({
+                    text: props.label,
+                    offsetX: props.labelOffset[0],
+                    offsetY: props.labelOffset[1],
+                }),
+                zIndex: props.zIndex
             });
             markerFeature.setStyle(iconStyle);
         }
@@ -168,34 +162,31 @@ class OpenLayerView extends MapView {
     initMap(options) {
 
         this.map = null;
-        let initialView = null;
         this.first = true;
         let overlays = [];
 
         let baseLayers = this.getDefaultLayers();
         let maxZoom = 19;
 
+        let view = new OlView({
+            center: [0, 0],
+            zoom: 0
+        });
+
         if (isDefined(options)) {
 
             //if the user passed in a map then use that one, don't make a new one
             if (options.map) {
                 this.map = options.map;
-                return;
+            }
+
+            // checks autoZoom
+            if (!options.autoZoomOnFirstMarker) {
+                this.first = false;
             }
 
             if (options.maxZoom) {
                 maxZoom = options.maxZoom;
-            }
-            if (options.initialView) {
-                initialView = new OlView({
-                    center: transform([options.initialView.lon, options.initialView.lat], 'EPSG:4326', 'EPSG:900913'),
-                    zoom: options.initialView.zoom,
-                    maxZoom: maxZoom
-                });
-            }
-            // checks autoZoom
-            if (!options.autoZoomOnFirstMarker) {
-                this.first = false;
             }
 
             // checks overlayers
@@ -207,52 +198,55 @@ class OpenLayerView extends MapView {
             if (options.baseLayers) {
                 baseLayers = options.baseLayers;
             }
+
+            if (options.initialView) {
+                view = options.initialView;
+            }
         }
-        // #region snippet_openlayerview_initial_view
-        if (initialView === null) {
-            // loads the default one
-            initialView = new OlView({
-                center: transform([0, 0], 'EPSG:4326', 'EPSG:900913'),
-                zoom: 5,
-                maxZoom: maxZoom
+
+        if (!isDefined(this.map)) {
+            // sets layers to map
+            //create map
+            // #region snippet_openlayerview_initial_map
+            this.map = new Map();
+
+            this.map.addInteraction(new DragRotateAndZoom());
+            this.map.addInteraction(new MouseWheelZoom({
+                constrainResolution: true, // force zooming to a integer zoom,
+                duration: 200
+            }));
+
+            this.map.addControl(new FullScreen());
+            const layerSwitcher = new LayerSwitcher({
+                tipLabel: 'Legend', // Optional label for button
+                groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
             });
+            this.map.addControl(layerSwitcher);
+            this.map.addControl(new ZoomSlider());
+
+            // #endregion snippet_openlayerview_initial_map
+
         }
-        // #endregion snippet_openlayerview_initial_view
 
-        // sets layers to map
-        //create map
-        this.map = new Map({
-            target: this.divId,
-            controls: defaultControls().extend([
-                new FullScreen()
-            ]),
-            interactions: defaultInteractions({mouseWheelZoom: false}).extend([
-                new DragRotateAndZoom(),
-                new MouseWheelZoom({
-                    constrainResolution: true, // force zooming to a integer zoom,
-                    duration: 200
-                })
-            ]),
-            layers: [
-                new Group({
-                    'title': 'Base maps',
-                    layers: baseLayers
-                }),
-                new Group({
-                    title: 'Overlays',
-                    layers: overlays
-                })
-            ],
-            view: initialView,
+        this.map.setTarget(this.divId);
 
-        });
+        if (!isDefined(this.map.getView())) {
+            this.map.setView(view);
+        }
 
-        const layerSwitcher = new LayerSwitcher({
-            tipLabel: 'Legend', // Optional label for button
-            groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
-        });
-        this.map.addControl(layerSwitcher);
-        this.map.addControl(new ZoomSlider());
+        this.map.getView().setMaxZoom(maxZoom);
+
+        // only if the map was not created with default layers
+        if(this.map.getLayers().getLength()  === 0) {
+            this.map.addLayer(new Group({
+                'title': 'Base maps',
+                layers: baseLayers
+            }));
+            this.map.addLayer(new Group({
+                title: 'Overlays',
+                layers: overlays
+            }));
+        }
 
         // inits onLeftClick events
         // select interaction working on "click"
@@ -277,6 +271,8 @@ class OpenLayerView extends MapView {
         this.map.addInteraction(selectClick);
         this.map.addInteraction(selectRightClick);
         this.map.addInteraction(selectPointerMove);
+        this.projection = this.map.getView().getProjection();
+
         const that = this;
 
         selectRightClick.on('select', function (e) {
@@ -344,6 +340,8 @@ class OpenLayerView extends MapView {
             source: this.vectorSource,
         });
 
+        vectorMarkerLayer.setZIndex(1);
+
         this.map.addLayer(vectorMarkerLayer);
         this.map.updateSize();
     }
@@ -372,39 +370,35 @@ class OpenLayerView extends MapView {
     addMarker(properties) {
         //create marker
         if(isDefined(this.map) &&  this.map !== null) {
-            let marker = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+            let marker = new Point(transform([properties.location.x, properties.location.y], 'EPSG:4326', this.projection));
             let markerFeature = new Feature({
                 geometry: marker,
                 name: 'Marker' //TODO
             });
-
-            let style = {
-                symbol: {
-                    symbolType: 'image',
-                    size: [16, 16],
-                    color: 'lightyellow',
-                    rotateWithView: false,
-                    offset: [0, 9]
-                }
-            };
 
             if (isDefined(properties.icon) && properties.icon !== null) {
                 let iconStyle = new Style({
                     image: new Icon({
                         opacity: 0.75,
                         src: properties.icon,
-                        rotation: properties.orientation * Math.PI / 180
+                        rotation: properties.orientation.heading * Math.PI / 180
                     }),
+                    zIndex: properties.zIndex,
+                    text: new Text({
+                        text: properties.label,
+                        offsetX: properties.labelOffset[0],
+                        offsetY: properties.labelOffset[1],
+                    })
                 });
                 markerFeature.setStyle(iconStyle);
             }
 
-            markerFeature.setId(properties.id);
+            markerFeature.setId(properties.id+"$"+properties.markerId);
             this.vectorSource.addFeature(markerFeature);
 
             if (this.first) {
                 this.first = false;
-                this.map.getView().setCenter(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
+                this.map.getView().setCenter(transform([properties.location.x, properties.location.y], 'EPSG:4326', this.projection));
                 this.map.getView().setZoom(12);
             }
 
@@ -434,50 +428,6 @@ class OpenLayerView extends MapView {
     }
 
     /**
-     *
-     * @private
-     * @param layer
-     * @return {string} the id of the newly created marker, or the id of the marker if it already exists from the current layer
-     */
-    createMarkerFromLayer(layer) {
-        //This method is intended to create a marker object only for the OpenLayerView. It does not actually add it
-        //to the view or map to give the user more control
-        let marker = this.getMarker(layer);
-        if (!isDefined(marker)) {
-            let properties = {
-                lat: layer.location.y,
-                lon: layer.location.x,
-                orientation: layer.orientation.heading,
-                color: layer.color,
-                icon: layer.icon,
-                name: this.names[layer.markerId]
-            }
-
-            //create marker
-            let markerPoint = new Point(transform([properties.lon, properties.lat], 'EPSG:4326', 'EPSG:900913'));
-            marker = new Feature({
-                geometry: markerPoint,
-                name: 'Marker' //TODO
-            });
-
-            if (properties.icon !== null) {
-                let iconStyle = new Style({
-                    image: new Icon({
-                        opacity: 0.75,
-                        src: properties.icon,
-                        rotation: properties.orientation * Math.PI / 180
-                    })
-                });
-                marker.setStyle(iconStyle);
-            }
-            let id = "view-marker-" + randomUUID();
-            marker.setId(id);
-        }
-        return this.getMarker(layer);
-    }
-
-
-    /**
      * Add a polyline to the map.
      * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
@@ -490,7 +440,7 @@ class OpenLayerView extends MapView {
         let polylinePoints = [];
 
         for (let i = 0; i < locations.length; i++) {
-            polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', 'EPSG:900913'))
+            polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
         }
 
         //create path
@@ -517,6 +467,7 @@ class OpenLayerView extends MapView {
             })
         });
 
+        vectorPathLayer.setZIndex(0);
         this.map.addLayer(vectorPathLayer);
 
         return vectorPathLayer;

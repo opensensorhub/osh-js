@@ -7,6 +7,8 @@
   <title>Showcase Examples</title>
   <link rel="stylesheet" href="lib/bootstrap.min.css"/>
   <link href="lib/prism.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <style>
     body {
       margin: 0;
@@ -185,6 +187,17 @@
         display: none;
       }
     }
+
+    button.share {
+        margin-left: 0!important;
+        font-size: 16px;
+    }
+
+    button.share img {
+        display: block;
+        height: 64px;
+        width: 64px;
+    }
   </style>
 
 </head>
@@ -230,6 +243,7 @@
         <h5 class="modal-title">OSH Sample</h5>
         <button id="src-button" role="button" class="btn btn-sm btn-outline-secondary ml-auto">Toggle Source Code
         </button>
+        <button id="shared-button" role="button" class="btn btn-sm btn-outline-secondary ml-auto share"><i class="fa fa-share-alt"></i></button>
         <button role="button" class="close ml-2" data-dismiss="modal" aria-label="Close" id="close-button">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -72,6 +72,7 @@ class View {
      */
     init(properties) {
 
+        this.properties = properties;
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
         this.elementDiv.setAttribute("class", this.css+" osh-view");
@@ -230,11 +231,7 @@ class View {
             broadcastChannel.onmessage = (event) => {
                 // skip data reset events for now
                 if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
-                    return;
-                }
-                if (event.data.message && event.data.message === 'reset' ||
-                    (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) ) {
-                    self.reset(); // on data stream reset
+                    self.reset(); // on data stream disconnection
                     return;
                 }
                 if(event.data.type === EventType.DATA) {

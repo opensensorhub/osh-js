@@ -68,6 +68,11 @@ var samples = [
     url: "openlayers-location"
   },
   {
+    name: "Moving Location + Path + Heading (Mapbox)",
+    description: "Display a moving marker and a polyline on a Mapbox map, showing both the current location of a vehicle and the historical track.",
+    url: "mapbox-location-path-heading"
+  },
+  {
     name: "Range slider (noUiSlider)",
     description: "Display a time bar to change dynamically the time period.",
     url: "range-slider"
@@ -79,9 +84,19 @@ var samples = [
     url: "video-map-multiple-datasource"
   },
   {
+    name: "Z-Index ordering",
+    description: "Display a moving marker on an Leaflet, DeckGl,Cesium and Openlayers map using a z-Index between markers",
+    url: "zIndex-location-path"
+  },
+  {
     name: "DataSource Synchronized",
     description: "Display the data of 3 differents kind of datasources(Video, Gps and Orientation) using time synchronization algorithm",
     url: "datasources-synchronized"
+  },
+  {
+    name: "Multiple Video DataSource Synchronized",
+    description: "Display the data of 3 differents video datasources using time synchronization algorithm",
+    url: "multi-datasources-synchronized"
   },
   {
     name: "Moving Location + Heading + Video (Leaflet)",
@@ -95,11 +110,11 @@ var samples = [
     description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
     url: "video-h264"
   },
-    {
-        name: "H264 Video using WebCodecAPI",
-        description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
-        url: "video-h264-webcodec-api"
-    },
+  {
+      name: "H264 Video using WebCodecAPI",
+      description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
+      url: "video-h264-webcodec-api"
+  },
   {
     name: "H264 Image draping Video",
     description: "Display an H264 video in a simple DIV using our FFMPEG-JS decoder and drap the decoded frame onto the terrain.",
@@ -129,6 +144,12 @@ var samples = [
     code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
   },
   {
+    name: 'VueJs component: Multiple Video data with control',
+    description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
+    url: 'videodata-with-control-vuejs-synchronized',
+    code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
+  },
+  {
     name: 'AVL data using multiple ids',
     description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
     url: 'avl'
@@ -150,6 +171,23 @@ var samples = [
     description: "Display a chart with time series of weather measurements and time controller.",
     url: "chart-archive-realtime-synchronized",
     code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
+  },
+  {
+    name: "Audio WebCodec/FFmpeg.js decoding",
+    description: "Listen audio stream using WebCodec/FFmpeg.js",
+    url: "audio"
+  },
+  {
+    name: "Audio WebCodec/FFmpeg.js decoding with time controller",
+    description: "Listen audio stream using WebCodec/FFmpeg.js with time controller",
+    url: 'audio-with-control-vuejs',
+    code: 'vue/App_examples/audio-with-control-vuejs.vue'
+  },
+  {
+    name: "Audio & Video WebCodec/FFmpeg.js decoding with time controller",
+    description: "Listen audio stream using WebCodec/FFmpeg.js with time controller and associated Video",
+    url: 'audio-video-synchronized-with-control-vuejs',
+    code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
   },
 ];
 
@@ -227,3 +265,9 @@ $("#src-button").button().on("click", e => {
     });
 });
 
+$("#shared-button").button().on("click", e => {
+
+  let url = currentSample.url+'.html';
+  const win = window.open(url, '_blank');
+  win.focus();
+});

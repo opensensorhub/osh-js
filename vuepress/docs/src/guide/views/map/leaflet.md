@@ -1,7 +1,7 @@
 # Leaflet
 
 The LeafletView is a way of showing data point on a map. Often, it is used to show GPS data, or fixed position of any sensor.
-This View can also display path using the corresponding [Layer](../layers/layer).
+This View can also display path using the corresponding [Layer](../../layers/general).
 
 The View is based on [LeafletJs](https://leafletjs.com/) framework.
 
@@ -25,7 +25,7 @@ The ***overlayLayers*** are [L.tileLayer](https://leafletjs.com/reference-1.7.1.
 The ***baseLayers*** are [L.tileLayer](https://leafletjs.com/reference-1.7.1.html#tilelayer-l-tilelayer)
  Leaflet objects to use as base layer.
  
-The default [OSM](https://openlayers.org/en/latest/apidoc/module-ol_source_OSM-OSM.html) layer is provided
+The default [OSM](https://openlayers.org/en/dev/apidoc/module-ol_source_OSM-OSM.html) layer is provided
  
 ## Initial View
 

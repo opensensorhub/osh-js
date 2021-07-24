@@ -27,9 +27,10 @@ class DataSynchronizerAlgo {
         }
 
         if (this.startBufferingTime === -1) {
+            console.log(`synchronizer buffering data for ${this.bufferingTime}ms..`);
             this.startBufferingTime = performance.now();
             // start iterating on data after bufferingTime
-            setTimeout(() => this.processData(), this.bufferingTime);
+            this.timeoutBuffering = setTimeout(() => this.processData(), this.bufferingTime);
         }
 
         let latency = 0;
@@ -41,15 +42,24 @@ class DataSynchronizerAlgo {
     }
 
     reset() {
+        console.log('reset synchronizer algo')
         this.close();
         for (let currentDsId in this.dataSourceMap) {
             const currentDs = this.dataSourceMap[currentDsId];
             currentDs.dataBuffer = [];
+            currentDs.startBufferingTime = -1;
+            currentDs.latency=0;
+            currentDs.status= Status.DISCONNECTED;
         }
+        this.tsRun = 0;
         this.startBufferingTime = -1;
     }
 
     processData() {
+        // the timeout has been cancelled
+        if(!isDefined(this.timeoutBuffering)) {
+            return;
+        }
         let tsRef = -1;
         let clockTimeRef = performance.now();
 
@@ -183,8 +193,14 @@ class DataSynchronizerAlgo {
     close() {
         if (isDefined(this.interval)) {
             clearInterval(this.interval);
-            console.log("Data synchronizer terminated successfully");
+            this.interval = null;
         }
+        if(isDefined(this.timeoutBuffering)) {
+            clearTimeout(this.timeoutBuffering);
+            this.timeoutBuffering = null;
+        }
+        console.log("Data synchronizer terminated successfully");
+
     }
 }
 

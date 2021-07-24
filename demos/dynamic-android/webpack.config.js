@@ -107,7 +107,7 @@ module.exports = env => {
       }),
       new CopyWebpackPlugin([
         {from: path.resolve(__dirname, 'public/images'), to: 'images'},
-        {from: path.resolve(__dirname, 'lib/osh-js/source'), to: 'lib/osh-js/source'}
+        {from: path.resolve(__dirname, 'lib/core-js/source'), to: 'lib/core-js/source'}
       ]),
       new Dotenv({
         path: (env.NODE_ENV === 'production') ? path.resolve(__dirname, '.env.production') :

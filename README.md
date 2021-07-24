@@ -94,5 +94,18 @@ package.json:
 You can add any external dependencies using *npm*. For example, if you attempt to use
 some OpenLayer features, don't forget to install OpenLayer as node module dependency.
 
-## Documentation
-The official website: [http://opensensorhub.github.io/osh-js/latest/site/](http://opensensorhub.github.io/osh-js/latest/site/)
+## Build site
+
+Because there are 2 environments, you must pass the ENV variable to build the corresponding target: 'dev' | 'latest'
+```shell
+$ ENV=dev yarn vuepress
+```
+
+or
+
+```shell
+$ ENV=latest yarn vuepress
+```
+
+The official website (latest): [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/latest/site/)
+The official website (development): [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/dev/site/)

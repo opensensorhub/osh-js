@@ -16,7 +16,7 @@
 
 import {
 	assertArray,
-	assertFunction,
+	assertFunction, assertNumber,
 	assertObject,
 	assertPositive,
 	assertString,
@@ -83,6 +83,7 @@ class PointMarkerLayer extends Layer {
 		* @param {String} [properties.labelColor="#000000"] - HTML color
 		* @param {Number} [properties.labelSize=16] -
 		* @param {Number[]} [properties.labelOffset=[0,0]] -
+	  * @param {Number} [properties.zIndex=] - z-ordering of markers
 		* @param {Function} [properties.getLocation] -
 	  * @param {Function} [properties.getDescription] -
 		* @param {Function} [properties.getOrientation] -
@@ -92,6 +93,7 @@ class PointMarkerLayer extends Layer {
 		* @param {Function} [properties.getLabel] -
 		* @param {Function} [properties.getLabelColor] -
 		* @param {Function} [properties.getLabelSize] -
+	  * @param {Function} [properties.getZindex] - z-ordering of markers
 	  * @param {Function} [properties.onLeftClick] - trigger onLeftClick marker event
 	  * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
 	  * @param {Function} [properties.onHover] - trigger onHover marker event
@@ -109,7 +111,7 @@ class PointMarkerLayer extends Layer {
 		this.props.icon = null;
 		this.props.iconAnchor = [16,16];
 		this.props.iconSize = [16,16];
-		this.props.iconScale = 10;
+		this.props.iconScale = 1;
 		this.props.iconColor = "#000000";
 		this.props.label = null;
 		this.props.labelColor = "#000000";
@@ -118,6 +120,7 @@ class PointMarkerLayer extends Layer {
 		this.props.zoomLevel = 15;
 		this.props.color = '#000000';
 		this.props.defaultToTerrainElevation = false;
+		this.props.zIndex = 0;
 		this.props.options = {};
 		this.props.markerId = 'marker';
 
@@ -184,6 +187,11 @@ class PointMarkerLayer extends Layer {
 		if (hasValue(properties.zoomLevel)) {
 			assertPositive(properties.zoomLevel, "zoomLevel");
 			this.props.zoomLevel = properties.zoomLevel;
+		}
+
+		if (hasValue(properties.zIndex)) {
+			assertNumber(properties.zIndex, "zIndex");
+			this.props.zIndex = properties.zIndex;
 		}
 
 		const that = this;
@@ -257,6 +265,13 @@ class PointMarkerLayer extends Layer {
 				that.props.labelSize = that.getFunc('getLabelSize')(rec,timeStamp,options);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getLabelSize'),fn);
+		}
+
+		if (this.checkFn("getZindex")) {
+			let fn = function(rec,timeStamp,options) {
+				that.props.zIndex = that.getFunc('getZindex')(rec,timeStamp,options);
+			};
+			this.addFn(that.getDataSourcesIdsByProperty('getZindex'),fn);
 		}
 
 		if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {

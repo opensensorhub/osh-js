@@ -125,7 +125,7 @@ class WebCodecView extends CanvasView {
 
             const chunk = new EncodedVideoChunk({
                 type: encodedFrame.key ? "key" : "delta",
-                timeStamp: timeStamp,
+                timestamp: timeStamp,
                 data: videoData
             });
 
