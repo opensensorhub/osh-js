@@ -98,6 +98,230 @@
 
         
             
+<h4 class="name" id="Earcut"><span class="type-signature">(constant) </span>Earcut<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Port from https://github.com/mapbox/earcut (v2.2.2)
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line28454">line 28454</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="emptyTexture"><span class="type-signature">(constant) </span>emptyTexture<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Uniforms of a program.
+Those form a tree structure with a special top-level container for the root,
+which you get by calling 'new WebGLUniforms( gl, program )'.
+
+
+Properties of inner nodes including the top-level container:
+
+.seq - array of nested uniforms
+.map - nested uniforms by name
+
+
+Methods of all nodes except the top-level container:
+
+.setValue( gl, value, [textures] )
+
+		uploads a uniform value(s)
+ 	the 'textures' parameter is needed for sampler uniforms
+
+
+Static methods of the top-level container (textures factorizations):
+
+.upload( gl, seq, values, textures )
+
+		sets uniforms in 'seq' to 'values[id].value'
+
+.seqWithValue( seq, values ) : filteredSeq
+
+		filters 'seq' entries with corresponding entry in values
+
+
+Methods of the top-level container (textures factorizations):
+
+.setValue( gl, name, value, textures )
+
+		sets uniform with  name 'name' to 'value'
+
+.setOptional( gl, obj, prop )
+
+		like .set for an optional property of the object
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line15560">line 15560</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="REVISION"><span class="type-signature">(constant) </span>REVISION<span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>Copyright 2010-2021 Three.js Authors
+SPDX-License-Identifier: MIT</li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
 <h4 class="name" id="Status"><span class="type-signature">(constant) </span>Status<span class="type-signature"> :Object</span></h4>
 
 
@@ -153,6 +377,68 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="core_protocol_Status.js.html">core/protocol/Status.js</a>, <a href="core_protocol_Status.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="UniformsLib"><span class="type-signature">(constant) </span>UniformsLib<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Uniforms library for shared webgl shaders
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line13076">line 13076</a>
     </li></ul></dd>
     
 
@@ -272,7 +558,283 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.worker.js.html">core/timesync/DataSynchronizer.worker.js</a>, <a href="core_timesync_DataSynchronizer.worker.js.html#line76">line 76</a>
+        <a href="core_timesync_DataSynchronizer.worker.js.html">core/timesync/DataSynchronizer.worker.js</a>, <a href="core_timesync_DataSynchronizer.worker.js.html#line86">line 86</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="CatmullRom"><span class="type-signature"></span>CatmullRom<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Bezier Curves formulas obtained from
+http://en.wikipedia.org/wiki/Bézier_curve
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line36144">line 36144</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="cloneUniforms"><span class="type-signature"></span>cloneUniforms<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Uniform Utilities
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line11335">line 11335</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="convertLinearToRGBE"><span class="type-signature"></span>convertLinearToRGBE<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    This class generates a Prefiltered, Mipmapped Radiance Environment Map
+(PMREM) from a cubeMap environment texture. This allows different levels of
+blur to be quickly accessed based on material roughness. It is packed into a
+special CubeUV format that allows us to perform custom interpolation so that
+we can support nonlinear formats such as RGBE. Unlike a traditional mipmap
+chain, it only goes down to the LOD_MIN level (above), and then creates extra
+even more filtered 'mips' at the same LOD_MIN resolution, associated with
+higher roughness levels. In this way we maintain resolution to smoothly
+interpolate diffuse lighting while limiting sampling computation.
+
+Paper: Fast, Accurate Image-Based Lighting
+https://drive.google.com/file/d/15y8r_UpKlU9SvV4ILb0C3qCPecS8pvLz/view
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html">core/ui/view/audio/visualizer/spectrogram/three/three.module.js</a>, <a href="core_ui_view_audio_visualizer_spectrogram_three_three.module.js.html#line46392">line 46392</a>
     </li></ul></dd>
     
 
