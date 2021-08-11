@@ -894,6 +894,11 @@ class CesiumView extends MapView {
         return imageryProvider;
     }
 
+    /**
+     * Adds a polygon to the polygon layer
+     * @param {Object} properties the properties to use in constructing the polygon
+     * @returns {Entity}
+     */
     addPolygon(properties) {
         let vertices = [[0, 0], [0, 0], [0, 0], [0, 0]];
         if (isDefined(properties.vertices)) {
@@ -904,7 +909,7 @@ class CesiumView extends MapView {
             name: (properties.hasOwnProperty('name')) ? properties.name : "Polygon " + properties.id,
             polygon: {
                 hierarchy: Cartesian3.fromDegreesArray(vertices),
-                material: Color.RED,
+                material: Color.RED.withAlpha(0.5),
                 clampToGround: (properties.hasOwnProperty('clampToGround')) ? properties.clampToGround : true
             }
         };
@@ -914,6 +919,11 @@ class CesiumView extends MapView {
         return this.viewer.entities.add(polygonObj);
     }
 
+    /**
+     * Retrieves the polygon and updates it or creates a new instance
+     * and adds with the given properties the polygon to the layer
+     * @param {Object} properties properties to apply in updating polygon
+     */
     updatePolygon(props) {
 
         if (!isDefined(props.vertices)) {
@@ -935,6 +945,11 @@ class CesiumView extends MapView {
         });
     }
 
+    /**
+     * Updates a given polygon layer object
+     * @param {Object} layer The layer object to update
+     * @param {Object} properties properties to apply in updating layer object
+     */
     updatePolygonObj(layer, properties) {
         const vertices = properties.vertices;
 
