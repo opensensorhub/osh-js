@@ -33,6 +33,8 @@ class MapView extends View {
 
         // map Layer id to array of corresponding polylines
         this.layerIdToEllipsoids= {};
+
+        this.layerIdToPolygon= {};
     }
 
     setData(dataSourceId, data) {
@@ -47,8 +49,19 @@ class MapView extends View {
                 this.updateDrapedImage(d);
             } else if(data.type === 'ellipse') {
                 this.updateEllipse(d);
+            } else if (data.type === 'polygon') {
+                this.updatePolygon(d);
             }
         }
+    }
+
+    addPolygonToLayer(props, polygon) {
+        const currentLayer = this.getLayer(props);
+        // associate the list of markers owning by a specific marker
+        if(!(props.id in this.layerIdToPolygon)) {
+            this.layerIdToPolygon[props.id] = {};
+        }
+        this.layerIdToPolygon[props.id][props.polygonId] = polygon;
     }
 
     /**
@@ -92,6 +105,23 @@ class MapView extends View {
             this.layerIdToEllipsoids[props.id] = {};
         }
         this.layerIdToEllipsoids[props.id][props.ellipseId] = ellipseObject;
+    }
+
+    getpolygons() {
+        const array = [];
+        for(let id in this.layerIdToPolygon) {
+            for(let polygonId in this.layerIdToPolygon[id]) {
+                array.push(this.layerIdToPolygon[id][polygonId]);
+            }
+        }
+        return array;
+    }
+
+    getPolygon(props) {
+        if(!(props.id in  this.layerIdToPolygon)) {
+            return null;
+        }
+        return this.layerIdToPolygon[props.id][props.polygonId];
     }
 
     /**
@@ -210,6 +240,27 @@ class MapView extends View {
 
         // check for polylines
         this.removePolylines(layer);
+
+        this.removeEllipsoids(layer);
+
+        this.removePolygons(layer);
+    }
+
+    removepolygonFromLayer(marker) {}
+
+    removePolygons(layer) {
+        if(isDefined(layer.props.polygonId)) {
+            const polygonMap = this.layerIdToPolygon[layer.props.id];
+            if(isDefined(polygonMap)) {
+                for(let polygonId in polygonMap) {
+                    const polygon = polygonMap[polygonId];
+                    this.removeMarkerFromLayer(polygon);
+                }
+            }
+
+            // remove markers ids from Layer map
+            delete this.layerIdToPolygon[layer.props.id];
+        }
     }
 
     /**
