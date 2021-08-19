@@ -8,7 +8,7 @@ import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
 
 import {
-    Cartographic, Math
+    Cartographic, Math as MathCesium
 } from "cesium";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
 
@@ -81,7 +81,8 @@ const commonMarkerConf = {
         if (rec['veh-id'] === 'FE4') {
             return './images/firemen1.png';
         } else if (rec['veh-id'] === 'FR6') {
-            return './images/firemen2.png';
+            const rand = Math.floor(Math.random() * 2);
+            return rand < 1 ? './images/firemen2.png' : './images/firemen2-alt.png';
         } else if (rec['veh-id'] === 'FL12') {
             return './images/firemen3.png';
         } else if (rec['veh-id'] === 'FE12') {
@@ -190,10 +191,10 @@ const olMapView = new OpenLayerView({
             onLeftClick: (markerId, billboard, event) => {
                 // transform into LonLat to display into info panel
                 const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-                const longitudeString = Math.toDegrees(
+                const longitudeString = MathCesium.toDegrees(
                     cartographic.longitude
                 ).toFixed(2);
-                const latitudeString = Math.toDegrees(
+                const latitudeString = MathCesium.toDegrees(
                     cartographic.latitude
                 ).toFixed(2);
 
@@ -206,10 +207,10 @@ const olMapView = new OpenLayerView({
             onHover: (markerId, billboard, event) => {
                 // transform into LonLat to display into info panel
                 const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-                const longitudeString = Math.toDegrees(
+                const longitudeString = MathCesium.toDegrees(
                     cartographic.longitude
                 ).toFixed(2);
-                const latitudeString = Math.toDegrees(
+                const latitudeString = MathCesium.toDegrees(
                     cartographic.latitude
                 ).toFixed(2);
 
