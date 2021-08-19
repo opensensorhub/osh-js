@@ -137,7 +137,7 @@ class OpenLayerView extends MapView {
             let polylinePoints = [];
             const locations = props.locations[props.polylineId];
 
-            if(isDefined(locations)) {
+            if(isDefined(locations) && locations.length > 0) {
                 for (let i = 0; i < locations.length; i++) {
                     polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
                 }
@@ -168,12 +168,13 @@ class OpenLayerView extends MapView {
             // update locations
             let polygonPoints = [];
             const vertices = props.vertices[props.polygonId];
-            for (let i = 0; i < vertices.length - 1; i = i +2) {
-                polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+            if(isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+                }
+
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
             }
-
-            vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
-
             // update style
             const style = polygon.getStyle();
             style.getStroke().setColor(props.outlineColor);
