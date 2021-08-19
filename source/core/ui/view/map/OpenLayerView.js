@@ -38,6 +38,7 @@ import MapView from "./MapView";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import LineString from "ol/geom/LineString";
+import Polygon from "ol/geom/Polygon";
 import {click, pointerMove} from "ol/events/condition";
 
 
@@ -62,7 +63,7 @@ class OpenLayerView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline'],
+            supportedLayers: ['marker', 'polyline','polygon'],
             ...properties
         });
     }
@@ -153,6 +154,38 @@ class OpenLayerView extends MapView {
         //
         //     geometry.setCoordinates(polylinePoints);
         // }
+    }
+
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Object} props - The layer allowing the update of the polygon
+     */
+    updatePolygon(props) {
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // removes the layer
+            // this.removePolygonFromLayer(polygon);
+            polygon = this.addPolygon(props)
+            this.addPolygonToLayer(props, polygon);
+        } else {
+            let vectorSource = polygon.getSource();
+
+            // update locations
+            let polygonPoints = [];
+            const vertices = props.vertices[props.polygonId];
+            for (let i = 0; i < vertices.length - 1; i = i +2) {
+                polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+            }
+
+            vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
+
+            // update style
+            const style = polygon.getStyle();
+            style.getStroke().setColor(props.outlineColor);
+            style.getStroke().setWidth(props.outlineWidth);
+            style.getFill().setColor(props.color);
+        }
+
     }
 
     //---------- MAP SETUP --------------//
@@ -428,6 +461,15 @@ class OpenLayerView extends MapView {
     }
 
     /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygon) {
+        this.map.removeLayer(polygon);
+    }
+
+    /**
      * Add a polyline to the map.
      * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
@@ -471,6 +513,48 @@ class OpenLayerView extends MapView {
         this.map.addLayer(vectorPathLayer);
 
         return vectorPathLayer;
+    }
+
+    /**
+     * Add a polygon to the map.
+     * @param {Object} properties
+     */
+    addPolygon(properties) {
+        let polygonPoints = [];
+
+        const vertices = properties.vertices[properties.polygonId];
+
+        for (let i = 0; i < vertices.length - 1; i = i +2) {
+            polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+        }
+        //create path
+        let pathGeometry = new Polygon([polygonPoints]);
+        let feature = new Feature({
+            geometry: pathGeometry,
+            name: 'Polygon'
+        });
+        let source = new VectorSource({
+            features: [feature]
+        });
+
+        let vectorPolygonLayer = new VectorLayer({
+            title: properties.name,
+            source: source,
+            style: new Style({
+                fill: new Fill({
+                    color: properties.color
+                }),
+                stroke: new Stroke({
+                    color: properties.color,
+                    width: properties.outlineWidth
+                })
+            })
+        });
+
+        vectorPolygonLayer.setZIndex(0);
+        this.map.addLayer(vectorPolygonLayer);
+
+        return vectorPolygonLayer;
     }
 
     onResize() {
