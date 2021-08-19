@@ -10,6 +10,7 @@ import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
 import {
     Cartographic, Math
 } from "cesium";
+import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
 
 window.CESIUM_BASE_URL = './';
 
@@ -108,14 +109,32 @@ const commonPolylineConf = {
     maxPoints: 200
 };
 
-let leafletMapView, olMapView, cesiumMapView;
+// Create a common configuration for polylines. This one can be shared between stylers
+const commonPolygonConf = {
+    dataSourceId: avlDataSource.id,
+    getVertices: (rec) => {
+        return [
+            rec.location.lon-0.001,
+            rec.location.lat,
+            rec.location.lon,
+            rec.location.lat+0.001,
+            rec.location.lon+0.001,
+            rec.location.lat,
+            rec.location.lon,
+            rec.location.lat-0.001,
+        ]
+    },
+    getPolygonId: (rec) =>  rec['veh-id'],
+    color: 'rgb(200,0,255)',
+    opacity: 0.5
+};
 
 /**************************************************************/
 /*************************** VIEWS ***************************/
 /************************************************************/
 
 // create Leaflet view
-leafletMapView = new LeafletView({
+const leafletMapView = new LeafletView({
     container: 'leafletMap',
     autoZoomOnFirstMarker: true,
     follow: false,
@@ -137,7 +156,7 @@ leafletMapView = new LeafletView({
 });
 
 // create OL view
-olMapView = new OpenLayerView({
+const olMapView = new OpenLayerView({
     container: 'olMap',
     autoZoomOnFirstMarker: true,
     layers: [
@@ -156,7 +175,7 @@ olMapView = new OpenLayerView({
     ]
 });
 
-cesiumMapView = new CesiumView({
+const cesiumMapView = new CesiumView({
     container: 'cesiumMap',
     layers: [
         new PointMarkerLayer({
@@ -193,6 +212,9 @@ cesiumMapView = new CesiumView({
         new Polyline({
             ...commonPolylineConf,
             clampToGround: true
+        }),
+        new PolygonLayer({
+            ...commonPolygonConf
         })
     ]
 });

@@ -246,15 +246,13 @@ class MapView extends View {
         this.removePolygons(layer);
     }
 
-    removepolygonFromLayer(marker) {}
-
     removePolygons(layer) {
         if(isDefined(layer.props.polygonId)) {
             const polygonMap = this.layerIdToPolygon[layer.props.id];
             if(isDefined(polygonMap)) {
                 for(let polygonId in polygonMap) {
                     const polygon = polygonMap[polygonId];
-                    this.removeMarkerFromLayer(polygon);
+                    this.removePolygonFromLayer(polygon);
                 }
             }
 
@@ -287,7 +285,7 @@ class MapView extends View {
      * @param {Ellipse} ellipse - the layer to remove the ellipsoids from
      */
     removeEllipsoids(ellipse) {
-        if(isDefined(ellipse.props.polylineId)) {
+        if(isDefined(ellipse.props.ellipseId)) {
             const ellipseMap = this.layerIdToEllipsoids[ellipse.props.id];
             if(isDefined(ellipseMap)) {
                 for(let ellipseId in ellipseMap) {
@@ -297,7 +295,7 @@ class MapView extends View {
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToEllipsoids[polyline.props.id];
+            delete this.layerIdToEllipsoids[ellipse.props.id];
         }
     }
 
@@ -335,6 +333,14 @@ class MapView extends View {
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(marker) {}
 
     /**
      * Method to call onLeftClick Layer method if exists
