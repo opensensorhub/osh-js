@@ -246,15 +246,13 @@ class MapView extends View {
         this.removePolygons(layer);
     }
 
-    removepolygonFromLayer(marker) {}
-
     removePolygons(layer) {
         if(isDefined(layer.props.polygonId)) {
             const polygonMap = this.layerIdToPolygon[layer.props.id];
             if(isDefined(polygonMap)) {
                 for(let polygonId in polygonMap) {
                     const polygon = polygonMap[polygonId];
-                    this.removeMarkerFromLayer(polygon);
+                    this.removePolygonFromLayer(polygon);
                 }
             }
 
@@ -335,6 +333,14 @@ class MapView extends View {
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(marker) {}
 
     /**
      * Method to call onLeftClick Layer method if exists
