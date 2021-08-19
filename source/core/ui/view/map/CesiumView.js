@@ -963,6 +963,15 @@ class CesiumView extends MapView {
             }
         }
     }
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependent.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygon) {
+        this.viewer.entities.remove(polygon);
+    }
 }
 
 export default CesiumView;
