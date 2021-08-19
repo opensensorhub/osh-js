@@ -79,44 +79,59 @@ class OpenLayerView extends MapView {
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
     updateMarker(props) {
-        let marker = this.getMarker(props);
-        if (!isDefined(marker)) {
+        let markerFeature = this.getMarker(props);
+        if (!isDefined(markerFeature)) {
             // adds a new marker to the leaflet renderer
             const markerObj = this.addMarker(props);
 
             this.addMarkerToLayer(props, markerObj);
-        }
+        } else {
+            // updates position
+            let lon = props.location.x;
+            let lat = props.location.y;
 
-        let markerFeature = this.getMarker(props);
-        // updates position
-        let lon = props.location.x;
-        let lat = props.location.y;
+            if (!isNaN(lon) && !isNaN(lat)) {
+                let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
+                markerFeature.getGeometry().setCoordinates(coordinates);
+            }
 
-        if (!isNaN(lon) && !isNaN(lat)) {
-            let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
-            markerFeature.getGeometry().setCoordinates(coordinates);
-        }
+            // update style
+            const style = markerFeature.getStyle();
 
-        // updates orientation
-        if (props.icon !== null) {
-            // updates icon
-            let iconStyle = new Style({
-                image: new Icon({
-                    opacity: 0.75,
-                    anchor: props.iconAnchor,
-                    anchorYUnits: 'pixels',
-                    anchorXUnits: 'pixels',
-                    src: props.icon,
-                    rotation: props.orientation.heading * Math.PI / 180
-                }),
-                text: new Text({
-                    text: props.label,
-                    offsetX: props.labelOffset[0],
-                    offsetY: props.labelOffset[1],
-                }),
-                zIndex: props.zIndex
-            });
-            markerFeature.setStyle(iconStyle);
+            // updates orientation
+            if (props.icon !== null) {
+                // updates icon
+                let iconStyle = new Style({
+                    image: new Icon({
+                        opacity: 0.75,
+                        anchor: props.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        rotation: props.orientation.heading * Math.PI / 180
+                    }),
+                });
+                style.getText().setText(props.label);
+                style.getText().setOffsetX(props.labelOffset[0]);
+                style.getText().setOffsetY(props.labelOffset[1]);
+                style.setZIndex(props.zIndex);
+
+                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
+                // Then either set that in your ol.style.Style as required
+                if(style.getImage().getSrc() !== props.icon) {
+                    style.setImage(new Icon({
+                        opacity: 0.75,
+                        anchor: props.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        rotation: props.orientation.heading * Math.PI / 180
+                    }));
+                } else {
+                    style.getImage().setAnchor(props.iconAnchor);
+                    style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
+                }
+            }
         }
     }
 
