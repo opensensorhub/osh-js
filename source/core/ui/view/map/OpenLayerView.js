@@ -79,81 +79,92 @@ class OpenLayerView extends MapView {
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
     updateMarker(props) {
-        let marker = this.getMarker(props);
-        if (!isDefined(marker)) {
+        let markerFeature = this.getMarker(props);
+        if (!isDefined(markerFeature)) {
             // adds a new marker to the leaflet renderer
             const markerObj = this.addMarker(props);
 
             this.addMarkerToLayer(props, markerObj);
-        }
+        } else {
+            // updates position
+            let lon = props.location.x;
+            let lat = props.location.y;
 
-        let markerFeature = this.getMarker(props);
-        // updates position
-        let lon = props.location.x;
-        let lat = props.location.y;
+            if (!isNaN(lon) && !isNaN(lat)) {
+                let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
+                markerFeature.getGeometry().setCoordinates(coordinates);
+            }
 
-        if (!isNaN(lon) && !isNaN(lat)) {
-            let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
-            markerFeature.getGeometry().setCoordinates(coordinates);
-        }
+            // update style
+            const style = markerFeature.getStyle();
 
-        // updates orientation
-        if (props.icon !== null) {
-            // updates icon
-            let iconStyle = new Style({
-                image: new Icon({
-                    opacity: 0.75,
-                    anchor: props.iconAnchor,
-                    anchorYUnits: 'pixels',
-                    anchorXUnits: 'pixels',
-                    src: props.icon,
-                    rotation: props.orientation.heading * Math.PI / 180
-                }),
-                text: new Text({
-                    text: props.label,
-                    offsetX: props.labelOffset[0],
-                    offsetY: props.labelOffset[1],
-                }),
-                zIndex: props.zIndex
-            });
-            markerFeature.setStyle(iconStyle);
+            // updates orientation
+            if (props.icon !== null) {
+                // updates icon
+                let iconStyle = new Style({
+                    image: new Icon({
+                        opacity: 0.75,
+                        anchor: props.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        rotation: props.orientation.heading * Math.PI / 180
+                    }),
+                });
+                style.getText().setText(props.label);
+                style.getText().setOffsetX(props.labelOffset[0]);
+                style.getText().setOffsetY(props.labelOffset[1]);
+                style.setZIndex(props.zIndex);
+
+                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
+                // Then either set that in your ol.style.Style as required
+                if(style.getImage().getSrc() !== props.icon) {
+                    style.setImage(new Icon({
+                        opacity: 0.75,
+                        anchor: props.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        rotation: props.orientation.heading * Math.PI / 180
+                    }));
+                } else {
+                    style.getImage().setAnchor(props.iconAnchor);
+                    style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
+                }
+            }
         }
     }
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline.props} props - The layer allowing the update of the polyline
+     * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
      */
     updatePolyline(props) {
         let polyline = this.getPolyline(props);
-        if (isDefined(polyline)) {
+        if (!isDefined(polyline)) {
             // removes the layer
-            this.removePolylineFromLayer(polyline);
+            polyline = this.addPolyline(props)
+            this.addPolylineToLayer(props, polyline);
+        } else {
+            let vectorSource = polyline.getSource();
+
+            // update locations
+            let polylinePoints = [];
+            const locations = props.locations[props.polylineId];
+
+            if(isDefined(locations) && locations.length > 0) {
+                for (let i = 0; i < locations.length; i++) {
+                    polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
+                }
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates(polylinePoints)
+            }
+
+            // update style
+            const style = polyline.getStyle();
+            style.getStroke().setColor(props.color);
+            style.getStroke().setWidth(props.weight);
+            style.getFill().setColor(props.color);
         }
-
-        const polylineObj = this.addPolyline(props.locations[props.polylineId], {
-            color: props.color,
-            weight: props.weight,
-            locations: props.locations,
-            maxPoints: props.maxPoints,
-            opacity: props.opacity,
-            smoothFactor: props.smoothFactor,
-            name: props.name
-        });
-
-        this.addPolylineToLayer(props, polylineObj);
-
-        //TODO: handle opacity, smoothFactor, color and weight
-        // if (polylineId in this.polylines) {
-        //     let geometry = this.polylines[polylineId];
-        //
-        //     let polylinePoints = [];
-        //     for (let i = 0; i < layer.locations.length; i++) {
-        //         polylinePoints.push(transform([layer.locations[i].x, layer.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-        //     }
-        //
-        //     geometry.setCoordinates(polylinePoints);
-        // }
     }
 
     /**
@@ -164,7 +175,6 @@ class OpenLayerView extends MapView {
         let polygon = this.getPolygon(props);
         if (!isDefined(polygon)) {
             // removes the layer
-            // this.removePolygonFromLayer(polygon);
             polygon = this.addPolygon(props)
             this.addPolygonToLayer(props, polygon);
         } else {
@@ -173,19 +183,19 @@ class OpenLayerView extends MapView {
             // update locations
             let polygonPoints = [];
             const vertices = props.vertices[props.polygonId];
-            for (let i = 0; i < vertices.length - 1; i = i +2) {
-                polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+            if(isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+                }
+
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
             }
-
-            vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
-
             // update style
             const style = polygon.getStyle();
             style.getStroke().setColor(props.outlineColor);
             style.getStroke().setWidth(props.outlineWidth);
             style.getFill().setColor(props.color);
         }
-
     }
 
     //---------- MAP SETUP --------------//
@@ -471,15 +481,12 @@ class OpenLayerView extends MapView {
 
     /**
      * Add a polyline to the map.
-     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {String} properties.color
-     * @param {Number} properties.weight
-     * @param {String} properties.name
-     * @return {string} the id of the new created polyline
      */
-    addPolyline(locations,properties) {
+    addPolyline(properties) {
         let polylinePoints = [];
+
+        const locations = properties.locations[properties.polylineId];
 
         for (let i = 0; i < locations.length; i++) {
             polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
