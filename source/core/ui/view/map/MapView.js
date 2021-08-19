@@ -285,7 +285,7 @@ class MapView extends View {
      * @param {Ellipse} ellipse - the layer to remove the ellipsoids from
      */
     removeEllipsoids(ellipse) {
-        if(isDefined(ellipse.props.polylineId)) {
+        if(isDefined(ellipse.props.ellipseId)) {
             const ellipseMap = this.layerIdToEllipsoids[ellipse.props.id];
             if(isDefined(ellipseMap)) {
                 for(let ellipseId in ellipseMap) {
@@ -295,7 +295,7 @@ class MapView extends View {
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToEllipsoids[polyline.props.id];
+            delete this.layerIdToEllipsoids[ellipse.props.id];
         }
     }
 
