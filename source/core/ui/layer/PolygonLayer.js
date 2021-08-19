@@ -50,6 +50,15 @@ class PolygonLayer extends Layer {
      * @param {Number[]} [properties.vertices] - defines the default vertices as an array of lat, lon e.g. [lat0, lon0, lat1, lon2, ... , latN, lonN]
      * @param {Function} [properties.getVertices] - defines a function to return the vertices as an array of lat, lon
      *      e.g. [lat0, lon0, lat1, lon2, ... , latN, lonN]
+     * @param {String} [properties.outlineColor=rgb(0,0,0)] - defines the weight of the polyline
+     * @param {Number} [properties.outlineWidth=1] - defines the weight of the polyline
+     * @param {String} [properties.color=rgb(255,0,0)] - defines the color of the polyline
+     * @param {Number} [properties.opacity=1] - defines the opacity of the polyline
+     * @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
+     * @param {Function} [properties.getColor] - defines a function to return the color
+     * @param {Function} [properties.getOpacity] - defines a function to return the opacity
+ 	 * @param {Function} [properties.getOutlineColor] - defines a function to return the outline color
+     * @param {Function} [properties.getOutlineWidth] - defines a function to return the outline width
      * @param {Function} [properties.getPolygonId] - map an id to a unique polygon
      */
     constructor(properties) {
@@ -59,11 +68,36 @@ class PolygonLayer extends Layer {
         this.properties = properties;
         this.props.vertices = {};
         this.props.polygonId = randomUUID();
+        this.props.color = 'rgb(255,0,0)';
+        this.props.outlineColor = 'rgb(0,0,0)';
+        this.props.outlineWidth = 1;
+        this.props.opacity = 1;
+        this.props.clampToGround = false;
 
         const that = this;
 
         if(isDefined(properties.vertices)){
             this.props.vertices = properties.vertices;
+        }
+
+        if(isDefined(properties.color)){
+            this.props.color = properties.color;
+        }
+
+        if(isDefined(properties.outlineWidth)){
+            this.props.outlineWidth = properties.outlineWidth;
+        }
+
+        if(isDefined(properties.outlineColor)){
+            this.props.outlineColor = properties.outlineColor;
+        }
+
+        if(isDefined(properties.opacity)){
+            this.props.opacity = properties.opacity;
+        }
+
+        if(isDefined(properties.clampToGround)){
+            this.props.clampToGround = properties.clampToGround;
         }
 
         // must be first to assign correctly the first location to the right id if it is defined
@@ -83,6 +117,34 @@ class PolygonLayer extends Layer {
                 that.props.vertices[that.props.polygonId] = vertices;
             };
             this.addFn(that.getDataSourcesIdsByProperty('getVertices'), fn);
+        }
+
+        if(isDefined(properties.getColor)) {
+            let fn = function(rec) {
+                that.props.color = that.getFunc('getColor')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
+        }
+
+        if(isDefined(properties.getOutlineWidth)) {
+            let fn = function(rec) {
+                that.props.outlineWidth = that.getFunc('getOutlineWidth')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getOutlineWidth'),fn);
+        }
+
+        if(isDefined(properties.getOutlineColor)) {
+            let fn = function(rec) {
+                that.props.outlineColor = that.getFunc('getOutlineColor')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getOutlineColor'),fn);
+        }
+
+        if(isDefined(properties.getOpacity)) {
+            let fn = function(rec) {
+                that.props.opacity = that.getFunc('getOpacity')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
         }
 
         this.saveState();
