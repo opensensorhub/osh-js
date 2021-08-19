@@ -852,20 +852,22 @@ class CesiumView extends MapView {
     addPolygon(properties) {
         let vertices = [[0, 0], [0, 0], [0, 0], [0, 0]];
         if (isDefined(properties.vertices)) {
-            vertices = properties.vertices;
+            vertices = properties.vertices[properties.polygonId];
         }
 
+        const id = properties.id + "$" + properties.polygonId;
         let polygonObj = {
-            name: (properties.hasOwnProperty('name')) ? properties.name : "Polygon " + properties.id,
+            id: id,
+            name: (properties.hasOwnProperty('name')) ? properties.name : "Polygon " + id,
             polygon: {
                 hierarchy: Cartesian3.fromDegreesArray(vertices),
-                material: Color.RED.withAlpha(0.5),
-                clampToGround: (properties.hasOwnProperty('clampToGround')) ? properties.clampToGround : true
+                material: new Color.fromCssColorString(properties.color).withAlpha(properties.opacity),
+                clampToGround: properties.clampToGround,
+                outline : true,
+                outlineColor:new Color.fromCssColorString(properties.outlineColor),
+                outlineWidth: properties.outlineWidth
             }
         };
-
-        polygonObj.id = properties.id;
-
         return this.viewer.entities.add(polygonObj);
     }
 
@@ -882,31 +884,26 @@ class CesiumView extends MapView {
 
         let polygon = this.getPolygon(props);
         if (!isDefined(polygon)) {
-            const polygonObj = this.addPolygon({
-                id: props.id + "$" + props.polygonId,
-                vertices: props.vertices[props.polygonId],
-            });
+            const polygonObj = this.addPolygon(props);
 
             this.addPolygonToLayer(props, polygonObj);
         }
 
-        this.updatePolygonObj(props, {
-            vertices: props.vertices[props.polygonId],
-        });
+        this.updatePolygonObj(props);
     }
 
     /**
      * Updates a given polygon layer object
-     * @param {Object} layer The layer object to update
-     * @param {Object} properties properties to apply in updating layer object
+     * @param {Object} properties - properties to apply in updating layer object
      */
-    updatePolygonObj(layer, properties) {
-        const vertices = properties.vertices;
+    updatePolygonObj(properties) {
+        if (isDefined(properties.vertices)) {
+            let polygonObj = this.getPolygon(properties);
 
-        if (isDefined(vertices)) {
-            let polygonObj = this.getPolygon(layer);
-
-            polygonObj.polygon.hierarchy = Cartesian3.fromDegreesArray(vertices);
+            polygonObj.polygon.hierarchy = Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId]);
+            polygonObj.polygon.material = new Color.fromCssColorString(properties.color).withAlpha(properties.opacity);
+            polygonObj.polygon.outlineColor = new Color.fromCssColorString(properties.outlineColor);
+            polygonObj.polygon.outlineWidth = properties.outlineWidth;
 
             if (properties.selected) {
                 this.viewer.selectedEntity = polygonObj;
