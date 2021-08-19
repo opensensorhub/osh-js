@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../utils/Utils.js";
 import Layer from "./Layer.js";
 
 /**
@@ -47,8 +47,10 @@ class PolygonLayer extends Layer {
      * Creates the PolygonLayer
      *
      * @param {Object} properties
+     * @param {Number[]} [properties.vertices] - defines the default vertices as an array of lat, lon e.g. [lat0, lon0, lat1, lon2, ... , latN, lonN]
      * @param {Function} [properties.getVertices] - defines a function to return the vertices as an array of lat, lon
      *      e.g. [lat0, lon0, lat1, lon2, ... , latN, lonN]
+     * @param {Function} [properties.getPolygonId] - map an id to a unique polygon
      */
     constructor(properties) {
         super(properties);
@@ -56,9 +58,21 @@ class PolygonLayer extends Layer {
 
         this.properties = properties;
         this.props.vertices = {};
-        this.props.polygonId = 'polygon';
+        this.props.polygonId = randomUUID();
 
         const that = this;
+
+        if(isDefined(properties.vertices)){
+            this.props.vertices = properties.vertices;
+        }
+
+        // must be first to assign correctly the first location to the right id if it is defined
+        if(isDefined(properties.getPolygonId)) {
+            let fn = function(rec) {
+                that.props.polygonId = that.getFunc('getPolygonId')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getPolygonId'),fn);
+        }
 
         if (isDefined(properties.getVertices)) {
             let fn = function (rec, timeStamp, options) {
@@ -66,8 +80,7 @@ class PolygonLayer extends Layer {
                 if(!(that.props.polygonId in that.props.vertices)) {
                     that.props.vertices[that.props.polygonId] = [];
                 }
-                that.props.vertices[that.props.polygonId] = [];
-                that.props.vertices[that.props.polygonId].push(...vertices);
+                that.props.vertices[that.props.polygonId] = vertices;
             };
             this.addFn(that.getDataSourcesIdsByProperty('getVertices'), fn);
         }
