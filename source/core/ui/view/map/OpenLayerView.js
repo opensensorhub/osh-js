@@ -122,38 +122,34 @@ class OpenLayerView extends MapView {
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline.props} props - The layer allowing the update of the polyline
+     * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
      */
     updatePolyline(props) {
         let polyline = this.getPolyline(props);
-        if (isDefined(polyline)) {
+        if (!isDefined(polyline)) {
             // removes the layer
-            this.removePolylineFromLayer(polyline);
+            polyline = this.addPolyline(props)
+            this.addPolylineToLayer(props, polyline);
+        } else {
+            let vectorSource = polyline.getSource();
+
+            // update locations
+            let polylinePoints = [];
+            const locations = props.locations[props.polylineId];
+
+            if(isDefined(locations)) {
+                for (let i = 0; i < locations.length; i++) {
+                    polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
+                }
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates(polylinePoints)
+            }
+
+            // update style
+            const style = polyline.getStyle();
+            style.getStroke().setColor(props.color);
+            style.getStroke().setWidth(props.weight);
+            style.getFill().setColor(props.color);
         }
-
-        const polylineObj = this.addPolyline(props.locations[props.polylineId], {
-            color: props.color,
-            weight: props.weight,
-            locations: props.locations,
-            maxPoints: props.maxPoints,
-            opacity: props.opacity,
-            smoothFactor: props.smoothFactor,
-            name: props.name
-        });
-
-        this.addPolylineToLayer(props, polylineObj);
-
-        //TODO: handle opacity, smoothFactor, color and weight
-        // if (polylineId in this.polylines) {
-        //     let geometry = this.polylines[polylineId];
-        //
-        //     let polylinePoints = [];
-        //     for (let i = 0; i < layer.locations.length; i++) {
-        //         polylinePoints.push(transform([layer.locations[i].x, layer.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-        //     }
-        //
-        //     geometry.setCoordinates(polylinePoints);
-        // }
     }
 
     /**
@@ -164,7 +160,6 @@ class OpenLayerView extends MapView {
         let polygon = this.getPolygon(props);
         if (!isDefined(polygon)) {
             // removes the layer
-            // this.removePolygonFromLayer(polygon);
             polygon = this.addPolygon(props)
             this.addPolygonToLayer(props, polygon);
         } else {
@@ -185,7 +180,6 @@ class OpenLayerView extends MapView {
             style.getStroke().setWidth(props.outlineWidth);
             style.getFill().setColor(props.color);
         }
-
     }
 
     //---------- MAP SETUP --------------//
@@ -471,15 +465,12 @@ class OpenLayerView extends MapView {
 
     /**
      * Add a polyline to the map.
-     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {String} properties.color
-     * @param {Number} properties.weight
-     * @param {String} properties.name
-     * @return {string} the id of the new created polyline
      */
-    addPolyline(locations,properties) {
+    addPolyline(properties) {
         let polylinePoints = [];
+
+        const locations = properties.locations[properties.polylineId];
 
         for (let i = 0; i < locations.length; i++) {
             polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
