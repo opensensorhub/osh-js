@@ -183,7 +183,7 @@ const olMapView = new OpenLayerView({
     ]
 });
 
-/*const cesiumMapView = new CesiumView({
+const cesiumMapView = new CesiumView({
     container: 'cesiumMap',
     layers: [
         new PointMarkerLayer({
@@ -225,28 +225,28 @@ const olMapView = new OpenLayerView({
             ...commonPolygonConf
         })
     ]
-});*/
+});
 
-// const deckView = new DeckGlView({
-//     container: 'deckMap',
-//     autoZoomOnFirstMarker:true,
-//     layers: [
-//         new PointMarkerLayer({
-//             ...commonMarkerConf,
-//             iconScale: 7,
-//             onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
-//             onLeftClick: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
-//             onRightClick: (markerId, pickingInfo, event) => {
-//                 const rect = document.getElementById('deckMap').getBoundingClientRect();
-//                 showPopup(pickingInfo.pixel[0] + rect.left, pickingInfo.pixel[1] + rect.top, 'some content ' + markerId);
-//             }
-//         }),
-//         new Polyline({
-//             ...commonPolylineConf,
-//             color: [255, 102, 0, 127]
-//         })
-//     ]
-// });
+const deckView = new DeckGlView({
+    container: 'deckMap',
+    autoZoomOnFirstMarker:true,
+    layers: [
+        new PointMarkerLayer({
+            ...commonMarkerConf,
+            iconScale: 7,
+            onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
+            onLeftClick: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
+            onRightClick: (markerId, pickingInfo, event) => {
+                const rect = document.getElementById('deckMap').getBoundingClientRect();
+                showPopup(pickingInfo.pixel[0] + rect.left, pickingInfo.pixel[1] + rect.top, 'some content ' + markerId);
+            }
+        }),
+        new Polyline({
+            ...commonPolylineConf,
+            color: [255, 102, 0, 127]
+        })
+    ]
+});
 
 /**************************************************************/
 /********************* Update UI  ****************************/
@@ -289,7 +289,7 @@ removeAllElt.onclick = async () => {
     setTimeout(() => {
         leafletMapView.removeAllFromLayers();
         olMapView.removeAllFromLayers();
-        // deckView.removeAllFromLayers();
-        // cesiumMapView.removeAllFromLayers();
+        deckView.removeAllFromLayers();
+        cesiumMapView.removeAllFromLayers();
     }, 100);
 };
