@@ -843,56 +843,6 @@ class CesiumView extends MapView {
         }
     }
 
-    /**
-     *
-     * @private
-     */
-    getGroundAltitude(lat, lon) {
-        var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
-        var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
-
-        if (altitude === 'undefined' || altitude <= 0)
-            altitude = 0.1;
-        return altitude;
-    }
-
-    /**
-     *
-     * @param type
-     * @param url
-     * @param layers
-     * @param imageFormat
-     * @param options
-     * @return {*}
-     */
-    addImageryProvider(type, url, layers, imageFormat, options) {
-        let minLOD = 0;
-        let maxLOD;
-
-        if (options.hasOwnProperty('minLOD')) {
-            minLOD = options.minLOD;
-        }
-        if (options.hasOwnProperty('maxLOD')) {
-            maxLOD = options.maxLOD;
-        }
-
-        let imageryProvider;
-        if (type === 'wms') {
-            imageryProvider = new WebMapServiceImageryProvider({
-                url: url,
-                layers: layers,
-                minimumLevel: minLOD,
-                maximumLevel: maxLOD,
-                parameters: {
-                    transparent: 'true',
-                    format: 'image/' + imageFormat
-                }
-            });
-        }
-        // imageryProvider.alpha = 0.5;
-        this.viewer.imageryLayers.addImageryProvider(imageryProvider);
-        return imageryProvider;
-    }
 
     /**
      * Adds a polygon to the polygon layer
@@ -971,6 +921,57 @@ class CesiumView extends MapView {
      */
     removePolygonFromLayer(polygon) {
         this.viewer.entities.remove(polygon);
+    }
+
+    /**
+     *
+     * @private
+     */
+    getGroundAltitude(lat, lon) {
+        var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
+        var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
+
+        if (altitude === 'undefined' || altitude <= 0)
+            altitude = 0.1;
+        return altitude;
+    }
+
+    /**
+     *
+     * @param type
+     * @param url
+     * @param layers
+     * @param imageFormat
+     * @param options
+     * @return {*}
+     */
+    addImageryProvider(type, url, layers, imageFormat, options) {
+        let minLOD = 0;
+        let maxLOD;
+
+        if (options.hasOwnProperty('minLOD')) {
+            minLOD = options.minLOD;
+        }
+        if (options.hasOwnProperty('maxLOD')) {
+            maxLOD = options.maxLOD;
+        }
+
+        let imageryProvider;
+        if (type === 'wms') {
+            imageryProvider = new WebMapServiceImageryProvider({
+                url: url,
+                layers: layers,
+                minimumLevel: minLOD,
+                maximumLevel: maxLOD,
+                parameters: {
+                    transparent: 'true',
+                    format: 'image/' + imageFormat
+                }
+            });
+        }
+        // imageryProvider.alpha = 0.5;
+        this.viewer.imageryLayers.addImageryProvider(imageryProvider);
+        return imageryProvider;
     }
 }
 
