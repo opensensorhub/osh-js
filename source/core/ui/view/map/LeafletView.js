@@ -278,16 +278,15 @@ class LeafletView extends MapView {
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-            const markerObject = this.addMarker(props);
-            this.addMarkerToLayer(props, markerObject);
+            marker = this.addMarker(props);
+            this.addMarkerToLayer(props, marker);
             const mId = props.markerId; //need to freeze
-            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, props, event));
-            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, props, event));
-            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, props, event));
+            marker.on('click', (event) => this.onMarkerLeftClick(mId,marker, props, event));
+            marker.on('contextmenu', (event) => this.onMarkerRightClick(mId,marker, props, event));
+            marker.on('mouseover', (event) => this.onMarkerHover(mId,marker, props, event));
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker
-        marker = this.getMarker(props);
         // updates position
         let lon = props.location.x;
         let lat = props.location.y;
