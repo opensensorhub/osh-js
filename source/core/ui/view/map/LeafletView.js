@@ -244,15 +244,10 @@ class LeafletView extends MapView {
 
     /**
      * Add a polyline to the map.
-     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {String} properties.color
-     * @param {Number} properties.weight
-     * @param {Number} properties.opacity
-     * @param {Number} properties.smoothFactor
-     * @return {string} the id of the new created polyline
      */
-    addPolyline(locations, properties) {
+    addPolyline(properties) {
+        const locations = properties.locations[properties.polylineId];
         let polylinePoints = [];
 
         if(isDefined(locations) && locations.length > 0) {
@@ -351,21 +346,31 @@ class LeafletView extends MapView {
      */
     updatePolyline(props) {
         let polyline = this.getPolyline(props);
-        if (isDefined(polyline)) {
-            // removes the layer
-           this.removePolylineFromLayer(polyline);
-        }
+        if (!isDefined(polyline)) {
+            // adds a new polygon to the leaflet renderer
+            const polylineObj = this.addPolyline(props);
+            this.addPolylineToLayer(props, polylineObj);
+        } else {
+            let polylinePoints = [];
+            const locations = props.locations[props.polylineId];
 
-        // adds a new polyline to the leaflet renderer
-        const polylineObj = this.addPolyline(props.locations[props.polylineId],{
-            color: props.color,
-            weight: props.weight,
-            locations: props.locations,
-            maxPoints: props.maxPoints,
-            opacity: props.opacity,
-            smoothFactor: props.smoothFactor
-        });
-        this.addPolylineToLayer(props, polylineObj);
+            if(isDefined(locations) && locations.length > 0) {
+                for (let i = 0; i < locations.length; i++) {
+                    polylinePoints.push(new L.LatLng(
+                        locations[i].y,
+                        locations[i].x)
+                    );
+                }
+            }
+            polyline.setLatLngs(polylinePoints);
+
+            // update style
+            polyline.setStyle({
+                color: props.color,
+                weight: props.weight,
+                opacity: props.opacity
+            });
+        }
     }
 
     /**
