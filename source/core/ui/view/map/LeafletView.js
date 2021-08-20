@@ -61,7 +61,7 @@ class LeafletView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker','draping', 'polyline'],
+            supportedLayers: ['marker','draping', 'polyline', 'polygon'],
             ...properties,
         });
 
@@ -283,13 +283,12 @@ class LeafletView extends MapView {
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-             const markerObject = this.addMarker(props);
+            const markerObject = this.addMarker(props);
             this.addMarkerToLayer(props, markerObject);
             const mId = props.markerId; //need to freeze
             markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, props, event));
             markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, props, event));
             markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, props, event));
-
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker
@@ -367,6 +366,77 @@ class LeafletView extends MapView {
             smoothFactor: props.smoothFactor
         });
         this.addPolylineToLayer(props, polylineObj);
+    }
+
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Polygon.props} props - The layer properties allowing the update of the polygon
+     */
+    updatePolygon(props) {
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // adds a new polygon to the leaflet renderer
+            const polygonObj = this.addPolygon(props);
+            this.addPolygonToLayer(props, polygonObj);
+        } else {
+            // update location
+            const vertices = props.vertices[props.polygonId];
+
+            let polygonPoints = [];
+
+            if(isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    let latLon = new L.LatLng(vertices[i + 1 ], vertices[i]);
+                    polygonPoints.push([latLon.lat,latLon.lng]);
+                }
+            }
+            polygon.setLatLngs(polygonPoints);
+
+            // update style
+            polygon.setStyle({
+                color: props.outlineColor,
+                weight: props.outlineWidth,
+                fillColor: props.color,
+                fill : true,
+                fillOpacity: props.opacity
+            });
+        }
+    }
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygon) {
+        this.map.removeLayer(polygon);
+    }
+
+    /**
+     * Add a polygon to the map.
+     * @param {Object} properties
+     */
+    addPolygon(properties) {
+        const vertices = properties.vertices[properties.polygonId];
+
+        let polygonPoints = [];
+
+        if(isDefined(vertices) && vertices.length > 0) {
+            for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                let latLon = new L.LatLng(vertices[i + 1 ], vertices[i]);
+                polygonPoints.push([latLon.lat,latLon.lng]);
+            }
+        }
+
+        //create polygon
+        let polygon = new L.polygon(polygonPoints, {
+            color: properties.outlineColor,
+            weight: properties.outlineWidth,
+            fillColor: properties.color,
+            fill : true,
+            fillOpacity: properties.opacity
+        }).addTo(this.map);
+        return polygon;
     }
 
     attachTo(parentElement) {
