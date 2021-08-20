@@ -131,7 +131,8 @@ const commonPolygonConf = {
     color: 'rgba(200,0,255, 0.5)',
     opacity: 0.5,
     outlineWidth:3,
-    outlineColor: 'rgba(255,169,17,0.5)'
+    outlineColor: 'rgba(255,169,17,0.5)',
+    getColor: (rec) => Math.floor(Math.random() * 2) < 1 ? 'rgba(200,0,255, 0.5)' : 'rgba(0,157,255,0.5)'
 };
 
 /**************************************************************/
@@ -156,7 +157,10 @@ const leafletMapView = new LeafletView({
             },
             onHover: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint)
         }),
-        new Polyline({...commonPolylineConf})
+        new Polyline({...commonPolylineConf}),
+        new PolygonLayer({
+            ...commonPolygonConf
+        })
     ]
 });
 
