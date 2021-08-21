@@ -6,13 +6,16 @@ import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
+import MapboxView from 'osh-js/core/ui/view/map/MapboxView';
 
 import {
     Cartographic, Math as MathCesium
 } from "cesium";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
+import mapboxgl from "mapbox-gl/dist/mapbox-gl";
 
 window.CESIUM_BASE_URL = './';
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 
 const currentSelectedElt = document.getElementById("current-marker");
 
@@ -130,7 +133,8 @@ const commonPolygonConf = {
     getPolygonId: (rec) =>  rec['veh-id'],
     color: 'rgba(200,0,255, 0.5)',
     opacity: 0.5,
-    outlineWidth:3,
+    outlineWidth: 3,
+    getOutlineWidth: (rec) => Math.floor(Math.random() * 2) < 1 ? 3: 10,
     outlineColor: 'rgba(255,169,17,0.5)',
     getColor: (rec) => Math.floor(Math.random() * 2) < 1 ? 'rgba(200,0,255, 0.5)' : 'rgba(0,157,255,0.5)'
 };
@@ -255,6 +259,25 @@ const deckView = new DeckGlView({
     ]
 });
 
+
+const mapboxView = new MapboxView({
+    mapProperties: {
+        container: 'mapboxMap',
+        style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+    },
+    autoZoomOnFirstMarker:true,
+    layers: [
+        new PointMarkerLayer({
+            ...commonMarkerConf,
+        }),
+        new Polyline({
+            ...commonPolylineConf
+        }),
+        new PolygonLayer({
+            ...commonPolygonConf
+        })
+    ]
+});
 /**************************************************************/
 /********************* Update UI  ****************************/
 /************************************************************/
