@@ -248,6 +248,9 @@ const deckView = new DeckGlView({
         new Polyline({
             ...commonPolylineConf,
             color: [255, 102, 0, 127]
+        }),
+        new PolygonLayer({
+            ...commonPolygonConf
         })
     ]
 });
