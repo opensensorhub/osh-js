@@ -508,3 +508,10 @@ export function merge (target, source) {
     Object.assign(target || {}, source)
     return target
 };
+
+export function rgbaToArray(str) {
+    let startIdxValue = str.indexOf('(') + 1;
+    let endIdxValue = str.indexOf(')');
+    let values = str.substr(startIdxValue, endIdxValue-startIdxValue);
+    return values.split(',').map(Number);
+}
