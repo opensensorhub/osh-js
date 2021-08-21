@@ -40,7 +40,7 @@ class MapboxView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline'],
+            supportedLayers: ['marker', 'polyline', 'polygon'],
             ...properties
         });
         this.loaded = false;
@@ -300,6 +300,120 @@ class MapboxView extends MapView {
         return geojson;
     }
 
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Polygon.props} props - The layer allowing the update of the polygon
+     */
+    updatePolygon(props) {
+        if(!this.loaded) {
+            // map is not loaded yet
+            return;
+        }
+
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // adds a new marker to the leaflet renderer
+            polygon = this.addPolygon(props);
+            this.addPolygonToLayer(props, polygon);
+        } else {
+            let polygonFeature = this.map.getSource(polygon.id);
+
+            // update locations
+            let polygonPoints = [];
+            const vertices = props.vertices[props.polygonId];
+            if(isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    polygonPoints.push([vertices[i], vertices[i + 1]]);
+                }
+            }
+            polygonFeature.setData({
+                'id': polygonFeature.id,
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [polygonPoints]
+                        }
+                    }
+                ]
+            });
+
+            const layerId = polygonFeature.id;
+            this.map.setPaintProperty(layerId, 'fill-color',props.color);
+            this.map.setPaintProperty(layerId, 'fill-opacity',props.opacity);
+
+            // change outline
+            this.map.setPaintProperty(layerId+'-outline', 'line-color',props.outlineColor);
+            this.map.setPaintProperty(layerId+'-outline', 'line-width',props.outlineWidth);
+
+        }
+    }
+
+    /**
+     * Add a polygon to the map.
+     * @param {Object} properties
+     */
+    addPolygon(properties) {
+        const id = properties.id+"$"+properties.polygonId;
+
+        // update locations
+        let polygonPoints = [];
+        const vertices = properties.vertices[properties.polygonId];
+        if(isDefined(vertices) && vertices.length > 0) {
+            for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                polygonPoints.push([vertices[i], vertices[i + 1]]);
+            }
+        }
+
+        const geojson = {
+            'id': id,
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [polygonPoints]
+                    }
+                }
+            ]
+        };
+
+        this.map.addSource(id, {
+            'type': 'geojson',
+            'data': geojson
+        });
+
+        // add the line which will be modified in the animation
+        const layer = {
+            'id': id,
+            'type': 'fill',
+            'source':  id,
+            'layout': {},
+            'paint': {
+                'fill-color': properties.color,
+                'fill-opacity': properties.opacity
+            }
+        };
+
+        this.map.addLayer(layer);
+
+        // Add an outline around the polygon.
+        this.map.addLayer({
+            'id': id +'-outline',
+            'type': 'line',
+            'source':  id,
+            'layout': {},
+            'paint': {
+                'line-color': properties.outlineColor,
+                'line-width': properties.outlineWidth
+            }
+        });
+
+        return layer;
+    }
     onResize() {
     }
 }
