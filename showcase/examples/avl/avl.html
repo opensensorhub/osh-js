@@ -17,7 +17,16 @@
     #deckMap {
         flex: auto;
         padding: 10px;
+        flex-grow: 1;
+    }
+    #deckMap > div.osh-view > canvas {
+        position: relative !important;
+    }
+    #mapboxMap {
+        flex: auto;
+        padding: 10px;
         width: 40%;
+        height: 100%;
         flex-grow: 1;
     }
     #container {
@@ -25,9 +34,6 @@
         flex-direction: row;
         flex-wrap: wrap;
         height: 40%;
-    }
-    #deckgl-overlay {
-        position: relative!important;
     }
     button {
         margin:  10px;
@@ -53,4 +59,6 @@
   <div id="olMap"></div>
   <div id="cesiumMap"></div>
   <div id="deckMap"></div>
+  <div id="mapboxMap"></div>
+
 </div>
