@@ -111,47 +111,32 @@ class MapboxView extends MapView {
             // adds a new marker to the leaflet renderer
             const polylineObj = this.addPolyline(props);
             this.addPolylineToLayer(props, polylineObj);
-        }
-
-        let polylineFeature = this.getPolyline(props);
-        const id = polylineFeature.id;
-
-        const locs = [];
-        for(let i=0;i < props.locations.polyline.length;i++) {
-            locs.push([props.locations.polyline[i].x, props.locations.polyline[i].y]);
-        }
-        polylineFeature.features[0].geometry.coordinates = locs;
-
-        // check if layer changed
-        let invalidateLayer  = false;
-        const layer = this.map.getLayer(id);
-        if(layer) {
-            let newLayer = {
-                'id': id,
-                'type': 'line',
-                'source': layer.id,
-                'layout': {
-                    'line-cap': 'round',
-                    'line-join': 'round'
-                },
-                'paint': {
-                    'line-color': props.color,
-                    'line-width': props.weight,
-                    'line-opacity': props.opacity
-                }
-            };
-            if (layer.paint["line-color"] !== newLayer.paint["line-color"]) {
-                invalidateLayer = true;
-            } else if (layer.paint["line-width"] !== newLayer.paint["line-weight"]) {
-                invalidateLayer = true;
-            } else if (layer.paint["line-opacity"] !== newLayer.paint["line-opacity"]) {
-                invalidateLayer = true;
+        } else {
+            let  polylineFeature = this.map.getSource(polyline.id);
+            const locationsPts = [];
+            // update locations
+            const locations = props.locations[props.polylineId];
+            for(let i=0;i < locations.length;i++) {
+                locationsPts.push([locations[i].x, locations[i].y]);
             }
-            if (invalidateLayer) {
-                this.map.removeLayer(id);
-                this.map.addLayer(newLayer);
-            }
-            this.map.getSource(id).setData(polylineFeature);
+
+            polylineFeature.setData({
+                'id': polylineFeature.id,
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': locationsPts
+                        }
+                    }
+                ]
+            });
+            const layerId = polylineFeature.id;
+            this.map.setPaintProperty(layerId, 'line-color',props.color);
+            this.map.setPaintProperty(layerId, 'line-width',props.weight);
+            this.map.setPaintProperty(layerId, 'line-opacity',props.opacity);
         }
     }
 
@@ -283,7 +268,7 @@ class MapboxView extends MapView {
         });
 
         // add the line which will be modified in the animation
-        this.map.addLayer({
+        const layer = {
             'id': id,
             'type': 'line',
             'source':  properties.id+"$"+properties.polylineId,
@@ -296,8 +281,9 @@ class MapboxView extends MapView {
                 'line-width': properties.weight,
                 'line-opacity': properties.opacity
             }
-        });
-        return geojson;
+        };
+        this.map.addLayer(layer);
+        return layer;
     }
 
     /**
@@ -347,7 +333,6 @@ class MapboxView extends MapView {
             // change outline
             this.map.setPaintProperty(layerId+'-outline', 'line-color',props.outlineColor);
             this.map.setPaintProperty(layerId+'-outline', 'line-width',props.outlineWidth);
-
         }
     }
 

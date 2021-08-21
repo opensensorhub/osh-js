@@ -270,9 +270,9 @@ const mapboxView = new MapboxView({
         new PointMarkerLayer({
             ...commonMarkerConf,
         }),
-        // new Polyline({
-        //     ...commonPolylineConf
-        // }),
+        new Polyline({
+            ...commonPolylineConf
+        }),
         new PolygonLayer({
             ...commonPolygonConf
         })
