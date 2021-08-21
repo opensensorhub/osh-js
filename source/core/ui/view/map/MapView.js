@@ -107,7 +107,7 @@ class MapView extends View {
         this.layerIdToEllipsoids[props.id][props.ellipseId] = ellipseObject;
     }
 
-    getpolygons() {
+    getPolygons() {
         const array = [];
         for(let id in this.layerIdToPolygon) {
             for(let polygonId in this.layerIdToPolygon[id]) {
