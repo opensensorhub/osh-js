@@ -321,5 +321,6 @@ removeAllElt.onclick = async () => {
         olMapView.removeAllFromLayers();
         deckView.removeAllFromLayers();
         cesiumMapView.removeAllFromLayers();
+        mapboxView.removeAllFromLayers();
     }, 100);
 };
