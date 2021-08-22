@@ -92,6 +92,22 @@ class MapboxView extends MapView {
             let lat = props.location.y;
 
             marker.setLngLat([lon, lat]).setRotation(props.orientation.heading)
+
+            // update style
+            marker.getElement().style.backgroundImage = `url(${props.icon})`;
+            marker.getElement().style.width = props.iconSize[0] + 'px';
+            marker.getElement().style.height = props.iconSize[1] + 'px';
+            if(isDefined(props.orientation)) {
+                marker.setRotation(props.orientation.heading)
+            }
+            let name = 'Marker';
+            if(isDefined(props.name) && props.name !== '') {
+                name = props.name;
+            } else if(isDefined(props.label) && props.label !== '') {
+                name = props.label;
+            }
+
+            marker.getPopup().setHTML(`<strong>${name}</strong>`)
         }
     }
 
