@@ -854,27 +854,57 @@ class CesiumView extends MapView {
     addPolygon(properties) {
         // bind the object to the callback property
         const id = properties.id + "$" + properties.polygonId;
-        let polygonObj = {
-            id: id,
-            name: (properties.hasOwnProperty('name')) ? properties.name : "Polygon " + id,
-            polygon: {
+        // let polygonObj = {
+        //     id: id,
+        //     name: (properties.hasOwnProperty('name')) ? properties.name : "Polygon " + id,
+        //     polygon: {
                 // hierarchy: Cartesian3.fromDegreesArray(vertices),
-                material: new Color.fromCssColorString(properties.color).withAlpha(properties.opacity),
-                clampToGround: properties.clampToGround,
-                outline : true,
-                outlineColor:new Color.fromCssColorString(properties.outlineColor),
-                outlineWidth: properties.outlineWidth,
-                hierarchy: new CallbackProperty(function (time, result) {
-                    let vertices = [[0, 0], [0, 0], [0, 0], [0, 0]];
-                    if (isDefined(properties.vertices)) {
-                        vertices = properties.vertices[properties.polygonId];
-                    }
+                // material: new Color.fromCssColorString(properties.color).withAlpha(properties.opacity),
+                // clampToGround: properties.clampToGround,
+                // outline : true,
+                // outlineColor:new Color.fromCssColorString(properties.outlineColor),
+                // outlineWidth: properties.outlineWidth,
+                // hierarchy: new CallbackProperty(function (time, result) {
+                //     let vertices = [[0, 0], [0, 0], [0, 0], [0, 0]];
+                //     if (isDefined(properties.vertices)) {
+                //         vertices = properties.vertices[properties.polygonId];
+                //     }
+                //
+                //     return new PolygonHierarchy( Cartesian3.fromDegreesArray(vertices));
+                // }, false)
+            // }
+        // };
+        // return this.viewer.entities.add(polygonObj);
+        const polygonInstance = new GeometryInstance({
+            geometry: new PolygonGeometry({
+                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId])),
+                attributes : {
+                    color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
+                }
+            }),
+            id: 'polygon',
+        });
 
-                    return new PolygonHierarchy( Cartesian3.fromDegreesArray(vertices));
-                }, false)
-            }
+        const primitive = new Primitive({
+            geometryInstances : polygonInstance,
+            appearance : new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Color',
+                        uniforms: {
+                            color:  Color.fromCssColorString(properties.color).withAlpha(properties.opacity)
+                        }
+                    }
+                }),
+            }),
+            asynchronous: false
+        });
+        this.viewer.scene.primitives.add(primitive);
+
+        return {
+            primitive: primitive,
+            geometryInstance: polygonInstance
         };
-        return this.viewer.entities.add(polygonObj);
     }
 
     /**
@@ -883,24 +913,12 @@ class CesiumView extends MapView {
      * @param {Object} properties properties to apply in updating polygon
      */
     updatePolygon(props) {
-        if (!isDefined(props.vertices)) {
-            return;
-        }
-
         let polygon = this.getPolygon(props);
-        if (!isDefined(polygon)) {
-            const polygonObj = this.addPolygon(props);
-
-            this.addPolygonToLayer(props, polygonObj);
-        } else {
-            polygon.polygon.material = new Color.fromCssColorString(props.color).withAlpha(props.opacity);
-            polygon.polygon.outlineColor = new Color.fromCssColorString(props.outlineColor);
-            polygon.polygon.outlineWidth = props.outlineWidth;
-
-            if (props.selected) {
-                this.viewer.selectedEntity = polygon;
-            }
+        if (isDefined(polygon)) {
+            this.viewer.scene.primitives.remove(polygon.primitive);
         }
+        const polygonObj = this.addPolygon(props);
+        this.addPolygonToLayer(props, polygonObj);
     }
 
     /**
