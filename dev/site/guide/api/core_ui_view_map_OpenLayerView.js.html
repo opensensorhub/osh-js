@@ -66,6 +66,7 @@ import MapView from "./MapView";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import LineString from "ol/geom/LineString";
+import Polygon from "ol/geom/Polygon";
 import {click, pointerMove} from "ol/events/condition";
 
 
@@ -90,7 +91,7 @@ class OpenLayerView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline'],
+            supportedLayers: ['marker', 'polyline','polygon'],
             ...properties
         });
     }
@@ -106,81 +107,123 @@ class OpenLayerView extends MapView {
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
     updateMarker(props) {
-        let marker = this.getMarker(props);
-        if (!isDefined(marker)) {
+        let markerFeature = this.getMarker(props);
+        if (!isDefined(markerFeature)) {
             // adds a new marker to the leaflet renderer
             const markerObj = this.addMarker(props);
 
             this.addMarkerToLayer(props, markerObj);
-        }
+        } else {
+            // updates position
+            let lon = props.location.x;
+            let lat = props.location.y;
 
-        let markerFeature = this.getMarker(props);
-        // updates position
-        let lon = props.location.x;
-        let lat = props.location.y;
+            if (!isNaN(lon) &amp;&amp; !isNaN(lat)) {
+                let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
+                markerFeature.getGeometry().setCoordinates(coordinates);
+            }
 
-        if (!isNaN(lon) &amp;&amp; !isNaN(lat)) {
-            let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
-            markerFeature.getGeometry().setCoordinates(coordinates);
-        }
+            // update style
+            const style = markerFeature.getStyle();
 
-        // updates orientation
-        if (props.icon !== null) {
-            // updates icon
-            let iconStyle = new Style({
-                image: new Icon({
-                    opacity: 0.75,
-                    anchor: props.iconAnchor,
-                    anchorYUnits: 'pixels',
-                    anchorXUnits: 'pixels',
-                    src: props.icon,
-                    rotation: props.orientation.heading * Math.PI / 180
-                }),
-                text: new Text({
-                    text: props.label,
-                    offsetX: props.labelOffset[0],
-                    offsetY: props.labelOffset[1],
-                }),
-                zIndex: props.zIndex
-            });
-            markerFeature.setStyle(iconStyle);
+            // updates orientation
+            if (props.icon !== null) {
+                // updates icon
+                let iconStyle = new Style({
+                    image: new Icon({
+                        opacity: 0.75,
+                        anchor: props.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        rotation: props.orientation.heading * Math.PI / 180
+                    }),
+                });
+                style.getText().setText(props.label);
+                style.getText().setOffsetX(props.labelOffset[0]);
+                style.getText().setOffsetY(props.labelOffset[1]);
+                style.setZIndex(props.zIndex);
+
+                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
+                // Then either set that in your ol.style.Style as required
+                if(style.getImage().getSrc() !== props.icon) {
+                    style.setImage(new Icon({
+                        opacity: 0.75,
+                        anchor: props.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        rotation: props.orientation.heading * Math.PI / 180
+                    }));
+                } else {
+                    style.getImage().setAnchor(props.iconAnchor);
+                    style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
+                }
+            }
         }
     }
 
     /**
      * Updates the polyline associated to the layer.
-     * @param {Polyline.props} props - The layer allowing the update of the polyline
+     * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
      */
     updatePolyline(props) {
         let polyline = this.getPolyline(props);
-        if (isDefined(polyline)) {
+        if (!isDefined(polyline)) {
             // removes the layer
-            this.removePolylineFromLayer(polyline);
+            polyline = this.addPolyline(props)
+            this.addPolylineToLayer(props, polyline);
+        } else {
+            let vectorSource = polyline.getSource();
+
+            // update locations
+            let polylinePoints = [];
+            const locations = props.locations[props.polylineId];
+
+            if(isDefined(locations) &amp;&amp; locations.length > 0) {
+                for (let i = 0; i &lt; locations.length; i++) {
+                    polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
+                }
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates(polylinePoints)
+            }
+
+            // update style
+            const style = polyline.getStyle();
+            style.getStroke().setColor(props.color);
+            style.getStroke().setWidth(props.weight);
+            style.getFill().setColor(props.color);
         }
+    }
 
-        const polylineObj = this.addPolyline(props.locations[props.polylineId], {
-            color: props.color,
-            weight: props.weight,
-            locations: props.locations,
-            maxPoints: props.maxPoints,
-            opacity: props.opacity,
-            smoothFactor: props.smoothFactor,
-            name: props.name
-        });
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Object} props - The layer allowing the update of the polygon
+     */
+    updatePolygon(props) {
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // removes the layer
+            polygon = this.addPolygon(props)
+            this.addPolygonToLayer(props, polygon);
+        } else {
+            let vectorSource = polygon.getSource();
 
-        this.addPolylineToLayer(props, polylineObj);
+            // update locations
+            let polygonPoints = [];
+            const vertices = props.vertices[props.polygonId];
+            if(isDefined(vertices) &amp;&amp; vertices.length > 0) {
+                for (let i = 0; i &lt; vertices.length - 1; i = i + 2) {
+                    polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+                }
 
-        //TODO: handle opacity, smoothFactor, color and weight
-        // if (polylineId in this.polylines) {
-        //     let geometry = this.polylines[polylineId];
-        //
-        //     let polylinePoints = [];
-        //     for (let i = 0; i &lt; layer.locations.length; i++) {
-        //         polylinePoints.push(transform([layer.locations[i].x, layer.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-        //     }
-        //
-        //     geometry.setCoordinates(polylinePoints);
-        // }
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
+            }
+            // update style
+            const style = polygon.getStyle();
+            style.getStroke().setColor(props.outlineColor);
+            style.getStroke().setWidth(props.outlineWidth);
+            style.getFill().setColor(props.color);
+        }
     }
 
     //---------- MAP SETUP --------------//
@@ -456,16 +499,22 @@ class OpenLayerView extends MapView {
     }
 
     /**
-     * Add a polyline to the map.
-     * @param {locations} locations - the coordinates [{x, y}]
-     * @param {Object} properties
-     * @param {String} properties.color
-     * @param {Number} properties.weight
-     * @param {String} properties.name
-     * @return {string} the id of the new created polyline
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polygon - The Map polygon object
      */
-    addPolyline(locations,properties) {
+    removePolygonFromLayer(polygon) {
+        this.map.removeLayer(polygon);
+    }
+
+    /**
+     * Add a polyline to the map.
+     * @param {Object} properties
+     */
+    addPolyline(properties) {
         let polylinePoints = [];
+
+        const locations = properties.locations[properties.polylineId];
 
         for (let i = 0; i &lt; locations.length; i++) {
             polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
@@ -499,6 +548,48 @@ class OpenLayerView extends MapView {
         this.map.addLayer(vectorPathLayer);
 
         return vectorPathLayer;
+    }
+
+    /**
+     * Add a polygon to the map.
+     * @param {Object} properties
+     */
+    addPolygon(properties) {
+        let polygonPoints = [];
+
+        const vertices = properties.vertices[properties.polygonId];
+
+        for (let i = 0; i &lt; vertices.length - 1; i = i +2) {
+            polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+        }
+        //create path
+        let pathGeometry = new Polygon([polygonPoints]);
+        let feature = new Feature({
+            geometry: pathGeometry,
+            name: 'Polygon'
+        });
+        let source = new VectorSource({
+            features: [feature]
+        });
+
+        let vectorPolygonLayer = new VectorLayer({
+            title: properties.name,
+            source: source,
+            style: new Style({
+                fill: new Fill({
+                    color: properties.color
+                }),
+                stroke: new Stroke({
+                    color: properties.color,
+                    width: properties.outlineWidth
+                })
+            })
+        });
+
+        vectorPolygonLayer.setZIndex(0);
+        this.map.addLayer(vectorPolygonLayer);
+
+        return vectorPolygonLayer;
     }
 
     onResize() {

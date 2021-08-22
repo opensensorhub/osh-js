@@ -45,8 +45,8 @@
 import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
 import {IconLayer} from '@deck.gl/layers';
-import {hex2rgb, isDefined, randomUUID} from "../../../utils/Utils";
-import {BitmapLayer, PathLayer} from '@deck.gl/layers';
+import {hex2rgb, isDefined, randomUUID, rgbaToArray} from "../../../utils/Utils";
+import {BitmapLayer, PathLayer, PolygonLayer} from '@deck.gl/layers';
 import {TileLayer} from '@deck.gl/geo-layers';
 import '../../../resources/css/deck.css';
 
@@ -66,7 +66,7 @@ class DeckGlView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline'],
+            supportedLayers: ['marker', 'polyline', 'polygon'],
             ...properties,
         });
 
@@ -220,8 +220,8 @@ class DeckGlView extends MapView {
     }
 
     /**
-     * Updates the marker associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the marker
+     * Updates the polyline associated to the layer.
+     * @param {Polyline} layer - The layer allowing the update of the polyline
      */
     updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
@@ -254,6 +254,66 @@ class DeckGlView extends MapView {
     }
 
     /**
+     * Updates the polyline associated to the layer.
+     * @param {Polyline} layer - The layer allowing the update of the polyline
+     */
+    updatePolygon(layer) {
+        const id = layer.id+'$'+layer.polygonId;
+
+        // update locations
+        let polygonPoints = [];
+        const vertices = layer.vertices[layer.polygonId];
+        if(isDefined(vertices) &amp;&amp; vertices.length > 0) {
+            for (let i = 0; i &lt; vertices.length - 1; i = i + 2) {
+                polygonPoints.push([vertices[i], vertices[i + 1]]);
+            }
+        }
+
+        let outlineColor = rgbaToArray(layer.outlineColor).map( (val, index, arr) => {
+            if(index >= 3) {
+                return parseInt(val * 255);
+            } else {
+                return val;
+            }
+        });
+        let color = rgbaToArray(layer.color).map( (val, index, arr) => {
+            if(index >= 3) {
+                return parseInt(val * 255);
+            } else {
+                return val;
+            }
+        });
+
+        const PATH_DATA =[
+            {
+                outlineWidth: layer.outlineWidth,
+                outlineColor: outlineColor,
+                name: layer.label,
+                color: color,
+                contour: [
+                    polygonPoints
+                ]
+            }
+        ];
+
+        const pathLayer = new PolygonLayer({
+            id: id,
+            data: PATH_DATA,
+            widthUnits: 'pixels',
+            lineWidthMinPixels: 1,
+            stroked: true,
+            filled: true,
+            getPolygon: d => d.contour,
+            getFillColor: d => d.color,
+            getLineWidth: d => d.outlineWidth,
+            getLineColor: d => d.outlineColor
+        });
+
+        this.addPolygonToLayer(layer, pathLayer);
+        this.render({});
+    }
+
+    /**
      * Override super method to render() at the end
      * @param {Object} marker - The Map marker object
      */
@@ -272,6 +332,15 @@ class DeckGlView extends MapView {
     }
 
     /**
+     * Override super method to render() at the end
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygons(polygon) {
+        super.removePolygons(polygon);
+        this.render({});
+    }
+
+    /**
      * Inner method to render in the order the different deck.gl layers
      * @private
      * @param {Object} extraProps - Extra deck props
@@ -279,12 +348,13 @@ class DeckGlView extends MapView {
     render(extraProps) {
         const markers = this.getMarkers();
         const polylines = this.getPolylines();
+        const polygons  = this.getPolygons();
 
-        // draw in order base -> polylines -> markers
+        // draw in order base -> polygons -> polylines -> markers
         markers.sort((a,b) => (a.props.zIndex > b.props.zIndex) ? 1 : ((b.props.zIndex > a.props.zIndex) ? -1 : 0))
 
         const props = {
-            layers: [...this.deckLayers,...polylines,...markers]
+            layers: [...this.deckLayers,...polygons,...polylines,...markers]
         };
         this.deckgl.setProps({
             ...extraProps,
