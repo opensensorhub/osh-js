@@ -15,7 +15,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../../utils/Utils.js";
 
 import {
     when,
@@ -50,7 +50,9 @@ import {
     ScreenSpaceEventType,
     CallbackProperty,
     ColorGeometryInstanceAttribute,
-    Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive
+    Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive,
+    PolylineCollection,
+    PrimitiveCollection
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -673,30 +675,29 @@ class CesiumView extends MapView {
     /**
      * Add a polyline to the map.
      * @param {Object} properties
-     * @param {String} properties.id
-     * @param {Number[]} properties.locations
-     * @param {String} properties.color
-     * @param {Number} properties.weight
      * @return {Object} the new created polyline
      */
     addPolyline(properties) {
+        const id = properties.id + "$" + properties.polylineId;
+        const locations = properties.locations[properties.polylineId];
 
-        let locations = [[0, 0, 0], [0, 0, 0]];
-        if (isDefined(properties.locations)) {
-            locations = properties.locations;
-        }
-        let polylineObj = {
-            name: (properties.hasOwnProperty('name')) ? properties.name : "PolyLine " + properties.id,
-            polyline: {
-                positions: locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat(),
-                width: properties.weight,
-                material: new Color.fromCssColorString(properties.color),
-                clampToGround: (properties.hasOwnProperty('clampToGround')) ? properties.clampToGround : true
-            }
-        };
-
-        polylineObj.id = properties.id;
-        return this.viewer.entities.add(polylineObj);
+        const polylineCollection = new PolylineCollection();
+        polylineCollection.add({
+            id: id,
+            positions: locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat(),
+            width: properties.weight,
+            loop: false,
+            material: new Material({
+                fabric: {
+                    type: 'Color',
+                    uniforms: {
+                        color:  Color.fromCssColorString(properties.color)
+                    }
+                }
+            }),
+        });
+        this.viewer.scene.primitives.add(polylineCollection);
+        return polylineCollection;
     }
 
     /**
@@ -708,48 +709,11 @@ class CesiumView extends MapView {
         if (!isDefined(props.locations)) {
             return;
         }
-
-        let polyline = this.getPolyline(props);
-        if (!isDefined(polyline)) {
-            const polylineObj = this.addPolyline({
-                id: props.id + "$" + props.polylineId,
-                locations: props.locations[props.polylineId],
-                color: props.color,
-                weight: props.weight,
-            });
-
-            this.addPolylineToLayer(props, polylineObj);
+        const polyline = this.getPolyline(props);
+        if (isDefined(polyline)) {
+            this.viewer.scene.primitives.remove(polyline);
         }
-
-        this.updatePolylineObj(props, {
-            locations: props.locations[props.polylineId],
-            color: props.color,
-            weight: props.weight,
-        });
-    }
-
-    /**
-     * Updates the actual polyline properties for the polyline from
-     * the given layer
-     * @param layer The polyline layer
-     * @param properties The properties to update the polyline on
-     * the given layer
-     */
-    updatePolylineObj(layer, properties) {
-        const locations = properties.locations;
-        const color = properties.color;
-        const weight = properties.weight;
-
-        if (isDefined(locations)) {
-            let polylineObj = this.getPolyline(layer);
-            polylineObj.polyline.positions = locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat();
-            polylineObj.polyline.width = weight;
-            polylineObj.polyline.material = new Color.fromCssColorString(color);
-
-            if (properties.selected) {
-                this.viewer.selectedEntity = polylineObj;
-            }
-        }
+        this.addPolylineToLayer(props, this.addPolyline(props));
     }
 
     /**
@@ -850,25 +814,58 @@ class CesiumView extends MapView {
      * @returns {Entity}
      */
     addPolygon(properties) {
-        let vertices = [[0, 0], [0, 0], [0, 0], [0, 0]];
-        if (isDefined(properties.vertices)) {
-            vertices = properties.vertices[properties.polygonId];
-        }
-
+        // bind the object to the callback property
         const id = properties.id + "$" + properties.polygonId;
-        let polygonObj = {
+        // return this.viewer.entities.add(polygonObj);
+        const polygonInstance = new GeometryInstance({
+            geometry: new PolygonGeometry({
+                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId])),
+                attributes : {
+                    color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
+                }
+            }),
             id: id,
-            name: (properties.hasOwnProperty('name')) ? properties.name : "Polygon " + id,
-            polygon: {
-                hierarchy: Cartesian3.fromDegreesArray(vertices),
-                material: new Color.fromCssColorString(properties.color).withAlpha(properties.opacity),
-                clampToGround: properties.clampToGround,
-                outline : true,
-                outlineColor:new Color.fromCssColorString(properties.outlineColor),
-                outlineWidth: properties.outlineWidth
-            }
-        };
-        return this.viewer.entities.add(polygonObj);
+        });
+
+        const polygonPrimitive = new Primitive({
+            geometryInstances : polygonInstance,
+            appearance : new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Color',
+                        uniforms: {
+                            color:  Color.fromCssColorString(properties.color).withAlpha(properties.opacity)
+                        }
+                    }
+                }),
+            }),
+            asynchronous: false
+        });
+
+        // according to this example: https://sandcastle.cesium.com/?#c=pVRNj9MwEP0rVi9JpeIulAWU7VZULVrQLlq0IC6EgzeZthaOHY2dVAH1v2MncZq05YQPbebjzbw38aRkSEoOe0BySyTsyQo0LzL6vfaFQVKbKyUN4xIwGN/EMpalRSVKYaot6kcsiT0v3r6iVxPy+sr+eo97JrPrnue69pzn9Dxv3vk6sfx5bMfQWC5M2o4tx5V3zegGVbaGLQLoJSKrwoZdn61Q2IM6k66XT/dPH9Y3TYoqjLAaV5cy7x4f1l2tXIlqq+QX5Bk3vITh5Dp3+KcRtAWVgcHqk9SGSTvQqJ9+dxL1KHd4GpGg7RZMjn5fMep6Njm+Fk0QmAFvhkekO32uQ1y/tz9t+48ckGGyq6IL+C4Ydm9pPKx06Nnt42HcKmJ5Dgyd9kHtz1YBciaWXbhPL2ujFyH1dfhW5RAG9esLJuREWX0doubvGDmcUdOVTHaopCrsW9swoSGWh/HgJrg786+r0IYtCQGJ4UqGDnuGoixNvbhcae4ybb9umC2bPU/NLiKzblWEUnlEDBbQOv5jKu1E+kvghzGU7Em71W++HFQnIIEeI05jZ9TiTldmfDllMBWXM5qM5tpUAhYNmfc8yxUaUqAIKZ0ayHJh5enpc5H8AkMTXe/8fOpB85SXdo9u49HJlywekUQwrW1kUwjxlf+GeLSYT23+ACYUS7ncPpaAglUuZfdy8dA4KaXzqTXPUUYp8cywV/Ev
+        var polygonOutlinePrimitive = new PolylineCollection();
+        polygonOutlinePrimitive.add({
+            positions: Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId]),
+            width: properties.outlineWidth,
+            loop: true,
+            material: new Material({
+                fabric: {
+                    type: 'Color',
+                    uniforms: {
+                        color:  Color.fromCssColorString(properties.outlineColor)
+                    }
+                }
+            }),
+        });
+
+        const collection = new PrimitiveCollection();
+
+        collection.add(polygonPrimitive);
+        collection.add(polygonOutlinePrimitive);
+
+        this.viewer.scene.primitives.add(collection);
+
+        return collection;
     }
 
     /**
@@ -877,38 +874,12 @@ class CesiumView extends MapView {
      * @param {Object} properties properties to apply in updating polygon
      */
     updatePolygon(props) {
-
-        if (!isDefined(props.vertices)) {
-            return;
+        let polygonPrimitiveCollection = this.getPolygon(props);
+        if (isDefined(polygonPrimitiveCollection)) {
+            polygonPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
         }
-
-        let polygon = this.getPolygon(props);
-        if (!isDefined(polygon)) {
-            const polygonObj = this.addPolygon(props);
-
-            this.addPolygonToLayer(props, polygonObj);
-        }
-
-        this.updatePolygonObj(props);
-    }
-
-    /**
-     * Updates a given polygon layer object
-     * @param {Object} properties - properties to apply in updating layer object
-     */
-    updatePolygonObj(properties) {
-        if (isDefined(properties.vertices)) {
-            let polygonObj = this.getPolygon(properties);
-
-            polygonObj.polygon.hierarchy = Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId]);
-            polygonObj.polygon.material = new Color.fromCssColorString(properties.color).withAlpha(properties.opacity);
-            polygonObj.polygon.outlineColor = new Color.fromCssColorString(properties.outlineColor);
-            polygonObj.polygon.outlineWidth = properties.outlineWidth;
-
-            if (properties.selected) {
-                this.viewer.selectedEntity = polygonObj;
-            }
-        }
+        this.addPolygonToLayer(props, this.addPolygon(props));
     }
 
     /**
