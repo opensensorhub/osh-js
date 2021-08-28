@@ -2,9 +2,11 @@
 import SweApiMqttJson from 'osh-js/core/datasource/SweApiMqttJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import mqtt from 'mqtt';
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';
 import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
+
+// #region snippet_datasource_mqttswejson
+import mqtt from 'mqtt';
 
 let gpsDataSource = new SweApiMqttJson("android-GPS", {
     protocol: 'mqtt', // or mqtts
@@ -17,6 +19,9 @@ const isaDataSource = new SweApiMqttJson("ISA-bio-sensor", {
     endpoint: 'ogct17.georobotix.io:8083',
     topic: '/api/datastreams/1lppw59ger1py/observations'
 });
+
+// #endregion snippet_datasource_mqttswejson
+
 
 // style it with a moving point marker
 const pointMarkerLayer = new PointMarkerLayer({
