@@ -9,7 +9,7 @@ class SweApiMqttJsonParser {
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        return data.phenomenonTime;
+        return new Date(data.phenomenonTime).getTime();
     }
 
     /**
