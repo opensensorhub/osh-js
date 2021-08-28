@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
+    "dev": "node --max-old-space-size=8192 node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --mode development --watch",
     "prod": "webpack --config webpack.config.js --mode production",
     "merge": "package-json-merge package-base.json cesium-fois/package.json  cesium-location/package.json chart/package.json discovery/package.json examples/entity/package.json examples/leaflet-location/package.json examples/leaflet-location-fois/package.json examples/leaflet-location-heading/package.json examples/leaflet-location-path/package.json examples/openlayers-location/package.json examples/ptz-tasking/package.json examples/rangeslider/package.json examples/video-gps-sync/package.json examples/video-h264/package.json examples/video-h264-drapping/package.json examples/video-mjpeg/package.json examples/video-with-control-vuejs/package.json > package.json",
     "postinstall": "patch-package"
@@ -71,6 +71,7 @@
     "fs-extra": "^9.0.0",
     "leaflet": "1.6.0",
     "mapbox-gl": "1.13.0",
+    "mqtt": "^4.2.8",
     "nouislider": "14.4.0",
     "ol": "6.2.1",
     "ol-layerswitcher": "3.8.1",
