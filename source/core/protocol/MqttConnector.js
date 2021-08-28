@@ -86,7 +86,7 @@ class MqttConnector extends DataConnector {
             });
             client.on('message', function (topic, message) {
                 // message is Buffer
-                this.dataSource.onMessage(JSON.parse(message.toString()));
+                this.dataSource.onMessage(message);
             }.bind(that));
 
             this.client = client;

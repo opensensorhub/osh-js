@@ -9,7 +9,8 @@ class SweApiMqttJsonParser {
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        return new Date(data.phenomenonTime).getTime();
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        return new Date(JSON.parse(rec)['phenomenonTime']).getTime();
     }
 
     /**
@@ -18,7 +19,8 @@ class SweApiMqttJsonParser {
      * @return {Object} the parsed data
      */
     async parseData(data) {
-        return data.result;
+        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        return rec['result'];
     }
 
     /**
@@ -26,7 +28,7 @@ class SweApiMqttJsonParser {
      * @protected
      * @param {Object} properties
      * @param {String} properties.endpoint the endpoint url
-     * @param {String} properties.protocol the protocol mqtt | mqtts
+     * @param {String} properties.protocol the protocol datamqtt | mqtts
      * @return {String} the full url
      */
     buildUrl(properties) {
