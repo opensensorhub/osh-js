@@ -27,9 +27,9 @@ class SweApiMqttJson extends DataSource {
      */
     constructor(name, properties) {
         super(name, {
-            batchSize: 10,
+            batchSize: 1,
+            reconnectTimeout: 1000 * 30, // default if not defined into properties
             ...properties,
-            responseType: 'application/xml',
         }, new SweApiMqttJsonWorker());
     }
 }
