@@ -58,7 +58,7 @@ class MqttConnector extends DataConnector {
             this.init = true;
             const url = this.getUrl();
             let options = {
-                reconnectPeriod: 1000,
+                reconnectPeriod: this.reconnectTimeout,
                 connectTimeout: 30 * 1000
             };
 
@@ -112,6 +112,7 @@ class MqttConnector extends DataConnector {
             this.client.end(true);
             this.client = null;
         }
+        console.warn(`Disconnected from ${this.getUrl()}`);
     }
 
     /**
