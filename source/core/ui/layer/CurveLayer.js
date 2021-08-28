@@ -63,6 +63,22 @@ class CurveLayer extends Layer {
         }
 
         const that = this;
+
+        // must be first to assign correctly the first location to the right id if it is defined
+        if (this.checkFn("getCurveId")) {
+            let fn = function(rec,timeStamp,options) {
+                that.props.curveId = that.getFunc('getCurveId')(rec,timeStamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getCurveId'),fn);
+        }
+
+        if (this.checkFn("getName")) {
+            let fn = function(rec,timeStamp,options) {
+                that.props.name = that.getFunc('getName')(rec,timeStamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getName'),fn);
+        }
+
         if (isDefined(properties.getStroke)) {
             let fn = function (rec, timeStamp, options) {
                 that.props.stroke = that.getFunc('getStroke')(rec,timeStamp,options);

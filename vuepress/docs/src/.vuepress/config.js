@@ -171,6 +171,7 @@ module.exports = (env) => {
                                 title: 'Others',
                                 collapsable: true,
                                 children: [
+                                    '/guide/datasources/others/mqtt.md',
                                     '/guide/datasources/others/file.md',
                                 ]
                             }

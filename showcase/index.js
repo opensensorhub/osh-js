@@ -155,6 +155,11 @@ var samples = [
     url: 'avl'
   },
   {
+    name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
+    description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
+    url: 'mqtt'
+  },
+  {
     name: "Chart with Time controller (Chart.js)",
     description: "Display a chart with time series of weather measurements and time controller.",
     url: "chart-archive-realtime",
