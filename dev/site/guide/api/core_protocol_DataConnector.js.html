@@ -53,8 +53,9 @@ class DataConnector {
     /**
      * @param {String} url - The full url used to connect to the data stream
      */
-    constructor(url) {
+    constructor(url, properties) {
         this.url = url;
+        this.properties = properties;
         this.id = "DataConnector-" + randomUUID();
         this.reconnectTimeout = 1000 * 60 * 2; //2 min
         this.status =  Status.DISCONNECTED;

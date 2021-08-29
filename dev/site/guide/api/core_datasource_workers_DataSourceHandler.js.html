@@ -34,6 +34,9 @@ import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
 import FileConnector from "../../protocol/FileConnector";
 
+// expose as Global. static property is still experimental
+const mqttConnectors = {};
+
 class DataSourceHandler {
 
     constructor(parser) {
@@ -100,15 +103,20 @@ class DataSourceHandler {
         });
 
         // checks if type is WebSocketConnector
-        if (properties.protocol.startsWith('ws')) {
+        if (properties.protocol.startsWith('ws')) { // for wss
             this.connector = new WebSocketConnector(url);
-        } else if (properties.protocol.startsWith('http')) {
+        } else if (properties.protocol.startsWith('http')) { //for https
             this.connector = new Ajax(url);
             this.connector.responseType = properties.responseType || 'arraybuffer';
-        } else if (properties.protocol.startsWith('topic')) {
+        } else if (properties.protocol === 'topic') {
             this.connector = new TopicConnector(url);
-        } else if (properties.protocol.startsWith('file')) {
+        } else if (properties.protocol === 'file') {
             this.connector = new FileConnector(url,properties);
+        } else if(properties.protocol.startsWith('mqtt')) {
+            if(!(url in mqttConnectors)) {
+                mqttConnectors[url] = new MqttConnector(url,properties,this);
+            }
+            this.connector = mqttConnectors[url];
         }
 
         if (this.connector !== null) {
