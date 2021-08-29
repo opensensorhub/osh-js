@@ -8,16 +8,16 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2021 Mathieu Dhainaut. All Rights Reserved.
+ Copyright (C) 2021 Georobotix Inc. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataConnector from "./DataConnector";
+import DataConnector from "../../core/protocol/DataConnector";
 import mqtt from 'mqtt';
-import {assertDefined, isDefined} from "../utils/Utils";
-import {Status} from "./Status";
+import {assertDefined, isDefined} from "../../core/utils/Utils";
+import {Status} from "../../core/protocol/Status";
 
 /**
  * Defines the MqttConnector to connect to a remote server by creating a Mqtt channel.
