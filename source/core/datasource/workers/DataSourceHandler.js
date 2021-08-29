@@ -5,7 +5,6 @@ import TopicConnector from "../../protocol/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
 import FileConnector from "../../protocol/FileConnector";
-import MqttConnector from "../../protocol/MqttConnector";
 
 // expose as Global. static property is still experimental
 const mqttConnectors = {};

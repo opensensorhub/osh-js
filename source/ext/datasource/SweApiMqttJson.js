@@ -1,5 +1,5 @@
-import DataSource from "./DataSource";
 import SweApiMqttJsonWorker from "./workers/SweApiMqttJson.worker.js";
+import DataSource from "../../core/datasource/DataSource";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
