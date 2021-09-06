@@ -286,7 +286,6 @@ export default {
             }
             this.lastSynchronizedTimestamp = message.data.timestamp;
             // }
-            // check data if out of sync
             this.setStartTime(message.data.timestamp);
           }
         } else {
