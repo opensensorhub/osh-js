@@ -230,8 +230,8 @@ class View {
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
             broadcastChannel.onmessage = (event) => {
                 // skip data reset events for now
-                if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
-                    self.reset(); // on data stream disconnection
+                if (event.data.type === EventType.TIME_CHANGED) {
+                    self.reset(); // on time changed
                     return;
                 }
                 if(event.data.type === EventType.DATA) {
