@@ -97,10 +97,6 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
-      if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
-          || (eventName === 'play' && (!isDefined(this.dataSource.properties.replaySpeed)))) {
-        this.view.reset();
-      }
     }
   }
 };
