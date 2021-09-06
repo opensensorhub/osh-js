@@ -286,7 +286,6 @@ export default {
             }
             this.lastSynchronizedTimestamp = message.data.timestamp;
             // }
-            // check data if out of sync
             this.setStartTime(message.data.timestamp);
           }
         } else {
@@ -343,11 +342,14 @@ export default {
     doBackward() {
       if (!this.interval) {
         this.interval = setInterval(() => {
-          const backwardTime = parseInt(this.startTime - this.skipTime);
+          let backwardTime = parseInt(this.startTime - this.skipTime);
           if (backwardTime > this.minTime) {
             this.startTime = backwardTime;
-            this.setRangeSliderStartTimeThrottle(backwardTime);
+          } else {
+            this.startTime = this.minTime;
+            backwardTime = this.minTime;
           }
+          this.setRangeSliderStartTime(backwardTime);
         }, 70);
       }
     }
@@ -363,6 +365,7 @@ export default {
     ,
     async updateTime(event) {
       // reset master time
+      console.log('update time')
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
@@ -393,10 +396,10 @@ export default {
     ,
     stopForward() {
       if (this.interval) {
-        clearInterval(this.interval)
-        this.interval = false;
         this.update = true;
         this.updateTimeDebounce('forward');
+        clearInterval(this.interval);
+        this.interval = false;
       }
     }
     ,
@@ -404,11 +407,14 @@ export default {
     doFastForward() {
       if (!this.interval) {
         this.interval = setInterval(() => {
-          const forwardTime = parseInt(this.startTime + this.skipTime);
+          let forwardTime = parseInt(this.startTime +  this.skipTime);
           if (forwardTime < this.maxTime) {
-            this.startTime = new Date(forwardTime).getTime();
-            this.setRangeSliderStartTimeThrottle(forwardTime);
+            this.startTime = forwardTime;
+          } else {
+            this.startTime = this.maxTime;
+            forwardTime = this.maxTime ;
           }
+          this.setRangeSliderStartTime(forwardTime);
         }, 70);
       }
     }
