@@ -53,11 +53,11 @@ class WebCodecView extends CanvasView {
 
         this.codec = 'h264';
 
-        this.canvasElt = this.createCanvas(this.width, this.height, 'transform: scaleY(-1)');
+        this.canvasElt = this.createCanvas(this.width, this.height);
         this.domNode.appendChild(this.canvasElt);
 
-        this.videoDecoder = this.createWebDecoder();
-        this.initDecodeWorker();
+        // this.videoDecoder = this.createWebDecoder();
+        // this.initDecodeWorker();
     }
 
     createWebDecoder() {
@@ -188,10 +188,10 @@ class WebCodecView extends CanvasView {
     }
 
     getBit(data) {
-     let mask = 1 << (7 - (this.pos & 7));
-     let idx = this.pos >> 3;
-     this.pos++;
-     return ((data[idx] & mask) === 0) ? 0 : 1;
+        let mask = 1 << (7 - (this.pos & 7));
+        let idx = this.pos >> 3;
+        this.pos++;
+        return ((data[idx] & mask) === 0) ? 0 : 1;
     }
 
     /**
@@ -201,73 +201,166 @@ class WebCodecView extends CanvasView {
      * @param timeStamp
      */
     decode(pktSize, pktData, timeStamp, roll) {
-        if(pktSize > 0) {
-            this.pos = 4 * 8;
-            let arrayBuffer = pktData.buffer;
-            // check configure
-            // init decoder with config
-            if (!this.codecConfigured) {
-                if(pktData[4] === 0x67) {
-                    const data = pktData;
-                    const forbidden_zero_bit = this.getU(1,data);
-                    const nal_ref_idc = this.getU(2,data); // 3 for SPS
-                    const nal_unit_type = this.getU(5,data); // 7 = SPS
-                    const profile_idc = this.getU(8,data); // 66 = Baseline
-                    const constraint_set0_flag = this.getU(1,data);
-                    const constraint_set1_flag = this.getU(1,data);
-                    const constraint_set2_flag = this.getU(1,data);
-                    const constraint_set3_flag = this.getU(1,data);
-                    const reserved = this.getU(4,data);
-                    const level_idc = this.getU(8, data);
-                    const seq_parameter_set_id = this.uev(data);
-                    const log2_max_frame_num_minus4 = this.uev(data);
-                    const pict_order_cnt_type = this.uev(data);
-                    if (pict_order_cnt_type === 0) {
-                        this.uev(data);
-                    } else if (pict_order_cnt_type === 1) {
-                        this.getU(1,data);
-                        this.sev(data);
-                        this.sev(data);
-                        const n = this.uev(data);
-                        for (let i = 0; i < n; i++) {
-                            this.sev(data);
-                        }
-                    }
-                    const num_ref_frames = this.uev(data);
-                    const gaps_in_frame_num_value_allowed_flag = this.getU(1,data);
-                    const pic_width = (this.uev(data) + 1) * 16;
-                    const pic_height = (this.uev(data) + 1) * 16;
-                    const frame_mbs_only_flag = this.getU(1,data);
-                    const direct_8x8_inference_flag = this.getU(1, data);
-                    const frame_cropping_flag = this.getU(1, data);
-                    const vui_prameters_present_flag = this.getU(1,data);
-                    const rbsp_stop_one_bit = this.getU(1,data);
+        if (!this.codecConfigured) {
+            const gl = this.canvasElt.getContext("bitmaprenderer");
+            // var offscreen =  this.canvasElt.transferControlToOffscreen();
+            let drawWorker = new DecodeWorker();
 
-                    this.videoDecoder.configure({
-                        codec: 'avc1.42e01e',
-                        description: new Uint8Array([
-                            0x01, 0x42, 0xC0, 0x1E, 0xFF,
-                            0xE1, 0, 9, 103, 66, 64, 31, 166, 128, 80, 5, 185, //sps
-                            0x01, 0, 5, 104, 206, 48, 166, 128 // pps
-                        ]),
-                        codedWidth: parseInt(pic_width),
-                        codedHeight: parseInt(pic_height)
-                    });
-                    this.codecConfigured = true;
-                    this.width = pic_width;
-                    this.height = pic_height;
+            const that = this;
+            // drawWorker.postMessage({canvas: offscreen}, [offscreen]);
+
+            drawWorker.onmessage = (event) => {
+                const bitmap = event.data.bitmap;
+                gl.transferFromImageBitmap(bitmap);
+                event.data.bitmap.close();
+
+                that.updateStatistics(pktSize);
+                if(that.showTime) {
+                    that.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
                 }
-            } else {
-                this.decodeWorker.postMessage({
-                    pktSize: pktSize,
-                    pktData: pktData,
-                    roll: roll,
-                    timeStamp: timeStamp,
-                    dataSourceId: this.dataSourceId
-                }, [arrayBuffer]);
-                pktData = null;
+                if(that.showStats) {
+                    that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
+                        (that.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
+                }
+
+                that.onUpdated(that.statistics);
             }
+            async function paintFrameToCanvas(videoFrame) {
+                // console.log(videoFrame)
+                // createImageBitmap(videoFrame,{
+                //     imageOrientation: "flipY"
+                // }).then(bitmap => {
+                //     ctx.transferFromImageBitmap(bitmap);
+                // });
+                // console.log(ctx);
+                // gl.drawImage(videoFrame, 0, 0, 10,10,0,0,10,10);
+
+                // var bitmapUne = horsEcran.transferToImageBitmap();
+                // console.log(ctx)
+                // ctx.transferFromImageBitmap(bitmapUne);
+
+                // console.log(videoFrame)
+                // console.log(videoFrame)
+                drawWorker.postMessage({
+                    frame: videoFrame,
+                    pktSize: pktSize
+                });
+                // createImageBitmap(videoFrame,{
+                // }).then(bitmap => {
+                //offscreenCtx.transferFromImageBitmap(bitmap);
+                // gl.transferFromImageBitmap(bitmap);
+                // videoFrame.close();
+                // bitmap.close();
+                // });
+            }
+
+            function onDecoderError(error) {
+                console.error(error);
+            }
+
+            const init = {
+                output: paintFrameToCanvas,
+                error: onDecoderError
+            };
+            this.codecConfigured = true;
+            this.width = 1920;
+            this.height = 1080;
+            this.videoDecoder = new VideoDecoder(init);
+            this.videoDecoder.configure({
+                codec: 'avc1.42e01e',
+                codedWidth: 1920,
+                codedHeight: 1080
+            });
+        } else {
+            let i;
+            let key = false;
+            for (i = 0; i < 100; i++) {
+                if ((pktData[i] === 101 || pktData[i] === 65) && pktData[i - 1] === 1
+                    && pktData[i - 2] === 0 && pktData[i - 3] === 0) {
+
+                    // check if key frame
+                    if (pktData[i] === 101) {
+                        key = true;
+                    }
+
+                    break;
+                }
+            }
+
+            let chunk = new EncodedVideoChunk({
+                timestamp: timeStamp,
+                type: key ? 'key' : 'delta',
+                data: pktData
+            });
+            this.videoDecoder.decode(chunk);
         }
+        /* if(pktSize > 0) {
+             this.pos = 4 * 8;
+             let arrayBuffer = pktData.buffer;
+             // check configure
+             // init decoder with config
+             if (!this.codecConfigured) {
+                 if(pktData[4] === 0x67) {
+                     const data = pktData;
+                     const forbidden_zero_bit = this.getU(1,data);
+                     const nal_ref_idc = this.getU(2,data); // 3 for SPS
+                     const nal_unit_type = this.getU(5,data); // 7 = SPS
+                     const profile_idc = this.getU(8,data); // 66 = Baseline
+                     const constraint_set0_flag = this.getU(1,data);
+                     const constraint_set1_flag = this.getU(1,data);
+                     const constraint_set2_flag = this.getU(1,data);
+                     const constraint_set3_flag = this.getU(1,data);
+                     const reserved = this.getU(4,data);
+                     const level_idc = this.getU(8, data);
+                     const seq_parameter_set_id = this.uev(data);
+                     const log2_max_frame_num_minus4 = this.uev(data);
+                     const pict_order_cnt_type = this.uev(data);
+                     if (pict_order_cnt_type === 0) {
+                         this.uev(data);
+                     } else if (pict_order_cnt_type === 1) {
+                         this.getU(1,data);
+                         this.sev(data);
+                         this.sev(data);
+                         const n = this.uev(data);
+                         for (let i = 0; i < n; i++) {
+                             this.sev(data);
+                         }
+                     }
+                     const num_ref_frames = this.uev(data);
+                     const gaps_in_frame_num_value_allowed_flag = this.getU(1,data);
+                     const pic_width = (this.uev(data) + 1) * 16;
+                     const pic_height = (this.uev(data) + 1) * 16;
+                     const frame_mbs_only_flag = this.getU(1,data);
+                     const direct_8x8_inference_flag = this.getU(1, data);
+                     const frame_cropping_flag = this.getU(1, data);
+                     const vui_prameters_present_flag = this.getU(1,data);
+                     const rbsp_stop_one_bit = this.getU(1,data);
+
+                     this.videoDecoder.configure({
+                         codec: 'avc1.42e01e',
+                         description: new Uint8Array([
+                             0x01, 0x42, 0xC0, 0x1E, 0xFF,
+                             0xE1, 0, 9, 103, 66, 64, 31, 166, 128, 80, 5, 185, //sps
+                             0x01, 0, 5, 104, 206, 48, 166, 128 // pps
+                         ]),
+                         codedWidth: parseInt(pic_width),
+                         codedHeight: parseInt(pic_height)
+                     });
+                     this.codecConfigured = true;
+                     this.width = pic_width;
+                     this.height = pic_height;
+                 }
+             } else {
+                 this.decodeWorker.postMessage({
+                     pktSize: pktSize,
+                     pktData: pktData,
+                     roll: roll,
+                     timeStamp: timeStamp,
+                     dataSourceId: this.dataSourceId
+                 }, [arrayBuffer]);
+                 pktData = null;
+             }
+         }*/
     }
 
     destroy() {
