@@ -55,7 +55,6 @@ class FFMPEGView extends CanvasView {
             supportedLayers: ['data'],
             ...properties
         });
-
         this.directPlay = false;
         this.codec = 'h264';
 
@@ -154,7 +153,6 @@ class FFMPEGView extends CanvasView {
                 that.width = decodedFrame.frame_width;
                 that.height = decodedFrame.frame_height;
             }
-
             that.yuvCanvas.canvasElement.drawing = true;
             that.yuvCanvas.drawNextOuptutPictureGL({
                 yData: decodedFrame.frameYData,
@@ -170,7 +168,6 @@ class FFMPEGView extends CanvasView {
             });
 
             that.yuvCanvas.canvasElement.drawing = false;
-
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
                 this.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';

@@ -13,6 +13,7 @@ import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import '../../../resources/css/ffmpegview.css';
 import CanvasView from "./CanvasView";
 import DecodeWorker from './workers/webapi.decode.worker.js';
+import YUVCanvas from "./YUVCanvas";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -53,33 +54,11 @@ class WebCodecView extends CanvasView {
 
         this.codec = 'h264';
 
+        // create webGL canvas
         this.canvasElt = this.createCanvas(this.width, this.height);
         this.domNode.appendChild(this.canvasElt);
 
-        // this.videoDecoder = this.createWebDecoder();
-        // this.initDecodeWorker();
-    }
-
-    createWebDecoder() {
-        this.codecConfigured = false;
-        const canvasCtx = this.canvasElt.getContext('bitmaprenderer');
-
-        function paintFrameToCanvas(videoFrame) {
-            videoFrame.createImageBitmap({
-                imageOrientation: "flipY"
-            }).then(bitmap => {
-                canvasCtx.transferFromImageBitmap(bitmap);
-            });
-        }
-
-        function onDecoderError(error) {
-            console.error(error);
-        }
-
-        return new VideoDecoder({
-            output: paintFrameToCanvas,
-            error: onDecoderError
-        });
+        // this.offscreen = this.canvasElt.transferControlToOffscreen()
     }
 
     /**
@@ -112,86 +91,11 @@ class WebCodecView extends CanvasView {
         }
     }
 
-    initDecodeWorker() {
-        this.decodeWorker = new DecodeWorker();
-        this.decodeWorker.id = randomUUID();
-
-        const that = this;
-        this.decodeWorker.onmessage =  function(e) {
-            let encodedFrame = e.data;
-            let videoData = encodedFrame.videoData;
-            let timeStamp = encodedFrame.timeStamp;
-            let pktSize = encodedFrame.pktSize;
-
-            const chunk = new EncodedVideoChunk({
-                type: encodedFrame.key ? "key" : "delta",
-                timestamp: timeStamp,
-                data: videoData
-            });
-
-            try {
-                that.videoDecoder.decode(chunk);
-            } catch (error) {
-                console.error(error);
-            }
-            that.updateStatistics(pktSize);
-            if(that.showTime) {
-                that.textFpsDiv.innerText = new Date(timeStamp).toISOString()+' ';
-            }
-            if(that.showStats) {
-                that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
-                    (that.statistics.averageBitRate/1000).toFixed(2)+' kB/s @'+
-                    that.width+"x"+that.height+'\n '+that.codec;
-            }
-
-            that.onUpdated(that.statistics);
-        }
-    }
     /**
      * Reset the view by drawing no data array into the YUV canvas.
      * @override
      */
     reset() {
-    }
-
-    ev(signed, data) {
-        let bitCount = 0;
-        while (this.getBit(data) === 0) {
-            bitCount++;
-        }
-        let result = 1;
-        for (let i = 0; i < bitCount; i++) {
-            let b = this.getBit(data);
-            result = result * 2 + b;
-        }
-        result--;
-        if (signed) {
-            result = (result + 1) / 2 * (result % 2 === 0 ? -1 : 1);
-        }
-        return result;
-    }
-
-    uev(data) {
-        return this.ev(false,data);
-    }
-
-    sev(data) {
-        return this.ev(true,data);
-    }
-
-    getU(bits, data) {
-        let result = 0;
-        for (let i = 0; i < bits; i++) {
-            result = result * 2 + this.getBit(data);
-        }
-        return result;
-    }
-
-    getBit(data) {
-        let mask = 1 << (7 - (this.pos & 7));
-        let idx = this.pos >> 3;
-        this.pos++;
-        return ((data[idx] & mask) === 0) ? 0 : 1;
     }
 
     /**
@@ -202,18 +106,30 @@ class WebCodecView extends CanvasView {
      */
     decode(pktSize, pktData, timeStamp, roll) {
         if (!this.codecConfigured) {
-            const gl = this.canvasElt.getContext("bitmaprenderer");
-            // var offscreen =  this.canvasElt.transferControlToOffscreen();
             let drawWorker = new DecodeWorker();
 
             const that = this;
-            // drawWorker.postMessage({canvas: offscreen}, [offscreen]);
+
+            // drawWorker.postMessage({
+            //     canvas: this.offscreen
+            // }, [this.offscreen]);
+
+            const gl = this.canvasElt.getContext("bitmaprenderer");
 
             drawWorker.onmessage = (event) => {
                 const bitmap = event.data.bitmap;
+                // that.yuvCanvas.canvasElement.drawing = true;
+                // that.yuvCanvas.drawNextOuptutPictureBitmapGL({
+                //     yData: bitmap,
+                //     yDataPerRow: 1920,
+                //     yRowCnt: 1080,
+                //     roll: 0
+                // });
+                //
+                // that.yuvCanvas.canvasElement.drawing = false;
+                // event.data.bitmap.close();
                 gl.transferFromImageBitmap(bitmap);
-                event.data.bitmap.close();
-
+                bitmap.close();
                 that.updateStatistics(pktSize);
                 if(that.showTime) {
                     that.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
@@ -226,32 +142,10 @@ class WebCodecView extends CanvasView {
                 that.onUpdated(that.statistics);
             }
             async function paintFrameToCanvas(videoFrame) {
-                // console.log(videoFrame)
-                // createImageBitmap(videoFrame,{
-                //     imageOrientation: "flipY"
-                // }).then(bitmap => {
-                //     ctx.transferFromImageBitmap(bitmap);
-                // });
-                // console.log(ctx);
-                // gl.drawImage(videoFrame, 0, 0, 10,10,0,0,10,10);
-
-                // var bitmapUne = horsEcran.transferToImageBitmap();
-                // console.log(ctx)
-                // ctx.transferFromImageBitmap(bitmapUne);
-
-                // console.log(videoFrame)
-                // console.log(videoFrame)
                 drawWorker.postMessage({
                     frame: videoFrame,
                     pktSize: pktSize
                 });
-                // createImageBitmap(videoFrame,{
-                // }).then(bitmap => {
-                //offscreenCtx.transferFromImageBitmap(bitmap);
-                // gl.transferFromImageBitmap(bitmap);
-                // videoFrame.close();
-                // bitmap.close();
-                // });
             }
 
             function onDecoderError(error) {
@@ -294,73 +188,6 @@ class WebCodecView extends CanvasView {
             });
             this.videoDecoder.decode(chunk);
         }
-        /* if(pktSize > 0) {
-             this.pos = 4 * 8;
-             let arrayBuffer = pktData.buffer;
-             // check configure
-             // init decoder with config
-             if (!this.codecConfigured) {
-                 if(pktData[4] === 0x67) {
-                     const data = pktData;
-                     const forbidden_zero_bit = this.getU(1,data);
-                     const nal_ref_idc = this.getU(2,data); // 3 for SPS
-                     const nal_unit_type = this.getU(5,data); // 7 = SPS
-                     const profile_idc = this.getU(8,data); // 66 = Baseline
-                     const constraint_set0_flag = this.getU(1,data);
-                     const constraint_set1_flag = this.getU(1,data);
-                     const constraint_set2_flag = this.getU(1,data);
-                     const constraint_set3_flag = this.getU(1,data);
-                     const reserved = this.getU(4,data);
-                     const level_idc = this.getU(8, data);
-                     const seq_parameter_set_id = this.uev(data);
-                     const log2_max_frame_num_minus4 = this.uev(data);
-                     const pict_order_cnt_type = this.uev(data);
-                     if (pict_order_cnt_type === 0) {
-                         this.uev(data);
-                     } else if (pict_order_cnt_type === 1) {
-                         this.getU(1,data);
-                         this.sev(data);
-                         this.sev(data);
-                         const n = this.uev(data);
-                         for (let i = 0; i < n; i++) {
-                             this.sev(data);
-                         }
-                     }
-                     const num_ref_frames = this.uev(data);
-                     const gaps_in_frame_num_value_allowed_flag = this.getU(1,data);
-                     const pic_width = (this.uev(data) + 1) * 16;
-                     const pic_height = (this.uev(data) + 1) * 16;
-                     const frame_mbs_only_flag = this.getU(1,data);
-                     const direct_8x8_inference_flag = this.getU(1, data);
-                     const frame_cropping_flag = this.getU(1, data);
-                     const vui_prameters_present_flag = this.getU(1,data);
-                     const rbsp_stop_one_bit = this.getU(1,data);
-
-                     this.videoDecoder.configure({
-                         codec: 'avc1.42e01e',
-                         description: new Uint8Array([
-                             0x01, 0x42, 0xC0, 0x1E, 0xFF,
-                             0xE1, 0, 9, 103, 66, 64, 31, 166, 128, 80, 5, 185, //sps
-                             0x01, 0, 5, 104, 206, 48, 166, 128 // pps
-                         ]),
-                         codedWidth: parseInt(pic_width),
-                         codedHeight: parseInt(pic_height)
-                     });
-                     this.codecConfigured = true;
-                     this.width = pic_width;
-                     this.height = pic_height;
-                 }
-             } else {
-                 this.decodeWorker.postMessage({
-                     pktSize: pktSize,
-                     pktData: pktData,
-                     roll: roll,
-                     timeStamp: timeStamp,
-                     dataSourceId: this.dataSourceId
-                 }, [arrayBuffer]);
-                 pktData = null;
-             }
-         }*/
     }
 
     destroy() {
