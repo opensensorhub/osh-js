@@ -109,6 +109,44 @@ class WebCodecView extends CanvasView {
     reset() {
     }
 
+    initDecoder() {
+        const gl = this.canvasElt.getContext("bitmaprenderer");
+
+        this.decodeWorker = new DecodeWorker();
+        this.decodeWorker.postMessage({
+            init: {
+                codec: this.codec
+            },
+        });
+
+        this.decodeWorker.onmessage = (event) => {
+            if(event.data.init) {
+                this.codecConfigured = true;
+            } else if(this.codecConfigured) {
+                const bitmap = event.data.bitmap;
+                try {
+                    // draw image
+                    gl.transferFromImageBitmap(bitmap);
+
+                    // update stats
+                    this.updateStatistics(event.data.pktSize);
+                    if(this.showTime) {
+                        this.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
+                    }
+                    if(this.showStats) {
+                        this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
+                            (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
+                    }
+                    this.onUpdated(this.statistics);
+                } catch (exception) {
+                    console.error(exception);
+                    //continue;
+                } finally {
+                    bitmap.close();
+                }
+            }
+        }
+    }
     /**
      * @private
      * @param pktSize
@@ -117,80 +155,19 @@ class WebCodecView extends CanvasView {
      */
     decode(pktSize, pktData, timeStamp, roll) {
         if (!this.codecConfigured) {
-            let drawWorker = new DecodeWorker();
+            this.initDecoder();
+        }
 
-            const that = this;
-
-            const gl = this.canvasElt.getContext("bitmaprenderer");
-
-            drawWorker.onmessage = (event) => {
-                const bitmap = event.data.bitmap;
-                try {
-                    gl.transferFromImageBitmap(bitmap);
-
-                    that.updateStatistics(pktSize);
-                    if(that.showTime) {
-                        that.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
-                    }
-                    if(that.showStats) {
-                        that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
-                            (that.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
-                    }
-
-                    that.onUpdated(that.statistics);
-                } catch (exception) {
-                    console.error(exception);
-                    throw exception;
-                } finally {
-                    bitmap.close();
-                }
-            }
-            function paintFrameToCanvas(videoFrame) {
-                drawWorker.postMessage({
-                    frame: videoFrame,
-                    pktSize: pktSize
-                }, [videoFrame]);
-            }
-
-            function onDecoderError(error) {
-                console.error(error);
-            }
-
-            const init = {
-                output: paintFrameToCanvas,
-                error: onDecoderError
-            };
-            this.codecConfigured = true;
-            this.width = 1920;
-            this.height = 1080;
-            this.videoDecoder = new VideoDecoder(init);
-            this.videoDecoder.configure({
+        if (this.codecConfigured) {
+            this.decodeWorker.postMessage({
+                pktSize: pktSize,
+                pktData: pktData,
+                roll: roll,
                 codec: this.codec,
-                codedWidth: 1920,
-                codedHeight: 1080
-            });
+                timeStamp: timeStamp,
+            }, [pktData.buffer]);
         } else {
-            let i;
-            let key = false;
-            for (i = 0; i < 100; i++) {
-                if ((pktData[i] === 101 || pktData[i] === 65) && pktData[i - 1] === 1
-                    && pktData[i - 2] === 0 && pktData[i - 3] === 0) {
-
-                    // check if key frame
-                    if (pktData[i] === 101) {
-                        key = true;
-                    }
-
-                    break;
-                }
-            }
-
-            let chunk = new EncodedVideoChunk({
-                timestamp: timeStamp,
-                type: key ? 'key' : 'delta',
-                data: pktData
-            });
-            this.videoDecoder.decode(chunk);
+            console.warn('decoder has not been initialized yet');
         }
     }
 
