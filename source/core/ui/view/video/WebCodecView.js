@@ -52,6 +52,11 @@ class WebCodecView extends CanvasView {
             ...properties
         });
 
+        if (!'VideoEncoder' in window) {
+            // WebCodecs API is not supported.
+            throw Error('WebCodec API is not supported');
+        }
+
         this.codecMap = {
             'vp9':'vp09.02.10.10.01.09.16.09.01',
             'h264': 'avc1.42e01e'
