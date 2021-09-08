@@ -57,8 +57,10 @@ class WebCodecView extends CanvasView {
             throw Error('WebCodec API is not supported');
         }
 
+        // common VP8/ VP9/ H264 profiles. May not work depending on the video encoding profile
         this.codecMap = {
             'vp9':'vp09.02.10.10.01.09.16.09.01',
+            'vp8': 'vp08.00.41.08',
             'h264': 'avc1.42e01e'
         };
 
