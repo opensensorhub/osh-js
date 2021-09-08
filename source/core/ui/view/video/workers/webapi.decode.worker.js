@@ -1,41 +1,84 @@
+import {isDefined} from "../../../../utils/Utils";
+
+let width, height, videoDecoder, codec;
+let currentPktSize, currentTimestamp;
+
 self.onmessage = (event) => {
-    const data = event.data;
-    const timeStamp = data.timeStamp;
-    const pktSize = data.pktSize;
-    let videoData = data.pktData;
+    if(isDefined(event.data.init)) {
+        codec = event.data.init.codec;
+        width = event.data.init.width;
+        height = event.data.init.height;
 
-    // look for 1st byte of actual frame data
-    let i;
-    let key = false;
-    for (i = 0; i < 100; i++) {
-        if ((videoData[i] === 101 || videoData[i] === 65) && videoData[i - 1] === 1
-            && videoData[i - 2] === 0 && videoData[i - 3] === 0) {
+        const init = {
+            output: (videoFrame) => {
+                // check picture width
+                if(width !== videoFrame.codedWidth || height !== videoFrame.codedHeight) {
+                    width = videoFrame.codedWidth;
+                    height = videoFrame.codedHeight;
 
-            // check if key frame
-            if (videoData[i] === 101) {
-                key = true;
+                    videoDecoder.configure({
+                        codec: codec,
+                        codedWidth: width,
+                        codedHeight: height
+                    });
+                }
+                createImageBitmap(videoFrame,{
+                }).then(bitmap => {
+                    videoFrame.close();
+                    try {
+                        self.postMessage({
+                            bitmap:bitmap,
+                            timestamp: currentTimestamp,
+                            pktSize: currentPktSize,
+                            width: width,
+                            height:height
+                        }, [bitmap]);
+
+                    } catch (exception) {
+                        console.error(exception);
+                    }
+                });
+            },
+            error: (error) => {
+                console.error(error);
             }
+        };
+        videoDecoder = new VideoDecoder(init);
+        videoDecoder.configure({
+            codec: codec,
+            codedWidth: width,
+            codedHeight: height
+        });
 
-            let offset = i - 4;
-            let pktSizeOff = pktSize - offset;
-            let nalSize = pktSizeOff - 4;
-            videoData = new Uint8Array(data.pktData.buffer, offset, pktSizeOff);
-            videoData[0] = (nalSize >> 24) & 0xFF;
-            videoData[1] = (nalSize >> 16) & 0xFF;
-            videoData[2] = (nalSize >> 8) & 0xFF;
-            videoData[3] = nalSize & 0xFF;
-            break;
+        self.postMessage({
+            init: true
+        });
+    } else {
+        const pktData = event.data.pktData;
+        const timeStamp = event.data.timeStamp;
+
+        currentPktSize = event.data.pktSize;
+        currentTimestamp = timeStamp;
+
+        let i;
+        let key = false;
+        // H264 logic
+        for (i = 0; i < 100; i++) {
+            if ((pktData[i] === 101 || pktData[i] === 65) && pktData[i - 1] === 1
+                && pktData[i - 2] === 0 && pktData[i - 3] === 0) {
+
+                // check if key frame
+                if (pktData[i] === 101) {
+                    key = true;
+                }
+                break;
+            }
         }
+        let chunk = new EncodedVideoChunk({
+            timestamp: timeStamp,
+            type: key ? 'key' : 'delta',
+            data: pktData
+        });
+        videoDecoder.decode(chunk);
     }
-
-    const encodedFrame = {
-        timeStamp: timeStamp,
-        pktSize:pktSize,
-        videoData: videoData,
-        key: key
-    };
-
-    self.postMessage(encodedFrame, [
-        encodedFrame.videoData.buffer
-    ]);
 }
