@@ -52,7 +52,20 @@ class WebCodecView extends CanvasView {
             ...properties
         });
 
-        this.codec = 'h264';
+        this.codecMap = {
+            'vp9':'vp09.02.10.10.01.09.16.09.01',
+            'h264': 'avc1.42e01e'
+        };
+
+        this.codec = this.codecMap['h264'];
+
+        if(isDefined(properties.codec)) {
+            if(!properties.codec in this.codecMap) {
+                throw Error(`The codec properties.codec is not supported, the list of supported codec: this.codecMap`);
+            } else {
+                this.codec = this.codecMap[properties.codec];
+            }
+        }
 
         // create webGL canvas
         this.canvasElt = this.createCanvas(this.width, this.height);
@@ -161,7 +174,7 @@ class WebCodecView extends CanvasView {
             this.height = 1080;
             this.videoDecoder = new VideoDecoder(init);
             this.videoDecoder.configure({
-                codec: 'avc1.42e01e',
+                codec: this.codec,
                 codedWidth: 1920,
                 codedHeight: 1080
             });

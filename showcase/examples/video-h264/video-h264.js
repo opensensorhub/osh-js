@@ -10,7 +10,12 @@ const dataSynchronizer = new DataSynchronizer({
   dataSources: []
 })
 
-for(let i=0;i < 4;i++) {
+
+let codecList = RTCRtpSender.getCapabilities("video").codecs;
+codecList.forEach(rtcrtpCodec => {
+  console.log(rtcrtpCodec)
+});
+for(let i=0;i < 16;i++) {
   const child = document.createElement("div");
   child.setAttribute("id", i);
 
@@ -22,8 +27,8 @@ for(let i=0;i < 4;i++) {
     endpointUrl: "localhost:8082/sensorhub/sos",
     offeringID: "urn:android:device:9d31c07640c760a7-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    startTime: "2021-09-07T07:22:44.743Z",
-    endTime: "2021-09-07T07:23:51.378Z",
+    startTime: "2021-09-07T21:38:59.163Z",
+    endTime: "2021-09-07T21:39:49.579Z",
     replaySpeed: 1,
   });
 
