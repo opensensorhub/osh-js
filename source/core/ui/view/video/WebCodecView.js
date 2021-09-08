@@ -70,8 +70,6 @@ class WebCodecView extends CanvasView {
         // create webGL canvas
         this.canvasElt = this.createCanvas(this.width, this.height);
         this.domNode.appendChild(this.canvasElt);
-
-        // this.offscreen = this.canvasElt.transferControlToOffscreen()
     }
 
     /**
@@ -123,42 +121,35 @@ class WebCodecView extends CanvasView {
 
             const that = this;
 
-            // drawWorker.postMessage({
-            //     canvas: this.offscreen
-            // }, [this.offscreen]);
-
             const gl = this.canvasElt.getContext("bitmaprenderer");
 
             drawWorker.onmessage = (event) => {
                 const bitmap = event.data.bitmap;
-                // that.yuvCanvas.canvasElement.drawing = true;
-                // that.yuvCanvas.drawNextOuptutPictureBitmapGL({
-                //     yData: bitmap,
-                //     yDataPerRow: 1920,
-                //     yRowCnt: 1080,
-                //     roll: 0
-                // });
-                //
-                // that.yuvCanvas.canvasElement.drawing = false;
-                // event.data.bitmap.close();
-                gl.transferFromImageBitmap(bitmap);
-                bitmap.close();
-                that.updateStatistics(pktSize);
-                if(that.showTime) {
-                    that.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
-                }
-                if(that.showStats) {
-                    that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
-                        (that.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
-                }
+                try {
+                    gl.transferFromImageBitmap(bitmap);
 
-                that.onUpdated(that.statistics);
+                    that.updateStatistics(pktSize);
+                    if(that.showTime) {
+                        that.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
+                    }
+                    if(that.showStats) {
+                        that.textStatsDiv.innerText  = that.statistics.averageFps.toFixed(2) + ' fps, ' +
+                            (that.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
+                    }
+
+                    that.onUpdated(that.statistics);
+                } catch (exception) {
+                    console.error(exception);
+                    throw exception;
+                } finally {
+                    bitmap.close();
+                }
             }
-            async function paintFrameToCanvas(videoFrame) {
+            function paintFrameToCanvas(videoFrame) {
                 drawWorker.postMessage({
                     frame: videoFrame,
                     pktSize: pktSize
-                });
+                }, [videoFrame]);
             }
 
             function onDecoderError(error) {
