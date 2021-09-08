@@ -64,6 +64,7 @@ class WebCodecView extends CanvasView {
             'h264': 'avc1.42e01e'
         };
 
+        // default use H264 codec
         this.codec = this.codecMap['h264'];
 
         if(isDefined(properties.codec)) {
@@ -140,6 +141,12 @@ class WebCodecView extends CanvasView {
                 const bitmap = event.data.bitmap;
                 const width = event.data.width;
                 const height = event.data.height;
+
+                // for some reason, the web worker failed to create the bitmal
+                if(!isDefined(bitmap)) {
+                    console.warn('Bitmap is undefined, skipping this frame..');
+                    return;
+                }
 
                 try {
                     if(this.width !== width || this.height !== height) {
