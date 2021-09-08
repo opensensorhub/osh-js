@@ -1,9 +1,6 @@
 <style>
-    body {
-        width: 1280px;
-    }
     div.video-h264 {
-        width: 500px;
+        width: calc(100% - 20px);
         border: 1px solid #dee2e6;
         resize: horizontal;
         overflow: hidden;
@@ -12,10 +9,9 @@
     div.video-h264 canvas {
         width: 100%;
     }
-    #container {
-        display: flex;
-        flex-wrap: wrap;
+    #video-h264-container {
+        height: calc(100% - 10px);
     }
 </style>
-<div id="container"></div>
+<div id="video-h264-container"/>
 
