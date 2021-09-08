@@ -14,8 +14,8 @@ class CanvasView extends View {
         super(properties);
 
         this.fps = 0;
-        this.width = "1920";
-        this.height = "1080";
+        this.width = 1920;
+        this.height = 1080;
         this.showTime = false;
         this.showStats = false;
 
@@ -51,11 +51,11 @@ class CanvasView extends View {
             }
 
             if (isDefined(properties.width)) {
-                this.width = properties.width+"";
+                this.width = properties.width;
             }
 
             if (isDefined(properties.height)) {
-                this.height = properties.height+"";
+                this.height = properties.height;
             }
         }
 
@@ -64,7 +64,7 @@ class CanvasView extends View {
         // if need to draw text
         if(this.showTime || this.showStats) {
             this.textDiv = document.createElement("div");
-            this.textDiv.setAttribute("width",this.width);
+            this.textDiv.setAttribute("width",""+this.width);
             this.textDiv.setAttribute("height",15);
             this.textDiv.setAttribute("class","ffmpeg-info");
 

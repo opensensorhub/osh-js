@@ -89,6 +89,11 @@ class WebCodecView extends CanvasView {
         return canvasElement;
     }
 
+    updateCanvasSize(width, height) {
+        this.canvasElt.setAttribute('width', width);
+        this.canvasElt.setAttribute('height', height);
+    }
+
     setData(dataSourceId, data) {
         const values = data.values;
         for(let i=0; i < values.length;i++) {
@@ -115,7 +120,9 @@ class WebCodecView extends CanvasView {
         this.decodeWorker = new DecodeWorker();
         this.decodeWorker.postMessage({
             init: {
-                codec: this.codec
+                codec: this.codec,
+                width: this.width,
+                height: this.height
             },
         });
 
@@ -124,7 +131,16 @@ class WebCodecView extends CanvasView {
                 this.codecConfigured = true;
             } else if(this.codecConfigured) {
                 const bitmap = event.data.bitmap;
+                const width = event.data.width;
+                const height = event.data.height;
+
                 try {
+                    if(this.width !== width || this.height !== height) {
+                        this.width = width;
+                        this.height = height;
+                        //re-configure the canvas
+                        this.updateCanvasSize(width,height);
+                    }
                     // draw image
                     gl.transferFromImageBitmap(bitmap);
 
