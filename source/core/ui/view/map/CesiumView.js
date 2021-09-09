@@ -52,7 +52,8 @@ import {
     ColorGeometryInstanceAttribute,
     Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive,
     PolylineCollection,
-    PrimitiveCollection
+    PrimitiveCollection,
+    EllipseGeometry
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -516,7 +517,7 @@ class CesiumView extends MapView {
      * @param ellipse The ellipse to remove
      */
     removeEllipseFromLayer(ellipse) {
-        this.viewer.entities.remove(ellipse);
+        this.viewer.scene.primitives.remove(ellipse);
     }
 
     /**
@@ -538,29 +539,50 @@ class CesiumView extends MapView {
      * @returns {Entity}
      */
     addEllipse(properties) {
+        // bind the object to the callback property
+        const id = properties.id + "$" + properties.ellipseId;
 
-        let position = [0, 0, 0];
-        if (isDefined(properties.position)) {
-            position = properties.position;
-        }
-        let ellipseObj = {
-            position: Cartesian3.fromDegrees(position.x, position.y, position.z),
-            name: isDefined(properties.name) ? properties.name : "Ellipse " + properties.id,
-            ellipse: {
-                semiMajorAxis: properties.semiMajorAxis,
-                semiMinorAxis: properties.semiMinorAxis,
-                height: properties.height,
-                extrudedHeight: properties.extrudedHeight,
-                rotation: properties.rotation,
-                stRotation: properties.stRotation,
-                granularity: properties.granularity,
-                clampToGround: isDefined(properties.clampToGround) ? properties.clampToGround : true,
-                material: Color.fromAlpha(Color.fromCssColorString(properties.color), isDefined(properties.transparency) ? properties.transparency : 0.5)
-            }
-        };
+        const position = properties.position;
+        const semiMajorAxis = properties.semiMajorAxis;
+        const semiMinorAxis = properties.semiMinorAxis;
+        const height = isDefined(properties.height) ? properties.height : 0.0;
+        const extrudedHeight = isDefined(properties.extrudedHeight) ? properties.extrudedHeight : 0.0;
+        const rotation = isDefined(properties.rotation) ? properties.rotation : 0.0;
+        const stRotation = isDefined(properties.stRotation) ? properties.stRotation : 0.0;
+        const color = properties.color;
+        const alpha = isDefined(properties.transparency) ? properties.transparency : 0.5;
 
-        ellipseObj.id = properties.id;
-        return this.viewer.entities.add(ellipseObj);
+        const ellipseInstance = new GeometryInstance({
+            geometry: new EllipseGeometry({
+                center: Cartesian3.fromDegrees(position.x, position.y),
+                semiMajorAxis: semiMajorAxis,
+                semiMinorAxis: semiMinorAxis,
+                height: height,
+                extrudedHeight: extrudedHeight,
+                rotation: rotation,
+                stRotation: stRotation
+            }),
+            id: id,
+        });
+
+        const ellipsePrimitive = new Primitive({
+            geometryInstances : ellipseInstance,
+            appearance : new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Color',
+                        uniforms: {
+                            color:  Color.fromCssColorString(color).withAlpha(alpha)
+                        }
+                    }
+                }),
+            }),
+            asynchronous: false
+        });
+
+        this.viewer.scene.primitives.add(ellipsePrimitive);
+
+        return ellipsePrimitive;
     }
 
     /**
@@ -581,86 +603,14 @@ class CesiumView extends MapView {
      * @param props.color The color of the ellipse
      */
     updateEllipse(props) {
-
         if (!isDefined(props.position)) {
             return;
         }
-
-        let ellipse = this.getEllipse(props);
-        if (!isDefined(ellipse)) {
-            const ellipseObj = this.addEllipse({
-                id: props.id + "$" + props.ellipseId,
-                position: props.position,
-                semiMajorAxis: props.semiMajorAxis,
-                semiMinorAxis: props.semiMinorAxis,
-                height: props.height,
-                extrudedHeight: props.extrudedHeight,
-                rotation: props.rotation,
-                stRotation: props.stRotation,
-                granularity: props.granularity,
-                clampToGround: props.clampToGround,
-                color: props.color,
-                transparency: props.transparency
-            });
-
-            this.addEllipseToLayer(props, ellipseObj);
+        const ellipse = this.getEllipse(props);
+        if (isDefined(ellipse)) {
+            this.viewer.scene.primitives.remove(ellipse);
         }
-
-        this.updateEllipseObj(props, {
-            position: props.position,
-            semiMajorAxis: props.semiMajorAxis,
-            semiMinorAxis: props.semiMinorAxis,
-            height: props.height,
-            extrudedHeight: props.extrudedHeight,
-            rotation: props.rotation,
-            stRotation: props.stRotation,
-            color: props.color,
-            transparency: props.transparency
-        });
-    }
-
-    /**
-     * Updates an Ellipse properties
-     * @param layer The layer containing the ellipse
-     * @param properties
-     * @param properties.position [] The ellipse's center point in the fixed frame.
-     * @param properties.semiMajorAxis {Number} The length of the ellipse's semi-major axis in meters.
-     * @param properties.semiMinorAxis {Number} The length of the ellipse's semi-minor axis in meters.
-     * @param properties.height {Number} 0.0 optional The distance in meters between the ellipse and the ellipsoid surface.
-     * @param properties.extrudedHeight {Number} optional The distance in meters between the ellipse's extruded face and the ellipsoid surface.
-     * @param properties.rotation {Number} 0.0 optional The angle of rotation counter-clockwise from north.
-     * @param properties.stRotation {Number} 0.0 optional The rotation of the texture coordinates counter-clockwise from north.
-     * @param properties.granularity {Number}    CesiumMath.RADIANS_PER_DEGREE optional The angular distance between points on the ellipse in radians.
-     * @param properties.clampToGround {boolean} Flag to indicate if ellipse needs to be clamped to ground
-     * @param properties.transparency The level of transparency or alpha value
-     * @param properties.color The color of the ellipse
-     */
-    updateEllipseObj(layer, properties) {
-        const position = properties.position;
-        const semiMajorAxis = properties.semiMajorAxis;
-        const semiMinorAxis = properties.semiMinorAxis;
-        const height = isDefined(properties.height) ? properties.height : 0.0;
-        const extrudedHeight = isDefined(properties.extrudedHeight) ? properties.extrudedHeight : 0.0;
-        const rotation = isDefined(properties.rotation) ? properties.rotation : 0.0;
-        const stRotation = isDefined(properties.stRotation) ? properties.stRotation : 0.0;
-        const color = properties.color;
-        const alpha = isDefined(properties.transparency) ? properties.transparency : 0.5;
-
-        if (isDefined(position)) {
-            let ellipseObj = this.getEllipse(layer);
-            ellipseObj.position = Cartesian3.fromDegrees(position.x, position.y, position.z);
-            ellipseObj.ellipse.semiMajorAxis = semiMajorAxis;
-            ellipseObj.ellipse.semiMinorAxis = semiMinorAxis;
-            ellipseObj.ellipse.height = height;
-            ellipseObj.ellipse.extrudedHeight = extrudedHeight;
-            ellipseObj.ellipse.rotation = rotation;
-            ellipseObj.ellipse.stRotation = stRotation;
-            ellipseObj.ellipse.material = Color.fromAlpha(Color.fromCssColorString(color), alpha);
-
-            if (properties.selected) {
-                this.viewer.selectedEntity = ellipseObj;
-            }
-        }
+        this.addEllipseToLayer(props, this.addEllipse(props));
     }
 
     /**
