@@ -31,9 +31,9 @@ const pointMarkerLayer = new PointMarkerLayer({
         y: rec.location.lat,
         z: rec.location.alt
     }),
-    icon: './images/car-location.png',
-    iconSize: [32, 64],
-    iconAnchor: [16, 65],
+    icon: './images/uav.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
     name: 'Car',
     description: 'GPS car Toulouse'
 });
