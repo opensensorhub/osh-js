@@ -1,7 +1,7 @@
 import {isDefined} from "../../utils/Utils";
 import DataSourceParser from "./DataSourceParser";
 
-class TimeSeriesParserParser extends DataSourceParser{
+class TimeSeriesParserParser extends DataSourceParser {
 
     /**
      * Builds the full url.
