@@ -1,7 +1,7 @@
 import FileParser from "../parsers/File.parser";
-import DataSourceHandler from "../../../core/datasource/workers/DataSourceHandler";
+import FileDataSourceHandler from "../FileDataSourceHandler";
 
-const dataSourceHandler = new DataSourceHandler(new FileParser());
+const dataSourceHandler = new FileDataSourceHandler(new FileParser());
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);

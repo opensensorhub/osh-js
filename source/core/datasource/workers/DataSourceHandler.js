@@ -4,10 +4,6 @@ import {isDefined} from "../../utils/Utils.js";
 import TopicConnector from "../../protocol/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
-import FileConnector from "../../protocol/FileConnector";
-
-// expose as Global. static property is still experimental
-const mqttConnectors = {};
 
 class DataSourceHandler {
 
@@ -75,13 +71,6 @@ class DataSourceHandler {
             this.connector.responseType = properties.responseType || 'arraybuffer';
         } else if (properties.protocol === 'topic') {
             this.connector = new TopicConnector(url);
-        } else if (properties.protocol === 'file') {
-            this.connector = new FileConnector(url,properties);
-        } else if(properties.protocol.startsWith('mqtt')) {
-            if(!(url in mqttConnectors)) {
-                mqttConnectors[url] = new MqttConnector(url,properties,this);
-            }
-            this.connector = mqttConnectors[url];
         }
 
         if (this.connector !== null) {
