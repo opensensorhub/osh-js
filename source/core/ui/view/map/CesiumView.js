@@ -619,7 +619,7 @@ class CesiumView extends MapView {
      * @param {Object} polyline - The Map marker object
      */
     removePolylineFromLayer(polyline) {
-        this.viewer.entities.remove(polyline);
+        this.viewer.scene.primitives.remove(polyline);
     }
 
     /**
@@ -838,7 +838,7 @@ class CesiumView extends MapView {
      * @param {Object} polygon - The Map polygon object
      */
     removePolygonFromLayer(polygon) {
-        this.viewer.entities.remove(polygon);
+        this.viewer.scene.primitives.remove(polygon);
     }
 
     /**
