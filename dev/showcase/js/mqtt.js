@@ -11,7 +11,7 @@ import mqtt from 'mqtt';
 let gpsDataSource = new SweApiMqttJson("android-GPS", {
     protocol: 'mqtt', // or mqtts
     endpoint: 'ogct17.georobotix.io:8083',
-    topic: '/api/datastreams/m1isar991e9i/observations'
+    topic: '/api/datastreams/gal7w6j6v7n9/observations'
 });
 
 const isaDataSource = new SweApiMqttJson("ISA-bio-sensor", {
@@ -27,9 +27,9 @@ const isaDataSource = new SweApiMqttJson("ISA-bio-sensor", {
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.platformLocation.lon,
-        y: rec.platformLocation.lat,
-        z: rec.platformLocation.alt
+        x: rec.location.lon,
+        y: rec.location.lat,
+        z: rec.location.alt
     }),
     icon: './images/car-location.png',
     iconSize: [32, 64],
