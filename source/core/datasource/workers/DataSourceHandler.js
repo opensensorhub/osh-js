@@ -31,10 +31,6 @@ class DataSourceHandler {
 
         const properties = JSON.parse(propertiesStr);
 
-        if (isDefined(properties.timeShift)) {
-            this.timeShift = properties.timeShift;
-        }
-
         if (isDefined(properties.bufferingTime)) {
             this.bufferingTime = properties.bufferingTime;
         }
@@ -69,10 +65,7 @@ class DataSourceHandler {
      * @private
      */
     createDataConnector(properties) {
-        const url = this.parser.buildUrl({
-            ...properties,
-            timeShift: this.timeShift
-        });
+        const url = this.parser.buildUrl(properties);
 
         // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) { // for wss

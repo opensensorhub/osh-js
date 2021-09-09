@@ -16,6 +16,10 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
      * @private
      */
     createDataConnector(properties) {
+        if (isDefined(properties.timeShift)) {
+            this.timeShift = properties.timeShift;
+        }
+
         super.createDataConnector({
             ...properties,
             timeShift: this.timeShift

@@ -11,11 +11,7 @@ class DataSourceParser {
      * @param {String} properties.service the service
      * @param {String} properties.offeringID the offeringID
      * @param {String} properties.observedProperty the observed property
-     * @param {String} properties.startTime the start time (ISO format)
-     * @param {String} properties.endTime the end time (ISO format)
-     * @param {Number} properties.replaySpeed the replay factor
      * @param {Number} properties.responseFormat the response format (e.g video/mp4)
-     * @param {Date} properties.lastTimeStamp - the last timestamp to start at this time (ISO String)
      * @param {Object} properties.customUrlParams - the encoding options
      * @param {Number} properties.customUrlParams.video_bitrate - define a custom bitrate (in b/s)
      * @param {Number} properties.customUrlParams.video_scale - define a custom scale, 0.0 < value < 1.0
