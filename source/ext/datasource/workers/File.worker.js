@@ -1,5 +1,5 @@
-import DataSourceHandler from './DataSourceHandler.js';
 import FileParser from "../parsers/File.parser";
+import DataSourceHandler from "../../../core/datasource/workers/DataSourceHandler";
 
 const dataSourceHandler = new DataSourceHandler(new FileParser());
 

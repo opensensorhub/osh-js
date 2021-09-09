@@ -1,5 +1,3 @@
-import DataSourceParser from "./DataSourceParser";
-import {assertArray} from "../../utils/Utils";
 import {registerLoaders, selectLoader} from '@loaders.gl/core';
 import {CSVLoader} from '@loaders.gl/csv';
 import {ShapefileLoader} from '@loaders.gl/shapefile';
@@ -7,6 +5,8 @@ import {KMLLoader} from '@loaders.gl/kml';
 import {JSONLoader} from '@loaders.gl/json';
 import {WKTLoader} from '@loaders.gl/wkt';
 import {parse} from '@loaders.gl/core';
+import DataSourceParser from "../../../core/datasource/parsers/DataSourceParser";
+import {assertArray} from "../../../core/utils/Utils";
 
 class FileParser extends DataSourceParser {
 
