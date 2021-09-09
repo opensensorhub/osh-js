@@ -1,7 +1,6 @@
 export const VERSION = '2.1.0';
 export { default as  Ajax } from './protocol/Ajax.js';
 export { default as  DataConnector } from './protocol/DataConnector.js';
-export { default as  FileConnector } from './protocol/FileConnector.js';
 export { default as  Status } from './protocol/Status.js';
 export { default as  TopicConnector } from './protocol/TopicConnector.js';
 export { default as  WebSocketConnector } from './protocol/WebSocketConnector.js';
@@ -12,12 +11,10 @@ export { default as  OrientationQuaternion  } from '../ext/datasource/Orientatio
 export { default as  SosGetResultVideo } from './datasource/SosGetResultVideo.js';
 export { default as  SosGetResultVideoWithRoll } from './datasource/SosGetResultVideoWithRoll.js';
 export { default as  SosGetFois } from './datasource/SosGetFois.js';
-export { default as  File } from './datasource/File.js';
 export { default as  TimeSeriesDataSource } from './datasource/TimeSeriesDataSource.js';
 export { default as  SosGetResultAudio } from './datasource/SosGetResultAudio.js';
 export { default as  DataSenderController } from './datapush/DataSenderController.js';
 export { default as  DataSink } from './datapush/DataSink.js';
-// export { default as  FoscamPtzTasking } from './command/FoscamPtzTasking.js';
 export { default as  PtzTasking } from './datapush/PtzTasking.js';
 export { default as  UavMapTasking } from './datapush/UavMapTasking.js';
 export { default as  SWEXmlStreamParser  } from './parsers/SWEXmlStreamParser.js';

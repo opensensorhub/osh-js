@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 
-import DataSource from './DataSource.js';
+import DataSource from '../../core/datasource/DataSource.js';
 import FileWorker from './workers/File.worker.js';
 
 
