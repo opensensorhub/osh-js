@@ -32,7 +32,7 @@ class SweApiMqttJsonParser {
      * @return {String} the full url
      */
     buildUrl(properties) {
-        return properties.protocol + '://'+properties.endpoint + '/mqtt';
+        return properties.protocol + '://'+properties.endpoint;
     }
 
 }

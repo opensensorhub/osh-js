@@ -117,3 +117,4 @@ const chartView = new ChartJsView({
 // start streaming
 gpsDataSource.connect();
 isaDataSource.connect();
+

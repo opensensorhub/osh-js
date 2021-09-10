@@ -2,8 +2,6 @@ import MqttConnector from "../protocol/MqttConnector";
 import TimeSeriesDataSourceHandler from "../../core/datasource/workers/TimeSeriesDataSourceHandler";
 
 // expose as Global. static property is still experimental
-const mqttConnectors = {};
-
 class MqttDataSourceHandler  extends TimeSeriesDataSourceHandler {
 
     constructor(parser) {
@@ -14,16 +12,15 @@ class MqttDataSourceHandler  extends TimeSeriesDataSourceHandler {
      * Override default data connector build
      * @private
      */
-    createDataConnector(properties) {
+    createConnector(propertiesStr, topic, dataSourceId) {
+        const properties = JSON.parse(propertiesStr);
+
         const url = this.parser.buildUrl({
             ...properties,
             timeShift: this.timeShift
         });
 
-        if(!(url in mqttConnectors)) {
-            mqttConnectors[url] = new MqttConnector(url,properties,this);
-        }
-        this.connector = mqttConnectors[url];
+        this.connector = new MqttConnector(url,properties,dataSourceId);
 
         // set the reconnectTimeout
         this.connector.setReconnectTimeout(this.reconnectTimeout);
