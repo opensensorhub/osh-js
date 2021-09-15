@@ -16,17 +16,15 @@ let common = {
         }
     },
     module: {
-        rules: [
-            {
-                test: /\.(png|svg|jpg|gif)$/,
-                use: [
-                    'file-loader',
-                ],
-            },{
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
-            }
-        ]
+        rules: [{
+            test: /\.(png|svg|jpg|gif)$/,
+            use: [
+                'file-loader',
+            ],
+        }, {
+            test: /\.css$/i,
+            use: ['style-loader', 'css-loader'],
+        }]
     },
     node: {
         // Resolve node module use of fs
@@ -59,13 +57,15 @@ module.exports = [{
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'index.html')
         }),
-      new CopyWebpackPlugin([
-          { from: path.resolve(__dirname, 'lib'), to:'lib'},
-          { from: path.resolve(__dirname, 'images'), to:'images'}
-      ])
+        new CopyWebpackPlugin([
+            { from: path.resolve(__dirname, 'lib'), to: 'lib' },
+            { from: path.resolve(__dirname, 'images'), to: 'images' }
+        ])
     ]
 }];
 
+<<
+<< << < HEAD
 let directories = [
     'cesium-fois',
     'cesium-location',
@@ -104,14 +104,17 @@ let directories = [
     'chart-archive-realtime-batch',
     'chart-archive-realtime-synchronized',
     'audio',
+    'audioRaw',
     'audio-with-control-vuejs',
+    'audioRaw-with-control-vuejs',
     'datasource-audio',
-    'audio-video-synchronized-with-control-vuejs'];
+    'audio-video-synchronized-with-control-vuejs'
+];
 
-const plug= {};
+const plug = {};
 
-for(let i=0;i < directories.length;i++) {
-    let example = 'examples/'+directories[i];
+for (let i = 0; i < directories.length; i++) {
+    let example = 'examples/' + directories[i];
     let config = require(path.resolve(__dirname, './' + example + '/webpack.config.js'));
 
     //
@@ -119,18 +122,18 @@ for(let i=0;i < directories.length;i++) {
 
     // removes clean webpack plugin because it is causing issues while copying files/dir
     let currentPlugin = [];
-    for(let j=0;j < config.plugins.length;j++) {
-        if(config.plugins[j].constructor.name !== 'CleanWebpackPlugin') {
+    for (let j = 0; j < config.plugins.length; j++) {
+        if (config.plugins[j].constructor.name !== 'CleanWebpackPlugin') {
             currentPlugin.push(config.plugins[j]);
         }
     }
     currentPlugin.push(new CopyWebpackPlugin([
-        {from: path.resolve(__dirname, './' + example + '/'+directories[i]+'.js'), to: 'js'}
+        { from: path.resolve(__dirname, './' + example + '/' + directories[i] + '.js'), to: 'js' }
     ]));
 
-    if (fs.existsSync( path.resolve(__dirname, './' + example + '/src/App.vue'))) {
+    if (fs.existsSync(path.resolve(__dirname, './' + example + '/src/App.vue'))) {
         currentPlugin.push(new CopyWebpackPlugin([
-            {from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue/App_' + example+'.vue' },
+            { from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue/App_' + example + '.vue' },
         ]));
     }
 
