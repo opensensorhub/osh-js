@@ -205,7 +205,7 @@ class DeckGlView extends MapView {
             {
                 weight: layer.weight,
                 "name": layer.id,
-                "color": layer.color,
+                "color": this.rgbaToArray(layer.color),
                 "path": path
             }
         ];
@@ -262,6 +262,15 @@ class DeckGlView extends MapView {
             ...extraProps,
             ...props
         });
+    }
+
+    rgbaToArray(str) {
+        let startIdxValue = str.indexOf('(') + 1;
+        let endIdxValue = str.indexOf(')');
+        let values = str.substr(startIdxValue, endIdxValue-startIdxValue);
+        const rgba = values.split(',').map(Number);
+        rgba[3] = parseInt(rgba[3]*100);
+        return rgba;
     }
 }
 
