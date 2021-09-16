@@ -88,7 +88,6 @@ class WebSocketConnector extends DataConnector {
             this.ws.onclose = (event) => {
                 this.checkStatus(Status.DISCONNECTED);
                 console.warn('WebSocket stream closed: ',event.reason, event.code);
-                this.init = false;
                 if(event.code !== 1000 && !this.closed) {
                     this.createReconnection();
                 }
