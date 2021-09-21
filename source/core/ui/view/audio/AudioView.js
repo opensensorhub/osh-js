@@ -212,8 +212,15 @@ class AudioView extends View {
             if (!this.isInitContext) {
                 this.initAudioContext(value.data.sampleRate, value.timeStamp);
             }
+            if(this.properties.codec === 'raw') {
+                const frame =  new Float32Array(value.data.frameData);
 
-            this.decoder.decode(value.data, value.timeStamp);
+                let audioBuffer = this.audioCtx.createBuffer(1, frame.length, this.audioCtx.sampleRate);
+                audioBuffer.copyToChannel(frame, 0,0);
+                this.onDecodedBuffer(audioBuffer);
+            } else {
+                this.decoder.decode(value.data, value.timeStamp);
+            }
         }
     }
 

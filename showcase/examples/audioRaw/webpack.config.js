@@ -57,7 +57,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'audioUncomp.html'
+        index: 'audioRaw.html'
     },
     devtool: 'source-map',
     plugins: [

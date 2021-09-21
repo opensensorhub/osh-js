@@ -9,7 +9,7 @@ import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spe
 let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     protocol: "ws",
     service: "SOS",
-    endpointUrl: "localhost:8181/sensorhub/sos",
+    endpointUrl: "70.115.128.249:8282/sensorhub/sos",
     offeringID: "urn:osh:audio:wav",
     observedProperty: "urn:osh:audio:wav:sampleArray",
     startTime: "2019-03-01T00:00:00Z",
@@ -23,6 +23,7 @@ let audioView = new AudioView({
     container: 'audio-chart-container',
     dataSource: audioDataSource,
     gain: 5,
+    codec: 'raw',
     playSound: true
 });
 
