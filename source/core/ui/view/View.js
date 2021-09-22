@@ -295,7 +295,9 @@ class View {
      * Calls for resetting the view.
      */
     reset() {
+        this.removeAllFromLayers();
     }
+
 }
 
 export default View;
