@@ -9,7 +9,7 @@ import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/tim
 import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
 
 let audioDataSource = new SosGetResultAudio("alex-audio", {
-  protocol: "ws",
+  protocol: "wss",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
