@@ -588,6 +588,7 @@ export default {
   align-items: center;
   justify-content: center;
   line-height: 15px;
+  min-width: 65px;
 }
 
 .control .control-back-for {
