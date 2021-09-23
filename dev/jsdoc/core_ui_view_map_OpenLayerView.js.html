@@ -455,6 +455,9 @@ class OpenLayerView extends MapView {
                     image: new Icon({
                         opacity: 0.75,
                         src: properties.icon,
+                        anchor: properties.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
                         rotation: properties.orientation.heading * Math.PI / 180
                     }),
                     zIndex: properties.zIndex,

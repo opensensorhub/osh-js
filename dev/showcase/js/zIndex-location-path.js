@@ -18,7 +18,7 @@ let gpsDataSource = new SosGetResultJson("android-GPS", {
     replaySpeed: 2
 });
 
-function createPointMarker0(extra={}) {
+function createPointMarker0() {
     return new PointMarkerLayer({
         dataSourceId: gpsDataSource.id,
         getLocation: (rec) => ({
@@ -34,12 +34,11 @@ function createPointMarker0(extra={}) {
         label: '#0',
         labelOffset: [0, 5],
         labelColor: '#000000',
-        labelSize: 12,
-        ...extra
+        labelSize: 12
     });
 }
 
-function createPointMarker1(extra={}) {
+function createPointMarker1() {
     return new PointMarkerLayer({
         dataSourceId: gpsDataSource.id,
         getLocation: (rec) => ({
@@ -55,12 +54,11 @@ function createPointMarker1(extra={}) {
         zIndex: 1,
         labelOffset: [-20, 5],
         labelColor: '#000000',
-        labelSize: 12,
-        ...extra
+        labelSize: 12
     });
 }
 
-function createPointMarker2(extra={}) {
+function createPointMarker2() {
     return new PointMarkerLayer({
         dataSourceId: gpsDataSource.id,
         getLocation: (rec) => ({
@@ -76,9 +74,7 @@ function createPointMarker2(extra={}) {
         label: '#2',
         labelOffset: [-45, 5],
         labelColor: '#000000',
-        labelSize: 12,
-        ...extra
-
+        labelSize: 12
     });
 }
 
@@ -108,12 +104,7 @@ new LeafletView({
 // create OL view
 new OpenLayerView({
     container: 'olMap',
-    layers: [
-        createPointMarker1({  iconAnchor: [0.5, 1.0]}),
-        createPointMarker0({  iconAnchor: [-0.2, 1.0]}),
-        createPointMarker2({  iconAnchor: [1.3, 1.0]}),
-        createPolyline()
-    ],
+    layers: [createPointMarker1(),createPointMarker0(),createPointMarker2(),  createPolyline()],
     autoZoomOnFirstMarker:true
 });
 
