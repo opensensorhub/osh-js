@@ -210,6 +210,7 @@ export default {
         // Gets the common conf and add onLeftClick & onHover callback to update infos
         new PointMarkerLayer({
           ...commonMarkerConf,
+          iconAnchor: [0.5, 1.0],
           onLeftClick: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
           onRightClick: (markerId, billboard, event) => {
             const rect = document.getElementById('olMap').getBoundingClientRect();
