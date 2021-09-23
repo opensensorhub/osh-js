@@ -584,7 +584,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 20px;
-  line-height: 15px;
+  line-height: 12px;
   min-width: 65px;
   margin-bottom: 5px;
 }
