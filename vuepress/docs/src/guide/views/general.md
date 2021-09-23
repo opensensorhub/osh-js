@@ -91,5 +91,13 @@ In this way, the View subscribes to the DataSource broadcast channel at initiali
 The subclasses of View have to therefore *override* the ***setData(dataSourceId, data)*** method to receive
  the data automatically.
 
+## Events
+
+When an event of type "time-changed" comes in the view, the view will call the generic reset() method which can of course be overloaded in the subclasses.
+
+For example, if we use the Time Controller with a Map View, and some layers have markers, polylines or other, calling the reset()
+method will delete them from their respective layer and will be automatically recreated in the respective update methods
+
+
 
 
