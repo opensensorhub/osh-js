@@ -1,9 +1,8 @@
 // create data source for Android phone GPS
 import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import RangeSlider from 'osh-js/ext/ui/view/rangeslider/RangeSliderView.js';
-import CesiumView from "../../../source/core/ui/view/map/CesiumView";
+import LeafletView from "../../../source/core/ui/view/map/LeafletView";
 
 let gpsDataSource = new SosGetResultJson("android-GPS", {
   protocol: "ws",
@@ -32,7 +31,7 @@ let pointMarkerLayer = new PointMarkerLayer({
 });
 
 // create Leaflet view
-let leafletMapView = new CesiumView({
+let leafletMapView = new LeafletView({
     container: 'leafletMap',
     layers: [pointMarkerLayer],
     autoZoomOnFirstMarker:true
