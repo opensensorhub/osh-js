@@ -517,11 +517,10 @@ export default {
     ,
     parseDate(timestamp) {
       const date = new Date(timestamp);
-      const smallDate = this.withLeadingZeros(date.getUTCFullYear()) + '-' + this.withLeadingZeros(date.getUTCMonth())
-          + '-' + this.withLeadingZeros(date.getUTCDay());
+      const isoDate = date.toISOString();
 
-      const smallTime = this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-          + this.withLeadingZeros(date.getUTCSeconds());
+      const smallDate = isoDate.substr(0,10);
+      const smallTime = isoDate.substr(11,8);
 
       return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
     },
