@@ -26,7 +26,7 @@ let pointMarker = new PointMarkerLayer({
     heading: 0
   },
   icon: 'images/car-location.png',
-  iconAnchor: [16, 64],
+  iconAnchor: [0.5, 1.0],
   iconSize: [32, 64],
   name: "Android Phone GPS"
 });
