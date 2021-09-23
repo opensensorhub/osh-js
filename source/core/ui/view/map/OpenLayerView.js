@@ -116,21 +116,14 @@ class OpenLayerView extends MapView {
                 style.getText().setOffsetY(props.labelOffset[1]);
                 style.setZIndex(props.zIndex);
 
-                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
-                // Then either set that in your ol.style.Style as required
-                if(style.getImage().getSrc() !== props.icon) {
-                    style.setImage(new Icon({
-                        opacity: 0.75,
-                        anchor: props.iconAnchor,
-                        anchorYUnits: 'pixels',
-                        anchorXUnits: 'pixels',
-                        src: props.icon,
-                        rotation: props.orientation.heading * Math.PI / 180
-                    }));
-                } else {
-                    style.getImage().setAnchor(props.iconAnchor);
-                    style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
-                }
+                style.setImage(new Icon({
+                    opacity: 0.75,
+                    anchor: props.iconAnchor,
+                    anchorYUnits: 'pixels',
+                    anchorXUnits: 'pixels',
+                    src: props.icon,
+                    rotation: props.orientation.heading * Math.PI / 180
+                }));
             }
         }
     }
