@@ -365,7 +365,6 @@ export default {
     ,
     async updateTime(event) {
       // reset master time
-      console.log('update time')
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
@@ -585,10 +584,9 @@ export default {
   display: flex;
   flex-direction: column;
   height: 20px;
-  align-items: center;
-  justify-content: center;
   line-height: 15px;
   min-width: 65px;
+  margin-bottom: 5px;
 }
 
 .control .control-back-for {
