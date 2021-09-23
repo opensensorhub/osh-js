@@ -229,7 +229,9 @@ class View {
             let self = this;
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
             broadcastChannel.onmessage = (event) => {
-                if(event.data.type === EventType.DATA) {
+                if(event.data.type === EventType.STATUS && event.data.status === Status.CLOSED_ERROR) {
+                    self.reset();
+                } else if(event.data.type === EventType.DATA) {
 
                     // transform the data
                     layer.setData(dataSourceId, event.data.values);
