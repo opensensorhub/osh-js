@@ -106,7 +106,7 @@ class MqttConnector extends DataConnector {
                 client.subscribe(that.properties.topic, function (err) {
                     if (err) {
                         console.error(err);
-                        that.checkStatus(Status.DISCONNECTED);
+                        that.checkStatus(Status.CLOSED_ERROR);
                     } else {
                         console.warn(`Subscribed to ${that.properties.topic}`);
                     }

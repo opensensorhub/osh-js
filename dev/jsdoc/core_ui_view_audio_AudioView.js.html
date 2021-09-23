@@ -140,7 +140,10 @@ class AudioView extends View {
 
     initDecoder() {
         try {
-            this.decoder = new WebCodecApi({
+            //TODO: since the WebCodec API changed after chrome >=94, we need to detect correctly which version
+            // of the browser is used to be sure to apply the right decoder
+            // this.decoder = new WebCodecApi({
+            this.decoder = new FfmpegAudio({
                 ...this.properties,
                 audioCtx: this.audioCtx
             });
