@@ -42,15 +42,15 @@ import MqttProvider from "../mqtt/MqttProvider";
 
 // TODO: Useless in WebWorker since the WebWorker has its own context.
 const mqttProviders = {};
+
 class MqttConnector extends DataConnector {
     /**
      *
      * @param properties -
      */
-    constructor(url, properties, dataSourceId) {
+    constructor(url, properties) {
         super(url, properties);
         this.interval = -1;
-        this.dataSourceId = dataSourceId;
     }
 
     /**

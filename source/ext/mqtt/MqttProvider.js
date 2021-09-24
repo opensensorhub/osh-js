@@ -135,8 +135,9 @@ class MqttProvider {
         if(!isDefined(this.client)) {
             // connects to the broker specified by the given url and options and returns a Client.
             this.client = mqtt.connect(this.endpoint, {...this.options});
+            const that = this;
             this.client.on('connect', function (e) {
-                console.log('is connected')
+                console.info(`Mqqt client is connected to ${that.endpoint}`)
             })
             this.client.on('message', this.onMessage.bind(this));
         }

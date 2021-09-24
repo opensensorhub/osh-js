@@ -12,15 +12,13 @@ class MqttDataSourceHandler  extends TimeSeriesDataSourceHandler {
      * Override default data connector build
      * @private
      */
-    createConnector(propertiesStr, topic, dataSourceId) {
-        const properties = JSON.parse(propertiesStr);
-
+    createDataConnector(properties) {
         const url = this.parser.buildUrl({
             ...properties,
             timeShift: this.timeShift
         });
 
-        this.connector = new MqttConnector(url,properties,dataSourceId);
+        this.connector = new MqttConnector(url,properties);
 
         // set the reconnectTimeout
         this.connector.setReconnectTimeout(this.reconnectTimeout);
