@@ -1,6 +1,5 @@
 // webpack.config.common.js
 const CopywebpackPlugin = require('copy-webpack-plugin');
-const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
@@ -18,7 +17,6 @@ const cesiumConfig = {
             {from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers'},
             {from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets'},
             {from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets'},
-            {from: 'images', to: 'images'},
             {from: 'models', to: 'models'}
           ],
           options: {
