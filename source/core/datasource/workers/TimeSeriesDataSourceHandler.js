@@ -16,10 +16,6 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
      * @private
      */
     createDataConnector(properties) {
-        if (isDefined(properties.timeShift)) {
-            this.timeShift = properties.timeShift;
-        }
-
         super.createDataConnector({
             ...properties,
             timeShift: this.timeShift
@@ -37,6 +33,28 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
                     }));
             }
             return true;
+        }
+    }
+
+    handleProperties(properties) {
+        super.handleProperties(properties);
+
+        if (isDefined(properties.timeShift)) {
+            this.timeShift = properties.timeShift;
+        }
+
+        if(properties.startTime === 'now') {
+            this.batchSize = 1;
+        } else {
+            if (isDefined(properties.replaySpeed)) {
+                if (!isDefined(properties.batchSize)) {
+                    this.batchSize = 1;
+                }
+            }
+
+            if (isDefined(properties.batchSize)) {
+                this.batchSize = properties.batchSize;
+            }
         }
     }
 
