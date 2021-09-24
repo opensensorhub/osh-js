@@ -16,6 +16,7 @@
 
 import mqtt from 'mqtt';
 import {isDefined} from "../../core/utils/Utils";
+import ObsFilter from "../../core/sensorwebapi/ObsFilter";
 
 let mqttCallbacks = {};
 
@@ -63,26 +64,27 @@ class MqttProvider {
     }
 
 
-    subscribeToObservations(dsID, format, callback) {
-
+    subscribeToObservations(dataStreamId, format, callback) {
+        const obsFilter = new ObsFilter({
+            datastreamIds: [dataStreamId],
+        });
+        this.subscribeToObservationsWithObsFilter(obsFilter, format, callback);
     }
+
 
     /**
      * Generic model
      * mqttCallback: {
-     *     'topic0': {
-     *         dsId: callback
-     *     }
+     *     'topic0': [callback]
      * }
      */
     /**
      *
-     * @param dsID
      * @param {ObsFilter} ObsFilter - the observation filter object
      * @param {string} format - the return format such as 'application/json', 'application/swe+json','text/xml','text/plain', 'application/swe+binary'
      * @param callback
      */
-    subscribeToObservationsWithObsFilter(dsID, obsFilter, format, callback) {
+    subscribeToObservationsWithObsFilter(obsFilter, format, callback) {
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic')
         }
@@ -96,10 +98,10 @@ class MqttProvider {
                     for (let dataStreamId of obsFilter.datastreamIds) {
                         // store callback for this topic
                         if (!(dataStreamId in mqttCallbacks)) {
-                            mqttCallbacks[dataStreamId] = {};
+                            mqttCallbacks[dataStreamId] = [];
                         }
 
-                        mqttCallbacks[dataStreamId][dsID] = callback;
+                        mqttCallbacks[dataStreamId].push(callback);
 
                         this.client.subscribe(dataStreamId, function (err) {
                             if (err) {
@@ -118,39 +120,20 @@ class MqttProvider {
         },100);
     }
 
-    // TODO!:
-    unsubscribeObservations(dsId, obsFilter) {
-    }
-
     /**
      * Check to unsuscribe to any topic listened by this dsId
      * If the topic is only subscribed by the dsId, unsubscribe from broken
      * Otherwise, remove from the list of subscribe topic/dsId
-     * @param dsId
+     * @param dataStreamId
      */
-    unsubscribeDs(dsId) {
-        console.log('remove', mqttCallbacks)
-
-        for (let dataStreamId in mqttCallbacks) {
-            // callback for the corresponding topic
-            if(dsId in mqttCallbacks[dataStreamId]) {
-                delete mqttCallbacks[dataStreamId][dsId];
-            }
-
-            if (Object.keys(mqttCallbacks[dataStreamId]).length === 0) {
-                this.client.unsubscribe(dataStreamId, function (err) {
-                    // throw Error(err);
-                });
-                delete mqttCallbacks[dataStreamId];
-            }
-        }
-        console.log(mqttCallbacks)
+    unsubscribeDs(dataStreamId) {
+        console.log(`remove dataStream: ${dataStreamId}`)
+        delete mqttCallbacks[dataStreamId];
     }
 
     connect() {
         if(!isDefined(this.client)) {
             // connects to the broker specified by the given url and options and returns a Client.
-
             this.client = mqtt.connect(this.endpoint, {...this.options});
             this.client.on('connect', function (e) {
                 console.log('is connected')
@@ -162,12 +145,11 @@ class MqttProvider {
     onMessage(topic, message) {
         if(topic in mqttCallbacks) {
             // callback for the corresponding topic
-            for(let dsId in mqttCallbacks[topic]) {
+            for(let callbackFn of mqttCallbacks[topic]) {
                 // callback to all subscription registered
-                mqttCallbacks[topic][dsId](message)
+                callbackFn(message)
             }
         }
-        console.log(mqttCallbacks)
     }
 
     disconnect() {
