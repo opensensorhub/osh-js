@@ -19,8 +19,7 @@ class SweApiMqttJsonParser {
      * @return {Object} the parsed data
      */
     async parseData(data) {
-        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-        return rec['result'];
+        return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)))['result'];
     }
 
     /**

@@ -10,15 +10,10 @@ const mqttProvider = new MqttProvider({
    clientId: randomUUID()
 });
 
-const obsFilter = new ObsFilter({
-   datastreamIds: ['/api/datastreams/gal7w6j6v7n9/observations'],
-})
-
 mqttProvider.connect();
-
 let count = 0;
 
-mqttProvider.subscribeToObservationsWithObsFilter(0,obsFilter,'application/json',async function (message) {
+mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations','application/json',async function (message) {
    const parser = new SweApiMqttJsonParser();
    const data = await parser.parseData(message)
    if(count++ < 100) {
@@ -29,11 +24,7 @@ mqttProvider.subscribeToObservationsWithObsFilter(0,obsFilter,'application/json'
    }
 });
 
-const obsFilter2 = new ObsFilter({
-   datastreamIds: ['/api/datastreams/1lppw59ger1py/observations'],
-});
-
-mqttProvider.subscribeToObservationsWithObsFilter(0,obsFilter2,'application/json',async function (message) {
+mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
    const parser = new SweApiMqttJsonParser();
    const data = await parser.parseData(message)
    if(count++ < 100) {
@@ -43,11 +34,7 @@ mqttProvider.subscribeToObservationsWithObsFilter(0,obsFilter2,'application/json
       count = 0;
    }});
 
-const obsFilter3 = new ObsFilter({
-   datastreamIds: ['/api/datastreams/1lppw59ger1py/observations'],
-});
-
-mqttProvider.subscribeToObservationsWithObsFilter(1,obsFilter3,'application/json',async function (message) {
+mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
    const parser = new SweApiMqttJsonParser();
    const data = await parser.parseData(message)
    if(count++ < 100) {
@@ -58,6 +45,10 @@ mqttProvider.subscribeToObservationsWithObsFilter(1,obsFilter3,'application/json
    }});
 
 setTimeout(() => {
-   mqttProvider.unsubscribeDs(0);
+   mqttProvider.unsubscribeDs('/api/datastreams/1lppw59ger1py/observations');
 },2500);
+
+setTimeout(() => {
+   mqttProvider.unsubscribeDs('/api/datastreams/gal7w6j6v7n9/observations');
+},5000);
 

@@ -83,11 +83,7 @@ class MqttConnector extends DataConnector {
             }
 
             assertDefined(this.properties.topic, 'topic');
-
-            const obsFilter = new ObsFilter({
-                datastreamIds: [this.properties.topic]
-            });
-            mqttProviders[url].subscribeToObservationsWithObsFilter(this.dataSourceId,obsFilter, 'application/json',this.onMessage);
+            mqttProviders[url].subscribeToObservations(this.properties.topic, 'application/json',this.onMessage);
             this.url = url;
         }
     }
@@ -104,7 +100,7 @@ class MqttConnector extends DataConnector {
             // unsubscribe topic
             // find the client
             const client = mqttProviders[this.url];
-            client.unsubscribeDs(this.dataSourceId);
+            client.unsubscribeDs(this.properties.topic);
         }
         console.warn(`Disconnected from ${this.getUrl()}`);
     }
