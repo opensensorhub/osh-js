@@ -44,6 +44,16 @@ The HTTP connector is used to open a connection to a HTTP feed.
 Within the Toolkit, some options of the dataSources allow to define the remote address of the server, some properties
 depend on the SOS standard that the OSH server needs to retrieve the data.
 
+## MQTT protocol: '***mqtt***'
+The MQTT connector is used to open a connection to a MQTT feed.
+
+The Toolkit uses a utility class to connect to the MQTT Server. This utility class `MqttProvider` is based on the MQTT.js lib
+[https://github.com/mqttjs/MQTT.js](https://github.com/mqttjs/MQTT.js)
+
+It should be noted that for the moment, and given the current architecture of the Toolkit, the MQTT connector is launched
+in a WebWorker. Thus, it is not possible to mutualize the connections to the server between different DataSouces.
+
+
 ## Topic protocol: '***topic***'
 
 The Topic connector is used to listen to a BroadcastChannel given a specific topic name.
