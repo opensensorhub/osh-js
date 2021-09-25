@@ -72,7 +72,7 @@ let directories = ['cesium-fois',
     'leaflet-location-path', 'openlayers-location', 'mapbox-location-path-heading', 'zIndex-location-path', 'range-slider',
     'video-h264','video-h264-draping','video-h264-webcodec-api', 'video-h264-transferable','video-mjpeg', 'video-with-control-vuejs',
     'video-with-control-vuejs-synchronized','videodata-with-control-vuejs-synchronized', 'video-map-multiple-datasource', 'video-map-multiple-datasource-synchronizer',
-    'avl','avl-with-control-vuejs','mqtt','datasources-synchronized', 'multi-datasources-synchronized','datasource-swejson','datasource-video', 'deckgl-location', 'chart-archive-realtime',
+    'avl','mqtt','mqtt-utility','datasources-synchronized', 'multi-datasources-synchronized','datasource-swejson','datasource-video', 'deckgl-location', 'chart-archive-realtime',
     'chart-archive-realtime-batch', 'chart-archive-realtime-synchronized','audio', 'audio-with-control-vuejs','datasource-audio', 'audio-video-synchronized-with-control-vuejs'];
 
 const plug= {};

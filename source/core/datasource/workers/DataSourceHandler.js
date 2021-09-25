@@ -15,7 +15,7 @@ class DataSourceHandler {
         this.version = -Number.MAX_SAFE_INTEGER;
     }
 
-    createConnector(propertiesStr, topic, dataSourceId) {
+    init(propertiesStr, topic, dataSourceId) {
         this.dataSourceId = dataSourceId;
         // check for existing protocol
         if(this.connector !== null) {
@@ -27,6 +27,12 @@ class DataSourceHandler {
 
         const properties = JSON.parse(propertiesStr);
 
+        this.handleProperties(properties);
+
+        this.createDataConnector(this.properties);
+    }
+
+    handleProperties(properties) {
         if (isDefined(properties.bufferingTime)) {
             this.bufferingTime = properties.bufferingTime;
         }
@@ -39,22 +45,7 @@ class DataSourceHandler {
             this.reconnectTimeout = properties.reconnectTimeout;
         }
 
-        if(properties.startTime === 'now') {
-            this.batchSize = 1;
-        } else {
-            if (isDefined(properties.replaySpeed)) {
-                if (!isDefined(properties.batchSize)) {
-                    this.batchSize = 1;
-                }
-            }
-
-            if (isDefined(properties.batchSize)) {
-                this.batchSize = properties.batchSize;
-            }
-        }
-
         this.properties = properties;
-        this.createDataConnector(this.properties);
     }
 
     /**
@@ -189,7 +180,7 @@ class DataSourceHandler {
 
     handleMessage(message, worker) {
         if(message.message === 'init') {
-            this.createConnector(message.properties, message.topic, message.id);
+            this.init(message.properties, message.topic, message.id);
         } else if (message.message === 'connect') {
             this.connect();
         } else if (message.message === 'disconnect') {

@@ -15,9 +15,10 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataConnector from "../../core/protocol/DataConnector";
-import mqtt from 'mqtt';
-import {assertDefined, isDefined} from "../../core/utils/Utils";
+import {assertDefined, isDefined, randomUUID} from "../../core/utils/Utils";
 import {Status} from "../../core/protocol/Status";
+import ObsFilter from "../../core/sensorwebapi/ObsFilter";
+import MqttProvider from "../mqtt/MqttProvider";
 
 /**
  * Defines the MqttConnector to connect to a remote server by creating a Mqtt channel.
@@ -39,21 +40,23 @@ import {Status} from "../../core/protocol/Status";
  *
  */
 
+// TODO: Useless in WebWorker since the WebWorker has its own context.
+const mqttProviders = {};
+
 class MqttConnector extends DataConnector {
     /**
      *
      * @param properties -
      */
-    constructor(url, properties, dataSource) {
+    constructor(url, properties) {
         super(url, properties);
         this.interval = -1;
-        this.dataSource = dataSource;
     }
 
     /**
      * Connect to the Mqtt broker.
      */
-    async connect() {
+    connect() {
         if (!this.init) {
             this.init = true;
             const url = this.getUrl();
@@ -68,34 +71,20 @@ class MqttConnector extends DataConnector {
                     ...this.properties.options
                 }
             }
-            const client = mqtt.connect(url, {...options});
+          
+            // only 1 provider by URL
+            if(!(url in mqttProviders)) {
+                mqttProviders[url] = new MqttProvider({
+                    endpoint: url,
+                    clientId: randomUUID(),
+                    options: options
+                });
+                mqttProviders[url].connect();
+            }
 
             assertDefined(this.properties.topic, 'topic');
-            const that = this;
-            client.on('connect', function () {
-                that.checkStatus(Status.CONNECTED);
-                console.warn(`Connected to ${url}`);
-                client.subscribe(that.properties.topic, function (err) {
-                    if (err) {
-                        console.error(err);
-                        that.checkStatus(Status.CLOSED_ERROR);
-                    } else {
-                        console.warn(`Subscribed to ${that.properties.topic}`);
-                    }
-                });
-            });
-            client.on('message', function (topic, message) {
-                // message is Buffer
-                this.dataSource.onMessage(message);
-            }.bind(that));
-
-            this.client = client;
-        }
-    }
-
-    unsubscribe(topic) {
-        if(this.isConnected()) {
-            this.client.unsubscribe(topic);
+            mqttProviders[url].subscribeToObservations(this.properties.topic, 'application/json',this.onMessage);
+            this.url = url;
         }
     }
 
@@ -107,10 +96,11 @@ class MqttConnector extends DataConnector {
         this.checkStatus(Status.DISCONNECTED);
         this.init = false;
         this.closed = true;
-        if(isDefined(this.client) && this.client !== null) {
-            // close the client right away, without waiting for the in-flight messages to be acked
-            this.client.end(true);
-            this.client = null;
+        if(isDefined(mqttProviders[this.url])) {
+            // unsubscribe topic
+            // find the client
+            const client = mqttProviders[this.url];
+            client.unsubscribeDs(this.properties.topic);
         }
         console.warn(`Disconnected from ${this.getUrl()}`);
     }
@@ -124,11 +114,7 @@ class MqttConnector extends DataConnector {
     }
 
     isConnected() {
-        if(!isDefined(this.client) && this.client == null) {
-            return false;
-        } else {
-            return this.client.connected;
-        }
+        return isDefined(mqttProviders[this.url]) && mqttProviders[this.url].isConnected();
     }
 }
 
