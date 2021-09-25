@@ -68,7 +68,7 @@ class MqttProvider {
         const obsFilter = new ObsFilter({
             datastreamIds: [dataStreamId],
         });
-        this.subscribeToObservationsWithObsFilter(obsFilter, format, callback);
+        this.subscribeToObservationsByObsFilter(obsFilter, format, callback);
     }
 
 
@@ -84,7 +84,7 @@ class MqttProvider {
      * @param {string} format - the return format such as 'application/json', 'application/swe+json','text/xml','text/plain', 'application/swe+binary'
      * @param callback
      */
-    subscribeToObservationsWithObsFilter(obsFilter, format, callback) {
+    subscribeToObservationsByObsFilter(obsFilter, format, callback) {
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic')
         }
