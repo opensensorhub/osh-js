@@ -32,7 +32,7 @@ const pointMarkerLayer = new PointMarkerLayer({
         z: rec.location.alt
     }),
     icon: './images/drone.png',
-    iconSize: [32, 32],
+    iconSize: [128, 128],
     iconAnchor: [16, 32],
     name: 'drone',
     description: 'Drone'
@@ -117,3 +117,4 @@ const chartView = new ChartJsView({
 // start streaming
 gpsDataSource.connect();
 isaDataSource.connect();
+

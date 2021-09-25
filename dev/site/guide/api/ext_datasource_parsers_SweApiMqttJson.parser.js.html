@@ -47,8 +47,7 @@
      * @return {Object} the parsed data
      */
     async parseData(data) {
-        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-        return rec['result'];
+        return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)))['result'];
     }
 
     /**
@@ -60,7 +59,7 @@
      * @return {String} the full url
      */
     buildUrl(properties) {
-        return properties.protocol + '://'+properties.endpoint + '/mqtt';
+        return properties.protocol + '://'+properties.endpoint;
     }
 
 }
