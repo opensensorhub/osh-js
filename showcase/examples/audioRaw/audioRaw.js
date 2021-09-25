@@ -12,8 +12,9 @@ let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     endpointUrl: "70.115.128.249:8282/sensorhub/sos",
     offeringID: "urn:osh:audio:wav",
     observedProperty: "urn:osh:audio:wav:sampleArray",
-    startTime: "2019-03-01T00:00:00Z",
-    endTime: "now",
+    startTime: "2019-03-27T14:18:00Z",
+    endTime: "2019-03-28T00:00:00Z",
+    replaySpeed: 1.0,
     bufferingTime: 1000
 });
 

@@ -10,8 +10,9 @@ class AudioParserRaw extends TimeSeriesParser {
      */
     parseTimeStamp(data) {
         // read double time stamp as big endian
-        let ts = new DataView(data).getFloat64(0, false) * 1000;
-        console.log('timestamp is ' + ts);
+        let ts = new DataView(data).getFloat64(0, true) * 1000;
+        let iso = new Date(ts).toISOString();
+        console.log('timestamp is ' + iso);
         return ts;
     }
 
@@ -24,16 +25,17 @@ class AudioParserRaw extends TimeSeriesParser {
         // 8 bytes for timestamp
         // 4 bytes for sampleRate
         // 4 bytes for nbSamples
-        // numSamples * 8 bytes for samples
-        let sr = new DataView(data).getUint32(8, false);
+        // numSamples * 4 bytes for samples
+        let sr = new DataView(data).getUint32(8, true);
         // console.log('sampling rate: ' + sr);
-        let numSamples = new DataView(data).getUint32(12, false);
+        let numSamples = new DataView(data).getUint32(12, true);
         // console.log(numSamples);
-        let endIndex = 16 + numSamples;
-        let samples = new Uint8Array(data.slice(16, endIndex));
-        // console.log("End Index: " + endIndex);
+        let endIndex = 16 + (numSamples * 4);
+        // let s0 = new DataView(data).getFloat32(4, false);
+        let samples = new Float32Array(data.slice(16, endIndex));
+        // console.log("End Index: " + endIndex)
         // for (let i = 0; i < 256; i++)
-        //     if (i < 2) console.log("Sample" + i + ": " + samples[i]); // + "," + samples[1] + "," + samples[2]);
+        //     if (i < 5) console.log("Sample" + i + ": " + samples[i]); // + "," + samples[1] + "," + samples[2]);
         return {
             sampleRate: sr,
             nbSamples: numSamples,

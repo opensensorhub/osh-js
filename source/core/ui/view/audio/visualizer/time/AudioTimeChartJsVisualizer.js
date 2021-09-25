@@ -1,6 +1,6 @@
 import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-moment';
-import {isDefined, merge, randomUUID} from "../../../../../utils/Utils";
+import { isDefined, merge, randomUUID } from "../../../../../utils/Utils";
 import AudioChartVisualizer from "../AudioChartVisualizer";
 
 /**
@@ -13,7 +13,7 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
      * @param {string} properties.container - The div element to attach to
      * @param {string} [properties.css=''] - The css classes to set, can be multiple if separate by spaces
      * @param {Number} [properties.maxValues=200] - The maximum values before shifting the graph to the left
-      * @param {Object} [properties.options={}] - Properties which can override the default framework ones
+     * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      * @param {String} [properties.colorData='rgba(100,255,65,0.4)'] - Defines color which colorizes the read data
      */
@@ -72,7 +72,7 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
                 }
             },
             datasets: {},
-            interaction :{},
+            interaction: {},
             animations: {},
             layout: {},
             elements: {},
@@ -81,16 +81,16 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
         };
 
         if (isDefined(properties)) {
-            if(properties.hasOwnProperty('options')){
-                merge(properties.options,this.options);
+            if (properties.hasOwnProperty('options')) {
+                merge(properties.options, this.options);
             }
-            if(properties.hasOwnProperty('type')){
+            if (properties.hasOwnProperty('type')) {
                 type = properties.type;
             }
-            if(properties.hasOwnProperty('datasetOptions')){
+            if (properties.hasOwnProperty('datasetOptions')) {
                 this.datasetOptions = properties.datasetOptions;
             }
-            if(properties.hasOwnProperty('colorReadData')){
+            if (properties.hasOwnProperty('colorReadData')) {
                 this.colorReadData = properties.colorReadData;
             }
         }
@@ -114,9 +114,9 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
         // #region snippet_audiochartjsview_default_chartprops
         this.dataset = {
             label: 'Time domain',
-            backgroundColor:  'rgba(200,200,200,0.4)',
+            backgroundColor: 'rgba(200,200,200,0.4)',
             data: [],
-            pointRadius:0.1,
+            pointRadius: 0.1,
             fill: true,
             // barPercentage: 1.0,
             // categoryPercentage: 1.0,
@@ -127,8 +127,8 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
 
         // init array of background color
         let color = this.dataset.backgroundColor;
-        this.dataset.backgroundColor=[];
-        for(let i =0; i < this.properties.maxValues;i++) {
+        this.dataset.backgroundColor = [];
+        for (let i = 0; i < this.properties.maxValues; i++) {
             this.dataset.backgroundColor.push(color);
         }
 
@@ -137,12 +137,12 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
     }
 
     draw(decodedSample) {
-        if(this.resetting) {
+        if (this.resetting) {
             return;
         }
 
-        if((this.dataset.data.length > this.properties.maxValues )) {
-            this.dataset.backgroundColor[this.dataset.data.length-1] = 'rgba(200,200,200,0.4)';
+        if ((this.dataset.data.length > this.properties.maxValues)) {
+            this.dataset.backgroundColor[this.dataset.data.length - 1] = 'rgba(200,200,200,0.4)';
             this.chart.data.labels.shift();
             this.dataset.data.shift();
             this.posReadData--;
@@ -154,6 +154,7 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
         const maxValue = Math.max(...dataArray);
 
         const time = decodedSample.timestamp;
+        // console.log("TimeChart ts: " + new Date(time).toISOString());
         this.dataset.data.push({
             'x': time,
             'y': [minValue, maxValue]
@@ -163,7 +164,7 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
         this.chart.update();
     }
     onended(decodedSample) {
-        if(this.resetting) {
+        if (this.resetting) {
             return;
         }
 
