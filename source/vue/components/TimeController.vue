@@ -262,31 +262,33 @@ export default {
             return;
           }
 
-          if (!this.interval && this.speed > 0.0 && !this.update) {
-            // consider here datasynchronizer sends data in time order
-            if (isDefined(this.dataSynchronizer)) {
-              const contains = message.data.dataSourceId in this.outOfSync;
-              if (message.data.timestamp < this.lastSynchronizedTimestamp) {
-                if (!contains) {
-                  if(isDefined(this.dataSynchronizer)) {
-                    this.dataSynchronizer.dataSources.forEach(datasource => {
-                      if(datasource.id === message.data.dataSourceId) {
-                        this.outOfSync[datasource.id] = datasource;
-                      }
-                    });
-                  } else {
-                    this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
+          if(message.data.type ===  EventType.DATA) {
+            if (!this.interval && this.speed > 0.0 && !this.update) {
+              // consider here datasynchronizer sends data in time order
+              if (isDefined(this.dataSynchronizer)) {
+                const contains = message.data.dataSourceId in this.outOfSync;
+                if (message.data.timestamp < this.lastSynchronizedTimestamp) {
+                  if (!contains) {
+                    if (isDefined(this.dataSynchronizer)) {
+                      this.dataSynchronizer.dataSources.forEach(datasource => {
+                        if (datasource.id === message.data.dataSourceId) {
+                          this.outOfSync[datasource.id] = datasource;
+                        }
+                      });
+                    } else {
+                      this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
+                    }
                   }
+                  return;
+                } else if (contains) {
+                  // check that the datasource is not out of sync anymore
+                  delete this.outOfSync[message.data.dataSourceId];
                 }
-                return;
-              } else if (contains) {
-                // check that the datasource is not out of sync anymore
-                delete this.outOfSync[message.data.dataSourceId];
               }
+              this.lastSynchronizedTimestamp = message.data.timestamp;
+              // }
+              this.setStartTime(message.data.timestamp);
             }
-            this.lastSynchronizedTimestamp = message.data.timestamp;
-            // }
-            this.setStartTime(message.data.timestamp);
           }
         } else {
           this.realtime = message.data.timestamp;
@@ -365,7 +367,6 @@ export default {
     ,
     async updateTime(event) {
       // reset master time
-      console.log('update time')
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
@@ -517,11 +518,10 @@ export default {
     ,
     parseDate(timestamp) {
       const date = new Date(timestamp);
-      const smallDate = this.withLeadingZeros(date.getUTCFullYear()) + '-' + this.withLeadingZeros(date.getUTCMonth())
-          + '-' + this.withLeadingZeros(date.getUTCDay());
+      const isoDate = date.toISOString();
 
-      const smallTime = this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-          + this.withLeadingZeros(date.getUTCSeconds());
+      const smallDate = isoDate.substr(0, 10);
+      const smallTime = isoDate.substr(11, 8);
 
       return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
     },
@@ -586,9 +586,9 @@ export default {
   display: flex;
   flex-direction: column;
   height: 20px;
-  align-items: center;
-  justify-content: center;
-  line-height: 15px;
+  line-height: 12px;
+  min-width: 65px;
+  margin-bottom: 5px;
 }
 
 .control .control-back-for {

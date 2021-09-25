@@ -1,6 +1,6 @@
 // webpack.config.common.js
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const { DefinePlugin, ProvidePlugin } = require('webpack');
+const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
@@ -96,7 +96,6 @@ const config = {
       favicon: path.resolve(__dirname,'favicon.ico')
     }),
     new DefinePlugin({
-      // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
     }),
   ],

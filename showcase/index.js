@@ -155,6 +155,12 @@ var samples = [
     url: 'avl'
   },
   {
+    name: 'AVL data using multiple ids and Time controller in VueJS',
+    description: 'Display multiple markers corresponding to a unique id provided by the same DataSource with a Time controller in VueJS',
+    url: 'avl-with-control-vuejs',
+    code: 'vue/App_examples/avl-with-control-vuejs.vue'
+  },
+  {
     name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
     description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
     url: 'mqtt'

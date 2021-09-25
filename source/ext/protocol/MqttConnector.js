@@ -71,7 +71,7 @@ class MqttConnector extends DataConnector {
                     ...this.properties.options
                 }
             }
-
+          
             // only 1 provider by URL
             if(!(url in mqttProviders)) {
                 mqttProviders[url] = new MqttProvider({
