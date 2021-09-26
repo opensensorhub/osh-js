@@ -59,6 +59,12 @@ class ChartJsView extends View {
                     }
                 }
             },
+            plugins: {},
+            datasets: {},
+            interaction :{},
+            animations: {},
+            layout: {},
+            elements: {}
         };
 
         // #endregion snippet_chartjsview_default_chartprops
@@ -73,6 +79,8 @@ class ChartJsView extends View {
                 this.datasetOptions = properties.datasetOptions;
             }
         }
+
+        console.log(this.options)
         let domNode = document.getElementById(this.divId);
 
         let ctx = document.createElement("canvas");
@@ -140,6 +148,7 @@ class ChartJsView extends View {
                 this.datasets[props[0].curveId].data.push(value);
             });
         }
+        //TODO: max points with multiple dataset won't work
         if((currentDataset.data.length > props[0].maxValues)) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();

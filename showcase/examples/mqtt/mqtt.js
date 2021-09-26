@@ -57,8 +57,8 @@ const chartView = new ChartJsView({
                     y: rec.density
                 }
             },
-            color: 'rgba(0,220,204,0.5)',
-            getColor: (rec) => {
+            lineColor: 'rgba(0,220,204,0.5)',
+            getLineColor: (rec) => {
                 if(rec.material_class === 'NEUROTOXIN') {
                     return 'rgba(0,220,204,0.5)';
                 } else if(rec.material_class === 'UNKNOWN') {
@@ -82,31 +82,31 @@ const chartView = new ChartJsView({
         })
     ],
     css: "chart-view",
-    chartjsProps: {
-        chartProps: {
-            scales: {
-                yAxes: [{
-                    scaleLabel: {
-                        labelString: "Density"
-                    }
-                }],
-                xAxes: [{
-                    scaleLabel: {
-                        labelString: "Time"
-                    },
-                    ticks: {
-                        maxTicksLimit: 2
-                    }
-                }],
-            },
+    options: {
+        plugins: {
             title: {
                 display: true,
-                text: 'ISA Biological Sensor density'
-            },
-            maintainAspectRatio: false
+                text: 'ISA Biological Sensor density',
+            }
         },
-        datasetsProps: {
-            fill: false
+        responsive: true,
+        scales: {
+            y : {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Density',
+                    padding: 10
+                }
+            },
+            x : {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Time',
+                    padding: 10
+                }
+            }
         }
     }
 });
