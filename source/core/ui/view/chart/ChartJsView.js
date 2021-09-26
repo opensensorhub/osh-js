@@ -54,9 +54,6 @@ class ChartJsView extends View {
                     time: {
                         unit: 'second',
                     },
-                    ticks :{
-                        source : 'data'
-                    }
                 }
             },
             plugins: {},
