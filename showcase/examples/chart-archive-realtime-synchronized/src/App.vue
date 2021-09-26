@@ -67,6 +67,8 @@ export default {
             }
           },
           lineColor: 'rgba(0,220,204,0.5)',
+          backgroundColor: 'rgba(0,220,204,0.5)',
+          fill:true,
           getCurveId:(rec, timeStamp) => 2,
           name: 'Wind Speed 1 (m/s)'
         }),
@@ -80,11 +82,16 @@ export default {
             }
           },
           lineColor: 'rgba(59,210,29,0.5)',
+          backgroundColor: 'rgba(59,210,29,0.5)',
+          fill:true,
           getCurveId:(rec, timeStamp) => 1,
           name: 'Wind Speed 2 (m/s)'
         })
       ],
       css: "chart-view",
+      datasetOptions: {
+       tension: 0.2 // for 'line'
+      }
     });
 
 // start streaming

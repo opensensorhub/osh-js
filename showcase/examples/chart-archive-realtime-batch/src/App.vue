@@ -50,6 +50,9 @@ export default {
           y: rec.windSpeed
         }
       },
+      backgroundColor: 'rgba(141,242,246, 0.5)',
+      lineColor: 'rgba(183,183,183,0.83)',
+      fill: true,
       name: 'Wind Speed (m/s)'
     });
 // #endregion snippet_curve_layer
@@ -59,6 +62,9 @@ export default {
       container: 'container',
       layers: [windSpeedLayerCurve],
       css: "chart-view",
+      datasetOptions: {
+       tension: 0.2 // for 'line'
+      }
     });
 
 // start streaming

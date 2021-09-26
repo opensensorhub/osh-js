@@ -19,6 +19,9 @@ function createChart(dataSource, divId, title) {
         container: divId,
         layers: [windSpeedLayerCurve],
         css: "chart-view",
+        datasetOptions: {
+            tension: 0.2 // for 'line'
+        }
     });
 }
 

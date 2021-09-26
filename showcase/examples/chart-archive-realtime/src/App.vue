@@ -96,7 +96,10 @@ export default {
               }
             },
           }
-        }
+        },
+      datasetOptions: {
+        tension: 0.2 // for 'line'
+      }
     });
 
     // start streaming

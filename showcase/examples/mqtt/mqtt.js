@@ -108,6 +108,9 @@ const chartView = new ChartJsView({
                 }
             }
         }
+    },
+    datasetOptions: {
+        tension: 0.2 // for 'line'
     }
 });
 
