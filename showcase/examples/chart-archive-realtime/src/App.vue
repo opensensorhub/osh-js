@@ -44,6 +44,10 @@ export default {
       replaySpeed: 1.5
     });
 
+    function getRandomArbitrary(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
 // #region snippet_curve_layer
     let windSpeedLayerCurve = new CurveLayer({
       dataSourceId: chartDataSource.id,
@@ -51,6 +55,26 @@ export default {
         return {
           x: timeStamp,
           y: rec.windSpeed
+        }
+      },
+      lineColor: 'rgba(38,152,255,0.5)',
+      getLineColor: (rec) => {
+        const randomNumber = getRandomArbitrary(0,1);
+        if(randomNumber > 0.5) {
+          return 'rgba(255,0,0,0.5)';
+        } else {
+          return 'rgba(38,152,255,0.5)';
+        }
+      },
+      fill: true,
+      backgroundColor: 'rgba(169,212,255,0.5)',
+      maxValues: 25,
+      getBackgroundColor: (rec) => {
+        const randomNumber = getRandomArbitrary(0,1);
+        if(randomNumber > 0.5) {
+          return 'rgba(255,0,0,0.5)';
+        } else {
+          return 'rgba(38,152,255,0.5)';
         }
       },
       name: 'Wind Speed (m/s)'
@@ -62,35 +86,20 @@ export default {
       container: 'container',
       layers: [windSpeedLayerCurve],
       css: "chart-view",
-      chartjsProps: {
-        chartProps: {
+      options: {
           scales: {
-            yAxes: [{
-              scaleLabel: {
-                labelString: "Wind Speed (m/s)"
-              },
-              ticks: {
-                maxTicksLimit: 10
+            y: {
+              title: {
+                display : true,
+                text: "Wind Speed (m/s)s",
+                padding: 20
               }
-            }],
-            xAxes: [{
-              scaleLabel: {
-                labelString: "Time"
-              },
-              ticks: {
-                maxTicksLimit: 20
-              }
-            }],
-          },
-          maintainAspectRatio: false
-        },
-        datasetsProps: {
-          backgroundColor: 'rgba(141,242,246, 0.1)'
+            },
+          }
         }
-      }
     });
 
-// start streaming
+    // start streaming
     chartDataSource.connect();
 
     this.dataSource = chartDataSource;
