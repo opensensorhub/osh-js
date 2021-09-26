@@ -37,6 +37,8 @@
     "webpack-dev-server": "3.10.3"
   },
   "dependencies": {
-    "chart.js": "2.9.3"
+    "chart.js": "3.5.1",
+    "chartjs-adapter-moment": "1.0.0",
+    "moment": "2.29.1"
   }
 }

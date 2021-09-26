@@ -19,35 +19,6 @@ function createChart(dataSource, divId, title) {
         container: divId,
         layers: [windSpeedLayerCurve],
         css: "chart-view",
-        chartjsProps: {
-            datasetsProps: {
-                backgroundColor: 'rgba(141,242,246, 0.1)'
-            },
-            chartProps: {
-                title: {
-                    display: true,
-                    text: title
-                },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            labelString: "Wind Speed (m/s)"
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
-                        }
-                    }],
-                    xAxes: [{
-                        scaleLabel: {
-                            labelString: "Time"
-                        },
-                        ticks: {
-                            maxTicksLimit: 20
-                        }
-                    }],
-                }
-            },
-        }
     });
 }
 
