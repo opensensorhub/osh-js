@@ -31,8 +31,8 @@ const pointMarkerLayer = new PointMarkerLayer({
         y: rec.location.lat,
         z: rec.location.alt
     }),
-    icon: './images/drone.png',
-    iconSize: [128, 128],
+    icon: './images/drone-mqtt.png',
+    iconSize: [32, 32],
     iconAnchor: [16, 32],
     name: 'drone',
     description: 'Drone'
@@ -88,9 +88,6 @@ const chartView = new ChartJsView({
                 yAxes: [{
                     scaleLabel: {
                         labelString: "Density"
-                    },
-                    ticks: {
-                        maxTicksLimit: 10
                     }
                 }],
                 xAxes: [{
@@ -98,7 +95,7 @@ const chartView = new ChartJsView({
                         labelString: "Time"
                     },
                     ticks: {
-                        maxTicksLimit: 20
+                        maxTicksLimit: 2
                     }
                 }],
             },
