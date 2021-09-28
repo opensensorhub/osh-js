@@ -1,0 +1,52 @@
+<style>
+    body {
+        margin: 0 !important
+    }
+    #container {
+        /* height: calc(100% - 15px); */
+        height: 100%;
+        overflow: hidden;
+        background-color: black;
+    }
+
+    #left {
+        flex-direction: column;
+        /* width:calc(75% - 50px); */
+        width:75%;
+        float:left;
+        height:100%;
+    }
+
+    #right {
+        flex-direction: column;
+        /* width:calc(25% - 50px); */
+        width:25%;
+        float:left;
+        height:100%;
+    }
+
+    div.video-h264 {
+        width: auto;
+        /* padding: 8px; */
+        /* border: 1px solid #dee2e6; */
+        overflow: hidden;
+        /* height:calc(50% - 40px); */
+        height:33%;
+    }
+
+    div.video-h264 canvas {
+        width: 100%;
+    }
+
+</style>
+<div id="container">
+    <div id="left">
+        <div id="cesium-container"></div>
+    </div>
+    <div id="right">
+        <div id="video-window"></div>
+        <div id="tvs-video-window"></div>
+        <div id="alt-chart-window"></div>
+    </div>
+</div>
+<script type="text/javascript" src="bundle.geoint.demo.js"></script>
