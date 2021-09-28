@@ -58,7 +58,7 @@ import {
     randomUUID
 } from '../../utils/Utils.js';
 import '../../resources/css/view.css';
-import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
+import {DATASOURCE_DATA_TOPIC, DATASOURCE_TIME_TOPIC} from "../../Constants.js";
 import {Status} from "../../protocol/Status.js";
 import {EventType} from "../../event/EventType.js";
 import DataLayer from "../layer/DataLayer";
@@ -260,11 +260,6 @@ class View {
             let self = this;
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
             broadcastChannel.onmessage = (event) => {
-                // skip data reset events for now
-                if (event.data.type === EventType.STATUS &amp;&amp; event.data.status === Status.DISCONNECTED) {
-                    self.reset(); // on data stream disconnection
-                    return;
-                }
                 if(event.data.type === EventType.DATA) {
 
                     // transform the data
@@ -275,6 +270,14 @@ class View {
 
                     // store as last record
                     self.lastRec[dataSourceId] = event.data;
+                }
+            };
+
+            const timeBroadcastChannel = new BroadcastChannel(DATASOURCE_TIME_TOPIC+dataSourceId);
+            timeBroadcastChannel.onmessage = (event) => {
+                // skip data reset events for now
+                if (event.data.type === EventType.TIME_CHANGED) {
+                    self.reset(); // on time changed
                 }
             };
         }

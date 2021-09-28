@@ -154,6 +154,43 @@
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             };
 
+            this.drawNextOuptutPictureBitmapGL = (par) => {
+                var gl = this.contextGL;
+                var texturePosBuffer = this.texturePosBuffer;
+
+                var yTextureRef = this.yTextureRef;
+
+                var yData = par.yData;
+
+                var width = this.width;
+                var height = this.height;
+
+                var yDataPerRow = width;
+                var yRowCnt = height;
+
+                var tTop = 0;
+                var tLeft = 0;
+                var tBottom = height / yRowCnt;
+                var tRight = width / yDataPerRow;
+                var texturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, texturePosValues, gl.DYNAMIC_DRAW);
+
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, yTextureRef);
+                // gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, yDataPerRow, yRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, yData);
+                gl.texImage2D(
+                    gl.TEXTURE_2D, // target
+                    0, // mip level
+                    gl.RGBA, // internal format
+                    gl.RGBA, //format
+                    gl.UNSIGNED_BYTE, // type
+                    yData);
+
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+
         } else if (this.type === "yuv422") {
             this.drawNextOuptutPictureGL = (par) => {
                 var gl = this.contextGL;
@@ -470,7 +507,6 @@
         var program = this.shaderProgram;
 
         if (this.type === "yuv420") {
-
             var yTextureRef = this.initTexture();
             var ySamplerRef = gl.getUniformLocation(program, 'ySampler');
             gl.uniform1i(ySamplerRef, 0);
@@ -533,7 +569,6 @@
      */
     drawNextOuptutPictureRGBA(width, height, croppingParams, data) {
         var canvas = this.canvasElement;
-
         var argbData = data;
         var ctx = canvas.getContext('2d');
         var imageData = ctx.getImageData(0, 0, width, height);

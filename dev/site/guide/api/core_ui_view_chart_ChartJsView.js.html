@@ -184,13 +184,16 @@ class ChartJsView extends View {
         if(!isDefined(currentDataset)) {
             create = true;
             let lineColor = props[0].color;
+
             if(lineColor.startsWith('#')) {
                 const rgb = hex2rgb(lineColor);
-                lineColor = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.5)';
+                lineColor = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.2)';
             }
+
             currentDataset = {
                 label: props[0].name,
                 backgroundColor: lineColor,
+                borderColor: lineColor,
                 data: values
             };
             currentDataset = {...this.datasetsProps, ...currentDataset};
@@ -201,14 +204,12 @@ class ChartJsView extends View {
                 this.datasets[props[0].curveId].data.push(value);
             });
         }
-        if((currentDataset.data.length > this.maxPoints + 2) || create) {
+        if((currentDataset.data.length > this.maxPoints + 2)) {
             this.chart.options.scales.xAxes[0].ticks.min = this.chart.data.labels[2];
-        }
-
-        if((currentDataset.data.length > this.maxPoints + 2) || create) {
             this.chart.data.labels.shift();
             currentDataset.data.shift();
         }
+
         this.chart.update();
     }
 

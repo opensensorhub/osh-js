@@ -107,20 +107,25 @@ class WebSocketConnector extends DataConnector {
             // closes socket if any errors occur
             this.ws.onerror = function (event) {
                 console.error('WebSocket stream error');
-                this.checkStatus(Status.DISCONNECTED);
+                this.checkStatus(Status.CLOSED_ERROR);
                 this.init = false;
                 this.lastReceiveTime = -1;
                 this.createReconnection();
             }.bind(this);
 
             this.ws.onclose = (event) => {
-                this.checkStatus(Status.DISCONNECTED);
                 console.warn('WebSocket stream closed: ',event.reason, event.code);
-                this.init = false;
                 if(event.code !== 1000 &amp;&amp; !this.closed) {
+                    this.checkStatus(Status.CLOSED_ERROR);
                     this.createReconnection();
+                } else {
+                    this.checkStatus(Status.DISCONNECTED);
                 }
             };
+            if(this.reconnectionInterval !== -1) {
+                clearInterval(this.reconnectionInterval);
+                this.reconnectionInterval = -1;
+            }
         }
     }
 
@@ -131,6 +136,7 @@ class WebSocketConnector extends DataConnector {
                 // -1 means the WS went in error
                 if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
                     console.warn('trying to reconnect', this.url);
+                    this.init = false;
                     this.connect();
                 }
             }.bind(this), this.reconnectTimeout);
