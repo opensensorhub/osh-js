@@ -11,7 +11,6 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
      * @param {string} properties.container - The div element to attach to
      * @param {string} [properties.css=''] - The css classes to set, can be multiple if separate by spaces
      * @param {number} [properties.fftSize=32] - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
-     * @param {Object} properties.chartJsProps - (type 'chart')
      * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      */

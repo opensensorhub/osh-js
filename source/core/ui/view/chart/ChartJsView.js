@@ -41,9 +41,8 @@ class ChartJsView extends View {
         });
         Chart.register(...registerables);
 
-        this.datasetOptions = {};
-
         // #region snippet_chartjsview_default_chartprops
+        this.datasetOptions = {};
         let type = 'line';
         this.options = {
             maintainAspectRatio: false,
@@ -77,7 +76,6 @@ class ChartJsView extends View {
             }
         }
 
-        console.log(this.options)
         let domNode = document.getElementById(this.divId);
 
         let ctx = document.createElement("canvas");
