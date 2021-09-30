@@ -66,6 +66,7 @@
     "@deck.gl/layers": "8.3.6",
     "@deck.gl/geo-layers": "8.3.6",
     "@deck.gl/mesh-layers": "8.3.6",
+    "@luma.gl/experimental": "8.5.7",
     "@math.gl/web-mercator": "3.3.2",
     "@open-wc/webpack-import-meta-loader": "^0.4.7",
     "cesium": "1.85.0",

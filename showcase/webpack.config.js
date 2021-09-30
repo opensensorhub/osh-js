@@ -20,7 +20,7 @@ let common = {
             {
                 test: /\.js$/,
                 use: { loader: require.resolve('@open-wc/webpack-import-meta-loader') }
-            }, {
+            },{
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
                     'file-loader',
