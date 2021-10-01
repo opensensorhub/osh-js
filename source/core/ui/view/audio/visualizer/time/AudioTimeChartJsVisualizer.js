@@ -15,12 +15,12 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
      * @param {Number} [properties.maxValues=200] - The maximum values before shifting the graph to the left
       * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
-     * @param {Object} [properties.colorDatasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
+     * @param {String} [properties.colorData='rgba(100,255,65,0.4)'] - Defines color which colorizes the read data
      */
     constructor(properties) {
         super({
             fftSize: 1024,
-            maxValues: 50,
+            maxValues: 200,
             ...properties,
             type: 'time',
             format: 'float'
@@ -33,7 +33,7 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
         let type = 'bar';
         this.datasetMinMaxOptions = {};
         this.datasetOptions = {};
-
+        this.colorReadData = 'rgba(100,255,65,0.4)';
         this.options = {
             legend: {
                 display: false
@@ -90,8 +90,8 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
             if(properties.hasOwnProperty('datasetOptions')){
                 this.datasetOptions = properties.datasetOptions;
             }
-            if(properties.hasOwnProperty('datasetMinMaxOptions')){
-                this.datasetMinMaxOptions = properties.datasetMinMaxOptions;
+            if(properties.hasOwnProperty('colorReadData')){
+                this.colorReadData = properties.colorReadData;
             }
         }
 
@@ -117,8 +117,11 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
             backgroundColor:  'rgba(200,200,200,0.4)',
             data: [],
             pointRadius:0.1,
-            barThickness:2,
             fill: true,
+            // barPercentage: 1.0,
+            // categoryPercentage: 1.0,
+            // barThickness: 'flex',
+            barThickness: 2.0,
             ...this.datasetOptions
         };
 
@@ -164,7 +167,8 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
         if(this.resetting) {
             return;
         }
-        this.dataset.backgroundColor[this.posReadData++] = 'rgba(100,255,65,0.4)';
+
+        this.dataset.backgroundColor[this.posReadData++] = this.colorReadData;
         this.chart.update();
     }
 

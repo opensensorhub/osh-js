@@ -90,6 +90,9 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
 
         this.dataset = {
             data: [],
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(210,210,210,0.8)',
+            borderWidth: 1,
             barThickness: 20,
             ...this.datasetOptions
         };

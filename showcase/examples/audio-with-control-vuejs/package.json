@@ -6,7 +6,9 @@
     "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
   },
   "dependencies": {
-    "chart.js": "2.9.3",
+    "chart.js": "3.5.1",
+    "chartjs-adapter-moment": "1.0.0",
+    "moment": "2.29.1",
     "vue": "2.6.11",
     "vue-dialog-drag": "0.1.29",
     "vue-plugin-load-script": "1.2.0",
