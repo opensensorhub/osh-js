@@ -132,7 +132,6 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
             this.dataset.backgroundColor.push(color);
         }
 
-        console.log(this.dataset, this.properties.maxValues)
         // #endregion snippet_audiochartjsview_default_chartprops
         this.chart.data.datasets.push(this.dataset);
     }
