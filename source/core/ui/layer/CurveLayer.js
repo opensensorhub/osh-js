@@ -29,6 +29,7 @@ class CurveLayer extends Layer {
      * @param {String} [properties.lineColor="#000000"] - color in hex or rgba value
      * @param {String} [properties.backgroundColor="#000000"] - color in hex or rgba value
      * @param {String} [properties.fill=false] -
+     * @param {String} [properties.maxValues=10] - Defines the max values hold by the layer
      * @param {Number} [properties.stroke=1] -
      * @param {Number} [properties.x=0] -
      * @param {Number} [properties.y=[]] -
