@@ -55,7 +55,7 @@
           css: 'audio-css',
           container: 'audio-chart-container',
           dataSource: audioDataSource,
-          gain: 1,
+          gain: 10,
           playSound: true
         });
 
@@ -63,57 +63,26 @@
           css: 'audio-canvas',
           fftSize: 32,
           container: 'chart-frequency',
-          chartjsProps: {
-            datasetsProps: {
-              borderColor: 'rgba(0,0,0,0.5)',
-              backgroundColor: 'rgba(210,210,210,0.8)',
-              barThickness: 20,
-              borderWidth: 1
-            },
-          }
+          datasetOptions: {
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(210,210,210,0.8)',
+            barThickness: 20,
+            borderWidth: 1
+          },
         });
 
         const audioChartTimeVisualizer = new AudioTimeChartJsVisualizer({
           css: 'audio-canvas',
           fftSize: 1024,
           container: 'chart-time',
-          chartjsProps: {
-            chartProps: {
-              scales: {
-                yAxes: [{
-                  scaleLabel: {
-                    labelString: "Amplitude"
-                  },
-                  ticks: {
-                    maxTicksLimit: 5
-                  }
-                }],
-                xAxes: [{
-                  scaleLabel: {
-                    labelString: "Time"
-                  },
-                  ticks: {
-                    maxTicksLimit: 130,
-                    beginAtZero: true
-                  }
-                }],
-              },
-              maintainAspectRatio: false
-            },
-            datasetsProps: {
-              pointRadius: 0.1,
-              borderColor: 'rgba(0,0,0,0.5)',
-              backgroundColor: 'rgba(255,195,100,0.2)',
-              barThickness: 2,
-              borderWidth: 1
-            },
-            datasetsMinMaxProps: {
-              pointRadius: 0.0,
-              backgroundColor: 'rgba(0,139,141,1.0)',
-              barThickness: 2,
-              borderWidth: 1
-            }
-          }
+          datasetOptions: {
+            pointRadius: 0.1,
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(255,195,100,0.2)',
+            barThickness: 2,
+            borderWidth: 1
+          },
+          colorReadData: 'rgb(22,255,0)'
         });
         const audioSpectrogramVisualizer = new AudioSpectrogramVisualizer({
           fftSize: 2048,
@@ -128,8 +97,10 @@
 
       methods: {
         onControlEvent(eventName) {
-          if (eventName === 'forward' || eventName === 'backward' || eventName === 'end' || eventName === 'replaySpeed') {
-            this.view.reset()
+          if (eventName === 'time-changed') {
+            for (let view of this.views) {
+              view.reset();
+            }
           }
         },
       }

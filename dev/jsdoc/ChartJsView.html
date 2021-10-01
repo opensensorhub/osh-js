@@ -228,13 +228,13 @@
 
         <tr>
             
-                <td class="name"><code>chartjsProps</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">String</span>
 
 
             
@@ -255,81 +255,19 @@
             
                 <td class="default">
                 
-                    {}
+                    'line'
                 
                 </td>
             
 
-            <td class="description last">Properties which can override the default framework ones
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>datasetsProps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    {}
-                
-                </td>
-            
-
-            <td class="description last">chart.js <a href="https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties">dataset options</a>.</td>
+            <td class="description last">The  <a href="https://www.chartjs.org/docs/3.5.1/">type</a> of the graph</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>chartProps</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
@@ -361,14 +299,85 @@
                 </td>
             
 
-            <td class="description last">chart.js <a href="https://www.chartjs.org/docs/latest/configuration">context configuration options</a></td>
+            <td class="description last">Properties which can override the default framework ones</td>
         </tr>
 
     
-    </tbody>
-</table>
 
+        <tr>
+            
+                <td class="name"><code>datasetOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">Properties which can override the default framework ones (as defined <a href="https://www.chartjs.org/docs/latest/configuration/#dataset-configuration">dataset</a></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>override</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Defines if options (as defined <a href="https://www.chartjs.org/docs/3.5.1/general/options.html">Chart options</a>) are completely overridden or merge only. Default is merge</td>
         </tr>
 
     
@@ -1943,7 +1952,7 @@ Note: the onResize() is called at the end of the process.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ui_view_chart_ChartJsView.js.html">core/ui/view/chart/ChartJsView.js</a>, <a href="core_ui_view_chart_ChartJsView.js.html#line149">line 149</a>
+        <a href="core_ui_view_chart_ChartJsView.js.html">core/ui/view/chart/ChartJsView.js</a>, <a href="core_ui_view_chart_ChartJsView.js.html#line116">line 116</a>
     </li></ul></dd>
     
 

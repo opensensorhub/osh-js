@@ -31,8 +31,8 @@ const pointMarkerLayer = new PointMarkerLayer({
         y: rec.location.lat,
         z: rec.location.alt
     }),
-    icon: './images/drone.png',
-    iconSize: [128, 128],
+    icon: './images/drone-mqtt.png',
+    iconSize: [32, 32],
     iconAnchor: [16, 32],
     name: 'drone',
     description: 'Drone'
@@ -57,8 +57,8 @@ const chartView = new ChartJsView({
                     y: rec.density
                 }
             },
-            color: 'rgba(0,220,204,0.5)',
-            getColor: (rec) => {
+            lineColor: 'rgba(0,220,204,0.5)',
+            getLineColor: (rec) => {
                 if(rec.material_class === 'NEUROTOXIN') {
                     return 'rgba(0,220,204,0.5)';
                 } else if(rec.material_class === 'UNKNOWN') {
@@ -82,35 +82,35 @@ const chartView = new ChartJsView({
         })
     ],
     css: "chart-view",
-    chartjsProps: {
-        chartProps: {
-            scales: {
-                yAxes: [{
-                    scaleLabel: {
-                        labelString: "Density"
-                    },
-                    ticks: {
-                        maxTicksLimit: 10
-                    }
-                }],
-                xAxes: [{
-                    scaleLabel: {
-                        labelString: "Time"
-                    },
-                    ticks: {
-                        maxTicksLimit: 20
-                    }
-                }],
-            },
+    options: {
+        plugins: {
             title: {
                 display: true,
-                text: 'ISA Biological Sensor density'
-            },
-            maintainAspectRatio: false
+                text: 'ISA Biological Sensor density',
+            }
         },
-        datasetsProps: {
-            fill: false
+        responsive: true,
+        scales: {
+            y : {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Density',
+                    padding: 10
+                }
+            },
+            x : {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Time',
+                    padding: 10
+                }
+            }
         }
+    },
+    datasetOptions: {
+        tension: 0.2 // for 'line'
     }
 });
 

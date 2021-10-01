@@ -26,8 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Chart from 'chart.js';
-import 'chart.js/dist/Chart.min.css';
+            <pre class="prettyprint source linenums"><code>import { Chart, registerables } from 'chart.js';
 import {isDefined, merge} from "../../../../../utils/Utils";
 import AudioChartVisualizer from "../AudioChartVisualizer";
 
@@ -40,10 +39,8 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
      * @param {string} properties.container - The div element to attach to
      * @param {string} [properties.css=''] - The css classes to set, can be multiple if separate by spaces
      * @param {number} [properties.fftSize=32] - The fftSize property of the AnalyserNode interface is an unsigned long value and represents the window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
-     * @param {Object} properties.chartJsProps - (type 'chart')
-     * @param {Object} properties.chartJsProps.chartProps - (type 'chart') [context configuration options]{@link https://www.chartjs.org/docs/2.9.4/configuration}
-     * @param {Object} properties.chartJsProps.datasetsProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
-     * @param {Object} properties.chartJsProps.datasetsMinMaxProps - (type 'chart')  [dataset options]{@link https://www.chartjs.org/docs/2.9.4/charts/bar.html#dataset-properties}
+     * @param {Object} [properties.options={}] - Properties which can override the default framework ones
+     * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      */
     constructor(properties) {
         super({
@@ -56,95 +53,79 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
     }
 
     initFrequencyChart(properties) {
-        this.datasetsProps = {};
-        this.chartProps = {};
+        Chart.register(...registerables);
+
+        // #region snippet_audiochartjsview_default_chartprops
+        let type = 'bar';
+        this.options = {
+            maintainAspectRatio: true,
+            normalized : true,
+            spanGaps: true,
+            scales: {
+                x: {
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Frequency (Hz)'
+                    },
+                    ticks: {
+                        autoSkip: false
+                    }
+                },
+                y : {
+                    type: 'linear',
+                    min: -100,
+                    max: 0,
+                    title: {
+                        display: true,
+                        text: 'Amplitude (dB)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            datasets: {},
+            interaction :{},
+            animations: {},
+            layout: {},
+            elements: {}
+        };
+        // #endregion snippet_audiochartjsview_default_chartprops
 
         if (isDefined(properties)) {
-            if(properties.hasOwnProperty('chartjsProps')){
-                if(properties.chartjsProps.hasOwnProperty('datasetsProps')){
-                    this.datasetsProps = properties.chartjsProps.datasetsProps;
-                }
-
-                if(properties.chartjsProps.hasOwnProperty('chartProps')){
-                    this.chartProps = properties.chartjsProps.chartProps;
-                }
+            if(properties.hasOwnProperty('options')){
+                merge(properties.options,this.options);
+            }
+            if(properties.hasOwnProperty('type')){
+                type = properties.type;
+            }
+            if(properties.hasOwnProperty('datasetOptions')){
+                this.datasetOptions = properties.datasetOptions;
             }
         }
 
         this.resetting = false;
         this.pos = 0;
-        // #region snippet_audiochartjsview_default_chartprops
-        let chartProps = {
-            events: [],
-            responsiveAnimationDuration: 0,
-            animation: {
-                duration: 0
-            },
-            legend: {
-                display: false
-            },
-            spanGaps: true,
-            elements: {
-                line: {
-                    tension: 0
-                }
-            },
-            scales: {
-                reverse: true,
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Amplitude (dB)',
-                    },
-                    ticks: {
-                        min: -100,
-                        max: 0,
-                        beginAtZero: true
-                    },
-                }],
-                xAxes: [{
-                    scaleLabel: {
-                        labelString: 'Frequency (Hz)',
-                        display: true,
-                    }
-                }]
-            },
-            responsive: true,
-            maintainAspectRatio: true,
-        };
-
-        let datasetsProps = {
-            borderColor: '#a3a3a3',
-            borderWidth:1,
-            backgroundColor: 'rgba(188,221,255,0.1)',
-            fill: false
-        };
-
-        // #endregion snippet_audiochartjsview_default_chartprops
-
-        merge(chartProps,this.chartProps);
-        merge(datasetsProps,this.datasetsProps);
-
-        this.datasetsProps = datasetsProps;
 
         this.chart = new Chart(
             this.canvas, {
-                labels:[''],
-                type: 'bar',
-                data: {
-                    datasets: []
-                },
-                options : chartProps,
-                plugins: []
+                type: type,
+                options: this.options
             });
 
         this.dataset = {
             data: [],
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(210,210,210,0.8)',
+            borderWidth: 1,
             barThickness: 20,
-            ...this.datasetsProps
+            ...this.datasetOptions
         };
-
         this.chart.data.datasets.push(this.dataset);
+        this.first = false;
     }
 
     buildLabels(decodedSample) {
@@ -164,17 +145,18 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
                 labels.push(''+value);
             }
         }
-
         this.chart.data.labels = labels;
     }
 
     draw(decodedSample) {
+
         if(this.resetting) {
             return;
         }
         const dataArray = decodedSample[this.properties.type][this.properties.format];
         if(this.chart.data.labels.length ===0) {
             this.buildLabels(decodedSample);
+            this.first = true;
             for(let i=0;i &lt; dataArray.length;i++) {
                 this.dataset.data.push([-100, dataArray[i]]);
             }
@@ -183,7 +165,14 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
                 this.dataset.data[i][1] = dataArray[i];
             }
         }
-        this.chart.update(0);
+        // the first check is to avoid animation causing the bar coming from the top to the bottom to the Graph
+        // We also update using 'none' telling to chart.js to update the graph without any animation
+        if(this.first) {
+            this.chart.update('none');
+            this.first = false;
+        } else {
+            this.chart.update();
+        }
     }
 
 }

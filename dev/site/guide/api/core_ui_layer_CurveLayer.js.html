@@ -54,12 +54,16 @@ class CurveLayer extends Layer {
      * @param {Object} properties -
      * @param {String} [properties.xLabel=""] -
      * @param {String} [properties.yLabel=""] -
-     * @param {String} [properties.color="#000000"] - color in hex or rgba value
+     * @param {String} [properties.lineColor="#000000"] - color in hex or rgba value
+     * @param {String} [properties.backgroundColor="#000000"] - color in hex or rgba value
+     * @param {String} [properties.fill=false] -
+     * @param {Number} [properties.maxValues=10] - Defines the max values hold by the layer
      * @param {Number} [properties.stroke=1] -
      * @param {Number} [properties.x=0] -
      * @param {Number} [properties.y=[]] -
+     * @param {Number} [properties.maxValues=10] - The maximum values to display
      * @param {Function} properties.getStroke -
-     * @param {Function} properties.getColor -
+     * @param {Function} properties.getLineColor -
      * @param {Function} properties.getValues -
      *
      */
@@ -68,18 +72,33 @@ class CurveLayer extends Layer {
         this.type = 'curve';
         this.props.xLabel = "";
         this.props.yLabel = "";
-        this.props.color = "#399ca5";
+        this.props.lineColor = "#399ca5";
+        this.props.backgroundColor = "#399ca5";
+        this.props.fill = false;
         this.props.stroke = 1;
         this.props.curveId = randomUUID();
         this.props.x = 0;
         this.props.y = 0;
+        this.props.maxValues = 10;
 
         if (isDefined(properties.stroke)) {
             this.props.stroke = properties.stroke;
         }
 
-        if (isDefined(properties.color)) {
-            this.props.color = properties.color;
+        if (isDefined(properties.maxValues)) {
+            this.props.maxValues = properties.maxValues;
+        }
+
+        if (isDefined(properties.lineColor)) {
+            this.props.lineColor = properties.lineColor;
+        }
+
+        if (isDefined(properties.backgroundColor)) {
+            this.props.backgroundColor = properties.backgroundColor;
+        }
+
+        if (isDefined(properties.fill)) {
+            this.props.fill = properties.fill;
         }
 
         if (isDefined(properties.x)) {
@@ -114,11 +133,18 @@ class CurveLayer extends Layer {
             this.addFn(that.getDataSourcesIdsByProperty('getStroke'), fn);
         }
 
-        if (isDefined(properties.getColor)) {
+        if (isDefined(properties.getLineColor)) {
             let fn = function (rec, timeStamp, options) {
-                that.props.color = that.getFunc('getColor')(rec,timeStamp,options);
+                that.props.lineColor = that.getFunc('getLineColor')(rec,timeStamp,options);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getColor'), fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getLineColor'), fn);
+        }
+
+        if (isDefined(properties.getBackgroundColor)) {
+            let fn = function (rec, timeStamp, options) {
+                that.props.backgroundColor = that.getFunc('getBackgroundColor')(rec,timeStamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getLineColor'), fn);
         }
 
         if (isDefined(properties.getValues)) {

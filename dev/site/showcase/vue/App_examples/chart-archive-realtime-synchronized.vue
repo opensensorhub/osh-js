@@ -8,7 +8,6 @@
         :skipTimeStep="'60s'"
         :parseTime='parseTime'
         v-if="dataSynchronizer"
-        :key="key"
     ></TimeController>
   </div>
 </template>
@@ -28,8 +27,7 @@ export default {
   data: function () {
     return {
       dataSynchronizer: null,
-      view: null,
-      key: 0
+      view: null
     }
   },
   mounted() {
@@ -44,9 +42,9 @@ export default {
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      bufferingTime: 100,
+      bufferingTime: 1000,
       timeOut: 100,
-      replaySpeed: 2.0
+      replaySpeed: 1.0
     };
 
     let chartDataSource1 = new SosGetResultJson("weather", {
@@ -68,7 +66,9 @@ export default {
               y: rec.windSpeed
             }
           },
-          color: 'rgba(0,220,204,0.5)',
+          lineColor: 'rgba(0,220,204,0.5)',
+          backgroundColor: 'rgba(0,220,204,0.5)',
+          fill:true,
           getCurveId:(rec, timeStamp) => 2,
           name: 'Wind Speed 1 (m/s)'
         }),
@@ -81,34 +81,16 @@ export default {
 
             }
           },
-          color: 'rgba(59,210,29,0.5)',
+          lineColor: 'rgba(59,210,29,0.5)',
+          backgroundColor: 'rgba(59,210,29,0.5)',
+          fill:true,
           getCurveId:(rec, timeStamp) => 1,
           name: 'Wind Speed 2 (m/s)'
         })
       ],
       css: "chart-view",
-      chartjsProps: {
-        chartProps: {
-          scales: {
-            yAxes: [{
-              scaleLabel: {
-                labelString: "Wind Speed (m/s)"
-              },
-              ticks: {
-                maxTicksLimit: 10
-              }
-            }],
-            xAxes: [{
-              scaleLabel: {
-                labelString: "Time"
-              },
-              ticks: {
-                maxTicksLimit: 20
-              }
-            }],
-          },
-          maintainAspectRatio: false
-        }
+      datasetOptions: {
+       tension: 0.2 // for 'line'
       }
     });
 
@@ -116,19 +98,11 @@ export default {
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
       timerResolution: 5,
-      dataSources: []
+      dataSources: [chartDataSource1, chartDataSource2]
     })
 
-    const that = this;
-    setTimeout(() => {
-      dataSynchronizer.addDataSource(chartDataSource1);
-      dataSynchronizer.addDataSource(chartDataSource2);
-      dataSynchronizer.reset();
-      dataSynchronizer.connect();
-      that.key = 1;
-    },5000);
-// connects each DataSource
     dataSynchronizer.connect();
+    // connects each DataSource
     this.dataSynchronizer = dataSynchronizer;
   },
   methods: {
