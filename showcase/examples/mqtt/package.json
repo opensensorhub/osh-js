@@ -41,6 +41,8 @@
   "dependencies": {
     "leaflet": "1.7.1",
     "mqtt": "4.2.8",
-    "chart.js": "2.9.3"
+    "chart.js": "3.5.1",
+    "chartjs-adapter-moment": "1.0.0",
+    "moment": "2.29.1"
   }
 }
