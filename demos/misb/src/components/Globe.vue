@@ -24,7 +24,7 @@
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         // add 3D model marker to Cesium view
         let pointMarkerLayer = new PointMarkerLayer({
-          label: "3DR Solo",
+          label: "MISB UAS",
           getLocation : {
             dataSourceIds : [this.platformLocationDataSource.id],
             handler : function(rec) {
@@ -43,7 +43,7 @@
               };
             }
           },
-          icon: "./models/Drone+06B.glb"
+          icon: "./models/Drone+06B.glb",
         });
 
         // style it with a moving point marker

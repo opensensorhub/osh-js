@@ -26,6 +26,7 @@ const cesiumConfig = {
         { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
         { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
         { from: 'images', to: 'images'},
+        { from: 'models', to: 'models'},
         { from: 'public', to: 'public'}
       ]
     })

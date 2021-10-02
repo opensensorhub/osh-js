@@ -1,65 +1,114 @@
 <template>
-  <v-app id="inspire">
-    <v-card>
-      <v-navigation-drawer
-          v-model="drawer"
-          :mini-variant.sync="mini"
-          permanent
-      >
-        <v-list-item class="px-2">
-          <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-          </v-list-item-avatar>
-
-          <v-list-item-title>John Leider</v-list-item-title>
-
-          <v-btn
-              icon
-              @click.stop="mini = !mini"
-          >
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-        </v-list-item>
-
-        <v-divider></v-divider>
-
-        <v-list dense>
-          <v-list-item
-              v-for="item in items"
-              :key="item.title"
-              link
-          >
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-    </v-card>
-  </v-app>
+  <v-card id="inspire">
+    <v-navigation-drawer
+        v-model="drawer"
+        :mini-variant="mini"
+        permanent
+        dark
+        floating
+        right
+        width="640"
+    >
+      <div class="variant-title">{{ videoDataSource.name }}</div>
+      <v-divider></v-divider>
+      <div class="icon-container">
+        <v-btn
+            icon
+            right
+            @click.stop="mini = !mini"
+            dark
+            class="chevron-right"
+            v-if="!mini"
+        >
+          <v-icon>mdi-chevron-right</v-icon>
+        </v-btn>
+        <v-btn
+            icon
+            right
+            @click.stop="mini = !mini"
+            dark
+            v-else
+        >
+          <v-icon>mdi-video</v-icon>
+        </v-btn>
+        <v-btn
+            icon
+            dark
+            title="Center on target"
+        >
+          <v-icon>mdi-target</v-icon>
+        </v-btn>
+        <v-btn
+            icon
+            dark
+            title="Show footprint/draping"
+        >
+          <v-icon>mdi-vector-rectangle</v-icon>
+        </v-btn>
+      </div>
+      <Video
+          :video-data-source="videoDataSource"
+          :show=!mini
+      />
+    </v-navigation-drawer>
+  </v-card>
 </template>
 
 <script>
+import Video from './Video.vue';
+
 export default {
   name: "VideoVariant",
+  components: {
+    Video
+  },
+  props: ['videoDataSource'],
   data() {
     return {
       drawer: true,
-      items: [
-        {title: 'Home', icon: 'mdi-home-city'},
-        {title: 'My Account', icon: 'mdi-account'},
-        {title: 'Users', icon: 'mdi-account-group-outline'},
-      ],
-      mini: true,
+      mini: true
     }
   },
 }
 </script>
 
 <style scoped>
+#inspire {
+  position: absolute;
+  top: 100px;
+  right: 0;
+  z-index: 10;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
+  background-color: #363636;
+  caret-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+}
 
+#inspire > aside {
+  min-width: 80px;
+  width: unset !important;
+  max-width: 640px;
+}
+
+.variant-title {
+  color: white;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.chevron-right {
+  position: absolute;
+  right: 0;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: space-around;
+}
 </style>

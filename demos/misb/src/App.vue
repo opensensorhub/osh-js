@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <Video
-      :video-data-source="videoDataSource"
+    <VideoVariant
+        :video-data-source="videoDataSource"
     />
-    <VideoVariant></VideoVariant>
     <Globe
       :platform-location-data-source="platformLocationDataSource"
       :platform-orientation-data-source="platformOrientationDataSource"
@@ -14,22 +13,20 @@
 <script>
   // @ is an alias to /src
 import Globe from './components/Globe.vue';
-import Video from './components/Video.vue';
 import VideoVariant from "./components/VideoVariant.vue";
 import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo.js";
 import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
-
+//https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
   export default {
   components: {
     VideoVariant,
-    Globe,
-    Video
+    Globe
   },
     data: function () {
       return {
-        videoDataSource: new SosGetResultVideo("drone-Video", {
+        videoDataSource: new SosGetResultVideo("MISB Drone", {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -39,7 +36,7 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        platformLocationDataSource: new SosGetResultJson('android-GPS', {
+        platformLocationDataSource: new SosGetResultJson('MISB UAS - Sensor Location', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -85,8 +82,9 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 };
 </script>
 <style>
-  body {
-    overflow-x: hidden;
+  html, body {
+    overflow: hidden !important;
     margin:0;
+    padding:0
   }
 </style>
