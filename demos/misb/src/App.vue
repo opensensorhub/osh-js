@@ -21,6 +21,7 @@ import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
 import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
+  import SosGetResultVideoWithRoll from "../../../source/core/datasource/SosGetResultVideoWithRoll";
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
   export default {
@@ -31,54 +32,60 @@ import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
     data: function () {
       return {
         videoDataSource: new SosGetResultVideo("MISB Drone", {
-          protocol: 'ws',
+          protocol: 'wss',
           service: 'SOS',
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-          offeringID: 'urn:mysos:solo:video2',
+          endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+          offeringID: 'urn:osh:sensor:uas:predator001',
           observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-          startTime: '2015-12-19T21:04:29.231Z',
-          endTime: '2015-12-19T21:09:19.675Z',
-          replaySpeed: 1
+          startTime: '2012-06-29T14:32:34.099333251Z',
+          endTime: '2012-06-29T14:37:44.033333251Z',
+          replaySpeed: 1,
+          bufferingTime: 1000,
+          timeOut: 500
         }),
         platformLocationDataSource: new SosGetResultJson('MISB UAS - Sensor Location', {
-          protocol: 'ws',
+          protocol: 'wss',
           service: 'SOS',
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-          offeringID: 'urn:mysos:solo:nav2',
-          observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
-          startTime: '2015-12-19T21:04:29.231Z',
-          endTime: '2015-12-19T21:09:19.675Z',
-          replaySpeed: 1
+          endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+          offeringID: 'urn:osh:sensor:uas:predator001',
+          observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
+          startTime: '2012-06-29T14:32:34.099333251Z',
+          endTime: '2012-06-29T14:37:44.033333251Z',
+          replaySpeed: 1,
+          bufferingTime: 1000,
+          timeOut: 500
         }),
-        platformOrientationDataSource: new SosGetResultJson('android-Heading', {
-          protocol: 'ws',
+        platformOrientationDataSource: new SosGetResultJson('MISB UAS - Sensor Orientation', {
+          protocol: 'wss',
           service: 'SOS',
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-          offeringID: 'urn:mysos:solo:nav2',
+          endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+          offeringID: 'urn:osh:sensor:uas:predator001',
+          observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
+          startTime: '2012-06-29T14:32:34.099333251Z',
+          endTime: '2012-06-29T14:37:44.033333251Z',
+          replaySpeed: 1,
+          bufferingTime: 1000,
+          timeOut: 500
+        }),
+        gimbalOrientationDataSource: new SosGetResultJson('MISB UAS - Platform Orientation', {
+          protocol: 'wss',
+          service: 'SOS',
+          endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+          offeringID: 'urn:osh:sensor:uas:predator001',
           observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-          startTime: '2015-12-19T21:04:29.231Z',
-          endTime: '2015-12-19T21:09:19.675Z',
-          replaySpeed: 1
-        }),
-        gimbalOrientationDataSource: new SosGetResultJson('android-Heading', {
-          protocol: 'ws',
-          service: 'SOS',
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-          offeringID: 'urn:mysos:solo:nav2',
-          observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
-          startTime: '2015-12-19T21:04:29.231Z',
-          endTime: '2015-12-19T21:09:19.675Z',
-          replaySpeed: 1
+          startTime: '2012-06-29T14:32:34.099333251Z',
+          endTime: '2012-06-29T14:37:44.033333251Z',
+          replaySpeed: 1,
+          bufferingTime: 1000,
+          timeOut: 500
         })
       }
     },
     mounted() {
       const dataSynchronizer = new DataSynchronizer({
         replayFactor: 1,
-        dataSources: [this.videoDataSource, this.platformLocationDataSource, this.platformOrientationDataSource,
-          this.gimbalOrientationDataSource]
+        dataSources: [this.videoDataSource, this.platformLocationDataSource, this.platformOrientationDataSource, this.gimbalOrientationDataSource]
       });
-
 
     // check connect/disconnect
       const videoBroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.videoDataSource.id);

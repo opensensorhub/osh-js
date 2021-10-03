@@ -34,9 +34,9 @@
             dataSourceIds : [this.platformLocationDataSource.id],
             handler : function(rec) {
               return {
-                x : rec.loc.lon,
-                y : rec.loc.lat,
-                z : rec.loc.alt - 184 // model offset
+                x : rec.location.lon,
+                y : rec.location.lat,
+                z : rec.location.alt - 184 // model offset
               };
             }
           },
@@ -57,9 +57,9 @@
             dataSourceIds: [this.platformLocationDataSource.getId()],
             handler: function (rec) {
               return {
-                x: rec.loc.lon,
-                y: rec.loc.lat,
-                z: rec.loc.alt - 184
+                x: rec.location.lon,
+                y: rec.location.lat,
+                z: rec.location.alt - 184
               };
             }
           },
@@ -99,7 +99,7 @@
             '2WfIX0QHiZcOjVaXI92stjDh4fI';
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
-          layers: [pointMarkerLayer, imageDrapingLayer]
+          layers: [pointMarkerLayer/*, imageDrapingLayer*/]
         });
         cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
         cesiumView.viewer.scene.logarithmicDepthBuffer = false;

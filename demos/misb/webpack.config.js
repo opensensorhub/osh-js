@@ -59,6 +59,9 @@ const config = {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
   },
+  devServer: {
+    https: true,
+  },
   module: {
     unknownContextCritical: false,
     rules: [

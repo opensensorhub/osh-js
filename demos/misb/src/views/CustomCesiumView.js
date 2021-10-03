@@ -9,7 +9,7 @@ class CustomCesiumView extends CesiumView {
 
     panToLayer(layer) {
         let marker = this.getMarker(layer.props);
-        this.viewer.zoomTo(marker, new HeadingPitchRange(CesiumMath.toRadians(0),CesiumMath.toRadians(-90),200));
+        this.viewer.zoomTo(marker, new HeadingPitchRange(CesiumMath.toRadians(0),CesiumMath.toRadians(-90),2000));
     }
 }
 export default CustomCesiumView;
