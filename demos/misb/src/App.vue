@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <VideoVariant
+    <DroneMiniPanel
         :video-data-source="videoDataSource"
     />
     <Globe
@@ -13,15 +13,19 @@
 <script>
   // @ is an alias to /src
 import Globe from './components/Globe.vue';
-import VideoVariant from "./components/VideoVariant.vue";
+import DroneMiniPanel from "./components/DroneMiniPanel.vue";
 import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo.js";
 import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import {EventType} from "osh-js/core/event/EventType";
+import {Status} from "osh-js/core/protocol/Status";
+
+import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
   export default {
   components: {
-    VideoVariant,
+    DroneMiniPanel,
     Globe
   },
     data: function () {
@@ -69,15 +73,56 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
       }
     },
     mounted() {
-
       const dataSynchronizer = new DataSynchronizer({
         replayFactor: 1,
         dataSources: [this.videoDataSource, this.platformLocationDataSource, this.platformOrientationDataSource,
           this.gimbalOrientationDataSource]
       });
 
-    // start streaming
-    dataSynchronizer.connect();
+
+    // check connect/disconnect
+      const videoBroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.videoDataSource.id);
+
+      videoBroadcastChannel.onmessage = (message) => {
+        if(message.data.type === EventType.STATUS) {
+          if(message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneDataSourceStatus', {
+              video: {
+                connected: true
+              }
+            });
+          } else if(message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneDataSourceStatus', {
+              video: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      const locationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.platformLocationDataSource.id);
+
+      locationBroadcastChannel.onmessage = (message) => {
+        if(message.data.type === EventType.STATUS) {
+          if(message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneDataSourceStatus', {
+              position: {
+                connected: true
+              }
+            });
+          } else if(message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneDataSourceStatus', {
+              video: {
+                position: false
+              }
+            });
+          }
+        }
+      }
+
+      // start streaming
+      dataSynchronizer.connect();
   }
 };
 </script>

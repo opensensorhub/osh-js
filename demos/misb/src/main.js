@@ -3,6 +3,7 @@ import App from "./App.vue";
 import LoadScript from 'vue-plugin-load-script';
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import store from './store'
 
 Vue.use(LoadScript);
 Vue.use(Vuetify);
@@ -15,6 +16,7 @@ export default new Vuetify({
 })
 
 new Vue({
+  store,
   vuetify: new Vuetify({
     theme: { dark: true },
   }),

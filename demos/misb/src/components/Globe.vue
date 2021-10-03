@@ -5,18 +5,23 @@
 </template>
 
 <script>
+  import CustomCesiumView from "../views/CustomCesiumView";
+
   window.CESIUM_BASE_URL = './';
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-  import CesiumView from "osh-js/core/ui/view/map/CesiumView.js";
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     name: "Globe",
     components: {},
     mounted() {
       this.init();
+      this.$root.$on('pan_to_drone', () => {
+        this.cesiumView.panToLayer(this.pointMarkerLayer);
+      });
     },
     props: ['platformLocationDataSource','platformOrientationDataSource','gimbalOrientationDataSource'],
     methods: {
@@ -92,7 +97,7 @@
         Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
             'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
             '2WfIX0QHiZcOjVaXI92stjDh4fI';
-        let cesiumView = new CesiumView({
+        let cesiumView = new CustomCesiumView({
           container: "cesium-container",
           layers: [pointMarkerLayer, imageDrapingLayer]
         });
@@ -106,6 +111,8 @@
         const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
         baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
+        this.pointMarkerLayer = pointMarkerLayer;
+        this.cesiumView = cesiumView;
       }
     }
   };

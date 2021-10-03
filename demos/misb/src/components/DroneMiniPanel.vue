@@ -24,19 +24,24 @@
         </v-btn>
         <v-btn
             icon
-            right
-            @click.stop="mini = !mini"
             dark
-            v-else
+            title="Center on target"
+            @click.stop="panToDrone()"
         >
-          <v-icon>mdi-video</v-icon>
+          <v-icon
+              :color='(this.$store.state.drone.position.connected)? "#00AF2AFF" : "#d50000"'
+          >mdi-map-marker</v-icon>
         </v-btn>
         <v-btn
             icon
+            right
+            @click.stop="mini = !mini"
             dark
-            title="Center on target"
+            :title='(this.$store.state.drone.video.connected)? "Connected" : "Disconnected"'
         >
-          <v-icon>mdi-target</v-icon>
+          <v-icon
+              :color='(this.$store.state.drone.video.connected)? "#00AF2AFF" : "#d50000"'
+          >mdi-video</v-icon>
         </v-btn>
         <v-btn
             icon
@@ -56,9 +61,10 @@
 
 <script>
 import Video from './Video.vue';
+import {mapState, mapActions} from 'vuex'
 
 export default {
-  name: "VideoVariant",
+  name: "DroneMiniPanel",
   components: {
     Video
   },
@@ -69,6 +75,13 @@ export default {
       mini: true
     }
   },
+  methods: {
+    ...mapActions(['toggleDroneSelection']
+    ),
+    panToDrone() {
+      this.$root.$emit('pan_to_drone');
+    }
+  }
 }
 </script>
 
@@ -93,6 +106,7 @@ export default {
   min-width: 80px;
   width: unset !important;
   max-width: 640px;
+  padding-right: 5px;
 }
 
 .variant-title {
