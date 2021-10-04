@@ -53,7 +53,8 @@ import {
     Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive,
     PolylineCollection,
     PrimitiveCollection,
-    EllipseGeometry
+    EllipseGeometry,
+    DistanceDisplayCondition
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -146,7 +147,8 @@ class CesiumView extends MapView {
                 name: props.name,
                 description: props.description,
                 id: props.id + "$" + props.markerId,
-                zIndex: props.zIndex
+                zIndex: props.zIndex,
+                visible: props.visible
             });
 
             this.addMarkerToLayer(props, markerObj);
@@ -161,7 +163,8 @@ class CesiumView extends MapView {
             label: props.label,
             labelColor: props.labelColor,
             labelSize: props.labelSize,
-            defaultToTerrainElevation: props.defaultToTerrainElevation
+            defaultToTerrainElevation: props.defaultToTerrainElevation,
+            visible: props.visible
         });
     }
 
@@ -169,11 +172,10 @@ class CesiumView extends MapView {
      * Updates the image draping associated to the layer.
      * @param {ImageDrapingLayer.props} props - The layer properties allowing the update of the image draping
      */
-    updateDrapedImage(props) {
+    async updateDrapedImage(props) {
         if (!isDefined(props.platformLocation)) {
             return;
         }
-
         const llaPos = props.platformLocation;
         const DTR = Math.PI / 180;
         const attitude = props.platformOrientation;
@@ -231,7 +233,6 @@ class CesiumView extends MapView {
                 ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
                 imgSrc = this.captureCanvas;
             }
-
             const encCamPos = EncodedCartesian3.fromCartesian(camPos);
             const appearance = new MaterialAppearance({
                 material: new Material({
@@ -256,33 +257,33 @@ class CesiumView extends MapView {
                 if (this.imageDrapingPrimitive === null)
                     this.imageDrapingPrimitive = {};
 
-                const promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-                const that = this;
-                when(promise, function (updatedPositions) {
-                    //console.log(updatedPositions[0]);
-                    var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Primitive({
-                        geometryInstances: new GeometryInstance({
-                            geometry: new RectangleGeometry({
-                                rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
-                                height: updatedPositions[0].height,
-                                extrudedHeight: llaPos.z - 1
-                            })
-                        }),
-                        appearance: appearance
-                    }));
+                const updatedPositions = await sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+                var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
+                    geometryInstances: new GeometryInstance({
+                        geometry: new RectangleGeometry({
+                            rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
+                            height: updatedPositions[0].height,
+                            extrudedHeight: llaPos.z - 1
+                        })
+                    }),
+                    appearance: appearance,
+                    show: props.visible
+                }));
 
-                    if (!snapshot)
-                        that.imageDrapingPrimitive = newImageDrapingPrimitive;
+                if (!snapshot)
+                    this.imageDrapingPrimitive = newImageDrapingPrimitive;
 
-                    that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
-                    that.imageDrapingPrimitiveReady = true;
-                });
+                this.viewer.scene.primitives.raiseToTop(this.imageDrapingPrimitive);
+                this.imageDrapingPrimitiveReady = true;
 
             } else if (this.imageDrapingPrimitiveReady) {
                 this.imageDrapingPrimitive.appearance = appearance;
             }
         }
 
+        if(isDefined(this.imageDrapingPrimitive)) {
+            this.imageDrapingPrimitive.show = props.visible;
+        }
         this.frameCount++;
     }
 
@@ -422,6 +423,7 @@ class CesiumView extends MapView {
      * @param {String} properties.icon - the icon path
      * @param {String} properties.label - label of the tooltip
      * @param {String} properties.description - description of the marker to display into the tooltip
+     * @param {boolean} properties.visible - set marker visibility
      * @param {Object} properties.orientation.heading - orientation of the icon in degree
      * @return {Entity} the new created entity
      */
@@ -432,14 +434,16 @@ class CesiumView extends MapView {
             imgIcon = properties.icon;
         }
         const isModel = imgIcon.endsWith(".glb");
-        const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
+        let label = 'marker';
+        if(isDefined(properties.label)) {
+            label = properties.label;
+        }
         const fillColor = properties.labelColor || '#FFFFFF';
         const labelSize = properties.labelSize || 16;
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
         const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
 
-        const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
-            label != null ? label : "Selected Marker";
+        const name = isDefined(properties.name)? properties.name : label;
         const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
         const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
             Color.fromCssColorString(properties.color) : Color.YELLOW;
@@ -467,8 +471,11 @@ class CesiumView extends MapView {
                     uri: imgIcon,
                     scale: 4,
                     modelM: Matrix4.IDENTITY.clone(),
-                    color: color
-                }
+                    color: color,
+                    minimumPixelSize: 64,
+                    maximumScale: 20000,
+                },
+                show: properties.visible,
             };
         } else {
             let rot = 0;
@@ -500,7 +507,8 @@ class CesiumView extends MapView {
                     pixelOffset: iconOffset,
                     pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
                     eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex) // make sure icon always displays in front
-                }
+                },
+                show: properties.visible,
             };
         }
 
@@ -577,7 +585,8 @@ class CesiumView extends MapView {
                     }
                 }),
             }),
-            asynchronous: false
+            asynchronous: false,
+            show: properties.visible
         });
 
         this.viewer.scene.primitives.add(ellipsePrimitive);
@@ -645,6 +654,7 @@ class CesiumView extends MapView {
                     }
                 }
             }),
+            show: properties.visible
         });
         this.viewer.scene.primitives.add(polylineCollection);
         return polylineCollection;
@@ -655,7 +665,6 @@ class CesiumView extends MapView {
      * @param props The properties containing the updated data
      */
     updatePolyline(props) {
-
         if (!isDefined(props.locations)) {
             return;
         }
@@ -690,6 +699,8 @@ class CesiumView extends MapView {
 
         if (!isNaN(lon) && !isNaN(lat)) {
             let marker = this.getMarker(layer);
+
+            marker.show =  properties.visible;
 
             // get ground altitude if non specified
             if (!isDefined(alt) || isNaN(alt)) {
@@ -789,7 +800,8 @@ class CesiumView extends MapView {
                     }
                 }),
             }),
-            asynchronous: false
+            asynchronous: false,
+            show: properties.visible
         });
 
         // according to this example: https://sandcastle.cesium.com/?#c=pVRNj9MwEP0rVi9JpeIulAWU7VZULVrQLlq0IC6EgzeZthaOHY2dVAH1v2MncZq05YQPbebjzbw38aRkSEoOe0BySyTsyQo0LzL6vfaFQVKbKyUN4xIwGN/EMpalRSVKYaot6kcsiT0v3r6iVxPy+sr+eo97JrPrnue69pzn9Dxv3vk6sfx5bMfQWC5M2o4tx5V3zegGVbaGLQLoJSKrwoZdn61Q2IM6k66XT/dPH9Y3TYoqjLAaV5cy7x4f1l2tXIlqq+QX5Bk3vITh5Dp3+KcRtAWVgcHqk9SGSTvQqJ9+dxL1KHd4GpGg7RZMjn5fMep6Njm+Fk0QmAFvhkekO32uQ1y/tz9t+48ckGGyq6IL+C4Ydm9pPKx06Nnt42HcKmJ5Dgyd9kHtz1YBciaWXbhPL2ujFyH1dfhW5RAG9esLJuREWX0doubvGDmcUdOVTHaopCrsW9swoSGWh/HgJrg786+r0IYtCQGJ4UqGDnuGoixNvbhcae4ybb9umC2bPU/NLiKzblWEUnlEDBbQOv5jKu1E+kvghzGU7Em71W++HFQnIIEeI05jZ9TiTldmfDllMBWXM5qM5tpUAhYNmfc8yxUaUqAIKZ0ayHJh5enpc5H8AkMTXe/8fOpB85SXdo9u49HJlywekUQwrW1kUwjxlf+GeLSYT23+ACYUS7ncPpaAglUuZfdy8dA4KaXzqTXPUUYp8cywV/Ev
@@ -806,6 +818,7 @@ class CesiumView extends MapView {
                     }
                 }
             }),
+            show: properties.visible
         });
 
         const collection = new PrimitiveCollection();
@@ -829,6 +842,7 @@ class CesiumView extends MapView {
             polygonPrimitiveCollection.removeAll();
             this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
         }
+
         this.addPolygonToLayer(props, this.addPolygon(props));
     }
 
