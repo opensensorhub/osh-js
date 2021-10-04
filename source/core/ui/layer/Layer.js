@@ -34,6 +34,7 @@ class Layer {
      * @param {string} properties.name - default name
      * @param {string} properties.description - default description
      * @param {string} properties.dataSourceId - default dataSourceId
+     * @param {boolean} properties.visible - defines if the layer is visible
      */
     constructor(properties) {
         this.properties = properties;
@@ -44,6 +45,7 @@ class Layer {
         this.props.name = '';
         this.props.description = '';
         this.props.dataSourceId = '';
+        this.props.visible = true;
 
         if(isDefined(properties.name)) {
             this.props.name = properties.name;
@@ -56,7 +58,19 @@ class Layer {
             this.props.dataSourceId = properties.dataSourceId;
         }
 
+        if(isDefined(properties.visible)) {
+            this.props.visible = properties.visible;
+        }
+
         this.initEvents();
+
+        const that = this;
+        if (this.checkFn("getVisible")) {
+            let fn = function(rec,timeStamp,options) {
+                that.props.visible = that.getFunc('getVisible')(rec,timeStamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
+        }
     }
 
     saveState() {
