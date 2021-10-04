@@ -9,69 +9,30 @@
         right
         width="640"
     >
-      <div class="variant-title">MISB UAS</div>
+      <div class="variant-title">Target (s)</div>
       <v-divider></v-divider>
       <div class="icon-container">
         <v-btn
             icon
-            right
-            @click.stop="mini = !mini"
             dark
-            class="chevron-right"
-            v-if="!mini"
-        >
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-        <v-btn
-            icon
-            dark
-            title="Center on target location"
-            @click.stop="panToDrone()"
+            title="Center on target"
+            @click.stop="panToTarget()"
         >
           <v-icon
               :color='(this.$store.state.drone.position.connected)? "#00AF2AFF" : "#d50000"'
           >mdi-map-marker</v-icon>
         </v-btn>
-        <v-btn
-            icon
-            right
-            @click.stop="mini = !mini"
-            dark
-            title="Video"
-        >
-          <v-icon
-              :color='(this.$store.state.drone.video.connected)? "#00AF2AFF" : "#d50000"'
-          >mdi-video</v-icon>
-        </v-btn>
-        <v-btn
-            icon
-            dark
-            title="Show/hide footprint"
-            @click.stop="toggleDroneFootprint()"
-        >
-          <v-icon
-              :color='(this.$store.state.drone.footprint)? "#00AF2AFF" : "#d50000"'
-          >mdi-vector-rectangle</v-icon>
-        </v-btn>
       </div>
-      <Video
-          :video-data-source="videoDataSource"
-          :show=!mini
-      />
     </v-navigation-drawer>
   </v-card>
 </template>
 
 <script>
-import Video from './Video.vue';
-import {mapState, mapActions} from 'vuex'
-
 export default {
   name: "DroneMiniPanel",
   components: {
-    Video
   },
-  props: ['videoDataSource'],
+  props: ['targetLocationDataSource'],
   data() {
     return {
       drawer: true,
@@ -79,10 +40,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleDroneSelection', 'toggleDroneFootprint']
-    ),
-    panToDrone() {
-      this.$root.$emit('pan_to_drone');
+    panToTarget() {
+      this.$root.$emit('pan_to_target');
     }
   }
 }
@@ -91,7 +50,7 @@ export default {
 <style scoped>
 .inspire {
   position: absolute;
-  top: 220px;
+  top: 100px;
   right: 0;
   z-index: 10;
   border-radius: 4px;
@@ -117,11 +76,6 @@ export default {
   padding: 10px;
   text-align: center;
   vertical-align: middle;
-}
-
-.chevron-right {
-  position: absolute;
-  right: 0;
 }
 
 .icon-container {

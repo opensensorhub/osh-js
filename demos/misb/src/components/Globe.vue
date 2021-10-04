@@ -13,6 +13,7 @@
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
   import {mapState, mapActions} from 'vuex'
+  import PolygonLayer from "../../../../source/core/ui/layer/PolygonLayer";
 
   export default {
     name: "Globe",
@@ -20,41 +21,57 @@
     mounted() {
       this.init();
       this.$root.$on('pan_to_drone', () => {
-        this.cesiumView.panToLayer(this.pointMarkerLayer);
+        this.cesiumView.panToLayer(this.dronePointMarkerLayer);
+      });
+      this.$root.$on('pan_to_target', () => {
+        this.cesiumView.panToLayer(this.targetPointMarkerLayer);
       });
     },
-    props: ['platformLocationDataSource','platformOrientationDataSource','gimbalOrientationDataSource'],
+    props: ['droneLocationDataSource','droneOrientationDataSource',
+      'droneCameraOrientationDataSource', 'droneGeoRefImageFrameDataSource','targetLocationDataSource'],
     methods: {
       init() {
+        let lastDronePosition = null;
+
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         // add 3D model marker to Cesium view
-        let pointMarkerLayer = new PointMarkerLayer({
+        let dronePointMarkerLayer = new PointMarkerLayer({
           label: "MISB UAS",
           getLocation : {
-            dataSourceIds : [this.platformLocationDataSource.id],
+            dataSourceIds : [this.droneLocationDataSource.id],
             handler : function(rec) {
-              return {
+              const pos = {
                 x : rec.location.lon,
                 y : rec.location.lat,
                 z : rec.location.alt - 184 // model offset
               };
+
+              lastDronePosition = pos;
+              return pos;
             }
           },
           getOrientation : {
-            dataSourceIds : [this.platformOrientationDataSource.getId()],
+            dataSourceIds : [this.droneOrientationDataSource.getId()],
             handler : function(rec) {
               return {
-                heading : rec.attitude.yaw
+                heading : rec.attitude.heading
               };
             }
           },
           icon: "./models/Drone+06B.glb",
         });
 
+        const that = this;
         // style it with a moving point marker
-        let imageDrapingLayer = new ImageDrapingLayer({
+        let droneImageDrapingLayer = new ImageDrapingLayer({
+          getVisible: {
+            dataSourceIds: [this.droneLocationDataSource.getId()],
+            handler: function(rec) {
+             return !that.$store.state.drone.footprint;
+            }
+          },
           getPlatformLocation: {
-            dataSourceIds: [this.platformLocationDataSource.getId()],
+            dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function (rec) {
               return {
                 x: rec.location.lon,
@@ -64,17 +81,17 @@
             }
           },
           getPlatformOrientation: {
-            dataSourceIds: [this.platformOrientationDataSource.getId()],
+            dataSourceIds: [this.droneOrientationDataSource.getId()],
             handler: function (rec) {
               return {
-                heading : rec.attitude.yaw,
+                heading : rec.attitude.heading,
                 pitch: rec.attitude.pitch,
                 roll: rec.attitude.roll
               };
             }
           },
           getGimbalOrientation: {
-            dataSourceIds: [this.gimbalOrientationDataSource.getId()],
+            dataSourceIds: [this.droneCameraOrientationDataSource.getId()],
             handler: function (rec) {
               return {
                 heading : rec.attitude.yaw,
@@ -90,17 +107,59 @@
             camDistR: new Cartesian3(-2.644e-01, 8.4e-02, 0.0),
             camDistT: new Cartesian2(-8.688e-04, 6.123e-04)
           },
-          imageSrc: videoCanvas
+          imageSrc: videoCanvas,
         });
 
-        // create Cesium view
+        let dronePolygonFootprintLayer = new PolygonLayer({
+          dataSourceId: this.droneGeoRefImageFrameDataSource.id,
+          getVisible: () => this.$store.state.drone.footprint, // link state application to
+          getVertices: (rec) => {
+            return [
+              rec.ulc.lon,
+              rec.ulc.lat,
+              rec.urc.lon,
+              rec.urc.lat,
+              rec.lrc.lon,
+              rec.lrc.lat,
+              rec.llc.lon,
+              rec.llc.lat,
+              rec.ulc.lon,
+              rec.ulc.lat,
+            ]
+          },
+          getPolygonId: (rec) =>  "drone-polygon-id",
+          color: 'rgba(65,183,255,0.4)',
+          opacity: 0.5,
+          outlineWidth: 1,
+          outlineColor: 'rgba(255,195,100,0.3)'
+        });
+
+
+        let targetPointMarkerLayer = new PointMarkerLayer({
+          dataSourceId: this.targetLocationDataSource.id,
+          getLocation: (rec) => ({
+            x: rec.location.lon,
+            y: rec.location.lat
+          }),
+          orientation: {
+            heading: 0
+          },
+          icon: 'images/marker-icon.png',
+          iconAnchor: [16, 40]
+        });
+
+        // Init cesium token
         Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
             'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
             '2WfIX0QHiZcOjVaXI92stjDh4fI';
+
+        // create Cesium view
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
-          layers: [pointMarkerLayer/*, imageDrapingLayer*/]
+          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer, targetPointMarkerLayer]
         });
+
+        //cesium custom param
         cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
         cesiumView.viewer.scene.logarithmicDepthBuffer = false;
         cesiumView.viewer.camera.setView({
@@ -111,7 +170,8 @@
         const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
         baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
-        this.pointMarkerLayer = pointMarkerLayer;
+        this.dronePointMarkerLayer = dronePointMarkerLayer;
+        this.targetPointMarkerLayer = targetPointMarkerLayer;
         this.cesiumView = cesiumView;
       }
     }

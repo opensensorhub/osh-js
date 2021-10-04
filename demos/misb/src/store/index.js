@@ -15,18 +15,27 @@ export default new Vuex.Store({
             position: {
                 connected: false
             },
-            selected: false,
+            footprint: false,
+            selected : false
+        },
+        target : {
+            position: {
+                connected: false
+            }
         }
     },
     actions: {
         toggleDroneSelection({state, commit}, props) {
             commit('toggleDroneSelection', !state.drone.selected);
         },
-        showFootprint({state, commit}, props) {
-
+        toggleDroneFootprint({state, commit}, props) {
+            commit('toggleDroneFootprint', !state.drone.footprint);
         },
         updateDroneDataSourceStatus({state, commit}, props) {
             commit('setDroneConnections', {...props});
+        },
+        updateTargetDataSourceStatus({state, commit}, props) {
+            commit('setTargetConnections', {...props});
         },
     },
     mutations: {
@@ -36,9 +45,18 @@ export default new Vuex.Store({
         toggleDroneSelection(state, value) {
             state.drone.selected = value;
         },
+        toggleDroneFootprint(state, value) {
+            state.drone.footprint = value;
+        },
         setDroneConnections(state, value) {
             state.drone = {
                 ...state.drone,
+                ...value
+            }
+        },
+        setTargetConnections(state, value) {
+            state.target = {
+                ...state.target,
                 ...value
             }
         }

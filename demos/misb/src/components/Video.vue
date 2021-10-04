@@ -17,7 +17,7 @@ export default {
       container: "video-container",
       css: "video-h264",
       name: "UAV Video",
-      framerate:70,
+      framerate:30,
       showTime: true,
       showStats: true,
       dataSourceId: this.videoDataSource.id
