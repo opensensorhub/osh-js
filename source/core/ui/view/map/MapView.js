@@ -51,6 +51,8 @@ class MapView extends View {
                 this.updateEllipse(d);
             } else if (data.type === 'polygon') {
                 this.updatePolygon(d);
+            } else if (data.type === 'coplanarPolygon') {
+                this.updateCoPlanarPolygon(d);
             }
         }
     }
@@ -424,6 +426,14 @@ class MapView extends View {
         }
         return null;
     }
+
+    updateMarker() {}
+    updatePolyline() {}
+    updatePolygon() {}
+    updateEllipse() {}
+    updateCoPlanarPolygon() {}
+    updateDrapedImage() {}
+
 }
 
 export default MapView;
