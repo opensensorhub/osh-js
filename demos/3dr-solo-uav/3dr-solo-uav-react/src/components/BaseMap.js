@@ -2,6 +2,9 @@ import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
 import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
 import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
+import PolygonLayer from "osh/core/ui/layer/PolygonLayer.js";
+import CoPlanarPolygonLayer from "osh/core/ui/layer/CoPlanarPolygonLayer.js";
+
 import CesiumView from "osh/core/ui/view/map/CesiumView.js";
 import {randomUUID} from "osh/core/utils/Utils.js";
 import ImageDrapingLayer from "osh/core/ui/layer/ImageDrapingLayer.js";
@@ -15,6 +18,9 @@ class BaseMap extends React.Component {
   }
 
   componentDidMount() {
+    let START_TIME = '2015-12-19T21:04:29.231Z';
+    let END_TIME = '2015-12-19T21:09:19.675Z';
+
     let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
 
     // create data source for Android phone GPS
@@ -24,8 +30,8 @@ class BaseMap extends React.Component {
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
       offeringID: 'urn:mysos:solo:nav2',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1
     });
 
@@ -35,8 +41,8 @@ class BaseMap extends React.Component {
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
       offeringID: 'urn:mysos:solo:nav2',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1
     });
 
@@ -46,8 +52,8 @@ class BaseMap extends React.Component {
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
       offeringID: 'urn:mysos:solo:nav2',
       observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1
     });
 
@@ -74,6 +80,48 @@ class BaseMap extends React.Component {
       },
       icon: "./models/Drone+06B.glb",
       name: 'Solo draping marker'
+    });
+
+    let polygonLayer = new PolygonLayer({
+      dataSourceId: platformLocationDataSource.id,
+      getVertices: (rec) => {
+          return [
+              rec.loc.lon-0.001,
+              rec.loc.lat,
+              rec.loc.lon,
+              rec.loc.lat+0.001,
+              rec.loc.lon+0.001,
+              rec.loc.lat,
+              rec.loc.lon,
+              rec.loc.lat-0.001,
+              rec.loc.lon-0.001,
+              rec.loc.lat,
+          ]
+      },
+      getPolygonId: (rec) =>  "my-id",
+      color: 'rgba(0,157,255,0.5)',
+      opacity: 0.5,
+      outlineWidth: 1,
+      outlineColor: 'rgba(255,169,17,0.5)',
+    });
+
+    let coplanarPolygonLayer = new CoPlanarPolygonLayer({
+      dataSourceId: platformLocationDataSource.id,
+      getVertices: (rec) => {
+        // (lon, lat, alt)
+        let p0 = [rec.loc.lon-0.001,rec.loc.lat,0];
+        let p1 = [rec.loc.lon, rec.loc.lat+0.001,0];
+        let p2 = [rec.loc.lon+0.001,rec.loc.lat,0];
+        let p3 = [rec.loc.lon,rec.loc.lat-0.001,0];
+        let c = [rec.loc.lon, rec.loc.lat, rec.loc.alt-180];
+
+        return [...p0,...p1,...p2,...p3,...p0,...c,]
+      },
+      getPolygonId: (rec) =>  "my-id",
+      color: 'rgba(233,244,255,0.2)',
+      opacity: 0.5,
+      outlineWidth: 1,
+      outlineColor: 'rgba(255,169,17,0.5)',
     });
 
     // style it with a moving point marker
@@ -127,7 +175,7 @@ class BaseMap extends React.Component {
         '2WfIX0QHiZcOjVaXI92stjDh4fI';
     let cesiumView = new CesiumView({
       container: this.divId,
-      layers: [pointMarkerLayer, imageDrapingLayer],
+      layers: [pointMarkerLayer, polygonLayer, coplanarPolygonLayer, imageDrapingLayer],
     });
 
     cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
