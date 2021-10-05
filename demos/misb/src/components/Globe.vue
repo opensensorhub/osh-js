@@ -155,7 +155,7 @@
           getFrame: {
             dataSourceIds: [this.droneGeoRefImageFrameDataSource.getId()],
             handler: function(rec) {
-              return [rec.ulc.lon, rec.ulc.lat, 0];
+              return [rec.center.lon, rec.center.lat, 0];
             }
           },
           getOrientation: {

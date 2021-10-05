@@ -7,7 +7,7 @@ import {
     PrimitiveCollection,
     Cartesian3,
     Color,
-    Math,
+    Math as MathCesium,
     Transforms,
     Matrix3,
     Matrix4,
@@ -119,22 +119,48 @@ class CustomCesiumView extends CesiumView {
         // const orientation = Transforms.headingPitchRollQuaternion(origin, rotation);
 
         // -- Method 2 --
-        const rotation = new HeadingPitchRoll.fromDegrees(properties.orientation.heading, properties.orientation.pitch, properties.orientation.roll);
-        const mat = Transforms.headingPitchRollToFixedFrame(fixeFrame, rotation);
+        // const rotation = new HeadingPitchRoll.fromDegrees(properties.orientation.heading, properties.orientation.pitch, properties.orientation.roll);
+        // const mat = Transforms.headingPitchRollToFixedFrame(fixeFrame, rotation);
+        //
+        // const right = new Cartesian3(mat[0], mat[1], mat[2]);
+        // const direction = new Cartesian3(mat[4], mat[5], mat[6]);
+        // const up = new Cartesian3(mat[8], mat[9], mat[10]);
+        //
+        // let rot = new Matrix3();
+        // Matrix3.setColumn(rot, 0, right, rot);
+        // Matrix3.setColumn(rot, 1, up, rot);
+        // Matrix3.setColumn(rot, 2, direction, rot);
+        //
+        // const orientation = Quaternion.fromRotationMatrix(rot, new Quaternion())
 
-        const right = new Cartesian3(mat[0], mat[1], mat[2]);
-        const direction = new Cartesian3(mat[4], mat[5], mat[6]);
-        const up = new Cartesian3(mat[8], mat[9], mat[10]);
+        // -- Method 3 -- https://community.cesium.com/t/a-way-to-orient-and-place-frustum-outline/10487
+        //deg to rad
+        let heading = properties.orientation.heading * Math.PI/180;
+        let pitch = properties.orientation.pitch * Math.PI/180;
+        let roll = properties.orientation.roll *Math.PI/180;
 
-        let rot = new Matrix3();
-        Matrix3.setColumn(rot, 0, right, rot);
-        Matrix3.setColumn(rot, 1, up, rot);
-        Matrix3.setColumn(rot, 2, direction, rot);
+        //declare shortcuts
+        let til= pitch+(Math.PI/2);roll*=-1;
+        let ch = Math.cos(heading);let sh = Math.sin(heading);
+        let ct = Math.cos(til);let st = Math.sin(til);
+        let cr = Math.cos(roll);let sr = Math.sin(roll);
 
-        const orientation = Quaternion.fromRotationMatrix(rot, new Quaternion())
+        //calc rot mat in terms of local ENU frame
+        let myrig=new Cartesian3(ch*cr+sh*ct*sr,sh*cr*-1+ch*ct*sr,st*sr);
+        let mydir=new Cartesian3(sh*st,ch*st,ct*-1);
+        let myup=new Cartesian3(sh*ct*cr+ch*sr*-1,ch*ct*cr+sh*sr,st*cr);
+
+        //transform rot mat to world coordinates
+        let GD_transform = Transforms.eastNorthUpToFixedFrame(origin, this.viewer.scene.globe.ellipsoid, new Matrix4());//rot-tran
+        let GD_rotmat = Matrix4.getMatrix3(GD_transform, new Matrix3());
+        Matrix3.multiplyByVector(GD_rotmat, myrig, myrig);
+        Matrix3.multiplyByVector(GD_rotmat, mydir, mydir);
+        Matrix3.multiplyByVector(GD_rotmat, myup, myup);
+        let rot = [myrig.x,myrig.y,myrig.z,mydir.x,mydir.y,mydir.z,myup.x,myup.y,myup.z];
+        const zeroPt = new Cartesian3(0,0,0);
 
         const frustum = new PerspectiveFrustum({
-            fov : Math.toRadians(properties.fov),
+            fov : MathCesium.toRadians(properties.fov),
             aspectRatio : 4 / 3,
             //twist:15,
             near : 1.0,
@@ -144,10 +170,11 @@ class CustomCesiumView extends CesiumView {
         const frustrumInstance = new GeometryInstance({
             geometry: new FrustumGeometry({
                 frustum : frustum,
-                origin : origin,
-                orientation : orientation,
+                origin : zeroPt,
+                orientation : {x:0,y:0,z:0,w:1},
                 vertexFormat : VertexFormat.POSITION_ONLY
             }),
+            modelMatrix :[1,0,0,0, 0,0,-1,0, 0,1,0,0, 0,0,0,1],
             id: id,
         });
 
@@ -173,6 +200,11 @@ class CustomCesiumView extends CesiumView {
         // collection.add(polygonOutlinePrimitive);
 
         this.viewer.scene.primitives.add(collection);
+
+        //place and orient primitive
+        frustrumPrimitive.modelMatrix=
+            [rot[0],rot[1],rot[2],0, rot[3],rot[4],rot[5],0, rot[6],rot[7],rot[8],0,
+                origin.x,origin.y,origin.z,1];
 
         return collection;
     }
