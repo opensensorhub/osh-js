@@ -12,6 +12,8 @@
         :drone-orientation-data-source="droneOrientationDataSource"
         :drone-geo-ref-image-frame-data-source="droneGeoRefImageFrameDataSource"
         :target-location-data-source="targetLocationDataSource"
+        :drone-h-fov-data-source="droneHFovDataSource"
+        :drone-v-fov-data-source="droneVFovDataSource"
         :lastDroneLocation="lastDroneLocation"
     />
   </div>
@@ -97,6 +99,32 @@ export default {
       timeOut: 500
     });
 
+    const droneHFovDataSource = new SosGetResultJson('MISB UAS - Horizontal FoV', {
+      protocol: 'wss',
+      service: 'SOS',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      offeringID: 'urn:osh:sensor:uas:predator001',
+      observedProperty: 'http://sensorml.com/ont/misb0601/property/HorizontalFov',
+      startTime: START_TIME,
+      endTime: END_TIME,
+      replaySpeed: 1,
+      bufferingTime: 1000,
+      timeOut: 500
+    });
+
+    const droneVFovDataSource = new SosGetResultJson('MISB UAS - Vertical FoV', {
+      protocol: 'wss',
+      service: 'SOS',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      offeringID: 'urn:osh:sensor:uas:predator001',
+      observedProperty: 'http://sensorml.com/ont/misb0601/property/VerticalFov',
+      startTime: START_TIME,
+      endTime: END_TIME,
+      replaySpeed: 1,
+      bufferingTime: 1000,
+      timeOut: 500
+    });
+
     const droneGeoRefImageFrameDataSource = new SosGetResultJson('MISB UAS - Geo ref image', {
       protocol: 'wss',
       service: 'SOS',
@@ -125,8 +153,8 @@ export default {
 
     const dataSynchronizer = new DataSynchronizer({
       replayFactor: 1,
-      dataSources: [droneLocationDataSource, droneVideoDataSource, droneOrientationDataSource,
-        droneCameraOrientationDataSource, droneGeoRefImageFrameDataSource, targetLocationDataSource]
+      dataSources: [droneLocationDataSource/*, droneVideoDataSource*/, droneOrientationDataSource,
+        droneCameraOrientationDataSource, droneGeoRefImageFrameDataSource, targetLocationDataSource, droneVFovDataSource,droneHFovDataSource]
     });
 
     // check connect/disconnect
@@ -216,6 +244,8 @@ export default {
     this.droneCameraOrientationDataSource = droneCameraOrientationDataSource;
     this.droneGeoRefImageFrameDataSource = droneGeoRefImageFrameDataSource;
     this.targetLocationDataSource = targetLocationDataSource;
+    this.droneHFovDataSource = droneHFovDataSource;
+    this.droneVFovDataSource = droneVFovDataSource;
     //
 
     let sosGetFois = new SosGetFois('fois', {

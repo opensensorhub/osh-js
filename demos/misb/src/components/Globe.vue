@@ -13,8 +13,7 @@
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
   import PolygonLayer from "osh-js/core/ui/layer/PolygonLayer";
-  import CoPlanarPolygonLayer from "osh-js/core/ui/layer/CoPlanarPolygonLayer";
-  import {isDefined} from "../../../../source/core/utils/Utils";
+  import FrustrumLayer from "../views/FrustrumLayer";
 
   export default {
     name: "Globe",
@@ -29,9 +28,12 @@
       });
     },
     props: ['droneLocationDataSource','droneOrientationDataSource',
-      'droneCameraOrientationDataSource', 'droneGeoRefImageFrameDataSource','targetLocationDataSource','lastDroneLocation'],
+      'droneCameraOrientationDataSource', 'droneGeoRefImageFrameDataSource','targetLocationDataSource','lastDroneLocation',
+      'droneHFovDataSource','droneVFovDataSource'
+    ],
     methods: {
       init() {
+        const that = this;
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         // add 3D model marker to Cesium view
         let dronePointMarkerLayer = new PointMarkerLayer({
@@ -59,7 +61,7 @@
           icon: "./models/Drone+06B.glb",
         });
 
-        const that = this;
+
         // style it with a moving point marker
         let droneImageDrapingLayer = new ImageDrapingLayer({
           getVisible: {
@@ -133,8 +135,50 @@
         });
 
 
+        let droneFrustrumLayer = new FrustrumLayer({
+          getOrigin: {
+            dataSourceIds: [this.droneLocationDataSource.getId()],
+            handler: function(rec) {
+              return {
+                x: rec.location.lon,
+                y: rec.location.lat,
+                z: rec.location.alt - 184
+              };
+            }
+          },
+          getFov: {
+            dataSourceIds: [this.droneHFovDataSource.getId()],
+            handler: function(rec) {
+              return rec.params.hfov;
+            }
+          },
+          getFrame: {
+            dataSourceIds: [this.droneGeoRefImageFrameDataSource.getId()],
+            handler: function(rec) {
+              return [rec.ulc.lon, rec.ulc.lat, 0];
+            }
+          },
+          getOrientation: {
+            dataSourceIds: [this.droneCameraOrientationDataSource.getId()],
+            handler: function(rec) {
+              return {
+                heading : rec.attitude.yaw,
+                pitch: rec.attitude.pitch,
+                roll: rec.attitude.roll
+              };
+            }
+          },
+          getVisible: {
+            dataSourceIds: [this.droneLocationDataSource.getId()],
+            handler: function(rec) {
+              return  that.$store.state.drone.footprint; // link state application to
+            }
+          },
+          color: 'rgba(65,183,255,0.4)',
+          opacity: 0.5,
+        });
+        /*
         const MODEL_CORRECTION = -170;
-
         let droneFootPrintCoPlanarLayer0 = new CoPlanarPolygonLayer({
           dataSourceId: this.droneGeoRefImageFrameDataSource.id,
           getVisible: () => this.$store.state.drone.footprint, // link state application to
@@ -185,7 +229,7 @@
           opacity: 0.2,
           outlineWidth: 1,
           outlineColor: 'rgba(255,169,17,0.5)',
-        });
+        });*/
 
         let targetPointMarkerLayer = new PointMarkerLayer({
           dataSourceId: this.targetLocationDataSource.id,
@@ -209,7 +253,7 @@
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
           layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer,
-            droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1, targetPointMarkerLayer]
+            /*droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1,*/ droneFrustrumLayer, targetPointMarkerLayer]
         });
 
         //cesium custom param
