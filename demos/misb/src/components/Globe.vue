@@ -12,8 +12,9 @@
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
-  import {mapState, mapActions} from 'vuex'
-  import PolygonLayer from "../../../../source/core/ui/layer/PolygonLayer";
+  import PolygonLayer from "osh-js/core/ui/layer/PolygonLayer";
+  import CoPlanarPolygonLayer from "osh-js/core/ui/layer/CoPlanarPolygonLayer";
+  import {isDefined} from "../../../../source/core/utils/Utils";
 
   export default {
     name: "Globe",
@@ -28,11 +29,9 @@
       });
     },
     props: ['droneLocationDataSource','droneOrientationDataSource',
-      'droneCameraOrientationDataSource', 'droneGeoRefImageFrameDataSource','targetLocationDataSource'],
+      'droneCameraOrientationDataSource', 'droneGeoRefImageFrameDataSource','targetLocationDataSource','lastDroneLocation'],
     methods: {
       init() {
-        let lastDronePosition = null;
-
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         // add 3D model marker to Cesium view
         let dronePointMarkerLayer = new PointMarkerLayer({
@@ -46,7 +45,6 @@
                 z : rec.location.alt - 184 // model offset
               };
 
-              lastDronePosition = pos;
               return pos;
             }
           },
@@ -135,6 +133,60 @@
         });
 
 
+        const MODEL_CORRECTION = -170;
+
+        let droneFootPrintCoPlanarLayer0 = new CoPlanarPolygonLayer({
+          dataSourceId: this.droneGeoRefImageFrameDataSource.id,
+          getVisible: () => this.$store.state.drone.footprint, // link state application to
+          getVertices: (rec) => {
+            // (lon, lat, alt)
+            let p0 = [rec.ulc.lon, rec.ulc.lat, 0];
+            let p1 = [rec.urc.lon, rec.urc.lat, 0];
+            let p2 = [rec.lrc.lon, rec.lrc.lat, 0];
+            let p3 = [rec.llc.lon, rec.llc.lat, 0];
+
+
+            if(isDefined(that.lastDroneLocation)) {
+
+              let c = [that.lastDroneLocation.location.lon, that.lastDroneLocation.location.lat, that.lastDroneLocation.location.alt + MODEL_CORRECTION];
+              return [...p0, ...p1, ...p2, ...c]
+            } else {
+              return [...p0, ...p1, ...p2, ...p3, ...p0]
+            }
+          },
+          getPolygonId: (rec) =>  "my-id-0",
+          color: 'rgba(233,244,255,0.1)',
+          opacity: 0.2,
+          outlineWidth: 1,
+          outlineColor: 'rgba(255,169,17,0.5)',
+        });
+
+        let droneFootPrintCoPlanarLayer1 = new CoPlanarPolygonLayer({
+          dataSourceId: this.droneGeoRefImageFrameDataSource.id,
+          getVisible: () => this.$store.state.drone.footprint, // link state application to
+          getVertices: (rec) => {
+            // (lon, lat, alt)
+            let p0 = [rec.ulc.lon, rec.ulc.lat, 0];
+            let p1 = [rec.urc.lon, rec.urc.lat, 0];
+            let p2 = [rec.lrc.lon, rec.lrc.lat, 0];
+            let p3 = [rec.llc.lon, rec.llc.lat, 0];
+
+
+            if(isDefined(that.lastDroneLocation)) {
+
+              let c = [that.lastDroneLocation.location.lon, that.lastDroneLocation.location.lat, that.lastDroneLocation.location.alt + MODEL_CORRECTION];
+              return [...p2, ...p3, ...p0, ...c]
+            } else {
+              return [...p0, ...p1, ...p2, ...p3, ...p0]
+            }
+          },
+          getPolygonId: (rec) =>  "my-id-1",
+          color: 'rgba(233,244,255,0.1)',
+          opacity: 0.2,
+          outlineWidth: 1,
+          outlineColor: 'rgba(255,169,17,0.5)',
+        });
+
         let targetPointMarkerLayer = new PointMarkerLayer({
           dataSourceId: this.targetLocationDataSource.id,
           getLocation: (rec) => ({
@@ -156,7 +208,8 @@
         // create Cesium view
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
-          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer, targetPointMarkerLayer]
+          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer,
+            droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1, targetPointMarkerLayer]
         });
 
         //cesium custom param

@@ -12,6 +12,7 @@
         :drone-orientation-data-source="droneOrientationDataSource"
         :drone-geo-ref-image-frame-data-source="droneGeoRefImageFrameDataSource"
         :target-location-data-source="targetLocationDataSource"
+        :lastDroneLocation="lastDroneLocation"
     />
   </div>
 </template>
@@ -38,18 +39,23 @@ export default {
   },
   data() {
     return {
-      dataSynchronizer: null
+      dataSynchronizer: null,
+      lastDroneLocation: null
     }
   },
   beforeMount() {
+    const START_TIME = '2012-06-29T14:32:34.099333251Z';
+    const END_TIME = '2012-06-29T14:37:44.033333251Z'
+    // const END_TIME = '2012-06-29T14:32:44.099333251Z'
+
     const droneVideoDataSource = new SosGetResultVideo("MISB Drone - Video", {
       protocol: 'wss',
       service: 'SOS',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: '2012-06-29T14:32:34.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1,
       bufferingTime: 1000,
       timeOut: 500
@@ -60,8 +66,8 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
-      startTime: '2012-06-29T14:32:34.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1,
       bufferingTime: 1000,
       timeOut: 500
@@ -72,8 +78,8 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-      startTime: '2012-06-29T14:32:34.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1,
       bufferingTime: 1000,
       timeOut: 500
@@ -84,8 +90,8 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
-      startTime: '2012-06-29T14:32:34.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1,
       bufferingTime: 1000,
       timeOut: 500
@@ -97,8 +103,8 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
       offeringID: 'urn:osh:process:georef',
       observedProperty: 'http://sensorml.com/ont/misb0601/property/GeoRefImageFrame',
-      startTime: '2012-06-29T14:32:34.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1,
       bufferingTime: 1000,
       timeOut: 500
@@ -110,8 +116,8 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
       offeringID: 'urn:osh:process:vmti',
       observedProperty: 'http://sensorml.com/ont/swe/property/TargetLocation',
-      startTime: '2012-06-29T14:32:34.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: START_TIME,
+      endTime: END_TIME,
       replaySpeed: 1,
       bufferingTime: 1000,
       timeOut: 500
@@ -161,6 +167,8 @@ export default {
             }
           });
         }
+      } else if(message.data.type === EventType.DATA) {
+        this.lastDroneLocation = message.data.values[message.data.values.length-1].data;
       }
     }
 

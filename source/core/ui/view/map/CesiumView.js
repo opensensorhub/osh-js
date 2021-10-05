@@ -847,7 +847,7 @@ class CesiumView extends MapView {
                 polygonHierarchy: new PolygonHierarchy(
                     Cartesian3.fromDegreesArrayHeights(
                         properties.vertices[properties.polygonId]
-                )),
+                    )),
             }),
             id: id,
         });
@@ -864,33 +864,34 @@ class CesiumView extends MapView {
                     }
                 }),
             }),
-            asynchronous: false
+            asynchronous: false,
+            show: properties.visible
         });
 
-       /* const polygonOutlineInstance = new GeometryInstance({
-            geometry : new CoplanarPolygonOutlineGeometry({
-                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArrayHeights(properties.vertices[properties.polygonId])),
-            }),
-            attributes : {
-                color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
-            },
-            id: id,
-        });
+        /* const polygonOutlineInstance = new GeometryInstance({
+             geometry : new CoplanarPolygonOutlineGeometry({
+                 polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArrayHeights(properties.vertices[properties.polygonId])),
+             }),
+             attributes : {
+                 color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
+             },
+             id: id,
+         });
 
-        const polygonOutlinePrimitive = new Primitive({
-            geometryInstances : polygonOutlineInstance,
-            appearance : new MaterialAppearance({
-                material: new Material({
-                    fabric: {
-                        type: 'Color',
-                        uniforms: {
-                            color:  Color.fromCssColorString(properties.outlineColor)
-                        }
-                    }
-                }),
-            }),
-            asynchronous: false
-        });*/
+         const polygonOutlinePrimitive = new Primitive({
+             geometryInstances : polygonOutlineInstance,
+             appearance : new MaterialAppearance({
+                 material: new Material({
+                     fabric: {
+                         type: 'Color',
+                         uniforms: {
+                             color:  Color.fromCssColorString(properties.outlineColor)
+                         }
+                     }
+                 }),
+             }),
+             asynchronous: false
+         });*/
 
         const collection = new PrimitiveCollection();
 
