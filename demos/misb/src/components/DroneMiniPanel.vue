@@ -96,7 +96,7 @@ export default {
   z-index: 10;
   border-radius: 4px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
-  background-color: #363636 !important;
+  background-color: rgba(0,0,0,0.6) !important;
   caret-color: rgba(0, 0, 0, 0);
   user-select: none;
   -moz-user-select: none;

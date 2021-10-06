@@ -14,6 +14,8 @@
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
   import PolygonLayer from "osh-js/core/ui/layer/PolygonLayer";
   import FrustrumLayer from "../views/FrustrumLayer";
+  import {isDefined} from "../../../../source/core/utils/Utils";
+  import CoPlanarPolygonLayer from "../../../../source/core/ui/layer/CoPlanarPolygonLayer";
 
   export default {
     name: "Globe",
@@ -177,7 +179,6 @@
           color: 'rgba(65,183,255,0.4)',
           opacity: 0.5,
         });
-        /*
         const MODEL_CORRECTION = -170;
         let droneFootPrintCoPlanarLayer0 = new CoPlanarPolygonLayer({
           dataSourceId: this.droneGeoRefImageFrameDataSource.id,
@@ -229,7 +230,7 @@
           opacity: 0.2,
           outlineWidth: 1,
           outlineColor: 'rgba(255,169,17,0.5)',
-        });*/
+        });
 
         let targetPointMarkerLayer = new PointMarkerLayer({
           dataSourceId: this.targetLocationDataSource.id,
@@ -253,7 +254,7 @@
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
           layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer,
-            /*droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1,*/ droneFrustrumLayer, targetPointMarkerLayer]
+            droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1,/* droneFrustrumLayer,*/ targetPointMarkerLayer]
         });
 
         //cesium custom param

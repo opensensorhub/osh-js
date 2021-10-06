@@ -16,6 +16,10 @@
         :drone-v-fov-data-source="droneVFovDataSource"
         :lastDroneLocation="lastDroneLocation"
     />
+    <CollapseTimeController
+        :dataSynchronizer="dataSynchronizer"
+        v-if="dataSynchronizer"
+    ></CollapseTimeController>
   </div>
 </template>
 <script>
@@ -23,6 +27,8 @@
 import Globe from './components/Globe.vue';
 import DroneMiniPanel from "./components/DroneMiniPanel.vue";
 import TargetMiniPanel from "./components/TargetMiniPanel.vue";
+import CollapseTimeController from "./components/CollapseTimeController.vue";
+
 import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo.js";
 import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
@@ -30,14 +36,15 @@ import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
 import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
-import SosGetFois from "../../../source/core/datasource/SosGetFois";
+import SosGetFois from "osh-js/core/datasource/SosGetFois";
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
   components: {
     DroneMiniPanel,
     TargetMiniPanel,
-    Globe
+    Globe,
+    CollapseTimeController
   },
   data() {
     return {
@@ -58,9 +65,11 @@ export default {
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
     const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Location', {
       protocol: 'wss',
@@ -70,9 +79,11 @@ export default {
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
     const droneOrientationDataSource = new SosGetResultJson('MISB UAS - Platform Orientation', {
       protocol: 'wss',
@@ -82,9 +93,11 @@ export default {
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
     const droneCameraOrientationDataSource = new SosGetResultJson('MISB UAS - Sensor Orientation', {
       protocol: 'wss',
@@ -94,9 +107,11 @@ export default {
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
 
     const droneHFovDataSource = new SosGetResultJson('MISB UAS - Horizontal FoV', {
@@ -107,9 +122,11 @@ export default {
       observedProperty: 'http://sensorml.com/ont/misb0601/property/HorizontalFov',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
 
     const droneVFovDataSource = new SosGetResultJson('MISB UAS - Vertical FoV', {
@@ -120,9 +137,11 @@ export default {
       observedProperty: 'http://sensorml.com/ont/misb0601/property/VerticalFov',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
 
     const droneGeoRefImageFrameDataSource = new SosGetResultJson('MISB UAS - Geo ref image', {
@@ -133,9 +152,11 @@ export default {
       observedProperty: 'http://sensorml.com/ont/misb0601/property/GeoRefImageFrame',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
 
     const targetLocationDataSource = new SosGetResultJson('MISB UAS - Target location', {
@@ -146,9 +167,11 @@ export default {
       observedProperty: 'http://sensorml.com/ont/swe/property/TargetLocation',
       startTime: START_TIME,
       endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
       replaySpeed: 1,
-      bufferingTime: 1000,
-      timeOut: 500
+      timeOut: 1500,
+      bufferingTime: 1500
     });
 
     const dataSynchronizer = new DataSynchronizer({
@@ -235,7 +258,8 @@ export default {
         }
       }
     }
-
+    // start streaming
+    dataSynchronizer.connect();
     this.dataSynchronizer = dataSynchronizer;
 
     this.droneLocationDataSource = droneLocationDataSource;
@@ -268,8 +292,6 @@ export default {
   },
   mounted() {
 
-    // start streaming
-    this.dataSynchronizer.connect();
   }
 };
 </script>
@@ -280,3 +302,4 @@ html, body {
   padding: 0
 }
 </style>
+

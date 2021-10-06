@@ -72,8 +72,17 @@ import {randomUUID} from '../../core/utils/Utils.js';
 import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/protocol/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
-import {TIME_SYNCHRONIZER_TOPIC} from "../../core/Constants";
 import {EventType} from "../../core/event/EventType";
+
+function parseDate(timestamp) {
+  const date = new Date(timestamp);
+  const isoDate = date.toISOString();
+
+  const smallDate = isoDate.substr(0, 10);
+  const smallTime = isoDate.substr(11, 8);
+
+  return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
+}
 
 /**
  * @module osh-vue/TimeController
@@ -109,7 +118,8 @@ export default {
       default: () => 800 // 800ms
     },
     parseTime: {
-      type: Function
+      type: Function,
+      default: parseDate
     }
   },
   data() {
@@ -143,13 +153,9 @@ export default {
     }
   },
   beforeMount() {
-    if (!isDefined(this.parseTime)) {
-      this.parseTime = this.parseDate;
-    }
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
     this.history = this.dataSourceObject.getStartTime() !== 'now';
-
   },
   async updated() {
     await this.initComp();
@@ -516,15 +522,6 @@ export default {
       this.$emit('event', eventName);
     }
     ,
-    parseDate(timestamp) {
-      const date = new Date(timestamp);
-      const isoDate = date.toISOString();
-
-      const smallDate = isoDate.substr(0, 10);
-      const smallTime = isoDate.substr(11, 8);
-
-      return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
-    },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
     },

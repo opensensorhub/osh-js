@@ -43,6 +43,9 @@ const config = {
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+    ],
     alias: {
       'osh-js': path.resolve(__dirname, '../../source'),
       'cesium': path.resolve(__dirname, 'node_modules/cesium'),
@@ -77,7 +80,7 @@ const config = {
         }
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
+        test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'
