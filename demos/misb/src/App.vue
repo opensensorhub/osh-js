@@ -1,5 +1,20 @@
 <template>
   <div id="app">
+    <v-app-bar
+      class="bar-icon"
+      floating
+      max-height=44
+    >
+      <v-img src="images/OSH-Logo-min.svg"
+             height="80px"
+             width="50px"
+             contain
+             position="top 15px right 0px"
+      ></v-img>
+      <v-toolbar-title
+        color="#FFF"
+      >OpenSensorHub</v-toolbar-title>
+    </v-app-bar>
     <DroneMiniPanel
         :video-data-source="this.droneVideoDataSource"
     />
@@ -176,7 +191,7 @@ export default {
 
     const dataSynchronizer = new DataSynchronizer({
       replayFactor: 1,
-      dataSources: [droneLocationDataSource/*, droneVideoDataSource*/, droneOrientationDataSource,
+      dataSources: [droneLocationDataSource, droneVideoDataSource, droneOrientationDataSource,
         droneCameraOrientationDataSource, droneGeoRefImageFrameDataSource, targetLocationDataSource, droneVFovDataSource,droneHFovDataSource]
     });
 
@@ -300,6 +315,24 @@ html, body {
   overflow: hidden !important;
   margin: 0;
   padding: 0
+}
+
+.bar-icon {
+  z-index: 30;
+  background-color: rgba(0,0,0,0.5) !important;
+  position: absolute;
+  border-radius: 0 0 8px 0 !important;
+  color: #c1c1c1 !important;
+  caret-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+}
+
+.v-toolbar__content, .v-toolbar__extension {
+  padding: 4px 4px;
 }
 </style>
 
