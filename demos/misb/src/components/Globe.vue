@@ -8,7 +8,7 @@
   import CustomCesiumView from "../views/CustomCesiumView";
 
   window.CESIUM_BASE_URL = './';
-  import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
+  import {EllipsoidTerrainProvider,HeadingPitchRange,Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
@@ -36,7 +36,10 @@
     methods: {
       init() {
         const that = this;
+        const altitudeOffset = -184 - 28;
+        const DTR = Math.PI / 180;
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
+        
         // add 3D model marker to Cesium view
         let dronePointMarkerLayer = new PointMarkerLayer({
           label: "MISB UAS",
@@ -46,7 +49,7 @@
               const pos = {
                 x : rec.location.lon,
                 y : rec.location.lat,
-                z : rec.location.alt - 184 // model offset
+                z : rec.location.alt + altitudeOffset - 20
               };
 
               return pos;
@@ -78,7 +81,7 @@
               return {
                 x: rec.location.lon,
                 y: rec.location.lat,
-                z: rec.location.alt - 184
+                z: rec.location.alt + altitudeOffset
               };
             }
           },
@@ -102,12 +105,20 @@
               };
             }
           },
-          cameraModel: {
-            camProj: new Matrix3(747.963/1280.,     0.0,       650.66/1280.,
-                    0.0,        769.576/738.,  373.206/738.,
-                    0.0,            0.0,          1.0),
-            camDistR: new Cartesian3(-2.644e-01, 8.4e-02, 0.0),
-            camDistT: new Cartesian2(-8.688e-04, 6.123e-04)
+          getCameraModel: {
+            dataSourceIds: [this.droneHFovDataSource.getId()],
+            handler: function (rec) {
+              let fx = 1. / (2. * Math.tan(rec.params.hfov * DTR / 2));
+              let fy = fx * 480. / 640.;
+              return {
+                camProj: new Matrix3(
+                     fy, 0.0, 0.5,
+                    0.0,  fx, 0.5,
+                    0.0, 0.0, 1.0),
+                camDistR: new Cartesian3(0,0,0),
+                camDistT: new Cartesian2(0,0)
+             };
+            }
           },
           imageSrc: videoCanvas,
         });
@@ -144,7 +155,7 @@
               return {
                 x: rec.location.lon,
                 y: rec.location.lat,
-                z: rec.location.alt - 184
+                z: rec.location.alt - altitudeOffset
               };
             }
           },
@@ -254,15 +265,21 @@
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
           layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer,
-            droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1,/* droneFrustrumLayer,*/ targetPointMarkerLayer]
+            droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1/*, droneFrustrumLayer*/, targetPointMarkerLayer]
         });
 
         //cesium custom param
         cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
         cesiumView.viewer.scene.logarithmicDepthBuffer = false;
         cesiumView.viewer.camera.setView({
-          destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
+          destination: new Cartesian3(305721.4585559864, -5239510.338378854, 3615622.5459225853),
+          orientation: {
+            heading: 3.3910351920692143,
+            pitch: -0.35343571662519757,
+            roll: 0.000021768997500615228
+          }
         });
+        cesiumView.first = false;
 
         // select bing maps as default imagery
         const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
