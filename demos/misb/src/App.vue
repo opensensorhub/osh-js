@@ -69,70 +69,82 @@ export default {
   },
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
-    const END_TIME = '2012-06-29T14:37:44.033333251Z'
+    const END_TIME = '2012-06-29T14:37:44.033333251Z';
     // const END_TIME = '2012-06-29T14:32:44.099333251Z'
 
+    const tls = true;
+    const sosEndpoint = 'ogct17.georobotix.io:8443/sensorhub/sos';    
+    //const tls = false;
+    //const sosEndpoint = 'localhost:8181/sensorhub/sos';
+    
+    const dsReplaySpeed = 1.5;
+    const timeOut = 3000;
+    const bufferingTime = 500;
+    
     const droneVideoDataSource = new SosGetResultVideo("MISB Drone - Video", {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
+    
     const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Location', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
+    
     const droneOrientationDataSource = new SosGetResultJson('MISB UAS - Platform Orientation', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
+    
     const droneCameraOrientationDataSource = new SosGetResultJson('MISB UAS - Sensor Orientation', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
 
     const droneHFovDataSource = new SosGetResultJson('MISB UAS - Horizontal FoV', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://sensorml.com/ont/misb0601/property/HorizontalFov',
       startTime: START_TIME,
@@ -140,53 +152,53 @@ export default {
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
 
     const droneVFovDataSource = new SosGetResultJson('MISB UAS - Vertical FoV', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:sensor:uas:predator001',
       observedProperty: 'http://sensorml.com/ont/misb0601/property/VerticalFov',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
 
     const droneGeoRefImageFrameDataSource = new SosGetResultJson('MISB UAS - Geo ref image', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:process:georef',
       observedProperty: 'http://sensorml.com/ont/misb0601/property/GeoRefImageFrame',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
 
     const targetLocationDataSource = new SosGetResultJson('MISB UAS - Target location', {
-      protocol: 'wss',
+      protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       offeringID: 'urn:osh:process:vmti',
       observedProperty: 'http://sensorml.com/ont/swe/property/TargetLocation',
       startTime: START_TIME,
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
-      timeOut: 1500,
-      bufferingTime: 1500
+      replaySpeed: dsReplaySpeed,
+      timeOut: timeOut,
+      bufferingTime: bufferingTime
     });
 
     const dataSynchronizer = new DataSynchronizer({
@@ -288,9 +300,9 @@ export default {
     //
 
     let sosGetFois = new SosGetFois('fois', {
-      protocol: 'https',
+      protocol: tls ? 'https' : 'http',
       service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      endpointUrl: sosEndpoint,
       batchSize: 50,
       procedureId: 'urn:osh:sensor:isa:701149'
     });
