@@ -142,6 +142,7 @@ class CesiumView extends MapView {
                 orientation: props.orientation,
                 icon: props.icon,
                 iconAnchor: props.iconAnchor,
+                iconScale: props.iconScale,
                 label: props.label,
                 labelColor: props.labelColor,
                 labelSize: props.labelSize,
@@ -162,6 +163,7 @@ class CesiumView extends MapView {
             alt: props.location.z,
             orientation: props.orientation,
             icon: props.icon,
+            iconScale: props.iconScale,
             label: props.label,
             labelColor: props.labelColor,
             labelSize: props.labelSize,
@@ -442,9 +444,10 @@ class CesiumView extends MapView {
         }
         const fillColor = properties.labelColor || '#FFFFFF';
         const labelSize = properties.labelSize || 16;
-        const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
         const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
-
+        const iconScale = properties.iconScale;
+        const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+        
         const name = isDefined(properties.name)? properties.name : label;
         const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
         const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
@@ -471,7 +474,7 @@ class CesiumView extends MapView {
                 },
                 model: {
                     uri: imgIcon,
-                    scale: 4,
+                    scale: iconScale,
                     modelM: Matrix4.IDENTITY.clone(),
                     color: color,
                     minimumPixelSize: 64,
@@ -501,6 +504,7 @@ class CesiumView extends MapView {
                 },
                 billboard: {
                     image: imgIcon,
+                    scale: iconScale,
                     scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
                     alignedAxis: Cartesian3.UNIT_Z, // Z means rotation is from north
                     rotation: Math.toRadians(rot),
@@ -790,7 +794,7 @@ class CesiumView extends MapView {
             id: id,
         });
 
-        const polygonPrimitive = new Primitive({
+        const polygonPrimitive = new GroundPrimitive({
             geometryInstances : polygonInstance,
             appearance : new MaterialAppearance({
                 material: new Material({
