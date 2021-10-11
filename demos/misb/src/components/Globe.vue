@@ -8,7 +8,7 @@
   import CustomCesiumView from "../views/CustomCesiumView";
 
   window.CESIUM_BASE_URL = './';
-  import {EllipsoidTerrainProvider,HeadingPitchRange,Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
+  import {EllipsoidTerrainProvider,Ellipsoid,Transforms,HeadingPitchRoll,Quaternion,Matrix3,Cartesian3,Cartesian2,Ion,Color } from "cesium";
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
@@ -36,20 +36,22 @@
     methods: {
       init() {
         const that = this;
-        const altitudeOffset = -184 - 28;
+        const altitudeOffset = -193;
         const DTR = Math.PI / 180;
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
-        
+                
         // add 3D model marker to Cesium view
         let dronePointMarkerLayer = new PointMarkerLayer({
           label: "MISB UAS",
+          labelColor: "#FFFFFF",
+          labelOffset: [0, -20], 
           getLocation : {
             dataSourceIds : [this.droneLocationDataSource.id],
             handler : function(rec) {
               const pos = {
                 x : rec.location.lon,
                 y : rec.location.lat,
-                z : rec.location.alt + altitudeOffset - 20
+                z : rec.location.alt + altitudeOffset
               };
 
               return pos;
@@ -59,11 +61,12 @@
             dataSourceIds : [this.droneOrientationDataSource.getId()],
             handler : function(rec) {
               return {
-                heading : rec.attitude.heading
+                heading : rec.attitude.heading + 180 // model is reversed
               };
             }
           },
-          icon: "./models/Drone+06B.glb",
+          //icon: "./models/Drone+06B.glb",
+          icon: "./models/predator2.glb",
         });
 
 
@@ -120,6 +123,14 @@
              };
             }
           },
+          cameraModel: {
+            camProj: new Matrix3(
+                    1.0, 0.0, 0.5,
+                    0.0, 1.0, 0.5,
+                    0.0, 0.0, 1.0),
+            camDistR: new Cartesian3(0,0,0),
+            camDistT: new Cartesian2(0,0)
+          },
           imageSrc: videoCanvas,
         });
 
@@ -146,8 +157,7 @@
           outlineWidth: 1,
           outlineColor: 'rgba(255,195,100,0.3)'
         });
-
-
+        
         let droneFrustrumLayer = new FrustrumLayer({
           getOrigin: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
@@ -155,7 +165,7 @@
               return {
                 x: rec.location.lon,
                 y: rec.location.lat,
-                z: rec.location.alt - altitudeOffset
+                z: rec.location.alt + altitudeOffset
               };
             }
           },
@@ -165,20 +175,22 @@
               return rec.params.hfov;
             }
           },
-          getFrame: {
-            dataSourceIds: [this.droneGeoRefImageFrameDataSource.getId()],
+          getRange: {
+            dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function(rec) {
-              return [rec.center.lon, rec.center.lat, 0];
+              return rec.location.alt*5;
             }
           },
-          getOrientation: {
+          getPlatformOrientation: {
+            dataSourceIds: [this.droneOrientationDataSource.getId()],
+            handler: function(rec) {
+               return rec.attitude;
+            }
+          },
+          getSensorOrientation: {
             dataSourceIds: [this.droneCameraOrientationDataSource.getId()],
             handler: function(rec) {
-              return {
-                heading : rec.attitude.yaw,
-                pitch: rec.attitude.pitch,
-                roll: rec.attitude.roll
-              };
+              return rec.attitude;
             }
           },
           getVisible: {
@@ -187,60 +199,8 @@
               return  that.$store.state.drone.footprint; // link state application to
             }
           },
-          color: 'rgba(65,183,255,0.4)',
+          color: 'rgba(255,183,183,0.4)',
           opacity: 0.5,
-        });
-        const MODEL_CORRECTION = -170;
-        let droneFootPrintCoPlanarLayer0 = new CoPlanarPolygonLayer({
-          dataSourceId: this.droneGeoRefImageFrameDataSource.id,
-          getVisible: () => this.$store.state.drone.footprint, // link state application to
-          getVertices: (rec) => {
-            // (lon, lat, alt)
-            let p0 = [rec.ulc.lon, rec.ulc.lat, 0];
-            let p1 = [rec.urc.lon, rec.urc.lat, 0];
-            let p2 = [rec.lrc.lon, rec.lrc.lat, 0];
-            let p3 = [rec.llc.lon, rec.llc.lat, 0];
-
-
-            if(isDefined(that.lastDroneLocation)) {
-
-              let c = [that.lastDroneLocation.location.lon, that.lastDroneLocation.location.lat, that.lastDroneLocation.location.alt + MODEL_CORRECTION];
-              return [...p0, ...p1, ...p2, ...c]
-            } else {
-              return [...p0, ...p1, ...p2, ...p3, ...p0]
-            }
-          },
-          getPolygonId: (rec) =>  "my-id-0",
-          color: 'rgba(233,244,255,0.1)',
-          opacity: 0.2,
-          outlineWidth: 1,
-          outlineColor: 'rgba(255,169,17,0.5)',
-        });
-
-        let droneFootPrintCoPlanarLayer1 = new CoPlanarPolygonLayer({
-          dataSourceId: this.droneGeoRefImageFrameDataSource.id,
-          getVisible: () => this.$store.state.drone.footprint, // link state application to
-          getVertices: (rec) => {
-            // (lon, lat, alt)
-            let p0 = [rec.ulc.lon, rec.ulc.lat, 0];
-            let p1 = [rec.urc.lon, rec.urc.lat, 0];
-            let p2 = [rec.lrc.lon, rec.lrc.lat, 0];
-            let p3 = [rec.llc.lon, rec.llc.lat, 0];
-
-
-            if(isDefined(that.lastDroneLocation)) {
-
-              let c = [that.lastDroneLocation.location.lon, that.lastDroneLocation.location.lat, that.lastDroneLocation.location.alt + MODEL_CORRECTION];
-              return [...p2, ...p3, ...p0, ...c]
-            } else {
-              return [...p0, ...p1, ...p2, ...p3, ...p0]
-            }
-          },
-          getPolygonId: (rec) =>  "my-id-1",
-          color: 'rgba(233,244,255,0.1)',
-          opacity: 0.2,
-          outlineWidth: 1,
-          outlineColor: 'rgba(255,169,17,0.5)',
         });
 
         let targetPointMarkerLayer = new PointMarkerLayer({
@@ -264,13 +224,13 @@
         // create Cesium view
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
-          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer,
-            droneFootPrintCoPlanarLayer0,droneFootPrintCoPlanarLayer1/*, droneFrustrumLayer*/, targetPointMarkerLayer]
+          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer, droneFrustrumLayer, targetPointMarkerLayer]
         });
 
         //cesium custom param
         cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
-        cesiumView.viewer.scene.logarithmicDepthBuffer = false;
+        //cesiumView.viewer.scene.logarithmicDepthBuffer = true;
+        cesiumView.viewer.scene.globe.depthTestAgainstTerrain = true;
         cesiumView.viewer.camera.setView({
           destination: new Cartesian3(305721.4585559864, -5239510.338378854, 3615622.5459225853),
           orientation: {

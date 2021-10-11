@@ -15,8 +15,12 @@ import {
     VertexFormat,
     Quaternion,
     PerspectiveFrustum,
-    FrustumGeometry, MaterialAppearance, Material,
-    HeadingPitchRoll
+    FrustumGeometry, FrustumOutlineGeometry,
+    MaterialAppearance, Material,
+    IntersectionTests,
+    HeadingPitchRoll,
+    Ellipsoid, Ray,
+    CircleGeometry
 } from "cesium";
 import {isDefined} from "osh-js/core/utils/Utils";
 
@@ -31,6 +35,15 @@ class CustomCesiumView extends CesiumView {
             });
 
         this.layerIdToFrustrum= {};
+        
+        this.tmpHPR = new HeadingPitchRoll();
+        this.nedQuat = new Quaternion();
+        this.platformQuat = new Quaternion(0,0,0,1);
+        this.sensorQuat = new Quaternion(0,0,0,1);
+        this.camQuat = Quaternion.fromRotationMatrix(Matrix3.fromRowMajorArray(
+            [0, 0, 1,
+             1, 0, 0,
+             0, 1, 0])); // frustum is along Z
     }
 
     addFrustrumToLayer(props, frustrum) {
@@ -94,7 +107,7 @@ class CustomCesiumView extends CesiumView {
     }
 
     updateFrustrum(props) {
-        if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.frame) || !isDefined(props.orientation)) {
+        if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range) || !isDefined(props.sensorOrientation)) {
             return;
         }
         let frustrumPrimitiveCollection = this.getFrustrum(props);
@@ -110,71 +123,41 @@ class CustomCesiumView extends CesiumView {
         // bind the object to the callback property
         const id = properties.id + "$" + properties.frustrumId;
 
+        // NED rotation
         const origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
-
-        const fixeFrame = Cartesian3.fromDegrees(properties.frame[0], properties.frame[1], 0);
-
-        // -- Method 1 --
-        // const rotation = new HeadingPitchRoll.fromDegrees(properties.orientation.heading, properties.orientation.pitch, properties.orientation.roll);
-        // const orientation = Transforms.headingPitchRollQuaternion(origin, rotation);
-
-        // -- Method 2 --
-        const rotation = new HeadingPitchRoll.fromDegrees(properties.orientation.heading, properties.orientation.pitch, properties.orientation.roll);
-        const mat = Transforms.headingPitchRollToFixedFrame(fixeFrame, rotation);
-
-        const right = new Cartesian3(mat[0], mat[1], mat[2]);
-        const direction = new Cartesian3(mat[4], mat[5], mat[6]);
-        const up = new Cartesian3(mat[8], mat[9], mat[10]);
-
-        let rot = new Matrix3();
-        Matrix3.setColumn(rot, 0, right, rot);
-        Matrix3.setColumn(rot, 1, up, rot);
-        Matrix3.setColumn(rot, 2, direction, rot);
-
-        const orientation = Quaternion.fromRotationMatrix(rot, new Quaternion())
-
-        // -- Method 3 -- https://community.cesium.com/t/a-way-to-orient-and-place-frustum-outline/10487
-        //deg to rad
-        // let heading = properties.orientation.heading * Math.PI/180;
-        // let pitch = properties.orientation.pitch * Math.PI/180;
-        // let roll = properties.orientation.roll *Math.PI/180;
-        //
-        // declare shortcuts
-        // let til= pitch+(Math.PI/2);roll*=-1;
-        // let ch = Math.cos(heading);let sh = Math.sin(heading);
-        // let ct = Math.cos(til);let st = Math.sin(til);
-        // let cr = Math.cos(roll);let sr = Math.sin(roll);
-        //
-        //calc rot mat in terms of local ENU frame
-        // let myrig=new Cartesian3(ch*cr+sh*ct*sr,sh*cr*-1+ch*ct*sr,st*sr);
-        // let mydir=new Cartesian3(sh*st,ch*st,ct*-1);
-        // let myup=new Cartesian3(sh*ct*cr+ch*sr*-1,ch*ct*cr+sh*sr,st*cr);
-
-        //transform rot mat to world coordinates
-        // let GD_transform = Transforms.eastNorthUpToFixedFrame(origin, this.viewer.scene.globe.ellipsoid, new Matrix4());//rot-tran
-        // let GD_rotmat = Matrix4.getMatrix3(GD_transform, new Matrix3());
-        // Matrix3.multiplyByVector(GD_rotmat, myrig, myrig);
-        // Matrix3.multiplyByVector(GD_rotmat, mydir, mydir);
-        // Matrix3.multiplyByVector(GD_rotmat, myup, myup);
-        // let rot = [myrig.x,myrig.y,myrig.z,mydir.x,mydir.y,mydir.z,myup.x,myup.y,myup.z];
-        // const zeroPt = new Cartesian3(0,0,0);
-
+        Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
+        
+        // platform attitude w/r NED
+        // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
+        const platformHPR = properties.platformOrientation;
+        HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
+        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
+        
+        // sensor orientation w/r platform
+        const sensorYPR = properties.sensorOrientation;
+        HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
+        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
+        
+        // compute combined transform
+        // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
+        Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
+        Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF 
+        const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF 
+        
         const frustum = new PerspectiveFrustum({
             fov : MathCesium.toRadians(properties.fov),
             aspectRatio : 4 / 3,
-            //twist:15,
             near : 1.0,
-            far : 4000.0
+            far : properties.range
         });
 
         const frustrumInstance = new GeometryInstance({
             geometry: new FrustumGeometry({
                 frustum : frustum,
                 origin : origin,
-                orientation : orientation,
+                orientation : quat,
                 vertexFormat : VertexFormat.POSITION_ONLY
             }),
-            // modelMatrix :[1,0,0,0, 0,0,-1,0, 0,1,0,0, 0,0,0,1], -- (Method 3)
             id: id,
         });
 
@@ -195,17 +178,8 @@ class CustomCesiumView extends CesiumView {
         });
 
         const collection = new PrimitiveCollection();
-
         collection.add(frustrumPrimitive);
-        // collection.add(polygonOutlinePrimitive);
-
         this.viewer.scene.primitives.add(collection);
-
-        //place and orient primitive -- (Method 3)
-        // frustrumPrimitive.modelMatrix=
-        //     [rot[0],rot[1],rot[2],0, rot[3],rot[4],rot[5],0, rot[6],rot[7],rot[8],0,
-        //         origin.x,origin.y,origin.z,1];
-
         return collection;
     }
 

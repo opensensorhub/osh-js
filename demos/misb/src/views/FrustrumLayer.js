@@ -11,13 +11,13 @@ class FrustrumLayer extends Layer {
         this.properties = properties;
         this.props.frustrumId = randomUUID();
         this.props.color = 'rgb(255,0,0)';
+        this.opacity = 0.5;
         this.origin = null;
         this.fov = null;
         this.near = 0.009;
-        this.far = 400.0;
-        this.opacity = 0.5;
-        this.frame = null;
-        this.orientation = null;
+        this.range = null;
+        this.platformOrientation = {heading: 0.0, pitch: 0.0, roll: 0.0};
+        this.sensorOrientation = {yaw: 0.0, pitch: 0.0, roll: 0.0};
 
         const that = this;
 
@@ -27,10 +27,6 @@ class FrustrumLayer extends Layer {
 
         if(isDefined(properties.opacity)){
             this.props.opacity = properties.opacity;
-        }
-
-        if(isDefined(properties.frame)){
-            this.props.frame = properties.frame;
         }
 
         if(isDefined(properties.getColor)) {
@@ -54,18 +50,25 @@ class FrustrumLayer extends Layer {
             this.addFn(that.getDataSourcesIdsByProperty('getFov'),fn);
         }
 
-        if(isDefined(properties.getFrame)) {
+        if(isDefined(properties.getRange)) {
             let fn = function(rec) {
-                that.props.frame = that.getFunc('getFrame')(rec);
+                that.props.range = that.getFunc('getRange')(rec);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getFrame'),fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getRange'),fn);
         }
 
-        if(isDefined(properties.getOrientation)) {
+        if(isDefined(properties.getPlatformOrientation)) {
             let fn = function(rec) {
-                that.props.orientation = that.getFunc('getOrientation')(rec);
+                that.props.platformOrientation = that.getFunc('getPlatformOrientation')(rec);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getOrientation'),fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getPlatformOrientation'),fn);
+        }
+
+        if(isDefined(properties.getSensorOrientation)) {
+            let fn = function(rec) {
+                that.props.sensorOrientation = that.getFunc('getSensorOrientation')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getSensorOrientation'),fn);
         }
 
         this.saveState();
