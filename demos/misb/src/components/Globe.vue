@@ -44,7 +44,7 @@
         let dronePointMarkerLayer = new PointMarkerLayer({
           label: "MISB UAS",
           labelColor: "#FFFFFF",
-          labelOffset: [0, -20], 
+          labelOffset: [0, -20],
           getLocation : {
             dataSourceIds : [this.droneLocationDataSource.id],
             handler : function(rec) {
@@ -67,6 +67,7 @@
           },
           //icon: "./models/Drone+06B.glb",
           icon: "./models/predator2.glb",
+          iconScale: 0.1
         });
 
 
