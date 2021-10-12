@@ -1,26 +1,16 @@
 <template>
   <div id="app">
-    <v-app-bar
-      class="bar-icon"
-      floating
-      max-height=44
-    >
+    <v-app-bar class="bar-icon" floating>
       <v-img src="images/OSH-Logo-min.svg"
              height="80px"
              width="50px"
              contain
-             position="top 15px right 0px"
-      ></v-img>
-      <v-toolbar-title
-        color="#FFF"
-      >OpenSensorHub</v-toolbar-title>
+             position="top 15px right 0px">
+      </v-img>
+      <v-toolbar-title color="#FFF">OpenSensorHub</v-toolbar-title>
     </v-app-bar>
-    <DroneMiniPanel
-        :video-data-source="this.droneVideoDataSource"
-    />
-    <TargetMiniPanel
-      :target-location-data-source="targetLocationDataSource"
-    />
+    <DroneMiniPanel :video-data-source="this.droneVideoDataSource"/>
+    <TargetMiniPanel :target-location-data-source="targetLocationDataSource"/>
     <Globe
         :drone-camera-orientation-data-source="droneCameraOrientationDataSource"
         :drone-location-data-source="droneLocationDataSource"
@@ -29,12 +19,11 @@
         :target-location-data-source="targetLocationDataSource"
         :drone-h-fov-data-source="droneHFovDataSource"
         :drone-v-fov-data-source="droneVFovDataSource"
-        :lastDroneLocation="lastDroneLocation"
-    />
+        :lastDroneLocation="lastDroneLocation"/>
     <CollapseTimeController
         :dataSynchronizer="dataSynchronizer"
-        v-if="dataSynchronizer"
-    ></CollapseTimeController>
+        v-if="dataSynchronizer">
+    </CollapseTimeController>
   </div>
 </template>
 <script>
@@ -345,6 +334,11 @@ html, body {
 
 .v-toolbar__content, .v-toolbar__extension {
   padding: 4px 4px;
+  font-family: sans-serif;
+}
+
+.v-toolbar__title {
+  margin-left: 10px;
 }
 </style>
 
