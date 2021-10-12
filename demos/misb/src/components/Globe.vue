@@ -205,16 +205,19 @@
         });
 
         let targetPointMarkerLayer = new PointMarkerLayer({
+          label: "Tracked Vehicle",
+          labelColor: "#FFFFFF",
+          labelOffset: [0, 10],
           dataSourceId: this.targetLocationDataSource.id,
           getLocation: (rec) => ({
             x: rec.location.lon,
             y: rec.location.lat
           }),
           orientation: {
-            heading: 0
+            heading: 90
           },
-          icon: 'images/marker-icon.png',
-          iconAnchor: [16, 40]
+          icon: "models/pickup.glb",
+          iconScale: 1.0
         });
 
         // Init cesium token
