@@ -239,6 +239,11 @@ class CesiumView extends MapView {
             }
             const encCamPos = EncodedCartesian3.fromCartesian(camPos);
             const appearance = new MaterialAppearance({
+                renderState: {
+                  depthTest: {
+                    enabled: false
+                  }
+                },
                 material: new Material({
                     fabric: {
                         type: 'Image',
@@ -470,14 +475,15 @@ class CesiumView extends MapView {
                     fillColor: Color.fromCssColorString(fillColor),
                     horizontalOrigin: HorizontalOrigin.CENTER,
                     verticalOrigin: VerticalOrigin.TOP,
-                    pixelOffset: labelOffset
+                    pixelOffset: labelOffset,
+                    disableDepthTestDistance: 10000
                 },
                 model: {
                     uri: imgIcon,
                     scale: iconScale,
                     modelM: Matrix4.IDENTITY.clone(),
                     color: color,
-                    minimumPixelSize: 64,
+                    minimumPixelSize: 20,
                     maximumScale: 20000,
                 },
                 show: properties.visible,
@@ -500,7 +506,8 @@ class CesiumView extends MapView {
                     horizontalOrigin: HorizontalOrigin.CENTER,
                     verticalOrigin: VerticalOrigin.TOP,
                     pixelOffset: labelOffset,
-                    pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0)
+                    pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+                    disableDepthTestDistance: 10000
                 },
                 billboard: {
                     image: imgIcon,
@@ -512,6 +519,7 @@ class CesiumView extends MapView {
                     verticalOrigin: VerticalOrigin.TOP,
                     pixelOffset: iconOffset,
                     pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+                    disableDepthTestDistance: 10000,
                     eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex) // make sure icon always displays in front
                 },
                 show: properties.visible,
@@ -579,7 +587,7 @@ class CesiumView extends MapView {
             id: id,
         });
 
-        const ellipsePrimitive = new Primitive({
+        const ellipsePrimitive = new GroundPrimitive({
             geometryInstances : ellipseInstance,
             appearance : new MaterialAppearance({
                 material: new Material({
