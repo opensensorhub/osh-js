@@ -1,15 +1,15 @@
 import Layer from "../../../../source/core/ui/layer/Layer";
 import {isDefined, randomUUID} from "../../../../source/core/utils/Utils";
 
-class FrustrumLayer extends Layer {
+class frustumLayer extends Layer {
     /**
      */
     constructor(properties) {
         super(properties);
-        this.type = 'frustrum';
+        this.type = 'frustum';
 
         this.properties = properties;
-        this.props.frustrumId = randomUUID();
+        this.props.frustumId = randomUUID();
         this.props.color = 'rgb(255,0,0)';
         this.opacity = 0.5;
         this.origin = null;
@@ -75,4 +75,4 @@ class FrustrumLayer extends Layer {
     }
 }
 
-export default  FrustrumLayer;
+export default  frustumLayer;

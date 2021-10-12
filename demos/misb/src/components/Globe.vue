@@ -13,7 +13,7 @@
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
   import PolygonLayer from "osh-js/core/ui/layer/PolygonLayer";
-  import FrustrumLayer from "../views/FrustrumLayer";
+  import FrustumLayer from "../views/FrustumLayer";
   import {isDefined} from "../../../../source/core/utils/Utils";
   import CoPlanarPolygonLayer from "../../../../source/core/ui/layer/CoPlanarPolygonLayer";
 
@@ -159,7 +159,7 @@
           outlineColor: 'rgba(255,195,100,0.3)'
         });
         
-        let droneFrustrumLayer = new FrustrumLayer({
+        let droneFrustumLayer = new FrustumLayer({
           getOrigin: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function(rec) {
@@ -225,7 +225,7 @@
         // create Cesium view
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
-          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer, droneFrustrumLayer, targetPointMarkerLayer]
+          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer, droneFrustumLayer, targetPointMarkerLayer]
         });
 
         //cesium custom param

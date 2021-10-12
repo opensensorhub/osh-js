@@ -31,10 +31,10 @@ class CustomCesiumView extends CesiumView {
         super(
             {
                 ...properties,
-                supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustrum']
+                supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustum']
             });
 
-        this.layerIdToFrustrum= {};
+        this.layerIdToFrustum= {};
         
         this.tmpHPR = new HeadingPitchRoll();
         this.nedQuat = new Quaternion();
@@ -46,82 +46,82 @@ class CustomCesiumView extends CesiumView {
              0, 1, 0])); // frustum is along Z
     }
 
-    addFrustrumToLayer(props, frustrum) {
+    addFrustumToLayer(props, frustum) {
         const currentLayer = this.getLayer(props);
         // associate the list of markers owning by a specific marker
-        if(!(props.id in this.layerIdToFrustrum)) {
-            this.layerIdToFrustrum[props.id] = {};
+        if(!(props.id in this.layerIdToFrustum)) {
+            this.layerIdToFrustum[props.id] = {};
         }
-        this.layerIdToFrustrum[props.id][props.frustrumId] = frustrum;
+        this.layerIdToFrustum[props.id][props.frustumId] = frustum;
     }
 
-    getFrustrums() {
+    getFrustums() {
         const array = [];
-        for(let id in this.layerIdToFrustrum) {
-            for(let frustrumId in this.layerIdToFrustrum[id]) {
-                array.push(this.layerIdToFrustrum[id][frustrumId]);
+        for(let id in this.layerIdToFrustum) {
+            for(let frustumId in this.layerIdToFrustum[id]) {
+                array.push(this.layerIdToFrustum[id][frustumId]);
             }
         }
         return array;
     }
 
-    getFrustrum(props) {
-        if(!(props.id in  this.layerIdToFrustrum)) {
+    getFrustum(props) {
+        if(!(props.id in  this.layerIdToFrustum)) {
             return null;
         }
-        return this.layerIdToFrustrum[props.id][props.frustrumId];
+        return this.layerIdToFrustum[props.id][props.frustumId];
     }
 
     removeAllFromLayer(layer) {
         super.removeAllFromLayer(layer);
-        this.removeFrustrums(layer);
+        this.removeFrustums(layer);
     }
 
-    removeFrustrums(layer) {
-        if(isDefined(layer.props.frustrumId)) {
-            const frustrumMap = this.layerIdToFrustrum[layer.props.id];
-            if(isDefined(frustrumMap)) {
-                for(let frustrumId in frustrumMap) {
-                    const frustrum = frustrumMap[frustrumId];
-                    this.removeFrustrumFromLayer(frustrum);
+    removeFrustums(layer) {
+        if(isDefined(layer.props.frustumId)) {
+            const frustumMap = this.layerIdToFrustum[layer.props.id];
+            if(isDefined(frustumMap)) {
+                for(let frustumId in frustumMap) {
+                    const frustum = frustumMap[frustumId];
+                    this.removeFrustumFromLayer(frustum);
                 }
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToFrustrum[layer.props.id];
+            delete this.layerIdToFrustum[layer.props.id];
         }
     }
 
-    removeFrustrumFromLayer(frustrum) {}
+    removeFrustumFromLayer(frustum) {}
 
     setData(dataSourceId, data) {
         const values = data.values;
         for(let i=0;i < values.length;i++) {
             const d = values[i];
-            if(data.type === 'frustrum') {
-                this.updateFrustrum(d);
+            if(data.type === 'frustum') {
+                this.updateFrustum(d);
             } else {
                 super.setData(dataSourceId, data);
             }
         }
     }
 
-    updateFrustrum(props) {
+    updateFrustum(props) {
         if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range) || !isDefined(props.sensorOrientation)) {
             return;
         }
-        let frustrumPrimitiveCollection = this.getFrustrum(props);
-        if (isDefined(frustrumPrimitiveCollection)) {
-            frustrumPrimitiveCollection.removeAll();
-            this.viewer.scene.primitives.remove(frustrumPrimitiveCollection);
+        let frustumPrimitiveCollection = this.getFrustum(props);
+        if (isDefined(frustumPrimitiveCollection)) {
+            frustumPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
         }
 
-        this.addFrustrumToLayer(props, this.addFrustrum(props));
+        this.addFrustumToLayer(props, this.addFrustum(props));
     }
 
-    addFrustrum(properties) {
+    addFrustum(properties) {
         // bind the object to the callback property
-        const id = properties.id + "$" + properties.frustrumId;
+        const id = properties.id + "$" + properties.frustumId;
 
         // NED rotation
         const origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
@@ -151,7 +151,7 @@ class CustomCesiumView extends CesiumView {
             far : properties.range
         });
 
-        const frustrumInstance = new GeometryInstance({
+        const frustumInstance = new GeometryInstance({
             geometry: new FrustumGeometry({
                 frustum : frustum,
                 origin : origin,
@@ -161,8 +161,8 @@ class CustomCesiumView extends CesiumView {
             id: id,
         });
 
-        const frustrumPrimitive = new Primitive({
-            geometryInstances : frustrumInstance,
+        const frustumPrimitive = new Primitive({
+            geometryInstances : frustumInstance,
             appearance : new MaterialAppearance({
                 material: new Material({
                     fabric: {
@@ -178,7 +178,7 @@ class CustomCesiumView extends CesiumView {
         });
 
         const collection = new PrimitiveCollection();
-        collection.add(frustrumPrimitive);
+        collection.add(frustumPrimitive);
         this.viewer.scene.primitives.add(collection);
         return collection;
     }
