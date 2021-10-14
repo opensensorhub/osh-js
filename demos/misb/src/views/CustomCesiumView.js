@@ -26,7 +26,6 @@ import {isDefined} from "osh-js/core/utils/Utils";
 
 class CustomCesiumView extends CesiumView {
 
-
     constructor(properties) {
         super(
             {
@@ -35,7 +34,7 @@ class CustomCesiumView extends CesiumView {
             });
 
         this.layerIdToFrustum= {};
-        
+
         this.tmpHPR = new HeadingPitchRoll();
         this.nedQuat = new Quaternion();
         this.platformQuat = new Quaternion(0,0,0,1);
@@ -92,7 +91,12 @@ class CustomCesiumView extends CesiumView {
         }
     }
 
-    removeFrustumFromLayer(frustum) {}
+    removeFrustumFromLayer(frustumPrimitiveCollection) {
+        if (isDefined(frustumPrimitiveCollection)) {
+            frustumPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
+        }
+    }
 
     setData(dataSourceId, data) {
         const values = data.values;
@@ -126,24 +130,24 @@ class CustomCesiumView extends CesiumView {
         // NED rotation
         const origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
         Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
-        
+
         // platform attitude w/r NED
         // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
         const platformHPR = properties.platformOrientation;
         HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
         Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
-        
+
         // sensor orientation w/r platform
         const sensorYPR = properties.sensorOrientation;
         HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
         Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
-        
+
         // compute combined transform
         // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
         Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
-        Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF 
-        const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF 
-        
+        Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
+        const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+
         const frustum = new PerspectiveFrustum({
             fov : MathCesium.toRadians(properties.fov),
             aspectRatio : 4 / 3,
