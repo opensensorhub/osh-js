@@ -48,4 +48,7 @@ export default {
     .video-h264 >  canvas {
         width: 100%;
     }
+    .video-container {
+      resize: both;
+    }
 </style>

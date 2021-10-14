@@ -16,6 +16,8 @@ export default new Vuex.Store({
                 connected: false
             },
             footprint: false,
+            draping: false,
+            fov: false,
             selected : false
         },
         target : {
@@ -30,6 +32,12 @@ export default new Vuex.Store({
         },
         toggleDroneFootprint({state, commit}, props) {
             commit('toggleDroneFootprint', !state.drone.footprint);
+        },
+        toggleDroneFov({state, commit}, props) {
+            commit('toggleDroneFov', !state.drone.fov);
+        },
+        toggleDroneDraping({state, commit}, props) {
+            commit('toggleDroneDraping', !state.drone.draping);
         },
         updateDroneDataSourceStatus({state, commit}, props) {
             commit('setDroneConnections', {...props});
@@ -47,6 +55,12 @@ export default new Vuex.Store({
         },
         toggleDroneFootprint(state, value) {
             state.drone.footprint = value;
+        },
+        toggleDroneFov(state, value) {
+            state.drone.fov = value;
+        },
+        toggleDroneDraping(state, value) {
+            state.drone.draping = value;
         },
         setDroneConnections(state, value) {
             state.drone = {

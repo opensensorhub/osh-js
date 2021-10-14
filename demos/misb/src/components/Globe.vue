@@ -39,7 +39,7 @@
         const altitudeOffset = -193;
         const DTR = Math.PI / 180;
         let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
-                
+
         // add 3D model marker to Cesium view
         let dronePointMarkerLayer = new PointMarkerLayer({
           label: "MISB UAS",
@@ -76,7 +76,7 @@
           getVisible: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function(rec) {
-             return !that.$store.state.drone.footprint;
+              return that.$store.state.drone.draping;
             }
           },
           getPlatformLocation: {
@@ -158,7 +158,7 @@
           outlineWidth: 1,
           outlineColor: 'rgba(255,195,100,0.3)'
         });
-        
+
         let droneFrustumLayer = new FrustumLayer({
           getOrigin: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
@@ -195,9 +195,9 @@
             }
           },
           getVisible: {
-            dataSourceIds: [this.droneLocationDataSource.getId()],
+            dataSourceIds: [this.droneHFovDataSource.getId()],
             handler: function(rec) {
-              return  that.$store.state.drone.footprint; // link state application to
+              return  that.$store.state.drone.fov; // link state application to
             }
           },
           color: 'rgba(255,183,183,0.4)',

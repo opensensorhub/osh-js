@@ -46,12 +46,32 @@
         <v-btn
             icon
             dark
+            title="Show/hide Image draping"
+            @click.stop="toggleDroneDraping()"
+        >
+          <v-icon
+              :color='(this.$store.state.drone.draping)? "#00AF2AFF" : "#d50000"'
+          >mdi-video-image</v-icon>
+        </v-btn>
+        <v-btn
+            icon
+            dark
             title="Show/hide footprint"
             @click.stop="toggleDroneFootprint()"
         >
           <v-icon
               :color='(this.$store.state.drone.footprint)? "#00AF2AFF" : "#d50000"'
           >mdi-vector-rectangle</v-icon>
+        </v-btn>
+        <v-btn
+            icon
+            dark
+            title="Show/hide Field of view"
+            @click.stop="toggleDroneFov()"
+        >
+          <v-icon
+              :color='(this.$store.state.drone.fov)? "#00AF2AFF" : "#d50000"'
+          >mdi-angle-acute mdi-rotate-135</v-icon>
         </v-btn>
       </div>
       <Video
@@ -79,7 +99,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleDroneSelection', 'toggleDroneFootprint']
+    ...mapActions(['toggleDroneSelection', 'toggleDroneFootprint', 'toggleDroneDraping', 'toggleDroneFov']
     ),
     panToDrone() {
       this.$root.$emit('pan_to_drone');
