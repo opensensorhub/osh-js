@@ -25,7 +25,7 @@
         <v-btn
             icon
             dark
-            title="Center on target location"
+            title="Center on drone location"
             @click.stop="panToDrone()"
         >
           <v-icon
