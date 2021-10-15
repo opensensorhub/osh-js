@@ -6,21 +6,21 @@
         permanent
         dark
         floating
-        right
+        left
         width="640"
     >
-      <div class="variant-title">Target (s)</div>
+      <div class="variant-title">ISA Biological Sensor</div>
       <v-divider></v-divider>
       <div class="icon-container">
         <v-btn
             icon
+            right
+            @click.stop="mini = !mini"
             dark
-            title="Center on target"
-            @click.stop="panToTarget()"
+            class="chevron-right"
+            v-if="!mini"
         >
-          <v-icon
-              :color='(this.$store.state.target.location.connected)? "#00AF2AFF" : "#d50000"'
-          >mdi-map-marker</v-icon>
+          <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
       </div>
     </v-navigation-drawer>
@@ -28,11 +28,17 @@
 </template>
 
 <script>
+import {mapState, mapActions} from 'vuex'
+
+const DISCONNECTED_ICON_COLOR = "#d50000";
+const CONNECTED_ICON_COLOR = "#00AF2AFF"
+const DEFAULT_ICON_COLOR = "#FFFFFF";
+
 export default {
-  name: "DroneMiniPanel",
+  name: "BioSensorMiniPanel",
   components: {
   },
-  props: ['targetLocationDataSource'],
+  props: ['biologicalSensorsDataSource'],
   data() {
     return {
       drawer: true,
@@ -40,9 +46,8 @@ export default {
     }
   },
   methods: {
-    panToTarget() {
-      this.$root.$emit('pan_to_target');
-    }
+    ...mapActions([]
+    ),
   }
 }
 </script>
@@ -51,11 +56,11 @@ export default {
 .inspire {
   position: absolute;
   top: 150px;
-  right: 0;
+  left: 0;
   z-index: 10;
   border-radius: 4px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
-  background-color: #363636 !important;
+  background-color: rgba(0,0,0,0.6) !important;
   caret-color: rgba(0, 0, 0, 0);
   user-select: none;
   -moz-user-select: none;
@@ -76,6 +81,11 @@ export default {
   padding: 10px;
   text-align: center;
   vertical-align: middle;
+}
+
+.chevron-right {
+  position: absolute;
+  right: 0;
 }
 
 .icon-container {

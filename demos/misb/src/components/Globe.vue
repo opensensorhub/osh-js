@@ -12,10 +12,11 @@
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
+  import EllipseLayer from "osh-js/core/ui/layer/EllipseLayer.js";
   import PolygonLayer from "osh-js/core/ui/layer/PolygonLayer";
   import FrustumLayer from "../views/FrustumLayer";
   import {isDefined} from "../../../../source/core/utils/Utils";
-  import CoPlanarPolygonLayer from "../../../../source/core/ui/layer/CoPlanarPolygonLayer";
+
 
   export default {
     name: "Globe",
@@ -36,7 +37,8 @@
       'droneGeoRefImageFrameDataSource',
       'targetLocationDataSource',
       'droneHFovDataSource',
-      'droneVFovDataSource'
+      'droneVFovDataSource',
+      'biologicalSensorsDataSource'
     ],
     methods: {
       init() {
@@ -225,6 +227,48 @@
           iconScale: 1.0
         });
 
+        let biologicalSensorMarkers =  new PointMarkerLayer({
+          dataSourceId: this.biologicalSensorsDataSource.id,
+          getLocation: (f) => {
+            let pos = f.shape.pos.split(" ");
+            return {
+              x: parseFloat(pos[1]),
+              y: parseFloat(pos[0]),
+              z: 5
+            }
+          },
+          getDescription:(f) => {
+            let pos = f.shape.pos.split(" ");
+            return  f.description + "<br/>" +
+                "Latitude: " + pos[0] + "°<br/>" +
+                "Longitude: " + pos[1] + "°"
+          },
+          getMarkerId:(f) => f.id,
+          icon: 'images/bio-32.png',
+          // iconAnchor: [12, 41],
+          getLabel: (f) =>  f.id,
+          labelColor: '#ffffff',
+          labelSize: 18,
+          labelOffset: [0, 10]
+        });
+
+        let biologicalSensorMarkersRadius =  new EllipseLayer({
+          dataSourceId: this.biologicalSensorsDataSource.id,
+          getEllipseID:(f) => f.id,
+          getPosition: (f) => {
+            let pos = f.shape.pos.split(" ");
+            return {
+              x: parseFloat(pos[1]),
+              y: parseFloat(pos[0]),
+              z: 5
+            }
+          },
+          color: 'rgba(255,74,22, 0.5)',
+          getSemiMajorAxis:(rec) => parseFloat(rec.radius),
+          getSemiMinorAxis:(rec) => parseFloat(rec.radius),
+          filter: (rec) => isDefined(rec.radius)
+        });
+
         // Init cesium token
         Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
             'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
@@ -233,7 +277,15 @@
         // create Cesium view
         let cesiumView = new CustomCesiumView({
           container: "cesium-container",
-          layers: [dronePointMarkerLayer, droneImageDrapingLayer, dronePolygonFootprintLayer, droneFrustumLayer, targetPointMarkerLayer]
+          layers: [
+            dronePointMarkerLayer,
+            droneImageDrapingLayer,
+            dronePolygonFootprintLayer,
+            droneFrustumLayer,
+            targetPointMarkerLayer,
+            biologicalSensorMarkersRadius,
+            biologicalSensorMarkers
+          ]
         });
 
         //cesium custom param

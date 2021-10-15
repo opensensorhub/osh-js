@@ -452,7 +452,7 @@ class CesiumView extends MapView {
         const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
         const iconScale = properties.iconScale;
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-        
+
         const name = isDefined(properties.name)? properties.name : label;
         const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
         const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
@@ -880,33 +880,7 @@ class CesiumView extends MapView {
             show: properties.visible
         });
 
-        /* const polygonOutlineInstance = new GeometryInstance({
-             geometry : new CoplanarPolygonOutlineGeometry({
-                 polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArrayHeights(properties.vertices[properties.polygonId])),
-             }),
-             attributes : {
-                 color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
-             },
-             id: id,
-         });
-
-         const polygonOutlinePrimitive = new Primitive({
-             geometryInstances : polygonOutlineInstance,
-             appearance : new MaterialAppearance({
-                 material: new Material({
-                     fabric: {
-                         type: 'Color',
-                         uniforms: {
-                             color:  Color.fromCssColorString(properties.outlineColor)
-                         }
-                     }
-                 }),
-             }),
-             asynchronous: false
-         });*/
-
         const collection = new PrimitiveCollection();
-
         collection.add(polygonPrimitive);
         // collection.add(polygonOutlinePrimitive);
 

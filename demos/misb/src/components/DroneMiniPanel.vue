@@ -151,7 +151,7 @@ export default {
 <style scoped>
 .inspire {
   position: absolute;
-  top: 220px;
+  top: 260px;
   right: 0;
   z-index: 10;
   border-radius: 4px;

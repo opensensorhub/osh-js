@@ -11,6 +11,7 @@
     </v-app-bar>
     <DroneMiniPanel :video-data-source="this.droneVideoDataSource"/>
     <TargetMiniPanel :target-location-data-source="targetLocationDataSource"/>
+    <BioSensorMiniPanel :biological-sensors-data-source="biologicalSensorsDataSource"/>
     <Globe
         :drone-camera-orientation-data-source="droneCameraOrientationDataSource"
         :drone-location-data-source="droneLocationDataSource"
@@ -19,6 +20,7 @@
         :target-location-data-source="targetLocationDataSource"
         :drone-h-fov-data-source="droneHFovDataSource"
         :drone-v-fov-data-source="droneVFovDataSource"
+        :biological-sensors-data-source="biologicalSensorsDataSource"
     />
     <CollapseTimeController
         :dataSynchronizer="dataSynchronizer"
@@ -31,6 +33,7 @@
 import Globe from './components/Globe.vue';
 import DroneMiniPanel from "./components/DroneMiniPanel.vue";
 import TargetMiniPanel from "./components/TargetMiniPanel.vue";
+import BioSensorMiniPanel from "./components/BioSensorMiniPanel.vue";
 import CollapseTimeController from "./components/CollapseTimeController.vue";
 
 import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo.js";
@@ -42,13 +45,15 @@ import {Status} from "osh-js/core/protocol/Status";
 import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
 import SosGetFois from "osh-js/core/datasource/SosGetFois";
 
+
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
   components: {
+    BioSensorMiniPanel,
     DroneMiniPanel,
     TargetMiniPanel,
     Globe,
-    CollapseTimeController
+    CollapseTimeController,
   },
   data() {
     return {
@@ -66,8 +71,8 @@ export default {
     //const sosEndpoint = 'localhost:8181/sensorhub/sos';
 
     const dsReplaySpeed = 1.0;
-    const timeOut = 5000;
-    const bufferingTime = 500;
+    const timeOut = 3000;
+    const bufferingTime = 800;
 
     const droneVideoDataSource = new SosGetResultVideo("MISB Drone - Video", {
       protocol: tls ? 'wss' : 'ws',
@@ -189,6 +194,28 @@ export default {
       bufferingTime: bufferingTime
     });
 
+    let biologicalSensorsDataSource = new SosGetFois('Biological Sensors', {
+      protocol: tls ? 'https' : 'http',
+      service: 'SOS',
+      endpointUrl: sosEndpoint,
+      batchSize: 50,
+      procedureId: 'urn:osh:sensor:isa:701149'
+    });
+
+
+    let biologicalSensorsDataSource2 = new SosGetResultJson('Biological Sensors', {
+      protocol: tls ? 'https' : 'http',
+      service: 'SOS',
+      endpointUrl: sosEndpoint,
+      batchSize: 1,
+      startTime: START_TIME,
+      endTime: END_TIME,
+      minTime: START_TIME,
+      maxTime: END_TIME,
+      replaySpeed: dsReplaySpeed,
+      offeringID: 'urn:osh:sensor:isa:701149:BIO001'
+    });
+
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: dsReplaySpeed,
       dataSources: [
@@ -215,34 +242,18 @@ export default {
     this.geoRefImageFrameDataSource = geoRefImageFrameDataSource;
     this.targetLocationDataSource = targetLocationDataSource;
     //
+    this.biologicalSensorsDataSource = biologicalSensorsDataSource;
 
     this.initEvents();
 
     dataSynchronizer.connect();
+    biologicalSensorsDataSource.connect()
 
     // setup default UI options
     this.$store.dispatch('updateUiStatus', {
       fov: true,
       footprint: true
     });
-
-    // let sosGetFois = new SosGetFois('fois', {
-    //   protocol: tls ? 'https' : 'http',
-    //   service: 'SOS',
-    //   endpointUrl: sosEndpoint,
-    //   batchSize: 50,
-    //   procedureId: 'urn:osh:sensor:isa:701149'
-    // });
-
-    // const sosGetFoisBc = new BroadcastChannel(DATASOURCE_DATA_TOPIC + sosGetFois.id);
-    //
-    // sosGetFoisBc.onmessage = (message) => {
-    //   if (message.data.type === EventType.DATA) {
-    //     console.log(message.data)
-    //   }
-    // }
-    // sosGetFois.connect()
-
   },
   mounted() {
 
