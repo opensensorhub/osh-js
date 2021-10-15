@@ -64,6 +64,8 @@ const config = {
   },
   devServer: {
     https: true,
+    compress: false,
+    hot: true,
   },
   module: {
     unknownContextCritical: false,

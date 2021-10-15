@@ -8,7 +8,7 @@
   import CustomCesiumView from "../views/CustomCesiumView";
 
   window.CESIUM_BASE_URL = './';
-  import {EllipsoidTerrainProvider,Ellipsoid,Transforms,HeadingPitchRoll,Quaternion,Matrix3,Cartesian3,Cartesian2,Ion,Color } from "cesium";
+  import {EllipsoidTerrainProvider,Matrix3,Cartesian3,Cartesian2,Ion} from "cesium";
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
@@ -29,9 +29,14 @@
         this.cesiumView.panToLayer(this.targetPointMarkerLayer);
       });
     },
-    props: ['droneLocationDataSource','droneOrientationDataSource',
-      'droneCameraOrientationDataSource', 'droneGeoRefImageFrameDataSource','targetLocationDataSource','lastDroneLocation',
-      'droneHFovDataSource','droneVFovDataSource'
+    props: [
+      'droneLocationDataSource',
+      'droneOrientationDataSource',
+      'droneCameraOrientationDataSource',
+      'droneGeoRefImageFrameDataSource',
+      'targetLocationDataSource',
+      'droneHFovDataSource',
+      'droneVFovDataSource'
     ],
     methods: {
       init() {
@@ -76,7 +81,7 @@
           getVisible: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function(rec) {
-              return that.$store.state.drone.draping;
+              return that.$store.state.ui.draping;
             }
           },
           getPlatformLocation: {
@@ -137,7 +142,7 @@
 
         let dronePolygonFootprintLayer = new PolygonLayer({
           dataSourceId: this.droneGeoRefImageFrameDataSource.id,
-          getVisible: () => this.$store.state.drone.footprint, // link state application to
+          getVisible: () => this.$store.state.ui.footprint, // link state application to
           getVertices: (rec) => {
             return [
               rec.ulc.lon,
@@ -197,7 +202,7 @@
           getVisible: {
             dataSourceIds: [this.droneHFovDataSource.getId()],
             handler: function(rec) {
-              return  that.$store.state.drone.fov; // link state application to
+              return  that.$store.state.ui.fov; // link state application to
             }
           },
           color: 'rgba(255,183,183,0.4)',

@@ -15,11 +15,11 @@
         :drone-camera-orientation-data-source="droneCameraOrientationDataSource"
         :drone-location-data-source="droneLocationDataSource"
         :drone-orientation-data-source="droneOrientationDataSource"
-        :drone-geo-ref-image-frame-data-source="droneGeoRefImageFrameDataSource"
+        :drone-geo-ref-image-frame-data-source="geoRefImageFrameDataSource"
         :target-location-data-source="targetLocationDataSource"
         :drone-h-fov-data-source="droneHFovDataSource"
         :drone-v-fov-data-source="droneVFovDataSource"
-        :lastDroneLocation="lastDroneLocation"/>
+    />
     <CollapseTimeController
         :dataSynchronizer="dataSynchronizer"
         v-if="dataSynchronizer">
@@ -52,8 +52,7 @@ export default {
   },
   data() {
     return {
-      dataSynchronizer: null,
-      lastDroneLocation: null
+      dataSynchronizer: null
     }
   },
   beforeMount() {
@@ -62,14 +61,14 @@ export default {
     // const END_TIME = '2012-06-29T14:32:44.099333251Z'
 
     const tls = true;
-    const sosEndpoint = 'ogct17.georobotix.io:8443/sensorhub/sos';    
+    const sosEndpoint = 'ogct17.georobotix.io:8443/sensorhub/sos';
     //const tls = false;
     //const sosEndpoint = 'localhost:8181/sensorhub/sos';
-    
-    const dsReplaySpeed = 1.5;
-    const timeOut = 3000;
+
+    const dsReplaySpeed = 1.0;
+    const timeOut = 5000;
     const bufferingTime = 500;
-    
+
     const droneVideoDataSource = new SosGetResultVideo("MISB Drone - Video", {
       protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
@@ -84,7 +83,7 @@ export default {
       timeOut: timeOut,
       bufferingTime: bufferingTime
     });
-    
+
     const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Location', {
       protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
@@ -99,7 +98,7 @@ export default {
       timeOut: timeOut,
       bufferingTime: bufferingTime
     });
-    
+
     const droneOrientationDataSource = new SosGetResultJson('MISB UAS - Platform Orientation', {
       protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
@@ -114,7 +113,7 @@ export default {
       timeOut: timeOut,
       bufferingTime: bufferingTime
     });
-    
+
     const droneCameraOrientationDataSource = new SosGetResultJson('MISB UAS - Sensor Orientation', {
       protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
@@ -140,7 +139,7 @@ export default {
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: 1,
+      replaySpeed: dsReplaySpeed,
       timeOut: timeOut,
       bufferingTime: bufferingTime
     });
@@ -160,7 +159,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneGeoRefImageFrameDataSource = new SosGetResultJson('MISB UAS - Geo ref image', {
+    const geoRefImageFrameDataSource = new SosGetResultJson('MISB UAS - Geo ref image', {
       protocol: tls ? 'wss' : 'ws',
       service: 'SOS',
       endpointUrl: sosEndpoint,
@@ -191,123 +190,218 @@ export default {
     });
 
     const dataSynchronizer = new DataSynchronizer({
-      replayFactor: 1,
-      dataSources: [droneLocationDataSource, droneVideoDataSource, droneOrientationDataSource,
-        droneCameraOrientationDataSource, droneGeoRefImageFrameDataSource, targetLocationDataSource, droneVFovDataSource,droneHFovDataSource]
+      replaySpeed: dsReplaySpeed,
+      dataSources: [
+        droneLocationDataSource,
+        droneVideoDataSource,
+        droneOrientationDataSource,
+        droneCameraOrientationDataSource,
+        geoRefImageFrameDataSource,
+        targetLocationDataSource,
+        droneVFovDataSource,
+        droneHFovDataSource
+      ]
     });
 
-    // check connect/disconnect
-    const videoBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + droneVideoDataSource.id);
-
-    videoBroadcastChannel.onmessage = (message) => {
-      if (message.data.type === EventType.STATUS) {
-        if (message.data.status === Status.CONNECTED) {
-          this.$store.dispatch('updateDroneDataSourceStatus', {
-            video: {
-              connected: true
-            }
-          });
-        } else if (message.data.status === Status.DISCONNECTED) {
-          this.$store.dispatch('updateDroneDataSourceStatus', {
-            video: {
-              connected: false
-            }
-          });
-        }
-      }
-    }
-
-    const locationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + droneLocationDataSource.id);
-
-    locationBroadcastChannel.onmessage = (message) => {
-      if (message.data.type === EventType.STATUS) {
-        if (message.data.status === Status.CONNECTED) {
-          this.$store.dispatch('updateDroneDataSourceStatus', {
-            position: {
-              connected: true
-            }
-          });
-        } else if (message.data.status === Status.DISCONNECTED) {
-          this.$store.dispatch('updateDroneDataSourceStatus', {
-            video: {
-              position: false
-            }
-          });
-        }
-      } else if(message.data.type === EventType.DATA) {
-        this.lastDroneLocation = message.data.values[message.data.values.length-1].data;
-      }
-    }
-
-    const droneGeoRefImageFrameBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + droneGeoRefImageFrameDataSource.id);
-
-    droneGeoRefImageFrameBroadcastChannel.onmessage = (message) => {
-      if (message.data.type === EventType.STATUS) {
-        if (message.data.status === Status.CONNECTED) {
-          this.$store.dispatch('updateDroneDataSourceStatus', {
-            footprint: true
-          });
-        } else if (message.data.status === Status.DISCONNECTED) {
-          this.$store.dispatch('updateDroneDataSourceStatus', {
-            footprint: false
-          });
-        }
-      }
-    }
-
-    const targetLocationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + targetLocationDataSource.id);
-
-    targetLocationBroadcastChannel.onmessage = (message) => {
-      if (message.data.type === EventType.STATUS) {
-        if (message.data.status === Status.CONNECTED) {
-          this.$store.dispatch('updateTargetDataSourceStatus', {
-            position: {
-              connected: true
-            }
-          });
-        } else if (message.data.status === Status.DISCONNECTED) {
-          this.$store.dispatch('updateTargetDataSourceStatus', {
-            video: {
-              position: false
-            }
-          });
-        }
-      }
-    }
-    // start streaming
-    dataSynchronizer.connect();
     this.dataSynchronizer = dataSynchronizer;
 
     this.droneLocationDataSource = droneLocationDataSource;
     this.droneVideoDataSource = droneVideoDataSource;
     this.droneOrientationDataSource = droneOrientationDataSource;
     this.droneCameraOrientationDataSource = droneCameraOrientationDataSource;
-    this.droneGeoRefImageFrameDataSource = droneGeoRefImageFrameDataSource;
-    this.targetLocationDataSource = targetLocationDataSource;
     this.droneHFovDataSource = droneHFovDataSource;
     this.droneVFovDataSource = droneVFovDataSource;
+
+    this.geoRefImageFrameDataSource = geoRefImageFrameDataSource;
+    this.targetLocationDataSource = targetLocationDataSource;
     //
 
-    let sosGetFois = new SosGetFois('fois', {
-      protocol: tls ? 'https' : 'http',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      batchSize: 50,
-      procedureId: 'urn:osh:sensor:isa:701149'
+    this.initEvents();
+
+    dataSynchronizer.connect();
+
+    // setup default UI options
+    this.$store.dispatch('updateUiStatus', {
+      fov: true,
+      footprint: true
     });
 
-    const sosGetFoisBc = new BroadcastChannel(DATASOURCE_DATA_TOPIC + sosGetFois.id);
+    // let sosGetFois = new SosGetFois('fois', {
+    //   protocol: tls ? 'https' : 'http',
+    //   service: 'SOS',
+    //   endpointUrl: sosEndpoint,
+    //   batchSize: 50,
+    //   procedureId: 'urn:osh:sensor:isa:701149'
+    // });
 
-    sosGetFoisBc.onmessage = (message) => {
-      if (message.data.type === EventType.DATA) {
-        console.log(message.data)
-      }
-    }
-    sosGetFois.connect()
+    // const sosGetFoisBc = new BroadcastChannel(DATASOURCE_DATA_TOPIC + sosGetFois.id);
+    //
+    // sosGetFoisBc.onmessage = (message) => {
+    //   if (message.data.type === EventType.DATA) {
+    //     console.log(message.data)
+    //   }
+    // }
+    // sosGetFois.connect()
 
   },
   mounted() {
 
+  },
+  methods: {
+    initEvents() {
+
+      // Link DataSources connected/disconnected Status to state
+      // update drone status
+      const droneLocationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneLocationDataSource.id);
+      droneLocationBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              platformLocation: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              platformLocation: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      const droneVideoBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneVideoDataSource.id);
+      droneVideoBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              video: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              video: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      const droneOrientationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneOrientationDataSource.id);
+      droneOrientationBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              platformOrientation: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              platformOrientation: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      const droneCameraOrientationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneCameraOrientationDataSource.id);
+      droneCameraOrientationBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              cameraOrientation: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              cameraOrientation: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      const droneHFovBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneHFovDataSource.id);
+      droneHFovBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              hFov: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              hFov: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      const droneVFovBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneVFovDataSource.id);
+      droneVFovBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              vFov: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateDroneStatus', {
+              vFov: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+
+      // Update GeoRef status
+      const droneGeoRefImageFrameBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.geoRefImageFrameDataSource.id);
+      droneGeoRefImageFrameBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateGeoRefStatus', {
+              connected: true
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateGeoRefStatus', {
+              connected: false
+            });
+          }
+        }
+      }
+
+      // Update Target status
+      const targetLocationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC +this. targetLocationDataSource.id);
+      targetLocationBroadcastChannel.onmessage = (message) => {
+        if (message.data.type === EventType.STATUS) {
+          if (message.data.status === Status.CONNECTED) {
+            this.$store.dispatch('updateTargetStatus', {
+              location: {
+                connected: true
+              }
+            });
+          } else if (message.data.status === Status.DISCONNECTED) {
+            this.$store.dispatch('updateTargetStatus', {
+              location: {
+                connected: false
+              }
+            });
+          }
+        }
+      }
+    }
   }
 };
 </script>

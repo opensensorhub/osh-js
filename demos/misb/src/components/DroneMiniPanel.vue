@@ -29,7 +29,7 @@
             @click.stop="panToDrone()"
         >
           <v-icon
-              :color='(this.$store.state.drone.position.connected)? "#00AF2AFF" : "#d50000"'
+              :color='(this.$store.state.drone.platformLocation.connected)? "#00AF2AFF" : "#d50000"'
           >mdi-map-marker</v-icon>
         </v-btn>
         <v-btn
@@ -40,37 +40,37 @@
             title="Video"
         >
           <v-icon
-              :color='(this.$store.state.drone.video.connected)? "#00AF2AFF" : "#d50000"'
+              :color='getVideoIconColor()'
           >mdi-video</v-icon>
         </v-btn>
         <v-btn
             icon
             dark
             title="Show/hide Image draping"
-            @click.stop="toggleDroneDraping()"
+            @click.stop="toggleUiDraping()"
         >
           <v-icon
-              :color='(this.$store.state.drone.draping)? "#00AF2AFF" : "#d50000"'
+              :color='getDrapingIconColor()'
           >mdi-video-image</v-icon>
         </v-btn>
         <v-btn
             icon
             dark
             title="Show/hide footprint"
-            @click.stop="toggleDroneFootprint()"
+            @click.stop="toggleUiFootprint()"
         >
           <v-icon
-              :color='(this.$store.state.drone.footprint)? "#00AF2AFF" : "#d50000"'
+              :color='getFootprintIconColor()'
           >mdi-vector-rectangle</v-icon>
         </v-btn>
         <v-btn
             icon
             dark
             title="Show/hide Field of view"
-            @click.stop="toggleDroneFov()"
+            @click.stop="toggleUiFov()"
         >
           <v-icon
-              :color='(this.$store.state.drone.fov)? "#00AF2AFF" : "#d50000"'
+              :color='getFovIconColor()'
           >mdi-angle-acute mdi-rotate-135</v-icon>
         </v-btn>
       </div>
@@ -86,6 +86,10 @@
 import Video from './Video.vue';
 import {mapState, mapActions} from 'vuex'
 
+const DISCONNECTED_ICON_COLOR = "#d50000";
+const CONNECTED_ICON_COLOR = "#00AF2AFF"
+const DEFAULT_ICON_COLOR = "#FFFFFF";
+
 export default {
   name: "DroneMiniPanel",
   components: {
@@ -99,10 +103,46 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleDroneSelection', 'toggleDroneFootprint', 'toggleDroneDraping', 'toggleDroneFov']
+    ...mapActions(['toggleUiDroneSelection', 'toggleUiFootprint', 'toggleUiDraping', 'toggleUiFov']
     ),
     panToDrone() {
       this.$root.$emit('pan_to_drone');
+    },
+    getVideoIconColor() {
+      if(!this.$store.state.drone.video.connected) {
+        return DISCONNECTED_ICON_COLOR;
+      } else if(!this.mini) {
+        return CONNECTED_ICON_COLOR;
+      } else {
+        return DEFAULT_ICON_COLOR;
+      }
+    },
+    getDrapingIconColor() {
+      if(!this.$store.state.drone.video.connected) {
+        return DISCONNECTED_ICON_COLOR;
+      } else if(this.$store.state.ui.draping) {
+        return CONNECTED_ICON_COLOR;
+      } else {
+        return DEFAULT_ICON_COLOR;
+      }
+    },
+    getFootprintIconColor() {
+      if(!this.$store.state.geoRefImage.connected) {
+        return DISCONNECTED_ICON_COLOR;
+      } else if(this.$store.state.ui.footprint) {
+        return CONNECTED_ICON_COLOR;
+      } else {
+        return DEFAULT_ICON_COLOR;
+      }
+    },
+    getFovIconColor() {
+      if(!this.$store.state.drone.vFov.connected) {
+        return DISCONNECTED_ICON_COLOR;
+      } else if(this.$store.state.ui.fov) {
+        return CONNECTED_ICON_COLOR;
+      } else {
+        return DEFAULT_ICON_COLOR;
+      }
     }
   }
 }

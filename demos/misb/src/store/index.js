@@ -12,67 +12,107 @@ export default new Vuex.Store({
             video: {
                 connected: false
             },
-            position: {
+            platformLocation: {
                 connected: false
             },
-            footprint: false,
-            draping: false,
-            fov: false,
-            selected : false
+            platformOrientation: {
+                connected: false
+            },
+            cameraOrientation: {
+                connected: false
+            },
+            hFov: {
+                connected: false
+            },
+            vFov: {
+                connected: false
+            },
+        },
+        geoRefImage: {
+            connected : false
         },
         target : {
-            position: {
+            location: {
                 connected: false
             }
+        },
+        ui: {
+            draping: false,
+            fov: false,
+            footprint: false,
+            droneSelected: false,
+            droneVideo: false,
+            targetSelected: false
         }
     },
     actions: {
-        toggleDroneSelection({state, commit}, props) {
-            commit('toggleDroneSelection', !state.drone.selected);
+        updateDroneStatus({state, commit}, props) {
+            commit('setDroneStatus', {...props});
         },
-        toggleDroneFootprint({state, commit}, props) {
-            commit('toggleDroneFootprint', !state.drone.footprint);
+        updateTargetStatus({state, commit}, props) {
+            commit('setTargetStatus', {...props});
         },
-        toggleDroneFov({state, commit}, props) {
-            commit('toggleDroneFov', !state.drone.fov);
+        updateGeoRefStatus({state, commit}, props) {
+            commit('setGeoRefStatus', {...props});
         },
-        toggleDroneDraping({state, commit}, props) {
-            commit('toggleDroneDraping', !state.drone.draping);
+        updateUiStatus({state, commit}, props) {
+            commit('setUiStatus', {...props});
         },
-        updateDroneDataSourceStatus({state, commit}, props) {
-            commit('setDroneConnections', {...props});
+        toggleUiDroneSelection({state, commit}, props) {
+            commit('setUiDroneSelection', !state.ui.droneSelected);
         },
-        updateTargetDataSourceStatus({state, commit}, props) {
-            commit('setTargetConnections', {...props});
+        toggleUiFootprint({state, commit}, props) {
+            if(state.geoRefImage.connected) {
+                commit('setUiFootprint', !state.ui.footprint);
+            }
+        },
+        toggleUiDraping({state, commit}, props) {
+            if(state.drone.video.connected) {
+                commit('setUiDraping', !state.ui.draping);
+            }
+        },
+        toggleUiFov({state, commit}, props) {
+            if(state.drone.vFov.connected) {
+                commit('setUiFov', !state.ui.fov);
+            }
         },
     },
     mutations: {
-        showFootprint(state, value) {
-            state.footprint = value;
-        },
-        toggleDroneSelection(state, value) {
-            state.drone.selected = value;
-        },
-        toggleDroneFootprint(state, value) {
-            state.drone.footprint = value;
-        },
-        toggleDroneFov(state, value) {
-            state.drone.fov = value;
-        },
-        toggleDroneDraping(state, value) {
-            state.drone.draping = value;
-        },
-        setDroneConnections(state, value) {
+        setDroneStatus(state, value) {
             state.drone = {
                 ...state.drone,
                 ...value
             }
         },
-        setTargetConnections(state, value) {
+        setTargetStatus(state, value) {
             state.target = {
                 ...state.target,
                 ...value
             }
-        }
+        },
+        setGeoRefStatus(state, value) {
+            state.geoRefImage = {
+                ...state.geoRefImage,
+                ...value
+            }
+        },
+        setUiStatus(state, value) {
+            state.ui = {
+                ...state.ui,
+                ...value
+            }
+        },
+        setUiDroneSelection(state, value) {
+            state.ui.droneSelected = value;
+        },
+        setUiFootprint(state, value) {
+            state.ui.footprint = value;
+        },
+        setUiDraping(state, value) {
+            state.ui.draping = value;
+        },
+        setUiFov(state, value) {
+            state.ui.fov = value;
+        },
     }
 });

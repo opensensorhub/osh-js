@@ -19,7 +19,7 @@
             @click.stop="panToTarget()"
         >
           <v-icon
-              :color='(this.$store.state.drone.position.connected)? "#00AF2AFF" : "#d50000"'
+              :color='(this.$store.state.target.location.connected)? "#00AF2AFF" : "#d50000"'
           >mdi-map-marker</v-icon>
         </v-btn>
       </div>
