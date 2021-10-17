@@ -3,9 +3,9 @@
     <div :id="id" class="range"></div>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
-        <slot v-if="history">
-          <div class="datasource-actions history">
-            <a :id="'history-btn-'+this.id" class="control-btn clicked" @click="toggleHistory">
+        <slot v-if="replay">
+          <div class="datasource-actions replay">
+            <a :id="'replay-btn-'+this.id" class="control-btn clicked" @click="toggleReplay">
               <i class="fa fa-history"></i>
             </a>
             <div class="control-speed" v-if="activateSpeedControl">
@@ -42,7 +42,7 @@
         </slot>
         <slot v-else>
           <div class="datasource-actions live">
-            <a :id="'history-btn-'+this.id" class="control-btn history" @click="toggleHistory">
+            <a :id="'replay-btn-'+this.id" class="control-btn replay" @click="toggleReplay">
               <i class="fa fa-history"></i>
             </a>
           </div>
@@ -127,7 +127,7 @@ export default {
       id: randomUUID(),
       speedId: randomUUID(),
       event: null,
-      history: true,
+      replay: true,
       dataSourceObject: null,
       connected: true,
       startTime: null,
@@ -155,9 +155,10 @@ export default {
   beforeMount() {
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
-    this.history = this.dataSourceObject.getStartTime() !== 'now';
+    this.replay = this.dataSourceObject.getStartTime() !== 'now';
   },
   async updated() {
+    console.log(this.replay)
     await this.initComp();
   },
   async mounted() {
@@ -203,9 +204,9 @@ export default {
             this.maxTime = this.endTime;
           }
           // save the times after creating the component
-          this.history = this.startTime !== 'now';
+          this.replay = this.startTime !== 'now';
         } else {
-          this.history = false;
+          this.replay = false;
         }
 
         // compute skip time
@@ -292,17 +293,15 @@ export default {
             }
           }
           this.lastSynchronizedTimestamp = message.data.timestamp;
-        }
 
-        if (this.history) {
-          if(message.data.type ===  EventType.DATA) {
+          if (this.replay) {
             if (!this.interval && this.speed > 0.0 && !this.update) {
               // }
               this.setStartTime(message.data.timestamp);
             }
+          } else {
+            this.realtime = message.data.timestamp;
           }
-        } else {
-          this.realtime = message.data.timestamp;
         }
       }
     },
@@ -339,7 +338,7 @@ export default {
 
           if (!this.interval) {
             this.startTime = startTime;
-            if (this.history) {
+            if (this.replay) {
               this.endTime = endTime;
             }
 
@@ -453,11 +452,11 @@ export default {
       return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
     }
     ,
-    async toggleHistory() {
-      this.history = !this.history;
+    async toggleReplay() {
+      this.replay = !this.replay;
 
       this.resetMasterTime();
-      if (!this.history) {
+      if (!this.replay) {
         this.dataSourceObject.setTimeRange(
             'now',
             new Date("2055-01-01T00:00:00Z").toISOString(),
@@ -473,6 +472,7 @@ export default {
         document.getElementById(this.id).style.display = 'block';
       }
       this.$emit('event', 'end');
+      this.$emit('replay', this.replay);
     }
     ,
     incSpeed() {
