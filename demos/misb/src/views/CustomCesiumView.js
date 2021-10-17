@@ -111,7 +111,8 @@ class CustomCesiumView extends CesiumView {
     }
 
     updateFrustum(props) {
-        if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range) || !isDefined(props.sensorOrientation)) {
+        if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range)
+            || !isDefined(props.sensorOrientation) || !isDefined(props.platformOrientation)) {
             return;
         }
         let frustumPrimitiveCollection = this.getFrustum(props);
