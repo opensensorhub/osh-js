@@ -223,7 +223,7 @@
           orientation: {
             heading: 90
           },
-          icon: "models/pickup.glb",
+          // icon: "models/pickup.glb",
           iconScale: 1.0
         });
 
