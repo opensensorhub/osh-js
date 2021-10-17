@@ -39,11 +39,6 @@
               <span :id="'end-time-'+this.id" v-html=parseTime(endTime)></span>
             </div>
           </div>
-          <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
-            <a :id="'out-of-sync-btn-'+this.id" class="control-btn out-of-sync">
-              <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
-            </a>
-          </div>
         </slot>
         <slot v-else>
           <div class="datasource-actions live">
@@ -61,6 +56,11 @@
             LIVE
           </v-chip>
         </slot>
+        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
+          <a :id="'out-of-sync-btn-'+this.id" class="control-btn out-of-sync">
+            <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -258,40 +258,45 @@ export default {
       // listen for BC
       this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
       this.bcTime.onmessage =  (message) => {
-        if (this.history) {
-          if(this.waitForTimeChangedEvent) {
-            if(message.data.type ===  EventType.DATA) {
-              this.displayConsoleWarningIncompatibleVersionThrottle();
-            } else if(message.data.type ===  EventType.TIME_CHANGED) {
-              this.waitForTimeChangedEvent = false;
-            }
-            return;
-          }
-
+        if(this.waitForTimeChangedEvent) {
+          console.log('Waiting for TIME CHANGED EVENT');
+        }
+        if(this.waitForTimeChangedEvent) {
           if(message.data.type ===  EventType.DATA) {
-            if (!this.interval && this.speed > 0.0 && !this.update) {
-              // consider here datasynchronizer sends data in time order
-              if (isDefined(this.dataSynchronizer)) {
-                const contains = message.data.dataSourceId in this.outOfSync;
-                if (message.data.timestamp < this.lastSynchronizedTimestamp) {
-                  if (!contains) {
-                    if (isDefined(this.dataSynchronizer)) {
-                      this.dataSynchronizer.dataSources.forEach(datasource => {
-                        if (datasource.id === message.data.dataSourceId) {
-                          this.outOfSync[datasource.id] = datasource;
-                        }
-                      });
-                    } else {
-                      this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
+            this.displayConsoleWarningIncompatibleVersionThrottle();
+          } else if(message.data.type ===  EventType.TIME_CHANGED) {
+            this.waitForTimeChangedEvent = false;
+          }
+          return;
+        }
+        if(message.data.type === EventType.DATA) {
+          // consider here datasynchronizer sends data in time order
+          if (isDefined(this.dataSynchronizer)) {
+            const contains = message.data.dataSourceId in this.outOfSync;
+            if (message.data.timestamp < this.lastSynchronizedTimestamp) {
+              if (!contains) {
+                if (isDefined(this.dataSynchronizer)) {
+                  this.dataSynchronizer.dataSources.forEach(datasource => {
+                    if (datasource.id === message.data.dataSourceId) {
+                      this.outOfSync[datasource.id] = datasource;
                     }
-                  }
-                  return;
-                } else if (contains) {
-                  // check that the datasource is not out of sync anymore
-                  delete this.outOfSync[message.data.dataSourceId];
+                  });
+                } else {
+                  this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
                 }
               }
-              this.lastSynchronizedTimestamp = message.data.timestamp;
+              return;
+            } else if (contains) {
+              // check that the datasource is not out of sync anymore
+              delete this.outOfSync[message.data.dataSourceId];
+            }
+          }
+          this.lastSynchronizedTimestamp = message.data.timestamp;
+        }
+
+        if (this.history) {
+          if(message.data.type ===  EventType.DATA) {
+            if (!this.interval && this.speed > 0.0 && !this.update) {
               // }
               this.setStartTime(message.data.timestamp);
             }
@@ -369,15 +374,19 @@ export default {
         this.update = true;
         this.updateTimeDebounce('backward');
       }
-    }
-    ,
-    async updateTime(event) {
+    },
+
+    resetMasterTime() {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
+    },
+
+    async updateTime(event) {
+      this.resetMasterTime();
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
@@ -447,11 +456,12 @@ export default {
     async toggleHistory() {
       this.history = !this.history;
 
+      this.resetMasterTime();
       if (!this.history) {
         this.dataSourceObject.setTimeRange(
             'now',
             new Date("2055-01-01T00:00:00Z").toISOString(),
-            this.speed,
+            1.0,
             true);
         document.getElementById(this.id).style.display = 'none';
       } else {
@@ -459,7 +469,7 @@ export default {
             new Date(this.startTime).toISOString(),
             new Date(this.endTime).toISOString(),
             this.speed,
-            false);
+            true);
         document.getElementById(this.id).style.display = 'block';
       }
       this.$emit('event', 'end');
