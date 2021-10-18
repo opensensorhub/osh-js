@@ -120,11 +120,11 @@
             dataSourceIds: [this.droneHFovDataSource.getId()],
             handler: function (rec) {
               let fx = 1. / (2. * Math.tan(rec.params.hfov * DTR / 2));
-              let fy = fx * 480. / 640.;
+              let fy = fx * 640. / 480.;
               return {
                 camProj: new Matrix3(
-                     fy, 0.0, 0.5,
-                    0.0,  fx, 0.5,
+                     fx, 0.0, 0.5,
+                    0.0,  fy, 0.5,
                     0.0, 0.0, 1.0),
                 camDistR: new Cartesian3(0,0,0),
                 camDistT: new Cartesian2(0,0)
