@@ -148,7 +148,7 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return this.dataSources[0].properties.startTime;
+        return this.dataSources[0].currentRunningProperties.startTime;
     }
 
     /**
@@ -159,7 +159,7 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return this.dataSources[0].properties.endTime;
+        return this.dataSources[0].currentRunningProperties.endTime;
     }
 
     /**
