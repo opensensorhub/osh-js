@@ -36,7 +36,8 @@ class DataSynchronizer {
         this.dataSources = [];
         this.replaySpeed = 1;
         this.timerResolution = 5;
-
+        this.initialized = false;
+        
         if(isDefined(properties.replaySpeed)) {
             this.replaySpeed = properties.replaySpeed;
         }
@@ -62,6 +63,14 @@ class DataSynchronizer {
         }
 
         this.synchronizerWorker = new DataSynchronizerWorker();
+        
+        this.synchronizerWorker.onmessage = (event) => {
+            if (event.data.message === 'initialized') {
+                this.initialized = true;
+                console.log("datasynchronizer initialized");
+            }
+        }
+        
         this.synchronizerWorker.postMessage({
             message: 'init',
             dataSources: dataSourcesForWorker,
@@ -80,7 +89,8 @@ class DataSynchronizer {
         const obj = {
             bufferingTime: dataSource.properties.bufferingTime || 0,
             timeOut: dataSource.properties.timeOut || 0,
-            id: dataSource.id
+            id: dataSource.id,
+            name: dataSource.name
         };
         // bind dataSource data onto dataSynchronizer data
         try {
@@ -124,7 +134,20 @@ class DataSynchronizer {
     /**
      * Connects all dataSources
      */
-    connect() {
+    connect() {      
+        // wait until webworker is fully initialized before connecting datasources
+        let tryConnect = () => {
+            if (this.initialized) {
+              this.doConnect();
+            } else {
+              setTimeout(tryConnect, 100);
+            }
+        };
+        
+        tryConnect();
+    }
+    
+    doConnect() {
         for(let dataSource of this.dataSources) {
             dataSource.connect();
         }
