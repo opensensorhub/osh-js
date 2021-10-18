@@ -7,9 +7,10 @@
         dark
         floating
         right
+        clipped
         width="640"
     >
-      <div class="variant-title">Target (s)</div>
+      <div class="variant-title">Target</div>
       <v-divider></v-divider>
       <div class="icon-container">
         <v-btn
@@ -50,7 +51,7 @@ export default {
 <style scoped>
 .inspire {
   position: absolute;
-  top: 150px;
+  top: calc(25%);
   right: 0;
   z-index: 10;
   border-radius: 4px;
@@ -65,9 +66,9 @@ export default {
 }
 
 .inspire > aside {
-  min-width: 80px;
+  min-width: 20px;
   width: unset !important;
-  max-width: 640px;
+  max-width: 66px;
   padding-right: 5px;
 }
 

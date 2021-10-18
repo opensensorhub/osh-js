@@ -76,6 +76,12 @@ export default new Vuex.Store({
                 commit('setUiFov', !state.ui.fov);
             }
         },
+        toggleUiDroneVideo({state, commit}, props) {
+            if(state.drone.video.connected) {
+                commit('setUiDroneVideo', !state.ui.droneVideo);
+            }
+        },
+
     },
     mutations: {
         setDroneStatus(state, value) {
@@ -113,6 +119,9 @@ export default new Vuex.Store({
         },
         setUiFov(state, value) {
             state.ui.fov = value;
+        },
+        setUiDroneVideo(state, value) {
+            state.ui.droneVideo = value;
         },
     }
 });

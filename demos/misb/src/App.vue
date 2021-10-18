@@ -11,7 +11,14 @@
     </v-app-bar>
     <DroneMiniPanel :video-data-source="this.droneVideoDataSource"/>
     <TargetMiniPanel :target-location-data-source="targetLocationDataSource"/>
-    <BioSensorMiniPanel :biological-sensors-data-source="biologicalSensorsDataSource"/>
+    <VideoPanel
+      :drone-video-data-source="this.droneVideoDataSource"
+      v-show="this.$store.state.ui.droneVideo"
+    ></VideoPanel>
+    <BioSensorMiniPanel
+        :biological-sensors-data-source="biologicalSensorsDataSource"
+        v-show="false"
+    />
     <Globe
         :drone-camera-orientation-data-source="droneCameraOrientationDataSource"
         :drone-location-data-source="droneLocationDataSource"
@@ -45,11 +52,13 @@ import {Status} from "osh-js/core/protocol/Status";
 
 import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
 import SosGetFois from "osh-js/core/datasource/SosGetFois";
+import VideoPanel from "./components/VideoPanel.vue";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
   components: {
+    VideoPanel,
     BioSensorMiniPanel,
     DroneMiniPanel,
     TargetMiniPanel,

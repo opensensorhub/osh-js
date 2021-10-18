@@ -7,21 +7,12 @@
         dark
         floating
         right
+        clipped
         width="640"
     >
       <div class="variant-title">MISB UAS</div>
       <v-divider></v-divider>
       <div class="icon-container">
-        <v-btn
-            icon
-            right
-            @click.stop="mini = !mini"
-            dark
-            class="chevron-right"
-            v-if="!mini"
-        >
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
         <v-btn
             icon
             dark
@@ -35,7 +26,7 @@
         <v-btn
             icon
             right
-            @click.stop="mini = !mini"
+            @click.stop="toggleUiDroneVideo()"
             dark
             title="Video"
         >
@@ -74,16 +65,11 @@
           >mdi-angle-acute mdi-rotate-135</v-icon>
         </v-btn>
       </div>
-      <Video
-          :video-data-source="videoDataSource"
-          :show=!mini
-      />
     </v-navigation-drawer>
   </v-card>
 </template>
 
 <script>
-import Video from './Video.vue';
 import {mapState, mapActions} from 'vuex'
 
 const DISCONNECTED_ICON_COLOR = "#d50000";
@@ -92,9 +78,7 @@ const DEFAULT_ICON_COLOR = "#FFFFFF";
 
 export default {
   name: "DroneMiniPanel",
-  components: {
-    Video
-  },
+  components: {},
   props: ['videoDataSource'],
   data() {
     return {
@@ -103,7 +87,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleUiDroneSelection', 'toggleUiFootprint', 'toggleUiDraping', 'toggleUiFov']
+    ...mapActions(['toggleUiDroneSelection', 'toggleUiFootprint', 'toggleUiDraping', 'toggleUiFov', 'toggleUiDroneVideo']
     ),
     panToDrone() {
       this.$root.$emit('pan_to_drone');
@@ -111,7 +95,7 @@ export default {
     getVideoIconColor() {
       if(!this.$store.state.drone.video.connected) {
         return DISCONNECTED_ICON_COLOR;
-      } else if(!this.mini) {
+      } else if(this.$store.state.ui.droneVideo) {
         return CONNECTED_ICON_COLOR;
       } else {
         return DEFAULT_ICON_COLOR;
@@ -151,7 +135,7 @@ export default {
 <style scoped>
 .inspire {
   position: absolute;
-  top: 260px;
+  top: calc(35% + 20px);
   right: 0;
   z-index: 10;
   border-radius: 4px;
@@ -166,9 +150,9 @@ export default {
 }
 
 .inspire > aside {
-  min-width: 80px;
+  min-width: 20px;
   width: unset !important;
-  max-width: 640px;
+  max-width: 66px;
   padding-right: 5px;
 }
 
@@ -179,13 +163,10 @@ export default {
   vertical-align: middle;
 }
 
-.chevron-right {
-  position: absolute;
-  right: 0;
-}
-
 .icon-container {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 </style>

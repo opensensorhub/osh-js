@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .inspire {
   position: absolute;
-  top: 150px;
+  top: 500px;
   left: 0;
   z-index: 10;
   border-radius: 4px;

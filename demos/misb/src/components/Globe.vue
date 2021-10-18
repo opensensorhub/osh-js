@@ -80,7 +80,6 @@
         });
       },
       createDroneImageDrapingLayer() {
-        let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
         const that = this;
         return new ImageDrapingLayer({
           getVisible: {
@@ -142,7 +141,7 @@
             camDistR: new Cartesian3(0,0,0),
             camDistT: new Cartesian2(0,0)
           },
-          imageSrc: videoCanvas,
+          imageSrc: document.getElementById("video-container").getElementsByTagName("canvas")[0],
         });
       },
       createDronePolygonFootprintLayer() {
@@ -258,7 +257,12 @@
           getLabel: (f) =>  f.id,
           labelColor: '#ffffff',
           labelSize: 18,
-          labelOffset: [0, 10]
+          labelOffset: [0, 10],
+          onLeftClick: (markerId, billboard, event) => {
+            if(markerId.startsWith("FOI_ATM")) {
+              console.log(markerId);
+            }
+          }
         });
       },
       createBiologicalSensorMarkersRadiusLayer() {
