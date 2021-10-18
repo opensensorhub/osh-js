@@ -63,14 +63,14 @@ export default {
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
     const END_TIME = '2012-06-29T14:37:44.033333251Z';
-    // const END_TIME = '2012-06-29T14:32:44.099333251Z'
+    // const END_TIME = '2012-06-29T14:32:37.099333251Z'
 
     const tls = true;
     const sosEndpoint = 'ogct17.georobotix.io:8443/sensorhub/sos';
     //const tls = false;
     //const sosEndpoint = 'localhost:8181/sensorhub/sos';
 
-    const dsReplaySpeed = 1.0;
+    const dsReplaySpeed = 1.5;
     const timeOut = 3000;
     const bufferingTime = 800;
 
@@ -200,20 +200,6 @@ export default {
       endpointUrl: sosEndpoint,
       batchSize: 50,
       procedureId: 'urn:osh:sensor:isa:701149'
-    });
-
-
-    let biologicalSensorsDataSource2 = new SosGetResultJson('Biological Sensors', {
-      protocol: tls ? 'https' : 'http',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      batchSize: 1,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      offeringID: 'urn:osh:sensor:isa:701149:BIO001'
     });
 
     const dataSynchronizer = new DataSynchronizer({
