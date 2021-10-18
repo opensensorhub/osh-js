@@ -4,7 +4,7 @@
         name="slide"
     >
       <div class="sub-container"
-           v-if="!mini"
+           v-show="!mini"
       >
         <TimeController
             :dataSynchronizer="dataSynchronizer"
@@ -21,13 +21,17 @@
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
       </div>
+    </transition>
+    <transition
+        name="slide"
+    >
       <v-btn
           icon
           left
           dark
           class="collapse-button mini"
           @click.stop="mini = !mini"
-          v-if="mini"
+          v-show="mini"
           x-large
           title="Time controller"
       >
@@ -39,6 +43,7 @@
 
 <script>
 import TimeController from 'osh-js/vue/components/TimeController.vue';
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: "CollapseTimeController",
@@ -47,13 +52,13 @@ export default {
   },
   data() {
     return {
-      mini: true
+      mini: false,
     }
   },
   props: ['dataSynchronizer'],
   methods: {
-    onControlEvent(event) {
-
+    ...mapActions(['updateUiStatus']),
+    onControlEvent(props) {
     }
   }
 }
