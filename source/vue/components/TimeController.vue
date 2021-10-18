@@ -149,7 +149,12 @@ export default {
   },
   watch: {
     event(newValue) {
-      this.$emit('event', newValue);
+      this.$emit('event', {
+        event: newValue,
+        replay: this.replay,
+        startTime: this.startTime,
+        endTime: this.endTime
+      });
     }
   },
   beforeMount() {
@@ -158,7 +163,6 @@ export default {
     this.replay = this.dataSourceObject.getStartTime() !== 'now';
   },
   async updated() {
-    console.log(this.replay)
     await this.initComp();
   },
   async mounted() {
@@ -529,7 +533,12 @@ export default {
     }
     ,
     on(eventName) {
-      this.$emit('event', eventName);
+      this.$emit('event', {
+        event: eventName,
+        replay: this.replay,
+        startTime: this.startTime,
+        endTime: this.endTime
+      });
     }
     ,
     withLeadingZeros(dt) {

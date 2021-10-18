@@ -55,10 +55,13 @@ export default {
       mini: false,
     }
   },
-  props: ['dataSynchronizer'],
+  props: ['dataSynchronizer','biologicalSensorsDataSource'],
   methods: {
     ...mapActions(['updateUiStatus']),
     onControlEvent(props) {
+      if(props.event === 'time-changed') {
+        this.biologicalSensorsDataSource.connect();
+      }
     }
   }
 }

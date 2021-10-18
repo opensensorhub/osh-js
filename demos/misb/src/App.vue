@@ -24,6 +24,7 @@
     />
     <CollapseTimeController
         :dataSynchronizer="dataSynchronizer"
+        :biological-sensors-data-source="biologicalSensorsDataSource"
         v-if="dataSynchronizer">
     </CollapseTimeController>
   </div>

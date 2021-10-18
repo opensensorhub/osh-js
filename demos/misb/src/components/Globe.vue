@@ -77,7 +77,6 @@
           iconScale: 0.1
         });
 
-
         // style it with a moving point marker
         let droneImageDrapingLayer = new ImageDrapingLayer({
           getVisible: {
@@ -230,6 +229,7 @@
         let biologicalSensorMarkers =  new PointMarkerLayer({
           dataSourceId: this.biologicalSensorsDataSource.id,
           getLocation: (f) => {
+            console.log(f);
             let pos = f.shape.pos.split(" ");
             return {
               x: parseFloat(pos[1]),
