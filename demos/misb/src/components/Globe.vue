@@ -18,6 +18,14 @@
   import {isDefined} from "../../../../source/core/utils/Utils";
 
 
+  const altitudeOffset = -193;
+  const DTR = Math.PI / 180;
+
+  // Init cesium token
+  Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
+      'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
+      '2WfIX0QHiZcOjVaXI92stjDh4fI';
+
   export default {
     name: "Globe",
     components: {},
@@ -41,14 +49,8 @@
       'biologicalSensorsDataSource'
     ],
     methods: {
-      init() {
-        const that = this;
-        const altitudeOffset = -193;
-        const DTR = Math.PI / 180;
-        let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
-
-        // add 3D model marker to Cesium view
-        let dronePointMarkerLayer = new PointMarkerLayer({
+      createDroneMarkerLayer() {
+        return new PointMarkerLayer({
           label: "MISB UAS",
           labelColor: "#FFFFFF",
           labelOffset: [0, -20],
@@ -76,9 +78,11 @@
           icon: "./models/predator2.glb",
           iconScale: 0.1
         });
-
-        // style it with a moving point marker
-        let droneImageDrapingLayer = new ImageDrapingLayer({
+      },
+      createDroneImageDrapingLayer() {
+        let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
+        const that = this;
+        return new ImageDrapingLayer({
           getVisible: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function(rec) {
@@ -122,28 +126,30 @@
               let fy = fx * 640. / 480.;
               return {
                 camProj: new Matrix3(
-                     fx, 0.0, 0.5,
+                    fx, 0.0, 0.5,
                     0.0,  fy, 0.5,
                     0.0, 0.0, 1.0),
                 camDistR: new Cartesian3(0,0,0),
                 camDistT: new Cartesian2(0,0)
-             };
+              };
             }
           },
           cameraModel: {
             camProj: new Matrix3(
-                    1.0, 0.0, 0.5,
-                    0.0, 1.0, 0.5,
-                    0.0, 0.0, 1.0),
+                1.0, 0.0, 0.5,
+                0.0, 1.0, 0.5,
+                0.0, 0.0, 1.0),
             camDistR: new Cartesian3(0,0,0),
             camDistT: new Cartesian2(0,0)
           },
           imageSrc: videoCanvas,
         });
-
-        let dronePolygonFootprintLayer = new PolygonLayer({
+      },
+      createDronePolygonFootprintLayer() {
+        const that = this;
+        return new PolygonLayer({
           dataSourceId: this.droneGeoRefImageFrameDataSource.id,
-          getVisible: () => this.$store.state.ui.footprint, // link state application to
+          getVisible: () => that.$store.state.ui.footprint, // link state application to
           getVertices: (rec) => {
             return [
               rec.ulc.lon,
@@ -164,8 +170,10 @@
           outlineWidth: 1,
           outlineColor: 'rgba(255,195,100,0.3)'
         });
-
-        let droneFrustumLayer = new FrustumLayer({
+      },
+      createDroneFrustumLayer() {
+        const that = this;
+        return new FrustumLayer({
           getOrigin: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
             handler: function(rec) {
@@ -191,7 +199,7 @@
           getPlatformOrientation: {
             dataSourceIds: [this.droneOrientationDataSource.getId()],
             handler: function(rec) {
-               return rec.attitude;
+              return rec.attitude;
             }
           },
           getSensorOrientation: {
@@ -209,8 +217,9 @@
           color: 'rgba(255,183,183,0.4)',
           opacity: 0.5,
         });
-
-        let targetPointMarkerLayer = new PointMarkerLayer({
+      },
+      createTargetPointMarkerLayer() {
+        return new PointMarkerLayer({
           label: "Tracked Vehicle",
           labelColor: "#FFFFFF",
           labelOffset: [0, 10],
@@ -225,8 +234,9 @@
           // icon: "models/pickup.glb",
           iconScale: 1.0
         });
-
-        let biologicalSensorMarkers =  new PointMarkerLayer({
+      },
+      createBiologicalSensorMarkersLayer() {
+        return new PointMarkerLayer({
           dataSourceId: this.biologicalSensorsDataSource.id,
           getLocation: (f) => {
             let pos = f.shape.pos.split(" ");
@@ -250,8 +260,9 @@
           labelSize: 18,
           labelOffset: [0, 10]
         });
-
-        let biologicalSensorMarkersRadius =  new EllipseLayer({
+      },
+      createBiologicalSensorMarkersRadiusLayer() {
+        return new EllipseLayer({
           dataSourceId: this.biologicalSensorsDataSource.id,
           getEllipseID:(f) => f.id,
           getPosition: (f) => {
@@ -267,11 +278,23 @@
           getSemiMinorAxis:(rec) => parseFloat(rec.radius),
           filter: (rec) => isDefined(rec.radius)
         });
+      },
+      init() {
+        // add 3D model marker to Cesium view
+        let dronePointMarkerLayer = this.createDroneMarkerLayer();
 
-        // Init cesium token
-        Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-            'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-            '2WfIX0QHiZcOjVaXI92stjDh4fI';
+        // style it with a moving point marker
+        let droneImageDrapingLayer = this.createDroneImageDrapingLayer();
+
+        let dronePolygonFootprintLayer = this.createDronePolygonFootprintLayer();
+
+        let droneFrustumLayer = this.createDroneFrustumLayer();
+
+        let targetPointMarkerLayer = this.createTargetPointMarkerLayer();
+
+        let biologicalSensorMarkersLayer = this.createBiologicalSensorMarkersLayer();
+
+        let biologicalSensorMarkersRadiusLayer =  this.createBiologicalSensorMarkersRadiusLayer();
 
         // create Cesium view
         let cesiumView = new CustomCesiumView({
@@ -282,8 +305,8 @@
             dronePolygonFootprintLayer,
             droneFrustumLayer,
             targetPointMarkerLayer,
-            biologicalSensorMarkersRadius,
-            biologicalSensorMarkers
+            biologicalSensorMarkersRadiusLayer,
+            biologicalSensorMarkersLayer
           ]
         });
 
