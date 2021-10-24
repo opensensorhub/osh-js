@@ -53,7 +53,10 @@ import {
     Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive,
     PolylineCollection,
     PrimitiveCollection,
-    EllipseGeometry
+    EllipseGeometry,
+    BillboardCollection,
+    LabelCollection,
+    InfoBox
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -158,32 +161,62 @@ class CesiumView extends MapView {
         this.viewer.scene.copyGlobeDepth = true;
         this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 
+        this.billboardCollection = new BillboardCollection();
+        this.labelCollection = new LabelCollection();
+
+        this.viewer.scene.primitives.add(this.billboardCollection);
+        this.viewer.scene.primitives.add(this.labelCollection);
+
         // inits callbacks
         // Get default left click handler for when a feature is not picked on left click
-        const that = this;
-        const onClick = (movement) => {
-            // Pick a new feature
-            const pickedFeature = that.viewer.scene.pick(movement.position);
-            if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
-                return;
-            }
-            const mId = that.getMarkerId(pickedFeature.id.id);
-            if (!isDefined(mId)) {
-                return;
-            }
-            const sId = that.getLayerId(pickedFeature.id.id);
-            if (!isDefined(sId)) {
-                return;
-            }
-            const layer = that.getLayer(sId);
-            if (!isDefined(layer)) {
-                return;
-            }
+        this.initPrimitiveCallbackSelection();
+    }
 
-            that.viewer.selectedEntity = pickedFeature.id;
-            that.viewer.selectedEntity.name = mId;
-            pickedFeature.pixel = movement.position;
-            that.onMarkerLeftClick(mId, pickedFeature, layer.props, {});
+    initPrimitiveCallbackSelection() {
+        const that = this;
+        const infoBoxContainer = document.createElement('div');
+        infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
+        this.viewer.container.appendChild(infoBoxContainer);
+
+        const infoBox = new InfoBox(infoBoxContainer);
+
+        const infoBoxViewModel = infoBox.viewModel;
+
+        // https://groups.google.com/g/cesium-dev/c/rzLrPY5ERJs/m/VYfUj-fYCgAJ
+        const onClick = (movement) => {
+            try {
+                // Pick a new feature
+                let pickedFeature = that.viewer.scene.pick(movement.position);
+
+                if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
+                    infoBoxViewModel.showInfo = false;
+                    return;
+                }
+
+                // check if collection and get the one of the top
+                if (isDefined(pickedFeature.collection) && pickedFeature.collection.length > 0) {
+                    pickedFeature = pickedFeature.collection.get(pickedFeature.collection.length - 1);
+                }
+
+                const primitiveId = pickedFeature._id;
+
+                const layerId = that.getLayerId(primitiveId);
+
+                const layer = that.getLayer(layerId);
+
+                if (!isDefined(layer)) {
+                    infoBoxViewModel.showInfo = false;
+                    return;
+                }
+
+                infoBoxViewModel.showInfo = true;
+                infoBoxViewModel.titleText = layer.props.label || layer.props.name;
+                infoBoxViewModel.description = layer.props.description;
+
+                that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});
+            }catch (exception) {
+                infoBoxViewModel.showInfo = false;
+            }
         };
 
         const onRightClick = (movement) => {
@@ -235,9 +268,7 @@ class CesiumView extends MapView {
         this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onRightClick, ScreenSpaceEventType.RIGHT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
-
     }
-
     /**
      *
      * @private
@@ -295,22 +326,133 @@ class CesiumView extends MapView {
 
     // ----- MARKER
     addMarker(properties) {
+        const id = properties.id + "$" + properties.markerId;
+        let imgIcon = properties.icon;
+        const isModel = imgIcon.endsWith(".glb");
+        const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
 
+        const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+
+        const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
+            label != null ? label : "Selected Marker";
+        const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
+            Color.fromCssColorString(properties.color) : Color.YELLOW;
+
+        let lonLatAlt = [0, 0, 0];
+
+        if (isDefined(properties.location)) {
+            lonLatAlt = [properties.location.x, properties.location.y, properties.location.z || 0];
+        }
+
+        // get ground altitude if non specified
+        if (!isDefined(properties.location.z) || isNaN(properties.location.z)) {
+            lonLatAlt[2] = this.getGroundAltitude(properties.location.x, properties.location.y);
+            if (lonLatAlt[2] > 1)
+                lonLatAlt[2] += 0.3;
+        }
+
+        let rot = 0;
+        if (isDefined(properties.orientation) && isDefined(properties.orientation.heading)) {
+            const heading = properties.orientation.heading;
+            // const roll = 0.0;
+            rot = Math.toRadians(heading);
+        }
+
+        const billboard = {
+            id: id,
+            name: name,
+            description: properties.description,
+            position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
+            image: imgIcon,
+            scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+            alignedAxis: (this.viewer.camera.pitch < -Math.PI / 4)? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
+            rotation: rot,
+            horizontalOrigin: HorizontalOrigin.LEFT,
+            verticalOrigin: VerticalOrigin.TOP,
+            pixelOffset: iconOffset,
+            pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+            eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
+            show: properties.visible,
+            //default values
+            heightReference : properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
+            scale : 1.0,
+            imageSubRegion : undefined,
+            color : undefined,
+            width : undefined,
+            height : undefined,
+            translucencyByDistance : undefined,
+            sizeInMeters : false,
+            distanceDisplayCondition : undefined
+        }
+
+        const billboardPrimitive = this.billboardCollection.add(billboard);
+
+        // Add Label primitive
+        const labelColor = properties.labelColor || '#FFFFFF';
+        const labelSize = properties.labelSize || 16;
+        const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+
+        const labelOpts = {
+            backgroundColor: undefined,
+            backgroundPadding: undefined,
+            disableDepthTestDistance: undefined,
+            distanceDisplayCondition: undefined,
+            eyeOffset: undefined,
+            fillColor: Color.fromCssColorString(labelColor),
+            font: labelSize + 'px sans-serif',
+            heightReference: undefined,
+            horizontalOrigin: HorizontalOrigin.CENTER,
+            id: undefined,
+            outlineColor: undefined,
+            outlineWidth: undefined,
+            pixelOffset: labelOffset,
+            pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+            position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
+            scale: undefined,
+            scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+            show: undefined,
+            showBackground: undefined,
+            style: undefined,
+            text: label,
+            totalScale: undefined,
+            translucencyByDistance: undefined,
+            verticalOrigin: VerticalOrigin.TOP,
+        }
+
+        const labelPrimitive = this.labelCollection.add(labelOpts);
+
+        // zoom map if first marker update
+        if (this.first) {
+            this.viewer.camera.flyTo({
+                destination : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], 1000),
+                duration : 1.0
+            });
+            this.first = false;
+        }
+
+        return {
+            billboard: billboardPrimitive,
+            label: labelPrimitive
+        };
     }
 
     updateMarker(props) {
-        if (!isDefined(props.position)) {
+        if (!isDefined(props.location)) {
             return;
         }
-        const marker = this.getEllipse(props);
-        if (isDefined(marker)) {
-            this.removeMarkerFromLayer(marker);
+
+        let primitiveMarker = this.getMarker(props);
+
+        // create one collection for marker entities
+        if (isDefined(primitiveMarker)) {
+            this.removeMarkerFromLayer(primitiveMarker);
         }
         this.addMarkerToLayer(props, this.addMarker(props));
     }
 
-    removeMarkerFromLayer(marker) {
-        this.viewer.scene.entities.remove(marker);
+    removeMarkerFromLayer(primitiveMarker) {
+        this.billboardCollection.remove(primitiveMarker.billboard);
+        this.labelCollection.remove(primitiveMarker.label);
     }
 
     // ----- ELLIPSE
