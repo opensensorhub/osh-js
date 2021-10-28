@@ -226,19 +226,10 @@ class CesiumView extends MapView {
                 } else if(pickedFeature.id instanceof Entity) {
                     entity = pickedFeature.id;
                 } else {
-                    primitive = pickedFeature._id;
+                    primitive = pickedFeature;
                 }
 
-                let featureId;
-                // if(isBillboardEntity) {
-                //     featureId = pickedFeature._id._id;
-                // } else if(isModelEntity) {
-                //     featureId = pickedFeature.id._id;
-                // } else {
-                //     is primitive
-                // featureId = pickedFeature._id;
-                // }
-                featureId = entity && entity._id || primitive && primitive._id;
+                let featureId = entity && entity._id || primitive && primitive.id;
 
                 const layerId = that.getLayerId(featureId);
                 const layer = that.getLayer(layerId);
@@ -289,7 +280,6 @@ class CesiumView extends MapView {
             }
 
             that.viewer.selectedEntity = pickedFeature.id;
-            that.viewer.selectedEntity.name = mId;
             pickedFeature.pixel = movement.position;
             that.onMarkerRightClick(mId, pickedFeature, layer.props, {});
         };
@@ -383,12 +373,8 @@ class CesiumView extends MapView {
     addMarker(properties, entity= undefined) {
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
-        const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
-
+        const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-        const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
-            label != null ? label : "Selected Marker";
-
         const color =  isDefined(properties.color) ? Color.fromCssColorString(properties.color) : Color.YELLOW;
 
         let lonLatAlt = [0, 0, 0];
@@ -445,11 +431,11 @@ class CesiumView extends MapView {
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
                 scale: 1.0,
                 imageSubRegion: undefined,
-                color: color,
+                color: undefined,
                 width: undefined,
                 height: undefined,
                 translucencyByDistance: undefined,
-                sizeInMeters: false,
+                sizeInMeters: undefined,
                 distanceDisplayCondition: undefined
             }
         } else {
@@ -519,7 +505,6 @@ class CesiumView extends MapView {
         }
 
         const entityOpts = {
-            name: label,
             description: properties.description,
             position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
             orientation: orientation,
@@ -539,12 +524,10 @@ class CesiumView extends MapView {
         } else {
             // update only properties
             entity.billboard = billboardOpts && {...billboardOpts} || undefined;
-
             entity.model = modelOpts && {...modelOpts} || undefined;
-
             entity.label =  labelOpts && {...labelOpts} || undefined;
 
-            entity.name = entityOpts.name;
+            entity.name = label;
             entity.position = entityOpts.position;
             entity.description = entityOpts.description;
 
