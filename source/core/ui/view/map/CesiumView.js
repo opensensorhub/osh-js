@@ -18,7 +18,6 @@
 import {isDefined, randomUUID} from "../../../utils/Utils.js";
 
 import {
-    when,
     Cartographic,
     Cartesian3,
     Cartesian2,
@@ -48,15 +47,17 @@ import {
     Ellipsoid,
     EncodedCartesian3,
     ScreenSpaceEventType,
-    CallbackProperty,
-    ColorGeometryInstanceAttribute,
-    Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive,
+    PolygonHierarchy,
+    GroundPrimitive,
     PolylineCollection,
     PrimitiveCollection,
     EllipseGeometry,
     CoplanarPolygonGeometry,
-    CoplanarPolygonOutlineGeometry,
-    VertexFormat
+    VertexFormat,
+    PerspectiveFrustum,
+    FrustumGeometry,
+    Quaternion,
+    ColorGeometryInstanceAttribute
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -106,7 +107,7 @@ class CesiumView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon'],
+            supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustum'],
             ...properties
         });
 
@@ -120,6 +121,16 @@ class CesiumView extends MapView {
         this.captureCanvas = document.createElement('canvas');
         this.captureCanvas.width = 640;
         this.captureCanvas.height = 480;
+
+        // for frustum
+        this.tmpHPR = new HeadingPitchRoll();
+        this.nedQuat = new Quaternion();
+        this.platformQuat = new Quaternion(0,0,0,1);
+        this.sensorQuat = new Quaternion(0,0,0,1);
+        this.camQuat = Quaternion.fromRotationMatrix(Matrix3.fromRowMajorArray(
+            [0, 0, 1,
+                1, 0, 0,
+                0, 1, 0])); // frustum is along Z
     }
 
     /**
@@ -918,6 +929,91 @@ class CesiumView extends MapView {
         this.addPolygonToLayer(props, this.addCoPlanarPolygon(props));
     }
 
+    updateFrustum(props) {
+        if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range)
+            || !isDefined(props.sensorOrientation) || !isDefined(props.platformOrientation)) {
+            return;
+        }
+        let frustumPrimitiveCollection = this.getFrustum(props);
+        if (isDefined(frustumPrimitiveCollection)) {
+            frustumPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
+        }
+
+        this.addFrustumToLayer(props, this.addFrustum(props));
+    }
+
+    addFrustum(properties) {
+        // bind the object to the callback property
+        const id = properties.id + "$" + properties.frustumId;
+
+        // NED rotation
+        const origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
+        Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
+
+        // platform attitude w/r NED
+        // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
+        const platformHPR = properties.platformOrientation;
+        HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
+        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
+
+        // sensor orientation w/r platform
+        const sensorYPR = properties.sensorOrientation;
+        HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
+        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
+
+        // compute combined transform
+        // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
+        Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
+        Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
+        const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+
+        const frustum = new PerspectiveFrustum({
+            fov : Math.toRadians(properties.fov),
+            aspectRatio : 4 / 3,
+            near : 1.0,
+            far : properties.range
+        });
+
+        const frustumInstance = new GeometryInstance({
+            geometry: new FrustumGeometry({
+                frustum : frustum,
+                origin : origin,
+                orientation : quat,
+                vertexFormat : VertexFormat.POSITION_ONLY
+            }),
+            id: id,
+        });
+
+        const frustumPrimitive = new Primitive({
+            geometryInstances : frustumInstance,
+            appearance : new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Color',
+                        uniforms: {
+                            color:  Color.fromCssColorString(properties.color).withAlpha(properties.opacity)
+                        }
+                    }
+                }),
+            }),
+            asynchronous: false,
+            show: properties.visible
+        });
+
+        const collection = new PrimitiveCollection();
+        collection.add(frustumPrimitive);
+        this.viewer.scene.primitives.add(collection);
+        return collection;
+    }
+
+    removeFrustumFromLayer(frustumPrimitiveCollection) {
+        if (isDefined(frustumPrimitiveCollection)) {
+            frustumPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
+        }
+    }
+
     /**
      * Abstract method to remove a polygon from its corresponding layer.
      * This is library dependent.
@@ -938,6 +1034,11 @@ class CesiumView extends MapView {
         if (altitude === 'undefined' || altitude <= 0)
             altitude = 0.1;
         return altitude;
+    }
+
+    panToLayer(layer) {
+        let marker = this.getMarker(layer.props);
+        this.viewer.zoomTo(marker, new HeadingPitchRange(Math.toRadians(0),Math.toRadians(-90),2000));
     }
 
     /**

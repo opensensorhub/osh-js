@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import CustomCesiumView from "../views/CustomCesiumView";
+  import CesiumView from "osh-js/core/ui/view/map/CesiumView";
 
   window.CESIUM_BASE_URL = './';
   import {EllipsoidTerrainProvider,Matrix3,Cartesian3,Cartesian2,Ion} from "cesium";
@@ -14,8 +14,8 @@
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
   import EllipseLayer from "osh-js/core/ui/layer/EllipseLayer.js";
   import PolygonLayer from "osh-js/core/ui/layer/PolygonLayer";
-  import FrustumLayer from "../views/FrustumLayer";
-  import {isDefined} from "../../../../source/core/utils/Utils";
+  import FrustumLayer from "osh-js/core/ui/layer/FrustumLayer";
+  import {isDefined} from "osh-js/core/utils/Utils";
 
 
   const altitudeOffset = -193;
@@ -213,8 +213,8 @@
               return  that.$store.state.ui.fov; // link state application to
             }
           },
-          color: 'rgba(255,183,183,0.4)',
-          opacity: 0.5,
+          color: 'rgba(255,246,246,0.24)',
+          opacity: 0.25,
         });
       },
       createTargetPointMarkerLayer() {
@@ -301,7 +301,7 @@
         let biologicalSensorMarkersRadiusLayer =  this.createBiologicalSensorMarkersRadiusLayer();
 
         // create Cesium view
-        let cesiumView = new CustomCesiumView({
+        let cesiumView = new CesiumView({
           container: "cesium-container",
           layers: [
             dronePointMarkerLayer,
