@@ -59,7 +59,10 @@ import {
     InfoBox,
     Entity,
     Quaternion,
-    ColorBlendMode
+    ColorBlendMode,
+    PerspectiveFrustum,
+    FrustumGeometry,
+    VertexFormat
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -123,6 +126,16 @@ class CesiumView extends MapView {
         this.captureCanvas = document.createElement('canvas');
         this.captureCanvas.width = 640;
         this.captureCanvas.height = 480;
+
+        // for frustum
+        this.tmpHPR = new HeadingPitchRoll();
+        this.nedQuat = new Quaternion();
+        this.platformQuat = new Quaternion(0,0,0,1);
+        this.sensorQuat = new Quaternion(0,0,0,1);
+        this.camQuat = Quaternion.fromRotationMatrix(Matrix3.fromRowMajorArray(
+            [0, 0, 1,
+                1, 0, 0,
+                0, 1, 0])); // frustum is along Z
     }
 
     //---------- MAP SETUP
