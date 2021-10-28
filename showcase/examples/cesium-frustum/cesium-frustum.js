@@ -145,9 +145,10 @@ const droneMarkerLayer = new PointMarkerLayer({
             };
         }
     },
-    color: 'rgba(234,252,255,0.35)',
+    color: 'rgba(129,137,145,0.8)',
     icon: "./models/predator2.glb",
-    iconScale: 0.1
+    iconScale: 0.1,
+    opacity: 0.2
 });
 
 // create Cesium view
@@ -161,7 +162,7 @@ let cesiumView = new CesiumView({
 
 cesiumView.viewer.scene.globe.depthTestAgainstTerrain = true;
 cesiumView.viewer.camera.setView({
-    destination: new Cartesian3(305721.4585559864, -5239510.338378854, 3615622.5459225853),
+    destination: new Cartesian3(305721.4585559864, -5239510.338378854, 3619622.5459225853),
     orientation: {
         heading: 3.3910351920692143,
         pitch: -0.35343571662519757,
