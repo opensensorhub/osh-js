@@ -236,7 +236,7 @@ class CesiumView extends MapView {
                 //     featureId = pickedFeature.id._id;
                 // } else {
                 //     is primitive
-                    // featureId = pickedFeature._id;
+                // featureId = pickedFeature._id;
                 // }
                 featureId = entity && entity._id || primitive && primitive._id;
 
@@ -618,7 +618,7 @@ class CesiumView extends MapView {
             id: id,
         });
 
-        const ellipsePrimitive = new Primitive({
+        const ellipsePrimitive = new GroundPrimitive({
             geometryInstances : ellipseInstance,
             appearance : new MaterialAppearance({
                 material: new Material({
@@ -737,7 +737,7 @@ class CesiumView extends MapView {
      * @returns {PrimitiveCollection}
      */
     addPolygon(properties) {
-        // bind the object to the callback property
+// bind the object to the callback property
         const id = properties.id + "$" + properties.polygonId;
         // return this.viewer.entities.add(polygonObj);
         const polygonInstance = new GeometryInstance({
@@ -750,7 +750,7 @@ class CesiumView extends MapView {
             id: id,
         });
 
-        const polygonPrimitive = new Primitive({
+        const polygonPrimitive = new GroundPrimitive({
             geometryInstances : polygonInstance,
             appearance : new MaterialAppearance({
                 material: new Material({
@@ -780,6 +780,7 @@ class CesiumView extends MapView {
                     }
                 }
             }),
+            show: properties.visible
         });
 
         const collection = new PrimitiveCollection();
@@ -904,11 +905,10 @@ class CesiumView extends MapView {
      * Updates the image draping associated to the layer.
      * @param {ImageDrapingLayer.props} props - The layer properties allowing the update of the image draping
      */
-    updateDrapedImage(props) {
+    async updateDrapedImage(props) {
         if (!isDefined(props.platformLocation)) {
             return;
         }
-
         const llaPos = props.platformLocation;
         const DTR = Math.PI / 180;
         const attitude = props.platformOrientation;
@@ -966,9 +966,13 @@ class CesiumView extends MapView {
                 ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
                 imgSrc = this.captureCanvas;
             }
-
             const encCamPos = EncodedCartesian3.fromCartesian(camPos);
             const appearance = new MaterialAppearance({
+                renderState: {
+                    depthTest: {
+                        enabled: false
+                    }
+                },
                 material: new Material({
                     fabric: {
                         type: 'Image',
@@ -991,33 +995,33 @@ class CesiumView extends MapView {
                 if (this.imageDrapingPrimitive === null)
                     this.imageDrapingPrimitive = {};
 
-                const promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-                const that = this;
-                when(promise, function (updatedPositions) {
-                    //console.log(updatedPositions[0]);
-                    var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Primitive({
-                        geometryInstances: new GeometryInstance({
-                            geometry: new RectangleGeometry({
-                                rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
-                                height: updatedPositions[0].height,
-                                extrudedHeight: llaPos.z - 1
-                            })
-                        }),
-                        appearance: appearance
-                    }));
+                const updatedPositions = await sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+                var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
+                    geometryInstances: new GeometryInstance({
+                        geometry: new RectangleGeometry({
+                            rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
+                            height: updatedPositions[0].height,
+                            extrudedHeight: llaPos.z - 1
+                        })
+                    }),
+                    appearance: appearance,
+                    show: props.visible
+                }));
 
-                    if (!snapshot)
-                        that.imageDrapingPrimitive = newImageDrapingPrimitive;
+                if (!snapshot)
+                    this.imageDrapingPrimitive = newImageDrapingPrimitive;
 
-                    that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
-                    that.imageDrapingPrimitiveReady = true;
-                });
+                this.viewer.scene.primitives.raiseToTop(this.imageDrapingPrimitive);
+                this.imageDrapingPrimitiveReady = true;
 
             } else if (this.imageDrapingPrimitiveReady) {
                 this.imageDrapingPrimitive.appearance = appearance;
             }
         }
 
+        if(isDefined(this.imageDrapingPrimitive)) {
+            this.imageDrapingPrimitive.show = props.visible;
+        }
         this.frameCount++;
     }
 
