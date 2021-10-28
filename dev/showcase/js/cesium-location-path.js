@@ -16,7 +16,7 @@ let gpsDataSource = new SosGetResultJson('android-GPS', {
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     startTime: '2015-02-16T07:58:30Z',
     endTime: '2015-02-16T08:09:00Z',
-    replaySpeed: 2
+    replaySpeed: 3
 });
 
 // style it with a moving point marker
@@ -24,13 +24,21 @@ let pointMarker = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
         x: rec.location.lon,
-        y: rec.location.lat
+        y: rec.location.lat,
+        z: rec.location.alt
     }),
     orientation: {
         heading: 0
     },
+    labelOffset: [0, 30],
+    labelColor: '#ffffff',
+    labelSize: 12,
+    label: 'GPS car',
     icon: 'images/car-location.png',
-    iconAnchor: [16, 40]
+    iconAnchor: [16, 40],
+    description: 'Car',
+    getDescription: (d) => `Alt: ${d.location.alt}`,
+    zIndex: 2
 });
 
 // also create a polyline with the last 200 points of the track
@@ -46,7 +54,8 @@ let polyline = new PolylineLayer({
     opacity: .5,
     smoothFactor: 1,
     maxPoints: 200,
-    name: "Android Phone GPS Path"
+    name: "Android Phone GPS Path",
+    zIndex: 0
 });
 
 let ellipse = new EllipseLayer({
@@ -59,14 +68,21 @@ let ellipse = new EllipseLayer({
     color: 'rgba(255,74,22, 0.5)',
     semiMinorAxis: 100,
     semiMajorAxis: 200,
-    name: "Android Phone GPS Path"
+    name: "Android Phone GPS Path",
+    zIndex: 1
 });
 
 // #region snippet_cesium_location_view
 // create Cesium view
 let cesiumView = new CesiumView({
     container: 'cesium-container',
-    layers: [pointMarker, polyline, ellipse],
+    layers: [pointMarker, polyline/*, ellipse*/],
+    autoZoomOnFirstMarker: true,
+    cesiumProps: {
+        viewerProps: {
+            targetFrameRate:10
+        }
+    }
 });
 
 // #endregion snippet_cesium_location_view
