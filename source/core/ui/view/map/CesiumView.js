@@ -170,10 +170,10 @@ class CesiumView extends MapView {
 
         // inits callbacks
         // Get default left click handler for when a feature is not picked on left click
-        this.initPrimitiveCallbackSelection();
+        this.initCallbackEvents();
     }
 
-    initPrimitiveCallbackSelection() {
+    initCallbackEvents() {
         const that = this;
         const infoBoxContainer = document.createElement('div');
         infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
@@ -201,7 +201,6 @@ class CesiumView extends MapView {
 
                 const isEntity = pickedFeature._id instanceof Entity;
                 const featureId =  isEntity ? pickedFeature._id._id : pickedFeature._id;
-                console.log(featureId)
 
                 const layerId = that.getLayerId(featureId);
                 const layer = that.getLayer(layerId);
@@ -213,17 +212,20 @@ class CesiumView extends MapView {
                     that.onMarkerRightClick(layerId, pickedFeature, layer.props, {});
                 } else {
                     // is primitive
-                    if (!isDefined(layer)) {
-                        infoBoxViewModel.showInfo = false;
-                        return;
-                    }
+                    //TODO: support primitive selection using tracking tool
 
-                    infoBoxViewModel.showInfo = true;
-                    infoBoxViewModel.titleText = layer.props.label || layer.props.name;
-                    infoBoxViewModel.description = layer.props.description;
+                    /* if (!isDefined(layer)) {
+                         infoBoxViewModel.showInfo = false;
+                         return;
+                     }
+
+                     infoBoxViewModel.showInfo = true;
+                     infoBoxViewModel.titleText = layer.props.label || layer.props.name;
+                     infoBoxViewModel.description = layer.props.description;
+                 }
+
+                 that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});*/
                 }
-
-                that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});
             }catch (exception) {
                 infoBoxViewModel.showInfo = false;
                 console.error(exception);
