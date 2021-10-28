@@ -54,9 +54,10 @@ import {
     PolylineCollection,
     PrimitiveCollection,
     EllipseGeometry,
-    CoplanarPolygonGeometry,
-    CoplanarPolygonOutlineGeometry,
-    VertexFormat
+    BillboardCollection,
+    LabelCollection,
+    InfoBox,
+    Entity
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -122,174 +123,7 @@ class CesiumView extends MapView {
         this.captureCanvas.height = 480;
     }
 
-    /**
-     * Updates the marker associated to the layer.
-     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
-     */
-    updateMarker(props) {
-
-        // for the first data, we can receive the orientation before the first location point
-        if (!isDefined(props.location)) {
-            return;
-        }
-
-        let marker = this.getMarker(props);
-        if (!isDefined(marker)) {
-            const markerObj = this.addMarker({
-                lat: props.location.y,
-                lon: props.location.x,
-                alt: props.location.z,
-                orientation: props.orientation,
-                icon: props.icon,
-                iconAnchor: props.iconAnchor,
-                label: props.label,
-                labelColor: props.labelColor,
-                labelSize: props.labelSize,
-                labelOffset: props.labelOffset,
-                name: props.name,
-                description: props.description,
-                id: props.id + "$" + props.markerId,
-                zIndex: props.zIndex
-            });
-
-            this.addMarkerToLayer(props, markerObj);
-        }
-
-        this.updateMapMarker(props, {
-            lat: props.location.y,
-            lon: props.location.x,
-            alt: props.location.z,
-            orientation: props.orientation,
-            icon: props.icon,
-            label: props.label,
-            labelColor: props.labelColor,
-            labelSize: props.labelSize,
-            defaultToTerrainElevation: props.defaultToTerrainElevation
-        });
-    }
-
-    /**
-     * Updates the image draping associated to the layer.
-     * @param {ImageDrapingLayer.props} props - The layer properties allowing the update of the image draping
-     */
-    updateDrapedImage(props) {
-        if (!isDefined(props.platformLocation)) {
-            return;
-        }
-
-        const llaPos = props.platformLocation;
-        const DTR = Math.PI / 180;
-        const attitude = props.platformOrientation;
-        const gimbal = props.gimbalOrientation;
-
-        ///////////////////////////////////////////////////////////////////////////////////
-        // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
-        ///////////////////////////////////////////////////////////////////////////////////
-        const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
-        const nedTransform = Transforms.northEastDownToFixedFrame(camPos);
-        const camRot = new Matrix3();
-        Matrix4.getMatrix3(nedTransform, camRot);
-        const rotM = new Matrix3();
-
-        if (isDefined(attitude)) {
-            // UAV heading, pitch, roll (given in NED frame)
-            const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
-            Matrix3.multiply(camRot, uavHeading, camRot);
-            const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
-            Matrix3.multiply(camRot, uavPitch, camRot);
-            const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
-            Matrix3.multiply(camRot, uavRoll, camRot);
-        }
-
-        // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
-        if (isDefined(gimbal)) {
-            const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalYaw, camRot);
-            const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalRoll, camRot);
-            const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalPitch, camRot);
-        }
-
-        // transform to camera frame
-        var img2cam = Matrix3.fromRotationZ(90 * DTR, rotM);
-        Matrix3.multiply(camRot, img2cam, camRot);
-
-        ////////////////////////////////////////////////////////////////////////////////////
-
-        const camProj = props.cameraModel.camProj;
-        const camDistR = props.cameraModel.camDistR;
-        const camDistT = props.cameraModel.camDistT;
-
-        let imgSrc = props.imageSrc;
-
-        {
-            let snapshot = false;
-            if (props.getSnapshot !== null) {
-                snapshot = props.getSnapshot();
-            }
-            // snapshot
-            if (props.snapshot) {
-                var ctx = this.captureCanvas.getContext('2d');
-                ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
-                imgSrc = this.captureCanvas;
-            }
-
-            const encCamPos = EncodedCartesian3.fromCartesian(camPos);
-            const appearance = new MaterialAppearance({
-                material: new Material({
-                    fabric: {
-                        type: 'Image',
-                        uniforms: {
-                            image: imgSrc,
-                            camPosHigh: encCamPos.high,
-                            camPosLow: encCamPos.low,
-                            camAtt: Matrix3.toArray(Matrix3.transpose(camRot, new Matrix3())),
-                            camProj: Matrix3.toArray(camProj),
-                            camDistR: camDistR,
-                            camDistT: camDistT
-                        }
-                    }
-                }),
-                vertexShaderSource: ImageDrapingVS,
-                fragmentShaderSource: ImageDrapingFS
-            });
-
-            if (this.imageDrapingPrimitive === null || snapshot) {
-                if (this.imageDrapingPrimitive === null)
-                    this.imageDrapingPrimitive = {};
-
-                const promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-                const that = this;
-                when(promise, function (updatedPositions) {
-                    //console.log(updatedPositions[0]);
-                    var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Primitive({
-                        geometryInstances: new GeometryInstance({
-                            geometry: new RectangleGeometry({
-                                rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
-                                height: updatedPositions[0].height,
-                                extrudedHeight: llaPos.z - 1
-                            })
-                        }),
-                        appearance: appearance
-                    }));
-
-                    if (!snapshot)
-                        that.imageDrapingPrimitive = newImageDrapingPrimitive;
-
-                    that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
-                    that.imageDrapingPrimitiveReady = true;
-                });
-
-            } else if (this.imageDrapingPrimitiveReady) {
-                this.imageDrapingPrimitive.appearance = appearance;
-            }
-        }
-
-        this.frameCount++;
-    }
-
-    //---------- MAP SETUP --------------//
+    //---------- MAP SETUP
     beforeAddingItems(options) {
         this.first = true;
 
@@ -328,32 +162,74 @@ class CesiumView extends MapView {
         this.viewer.scene.copyGlobeDepth = true;
         this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
 
+        this.billboardCollection = new BillboardCollection();
+        this.labelCollection = new LabelCollection();
+
+        this.viewer.scene.primitives.add(this.billboardCollection);
+        this.viewer.scene.primitives.add(this.labelCollection);
+
         // inits callbacks
         // Get default left click handler for when a feature is not picked on left click
-        const that = this;
-        const onClick = (movement) => {
-            // Pick a new feature
-            const pickedFeature = that.viewer.scene.pick(movement.position);
-            if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
-                return;
-            }
-            const mId = that.getMarkerId(pickedFeature.id.id);
-            if (!isDefined(mId)) {
-                return;
-            }
-            const sId = that.getLayerId(pickedFeature.id.id);
-            if (!isDefined(sId)) {
-                return;
-            }
-            const layer = that.getLayer(sId);
-            if (!isDefined(layer)) {
-                return;
-            }
+        this.initCallbackEvents();
+    }
 
-            that.viewer.selectedEntity = pickedFeature.id;
-            that.viewer.selectedEntity.name = mId;
-            pickedFeature.pixel = movement.position;
-            that.onMarkerLeftClick(mId, pickedFeature, layer.props, {});
+    initCallbackEvents() {
+        const that = this;
+        const infoBoxContainer = document.createElement('div');
+        infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
+        this.viewer.container.appendChild(infoBoxContainer);
+
+        const infoBox = new InfoBox(infoBoxContainer);
+
+        const infoBoxViewModel = infoBox.viewModel;
+
+        // https://groups.google.com/g/cesium-dev/c/rzLrPY5ERJs/m/VYfUj-fYCgAJ
+        const onClick = (movement) => {
+            try {
+                // Pick a new feature
+                let pickedFeature = that.viewer.scene.pick(movement.position);
+
+                if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
+                    infoBoxViewModel.showInfo = false;
+                    return;
+                }
+
+                // check if collection and get the one of the top
+                if (isDefined(pickedFeature.collection) && pickedFeature.collection.length > 0) {
+                    pickedFeature = pickedFeature.collection.get(pickedFeature.collection.length - 1);
+                }
+
+                const isEntity = pickedFeature._id instanceof Entity;
+                const featureId =  isEntity ? pickedFeature._id._id : pickedFeature._id;
+
+                const layerId = that.getLayerId(featureId);
+                const layer = that.getLayer(layerId);
+
+                if(isEntity) {
+                    that.viewer.selectedEntity = pickedFeature._id;
+                    that.viewer.selectedEntity.name = layer.props.label || layer.props.name;
+                    pickedFeature.pixel = movement.position;
+                    that.onMarkerRightClick(layerId, pickedFeature, layer.props, {});
+                } else {
+                    // is primitive
+                    //TODO: support primitive selection using tracking tool
+
+                    /* if (!isDefined(layer)) {
+                         infoBoxViewModel.showInfo = false;
+                         return;
+                     }
+
+                     infoBoxViewModel.showInfo = true;
+                     infoBoxViewModel.titleText = layer.props.label || layer.props.name;
+                     infoBoxViewModel.description = layer.props.description;
+                 }
+
+                 that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});*/
+                }
+            }catch (exception) {
+                infoBoxViewModel.showInfo = false;
+                console.error(exception);
+            }
         };
 
         const onRightClick = (movement) => {
@@ -405,124 +281,230 @@ class CesiumView extends MapView {
         this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onRightClick, ScreenSpaceEventType.RIGHT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
+    }
+    /**
+     *
+     * @private
+     */
+    getGroundAltitude(lat, lon) {
+        var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
+        var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
 
+        if (altitude === 'undefined' || altitude <= 0)
+            altitude = 0.1;
+        return altitude;
     }
 
     /**
-     * Abstract method to remove a marker from its corresponding layer.
-     * This is library dependent.
-     * @param {Object} marker - The Map marker object
+     *
+     * @param type
+     * @param url
+     * @param layers
+     * @param imageFormat
+     * @param options
+     * @return {*}
      */
+    addImageryProvider(type, url, layers, imageFormat, options) {
+        let minLOD = 0;
+        let maxLOD;
+
+        if (options.hasOwnProperty('minLOD')) {
+            minLOD = options.minLOD;
+        }
+        if (options.hasOwnProperty('maxLOD')) {
+            maxLOD = options.maxLOD;
+        }
+
+        let imageryProvider;
+        if (type === 'wms') {
+            imageryProvider = new WebMapServiceImageryProvider({
+                url: url,
+                layers: layers,
+                minimumLevel: minLOD,
+                maximumLevel: maxLOD,
+                parameters: {
+                    transparent: 'true',
+                    format: 'image/' + imageFormat
+                }
+            });
+        }
+        // imageryProvider.alpha = 0.5;
+        this.viewer.imageryLayers.addImageryProvider(imageryProvider);
+        return imageryProvider;
+    }
+
+    // ----------------------------------------------------//
+    // ---------------------- LAYERS ---------------------//
+    // --------------------------------------------------//
+
+    // ----- MARKER
+    addMarker(properties, entity= undefined) {
+        const id = properties.id + "$" + properties.markerId;
+        let imgIcon = properties.icon;
+        const isModel = imgIcon.endsWith(".glb");
+        const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
+
+        const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
+
+        const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
+            label != null ? label : "Selected Marker";
+        const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
+            Color.fromCssColorString(properties.color) : Color.YELLOW;
+
+        let lonLatAlt = [0, 0, 0];
+
+        if (isDefined(properties.location)) {
+            lonLatAlt = [properties.location.x, properties.location.y, properties.location.z || 0];
+        }
+
+        // get ground altitude if non specified
+        if (!isDefined(properties.location.z) || isNaN(properties.location.z)) {
+            lonLatAlt[2] = this.getGroundAltitude(properties.location.x, properties.location.y);
+            if (lonLatAlt[2] > 1)
+                lonLatAlt[2] += 0.3;
+        }
+
+        let rot = 0;
+        if (isDefined(properties.orientation) && isDefined(properties.orientation.heading)) {
+            const heading = properties.orientation.heading;
+            // const roll = 0.0;
+            rot = Math.toRadians(heading);
+        }
+
+        // cartesian position
+        let position = Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]);
+
+        let orientation = undefined;
+        if(isDefined(properties.orientation) && isDefined(properties.orientation.heading)) {
+            const DTR = Math.PI / 180.0;
+            const heading = properties.orientation.heading;
+            const pitch = 0.0;
+            orientation = Transforms.headingPitchRollQuaternion(position, new HeadingPitchRoll(heading * DTR, /*roll*DTR*/0.0, pitch * DTR)); // inverse roll and pitch to go from NED to ENU;
+        }
+
+        const billboardOpts = {
+            id: undefined,
+            name: undefined,
+            description: undefined,
+            position: undefined,
+            image: imgIcon,
+            scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+            alignedAxis: (this.viewer.camera.pitch < -Math.PI / 4)? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
+            rotation: rot,
+            horizontalOrigin: HorizontalOrigin.LEFT,
+            verticalOrigin: VerticalOrigin.TOP,
+            pixelOffset: iconOffset,
+            pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
+            eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
+            show: properties.visible,
+            //default values
+            heightReference : properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
+            scale : 1.0,
+            imageSubRegion : undefined,
+            color : undefined,
+            width : undefined,
+            height : undefined,
+            translucencyByDistance : undefined,
+            sizeInMeters : false,
+            distanceDisplayCondition : undefined
+        }
+
+        // Add Label primitive
+        const labelColor = properties.labelColor || '#FFFFFF';
+        const labelSize = properties.labelSize || 16;
+        const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+
+        const labelOpts = {
+            backgroundColor: undefined,
+            backgroundPadding: undefined,
+            disableDepthTestDistance: undefined,
+            distanceDisplayCondition: undefined,
+            eyeOffset: undefined,
+            fillColor: Color.fromCssColorString(labelColor),
+            font: labelSize + 'px sans-serif',
+            heightReference: undefined,
+            horizontalOrigin: HorizontalOrigin.CENTER,
+            id: undefined,
+            outlineColor: undefined,
+            outlineWidth: undefined,
+            pixelOffset: labelOffset,
+            pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+            position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
+            scale: undefined,
+            scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
+            show: undefined,
+            showBackground: undefined,
+            style: undefined,
+            text: label,
+            totalScale: undefined,
+            translucencyByDistance: undefined,
+            verticalOrigin: VerticalOrigin.TOP,
+        }
+
+        // zoom map if first marker update
+        if (this.first) {
+            this.viewer.camera.flyTo({
+                destination : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], 1000),
+                duration : 1.0
+            });
+            this.first = false;
+        }
+
+        const entityOpts = {
+            name: name,
+            description: properties.description,
+            position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
+            orientation: orientation,
+            id: id,
+            billboard: billboardOpts,
+            label: labelOpts
+        };
+
+        if(!isDefined(entity)) {
+            const entity = this.viewer.entities.add(entityOpts)
+
+            if (properties.selected) {
+                this.viewer.selectedEntity = entity;
+            }
+            return entity;
+        } else {
+            // update only properties
+            entity.billboard = {
+                ...billboardOpts
+            };
+
+            entity.label = {
+                ...label
+            };
+            entity.name = entityOpts.name;
+            entity.position = entityOpts.position;
+            entity.description = entityOpts.description;
+
+            return entity;
+        }
+    }
+
+    updateMarker(props) {
+        if (!isDefined(props.location)) {
+            return;
+        }
+
+        let marker = this.getMarker(props);
+
+        // create one collection for marker entities
+        // /!\ If we remove the marker every time such as Primitive, we loose selection tracking!
+        // if (isDefined(marker)) {
+        //     isSelected = this.viewer.selectedEntity === marker;
+            // this.removeMarkerFromLayer(marker);
+        // }
+        this.addMarkerToLayer(props, this.addMarker(props,marker));
+    }
+
     removeMarkerFromLayer(marker) {
         this.viewer.entities.remove(marker);
     }
 
-    /**
-     * Add a marker to the map.
-     * @param {Object} properties
-     * @param {Number} properties.lon
-     * @param {Number} properties.lat
-     * @param {String} properties.icon - the icon path
-     * @param {String} properties.label - label of the tooltip
-     * @param {String} properties.description - description of the marker to display into the tooltip
-     * @param {Object} properties.orientation.heading - orientation of the icon in degree
-     * @return {Entity} the new created entity
-     */
-    addMarker(properties) {
-
-        let imgIcon = 'images/cameralook.png';
-        if (properties.icon !== null) {
-            imgIcon = properties.icon;
-        }
-        const isModel = imgIcon.endsWith(".glb");
-        const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : null;
-        const fillColor = properties.labelColor || '#FFFFFF';
-        const labelSize = properties.labelSize || 16;
-        const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-        const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
-
-        const name = properties.hasOwnProperty("name") && properties.name != null ? properties.name :
-            label != null ? label : "Selected Marker";
-        const desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : null;
-        const color = properties.hasOwnProperty("color") && isDefined(properties.color) ?
-            Color.fromCssColorString(properties.color) : Color.YELLOW;
-
-        var geom;
-        let lonLatAlt = [0, 0, 0];
-        if (isDefined(properties.location)) {
-            lonLatAlt = [properties.location.x, properties.location.y, properties.location.z || 0];
-        }
-        if (isModel) {
-            geom = {
-                name: name,
-                description: desc,
-                position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
-                label: {
-                    text: label,
-                    font: labelSize + 'px sans-serif',
-                    scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
-                    fillColor: Color.fromCssColorString(fillColor),
-                    horizontalOrigin: HorizontalOrigin.CENTER,
-                    verticalOrigin: VerticalOrigin.TOP,
-                    pixelOffset: labelOffset
-                },
-                model: {
-                    uri: imgIcon,
-                    scale: 4,
-                    modelM: Matrix4.IDENTITY.clone(),
-                    color: color
-                }
-            };
-        } else {
-            let rot = 0;
-            if (isDefined(properties.orientation) && isDefined(properties.orientation.heading)) {
-                rot = properties.orientation.heading;
-            }
-
-            geom = {
-                name: name,
-                description: desc,
-                position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
-                label: {
-                    text: label,
-                    font: labelSize + 'px sans-serif',
-                    scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
-                    fillColor: Color.fromCssColorString(fillColor),
-                    horizontalOrigin: HorizontalOrigin.CENTER,
-                    verticalOrigin: VerticalOrigin.TOP,
-                    pixelOffset: labelOffset,
-                    pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0)
-                },
-                billboard: {
-                    image: imgIcon,
-                    scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-                    alignedAxis: Cartesian3.UNIT_Z, // Z means rotation is from north
-                    rotation: Math.toRadians(rot),
-                    horizontalOrigin: HorizontalOrigin.LEFT,
-                    verticalOrigin: VerticalOrigin.TOP,
-                    pixelOffset: iconOffset,
-                    pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-                    eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex) // make sure icon always displays in front
-                }
-            };
-        }
-
-        if (properties.hasOwnProperty('description')) {
-            geom.description = properties.description;
-        }
-
-        geom.id = properties.id;
-        return this.viewer.entities.add(geom);
-    }
-
-    /**
-     * Removes an ellipse
-     * @param ellipse The ellipse to remove
-     */
-    removeEllipseFromLayer(ellipse) {
-        this.viewer.scene.primitives.remove(ellipse);
-    }
-
+    // ----- ELLIPSE
     /**
      * Add an Ellipse to the view
      * @param properties
@@ -611,20 +593,20 @@ class CesiumView extends MapView {
         }
         const ellipse = this.getEllipse(props);
         if (isDefined(ellipse)) {
-            this.viewer.scene.primitives.remove(ellipse);
+            this.removeEllipseFromLayer(ellipse);
         }
         this.addEllipseToLayer(props, this.addEllipse(props));
     }
 
     /**
-     * Abstract method to remove a polyline from its corresponding layer.
-     * This is library dependent.
-     * @param {Object} polyline - The Map marker object
+     * Removes an ellipse
+     * @param ellipse The ellipse to remove
      */
-    removePolylineFromLayer(polyline) {
-        this.viewer.scene.primitives.remove(polyline);
+    removeEllipseFromLayer(ellipse) {
+        this.viewer.scene.primitives.remove(ellipse);
     }
 
+    // ----- POLYLINE
     /**
      * Add a polyline to the map.
      * @param {Object} properties
@@ -664,103 +646,21 @@ class CesiumView extends MapView {
         }
         const polyline = this.getPolyline(props);
         if (isDefined(polyline)) {
-            this.viewer.scene.primitives.remove(polyline);
+            this.removePolylineFromLayer(polyline);
         }
         this.addPolylineToLayer(props, this.addPolyline(props));
     }
 
     /**
-     * Updates the marker associated to the layer.
-     * @param {Layer} layer - The layer allowing the update of the marker
-     * @param {Object} properties -
-     * @param {Object} properties.lon -
-     * @param {Object} properties.lat -
-     * @param {Object} properties.alt -
-     * @param {Object} properties.orientation -
-     * @param {Object} properties.icon -
-     * @param {Object} properties.defaultToTerrainElevation -
-     * @param {Object} properties.selected -
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependent.
+     * @param {Object} polyline - The Map marker object
      */
-    updateMapMarker(layer, properties) {
-        const lon = properties.lon;
-        const lat = properties.lat;
-        let alt = properties.alt;
-        const orient = properties.orientation;
-        const labelColor = properties.labelColor;
-        const imgIcon = properties.icon;
-        var label = properties.label;
-        let defaultToTerrainElevation = properties.defaultToTerrainElevation;
-
-        if (!isNaN(lon) && !isNaN(lat)) {
-            let marker = this.getMarker(layer);
-
-            // get ground altitude if non specified
-            if (!isDefined(alt) || isNaN(alt)) {
-                alt = this.getGroundAltitude(lat, lon);
-                if (alt > 1)
-                    alt += 0.3;
-            }
-
-            // update position
-            const pos = Cartesian3.fromDegrees(lon, lat, alt);
-            marker.position = pos;
-
-            // update orientation
-            if (isDefined(orient)) {
-                const DTR = Math.PI / 180.0;
-                const heading = orient.heading;
-                const pitch = 0.0;
-                // const roll = 0.0;
-                marker.orientation = Transforms.headingPitchRollQuaternion(pos, new HeadingPitchRoll(heading * DTR, /*roll*DTR*/0.0, pitch * DTR)); // inverse roll and pitch to go from NED to ENU;
-                if (marker.billboard)
-                    marker.billboard.rotation = Math.toRadians(heading);
-            }
-
-            if (isDefined(label)) {
-                marker.label.text = label;
-            }
-
-            if (isDefined(labelColor)) {
-                marker.label.fillColor = Color.fromCssColorString(labelColor);
-            }
-            // update icon or model
-            if (marker.billboard) {
-                if (defaultToTerrainElevation) {
-                    marker.billboard.heightReference = HeightReference.CLAMP_TO_GROUND;
-                }
-                marker.billboard.image = imgIcon;
-            } else if (marker.model) {
-                if (defaultToTerrainElevation) {
-                    marker.model.heightReference = HeightReference.CLAMP_TO_GROUND;
-                }
-                marker.model.uri = imgIcon;
-            }
-
-            // update label
-            //marker.label = properties.label;
-            //if (properties.labelColor != null)
-            //	marker.label.fillColor = Cesium.Color.fromCssColorString(properties.labelColor);
-
-            // update billboard aligned axis depending on camera angle
-            if (marker.billboard) {
-                if (this.viewer.camera.pitch < -Math.PI / 4)
-                    marker.billboard.alignedAxis = Cartesian3.UNIT_Z;
-                else
-                    marker.billboard.alignedAxis = Cartesian3.ZERO;
-            }
-            // zoom map if first marker update
-            if (this.first) {
-                this.viewer.zoomTo(this.viewer.entities, new HeadingPitchRange(Math.toRadians(0), Math.toRadians(-90), 2000));
-                this.first = false;
-            }
-
-            if (properties.selected) {
-                this.viewer.selectedEntity = marker;
-            }
-        }
+    removePolylineFromLayer(polyline) {
+        this.viewer.scene.primitives.remove(polyline);
     }
 
-
+    // ----- POLYGON
     /**
      * Adds a polygon to the polygon layer
      * @param {Object} properties the properties to use in constructing the polygon
@@ -898,8 +798,7 @@ class CesiumView extends MapView {
     updatePolygon(props) {
         let polygonPrimitiveCollection = this.getPolygon(props);
         if (isDefined(polygonPrimitiveCollection)) {
-            polygonPrimitiveCollection.removeAll();
-            this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
+            this.removePolygonFromLayer(polygonPrimitiveCollection);
         }
         this.addPolygonToLayer(props, this.addPolygon(props));
     }
@@ -923,59 +822,131 @@ class CesiumView extends MapView {
      * This is library dependent.
      * @param {Object} polygon - The Map polygon object
      */
-    removePolygonFromLayer(polygon) {
-        this.viewer.scene.primitives.remove(polygon);
+    removePolygonFromLayer(polygonPrimitiveCollection) {
+        polygonPrimitiveCollection.removeAll();
+        this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
     }
 
+    // ----- IMAGE_DRAPING
     /**
-     *
-     * @private
+     * Updates the image draping associated to the layer.
+     * @param {ImageDrapingLayer.props} props - The layer properties allowing the update of the image draping
      */
-    getGroundAltitude(lat, lon) {
-        var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
-        var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
-
-        if (altitude === 'undefined' || altitude <= 0)
-            altitude = 0.1;
-        return altitude;
-    }
-
-    /**
-     *
-     * @param type
-     * @param url
-     * @param layers
-     * @param imageFormat
-     * @param options
-     * @return {*}
-     */
-    addImageryProvider(type, url, layers, imageFormat, options) {
-        let minLOD = 0;
-        let maxLOD;
-
-        if (options.hasOwnProperty('minLOD')) {
-            minLOD = options.minLOD;
-        }
-        if (options.hasOwnProperty('maxLOD')) {
-            maxLOD = options.maxLOD;
+    updateDrapedImage(props) {
+        if (!isDefined(props.platformLocation)) {
+            return;
         }
 
-        let imageryProvider;
-        if (type === 'wms') {
-            imageryProvider = new WebMapServiceImageryProvider({
-                url: url,
-                layers: layers,
-                minimumLevel: minLOD,
-                maximumLevel: maxLOD,
-                parameters: {
-                    transparent: 'true',
-                    format: 'image/' + imageFormat
-                }
+        const llaPos = props.platformLocation;
+        const DTR = Math.PI / 180;
+        const attitude = props.platformOrientation;
+        const gimbal = props.gimbalOrientation;
+
+        ///////////////////////////////////////////////////////////////////////////////////
+        // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
+        ///////////////////////////////////////////////////////////////////////////////////
+        const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
+        const nedTransform = Transforms.northEastDownToFixedFrame(camPos);
+        const camRot = new Matrix3();
+        Matrix4.getMatrix3(nedTransform, camRot);
+        const rotM = new Matrix3();
+
+        if (isDefined(attitude)) {
+            // UAV heading, pitch, roll (given in NED frame)
+            const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
+            Matrix3.multiply(camRot, uavHeading, camRot);
+            const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
+            Matrix3.multiply(camRot, uavPitch, camRot);
+            const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
+            Matrix3.multiply(camRot, uavRoll, camRot);
+        }
+
+        // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
+        if (isDefined(gimbal)) {
+            const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
+            Matrix3.multiply(camRot, gimbalYaw, camRot);
+            const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
+            Matrix3.multiply(camRot, gimbalRoll, camRot);
+            const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
+            Matrix3.multiply(camRot, gimbalPitch, camRot);
+        }
+
+        // transform to camera frame
+        var img2cam = Matrix3.fromRotationZ(90 * DTR, rotM);
+        Matrix3.multiply(camRot, img2cam, camRot);
+
+        ////////////////////////////////////////////////////////////////////////////////////
+
+        const camProj = props.cameraModel.camProj;
+        const camDistR = props.cameraModel.camDistR;
+        const camDistT = props.cameraModel.camDistT;
+
+        let imgSrc = props.imageSrc;
+
+        {
+            let snapshot = false;
+            if (props.getSnapshot !== null) {
+                snapshot = props.getSnapshot();
+            }
+            // snapshot
+            if (props.snapshot) {
+                var ctx = this.captureCanvas.getContext('2d');
+                ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
+                imgSrc = this.captureCanvas;
+            }
+
+            const encCamPos = EncodedCartesian3.fromCartesian(camPos);
+            const appearance = new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Image',
+                        uniforms: {
+                            image: imgSrc,
+                            camPosHigh: encCamPos.high,
+                            camPosLow: encCamPos.low,
+                            camAtt: Matrix3.toArray(Matrix3.transpose(camRot, new Matrix3())),
+                            camProj: Matrix3.toArray(camProj),
+                            camDistR: camDistR,
+                            camDistT: camDistT
+                        }
+                    }
+                }),
+                vertexShaderSource: ImageDrapingVS,
+                fragmentShaderSource: ImageDrapingFS
             });
+
+            if (this.imageDrapingPrimitive === null || snapshot) {
+                if (this.imageDrapingPrimitive === null)
+                    this.imageDrapingPrimitive = {};
+
+                const promise = sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+                const that = this;
+                when(promise, function (updatedPositions) {
+                    //console.log(updatedPositions[0]);
+                    var newImageDrapingPrimitive = that.viewer.scene.primitives.add(new Primitive({
+                        geometryInstances: new GeometryInstance({
+                            geometry: new RectangleGeometry({
+                                rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
+                                height: updatedPositions[0].height,
+                                extrudedHeight: llaPos.z - 1
+                            })
+                        }),
+                        appearance: appearance
+                    }));
+
+                    if (!snapshot)
+                        that.imageDrapingPrimitive = newImageDrapingPrimitive;
+
+                    that.viewer.scene.primitives.raiseToTop(that.imageDrapingPrimitive);
+                    that.imageDrapingPrimitiveReady = true;
+                });
+
+            } else if (this.imageDrapingPrimitiveReady) {
+                this.imageDrapingPrimitive.appearance = appearance;
+            }
         }
-        // imageryProvider.alpha = 0.5;
-        this.viewer.imageryLayers.addImageryProvider(imageryProvider);
-        return imageryProvider;
+
+        this.frameCount++;
     }
 }
 
