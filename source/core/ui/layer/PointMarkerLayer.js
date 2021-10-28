@@ -194,6 +194,11 @@ class PointMarkerLayer extends Layer {
 			this.props.zIndex = properties.zIndex;
 		}
 
+		if (hasValue(properties.color)) {
+			assertString(properties.color, "color");
+			this.props.color = properties.color;
+		}
+
 		const that = this;
 
 		// must be first to assign correctly the first location to the right id if it is defined
