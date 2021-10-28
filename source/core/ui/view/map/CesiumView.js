@@ -56,7 +56,8 @@ import {
     EllipseGeometry,
     BillboardCollection,
     LabelCollection,
-    InfoBox
+    InfoBox,
+    Entity
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -198,24 +199,34 @@ class CesiumView extends MapView {
                     pickedFeature = pickedFeature.collection.get(pickedFeature.collection.length - 1);
                 }
 
-                const primitiveId = pickedFeature._id;
+                const isEntity = pickedFeature._id instanceof Entity;
+                const featureId =  isEntity ? pickedFeature._id._id : pickedFeature._id;
+                console.log(featureId)
 
-                const layerId = that.getLayerId(primitiveId);
-
+                const layerId = that.getLayerId(featureId);
                 const layer = that.getLayer(layerId);
 
-                if (!isDefined(layer)) {
-                    infoBoxViewModel.showInfo = false;
-                    return;
-                }
+                if(isEntity) {
+                    that.viewer.selectedEntity = pickedFeature._id;
+                    that.viewer.selectedEntity.name = layer.props.label || layer.props.name;
+                    pickedFeature.pixel = movement.position;
+                    that.onMarkerRightClick(layerId, pickedFeature, layer.props, {});
+                } else {
+                    // is primitive
+                    if (!isDefined(layer)) {
+                        infoBoxViewModel.showInfo = false;
+                        return;
+                    }
 
-                infoBoxViewModel.showInfo = true;
-                infoBoxViewModel.titleText = layer.props.label || layer.props.name;
-                infoBoxViewModel.description = layer.props.description;
+                    infoBoxViewModel.showInfo = true;
+                    infoBoxViewModel.titleText = layer.props.label || layer.props.name;
+                    infoBoxViewModel.description = layer.props.description;
+                }
 
                 that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});
             }catch (exception) {
                 infoBoxViewModel.showInfo = false;
+                console.error(exception);
             }
         };
 
@@ -325,7 +336,7 @@ class CesiumView extends MapView {
     // --------------------------------------------------//
 
     // ----- MARKER
-    addMarker(properties) {
+    addMarker(properties, entity= undefined) {
         const id = properties.id + "$" + properties.markerId;
         let imgIcon = properties.icon;
         const isModel = imgIcon.endsWith(".glb");
@@ -358,11 +369,22 @@ class CesiumView extends MapView {
             rot = Math.toRadians(heading);
         }
 
-        const billboard = {
-            id: id,
-            name: name,
-            description: properties.description,
-            position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
+        // cartesian position
+        let position = Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]);
+
+        let orientation = undefined;
+        if(isDefined(properties.orientation) && isDefined(properties.orientation.heading)) {
+            const DTR = Math.PI / 180.0;
+            const heading = properties.orientation.heading;
+            const pitch = 0.0;
+            orientation = Transforms.headingPitchRollQuaternion(position, new HeadingPitchRoll(heading * DTR, /*roll*DTR*/0.0, pitch * DTR)); // inverse roll and pitch to go from NED to ENU;
+        }
+
+        const billboardOpts = {
+            id: undefined,
+            name: undefined,
+            description: undefined,
+            position: undefined,
             image: imgIcon,
             scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
             alignedAxis: (this.viewer.camera.pitch < -Math.PI / 4)? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
@@ -384,8 +406,6 @@ class CesiumView extends MapView {
             sizeInMeters : false,
             distanceDisplayCondition : undefined
         }
-
-        const billboardPrimitive = this.billboardCollection.add(billboard);
 
         // Add Label primitive
         const labelColor = properties.labelColor || '#FFFFFF';
@@ -419,8 +439,6 @@ class CesiumView extends MapView {
             verticalOrigin: VerticalOrigin.TOP,
         }
 
-        const labelPrimitive = this.labelCollection.add(labelOpts);
-
         // zoom map if first marker update
         if (this.first) {
             this.viewer.camera.flyTo({
@@ -430,10 +448,38 @@ class CesiumView extends MapView {
             this.first = false;
         }
 
-        return {
-            billboard: billboardPrimitive,
-            label: labelPrimitive
+        const entityOpts = {
+            name: name,
+            description: properties.description,
+            position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
+            orientation: orientation,
+            id: id,
+            billboard: billboardOpts,
+            label: labelOpts
         };
+
+        if(!isDefined(entity)) {
+            const entity = this.viewer.entities.add(entityOpts)
+
+            if (properties.selected) {
+                this.viewer.selectedEntity = entity;
+            }
+            return entity;
+        } else {
+            // update only properties
+            entity.billboard = {
+                ...billboardOpts
+            };
+
+            entity.label = {
+                ...label
+            };
+            entity.name = entityOpts.name;
+            entity.position = entityOpts.position;
+            entity.description = entityOpts.description;
+
+            return entity;
+        }
     }
 
     updateMarker(props) {
@@ -441,18 +487,19 @@ class CesiumView extends MapView {
             return;
         }
 
-        let primitiveMarker = this.getMarker(props);
+        let marker = this.getMarker(props);
 
         // create one collection for marker entities
-        if (isDefined(primitiveMarker)) {
-            this.removeMarkerFromLayer(primitiveMarker);
-        }
-        this.addMarkerToLayer(props, this.addMarker(props));
+        // /!\ If we remove the marker every time such as Primitive, we loose selection tracking!
+        // if (isDefined(marker)) {
+        //     isSelected = this.viewer.selectedEntity === marker;
+            // this.removeMarkerFromLayer(marker);
+        // }
+        this.addMarkerToLayer(props, this.addMarker(props,marker));
     }
 
-    removeMarkerFromLayer(primitiveMarker) {
-        this.billboardCollection.remove(primitiveMarker.billboard);
-        this.labelCollection.remove(primitiveMarker.label);
+    removeMarkerFromLayer(marker) {
+        this.viewer.entities.remove(marker);
     }
 
     // ----- ELLIPSE
