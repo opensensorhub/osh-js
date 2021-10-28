@@ -107,7 +107,7 @@ class CesiumView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon'],
+            supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon'],
             ...properties
         });
 
@@ -664,7 +664,7 @@ class CesiumView extends MapView {
     /**
      * Adds a polygon to the polygon layer
      * @param {Object} properties the properties to use in constructing the polygon
-     * @returns {Entity}
+     * @returns {PrimitiveCollection}
      */
     addPolygon(properties) {
         // bind the object to the callback property
@@ -675,7 +675,7 @@ class CesiumView extends MapView {
                 polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId])),
                 attributes : {
                     color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
-                }
+                },
             }),
             id: id,
         });
@@ -722,6 +722,75 @@ class CesiumView extends MapView {
     }
 
     /**
+     * Adds a coplanar polygon to the coplanar polygon layer
+     * @param {Object} properties the properties to use in constructing the coplanar polygon
+     * @returns {Entity}
+     */
+    addCoPlanarPolygon(properties) {
+        // bind the object to the callback property
+        const id = properties.id + "$" + properties.polygonId;
+
+        const polygonInstance = new GeometryInstance({
+            geometry : new CoplanarPolygonGeometry({
+                polygonHierarchy: new PolygonHierarchy(
+                    Cartesian3.fromDegreesArrayHeights(
+                        properties.vertices[properties.polygonId]
+                )),
+            }),
+            id: id,
+        });
+
+        const polygonPrimitive = new Primitive({
+            geometryInstances : polygonInstance,
+            appearance : new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Color',
+                        uniforms: {
+                            color:  Color.fromCssColorString(properties.color).withAlpha(properties.opacity)
+                        }
+                    }
+                }),
+            }),
+            asynchronous: false
+        });
+
+       /* const polygonOutlineInstance = new GeometryInstance({
+            geometry : new CoplanarPolygonOutlineGeometry({
+                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArrayHeights(properties.vertices[properties.polygonId])),
+            }),
+            attributes : {
+                color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
+            },
+            id: id,
+        });
+
+        const polygonOutlinePrimitive = new Primitive({
+            geometryInstances : polygonOutlineInstance,
+            appearance : new MaterialAppearance({
+                material: new Material({
+                    fabric: {
+                        type: 'Color',
+                        uniforms: {
+                            color:  Color.fromCssColorString(properties.outlineColor)
+                        }
+                    }
+                }),
+            }),
+            asynchronous: false
+        });*/
+
+        const collection = new PrimitiveCollection();
+
+        collection.add(polygonPrimitive);
+        // collection.add(polygonOutlinePrimitive);
+
+        this.viewer.scene.primitives.add(collection);
+
+        return collection;
+    }
+
+    /**
      * Retrieves the polygon and updates it or creates a new instance
      * and adds with the given properties the polygon to the layer
      * @param {Object} properties properties to apply in updating polygon
@@ -732,6 +801,20 @@ class CesiumView extends MapView {
             this.removePolygonFromLayer(polygonPrimitiveCollection);
         }
         this.addPolygonToLayer(props, this.addPolygon(props));
+    }
+
+    /**
+     * Retrieves the coplanar polygon and updates it or creates a new instance
+     * and adds with the given properties the coplanar polygon to the layer
+     * @param {Object} properties properties to apply in updating polygon
+     */
+    updateCoPlanarPolygon(props) {
+        let polygonPrimitiveCollection = this.getPolygon(props);
+        if (isDefined(polygonPrimitiveCollection)) {
+            polygonPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
+        }
+        this.addPolygonToLayer(props, this.addCoPlanarPolygon(props));
     }
 
     /**
