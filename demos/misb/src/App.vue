@@ -15,10 +15,10 @@
       :drone-video-data-source="this.droneVideoDataSource"
       v-show="this.$store.state.ui.droneVideo"
     ></VideoPanel>
-    <BioSensorMiniPanel
+    <!--BioSensorMiniPanel
         :biological-sensors-data-source="biologicalSensorsDataSource"
         v-show="false"
-    />
+    /-->
     <Globe
         :drone-camera-orientation-data-source="droneCameraOrientationDataSource"
         :drone-location-data-source="droneLocationDataSource"
