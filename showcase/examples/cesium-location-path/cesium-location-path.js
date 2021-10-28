@@ -37,6 +37,7 @@ let pointMarker = new PointMarkerLayer({
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
     description: 'Car',
+    getDescription: (d) => `Alt: ${d.location.alt}`,
     zIndex: 2
 });
 
