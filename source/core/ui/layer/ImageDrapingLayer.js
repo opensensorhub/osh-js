@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../utils/Utils.js";
 import Layer from "./Layer.js";
 
 /**
@@ -88,7 +88,7 @@ class ImageDrapingLayer extends Layer {
      */
     constructor(properties) {
         super(properties);
-        this.type = 'draping';
+        this.type = 'drapedImage';
 
         this.properties = properties;
         this.props.cameraModel = null;
@@ -97,6 +97,7 @@ class ImageDrapingLayer extends Layer {
         this.props.platformLocation = null;
         this.props.platformOrientation = null;
         this.props.gimbalOrientation = null;
+        this.props.drapedImageId = 'drapedImageId';
 
         const that = this;
 
