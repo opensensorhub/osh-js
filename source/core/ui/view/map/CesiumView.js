@@ -62,7 +62,8 @@ import {
     ColorBlendMode,
     PerspectiveFrustum,
     FrustumGeometry,
-    VertexFormat
+    VertexFormat,
+    CoplanarPolygonGeometry
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -448,7 +449,7 @@ class CesiumView extends MapView {
                 colorBlendMode: ColorBlendMode.MIX,
                 colorBlendAmount: 0.5,
                 silhouetteColor: color,
-                silhouetteSize: 0.5,
+                // silhouetteSize: 1.0, // cause image draping crash
                 minimumPixelSize: 20,
                 maximumScale: 20000,
                 show: properties.visible,
