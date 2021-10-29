@@ -63,7 +63,11 @@ import {
     PerspectiveFrustum,
     FrustumGeometry,
     VertexFormat,
-    CoplanarPolygonGeometry
+    CoplanarPolygonGeometry,
+    GroundPolylineGeometry,
+    GroundPolylinePrimitive,
+    PolylineGeometry,
+    PolylineColorAppearance
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -177,6 +181,7 @@ class CesiumView extends MapView {
         this.viewer.terrainProvider = new EllipsoidTerrainProvider();
         this.viewer.scene.copyGlobeDepth = true;
         this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
+        this.viewer.scene.globe.depthTestAgainstTerrain = true;
 
         this.billboardCollection = new BillboardCollection();
         this.labelCollection = new LabelCollection();
@@ -437,7 +442,8 @@ class CesiumView extends MapView {
                 height: undefined,
                 translucencyByDistance: undefined,
                 sizeInMeters: undefined,
-                distanceDisplayCondition: undefined
+                distanceDisplayCondition: undefined,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY
             }
         } else {
             modelOpts = {
@@ -462,6 +468,7 @@ class CesiumView extends MapView {
                 nodeTransformations: undefined,
                 articulations: undefined,
                 clippingPlanes: undefined,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY
             }
         }
         // Add Label primitive
@@ -472,7 +479,6 @@ class CesiumView extends MapView {
         const labelOpts = {
             backgroundColor: undefined,
             backgroundPadding: undefined,
-            disableDepthTestDistance: undefined,
             distanceDisplayCondition: undefined,
             eyeOffset: undefined,
             fillColor: Color.fromCssColorString(labelColor),
@@ -494,6 +500,7 @@ class CesiumView extends MapView {
             totalScale: undefined,
             translucencyByDistance: undefined,
             verticalOrigin: VerticalOrigin.TOP,
+            disableDepthTestDistance: Number.POSITIVE_INFINITY
         }
 
         // zoom map if first marker update
@@ -669,24 +676,64 @@ class CesiumView extends MapView {
         const id = properties.id + "$" + properties.polylineId;
         const locations = properties.locations[properties.polylineId];
 
-        const polylineCollection = new PolylineCollection();
-        polylineCollection.add({
-            id: id,
-            positions: locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat(),
-            width: properties.weight,
-            loop: false,
-            material: new Material({
-                fabric: {
-                    type: 'Color',
-                    uniforms: {
-                        color:  Color.fromCssColorString(properties.color)
-                    }
-                }
-            }),
-            show: properties.visible
-        });
-        this.viewer.scene.primitives.add(polylineCollection);
-        return polylineCollection;
+        const flatPositions = locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat();
+
+        // check if clamp to terrain
+        let polylinePrimitive;
+
+        if(properties.clampToGround) {
+            const polylineInstance = new GeometryInstance({
+                geometry: new GroundPolylineGeometry({
+                    id: id,
+                    positions: flatPositions,
+                    width: properties.weight,
+                    loop: false,
+                }),
+                id: id,
+            });
+
+            polylinePrimitive = new GroundPolylinePrimitive({
+                geometryInstances: polylineInstance,
+                appearance: new MaterialAppearance({
+                    material: new Material({
+                        fabric: {
+                            type: 'Color',
+                            uniforms: {
+                                color: Color.fromCssColorString(properties.color)
+                            }
+                        }
+                    }),
+                }),
+                asynchronous: false,
+                show: properties.visible
+            });
+        } else {
+            // use classic primitive
+            const polylineInstance = new GeometryInstance({
+                geometry: new PolylineGeometry({
+                    id: id,
+                    positions: flatPositions,
+                    width: properties.weight,
+                    loop: false,
+                }),
+                attributes: {
+                    color: ColorGeometryInstanceAttribute.fromColor(Color.fromCssColorString(properties.color))
+                },
+                id: id,
+            });
+
+            polylinePrimitive = new Primitive({
+                geometryInstances: polylineInstance,
+                appearance: new PolylineColorAppearance(),
+                asynchronous: false,
+                show: properties.visible
+            });
+        }
+
+
+        this.viewer.scene.primitives.add(polylinePrimitive);
+
+        return polylinePrimitive;
     }
 
     /**
@@ -694,8 +741,7 @@ class CesiumView extends MapView {
      * @param props The properties containing the updated data
      */
     updatePolyline(props) {
-
-        if (!isDefined(props.locations)) {
+        if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
             return;
         }
         const polyline = this.getPolyline(props);

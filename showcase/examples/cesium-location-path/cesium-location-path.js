@@ -16,7 +16,7 @@ let gpsDataSource = new SosGetResultJson('android-GPS', {
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     startTime: '2015-02-16T07:58:30Z',
     endTime: '2015-02-16T08:09:00Z',
-    replaySpeed: 3
+    replaySpeed: 10
 });
 
 // style it with a moving point marker
@@ -25,7 +25,7 @@ let pointMarker = new PointMarkerLayer({
     getLocation: (rec) => ({
         x: rec.location.lon,
         y: rec.location.lat,
-        z: rec.location.alt
+        z: 0
     }),
     orientation: {
         heading: 0
@@ -49,6 +49,7 @@ let polyline = new PolylineLayer({
         y: rec.location.lat,
         z: rec.location.alt
     }),
+    clampToGround: true,
     color: 'rgba(0,0,255,0.5)',
     weight: 10,
     opacity: .5,
@@ -76,7 +77,7 @@ let ellipse = new EllipseLayer({
 // create Cesium view
 let cesiumView = new CesiumView({
     container: 'cesium-container',
-    layers: [pointMarker, polyline/*, ellipse*/],
+    layers: [pointMarker, polyline, ellipse],
     autoZoomOnFirstMarker: true,
     cesiumProps: {
         viewerProps: {
