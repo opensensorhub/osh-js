@@ -70,6 +70,9 @@ class MapView extends View {
 
         // map Layer id to array of corresponding frustums
         this.layerIdToFrustum= {};
+
+        // map Layer id to array of corresponding draping
+        this.layerIdToDrapedImage= {};
     }
 
     setData(dataSourceId, data) {
@@ -80,7 +83,7 @@ class MapView extends View {
                 this.updateMarker(d);
             } else if(data.type === 'polyline') {
                 this.updatePolyline(d);
-            } else if(data.type === 'draping') {
+            } else if(data.type === 'drapedImage') {
                 this.updateDrapedImage(d);
             } else if(data.type === 'ellipse') {
                 this.updateEllipse(d);
@@ -144,6 +147,29 @@ class MapView extends View {
             this.layerIdToEllipsoids[props.id] = {};
         }
         this.layerIdToEllipsoids[props.id][props.ellipseId] = ellipseObject;
+    }
+
+    /**
+     * Associate a drapedImageId to a Layer for a fast lookup
+     * @protected
+     * @param {ImageDraping.props} layer - the Layer object
+     * @param {Object} drapedImageObject - the Map drapedImage object
+     */
+    addDrapedImageToLayer(props, drapedImageObject) {
+        // associate the list of markers owning by a specific marker
+        if(!(props.id in this.layerIdToDrapedImage)) {
+            this.layerIdToDrapedImage[props.id] = {};
+        }
+        this.layerIdToDrapedImage[props.id][props.drapedImageId] = drapedImageObject;
+    }
+
+    addFrustumToLayer(props, frustum) {
+        const currentLayer = this.getLayer(props);
+        // associate the list of markers owning by a specific marker
+        if(!(props.id in this.layerIdToFrustum)) {
+            this.layerIdToFrustum[props.id] = {};
+        }
+        this.layerIdToFrustum[props.id][props.frustumId] = frustum;
     }
 
     getPolygons() {
@@ -253,13 +279,16 @@ class MapView extends View {
         return this.layerIdToPolylines[props.id][props.polylineId];
     }
 
-    addFrustumToLayer(props, frustum) {
-        const currentLayer = this.getLayer(props);
-        // associate the list of markers owning by a specific marker
-        if(!(props.id in this.layerIdToFrustum)) {
-            this.layerIdToFrustum[props.id] = {};
+    /**
+     * Get the draped image associate to the Layer
+     * @protected
+     * @param {ImageDrapingLayer.props} layer - the Layer Object
+     */
+    getDrapedImage(props) {
+        if(!(props.id in  this.layerIdToDrapedImage)) {
+            return null;
         }
-        this.layerIdToFrustum[props.id][props.frustumId] = frustum;
+        return this.layerIdToDrapedImage[props.id][props.drapedImageId];
     }
 
     getFrustums() {
@@ -386,6 +415,25 @@ class MapView extends View {
     }
 
     /**
+     * Remove the drapedImage corresponding to a ImageDraping Layer
+     * @param {ImageDraping} imageDraping - the layer to remove the drapedImage from
+     */
+    removeDrapedImages(drapedImage) {
+        if(isDefined(drapedImage.props.drapedImageId)) {
+            const drapedImageMap = this.layerIdToDrapedImage[drapedImage.props.id];
+            if(isDefined(drapedImageMap)) {
+                for(let drapedImageId in drapedImageMap) {
+                    const drapedImage = drapedImageMap[drapedImageId];
+                    this.removeDrapedImageFromLayer(drapedImage);
+                }
+            }
+
+            // remove drapedImage ids from Layer map
+            delete this.layerIdToDrapedImage[drapedImage.props.id];
+        }
+    }
+
+    /**
      * Remove the frustums corresponding to a Frustum Layer
      * @param {FrustumLayer} polyline - the layer to remove the Frustum from
      */
@@ -418,6 +466,14 @@ class MapView extends View {
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Abstract method to remove a draped image from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} drapedImage - The Map drapedImage object
+     */
+    removeDrapedImageFromLayer(drapedImage) {}
 
     /**
      * Abstract method to remove a polygon from its corresponding layer.
