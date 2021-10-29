@@ -3,9 +3,9 @@
     <div :id="id" class="range"></div>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
-        <slot v-if="history">
-          <div class="datasource-actions history">
-            <a :id="'history-btn-'+this.id" class="control-btn clicked" @click="toggleHistory">
+        <slot v-if="replay">
+          <div class="datasource-actions replay">
+            <a :id="'replay-btn-'+this.id" class="control-btn clicked" @click="toggleReplay">
               <i class="fa fa-history"></i>
             </a>
             <div class="control-speed" v-if="activateSpeedControl">
@@ -39,15 +39,10 @@
               <span :id="'end-time-'+this.id" v-html=parseTime(endTime)></span>
             </div>
           </div>
-          <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
-            <a :id="'out-of-sync-btn-'+this.id" class="control-btn out-of-sync">
-              <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
-            </a>
-          </div>
         </slot>
         <slot v-else>
           <div class="datasource-actions live">
-            <a :id="'history-btn-'+this.id" class="control-btn history" @click="toggleHistory">
+            <a :id="'replay-btn-'+this.id" class="control-btn replay" @click="toggleReplay">
               <i class="fa fa-history"></i>
             </a>
           </div>
@@ -61,6 +56,11 @@
             LIVE
           </v-chip>
         </slot>
+        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
+          <a :id="'out-of-sync-btn-'+this.id" class="control-btn out-of-sync">
+            <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -72,8 +72,17 @@ import {randomUUID} from '../../core/utils/Utils.js';
 import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/protocol/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
-import {TIME_SYNCHRONIZER_TOPIC} from "../../core/Constants";
 import {EventType} from "../../core/event/EventType";
+
+function parseDate(timestamp) {
+  const date = new Date(timestamp);
+  const isoDate = date.toISOString();
+
+  const smallDate = isoDate.substr(0, 10);
+  const smallTime = isoDate.substr(11, 8);
+
+  return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
+}
 
 /**
  * @module osh-vue/TimeController
@@ -109,7 +118,8 @@ export default {
       default: () => 800 // 800ms
     },
     parseTime: {
-      type: Function
+      type: Function,
+      default: parseDate
     }
   },
   data() {
@@ -117,7 +127,7 @@ export default {
       id: randomUUID(),
       speedId: randomUUID(),
       event: null,
-      history: true,
+      replay: true,
       dataSourceObject: null,
       connected: true,
       startTime: null,
@@ -139,17 +149,18 @@ export default {
   },
   watch: {
     event(newValue) {
-      this.$emit('event', newValue);
+      this.$emit('event', {
+        event: newValue,
+        replay: this.replay,
+        startTime: this.startTime,
+        endTime: this.endTime
+      });
     }
   },
   beforeMount() {
-    if (!isDefined(this.parseTime)) {
-      this.parseTime = this.parseDate;
-    }
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
-    this.history = this.dataSourceObject.getStartTime() !== 'now';
-
+    this.replay = this.dataSourceObject.getStartTime() !== 'now';
   },
   async updated() {
     await this.initComp();
@@ -197,9 +208,9 @@ export default {
             this.maxTime = this.endTime;
           }
           // save the times after creating the component
-          this.history = this.startTime !== 'now';
+          this.replay = this.startTime !== 'now';
         } else {
-          this.history = false;
+          this.replay = false;
         }
 
         // compute skip time
@@ -252,46 +263,49 @@ export default {
       // listen for BC
       this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
       this.bcTime.onmessage =  (message) => {
-        if (this.history) {
-          if(this.waitForTimeChangedEvent) {
-            if(message.data.type ===  EventType.DATA) {
-              this.displayConsoleWarningIncompatibleVersionThrottle();
-            } else if(message.data.type ===  EventType.TIME_CHANGED) {
-              this.waitForTimeChangedEvent = false;
-            }
-            return;
-          }
-
+        if(this.waitForTimeChangedEvent) {
+          console.log('Waiting for TIME CHANGED EVENT');
+        }
+        if(this.waitForTimeChangedEvent) {
           if(message.data.type ===  EventType.DATA) {
-            if (!this.interval && this.speed > 0.0 && !this.update) {
-              // consider here datasynchronizer sends data in time order
-              if (isDefined(this.dataSynchronizer)) {
-                const contains = message.data.dataSourceId in this.outOfSync;
-                if (message.data.timestamp < this.lastSynchronizedTimestamp) {
-                  if (!contains) {
-                    if (isDefined(this.dataSynchronizer)) {
-                      this.dataSynchronizer.dataSources.forEach(datasource => {
-                        if (datasource.id === message.data.dataSourceId) {
-                          this.outOfSync[datasource.id] = datasource;
-                        }
-                      });
-                    } else {
-                      this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
+            this.displayConsoleWarningIncompatibleVersionThrottle();
+          } else if(message.data.type ===  EventType.TIME_CHANGED) {
+            this.waitForTimeChangedEvent = false;
+          }
+          return;
+        }
+        if(message.data.type === EventType.DATA) {
+          // consider here datasynchronizer sends data in time order
+          if (isDefined(this.dataSynchronizer)) {
+            const contains = message.data.dataSourceId in this.outOfSync;
+            if (message.data.timestamp < this.lastSynchronizedTimestamp) {
+              if (!contains) {
+                if (isDefined(this.dataSynchronizer)) {
+                  this.dataSynchronizer.dataSources.forEach(datasource => {
+                    if (datasource.id === message.data.dataSourceId) {
+                      this.outOfSync[datasource.id] = datasource;
                     }
-                  }
-                  return;
-                } else if (contains) {
-                  // check that the datasource is not out of sync anymore
-                  delete this.outOfSync[message.data.dataSourceId];
+                  });
+                } else {
+                  this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
                 }
               }
-              this.lastSynchronizedTimestamp = message.data.timestamp;
+              return;
+            } else if (contains) {
+              // check that the datasource is not out of sync anymore
+              delete this.outOfSync[message.data.dataSourceId];
+            }
+          }
+          this.lastSynchronizedTimestamp = message.data.timestamp;
+
+          if (this.replay) {
+            if (!this.interval && this.speed > 0.0 && !this.update) {
               // }
               this.setStartTime(message.data.timestamp);
             }
+          } else {
+            this.realtime = message.data.timestamp;
           }
-        } else {
-          this.realtime = message.data.timestamp;
         }
       }
     },
@@ -328,7 +342,7 @@ export default {
 
           if (!this.interval) {
             this.startTime = startTime;
-            if (this.history) {
+            if (this.replay) {
               this.endTime = endTime;
             }
 
@@ -363,15 +377,19 @@ export default {
         this.update = true;
         this.updateTimeDebounce('backward');
       }
-    }
-    ,
-    async updateTime(event) {
+    },
+
+    resetMasterTime() {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
       this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
+    },
+
+    async updateTime(event) {
+      this.resetMasterTime();
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
           new Date(this.endTime).toISOString(),
@@ -438,14 +456,15 @@ export default {
       return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
     }
     ,
-    async toggleHistory() {
-      this.history = !this.history;
+    async toggleReplay() {
+      this.replay = !this.replay;
 
-      if (!this.history) {
+      this.resetMasterTime();
+      if (!this.replay) {
         this.dataSourceObject.setTimeRange(
             'now',
             new Date("2055-01-01T00:00:00Z").toISOString(),
-            this.speed,
+            1.0,
             true);
         document.getElementById(this.id).style.display = 'none';
       } else {
@@ -453,10 +472,11 @@ export default {
             new Date(this.startTime).toISOString(),
             new Date(this.endTime).toISOString(),
             this.speed,
-            false);
+            true);
         document.getElementById(this.id).style.display = 'block';
       }
       this.$emit('event', 'end');
+      this.$emit('replay', this.replay);
     }
     ,
     incSpeed() {
@@ -513,18 +533,14 @@ export default {
     }
     ,
     on(eventName) {
-      this.$emit('event', eventName);
+      this.$emit('event', {
+        event: eventName,
+        replay: this.replay,
+        startTime: this.startTime,
+        endTime: this.endTime
+      });
     }
     ,
-    parseDate(timestamp) {
-      const date = new Date(timestamp);
-      const isoDate = date.toISOString();
-
-      const smallDate = isoDate.substr(0, 10);
-      const smallTime = isoDate.substr(11, 8);
-
-      return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
-    },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
     },

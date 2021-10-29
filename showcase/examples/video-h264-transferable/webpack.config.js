@@ -20,6 +20,7 @@ module.exports = {
     // the property we’ll need to tell it to look there in addition to the
     // bower_components folder.
     resolve: {
+        extensions: [".ts", ".js"], // Added ".js" here
         modules: [
             path.resolve(__dirname, 'node_modules'),
         ],

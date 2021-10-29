@@ -111,7 +111,7 @@ class PointMarkerLayer extends Layer {
 		this.props.icon = null;
 		this.props.iconAnchor = [16,16];
 		this.props.iconSize = [16,16];
-		this.props.iconScale = 10;
+		this.props.iconScale = 1.0;
 		this.props.iconColor = "#000000";
 		this.props.label = null;
 		this.props.labelColor = "#000000";
@@ -192,6 +192,11 @@ class PointMarkerLayer extends Layer {
 		if (hasValue(properties.zIndex)) {
 			assertNumber(properties.zIndex, "zIndex");
 			this.props.zIndex = properties.zIndex;
+		}
+
+		if (hasValue(properties.color)) {
+			assertString(properties.color, "color");
+			this.props.color = properties.color;
 		}
 
 		const that = this;

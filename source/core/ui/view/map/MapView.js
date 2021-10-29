@@ -34,7 +34,11 @@ class MapView extends View {
         // map Layer id to array of corresponding polylines
         this.layerIdToEllipsoids= {};
 
+        // map Layer id to array of corresponding polygons
         this.layerIdToPolygon= {};
+
+        // map Layer id to array of corresponding frustums
+        this.layerIdToFrustum= {};
     }
 
     setData(dataSourceId, data) {
@@ -53,6 +57,8 @@ class MapView extends View {
                 this.updatePolygon(d);
             } else if (data.type === 'coplanarPolygon') {
                 this.updateCoPlanarPolygon(d);
+            } else if(data.type === 'frustum') {
+                this.updateFrustum(d);
             }
         }
     }
@@ -216,6 +222,32 @@ class MapView extends View {
         return this.layerIdToPolylines[props.id][props.polylineId];
     }
 
+    addFrustumToLayer(props, frustum) {
+        const currentLayer = this.getLayer(props);
+        // associate the list of markers owning by a specific marker
+        if(!(props.id in this.layerIdToFrustum)) {
+            this.layerIdToFrustum[props.id] = {};
+        }
+        this.layerIdToFrustum[props.id][props.frustumId] = frustum;
+    }
+
+    getFrustums() {
+        const array = [];
+        for(let id in this.layerIdToFrustum) {
+            for(let frustumId in this.layerIdToFrustum[id]) {
+                array.push(this.layerIdToFrustum[id][frustumId]);
+            }
+        }
+        return array;
+    }
+
+    getFrustum(props) {
+        if(!(props.id in  this.layerIdToFrustum)) {
+            return null;
+        }
+        return this.layerIdToFrustum[props.id][props.frustumId];
+    }
+
     /**
      * Get the Layer associated to its id
      * @param {String} layerId - the id of the Layer
@@ -246,6 +278,8 @@ class MapView extends View {
         this.removeEllipsoids(layer);
 
         this.removePolygons(layer);
+
+        this.removeFrustums(layer);
     }
 
     removePolygons(layer) {
@@ -320,6 +354,24 @@ class MapView extends View {
         }
     }
 
+    /**
+     * Remove the frustums corresponding to a Frustum Layer
+     * @param {FrustumLayer} polyline - the layer to remove the Frustum from
+     */
+    removeFrustums(layer) {
+        if(isDefined(layer.props.frustumId)) {
+            const frustumMap = this.layerIdToFrustum[layer.props.id];
+            if(isDefined(frustumMap)) {
+                for(let frustumId in frustumMap) {
+                    const frustum = frustumMap[frustumId];
+                    this.removeFrustumFromLayer(frustum);
+                }
+            }
+
+            // remove markers ids from Layer map
+            delete this.layerIdToFrustum[layer.props.id];
+        }
+    }
     /**
      * Abstract method to remove a marker from its corresponding layer.
      * This is library dependant.

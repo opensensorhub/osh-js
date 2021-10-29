@@ -38,6 +38,7 @@ class DataSynchronizerAlgo {
             latency = this.tsRun - data.timeStamp;
         }
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
+
         ds.dataBuffer.push(data);
     }
 
@@ -108,8 +109,10 @@ class DataSynchronizerAlgo {
                 minLatency = (currentDs.latency < minLatency) ? currentDs.latency : minLatency;
             }
         }
+        maxLatency *= this.replaySpeed;
+        minLatency *= this.replaySpeed;
 
-        const dClock = performance.now() - refClockTime;
+        const dClock = (performance.now() - refClockTime) * this.replaySpeed;
         this.tsRun = tsRef + dClock;
 
         // compute next data to return
@@ -119,11 +122,11 @@ class DataSynchronizerAlgo {
                 continue;
             }
             if (currentDs.dataBuffer.length > 0) {
-                const dTs = currentDs.dataBuffer[0].timeStamp - tsRef;
+                const dTs = (currentDs.dataBuffer[0].timeStamp - tsRef);
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClockAdj * this.replaySpeed) {
+                if (dTs <= dClockAdj) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;

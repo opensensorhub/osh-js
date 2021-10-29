@@ -218,4 +218,3 @@ class FFMPEGView extends CanvasView {
 }
 
 export default FFMPEGView;
-

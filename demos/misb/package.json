@@ -1,0 +1,45 @@
+{
+  "name": "video-display",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "patch-package",
+    "prod": "webpack --config webpack.config.js --mode production",
+    "dev": "webpack-dev-server --config webpack.config.js --mode development"
+  },
+  "dependencies": {
+    "cesium": "1.85.0",
+    "vue": "2.6.11",
+    "vue-plugin-load-script": "1.2.0",
+    "vue-router": "3.1.6",
+    "vuetify": "2.5.9",
+    "vuex": "3.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.0",
+    "@mdi/font": "6.2.95",
+    "babel-core": "6.26.3",
+    "babel-loader": "8.1.0",
+    "babel-preset-env": "1.7.0",
+    "clean-webpack-plugin": "4.0.0",
+    "copy-webpack-plugin": "9.0.1",
+    "css-loader": "3.5.3",
+    "deepmerge": "4.2.2",
+    "file-loader": "6.0.0",
+    "html-webpack-plugin": "5.3.2",
+    "patch-package": "6.2.2",
+    "path-browserify": "1.0.1",
+    "sass": "1.32",
+    "sass-loader": "12.1.0",
+    "style-loader": "1.2.0",
+    "vue-dialog-drag": "0.1.29",
+    "vue-loader": "15.9.1",
+    "vue-template-compiler": "2.6.11",
+    "webpack": "5.56.0",
+    "webpack-cli": "4.8.0",
+    "webpack-dev-server": "4.3.0",
+    "worker-loader": "3.0.8",
+    "wnumb": "1.2.0",
+    "nouislider": "14.4.0"
+  }
+}

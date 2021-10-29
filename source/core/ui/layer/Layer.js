@@ -34,6 +34,7 @@ class Layer {
      * @param {string} properties.name - default name
      * @param {string} properties.description - default description
      * @param {string} properties.dataSourceId - default dataSourceId
+     * @param {boolean} properties.visible - defines if the layer is visible
      */
     constructor(properties) {
         this.properties = properties;
@@ -44,6 +45,8 @@ class Layer {
         this.props.name = '';
         this.props.description = '';
         this.props.dataSourceId = '';
+        this.props.visible = true;
+        this.props.filter = true;
 
         if(isDefined(properties.name)) {
             this.props.name = properties.name;
@@ -56,7 +59,37 @@ class Layer {
             this.props.dataSourceId = properties.dataSourceId;
         }
 
+        if(isDefined(properties.visible)) {
+            this.props.visible = properties.visible;
+        }
+
         this.initEvents();
+
+        const that = this;
+
+        if (this.checkFn("filter")) {
+            let fn = function(rec,timeStamp,options) {
+                that.props.filter = that.getFunc('filter')(rec,timeStamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
+        } else {
+            this.properties.filter = function(rec,timeStamp,options) {
+                return true;
+            };
+
+            let fn = function(rec,timeStamp,options) {
+                that.props.filter = that.getFunc('filter')(rec,timeStamp,options);
+            };
+
+            this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
+        }
+
+        if (this.checkFn("getVisible")) {
+            let fn = function(rec,timeStamp,options) {
+                that.props.visible = that.getFunc('getVisible')(rec,timeStamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
+        }
     }
 
     saveState() {
@@ -144,16 +177,22 @@ class Layer {
     setData(dataSourceId, records, options) {
         // store data into data props
         this.data = [];
-        if(isDefined(this.dataSourcesToFn)) {
+        if (isDefined(this.dataSourcesToFn)) {
             if (dataSourceId in this.dataSourcesToFn) {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
-                for (let j = 0; j < records.length; j++) {
-                    for (let i = 0; i < fnArr.length; i++) {
+
+                outer: for (let j = 0; j < records.length; j++) {
+                    inner: for (let i = 0; i < fnArr.length; i++) {
                         fnArr[i](records[j].data, records[j].timeStamp, options);
+                        if(!this.props.filter) {
+                            break inner;
+                        }
                     }
-                    this.data.push({
-                        ...this.props
-                    });
+                    if(this.props.filter) {
+                        this.data.push({
+                            ...this.props
+                        });
+                    }
                 }
             }
         }

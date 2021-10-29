@@ -26,7 +26,10 @@ self.onmessage = (event) => {
         addDataSources(event.data.dataSources);
         topicData = event.data.dataTopic;
         topicTime = event.data.timeTopic;
-        initBroadcastChannel(topicData,topicTime );
+        initBroadcastChannel(topicData, topicTime);
+        self.postMessage({
+            message: 'initialized'
+        });
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(event.data.message === 'current-time') {
@@ -70,6 +73,7 @@ function initBroadcastChannel(dataTopic, timeTopic) {
         } else if(event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
             dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
+            console.log(dataSources[dataSourceId].name + ": status=" + event.data.status);
             // bubble the message
             bcChannels[dataSourceId].postMessage(event.data);
         }
