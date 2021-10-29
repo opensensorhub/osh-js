@@ -316,8 +316,6 @@
 
         //cesium custom param
         cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
-        //cesiumView.viewer.scene.logarithmicDepthBuffer = true;
-        cesiumView.viewer.scene.globe.depthTestAgainstTerrain = true;
         cesiumView.viewer.camera.setView({
           destination: new Cartesian3(305721.4585559864, -5239510.338378854, 3615622.5459225853),
           orientation: {
