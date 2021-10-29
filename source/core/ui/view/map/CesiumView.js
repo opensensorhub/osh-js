@@ -117,16 +117,12 @@ class CesiumView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'draping', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustum'],
+            supportedLayers: ['marker', 'drapedImage', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustum'],
             ...properties
         });
 
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass + " " + this.css);
-
-        this.imageDrapingPrimitive = null;
-        this.imageDrapingPrimitiveReady = false;
-        this.frameCount = 0;
 
         this.captureCanvas = document.createElement('canvas');
         this.captureCanvas.width = 640;
@@ -762,6 +758,19 @@ class CesiumView extends MapView {
 
     // ----- POLYGON
     /**
+     * Retrieves the polygon and updates it or creates a new instance
+     * and adds with the given properties the polygon to the layer
+     * @param {Object} properties properties to apply in updating polygon
+     */
+    updatePolygon(props) {
+        let polygonPrimitiveCollection = this.getPolygon(props);
+        if (isDefined(polygonPrimitiveCollection)) {
+            this.removePolygonFromLayer(polygonPrimitiveCollection);
+        }
+        this.addPolygonToLayer(props, this.addPolygon(props));
+    }
+
+    /**
      * Adds a polygon to the polygon layer
      * @param {Object} properties the properties to use in constructing the polygon
      * @returns {PrimitiveCollection}
@@ -821,6 +830,30 @@ class CesiumView extends MapView {
         this.viewer.scene.primitives.add(collection);
 
         return collection;
+    }
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependent.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygonPrimitiveCollection) {
+        polygonPrimitiveCollection.removeAll();
+        this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
+    }
+
+    /**
+     * Retrieves the coplanar polygon and updates it or creates a new instance
+     * and adds with the given properties the coplanar polygon to the layer
+     * @param {Object} properties properties to apply in updating polygon
+     */
+    updateCoPlanarPolygon(props) {
+        let polygonPrimitiveCollection = this.getPolygon(props);
+        if (isDefined(polygonPrimitiveCollection)) {
+            polygonPrimitiveCollection.removeAll();
+            this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
+        }
+        this.addPolygonToLayer(props, this.addCoPlanarPolygon(props));
     }
 
     /**
@@ -893,43 +926,6 @@ class CesiumView extends MapView {
         return collection;
     }
 
-    /**
-     * Retrieves the polygon and updates it or creates a new instance
-     * and adds with the given properties the polygon to the layer
-     * @param {Object} properties properties to apply in updating polygon
-     */
-    updatePolygon(props) {
-        let polygonPrimitiveCollection = this.getPolygon(props);
-        if (isDefined(polygonPrimitiveCollection)) {
-            this.removePolygonFromLayer(polygonPrimitiveCollection);
-        }
-        this.addPolygonToLayer(props, this.addPolygon(props));
-    }
-
-    /**
-     * Retrieves the coplanar polygon and updates it or creates a new instance
-     * and adds with the given properties the coplanar polygon to the layer
-     * @param {Object} properties properties to apply in updating polygon
-     */
-    updateCoPlanarPolygon(props) {
-        let polygonPrimitiveCollection = this.getPolygon(props);
-        if (isDefined(polygonPrimitiveCollection)) {
-            polygonPrimitiveCollection.removeAll();
-            this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
-        }
-        this.addPolygonToLayer(props, this.addCoPlanarPolygon(props));
-    }
-
-    /**
-     * Abstract method to remove a polygon from its corresponding layer.
-     * This is library dependent.
-     * @param {Object} polygon - The Map polygon object
-     */
-    removePolygonFromLayer(polygonPrimitiveCollection) {
-        polygonPrimitiveCollection.removeAll();
-        this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
-    }
-
     // ----- IMAGE_DRAPING
     /**
      * Updates the image draping associated to the layer.
@@ -939,6 +935,15 @@ class CesiumView extends MapView {
         if (!isDefined(props.platformLocation)) {
             return;
         }
+        let drapedImagePrimitive = this.getDrapedImage(props);
+        if (!isDefined(drapedImagePrimitive)) {
+            this.addDrapedImageToLayer(props, await this.addDrapedImage(props));
+        } else {
+            await this.addDrapedImage(props, drapedImagePrimitive)
+        }
+    }
+
+    async addDrapedImage(props, existingDrapedImagePrimitive) {
         const llaPos = props.platformLocation;
         const DTR = Math.PI / 180;
         const attitude = props.platformOrientation;
@@ -985,74 +990,64 @@ class CesiumView extends MapView {
 
         let imgSrc = props.imageSrc;
 
-        {
-            let snapshot = false;
-            if (props.getSnapshot !== null) {
-                snapshot = props.getSnapshot();
-            }
-            // snapshot
-            if (props.snapshot) {
-                var ctx = this.captureCanvas.getContext('2d');
-                ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
-                imgSrc = this.captureCanvas;
-            }
-            const encCamPos = EncodedCartesian3.fromCartesian(camPos);
-            const appearance = new MaterialAppearance({
-                renderState: {
-                    depthTest: {
-                        enabled: false
+        let snapshot = false;
+        if (props.getSnapshot !== null) {
+            snapshot = props.getSnapshot();
+        }
+        // snapshot
+        if (props.snapshot) {
+            let ctx = this.captureCanvas.getContext('2d');
+            ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
+            imgSrc = this.captureCanvas;
+        }
+        const encCamPos = EncodedCartesian3.fromCartesian(camPos);
+        const appearance = new MaterialAppearance({
+            renderState: {
+                depthTest: {
+                    enabled: false
+                }
+            },
+            material: new Material({
+                fabric: {
+                    type: 'Image',
+                    uniforms: {
+                        image: imgSrc,
+                        camPosHigh: encCamPos.high,
+                        camPosLow: encCamPos.low,
+                        camAtt: Matrix3.toArray(Matrix3.transpose(camRot, new Matrix3())),
+                        camProj: Matrix3.toArray(camProj),
+                        camDistR: camDistR,
+                        camDistT: camDistT
                     }
-                },
-                material: new Material({
-                    fabric: {
-                        type: 'Image',
-                        uniforms: {
-                            image: imgSrc,
-                            camPosHigh: encCamPos.high,
-                            camPosLow: encCamPos.low,
-                            camAtt: Matrix3.toArray(Matrix3.transpose(camRot, new Matrix3())),
-                            camProj: Matrix3.toArray(camProj),
-                            camDistR: camDistR,
-                            camDistT: camDistT
-                        }
-                    }
+                }
+            }),
+            vertexShaderSource: ImageDrapingVS,
+            fragmentShaderSource: ImageDrapingFS
+        });
+
+        if (!isDefined(existingDrapedImagePrimitive) || snapshot) {
+            const updatedPositions = await sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+            const imageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
+                geometryInstances: new GeometryInstance({
+                    geometry: new RectangleGeometry({
+                        rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
+                        height: updatedPositions[0].height,
+                        extrudedHeight: llaPos.z - 1
+                    })
                 }),
-                vertexShaderSource: ImageDrapingVS,
-                fragmentShaderSource: ImageDrapingFS
-            });
+                appearance: appearance,
+                show: props.visible
+            }));
 
-            if (this.imageDrapingPrimitive === null || snapshot) {
-                if (this.imageDrapingPrimitive === null)
-                    this.imageDrapingPrimitive = {};
-
-                const updatedPositions = await sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-                var newImageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
-                    geometryInstances: new GeometryInstance({
-                        geometry: new RectangleGeometry({
-                            rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
-                            height: updatedPositions[0].height,
-                            extrudedHeight: llaPos.z - 1
-                        })
-                    }),
-                    appearance: appearance,
-                    show: props.visible
-                }));
-
-                if (!snapshot)
-                    this.imageDrapingPrimitive = newImageDrapingPrimitive;
-
-                this.viewer.scene.primitives.raiseToTop(this.imageDrapingPrimitive);
-                this.imageDrapingPrimitiveReady = true;
-
-            } else if (this.imageDrapingPrimitiveReady) {
-                this.imageDrapingPrimitive.appearance = appearance;
+            if (!snapshot) {
+                this.viewer.scene.primitives.raiseToTop(imageDrapingPrimitive);
             }
+            return imageDrapingPrimitive;
+        } else {
+            existingDrapedImagePrimitive.appearance = appearance;
+            existingDrapedImagePrimitive.show = props.visible;
+            return existingDrapedImagePrimitive;
         }
-
-        if(isDefined(this.imageDrapingPrimitive)) {
-            this.imageDrapingPrimitive.show = props.visible;
-        }
-        this.frameCount++;
     }
 
     // -- Frustum
