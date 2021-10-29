@@ -211,15 +211,6 @@ class CesiumView extends MapView {
                     return;
                 }
 
-                // check if collection and get the one of the top
-                if (isDefined(pickedFeature.collection) && pickedFeature.collection.length > 0) {
-                    pickedFeature = pickedFeature.collection.get(pickedFeature.collection.length - 1);
-                }
-
-                // for billboard, its pickedFeature._id, for model, pickedFeature.id
-                // const isEntity = pickedFeature._id instanceof Entity || pickedFeature.id instanceof Entity;
-                // const featureId =  isEntity ? (pickedFeature._id ? pickedFeature._id._id : pickedFeature.id._id) : pickedFeature._id;
-
                 let entity;
                 let primitive;
 
