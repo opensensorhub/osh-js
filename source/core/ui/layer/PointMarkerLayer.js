@@ -79,8 +79,10 @@ class PointMarkerLayer extends Layer {
      * @param {String} [properties.iconColor="#000000"] - the icon color
      * @param {Number[]} [properties.iconAnchor=[16,16]] -
      * @param {Number[]} [properties.iconSize=[16,16]] -
-     * @param {String} properties.label -
-     * @param {String} [properties.labelColor="#000000"] - HTML color
+     * @param {String} [properties.label=""] - the label to display
+     * @param {String} [properties.labelColor="#000000"] - color
+     * @param {String} [properties.labelOutlineColor=undefined] - color
+     * @param {String} [properties.labelBackgroundColor=undefined] -  color
      * @param {Number} [properties.labelSize=16] -
      * @param {Number[]} [properties.labelOffset=[0,0]] -
      * @param {Number} [properties.zIndex=] - z-ordering of markers
@@ -115,6 +117,8 @@ class PointMarkerLayer extends Layer {
         this.props.iconColor = "#000000";
         this.props.label = null;
         this.props.labelColor = "#000000";
+        this.props.labelOutlineColor = undefined;
+        this.props.labelBackgroundColor = undefined;
         this.props.labelSize = 16;
         this.props.labelOffset = [0, 0];
         this.props.zoomLevel = 15;
@@ -171,6 +175,16 @@ class PointMarkerLayer extends Layer {
         if (hasValue(properties.labelColor)) {
             assertString(properties.labelColor, "labelColor");
             this.props.labelColor = properties.labelColor;
+        }
+
+        if (hasValue(properties.labelOutlineColor)) {
+            assertString(properties.labelOutlineColor, "labelOutlineColor");
+            this.props.labelOutlineColor = properties.labelOutlineColor;
+        }
+
+        if (hasValue(properties.labelBackgroundColor)) {
+            assertString(properties.labelBackgroundColor, "labelBackgroundColor");
+            this.props.labelBackgroundColor = properties.labelBackgroundColor;
         }
 
         if (hasValue(properties.labelSize)) {

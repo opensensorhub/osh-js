@@ -41,9 +41,11 @@ let cesiumView = new CesiumView({
             icon: 'images/marker-icon.png',
             iconAnchor: [12, 41],
             getLabel: (f) =>  f.id,
-            labelColor: '#006aff',
+            labelColor: '#ffffff',
             labelSize: 28,
             labelOffset: [0, 10],
+            labelBackgroundColor: 'rgba(0,0,0,0.5)',
+            labelOutlineColor: 'rgba(150,150,150,1.0)'
         })
     ]
 });
