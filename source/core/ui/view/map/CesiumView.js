@@ -67,7 +67,8 @@ import {
     GroundPolylineGeometry,
     GroundPolylinePrimitive,
     PolylineGeometry,
-    PolylineColorAppearance
+    PolylineColorAppearance,
+    LabelStyle
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -462,27 +463,29 @@ class CesiumView extends MapView {
         const labelColor = properties.labelColor || '#FFFFFF';
         const labelSize = properties.labelSize || 16;
         const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+        const labelBackgroundColor = properties.labelBackgroundColor && Color.fromCssColorString(properties.labelBackgroundColor);
+        const labelOutlineColor = properties.labelOutlineColor && Color.fromCssColorString(properties.labelOutlineColor);
 
         const labelOpts = {
-            backgroundColor: undefined,
+            backgroundColor: labelBackgroundColor || undefined,
             backgroundPadding: undefined,
             distanceDisplayCondition: undefined,
             eyeOffset: undefined,
             fillColor: Color.fromCssColorString(labelColor),
             font: labelSize + 'px sans-serif',
-            heightReference: undefined,
+            heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
             horizontalOrigin: HorizontalOrigin.CENTER,
             id: undefined,
-            outlineColor: undefined,
-            outlineWidth: undefined,
+            outlineColor: labelOutlineColor || undefined,
+            outlineWidth: (labelOutlineColor && 1.0) || undefined,
             pixelOffset: labelOffset,
             pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
             position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
             scale: undefined,
             scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
             show: undefined,
-            showBackground: undefined,
-            style: undefined,
+            showBackground: (labelBackgroundColor && true) || false,
+            style: LabelStyle.FILL_AND_OUTLINE,
             text: label,
             totalScale: undefined,
             translucencyByDistance: undefined,
