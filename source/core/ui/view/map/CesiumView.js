@@ -112,9 +112,9 @@ class CesiumView extends MapView {
      * @param {String} properties.container - The div element to attach to
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [properties.cesiumProps={}] - Properties which can override the default framework ones
-     * @param {Object} [properties.cesiumProps.viewerProps={}] - the properties of the [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
-     *
+     * @param {Object} [properties.options={}] - Properties which can override the default framework ones
+     * @param {Object} [properties.options.viewer=undefined] - the Viewer object to pass [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
+     * @param {Object} [properties.options.viewerProps={}] - the properties of the [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
      */
     constructor(properties) {
         super({
@@ -164,16 +164,20 @@ class CesiumView extends MapView {
 
         // #endregion snippet_cesiumview_default_cesiumprops_viewer_props
 
+        let customViewer = undefined;
         if (isDefined(options)) {
-            if (options.hasOwnProperty('cesiumProps') && options.cesiumProps.hasOwnProperty('viewerProps')) {
+            if (options.hasOwnProperty('options') && options.options.hasOwnProperty('viewerProps')) {
                 viewerProps = {
                     ...viewerProps,
-                    ...options.cesiumProps.viewerProps
+                    ...options.options.viewerProps
                 };
+            }
+            if (options.hasOwnProperty('options') && options.options.hasOwnProperty('viewer')) {
+                customViewer = options.options.viewer;
             }
         }
 
-        this.viewer = new Viewer(this.divId, viewerProps);
+        this.viewer = (isDefined(customViewer)) ? customViewer :  new Viewer(this.divId, viewerProps);
 
         this.viewer.terrainProvider = new EllipsoidTerrainProvider();
         this.viewer.scene.copyGlobeDepth = true;

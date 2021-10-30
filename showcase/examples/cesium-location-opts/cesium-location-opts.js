@@ -1,6 +1,6 @@
 import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import {EllipsoidTerrainProvider} from 'cesium';
+import {createDefaultImageryProviderViewModels, EllipsoidTerrainProvider, Viewer} from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 
 window.CESIUM_BASE_URL = './';
@@ -33,16 +33,33 @@ let pointMarker = new PointMarkerLayer({
 
 // #region snippet_cesium_location_view
 // create Cesium view
+const imageryProviders = createDefaultImageryProviderViewModels();
+
 let cesiumView = new CesiumView({
     container: 'cesium-container',
     layers: [pointMarker],
-    cesiumProps: {
+    options: {
+        // can provide either viewer custom properties or full Viewer object
         viewerProps: {
             geocoder: false,
             fullscreenButton: true,
             navigationHelpButton: true,
             homeButton: true
-        }
+        },
+        viewer: new Viewer('cesium-container', {
+            baseLayerPicker: true,
+            timeline: false,
+            homeButton: false,
+            navigationInstructionsInitiallyVisible: false,
+            navigationHelpButton: false,
+            geocoder: true,
+            fullscreenButton: false,
+            showRenderLoopErrors: true,
+            animation: false,
+            scene3DOnly: true, // for draw layer
+            imageryProviderViewModels: imageryProviders,
+            selectedImageryProviderViewModel: imageryProviders[7],
+        })
     }
 });
 
