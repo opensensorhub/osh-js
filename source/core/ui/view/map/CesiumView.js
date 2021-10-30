@@ -417,7 +417,7 @@ class CesiumView extends MapView {
                 position: undefined,
                 image: properties.icon,
                 scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-                alignedAxis: (this.viewer.camera.pitch < -Math.PI / 4) ? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
+                alignedAxis: (this.viewer.camera.pitch < -Math.PI / 4) && properties.allowBillboardRotation ? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
                 rotation: rot,
                 horizontalOrigin: HorizontalOrigin.LEFT,
                 verticalOrigin: VerticalOrigin.TOP,
@@ -425,7 +425,6 @@ class CesiumView extends MapView {
                 pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
-                //default values
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
                 scale: 1.0,
                 imageSubRegion: undefined,

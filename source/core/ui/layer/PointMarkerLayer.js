@@ -20,6 +20,7 @@ import {
     assertObject,
     assertPositive,
     assertString,
+    assertBoolean,
     hasValue,
     isDefined
 } from "../../utils/Utils.js";
@@ -86,6 +87,7 @@ class PointMarkerLayer extends Layer {
      * @param {Number} [properties.labelSize=16] -
      * @param {Number[]} [properties.labelOffset=[0,0]] -
      * @param {Number} [properties.zIndex=] - z-ordering of markers
+     * @param {Number} [properties.allowBillboardRotation=true] - allow billboard rotation
      * @param {Function} [properties.getLocation] -
      * @param {Function} [properties.getDescription] -
      * @param {Function} [properties.getOrientation] -
@@ -125,6 +127,7 @@ class PointMarkerLayer extends Layer {
         this.props.color = '#000000';
         this.props.defaultToTerrainElevation = false;
         this.props.zIndex = 0;
+        this.props.allowBillboardRotation = true;
         this.props.options = {};
         this.props.markerId = 'marker';
 
@@ -206,6 +209,11 @@ class PointMarkerLayer extends Layer {
         if (hasValue(properties.zIndex)) {
             assertNumber(properties.zIndex, "zIndex");
             this.props.zIndex = properties.zIndex;
+        }
+
+        if (hasValue(properties.allowBillboardRotation)) {
+            assertBoolean(properties.allowBillboardRotation, "allowBillboardRotation");
+            this.props.allowBillboardRotation = properties.allowBillboardRotation;
         }
 
         if (hasValue(properties.color)) {
