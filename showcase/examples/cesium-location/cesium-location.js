@@ -24,11 +24,9 @@ let pointMarker = new PointMarkerLayer({
         x: rec.location.lon,
         y: rec.location.lat
     }),
-    orientation: {
-        heading: 0
-    },
     icon: 'images/car-location.png',
-    iconAnchor: [16, 40]
+    iconAnchor: [16, 40],
+    allowBillboardRotation: false
 });
 
 // #region snippet_cesium_location_view
