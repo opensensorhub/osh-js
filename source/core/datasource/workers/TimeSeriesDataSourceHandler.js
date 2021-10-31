@@ -84,7 +84,8 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             this.flush();
             if(this.timeBroadcastChannel !== null) {
                 this.timeBroadcastChannel.postMessage({
-                    timestamp: this.lastTimeStamp
+                    timestamp: this.lastTimeStamp,
+                    type: EventType.TIME
                 });
             }
         }
