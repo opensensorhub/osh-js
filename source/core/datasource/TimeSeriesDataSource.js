@@ -76,6 +76,17 @@ class TimeSeriesDataSource extends DataSource{
             topic: this.getTopicId(),
             timeTopic: this.getTimeTopicId()
         });
+
+        // listen for Events to callback to subscriptions
+        const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
+        datasourceBroadcastChannel.onmessage = (message) => {
+            const type = message.data.type;
+            if(type in this.eventSubscriptionMap){
+                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
+                    this.eventSubscriptionMap[type][i](message.data);
+                }
+            }
+        };
     }
 
     /**
