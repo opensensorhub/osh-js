@@ -91,6 +91,32 @@ The structure of such a message is:
 
 ```
 
+### Data type `time`
+
+The main idea is to be able to retrieve the timestamp of the last data from a datasource on a specified channel. 
+This is useful for example if you only want to display the different times (and compare them) of the DataSources.
+
+```json
+{
+    "timestamp": 1396076885000,
+    "type": "time"
+}
+```
+
+### Subscription
+
+A DataSource can subscribe to one or more events simultaneously. To do so, we can use the `subscribe` method by specifying the type of data we want.
+
+myDataSource.subscribe((message) =>  ..., [EventType.DATA, EventType.TIME]);
+
+### Events type
+
+Several types of events can be listened:
+- DATA: data parsed result
+- TIME: last data timestamp
+- STATUS: connexion status,
+- TIME_CHANGED: when the time of a dataSource changed
+
 ### Global configuration
 
 There are global properties common to every datasource owned by the DataSource Object.
