@@ -197,13 +197,12 @@ class CesiumView extends MapView {
 
     initCallbackEvents() {
         const that = this;
-        const infoBoxContainer = document.createElement('div');
-        infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
-        this.viewer.container.appendChild(infoBoxContainer);
+        // const infoBoxContainer = document.createElement('div');
+        // infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
+        // this.viewer.container.appendChild(infoBoxContainer);
 
-        const infoBox = new InfoBox(infoBoxContainer);
-
-        const infoBoxViewModel = infoBox.viewModel;
+        // const infoBox = new InfoBox(infoBoxContainer);
+        // const infoBoxViewModel = infoBox.viewModel;
 
         // https://groups.google.com/g/cesium-dev/c/rzLrPY5ERJs/m/VYfUj-fYCgAJ
         const onClick = (movement) => {
@@ -212,7 +211,7 @@ class CesiumView extends MapView {
                 let pickedFeature = that.viewer.scene.pick(movement.position);
 
                 if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
-                    infoBoxViewModel.showInfo = false;
+                    // infoBoxViewModel.showInfo = false;
                     return;
                 }
 
@@ -253,7 +252,7 @@ class CesiumView extends MapView {
                  that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});*/
                 }
             }catch (exception) {
-                infoBoxViewModel.showInfo = false;
+                // infoBoxViewModel.showInfo = false;
                 console.error(exception);
             }
         };
