@@ -1,1 +1,13 @@
-define(["./when-c2e8ef35","./Check-c4f3a3fc","./Math-d30358ed","./Cartesian2-e875d9d2","./Transforms-44592b02","./RuntimeError-6122571f","./WebGLConstants-4ae0db90","./ComponentDatatype-5d3f6452","./GeometryAttribute-4098b8de","./GeometryAttributes-57608efc","./Plane-2d882f9f","./VertexFormat-ad523db1","./FrustumGeometry-9dd09ba5"],function(r,e,t,n,a,d,u,o,f,m,s,c,i){"use strict";return function(e,t){return r.defined(t)&&(e=i.FrustumGeometry.unpack(e,t)),i.FrustumGeometry.createGeometry(e)}});
+/* This file is automatically rebuilt by the Cesium build process. */
+define(['./when-e6e3e713', './Check-1df6b9a0', './Math-c5f6c994', './Cartesian2-1d7364fa', './Transforms-943e8463', './RuntimeError-717c34db', './WebGLConstants-7f7d68ac', './ComponentDatatype-2b8834a4', './GeometryAttribute-3a303898', './GeometryAttributes-6cf4559b', './Plane-2e419ea5', './VertexFormat-3b318cdc', './FrustumGeometry-ac094535'], function (when, Check, _Math, Cartesian2, Transforms, RuntimeError, WebGLConstants, ComponentDatatype, GeometryAttribute, GeometryAttributes, Plane, VertexFormat, FrustumGeometry) { 'use strict';
+
+    function createFrustumGeometry(frustumGeometry, offset) {
+            if (when.defined(offset)) {
+                frustumGeometry = FrustumGeometry.FrustumGeometry.unpack(frustumGeometry, offset);
+            }
+            return FrustumGeometry.FrustumGeometry.createGeometry(frustumGeometry);
+        }
+
+    return createFrustumGeometry;
+
+});

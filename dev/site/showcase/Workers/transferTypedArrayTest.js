@@ -1,1 +1,19 @@
-"undefined"==typeof self&&(self={}),self.onmessage=function(e){"use strict";var s=e.data.array,a=self.webkitPostMessage||self.postMessage;try{a({array:s},[s.buffer])}catch(e){a({})}};
+// make sure self is defined so that the Dojo build can evaluate this file without crashing.
+if (typeof self === 'undefined') {
+    self = {}; //eslint-disable-line no-implicit-globals, no-global-assign
+}
+
+self.onmessage = function(event) {
+    'use strict';
+    var array = event.data.array;
+    var postMessage = self.webkitPostMessage || self.postMessage;
+
+    try {
+        // transfer the test array back to the caller
+        postMessage({
+            array : array
+        }, [array.buffer]);
+    } catch (e) {
+        postMessage({});
+    }
+};

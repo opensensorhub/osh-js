@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
 // #region snippet_datasource_video
 import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo';
+import {EventType} from 'osh-js/core/event/EventType';
 
 const videoDataSource = new SosGetResultVideo("drone-Video", {
   protocol: 'ws',
@@ -14,23 +14,17 @@ const videoDataSource = new SosGetResultVideo("drone-Video", {
   replaySpeed: 1.0
 });
 
-// Data are received through Broadcast channel in a separate thread.
-// When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
-// If you don't have view, or don't need, you can directly subscribe to the channel
-
-const videoBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource.id);
 const videoDivElement = document.getElementById('datasource-video');
 
-videoBroadcastChannel.onmessage = (message) => {
-  if(message.data.type === 'data') {
-    let dataEvent;
-    for(let i=0;i < message.data.values.length;i++) {
-      dataEvent =  message.data.values[i];
-      dataEvent.data.frameData = message.data.values[i].data.frameData.slice(0,10);
-      videoDivElement.value += JSON.stringify( [dataEvent]) + '\n';
-    }
+videoDataSource.subscribe((message) => {
+  let dataEvent;
+  for(let i=0;i < message.values.length;i++) {
+    dataEvent =  message.values[i];
+    dataEvent.data.frameData = message.values[i].data.frameData.slice(0,10);
+    videoDivElement.value += JSON.stringify( [dataEvent]) + '\n';
   }
-}
+}, [EventType.DATA])
+
 
 // start streaming onclick
 const runButtonElement = document.getElementById('run-datasource-button');

@@ -98,7 +98,8 @@ import {
     GroundPolylineGeometry,
     GroundPolylinePrimitive,
     PolylineGeometry,
-    PolylineColorAppearance
+    PolylineColorAppearance,
+    LabelStyle
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
@@ -142,9 +143,9 @@ class CesiumView extends MapView {
      * @param {String} properties.container - The div element to attach to
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      * @param {Boolean} [properties.autoZoomOnFirstMarker=false] - auto zoom on the first added marker
-     * @param {Object} [properties.cesiumProps={}] - Properties which can override the default framework ones
-     * @param {Object} [properties.cesiumProps.viewerProps={}] - the properties of the [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
-     *
+     * @param {Object} [properties.options={}] - Properties which can override the default framework ones
+     * @param {Object} [properties.options.viewer=undefined] - the Viewer object to pass [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
+     * @param {Object} [properties.options.viewerProps={}] - the properties of the [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
      */
     constructor(properties) {
         super({
@@ -194,16 +195,20 @@ class CesiumView extends MapView {
 
         // #endregion snippet_cesiumview_default_cesiumprops_viewer_props
 
+        let customViewer = undefined;
         if (isDefined(options)) {
-            if (options.hasOwnProperty('cesiumProps') &amp;&amp; options.cesiumProps.hasOwnProperty('viewerProps')) {
+            if (options.hasOwnProperty('options') &amp;&amp; options.options.hasOwnProperty('viewerProps')) {
                 viewerProps = {
                     ...viewerProps,
-                    ...options.cesiumProps.viewerProps
+                    ...options.options.viewerProps
                 };
+            }
+            if (options.hasOwnProperty('options') &amp;&amp; options.options.hasOwnProperty('viewer')) {
+                customViewer = options.options.viewer;
             }
         }
 
-        this.viewer = new Viewer(this.divId, viewerProps);
+        this.viewer = (isDefined(customViewer)) ? customViewer :  new Viewer(this.divId, viewerProps);
 
         this.viewer.terrainProvider = new EllipsoidTerrainProvider();
         this.viewer.scene.copyGlobeDepth = true;
@@ -223,13 +228,12 @@ class CesiumView extends MapView {
 
     initCallbackEvents() {
         const that = this;
-        const infoBoxContainer = document.createElement('div');
-        infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
-        this.viewer.container.appendChild(infoBoxContainer);
+        // const infoBoxContainer = document.createElement('div');
+        // infoBoxContainer.className = 'cesium-viewer-infoBoxContainer';
+        // this.viewer.container.appendChild(infoBoxContainer);
 
-        const infoBox = new InfoBox(infoBoxContainer);
-
-        const infoBoxViewModel = infoBox.viewModel;
+        // const infoBox = new InfoBox(infoBoxContainer);
+        // const infoBoxViewModel = infoBox.viewModel;
 
         // https://groups.google.com/g/cesium-dev/c/rzLrPY5ERJs/m/VYfUj-fYCgAJ
         const onClick = (movement) => {
@@ -238,7 +242,7 @@ class CesiumView extends MapView {
                 let pickedFeature = that.viewer.scene.pick(movement.position);
 
                 if (!isDefined(pickedFeature) || !isDefined(pickedFeature.id)) {
-                    infoBoxViewModel.showInfo = false;
+                    // infoBoxViewModel.showInfo = false;
                     return;
                 }
 
@@ -279,7 +283,7 @@ class CesiumView extends MapView {
                  that.onMarkerLeftClick(layer.props.id, pickedFeature, layer.props, {});*/
                 }
             }catch (exception) {
-                infoBoxViewModel.showInfo = false;
+                // infoBoxViewModel.showInfo = false;
                 console.error(exception);
             }
         };
@@ -443,7 +447,7 @@ class CesiumView extends MapView {
                 position: undefined,
                 image: properties.icon,
                 scaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
-                alignedAxis: (this.viewer.camera.pitch &lt; -Math.PI / 4) ? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
+                alignedAxis: (this.viewer.camera.pitch &lt; -Math.PI / 4) &amp;&amp; properties.allowBillboardRotation ? Cartesian3.UNIT_Z : Cartesian3.ZERO, // Z means rotation is from north
                 rotation: rot,
                 horizontalOrigin: HorizontalOrigin.LEFT,
                 verticalOrigin: VerticalOrigin.TOP,
@@ -451,7 +455,6 @@ class CesiumView extends MapView {
                 pixelOffsetScaleByDistance: new NearFarScalar(1000, 1.0, 10e6, 0.0),
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
-                //default values
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
                 scale: 1.0,
                 imageSubRegion: undefined,
@@ -493,27 +496,29 @@ class CesiumView extends MapView {
         const labelColor = properties.labelColor || '#FFFFFF';
         const labelSize = properties.labelSize || 16;
         const labelOffset = new Cartesian2(properties.labelOffset[0], properties.labelOffset[1]);
+        const labelBackgroundColor = properties.labelBackgroundColor &amp;&amp; Color.fromCssColorString(properties.labelBackgroundColor);
+        const labelOutlineColor = properties.labelOutlineColor &amp;&amp; Color.fromCssColorString(properties.labelOutlineColor);
 
         const labelOpts = {
-            backgroundColor: undefined,
+            backgroundColor: labelBackgroundColor || undefined,
             backgroundPadding: undefined,
             distanceDisplayCondition: undefined,
             eyeOffset: undefined,
             fillColor: Color.fromCssColorString(labelColor),
             font: labelSize + 'px sans-serif',
-            heightReference: undefined,
+            heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
             horizontalOrigin: HorizontalOrigin.CENTER,
             id: undefined,
-            outlineColor: undefined,
-            outlineWidth: undefined,
+            outlineColor: labelOutlineColor || undefined,
+            outlineWidth: (labelOutlineColor &amp;&amp; 1.0) || undefined,
             pixelOffset: labelOffset,
             pixelOffsetScaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
             position: Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]),
             scale: undefined,
             scaleByDistance: new NearFarScalar(150, 1.0, 1e6, 0.0),
             show: undefined,
-            showBackground: undefined,
-            style: undefined,
+            showBackground: (labelBackgroundColor &amp;&amp; true) || false,
+            style: LabelStyle.FILL_AND_OUTLINE,
             text: label,
             totalScale: undefined,
             translucencyByDistance: undefined,

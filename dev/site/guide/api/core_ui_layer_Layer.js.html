@@ -202,9 +202,10 @@ class Layer {
      * @param {Object[]} records
      * @param options
      */
-    setData(dataSourceId, records, options) {
+    setData(dataSourceId, records, options={}) {
         // store data into data props
         this.data = [];
+        options.dataSourceId = dataSourceId;
         if (isDefined(this.dataSourcesToFn)) {
             if (dataSourceId in this.dataSourcesToFn) {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
