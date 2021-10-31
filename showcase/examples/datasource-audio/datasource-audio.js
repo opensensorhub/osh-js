@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
 // #region snippet_datasource_audio
 import SosGetResultAudio from "osh-js/core/datasource/SosGetResultAudio";
+import {EventType} from "osh-js/core/event/EventType";
 
 let audioDataSource = new SosGetResultAudio("alex-audio", {
   protocol: "ws",
@@ -19,19 +19,16 @@ let audioDataSource = new SosGetResultAudio("alex-audio", {
 // When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
 // If you don't have view, or don't need, you can directly subscribe to the channel
 
-const audioBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + audioDataSource.id);
 const divElement = document.getElementById('datasource-audio');
 
-audioBroadcastChannel.onmessage = (message) => {
-  if(message.data.type === 'data') {
-    let dataEvent;
-    for(let i=0;i < message.data.values.length;i++) {
-      dataEvent =  message.data.values[i];
-      dataEvent.data.frameData = message.data.values[i].data.frameData.slice(0,10);
-      divElement.value += JSON.stringify( [dataEvent]) + '\n';
-    }
+audioDataSource.subscribe((message) => {
+  let dataEvent;
+  for(let i=0;i < message.values.length;i++) {
+    dataEvent =  message.values[i];
+    dataEvent.data.frameData = message.values[i].data.frameData.slice(0,10);
+    divElement.value += JSON.stringify( [dataEvent]) + '\n';
   }
-}
+}, [EventType.DATA])
 
 // start streaming onclick
 const runButtonElement = document.getElementById('run-datasource-button');

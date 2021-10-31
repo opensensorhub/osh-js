@@ -2,11 +2,11 @@ import SweJson from 'osh-js/core/datasource/SosGetResultJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
 import MapboxView from 'osh-js/core/ui/view/map/MapboxView';
+import {EventType} from 'osh-js/core/event/EventType';
 
 import {
     Cartographic, Math as MathCesium
@@ -287,15 +287,7 @@ const timeElt = document.getElementById("time");
 const loadElt = document.getElementById("load");
 const removeAllElt = document.getElementById("removeall");
 
-const bc = new BroadcastChannel(DATASOURCE_DATA_TOPIC + avlDataSource.id)
-
-bc.onmessage = (event) => {
-    if (event.data.type === 'data') {
-        for (let i = 0; i < event.data.values.length; i++) {
-            timeElt.innerText = new Date(event.data.values[i].timeStamp).toISOString();
-        }
-    }
-}
+avlDataSource.subscribe((message) =>  timeElt.innerText = new Date(message.timestamp).toISOString(), [EventType.TIME]);
 
 removeAllElt.setAttribute("disabled", "");
 

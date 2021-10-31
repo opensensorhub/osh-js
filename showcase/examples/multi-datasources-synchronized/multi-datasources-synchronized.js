@@ -1,9 +1,8 @@
-import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
 import {displayVideo0, displayVideo1, displayVideo2, displayError} from './display-values';
+import {EventType} from 'osh-js/core/event/EventType';
 
 import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import {TIME_SYNCHRONIZER_TOPIC} from 'osh-js/core/Constants';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
@@ -59,38 +58,10 @@ const dataSynchronizer = new DataSynchronizer({
 // connects each DataSource
 dataSynchronizer.connect();
 
-// Data are received through Broadcast channel in a separate thread.
-// When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
-// If you don't have view, or don't need, you can directly subscribe to the channel
-
-const video0BroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource0.id);
-const video1BroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource1.id);
-const video2BroadcastChannel     = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource2.id);
-
-const syncTimeBroadcastChannel  = new BroadcastChannel(TIME_SYNCHRONIZER_TOPIC + dataSynchronizer.id);
-
-
-video0BroadcastChannel.onmessage = (message) => {
-  if(message.data.type === 'data') {
-    displayVideo0(message.data.values);
-  }
-}
-
-video1BroadcastChannel.onmessage = (message) => {
-  if(message.data.type === 'data') {
-    displayVideo1(message.data.values);
-  }
-}
-
-video2BroadcastChannel.onmessage = (message) => {
-  if(message.data.type === 'data') {
-    displayVideo2(message.data.values);
-  }
-}
-
-syncTimeBroadcastChannel.onmessage = (message) => {
-    displayError(message.data.timestamp);
-}
+videoDataSource0.subscribe((message) => displayVideo0(message.values), [EventType.DATA])
+videoDataSource1.subscribe((message) => displayVideo1(message.values), [EventType.DATA])
+videoDataSource2.subscribe((message) => displayVideo2(message.values), [EventType.DATA])
+dataSynchronizer.subscribe((message) => displayError(message.timestamp), [EventType.TIME])
 
 // start streaming
 dataSynchronizer.connect();
