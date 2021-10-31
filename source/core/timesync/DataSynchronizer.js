@@ -16,7 +16,7 @@
 
 import {isDefined, randomUUID} from "../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.worker.js';
-import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_DATA_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
+import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
 
 class DataSynchronizer {
     /**
@@ -37,7 +37,7 @@ class DataSynchronizer {
         this.replaySpeed = 1;
         this.timerResolution = 5;
         this.initialized = false;
-        
+
         if(isDefined(properties.replaySpeed)) {
             this.replaySpeed = properties.replaySpeed;
         }
@@ -48,6 +48,9 @@ class DataSynchronizer {
 
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
+
+        this.eventSubscriptionMap = {};
+        this.initEventSubscription();
     }
 
     /**
@@ -63,14 +66,14 @@ class DataSynchronizer {
         }
 
         this.synchronizerWorker = new DataSynchronizerWorker();
-        
+
         this.synchronizerWorker.onmessage = (event) => {
             if (event.data.message === 'initialized') {
                 this.initialized = true;
                 console.log("datasynchronizer initialized");
             }
         }
-        
+
         this.synchronizerWorker.postMessage({
             message: 'init',
             dataSources: dataSourcesForWorker,
@@ -79,6 +82,30 @@ class DataSynchronizer {
             dataTopic: this.getTopicId(),
             timeTopic: this.getTimeTopicId()
         });
+    }
+
+    /**
+     * @private
+     */
+    initEventSubscription() {
+        // listen for Events to callback to subscriptions
+        new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
+            const type = message.data.type;
+            if(type in this.eventSubscriptionMap){
+                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
+                    this.eventSubscriptionMap[type][i](message.data);
+                }
+            }
+        };
+
+        new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
+            const type = message.data.type;
+            if(type in this.eventSubscriptionMap){
+                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
+                    this.eventSubscriptionMap[type][i](message.data);
+                }
+            }
+        };
     }
 
     /**
@@ -134,7 +161,7 @@ class DataSynchronizer {
     /**
      * Connects all dataSources
      */
-    connect() {      
+    connect() {
         // wait until webworker is fully initialized before connecting datasources
         let tryConnect = () => {
             if (this.initialized) {
@@ -143,10 +170,10 @@ class DataSynchronizer {
               setTimeout(tryConnect, 100);
             }
         };
-        
+
         tryConnect();
     }
-    
+
     doConnect() {
         for(let dataSource of this.dataSources) {
             dataSource.connect();
@@ -304,6 +331,16 @@ class DataSynchronizer {
             }
         }
         return true;
+    }
+
+    subscribe(fn, eventTypes) {
+        // associate function to eventType
+        for(let i=0;i < eventTypes.length;i++) {
+            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
+                this.eventSubscriptionMap[eventTypes[i]] = [];
+            }
+            this.eventSubscriptionMap[eventTypes[i]].push(fn);
+        }
     }
 }
 export default  DataSynchronizer;

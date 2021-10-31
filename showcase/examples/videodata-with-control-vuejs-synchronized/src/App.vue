@@ -40,7 +40,6 @@
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import {DATASOURCE_DATA_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "osh-js/core/Constants";
 import {EventType} from "osh-js/core/event/EventType";
 
 export default {
@@ -159,67 +158,19 @@ export default {
       video2DivElement.scrollTop = video2DivElement.scrollHeight;
     }
 
-    let errorCount = 0;
-    const that = this;
-
-    function displayError(dataSourceId, timestamp) {
-      if (timestamp < that.lastTimestamp) {
-        // get DS name
-        let name = '';
-        for (let i = 0; i < that.dataSynchronizer.dataSources.length; i++) {
-          if (that.dataSynchronizer.dataSources[i].id === dataSourceId) {
-            name = `(${that.dataSynchronizer.dataSources[i].name})`;
-          }
-        }
-        errorCount++;
-        if (errorCount % 200 === 0) {
-          errorDivElement.value = new Date(timestamp).toISOString() + ' < ' + new Date(that.lastTimestamp).toISOString() + ' ' + name + '\n';
-        } else {
-          errorDivElement.value += new Date(timestamp).toISOString() + ' < ' + new Date(that.lastTimestamp).toISOString() + ' ' + name + '\n';
-        }
-      } else {
-        currentTimeDivElement.innerText = new Date(timestamp).toISOString() + ' - Current';
-        that.lastTimestamp = timestamp;
+    let lastTimestamp;
+    function displayError(timestamp) {
+      if(timestamp < lastTimestamp) {
+        errorDivElement.value += new Date(timestamp).toISOString() + ' < ' + new Date(lastTimestamp).toISOString()+ '\n';
       }
-      errorDivElement.scrollTop = errorDivElement.scrollHeight;
+      lastTimestamp = timestamp;
 
     }
 
-    const video0BroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource0.id);
-    const video1BroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource1.id);
-    const video2BroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + videoDataSource2.id);
-
-    const syncTimeBroadcastChannel = new BroadcastChannel(TIME_SYNCHRONIZER_TOPIC + this.dataSynchronizer.id);
-
-    video0BroadcastChannel.onmessage = (message) => {
-      if (message.data.type === 'data') {
-        displayVideo0(message.data.values);
-      }
-    }
-
-    video1BroadcastChannel.onmessage = (message) => {
-      if (message.data.type === 'data') {
-        displayVideo1(message.data.values);
-      }
-    }
-
-    video2BroadcastChannel.onmessage = (message) => {
-      if (message.data.type === 'data') {
-        displayVideo2(message.data.values);
-      }
-    }
-
-    syncTimeBroadcastChannel.onmessage = (message) => {
-      if(that.waitForTimeChangedEvent) {
-        if(message.data.type ===  EventType.DATA) {
-          console.warn('Skip data, old version');
-        } else if(message.data.type ===  EventType.TIME_CHANGED) {
-          that.waitForTimeChangedEvent = false;
-        }
-        return;
-      }
-      displayError(message.data.dataSourceId, message.data.timestamp);
-    }
+    videoDataSource0.subscribe((message) => displayVideo0(message.values), [EventType.DATA])
+    videoDataSource1.subscribe((message) => displayVideo1(message.values), [EventType.DATA])
+    videoDataSource2.subscribe((message) => displayVideo2(message.values), [EventType.DATA])
+    this.dataSynchronizer.subscribe((message) => displayError(message.timestamp, [EventType.TIME]));
 
   },
   methods: {

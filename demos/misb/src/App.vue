@@ -50,7 +50,6 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
-import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
 import SosGetFois from "osh-js/core/datasource/SosGetFois";
 import VideoPanel from "./components/VideoPanel.vue";
 
@@ -259,155 +258,86 @@ export default {
 
       // Link DataSources connected/disconnected Status to state
       // update drone status
-      const droneLocationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneLocationDataSource.id);
-      droneLocationBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              platformLocation: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              platformLocation: {
-                connected: false
-              }
-            });
-          }
+      this.droneLocationDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateDroneStatus', {
+            platformLocation: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
-      const droneVideoBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneVideoDataSource.id);
-      droneVideoBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              video: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              video: {
-                connected: false
-              }
-            });
-          }
+      this.droneVideoDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateDroneStatus', {
+            video: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
-      const droneOrientationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneOrientationDataSource.id);
-      droneOrientationBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              platformOrientation: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              platformOrientation: {
-                connected: false
-              }
-            });
-          }
+      this.droneOrientationDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateDroneStatus', {
+            platformOrientation: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
-      const droneCameraOrientationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneCameraOrientationDataSource.id);
-      droneCameraOrientationBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              cameraOrientation: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              cameraOrientation: {
-                connected: false
-              }
-            });
-          }
+      this.droneCameraOrientationDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateDroneStatus', {
+            cameraOrientation: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
-      const droneHFovBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneHFovDataSource.id);
-      droneHFovBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              hFov: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              hFov: {
-                connected: false
-              }
-            });
-          }
+      this.droneHFovDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateDroneStatus', {
+            hFov: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
-      const droneVFovBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.droneVFovDataSource.id);
-      droneVFovBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              vFov: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateDroneStatus', {
-              vFov: {
-                connected: false
-              }
-            });
-          }
+
+      this.droneVFovDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateDroneStatus', {
+            vFov: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
       // Update GeoRef status
-      const droneGeoRefImageFrameBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.geoRefImageFrameDataSource.id);
-      droneGeoRefImageFrameBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateGeoRefStatus', {
-              connected: true
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateGeoRefStatus', {
-              connected: false
-            });
-          }
+      this.geoRefImageFrameDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateGeoRefStatus', {
+            connected: (message.status === Status.CONNECTED)
+          });
         }
-      }
+      }, [EventType.STATUS]);
 
       // Update Target status
-      const targetLocationBroadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC +this. targetLocationDataSource.id);
-      targetLocationBroadcastChannel.onmessage = (message) => {
-        if (message.data.type === EventType.STATUS) {
-          if (message.data.status === Status.CONNECTED) {
-            this.$store.dispatch('updateTargetStatus', {
-              location: {
-                connected: true
-              }
-            });
-          } else if (message.data.status === Status.DISCONNECTED) {
-            this.$store.dispatch('updateTargetStatus', {
-              location: {
-                connected: false
-              }
-            });
-          }
+      this.targetLocationDataSource.subscribe((message) => {
+        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+          this.$store.dispatch('updateTargetStatus', {
+            location: {
+              connected: (message.status === Status.CONNECTED)
+            }
+          });
         }
-      }
+      }, [EventType.STATUS]);
     }
   }
 };

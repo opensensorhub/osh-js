@@ -115,7 +115,7 @@ function onData(dataSourceId, data) {
     timeBroadcastChannel.postMessage({
         timestamp: data.timeStamp,
         dataSourceId: dataSourceId,
-        type: EventType.DATA
+        type: EventType.TIME
     });
 }
 

@@ -8,7 +8,6 @@
     // @ is an alias to /src
 import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
-import {DATASOURCE_DATA_TOPIC} from "osh-js/core/Constants";
 import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
@@ -78,12 +77,7 @@ export default {
         autoZoomOnFirstMarker: true
       });
 
-      const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC + this.locationDataSource.id);
-      broadcastChannel.onmessage = (event) => {
-        if (event.data.type === EventType.STATUS && event.data.status === Status.DISCONNECTED) {
-          this.view.reset();
-        }
-      };
+      this.locationDataSource.subscribe((message) => {if(message.status === Status.DISCONNECTED) this.view.reset()}, [EventType.STATUS]);
     }
   }
 };

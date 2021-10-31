@@ -226,16 +226,13 @@ export default {
 
         this.createTimeBc();
         // listen for datasource status
-        const bc = new BroadcastChannel(this.dataSourceObject.getTopicId());
-        bc.onmessage = (event) => {
-          if (event.data.type === "status") {
-            if (event.data.status === STATUS.DISCONNECTED) {
-              this.connected = false;
-            } else if (event.data.status === STATUS.CONNECTED) {
-              this.connected = true;
-            }
+        this.dataSourceObject.subscribe(message => {
+          if (message.status === STATUS.DISCONNECTED) {
+            this.connected = false;
+          } else if (message.status === STATUS.CONNECTED) {
+            this.connected = true;
           }
-        }
+        }, [EventType.STATUS]);
 
         this.createRangeSlider();
 
@@ -261,53 +258,54 @@ export default {
     },
     createTimeBc() {
       // listen for BC
-      this.bcTime = new BroadcastChannel(this.dataSourceObject.getTimeTopicId());
-      this.bcTime.onmessage =  (message) => {
+      this.dataSourceObject.subscribe(message => {
         if(this.waitForTimeChangedEvent) {
           console.log('Waiting for TIME CHANGED EVENT');
         }
+
         if(this.waitForTimeChangedEvent) {
-          if(message.data.type ===  EventType.DATA) {
+          if(message.type ===  EventType.TIME) {
             this.displayConsoleWarningIncompatibleVersionThrottle();
-          } else if(message.data.type ===  EventType.TIME_CHANGED) {
+          } else if(message.type ===  EventType.TIME_CHANGED) {
             this.waitForTimeChangedEvent = false;
           }
           return;
         }
-        if(message.data.type === EventType.DATA) {
+
+        if(message.type === EventType.TIME) {
           // consider here datasynchronizer sends data in time order
           if (isDefined(this.dataSynchronizer)) {
-            const contains = message.data.dataSourceId in this.outOfSync;
-            if (message.data.timestamp < this.lastSynchronizedTimestamp) {
+            const contains = message.dataSourceId in this.outOfSync;
+            if (message.timestamp < this.lastSynchronizedTimestamp) {
               if (!contains) {
                 if (isDefined(this.dataSynchronizer)) {
                   this.dataSynchronizer.dataSources.forEach(datasource => {
-                    if (datasource.id === message.data.dataSourceId) {
+                    if (datasource.id === message.dataSourceId) {
                       this.outOfSync[datasource.id] = datasource;
                     }
                   });
                 } else {
-                  this.outOfSync[message.data.dataSourceId] = this.dataSourceObject;
+                  this.outOfSync[message.dataSourceId] = this.dataSourceObject;
                 }
               }
               return;
             } else if (contains) {
               // check that the datasource is not out of sync anymore
-              delete this.outOfSync[message.data.dataSourceId];
+              delete this.outOfSync[message.dataSourceId];
             }
           }
-          this.lastSynchronizedTimestamp = message.data.timestamp;
+          this.lastSynchronizedTimestamp = message.timestamp;
 
           if (this.replay) {
             if (!this.interval && this.speed > 0.0 && !this.update) {
               // }
-              this.setStartTime(message.data.timestamp);
+              this.setStartTime(message.timestamp);
             }
           } else {
-            this.realtime = message.data.timestamp;
+            this.realtime = message.timestamp;
           }
         }
-      }
+      }, [EventType.TIME_CHANGED,EventType.TIME]);
     },
     setStartTime(timestamp) {
       this.startTime = timestamp;

@@ -43,6 +43,8 @@ class DataSource {
         this.properties = properties;
         this.dataSourceWorker = worker;
         this.currentRunningProperties = {};
+        this.eventSubscriptionMap = {};
+
         this.initDataSource(properties);
     }
 
@@ -58,6 +60,17 @@ class DataSource {
             properties: JSON.stringify(properties),
             topic: this.getTopicId()
         });
+
+        // listen for Events to callback to subscriptions
+        const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
+        datasourceBroadcastChannel.onmessage = (message) => {
+            const type = message.data.type;
+            if(type in this.eventSubscriptionMap){
+                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
+                    this.eventSubscriptionMap[type][i](message.data);
+                }
+            }
+        };
     }
 
 
@@ -170,6 +183,16 @@ class DataSource {
 
     getVersion() {
         return 0;
+    }
+
+    subscribe(fn, eventTypes) {
+        // associate function to eventType
+        for(let i=0;i < eventTypes.length;i++) {
+            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
+                this.eventSubscriptionMap[eventTypes[i]] = [];
+            }
+            this.eventSubscriptionMap[eventTypes[i]].push(fn);
+        }
     }
 }
 
