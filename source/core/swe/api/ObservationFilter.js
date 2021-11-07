@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 import {isDefined} from "../utils/Utils";
 
-class ObsFilter {
+class ObservationFilter {
     /**
      *
      * @param {Object} properties - object properties
@@ -28,7 +28,6 @@ class ObsFilter {
      * @param {string[]} properties.propUris
      */
     constructor(properties) {
-        // time range | now | latest
         this.datastreamIds = [];
         // time range | latest
         this.phenomenonTime = 'now';
@@ -61,4 +60,4 @@ class ObsFilter {
         }
     }
 }
-export default ObsFilter;
+export default ObservationFilter;
