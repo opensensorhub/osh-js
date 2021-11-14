@@ -193,10 +193,21 @@ var samples = [{
         url: "audio"
     },
     {
+        name: "Audio Raw Binary decoding",
+        description: "Listen to raw audio stream using WebCodec/FFmpeg.js",
+        url: "audioRaw"
+    },
+    {
         name: "Audio WebCodec/FFmpeg.js decoding with time controller",
         description: "Listen audio stream using WebCodec/FFmpeg.js with time controller",
         url: 'audio-with-control-vuejs',
         code: 'vue/App_examples/audio-with-control-vuejs.vue'
+    },
+    {
+        name: "Audio WebCodec/FFmpeg.js decoding with time controller",
+        description: "Listen to raw audio stream using WebCodec/FFmpeg.js with time controller",
+        url: 'audioRaw-with-control-vuejs',
+        code: 'vue/App_examples/audioRaw-with-control-vuejs.vue'
     },
     {
         name: "Audio & Video WebCodec/FFmpeg.js decoding with time controller",

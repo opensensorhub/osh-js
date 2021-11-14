@@ -64,8 +64,6 @@ module.exports = [{
     ]
 }];
 
-<<
-<< << < HEAD
 let directories = [
     'cesium-fois',
     'cesium-location',
