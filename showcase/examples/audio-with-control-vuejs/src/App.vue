@@ -39,26 +39,14 @@
       mounted() {
         // setup video
         // create data source for UAV camera
-        // let audioDataSource = new SosGetResultAudio("alex-audio", {
-        //   protocol: "ws",
-        //   service: "SOS",
-        //   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-        //   offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
-        //   observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
-        //   startTime: "2021-04-12T10:48:45Z",
-        //   endTime: "2021-04-12T10:49:45Z",
-        //   replaySpeed: 1.0,
-        //   bufferingTime: 1000
-        // });
-
-        let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
+        let audioDataSource = new SosGetResultAudio("alex-audio", {
           protocol: "ws",
           service: "SOS",
-          endpointUrl: "70.115.128.249:8282/sensorhub/sos",
-          offeringID: "urn:osh:audio:wav",
-          observedProperty: "urn:osh:audio:wav:sampleArray",
-          startTime: "2019-03-27T14:18:00Z",
-          endTime: "2019-03-27T14:53:00Z",
+          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
+          observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
+          startTime: "2021-04-12T10:48:45Z",
+          endTime: "2021-04-12T10:49:45Z",
           replaySpeed: 1.0,
           bufferingTime: 1000
         });

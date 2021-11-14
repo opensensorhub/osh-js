@@ -39,7 +39,7 @@
         let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
           protocol: "ws",
           service: "SOS",
-          endpointUrl: "localhost:8282/sensorhub/sos",
+          endpointUrl: "localhost:8989/sensorhub/sos",
           offeringID: "urn:osh:audio:wav",
           observedProperty: "urn:osh:audio:wav:sampleArray",
           startTime: "2019-03-27T14:18:00Z",

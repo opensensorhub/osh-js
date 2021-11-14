@@ -204,7 +204,7 @@ var samples = [{
         code: 'vue/App_examples/audio-with-control-vuejs.vue'
     },
     {
-        name: "Audio WebCodec/FFmpeg.js decoding with time controller",
+        name: "Audio Raw WebCodec/FFmpeg.js decoding with time controller",
         description: "Listen to raw audio stream using WebCodec/FFmpeg.js with time controller",
         url: 'audioRaw-with-control-vuejs',
         code: 'vue/App_examples/audioRaw-with-control-vuejs.vue'
