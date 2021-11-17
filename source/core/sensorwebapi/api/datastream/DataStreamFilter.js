@@ -1,5 +1,3 @@
-import {isDefined} from "../../utils/Utils";
-
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -16,43 +14,41 @@ import {isDefined} from "../../utils/Utils";
 
  ******************************* END LICENSE BLOCK ***************************/
 
-class SystemFilter {
+import SensorWebApiFilter from "../Filter";
+
+class SystemFilter extends SensorWebApiFilter {
     /**
      *
      * @param {Object} properties - object properties
      * @param {string[]} [properties.q=undefined] - Comma separated keywords used for full-text search
      * @param {number[]} [properties.bbox=undefined] - BBOX to filter resources on their location
      * @param {string} [properties.location=undefined] - WKT geometry and operator to filter resources on their location or geometry
-     * @param {string[]} [properties.parent=undefined] - Comma separated list of parent resource IDs to restrict the search to or "*" to include nested resources at any level
+     * @param {string[]} [properties.observedProperty=undefined] - Comma separated list of observed property URIs to get observations for
+     * @param {string[]} [properties.featureOfInterest=undefined] - Comma separated list of feature of interest IDs to get observations for
      * @param {string[]} [properties.select=undefined] - Comma separated list of properties to include or exclude from results (use "!" prefix to exclude)
      * @param {string} [properties.format='application/json'] - Mime type designating the format to use to encode the response.
      * @param {string} [properties.validTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
-     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {string} [properties.resultTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter observations on their result time.
+     * When this parameter is omitted, no filtering on "resultTime" is applied.
+     * @param {string} [properties.phenomenonTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter observations on the phenomenon time.
+     * When this parameter is omitted, no filtering on "phenomenonTime" is applied.
      */
     constructor(properties) {
-        this.props = {
+        super({
             q: undefined,
             bbox: undefined,
             location: undefined,
-            parent: undefined,
+            observedProperty: undefined,
+            featureOfInterest: undefined,
             select: undefined,
             format: 'application/json',
             validTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
+            phenomenonTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
+            resultTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
             ...properties // merge defined properties
-        }
+        });
         //TODO: assertions
-    }
-
-    toQueryString() {
-        let queryString = '';
-        let separator = '';
-        for (let queryParameter in this.props) {
-            if(isDefined(this.props[queryParameter])) {
-                queryString += separator + queryParameter + '=' + this.props[queryParameter];
-                separator = '&';
-            }
-        }
-        return queryString;
     }
 }
 export default SystemFilter;

@@ -1,5 +1,5 @@
 import DataSourceParser from "./DataSourceParser";
-import System from "../../sensorwebapi/api/System";
+import System from "../../sensorwebapi/api/system/System";
 
 class SensorWebApiFetchSystemParser extends DataSourceParser {
     constructor(networkProperties) {
@@ -8,16 +8,14 @@ class SensorWebApiFetchSystemParser extends DataSourceParser {
     }
 
     parseData(data) {
-        const systems = [];
-        for (let i = 0; i < data.items.length; i++) {
-            systems.push(new System(
-                data.items[i].id,
-                data.items[i].type,
-                data.items[i].properties,
-                this.networkProperties
-            ));
-        }
-        return systems;
+        return new System(
+            {
+                id: data.id,
+                type: data.type,
+                ...data.properties,
+            },
+            this.networkProperties
+        );
     }
 
     buildUrl(properties) {

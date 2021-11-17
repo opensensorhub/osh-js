@@ -72,11 +72,12 @@ class HttpConnector extends DataConnector {
 
     /**
      * Sends the request to the defined server.
+     * @param {String} extraUrl - extra url to append to the url
      * @param {String} queryString - get query parameters
      */
-    doRequest(queryString= undefined) {
+    doRequest(extraUrl = '',queryString= undefined) {
         const instance = this;
-        let fullUrl = this.getUrl();
+        let fullUrl = this.getUrl() + extraUrl;
 
         if(isDefined(queryString)) {
             fullUrl += '?'+queryString;
