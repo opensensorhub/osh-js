@@ -20,7 +20,6 @@ class Systems extends SensorWebApi {
     async getSystems(systemFilter = new SystemFilter(), pageSize) {
         const connector = this.createConnector('/systems');
         const collection = new Collection('/systems', systemFilter.toQueryString(), pageSize,this.parser, connector);
-        await collection.fetchData();
         return collection;
     }
 

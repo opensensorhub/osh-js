@@ -53,10 +53,9 @@ class Collection {
 
     async nextPage(pageSize = undefined) {
         // > 0 => 0 = start, -1 = maxValues
-        if (this.nextOffset > 0 && (!isDefined(this.parseData)
-            || this.parseData.length === 0
-            || this.nextOffset > this.parseData.length
-            || this.cursorPosition === this.nextOffset)
+        if (this.parseData.length === 0 || (this.nextOffset > 0 &&
+            (this.nextOffset > this.parseData.length
+            || this.cursorPosition === this.nextOffset))
         ) {
             await this.fetchData();
         }
