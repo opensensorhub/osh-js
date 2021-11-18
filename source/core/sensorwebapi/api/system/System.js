@@ -20,6 +20,8 @@ import Collection from "../Collection";
 import SensorWebApiFetchSystemParser from "../../../datasource/parsers/SensorWebApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
 import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
+import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
+import SensorWebApiFetchFeatureOfInterestParser  from "../../../datasource/parsers/SensorWebApiFetchFeatureOfInterest.parser";
 
 class System extends SensorWebApi {
 
@@ -28,6 +30,7 @@ class System extends SensorWebApi {
         this.properties = properties;
         this.systemParser = new SensorWebApiFetchSystemParser(networkProperties);
         this.dataStreamParser = new SensorWebApiFetchDataStreamParser(networkProperties);
+        this.featureOfInterestParser = new SensorWebApiFetchFeatureOfInterestParser(networkProperties);
     }
 
     /**
@@ -57,6 +60,13 @@ class System extends SensorWebApi {
         return new Collection(`/systems/${this.properties.id}/datastreams`, dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this.connector);
     }
 
+    /**
+     *
+     * @returns {Collection<FeatureOfInterest>} A collection of FeatureOfInterest
+     */
+    async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize) {
+        return new Collection(`/systems/${this.properties.id}/featuresOfInterest`, featureOfInterestFilter.toQueryString(), pageSize,this.featureOfInterestParser, this.connector);
+    }
 }
 
 export default System;
