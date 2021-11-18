@@ -35,11 +35,11 @@ class FeaturesOfInterest extends SensorWebApi {
      * @returns {Collection<FeaturesOfInterest>} A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize) {
-        return new Collection('/featuresOfInterest', featureOfInterestFilter.toQueryString(), pageSize,this.parser, this.connector);
+        return new Collection('/featuresOfInterest', featureOfInterestFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
     }
 
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
-        const response = await this.connector.doRequest(`/featuresOfInterest/${fId}`,featureOfInterestFilter.toQueryString(['select','format']));
+        const response = await this._network.info.connector.doRequest(`/featuresOfInterest/${fId}`,featureOfInterestFilter.toQueryString(['select','format']));
         return this.parser.parseData(response);
     }
 }

@@ -33,11 +33,11 @@ class Observations extends SensorWebApi {
      * @returns {Collection<Observation>} A collection of Observation
      */
     async searchObservations(observationFilter = new ObservationFilter(), pageSize) {
-        return new Collection('/observations', observationFilter.toQueryString(), pageSize,this.parser, this.connector);
+        return new Collection('/observations', observationFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
     }
 
     async getObservationById(observationId,observationFilter = new ObservationFilter()) {
-        const response = await this.connector.doRequest(`/observations/${observationId}`,observationFilter.toQueryString(['select','format']));
+        const response = await this._network.info.connector.doRequest(`/observations/${observationId}`,observationFilter.toQueryString(['select','format']));
         return this.parser.parseData(response);
     }
 }

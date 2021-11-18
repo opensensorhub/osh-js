@@ -49,8 +49,8 @@ class HttpConnector extends DataConnector {
      * @param {String} properties.method -
      * @param {String} properties.headers -
      */
-    constructor(url, properties) {
-        super(url);
+    constructor(url, properties ) {
+        super(url, properties);
 
         this.method = "POST";
         this.responseType = "application/json";

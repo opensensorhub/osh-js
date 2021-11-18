@@ -25,7 +25,6 @@ class Observation extends SensorWebApi {
         this.properties = properties;
     }
 
-
 }
 
 export default Observation;

@@ -14,10 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SensorWebApi from "./SensorWebApi";
-import Collection from "./Collection";
-import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
+import SensorWebApi from "../SensorWebApi";
+import Collection from "../Collection";
 import DataStreamFilter from "./DataStreamFilter";
+import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
 
 class DataStreams extends SensorWebApi {
     /**
@@ -33,11 +33,11 @@ class DataStreams extends SensorWebApi {
      * @returns {Collection<DataStream>} A collection of DataStream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize) {
-        return new Collection('/datastreams', dataStreamFilter.toQueryString(), pageSize,this.parser, this.connector);
+        return new Collection('/datastreams', dataStreamFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
     }
 
     async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
-        const response = await this.connector.doRequest(`/datastreams/${datastreamId}`,dataStreamFilter.toQueryString(['select','format']));
+        const response = await this._network.info.connector.doRequest(`/datastreams/${datastreamId}`,dataStreamFilter.toQueryString(['select','format']));
         return this.parser.parseData(response);
     }
 }

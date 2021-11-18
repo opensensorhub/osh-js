@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataConnector from './DataConnector.js';
-import {isWebWorker} from '../utils/Utils.js';
+import {isDefined, isWebWorker} from '../utils/Utils.js';
 import {Status} from './Status.js';
 
 /**
@@ -41,10 +41,11 @@ import {Status} from './Status.js';
 class WebSocketConnector extends DataConnector {
     /**
      *
-     * @param properties -
+     * @param url -
+     * @param {Object} properties -
      */
-    constructor(properties) {
-        super(properties);
+    constructor(url, properties) {
+        super(url, properties);
         this.interval = -1;
         this.lastReceiveTime = 0;
     }
@@ -53,12 +54,18 @@ class WebSocketConnector extends DataConnector {
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    async connect() {
+    doRequest(extraUrl = '',queryString= undefined) {
         if (!this.init) {
+            let fullUrl = this.getUrl() + extraUrl;
+
+            if(isDefined(queryString)) {
+                fullUrl += '?'+queryString;
+            }
+
             this.closed = false;
             this.init = true;
             //creates Web Socket
-            this.ws = new WebSocket(this.getUrl());
+            this.ws = new WebSocket(fullUrl);
             this.ws.binaryType = 'arraybuffer';
             this.checkStatus(Status.CONNECTING);
             console.warn('WebSocket stream connecting');
@@ -99,6 +106,10 @@ class WebSocketConnector extends DataConnector {
                 this.reconnectionInterval = -1;
             }
         }
+    }
+
+    connect() {
+        this.doRequest();
     }
 
     createReconnection() {

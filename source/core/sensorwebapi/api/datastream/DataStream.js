@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import SensorWebApi from "../SensorWebApi";
+import ObservationFilter from "../observation/ObservationFilter";
 
 class DataStream extends SensorWebApi {
     /**
@@ -25,7 +26,15 @@ class DataStream extends SensorWebApi {
         this.properties = properties;
     }
 
-
+    /**
+     *
+     * @param observationFilter
+     * @param callback
+     */
+    streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
+        this._network.stream.connector.onMessage = callback;
+        this._network.stream.connector.doRequest(`/datastreams/${this.properties.id}/observations`,observationFilter.toQueryString());
+    }
 }
 
 export default DataStream;

@@ -29,13 +29,13 @@ class ObservationFilter extends SensorWebApiFilter {
      */
     constructor(properties) {
         super({
-            phenomenonTime: undefined,
-            resultTime: undefined,
+            phenomenonTime: 'now',
+            resultTime: 'now',
             featureOfInterest: undefined,
             select: undefined,
-            bbox: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
+            bbox: undefined,
             location: undefined,
-            format: 'application/json',
+            format: 'application/swe+json',
             ...properties // merge defined properties
         });
     }

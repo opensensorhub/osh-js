@@ -38,7 +38,7 @@ class System extends SensorWebApi {
      * @return Promise<JSON> - SensorlML Description
      */
     async getDetails(systemFilter = new SystemFilter()) {
-        return this.connector.doRequest(`/systems/${this.properties.id}/details`, systemFilter.toQueryString(['select', 'format']));
+        return this._network.info.connector.doRequest(`/systems/${this.properties.id}/details`, systemFilter.toQueryString(['select', 'format']));
     }
 
     /**
@@ -49,7 +49,7 @@ class System extends SensorWebApi {
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize) {
         systemFilter.props.parent = this.properties.id;
-        return new Collection('/systems', systemFilter.toQueryString(), pageSize, this.systemParser, this.connector);
+        return new Collection('/systems', systemFilter.toQueryString(), pageSize, this.systemParser, this._network.info.connector);
     }
 
     /**
@@ -57,7 +57,7 @@ class System extends SensorWebApi {
      * @returns {Collection<DataStream>} A collection of System
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize) {
-        return new Collection(`/systems/${this.properties.id}/datastreams`, dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this.connector);
+        return new Collection(`/systems/${this.properties.id}/datastreams`, dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this._network.info.connector);
     }
 
     /**
@@ -65,7 +65,7 @@ class System extends SensorWebApi {
      * @returns {Collection<FeatureOfInterest>} A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize) {
-        return new Collection(`/systems/${this.properties.id}/featuresOfInterest`, featureOfInterestFilter.toQueryString(), pageSize,this.featureOfInterestParser, this.connector);
+        return new Collection(`/systems/${this.properties.id}/featuresOfInterest`, featureOfInterestFilter.toQueryString(), pageSize,this.featureOfInterestParser, this._network.info.connector);
     }
 }
 

@@ -33,11 +33,11 @@ class Systems extends SensorWebApi {
      * @returns {Collection<System>} A collection of System
      */
     async searchSystems(systemFilter = new SystemFilter(), pageSize) {
-        return new Collection('/systems', systemFilter.toQueryString(), pageSize,this.parser, this.connector);
+        return new Collection('/systems', systemFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
     }
 
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
-        const response = await this.connector.doRequest(`/systems/${systemId}`,systemFilter.toQueryString(['select','format']));
+        const response = await this._network.info.connector.doRequest(`/systems/${systemId}`,systemFilter.toQueryString(['select','format']));
         return this.parser.parseData(response);
     }
 }
