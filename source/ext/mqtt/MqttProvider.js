@@ -16,7 +16,7 @@
 
 import mqtt from 'mqtt';
 import {isDefined} from "../../core/utils/Utils";
-import ObsFilter from "../../core/sensorwebapi/ObsFilter";
+import ObsFilter from "../../core/sensorwebapi/api/observation/ObservationFilter";
 
 let mqttCallbacks = {};
 

@@ -1,5 +1,4 @@
 import MqttProvider from "../../../source/ext/mqtt/MqttProvider";
-import ObsFilter from "../../../source/core/sensorwebapi/ObsFilter";
 import {randomUUID} from "../../../source/core/utils/Utils";
 import SweApiMqttJsonParser from "../../../source/ext/datasource/parsers/SweApiMqttJson.parser";
 

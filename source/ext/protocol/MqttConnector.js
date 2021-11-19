@@ -17,7 +17,6 @@
 import DataConnector from "../../core/protocol/DataConnector";
 import {assertDefined, isDefined, randomUUID} from "../../core/utils/Utils";
 import {Status} from "../../core/protocol/Status";
-import ObsFilter from "../../core/sensorwebapi/ObsFilter";
 import MqttProvider from "../mqtt/MqttProvider";
 
 /**
@@ -71,7 +70,7 @@ class MqttConnector extends DataConnector {
                     ...this.properties.options
                 }
             }
-          
+
             // only 1 provider by URL
             if(!(url in mqttProviders)) {
                 mqttProviders[url] = new MqttProvider({
