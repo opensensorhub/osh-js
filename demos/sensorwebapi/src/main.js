@@ -4,6 +4,7 @@ import LoadScript from 'vue-plugin-load-script';
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import store from './store'
+import colors from 'vuetify/lib/util/colors'
 
 Vue.use(LoadScript);
 Vue.use(Vuetify);
@@ -15,7 +16,9 @@ export default new Vuetify({
 new Vue({
   store,
   vuetify: new Vuetify({
-    theme: { dark: true },
+    theme: {
+      dark: true,
+    },
   }),
   render: h => h(App)
 }).$mount("#app");

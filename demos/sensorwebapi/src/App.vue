@@ -2,15 +2,16 @@
   <v-app>
     <div id="app">
       <v-card height="100%">
-        <v-card-title class="indigo white--text text-h5">
+        <v-card-title class="blue accent-3 white--text text-h5">
           SensorWebAPI: https://ogct17.georobotix.io:8443/
         </v-card-title>
         <v-row
-            class="pa-4"
+            class="pa-4 full"
             justify="space-between"
         >
-          <v-col cols="5">
+          <v-col cols="5" class="full">
             <v-treeview
+                dense
                 class="treeview"
                 :active.sync="active"
                 :items="items"
@@ -20,6 +21,7 @@
                 color="warning"
                 open-on-click
                 transition
+
             >
               <template v-slot:prepend="{ item }">
                 <v-icon v-if="!item.children">
@@ -32,7 +34,7 @@
           <v-divider vertical></v-divider>
 
           <v-col
-              class="d-flex text-center"
+              class="d-flex"
           >
             <v-scroll-y-transition mode="out-in">
               <div
@@ -53,8 +55,20 @@
                     color="primary"
                 ></v-progress-circular>
               </div>
-              <div class="blue--text font-weight-bold jsonpre" v-else>
-                <vue-json-pretty :path="'res'" :data="details"></vue-json-pretty>
+              <div class="white--text jsonpre" v-else>
+                <v-switch
+                    v-model="prettyJson"
+                    label="Pretty JSON"
+                ></v-switch>
+                <!--vue-json-pretty :path="'res'" :data="details"></vue-json-pretty-->
+                <!--                <pre>{{ details }}</pre>-->
+                <vue-json-pretty :path="'res'" :data="details" v-if="prettyJson"></vue-json-pretty>
+                <div class="noprettyjson" v-else-if="stream">
+                  <pre> {{ details }}</pre>
+                </div>
+                <div class="noprettyjson" v-else="stream">
+                  <pre><code class="language-json" v-html="highlight(details)"></code></pre>
+                </div>
               </div>
             </v-scroll-y-transition>
           </v-col>
@@ -63,7 +77,16 @@
     </div>
   </v-app>
 </template>
+
+<style>
+@import './assets/prism-material-oceanic.css';
+</style>
+
 <script>
+// yarn add prismjs
+import Prism from "prismjs";
+// import "prismjs/themes/prism-dark.css"; // you can change
+
 // @ is an alias to /src
 import Systems from "../../../source/core/sensorwebapi/api/system/Systems";
 import SystemFilter from "../../../source/core/sensorwebapi/api/system/SystemFilter";
@@ -72,6 +95,8 @@ import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import DataStreamFilter from "../../../source/core/sensorwebapi/api/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
+import ObservationFilter from "../../../source/core/sensorwebapi/api/observation/ObservationFilter";
+import SensorWebApiFetchJson from "../../../source/core/datasource/parsers/SensorWebApiFetchJson.parser";
 
 export default {
   components: {
@@ -84,12 +109,18 @@ export default {
       systems: [],
       nodes: {},
       details: undefined,
-      count: 0
+      count: 0,
+      stream: false,
+      prettyJson: false
     }
   },
   beforeMount() {
   },
   mounted() {
+    // if you are intending to use Prism functions manually, you will need to set:
+    Prism.manual = true;
+    Prism.highlightAll();
+
     this.systemsUtility = new Systems({
       info: {
         protocol: 'https',
@@ -114,6 +145,7 @@ export default {
       const that = this;
       if (!this.active.length) return undefined
 
+      this.stream = false;
       const id = this.active[0]
       this.details = undefined;
 
@@ -122,15 +154,33 @@ export default {
         node.system.getDetails().then(details => {
           that.details = details;
         });
-      } else if (id.startsWith('datastream-')) {
+      } else if (id.startsWith('datastream-details')) {
         this.details = node.datastream.properties;
       } else if (id.startsWith('foi-')) {
         this.details = node.foi.properties;
+      } else if (id.startsWith('datastream-observation')) {
+        this.stream = true;
+        const datastream = node.datastream;
+        const parser = new SensorWebApiFetchJson();
+        this.details = [];
+        const nodeId = node.id;
+        datastream.streamObservations(new ObservationFilter(), function (obs) {
+          if (that.active[0] !== nodeId) {
+            // node is different, disconnect
+            console.warn('node is different, disconnect from previous one');
+            datastream._network.stream.connector.disconnect();
+          } else {
+            that.details.push(parser.parseData(obs));
+          }
+        });
       }
       return node;
     },
   },
   methods: {
+    highlight(details) {
+      return Prism.highlight(JSON.stringify(details, null, 1), Prism.languages.json);
+    },
     async fetchData(item) {
       if (item.name === 'Systems') {
         await this.fetchSystem(item);
@@ -165,7 +215,7 @@ export default {
 
           const systemDetailsNode = {
             id: `system-details-${this.count++}`,
-            name: 'System details',
+            name: 'SensorML',
             system: system,
           };
           this.nodes[systemDetailsNode.id] = systemDetailsNode;
@@ -194,14 +244,37 @@ export default {
         const page = await datastreams.nextPage();
         for (let i = 0; i < page.length; i++) {
           const datastream = page[i];
-          const nodeId = `datastream-${this.count++}`;
-          this.nodes[nodeId] = {
-            id: nodeId,
+
+          const datastreamDetailsNode = {
+            id: `datastream-details-${this.count++}`,
+            name: 'details',
+            system: system,
+            datastream: datastream
+          };
+
+          const datastreamObservationNode = {
+            id: `datastream-observation-${this.count++}`,
+            name: 'observation',
+            system: system,
+            datastream: datastream
+          };
+
+          const datastreamNode = {
+            id: `datastream-${this.count++}`,
             name: datastream.properties.name,
             system: system,
             datastream: datastream,
+            children: [
+              datastreamDetailsNode,
+              datastreamObservationNode
+            ]
           };
-          item.children.push(this.nodes[nodeId]);
+
+          this.nodes[datastreamDetailsNode.id] = datastreamDetailsNode;
+          this.nodes[datastreamObservationNode.id] = datastreamObservationNode;
+          this.nodes[datastreamNode.id] = datastreamNode;
+
+          item.children.push(datastreamNode);
         }
       }
     },
@@ -254,11 +327,6 @@ html, body {
   overflow: auto !important;
 }
 
-.treeview {
-  max-height: 800px;
-  overflow: auto !important;
-}
-
 .progress {
   align-self: center;
   height: 100%;
@@ -272,6 +340,65 @@ html, body {
 
 .jsonpre {
   width: 100%;
+  text-align: unset !important;
+  overflow: auto !important;
+  padding-left: 12px;
+}
+
+.treeview {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+::v-deep .v-window.v-item-group {
+  flex-grow: 1;
+}
+
+::v-deep .v-window__container {
+  height: 100%;
+}
+
+.v-treeview {
+  height: 100% !important;
+  max-height: 800px;
+  overflow: auto;
+}
+
+.full {
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+.v-treeview--dense .v-treeview-node__root {
+  min-height: 30px !important;
+}
+
+.row {
+  flex-wrap: unset !important;
+}
+
+code {
+  background: none !important;
+  text-shadow: unset !important;
+}
+
+.vjs-tree__node.is-highlight, .vjs-tree__node:hover {
+  background-color: rgba(41, 161, 217, 0.19)
+}
+
+.noprettyjson {
+  overflow: auto !important;
+  max-height: 800px;
+}
+
+.col {
+  overflow: auto !important;
 }
 </style>
+
 

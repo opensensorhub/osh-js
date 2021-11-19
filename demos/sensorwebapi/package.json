@@ -7,6 +7,8 @@
     "dev": "webpack-dev-server --config webpack.config.js --mode development"
   },
   "dependencies": {
+    "babel-plugin-prismjs": "^2.1.0",
+    "prismjs": "1.25.0",
     "vue": "2.6.11",
     "vue-json-pretty": "^1.8.2",
     "vue-plugin-load-script": "1.2.0",
