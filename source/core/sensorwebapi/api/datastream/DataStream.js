@@ -17,6 +17,8 @@
 import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
+import SensorWebApiFetchJson from "../../../datasource/parsers/SensorWebApiFetchJson.parser";
+import SweApiMqttJsonParser from "../../../../ext/datasource/parsers/SweApiMqttJson.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -25,6 +27,11 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
+        if(networkProperties.stream.protocol.startsWith('mqtt')) {
+            this.dataParser = new SweApiMqttJsonParser(networkProperties);
+        } else {
+            this.dataParser = new SensorWebApiFetchJson(networkProperties);
+        }
     }
 
     /**
@@ -33,7 +40,9 @@ class DataStream extends SensorWebApi {
      * @param callback
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
-        this._network.stream.connector.onMessage = callback;
+        this._network.stream.connector.onMessage = async (data) => {
+            callback(await this.dataParser.parseData(data))
+        };
         this._network.stream.connector.doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter.toQueryString()

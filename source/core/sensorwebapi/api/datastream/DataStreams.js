@@ -36,7 +36,7 @@ class DataStreams extends SensorWebApi {
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize) {
         return new Collection(
             API.datastreams.search,dataStreamFilter.toQueryString(),
-            pageSize,this.parser, this._network.info.connector
+            pageSize, this.parser, this._network.info.connector
         );
     }
 
