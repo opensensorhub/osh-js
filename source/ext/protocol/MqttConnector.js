@@ -58,7 +58,6 @@ class MqttConnector extends DataConnector {
      * Connect to the Mqtt broker.
      */
     doRequest(topic = '',queryString= undefined) {
-        console.log(topic)
         if (!this.init) {
             let fullUrl = this.getUrl() ;
 
@@ -107,7 +106,7 @@ class MqttConnector extends DataConnector {
     }
 
     connect() {
-        this.doRequest();
+        this.doRequest(this.properties.topic || '');
     }
 
     /**
