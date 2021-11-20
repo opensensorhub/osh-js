@@ -48,17 +48,20 @@ class MqttConnector extends DataConnector {
      * @param properties -
      */
     constructor(url, properties) {
-        super(url, properties);
+        super(url, {
+            ...properties
+        });
         this.interval = -1;
     }
 
     /**
      * Connect to the Mqtt broker.
      */
-    connect() {
+    doRequest(topic = '',queryString= undefined) {
+        console.log(topic)
         if (!this.init) {
-            this.init = true;
-            const url = this.getUrl();
+            let fullUrl = this.getUrl() ;
+
             let options = {
                 reconnectPeriod: this.reconnectTimeout,
                 connectTimeout: 30 * 1000
@@ -72,18 +75,17 @@ class MqttConnector extends DataConnector {
             }
 
             // only 1 provider by URL
-            if(!(url in mqttProviders)) {
-                mqttProviders[url] = new MqttProvider({
-                    endpoint: url,
+            if(!(fullUrl in mqttProviders)) {
+                mqttProviders[fullUrl] = new MqttProvider({
+                    endpoint: fullUrl,
                     clientId: randomUUID(),
                     options: options
                 });
-                mqttProviders[url].connect();
+                mqttProviders[fullUrl].connect();
             }
 
-            assertDefined(this.properties.topic, 'topic');
-            mqttProviders[url].subscribeToObservations(this.properties.topic, 'application/json',this.onMessage);
-            this.url = url;
+            mqttProviders[fullUrl].subscribeToObservations(topic, 'application/json',this.onMessage);
+            this.url = fullUrl;
         }
     }
 
@@ -102,6 +104,10 @@ class MqttConnector extends DataConnector {
             client.unsubscribeDs(this.properties.topic);
         }
         console.warn(`Disconnected from ${this.getUrl()}`);
+    }
+
+    connect() {
+        this.doRequest();
     }
 
     /**

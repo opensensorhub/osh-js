@@ -22,6 +22,7 @@ import DataStreamFilter from "../datastream/DataStreamFilter";
 import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
 import SensorWebApiFetchFeatureOfInterestParser  from "../../../datasource/parsers/SensorWebApiFetchFeatureOfInterest.parser";
+import API from "../routes.conf";
 
 class System extends SensorWebApi {
 
@@ -38,7 +39,10 @@ class System extends SensorWebApi {
      * @return Promise<JSON> - SensorlML Description
      */
     async getDetails(systemFilter = new SystemFilter()) {
-        return this._network.info.connector.doRequest(`/systems/${this.properties.id}/details`, systemFilter.toQueryString(['select', 'format']));
+        return this._network.info.connector.doRequest(
+            API.systems.details.replace('{id}',this.properties.id),
+            systemFilter.toQueryString(['select', 'format'])
+        );
     }
 
     /**
@@ -49,7 +53,7 @@ class System extends SensorWebApi {
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize) {
         systemFilter.props.parent = this.properties.id;
-        return new Collection('/systems', systemFilter.toQueryString(), pageSize, this.systemParser, this._network.info.connector);
+        return new Collection(API.systems.search, systemFilter.toQueryString(), pageSize, this.systemParser, this._network.info.connector);
     }
 
     /**
@@ -57,7 +61,9 @@ class System extends SensorWebApi {
      * @returns {Collection<DataStream>} A collection of System
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize) {
-        return new Collection(`/systems/${this.properties.id}/datastreams`, dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this._network.info.connector);
+        return new Collection(
+            API.systems.datastreams.replace('{id}',this.properties.id),
+            dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this._network.info.connector);
     }
 
     /**
@@ -65,7 +71,9 @@ class System extends SensorWebApi {
      * @returns {Collection<FeatureOfInterest>} A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize) {
-        return new Collection(`/systems/${this.properties.id}/featuresOfInterest`, featureOfInterestFilter.toQueryString(), pageSize,this.featureOfInterestParser, this._network.info.connector);
+        return new Collection(
+            API.systems.fois.replace('{id}',this.properties.id),
+            pageSize,this.featureOfInterestParser, this._network.info.connector);
     }
 }
 

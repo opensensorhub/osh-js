@@ -16,7 +16,7 @@
 
 import mqtt from 'mqtt';
 import {isDefined} from "../../core/utils/Utils";
-import ObsFilter from "../../core/sensorwebapi/api/observation/ObservationFilter";
+import ObservationFilter from "../../core/sensorwebapi/api/observation/ObservationFilter";
 
 let mqttCallbacks = {};
 
@@ -65,10 +65,8 @@ class MqttProvider {
 
 
     subscribeToObservations(dataStreamId, format, callback) {
-        const obsFilter = new ObsFilter({
-            datastreamIds: [dataStreamId],
-        });
-        this.subscribeToObservationsByObsFilter(obsFilter, format, callback);
+        const obsFilter = new ObservationFilter();
+        this.subscribeToObservationsByObsFilter([dataStreamId],obsFilter,callback);
     }
 
 
@@ -80,11 +78,11 @@ class MqttProvider {
      */
     /**
      *
-     * @param {ObsFilter} ObsFilter - the observation filter object
-     * @param {string} format - the return format such as 'application/json', 'application/swe+json','text/xml','text/plain', 'application/swe+binary'
+     * @param {String[]} [dataStreamIds=[]] - list of datastream ids
+     * @param {ObservationFilter} observationFilter - the observation filter object
      * @param callback
      */
-    subscribeToObservationsByObsFilter(obsFilter, format, callback) {
+    subscribeToObservationsByObsFilter(dataStreamIds = [],observationFilter,  callback) {
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic')
         }
@@ -95,7 +93,7 @@ class MqttProvider {
             if (this.client.connected) {
                 try {
                     // subscribe
-                    for (let dataStreamId of obsFilter.datastreamIds) {
+                    for (let dataStreamId of dataStreamIds) {
                         // store callback for this topic
                         if (!(dataStreamId in mqttCallbacks)) {
                             mqttCallbacks[dataStreamId] = [];

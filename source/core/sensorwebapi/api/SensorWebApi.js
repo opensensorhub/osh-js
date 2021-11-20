@@ -18,14 +18,16 @@ import HttpConnector from "../../protocol/HttpConnector";
 import WebSocketConnector from "../../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../../utils/Utils";
 import SensorWebApiFetchJsonParser from "../../datasource/parsers/SensorWebApiFetchJson.parser";
+import MqttConnector from "../../../ext/protocol/MqttConnector";
 
 class SensorWebApi {
 
     constructor(networkProperties) {
         this._network = {}
+
         if(isDefined(networkProperties.info) && isDefined(networkProperties.info.connector)) {
             this._network.info = {
-                connector: networkProperties.info.connector
+                connector: networkProperties.info.connector,
             };
         } else {
             assertDefined(networkProperties.info, 'info');
@@ -45,7 +47,7 @@ class SensorWebApi {
 
         if(isDefined(networkProperties.stream) && isDefined(networkProperties.stream.connector)) {
             this._network.stream = {
-                connector: networkProperties.stream.connector
+                connector: networkProperties.stream.connector,
             };
         } else {
             assertDefined(networkProperties.stream, 'info');
@@ -71,7 +73,7 @@ class SensorWebApi {
                 method: 'GET'
             });
         } else if(networkProperties.protocol === 'mqtts' || networkProperties.protocol === 'mqtt') {
-
+            return new MqttConnector(networkProperties.protocol + '://' + networkProperties.endpoint);
         } else if(networkProperties.protocol === 'wss' || networkProperties.protocol === 'ws') {
             return new WebSocketConnector(networkProperties.protocol + '://' + networkProperties.endpoint);
         }

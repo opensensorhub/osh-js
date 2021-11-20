@@ -16,6 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
+import API from "../routes.conf";
 
 class DataStream extends SensorWebApi {
     /**
@@ -33,7 +34,10 @@ class DataStream extends SensorWebApi {
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
         this._network.stream.connector.onMessage = callback;
-        this._network.stream.connector.doRequest(`/datastreams/${this.properties.id}/observations`,observationFilter.toQueryString());
+        this._network.stream.connector.doRequest(
+            API.datastreams.observations.replace('{id}',this.properties.id),
+            observationFilter.toQueryString()
+        );
     }
 }
 
