@@ -15,11 +15,6 @@ const dsReplaySpeed = 1.0;
 const timeOut = 3000;
 const bufferingTime = 800;
 
-// Init cesium token
-Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-    'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-    '2WfIX0QHiZcOjVaXI92stjDh4fI';
-
 const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Location', {
     protocol: tls ? 'wss' : 'ws',
     service: 'SOS',
