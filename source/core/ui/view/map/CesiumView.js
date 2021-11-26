@@ -119,6 +119,7 @@ class CesiumView extends MapView {
     constructor(properties) {
         super({
             supportedLayers: ['marker', 'drapedImage', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustum'],
+            autoZoomOnFirstMarker: true,
             ...properties
         });
 
