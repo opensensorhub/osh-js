@@ -23,6 +23,10 @@ class SensorWebApiFetchDataStreamParser extends DataSourceParser {
         );
     }
 
+    parseTimeStamp(data) {
+        return 0;
+    }
+
     buildUrl(properties) {
         //TODO
     }

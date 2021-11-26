@@ -4,6 +4,7 @@ import {isDefined} from "../../utils/Utils.js";
 import TopicConnector from "../../protocol/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
+import HttpConnector from "../../protocol/HttpConnector";
 
 class DataSourceHandler {
 
@@ -52,14 +53,19 @@ class DataSourceHandler {
      * @private
      */
     createDataConnector(properties) {
-        const url = this.parser.buildUrl(properties);
+        // console.log(properties)
+        // const url = this.parser.buildUrl(properties);
+        this.updatedProperties = properties;
+        const url = properties.protocol + '://' + properties.endpointUrl;
 
         // checks if type is WebSocketConnector
         if (properties.protocol.startsWith('ws')) { // for wss
             this.connector = new WebSocketConnector(url);
         } else if (properties.protocol.startsWith('http')) { //for https
-            this.connector = new Ajax(url);
-            this.connector.responseType = properties.responseType || 'arraybuffer';
+            this.connector = new HttpConnector(url, {
+                responseType: properties.responseType || 'arraybuffer',
+                method: 'GET'
+            });
         } else if (properties.protocol === 'topic') {
             this.connector = new TopicConnector(url);
         }
@@ -90,7 +96,7 @@ class DataSourceHandler {
 
     connect() {
         if(this.connector !== null) {
-            this.connector.connect();
+            this.connector.doRequest('', this.parser.buildUrl(this.updatedProperties));
         }
     }
 

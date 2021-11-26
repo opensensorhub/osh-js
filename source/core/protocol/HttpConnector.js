@@ -75,30 +75,41 @@ class HttpConnector extends DataConnector {
      * @param {String} extraUrl - extra url to append to the url
      * @param {String} queryString - get query parameters
      */
-    doRequest(extraUrl = '',queryString= undefined) {
+    async doRequest(extraUrl = '', queryString = undefined) {
         const instance = this;
         let fullUrl = this.getUrl() + extraUrl;
 
-        if(isDefined(queryString)) {
-            fullUrl += '?'+queryString;
+        if (isDefined(queryString)) {
+            fullUrl += '?' + queryString;
         }
-        return fetch(fullUrl, {
+        return await fetch(fullUrl, {
             method: this.method,
             headers: this.headers
         })
-        .then(function(response) {
-            if(instance.responseType === 'application/json') {
-                return response.json();
-            }
-            switch (instance.responseType) {
-                case 'application/json': return response.json();break;
-                case 'plain/text': return response.text();break;
-                case 'arrayBuffer': return response.arrayBuffer();break;
-                case 'blob': return response.blob(); break;
-                default:
+            .then(function (response) {
+                if (instance.responseType === 'application/json') {
                     return response.json();
-            }
-        });
+                }
+                switch (instance.responseType) {
+                    case 'application/json':
+                        return response.json();
+                        break;
+                    case 'plain/text':
+                        return response.text();
+                        break;
+                    case 'application/xml':
+                        return response.text();
+                        break;
+                    case 'arrayBuffer':
+                        return response.arrayBuffer();
+                        break;
+                    case 'blob':
+                        return response.blob();
+                        break;
+                    default:
+                        return response.json();
+                }
+            });
     }
 
     /**

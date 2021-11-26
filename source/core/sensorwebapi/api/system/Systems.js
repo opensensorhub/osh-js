@@ -33,7 +33,7 @@ class Systems extends SensorWebApi {
      *
      * @returns {Collection<System>} A collection of System
      */
-    async searchSystems(systemFilter = new SystemFilter(), pageSize) {
+    async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         return new Collection(
             API.systems.search, systemFilter.toQueryString(),
             pageSize, this.parser, this._network.info.connector

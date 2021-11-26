@@ -112,3 +112,6 @@ The official website (latest): [http://opensensorhub.github.io/osh-js/latest/sit
 
 The official website (development): [http://opensensorhub.github.io/osh-js/dev/site/](http://opensensorhub.github.io/osh-js/dev/site/)
 
+## License
+
+OpenSensorHub is licensed under the Mozilla Public License version 2.0.

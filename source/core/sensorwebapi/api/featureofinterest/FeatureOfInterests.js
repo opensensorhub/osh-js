@@ -14,12 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SensorWebApi from "./SensorWebApi";
-import Collection from "./Collection";
 import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
-import DataStreamFilter from "./DataStreamFilter";
-import SystemFilter from "../system/SystemFilter";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
+import SensorWebApi from "../SensorWebApi";
+import Collection from "../Collection";
 
 class FeaturesOfInterest extends SensorWebApi {
     /**
@@ -34,7 +32,7 @@ class FeaturesOfInterest extends SensorWebApi {
      *
      * @returns {Collection<FeaturesOfInterest>} A collection of FeatureOfInterest
      */
-    async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize) {
+    async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection('/featuresOfInterest', featureOfInterestFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
     }
 

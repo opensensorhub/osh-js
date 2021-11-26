@@ -40,6 +40,10 @@ class Collection {
 
     async fetchData() {
         const response = await this.connector.doRequest(this.url,`${this.queryString}&offset=${this.nextOffset}&limit=${this.pageSize}`);
+        this.onFetchData(response);
+    }
+
+    onFetchData(response) {
         this.parseResponse(response);
     }
 

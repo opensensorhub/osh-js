@@ -32,7 +32,7 @@ class Observations extends SensorWebApi {
      *
      * @returns {Collection<Observation>} A collection of Observation
      */
-    async searchObservations(observationFilter = new ObservationFilter(), pageSize) {
+    async searchObservations(observationFilter = new ObservationFilter(), pageSize= 10) {
         return new Collection('/observations', observationFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
     }
 

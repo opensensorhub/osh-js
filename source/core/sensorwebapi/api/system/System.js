@@ -51,7 +51,7 @@ class System extends SensorWebApi {
      * @param pageSize
      * @return Promise<Collection<System>>
      */
-    async searchSubSystems(systemFilter = new SystemFilter(), pageSize) {
+    async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         systemFilter.props.parent = this.properties.id;
         return new Collection(API.systems.search, systemFilter.toQueryString(), pageSize, this.systemParser, this._network.info.connector);
     }
@@ -60,7 +60,7 @@ class System extends SensorWebApi {
      *
      * @returns {Collection<DataStream>} A collection of System
      */
-    async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize) {
+    async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
             API.systems.datastreams.replace('{id}',this.properties.id),
             dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this._network.info.connector);

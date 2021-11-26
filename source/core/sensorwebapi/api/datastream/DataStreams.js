@@ -33,7 +33,7 @@ class DataStreams extends SensorWebApi {
      *
      * @returns {Collection<DataStream>} A collection of DataStream
      */
-    async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize) {
+    async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
             API.datastreams.search,dataStreamFilter.toQueryString(),
             pageSize, this.parser, this._network.info.connector
