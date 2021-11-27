@@ -2,23 +2,17 @@ import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
 import DataStreams from "../../sensorwebapi/api/datastream/DataStreams";
 import Systems from "../../sensorwebapi/api/system/Systems";
 import FeatureOfInterests from "../../sensorwebapi/api/featureofinterest/FeatureOfInterests";
-import Observations from "../../sensorwebapi/api/observation/Observations";
 import {isDefined} from "../../utils/Utils";
 import {EventType} from "../../event/EventType";
+import Observations from "../../sensorwebapi/api/observation/Observations";
 
-// expose as Global. static property is still experimental
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
-
     constructor() {
         super();
     }
 
     async createDataConnector(properties) {
         super.createDataConnector(properties);
-
-        // create parser depending on protocol
-        // MQTT has a special parser
-        //TODO: handle MQTT protocol
 
         const networkProperties = {
             info: {
@@ -32,6 +26,10 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         let collection;
         let sensorWebApi;
 
+        // create parser depending on protocol
+        // MQTT has a special parser
+        // TODO: handle MQTT protocol
+
         // check if is a collection
         if (this.properties.collection === '/systems') {
             sensorWebApi = new Systems(networkProperties);
@@ -43,14 +41,12 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             sensorWebApi = new DataStreams(networkProperties);
             collection = sensorWebApi.searchDataStreams();
         } else if (this.properties.collection === '/observations') {
-            sensorWebApi = new DataStreams(networkProperties);
+            sensorWebApi = new Observations(networkProperties);
             collection = sensorWebApi.searchObservations();
         }
 
         this.collection = await collection;
-        if (isDefined(collection) && isDefined(sensorWebApi)) {
-            this.parser = sensorWebApi.parser;
-        }
+        this.parser = sensorWebApi.parser;
     }
 
     async connect() {

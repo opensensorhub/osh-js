@@ -70,7 +70,7 @@ class System extends SensorWebApi {
      *
      * @returns {Collection<FeatureOfInterest>} A collection of FeatureOfInterest
      */
-    async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize) {
+    async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(
             API.systems.fois.replace('{id}',this.properties.id),
             pageSize,this.featureOfInterestParser, this._network.info.connector);

@@ -21,7 +21,6 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             timeShift: this.timeShift
         });
 
-        console.log(properties)
         const lastStartTimeCst = this.parser && this.parser.lastStartTime || properties.startTime;
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp to reconnect at the last time received

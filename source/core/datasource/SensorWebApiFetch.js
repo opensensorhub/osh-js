@@ -35,6 +35,7 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
      */
     constructor(properties) {
         super(name, {
+            batchSize: 1,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             startTime: '1970-01-01T00:00:00Z',
             endTime: '2055-01-01T00:00:00Z',
