@@ -82,7 +82,7 @@ class HttpConnector extends DataConnector {
         if (isDefined(queryString)) {
             fullUrl += '?' + queryString;
         }
-        return await fetch(fullUrl, {
+        this.onMessage(await fetch(fullUrl, {
             method: this.method,
             headers: this.headers
         })
@@ -109,7 +109,7 @@ class HttpConnector extends DataConnector {
                     default:
                         return response.json();
                 }
-            });
+            }));
     }
 
     /**
