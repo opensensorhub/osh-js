@@ -49,27 +49,35 @@ class DataSourceHandler {
         this.properties = properties;
     }
 
+
     /**
-     * @private
+     * @protected
      */
-    createDataConnector(properties) {
+    createDataConnector(properties, connector = undefined) {
         // console.log(properties)
         // const url = this.parser.buildUrl(properties);
         this.updatedProperties = properties;
         const url = properties.protocol + '://' + properties.endpointUrl;
 
-        // checks if type is WebSocketConnector
-        if (properties.protocol.startsWith('ws')) { // for wss
-            this.connector = new WebSocketConnector(url);
-        } else if (properties.protocol.startsWith('http')) { //for https
-            this.connector = new HttpConnector(url, {
-                responseType: properties.responseType || 'arraybuffer',
-                method: 'GET'
-            });
-        } else if (properties.protocol === 'topic') {
-            this.connector = new TopicConnector(url);
+        if(!isDefined(connector)) {
+            // checks if type is WebSocketConnector
+            if (properties.protocol.startsWith('ws')) { // for wss
+                this.connector = new WebSocketConnector(url);
+            } else if (properties.protocol.startsWith('http')) { //for https
+                this.connector = new HttpConnector(url, {
+                    responseType: properties.responseType || 'arraybuffer',
+                    method: 'GET'
+                });
+            } else if (properties.protocol === 'topic') {
+                this.connector = new TopicConnector(url);
+            }
+        } else {
+            this.connector = connector;
         }
+        this.setUpConnector();
+    }
 
+    setUpConnector() {
         if (this.connector !== null) {
             // set the reconnectTimeout
             this.connector.setReconnectTimeout(this.reconnectTimeout);
@@ -81,7 +89,6 @@ class DataSourceHandler {
             this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
         }
     }
-
     /**
      * Sets the current topic to listen
      * @param {String} topic - the topic to listen

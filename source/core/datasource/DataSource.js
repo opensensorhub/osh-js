@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {randomUUID} from '../utils/Utils.js';
+import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATASOURCE_DATA_TOPIC} from "../Constants";
 import {Status} from "../protocol/Status";
 
@@ -44,6 +44,7 @@ class DataSource {
         this.dataSourceWorker = worker;
         this.currentRunningProperties = {};
         this.eventSubscriptionMap = {};
+        this.initialized = false;
 
         this.initDataSource(properties);
     }
@@ -54,25 +55,31 @@ class DataSource {
      * @param properties
      */
     initDataSource(properties) {
-        this.dataSourceWorker.postMessage({
-            message: 'init',
-            id: this.id,
-            properties: JSON.stringify(properties),
-            topic: this.getTopicId()
-        });
+        return this.createWorker(properties).then(worker => {
+            this.dataSourceWorker = worker;
+            this.dataSourceWorker.postMessage({
+                message: 'init',
+                id: this.id,
+                properties: JSON.stringify(properties),
+                topic: this.getTopicId()
+            });
 
-        // listen for Events to callback to subscriptions
-        const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
-        datasourceBroadcastChannel.onmessage = (message) => {
-            const type = message.data.type;
-            if(type in this.eventSubscriptionMap){
-                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
+            // listen for Events to callback to subscriptions
+            const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
+            datasourceBroadcastChannel.onmessage = (message) => {
+                const type = message.data.type;
+                if(type in this.eventSubscriptionMap){
+                    for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
+                        this.eventSubscriptionMap[type][i](message.data);
+                    }
                 }
-            }
-        };
+            };
+
+            this.initialized = true;
+        });
     }
 
+    async createWorker(properties) { return this.dataSourceWorker;}
 
     /**
      * Disconnect the dataSource then the protocol will be closed as well.
@@ -100,6 +107,19 @@ class DataSource {
      * Connect the dataSource then the protocol will be opened as well.
      */
     async connect() {
+        let tryConnect = () => {
+            if (this.initialized) {
+                this.doConnect();
+            } else {
+                setTimeout(tryConnect, 100);
+            }
+        };
+
+        tryConnect();
+        return false;
+    }
+
+    doConnect() {
         this.dataSourceWorker.postMessage({
             message: 'connect'
         });

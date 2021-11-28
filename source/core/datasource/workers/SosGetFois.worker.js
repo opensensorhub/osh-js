@@ -1,4 +1,4 @@
-import DataSourceHandler from './DataSourceHandler.js';
+import DataSourceHandler from '../handler/DataSourceHandler.js';
 import SosGetFoisParser from "../parsers/SosGetFois.parser";
 
 const dataSourceHandler = new DataSourceHandler(new SosGetFoisParser());

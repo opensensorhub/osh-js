@@ -1,6 +1,6 @@
-import SensorWebApiFetchHandler from "./SensorWebApiFetchHandler";
+import SensorWebApiFetchHandler from "../handler/SensorWebApiFetchHandler";
 import {isDefined} from "../../utils/Utils";
-import SensorWebApiDataStreamHandler from "./SensorWebApiDataStreamHandler";
+import SensorWebApiDataStreamHandler from "../handler/SensorWebApiDataStreamHandler";
 import SensorWebApiFetchJson from "../parsers/SensorWebApiFetchJson.parser";
 
 let  dataSourceHandler;

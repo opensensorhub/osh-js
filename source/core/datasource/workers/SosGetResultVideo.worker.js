@@ -1,5 +1,5 @@
 import SosGetResultVideoParser from '../parsers/SosGetResultVideo.parser.js';
-import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
+import TimeSeriesDataSourceHandler from "../handler/TimeSeriesDataSourceHandler";
 
 const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultVideoParser());
 

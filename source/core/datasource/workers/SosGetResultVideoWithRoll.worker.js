@@ -1,5 +1,5 @@
 import SosGetResultVideoWithRollParser from "../parsers/SosGetResultVideoWithRoll.parser";
-import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
+import TimeSeriesDataSourceHandler from "../handler/TimeSeriesDataSourceHandler";
 
 const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultVideoWithRollParser());
 

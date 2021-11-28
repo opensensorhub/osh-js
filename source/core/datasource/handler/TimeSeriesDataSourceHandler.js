@@ -13,13 +13,13 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     }
 
     /**
-     * @private
+     * @protected
      */
-    createDataConnector(properties) {
+    createDataConnector(properties, connector) {
         super.createDataConnector({
             ...properties,
             timeShift: this.timeShift
-        });
+        }, connector);
 
         const lastStartTimeCst = this.parser && this.parser.lastStartTime || properties.startTime;
         this.connector.onReconnect = () => {

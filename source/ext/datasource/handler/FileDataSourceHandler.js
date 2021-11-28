@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSourceHandler from "../../core/datasource/workers/DataSourceHandler";
-import FileConnector from "../protocol/FileConnector";
+import DataSourceHandler from "../../../core/datasource/handler/DataSourceHandler";
+import FileConnector from "../../protocol/FileConnector";
 
 class FileDataSourceHandler  extends DataSourceHandler {
 

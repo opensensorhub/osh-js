@@ -1,5 +1,5 @@
 import SosGetResultJsonParser from '../parsers/SosGetResultJson.parser';
-import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
+import TimeSeriesDataSourceHandler from "../handler/TimeSeriesDataSourceHandler";
 
 const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultJsonParser());
 

@@ -1,5 +1,5 @@
 import SweApiMqttJsonParser from "../parsers/SweApiMqttJson.parser.js";
-import MqttDataSourceHandler from "../MqttDataSourceHandler";
+import MqttDataSourceHandler from "../handler/MqttDataSourceHandler";
 
 const dataSourceHandler = new MqttDataSourceHandler(new SweApiMqttJsonParser());
 

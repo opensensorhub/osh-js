@@ -1,10 +1,4 @@
 import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
-import DataStreams from "../../sensorwebapi/api/datastream/DataStreams";
-import Systems from "../../sensorwebapi/api/system/Systems";
-import FeatureOfInterests from "../../sensorwebapi/api/featureofinterest/FeatureOfInterests";
-import Observations from "../../sensorwebapi/api/observation/Observations";
-import {isDefined} from "../../utils/Utils";
-import {EventType} from "../../event/EventType";
 import DataStream from "../../sensorwebapi/api/datastream/DataStream";
 import ObservationFilter from "../../sensorwebapi/api/observation/ObservationFilter";
 
@@ -13,8 +7,8 @@ class SensorWebApiDataStreamHandler extends TimeSeriesDataSourceHandler {
         super(parser);
     }
 
-    async createDataConnector(properties) {
-        super.createDataConnector(properties);
+    async createDataConnector(properties, connector) {
+        super.createDataConnector(properties, connector);
 
         const networkProperties = {
             info: {

@@ -69,8 +69,8 @@ class TimeSeriesDataSource extends DataSource{
      * @protected
      * @param properties
      */
-    initDataSource(properties) {
-        super.initDataSource(properties);
+    async initDataSource(properties) {
+        await super.initDataSource(properties);
         this.dataSourceWorker.postMessage({
             message: 'topic',
             topic: this.getTopicId(),
@@ -81,8 +81,8 @@ class TimeSeriesDataSource extends DataSource{
         const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
         datasourceBroadcastChannel.onmessage = (message) => {
             const type = message.data.type;
-            if(type in this.eventSubscriptionMap){
-                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
+            if (type in this.eventSubscriptionMap) {
+                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
                     this.eventSubscriptionMap[type][i](message.data);
                 }
             }

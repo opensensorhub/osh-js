@@ -1,5 +1,5 @@
 import SosGetResultAudioParser from '../parsers/SosGetResultAudio.parser.js';
-import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
+import TimeSeriesDataSourceHandler from "../handler/TimeSeriesDataSourceHandler";
 
 const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultAudioParser());
 

@@ -40,9 +40,16 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
             startTime: '1970-01-01T00:00:00Z',
             endTime: '2055-01-01T00:00:00Z',
             ...properties
-        }, new SensorWebApiFetchWorker());
+        });
     }
 
+    async createWorker(properties) {
+        if(properties.protocol.startsWith('mqtt')) {
+           return await import('../../ext/datasource/workers/SensorWebApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
+        } else {
+            return new SensorWebApiFetchWorker();
+        }
+    }
 }
 
 export default SensorWebApiFetch;
