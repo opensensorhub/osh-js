@@ -5,6 +5,9 @@ import FeatureOfInterests from "../../sensorwebapi/api/featureofinterest/Feature
 import {isDefined} from "../../utils/Utils";
 import {EventType} from "../../event/EventType";
 import Observations from "../../sensorwebapi/api/observation/Observations";
+import SystemFilter from "../../sensorwebapi/api/system/SystemFilter";
+import FeatureOfInterestFilter from "../../sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
+import DataStreamFilter from "../../sensorwebapi/api/datastream/DataStreamFilter";
 
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     constructor() {
@@ -25,6 +28,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
 
         let collection;
         let sensorWebApi;
+        let filter;
 
         // create parser depending on protocol
         // MQTT has a special parser
@@ -33,13 +37,16 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         // check if is a collection
         if (this.properties.collection === '/systems') {
             sensorWebApi = new Systems(networkProperties);
-            collection = sensorWebApi.searchSystems();
+            filter = this.createSystemFilter(properties);
+            collection = sensorWebApi.searchSystems(filter,  properties.batchSize);
         } else if (this.properties.collection === '/fois') {
             sensorWebApi = new FeatureOfInterests(networkProperties);
-            collection = sensorWebApi.searchFeaturesOfInterest();
+            filter = this.createFeatureOfInterestFilter(properties);
+            collection = sensorWebApi.searchFeaturesOfInterest(filter,  properties.batchSize);
         } else if (this.properties.collection === '/datastreams') {
             sensorWebApi = new DataStreams(networkProperties);
-            collection = sensorWebApi.searchDataStreams();
+            filter = this.createDataStreamFilter(properties);
+            collection = sensorWebApi.searchDataStreams(filter,  properties.batchSize);
         } else if (this.properties.collection === '/observations') {
             sensorWebApi = new Observations(networkProperties);
             collection = sensorWebApi.searchObservations();
@@ -47,6 +54,148 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
 
         this.collection = await collection;
         this.parser = sensorWebApi.parser;
+        this.filter = filter;
+    }
+
+    createSystemFilter(properties) {
+       const props = {};
+        if(isDefined(properties.keywords)) {
+            props.q = properties.keywords;
+        }
+        if(isDefined(properties.roi)) {
+            props.location = props.roi;
+        }
+        if(isDefined(properties.parentId)) {
+            props.parent = properties.parentId;
+        }
+        if(isDefined(properties.responseFormat)) {
+            props.format = properties.responseFormat;
+        }
+        if(isDefined(properties.validTime)) {
+            props.validTime = properties.validTime;
+        }
+        if(isDefined(properties.phenomenonTime)) {
+            props.phenomenonTime = properties.phenomenonTime;
+        }
+        if(isDefined(properties.resultTime)) {
+            props.resultTime = properties.resultTime;
+        }
+        if(isDefined(properties.excludedProps)) {
+            props.select = properties.excludedProps.map(e => '!' + e);
+        }
+        if(isDefined(properties.includedProps)) {
+            if(!isDefined(props.select)) {
+                props.select = [];
+            }
+            props.select.concat(properties.includedProps);
+        }
+
+        return new SystemFilter(props);
+    }
+
+    createFeatureOfInterestFilter(properties) {
+        const props = {};
+        if(isDefined(properties.keywords)) {
+            props.q = properties.keywords;
+        }
+        if(isDefined(properties.roi)) {
+            props.location = props.roi;
+        }
+        if(isDefined(properties.parentId)) {
+            props.parent = properties.parentId;
+        }
+        if(isDefined(properties.responseFormat)) {
+            props.format = properties.responseFormat;
+        }
+        if(isDefined(properties.validTime)) {
+            props.validTime = properties.validTime;
+        }
+        if(isDefined(properties.phenomenonTime)) {
+            props.phenomenonTime = properties.phenomenonTime;
+        }
+        if(isDefined(properties.resultTime)) {
+            props.resultTime = properties.resultTime;
+        }
+        if(isDefined(properties.excludedProps)) {
+            props.select = properties.excludedProps.map(e => '!' + e);
+        }
+        if(isDefined(properties.includedProps)) {
+            if(!isDefined(props.select)) {
+                props.select = [];
+            }
+            props.select.concat(properties.includedProps);
+        }
+
+        return new FeatureOfInterestFilter(props);
+    }
+
+    createObservationFilter(properties) {
+        const props = {};
+        if(isDefined(properties.roi)) {
+            props.location = props.roi;
+        }
+        if(isDefined(properties.responseFormat)) {
+            props.format = properties.responseFormat;
+        }
+        if(isDefined(properties.phenomenonTime)) {
+            props.phenomenonTime = properties.phenomenonTime;
+        }
+        if(isDefined(properties.resultTime)) {
+            props.resultTime = properties.resultTime;
+        }
+        if(isDefined(properties.resultTime)) {
+            props.resultTime = properties.resultTime;
+        }
+        if(isDefined(properties.featureOfInterest)) {
+            props.featureOfInterest = properties.featureOfInterest;
+        }
+        if(isDefined(properties.excludedProps)) {
+            props.select = properties.excludedProps.map(e => '!' + e);
+        }
+        if(isDefined(properties.includedProps)) {
+            if(!isDefined(props.select)) {
+                props.select = [];
+            }
+            props.select.concat(properties.includedProps);
+        }
+
+        return new FeatureOfInterestFilter(props);
+    }
+
+    createDataStreamFilter(properties) {
+        const props = {};
+        if(isDefined(properties.keywords)) {
+            props.q = properties.keywords;
+        }
+        if(isDefined(properties.roi)) {
+            props.location = props.roi;
+        }
+        if(isDefined(properties.responseFormat)) {
+            props.format = properties.responseFormat;
+        }
+        if(isDefined(properties.phenomenonTime)) {
+            props.phenomenonTime = properties.phenomenonTime;
+        }
+        if(isDefined(properties.resultTime)) {
+            props.resultTime = properties.resultTime;
+        }
+        if(isDefined(properties.observedProperty)) {
+            props.observedProperty = properties.observedProperty;
+        }
+        if(isDefined(properties.featureOfInterest)) {
+            props.featureOfInterest = properties.featureOfInterest;
+        }
+        if(isDefined(properties.excludedProps)) {
+            props.select = properties.excludedProps.map(e => '!' + e);
+        }
+        if(isDefined(properties.includedProps)) {
+            if(!isDefined(props.select)) {
+                props.select = [];
+            }
+            props.select.concat(properties.includedProps);
+        }
+
+        return new DataStreamFilter(props);
     }
 
     async connect() {

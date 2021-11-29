@@ -30,6 +30,7 @@ class FeatureOfInterestFilter extends SensorWebApiFilter {
      * @param {string} [properties.format='application/json'] - Mime type designating the format to use to encode the response.
      * @param {string} [properties.validTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
      When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {String[]} [properties.featureOfInterest=undefined] Comma separated list of feature of interest IDs to get observations for.
      */
     constructor(properties) {
         super({
@@ -39,6 +40,7 @@ class FeatureOfInterestFilter extends SensorWebApiFilter {
             validTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
             parent: undefined,
             select: undefined,
+            featureOfInterest: undefined,
             format: 'application/json',
             ...properties // merge defined properties
         });

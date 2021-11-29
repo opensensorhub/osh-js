@@ -31,7 +31,11 @@ class SensorWebApiFilter {
         let separator = '';
         for (let queryParameter in this.props) {
             if((parameters.length === 0 || parameters.includes(queryParameter)) && isDefined(this.props[queryParameter])) {
-                queryString += separator + queryParameter + '=' + encodeURIComponent(this.props[queryParameter]);
+                if(Array.isArray(this.props[queryParameter])) {
+                    queryString += separator + queryParameter + '=' + encodeURIComponent(this.props[queryParameter].join());
+                } else {
+                    queryString += separator + queryParameter + '=' + encodeURIComponent(this.props[queryParameter]);
+                }
                 separator = '&';
             }
         }

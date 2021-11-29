@@ -26,18 +26,25 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
      * @param {String} properties.endpointUrl the endpoint url
      * @param {String} properties.collection the collection, /procedures, /fois, /observations, /tasks, /datastreams/4778/obs
      * @param {Number} [properties.responseFormat=application/json] the response format (e.g application/json)
-     * @param {String[]} [properties.resourceIds=undefined] the resources ids
-     * @param {String[]} [properties.parentIds=undefined] the parent ids
+     * @param {String[]} [properties.parentId=undefined] the parent id
      * @param {String[]} [properties.keywords=undefined] the keyword ids
      * @param {String[]} [properties.includedProps=undefined] the included properties
      * @param {String[]} [properties.excludedProps=undefined] the excluded properties
      * @param {string} [properties.roi=undefined] - WKT geometry and operator to filter resources on their location or geometry
+     * @param {string} [properties.validTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
+     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {string} [properties.phenomenonTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
+     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {string} [properties.resultTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
+     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {String[]} [properties.featureOfInterest=undefined] Comma separated list of feature of interest IDs to get observations for.
+     * @param {String[]} [properties.observedProperty=undefined] Comma separated list of observed property URIs to get observations for.
      */
     constructor(properties) {
         super(name, {
             batchSize: 1,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
-            startTime: '1970-01-01T00:00:00Z',
+            startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
             ...properties
         });
