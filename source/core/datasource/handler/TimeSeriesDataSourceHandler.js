@@ -127,16 +127,20 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     handleMessage(message, worker) {
         super.handleMessage(message, worker);
 
+        let data = undefined;
         if (message.message === 'last-timestamp') {
-            const lastTimeStamp = this.getLastTimeStamp();
-            worker.postMessage({
-                message: 'last-timestamp',
-                data: lastTimeStamp
-            })
+            data = this.getLastTimeStamp();
         } else if (message.message === 'topic') {
             this.setTimeTopic(message.timeTopic);
-            super.setTopic(message.topic);
+        } else {
+            // skip response
+            return;
         }
+        worker.postMessage({
+            message: message.message,
+            data: data,
+            messageId: message.messageId
+        })
     }
 
     setTimeTopic(timeTopic) {

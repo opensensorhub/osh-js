@@ -15,6 +15,7 @@ let topicTime;
 let topicData;
 
 self.onmessage = (event) => {
+    let data = undefined;
     if(event.data.message === 'init') {
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
             event.data.dataSources,
@@ -27,16 +28,13 @@ self.onmessage = (event) => {
         topicData = event.data.dataTopic;
         topicTime = event.data.timeTopic;
         initBroadcastChannel(topicData, topicTime);
-        self.postMessage({
-            message: 'initialized'
-        });
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(event.data.message === 'current-time') {
-        self.postMessage({
+        data = {
             message: 'current-time',
             data: self.currentTime
-        });
+        };
     }  else if(event.data.message === 'reset') {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.reset();
@@ -55,10 +53,21 @@ self.onmessage = (event) => {
                 timeStamp: event.data.timeStamp
             });
         }
+    } else {
+        // skip response
+        return;
     }
+    self.postMessage({
+        message: event.data.message,
+        data: data,
+        messageId: event.data.messageId
+    })
+
 }
 
 function initBroadcastChannel(dataTopic, timeTopic) {
+    console.log('listen on topic ',dataTopic)
+
     dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
     dataSourceBroadCastChannel.onmessage = (event) => {
         if(event.data.type === EventType.DATA) {

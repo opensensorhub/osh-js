@@ -1,6 +1,6 @@
 import WebSocketConnector from "../../protocol/WebSocketConnector.js";
 import Ajax from "../../protocol/Ajax.js";
-import {isDefined} from "../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../utils/Utils.js";
 import TopicConnector from "../../protocol/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
@@ -8,12 +8,14 @@ import HttpConnector from "../../protocol/HttpConnector";
 
 class DataSourceHandler {
 
-    constructor(parser) {
+    constructor(parser, worker) {
         this.parser = parser;
         this.connector = null;
         this.reconnectTimeout = 1000 * 10; // 10 secs
         this.values = [];
         this.version = -Number.MAX_SAFE_INTEGER;
+        this.id = randomUUID();
+        this.initialized = false;
     }
 
     init(propertiesStr, topic, dataSourceId) {
@@ -26,11 +28,13 @@ class DataSourceHandler {
 
         this.broadcastChannel = new BroadcastChannel(topic);
 
-        const properties = JSON.parse(propertiesStr);
+        const properties = propertiesStr;
 
         this.handleProperties(properties);
 
         this.createDataConnector(this.properties);
+
+        this.initialized = true;
     }
 
     handleProperties(properties) {
@@ -54,8 +58,6 @@ class DataSourceHandler {
      * @protected
      */
     createDataConnector(properties, connector = undefined) {
-        // console.log(properties)
-        // const url = this.parser.buildUrl(properties);
         this.updatedProperties = properties;
         const url = properties.protocol + '://' + properties.endpointUrl;
 
@@ -95,10 +97,12 @@ class DataSourceHandler {
      */
     setTopic(topic) {
         if(isDefined(this.broadcastChannel)) {
+            console.log('close old topic ',this.broadcastChannel)
             this.broadcastChannel.close();
         }
         this.broadcastChannel = new BroadcastChannel(topic);
         this.topic = topic;
+        console.log('create new topic ',topic)
     }
 
     connect() {
@@ -180,6 +184,7 @@ class DataSourceHandler {
         if (isDefined(this.batchSize) && this.values.length > this.batchSize) {
             nbElements = this.batchSize;
         }
+        // console.log('push message on ',this.broadcastChannel)
         this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,
             type: EventType.DATA,
@@ -192,8 +197,11 @@ class DataSourceHandler {
     };
 
     handleMessage(message, worker) {
+        let data = undefined;
+
         if(message.message === 'init') {
             this.init(message.properties, message.topic, message.id);
+            data = this.initialized;
         } else if (message.message === 'connect') {
             this.connect();
         } else if (message.message === 'disconnect') {
@@ -203,11 +211,18 @@ class DataSourceHandler {
         } else if (message.message === 'update-url') {
             this.updateProperties(message.data);
         } else if (message.message === 'is-connected') {
-            worker.postMessage({
-                message: 'is-connected',
-                data: this.isConnected()
-            })
+            data = this.isConnected();
+        } else if (message.message === 'is-init') {
+            data = this.initialized;
+        } else {
+            // skip response
+            return;
         }
+        worker.postMessage({
+            message: message.message,
+            data: data,
+            messageId: message.messageId
+        })
     }
 }
 export default DataSourceHandler;

@@ -45,104 +45,7 @@ class DataSource {
         this.currentRunningProperties = {};
         this.eventSubscriptionMap = {};
         this.initialized = false;
-
-        this.initDataSource(properties);
-    }
-
-    /**
-     * Inits the datasource with the constructor properties.
-     * @protected
-     * @param properties
-     */
-    initDataSource(properties) {
-        return this.createWorker(properties).then(worker => {
-            this.dataSourceWorker = worker;
-            this.dataSourceWorker.postMessage({
-                message: 'init',
-                id: this.id,
-                properties: JSON.stringify(properties),
-                topic: this.getTopicId()
-            });
-
-            // listen for Events to callback to subscriptions
-            const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
-            datasourceBroadcastChannel.onmessage = (message) => {
-                const type = message.data.type;
-                if(type in this.eventSubscriptionMap){
-                    for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
-                        this.eventSubscriptionMap[type][i](message.data);
-                    }
-                }
-            };
-
-            this.initialized = true;
-        });
-    }
-
-    async createWorker(properties) { return this.dataSourceWorker;}
-
-    /**
-     * Disconnect the dataSource then the protocol will be closed as well.
-     */
-    disconnect() {
-        this.dataSourceWorker.postMessage({
-            message: 'disconnect'
-        });
-    }
-
-    /**
-     * Trigger when the datasource is disconnected for some reason.
-     */
-    onDisconnect() {
-        return new Promise(resolve => {
-            new BroadcastChannel(this.getTopicId()).onmessage = (event) => {
-                if(event.data.status === Status.DISCONNECTED) {
-                    resolve();
-                }
-            }
-        });
-    }
-
-    /**
-     * Connect the dataSource then the protocol will be opened as well.
-     */
-    async connect() {
-        let tryConnect = () => {
-            if (this.initialized) {
-                this.doConnect();
-            } else {
-                setTimeout(tryConnect, 100);
-            }
-        };
-
-        tryConnect();
-        return false;
-    }
-
-    doConnect() {
-        this.dataSourceWorker.postMessage({
-            message: 'connect'
-        });
-        return this.isConnected();
-    }
-
-    async isConnected() {
-        const promise = new Promise(resolve => {
-            if(this.dataSourceWorker !== null) {
-                this.dataSourceWorker.onmessage = (event) => {
-                    if (event.data.message === 'is-connected') {
-                        resolve(event.data.data);
-                    }
-                };
-            }
-        });
-        if(this.dataSourceWorker !== null) {
-            this.dataSourceWorker.postMessage({
-                message: 'is-connected'
-            });
-        }
-
-        return promise;
+        this.messagesMap = {};
     }
 
     /**
@@ -159,32 +62,6 @@ class DataSource {
      */
     getName() {
         return this.name;
-    }
-
-    /**
-     * Update properties
-     * @param {String} name - the datasource name
-     * @param {Object} properties - the datasource properties
-     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
-     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
-     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
-     * @param {String} properties.endpointUrl the endpoint url
-     * @param {String} properties.service the service
-     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
-     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
-     */
-    updateProperties(properties) {
-        // save current running properties
-        this.currentRunningProperties = {
-            ...this.properties,
-            ...properties
-        };
-        if(this.dataSourceWorker !== null) {
-            this.dataSourceWorker.postMessage({
-                message: 'update-url',
-                data: properties
-            });
-        }
     }
 
     getCurrentRunningProperties() {
@@ -212,6 +89,123 @@ class DataSource {
                 this.eventSubscriptionMap[eventTypes[i]] = [];
             }
             this.eventSubscriptionMap[eventTypes[i]].push(fn);
+        }
+    }
+
+    //----------- ASYNCHRONOUS FUNCTIONS -----------------//
+    async createWorker(properties) {
+        return this.dataSourceWorker;
+    }
+
+    /**
+     * Update properties
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
+     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
+     */
+    async updateProperties(properties) {
+        // save current running properties
+        this.currentRunningProperties = {
+            ...this.properties,
+            ...properties
+        };
+        return new Promise(resolve => {
+            this.postMessage({
+                message: 'update-url',
+                data: properties
+            }, resolve);
+        });
+    }
+
+    /**
+     * Connect the dataSource then the protocol will be opened as well.
+     */
+    async connect() {
+        await this.checkInit();
+        await this.doConnect();
+    }
+
+    async initDataSource() {
+        return new Promise(async resolve => {
+            this.dataSourceWorker = await this.createWorker(this.properties);
+            this.handleWorkerMessage();
+            this.postMessage({
+                message: 'init',
+                id: this.id,
+                properties: this.properties,
+                topic: this.getTopicId()
+            }, function () {
+                // listen for Events to callback to subscriptions
+                const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
+                datasourceBroadcastChannel.onmessage = (message) => {
+                    const type = message.data.type;
+                    if (type in this.eventSubscriptionMap) {
+                        for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
+                            this.eventSubscriptionMap[type][i](message.data);
+                        }
+                    }
+                };
+                this.initialized = true;
+                resolve();
+            }.bind(this));
+        });
+    }
+    async checkInit() {
+        if(!this.initialized) {
+            await this.initDataSource();
+        }
+    }
+
+    async doConnect() {
+        return new Promise(resolve => {
+            this.postMessage({
+                message: 'connect'
+            }, resolve);
+        });
+    }
+    async isConnected() {
+        return new Promise(resolve => {
+            this.postMessage({
+                message: 'is-connected'
+            },resolve);
+        });
+    }
+
+    /**
+     * Disconnect the dataSource then the protocol will be closed as well.
+     */
+    async disconnect() {
+        return new Promise(resolve => {
+            this.postMessage({
+                message: 'disconnect'
+            }, resolve);
+        });
+    }
+
+    postMessage(props, Fn) {
+        const messageId = randomUUID();
+        this.dataSourceWorker.postMessage({
+            ...props,
+            messageId: messageId
+        });
+        if(isDefined(Fn)) {
+            this.messagesMap[messageId] = Fn;
+        }
+    }
+
+    handleWorkerMessage() {
+        this.dataSourceWorker.onmessage = (event) => {
+            const id = event.data.messageId;
+            if(id in this.messagesMap){
+                this.messagesMap[id](event.data.data);
+                delete this.messagesMap[id];
+            }
         }
     }
 }

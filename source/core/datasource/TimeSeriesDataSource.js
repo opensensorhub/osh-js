@@ -55,61 +55,8 @@ class TimeSeriesDataSource extends DataSource{
         this.timeSync = null;
     }
 
-    setDataSynchronizer(timeSync) {
-        this.timeSync = timeSync;
-        this.dataSourceWorker.postMessage({
-            message: 'topic',
-            topic: DATA_SYNCHRONIZER_TOPIC+this.timeSync.id,
-            timeTopic: this.getTimeTopicId()
-        });
-    }
-
-    /**
-     * Inits the datasource with the constructor properties.
-     * @protected
-     * @param properties
-     */
-    async initDataSource(properties) {
-        await super.initDataSource(properties);
-        this.dataSourceWorker.postMessage({
-            message: 'topic',
-            topic: this.getTopicId(),
-            timeTopic: this.getTimeTopicId()
-        });
-
-        // listen for Events to callback to subscriptions
-        const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
-        datasourceBroadcastChannel.onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-    }
-
-    /**
-     * Sets the data source time range
-     * @param {String} startTime - the startTime (in date ISO)
-     * @param {String} endTime - the startTime (in date ISO)
-     * @param {Number} replaySpeed - the replay speed
-     * @param {boolean} reconnect - reconnect if was connected
-     */
-    setTimeRange(startTime, endTime, replaySpeed, reconnect= false) {
-        let replay = {};
-        if(isDefined(replaySpeed)) {
-            replay =  {
-                replaySpeed: replaySpeed
-            }
-        }
-        this.updateProperties({
-            ...this.currentRunningProperties,
-            startTime: startTime,
-            endTime: endTime,
-           ...replay,
-            reconnect : reconnect
-        });
+    getTimeTopicId() {
+        return DATASOURCE_TIME_TOPIC + this.id;
     }
 
     /**
@@ -158,55 +105,84 @@ class TimeSeriesDataSource extends DataSource{
         }
     }
 
-    async getCurrentTime() {
-        if(isDefined(this.timeSync)) {
-            return this.timeSync.getCurrentTime();
-        } else {
-            const promise = new Promise(resolve => {
-                if(this.dataSourceWorker !== null) {
-                    this.dataSourceWorker.onmessage = (event) => {
-                        if (event.data.message === 'last-timestamp') {
-                            resolve(event.data.data);
+    //----------- ASYNCHRONOUS FUNCTIONS -----------------//
+
+    async setDataSynchronizer(timeSync) {
+        return new Promise(async (resolve, reject) => {
+            await this.checkInit();
+            const topic = DATA_SYNCHRONIZER_TOPIC + timeSync.id;
+            this.timeSync = timeSync;
+            this.postMessage({
+                message: 'topic',
+                topic: topic,
+                timeTopic: this.getTimeTopicId()
+            }, resolve)
+        });
+    }
+
+    /**
+     * Inits the datasource with the constructor properties.
+     * @protected
+     * @param properties
+     */
+    async initDataSource(properties) {
+        if(!this.initialized) {
+            return new Promise(async resolve => {
+                await super.initDataSource(properties);
+                this.postMessage({
+                    message: 'topic',
+                    topic: this.getTopicId(),
+                    timeTopic: this.getTimeTopicId()
+                }, function () {
+                    // listen for Events to callback to subscriptions
+                    const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
+                    datasourceBroadcastChannel.onmessage = (message) => {
+                        const type = message.data.type;
+                        if (type in this.eventSubscriptionMap) {
+                            for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
+                                this.eventSubscriptionMap[type][i](message.data);
+                            }
                         }
                     };
-                }
+                    resolve();
+                }.bind(this));
             });
-            if(this.dataSourceWorker !== null) {
-                this.dataSourceWorker.postMessage({
-                    message: 'last-timestamp'
-                });
-            }
-
-            return promise;
         }
     }
 
     /**
-     * Update properties
-     * @param {String} name - the datasource name
-     * @param {Object} properties - the datasource properties
-     * @param {Boolean} properties.timeShift - fix some problem with some android devices with some timestamp shift to 16 sec
-     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
-     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
-     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
-     * @param {String} properties.endpointUrl the endpoint url
-     * @param {String} properties.service the service
-     * @param {String} properties.offeringID the offeringID
-     * @param {String} properties.observedProperty the observed property
-     * @param {String} properties.startTime the start time (ISO format)
-     * @param {String} properties.endTime the end time (ISO format)
-     * @param {Number} properties.replaySpeed the replay speed
-     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
-     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
+     * Sets the data source time range
+     * @param {String} startTime - the startTime (in date ISO)
+     * @param {String} endTime - the startTime (in date ISO)
+     * @param {Number} replaySpeed - the replay speed
+     * @param {boolean} reconnect - reconnect if was connected
      */
-    updateProperties(properties) {
-        super.updateProperties(properties);
-
+    async setTimeRange(startTime, endTime, replaySpeed, reconnect= false) {
+        let replay = {};
+        if(isDefined(replaySpeed)) {
+            replay =  {
+                replaySpeed: replaySpeed
+            }
+        }
+        return this.updateProperties({
+            ...this.currentRunningProperties,
+            startTime: startTime,
+            endTime: endTime,
+           ...replay,
+            reconnect : reconnect
+        });
     }
 
-
-    getTimeTopicId() {
-        return DATASOURCE_TIME_TOPIC + this.id;
+    async getCurrentTime() {
+        if(isDefined(this.timeSync)) {
+            return this.timeSync.getCurrentTime();
+        } else {
+            return new Promise(resolve => {
+                this.postMessage({
+                    message: 'last-timestamp'
+                }, resolve);
+            });
+        }
     }
 }
 
