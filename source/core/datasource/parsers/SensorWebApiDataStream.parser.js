@@ -1,13 +1,14 @@
 import DataSourceParser from "./DataSourceParser";
 import DataStream from "../../sensorwebapi/api/datastream/DataStream";
 
-class SensorWebApiFetchDataStreamParser extends DataSourceParser {
+class SensorWebApiDataStreamParser extends DataSourceParser {
     constructor(networkProperties) {
         super();
         this.networkProperties = networkProperties;
     }
 
     parseData(data) {
+        console.log(data)
         return new DataStream(
             {
                 id: data.id,
@@ -32,4 +33,4 @@ class SensorWebApiFetchDataStreamParser extends DataSourceParser {
     }
 }
 
-export default SensorWebApiFetchDataStreamParser;
+export default SensorWebApiDataStreamParser;

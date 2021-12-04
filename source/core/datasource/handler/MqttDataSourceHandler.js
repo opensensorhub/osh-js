@@ -1,8 +1,8 @@
 import MqttConnector from "../../protocol/MqttConnector";
-import SensorWebApiDataStreamHandler from "../../../core/datasource/handler/SensorWebApiDataStreamHandler";
+import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
 
 // expose as Global. static property is still experimental
-class MqttSensorWebApiDataStreamHandler extends SensorWebApiDataStreamHandler {
+class MqttDataSourceHandler  extends TimeSeriesDataSourceHandler {
 
     constructor(parser) {
         super(parser);
@@ -17,5 +17,5 @@ class MqttSensorWebApiDataStreamHandler extends SensorWebApiDataStreamHandler {
         super.createDataConnector(properties, new MqttConnector(url,properties));
     }
 }
-export default MqttSensorWebApiDataStreamHandler;
+export default MqttDataSourceHandler;
 

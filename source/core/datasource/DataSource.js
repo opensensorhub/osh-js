@@ -35,6 +35,7 @@ class DataSource {
      * @param {Number} [properties.reconnectTimeout=10000] - the time before reconnecting (in milliseconds)
      * @param {Number} [properties.batchSize=1] - the number of data to fetch
      * @param {Object} [properties.customUrlParams={}] - custom parameters appended to the URL as they are
+     * @param {Boolean} [properties.tls=false] - set TLS mode 
      * @param {Object} worker - DataSource worker
      */
     constructor(name, properties, worker) {

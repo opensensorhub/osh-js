@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
+import SensorWebApiDataStreamParser from "../../../datasource/parsers/SensorWebApiDataStream.parser";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
@@ -25,7 +25,7 @@ class FeaturesOfInterest extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SensorWebApiFetchDataStreamParser(networkProperties);
+        this.parser = new SensorWebApiDataStreamParser(networkProperties);
     }
 
     /**

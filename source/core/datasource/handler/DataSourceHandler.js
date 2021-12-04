@@ -59,7 +59,8 @@ class DataSourceHandler {
      */
     createDataConnector(properties, connector = undefined) {
         this.updatedProperties = properties;
-        const url = properties.protocol + '://' + properties.endpointUrl;
+        const tls = (properties.tls) ? 's' : '';
+        const url = properties.protocol + tls + '://' + properties.endpointUrl;
 
         if(!isDefined(connector)) {
             // checks if type is WebSocketConnector

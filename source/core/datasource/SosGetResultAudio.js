@@ -58,6 +58,7 @@ class SosGetResultAudio extends TimeSeriesDataSource {
         super(name, {
             timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
+            tls: false,
             ...properties
         }, new SosGetResultAudioWorker());
     }

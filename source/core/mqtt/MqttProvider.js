@@ -15,8 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import mqtt from 'mqtt';
-import {isDefined} from "../../core/utils/Utils";
-import ObservationFilter from "../../core/sensorwebapi/api/observation/ObservationFilter";
+import {isDefined} from "../utils/Utils";
+import ObservationFilter from "../sensorwebapi/api/observation/ObservationFilter";
+import SweApiMqttJsonParser from "../datasource/parsers/SweApiMqttJson.parser";
 
 let mqttCallbacks = {};
 
@@ -61,6 +62,7 @@ class MqttProvider {
         this.endpoint = properties.endpoint+'/mqtt';
         this.clientId = properties.clientId;
         this.client = null;
+        this.parser = new SweApiMqttJsonParser();
     }
 
 
@@ -141,10 +143,10 @@ class MqttProvider {
         }
     }
 
-    onMessage(topic, message) {
-        if(topic in mqttCallbacks) {
+    async onMessage(topic, message) {
+        if (topic in mqttCallbacks) {
             // callback for the corresponding topic
-            for(let callbackFn of mqttCallbacks[topic]) {
+            for (let callbackFn of mqttCallbacks[topic]) {
                 // callback to all subscription registered
                 callbackFn(message)
             }

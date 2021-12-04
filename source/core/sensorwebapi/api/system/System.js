@@ -19,7 +19,7 @@ import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import SensorWebApiFetchSystemParser from "../../../datasource/parsers/SensorWebApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
-import SensorWebApiFetchDataStreamParser from "../../../datasource/parsers/SensorWebApiFetchDataStream.parser";
+import SensorWebApiDataStreamParser from "../../../datasource/parsers/SensorWebApiDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
 import SensorWebApiFetchFeatureOfInterestParser  from "../../../datasource/parsers/SensorWebApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
@@ -30,7 +30,7 @@ class System extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.systemParser = new SensorWebApiFetchSystemParser(networkProperties);
-        this.dataStreamParser = new SensorWebApiFetchDataStreamParser(networkProperties);
+        this.dataStreamParser = new SensorWebApiDataStreamParser(networkProperties);
         this.featureOfInterestParser = new SensorWebApiFetchFeatureOfInterestParser(networkProperties);
     }
 

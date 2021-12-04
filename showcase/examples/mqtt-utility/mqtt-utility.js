@@ -1,6 +1,6 @@
-import MqttProvider from "../../../source/ext/mqtt/MqttProvider";
+import MqttProvider from "../../../source/core/mqtt/MqttProvider";
 import {randomUUID} from "../../../source/core/utils/Utils";
-import SweApiMqttJsonParser from "../../../source/ext/datasource/parsers/SweApiMqttJson.parser";
+import SweApiMqttJsonParser from "../../../source/core/datasource/parsers/SweApiMqttJson.parser";
 
 const textAreaElement =  document.getElementById("data-container");
 

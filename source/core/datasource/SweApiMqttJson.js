@@ -1,5 +1,5 @@
 import SweApiMqttJsonWorker from "./workers/SweApiMqttJson.worker.js";
-import DataSource from "../../core/datasource/DataSource";
+import DataSource from "./DataSource";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -29,6 +29,7 @@ class SweApiMqttJson extends DataSource {
         super(name, {
             batchSize: 1,
             reconnectTimeout: 1000 * 30, // default if not defined into properties
+            tls: false,
             ...properties,
         }, new SweApiMqttJsonWorker());
     }

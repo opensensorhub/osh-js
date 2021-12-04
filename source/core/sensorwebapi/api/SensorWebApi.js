@@ -18,64 +18,52 @@ import HttpConnector from "../../protocol/HttpConnector";
 import WebSocketConnector from "../../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../../utils/Utils";
 import SensorWebApiFetchJsonParser from "../../datasource/parsers/SensorWebApiFetchJson.parser";
-import MqttConnector from "../../../ext/protocol/MqttConnector";
+import MqttConnector from "../../protocol/MqttConnector";
 
 class SensorWebApi {
 
     constructor(networkProperties) {
         this._network = {}
+        this._network.info = {
+            connector: this.createConnector({
+                protocol: 'http',
+                tls: networkProperties.tls,
+                endpointUrl: networkProperties.endpointUrl
+            })
+        };
 
-        if(isDefined(networkProperties.info) && isDefined(networkProperties.info.connector)) {
-            this._network.info = {
-                connector: networkProperties.info.connector,
+        if (isDefined(networkProperties.connector)) {
+            this._network.stream = {
+                connector: networkProperties.connector,
             };
         } else {
-            assertDefined(networkProperties.info, 'info');
-            assertDefined(networkProperties.info.endpoint, 'info.endpoint');
-            assertDefined(networkProperties.info.protocol, 'info.protocol');
-            this._network.info = {
-                endpoint:  networkProperties.info.endpoint,
-                protocol: networkProperties.info.protocol,
-                connector: undefined
-            };
-
-            if (networkProperties.info.endpoint.endsWith('/')) {
-                this._network.info.enpoint = networkProperties.info.endpoint.substring(0, networkProperties.info.endpoint.length - 1);
-            }
-            this._network.info.connector   = this.createConnector(this._network.info);
-        }
-
-        if(isDefined(networkProperties.stream) && isDefined(networkProperties.stream.connector)) {
             this._network.stream = {
-                connector: networkProperties.stream.connector,
-            };
-        } else {
-            assertDefined(networkProperties.stream, 'info');
-            assertDefined(networkProperties.stream.endpoint, 'info.endpoint');
-            assertDefined(networkProperties.stream.protocol, 'info.protocol');
-            this._network.stream = {
-                endpoint:  networkProperties.stream.endpoint,
-                protocol: networkProperties.stream.protocol,
-                connector: undefined
-            };
-
-            if (networkProperties.stream.endpoint.endsWith('/')) {
-                this._network.stream.enpoint = networkProperties.stream.endpoint.substring(0, networkProperties.stream.endpoint.length - 1);
+                connector: this.createConnector(networkProperties)
             }
-            this._network.stream.connector   = this.createConnector(this._network.stream);
         }
     }
 
     createConnector(networkProperties) {
-        if(networkProperties.protocol === 'https' || networkProperties.protocol === 'http') {
-            return new HttpConnector(networkProperties.protocol + '://' + networkProperties.endpoint , {
-                responseType: 'application/json',
+        assertDefined(networkProperties.endpointUrl, 'endpointUrl');
+        assertDefined(networkProperties.protocol, 'protocol');
+
+        let endpoint = networkProperties.endpointUrl;
+        if (endpoint.endsWith('/')) {
+            endpoint = endpoint.substring(0, endpoint.length - 1);
+        }
+
+        const tls = (networkProperties.tls) ? 's' : '';
+        const url = networkProperties.protocol + tls + '://' + endpoint;
+
+        if(networkProperties.protocol === 'http') {
+            return new HttpConnector(url , {
+                responseType: networkProperties.responseFormat || 'application/json',
                 method: 'GET'
             });
-        } else if(networkProperties.protocol === 'mqtts' || networkProperties.protocol === 'mqtt') {
-            return new MqttConnector(networkProperties.protocol + '://' + networkProperties.endpoint);
-        } else if(networkProperties.protocol === 'wss' || networkProperties.protocol === 'ws') {
-            return new WebSocketConnector(networkProperties.protocol + '://' + networkProperties.endpoint);
+        } else if(networkProperties.protocol === 'mqtt') {
+            return new MqttConnector(url);
+        } else if(networkProperties.protocol === 'ws') {
+            return new WebSocketConnector(url);
         }
     }
 }

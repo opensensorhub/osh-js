@@ -46,13 +46,14 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
+            tls: false,
             ...properties
         });
     }
 
     async createWorker(properties) {
-        if(properties.protocol.startsWith('mqtt')) {
-           return await import('../../ext/datasource/workers/SensorWebApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
+        if(properties.protocol === 'mqtt' || properties.protocol === 'ws') {
+           return await import('./workers/SensorWebApiStream.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
         } else {
             return new SensorWebApiFetchWorker();
         }

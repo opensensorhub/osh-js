@@ -33,6 +33,7 @@ class SosGetFois extends DataSource {
             batchSize: 10,
             ...properties,
             responseType: 'application/xml',
+            tls: false,
         }, new SosGetResultJsonWorker());
     }
 }
