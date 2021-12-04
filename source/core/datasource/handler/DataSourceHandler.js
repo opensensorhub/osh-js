@@ -97,7 +97,7 @@ class DataSourceHandler {
      */
     setTopic(topic) {
         if(isDefined(this.broadcastChannel)) {
-            console.log('close old topic ',this.broadcastChannel)
+            console.warn('close old topic ',this.topic)
             this.broadcastChannel.close();
         }
         this.broadcastChannel = new BroadcastChannel(topic);
@@ -200,7 +200,9 @@ class DataSourceHandler {
         let data = undefined;
 
         if(message.message === 'init') {
-            this.init(message.properties, message.topic, message.id);
+            if(!this.initialized) {
+                this.init(message.properties, message.topic, message.id);
+            }
             data = this.initialized;
         } else if (message.message === 'connect') {
             this.connect();

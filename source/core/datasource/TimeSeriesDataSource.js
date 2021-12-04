@@ -108,8 +108,8 @@ class TimeSeriesDataSource extends DataSource{
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async setDataSynchronizer(timeSync) {
+        await this.checkInit();
         return new Promise(async (resolve, reject) => {
-            await this.checkInit();
             const topic = DATA_SYNCHRONIZER_TOPIC + timeSync.id;
             this.timeSync = timeSync;
             this.postMessage({
@@ -126,9 +126,9 @@ class TimeSeriesDataSource extends DataSource{
      * @param properties
      */
     async initDataSource(properties) {
+        await super.initDataSource(properties);
         if(!this.initialized) {
             return new Promise(async resolve => {
-                await super.initDataSource(properties);
                 this.postMessage({
                     message: 'topic',
                     topic: this.getTopicId(),
