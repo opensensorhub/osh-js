@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataConnector from "../../core/protocol/DataConnector";
-import {assertDefined, isDefined, randomUUID} from "../../core/utils/Utils";
-import {Status} from "../../core/protocol/Status";
+import DataConnector from "./DataConnector";
+import {assertDefined, isDefined, randomUUID} from "../utils/Utils";
+import {Status} from "./Status";
 import MqttProvider from "../mqtt/MqttProvider";
 
 /**

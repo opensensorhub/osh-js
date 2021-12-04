@@ -17,7 +17,6 @@
 import HttpConnector from "../../protocol/HttpConnector";
 import WebSocketConnector from "../../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../../utils/Utils";
-import SensorWebApiFetchJsonParser from "../../datasource/parsers/SensorWebApiFetchJson.parser";
 import MqttConnector from "../../protocol/MqttConnector";
 
 class SensorWebApi {
