@@ -14,7 +14,7 @@ let video2Count = 0;
 
 let lastTimestamp = 0;
 
-const MAX_TEXTAERA_NUMBER = 200;
+const MAX_TEXTAERA_NUMBER = 10;
 
 export function displayVideo0(values) {
     let dataEvent;

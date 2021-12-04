@@ -22,9 +22,9 @@
   const DTR = Math.PI / 180;
 
   // Init cesium token
-  Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-      'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-      '2WfIX0QHiZcOjVaXI92stjDh4fI';
+  Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkMDE5MzJmNC1hMTQ5LTQxOTEtODJiO' +
+      'C00ZDM4YTZiMDFhYTUiLCJpZCI6MTA1NzQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI0NTJ9.uTTE9gv7JB3y_XzV7FTm' +
+      'BcKUAOMYyOZ97h03_gasO7c';
 
   export default {
     name: "Globe",
@@ -308,7 +308,7 @@
             droneImageDrapingLayer,
             dronePolygonFootprintLayer,
             droneFrustumLayer,
-            targetPointMarkerLayer,
+            // targetPointMarkerLayer,
             biologicalSensorMarkersRadiusLayer,
             biologicalSensorMarkersLayer
           ]

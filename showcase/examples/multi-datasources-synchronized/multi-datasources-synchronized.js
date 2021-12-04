@@ -6,7 +6,7 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
-const REPLAY_SPEED = 4.0;
+const REPLAY_SPEED = 4.2;
 const BUFFERING_TIME = 500;
 const TIMEOUT = 1000;
 
@@ -54,9 +54,6 @@ const dataSynchronizer = new DataSynchronizer({
   timerResolution: 5,
   dataSources: [videoDataSource0, videoDataSource1, videoDataSource2]
 })
-
-// connects each DataSource
-dataSynchronizer.connect();
 
 videoDataSource0.subscribe((message) => displayVideo0(message.values), [EventType.DATA])
 videoDataSource1.subscribe((message) => displayVideo1(message.values), [EventType.DATA])

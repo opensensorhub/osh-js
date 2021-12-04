@@ -305,7 +305,7 @@ export default {
             this.realtime = message.timestamp;
           }
         }
-      }, [EventType.TIME_CHANGED,EventType.TIME]);
+      }, [EventType.TIME_CHANGED, EventType.TIME]);
     },
     setStartTime(timestamp) {
       this.startTime = timestamp;
