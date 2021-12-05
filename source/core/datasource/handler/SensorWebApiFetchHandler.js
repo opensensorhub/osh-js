@@ -8,53 +8,97 @@ import Observations from "../../sensorwebapi/api/observation/Observations";
 import SystemFilter from "../../sensorwebapi/api/system/SystemFilter";
 import FeatureOfInterestFilter from "../../sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
 import DataStreamFilter from "../../sensorwebapi/api/datastream/DataStreamFilter";
+import DataStream from "../../sensorwebapi/api/datastream/DataStream";
 
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
-    constructor() {
-        super();
+    constructor(parser) {
+        super(parser);
     }
 
-    async createDataConnector(properties) {
-        super.createDataConnector(properties);
+    async createDataConnector(properties, connector) {
+        super.createDataConnector(properties, connector);
 
         const networkProperties = {
-            info: {
-                connector: this.connector
-            },
-            stream: {
-                connector: this.connector
-            }
+            ...properties,
+            connector: this.connector
         };
 
         let collection;
-        let sensorWebApi;
         let filter;
 
-        // create parser depending on protocol
-        // MQTT has a special parser
-        // TODO: handle MQTT protocol
+        let stream = this.properties.protocol === 'mqtt' || this.properties.protocol === 'ws';
 
         // check if is a collection
         if (this.properties.collection === '/systems') {
-            sensorWebApi = new Systems(networkProperties);
             filter = this.createSystemFilter(properties);
-            collection = sensorWebApi.searchSystems(filter,  properties.batchSize);
+            collection = new Systems(networkProperties).searchSystems(filter, properties.batchSize);
+            stream = false;
         } else if (this.properties.collection === '/fois') {
-            sensorWebApi = new FeatureOfInterests(networkProperties);
             filter = this.createFeatureOfInterestFilter(properties);
-            collection = sensorWebApi.searchFeaturesOfInterest(filter,  properties.batchSize);
-        } else if (this.properties.collection === '/datastreams') {
-            sensorWebApi = new DataStreams(networkProperties);
+            collection = new FeatureOfInterests(networkProperties).searchFeaturesOfInterest(filter, properties.batchSize);
+            stream = false;
+        } else if (this.properties.collection.startsWith('/datastreams')) {
             filter = this.createDataStreamFilter(properties);
-            collection = sensorWebApi.searchDataStreams(filter,  properties.batchSize);
+
+            const regex = new RegExp('\\/(.*\\/)(.*)\\/observations'); // /datastreams/abc13/observations
+            if(regex.test(this.properties.collection)) {
+                // is observation streaming
+                const match = regex.exec(this.properties.collection);
+                let apiObject = new DataStream({
+                    id: match[2]
+                }, networkProperties);
+                if(stream) {
+                   // apiObject.streamObservations(filter, this.onMessage.bind(this));
+                    this.streamObject = apiObject;
+                } else {
+                    collection = apiObject.searchObservations(filter, properties.batchSize);
+                }
+            } else {
+                collection = new DataStreams(networkProperties).searchDataStreams(filter, properties.batchSize);
+            }
         } else if (this.properties.collection === '/observations') {
-            sensorWebApi = new Observations(networkProperties);
-            collection = sensorWebApi.searchObservations();
+            collection = new Observations(networkProperties).searchObservations();
+            stream = false;
         }
 
-        this.collection = await collection;
-        this.parser = sensorWebApi.parser;
+        if(stream) {
+            await this.setupStream(collection);
+        } else {
+            await this.setupNonStream(collection);
+        }
+
         this.filter = filter;
+    }
+
+    async setupStream(collection) {
+        this.connect = this.connectStream;
+    }
+
+    async setupNonStream(collection) {
+        this.collection = await collection;
+        this.onMessage = this.onMessageNonStream;
+    }
+
+    async connectStream() {
+        this.streamObject.streamObservations(this.filter, this.onMessage.bind(this));
+    }
+
+    // connect non stream object
+    async connect() {
+        if (isDefined(this.collection)) {
+            while (this.collection.hasNext()) {
+                const values = await this.collection.nextPage();
+                await this.onMessage(values.map(v => v.properties));
+            }
+        }
+    }
+
+    onMessageNonStream(values){
+        this.broadcastChannel.postMessage({
+            dataSourceId: this.dataSourceId,
+            type: EventType.DATA,
+            values: [...values]
+        });
     }
 
     createSystemFilter(properties) {
@@ -196,23 +240,6 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         }
 
         return new DataStreamFilter(props);
-    }
-
-    async connect() {
-        if (isDefined(this.collection)) {
-            while (this.collection.hasNext()) {
-                const values = await this.collection.nextPage();
-                this.onMessage(values.map(v => v.properties));
-            }
-        }
-    }
-
-    onMessage(values){
-        this.broadcastChannel.postMessage({
-            dataSourceId: this.dataSourceId,
-            type: EventType.DATA,
-            values: [...values]
-        });
     }
 }
 export default SensorWebApiFetchApiHandler;

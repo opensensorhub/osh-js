@@ -8,7 +8,6 @@ class SensorWebApiDataStreamParser extends DataSourceParser {
     }
 
     parseData(data) {
-        console.log(data)
         return new DataStream(
             {
                 id: data.id,

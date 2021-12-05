@@ -52,8 +52,8 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
     }
 
     async createWorker(properties) {
-        if(properties.protocol === 'mqtt' || properties.protocol === 'ws') {
-           return await import('./workers/SensorWebApiStream.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
+        if(properties.protocol === 'mqtt') {
+           return await import('./workers/SensorWebApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
         } else {
             return new SensorWebApiFetchWorker();
         }

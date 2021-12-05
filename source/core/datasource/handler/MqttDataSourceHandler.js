@@ -1,7 +1,6 @@
 import MqttConnector from "../../protocol/MqttConnector";
 import TimeSeriesDataSourceHandler from "./TimeSeriesDataSourceHandler";
 
-// expose as Global. static property is still experimental
 class MqttDataSourceHandler  extends TimeSeriesDataSourceHandler {
 
     constructor(parser) {

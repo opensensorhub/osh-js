@@ -82,34 +82,15 @@ class HttpConnector extends DataConnector {
         if (isDefined(queryString)) {
             fullUrl += '?' + queryString;
         }
-        this.onMessage(await fetch(fullUrl, {
+        const promiseResponse = fetch(fullUrl, {
             method: this.method,
             headers: this.headers
         })
             .then(function (response) {
-                if (instance.responseType === 'application/json') {
-                    return response.json();
-                }
-                switch (instance.responseType) {
-                    case 'application/json':
-                        return response.json();
-                        break;
-                    case 'plain/text':
-                        return response.text();
-                        break;
-                    case 'application/xml':
-                        return response.text();
-                        break;
-                    case 'arrayBuffer':
-                        return response.arrayBuffer();
-                        break;
-                    case 'blob':
-                        return response.blob();
-                        break;
-                    default:
-                        return response.json();
-                }
-            }));
+                return response.arrayBuffer();
+            });
+        this.onMessage(promiseResponse);
+        return promiseResponse;
     }
 
     /**

@@ -47,9 +47,11 @@ class Collection {
         this.parseResponse(response);
     }
 
-    parseResponse(response) {
+    parseResponse(encodedResponse) {
+        const response = this.parser.parseData(encodedResponse);
+        console.log(response)
         for(let i=0;i < response.items.length;i++) {
-            this.parseData.push(this.parser.parseData(response.items[i]));
+            this.parseData.push(response.items[i]);
         }
         this.nextOffset = this.parseNextOffset(response);
 

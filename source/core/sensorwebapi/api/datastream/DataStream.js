@@ -17,6 +17,9 @@
 import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
+import Collection from "../Collection";
+import SensorWebApiDataStreamParser from "../../../datasource/parsers/SensorWebApiDataStream.parser";
+import SensorWebApiFetchJson from "../../../datasource/parsers/SensorWebApiFetchJson.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -25,7 +28,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-
+        this.parser = new SensorWebApiFetchJson(networkProperties);
     }
 
     /**
@@ -35,9 +38,26 @@ class DataStream extends SensorWebApi {
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
         this._network.stream.connector.onMessage = callback;
+
         this._network.stream.connector.doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
-            observationFilter.toQueryString()
+            // observationFilter.toQueryString()
+        );
+    }
+
+    /**
+     *
+     * @param observationFilter
+     * @param pageSize
+     * @returns {Collection<DataStream>} A collection of DataStream
+     */
+    searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10) {
+        return new Collection(
+            API.datastreams.observations.replace('{id}',this.properties.id),
+            observationFilter.toQueryString(),
+            pageSize,
+            this.parser,
+            this._network.info.connector
         );
     }
 }
