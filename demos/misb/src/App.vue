@@ -27,11 +27,11 @@
         :target-location-data-source="targetLocationDataSource"
         :drone-h-fov-data-source="droneHFovDataSource"
         :drone-v-fov-data-source="droneVFovDataSource"
-        :biological-sensors-data-source="biologicalSensorsDataSource"
+        ></Globe>
+<!--        :biological-sensors-data-source="biologicalSensorsDataSource"-->
     />
     <CollapseTimeController
         :dataSynchronizer="dataSynchronizer"
-        :biological-sensors-data-source="biologicalSensorsDataSource"
         v-if="dataSynchronizer">
     </CollapseTimeController>
   </div>
@@ -44,14 +44,14 @@ import TargetMiniPanel from "./components/TargetMiniPanel.vue";
 import BioSensorMiniPanel from "./components/BioSensorMiniPanel.vue";
 import CollapseTimeController from "./components/CollapseTimeController.vue";
 
-import SosGetResultVideo from "osh-js/core/datasource/SosGetResultVideo.js";
 import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
-import SosGetFois from "osh-js/core/datasource/SosGetFois";
 import VideoPanel from "./components/VideoPanel.vue";
+import SensorWebApiFetchJson from "osh-js/core/datasource/SensorWebApiFetchJson";
+import SensorWebApiFetchVideo from "osh-js/core/datasource/SensorWebApiFetchVideo";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -83,14 +83,12 @@ export default {
     const timeOut = 3000;
     const bufferingTime = 800;
 
-    const droneVideoDataSource = new SosGetResultVideo("MISB Drone - Video", {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const droneVideoDataSource = new SensorWebApiFetchVideo('MISB Drone - Video',{
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/uxzna8pldpiv/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -98,14 +96,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Location', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const droneLocationDataSource = new SensorWebApiFetchJson('MISB UAS - Platform Location', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/gal7w6j6v7n9/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -113,14 +109,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneOrientationDataSource = new SosGetResultJson('MISB UAS - Platform Orientation', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const droneOrientationDataSource = new SensorWebApiFetchJson('MISB UAS - Platform Attitude', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/ei5nsp8guy5y/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -128,14 +122,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneCameraOrientationDataSource = new SosGetResultJson('MISB UAS - Sensor Orientation', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const droneCameraOrientationDataSource = new SensorWebApiFetchJson('MISB UAS - Gimbal Attitude', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/7rsjo1e6pq45/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -143,14 +135,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneHFovDataSource = new SosGetResultJson('MISB UAS - Horizontal FoV', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://sensorml.com/ont/misb0601/property/HorizontalFov',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const droneHFovDataSource = new SensorWebApiFetchJson('MISB UAS - Horizontal FoV', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/1fle3d5b29shh/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -158,14 +148,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneVFovDataSource = new SosGetResultJson('MISB UAS - Vertical FoV', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://sensorml.com/ont/misb0601/property/VerticalFov',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const droneVFovDataSource = new SensorWebApiFetchJson('MISB UAS - Vertical FoV', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/1fle3d5b29shh/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -173,14 +161,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const geoRefImageFrameDataSource = new SosGetResultJson('MISB UAS - Geo ref image', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:process:georef',
-      observedProperty: 'http://sensorml.com/ont/misb0601/property/GeoRefImageFrame',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const geoRefImageFrameDataSource = new SensorWebApiFetchJson('MISB UAS - GeoReferenced Image Frame', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/1b6j89nistu9h/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -188,14 +174,12 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const targetLocationDataSource = new SosGetResultJson('MISB UAS - Target location', {
-      protocol: tls ? 'wss' : 'ws',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      offeringID: 'urn:osh:process:vmti',
-      observedProperty: 'http://sensorml.com/ont/swe/property/TargetLocation',
-      startTime: START_TIME,
-      endTime: END_TIME,
+    const targetLocationDataSource = new SensorWebApiFetchJson('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      collection: '/datastreams/tmi5mitvl8c7/observations',
+      tls: tls,
+      phenomenonTime: START_TIME+'/'+END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
@@ -203,13 +187,13 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    let biologicalSensorsDataSource = new SosGetFois('Biological Sensors', {
-      protocol: tls ? 'https' : 'http',
-      service: 'SOS',
-      endpointUrl: sosEndpoint,
-      batchSize: 50,
-      procedureId: 'urn:osh:sensor:isa:701149'
-    });
+    // let biologicalSensorsDataSource = new SosGetFois('Biological Sensors', {
+    //   protocol: tls ? 'https' : 'http',
+    //   service: 'SOS',
+    //   endpointUrl: sosEndpoint,
+    //   batchSize: 50,
+    //   procedureId: 'urn:osh:sensor:isa:701149'
+    // });
 
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: dsReplaySpeed,
@@ -237,12 +221,12 @@ export default {
     this.geoRefImageFrameDataSource = geoRefImageFrameDataSource;
     this.targetLocationDataSource = targetLocationDataSource;
     //
-    this.biologicalSensorsDataSource = biologicalSensorsDataSource;
+    // this.biologicalSensorsDataSource = biologicalSensorsDataSource;
 
     this.initEvents();
 
     dataSynchronizer.connect();
-    biologicalSensorsDataSource.connect()
+    // biologicalSensorsDataSource.connect()
 
     // setup default UI options
     this.$store.dispatch('updateUiStatus', {

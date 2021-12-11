@@ -18,8 +18,8 @@ import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import Collection from "../Collection";
-import SensorWebApiDataStreamParser from "../../../datasource/parsers/SensorWebApiDataStream.parser";
-import SensorWebApiFetchJson from "../../../datasource/parsers/SensorWebApiFetchJson.parser";
+import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
+import SensorWebApiFetchJson from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchJson.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -41,7 +41,8 @@ class DataStream extends SensorWebApi {
 
         this._network.stream.connector.doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
-            // observationFilter.toQueryString()
+            observationFilter.toQueryString(),
+            observationFilter.props.format
         );
     }
 
@@ -54,7 +55,7 @@ class DataStream extends SensorWebApi {
     searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10) {
         return new Collection(
             API.datastreams.observations.replace('{id}',this.properties.id),
-            observationFilter.toQueryString(),
+            observationFilter,
             pageSize,
             this.parser,
             this._network.info.connector

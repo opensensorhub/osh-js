@@ -16,7 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SensorWebApiFetchSystemParser from "../../../datasource/parsers/SensorWebApiFetchSystem.parser";
+import SensorWebApiFetchSystemParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchSystem.parser";
 import SystemFilter from "./SystemFilter";
 import API from "../routes.conf";
 
@@ -35,7 +35,7 @@ class Systems extends SensorWebApi {
      */
     async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         return new Collection(
-            API.systems.search, systemFilter.toQueryString(),
+            API.systems.search, systemFilter,
             pageSize, this.parser, this._network.info.connector
         );
     }
@@ -43,7 +43,8 @@ class Systems extends SensorWebApi {
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
         const response = await this._network.info.connector.doRequest(
             API.systems.by_id.replace('{id}',systemId),
-            systemFilter.toQueryString(['select','format'])
+            systemFilter.toQueryString(['select','format']),
+            systemFilter.props.format
         );
         return this.parser.parseData(response);
     }

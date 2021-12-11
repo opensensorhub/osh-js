@@ -17,7 +17,7 @@
 import mqtt from 'mqtt';
 import {isDefined} from "../utils/Utils";
 import ObservationFilter from "../sensorwebapi/api/observation/ObservationFilter";
-import SweApiMqttJsonParser from "../datasource/parsers/SweApiMqttJson.parser";
+import SweApiMqttJsonParser from "../datasource/parsers/sensorwebapi/SweApiMqttJson.parser";
 
 let mqttCallbacks = {};
 

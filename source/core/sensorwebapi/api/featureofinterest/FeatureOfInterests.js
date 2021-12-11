@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SensorWebApiDataStreamParser from "../../../datasource/parsers/SensorWebApiDataStream.parser";
+import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
@@ -33,11 +33,16 @@ class FeaturesOfInterest extends SensorWebApi {
      * @returns {Collection<FeaturesOfInterest>} A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
-        return new Collection('/featuresOfInterest', featureOfInterestFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
+        return new Collection('/featuresOfInterest', featureOfInterestFilter, pageSize,this.parser, this._network.info.connector);
     }
 
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
-        const response = await this._network.info.connector.doRequest(`/featuresOfInterest/${fId}`,featureOfInterestFilter.toQueryString(['select','format']));
+        const response = await this._network.info.connector.doRequest(
+            `/featuresOfInterest/${fId}`,
+            featureOfInterestFilter.toQueryString(['select','format'],
+            featureOfInterestFilter.props.format
+        ));
+
         return this.parser.parseData(response);
     }
 }

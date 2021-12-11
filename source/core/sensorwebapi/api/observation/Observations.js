@@ -16,7 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SensorWebApiFetchObservation from "../../../datasource/parsers/SensorWebApiFetchObservation.parser";
+import SensorWebApiFetchObservation from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchObservation.parser";
 import ObservationFilter from "./ObservationFilter";
 
 class Observations extends SensorWebApi {
@@ -33,11 +33,15 @@ class Observations extends SensorWebApi {
      * @returns {Collection<Observation>} A collection of Observation
      */
     async searchObservations(observationFilter = new ObservationFilter(), pageSize= 10) {
-        return new Collection('/observations', observationFilter.toQueryString(), pageSize,this.parser, this._network.info.connector);
+        return new Collection('/observations', observationFilter, pageSize,this.parser, this._network.info.connector);
     }
 
     async getObservationById(observationId,observationFilter = new ObservationFilter()) {
-        const response = await this._network.info.connector.doRequest(`/observations/${observationId}`,observationFilter.toQueryString(['select','format']));
+        const response = await this._network.info.connector.doRequest(
+            `/observations/${observationId}`,
+            observationFilter.toQueryString(['select','format'],
+            observationFilter.props.format
+        ));
         return this.parser.parseData(response);
     }
 }

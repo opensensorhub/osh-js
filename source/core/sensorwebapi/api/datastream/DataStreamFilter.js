@@ -16,7 +16,7 @@
 
 import SensorWebApiFilter from "../Filter";
 
-class SystemFilter extends SensorWebApiFilter {
+class DataStreamFilter extends SensorWebApiFilter {
     /**
      *
      * @param {Object} properties - object properties
@@ -51,4 +51,4 @@ class SystemFilter extends SensorWebApiFilter {
         //TODO: assertions
     }
 }
-export default SystemFilter;
+export default DataStreamFilter;

@@ -1,5 +1,5 @@
 import SensorWebApiFetchHandler from "../handler/SensorWebApiFetchHandler";
-import SensorWebApiFetchJsonParser from "../parsers/SensorWebApiFetchJson.parser";
+import SensorWebApiFetchJsonParser from "../parsers/sensorwebapi/SensorWebApiFetchJson.parser";
 
 let  dataSourceHandler = new SensorWebApiFetchHandler(new SensorWebApiFetchJsonParser());
 

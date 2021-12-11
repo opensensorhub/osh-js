@@ -1,5 +1,5 @@
-import DataSourceParser from "./DataSourceParser";
-import DataStream from "../../sensorwebapi/api/datastream/DataStream";
+import DataSourceParser from "../DataSourceParser";
+import DataStream from "../../../sensorwebapi/api/datastream/DataStream";
 
 class SensorWebApiDataStreamParser extends DataSourceParser {
     constructor(networkProperties) {
@@ -8,6 +8,7 @@ class SensorWebApiDataStreamParser extends DataSourceParser {
     }
 
     parseData(data) {
+        console.log(data)
         return new DataStream(
             {
                 id: data.id,

@@ -1,5 +1,5 @@
-import DataSourceParser from "./DataSourceParser";
-import Observation from "../../sensorwebapi/api/observation/Observation";
+import DataSourceParser from "../DataSourceParser";
+import Observation from "../../../sensorwebapi/api/observation/Observation";
 
 class SensorWebApiFetchObservationParser extends DataSourceParser {
     constructor(networkProperties) {

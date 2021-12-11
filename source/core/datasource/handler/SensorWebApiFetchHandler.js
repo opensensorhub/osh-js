@@ -9,6 +9,7 @@ import SystemFilter from "../../sensorwebapi/api/system/SystemFilter";
 import FeatureOfInterestFilter from "../../sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
 import DataStreamFilter from "../../sensorwebapi/api/datastream/DataStreamFilter";
 import DataStream from "../../sensorwebapi/api/datastream/DataStream";
+import ObservationFilter from "../../sensorwebapi/api/observation/ObservationFilter";
 
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     constructor(parser) {
@@ -42,6 +43,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
 
             const regex = new RegExp('\\/(.*\\/)(.*)\\/observations'); // /datastreams/abc13/observations
             if(regex.test(this.properties.collection)) {
+                filter = this.createObservationFilter(properties);
                 // is observation streaming
                 const match = regex.exec(this.properties.collection);
                 let apiObject = new DataStream({
@@ -88,7 +90,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         if (isDefined(this.collection)) {
             while (this.collection.hasNext()) {
                 const values = await this.collection.nextPage();
-                await this.onMessage(values.map(v => v.properties));
+                await this.onMessage(values);
             }
         }
     }
@@ -181,6 +183,9 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         if(isDefined(properties.responseFormat)) {
             props.format = properties.responseFormat;
         }
+        if(isDefined(properties.replaySpeed)) {
+            props.replaySpeed = properties.replaySpeed;
+        }
         if(isDefined(properties.phenomenonTime)) {
             props.phenomenonTime = properties.phenomenonTime;
         }
@@ -203,7 +208,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             props.select.concat(properties.includedProps);
         }
 
-        return new FeatureOfInterestFilter(props);
+        return new ObservationFilter(props);
     }
 
     createDataStreamFilter(properties) {

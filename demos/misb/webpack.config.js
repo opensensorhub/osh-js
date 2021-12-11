@@ -6,7 +6,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
-
 const cesiumConfig = {
   // Tell Weback to output our bundle to ./dist/bundle.js
   output: {
@@ -155,7 +154,7 @@ const config = {
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
-    }),
+    })
   ],
 };
 

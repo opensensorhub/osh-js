@@ -1,4 +1,4 @@
-import SosGetResultVideoParser from '../parsers/SosGetResultVideo.parser.js';
+import SosGetResultVideoParser from '../parsers/sos/SosGetResultVideo.parser.js';
 import TimeSeriesDataSourceHandler from "../handler/TimeSeriesDataSourceHandler";
 
 const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultVideoParser());

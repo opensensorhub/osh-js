@@ -1,4 +1,4 @@
-import TimeSeriesParser from "./TimeSeriesParser.parser";
+import TimeSeriesParser from "../TimeSeriesParser.parser";
 
 class SosGetResultJsonParser extends TimeSeriesParser {
     /**

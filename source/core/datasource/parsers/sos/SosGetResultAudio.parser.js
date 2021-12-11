@@ -1,5 +1,5 @@
-import DataSourceParser from "./DataSourceParser.js";
-import TimeSeriesParser from "./TimeSeriesParser.parser";
+import DataSourceParser from "../DataSourceParser.js";
+import TimeSeriesParser from "../TimeSeriesParser.parser";
 
 class AudioParser extends TimeSeriesParser {
 

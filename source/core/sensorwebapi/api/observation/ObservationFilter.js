@@ -26,16 +26,18 @@ class ObservationFilter extends SensorWebApiFilter {
      * @param {number[]} [properties.bbox=undefined] - BBOX to filter resources on their location
      * @param {string} [properties.location=undefined] - WKT geometry and operator to filter resources on their location or geometry
      * @param {string} [properties.format='application/json'] - Mime type designating the format to use to encode the response.
+     * @param {string} [properties.replaySpeed=undefined] - Mime type designating the format to use to encode the response.
      */
     constructor(properties) {
         super({
-            phenomenonTime: 'now',
-            resultTime: 'now',
+            phenomenonTime: undefined,
+            resultTime: undefined,
             featureOfInterest: undefined,
             select: undefined,
             bbox: undefined,
             location: undefined,
-            format: 'application/swe+json',
+            format: 'application/json',
+            replaySpeed: undefined,
             ...properties // merge defined properties
         });
     }

@@ -17,11 +17,11 @@
 import SystemFilter from "./SystemFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SensorWebApiFetchSystemParser from "../../../datasource/parsers/SensorWebApiFetchSystem.parser";
+import SensorWebApiFetchSystemParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
-import SensorWebApiDataStreamParser from "../../../datasource/parsers/SensorWebApiDataStream.parser";
+import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
-import SensorWebApiFetchFeatureOfInterestParser  from "../../../datasource/parsers/SensorWebApiFetchFeatureOfInterest.parser";
+import SensorWebApiFetchFeatureOfInterestParser  from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
 
 class System extends SensorWebApi {
@@ -41,7 +41,8 @@ class System extends SensorWebApi {
     async getDetails(systemFilter = new SystemFilter()) {
         return this._network.info.connector.doRequest(
             API.systems.details.replace('{id}',this.properties.id),
-            systemFilter.toQueryString(['select', 'format'])
+            systemFilter.toQueryString(['select', 'format']),
+            systemFilter.props.format
         );
     }
 
@@ -53,7 +54,7 @@ class System extends SensorWebApi {
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         systemFilter.props.parent = this.properties.id;
-        return new Collection(API.systems.search, systemFilter.toQueryString(), pageSize, this.systemParser, this._network.info.connector);
+        return new Collection(API.systems.search, systemFilter, pageSize, this.systemParser, this._network.info.connector);
     }
 
     /**
@@ -63,7 +64,7 @@ class System extends SensorWebApi {
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
             API.systems.datastreams.replace('{id}',this.properties.id),
-            dataStreamFilter.toQueryString(), pageSize,this.dataStreamParser, this._network.info.connector);
+            dataStreamFilter, pageSize,this.dataStreamParser, this._network.info.connector);
     }
 
     /**
@@ -72,7 +73,7 @@ class System extends SensorWebApi {
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.fois.replace('{id}',this.properties.id),
+            API.systems.fois.replace('{id}',this.properties.id),featureOfInterestFilter,
             pageSize,this.featureOfInterestParser, this._network.info.connector);
     }
 }

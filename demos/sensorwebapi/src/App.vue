@@ -96,7 +96,7 @@ import 'vue-json-pretty/lib/styles.css';
 import DataStreamFilter from "../../../source/core/sensorwebapi/api/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
 import ObservationFilter from "../../../source/core/sensorwebapi/api/observation/ObservationFilter";
-import SensorWebApiFetchJson from "../../../source/core/datasource/parsers/SensorWebApiFetchJson.parser";
+import SensorWebApiFetchJson from "../../../source/core/datasource/parsers/sensorwebapi/SensorWebApiFetchJson.parser";
 
 export default {
   components: {

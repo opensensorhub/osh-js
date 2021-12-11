@@ -1,4 +1,4 @@
-import TimeSeriesParser from "./TimeSeriesParser.parser";
+import TimeSeriesParser from "../TimeSeriesParser.parser";
 
 class SensorWebApiFetchJson extends TimeSeriesParser {
     /**
@@ -7,8 +7,8 @@ class SensorWebApiFetchJson extends TimeSeriesParser {
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
-        return new Date(JSON.parse(rec)['time']).getTime();
+        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        return new Date(rec.phenomenonTime).getTime();
     }
 
     /**
@@ -26,16 +26,7 @@ class SensorWebApiFetchJson extends TimeSeriesParser {
      * }
      */
     parseData(data) {
-        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-
-        let result = {};
-
-        for (let key in rec) {
-            if (key !== 'time') {
-                result[key] = rec[key];
-            }
-        }
-        return result;
+        return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))).result;
     }
 
     /**

@@ -75,10 +75,10 @@ class HttpConnector extends DataConnector {
      * @param {String} extraUrl - extra url to append to the url
      * @param {String} queryString - get query parameters
      */
-    async doRequest(extraUrl = '', queryString = undefined) {
-        const instance = this;
+    async doRequest(extraUrl = '', queryString = undefined, format = 'application/swe+binary') {
         let fullUrl = this.getUrl() + extraUrl;
 
+        console.log(format)
         if (isDefined(queryString)) {
             fullUrl += '?' + queryString;
         }
@@ -87,7 +87,12 @@ class HttpConnector extends DataConnector {
             headers: this.headers
         })
             .then(function (response) {
-                return response.arrayBuffer();
+                if(format === 'application/swe+json' || format === 'application/json') {
+                    return response.json();
+                } else {
+                    // default return binary
+                    return response.arrayBuffer();
+                }
             });
         this.onMessage(promiseResponse);
         return promiseResponse;

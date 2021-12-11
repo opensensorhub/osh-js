@@ -5,38 +5,38 @@
       <div class="actions"> <!-- Next Page Buttons -->
         <slot v-if="replay">
           <div class="datasource-actions replay">
-            <a :id="'replay-btn-'+this.id" class="control-btn clicked" @click="toggleReplay">
+            <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleReplay">
               <i class="fa fa-history"></i>
             </a>
             <div class="control-speed" v-if="activateSpeedControl">
-              <a :id="'speed-minus-btn-'+this.id" class="control-btn " @mouseup="stopSpeed" @mouseleave="stopSpeed"
+              <a :id="'speed-minus-btn-'+id" class="control-btn " @mouseup="stopSpeed" @mouseleave="stopSpeed"
                  @click="decSpeed" @mousedown="decSpeedDown">
                 <i class="fa fa-minus"></i>
               </a>
               <span class="control-speed-content">
                 <v-chip :id="speedId">{{ speed > 0 ? speed.toFixed(2) + 'x' : 'none' }}</v-chip>
               </span>
-              <a :id="'speed-plus-btn-'+this.id" class="control-btn" @mouseup="stopSpeed" @mouseleave="stopSpeed"
+              <a :id="'speed-plus-btn-'+id" class="control-btn" @mouseup="stopSpeed" @mouseleave="stopSpeed"
                  @click="incSpeed" @mousedown="incSpeedDown">
                 <i class="fa fa-plus"></i>
               </a>
             </div>
             <div class="control-back-for">
-              <a :id="'fast-back-btn-'+this.id" class="control-btn" @mouseup="stopBackward" @mouseleave="stopBackward"
+              <a :id="'fast-back-btn-'+id" class="control-btn" @mouseup="stopBackward" @mouseleave="stopBackward"
                  @mousedown="doBackward"> <i
                   class="fa fa-fast-backward"></i></a>
-              <a :id="'pause-btn-'+this.id" class="control-btn control-btn-pause" v-if="connected" @click="doPause"><i
+              <a :id="'pause-btn-'+id" class="control-btn control-btn-pause" v-if="connected" @click="doPause"><i
                   class="fa fa-pause"></i></a>
-              <a :id="'play-btn-'+this.id" class="control-btn control-btn-play" v-else><i
+              <a :id="'play-btn-'+id" class="control-btn control-btn-play" v-else><i
                   class="fa fa-play" @click="doPlay"></i></a>
-              <a :id="'fast-forward-btn-'+this.id" class="control-btn" @mouseup="stopForward" @mouseleave="stopForward"
+              <a :id="'fast-forward-btn-'+id" class="control-btn" @mouseup="stopForward" @mouseleave="stopForward"
                  @mousedown="doFastForward"> <i
                   class="fa fa-fast-forward"></i></a>
             </div>
             <div class="control-time">
-              <span :id="'current-time-'+this.id" v-html=parseTime(startTime)></span>
+              <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
               <span style="padding:0 10px 0 10px">/</span>
-              <span :id="'end-time-'+this.id" v-html=parseTime(endTime)></span>
+              <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
             </div>
           </div>
         </slot>

@@ -1,6 +1,6 @@
-import DataSourceParser from "./DataSourceParser";
-import {assertDefined, isDefined} from "../../utils/Utils";
-import SWEXmlStreamParser from "../../parsers/SWEXmlStreamParser.js";
+import DataSourceParser from "../DataSourceParser";
+import {assertDefined, isDefined} from "../../../utils/Utils";
+import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser.js";
 
 class SosGetFoisParser extends DataSourceParser {
     /**

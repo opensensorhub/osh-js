@@ -46,7 +46,6 @@
       'targetLocationDataSource',
       'droneHFovDataSource',
       'droneVFovDataSource',
-      'biologicalSensorsDataSource'
     ],
     methods: {
       createDroneMarkerLayer() {
@@ -151,16 +150,16 @@
           getVisible: () => that.$store.state.ui.footprint, // link state application to
           getVertices: (rec) => {
             return [
-              rec.ulc.lon,
-              rec.ulc.lat,
-              rec.urc.lon,
-              rec.urc.lat,
-              rec.lrc.lon,
-              rec.lrc.lat,
-              rec.llc.lon,
-              rec.llc.lat,
-              rec.ulc.lon,
-              rec.ulc.lat,
+              rec.geoRef.ulc.lon,
+              rec.geoRef.ulc.lat,
+              rec.geoRef.urc.lon,
+              rec.geoRef.urc.lat,
+              rec.geoRef.lrc.lon,
+              rec.geoRef.lrc.lat,
+              rec.geoRef.llc.lon,
+              rec.geoRef.llc.lat,
+              rec.geoRef.ulc.lon,
+              rec.geoRef.ulc.lat,
             ]
           },
           getPolygonId: (rec) =>  "drone-polygon-id",
@@ -234,37 +233,37 @@
           iconScale: 1.0
         });
       },
-      createBiologicalSensorMarkersLayer() {
-        return new PointMarkerLayer({
-          dataSourceId: this.biologicalSensorsDataSource.id,
-          getLocation: (f) => {
-            let pos = f.shape.pos.split(" ");
-            return {
-              x: parseFloat(pos[1]),
-              y: parseFloat(pos[0]),
-              z: 5
-            }
-          },
-          getDescription:(f) => {
-            let pos = f.shape.pos.split(" ");
-            return  f.description + "<br/>" +
-                "Latitude: " + pos[0] + "°<br/>" +
-                "Longitude: " + pos[1] + "°"
-          },
-          getMarkerId:(f) => f.id,
-          icon: 'images/bio-32.png',
-          // iconAnchor: [12, 41],
-          getLabel: (f) =>  f.id,
-          labelColor: '#ffffff',
-          labelSize: 18,
-          labelOffset: [0, 10],
-          onLeftClick: (markerId, billboard, event) => {
-            if(markerId.startsWith("FOI_ATM")) {
-              console.log(markerId);
-            }
-          }
-        });
-      },
+      // createBiologicalSensorMarkersLayer() {
+      //   return new PointMarkerLayer({
+      //     dataSourceId: this.biologicalSensorsDataSource.id,
+      //     getLocation: (f) => {
+      //       let pos = f.shape.pos.split(" ");
+      //       return {
+      //         x: parseFloat(pos[1]),
+      //         y: parseFloat(pos[0]),
+      //         z: 5
+      //       }
+      //     },
+      //     getDescription:(f) => {
+      //       let pos = f.shape.pos.split(" ");
+      //       return  f.description + "<br/>" +
+      //           "Latitude: " + pos[0] + "°<br/>" +
+      //           "Longitude: " + pos[1] + "°"
+      //     },
+      //     getMarkerId:(f) => f.id,
+      //     icon: 'images/bio-32.png',
+      //     // iconAnchor: [12, 41],
+      //     getLabel: (f) =>  f.id,
+      //     labelColor: '#ffffff',
+      //     labelSize: 18,
+      //     labelOffset: [0, 10],
+      //     onLeftClick: (markerId, billboard, event) => {
+      //       if(markerId.startsWith("FOI_ATM")) {
+      //         console.log(markerId);
+      //       }
+      //     }
+      //   });
+      // },
       createBiologicalSensorMarkersRadiusLayer() {
         return new EllipseLayer({
           dataSourceId: this.biologicalSensorsDataSource.id,
@@ -296,9 +295,9 @@
 
         let targetPointMarkerLayer = this.createTargetPointMarkerLayer();
 
-        let biologicalSensorMarkersLayer = this.createBiologicalSensorMarkersLayer();
+        // let biologicalSensorMarkersLayer = this.createBiologicalSensorMarkersLayer();
 
-        let biologicalSensorMarkersRadiusLayer =  this.createBiologicalSensorMarkersRadiusLayer();
+        // let biologicalSensorMarkersRadiusLayer =  this.createBiologicalSensorMarkersRadiusLayer();
 
         // create Cesium view
         let cesiumView = new CesiumView({
@@ -309,8 +308,8 @@
             dronePolygonFootprintLayer,
             droneFrustumLayer,
             // targetPointMarkerLayer,
-            biologicalSensorMarkersRadiusLayer,
-            biologicalSensorMarkersLayer
+            // biologicalSensorMarkersRadiusLayer,
+            // biologicalSensorMarkersLayer
           ]
         });
 

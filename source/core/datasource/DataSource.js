@@ -35,7 +35,7 @@ class DataSource {
      * @param {Number} [properties.reconnectTimeout=10000] - the time before reconnecting (in milliseconds)
      * @param {Number} [properties.batchSize=1] - the number of data to fetch
      * @param {Object} [properties.customUrlParams={}] - custom parameters appended to the URL as they are
-     * @param {Boolean} [properties.tls=false] - set TLS mode 
+     * @param {Boolean} [properties.tls=false] - set TLS mode
      * @param {Object} worker - DataSource worker
      */
     constructor(name, properties, worker) {
@@ -164,17 +164,18 @@ class DataSource {
     }
 
     async doConnect() {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
             this.postMessage({
                 message: 'connect'
             }, resolve);
         });
     }
     async isConnected() {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
+            await this.checkInit();
             this.postMessage({
                 message: 'is-connected'
-            },resolve);
+            }, resolve);
         });
     }
 
@@ -182,7 +183,8 @@ class DataSource {
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
+            await this.checkInit();
             this.postMessage({
                 message: 'disconnect'
             }, resolve);

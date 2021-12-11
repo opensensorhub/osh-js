@@ -1,5 +1,5 @@
-import DataSourceParser from "./DataSourceParser";
-import FeatureOfInterest from "../../sensorwebapi/api/featureofinterest/FeatureOfInterest";
+import DataSourceParser from "../DataSourceParser";
+import FeatureOfInterest from "../../../sensorwebapi/api/featureofinterest/FeatureOfInterest";
 
 class SensorWebApiFetchFeatureOfInterestParser extends DataSourceParser {
     constructor(networkProperties) {

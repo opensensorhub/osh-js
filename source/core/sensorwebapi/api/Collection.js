@@ -20,9 +20,9 @@ class Collection {
     /**
      *
      */
-    constructor(url, queryString, pageSize, parser, connector) {
+    constructor(url, filter, pageSize, parser, connector) {
         this.url = url;
-        this.queryString = queryString;
+        this.filter = filter;
         this.pageSize = pageSize;
         this.parser = parser;
         this.connector = connector;
@@ -39,7 +39,11 @@ class Collection {
     }
 
     async fetchData() {
-        const response = await this.connector.doRequest(this.url,`${this.queryString}&offset=${this.nextOffset}&limit=${this.pageSize}`);
+        const response = await this.connector.doRequest(
+            this.url,
+            `${this.filter.toQueryString()}&offset=${this.nextOffset}&limit=${this.pageSize}`,
+            this.filter.props.format
+            );
         this.onFetchData(response);
     }
 
@@ -49,7 +53,6 @@ class Collection {
 
     parseResponse(encodedResponse) {
         const response = this.parser.parseData(encodedResponse);
-        console.log(response)
         for(let i=0;i < response.items.length;i++) {
             this.parseData.push(response.items[i]);
         }

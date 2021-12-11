@@ -1,5 +1,5 @@
-import DataSourceParser from "./DataSourceParser";
-import System from "../../sensorwebapi/api/system/System";
+import DataSourceParser from "../DataSourceParser";
+import System from "../../../sensorwebapi/api/system/System";
 
 class SensorWebApiFetchSystemParser extends DataSourceParser {
     constructor(networkProperties) {
