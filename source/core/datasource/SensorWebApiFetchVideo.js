@@ -14,9 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import TimeSeriesDataSource from "./TimeSeriesDataSource";
+import SensorWebApiFetchVideoWorker from "./workers/SensorWebApiFetchVideo.worker";
+import SensorWebApiFetch from "./SensorWebApiFetch";
 
-class SensorWebApiFetch extends TimeSeriesDataSource {
+class SensorWebApiFetchVideo extends SensorWebApiFetch {
 
     /**
      * @param {String} name - the datasource name
@@ -30,19 +31,29 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
      * @param {String[]} [properties.includedProps=undefined] the included properties
      * @param {String[]} [properties.excludedProps=undefined] the excluded properties
      * @param {string} [properties.roi=undefined] - WKT geometry and operator to filter resources on their location or geometry
+     * @param {string} [properties.validTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
+     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {string} [properties.phenomenonTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
+     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
+     * @param {string} [properties.resultTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
+     When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
      * @param {String[]} [properties.featureOfInterest=undefined] Comma separated list of feature of interest IDs to get observations for.
      * @param {String[]} [properties.observedProperty=undefined] Comma separated list of observed property URIs to get observations for.
      */
     constructor(name, properties) {
         super(name, {
-            batchSize: 1,
-            reconnectTimeout: 1000 * 5, // default if not defined into properties
-            startTime: 'now',
-            endTime: '2055-01-01T00:00:00Z',
-            tls: false,
-            ...properties
+            ...properties,
+            responseFormat: 'application/swe+binary'
         });
+    }
+
+    async createWorker(properties) {
+        if(properties.protocol === 'mqtt') {
+           // return import('./workers/SensorWebApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
+        } else {
+            return new SensorWebApiFetchVideoWorker();
+        }
     }
 }
 
-export default SensorWebApiFetch;
+export default SensorWebApiFetchVideo;

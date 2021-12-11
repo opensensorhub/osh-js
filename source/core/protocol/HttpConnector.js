@@ -53,7 +53,6 @@ class HttpConnector extends DataConnector {
         super(url, properties);
 
         this.method = "POST";
-        this.responseType = "application/json";
 
         if (isDefined(properties)) {
             if (properties.method) {
@@ -75,27 +74,46 @@ class HttpConnector extends DataConnector {
      * @param {String} extraUrl - extra url to append to the url
      * @param {String} queryString - get query parameters
      */
-    async doRequest(extraUrl = '', queryString = undefined, format = 'application/swe+binary') {
+    async doRequest(extraUrl = '', queryString = undefined, format = undefined) {
         let fullUrl = this.getUrl() + extraUrl;
 
-        console.log(format)
         if (isDefined(queryString)) {
             fullUrl += '?' + queryString;
         }
+
+        var checkVarType;
+        if (isDefined(format)) {
+            checkVarType = format;
+        } else if (isDefined(this.responseType)) {
+            checkVarType = this.responseType;
+        }
+
+        // default
+        let responseType = 'arraybuffer';
+        if (isDefined(checkVarType)) {
+            if (checkVarType === 'application/swe+json' || checkVarType === 'application/json') {
+                responseType = 'application/json';
+            } else if (checkVarType === 'plain/text' || checkVarType === 'application/xml') {
+                responseType = 'plain/text';
+            }
+        }
+
         const promiseResponse = fetch(fullUrl, {
             method: this.method,
             headers: this.headers
         })
             .then(function (response) {
-                if(format === 'application/swe+json' || format === 'application/json') {
+                if(responseType === 'application/json') {
                     return response.json();
+                } else if(responseType === 'plain/text'){
+                    return response.text();
                 } else {
-                    // default return binary
                     return response.arrayBuffer();
                 }
             });
-        this.onMessage(promiseResponse);
-        return promiseResponse;
+        const response = await promiseResponse;
+        this.onMessage(response);
+        return response;
     }
 
     /**

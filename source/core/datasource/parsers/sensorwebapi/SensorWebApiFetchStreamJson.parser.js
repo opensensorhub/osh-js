@@ -1,6 +1,6 @@
 import TimeSeriesParser from "../TimeSeriesParser.parser";
 
-class SensorWebApiFetchJson extends TimeSeriesParser {
+class SensorWebApiFetchStreamJsonParser extends TimeSeriesParser {
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
      * @param {String} data - the data to parse
@@ -39,4 +39,4 @@ class SensorWebApiFetchJson extends TimeSeriesParser {
     }
 }
 
-export default SensorWebApiFetchJson;
+export default SensorWebApiFetchStreamJsonParser;

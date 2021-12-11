@@ -10,15 +10,15 @@ import FeatureOfInterestFilter from "../../sensorwebapi/api/featureofinterest/Fe
 import DataStreamFilter from "../../sensorwebapi/api/datastream/DataStreamFilter";
 import DataStream from "../../sensorwebapi/api/datastream/DataStream";
 import ObservationFilter from "../../sensorwebapi/api/observation/ObservationFilter";
+import SensorWebApiFetchStreamJsonParser from "../parsers/sensorwebapi/SensorWebApiFetchStreamJson.parser";
+import SensorWebApiFetchJsonParser from "../parsers/sensorwebapi/SensorWebApiFetchJson.parser";
 
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     constructor(parser) {
         super(parser);
     }
 
-    async createDataConnector(properties, connector) {
-        super.createDataConnector(properties, connector);
-
+    async updateAferCreatingConnector(properties) {
         const networkProperties = {
             ...properties,
             connector: this.connector
@@ -34,10 +34,16 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             filter = this.createSystemFilter(properties);
             collection = new Systems(networkProperties).searchSystems(filter, properties.batchSize);
             stream = false;
+            if(!isDefined(this.parser)) {
+                this.parser = new SensorWebApiFetchJsonParser()
+            }
         } else if (this.properties.collection === '/fois') {
             filter = this.createFeatureOfInterestFilter(properties);
             collection = new FeatureOfInterests(networkProperties).searchFeaturesOfInterest(filter, properties.batchSize);
             stream = false;
+            if(!isDefined(this.parser)) {
+                this.parser = new SensorWebApiFetchJsonParser()
+            }
         } else if (this.properties.collection.startsWith('/datastreams')) {
             filter = this.createDataStreamFilter(properties);
 
@@ -55,12 +61,21 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
                 } else {
                     collection = apiObject.searchObservations(filter, properties.batchSize);
                 }
+                if(!isDefined(this.parser)) {
+                    this.parser = new SensorWebApiFetchStreamJsonParser()
+                }
             } else {
                 collection = new DataStreams(networkProperties).searchDataStreams(filter, properties.batchSize);
+                if(!isDefined(this.parser)) {
+                    this.parser = new SensorWebApiFetchJsonParser()
+                }
             }
         } else if (this.properties.collection === '/observations') {
             collection = new Observations(networkProperties).searchObservations();
             stream = false;
+            if(!isDefined(this.parser)) {
+                this.parser = new SensorWebApiFetchJsonParser()
+            }
         }
 
         if(stream) {
@@ -121,7 +136,9 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             props.validTime = properties.validTime;
         }
         if(isDefined(properties.phenomenonTime)) {
-            props.phenomenonTime = properties.phenomenonTime;
+            if(isDefined(properties.startTime)) {
+                props.phenomenonTime = properties.startTime + '/'+ properties.endTime;
+            }
         }
         if(isDefined(properties.resultTime)) {
             props.resultTime = properties.resultTime;
@@ -157,7 +174,9 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             props.validTime = properties.validTime;
         }
         if(isDefined(properties.phenomenonTime)) {
-            props.phenomenonTime = properties.phenomenonTime;
+            if(isDefined(properties.startTime)) {
+                props.phenomenonTime = properties.startTime + '/'+ properties.endTime;
+            }
         }
         if(isDefined(properties.resultTime)) {
             props.resultTime = properties.resultTime;
@@ -186,8 +205,8 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         if(isDefined(properties.replaySpeed)) {
             props.replaySpeed = properties.replaySpeed;
         }
-        if(isDefined(properties.phenomenonTime)) {
-            props.phenomenonTime = properties.phenomenonTime;
+        if(isDefined(properties.startTime)) {
+            props.phenomenonTime = properties.startTime + '/'+ properties.endTime;
         }
         if(isDefined(properties.resultTime)) {
             props.resultTime = properties.resultTime;
@@ -223,7 +242,9 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             props.format = properties.responseFormat;
         }
         if(isDefined(properties.phenomenonTime)) {
-            props.phenomenonTime = properties.phenomenonTime;
+            if(isDefined(properties.startTime)) {
+                props.phenomenonTime = properties.startTime + '/'+ properties.endTime;
+            }
         }
         if(isDefined(properties.resultTime)) {
             props.resultTime = properties.resultTime;

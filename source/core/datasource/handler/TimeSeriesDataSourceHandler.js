@@ -15,7 +15,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     /**
      * @protected
      */
-    createDataConnector(properties, connector) {
+    async createDataConnector(properties, connector) {
         super.createDataConnector({
             ...properties,
             timeShift: this.timeShift
@@ -29,7 +29,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
                 this.connector.setUrl(this.parser.buildUrl(
                     {
                         ...properties,
-                        lastTimeStamp: isDefined(this.lastTimeStamp) ? new Date(this.lastTimeStamp).toISOString(): properties.startTime,
+                        lastTimeStamp: isDefined(this.lastTimeStamp) ? new Date(this.lastTimeStamp).toISOString() : properties.startTime,
                     }));
             }
             return true;
@@ -95,32 +95,36 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         return this.lastTimeStamp;
     }
 
-    updateProperties(properties) {
-        this.disconnect();
+    async updateProperties(properties) {
+        try {
+            this.disconnect();
+            this.timeBroadcastChannel.postMessage({
+                dataSourceId: this.dataSourceId,
+                type: EventType.TIME_CHANGED
+            });
 
-        this.timeBroadcastChannel.postMessage({
-            dataSourceId: this.dataSourceId,
-            type: EventType.TIME_CHANGED
-        });
+            let lastTimestamp = new Date(this.lastTimeStamp).toISOString();
 
-        let lastTimestamp =  new Date(this.lastTimeStamp).toISOString();
+            if (properties.hasOwnProperty('startTime')) {
+                lastTimestamp = properties.startTime;
+            } else if (this.properties.startTime === 'now') {
+                //handle RealTime
+                lastTimestamp = 'now';
+            }
 
-        if(properties.hasOwnProperty('startTime')) {
-            lastTimestamp = properties.startTime;
-        } else if(this.properties.startTime === 'now'){
-            //handle RealTime
-            lastTimestamp = 'now';
-        }
+            this.version++;
 
-        this.version++;
-        this.createDataConnector({
-            ...this.properties,
-            ...properties,
-            lastTimeStamp: lastTimestamp
-        });
+            await this.createDataConnector({
+                ...this.properties,
+                ...properties,
+                lastTimeStamp: lastTimestamp
+            });
 
-        if(isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {
-            this.connect();
+            if (isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {
+                this.connect();
+            }
+        } catch (ex) {
+            console.error(ex);
         }
     }
 

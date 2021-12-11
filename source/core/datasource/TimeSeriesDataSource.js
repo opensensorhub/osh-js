@@ -126,8 +126,8 @@ class TimeSeriesDataSource extends DataSource{
      * @param properties
      */
     async initDataSource(properties) {
-        await super.initDataSource(properties);
         if(!this.initialized) {
+            await super.initDataSource(properties);
             return new Promise(async resolve => {
                 this.postMessage({
                     message: 'topic',

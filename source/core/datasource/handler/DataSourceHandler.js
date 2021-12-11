@@ -57,7 +57,7 @@ class DataSourceHandler {
     /**
      * @protected
      */
-    createDataConnector(properties, connector = undefined) {
+    async createDataConnector(properties, connector = undefined) {
         this.updatedProperties = properties;
         const tls = (properties.tls) ? 's' : '';
         const url = properties.protocol + tls + '://' + properties.endpointUrl;
@@ -77,10 +77,10 @@ class DataSourceHandler {
         } else {
             this.connector = connector;
         }
-        this.setUpConnector();
+        await this.setUpConnector(properties);
     }
 
-    setUpConnector() {
+    async setUpConnector(properties) {
         if (this.connector !== null) {
             // set the reconnectTimeout
             this.connector.setReconnectTimeout(this.reconnectTimeout);
@@ -90,8 +90,13 @@ class DataSourceHandler {
 
             // bind change connection STATUS
             this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
+
+            await this.updateAferCreatingConnector(properties);
         }
     }
+
+    async updateAferCreatingConnector(properties) {}
+
     /**
      * Sets the current topic to listen
      * @param {String} topic - the topic to listen

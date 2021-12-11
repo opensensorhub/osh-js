@@ -14,9 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import TimeSeriesDataSource from "./TimeSeriesDataSource";
+import SensorWebApiFetchWorkerJson from "./workers/SensorWebApiFetchJson.worker";
+import SensorWebApiFetch from "./SensorWebApiFetch";
 
-class SensorWebApiFetch extends TimeSeriesDataSource {
+class SensorWebApiFetchJson extends SensorWebApiFetch {
 
     /**
      * @param {String} name - the datasource name
@@ -34,15 +35,16 @@ class SensorWebApiFetch extends TimeSeriesDataSource {
      * @param {String[]} [properties.observedProperty=undefined] Comma separated list of observed property URIs to get observations for.
      */
     constructor(name, properties) {
-        super(name, {
-            batchSize: 1,
-            reconnectTimeout: 1000 * 5, // default if not defined into properties
-            startTime: 'now',
-            endTime: '2055-01-01T00:00:00Z',
-            tls: false,
-            ...properties
-        });
+        super(name, properties);
+    }
+
+    async createWorker(properties) {
+        if(properties.protocol === 'mqtt') {
+           // return import('./workers/SensorWebApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
+        } else {
+            return new SensorWebApiFetchWorkerJson();
+        }
     }
 }
 
-export default SensorWebApiFetch;
+export default SensorWebApiFetchJson;
