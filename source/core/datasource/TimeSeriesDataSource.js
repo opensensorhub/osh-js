@@ -108,8 +108,8 @@ class TimeSeriesDataSource extends DataSource{
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async setDataSynchronizer(timeSync) {
-        await this.checkInit();
         return new Promise(async (resolve, reject) => {
+            await this.checkInit();
             const topic = DATA_SYNCHRONIZER_TOPIC + timeSync.id;
             this.timeSync = timeSync;
             this.postMessage({
@@ -126,28 +126,26 @@ class TimeSeriesDataSource extends DataSource{
      * @param properties
      */
     async initDataSource(properties) {
-        if(!this.initialized) {
-            await super.initDataSource(properties);
-            return new Promise(async resolve => {
-                this.postMessage({
-                    message: 'topic',
-                    topic: this.getTopicId(),
-                    timeTopic: this.getTimeTopicId()
-                }, function () {
-                    // listen for Events to callback to subscriptions
-                    const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
-                    datasourceBroadcastChannel.onmessage = (message) => {
-                        const type = message.data.type;
-                        if (type in this.eventSubscriptionMap) {
-                            for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                                this.eventSubscriptionMap[type][i](message.data);
-                            }
+        await super.initDataSource(properties);
+        return new Promise(async resolve => {
+            this.postMessage({
+                message: 'topic',
+                topic: this.getTopicId(),
+                timeTopic: this.getTimeTopicId()
+            }, function () {
+                // listen for Events to callback to subscriptions
+                const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
+                datasourceBroadcastChannel.onmessage = (message) => {
+                    const type = message.data.type;
+                    if (type in this.eventSubscriptionMap) {
+                        for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
+                            this.eventSubscriptionMap[type][i](message.data);
                         }
-                    };
-                    resolve();
-                }.bind(this));
-            });
-        }
+                    }
+                };
+                resolve();
+            }.bind(this));
+        });
     }
 
     /**

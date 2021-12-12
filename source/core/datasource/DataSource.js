@@ -46,6 +46,7 @@ class DataSource {
         this.currentRunningProperties = {};
         this.eventSubscriptionMap = {};
         this.initialized = false;
+        this.init = undefined;
         this.messagesMap = {};
     }
 
@@ -141,7 +142,7 @@ class DataSource {
                 id: this.id,
                 properties: this.properties,
                 topic: this.getTopicId()
-            }, function () {
+            }, function (message) {
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
                 datasourceBroadcastChannel.onmessage = (message) => {
@@ -152,15 +153,19 @@ class DataSource {
                         }
                     }
                 };
-                this.initialized = true;
+                this.initialized = message;
                 resolve();
             }.bind(this));
         });
     }
     async checkInit() {
-        if(!this.initialized) {
-            await this.initDataSource();
-        }
+        return new Promise(async (resolve, reject) => {
+            if(!isDefined(this.init)) {
+                this.init = this.initDataSource();
+            }
+            await this.init;
+            resolve();
+        });
     }
 
     async doConnect() {

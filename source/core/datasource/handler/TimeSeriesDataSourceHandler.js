@@ -148,10 +148,15 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     }
 
     setTimeTopic(timeTopic) {
+        if(this.timeTopic === timeTopic) {
+            return;
+        }
         if(this.timeBroadcastChannel !== null) {
+            console.warn(`Replace old topic ${this.timeTopic} by ${timeTopic}`)
             this.timeBroadcastChannel.close();
         }
         this.timeBroadcastChannel = new BroadcastChannel(timeTopic);
+        this.timeTopic = timeTopic;
     }
 }
 export default TimeSeriesDataSourceHandler;

@@ -26,7 +26,7 @@ class DataSourceHandler {
             this.connector = null;
         }
 
-        this.broadcastChannel = new BroadcastChannel(topic);
+        this.setTopic(topic);
 
         const properties = propertiesStr;
 
@@ -102,13 +102,16 @@ class DataSourceHandler {
      * @param {String} topic - the topic to listen
      */
     setTopic(topic) {
+        if(this.topic === topic) {
+            return;
+        }
+
         if(isDefined(this.broadcastChannel)) {
-            console.warn('close old topic ',this.topic)
+            console.warn(`Replace old topic ${this.topic} by ${topic}`)
             this.broadcastChannel.close();
         }
         this.broadcastChannel = new BroadcastChannel(topic);
         this.topic = topic;
-        console.log('create new topic ',topic)
     }
 
     connect() {

@@ -9,8 +9,8 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
-const REPLAY_SPEED = 100.0;
-const BUFFERING_TIME = 500;
+const REPLAY_SPEED = 10.0;
+const BUFFERING_TIME = 800;
 const TIMEOUT = 1000;
 
 const videoDataSource = new SosGetResultVideo("drone-Video", {

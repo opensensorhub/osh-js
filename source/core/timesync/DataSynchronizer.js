@@ -38,7 +38,6 @@ class DataSynchronizer {
         this.properties.replaySpeed = this.replaySpeed;
 
         this.eventSubscriptionMap = {};
-        this.initialized = false;
         this.messagesMap = {};
     }
 
@@ -244,9 +243,13 @@ class DataSynchronizer {
     }
 
     async checkInit() {
-        if(!this.initialized) {
-            await this.initDataSources();
-        }
+        return new Promise(async (resolve, reject) => {
+            if(!isDefined(this.init)) {
+                this.init = this.initDataSources();
+            }
+            await this.init;
+            resolve();
+        });
     }
 
     async doConnect() {
