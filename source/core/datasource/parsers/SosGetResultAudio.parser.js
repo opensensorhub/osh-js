@@ -9,6 +9,10 @@ class AudioParser extends TimeSeriesParser {
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
+        let ts = new DataView(data).getFloat64(0, false) * 1000;
+        let iso = new Date(ts).toISOString();
+
+        console.log('Parser.parseTimestamp is ' + ts + " : " + iso);
         // read double time stamp as big endian
         return new DataView(data).getFloat64(0, false) * 1000;
     }

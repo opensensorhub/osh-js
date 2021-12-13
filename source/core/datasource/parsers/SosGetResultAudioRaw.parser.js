@@ -12,7 +12,13 @@ class AudioParserRaw extends TimeSeriesParser {
         // read double time stamp as big endian
         let ts = new DataView(data).getFloat64(0, true) * 1000;
         let iso = new Date(ts).toISOString();
-        //console.log('timestamp is ' + iso);
+        console.log('Parser.parseTimestamp is ' + ts + " : " + iso);
+        // if (ts === 1553697719336) {
+        if (ts === 1553696281032) {
+            console.log("TS test...");
+            console.log("TS test...");
+            console.log("TS test...");
+        }
         return ts;
     }
 
@@ -30,12 +36,13 @@ class AudioParserRaw extends TimeSeriesParser {
         // console.log('sampling rate: ' + sr);
         let numSamples = new DataView(data).getUint32(12, true);
         // console.log(numSamples);
-        let endIndex = 16 + (numSamples * 4);
-        // let s0 = new DataView(data).getFloat32(4, false);
-        let samples = new Float32Array(data.slice(16, endIndex));
+        // let endIndex = 16 + (numSamples * 4);
+        // let samples = new Float32Array(data.slice(16, endIndex));
+        let samples = new Float32Array(data.slice(16, data.byteLength));
+
         // console.log("End Index: " + endIndex)
         // for (let i = 0; i < 256; i++)
-        //     if (i < 5) console.log("Sample" + i + ": " + samples[i]); // + "," + samples[1] + "," + samples[2]);
+        //     if (i < 5 || i > 254) console.log("Sample" + i + ": " + samples[i]); // + "," + samples[1] + "," + samples[2]);
         return {
             sampleRate: sr,
             nbSamples: numSamples,

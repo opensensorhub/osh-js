@@ -10,10 +10,11 @@ let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "localhost:8989/sensorhub/sos",
+    // endpointUrl: "35.225.185.195:8989/sensorhub/sos",
     offeringID: "urn:osh:audio:wav",
     observedProperty: "urn:osh:audio:wav:sampleArray",
-    startTime: "2019-03-27T14:18:00Z",
-    endTime: "2019-03-28T00:00:00Z",
+    startTime: "2019-03-27T14:18:02Z",
+    endTime: "2019-03-27T14:18:40Z",
     replaySpeed: 1.0,
     bufferingTime: 1000
 });
@@ -23,7 +24,7 @@ let audioView = new AudioView({
     css: 'audio-css',
     container: 'audio-chart-container',
     dataSource: audioDataSource,
-    gain: 5,
+    gain: 1,
     codec: 'raw',
     playSound: true
 });

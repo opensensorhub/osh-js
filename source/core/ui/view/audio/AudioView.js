@@ -156,8 +156,10 @@ class AudioView extends View {
         this.deltaInc += audioBuffer.duration;
 
         //  if timestamp is defined, use it.  Otherwise compute
+        //console.log("onDecBuff() ts pre = " + timestamp);
         if (timestamp === undefined)
             timestamp = this.startTime + this.deltaInc * 1000;
+        //console.log("onDecBuff() ts post = " + timestamp);
 
         const decoded = {
             buffer: audioBuffer,
@@ -218,13 +220,14 @@ class AudioView extends View {
                 this.initAudioContext(value.data.sampleRate, value.timeStamp);
             }
             if (this.properties.codec === 'raw') {
-                //console.log("AV.set ts is: " + new Date(value.timeStamp).toISOString());
+                console.log("AudioView.setData() ts is: " + new Date(value.timeStamp).toISOString());
                 const frame = new Float32Array(value.data.frameData);
 
                 let audioBuffer = this.audioCtx.createBuffer(1, frame.length, this.audioCtx.sampleRate);
                 audioBuffer.copyToChannel(frame, 0, 0);
                 this.onDecodedBuffer(audioBuffer, value.timeStamp);
             } else {
+                console.log("AudioView.setData() ts is: " + new Date(value.timeStamp).toISOString());
                 this.decoder.decode(value.data, value.timeStamp);
             }
         }
