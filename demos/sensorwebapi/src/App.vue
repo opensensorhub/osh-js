@@ -122,14 +122,9 @@ export default {
     Prism.highlightAll();
 
     this.systemsUtility = new Systems({
-      info: {
-        protocol: 'https',
-        endpoint: 'ogct17.georobotix.io:8443/sensorhub/api'
-      },
-      stream: {
-        protocol: 'wss',
-        endpoint: 'ogct17.georobotix.io:8443/sensorhub/api'
-      }
+      protocol: 'http',
+      tls: true,
+      endpointUrl : 'ogct17.georobotix.io:8443/sensorhub'
     });
   },
   computed: {

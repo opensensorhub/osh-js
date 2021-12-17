@@ -44,19 +44,18 @@ class Collection {
             `${this.filter.toQueryString()}&offset=${this.nextOffset}&limit=${this.pageSize}`,
             this.filter.props.format
             );
-        this.onFetchData(response);
+        await this.onFetchData(response);
     }
 
-    onFetchData(response) {
-        this.parseResponse(response);
+    async onFetchData(response) {
+        await this.parseResponse(response);
     }
 
-    parseResponse(encodedResponse) {
-        const response = this.parser.parseData(encodedResponse);
-        for(let i=0;i < response.items.length;i++) {
-            this.parseData.push(response.items[i]);
+    async parseResponse(encodedResponse) {
+        for (let i = 0; i < encodedResponse.items.length; i++) {
+            this.parseData.push(await this.parser.parseData(encodedResponse.items[i]));
         }
-        this.nextOffset = this.parseNextOffset(response);
+        this.nextOffset = this.parseNextOffset(encodedResponse);
 
     }
 
