@@ -20,6 +20,9 @@ import API from "../routes.conf";
 import Collection from "../Collection";
 import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
 import SensorWebApiFetchJson from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchJson.parser";
+import HttpConnector from "../../../protocol/HttpConnector";
+import SensorWebApiFetchStreamJsonParser
+    from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchStreamJson.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -28,7 +31,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.parser = new SensorWebApiFetchJson(networkProperties);
+        this.parser = new SensorWebApiFetchStreamJsonParser(networkProperties);
     }
 
     /**
@@ -42,7 +45,7 @@ class DataStream extends SensorWebApi {
         this._network.stream.connector.doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter.toQueryString(),
-            observationFilter.props.format
+            'arraybuffer'
         );
     }
 

@@ -22,9 +22,10 @@ import {assertDefined, isDefined} from "../../utils/Utils";
 class SensorWebApi {
 
     constructor(networkProperties) {
+        this.networkProperties = networkProperties;
         this._network = {}
         this._network.info = {
-            connector: this.createConnector({
+            connector: this.createInfoConnector({
                 protocol: 'http',
                 tls: networkProperties.tls,
                 endpointUrl: networkProperties.endpointUrl
@@ -35,14 +36,14 @@ class SensorWebApi {
             this._network.stream = {
                 connector: networkProperties.connector,
             };
-        } else {
+        } else if(isDefined(networkProperties.stream)){
             this._network.stream = {
-                connector: this.createConnector(networkProperties)
+                connector: this.createStreamConnector(networkProperties)
             }
         }
     }
 
-    createConnector(networkProperties) {
+    createInfoConnector(networkProperties) {
         assertDefined(networkProperties.endpointUrl, 'endpointUrl');
         assertDefined(networkProperties.protocol, 'protocol');
 
@@ -64,6 +65,47 @@ class SensorWebApi {
         } else if(networkProperties.protocol === 'ws') {
             return new WebSocketConnector(url);
         }
+    }
+
+    createStreamConnector(networkProperties) {
+        assertDefined(networkProperties.endpointUrl, 'endpointUrl');
+        assertDefined(networkProperties.stream, 'stream');
+
+        let endpoint = networkProperties.endpointUrl;
+        if (endpoint.endsWith('/')) {
+            endpoint = endpoint.substring(0, endpoint.length - 1);
+        }
+
+        const tls = (networkProperties.tls) ? 's' : '';
+        const url = networkProperties.stream + tls + '://' + endpoint;
+
+        if(networkProperties.stream === 'http') {
+            return new HttpConnector(url , {
+                responseFormat: networkProperties.responseFormat || 'application/json',
+                responseType: networkProperties.responseType || 'application/json',
+                method: 'GET'
+            });
+        } else if(networkProperties.stream === 'mqtt') {
+            // return new MqttConnector(url);
+        } else if(networkProperties.stream === 'ws') {
+            return new WebSocketConnector(url);
+        }
+    }
+
+    setStreamProtocol(protocol, responseType = 'arraybuffer') {
+        this._network.stream.connector.disconnect();
+        this._network.stream = {
+            connector: this.createStreamConnector({
+                ...this.networkProperties,
+                stream: protocol,
+                responseType: responseType
+            })
+        }
+    }
+
+    connect() {
+        console.log(this._network.stream.connector)
+        this._network.stream.connector.connect();
     }
 }
 export default SensorWebApi;

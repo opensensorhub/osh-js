@@ -59,10 +59,6 @@ class HttpConnector extends DataConnector {
                 this.method = properties.method;
             }
 
-            if (properties.responseType) {
-                this.responseType = properties.responseType;
-            }
-
             if (properties.headers) {
                 this.headers = properties.headers;
             }
@@ -74,42 +70,26 @@ class HttpConnector extends DataConnector {
      * @param {String} extraUrl - extra url to append to the url
      * @param {String} queryString - get query parameters
      */
-    async doRequest(extraUrl = '', queryString = undefined, format = undefined) {
+    async doRequest(extraUrl = '', queryString = undefined, responseType = undefined) {
         let fullUrl = this.getUrl() + extraUrl;
 
         if (isDefined(queryString)) {
             fullUrl += '?' + queryString;
         }
 
-        var checkVarType;
-        if (isDefined(format)) {
-            checkVarType = format;
-        } else if (isDefined(this.responseType)) {
-            checkVarType = this.responseType;
-        }
-
         // default
-        let responseType = 'arraybuffer';
-        if (isDefined(checkVarType)) {
-            if (checkVarType === 'application/swe+json' || checkVarType === 'application/json') {
-                responseType = 'application/json';
-            } else if (checkVarType === 'plain/text' || checkVarType === 'application/xml') {
-                responseType = 'plain/text';
-            }
-        }
-
         const promiseResponse = fetch(fullUrl, {
             method: this.method,
             headers: this.headers
         })
             .then(function (response) {
-                if(responseType === 'application/json') {
-                    return response.json();
-                } else if(responseType === 'plain/text'){
-                    return response.text();
-                } else {
+                // if(responseTypeVar === 'application/json') {
+                //     return response.json();
+                // } else if(responseTypeVar === 'plain/text'){
+                //     return response.text();
+                // } else {
                     return response.arrayBuffer();
-                }
+                // }
             });
         const response = await promiseResponse;
         this.onMessage(response);
@@ -133,6 +113,8 @@ class HttpConnector extends DataConnector {
     onMessage(event) {
 
     }
+
+    disconnect() {}
 
     /**
      * Sends the request

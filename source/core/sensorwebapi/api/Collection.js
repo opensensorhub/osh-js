@@ -42,7 +42,7 @@ class Collection {
         const response = await this.connector.doRequest(
             this.url,
             `${this.filter.toQueryString()}&offset=${this.nextOffset}&limit=${this.pageSize}`,
-            this.filter.props.format
+            this.filter.props.responseType
             );
         await this.onFetchData(response);
     }
@@ -52,10 +52,12 @@ class Collection {
     }
 
     async parseResponse(encodedResponse) {
-        for (let i = 0; i < encodedResponse.items.length; i++) {
-            this.parseData.push(await this.parser.parseData(encodedResponse.items[i]));
+        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(encodedResponse)));
+
+        for (let i = 0; i < rec.items.length; i++) {
+            this.parseData.push(await this.parser.parseData(rec.items[i]));
         }
-        this.nextOffset = this.parseNextOffset(encodedResponse);
+        this.nextOffset = this.parseNextOffset(rec);
 
     }
 

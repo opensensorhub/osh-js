@@ -8,7 +8,6 @@ class SensorWebApiDataStreamParser extends DataSourceParser {
     }
 
     parseData(data) {
-        console.log(data)
         return new DataStream(
             {
                 id: data.id,
@@ -20,7 +19,10 @@ class SensorWebApiDataStreamParser extends DataSourceParser {
                 observedProperties: data.observedProperties,
                 formats: data.formats
             },
-            this.networkProperties
+            {
+                stream: 'ws', // default streaming
+                ...this.networkProperties
+            }
         );
     }
 

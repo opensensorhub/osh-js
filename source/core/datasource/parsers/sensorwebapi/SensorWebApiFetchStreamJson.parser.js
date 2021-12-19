@@ -26,7 +26,11 @@ class SensorWebApiFetchStreamJsonParser extends TimeSeriesParser {
      * }
      */
     parseData(data) {
-        return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))).result;
+        if(data instanceof ArrayBuffer) {
+            return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))).result;
+        } else {
+            return data.result;
+        }
     }
 
     /**

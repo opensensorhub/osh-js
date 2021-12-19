@@ -56,10 +56,34 @@
                 ></v-progress-circular>
               </div>
               <div class="white--text jsonpre" v-else>
-                <v-switch
-                    v-model="prettyJson"
-                    label="Pretty JSON"
-                ></v-switch>
+                <v-row align="center">
+                  <v-col
+                      class="d-flex"
+                      cols="12"
+                      sm="6"
+                  >
+                    <v-switch
+                        v-model="prettyJson"
+                        label="Pretty JSON"
+                    ></v-switch>
+                  </v-col>
+
+                  <v-col
+                      class="d-flex"
+                      cols="12"
+                      sm="6"
+                  >
+
+                    <v-select
+                        :items='["ws", "http", "mqtt"]'
+                        label="Protocol"
+                        dense
+                        read-only
+                        v-model="dataStreamProtocol"
+                        @change="changeStreamProtocol"
+                    ></v-select>
+                  </v-col>
+                </v-row>
                 <!--vue-json-pretty :path="'res'" :data="details"></vue-json-pretty-->
                 <!--                <pre>{{ details }}</pre>-->
                 <vue-json-pretty :path="'res'" :data="details" v-if="prettyJson"></vue-json-pretty>
@@ -97,6 +121,9 @@ import DataStreamFilter from "../../../source/core/sensorwebapi/api/datastream/D
 import FeatureOfInterestFilter from "../../../source/core/sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
 import ObservationFilter from "../../../source/core/sensorwebapi/api/observation/ObservationFilter";
 import SensorWebApiFetchJson from "../../../source/core/datasource/parsers/sensorwebapi/SensorWebApiFetchJson.parser";
+import {isDefined} from "../../../source/core/utils/Utils";
+import SensorWebApiFetchStreamJsonParser
+  from "../../../source/core/datasource/parsers/sensorwebapi/SensorWebApiFetchStreamJson.parser";
 
 export default {
   components: {
@@ -111,7 +138,9 @@ export default {
       details: undefined,
       count: 0,
       stream: false,
-      prettyJson: false
+      prettyJson: true,
+      currentDataStream: undefined,
+      dataStreamProtocol: 'ws'
     }
   },
   beforeMount() {
@@ -124,7 +153,7 @@ export default {
     this.systemsUtility = new Systems({
       protocol: 'http',
       tls: true,
-      endpointUrl : 'ogct17.georobotix.io:8443/sensorhub'
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub'
     });
   },
   computed: {
@@ -156,23 +185,54 @@ export default {
       } else if (id.startsWith('datastream-observation')) {
         this.stream = true;
         const datastream = node.datastream;
-        const parser = new SensorWebApiFetchJson();
+        const parser = new SensorWebApiFetchStreamJsonParser();
         this.details = [];
         const nodeId = node.id;
-        datastream.streamObservations(new ObservationFilter(), function (obs) {
+        if(this.dataStreamProtocol === 'ws') {
+          datastream.streamObservations(new ObservationFilter(), function (obs) {
+            if (that.active[0] !== nodeId) {
+              // node is different, disconnect
+              console.warn('node is different, disconnect from previous one');
+              datastream._network.stream.connector.disconnect();
+            } else {
+              that.details = parser.parseData(obs);
+            }
+          });
+        } else if(this.dataStreamProtocol === 'http') {
           if (that.active[0] !== nodeId) {
             // node is different, disconnect
             console.warn('node is different, disconnect from previous one');
             datastream._network.stream.connector.disconnect();
-          } else {
-            that.details.push(parser.parseData(obs));
           }
-        });
+
+          let collection = datastream.searchObservations(new ObservationFilter());
+          let asyncCollection = async () => {
+            outer: while(collection.hasNext()) {
+              const page = await collection.nextPage();
+              for(let pageElement of page) {
+                that.details = pageElement;
+                if (that.active[0] !== nodeId || this.dataStreamProtocol !== 'http') {
+                  // node is different, disconnect
+                  console.warn('node is different, disconnect from previous one');
+                  break outer;
+                }
+              }
+            }
+            console.warn('end of HTTP stream');
+          };
+          asyncCollection();
+        }
+        this.currentDataStream = datastream;
       }
       return node;
     },
   },
   methods: {
+    changeStreamProtocol(value) {
+      if(isDefined(this.currentDataStream)) {
+        this.currentDataStream.setStreamProtocol(value, 'arraybuffer');
+      }
+    },
     highlight(details) {
       return Prism.highlight(JSON.stringify(details, null, 1), Prism.languages.json);
     },
@@ -230,7 +290,6 @@ export default {
         }
       }
     },
-
     async fetchDataStream(item) {
       const system = item.system;
       const dataStreamFilter = new DataStreamFilter({});
@@ -273,7 +332,6 @@ export default {
         }
       }
     },
-
     async fetchFoi(item) {
       const system = item.system;
       const featureOfInterestFiltlter = new FeatureOfInterestFilter({});
