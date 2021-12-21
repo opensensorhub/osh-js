@@ -93,7 +93,9 @@ class SensorWebApi {
     }
 
     setStreamProtocol(protocol, responseType = 'arraybuffer') {
-        this._network.stream.connector.disconnect();
+        if(isDefined(this._network.stream.connector)) {
+            this._network.stream.connector.disconnect();
+        }
         this._network.stream = {
             connector: this.createStreamConnector({
                 ...this.networkProperties,
@@ -104,7 +106,6 @@ class SensorWebApi {
     }
 
     connect() {
-        console.log(this._network.stream.connector)
         this._network.stream.connector.connect();
     }
 }

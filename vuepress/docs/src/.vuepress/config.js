@@ -234,6 +234,13 @@ module.exports = (env) => {
                         ]
                     },
                     {
+                        title: 'Sensor Web API',
+                        collapsable: true,
+                        children: [
+                            '/guide/sensorwebapi/general.md'
+                        ]
+                    },
+                    {
                         title: 'Vue.js components',
                         collapsable: true,
                         children: [

@@ -1,0 +1,116 @@
+<template>
+  <div class="white--text jsonpre" v-else>
+    <v-row align="center">
+      <v-col
+          class="d-flex"
+          cols="12"
+          sm="6"
+      >
+        <v-switch
+            v-model="prettyJson"
+            label="Pretty JSON"
+        ></v-switch>
+      </v-col>
+      <v-col>
+        <v-btn
+            depressed
+            elevation="2"
+            icon
+            @click="previous"
+        ><v-icon>mdi-chevron-double-left</v-icon></v-btn>
+        <v-btn
+            depressed
+            elevation="2"
+            icon
+            @click="next"
+        ><v-icon>mdi-chevron-double-right</v-icon></v-btn>
+      </v-col>
+    </v-row>
+    <slot v-if="content">
+      <!--v-pagination
+          v-model="pagination.page"
+          :length="pagination.total / 5"
+          :total-visible="pagination.visible"
+          @input="changePage"
+      ></v-pagination-->
+      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
+      <div class="noprettyjson" v-else>
+        <pre> {{ content }}</pre>
+      </div>
+    </slot>
+  </div>
+</template>
+
+<script>
+import ObservationFilter from "../../../../source/core/sensorwebapi/api/observation/ObservationFilter";
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
+
+export default {
+  name: "SearchObservationsContent",
+  props: [
+    'datastream','datastreamNodeId'
+  ],
+  components: {
+    VueJsonPretty,
+  },
+  data() {
+    return {
+      prettyJson: true,
+      dataStreamProtocol: 'http',
+      content: undefined,
+      active: true,
+      pagination: {
+        page: 1,
+        total: 100,
+        perPage: 5,
+        visible: 6,
+        current: 1
+      },
+      collection: undefined
+    }
+  },
+  mounted() {
+    this.collection = this.datastream.searchObservations(new ObservationFilter());
+    this.connect();
+  },
+  async destroyed(){
+    // make it async
+    const that = this;
+    new Promise((resolve, reject) => {
+      that.disconnect();
+    });
+  },
+  methods: {
+    next() {
+      let asyncCollection = async () => {
+        const page = await this.collection.nextPage();
+        this.content = page;
+      };
+      asyncCollection();
+    },
+    previous() {
+      let asyncCollection = async () => {
+        const page = await this.collection.previousPage();
+        this.content = page;
+      };
+      asyncCollection();
+    },
+    connect() {
+      const that = this;
+      let asyncCollection = async () => {
+        const page = await this.collection.nextPage();
+        this.content = page;
+      };
+      asyncCollection();
+    },
+    disconnect() {
+      this.active = false;
+    },
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

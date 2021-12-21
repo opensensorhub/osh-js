@@ -44,7 +44,6 @@ import TargetMiniPanel from "./components/TargetMiniPanel.vue";
 import BioSensorMiniPanel from "./components/BioSensorMiniPanel.vue";
 import CollapseTimeController from "./components/CollapseTimeController.vue";
 
-import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";

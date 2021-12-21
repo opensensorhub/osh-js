@@ -40,7 +40,7 @@ class SensorWebApiFetchJson extends SensorWebApiFetch {
 
     async createWorker(properties) {
         if(properties.protocol === 'mqtt') {
-           // return import('./workers/SensorWebApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
+           return import('./workers/SensorWebApiFetchMqtt.worker.js').then( SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
         } else {
             return new SensorWebApiFetchWorkerJson();
         }

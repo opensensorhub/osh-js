@@ -36,65 +36,19 @@
           <v-col
               class="d-flex"
           >
-            <v-scroll-y-transition mode="out-in">
-              <div
-                  v-if="!selected"
-                  class="text-h6 grey--text text--lighten-1 font-weight-light"
-                  style="align-self: center;"
-              >
-                Select a Component
-              </div>
-              <div
-                  v-else-if="details === undefined"
-                  class="text-h6 grey--text text--lighten-1 font-weight-light progress"
-                  style="align-self: center;"
-              >
-                <v-progress-circular
-                    indeterminate
-                    :size="100"
-                    color="primary"
-                ></v-progress-circular>
-              </div>
-              <div class="white--text jsonpre" v-else>
-                <v-row align="center">
-                  <v-col
-                      class="d-flex"
-                      cols="12"
-                      sm="6"
-                  >
-                    <v-switch
-                        v-model="prettyJson"
-                        label="Pretty JSON"
-                    ></v-switch>
-                  </v-col>
-
-                  <v-col
-                      class="d-flex"
-                      cols="12"
-                      sm="6"
-                  >
-
-                    <v-select
-                        :items='["ws", "http", "mqtt"]'
-                        label="Protocol"
-                        dense
-                        read-only
-                        v-model="dataStreamProtocol"
-                        @change="changeStreamProtocol"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-                <!--vue-json-pretty :path="'res'" :data="details"></vue-json-pretty-->
-                <!--                <pre>{{ details }}</pre>-->
-                <vue-json-pretty :path="'res'" :data="details" v-if="prettyJson"></vue-json-pretty>
-                <div class="noprettyjson" v-else-if="stream">
-                  <pre> {{ details }}</pre>
-                </div>
-                <div class="noprettyjson" v-else="stream">
-                  <pre><code class="language-json" v-html="highlight(details)"></code></pre>
-                </div>
-              </div>
-            </v-scroll-y-transition>
+              <NoSelectedContent v-if="!selected"></NoSelectedContent>
+              <Details v-else-if="!datastream && details"
+                :details="details"
+              ></Details>
+              <StreamObservationsContent v-else-if="datastream"
+                 :datastream="datastream"
+                 :key="datastreamNodeId"
+              ></StreamObservationsContent>
+            <SearchObservationsContent v-else-if="datastreamSearch"
+                                       :datastream="datastreamSearch"
+                                       :key="datastreamNodeId"
+            ></SearchObservationsContent>
+            <ContentLoading v-else></ContentLoading>
           </v-col>
         </v-row>
       </v-card>
@@ -117,17 +71,23 @@ import SystemFilter from "../../../source/core/sensorwebapi/api/system/SystemFil
 
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
+import ContentLoading from './components/ContentLoading.vue';
+import NoSelectedContent from "./components/NoSelectedContent.vue";
+import Details from "./components/Details.vue";
+import StreamObservationsContent from "./components/StreamObservationsContent.vue";
+import SearchObservationsContent from "./components/SearchObservationsContent.vue";
+
 import DataStreamFilter from "../../../source/core/sensorwebapi/api/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
-import ObservationFilter from "../../../source/core/sensorwebapi/api/observation/ObservationFilter";
-import SensorWebApiFetchJson from "../../../source/core/datasource/parsers/sensorwebapi/SensorWebApiFetchJson.parser";
-import {isDefined} from "../../../source/core/utils/Utils";
-import SensorWebApiFetchStreamJsonParser
-  from "../../../source/core/datasource/parsers/sensorwebapi/SensorWebApiFetchStreamJson.parser";
 
 export default {
   components: {
-    VueJsonPretty
+    Details,
+    NoSelectedContent,
+    ContentLoading,
+    VueJsonPretty,
+    StreamObservationsContent,
+    SearchObservationsContent
   },
   data() {
     return {
@@ -137,10 +97,10 @@ export default {
       nodes: {},
       details: undefined,
       count: 0,
-      stream: false,
+      datastream: undefined,
+      datastreamSearch: undefined,
+      datastreamNodeId: undefined,
       prettyJson: true,
-      currentDataStream: undefined,
-      dataStreamProtocol: 'ws'
     }
   },
   beforeMount() {
@@ -169,11 +129,13 @@ export default {
       const that = this;
       if (!this.active.length) return undefined
 
-      this.stream = false;
-      const id = this.active[0]
+      this.datastream = undefined;
+      this.datastreamSearch = undefined;
       this.details = undefined;
 
+      const id = this.active[0]
       const node = this.nodes[id];
+      this.datastreamNodeId = node.id;
       if (id.startsWith('system-details')) {
         node.system.getDetails().then(details => {
           that.details = details;
@@ -182,60 +144,15 @@ export default {
         this.details = node.datastream.properties;
       } else if (id.startsWith('foi-')) {
         this.details = node.foi.properties;
-      } else if (id.startsWith('datastream-observation')) {
-        this.stream = true;
-        const datastream = node.datastream;
-        const parser = new SensorWebApiFetchStreamJsonParser();
-        this.details = [];
-        const nodeId = node.id;
-        if(this.dataStreamProtocol === 'ws') {
-          datastream.streamObservations(new ObservationFilter(), function (obs) {
-            if (that.active[0] !== nodeId) {
-              // node is different, disconnect
-              console.warn('node is different, disconnect from previous one');
-              datastream._network.stream.connector.disconnect();
-            } else {
-              that.details = parser.parseData(obs);
-            }
-          });
-        } else if(this.dataStreamProtocol === 'http') {
-          if (that.active[0] !== nodeId) {
-            // node is different, disconnect
-            console.warn('node is different, disconnect from previous one');
-            datastream._network.stream.connector.disconnect();
-          }
-
-          let collection = datastream.searchObservations(new ObservationFilter());
-          let asyncCollection = async () => {
-            outer: while(collection.hasNext()) {
-              const page = await collection.nextPage();
-              for(let pageElement of page) {
-                that.details = pageElement;
-                if (that.active[0] !== nodeId || this.dataStreamProtocol !== 'http') {
-                  // node is different, disconnect
-                  console.warn('node is different, disconnect from previous one');
-                  break outer;
-                }
-              }
-            }
-            console.warn('end of HTTP stream');
-          };
-          asyncCollection();
-        }
-        this.currentDataStream = datastream;
+      } else if (id.startsWith('datastream-stream-observation')) {
+        this.datastream = node.datastream;
+      } else if(id.startsWith('datastream-search-observation')) {
+        this.datastreamSearch = node.datastream;
       }
       return node;
     },
   },
   methods: {
-    changeStreamProtocol(value) {
-      if(isDefined(this.currentDataStream)) {
-        this.currentDataStream.setStreamProtocol(value, 'arraybuffer');
-      }
-    },
-    highlight(details) {
-      return Prism.highlight(JSON.stringify(details, null, 1), Prism.languages.json);
-    },
     async fetchData(item) {
       if (item.name === 'Systems') {
         await this.fetchSystem(item);
@@ -306,9 +223,16 @@ export default {
             datastream: datastream
           };
 
-          const datastreamObservationNode = {
-            id: `datastream-observation-${this.count++}`,
-            name: 'observation',
+          const datastreamStreamObservationNode = {
+            id: `datastream-stream-observation-${this.count++}`,
+            name: 'streamObservations',
+            system: system,
+            datastream: datastream
+          };
+
+          const datastreamSearchObservationNode = {
+            id: `datastream-search-observation-${this.count++}`,
+            name: 'searchObservations (http)',
             system: system,
             datastream: datastream
           };
@@ -320,12 +244,14 @@ export default {
             datastream: datastream,
             children: [
               datastreamDetailsNode,
-              datastreamObservationNode
+              datastreamStreamObservationNode,
+              datastreamSearchObservationNode
             ]
           };
 
           this.nodes[datastreamDetailsNode.id] = datastreamDetailsNode;
-          this.nodes[datastreamObservationNode.id] = datastreamObservationNode;
+          this.nodes[datastreamStreamObservationNode.id] = datastreamStreamObservationNode;
+          this.nodes[datastreamSearchObservationNode.id] = datastreamSearchObservationNode;
           this.nodes[datastreamNode.id] = datastreamNode;
 
           item.children.push(datastreamNode);
