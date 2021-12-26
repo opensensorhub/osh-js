@@ -11,7 +11,7 @@ class SosGetResultVideoWithRollParser extends SosGetResultVideoParser {
             // H264 NAL unit starts at offset 14 after 8-bytes time stamp, 2-bytes roll value, and 4-bytes frame length
             frameData: new Uint8Array(data, 14),
             roll: new DataView(data).getInt16(8, false)
-        }
+        };
     }
 
     /**
