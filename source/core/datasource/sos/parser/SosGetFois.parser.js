@@ -30,8 +30,12 @@ class SosGetFoisParser extends DataSourceParser {
         </sos:GetFeatureOfInterestResponse>
      */
     async parseData(data) {
-        let sweXmlParser = new SWEXmlStreamParser(data);
-        sweXmlParser.setXml(data);
+        let rec = data;
+        if(data instanceof ArrayBuffer) {
+            rec = new TextDecoder().decode(data);
+        }
+        let sweXmlParser = new SWEXmlStreamParser(rec);
+        sweXmlParser.setXml(rec);
         const json =  sweXmlParser.toJson();
         assertDefined(json.GetFeatureOfInterestResponse,'json.GetFeatureOfInterestResponse does not exist');
         assertDefined(json.GetFeatureOfInterestResponse.featureMember,'json.GetFeatureOfInterestResponse.featureMember does not exist');
