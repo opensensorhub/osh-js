@@ -22,7 +22,7 @@ import {assertDefined, isDefined} from "../utils/Utils";
  * The DataSource is the abstract class used to create different datasources.
  *
  */
-class TimeSeriesDataSource extends DataSource{
+class TimeSeriesDataSource extends DataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
@@ -45,8 +45,8 @@ class TimeSeriesDataSource extends DataSource{
      * @param {Object} [properties.customUrlParams={}] - custom parameters appended to the URL as they are
      * @param {Object} worker - DataSource worker
      */
-    constructor(name, properties, worker) {
-        super(name,properties ,worker);
+    constructor(name, properties) {
+        super(name,properties);
 
         assertDefined(properties,'Some properties must be defined');
         assertDefined(properties.startTime,'startTime must must be defined');
@@ -116,7 +116,7 @@ class TimeSeriesDataSource extends DataSource{
                 message: 'topic',
                 topic: topic,
                 timeTopic: this.getTimeTopicId()
-            }, resolve)
+            }, resolve);
         });
     }
 
@@ -160,7 +160,7 @@ class TimeSeriesDataSource extends DataSource{
         if(isDefined(replaySpeed)) {
             replay =  {
                 replaySpeed: replaySpeed
-            }
+            };
         }
         return this.updateProperties({
             ...this.currentRunningProperties,

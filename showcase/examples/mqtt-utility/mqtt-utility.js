@@ -1,6 +1,6 @@
 import MqttProvider from "../../../source/core/mqtt/MqttProvider";
 import {randomUUID} from "../../../source/core/utils/Utils";
-import SweApiMqttJsonParser from "../../../source/core/datasource/parsers/sensorwebapi/SweApiMqttJson.parser";
+import SweApiMqttJsonParser from "../../../source/core/datasource/swe/parser/SweApiMqttJson.parser";
 
 const textAreaElement =  document.getElementById("data-container");
 
@@ -14,7 +14,7 @@ let count = 0;
 
 mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations','application/json',async function (message) {
    const parser = new SweApiMqttJsonParser();
-   const data = await parser.parseData(message)
+   const data = await parser.parseData(message);
    if(count++ < 100) {
       textAreaElement.value += JSON.stringify(data.location) + "\n";
    } else {
@@ -25,7 +25,7 @@ mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations
 
 mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
    const parser = new SweApiMqttJsonParser();
-   const data = await parser.parseData(message)
+   const data = await parser.parseData(message);
    if(count++ < 100) {
       textAreaElement.value += '(0) ' + JSON.stringify(data) + "\n";
    } else {
@@ -35,7 +35,7 @@ mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observation
 
 mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
    const parser = new SweApiMqttJsonParser();
-   const data = await parser.parseData(message)
+   const data = await parser.parseData(message);
    if(count++ < 100) {
       textAreaElement.value += '(1) ' + JSON.stringify(data) + "\n";
    } else {

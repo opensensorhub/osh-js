@@ -17,7 +17,7 @@
 import mqtt from 'mqtt';
 import {isDefined} from "../utils/Utils";
 import ObservationFilter from "../sensorwebapi/api/observation/ObservationFilter";
-import SweApiMqttJsonParser from "../datasource/parsers/sensorwebapi/SweApiMqttJson.parser";
+import SweApiMqttJsonParser from "../datasource/swe/parser/SweApiMqttJson.parser";
 
 let mqttCallbacks = {};
 
@@ -55,7 +55,7 @@ class MqttProvider {
             options = {
                 ...options,
                 ...this.properties.options
-            }
+            };
         }
 
         this.options = options;
@@ -86,7 +86,7 @@ class MqttProvider {
      */
     subscribeToObservationsByObsFilter(dataStreamIds = [],observationFilter,  callback) {
         if (!isDefined(this.client)) {
-            throw Error('You must connect the client before subscribing any topic')
+            throw Error('You must connect the client before subscribing any topic');
         }
         // waiting for the client gets connected
         let interval;
@@ -127,7 +127,7 @@ class MqttProvider {
      * @param dataStreamId
      */
     unsubscribeDs(dataStreamId) {
-        console.log(`remove dataStream: ${dataStreamId}`)
+        console.log(`remove dataStream: ${dataStreamId}`);
         delete mqttCallbacks[dataStreamId];
     }
 
@@ -137,8 +137,8 @@ class MqttProvider {
             this.client = mqtt.connect(this.endpoint, {...this.options});
             const that = this;
             this.client.on('connect', function (e) {
-                console.info(`Mqqt client is connected to ${that.endpoint}`)
-            })
+                console.info(`Mqqt client is connected to ${that.endpoint}`);
+            });
             this.client.on('message', this.onMessage.bind(this));
         }
     }
@@ -148,7 +148,7 @@ class MqttProvider {
             // callback for the corresponding topic
             for (let callbackFn of mqttCallbacks[topic]) {
                 // callback to all subscription registered
-                callbackFn(message)
+                callbackFn(message);
             }
         }
     }

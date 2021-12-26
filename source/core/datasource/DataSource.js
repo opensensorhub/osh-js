@@ -38,11 +38,10 @@ class DataSource {
      * @param {Boolean} [properties.tls=false] - set TLS mode
      * @param {Object} worker - DataSource worker
      */
-    constructor(name, properties, worker) {
+    constructor(name, properties) {
         this.id = "DataSource-" + randomUUID();
         this.name = name;
         this.properties = properties;
-        this.dataSourceWorker = worker;
         this.currentRunningProperties = {};
         this.eventSubscriptionMap = {};
         this.initialized = false;
@@ -95,9 +94,7 @@ class DataSource {
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
-    async createWorker(properties) {
-        return this.dataSourceWorker;
-    }
+    async createWorker(properties) {}
 
     /**
      * Update properties
@@ -214,7 +211,7 @@ class DataSource {
                 this.messagesMap[id](event.data.data);
                 delete this.messagesMap[id];
             }
-        }
+        };
     }
 }
 

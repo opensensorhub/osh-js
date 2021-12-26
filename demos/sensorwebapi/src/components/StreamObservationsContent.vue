@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import SensorWebApiFetchStreamJsonParser
-  from "../../../../source/core/datasource/parsers/sensorwebapi/SensorWebApiFetchStreamJson.parser";
+import SweApiFetchStreamJsonParser
+  from "../../../../source/core/datasource/swe/parser/SweApiFetchStreamJson.parser";
 import ObservationFilter from "../../../../source/core/sensorwebapi/api/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     connect() {
-      const parser = new SensorWebApiFetchStreamJsonParser();
+      const parser = new SweApiFetchStreamJsonParser();
       this.datastream.streamObservations(new ObservationFilter(), function (obs) {
         this.content = parser.parseData(obs);
       }.bind(this));

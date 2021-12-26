@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
+import SweApiDataStreamParser from "../../../datasource/swe/parser/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
@@ -25,7 +25,7 @@ class FeaturesOfInterest extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SensorWebApiDataStreamParser(networkProperties);
+        this.parser = new SweApiDataStreamParser(networkProperties);
     }
 
     /**

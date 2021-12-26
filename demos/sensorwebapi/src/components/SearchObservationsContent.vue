@@ -11,20 +11,6 @@
             label="Pretty JSON"
         ></v-switch>
       </v-col>
-      <v-col>
-        <!--v-btn
-            depressed
-            elevation="2"
-            icon
-            @click="previous"
-        ><v-icon>mdi-chevron-double-left</v-icon></v-btn>
-        <v-btn
-            depressed
-            elevation="2"
-            icon
-            @click="next"
-        ><v-icon>mdi-chevron-double-right</v-icon></v-btn-->
-      </v-col>
     </v-row>
     <slot v-if="content">
       <v-pagination
@@ -45,6 +31,7 @@
 import ObservationFilter from "../../../../source/core/sensorwebapi/api/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
+import SensorWebApiFetchJsonParser from "../../../../source/core/datasource/swe/parser/SweApiFetchJson.parser";
 
 export default {
   name: "SearchObservationsContent",
@@ -72,7 +59,7 @@ export default {
     }
   },
   mounted() {
-    this.collection = this.datastream.searchObservations(new ObservationFilter());
+    this.collection = this.datastream.searchObservations(new ObservationFilter(), 10, new SensorWebApiFetchJsonParser());
     this.connect();
   },
   async destroyed(){

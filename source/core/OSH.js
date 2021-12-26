@@ -6,13 +6,13 @@ export { default as  TopicConnector } from './protocol/TopicConnector.js';
 export { default as  WebSocketConnector } from './protocol/WebSocketConnector.js';
 export { default as  DataSynchronizer } from './timesync/DataSynchronizer.js';
 export { default as  DataSource } from './datasource/DataSource.js';
-export { default as  SosGetResultJson } from './datasource/SosGetResultJson.js';
+export { default as  SosGetResultJson } from './datasource/sos/SosGetResultJson.js';
 export { default as  OrientationQuaternion  } from '../ext/datasource/OrientationQuaternion.js';
-export { default as  SosGetResultVideo } from './datasource/SosGetResultVideo.js';
-export { default as  SosGetResultVideoWithRoll } from './datasource/SosGetResultVideoWithRoll.js';
-export { default as  SosGetFois } from './datasource/SosGetFois.js';
+export { default as  SosGetResultVideo } from './datasource/sos/SosGetResultVideo.js';
+export { default as  SosGetResultVideoWithRoll } from './datasource/sos/SosGetResultVideoWithRoll.js';
+export { default as  SosGetFois } from './datasource/sos/SosGetFois.js';
 export { default as  TimeSeriesDataSource } from './datasource/TimeSeriesDataSource.js';
-export { default as  SosGetResultAudio } from './datasource/SosGetResultAudio.js';
+export { default as  SosGetResultAudio } from './datasource/sos/SosGetResultAudio.js';
 export { default as  DataSenderController } from './datapush/DataSenderController.js';
 export { default as  DataSink } from './datapush/DataSink.js';
 export { default as  PtzTasking } from './datapush/PtzTasking.js';
@@ -45,4 +45,4 @@ export { default as  AudioFrequencyChartJsVisualizer } from './ui/view/audio/vis
 export { default as  AudioSpectrogramVisualizer } from './ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer.js';
 export { default as  AudioRollingSpectrogramCanvasVisualizer } from './ui/view/audio/visualizer/spectrogram/AudioRollingSpectrogramCanvasVisualizer.js';
 export { default as  View } from './ui/view/View.js';
-export * from './Constants.js'
+export * from './Constants.js';

@@ -17,7 +17,7 @@
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import DataStreamFilter from "./DataStreamFilter";
-import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
+import SweApiDataStreamParser from "../../../datasource/swe/parser/SweApiDataStream.parser";
 import API from "../routes.conf";
 
 class DataStreams extends SensorWebApi {
@@ -26,7 +26,7 @@ class DataStreams extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SensorWebApiDataStreamParser(networkProperties);
+        this.parser = new SweApiDataStreamParser(networkProperties);
     }
 
     /**

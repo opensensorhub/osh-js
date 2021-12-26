@@ -49,8 +49,8 @@ import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
-import SensorWebApiFetchJson from "osh-js/core/datasource/SensorWebApiFetchJson";
-import SensorWebApiFetchVideo from "osh-js/core/datasource/SensorWebApiFetchVideo";
+import SweApiFetchJson from "osh-js/core/datasource/SweApiFetchJson";
+import SweApiFetchVideo from "osh-js/core/datasource/SweApiFetchVideo";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities

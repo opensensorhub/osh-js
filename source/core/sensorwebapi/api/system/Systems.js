@@ -16,7 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SensorWebApiFetchSystemParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchSystem.parser";
+import SweApiFetchSystemParser from "../../../datasource/swe/parser/SweApiFetchSystem.parser";
 import SystemFilter from "./SystemFilter";
 import API from "../routes.conf";
 
@@ -26,7 +26,7 @@ class Systems extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SensorWebApiFetchSystemParser(networkProperties);
+        this.parser = new SweApiFetchSystemParser(networkProperties);
     }
 
     /**

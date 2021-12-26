@@ -18,11 +18,11 @@ import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import Collection from "../Collection";
-import SensorWebApiDataStreamParser from "../../../datasource/parsers/sensorwebapi/SensorWebApiDataStream.parser";
-import SensorWebApiFetchJson from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchJson.parser";
+import SweApiDataStreamParser from "../../../datasource/swe/parser/SweApiDataStream.parser";
+import SensorWebApiFetchJson from "../../../datasource/swe/parser/SweApiFetchJson.parser";
 import HttpConnector from "../../../protocol/HttpConnector";
-import SensorWebApiFetchStreamJsonParser
-    from "../../../datasource/parsers/sensorwebapi/SensorWebApiFetchStreamJson.parser";
+import SweApiFetchStreamJsonParser
+    from "../../../datasource/swe/parser/SweApiFetchStreamJson.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -31,7 +31,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.parser = new SensorWebApiFetchStreamJsonParser(networkProperties);
+        this.parser = new SweApiFetchStreamJsonParser(networkProperties);
     }
 
     /**
@@ -53,14 +53,15 @@ class DataStream extends SensorWebApi {
      *
      * @param observationFilter
      * @param pageSize
+     * @param parser
      * @returns {Collection<DataStream>} A collection of DataStream
      */
-    searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10) {
+    searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.parser) {
         return new Collection(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,
             pageSize,
-            this.parser,
+            parser,
             this._network.info.connector
         );
     }

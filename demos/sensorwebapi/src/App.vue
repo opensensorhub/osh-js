@@ -378,6 +378,10 @@ code {
 .col {
   overflow: auto !important;
 }
+
+.theme--dark.v-card {
+  background-color: #2f2f2f !important;
+}
 </style>
 
 
