@@ -38,7 +38,7 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {EventType} from "osh-js/core/event/EventType";
 

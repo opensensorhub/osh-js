@@ -1,4 +1,4 @@
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider} from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';

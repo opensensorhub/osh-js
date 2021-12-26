@@ -3,8 +3,8 @@ import {EventType} from 'osh-js/core/event/EventType';
 
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
-import SweJson from 'osh-js/core/datasource/SosGetResultJson.js';
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo';
+import SweJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';

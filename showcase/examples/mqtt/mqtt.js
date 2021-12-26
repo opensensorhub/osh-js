@@ -1,5 +1,5 @@
 // create data source for Android phone GPS
-import SweApiMqttJson from 'osh-js/core/datasource/SweApiMqttJson.js';
+import SweApiMqttJson from 'osh-js/core/datasource/swe/SweApiMqttJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';

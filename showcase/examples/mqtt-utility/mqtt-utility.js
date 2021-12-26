@@ -1,6 +1,6 @@
-import MqttProvider from "../../../source/core/mqtt/MqttProvider";
-import {randomUUID} from "../../../source/core/utils/Utils";
-import SweApiMqttJsonParser from "../../../source/core/datasource/swe/parser/SweApiMqttJson.parser";
+import MqttProvider from "osh-js/core/mqtt/MqttProvider";
+import {randomUUID} from "osh-js/core/utils/Utils";
+import SweApiMqttJsonParser from "osh-js/core/datasource/swe/parser/SweApiMqttJson.parser";
 
 const textAreaElement =  document.getElementById("data-container");
 

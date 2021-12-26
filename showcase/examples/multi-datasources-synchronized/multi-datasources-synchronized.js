@@ -1,7 +1,7 @@
 import {displayVideo0, displayVideo1, displayVideo2, displayError} from './display-values';
 import {EventType} from 'osh-js/core/event/EventType';
 
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';

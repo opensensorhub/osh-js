@@ -1,4 +1,4 @@
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
@@ -6,7 +6,7 @@ import {
     Cartesian3,
     Cartesian2, Ion
 } from "cesium";
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
 import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';

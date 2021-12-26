@@ -15,7 +15,7 @@
 // @ is an alias to /src
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils.js';
 

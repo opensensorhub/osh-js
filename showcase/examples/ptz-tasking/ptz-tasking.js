@@ -1,4 +1,4 @@
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
 import FoscamPtzTasking from 'osh-js/core/datapush/FoscamPtzTasking.js';
 import PtzTaskingView from 'osh-js/ext/ui/view/tasking/PtzTaskingView.js';

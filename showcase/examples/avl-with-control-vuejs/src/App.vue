@@ -25,7 +25,7 @@ window.CESIUM_BASE_URL = './';
 
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SweJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SweJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
