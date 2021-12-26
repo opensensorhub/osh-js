@@ -12,7 +12,7 @@
         ></v-switch>
       </v-col>
       <v-col>
-        <v-btn
+        <!--v-btn
             depressed
             elevation="2"
             icon
@@ -23,16 +23,16 @@
             elevation="2"
             icon
             @click="next"
-        ><v-icon>mdi-chevron-double-right</v-icon></v-btn>
+        ><v-icon>mdi-chevron-double-right</v-icon></v-btn-->
       </v-col>
     </v-row>
     <slot v-if="content">
-      <!--v-pagination
+      <v-pagination
           v-model="pagination.page"
           :length="pagination.total / 5"
           :total-visible="pagination.visible"
-          @input="changePage"
-      ></v-pagination-->
+          @input="setPage"
+      ></v-pagination>
       <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
       <div class="noprettyjson" v-else>
         <pre> {{ content }}</pre>
@@ -67,7 +67,8 @@ export default {
         visible: 6,
         current: 1
       },
-      collection: undefined
+      collection: undefined,
+      cache: {}
     }
   },
   mounted() {
@@ -82,25 +83,23 @@ export default {
     });
   },
   methods: {
-    next() {
-      let asyncCollection = async () => {
-        const page = await this.collection.nextPage();
-        this.content = page;
-      };
-      asyncCollection();
-    },
-    previous() {
-      let asyncCollection = async () => {
-        const page = await this.collection.previousPage();
-        this.content = page;
-      };
-      asyncCollection();
+    setPage(value) {
+      if(!(value in this.cache)) {
+        let asyncCollection = async () => {
+          const page = await this.collection.nextPage(value - 1);
+          this.content = page;
+          this.cache[value]= page;
+        };
+        asyncCollection();
+      } else {
+        this.content = this.cache[value];
+      }
     },
     connect() {
-      const that = this;
       let asyncCollection = async () => {
         const page = await this.collection.nextPage();
         this.content = page;
+        this.cache[1]= page;
       };
       asyncCollection();
     },
