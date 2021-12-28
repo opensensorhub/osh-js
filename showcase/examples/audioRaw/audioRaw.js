@@ -5,6 +5,7 @@ import AudioTimeCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/time
 import AudioFrequencyChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
 import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
 import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
+import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
 let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     protocol: "ws",
@@ -16,7 +17,9 @@ let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     startTime: "2019-03-27T14:18:02Z",
     endTime: "2019-03-27T14:18:40Z",
     replaySpeed: 1.0,
-    bufferingTime: 1000
+    bufferingTime: 1000,
+    timeOut:800,
+    batchSize: 256 * 0.32 // ~81ms buffering
 });
 
 let audioView = new AudioView({
@@ -104,14 +107,20 @@ const audioSpectrogramVisualizer = new AudioSpectrogramVisualizer({
 });
 
 audioView.addVisualizer(audioCanvasFrequencyVisualizer);
-audioView.addVisualizer(audioCanvasTimeVisualizer);
-audioView.addVisualizer(audioChartFrequencyVisualizer);
-audioView.addVisualizer(audioChartTimeVisualizer);
-audioView.addVisualizer(audioSpectrogramVisualizer);
+// audioView.addVisualizer(audioCanvasTimeVisualizer);
+// audioView.addVisualizer(audioChartFrequencyVisualizer);
+// audioView.addVisualizer(audioChartTimeVisualizer);
+// audioView.addVisualizer(audioSpectrogramVisualizer);
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 1.0,
+    timerResolution: 5,
+    dataSources: [audioDataSource]
+});
 
 document.getElementById("listen").onclick = () => {
-    audioDataSource.connect();
-}
+    dataSynchronizer.connect();
+};
 
 const inputChartElt = document.getElementById("input-range-chart");
 inputChartElt.onchange = (event) => {
