@@ -183,11 +183,11 @@ class DataSynchronizerAlgo {
     setStatus(dataSourceId, status) {
         if (dataSourceId in this.dataSourceMap) {
             this.dataSourceMap[dataSourceId].status = status;
-            if (status === Status.DISCONNECTED) {
+            // if (status === Status.DISCONNECTED) {
                 // reset latency and buffer
-                this.dataSourceMap[dataSourceId].latency = 0;
-                this.dataSourceMap[dataSourceId].dataBuffer = [];
-            }
+                // this.dataSourceMap[dataSourceId].latency = 0;
+                // this.dataSourceMap[dataSourceId].dataBuffer = [];
+            // }
 
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }

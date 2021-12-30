@@ -19,7 +19,7 @@ let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     replaySpeed: 1.0,
     bufferingTime: 1000,
     timeOut:800,
-    batchSize: 256 * 0.32 // ~81ms buffering
+    batchSize: 5
 });
 
 let audioView = new AudioView({
@@ -27,8 +27,9 @@ let audioView = new AudioView({
     css: 'audio-css',
     container: 'audio-chart-container',
     dataSource: audioDataSource,
-    gain: 1,
+    gain: 3,
     codec: 'raw',
+    frequency: 8000 , // 8000Hz
     playSound: true
 });
 
@@ -107,19 +108,19 @@ const audioSpectrogramVisualizer = new AudioSpectrogramVisualizer({
 });
 
 audioView.addVisualizer(audioCanvasFrequencyVisualizer);
-// audioView.addVisualizer(audioCanvasTimeVisualizer);
-// audioView.addVisualizer(audioChartFrequencyVisualizer);
-// audioView.addVisualizer(audioChartTimeVisualizer);
-// audioView.addVisualizer(audioSpectrogramVisualizer);
+audioView.addVisualizer(audioCanvasTimeVisualizer);
+audioView.addVisualizer(audioChartFrequencyVisualizer);
+audioView.addVisualizer(audioChartTimeVisualizer);
+audioView.addVisualizer(audioSpectrogramVisualizer);
 
-const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 1.0,
-    timerResolution: 5,
-    dataSources: [audioDataSource]
-});
+// const dataSynchronizer = new DataSynchronizer({
+//     replaySpeed: 1.0,
+//     timerResolution: 5,
+//     dataSources: [audioDataSource]
+// });
 
 document.getElementById("listen").onclick = () => {
-    dataSynchronizer.connect();
+    audioDataSource.connect();
 };
 
 const inputChartElt = document.getElementById("input-range-chart");

@@ -45,6 +45,7 @@ class AudioView extends View {
             playSound: true,
             codec: 'aac',
             visualizers: [],
+            frequency: 30,
             dataSourceId: properties.dataSource.id,
             ...properties,
             visible: false,
@@ -153,13 +154,9 @@ class AudioView extends View {
         }
 
         source.start(this.deltaInc);
-        // this.deltaInc += audioBuffer.duration;
-
         //  if timestamp is defined, use it.  Otherwise compute
-        //console.log("onDecBuff() ts pre = " + timestamp);
         if (timestamp === undefined)
             timestamp = this.startTime + this.deltaInc * 1000;
-        //console.log("onDecBuff() ts post = " + timestamp);
 
         if(isDefined(this.lastTimestamp)) {
             this.deltaInc += (timestamp - this.lastTimestamp)/1000;
@@ -167,6 +164,24 @@ class AudioView extends View {
             this.deltaInc += audioBuffer.duration;
         }
         this.lastTimestamp = timestamp;
+
+        if(isDefined(this.startClockTime)) {
+            const endClockTime = performance.now();
+            const deltaClockTime = endClockTime - this.startClockTime;
+            if(deltaClockTime > 1000) {
+                this.startClockTime = endClockTime;
+                this.nbData = audioBuffer.length;
+            } else {
+                this.nbData += audioBuffer.length;
+                if(this.nbData > this.properties.frequency) {
+                    console.warn('skipping display of audioBuffer');
+                    return;
+                }
+            }
+        } else {
+            this.nbData = audioBuffer.length;
+            this.startClockTime = performance.now();
+        }
 
         const decoded = {
             buffer: audioBuffer,
@@ -216,7 +231,7 @@ class AudioView extends View {
             for (let visualizer of this.visualizers) {
                 visualizer.onended(decoded);
             }
-        }
+        };
     }
 
     onEndedDecodedBuffer(audioBuffer) {}

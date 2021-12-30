@@ -10,16 +10,7 @@ class AudioParserRaw extends TimeSeriesParser {
      */
     parseTimeStamp(data) {
         // read double time stamp as big endian
-        let ts = new DataView(data).getFloat64(0, true) * 1000;
-        let iso = new Date(ts).toISOString();
-        console.log('Parser.parseTimestamp is ' + ts + " : " + iso);
-        // if (ts === 1553697719336) {
-        if (ts === 1553696281032) {
-            console.log("TS test...");
-            console.log("TS test...");
-            console.log("TS test...");
-        }
-        return ts;
+        return new DataView(data).getFloat64(0, true) * 1000;
     }
 
     /**
