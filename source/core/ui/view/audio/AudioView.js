@@ -45,7 +45,7 @@ class AudioView extends View {
             playSound: true,
             codec: 'aac',
             visualizers: [],
-            frequency: 30,
+            frequency: 8000,
             dataSourceId: properties.dataSource.id,
             ...properties,
             visible: false,
@@ -165,23 +165,18 @@ class AudioView extends View {
         }
         this.lastTimestamp = timestamp;
 
-        if(isDefined(this.startClockTime)) {
+        if(isDefined(this.lastClockTime)) {
             const endClockTime = performance.now();
-            const deltaClockTime = endClockTime - this.startClockTime;
-            if(deltaClockTime > 1000) {
-                this.startClockTime = endClockTime;
-                this.nbData = audioBuffer.length;
-            } else {
-                this.nbData += audioBuffer.length;
-                if(this.nbData > this.properties.frequency) {
-                    console.warn('skipping display of audioBuffer');
-                    return;
-                }
+            const deltaClockTime = endClockTime - this.lastClockTime;
+            if(deltaClockTime < this.frequency) {
+                console.warn('skipping audioBuffer');
+                return;
             }
         } else {
-            this.nbData = audioBuffer.length;
-            this.startClockTime = performance.now();
+            this.frequency = 1000 / (this.properties.frequency / audioBuffer.length);
         }
+
+        this.lastClockTime = performance.now();
 
         const decoded = {
             buffer: audioBuffer,
