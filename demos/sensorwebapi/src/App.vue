@@ -79,6 +79,7 @@ import SearchObservationsContent from "./components/SearchObservationsContent.vu
 
 import DataStreamFilter from "../../../source/core/sensorwebapi/api/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sensorwebapi/api/featureofinterest/FeatureOfInterestFilter";
+import SweApiFetchJsonParser from "../../../source/core/datasource/swe/parser/SweApiFetchJson.parser";
 
 export default {
   components: {
@@ -136,9 +137,10 @@ export default {
       const id = this.active[0]
       const node = this.nodes[id];
       this.datastreamNodeId = node.id;
+      const jsonParser = new SweApiFetchJsonParser();
       if (id.startsWith('system-details')) {
         node.system.getDetails().then(details => {
-          that.details = details;
+          that.details = jsonParser.parseData(details);
         });
       } else if (id.startsWith('datastream-details')) {
         this.details = node.datastream.properties;
