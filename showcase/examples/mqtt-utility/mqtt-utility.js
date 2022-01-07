@@ -1,6 +1,6 @@
 import MqttProvider from "osh-js/core/mqtt/MqttProvider";
 import {randomUUID} from "osh-js/core/utils/Utils";
-import SweApiMqttJsonParser from "osh-js/core/datasource/swe/parser/SweApiMqttJson.parser";
+import SweApiFetchStreamJson from "osh-js/core/datasource/swe/parser/SweApiFetchStreamJson.parser";
 
 const textAreaElement =  document.getElementById("data-container");
 
@@ -13,7 +13,7 @@ mqttProvider.connect();
 let count = 0;
 
 mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations','application/json',async function (message) {
-   const parser = new SweApiMqttJsonParser();
+   const parser = new SweApiFetchStreamJson();
    const data = await parser.parseData(message);
    if(count++ < 100) {
       textAreaElement.value += JSON.stringify(data.location) + "\n";
@@ -24,7 +24,7 @@ mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations
 });
 
 mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
-   const parser = new SweApiMqttJsonParser();
+   const parser = new SweApiFetchStreamJson();
    const data = await parser.parseData(message);
    if(count++ < 100) {
       textAreaElement.value += '(0) ' + JSON.stringify(data) + "\n";
@@ -34,7 +34,7 @@ mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observation
    }});
 
 mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
-   const parser = new SweApiMqttJsonParser();
+   const parser = new SweApiFetchStreamJson();
    const data = await parser.parseData(message);
    if(count++ < 100) {
       textAreaElement.value += '(1) ' + JSON.stringify(data) + "\n";
