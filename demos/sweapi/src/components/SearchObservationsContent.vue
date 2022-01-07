@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import ObservationFilter from "../../../../source/core/sensorwebapi/api/observation/ObservationFilter";
+import ObservationFilter from "../../../../source/core/sweapi/api/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import SensorWebApiFetchJsonParser from "../../../../source/core/datasource/swe/parser/SweApiFetchJson.parser";

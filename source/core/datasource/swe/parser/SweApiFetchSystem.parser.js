@@ -1,5 +1,5 @@
 import DataSourceParser from "../../parsers/DataSourceParser";
-import System from "../../../sensorwebapi/api/system/System";
+import System from "../../../sweapi/api/system/System";
 
 class SweApiFetchSystemParser extends DataSourceParser {
     constructor(networkProperties) {

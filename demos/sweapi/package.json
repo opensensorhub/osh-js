@@ -8,7 +8,12 @@
   },
   "dependencies": {
     "babel-plugin-prismjs": "^2.1.0",
+    "browserify-fs": "^1.0.0",
+    "buffer": "^6.0.3",
+    "mqtt": "^4.3.4",
+    "node-polyfill-webpack-plugin": "^1.1.4",
     "prismjs": "1.25.0",
+    "stream-browserify": "^3.0.0",
     "vue": "2.6.11",
     "vue-json-pretty": "^1.8.2",
     "vue-plugin-load-script": "1.2.0",

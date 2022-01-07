@@ -5,6 +5,7 @@ const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
+const webpack = require('webpack');
 const path = require('path');
 
 const config = {
@@ -25,7 +26,9 @@ const config = {
     fallback : {
       "path": require.resolve("path-browserify"),
       "crypto": false,
-      fs: false
+      fs: require.resolve('browserify-fs'),
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer")
     }
   },
   node: {
@@ -139,6 +142,12 @@ const config = {
     }),
     new DefinePlugin({
       BASE_URL: JSON.stringify('/')
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
     }),
   ],
 };

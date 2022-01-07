@@ -40,7 +40,7 @@
 <script>
 import SweApiFetchStreamJsonParser
   from "../../../../source/core/datasource/swe/parser/SweApiFetchStreamJson.parser";
-import ObservationFilter from "../../../../source/core/sensorwebapi/api/observation/ObservationFilter";
+import ObservationFilter from "../../../../source/core/sweapi/api/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 
@@ -86,8 +86,14 @@ export default {
       this.disconnect();
       if(value === 'ws') {
         this.datastream.setStreamProtocol(value, 'arraybuffer');
-        this.connect();
+      } else {
+        // mqtt
+        this.datastream.setStreamProtocol(value, 'arraybuffer', {
+          endpointUrl: 'ogct17.georobotix.io:8483'
+        });
       }
+
+      this.connect();
     },
   }
 }

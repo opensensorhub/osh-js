@@ -237,7 +237,7 @@ module.exports = (env) => {
                         title: 'Sensor Web API',
                         collapsable: true,
                         children: [
-                            '/guide/sensorwebapi/general.md'
+                            '/guide/sweapi/general.md'
                         ]
                     },
                     {

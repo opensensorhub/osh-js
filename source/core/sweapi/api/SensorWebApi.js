@@ -17,6 +17,7 @@
 import HttpConnector from "../../protocol/HttpConnector";
 import WebSocketConnector from "../../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../../utils/Utils";
+import MqttConnector from "../../protocol/MqttConnector";
 // import MqttConnector from "../../protocol/MqttConnector";
 
 class SensorWebApi {
@@ -61,7 +62,7 @@ class SensorWebApi {
                 method: 'GET'
             });
         } else if(networkProperties.protocol === 'mqtt') {
-            // return new MqttConnector(url);
+            return new MqttConnector(url);
         } else if(networkProperties.protocol === 'ws') {
             return new WebSocketConnector(url);
         }
@@ -86,19 +87,20 @@ class SensorWebApi {
                 method: 'GET'
             });
         } else if(networkProperties.stream === 'mqtt') {
-            // return new MqttConnector(url);
+            return new MqttConnector(url);
         } else if(networkProperties.stream === 'ws') {
             return new WebSocketConnector(url);
         }
     }
 
-    setStreamProtocol(protocol, responseType = 'arraybuffer') {
+    setStreamProtocol(protocol, responseType = 'arraybuffer', extraNetworkProperties = {}) {
         if(isDefined(this._network.stream.connector)) {
             this._network.stream.connector.disconnect();
         }
         this._network.stream = {
             connector: this.createStreamConnector({
                 ...this.networkProperties,
+                ...extraNetworkProperties,
                 stream: protocol,
                 responseType: responseType
             })
