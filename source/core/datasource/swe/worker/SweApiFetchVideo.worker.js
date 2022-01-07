@@ -1,7 +1,7 @@
-import SensorWebApiFetchHandler from "../handler/SweApiFetchHandler";
-import SensorWebApiFetchVideo from "../parser/SweApiFetchVideo.parser";
+import SweApiFetchHandler from "../handler/SweApiFetchHandler";
+import SweApiFetchVideo from "../parser/SweApiFetchVideo.parser";
 
-let  dataSourceHandler = new SensorWebApiFetchHandler(new SensorWebApiFetchVideo());
+let  dataSourceHandler = new SweApiFetchHandler(new SweApiFetchVideo());
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);

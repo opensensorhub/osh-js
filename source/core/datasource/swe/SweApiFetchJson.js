@@ -39,11 +39,7 @@ class SweApiFetchJson extends SweApiFetch {
     }
 
     async createWorker(properties) {
-        if(properties.protocol === 'mqtt') {
-           return import('./worker/SweApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
-        } else {
-            return new SensorWebApiFetchWorkerJson();
-        }
+        return new SensorWebApiFetchWorkerJson();
     }
 }
 

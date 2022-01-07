@@ -1,6 +1,5 @@
-import SweApiMqttJsonWorker from "./worker/SweApiMqttJson.worker.js";
-import DataSource from "../DataSource";
-import SosGetResultVideoWithRollWorker from "../sos/worker/SosGetResultVideoWithRoll.worker";
+import SweApiMqttJson from "./worker/SweApiMqttJson.worker.js";
+import SweApiFetch from "./SweApiFetch";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -18,7 +17,7 @@ import SosGetResultVideoWithRollWorker from "../sos/worker/SosGetResultVideoWith
 
  ******************************* END LICENSE BLOCK ***************************/
 
-class SweApiMqttJson extends DataSource {
+class SweApiMqttFetchJson extends SweApiFetch {
 
     /**
      * @param {String} name - the datasource name
@@ -36,7 +35,7 @@ class SweApiMqttJson extends DataSource {
     }
 
     async createWorker(properties) {
-        return new SweApiMqttJsonWorker();
+        return new SweApiMqttJson();
     }
 }
-export default SweApiMqttJson;
+export default SweApiMqttFetchJson;

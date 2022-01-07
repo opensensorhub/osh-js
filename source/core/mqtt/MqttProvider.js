@@ -17,7 +17,6 @@
 import mqtt from 'mqtt';
 import {isDefined} from "../utils/Utils";
 import ObservationFilter from "../sensorwebapi/api/observation/ObservationFilter";
-import SweApiMqttJsonParser from "../datasource/swe/parser/SweApiMqttJson.parser";
 
 let mqttCallbacks = {};
 
@@ -47,7 +46,10 @@ class MqttProvider {
 
         let options = {
             reconnectPeriod: 30,
-            connectTimeout: 30 * 1000
+            connectTimeout: 30 * 1000,
+            wsOptions: {
+                binaryType: 'arraybuffer'
+            }
         };
 
         // merge generic options
@@ -62,7 +64,6 @@ class MqttProvider {
         this.endpoint = properties.endpoint+'/mqtt';
         this.clientId = properties.clientId;
         this.client = null;
-        this.parser = new SweApiMqttJsonParser();
     }
 
 
@@ -134,6 +135,7 @@ class MqttProvider {
     connect() {
         if(!isDefined(this.client)) {
             // connects to the broker specified by the given url and options and returns a Client.
+            console.log(this.options)
             this.client = mqtt.connect(this.endpoint, {...this.options});
             const that = this;
             this.client.on('connect', function (e) {
@@ -148,7 +150,7 @@ class MqttProvider {
             // callback for the corresponding topic
             for (let callbackFn of mqttCallbacks[topic]) {
                 // callback to all subscription registered
-                callbackFn(message);
+                callbackFn(new Uint8Array(message).buffer);
             }
         }
     }
