@@ -1,5 +1,6 @@
 import DataSourceParser from "./DataSourceParser.js";
 import TimeSeriesParser from "./TimeSeriesParser.parser";
+import {MAGIC_END_PACKET} from "../../Constants";
 
 class AudioParserRaw extends TimeSeriesParser {
 
@@ -31,6 +32,10 @@ class AudioParserRaw extends TimeSeriesParser {
         // let samples = new Float32Array(data.slice(16, endIndex));
         let samples = new Float32Array(data.slice(16, data.byteLength));
 
+        // magic packet
+        if(sr === 0) {
+            return MAGIC_END_PACKET;
+        }
         // console.log("End Index: " + endIndex)
         // for (let i = 0; i < 256; i++)
         //     if (i < 5 || i > 254) console.log("Sample" + i + ": " + samples[i]); // + "," + samples[1] + "," + samples[2]);

@@ -4,6 +4,7 @@ import {isDefined} from "../../utils/Utils.js";
 import TopicConnector from "../../protocol/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
+import {MAGIC_END_PACKET} from "../../Constants";
 
 class DataSourceHandler {
 
@@ -103,6 +104,10 @@ class DataSourceHandler {
     async onMessage(event) {
         const data   = await Promise.resolve(this.parser.parseData(event));
 
+        if(data === MAGIC_END_PACKET) {
+            this.flush();
+            return;
+        }
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {

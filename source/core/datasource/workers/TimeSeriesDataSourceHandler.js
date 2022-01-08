@@ -1,6 +1,7 @@
 import {isDefined} from "../../utils/Utils.js";
 import DataSourceHandler from "./DataSourceHandler";
 import {EventType} from "../../event/EventType";
+import {MAGIC_END_PACKET} from "../../Constants";
 
 class TimeSeriesDataSourceHandler extends DataSourceHandler{
 
@@ -62,6 +63,10 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         const timeStamp = await Promise.resolve(this.parser.parseTimeStamp(event) + this.timeShift);
         const data      = await Promise.resolve(this.parser.parseData(event));
 
+        if(data === MAGIC_END_PACKET) {
+            this.flush();
+            return;
+        }
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
