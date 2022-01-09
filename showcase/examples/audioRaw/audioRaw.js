@@ -27,7 +27,7 @@ let audioView = new AudioView({
     css: 'audio-css',
     container: 'audio-chart-container',
     dataSource: audioDataSource,
-    gain: 10,
+    gain: 2,
     codec: 'raw',
     frequency: 4000 , // 8000Hz
     playSound: true

@@ -64,6 +64,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         const data      = await Promise.resolve(this.parser.parseData(event));
 
         if(data === MAGIC_END_PACKET) {
+            console.warn('Got magic end packet');
             this.flush();
             return;
         }
