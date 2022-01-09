@@ -7,6 +7,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const webpack = require('webpack');
+const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+
 // Now, using the cesiumConfig in your real configuration
 const config = {
   entry: {
@@ -28,9 +30,7 @@ const config = {
     fallback : {
       "path": require.resolve("path-browserify"),
       "crypto": false,
-      "stream": require.resolve("stream-browserify"),
-      "buffer": require.resolve("buffer"),
-      process: 'process/browser',
+      fs: false
     }
   },
   module: {
@@ -149,10 +149,6 @@ const config = {
       // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
     }),
-    new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-    }),
     new   CopywebpackPlugin({
       patterns: [
         { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
@@ -162,7 +158,8 @@ const config = {
         { from: 'models', to: 'models'},
         { from: 'public', to: 'public'}
       ]
-    })
+    }),
+    new nodePolyfillWebpackPlugin(), // fix Webpack Buffer not defined
   ],
 };
 
