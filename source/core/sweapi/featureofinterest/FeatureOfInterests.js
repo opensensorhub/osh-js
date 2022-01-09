@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";

@@ -1,5 +1,5 @@
 // create data source for Android phone GPS
-import SweApiMqttFetchJson from 'osh-js/core/datasource/sweapi/SweApiMqttFetchJson.js';
+import SweApiFetchJson from 'osh-js/core/datasource/sweapi/SweApiFetchJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';
@@ -8,14 +8,14 @@ import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
 // #region snippet_datasource_mqttswejson
 import mqtt from 'mqtt';
 
-let gpsDataSource = new SweApiMqttFetchJson("android-GPS", {
+let gpsDataSource = new SweApiFetchJson("android-GPS", {
     protocol: 'mqtt', // or mqtts
     endpointUrl: 'ogct17.georobotix.io:8083',
     collection: '/datastreams/gal7w6j6v7n9/observations',
     tls: false,
 });
 
-const isaDataSource = new SweApiMqttFetchJson("ISA-bio-sensor", {
+const isaDataSource = new SweApiFetchJson("ISA-bio-sensor", {
     protocol: 'mqtt', // or mqtts
     endpointUrl: 'ogct17.georobotix.io:8083',
     collection: '/datastreams/1lppw59ger1py/observations',

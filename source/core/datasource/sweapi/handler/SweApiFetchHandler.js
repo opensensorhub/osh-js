@@ -10,8 +10,6 @@ import FeatureOfInterestFilter from "../../../sweapi/featureofinterest/FeatureOf
 import DataStreamFilter from "../../../sweapi/datastream/DataStreamFilter";
 import DataStream from "../../../sweapi/datastream/DataStream";
 import ObservationFilter from "../../../sweapi/observation/ObservationFilter";
-import SweApiFetchStreamJsonParser from "../parser/SweApiFetchStreamJson.parser";
-import SensorWebApiFetchJsonParser from "../parser/SweApiFetchJson.parser";
 
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     constructor(parser) {
@@ -33,17 +31,9 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         if (this.properties.collection === '/systems') {
             filter = this.createSystemFilter(properties);
             collection = new Systems(networkProperties).searchSystems(filter, properties.batchSize);
-            stream = false;
-            if(!isDefined(this.parser)) {
-                this.parser = new SensorWebApiFetchJsonParser();
-            }
         } else if (this.properties.collection === '/fois') {
             filter = this.createFeatureOfInterestFilter(properties);
             collection = new FeatureOfInterests(networkProperties).searchFeaturesOfInterest(filter, properties.batchSize);
-            stream = false;
-            if(!isDefined(this.parser)) {
-                this.parser = new SensorWebApiFetchJsonParser();
-            }
         } else if (this.properties.collection.startsWith('/datastreams')) {
             filter = this.createDataStreamFilter(properties);
 
@@ -61,21 +51,11 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
                 } else {
                     collection = apiObject.searchObservations(filter, properties.batchSize);
                 }
-                if(!isDefined(this.parser)) {
-                    this.parser = new SweApiFetchStreamJsonParser();
-                }
             } else {
                 collection = new DataStreams(networkProperties).searchDataStreams(filter, properties.batchSize);
-                if(!isDefined(this.parser)) {
-                    this.parser = new SensorWebApiFetchJsonParser();
-                }
             }
         } else if (this.properties.collection === '/observations') {
             collection = new Observations(networkProperties).searchObservations();
-            stream = false;
-            if(!isDefined(this.parser)) {
-                this.parser = new SensorWebApiFetchJsonParser();
-            }
         }
 
         if(stream) {

@@ -79,7 +79,7 @@ import SearchObservationsContent from "./components/SearchObservationsContent.vu
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchJsonParser from "../../../source/core/datasource/sweapi/parser/SweApiFetchJson.parser";
+import SweApiFetchJsonParser from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
 
 export default {
   components: {

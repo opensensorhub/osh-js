@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import SweApiFetchStreamJsonParser
-  from "../../../../source/core/datasource/sweapi/parser/SweApiFetchStreamJson.parser";
+import SweApiFetchJsonParser
+  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
 import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     connect() {
-      const parser = new SweApiFetchStreamJsonParser();
+      const parser = new SweApiFetchJsonParser();
       this.datastream.streamObservations(new ObservationFilter(), function (obs) {
         this.content = parser.parseData(obs);
       }.bind(this));

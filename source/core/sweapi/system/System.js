@@ -17,11 +17,11 @@
 import SystemFilter from "./SystemFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SweApiFetchSystemParser from "../../datasource/sweapi/parser/SweApiFetchSystem.parser";
+import SweApiFetchSystemParser from "../../datasource/sweapi/parser/json/SweApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/SweApiFetchFeatureOfInterest.parser";
+import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/json/SweApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
 
 class System extends SensorWebApi {

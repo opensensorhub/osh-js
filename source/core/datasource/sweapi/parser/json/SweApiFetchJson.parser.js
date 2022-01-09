@@ -1,14 +1,14 @@
-import TimeSeriesParser from "../../parsers/TimeSeriesParser.parser";
+import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
 
-class SweApiFetchStreamJsonParser extends TimeSeriesParser {
+class SensorWebApiFetchJson extends TimeSeriesParser {
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
      * @param {String} data - the data to parse
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-        return new Date(rec.phenomenonTime).getTime();
+        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
+        return new Date(JSON.parse(rec)['phenomenonTime']).getTime();
     }
 
     /**
@@ -26,12 +26,21 @@ class SweApiFetchStreamJsonParser extends TimeSeriesParser {
      * }
      */
     parseData(data) {
+        let rec;
         if(data instanceof ArrayBuffer) {
-            return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))).result;
-            //;
+            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
         } else {
-            return data.result;
+            rec = data;
         }
+
+        let result = {};
+
+        for (let key in rec) {
+            if (key !== 'time') {
+                result[key] = rec[key];
+            }
+        }
+        return result;
     }
 
     /**
@@ -44,4 +53,4 @@ class SweApiFetchStreamJsonParser extends TimeSeriesParser {
     }
 }
 
-export default SweApiFetchStreamJsonParser;
+export default SensorWebApiFetchJson;

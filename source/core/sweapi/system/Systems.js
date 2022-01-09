@@ -16,7 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SweApiFetchSystemParser from "../../datasource/sweapi/parser/SweApiFetchSystem.parser";
+import SweApiFetchSystemParser from "../../datasource/sweapi/parser/json/SweApiFetchSystem.parser";
 import SystemFilter from "./SystemFilter";
 import API from "../routes.conf";
 

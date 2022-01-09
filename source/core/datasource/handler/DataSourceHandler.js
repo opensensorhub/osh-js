@@ -1,10 +1,10 @@
 import WebSocketConnector from "../../protocol/WebSocketConnector.js";
-import Ajax from "../../protocol/Ajax.js";
 import {isDefined, randomUUID} from "../../utils/Utils.js";
 import TopicConnector from "../../protocol/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
 import HttpConnector from "../../protocol/HttpConnector";
+import MqttConnector from "../../protocol/MqttConnector";
 
 class DataSourceHandler {
 
@@ -73,6 +73,10 @@ class DataSourceHandler {
                 });
             } else if (properties.protocol === 'topic') {
                 this.connector = new TopicConnector(url);
+            } else if(properties.protocol === 'mqtt') {
+                const tls = (properties.tls) ? 's' : '';
+                const url = properties.protocol + tls + '://' + properties.endpointUrl;
+                this.connector =  new MqttConnector(url, properties);
             }
         } else {
             this.connector = connector;

@@ -17,7 +17,7 @@
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import DataStreamFilter from "./DataStreamFilter";
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
 import API from "../routes.conf";
 
 class DataStreams extends SensorWebApi {

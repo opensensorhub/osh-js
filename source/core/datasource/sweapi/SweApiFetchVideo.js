@@ -14,7 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SensorWebApiFetchVideoWorker from "./worker/SweApiFetchVideo.worker";
+import SweApiFetchBinaryVideoWorker from "./worker/SweApiFetchBinaryVideo.worker";
+
 import SweApiFetch from "./SweApiFetch";
 
 class SweApiFetchVideo extends SweApiFetch {
@@ -37,18 +38,22 @@ class SweApiFetchVideo extends SweApiFetch {
      When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
      * @param {string} [properties.resultTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - validTime - ISO 8601 time range to filter resources on their validity time.
      When this parameter is omitted, the implicit value is "now", except for "history" collections where the absence of this parameter means no filtering is applied.
-     * @param {String[]} [properties.featureOfInterest=undefined] Comma separated list of feature of interest IDs to get observations for.
      * @param {String[]} [properties.observedProperty=undefined] Comma separated list of observed property URIs to get observations for.
      */
     constructor(name, properties) {
         super(name, {
-            ...properties,
-            responseFormat: 'application/sweapi+binary'
+            responseFormat: 'application/swe+binary',
+            ...properties
         });
     }
 
     async createWorker(properties) {
-        return new SensorWebApiFetchVideoWorker();
+        // TODO: create worker/parser depending on responseFormat
+        if(properties.responseFormat === 'application/swe+binary') {
+            return new SweApiFetchBinaryVideoWorker();
+        } else {
+            throw Error('Does support only application/swe+binary');
+        }
     }
 }
 

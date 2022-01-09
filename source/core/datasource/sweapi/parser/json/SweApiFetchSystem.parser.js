@@ -1,5 +1,5 @@
-import DataSourceParser from "../../parsers/DataSourceParser";
-import System from "../../../sweapi/system/System";
+import DataSourceParser from "../../../parsers/DataSourceParser";
+import System from "../../../../sweapi/system/System";
 
 class SweApiFetchSystemParser extends DataSourceParser {
     constructor(networkProperties) {

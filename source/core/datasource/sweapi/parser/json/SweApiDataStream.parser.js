@@ -1,5 +1,5 @@
-import DataSourceParser from "../../parsers/DataSourceParser";
-import DataStream from "../../../sweapi/datastream/DataStream";
+import DataSourceParser from "../../../parsers/DataSourceParser";
+import DataStream from "../../../../sweapi/datastream/DataStream";
 
 class SweApiDataStreamParser extends DataSourceParser {
     constructor(networkProperties) {
