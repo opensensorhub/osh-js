@@ -14,12 +14,13 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SweApiDataStreamParser from "../../../datasource/swe/parser/SweApiDataStream.parser";
-import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
+import DataStreamFilter from "./DataStreamFilter";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/SweApiDataStream.parser";
+import API from "../routes.conf";
 
-class FeaturesOfInterest extends SensorWebApi {
+class DataStreams extends SensorWebApi {
     /**
      *
      */
@@ -30,20 +31,22 @@ class FeaturesOfInterest extends SensorWebApi {
 
     /**
      *
-     * @returns {Collection<FeaturesOfInterest>} A collection of FeatureOfInterest
+     * @returns {Collection<DataStream>} A collection of DataStream
      */
-    async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
-        return new Collection('/featuresOfInterest', featureOfInterestFilter, pageSize,this.parser, this._network.info.connector);
+    async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
+        return new Collection(
+            API.datastreams.search,dataStreamFilter,
+            pageSize, this.parser, this._network.info.connector
+        );
     }
 
-    async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
+    async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
         const response = await this._network.info.connector.doRequest(
-            `/featuresOfInterest/${fId}`,
-            featureOfInterestFilter.toQueryString(['select','format'],
-            featureOfInterestFilter.props.format
-        ));
-
+            API.datastreams.by_id.replace('{id}',datastreamId),
+            dataStreamFilter.toQueryString(['select','format']),
+            dataStreamFilter.props.format
+        );
         return this.parser.parseData(response);
     }
 }
-export default FeaturesOfInterest;
+export default DataStreams;

@@ -43,16 +43,12 @@ class SweApiFetchVideo extends SweApiFetch {
     constructor(name, properties) {
         super(name, {
             ...properties,
-            responseFormat: 'application/swe+binary'
+            responseFormat: 'application/sweapi+binary'
         });
     }
 
     async createWorker(properties) {
-        if(properties.protocol === 'mqtt') {
-           // return import('./workers/SweApiFetchMqtt.worker.js').then(SensorWebApiFetchMqtt => SensorWebApiFetchMqtt.default());
-        } else {
-            return new SensorWebApiFetchVideoWorker();
-        }
+        return new SensorWebApiFetchVideoWorker();
     }
 }
 

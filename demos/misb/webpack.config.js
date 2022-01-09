@@ -6,40 +6,16 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
-const cesiumConfig = {
-  // Tell Weback to output our bundle to ./dist/bundle.js
-  output: {
-    filename: 'bundle.misb.js',
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: ''
-  },
-  amd: {
-    // Enable webpack-friendly use of require in Cesium
-    toUrlUndefined: true
-  },
-  plugins: [
-    // Copy Cesium Assets, Widgets, and Workers to a static directory
-    new   CopywebpackPlugin({
-      patterns: [
-        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
-        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
-        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
-        { from: 'images', to: 'images'},
-        { from: 'models', to: 'models'},
-        { from: 'public', to: 'public'}
-      ]
-    })
-  ],
-};
+const webpack = require('webpack');
 // Now, using the cesiumConfig in your real configuration
 const config = {
-  ...cesiumConfig,
   entry: {
     app: './src/main.js'
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
+    sourcePrefix: ''
   },
   resolve: {
     modules: [
@@ -52,8 +28,13 @@ const config = {
     fallback : {
       "path": require.resolve("path-browserify"),
       "crypto": false,
-      fs: false
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer"),
+      process: 'process/browser',
     }
+  },
+  module: {
+      unknownContextCritical : false,
   },
   node: {
   },
@@ -92,7 +73,7 @@ const config = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.s(c|a)ss$/,
+        test: /\.sass$/,
         use: [
           'vue-style-loader',
           'css-loader',
@@ -100,15 +81,29 @@ const config = {
             loader: 'sass-loader',
             // Requires sass-loader@^7.0.0
             options: {
-              implementation: require('sass'),
-              indentedSyntax: true // optional
+              // This is the path to your variables
+              data: "@import '@/styles/variables.scss'",
+              prependData: "@import '@/styles/variables.scss'",
+              additionalData: "@import '@/styles/variables.scss'"
             },
-            // Requires >= sass-loader@^8.0.0
+          },
+        ],
+      },
+      // SCSS has different line endings than SASS
+      // and needs a semicolon after the import.
+      {
+        test: /\.scss$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            // Requires sass-loader@^7.0.0
             options: {
-              implementation: require('sass'),
-              sassOptions: {
-                indentedSyntax: true // optional
-              },
+              // This is the path to your variables
+              data: "@import '@/styles/variables.scss';",
+              prependData: "@import '@/styles/variables.scss';",
+              additionalData: "@import '@/styles/variables.scss';"
             },
           },
         ],
@@ -144,7 +139,6 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    ...cesiumConfig.plugins,
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
@@ -154,6 +148,20 @@ const config = {
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new   CopywebpackPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
+        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
+        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
+        { from: 'images', to: 'images'},
+        { from: 'models', to: 'models'},
+        { from: 'public', to: 'public'}
+      ]
     })
   ],
 };

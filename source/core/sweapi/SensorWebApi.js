@@ -14,11 +14,10 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import HttpConnector from "../../protocol/HttpConnector";
-import WebSocketConnector from "../../protocol/WebSocketConnector";
-import {assertDefined, isDefined} from "../../utils/Utils";
-import MqttConnector from "../../protocol/MqttConnector";
-// import MqttConnector from "../../protocol/MqttConnector";
+import HttpConnector from "../protocol/HttpConnector";
+import WebSocketConnector from "../protocol/WebSocketConnector";
+import {assertDefined, isDefined} from "../utils/Utils";
+import MqttConnector from "../protocol/MqttConnector";
 
 class SensorWebApi {
 
@@ -61,10 +60,6 @@ class SensorWebApi {
                 responseType: networkProperties.responseFormat || 'application/json',
                 method: 'GET'
             });
-        } else if(networkProperties.protocol === 'mqtt') {
-            return new MqttConnector(url);
-        } else if(networkProperties.protocol === 'ws') {
-            return new WebSocketConnector(url);
         }
     }
 

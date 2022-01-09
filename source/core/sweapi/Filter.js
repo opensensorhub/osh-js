@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
+import {isDefined} from "../utils/Utils";
 
 class SensorWebApiFilter {
     constructor(props) {

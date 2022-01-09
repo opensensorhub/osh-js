@@ -1,20 +1,18 @@
 import DataSourceParser from "../../parsers/DataSourceParser";
-import FeatureOfInterest from "../../../sweapi/api/featureofinterest/FeatureOfInterest";
+import System from "../../../sweapi/system/System";
 
-class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
+class SweApiFetchSystemParser extends DataSourceParser {
     constructor(networkProperties) {
         super();
         this.networkProperties = networkProperties;
     }
 
     parseData(data) {
-        return new FeatureOfInterest(
+        return new System(
             {
                 id: data.id,
                 type: data.type,
-                geometry: data.geometry || undefined,
-                bbox: data.bbox || undefined,
-                properties: data.properties
+                ...data.properties,
             },
             this.networkProperties
         );
@@ -29,4 +27,4 @@ class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
     }
 }
 
-export default SweApiFetchFeatureOfInterestParser;
+export default SweApiFetchSystemParser;

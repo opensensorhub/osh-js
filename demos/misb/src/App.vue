@@ -49,8 +49,8 @@ import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
-import SweApiFetchJson from "osh-js/core/datasource/SweApiFetchJson";
-import SweApiFetchVideo from "osh-js/core/datasource/SweApiFetchVideo";
+import SweApiFetchJson from "osh-js/core/datasource/sweapi/SweApiFetchJson";
+import SweApiFetchVideo from "osh-js/core/datasource/sweapi/SweApiFetchVideo";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -82,7 +82,7 @@ export default {
     const timeOut = 3000;
     const bufferingTime = 800;
 
-    const droneVideoDataSource = new SensorWebApiFetchVideo('MISB Drone - Video',{
+    const droneVideoDataSource = new SweApiFetchVideo('MISB Drone - Video',{
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/uxzna8pldpiv/observations',
@@ -96,7 +96,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneLocationDataSource = new SensorWebApiFetchJson('MISB UAS - Platform Location', {
+    const droneLocationDataSource = new SweApiFetchJson('MISB UAS - Platform Location', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/gal7w6j6v7n9/observations',
@@ -110,7 +110,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneOrientationDataSource = new SensorWebApiFetchJson('MISB UAS - Platform Attitude', {
+    const droneOrientationDataSource = new SweApiFetchJson('MISB UAS - Platform Attitude', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/ei5nsp8guy5y/observations',
@@ -124,7 +124,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneCameraOrientationDataSource = new SensorWebApiFetchJson('MISB UAS - Gimbal Attitude', {
+    const droneCameraOrientationDataSource = new SweApiFetchJson('MISB UAS - Gimbal Attitude', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/7rsjo1e6pq45/observations',
@@ -138,7 +138,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneHFovDataSource = new SensorWebApiFetchJson('MISB UAS - Horizontal FoV', {
+    const droneHFovDataSource = new SweApiFetchJson('MISB UAS - Horizontal FoV', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/1fle3d5b29shh/observations',
@@ -152,7 +152,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const droneVFovDataSource = new SensorWebApiFetchJson('MISB UAS - Vertical FoV', {
+    const droneVFovDataSource = new SweApiFetchJson('MISB UAS - Vertical FoV', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/1fle3d5b29shh/observations',
@@ -166,7 +166,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const geoRefImageFrameDataSource = new SensorWebApiFetchJson('MISB UAS - GeoReferenced Image Frame', {
+    const geoRefImageFrameDataSource = new SweApiFetchJson('MISB UAS - GeoReferenced Image Frame', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/1b6j89nistu9h/observations',
@@ -180,7 +180,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    const targetLocationDataSource = new SensorWebApiFetchJson('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
+    const targetLocationDataSource = new SweApiFetchJson('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       protocol: 'ws',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/tmi5mitvl8c7/observations',

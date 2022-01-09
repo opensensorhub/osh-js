@@ -66,8 +66,8 @@ import Prism from "prismjs";
 // import "prismjs/themes/prism-dark.css"; // you can change
 
 // @ is an alias to /src
-import Systems from "../../../source/core/sweapi/api/system/Systems";
-import SystemFilter from "../../../source/core/sweapi/api/system/SystemFilter";
+import Systems from "../../../source/core/sweapi/system/Systems";
+import SystemFilter from "../../../source/core/sweapi/system/SystemFilter";
 
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
@@ -77,9 +77,9 @@ import Details from "./components/Details.vue";
 import StreamObservationsContent from "./components/StreamObservationsContent.vue";
 import SearchObservationsContent from "./components/SearchObservationsContent.vue";
 
-import DataStreamFilter from "../../../source/core/sweapi/api/datastream/DataStreamFilter";
-import FeatureOfInterestFilter from "../../../source/core/sweapi/api/featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchJsonParser from "../../../source/core/datasource/swe/parser/SweApiFetchJson.parser";
+import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
+import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
+import SweApiFetchJsonParser from "../../../source/core/datasource/sweapi/parser/SweApiFetchJson.parser";
 
 export default {
   components: {

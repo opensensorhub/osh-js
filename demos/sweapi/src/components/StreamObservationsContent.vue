@@ -39,8 +39,8 @@
 
 <script>
 import SweApiFetchStreamJsonParser
-  from "../../../../source/core/datasource/swe/parser/SweApiFetchStreamJson.parser";
-import ObservationFilter from "../../../../source/core/sweapi/api/observation/ObservationFilter";
+  from "../../../../source/core/datasource/sweapi/parser/SweApiFetchStreamJson.parser";
+import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 

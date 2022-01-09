@@ -18,11 +18,11 @@ import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import Collection from "../Collection";
-import SweApiDataStreamParser from "../../../datasource/swe/parser/SweApiDataStream.parser";
-import SensorWebApiFetchJson from "../../../datasource/swe/parser/SweApiFetchJson.parser";
-import HttpConnector from "../../../protocol/HttpConnector";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/SweApiDataStream.parser";
+import SensorWebApiFetchJson from "../../datasource/sweapi/parser/SweApiFetchJson.parser";
+import HttpConnector from "../../protocol/HttpConnector";
 import SweApiFetchStreamJsonParser
-    from "../../../datasource/swe/parser/SweApiFetchStreamJson.parser";
+    from "../../datasource/sweapi/parser/SweApiFetchStreamJson.parser";
 
 class DataStream extends SensorWebApi {
     /**

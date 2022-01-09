@@ -26,7 +26,6 @@ const config = {
     fallback : {
       "path": require.resolve("path-browserify"),
       "crypto": false,
-      fs: require.resolve('browserify-fs'),
       "stream": require.resolve("stream-browserify"),
       "buffer": require.resolve("buffer")
     }
