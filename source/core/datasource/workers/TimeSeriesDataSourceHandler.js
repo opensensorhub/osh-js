@@ -63,11 +63,12 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         const timeStamp = await Promise.resolve(this.parser.parseTimeStamp(event) + this.timeShift);
         const data      = await Promise.resolve(this.parser.parseData(event));
 
-        if(data === MAGIC_END_PACKET) {
-            console.warn('Got magic end packet');
-            this.flush();
-            return;
-        }
+        // if(data === MAGIC_END_PACKET) {
+        //     console.warn('Got magic end packet');
+        //     this.flush();
+        //     return;
+        // }
+
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {

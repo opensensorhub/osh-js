@@ -19,7 +19,7 @@ let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     replaySpeed: 1.0,
     bufferingTime: 1000,
     timeOut:800,
-    batchSize: 100
+    // batchSize: 10
 });
 
 let audioView = new AudioView({
@@ -27,7 +27,7 @@ let audioView = new AudioView({
     css: 'audio-css',
     container: 'audio-chart-container',
     dataSource: audioDataSource,
-    gain: 2,
+    gain: 1,
     codec: 'raw',
     frequency: 4000 , // 8000Hz
     playSound: true
@@ -113,14 +113,14 @@ audioView.addVisualizer(audioChartFrequencyVisualizer);
 audioView.addVisualizer(audioChartTimeVisualizer);
 audioView.addVisualizer(audioSpectrogramVisualizer);
 
-const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 1.0,
-    timerResolution: 5,
-    dataSources: [audioDataSource]
-});
+// const dataSynchronizer = new DataSynchronizer({
+//     replaySpeed: 1.0,
+//     timerResolution: 5,
+//     dataSources: [audioDataSource]
+// });
 
 document.getElementById("listen").onclick = () => {
-    dataSynchronizer.connect();
+    audioDataSource.connect();
 };
 
 const inputChartElt = document.getElementById("input-range-chart");

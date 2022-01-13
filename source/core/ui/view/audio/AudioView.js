@@ -140,7 +140,6 @@ class AudioView extends View {
         source.playbackRate.value = replaySpeed;
 
         let node = source;
-
         node = node.connect(this.gainNode);
 
         // connect to visualizers using modules
