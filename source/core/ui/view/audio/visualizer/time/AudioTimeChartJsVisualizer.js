@@ -137,6 +137,9 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
     }
 
     draw(decodedSample) {
+        if(!super.checkSubsampling(decodedSample)) {
+            return;
+        }
         if (this.resetting) {
             return;
         }
@@ -159,9 +162,11 @@ class AudioTimeChartJsVisualizer extends AudioChartVisualizer {
             'x': time,
             'y': [minValue, maxValue]
         });
-
         //
-        this.chart.update();
+    }
+
+    render() {
+        super.update();
     }
     onended(decodedSample) {
         if (this.resetting) {

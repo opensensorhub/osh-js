@@ -1,4 +1,5 @@
 import AudioVisualizer from "./AudioVisualizer";
+import {isDefined} from "../../../../utils/Utils";
 
 /**
  * This abstract class is in charge of visualizing Audio based on a canvas and using a decoded AudioBuffer.
@@ -15,6 +16,9 @@ class AudioCanvasVisualizer extends AudioVisualizer {
     constructor(properties) {
         super(properties);
         this.initCanvas(properties);
+        this.subSamplingFrequency = 4000;
+        this.sampleNumber = 0;
+        this.animate();
     }
 
     // abstract
@@ -36,6 +40,47 @@ class AudioCanvasVisualizer extends AudioVisualizer {
         domNode.appendChild(this.canvas);
         this.canvasCtx = this.canvas.getContext("2d");
     }
+
+    checkSubsampling(decodedSample) {
+        if(isDefined(this.lastSubSampingClockTime)) {
+            const endClockTime = performance.now();
+            const deltaClockTime = endClockTime - this.lastSubSampingClockTime;
+            if(deltaClockTime < this.frequency) {
+                console.warn('skipping audioBuffer');
+                return false;
+            }
+        } else {
+            this.frequency = 1000 / (this.subSamplingFrequency / decodedSample.buffer.length);
+        }
+        this.lastSubSampingClockTime = performance.now();
+        return true;
+    }
+
+    checkUpdate() {
+        if(!isDefined(this.lastClockTime)) {
+            this.lastClockTime = performance.now();
+            return true;
+        }
+        const endClockTime = performance.now();
+        const deltaClockTime = endClockTime - this.lastClockTime;
+
+        if(deltaClockTime > 1000/15) {
+            this.lastClockTime = performance.now();
+            return true;
+        }
+        return false;
+    }
+
+    animate() {
+        setInterval(() => {
+            if (this.sampleNumber === 0) {
+                return;
+            }
+            this.render();
+        },1000/15); // 15Hz
+    }
+
+    render() {}
 }
 
 export default AudioCanvasVisualizer;

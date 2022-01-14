@@ -164,19 +164,6 @@ class AudioView extends View {
         }
         this.lastTimestamp = timestamp;
 
-        if(isDefined(this.lastClockTime)) {
-            const endClockTime = performance.now();
-            const deltaClockTime = endClockTime - this.lastClockTime;
-            if(deltaClockTime < this.frequency) {
-                console.warn('skipping audioBuffer');
-                return;
-            }
-        } else {
-            this.frequency = 1000 / (this.properties.frequency / audioBuffer.length);
-        }
-
-        this.lastClockTime = performance.now();
-
         const decoded = {
             buffer: audioBuffer,
             // timestamp: this.startTime + this.deltaInc * 1000,
