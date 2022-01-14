@@ -77,7 +77,7 @@ class AudioCanvasVisualizer extends AudioVisualizer {
                 return;
             }
             this.render();
-        },1000/15); // 15Hz
+        },1000/10); // 15Hz
     }
 
     render() {}
