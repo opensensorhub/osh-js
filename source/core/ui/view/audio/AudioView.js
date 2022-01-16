@@ -247,6 +247,7 @@ class AudioView extends View {
             if (isDefined(this.gainNode)) {
                 this.gainNode.disconnect();
             }
+            this.lastTimestamp = undefined;
             this.audioCtx.close();
             this.isInitContext = false;
         }
