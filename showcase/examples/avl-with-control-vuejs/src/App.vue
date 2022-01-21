@@ -21,10 +21,6 @@
 </template>
 <script>
 
-Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
-    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
-window.CESIUM_BASE_URL = './';
-
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import SweJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
@@ -37,9 +33,13 @@ import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
 import {EventType} from 'osh-js/core/event/EventType';
 
 import {
-  Cartographic, Math as MathCesium
+  Cartographic, Math as MathCesium, Ion
 } from "cesium";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
+
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
+window.CESIUM_BASE_URL = './';
 
 export default {
   components: {
