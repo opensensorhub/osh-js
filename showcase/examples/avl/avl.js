@@ -9,11 +9,13 @@ import MapboxView from 'osh-js/core/ui/view/map/MapboxView';
 import {EventType} from 'osh-js/core/event/EventType';
 
 import {
-    Cartographic, Math as MathCesium
+    Cartographic, Ion, Math as MathCesium
 } from "cesium";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
 import mapboxgl from "mapbox-gl/dist/mapbox-gl";
 
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 

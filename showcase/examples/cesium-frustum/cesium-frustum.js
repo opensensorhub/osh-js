@@ -4,6 +4,8 @@ import FrustumLayer from "osh-js/core/ui/layer/FrustumLayer";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
 import {Cartesian3, Ion} from "cesium";
 
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
 const START_TIME = '2012-06-29T14:32:34.099333251Z';

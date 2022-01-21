@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "leaflet": "1.7.1",
-    "mqtt": "4.2.8",
     "chart.js": "2.9.3"
   }
 }

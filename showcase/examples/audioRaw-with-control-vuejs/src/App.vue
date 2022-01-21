@@ -18,7 +18,7 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudioRaw from 'osh-js/core/datasource/SosGetResultAudioRaw.js';
+    import SosGetResultAudioRaw from 'osh-js/core/datasource/sos/SosGetResultAudioRaw.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer

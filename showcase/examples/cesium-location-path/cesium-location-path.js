@@ -1,10 +1,12 @@
 import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import {EllipsoidTerrainProvider} from 'cesium';
+import {EllipsoidTerrainProvider, Ion} from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import EllipseLayer from "osh-js/core/ui/layer/EllipseLayer";
 
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS

@@ -6,7 +6,6 @@ import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';
 import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
 
 // #region snippet_datasource_mqttswejson
-import mqtt from 'mqtt';
 
 let gpsDataSource = new SweApiFetchJson("android-GPS", {
     protocol: 'mqtt',
