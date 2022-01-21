@@ -18,7 +18,6 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
     import SosGetResultAudioRaw from 'osh-js/core/datasource/SosGetResultAudioRaw.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
@@ -37,16 +36,16 @@
         beforeMount() {
         },
       mounted() {
-        // setup video
-        // create data source for UAV camera
-        let audioDataSource = new SosGetResultAudio("alex-audio", {
+        let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
           protocol: "ws",
           service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-          offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
-          observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
-          startTime: "2021-04-12T10:48:45Z",
-          endTime: "2021-04-12T10:49:45Z",
+          // endpointUrl: "localhost:8989/sensorhub/sos",
+          endpointUrl: "35.225.185.195:8989/sensorhub/sos",
+          offeringID: "urn:osh:audio:wav",
+          observedProperty: "urn:osh:audio:wav:sampleArray",
+          startTime: "2019-03-27T14:18:00Z",
+          // endTime: "2019-03-27T14:53:00Z",
+          endTime: "2019-03-27T14:18:38Z",
           replaySpeed: 1.0,
           bufferingTime: 1000
         });
@@ -57,6 +56,7 @@
           container: 'audio-chart-container',
           dataSource: audioDataSource,
           gain: 10,
+          codec: 'raw',
           playSound: true
         });
 

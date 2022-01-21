@@ -22,6 +22,7 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
             format: 'float'
         });
         this.initFrequencyChart(properties);
+        this.sampleNumber = 0;
     }
 
     initFrequencyChart(properties) {
@@ -118,17 +119,21 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
             }
         }
         this.chart.data.labels = labels;
+        this.first = true;
     }
 
     draw(decodedSample) {
-
         if(this.resetting) {
             return;
         }
-        const dataArray = decodedSample[this.properties.type][this.properties.format];
+        this.decodedSample = decodedSample;
+        this.sampleNumber++;
+    }
+
+    render() {
+        const dataArray = this.decodedSample[this.properties.type][this.properties.format];
         if(this.chart.data.labels.length ===0) {
-            this.buildLabels(decodedSample);
-            this.first = true;
+            this.buildLabels(this.decodedSample);
             for(let i=0;i < dataArray.length;i++) {
                 this.dataset.data.push([-100, dataArray[i]]);
             }
@@ -137,16 +142,8 @@ class AudioFrequencyChartJsVisualizer extends AudioChartVisualizer {
                 this.dataset.data[i][1] = dataArray[i];
             }
         }
-        // the first check is to avoid animation causing the bar coming from the top to the bottom to the Graph
-        // We also update using 'none' telling to chart.js to update the graph without any animation
-        if(this.first) {
-            this.chart.update('none');
-            this.first = false;
-        } else {
-            this.chart.update();
-        }
+        super.update();
     }
-
 }
 
 export default AudioFrequencyChartJsVisualizer;

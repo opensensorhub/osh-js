@@ -1,4 +1,5 @@
 import AudioCanvasVisualizer from "./AudioCanvasVisualizer";
+import {isDefined} from "../../../../utils/Utils";
 
 /**
  * This abstract class is in charge of visualizing Audio based on chart.js framework and using a decoded AudioBuffer.
@@ -15,7 +16,9 @@ class AudioChartVisualizer extends AudioCanvasVisualizer {
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      */
     constructor(properties) {
-        super(properties);
+        super({
+            ...properties
+        });
     }
 
     parseDate(intTimeStamp) {
@@ -40,6 +43,15 @@ class AudioChartVisualizer extends AudioCanvasVisualizer {
     }
 
     onended() {}
+
+    update() {
+        if (this.first) {
+            this.chart.update('none');
+            this.first = false;
+        } else {
+            this.chart.update();
+        }
+    }
 }
 
 export default  AudioChartVisualizer;

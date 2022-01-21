@@ -10,7 +10,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import View from "../View.js";
-import {isDefined} from "../../../utils/Utils";
+import { isDefined } from "../../../utils/Utils";
 import FfmpegAudio from "./decoder/FfmpegAudio";
 import WebCodecApi from "./decoder/WebCodecApi";
 
@@ -36,7 +36,7 @@ class AudioView extends View {
      * @param {string} [properties.codec='aac'] - the audio codec
      * @param {boolean} [properties.playSound=true] - define if the sound is playing on the output
      * @param {DataSource} properties.dataSource - the dataSource object
-    * @param {Object[]}  [properties.layers=[]] - The initial layers to add
+     * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
     constructor(properties) {
         super({
@@ -44,7 +44,8 @@ class AudioView extends View {
             gain: 1.0,
             playSound: true,
             codec: 'aac',
-            visualizers : [],
+            visualizers: [],
+            frequency: 8000,
             dataSourceId: properties.dataSource.id,
             ...properties,
             visible: false,
@@ -71,7 +72,7 @@ class AudioView extends View {
     addVisualizer(visualizer) {
         // add to current existing context
         // otherwise, will be initialized later
-        if(isDefined(this.audioCtx)) {
+        if (isDefined(this.audioCtx)) {
             this.visualizersMap[visualizer.id] = visualizer.createAnalyzer(this.audioCtx);
         }
         this.visualizers.push(visualizer);
@@ -127,7 +128,7 @@ class AudioView extends View {
         this.decoder.onDecodedBuffer = this.onDecodedBuffer.bind(this);
     }
 
-    onDecodedBuffer(audioBuffer) {
+    onDecodedBuffer(audioBuffer, timestamp) {
         let replaySpeed = 1.0;
 
         if (isDefined(this.properties.dataSource)) {
@@ -139,7 +140,6 @@ class AudioView extends View {
         source.playbackRate.value = replaySpeed;
 
         let node = source;
-
         node = node.connect(this.gainNode);
 
         // connect to visualizers using modules
@@ -153,11 +153,21 @@ class AudioView extends View {
         }
 
         source.start(this.deltaInc);
-        this.deltaInc += audioBuffer.duration;
+        //  if timestamp is defined, use it.  Otherwise compute
+        if (timestamp === undefined)
+            timestamp = this.startTime + this.deltaInc * 1000;
+
+        if(isDefined(this.lastTimestamp)) {
+            this.deltaInc += (timestamp - this.lastTimestamp)/1000;
+        } else {
+            this.deltaInc += audioBuffer.duration;
+        }
+        this.lastTimestamp = timestamp;
 
         const decoded = {
             buffer: audioBuffer,
-            timestamp: this.startTime + this.deltaInc * 1000,
+            // timestamp: this.startTime + this.deltaInc * 1000,
+            timestamp: timestamp,
             time: {},
             frequency: {}
         };
@@ -169,7 +179,7 @@ class AudioView extends View {
             // --> byte | float
             visModule = this.visualizersMap[visualizer.id];
             if (visModule.type === 'time') {
-                if (visModule.format === 'byte' &&  !decoded['time'].hasOwnProperty('byte')) {
+                if (visModule.format === 'byte' && !decoded['time'].hasOwnProperty('byte')) {
                     const array = new Uint8Array(visModule['analyzer'].fftSize);
                     visModule['analyzer'].getByteTimeDomainData(array);
                     decoded['time']['byte'] = array;
@@ -202,7 +212,7 @@ class AudioView extends View {
             for (let visualizer of this.visualizers) {
                 visualizer.onended(decoded);
             }
-        }
+        };
     }
 
     onEndedDecodedBuffer(audioBuffer) {}
@@ -212,8 +222,15 @@ class AudioView extends View {
             if (!this.isInitContext) {
                 this.initAudioContext(value.data.sampleRate, value.timeStamp);
             }
+            if (this.properties.codec === 'raw') {
+                const frame = new Float32Array(value.data.frameData);
 
-            this.decoder.decode(value.data, value.timeStamp);
+                let audioBuffer = this.audioCtx.createBuffer(1, frame.length, this.audioCtx.sampleRate);
+                audioBuffer.copyToChannel(frame, 0, 0);
+                this.onDecodedBuffer(audioBuffer, value.timeStamp);
+            } else {
+                this.decoder.decode(value.data, value.timeStamp);
+            }
         }
     }
 
@@ -230,6 +247,7 @@ class AudioView extends View {
             if (isDefined(this.gainNode)) {
                 this.gainNode.disconnect();
             }
+            this.lastTimestamp = undefined;
             this.audioCtx.close();
             this.isInitContext = false;
         }
@@ -252,6 +270,3 @@ class AudioView extends View {
 }
 
 export default AudioView;
-
-
-
