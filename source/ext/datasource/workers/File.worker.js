@@ -1,5 +1,5 @@
 import FileParser from "../parsers/File.parser";
-import FileDataSourceHandler from "../FileDataSourceHandler";
+import FileDataSourceHandler from "../handler/FileDataSourceHandler";
 
 const dataSourceHandler = new FileDataSourceHandler(new FileParser());
 

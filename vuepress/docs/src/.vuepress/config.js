@@ -145,17 +145,16 @@ module.exports = (env) => {
                         children: [
                             '/guide/datasources/general.md',
                             '/guide/protocol/general.md',
+                            '/guide/datasources/batch_replayspeed.md',
                             {
                                 title: 'SOS',
                                 collapsable: true,
                                 children: [
-                                    '/guide/datasources/sos/general.md',
-                                    '/guide/datasources/sos/swejson.md',
+                                    '/guide/datasources/sos/sosjson.md',
                                     '/guide/datasources/sos/video.md',
                                     '/guide/datasources/sos/videoroll.md',
                                     '/guide/datasources/sos/audio.md',
-                                    '/guide/datasources/sos/sosgetfois.md',
-                                    '/guide/datasources/sos/batch_replayspeed.md',
+                                    '/guide/datasources/sos/sosgetfois.md'
                                 ]
                             },
                             {
@@ -165,6 +164,13 @@ module.exports = (env) => {
                                     '/guide/datasources/sps/datasink.md',
                                     '/guide/datasources/sps/foscamtasking.md',
                                     '/guide/datasources/sps/ptztasking.md'
+                                ]
+                            },
+                            {
+                                title: 'SweAPI',
+                                collapsable: true,
+                                children: [
+                                    '/guide/datasources/sweapi/sweapifetchjson.md'
                                 ]
                             },
                             {
@@ -231,6 +237,14 @@ module.exports = (env) => {
                             '/guide/layers/polyline.md',
                             '/guide/layers/curve.md',
                             '/guide/layers/draping.md',
+                        ]
+                    },
+                    {
+                        title: 'SweAPI',
+                        collapsable: true,
+                        children: [
+                            '/guide/sweapi/general.md',
+                            '/guide/sweapi/utility.md'
                         ]
                     },
                     {

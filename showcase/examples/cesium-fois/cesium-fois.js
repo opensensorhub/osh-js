@@ -1,6 +1,6 @@
 // #region snippet_cesium_fois
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import SosGetFois from 'osh-js/core/datasource/SosGetFois';
+import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois';
 import {
     Cartesian3
 } from 'cesium';

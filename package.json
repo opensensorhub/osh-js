@@ -57,5 +57,6 @@
     "worker-loader": "^2.0.0",
     "worker-plugin": "^4.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+  }
 }

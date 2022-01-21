@@ -42,6 +42,7 @@
     "dependencies": {
         "chart.js": "3.5.1",
         "chartjs-adapter-moment": "1.0.0",
-        "moment": "2.29.1"
+        "moment": "2.29.1",
+        "mqtt": "^4.3.4"
     }
 }

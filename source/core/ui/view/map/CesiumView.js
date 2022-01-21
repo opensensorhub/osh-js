@@ -315,7 +315,7 @@ class CesiumView extends MapView {
         var position = Cartesian3.fromDegrees(lon, lat, 0, this.viewer.scene.globe.ellipsoid, new Cartesian3());
         var altitude = this.viewer.scene.globe.getHeight(Ellipsoid.WGS84.cartesianToCartographic(position));
 
-        if (altitude === 'undefined' || altitude <= 0)
+        if (altitude === undefined || altitude <= 0)
             altitude = 0.1;
         return altitude;
     }

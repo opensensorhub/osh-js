@@ -7,5 +7,5 @@
     "forin"         : false,
     "immed"         : false,
     "indent"        : 4,
-    "esversion"     : 6
+    "esversion"     : 11
 }

@@ -1,11 +1,10 @@
-import SosGetResultAudioRaw from "osh-js/core/datasource/SosGetResultAudioRaw";
+import SosGetResultAudioRaw from "osh-js/core/datasource/sos/SosGetResultAudioRaw";
 import AudioView from "osh-js/core/ui/view/audio/AudioView";
 import AudioFrequencyCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer";
 import AudioTimeCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer";
 import AudioFrequencyChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
 import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
 import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
-import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
 let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
     protocol: "ws",
@@ -112,12 +111,6 @@ audioView.addVisualizer(audioCanvasTimeVisualizer);
 audioView.addVisualizer(audioChartFrequencyVisualizer);
 audioView.addVisualizer(audioChartTimeVisualizer);
 audioView.addVisualizer(audioSpectrogramVisualizer);
-
-// const dataSynchronizer = new DataSynchronizer({
-//     replaySpeed: 1.0,
-//     timerResolution: 5,
-//     dataSources: [audioDataSource]
-// });
 
 document.getElementById("listen").onclick = () => {
     audioDataSource.connect();

@@ -38,7 +38,7 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {EventType} from "osh-js/core/event/EventType";
 
@@ -109,10 +109,10 @@ export default {
     })
 
   // connects each DataSource
-  //     this.dataSynchronizer.connect();
-    setTimeout(() => videoDataSource0.connect(),700);
-    setTimeout(() => videoDataSource1.connect(),1800);
-    setTimeout(() => videoDataSource2.connect(),1900);
+      this.dataSynchronizer.connect();
+    // setTimeout(() => videoDataSource0.connect(),700);
+    // setTimeout(() => videoDataSource1.connect(),1800);
+    // setTimeout(() => videoDataSource2.connect(),1900);
 
   // Data are received through Broadcast channel in a separate thread.
   // When you create a View object, it automatically subscribes to the corresponding datasource channel(s).
@@ -170,7 +170,7 @@ export default {
     videoDataSource0.subscribe((message) => displayVideo0(message.values), [EventType.DATA])
     videoDataSource1.subscribe((message) => displayVideo1(message.values), [EventType.DATA])
     videoDataSource2.subscribe((message) => displayVideo2(message.values), [EventType.DATA])
-    this.dataSynchronizer.subscribe((message) => displayError(message.timestamp, [EventType.TIME]));
+    this.dataSynchronizer.subscribe((message) => displayError(message.timestamp), [EventType.TIME]);
 
   },
   methods: {

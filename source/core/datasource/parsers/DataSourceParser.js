@@ -23,13 +23,13 @@ class DataSourceParser {
         let url = "";
 
         // adds protocol
-        url += properties.protocol + "://";
+        // url += properties.protocol + "://";
 
         // adds endpoint url
-        url += properties.endpointUrl + "?";
+        // url += properties.endpointUrl + "?";
 
         // adds service
-        url += "service=" + properties.service;
+        url = "service=" + properties.service;
 
         // adds version
         url += "&version=2.0&";

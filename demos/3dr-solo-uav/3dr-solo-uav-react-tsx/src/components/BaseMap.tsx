@@ -1,6 +1,6 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-import SosGetResultJson from "osh-js/core/datasource/SosGetResultJson.js";
+import SosGetResultJson from "osh-js/core/datasource/sos/SosGetResultJson.js";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
 import CesiumView from "osh-js/core/ui/view/map/CesiumView.js";
 import {randomUUID} from "osh-js/core/utils/Utils.js";
