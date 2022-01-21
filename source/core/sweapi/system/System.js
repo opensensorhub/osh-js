@@ -35,6 +35,7 @@ class System extends SensorWebApi {
     }
 
     /**
+     * Get the latest specsheet of a system
      * @param {SystemFilter} systemFilter - the system filter
      * @return Promise<JSON> - SensorlML Description
      */
@@ -58,8 +59,9 @@ class System extends SensorWebApi {
     }
 
     /**
-     *
-     * @returns {Collection<DataStream>} A collection of System
+     * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.     * @param dataStreamFilter
+     * @param pageSize
+     * @return {Promise<Collection>}
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
@@ -68,8 +70,10 @@ class System extends SensorWebApi {
     }
 
     /**
-     *
-     * @returns {Collection<FeatureOfInterest>} A collection of FeatureOfInterest
+     * List or search features of interest of a system. Individual features can be retrieved by ID directly on the root "featuresOfInterest" collection
+     * @param featureOfInterestFilter
+     * @param pageSize
+     * @return {Promise<Collection>}
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(

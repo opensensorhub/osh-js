@@ -50,7 +50,8 @@ import {Status} from "osh-js/core/protocol/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
 import SweApiFetchJson from "osh-js/core/datasource/sweapi/SweApiFetchJson";
-import SweApiFetchVideo from "osh-js/core/datasource/sweapi/SweApiFetchVideo";
+// import SweApiFetchVideo from "osh-js/core/datasource/sweapi/SweApiFetchVideo";
+import SosGetResultVideo from "osh-js/core/datasource/sos/SosGetResultVideo";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -78,12 +79,15 @@ export default {
     const timeOut = 3000;
     const bufferingTime = 800;
 
-    const droneVideoDataSource = new SweApiFetchVideo('MISB Drone - Video',{
-      protocol: 'mqtt',
-      // endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
-      endpointUrl: 'ogct17.georobotix.io:8483',
-      collection: '/datastreams/uxzna8pldpiv/observations',
-      responseFormat: 'application/swe+binary',
+    const droneVideoDataSource = new SosGetResultVideo('MISB Drone - Video',{
+      protocol: 'ws',
+      service: 'SOS',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
+      offeringID: 'urn:osh:sensor:uas:predator001',
+      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
+      // endpointUrl: 'ogct17.georobotix.io:8483',
+      // collection: '/datastreams/uxzna8pldpiv/observations',
+      // responseFormat: 'application/swe+binary',
       tls: tls,
       startTime: START_TIME,
       endTime: END_TIME,

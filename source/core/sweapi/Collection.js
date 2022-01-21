@@ -34,7 +34,10 @@ class Collection {
         this.data = [];
     }
 
-    // cannot fetch dynamically data here otherwise we must change this function into async
+    /**
+     * Check if has next page
+     * @return {boolean}
+     */
     hasNext() {
         return !isDefined(this.nextOffset) || (this.nextOffset !== -1);
     }
@@ -90,6 +93,11 @@ class Collection {
         }
     }
 
+    /**
+     * Fetches next page.
+     * @param page - the number of page to fetch
+     * @return {Promise<Array>}
+     */
     async nextPage(page = undefined) {
         if(isDefined(page)) {
             this.nextOffset = page * this.pageSize;
@@ -102,6 +110,11 @@ class Collection {
         return this.data;
     }
 
+    /**
+     * Fetches previous page.
+     * @param page - the number of page to fetch
+     * @return {Promise<Array>}
+     */
     async previousPage(page = undefined) {
         if(isDefined(page)) {
             this.previousOffset = page * this.pageSize;
@@ -114,6 +127,10 @@ class Collection {
         return this.data;
     }
 
+    /**
+     * Check if has previous page
+     * @return {boolean}
+     */
     hasPrevious() {
         return !isDefined(this.previousOffset) || (this.previousOffset !== -1);
     }

@@ -5,7 +5,6 @@ class SweApiFetchBinaryVideo  {
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        console.log(new DataView(data).getFloat64(0, false) * 1000)
         return new DataView(data).getFloat64(0, false) * 1000;
     }
 

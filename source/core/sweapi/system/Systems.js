@@ -30,8 +30,11 @@ class Systems extends SensorWebApi {
     }
 
     /**
-     *
-     * @returns {Collection<System>} A collection of System
+     * List or search all observing systems available through this API. By default, only top level systems are listed
+     * (i.e. subsystems are ommitted) unless the "parent" query parameter is set
+     * @param systemFilter - the system filter
+     * @param pageSize - the page size
+     * @return {Promise<Collection>}  A collection of System
      */
     async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         return new Collection(
@@ -40,6 +43,13 @@ class Systems extends SensorWebApi {
         );
     }
 
+    /**
+     * Get a specific system resource by ID. Note that this will return the description of the system valid at the
+     * current time. To get the description valid for a past (or future) time, use the "history" sub-collection.
+     * @param systemId - the ID of the System resource
+     * @param systemFilter - the system filter
+     * @return {Promise<System>}
+     */
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
         const response = await this._network.info.connector.doRequest(
             API.systems.by_id.replace('{id}',systemId),

@@ -29,13 +29,21 @@ class Observations extends SensorWebApi {
     }
 
     /**
-     *
-     * @returns {Collection<Observation>} A collection of Observation
+     * List or search all observations available through this API.
+     * @param observationFilter
+     * @param pageSize
+     * @return {Promise<Collection>}
      */
     async searchObservations(observationFilter = new ObservationFilter(), pageSize= 10) {
         return new Collection('/observations', observationFilter, pageSize,this.parser, this._network.info.connector);
     }
 
+    /**
+     * Get a specific observation resource by ID
+     * @param observationId - The ID of the observation
+     * @param observationFilter
+     * @return {Promise<Observation>}
+     */
     async getObservationById(observationId,observationFilter = new ObservationFilter()) {
         const response = await this._network.info.connector.doRequest(
             `/observations/${observationId}`,

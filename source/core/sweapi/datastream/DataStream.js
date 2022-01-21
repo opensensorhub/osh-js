@@ -31,9 +31,9 @@ class DataStream extends SensorWebApi {
     }
 
     /**
-     *
+     * Retrieve historical observations from a datastream
      * @param observationFilter
-     * @param callback
+     * @param callback - A callback to get observations
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
         this._network.stream.connector.onMessage = callback;
@@ -46,11 +46,10 @@ class DataStream extends SensorWebApi {
     }
 
     /**
-     *
-     * @param observationFilter
+     * Retrieve historical observations from a datastream     * @param observationFilter
      * @param pageSize
      * @param parser
-     * @returns {Collection<DataStream>} A collection of DataStream
+     * @return {Collection}
      */
     searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.parser) {
         return new Collection(

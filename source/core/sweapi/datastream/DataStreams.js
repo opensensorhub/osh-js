@@ -30,8 +30,10 @@ class DataStreams extends SensorWebApi {
     }
 
     /**
-     *
-     * @returns {Collection<DataStream>} A collection of DataStream
+     * List or search all datastreams available through this API.
+     * @param dataStreamFilter - the datastream filter
+     * @param pageSize - the page size
+     * @return {Promise<Collection>}
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
@@ -40,6 +42,12 @@ class DataStreams extends SensorWebApi {
         );
     }
 
+    /**
+     * Get a specific datastream resource by ID
+     * @param datastreamId - The ID of the datastream or command stream
+     * @param dataStreamFilter - the datastream filter
+     * @return {Promise<DataStream>}
+     */
     async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
         const response = await this._network.info.connector.doRequest(
             API.datastreams.by_id.replace('{id}',datastreamId),

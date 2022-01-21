@@ -9,14 +9,14 @@ import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
 import mqtt from 'mqtt';
 
 let gpsDataSource = new SweApiFetchJson("android-GPS", {
-    protocol: 'mqtt', // or mqtts
+    protocol: 'mqtt',
     endpointUrl: 'ogct17.georobotix.io:8083',
     collection: '/datastreams/gal7w6j6v7n9/observations',
     tls: false,
 });
 
 const isaDataSource = new SweApiFetchJson("ISA-bio-sensor", {
-    protocol: 'mqtt', // or mqtts
+    protocol: 'mqtt',
     endpointUrl: 'ogct17.georobotix.io:8083',
     collection: '/datastreams/1lppw59ger1py/observations',
     tls: false

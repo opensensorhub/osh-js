@@ -29,13 +29,23 @@ class FeaturesOfInterest extends SensorWebApi {
     }
 
     /**
-     *
-     * @returns {Collection<FeaturesOfInterest>} A collection of FeatureOfInterest
+     * List or search all sampled and sampling features available through this API. By default, only top level features
+     * and collections are listed (i.e. nested members of feature collections are ommitted) unless the "parent" query parameter is set.
+     * @param featureOfInterestFilter
+     * @param pageSize
+     * @return {Promise<Collection>}
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection('/featuresOfInterest', featureOfInterestFilter, pageSize,this.parser, this._network.info.connector);
     }
 
+    /**
+     * Get a specific feature resource by ID. Note that this will return the description of the feature valid at the current time.
+     * To get the description valid for a past (or future) time, use the "history" sub-collection.
+     * @param fId - The ID of the Feature resource
+     * @param featureOfInterestFilter
+     * @return {Promise<DataStream>}
+     */
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
         const response = await this._network.info.connector.doRequest(
             `/featuresOfInterest/${fId}`,

@@ -24,8 +24,6 @@ class FeatureOfInterest extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
     }
-
-
 }
 
 export default FeatureOfInterest;
