@@ -12,7 +12,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "prod": "webpack --config webpack.config.js --mode production",
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
+    "dev": "webpack-dev-server --config webpack.config.js --mode development",
     "postinstall": "patch-package",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -55,9 +55,9 @@
     "strip-ansi": "7.0.0",
     "style-loader": "3.0.0",
     "ts-loader": "9.2.3",
-    "webpack": "5.44.0",
-    "webpack-cli": "4.7.2",
-    "webpack-dev-server": "3.11.2",
+    "webpack": "5.65.0",
+    "webpack-cli": "4.9.1",
+    "webpack-dev-server": "4.6.0",
     "worker-loader": "3.0.8"
   },
   "browser": {

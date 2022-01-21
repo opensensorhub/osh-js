@@ -43,7 +43,6 @@ const config = {
       "fs": false
     }
   },
-  devServer: { contentBase: path.join(__dirname, "src") },
   module: {
     unknownContextCritical: false,
     rules: [
