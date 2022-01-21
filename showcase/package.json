@@ -80,6 +80,12 @@
     "wnumb": "1.2.0",
     "chart.js": "3.5.1",
     "chartjs-adapter-moment": "1.0.0",
-    "moment": "2.29.1"
+    "moment": "2.29.1",
+    "@loaders.gl/core": "2.3.7",
+    "@loaders.gl/csv": "2.3.7",
+    "@loaders.gl/json": "2.3.7",
+    "@loaders.gl/kml": "2.3.7",
+    "@loaders.gl/shapefile": "2.3.7",
+    "@loaders.gl/wkt": "2.3.7"
   }
 }

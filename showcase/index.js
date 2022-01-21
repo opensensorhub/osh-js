@@ -93,6 +93,11 @@ var samples = [{
         url: "datasources-synchronized"
     },
     {
+        name: "DataSource File",
+        description: "Display the data of multiple CSV files using the file datasource",
+        url: "datasource-file"
+    },
+    {
         name: "Multiple Video DataSource Synchronized",
         description: "Display the data of 3 differents video datasources using time synchronization algorithm",
         url: "multi-datasources-synchronized"

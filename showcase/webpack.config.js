@@ -97,6 +97,7 @@ let directories = [
     'multi-datasources-synchronized',
     'datasource-swejson',
     'datasource-video',
+    'datasource-file',
     'deckgl-location',
     'chart-archive-realtime',
     'chart-archive-realtime-batch',
