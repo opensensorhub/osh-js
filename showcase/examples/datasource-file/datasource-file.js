@@ -29,6 +29,6 @@ fileDatasource.subscribe(async (message) => {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 // start streaming onclick
-const runButtonElement = document.getElementById('run-datasource-button');
-runButtonElement.onclick = () => fileDatasource.connect();
+fileDatasource.connect();
