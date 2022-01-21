@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import TimeSeriesDataSource from '../TimeSeriesDataSource.js';
-import SosGetResultAudioWorker from "./worker/SosGetResultAudio.worker.js";
+import SosGetResultAudioRawWorker from "./worker/SosGetResultAudioRaw.worker";
 
 /**
  * This datasource provides parsing to AAC raw data.
@@ -36,7 +36,7 @@ import SosGetResultAudioWorker from "./worker/SosGetResultAudio.worker.js";
         bufferingTime: 10
   });
  */
-class SosGetResultAudio extends TimeSeriesDataSource {
+class SosGetResultAudioRaw extends TimeSeriesDataSource {
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
@@ -56,16 +56,15 @@ class SosGetResultAudio extends TimeSeriesDataSource {
      */
     constructor(name, properties) {
         super(name, {
-            timeShift:0,
+            timeShift: 0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
-            tls: false,
             ...properties
         });
     }
 
     async createWorker(properties) {
-        return new SosGetResultAudioWorker();
+        return new SosGetResultAudioRawWorker();
     }
 }
 
-export default  SosGetResultAudio;
+export default SosGetResultAudioRaw;
