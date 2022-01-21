@@ -64,7 +64,7 @@ class SosGetResultJson extends TimeSeriesDataSource {
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             tls: false,
             ...properties
-        });
+        },new SosGetResultJsonWorker());
     }
 
     async createWorker(properties) {
