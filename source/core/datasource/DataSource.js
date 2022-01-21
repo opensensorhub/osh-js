@@ -213,6 +213,8 @@ class DataSource {
             }
         };
     }
+
+    onDisconnect(){}
 }
 
 export default DataSource;

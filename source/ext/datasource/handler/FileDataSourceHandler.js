@@ -27,7 +27,8 @@ class FileDataSourceHandler  extends DataSourceHandler {
      * Override default data connector build
      * @private
      */
-    createDataConnector(properties) {
+    async createDataConnector(properties) {
+        this.updatedProperties = properties;
         const url = this.parser.buildUrl({
             ...properties,
             timeShift: this.timeShift
@@ -35,14 +36,7 @@ class FileDataSourceHandler  extends DataSourceHandler {
 
         this.connector = new FileConnector(url,properties);
 
-        // set the reconnectTimeout
-        this.connector.setReconnectTimeout(this.reconnectTimeout);
-
-        // connects the callback
-        this.connector.onMessage = this.onMessage.bind(this);
-
-        // bind change connection STATUS
-        this.connector.onChangeStatus   = this.onChangeStatus.bind(this);
+        await this.setUpConnector(properties);
     }
 }
 export default FileDataSourceHandler;

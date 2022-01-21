@@ -17,6 +17,7 @@
 
 import DataSource from '../../core/datasource/DataSource.js';
 import FileWorker from './workers/File.worker.js';
+import SosGetResultAudioWorker from "../../core/datasource/sos/worker/SosGetResultAudio.worker";
 
 
 /**
@@ -43,7 +44,11 @@ class File extends DataSource {
         super(name, {
             ...properties,
             protocol: 'file'
-        }, new FileWorker());
+        });
+    }
+
+    async createWorker(properties) {
+        return new FileWorker();
     }
 }
 
