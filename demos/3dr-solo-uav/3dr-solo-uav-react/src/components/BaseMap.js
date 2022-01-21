@@ -1,6 +1,6 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+import SosGetResultJson from "osh/core/datasource/sos/SosGetResultJson.js";
 import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
 import PolygonLayer from "osh/core/ui/layer/PolygonLayer.js";
 import CoPlanarPolygonLayer from "osh/core/ui/layer/CoPlanarPolygonLayer.js";
@@ -173,6 +173,7 @@ class BaseMap extends React.Component {
     Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
         'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
         '2WfIX0QHiZcOjVaXI92stjDh4fI';
+
     let cesiumView = new CesiumView({
       container: this.divId,
       layers: [pointMarkerLayer, polygonLayer, coplanarPolygonLayer, imageDrapingLayer],
@@ -186,7 +187,7 @@ class BaseMap extends React.Component {
 
     // select bing maps as default imagery
     const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-    baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
+    baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[2];
 
 
 // start streaming
