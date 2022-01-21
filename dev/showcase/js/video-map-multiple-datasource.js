@@ -1,5 +1,5 @@
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
+import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';

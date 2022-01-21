@@ -136,7 +136,7 @@ class UavMapTasking extends DataSink {
         xmlSpsRequest += "version=\"" + this.properties.version + "\" ";
 
         // adds ns
-        xmlSpsRequest += "xmlns:sps=\"http://www.opengis.net/sps/2.0\" xmlns:swe=\"http://www.opengis.net/swe/2.0\"> ";
+        xmlSpsRequest += "xmlns:sps=\"http://www.opengis.net/sps/2.0\" xmlns:sweapi=\"http://www.opengis.net/swe/2.0\"> ";
 
         // adds procedure
         xmlSpsRequest += "&lt;sps:procedure>" + this.properties.offeringID + "&lt;/sps:procedure>";
@@ -145,7 +145,7 @@ class UavMapTasking extends DataSink {
         xmlSpsRequest += "&lt;sps:taskingParameters>&lt;sps:ParameterData>";
 
         // adds encoding
-        xmlSpsRequest += "&lt;sps:encoding>&lt;swe:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/>&lt;/sps:encoding>";
+        xmlSpsRequest += "&lt;sps:encoding>&lt;sweapi:TextEncoding blockSeparator=\" \"  collapseWhiteSpaces=\"true\" decimalSeparator=\".\" tokenSeparator=\",\"/>&lt;/sps:encoding>";
 
         // adds values
         xmlSpsRequest += "&lt;sps:values>" + cmdData + "&lt;/sps:values>";

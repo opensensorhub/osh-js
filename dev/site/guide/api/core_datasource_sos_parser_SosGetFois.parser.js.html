@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/datasource/sos/parser/SosGetFois.parser.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/datasource/sos/parser/SosGetFois.parser.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import DataSourceParser from "../../parsers/DataSourceParser";
+import {assertDefined, isDefined} from "../../../utils/Utils";
+import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser.js";
+
+class SosGetFoisParser extends DataSourceParser {
+    /**
+     * Extract data from the message. The message is in XML format following the OGC specification
+     * @param {Object} data - the data to parse
+     * @return {Object} the parsed data
+     * @example
+        &lt;?xml version='1.0' encoding='UTF-8'?>
+        &lt;sos:GetFeatureOfInterestResponse xmlns:sos="http://www.opengis.net/sos/2.0"
+                                          xmlns:gml="http://www.opengis.net/gml/3.2"
+                                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                                          xmlns:ns1="http://www.opengis.net/sensorml/2.0">
+            &lt;sos:featureMember>
+                &lt;ns1:PhysicalSystem gml:id="FE12">
+                    &lt;gml:description>Vehicle FE12 from Huntsville Fire Department&lt;/gml:description>
+                    &lt;gml:identifier codeSpace="uid">urn:core:sensor:avl:911:fleet:FE12&lt;/gml:identifier>
+                    &lt;gml:name>FE12&lt;/gml:name>
+                &lt;/ns1:PhysicalSystem>
+            &lt;/sos:featureMember>
+            &lt;sos:featureMember>
+                &lt;ns1:PhysicalSystem gml:id="FE4">
+                    &lt;gml:description>Vehicle FE4 from Huntsville Fire Department&lt;/gml:description>
+                    &lt;gml:identifier codeSpace="uid">urn:core:sensor:avl:911:fleet:FE4&lt;/gml:identifier>
+                    &lt;gml:name>FE4&lt;/gml:name>
+                &lt;/ns1:PhysicalSystem>
+            &lt;/sos:featureMember>
+        &lt;/sos:GetFeatureOfInterestResponse>
+     */
+    async parseData(data) {
+        let rec = data;
+        if(data instanceof ArrayBuffer) {
+            rec = new TextDecoder().decode(data);
+        }
+        let sweXmlParser = new SWEXmlStreamParser(rec);
+        sweXmlParser.setXml(rec);
+        const json =  sweXmlParser.toJson();
+        assertDefined(json.GetFeatureOfInterestResponse,'json.GetFeatureOfInterestResponse does not exist');
+        assertDefined(json.GetFeatureOfInterestResponse.featureMember,'json.GetFeatureOfInterestResponse.featureMember does not exist');
+        return json.GetFeatureOfInterestResponse.featureMember;
+    }
+
+    /**
+     * Builds the full url.
+     * @protected
+     * @param {Object} properties
+     * @param {String} properties.protocol the protocol protocol
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.procedureId the foi procedure id
+     * @param {String} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
+     * @return {String} the full url
+     */
+    buildUrl(properties) {
+        let url = super.buildUrl({
+            responseFormat:'application/xml',
+            ...properties,
+        });
+        // adds request
+        url += "&amp;request=GetFeatureOfInterest";
+
+        // adds foiURN if any
+        if(isDefined(properties.procedureId)) {
+            url += '&amp;procedure='+properties.procedureId;
+        }
+        return url;
+    }
+}
+
+export default SosGetFoisParser;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

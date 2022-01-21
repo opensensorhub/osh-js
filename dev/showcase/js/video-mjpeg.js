@@ -1,4 +1,4 @@
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
+import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
 import MjpegView from 'osh-js/core/ui/view/video/MjpegView.js';
 
 // create data source for Android phone camera

@@ -14,7 +14,7 @@
 <script>
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';

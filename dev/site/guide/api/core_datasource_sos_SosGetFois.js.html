@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/datasource/sos/SosGetFois.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/datasource/sos/SosGetFois.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2020 Mathieu Dhainaut. All Rights Reserved.
+
+ Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import DataSource from "../DataSource";
+import SosGetResultJsonWorker from "./worker/SosGetFois.worker.js";
+
+class SosGetFois extends DataSource {
+
+    /**
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {String} properties.procedureId the specific procedure id
+     * @param {Number} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
+     */
+    constructor(name, properties) {
+        super(name, {
+            batchSize: 10,
+            ...properties,
+            responseType: 'plain/text',
+            tls: false,
+        });
+    }
+    async createWorker(properties) {
+        return new SosGetResultJsonWorker();
+    }
+
+}
+export default SosGetFois;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

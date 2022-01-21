@@ -1,11 +1,13 @@
 // #region snippet_cesium_fois
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import SosGetFois from 'osh-js/core/datasource/SosGetFois';
+import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois';
 import {
-    Cartesian3
+    Cartesian3, Ion
 } from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer';
 
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
 // create data source for Fois

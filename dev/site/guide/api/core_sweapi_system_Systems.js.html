@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/sweapi/system/Systems.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/sweapi/system/Systems.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+
+ Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import SensorWebApi from "../SensorWebApi";
+import Collection from "../Collection";
+import SweApiFetchSystemParser from "../../datasource/sweapi/parser/json/SweApiFetchSystem.parser";
+import SystemFilter from "./SystemFilter";
+import API from "../routes.conf";
+
+class Systems extends SensorWebApi {
+    /**
+     *
+     */
+    constructor(networkProperties) {
+        super(networkProperties);
+        this.parser = new SweApiFetchSystemParser(networkProperties);
+    }
+
+    /**
+     * List or search all observing systems available through this API. By default, only top level systems are listed
+     * (i.e. subsystems are ommitted) unless the "parent" query parameter is set
+     * @param systemFilter - the system filter
+     * @param pageSize - the page size
+     * @return {Promise&lt;Collection>}  A collection of System
+     */
+    async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
+        return new Collection(
+            API.systems.search, systemFilter,
+            pageSize, this.parser, this._network.info.connector
+        );
+    }
+
+    /**
+     * Get a specific system resource by ID. Note that this will return the description of the system valid at the
+     * current time. To get the description valid for a past (or future) time, use the "history" sub-collection.
+     * @param systemId - the ID of the System resource
+     * @param systemFilter - the system filter
+     * @return {Promise&lt;System>}
+     */
+    async getSystemById(systemId,systemFilter = new SystemFilter()) {
+        const response = await this._network.info.connector.doRequest(
+            API.systems.by_id.replace('{id}',systemId),
+            systemFilter.toQueryString(['select','format']),
+            systemFilter.props.format
+        );
+        return this.parser.parseData(response);
+    }
+}
+export default Systems;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

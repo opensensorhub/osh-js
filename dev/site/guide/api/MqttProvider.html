@@ -238,7 +238,7 @@ Note that the credentials are passed in the object options as for the mqtt.js cl
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ext_mqtt_MqttProvider.js.html">ext/mqtt/MqttProvider.js</a>, <a href="ext_mqtt_MqttProvider.js.html#line32">line 32</a>
+        <a href="core_mqtt_MqttProvider.js.html">core/mqtt/MqttProvider.js</a>, <a href="core_mqtt_MqttProvider.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -294,7 +294,7 @@ Note that the credentials are passed in the object options as for the mqtt.js cl
     
 
     
-    <h4 class="name" id="subscribeToObservationsByObsFilter"><span class="type-signature"></span>subscribeToObservationsByObsFilter<span class="signature">(ObsFilter, format, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="subscribeToObservationsByObsFilter"><span class="type-signature"></span>subscribeToObservationsByObsFilter<span class="signature">(dataStreamIds<span class="signature-attributes">opt</span>, observationFilter, callback)</span><span class="type-signature"></span></h4>
     
 
     
@@ -322,7 +322,11 @@ Note that the credentials are passed in the object options as for the mqtt.js cl
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -334,46 +338,74 @@ Note that the credentials are passed in the object options as for the mqtt.js cl
 
         <tr>
             
-                <td class="name"><code>ObsFilter</code></td>
+                <td class="name"><code>dataStreamIds</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ObsFilter.html">ObsFilter</a></span>
+<span class="param-type">Array.&lt;String></span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">the observation filter object</td>
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+
+            <td class="description last">list of datastream ids</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>format</code></td>
+                <td class="name"><code>observationFilter</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><a href="ObservationFilter.html">ObservationFilter</a></span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">the return format such as 'application/json', 'application/swe+json','text/xml','text/plain', 'application/swe+binary'</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the observation filter object</td>
         </tr>
 
     
@@ -388,7 +420,19 @@ Note that the credentials are passed in the object options as for the mqtt.js cl
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"></td>
@@ -432,7 +476,7 @@ Note that the credentials are passed in the object options as for the mqtt.js cl
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ext_mqtt_MqttProvider.js.html">ext/mqtt/MqttProvider.js</a>, <a href="ext_mqtt_MqttProvider.js.html#line87">line 87</a>
+        <a href="core_mqtt_MqttProvider.js.html">core/mqtt/MqttProvider.js</a>, <a href="core_mqtt_MqttProvider.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -566,7 +610,7 @@ Otherwise, remove from the list of subscribe topic/dsId
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ext_mqtt_MqttProvider.js.html">ext/mqtt/MqttProvider.js</a>, <a href="ext_mqtt_MqttProvider.js.html#line129">line 129</a>
+        <a href="core_mqtt_MqttProvider.js.html">core/mqtt/MqttProvider.js</a>, <a href="core_mqtt_MqttProvider.js.html#line130">line 130</a>
     </li></ul></dd>
     
 

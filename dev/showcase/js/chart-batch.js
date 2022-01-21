@@ -1,7 +1,7 @@
 // create data source for Android phone camera
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 
 function createChart(dataSource, divId, title) {
 

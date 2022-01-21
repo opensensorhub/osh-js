@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/sweapi/observation/ObservationFilter.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/sweapi/observation/ObservationFilter.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+
+ Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+import SensorWebApiFilter from "../Filter";
+
+class ObservationFilter extends SensorWebApiFilter {
+    /**
+     *
+     * @param {Object} properties - object properties
+     * @param {any} [properties.phenomenonTime='now'] - time range &lt;00:00:00T00:00:00Z/00:00:00T00:00:00Z> | 'now' | 'latest'
+     * @param {any} [properties.resultTime='now'] - time range &lt;00:00:00T00:00:00Z/00:00:00T00:00:00Z> | 'latest'
+     * @param {string[]} [properties.featureOfInterest=undefined] - Comma separated list of feature of interest IDs to get observations for
+     * @param {string[]} [properties.select=undefined] - Comma separated list of properties to include or exclude from results (use "!" prefix to exclude)
+     * @param {number[]} [properties.bbox=undefined] - BBOX to filter resources on their location
+     * @param {string} [properties.location=undefined] - WKT geometry and operator to filter resources on their location or geometry
+     * @param {string} [properties.format='application/json'] - Mime type designating the format to use to encode the response.
+     * @param {string} [properties.replaySpeed=undefined] - Mime type designating the format to use to encode the response.
+     */
+    constructor(properties) {
+        super({
+            phenomenonTime: undefined,
+            resultTime: undefined,
+            featureOfInterest: undefined,
+            select: undefined,
+            bbox: undefined,
+            location: undefined,
+            format: 'application/json',
+            replaySpeed: undefined,
+            ...properties // merge defined properties
+        });
+    }
+}
+export default ObservationFilter;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -19,10 +19,10 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
+    import SosGetResultAudio from 'osh-js/core/datasource/sos/SosGetResultAudio.js';
     import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView";
     import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
-    import SosGetResultVideoWithRoll from "osh-js/core/datasource/SosGetResultVideoWithRoll";
+    import SosGetResultVideoWithRoll from "osh-js/core/datasource/sos/SosGetResultVideoWithRoll";
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
