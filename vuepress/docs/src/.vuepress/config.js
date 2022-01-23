@@ -21,18 +21,18 @@ module.exports = (env) => {
                 ]
             },
             plugins: [
-                new CopyWebpackPlugin({
-                    patterns: [{
+                new CopyWebpackPlugin([
+                    {
                         from: path.resolve(__dirname, '../../../../showcase/dist'),
                         to: 'showcase'
-                    }]
-                }),
-                new CopyWebpackPlugin({
-                    patterns: [{
+                    }
+                ]),
+                new CopyWebpackPlugin([
+                    {
                         from: path.resolve(__dirname, '../../../../jsdoc/dist-iframe'),
                         to: 'guide/api'
-                    }]
-                })
+                    }
+                ])
             ]
         },
         /**
