@@ -531,6 +531,7 @@ class CesiumView extends MapView {
             entity.name = label;
             entity.position = entityOpts.position;
             entity.description = entityOpts.description;
+            entity.orientation = entityOpts.orientation;
 
             return entity;
         }
