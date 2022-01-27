@@ -203,7 +203,6 @@ class OpenLayerView extends MapView {
      * @private
      */
     initMap(options) {
-
         this.map = null;
         this.first = true;
         let overlays = [];
@@ -269,26 +268,25 @@ class OpenLayerView extends MapView {
 
             // #endregion snippet_openlayerview_initial_map
 
-        }
+            this.map.setTarget(this.divId);
 
-        this.map.setTarget(this.divId);
+            if (!isDefined(this.map.getView())) {
+                this.map.setView(view);
+            }
 
-        if (!isDefined(this.map.getView())) {
-            this.map.setView(view);
-        }
+            this.map.getView().setMaxZoom(maxZoom);
 
-        this.map.getView().setMaxZoom(maxZoom);
-
-        // only if the map was not created with default layers
-        if(this.map.getLayers().getLength()  === 0) {
-            this.map.addLayer(new Group({
-                'title': 'Base maps',
-                layers: baseLayers
-            }));
-            this.map.addLayer(new Group({
-                title: 'Overlays',
-                layers: overlays
-            }));
+            // only if the map was not created with default layers
+            if(this.map.getLayers().getLength()  === 0) {
+                this.map.addLayer(new Group({
+                    'title': 'Base maps',
+                    layers: baseLayers
+                }));
+                this.map.addLayer(new Group({
+                    title: 'Overlays',
+                    layers: overlays
+                }));
+            }
         }
 
         // inits onLeftClick events
