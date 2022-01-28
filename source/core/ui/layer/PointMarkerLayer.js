@@ -80,11 +80,13 @@ class PointMarkerLayer extends Layer {
      * @param {String} [properties.iconColor="#000000"] - the icon color
      * @param {Number[]} [properties.iconAnchor=[16,16]] -
      * @param {Number[]} [properties.iconSize=[16,16]] -
+     * @param {Number} [properties.iconOpacity=0.75] - icon opacity
      * @param {String} [properties.label=""] - the label to display
      * @param {String} [properties.labelColor="#000000"] - color
      * @param {String} [properties.labelOutlineColor=undefined] - color
      * @param {String} [properties.labelBackgroundColor=undefined] -  color
      * @param {Number} [properties.labelSize=16] -
+     * @param {Number} [properties.labelScale=1.0] - label scale
      * @param {Number[]} [properties.labelOffset=[0,0]] -
      * @param {Number} [properties.zIndex=] - z-ordering of markers
      * @param {Number} [properties.allowBillboardRotation=true] - allow billboard rotation
@@ -117,11 +119,13 @@ class PointMarkerLayer extends Layer {
         this.props.iconSize = [16, 16];
         this.props.iconScale = 1.0;
         this.props.iconColor = "#000000";
+        this.props.iconOpacity = 0.75;
         this.props.label = null;
         this.props.labelColor = "#000000";
         this.props.labelOutlineColor = undefined;
         this.props.labelBackgroundColor = undefined;
         this.props.labelSize = 16;
+        this.props.labelScale = 1.0;
         this.props.labelOffset = [0, 0];
         this.props.zoomLevel = 15;
         this.props.color = '#000000';
@@ -170,6 +174,11 @@ class PointMarkerLayer extends Layer {
             this.props.iconColor = properties.iconColor;
         }
 
+        if (hasValue(properties.iconOpacity)) {
+            assertString(properties.iconOpacity, "iconOpacity");
+            this.props.iconOpacity = properties.iconOpacity;
+        }
+
         if (hasValue(properties.label)) {
             assertString(properties.label, "label");
             this.props.label = properties.label;
@@ -193,6 +202,11 @@ class PointMarkerLayer extends Layer {
         if (hasValue(properties.labelSize)) {
             assertPositive(properties.labelSize, "labelSize");
             this.props.labelSize = properties.labelSize;
+        }
+
+        if (hasValue(properties.labelScale)) {
+            assertPositive(properties.labelScale, "labelScale");
+            this.props.labelScale = properties.labelScale;
         }
 
         if (hasValue(properties.labelOffset)) {
