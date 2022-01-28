@@ -131,37 +131,28 @@ class OpenLayerView extends MapView {
 
             // updates orientation
             if (props.icon !== null) {
-                // updates icon
-                let iconStyle = new Style({
-                    image: new Icon({
-                        opacity: 0.75,
-                        anchor: props.iconAnchor,
+                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
+                // Then either set that in your ol.style.Style as required
+               if(style.getImage().getSrc() !== props.icon) {
+                    const iconOpts = {
                         anchorYUnits: 'pixels',
                         anchorXUnits: 'pixels',
                         src: props.icon,
-                        rotation: props.orientation.heading * Math.PI / 180
-                    }),
-                });
+                    };
+                    style.setImage(new Icon(iconOpts));
+                }
+
+                // updates icon
+                style.getImage().setOpacity(props.iconOpacity);
+                style.getImage().setScale(props.iconScale);
                 style.getText().setText(props.label);
                 style.getText().setOffsetX(props.labelOffset[0]);
                 style.getText().setOffsetY(props.labelOffset[1]);
+                style.getText().setScale(props.labelScale);
+                style.getText().getFill().setColor(props.labelColor)
                 style.setZIndex(props.zIndex);
-
-                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
-                // Then either set that in your ol.style.Style as required
-                if(style.getImage().getSrc() !== props.icon) {
-                    style.setImage(new Icon({
-                        opacity: 0.75,
-                        anchor: props.iconAnchor,
-                        anchorYUnits: 'pixels',
-                        anchorXUnits: 'pixels',
-                        src: props.icon,
-                        rotation: props.orientation.heading * Math.PI / 180
-                    }));
-                } else {
-                    style.getImage().setAnchor(props.iconAnchor);
-                    style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
-                }
+                style.getImage().setAnchor(props.iconAnchor);
+                style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
             }
         }
     }
@@ -234,7 +225,6 @@ class OpenLayerView extends MapView {
      * @private
      */
     initMap(options) {
-
         this.map = null;
         this.first = true;
         let overlays = [];
@@ -300,26 +290,25 @@ class OpenLayerView extends MapView {
 
             // #endregion snippet_openlayerview_initial_map
 
-        }
+            this.map.setTarget(this.divId);
 
-        this.map.setTarget(this.divId);
+            if (!isDefined(this.map.getView())) {
+                this.map.setView(view);
+            }
 
-        if (!isDefined(this.map.getView())) {
-            this.map.setView(view);
-        }
+            this.map.getView().setMaxZoom(maxZoom);
 
-        this.map.getView().setMaxZoom(maxZoom);
-
-        // only if the map was not created with default layers
-        if(this.map.getLayers().getLength()  === 0) {
-            this.map.addLayer(new Group({
-                'title': 'Base maps',
-                layers: baseLayers
-            }));
-            this.map.addLayer(new Group({
-                title: 'Overlays',
-                layers: overlays
-            }));
+            // only if the map was not created with default layers
+            if(this.map.getLayers().getLength()  === 0) {
+                this.map.addLayer(new Group({
+                    'title': 'Base maps',
+                    layers: baseLayers
+                }));
+                this.map.addLayer(new Group({
+                    title: 'Overlays',
+                    layers: overlays
+                }));
+            }
         }
 
         // inits onLeftClick events
@@ -453,18 +442,24 @@ class OpenLayerView extends MapView {
             if (isDefined(properties.icon) &amp;&amp; properties.icon !== null) {
                 let iconStyle = new Style({
                     image: new Icon({
-                        opacity: 0.75,
+                        opacity: properties.iconOpacity,
                         src: properties.icon,
                         anchor: properties.iconAnchor,
                         anchorYUnits: 'pixels',
                         anchorXUnits: 'pixels',
-                        rotation: properties.orientation.heading * Math.PI / 180
+                        rotation: properties.orientation.heading * Math.PI / 180,
+                        scale: properties.iconScale,
+                        size: properties.iconSize
                     }),
                     zIndex: properties.zIndex,
                     text: new Text({
                         text: properties.label,
                         offsetX: properties.labelOffset[0],
                         offsetY: properties.labelOffset[1],
+                        scale: properties.labelScale,
+                        fill: new Fill({
+                            color: properties.labelColor
+                        }),
                     })
                 });
                 markerFeature.setStyle(iconStyle);
