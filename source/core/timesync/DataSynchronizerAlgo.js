@@ -22,7 +22,7 @@ class DataSynchronizerAlgo {
 
     push(dataSourceId, data) {
         const ds = this.dataSourceMap[dataSourceId];
-        if (ds.status === Status.DISCONNECTED) {
+        if (!this.checkVersion(ds, data)) {
             return;
         }
 
@@ -51,6 +51,7 @@ class DataSynchronizerAlgo {
             currentDs.startBufferingTime = -1;
             currentDs.latency=0;
             currentDs.status= Status.DISCONNECTED;
+            currentDs.version = undefined;
         }
         this.tsRun = 0;
         this.startBufferingTime = -1;
@@ -69,9 +70,6 @@ class DataSynchronizerAlgo {
         let currentDs;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.status === Status.DISCONNECTED) {
-                continue;
-            }
             if (currentDs.dataBuffer.length > 0) {
                 tsRef = (tsRef === -1 || currentDs.dataBuffer[0].timeStamp < tsRef) ? currentDs.dataBuffer[0].timeStamp :
                     tsRef;
@@ -100,9 +98,6 @@ class DataSynchronizerAlgo {
         let minLatency = 0;
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.status === Status.DISCONNECTED) {
-                continue;
-            }
             if (currentDs.latency > 0) {
                 let latency = Math.min(currentDs.latency, currentDs.timeOut);
                 maxLatency = (latency > maxLatency) ? latency : maxLatency;
@@ -118,9 +113,6 @@ class DataSynchronizerAlgo {
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.status === Status.DISCONNECTED) {
-                continue;
-            }
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = (currentDs.dataBuffer[0].timeStamp - tsRef);
                 const dClockAdj = dClock - maxLatency;
@@ -168,10 +160,18 @@ class DataSynchronizerAlgo {
             timedOut: false,
             name: dataSource.name || dataSource.id,
             latency: 0,
-            status: Status.DISCONNECTED //MEANING Enabled, 0 = Disabled
+            status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
+            version: undefined
         };
     }
 
+    checkVersion(datasource, data) {
+        if(!isDefined(datasource.version) && datasource.status !== Status.DISCONNECTED) {
+            return true;
+        } else if(datasource.status === Status.DISCONNECTED && datasource.version !== data.version) {
+            return false;
+        }
+    }
     onData(dataSourceId, data) {
     }
 
@@ -183,12 +183,6 @@ class DataSynchronizerAlgo {
     setStatus(dataSourceId, status) {
         if (dataSourceId in this.dataSourceMap) {
             this.dataSourceMap[dataSourceId].status = status;
-            if (status === Status.DISCONNECTED) {
-                // reset latency and buffer
-                this.dataSourceMap[dataSourceId].latency = 0;
-                this.dataSourceMap[dataSourceId].dataBuffer = [];
-            }
-
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
     }

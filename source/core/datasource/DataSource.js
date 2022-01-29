@@ -215,6 +215,8 @@ class DataSource {
     }
 
     onDisconnect(){}
+
+    reset() {}
 }
 
 export default DataSource;
