@@ -97,6 +97,14 @@ module.exports = (env) => {
                             text: 'Earthquakes Deck.gl',
                             link: `http://opensensorhub.github.io/osh-js/${target}/demos/earthquake`
                         },
+                        {
+                            text: 'OGC MISB',
+                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/misb`
+                        },
+                        {
+                            text: 'Swe Rest API',
+                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/sweapi`
+                        }
                     ]
                 },
                 {
