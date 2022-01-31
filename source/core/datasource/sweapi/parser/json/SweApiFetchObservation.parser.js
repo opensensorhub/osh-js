@@ -8,14 +8,21 @@ class SweApiFetchObservationParser extends DataSourceParser {
     }
 
     parseData(data) {
+        let rec;
+        if(data instanceof ArrayBuffer) {
+            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        } else {
+            rec = data;
+        }
+
         return new Observation(
             {
-                id: data.id,
-                datastreamId: data.datastreamId,
-                foiId: data.foiId,
-                phenomenonTime: data.phenomenonTime,
-                resultTime: data.resultTime,
-                result: data.result
+                id: rec.id,
+                datastreamId: rec.datastreamId,
+                foiId: rec.foiId,
+                phenomenonTime: rec.phenomenonTime,
+                resultTime: rec.resultTime,
+                result: rec.result
             },
             this.networkProperties
         );

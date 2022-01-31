@@ -121,6 +121,10 @@ class MqttProvider {
         },100);
     }
 
+    publish(topic, payload) {
+        this.client.publish(topic, payload);
+    }
+
     /**
      * Check to unsuscribe to any topic listened by this dsId
      * If the topic is only subscribed by the dsId, unsubscribe from broken

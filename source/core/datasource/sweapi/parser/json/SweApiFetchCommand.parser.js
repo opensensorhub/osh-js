@@ -1,10 +1,11 @@
 import DataSourceParser from "../../../parsers/DataSourceParser";
-import FeatureOfInterest from "../../../../sweapi/featureofinterest/FeatureOfInterest";
+import Command from "../../../../sweapi/command/Command";
 
-class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
-    constructor(networkProperties) {
+class SweApiFetchCommandParser extends DataSourceParser {
+    constructor(networkProperties, systemId) {
         super();
         this.networkProperties = networkProperties;
+        this.systemId = systemId;
     }
 
     parseData(data) {
@@ -15,13 +16,10 @@ class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
             rec = data;
         }
 
-        return new FeatureOfInterest(
+        return new Command(
             {
-                id: rec.id,
-                type: rec.type,
-                geometry: rec.geometry || undefined,
-                bbox: rec.bbox || undefined,
-                properties: rec.properties
+                ...rec,
+                systemId: this.systemId
             },
             this.networkProperties
         );
@@ -36,4 +34,4 @@ class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
     }
 }
 
-export default SweApiFetchFeatureOfInterestParser;
+export default SweApiFetchCommandParser;

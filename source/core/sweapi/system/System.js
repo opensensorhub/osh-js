@@ -23,6 +23,8 @@ import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDa
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
 import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/json/SweApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
+import ControlFilter from "../control/ControlFilter";
+import SweApiFetchControlParser from "../../datasource/sweapi/parser/json/SweApiFetchControl.parser";
 
 class System extends SensorWebApi {
 
@@ -32,6 +34,7 @@ class System extends SensorWebApi {
         this.systemParser = new SweApiFetchSystemParser(networkProperties);
         this.dataStreamParser = new SweApiDataStreamParser(networkProperties);
         this.featureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
+        this.controlParser = new SweApiFetchControlParser(networkProperties);
     }
 
     /**
@@ -79,6 +82,32 @@ class System extends SensorWebApi {
         return new Collection(
             API.systems.fois.replace('{id}',this.properties.id),featureOfInterestFilter,
             pageSize,this.featureOfInterestParser, this._network.info.connector);
+    }
+
+    /**
+     * Get a list of control interfaces of a system
+     * @param {ControlFilter} controlFilter - the control filter
+     * @return {Promise<Collection<Control>>}
+     */
+    async searchControls(controlFilter = new ControlFilter(), pageSize= 10) {
+        return new Collection(
+            API.systems.controls.replace('{id}',this.properties.id),controlFilter,
+            pageSize,this.controlParser, this._network.info.connector);
+    }
+
+    /**
+     * Get a specific control interface description by ID
+     * @param {String} datastreamId - The ID of the datastream or command stream
+     * @param {ControlFilter} controlFilter - the control filter
+     * @return {Promise<Control>}
+     */
+    async getControlById(datastreamId,controlFilter = new ControlFilter()) {
+        const response = await this._network.info.connector.doRequest(
+            API.systems.control_by_id.replace('{id}',this.properties.id).replace('{dsid}', datastreamId),
+            controlFilter.toQueryString(['select','format']),
+            controlFilter.props.format
+        );
+        return this.controlParser.parseData(response);
     }
 }
 
