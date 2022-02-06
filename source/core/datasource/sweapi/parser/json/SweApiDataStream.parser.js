@@ -27,7 +27,7 @@ class SweApiDataStreamParser extends DataSourceParser {
                 formats: rec.formats
             },
             {
-                stream: 'ws', // default streaming
+                streamProtocol: 'ws', // default streaming
                 ...this.networkProperties
             }
         );
