@@ -85,7 +85,7 @@ class MqttConnector extends DataConnector {
      */
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
-        mqttProvider.subscribeToObservations(topic, 'application/json',this.onMessage);
+        mqttProvider.subscribeToObservations(topic, 'application/swe+json',this.onMessage);
     }
 
     publishRequest(topic, payload) {

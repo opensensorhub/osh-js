@@ -25,7 +25,9 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         let collection;
         let filter;
 
-        let stream = this.properties.protocol === 'mqtt' || this.properties.protocol === 'ws';
+        let stream = this.properties.protocol === 'mqtt'
+                    || this.properties.protocol === 'ws'
+        ;
 
         // check if is a collection
         if (this.properties.collection === '/systems') {
@@ -77,7 +79,13 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     }
 
     async connectStream() {
-        this.streamObject.streamObservations(this.filter, this.onMessage.bind(this));
+        this.streamObject.streamObservations(this.filter, (message) => {
+            // the onMessage needs to send data result only. If the content of the record contains
+            // time + result, we need to pass only result.
+            // TODO: This would be handled automatically by parsers?
+            const result = message.hasOwnProperty('result')? message.result : message;
+            this.onMessage(result);
+        });
     }
 
     // connect non stream object

@@ -68,7 +68,9 @@ class MqttProvider {
 
 
     subscribeToObservations(dataStreamId, format, callback) {
-        const obsFilter = new ObservationFilter();
+        const obsFilter = new ObservationFilter({
+            responseFormat: format
+        });
         this.subscribeToObservationsByObsFilter([dataStreamId],obsFilter,callback);
     }
 

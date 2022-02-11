@@ -27,7 +27,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.parser = new SweApiFetchJsonParser(networkProperties);
+        this.jsonParser = new SweApiFetchJsonParser(networkProperties);
     }
 
     /**
@@ -36,7 +36,14 @@ class DataStream extends SensorWebApi {
      * @param callback - A callback to get observations
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
-        this._network.stream.connector.onMessage = callback;
+        //TODO: handle swe+json
+        if(observationFilter.props.format === 'application/json') {
+            this._network.stream.connector.onMessage = (message) => {
+                callback(this.jsonParser.parseData(message));
+            };
+        } else {
+            this._network.stream.connector.onMessage = callback;
+        }
 
         this._network.stream.connector.doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),

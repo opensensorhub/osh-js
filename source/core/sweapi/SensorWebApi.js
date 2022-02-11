@@ -70,7 +70,7 @@ class SensorWebApi {
         const url = 'http' + tls + '://' + endpoint;
 
         return new HttpConnector(url , {
-            responseType: networkProperties.responseFormat || 'application/json',
+            responseType: networkProperties.responseFormat || 'application/swe+json',
             method: 'GET'
         });
     }
