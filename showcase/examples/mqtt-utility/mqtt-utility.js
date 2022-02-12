@@ -1,6 +1,6 @@
 import MqttProvider from "osh-js/core/mqtt/MqttProvider";
 import {randomUUID} from "osh-js/core/utils/Utils";
-import SweApiFetchJson from "osh-js/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
+import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 
 const textAreaElement =  document.getElementById("data-container");
 
@@ -13,7 +13,7 @@ mqttProvider.connect();
 let count = 0;
 
 mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations','application/json',async function (message) {
-   const parser = new SweApiFetchJson();
+   const parser = new SweApiFetchGenericJson();
    const data = await parser.parseData(message).result;
    if(count++ < 30) {
       textAreaElement.value += '[gal7w6j6v7n9] '+JSON.stringify(data.location) + "\n";
@@ -24,7 +24,7 @@ mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations
 });
 
 mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
-   const parser = new SweApiFetchJson();
+   const parser = new SweApiFetchGenericJson();
    const data = await parser.parseData(message).result;
    if(count++ < 30) {
       textAreaElement.value += '[1lppw59ger1py (0)] ' +  JSON.stringify(data) + "\n";
@@ -34,8 +34,7 @@ mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observation
    }});
 
 mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observations','application/json',async function (message) {
-   const parser = new SweApiFetchJson();
-
+   const parser = new SweApiFetchGenericJson();
    const data = await parser.parseData(message).result;
    if(count++ < 30) {
       textAreaElement.value += '[1lppw59ger1py (1)] ' + JSON.stringify(data) + "\n";
@@ -44,8 +43,8 @@ mqttProvider.subscribeToObservations('/api/datastreams/1lppw59ger1py/observation
       count = 0;
    }});
 
-// setTimeout(() => {
-//    mqttProvider.unsubscribeDs('/api/datastreams/gal7w6j6v7n9/observations');
-//    textAreaElement.value += '[gal7w6j6v7n9] Unsubscribed' + "\n";
-// },1000 * 10); //10s
+setTimeout(() => {
+   mqttProvider.unsubscribeDs('/api/datastreams/gal7w6j6v7n9/observations');
+   textAreaElement.value += '[gal7w6j6v7n9] Unsubscribed' + "\n";
+},1000 * 10); //10s
 

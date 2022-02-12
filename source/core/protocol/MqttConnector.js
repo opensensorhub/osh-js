@@ -77,6 +77,7 @@ class MqttConnector extends DataConnector {
                 options: options
             });
             mqttProviders[fullUrl].connect();
+            this.checkStatus(Status.CONNECTED);
         }
         return mqttProviders[fullUrl];
     }

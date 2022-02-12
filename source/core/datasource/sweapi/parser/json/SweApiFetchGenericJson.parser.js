@@ -1,18 +1,12 @@
 import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
 
-class SweApiFetchJson extends TimeSeriesParser {
+class SweApiFetchGenericJson extends TimeSeriesParser {
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
      * @param {String} data - the data to parse
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
-        let rec = data;
-        if((data instanceof ArrayBuffer)) {
-            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-        }
-
-        return new Date(rec['phenomenonTime']).getTime();
     }
 
     /**
@@ -30,8 +24,7 @@ class SweApiFetchJson extends TimeSeriesParser {
      * }
      */
     parseData(data) {
-        const result = (data instanceof ArrayBuffer) ? JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))) : data;
-        return result.result;
+        return (data instanceof ArrayBuffer) ? JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))) : data;
     }
 
     /**
@@ -44,4 +37,4 @@ class SweApiFetchJson extends TimeSeriesParser {
     }
 }
 
-export default SweApiFetchJson;
+export default SweApiFetchGenericJson;
