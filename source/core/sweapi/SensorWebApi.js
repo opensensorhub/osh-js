@@ -21,12 +21,21 @@ import MqttConnector from "../protocol/MqttConnector";
 
 class SensorWebApi {
 
+    /**
+     *
+     * @param {Object} networkProperties - Defines network properties
+     * @param {boolean} [networkProperties.tls=false] - Defines is use TLS connection
+     * @param {endpointUrl} networkProperties.endpointUrl - The endpoint URL
+     * @param {DataConnector} [networkProperties.connector=undefined] - Use a specific connector
+     * @param {String} [networkProperties.streamProtocol='ws'] - The stream protocol: 'ws' | 'mqtt'
+     *
+     */
     constructor(networkProperties) {
+        assertDefined(networkProperties.endpointUrl, 'endpointUrl');
         this.networkProperties = networkProperties;
         this._network = {}
         this._network.info = {
             connector: this.createInfoConnector({
-                protocol: 'http',
                 tls: networkProperties.tls,
                 endpointUrl: networkProperties.endpointUrl
             })
@@ -36,54 +45,60 @@ class SensorWebApi {
             this._network.stream = {
                 connector: networkProperties.connector,
             };
-        } else if(isDefined(networkProperties.stream)){
+        } else if(isDefined(networkProperties.streamProtocol)){
             this._network.stream = {
                 connector: this.createStreamConnector(networkProperties)
+            }
+        } else {
+            // default Stream to WS
+            this._network.stream = {
+                connector: this.createStreamConnector({
+                    ...networkProperties,
+                    streamProtocol: 'ws'
+                })
             }
         }
     }
 
     createInfoConnector(networkProperties) {
-        assertDefined(networkProperties.endpointUrl, 'endpointUrl');
-        assertDefined(networkProperties.protocol, 'protocol');
-
         let endpoint = networkProperties.endpointUrl;
         if (endpoint.endsWith('/')) {
             endpoint = endpoint.substring(0, endpoint.length - 1);
         }
 
         const tls = (networkProperties.tls) ? 's' : '';
-        const url = networkProperties.protocol + tls + '://' + endpoint;
+        const url = 'http' + tls + '://' + endpoint;
 
-        if(networkProperties.protocol === 'http') {
-            return new HttpConnector(url , {
-                responseType: networkProperties.responseFormat || 'application/json',
-                method: 'GET'
-            });
-        }
+        return new HttpConnector(url , {
+            responseType: networkProperties.responseFormat || 'application/swe+json',
+            method: 'GET'
+        });
     }
 
     createStreamConnector(networkProperties) {
-        assertDefined(networkProperties.endpointUrl, 'endpointUrl');
-        assertDefined(networkProperties.stream, 'stream');
+        assertDefined(networkProperties.streamProtocol, 'streamProtocol');
 
         let endpoint = networkProperties.endpointUrl;
+        if(networkProperties.streamProtocol === 'mqtt' && isDefined(networkProperties.mqttEndpointUrl)) {
+            endpoint = networkProperties.mqttEndpointUrl;
+        }
+
         if (endpoint.endsWith('/')) {
             endpoint = endpoint.substring(0, endpoint.length - 1);
         }
 
         const tls = (networkProperties.tls) ? 's' : '';
-        const url = networkProperties.stream + tls + '://' + endpoint;
+        const url = networkProperties.streamProtocol + tls + '://' + endpoint;
 
-        if(networkProperties.stream === 'http') {
+        if(networkProperties.streamProtocol === 'http') {
             return new HttpConnector(url , {
                 responseFormat: networkProperties.responseFormat || 'application/json',
                 responseType: networkProperties.responseType || 'application/json',
                 method: 'GET'
             });
-        } else if(networkProperties.stream === 'mqtt') {
+        } else if(networkProperties.streamProtocol === 'mqtt') {
             return new MqttConnector(url);
-        } else if(networkProperties.stream === 'ws') {
+        } else if(networkProperties.streamProtocol === 'ws') {
             return new WebSocketConnector(url);
         }
     }
@@ -96,7 +111,7 @@ class SensorWebApi {
             connector: this.createStreamConnector({
                 ...this.networkProperties,
                 ...extraNetworkProperties,
-                stream: protocol,
+                streamProtocol: protocol,
                 responseType: responseType
             })
         }

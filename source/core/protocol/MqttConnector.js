@@ -54,13 +54,11 @@ class MqttConnector extends DataConnector {
         this.interval = -1;
     }
 
-    /**
-     * Connect to the Mqtt broker.
-     */
-    doRequest(topic = '',queryString= undefined) {
-        if (!this.init) {
-            let fullUrl = this.getUrl() ;
+    getMqttProvider() {
+        let fullUrl = this.getUrl() ;
 
+        // only 1 provider by URL
+        if(!(fullUrl in mqttProviders)) {
             let options = {
                 reconnectPeriod: this.reconnectTimeout,
                 connectTimeout: 30 * 1000
@@ -73,19 +71,27 @@ class MqttConnector extends DataConnector {
                 }
             }
 
-            // only 1 provider by URL
-            if(!(fullUrl in mqttProviders)) {
-                mqttProviders[fullUrl] = new MqttProvider({
-                    endpoint: fullUrl,
-                    clientId: randomUUID(),
-                    options: options
-                });
-                mqttProviders[fullUrl].connect();
-            }
-
-            mqttProviders[fullUrl].subscribeToObservations(topic, 'application/json',this.onMessage);
-            this.url = fullUrl;
+            mqttProviders[fullUrl] = new MqttProvider({
+                endpoint: fullUrl,
+                clientId: randomUUID(),
+                options: options
+            });
+            mqttProviders[fullUrl].connect();
+            this.checkStatus(Status.CONNECTED);
         }
+        return mqttProviders[fullUrl];
+    }
+    /**
+     * Connect to the Mqtt broker.
+     */
+    doRequest(topic = '',queryString= undefined) {
+        const mqttProvider = this.getMqttProvider();
+        mqttProvider.subscribeToObservations(topic, 'application/swe+json',this.onMessage);
+    }
+
+    publishRequest(topic, payload) {
+        const mqttProvider = this.getMqttProvider();
+        mqttProvider.publish(topic, payload);
     }
 
     /**
@@ -96,10 +102,10 @@ class MqttConnector extends DataConnector {
         this.checkStatus(Status.DISCONNECTED);
         this.init = false;
         this.closed = true;
-        if(isDefined(mqttProviders[this.url])) {
+        if(isDefined(mqttProviders[this.getUrl()])) {
             // unsubscribe topic
             // find the client
-            const client = mqttProviders[this.url];
+            const client = mqttProviders[this.getUrl()];
             client.unsubscribeDs(this.properties.topic);
         }
         console.warn(`Disconnected from ${this.getUrl()}`);
@@ -118,7 +124,7 @@ class MqttConnector extends DataConnector {
     }
 
     isConnected() {
-        return isDefined(mqttProviders[this.url]) && mqttProviders[this.url].isConnected();
+        return isDefined(mqttProviders[this.getUrl()]) && mqttProviders[this.getUrl()].isConnected();
     }
 }
 

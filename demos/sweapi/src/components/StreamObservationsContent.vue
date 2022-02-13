@@ -43,6 +43,8 @@ import SweApiFetchJsonParser
 import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
+import SweApiFetchGenericJson
+  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 
 export default {
   name: "StreamObservationsContent",
@@ -71,7 +73,7 @@ export default {
   },
   methods: {
     connect() {
-      const parser = new SweApiFetchJsonParser();
+      const parser = new SweApiFetchGenericJson();
       this.datastream.streamObservations(new ObservationFilter(), function (obs) {
         this.content = parser.parseData(obs);
       }.bind(this));

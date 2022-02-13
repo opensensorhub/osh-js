@@ -8,11 +8,18 @@ class SweApiFetchSystemParser extends DataSourceParser {
     }
 
     parseData(data) {
+        let rec;
+        if(data instanceof ArrayBuffer) {
+            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        } else {
+            rec = data;
+        }
+
         return new System(
             {
-                id: data.id,
-                type: data.type,
-                ...data.properties,
+                id: rec.id,
+                type: rec.type,
+                ...rec.properties,
             },
             this.networkProperties
         );

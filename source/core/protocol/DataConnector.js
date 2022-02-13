@@ -120,6 +120,10 @@ class DataConnector {
     onConnect() {
 
     }
+
+    postRequest() {}
+
+    publishRequest() {}
 }
 
 export default DataConnector;

@@ -13,6 +13,16 @@ const API = {
         datastreams: '/api/systems/{id}/datastreams',
         history: '/api/systems/{id}/history',
         history_ver: '/api/systems/{id}/history/{ver}',
+        control_by_id: '/api/systems/{id}/controls/{dsid}',
+        controls: '/api/systems/{id}/controls'
+    },
+    controls: {
+        commands: '/api/systems/{sysid}/controls/{dsid}/commands',
+        command_by_id: '/api/systems/{sysid}/controls/{dsid}/commands/{cmdid}',
+        status: '/api/systems/{sysid}/controls/{dsid}/status'
+    },
+    commands: {
+        status: '/api/systems/{sysid}/controls/{dsid}/commands/{cmdid}/status'
     },
     observations: {
         search: '/api/observations',

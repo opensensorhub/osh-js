@@ -32,6 +32,8 @@ import ObservationFilter from "../../../../source/core/sweapi/observation/Observ
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import SensorWebApiFetchJsonParser from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
+import SweApiFetchGenericJson
+  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 
 export default {
   name: "SearchObservationsContent",
@@ -59,7 +61,7 @@ export default {
     }
   },
   mounted() {
-    this.collection = this.datastream.searchObservations(new ObservationFilter(), 10, new SensorWebApiFetchJsonParser());
+    this.collection = this.datastream.searchObservations(new ObservationFilter(), 10, new SweApiFetchGenericJson());
     this.connect();
   },
   async destroyed(){

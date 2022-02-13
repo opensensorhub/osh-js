@@ -68,7 +68,9 @@ class MqttProvider {
 
 
     subscribeToObservations(dataStreamId, format, callback) {
-        const obsFilter = new ObservationFilter();
+        const obsFilter = new ObservationFilter({
+            responseFormat: format
+        });
         this.subscribeToObservationsByObsFilter([dataStreamId],obsFilter,callback);
     }
 
@@ -119,6 +121,10 @@ class MqttProvider {
                 }
             }
         },100);
+    }
+
+    publish(topic, payload) {
+        this.client.publish(topic, payload);
     }
 
     /**

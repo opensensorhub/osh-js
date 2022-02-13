@@ -107,7 +107,8 @@ let directories = [
     'audio-with-control-vuejs',
     'audioRaw-with-control-vuejs',
     'datasource-audio',
-    'audio-video-synchronized-with-control-vuejs'
+    'audio-video-synchronized-with-control-vuejs',
+    'tasking'
 ];
 
 const plug = {};

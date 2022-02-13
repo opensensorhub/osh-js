@@ -8,13 +8,20 @@ class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
     }
 
     parseData(data) {
+        let rec;
+        if(data instanceof ArrayBuffer) {
+            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        } else {
+            rec = data;
+        }
+
         return new FeatureOfInterest(
             {
-                id: data.id,
-                type: data.type,
-                geometry: data.geometry || undefined,
-                bbox: data.bbox || undefined,
-                properties: data.properties
+                id: rec.id,
+                type: rec.type,
+                geometry: rec.geometry || undefined,
+                bbox: rec.bbox || undefined,
+                properties: rec.properties
             },
             this.networkProperties
         );
