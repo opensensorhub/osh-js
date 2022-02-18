@@ -79,7 +79,7 @@ import SearchObservationsContent from "./components/SearchObservationsContent.vu
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchJsonParser from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
+import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 
 export default {
   components: {
@@ -137,7 +137,7 @@ export default {
       const id = this.active[0]
       const node = this.nodes[id];
       this.datastreamNodeId = node.id;
-      const jsonParser = new SweApiFetchJsonParser();
+      const jsonParser = new SweApiFetchGenericJson();
       if (id.startsWith('system-details')) {
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
