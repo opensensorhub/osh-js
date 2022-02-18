@@ -124,6 +124,21 @@ class HttpConnector extends DataConnector {
         return response;
     }
 
+
+    async postRequest(extraUrl = '',payload={},  responseType = undefined) {
+        let fullUrl = this.getUrl() + extraUrl;
+        // default
+        await fetch(fullUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                ...this.headers
+            },
+            body: payload
+        });
+    }
+
     /**
      * This is the callback method in case of getting error connection.
      * @param event The error details

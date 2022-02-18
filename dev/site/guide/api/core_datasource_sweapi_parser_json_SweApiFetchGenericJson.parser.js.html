@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
+
+class SweApiFetchGenericJson extends TimeSeriesParser {
+    /**
+     * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
+     * @param {String} data - the data to parse
+     * @return {Number} the extracted timestamp
+     */
+    parseTimeStamp(data) {
+    }
+
+    /**
+     * Extract data from the message. The data are corresponding to the whole list of attributes of the JSON object
+     * excepting the 'time' one.
+     * @param {Object} data - the data to parse
+     * @return {Object} the parsed data
+     * @example
+     * {
+     *   location : {
+     *    lat:43.61758626,
+     *    lon: 1.42376557,
+     *    alt:100
+     *   }
+     * }
+     */
+    parseData(data) {
+        return (data instanceof ArrayBuffer) ? JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))) : data;
+    }
+
+    /**
+     * Builds the full url.
+     * @protected
+     * @param {Object} properties
+     * @return {String} the full url
+     */
+    buildUrl(properties) {
+    }
+}
+
+export default SweApiFetchGenericJson;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
