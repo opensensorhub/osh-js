@@ -104,6 +104,10 @@ module.exports = (env) => {
                         {
                             text: 'Swe Rest API',
                             link: `http://opensensorhub.github.io/osh-js/${target}/demos/sweapi`
+                        },
+                        {
+                            text: 'Swe Rest Tasking',
+                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/tasking`
                         }
                     ]
                 },
