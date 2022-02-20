@@ -1,34 +1,84 @@
 <template>
-  <div id="app">
-    <Map
-        v-if="isInit"
-        :drone-location-data-source="droneLocationDataSource"
-        :control="control"
+  <v-app>
+    <v-navigation-drawer
+        hide-overlay
+        :width="showNav ? 400 : 0"
+        permanent
+        app>
+      <v-expansion-panels focusable popout v-model="panel" multiple>
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            Commands
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <TimeLine
+                v-if="isInit"
+                :control="control"
+            ></TimeLine>          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-navigation-drawer>
+
+    <v-app-bar
+        elevation="4"
+        dense
+        app>
+      <v-app-bar-nav-icon
+          @click="showNav = !showNav">
+        <slot v-if="showNav">
+          <v-icon>mdi-chevron-left</v-icon>
+        </slot>
+        <slot v-if="!showNav">
+          <v-icon>mdi-chevron-right</v-icon>
+        </slot>
+      </v-app-bar-nav-icon>
+      <!-- -->
+      <v-toolbar-title>Hypersonic Drone Tasking</v-toolbar-title>
+      <div class="flex-grow-1"></div>
+
+      <Clock>
+      </Clock>
+    </v-app-bar>
+
+    <v-main>
+      <Map
+          v-if="isInit"
+          :drone-location-data-source="droneLocationDataSource"
+          :control-data-source="controlDataSource"
+          :control="control"
       ></Map>
-    <InfoPanel
-        v-if="isInit"
-        :drone-location-data-source="droneLocationDataSource"
-        :control="control"
-    ></InfoPanel>
-  </div>
+    </v-main>
+
+    <v-footer app>
+      <!-- -->
+    </v-footer>
+  </v-app>
 </template>
 <script>
 // @ is an alias to /src
 import Map from './components/Map.vue';
 import InfoPanel from "./components/InfoPanel.vue";
+import Clock from "./components/Clock.vue";
+import TimeLine from "./components/TimeLine.vue";
 
 import SweApiFetchJson from "osh-js/core/datasource/sweapi/SweApiFetchJson";
 import Systems from "osh-js/core/sweapi/system/Systems";
+import Control from "../../../source/core/sweapi/control/Control";
+import {EventType} from "../../../source/core/event/EventType";
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
   components: {
     Map,
-    InfoPanel
+    InfoPanel,
+    Clock,
+    TimeLine
   },
   data() {
     return {
-      isInit: false
+      isInit: false,
+      showNav: true,
+      panel: [0]
     }
   },
   async beforeMount() {
@@ -43,25 +93,40 @@ export default {
       tls: true,
     });
 
-    this.droneLocationDataSource.connect();
     this.systems = new Systems({
-      endpointUrl:  'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       mqttEndpointUrl: 'ogct17.georobotix.io:8483',
       streamProtocol: 'mqtt',
       tls: true
     });
 
-    const systems = new Systems({
-      endpointUrl:  'ogct17.georobotix.io:8443/sensorhub',
+    this.control = new Control({
+      id: cmdStreamId,
+      system: {
+        id: systemId
+      }
+    }, {
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       mqttEndpointUrl: 'ogct17.georobotix.io:8483',
       streamProtocol: 'mqtt',
       tls: true
     });
 
-    const system = await systems.getSystemById(systemId);
-    this.control = await system.getControlById(cmdStreamId);
+    // https://ogct17.georobotix.io:8443/sensorhub/api/systems/1ghd3h0dea3xy/controls/1rl2xoslsdldj/commands
+
+    this.controlDataSource = new SweApiFetchJson("Control Status", {
+      collection: `/systems/${systemId}/controls/${cmdStreamId}/status`,
+      endpointUrl: 'ogct17.georobotix.io:8483',
+      protocol: 'mqtt',
+      tls: true,
+    });
+
+    await this.controlDataSource.connect();
+    await this.droneLocationDataSource.connect();
+
+    // this.controlDataSource.subscribe(message => console.log(message), [EventType.DATA]);
+    // this.droneLocationDataSource.subscribe(message => console.log(message), [EventType.DATA]);
     this.isInit = true;
-
   },
   mounted() {
 
@@ -77,27 +142,5 @@ html, body {
   padding: 0
 }
 
-.bar-icon {
-  z-index: 30;
-  background-color: rgba(0,0,0,0.5) !important;
-  position: absolute;
-  border-radius: 0 0 8px 0 !important;
-  color: #c1c1c1 !important;
-  caret-color: rgba(0, 0, 0, 0);
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -ms-user-select: none;
-}
-
-.v-toolbar__content, .v-toolbar__extension {
-  padding: 4px 4px;
-  font-family: sans-serif;
-}
-
-.v-toolbar__title {
-  margin-left: 10px;
-}
 </style>
 
