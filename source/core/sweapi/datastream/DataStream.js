@@ -27,7 +27,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.jsonParser = new SweApiFetchGenericJson(networkProperties);
+        this.jsonParser = new SweApiFetchGenericJson('phenomenonTime');
     }
 
     /**
