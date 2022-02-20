@@ -10,12 +10,18 @@ import FeatureOfInterestFilter from "../../../sweapi/featureofinterest/FeatureOf
 import DataStreamFilter from "../../../sweapi/datastream/DataStreamFilter";
 import DataStream from "../../../sweapi/datastream/DataStream";
 import ObservationFilter from "../../../sweapi/observation/ObservationFilter";
+import CommandFilter from "../../../sweapi/command/CommandFilter";
+import Command from "../../../sweapi/command/Command";
+import ControlFilter from "../../../sweapi/control/ControlFilter";
+import Control from "../../../sweapi/control/Control";
 
 class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     constructor(parser) {
         super(parser);
     }
 
+    initStreamFunctions() {
+    }
     async updateAferCreatingConnector(properties) {
         const networkProperties = {
             ...properties,
@@ -30,9 +36,32 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         ;
 
         // check if is a collection
-        if (this.properties.collection === '/systems') {
+        if(this.properties.collection.startsWith('/systems')) {
+            const systems = new Systems(networkProperties);
+            //
             filter = this.createSystemFilter(properties);
-            collection = new Systems(networkProperties).searchSystems(filter, properties.batchSize);
+            const regex = new RegExp('\\/systems\\/(.*)\\/controls\\/(.*)\\/status');
+            // stream status
+            if(regex.test(this.properties.collection)) {
+                filter = this.createControlFilter(properties);
+                // is observation streaming
+                const match = regex.exec(this.properties.collection);
+
+                let apiObject = new Control({
+                    id: match[2],
+                    system: {
+                        id: match[1]
+                    }
+                }, networkProperties);
+
+                if(stream) {
+                    this.streamObject = apiObject
+                } else {
+                    collection = apiObject.searchStatus(filter, properties.batchSize);
+                }
+            } else {
+                collection = systems.searchSystems(filter, properties.batchSize);
+            }
         } else if (this.properties.collection === '/fois') {
             filter = this.createFeatureOfInterestFilter(properties);
             collection = new FeatureOfInterests(networkProperties).searchFeaturesOfInterest(filter, properties.batchSize);
@@ -79,12 +108,23 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
     }
 
     async connectStream() {
-        this.streamObject.streamObservations(this.filter, (message) => {
-            // the onMessage needs to send data result only. If the content of the record contains
-            // time + result, we need to pass only result.
-            // TODO: This would be handled automatically by parsers?
-            this.onMessage(message);
-        });
+        if(this.streamObject instanceof DataStream) {
+            this.parser = this.streamObject.jsonParser;
+            this.streamObject.streamObservations(this.filter, (message) => {
+                // the onMessage needs to send data result only. If the content of the record contains
+                // time + result, we need to pass only result.
+                // TODO: This would be handled automatically by parsers?
+                this.onMessage(message);
+            });
+        } else if(this.streamObject instanceof Control) {
+            this.parser = this.streamObject.jsonParser;
+            this.streamObject.streamStatus(this.filter, (message) => {
+                // the onMessage needs to send data result only. If the content of the record contains
+                // time + result, we need to pass only result.
+                // TODO: This would be handled automatically by parsers?
+                this.onMessage(message);
+            });
+        }
     }
 
     // connect non stream object
@@ -215,6 +255,60 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         }
 
         return new ObservationFilter(props);
+    }
+
+    createCommandFilter(properties) {
+        const props = {};
+        if(isDefined(properties.keywords)) {
+            props.q = properties.keywords;
+        }
+        if(isDefined(properties.actuableProperty)) {
+            props.actuableProperty = properties.actuableProperty;
+        }
+        if(isDefined(properties.statusCode)) {
+            props.statusCode = properties.statusCode;
+        }
+        if(isDefined(properties.responseFormat)) {
+            props.format = properties.responseFormat;
+        }
+        if(isDefined(properties.issueTime)) {
+            props.issueTime = properties.issueTime;
+        }
+        if(isDefined(properties.executionTime)) {
+            props.executionTime = properties.executionTime;
+        }
+        if(isDefined(properties.reportTime)) {
+            props.reportTime = properties.reportTime;
+        }
+
+        return new CommandFilter(props);
+    }
+
+    createControlFilter(properties) {
+        const props = {};
+        if(isDefined(properties.keywords)) {
+            props.q = properties.keywords;
+        }
+        if(isDefined(properties.actuableProperty)) {
+            props.actuableProperty = properties.actuableProperty;
+        }
+        if(isDefined(properties.statusCode)) {
+            props.statusCode = properties.statusCode;
+        }
+        if(isDefined(properties.responseFormat)) {
+            props.format = properties.responseFormat;
+        }
+        if(isDefined(properties.issueTime)) {
+            props.issueTime = properties.issueTime;
+        }
+        if(isDefined(properties.executionTime)) {
+            props.executionTime = properties.executionTime;
+        }
+        if(isDefined(properties.reportTime)) {
+            props.reportTime = properties.reportTime;
+        }
+
+        return new ControlFilter(props);
     }
 
     createDataStreamFilter(properties) {
