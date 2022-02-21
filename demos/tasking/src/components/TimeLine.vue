@@ -13,12 +13,23 @@
           small
       >
         <v-row justify="space-between">
-          <v-col cols="14" class="time-item-content">
-            {{  item.type }}: {{ item.status }}
+          <v-col cols="2" class="time-item-content">
+            <v-progress-circular
+                :rotate="360"
+                :size="45"
+                :width="4"
+                :value="item.progress"
+                color="teal"
+            >
+              {{  item.progress }}
+            </v-progress-circular>
+          </v-col>
+          <v-col cols="5" class="time-item-content">
+            {{  item.type }} {{ item.status }}
           </v-col>
           <v-col
               class="text-right"
-              cols="5"
+              cols="4"
           >
             {{  getDate(item.time) }}
             {{  getTime(item.time) }}
@@ -49,18 +60,21 @@ export default {
 
       const command = await this.control.getCommandById(status.command);
 
-      // this.commands.set(command.properties.id, command.properties);
-
-      await this.$store.dispatch('setCommand', command.properties);
+      await this.$store.dispatch('setCommand', {
+        ...command.properties,
+        progress: status.progress || ((command.properties.status === 'COMPLETED') ? 100 : 0)
+      });
 
       this.items = Array.from(this.$store.state.commands, ([key, value]) => (
           {
             key: key,
             type:Object.keys(value.params)[0],
             status: value.status,
-            time: value.issueTime
+            time: value.issueTime,
+            progress: value.progress
           }
       ));
+
       while(this.items.length > this.maxItems) {
         if(this.items[0].status === 'EXECUTING') {
           // do not remove at this point
@@ -100,7 +114,9 @@ export default {
 }
 
 .timeline-item{
-  display: flex;
+  align-content: center;
+  align-self: center;
   align-items: center;
+  text-align: center;
 }
 </style>

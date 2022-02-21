@@ -2,21 +2,17 @@
   <v-app>
     <v-navigation-drawer
         hide-overlay
-        :width="showNav ? 400 : 0"
+        :width="showNav ? 420 : 0"
         permanent
         app>
-      <v-expansion-panels focusable popout v-model="panel" multiple>
-        <v-expansion-panel>
-          <v-expansion-panel-header>
-            Commands
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <TimeLine
-                v-if="isInit"
-                :control="control"
-            ></TimeLine>          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+
+      <v-card dark raised elevation="4" class="time-card">
+      <v-card-title>Commands Ack</v-card-title>
+      <TimeLine
+          v-if="isInit"
+          :control="control"
+      ></TimeLine>
+      </v-card>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -140,6 +136,11 @@ html, body {
   overflow: hidden !important;
   margin: 0;
   padding: 0
+}
+
+.time-card{
+  padding-left:0;
+  padding-right: 10px;
 }
 
 </style>

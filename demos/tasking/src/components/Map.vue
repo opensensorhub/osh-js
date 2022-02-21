@@ -55,7 +55,6 @@ export default {
           let command = await this.getCommand(rec.command);
           let type = Object.keys(command.properties.params)[0];
           const pos = command.properties.params[type].position;
-          // console.log('location',command)
           return {
             x: pos.lon,
             y: pos.lat,
@@ -64,13 +63,21 @@ export default {
         },
         getMarkerId: async (rec) => {
           let command = await this.getCommand(rec.command);
-          // console.log('markerId',command)
           return command.properties.id;
         },
         name: 'waypoint',
         description: 'waypoint',
         iconSize: [25, 41],
         icon: 'images/marker-icon.png',
+        getIcon: (rec) => {
+          if(rec.statusCode === 'EXECUTING') {
+            return 'images/marker-icon-yellow.png'
+          } else if(rec.statusCode === 'COMPLETED') {
+            return 'images/marker-icon-green.png'
+          } else {
+            return 'images/marker-icon-grey.png'
+          }
+        },
         iconAnchor: [12, 38]
       });
 
