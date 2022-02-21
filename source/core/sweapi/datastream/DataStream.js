@@ -39,7 +39,7 @@ class DataStream extends SensorWebApi {
         //TODO: handle swe+json
         if(observationFilter.props.format === 'application/json') {
             this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
+                callback(this.parseJson(message));
             };
         } else {
             this._network.stream.connector.onMessage = callback;

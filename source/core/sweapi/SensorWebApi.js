@@ -120,5 +120,9 @@ class SensorWebApi {
     connect() {
         this._network.stream.connector.connect();
     }
+
+    parseJson(data) {
+        return (data instanceof ArrayBuffer) ? JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))) : data;
+    }
 }
 export default SensorWebApi;

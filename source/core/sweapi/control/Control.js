@@ -96,8 +96,7 @@ class Control extends SensorWebApi {
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
         if(controlFilter.props.format === 'application/json') {
             this._network.stream.connector.onMessage = (message) => {
-                const data = this.jsonParser.parseData(message);
-                callback(data);
+                callback(this.parseJson(message));
             };
         } else {
             this._network.stream.connector.onMessage = callback;
