@@ -109,7 +109,6 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
 
     async connectStream() {
         if(this.streamObject instanceof DataStream) {
-            this.parser = this.streamObject.jsonParser;
             this.streamObject.streamObservations(this.filter, (message) => {
                 // the onMessage needs to send data result only. If the content of the record contains
                 // time + result, we need to pass only result.
@@ -117,7 +116,6 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
                 this.onMessage(message);
             });
         } else if(this.streamObject instanceof Control) {
-            this.parser = this.streamObject.jsonParser;
             this.streamObject.streamStatus(this.filter, (message) => {
                 // the onMessage needs to send data result only. If the content of the record contains
                 // time + result, we need to pass only result.

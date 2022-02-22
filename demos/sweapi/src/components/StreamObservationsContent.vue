@@ -73,9 +73,8 @@ export default {
   },
   methods: {
     connect() {
-      const parser = new SweApiFetchGenericJson();
       this.datastream.streamObservations(new ObservationFilter(), function (obs) {
-        this.content = parser.parseData(obs);
+        this.content = obs;
       }.bind(this));
     },
     disconnect() {

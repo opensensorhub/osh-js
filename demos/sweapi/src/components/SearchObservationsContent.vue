@@ -61,7 +61,7 @@ export default {
     }
   },
   mounted() {
-    this.collection = this.datastream.searchObservations(new ObservationFilter(), 10, new SweApiFetchGenericJson());
+    this.collection = this.datastream.searchObservations(new ObservationFilter(), 10);
     this.connect();
   },
   async destroyed(){

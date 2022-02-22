@@ -5,6 +5,7 @@ import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
 import SweApiFetchGenericJson from "../../datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import SweParser from "../SweParser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -30,7 +31,7 @@ class Control extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties.system.id);
-        this.jsonParser = new SweApiFetchGenericJson('reportTime');
+        this.jsonParser = new SweParser();
     }
 
     /**
@@ -96,7 +97,7 @@ class Control extends SensorWebApi {
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
         if(controlFilter.props.format === 'application/json') {
             this._network.stream.connector.onMessage = (message) => {
-                callback(this.parseJson(message));
+                callback(this.jsonParser.parseData(message));
             };
         } else {
             this._network.stream.connector.onMessage = callback;
