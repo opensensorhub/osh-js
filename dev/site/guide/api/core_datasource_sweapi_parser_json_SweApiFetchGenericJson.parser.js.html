@@ -29,12 +29,23 @@
             <pre class="prettyprint source linenums"><code>import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
 
 class SweApiFetchGenericJson extends TimeSeriesParser {
+
+    constructor(timeFieldName) {
+        super();
+        this.timeFieldName = timeFieldName || 'phenomenonTime';
+    }
     /**
      * Extracts timestamp from the message. The timestamp corresponds to the 'time' attribute of the JSON object.
      * @param {String} data - the data to parse
      * @return {Number} the extracted timestamp
      */
     parseTimeStamp(data) {
+        let rec = data;
+        if((data instanceof ArrayBuffer)) {
+            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
+        }
+
+        return new Date(rec[this.timeFieldName]).getTime();
     }
 
     /**
@@ -52,7 +63,12 @@ class SweApiFetchGenericJson extends TimeSeriesParser {
      * }
      */
     parseData(data) {
-        return (data instanceof ArrayBuffer) ? JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))) : data;
+        const result = (data instanceof ArrayBuffer) ? JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data))) : data;
+        if(result.hasOwnProperty('result')) {
+            return result.result;
+        } else {
+            return result;
+        }
     }
 
     /**

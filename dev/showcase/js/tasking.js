@@ -74,8 +74,6 @@ async function startListening() {
         const values = message.values;
         for(let obs of values) {
             document.getElementById("text_loc").innerHTML = JSON.stringify(obs, null, 2);
-            const result = obs.result;
-
             prevTime = Date.parse(obs.resultTime);
         }
     }, [EventType.DATA]);
@@ -87,8 +85,7 @@ async function startListening() {
 
     control.streamStatus(new ControlFilter({}), async (message) =>{
         textCommandElt.innerHTML = "";
-        const statusStr = String.fromCharCode.apply(null, new Uint8Array(message));
-        const status = JSON.parse(statusStr);
+        const status = message;
         textStatusElt.innerHTML = JSON.stringify(status, null, 2);
         const command = await control.getCommandById(status.command);
         commands.set(command.properties.id, command.properties);

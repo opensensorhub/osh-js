@@ -256,19 +256,21 @@ class View {
             // observes the data come in
             let self = this;
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
-            broadcastChannel.onmessage = (event) => {
-                if(event.data.type === EventType.STATUS &amp;&amp; event.data.status === Status.CLOSED_ERROR) {
+            broadcastChannel.onmessage = async (event) => {
+                if (event.data.type === EventType.STATUS &amp;&amp; event.data.status === Status.CLOSED_ERROR) {
                     self.reset();
-                } else if(event.data.type === EventType.DATA) {
+                } else if (event.data.type === EventType.DATA) {
 
+                    const that = this;
                     // transform the data
-                    layer.setData(dataSourceId, event.data.values);
+                    layer.setData(dataSourceId, event.data.values).then(() => {
 
-                    // set the transformed data to the view
-                    this.setData(dataSourceId, layer.getProps());
+                        // set the transformed data to the view
+                        that.setData(dataSourceId, layer.getProps());
 
-                    // store as last record
-                    self.lastRec[dataSourceId] = event.data;
+                        // store as last record
+                        self.lastRec[dataSourceId] = event.data;
+                    });
                 }
             };
 

@@ -105,16 +105,16 @@ class Layer {
                 return true;
             };
 
-            let fn = function(rec,timeStamp,options) {
-                that.props.filter = that.getFunc('filter')(rec,timeStamp,options);
+            let fn = async function (rec, timeStamp, options) {
+                that.props.filter = await that.getFunc('filter')(rec, timeStamp, options);
             };
 
             this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
         }
 
         if (this.checkFn("getVisible")) {
-            let fn = function(rec,timeStamp,options) {
-                that.props.visible = that.getFunc('getVisible')(rec,timeStamp,options);
+            let fn = async function (rec, timeStamp, options) {
+                that.props.visible = await that.getFunc('getVisible')(rec, timeStamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
         }
@@ -202,18 +202,23 @@ class Layer {
      * @param {Object[]} records
      * @param options
      */
-    setData(dataSourceId, records, options={}) {
+    async setData(dataSourceId, records, options={}) {
         // store data into data props
         this.data = [];
         options.dataSourceId = dataSourceId;
         if (isDefined(this.dataSourcesToFn)) {
             if (dataSourceId in this.dataSourcesToFn) {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
-
                 outer: for (let j = 0; j &lt; records.length; j++) {
                     inner: for (let i = 0; i &lt; fnArr.length; i++) {
-                        fnArr[i](records[j].data, records[j].timeStamp, options);
-                        if(!this.props.filter) {
+                        const fn = fnArr[i]
+                        const isAsync = fn.constructor.name === "AsyncFunction";
+                        if(isAsync) {
+                            await fnArr[i](records[j].data, records[j].timeStamp, options);
+                        } else {
+                            fnArr[i](records[j].data, records[j].timeStamp, options);
+                        }
+                        if (!this.props.filter) {
                             break inner;
                         }
                     }
