@@ -305,7 +305,7 @@ class LeafletView extends MapView {
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(props) {
+    async updateMarker(props) {
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
@@ -374,7 +374,7 @@ class LeafletView extends MapView {
      * Updates the polyline associated to the layer.
      * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
      */
-    updatePolyline(props) {
+    async updatePolyline(props) {
         let polyline = this.getPolyline(props);
         if (!isDefined(polyline)) {
             // adds a new polygon to the leaflet renderer
@@ -407,7 +407,7 @@ class LeafletView extends MapView {
      * Updates the polygon associated to the layer.
      * @param {Polygon.props} props - The layer properties allowing the update of the polygon
      */
-    updatePolygon(props) {
+    async updatePolygon(props) {
         let polygon = this.getPolygon(props);
         if (!isDefined(polygon)) {
             // adds a new polygon to the leaflet renderer

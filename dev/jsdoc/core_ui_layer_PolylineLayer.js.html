@@ -130,14 +130,14 @@ class PolylineLayer extends Layer {
 		let that = this;
 		// must be first to assign correctly the first location to the right id if it is defined
 		if(isDefined(properties.getPolylineId)) {
-			let fn = async function (rec) {
+			let fn = async (rec) => {
 				that.props.polylineId = await that.getFunc('getPolylineId')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getPolylineId'),fn);
 		}
 
 		if(isDefined(properties.getLocation)) {
-			let fn = async function (rec) {
+			let fn = async (rec) => {
 				let loc = await that.getFunc('getLocation')(rec);
 				if (!(that.props.polylineId in that.props.locations)) {
 					that.props.locations[that.props.polylineId] = [];
@@ -151,28 +151,28 @@ class PolylineLayer extends Layer {
 		}
 
 		if(isDefined(properties.getColor)) {
-			let fn = async function (rec) {
+			let fn = async (rec) => {
 				that.props.color = await that.getFunc('getColor')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
 		}
 
 		if(isDefined(properties.getWeight)) {
-			let fn = async function (rec) {
+			let fn = async (rec) => {
 				that.props.weight = await that.getFunc('getWeight')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getWeight'),fn);
 		}
 
 		if(isDefined(properties.getOpacity)) {
-			let fn = async function (rec) {
+			let fn = async (rec) => {
 				that.props.opacity = await that.getFunc('getOpacity')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
 		}
 
 		if(isDefined(properties.getSmoothFactor)) {
-			let fn = async function (rec) {
+			let fn = async (rec) => {
 				that.props.smoothFactor = await that.getFunc('getSmoothFactor')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getSmoothFactor'),fn);

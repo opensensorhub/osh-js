@@ -164,7 +164,7 @@ class DeckGlView extends MapView {
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(props) {
+    async updateMarker(props) {
         const id = props.id+'$'+props.markerId;
 
         const mId = props.markerId;
@@ -223,7 +223,7 @@ class DeckGlView extends MapView {
      * Updates the polyline associated to the layer.
      * @param {Polyline} layer - The layer allowing the update of the polyline
      */
-    updatePolyline(layer) {
+    async updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
         const path = layer.locations[layer.polylineId].map((coordinate) => {
             return [coordinate.x, coordinate.y, 1]
@@ -257,7 +257,7 @@ class DeckGlView extends MapView {
      * Updates the polyline associated to the layer.
      * @param {Polyline} layer - The layer allowing the update of the polyline
      */
-    updatePolygon(layer) {
+    async updatePolygon(layer) {
         const id = layer.id+'$'+layer.polygonId;
 
         // update locations

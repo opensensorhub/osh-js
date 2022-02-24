@@ -124,7 +124,7 @@ class ChartJsView extends View {
         this.datasets = {};
     }
 
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
         if(data.type === 'curve') {
             this.updateCurve(data.values);
         }
@@ -144,7 +144,7 @@ class ChartJsView extends View {
      * Updates the curve associated to the layer.
      * @param {Curve.props[]} props - The layer properties allowing the update of the curve
      */
-    updateCurve(props) {
+    async updateCurve(props) {
         if(this.resetting) {
             return;
         }

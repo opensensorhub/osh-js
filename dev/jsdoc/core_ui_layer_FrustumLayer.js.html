@@ -61,43 +61,43 @@ class frustumLayer extends Layer {
         }
 
         if(isDefined(properties.getColor)) {
-            let fn = function(rec) {
-                that.props.color = that.getFunc('getColor')(rec);
+            let fn = async (rec) => {
+                that.props.color = await  that.getFunc('getColor')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
         }
 
         if(isDefined(properties.getOrigin)) {
-            let fn = function(rec) {
-                that.props.origin = that.getFunc('getOrigin')(rec);
+            let fn = async (rec) => {
+                that.props.origin = await that.getFunc('getOrigin')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getOrigin'),fn);
         }
 
         if(isDefined(properties.getFov)) {
-            let fn = function(rec) {
-                that.props.fov = that.getFunc('getFov')(rec);
+            let fn = async (rec) => {
+                that.props.fov = await that.getFunc('getFov')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getFov'),fn);
         }
 
         if(isDefined(properties.getRange)) {
-            let fn = function(rec) {
-                that.props.range = that.getFunc('getRange')(rec);
+            let fn = async (rec) => {
+                that.props.range = await that.getFunc('getRange')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getRange'),fn);
         }
 
         if(isDefined(properties.getPlatformOrientation)) {
-            let fn = function(rec) {
-                that.props.platformOrientation = that.getFunc('getPlatformOrientation')(rec);
+            let fn = async (rec) => {
+                that.props.platformOrientation = await that.getFunc('getPlatformOrientation')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getPlatformOrientation'),fn);
         }
 
         if(isDefined(properties.getSensorOrientation)) {
-            let fn = function(rec) {
-                that.props.sensorOrientation = that.getFunc('getSensorOrientation')(rec);
+            let fn = async (rec) => {
+                that.props.sensorOrientation = await that.getFunc('getSensorOrientation')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getSensorOrientation'),fn);
         }

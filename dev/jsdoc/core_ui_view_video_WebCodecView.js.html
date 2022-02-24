@@ -133,7 +133,7 @@ class WebCodecView extends CanvasView {
         this.canvasElt.setAttribute('height', height);
     }
 
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
         const values = data.values;
         for(let i=0; i &lt; values.length;i++) {
             if (!this.skipFrame) {
@@ -154,7 +154,7 @@ class WebCodecView extends CanvasView {
     }
 
     initDecoder() {
-        const gl = this.canvasElt.getContext("bitmaprenderer");
+        this.gl = this.canvasElt.getContext("bitmaprenderer");
 
         this.decodeWorker = new DecodeWorker();
         this.decodeWorker.postMessage({
@@ -178,43 +178,47 @@ class WebCodecView extends CanvasView {
                     console.warn('Bitmap is undefined, skipping this frame..');
                     return;
                 }
-
-                try {
-                    if(this.width !== width || this.height !== height) {
-                        this.width = width;
-                        this.height = height;
-                        //re-configure the canvas
-                        this.updateCanvasSize(width,height);
-                    }
-                    // draw image
-                    gl.transferFromImageBitmap(bitmap);
-
-                    // update stats
-                    this.updateStatistics(event.data.pktSize);
-                    if(this.showTime) {
-                        this.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
-                    }
-                    if(this.showStats) {
-                        this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
-                            (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
-                    }
-                    this.onUpdated(this.statistics);
-                } catch (exception) {
-                    console.error(exception);
-                    //continue;
-                } finally {
-                    bitmap.close();
-                }
+                this.handleDocodedFrame(bitmap, width, height);
             }
         }
     }
+
+    async handleDocodedFrame(bitmap, width, height) {
+        try {
+            if(this.width !== width || this.height !== height) {
+                this.width = width;
+                this.height = height;
+                //re-configure the canvas
+                this.updateCanvasSize(width,height);
+            }
+            // draw image
+            this.gl.transferFromImageBitmap(bitmap);
+
+            // update stats
+            this.updateStatistics(event.data.pktSize);
+            if(this.showTime) {
+                this.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
+            }
+            if(this.showStats) {
+                this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
+                    (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
+            }
+            this.onUpdated(this.statistics);
+        } catch (exception) {
+            console.error(exception);
+            //continue;
+        } finally {
+            bitmap.close();
+        }
+    }
+
     /**
      * @private
      * @param pktSize
      * @param pktData
      * @param timeStamp
      */
-    decode(pktSize, pktData, timeStamp, roll) {
+    async decode(pktSize, pktData, timeStamp, roll) {
         if (!this.codecConfigured) {
             this.initDecoder();
         }

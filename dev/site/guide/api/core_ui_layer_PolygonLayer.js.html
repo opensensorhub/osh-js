@@ -130,14 +130,14 @@ class PolygonLayer extends Layer {
 
         // must be first to assign correctly the first location to the right id if it is defined
         if(isDefined(properties.getPolygonId)) {
-            let fn = async function (rec) {
+            let fn = async (rec) => {
                 that.props.polygonId = await that.getFunc('getPolygonId')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getPolygonId'),fn);
         }
 
         if (isDefined(properties.getVertices)) {
-            let fn = async function (rec, timeStamp, options) {
+            let fn = async (rec, timeStamp, options) => {
                 let vertices = await that.getFunc('getVertices')(rec, timeStamp, options);
                 if (!(that.props.polygonId in that.props.vertices)) {
                     that.props.vertices[that.props.polygonId] = [];
@@ -148,28 +148,28 @@ class PolygonLayer extends Layer {
         }
 
         if(isDefined(properties.getColor)) {
-            let fn = async function (rec) {
+            let fn = async (rec) => {
                 that.props.color = await that.getFunc('getColor')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
         }
 
         if(isDefined(properties.getOutlineWidth)) {
-            let fn = async function (rec) {
+            let fn = async (rec) => {
                 that.props.outlineWidth = await that.getFunc('getOutlineWidth')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getOutlineWidth'),fn);
         }
 
         if(isDefined(properties.getOutlineColor)) {
-            let fn = async function (rec) {
+            let fn = async (rec) => {
                 that.props.outlineColor = await that.getFunc('getOutlineColor')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getOutlineColor'),fn);
         }
 
         if(isDefined(properties.getOpacity)) {
-            let fn = async function (rec) {
+            let fn = async (rec) => {
                 that.props.opacity = await that.getFunc('getOpacity')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);

@@ -129,50 +129,50 @@ class EllipseLayer extends Layer {
         let that = this;
 
         if (isDefined(properties.getEllipseID)){
-            let fn = function (rec) {
-                that.props.ellipseId = that.getFunc('getEllipseID')(rec);
+            let fn = async (rec) => {
+                that.props.ellipseId = await that.getFunc('getEllipseID')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getEllipseID'), fn);
         }
 
         if (isDefined(properties.getPosition)){
-            let fn = function (rec){
-                that.props.position = that.getFunc('getPosition')(rec);
+            let fn = async (rec) => {
+                that.props.position = await that.getFunc('getPosition')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getPosition'), fn);
         }
 
         if (isDefined(properties.getSemiMajorAxis)){
-            let fn = function (rec){
-                that.props.semiMajorAxis = that.getFunc('getSemiMajorAxis')(rec);
+            let fn = async (rec) => {
+                that.props.semiMajorAxis = await that.getFunc('getSemiMajorAxis')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getSemiMajorAxis'), fn);
         }
 
         if (isDefined(properties.getSemiMinorAxis)){
-            let fn = function (rec){
-                that.props.semiMinorAxis = that.getFunc('getSemiMinorAxis')(rec);
+            let fn = async (rec) => {
+                that.props.semiMinorAxis = await that.getFunc('getSemiMinorAxis')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getSemiMinorAxis'), fn);
         }
 
         if (isDefined(properties.getHeight)){
-            let fn = function (rec){
-                that.props.height = that.getFunc('getHeight')(rec);
+            let fn = async (rec) => {
+                that.props.height = await that.getFunc('getHeight')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getHeight'), fn);
         }
 
         if (isDefined(properties.getRotation)){
-            let fn = function (rec){
-                that.props.rotation = that.getFunc('getRotation')(rec);
+            let fn = async (rec) => {
+                that.props.rotation = await that.getFunc('getRotation')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getRotation'), fn);
         }
 
         if (isDefined(properties.getColor)){
-            let fn = function (rec){
-                that.props.color = that.getFunc('getColor')(rec);
+            let fn = async (rec) => {
+                that.props.color = await that.getFunc('getColor')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getColor'), fn);
         }

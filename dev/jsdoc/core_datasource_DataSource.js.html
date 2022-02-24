@@ -170,22 +170,26 @@ class DataSource {
                 id: this.id,
                 properties: this.properties,
                 topic: this.getTopicId()
-            }, function (message) {
+            }, async (message) => {
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
-                datasourceBroadcastChannel.onmessage = (message) => {
-                    const type = message.data.type;
-                    if (type in this.eventSubscriptionMap) {
-                        for (let i = 0; i &lt; this.eventSubscriptionMap[type].length; i++) {
-                            this.eventSubscriptionMap[type][i](message.data);
-                        }
-                    }
+                datasourceBroadcastChannel.onmessage = async (message) => {
+                   this.handleMessage(message);
                 };
                 this.initialized = message;
                 resolve();
-            }.bind(this));
+            });
         });
     }
+    async handleMessage(message) {
+        const type = message.data.type;
+        if (type in this.eventSubscriptionMap) {
+            for (let i = 0; i &lt; this.eventSubscriptionMap[type].length; i++) {
+                this.eventSubscriptionMap[type][i](message.data);
+            }
+        }
+    }
+
     async checkInit() {
         return new Promise(async (resolve, reject) => {
             if(!isDefined(this.init)) {
@@ -245,7 +249,7 @@ class DataSource {
         };
     }
 
-    onDisconnect(){}
+    async onDisconnect(){}
 
     reset() {}
 }
