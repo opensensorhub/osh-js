@@ -46,7 +46,8 @@ export default {
         description: 'Drone',
         icon: 'images/uav.png',
         iconSize: [30, 30],
-        iconAnchor: [15, 15]
+        iconAnchor: [15, 15],
+        zoomLevel: 4
       });
 
       const waypoints = new PointMarkerLayer({
