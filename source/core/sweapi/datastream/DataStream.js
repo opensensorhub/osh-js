@@ -18,7 +18,7 @@ import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import Collection from "../Collection";
-import SweApiFetchGenericJson from "../../datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import SweParser from "../SweParser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -27,7 +27,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.jsonParser = new SweApiFetchGenericJson(networkProperties);
+        this.jsonParser = new SweParser();
     }
 
     /**
@@ -54,11 +54,12 @@ class DataStream extends SensorWebApi {
 
     /**
      * Retrieve historical observations from a datastream     * @param observationFilter
+     * @param observationFilter
      * @param pageSize
      * @param parser
      * @return {Collection}
      */
-    searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.parser) {
+    searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.jsonParser) {
         return new Collection(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,

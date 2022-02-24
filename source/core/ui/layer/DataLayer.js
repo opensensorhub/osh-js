@@ -23,7 +23,7 @@ class DataLayer extends Layer {
         this.type = 'data';
     }
 
-    setData(dataSourceId, records, options) {
+    async setData(dataSourceId, records, options) {
         this.props.data = records;
     }
 

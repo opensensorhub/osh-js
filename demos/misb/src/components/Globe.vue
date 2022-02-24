@@ -22,9 +22,8 @@
   const DTR = Math.PI / 180;
 
   // Init cesium token
-  Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkMDE5MzJmNC1hMTQ5LTQxOTEtODJiO' +
-      'C00ZDM4YTZiMDFhYTUiLCJpZCI6MTA1NzQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI0NTJ9.uTTE9gv7JB3y_XzV7FTm' +
-      'BcKUAOMYyOZ97h03_gasO7c';
+  Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+      'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 
   export default {
     name: "Globe",

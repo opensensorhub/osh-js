@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <div
-        id="map"
-        class="map"></div>
-  </div>
+  <div
+      id="map"
+      class="map"></div>
 </template>
 
 <script>
@@ -15,13 +13,25 @@ import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
 export default {
   name: "Map",
   components: {},
+  data() {
+    return {
+      mapCommand: {}
+    }
+  },
   mounted() {
     this.init();
   },
   props: [
-    'droneLocationDataSource', 'control'
+    'droneLocationDataSource', 'controlDataSource', 'control'
   ],
   methods: {
+    async getCommand(commandId) {
+      if (!this.mapCommand[commandId]) {
+        this.mapCommand[commandId] = await this.control.getCommandById(commandId);
+      }
+      return this.mapCommand[commandId];
+    },
+
     init() {
       let prevTime = 0;
       // style it with a moving point marker
@@ -36,12 +46,45 @@ export default {
         description: 'Drone',
         icon: 'images/uav.png',
         iconSize: [30, 30],
-        iconAnchor: [15, 15]
+        iconAnchor: [15, 15],
+        zoomLevel: 4
+      });
+
+      const waypoints = new PointMarkerLayer({
+        dataSourceId: this.controlDataSource.id,
+        getLocation: async (rec) => {
+          let command = await this.getCommand(rec.command);
+          let type = Object.keys(command.properties.params)[0];
+          const pos = command.properties.params[type].position;
+          return {
+            x: pos.lon,
+            y: pos.lat,
+            z: pos.alt
+          }
+        },
+        getMarkerId: async (rec) => {
+          let command = await this.getCommand(rec.command);
+          return command.properties.id;
+        },
+        name: 'waypoint',
+        description: 'waypoint',
+        iconSize: [25, 41],
+        icon: 'images/marker-icon.png',
+        getIcon: (rec) => {
+          if(rec.statusCode === 'EXECUTING') {
+            return 'images/marker-icon-yellow.png'
+          } else if(rec.statusCode === 'COMPLETED') {
+            return 'images/marker-icon-green.png'
+          } else {
+            return 'images/marker-icon-grey.png'
+          }
+        },
+        iconAnchor: [12, 38]
       });
 
       let polylineLayer = new PolylineLayer({
         dataSourceId: this.droneLocationDataSource.id,
-        getLocation: (rec) => ({
+        getLocation: async (rec) => ({
           x: rec.pos.lon,
           y: rec.pos.lat,
           z: rec.pos.alt
@@ -57,7 +100,7 @@ export default {
       // create Leaflet view
       const leafletMapView = new LeafletView({
         container: 'map',
-        layers: [pointMarkerLayer, polylineLayer],
+        layers: [pointMarkerLayer, polylineLayer, waypoints],
         autoZoomOnFirstMarker: true
       });
 

@@ -99,20 +99,20 @@ class PolylineLayer extends Layer {
 		let that = this;
 		// must be first to assign correctly the first location to the right id if it is defined
 		if(isDefined(properties.getPolylineId)) {
-			let fn = function(rec) {
-				that.props.polylineId = that.getFunc('getPolylineId')(rec);
+			let fn = async function (rec) {
+				that.props.polylineId = await that.getFunc('getPolylineId')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getPolylineId'),fn);
 		}
 
 		if(isDefined(properties.getLocation)) {
-			let fn = function(rec) {
-				let loc = that.getFunc('getLocation')(rec);
-				if(!(that.props.polylineId in that.props.locations)) {
+			let fn = async function (rec) {
+				let loc = await that.getFunc('getLocation')(rec);
+				if (!(that.props.polylineId in that.props.locations)) {
 					that.props.locations[that.props.polylineId] = [];
 				}
 				that.props.locations[that.props.polylineId].push(loc);
-				if(that.props.locations[that.props.polylineId].length > that.props.maxPoints) {
+				if (that.props.locations[that.props.polylineId].length > that.props.maxPoints) {
 					that.props.locations[that.props.polylineId].shift();
 				}
 			};
@@ -120,29 +120,29 @@ class PolylineLayer extends Layer {
 		}
 
 		if(isDefined(properties.getColor)) {
-			let fn = function(rec) {
-				that.props.color = that.getFunc('getColor')(rec);
+			let fn = async function (rec) {
+				that.props.color = await that.getFunc('getColor')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
 		}
 
 		if(isDefined(properties.getWeight)) {
-			let fn = function(rec) {
-				that.props.weight = that.getFunc('getWeight')(rec);
+			let fn = async function (rec) {
+				that.props.weight = await that.getFunc('getWeight')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getWeight'),fn);
 		}
 
 		if(isDefined(properties.getOpacity)) {
-			let fn = function(rec) {
-				that.props.opacity = that.getFunc('getOpacity')(rec);
+			let fn = async function (rec) {
+				that.props.opacity = await that.getFunc('getOpacity')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
 		}
 
 		if(isDefined(properties.getSmoothFactor)) {
-			let fn = function(rec) {
-				that.props.smoothFactor = that.getFunc('getSmoothFactor')(rec);
+			let fn = async function (rec) {
+				that.props.smoothFactor = await that.getFunc('getSmoothFactor')(rec);
 			};
 			this.addFn(that.getDataSourcesIdsByProperty('getSmoothFactor'),fn);
 		}

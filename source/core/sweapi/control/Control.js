@@ -3,9 +3,9 @@ import CommandFilter from "../command/CommandFilter";
 import Collection from "../Collection";
 import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
-import SweApiFetchJsonParser from "../../datasource/sweapi/parser/json/SweApiFetchJson.parser";
-import controlFilter from "./ControlFilter";
 import ControlFilter from "./ControlFilter";
+import SweApiFetchGenericJson from "../../datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import SweParser from "../SweParser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -31,7 +31,7 @@ class Control extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties.system.id);
-        this.jsonParser = new SweApiFetchJsonParser(networkProperties);
+        this.jsonParser = new SweParser();
     }
 
     /**
@@ -91,11 +91,17 @@ class Control extends SensorWebApi {
 
     /**
      * Stream all status messages sent by this control interface
-     * @param {ControlFilter} - controlFilter
+     * @param {ControlFilter} controlFilter - controlFilter
      * @param callback - A callback to get observations
      */
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
-        this._network.stream.connector.onMessage = callback;
+        if(controlFilter.props.format === 'application/json') {
+            this._network.stream.connector.onMessage = (message) => {
+                callback(this.jsonParser.parseData(message));
+            };
+        } else {
+            this._network.stream.connector.onMessage = callback;
+        }
 
         this._network.stream.connector.doRequest(
             API.controls.status.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),

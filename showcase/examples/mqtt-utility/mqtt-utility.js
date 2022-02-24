@@ -14,7 +14,7 @@ let count = 0;
 
 mqttProvider.subscribeToObservations('/api/datastreams/gal7w6j6v7n9/observations','application/json',async function (message) {
    const parser = new SweApiFetchGenericJson();
-   const data = await parser.parseData(message).result;
+   const data = await parser.parseData(message);
    if(count++ < 30) {
       textAreaElement.value += '[gal7w6j6v7n9] '+JSON.stringify(data.location) + "\n";
    } else {
