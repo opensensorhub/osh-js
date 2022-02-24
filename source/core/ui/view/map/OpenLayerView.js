@@ -78,7 +78,7 @@ class OpenLayerView extends MapView {
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(props) {
+    async updateMarker(props) {
         let markerFeature = this.getMarker(props);
         if (!isDefined(markerFeature)) {
             // adds a new marker to the leaflet renderer
@@ -130,7 +130,7 @@ class OpenLayerView extends MapView {
      * Updates the polyline associated to the layer.
      * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
      */
-    updatePolyline(props) {
+    async updatePolyline(props) {
         let polyline = this.getPolyline(props);
         if (!isDefined(polyline)) {
             // removes the layer
@@ -162,7 +162,7 @@ class OpenLayerView extends MapView {
      * Updates the polygon associated to the layer.
      * @param {Object} props - The layer allowing the update of the polygon
      */
-    updatePolygon(props) {
+    async updatePolygon(props) {
         let polygon = this.getPolygon(props);
         if (!isDefined(polygon)) {
             // removes the layer

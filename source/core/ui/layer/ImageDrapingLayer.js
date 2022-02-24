@@ -122,29 +122,29 @@ class ImageDrapingLayer extends Layer {
         }
 
         if (isDefined(properties.getPlatformLocation)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.platformLocation = that.getFunc('getPlatformLocation')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.platformLocation = await that.getFunc('getPlatformLocation')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getPlatformLocation'), fn);
         }
 
         if (isDefined(properties.getPlatformOrientation)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.platformOrientation = that.getFunc('getPlatformOrientation')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.platformOrientation = await that.getFunc('getPlatformOrientation')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getPlatformOrientation'), fn);
         }
 
         if (isDefined(properties.getGimbalOrientation)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.gimbalOrientation = that.getFunc('getGimbalOrientation')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.gimbalOrientation = await that.getFunc('getGimbalOrientation')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getGimbalOrientation'), fn);
         }
 
         if (isDefined(properties.getCameraModel)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.cameraModel = that.getFunc('getCameraModel')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.cameraModel = await  that.getFunc('getCameraModel')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getCameraModel'), fn);
         }

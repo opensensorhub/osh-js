@@ -85,43 +85,43 @@ class CurveLayer extends Layer {
 
         // must be first to assign correctly the first location to the right id if it is defined
         if (this.checkFn("getCurveId")) {
-            let fn = function(rec,timeStamp,options) {
-                that.props.curveId = that.getFunc('getCurveId')(rec,timeStamp,options);
+            let fn = async (rec,timeStamp,options) => {
+                that.props.curveId = await that.getFunc('getCurveId')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getCurveId'),fn);
         }
 
         if (this.checkFn("getName")) {
-            let fn = function(rec,timeStamp,options) {
-                that.props.name = that.getFunc('getName')(rec,timeStamp,options);
+            let fn = async (rec,timeStamp,options) => {
+                that.props.name = await that.getFunc('getName')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getName'),fn);
         }
 
         if (isDefined(properties.getStroke)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.stroke = that.getFunc('getStroke')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.stroke = await that.getFunc('getStroke')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getStroke'), fn);
         }
 
         if (isDefined(properties.getLineColor)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.lineColor = that.getFunc('getLineColor')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.lineColor = await that.getFunc('getLineColor')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLineColor'), fn);
         }
 
         if (isDefined(properties.getBackgroundColor)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.backgroundColor = that.getFunc('getBackgroundColor')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                that.props.backgroundColor = await that.getFunc('getBackgroundColor')(rec,timeStamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLineColor'), fn);
         }
 
         if (isDefined(properties.getValues)) {
-            let fn = function (rec, timeStamp, options) {
-                const value = that.getFunc('getValues')(rec,timeStamp,options);
+            let fn = async (rec, timeStamp, options) => {
+                const value = await that.getFunc('getValues')(rec,timeStamp,options);
                 that.props.x = value.x;
                 that.props.y = value.y;
             };

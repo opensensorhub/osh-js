@@ -537,7 +537,7 @@ class CesiumView extends MapView {
         }
     }
 
-    updateMarker(props) {
+    async updateMarker(props) {
         if (!isDefined(props.location)) {
             return;
         }
@@ -641,7 +641,7 @@ class CesiumView extends MapView {
      * @param props.transparency The level of transparency or alpha value
      * @param props.color The color of the ellipse
      */
-    updateEllipse(props) {
+    async updateEllipse(props) {
         if (!isDefined(props.position)) {
             return;
         }
@@ -734,7 +734,7 @@ class CesiumView extends MapView {
      * Updates a given polyline, or adds it if it does not currently exist
      * @param props The properties containing the updated data
      */
-    updatePolyline(props) {
+    async updatePolyline(props) {
         if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
             return;
         }
@@ -760,7 +760,7 @@ class CesiumView extends MapView {
      * and adds with the given properties the polygon to the layer
      * @param {Object} properties properties to apply in updating polygon
      */
-    updatePolygon(props) {
+    async updatePolygon(props) {
         let polygonPrimitiveCollection = this.getPolygon(props);
         if (isDefined(polygonPrimitiveCollection)) {
             this.removePolygonFromLayer(polygonPrimitiveCollection);
@@ -845,7 +845,7 @@ class CesiumView extends MapView {
      * and adds with the given properties the coplanar polygon to the layer
      * @param {Object} properties properties to apply in updating polygon
      */
-    updateCoPlanarPolygon(props) {
+    async updateCoPlanarPolygon(props) {
         let polygonPrimitiveCollection = this.getPolygon(props);
         if (isDefined(polygonPrimitiveCollection)) {
             polygonPrimitiveCollection.removeAll();
@@ -1049,7 +1049,7 @@ class CesiumView extends MapView {
     }
 
     // -- Frustum
-    updateFrustum(props) {
+    async updateFrustum(props) {
         if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range)
             || !isDefined(props.sensorOrientation) || !isDefined(props.platformOrientation)) {
             return;

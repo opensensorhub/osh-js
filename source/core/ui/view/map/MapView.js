@@ -44,7 +44,7 @@ class MapView extends View {
         this.layerIdToDrapedImage= {};
     }
 
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
         const values = data.values;
         for(let i=0;i < values.length;i++) {
             const d = values[i];
@@ -66,7 +66,7 @@ class MapView extends View {
         }
     }
 
-    addPolygonToLayer(props, polygon) {
+    async addPolygonToLayer(props, polygon) {
         const currentLayer = this.getLayer(props);
         // associate the list of markers owning by a specific marker
         if(!(props.id in this.layerIdToPolygon)) {
@@ -81,7 +81,7 @@ class MapView extends View {
      * @param {PointMarkerLayer.props} layer - the Layer object
      * @param {Object} markerObject - the Map marker object
      */
-    addMarkerToLayer(props, markerObject) {
+    async addMarkerToLayer(props, markerObject) {
         const currentLayer = this.getLayer(props);
         // associate the list of markers owning by a specific marker
         if(!(props.id in this.layerIdToMarkers)) {
@@ -96,7 +96,7 @@ class MapView extends View {
      * @param {Polyline.props} layer - the Layer object
      * @param {Object} polylineObject - the Map polyline object
      */
-    addPolylineToLayer(props, polylineObject) {
+    async addPolylineToLayer(props, polylineObject) {
         // associate the list of markers owning by a specific marker
         if(!(props.id in this.layerIdToPolylines)) {
             this.layerIdToPolylines[props.id] = {};
@@ -110,7 +110,7 @@ class MapView extends View {
      * @param {Ellipse.props} layer - the Layer object
      * @param {Object} ellipseObject - the Map ellipse object
      */
-    addEllipseToLayer(props, ellipseObject) {
+    async addEllipseToLayer(props, ellipseObject) {
         // associate the list of markers owning by a specific marker
         if(!(props.id in this.layerIdToEllipsoids)) {
             this.layerIdToEllipsoids[props.id] = {};
@@ -124,7 +124,7 @@ class MapView extends View {
      * @param {ImageDraping.props} layer - the Layer object
      * @param {Object} drapedImageObject - the Map drapedImage object
      */
-    addDrapedImageToLayer(props, drapedImageObject) {
+    async addDrapedImageToLayer(props, drapedImageObject) {
         // associate the list of markers owning by a specific marker
         if(!(props.id in this.layerIdToDrapedImage)) {
             this.layerIdToDrapedImage[props.id] = {};
@@ -132,7 +132,7 @@ class MapView extends View {
         this.layerIdToDrapedImage[props.id][props.drapedImageId] = drapedImageObject;
     }
 
-    addFrustumToLayer(props, frustum) {
+    async addFrustumToLayer(props, frustum) {
         const currentLayer = this.getLayer(props);
         // associate the list of markers owning by a specific marker
         if(!(props.id in this.layerIdToFrustum)) {
@@ -535,12 +535,12 @@ class MapView extends View {
         return null;
     }
 
-    updateMarker() {}
-    updatePolyline() {}
-    updatePolygon() {}
-    updateEllipse() {}
-    updateCoPlanarPolygon() {}
-    updateDrapedImage() {}
+    async updateMarker() {}
+    async updatePolyline() {}
+    async updatePolygon() {}
+    async updateEllipse() {}
+    async updateCoPlanarPolygon() {}
+    async updateDrapedImage() {}
 
 }
 

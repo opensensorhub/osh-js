@@ -69,7 +69,7 @@ function initBroadcastChannel(dataTopic, timeTopic) {
     console.log('listen on topic ',dataTopic)
 
     dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
-    dataSourceBroadCastChannel.onmessage = (event) => {
+    dataSourceBroadCastChannel.onmessage = async (event) => {
         if(event.data.type === EventType.DATA) {
             for(let i=0; i < event.data.values.length;i++) {
                 dataSynchronizerAlgo.push(
@@ -112,7 +112,7 @@ function addDataSource(dataSource) {
     }
 }
 
-function onData(dataSourceId, data) {
+async function onData(dataSourceId, data) {
     self.currentTime = data.timeStamp;
     bcChannels[dataSourceId].postMessage({
             values: [data],

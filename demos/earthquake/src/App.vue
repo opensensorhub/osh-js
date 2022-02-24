@@ -20,6 +20,8 @@ import './assets/app.css';
 import Map from './components/MapColumn.vue';
 import TimeRangeSlider from './components/TimeRangeSlider';
 import File from 'osh-js/ext/datasource/File';
+import {EventType} from "../../../source/core/event/EventType";
+import {Status} from "../../../source/core/protocol/Status";
 
 export default {
   name: 'App',
@@ -37,7 +39,7 @@ export default {
   },
   mounted() {
 
-    const NB_FILES = 250;
+    const NB_FILES = 100;
     const files = [];
 
     for(let i=1;i <= NB_FILES;i++) {
@@ -46,12 +48,17 @@ export default {
 
     this.datasource = new File('EQ data',{
       paths: files,
-      batchSize: 5000
+      batchSize: 50
     });
 
     this.datasource.connect();
 
-    this.datasource.onDisconnect().then(() => this.loaded = true);
+    // this.datasource.onDisconnect().then(() => this.loaded = true);
+    this.datasource.subscribe(message => {
+      if(message.status === Status.DISCONNECTED) {
+        this.loaded = true;
+      }
+    }, [EventType.STATUS]);
 
   },
 }
