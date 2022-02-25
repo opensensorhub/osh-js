@@ -15,15 +15,58 @@ let gpsDataSource = new SosGetResultJson("android-GPS", {
   replaySpeed: 2
 });
 
+// create data source for Android phone orientation
+let orientationDataSource = new SosGetResultJson("android-Att", {
+  protocol: "ws",
+  service: "SOS",
+  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+  offeringID: "urn:android:device:060693280a28e015-sos",
+  observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
+  startTime: "2015-02-16T07:58:32Z",
+  endTime: "2015-02-16T08:09:00Z",
+  replaySpeed: 2
+});
+
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
   dataSourceId: gpsDataSource.id,
   getLocation: (rec) => ({
-      x: rec.location.lon,
-      y: rec.location.lat
+    x: rec.location.lon,
+    y: rec.location.lat
   }),
   orientation: {
     heading: 0
+  },
+  getOrientation : {
+    dataSourceIds : [orientationDataSource.getId()],
+    handler : (rec) => {
+      let qx = rec.orient.qx;
+      let qy = rec.orient.qy;
+      let qz = rec.orient.qz;
+      let qw = rec.orient.q0;
+
+      // look dir vector
+      let x = 0;
+      let y = 0;
+      let z = -1;
+
+      // compute quat * vector
+      let ix =  qw * x + qy * z - qz * y;
+      let iy =  qw * y + qz * x - qx * z;
+      let iz =  qw * z + qx * y - qy * x;
+      let iw = - qx * x - qy * y - qz * z;
+
+      // compute result * inverse quat
+      let xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
+      let yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
+      let zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+
+      let yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
+
+      return {
+        heading : yaw-130
+      };
+    }
   },
   icon: 'images/car-location.png',
   iconAnchor: [16, 64],
@@ -42,3 +85,4 @@ let olView = new OpenLayerView({
 
 // start streaming
 gpsDataSource.connect();
+orientationDataSource.connect();
