@@ -76,6 +76,7 @@ let directories = [
     'leaflet-location-heading',
     'leaflet-location-path',
     'openlayers-location',
+    'openlayers-location-heading',
     'mapbox-location-path-heading',
     'zIndex-location-path',
     'range-slider',

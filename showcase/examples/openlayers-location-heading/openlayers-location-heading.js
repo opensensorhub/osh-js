@@ -31,8 +31,8 @@ let orientationDataSource = new SosGetResultJson("android-Att", {
 let pointMarker = new PointMarkerLayer({
   dataSourceId: gpsDataSource.id,
   getLocation: (rec) => ({
-    x: rec.location.lon,
-    y: rec.location.lat
+      x: rec.location.lon,
+      y: rec.location.lat
   }),
   orientation: {
     heading: 0

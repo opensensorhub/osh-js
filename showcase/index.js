@@ -67,6 +67,11 @@ var samples = [{
         url: "openlayers-location"
     },
     {
+        name: "Moving Location + Heading (OpenLayers)",
+        description: "Display a moving marker on an OpenLayers map, tracking the current location and heading of a vehicle.",
+        url: "openlayers-location-heading"
+    },
+    {
         name: "Moving Location + Path + Heading (Mapbox)",
         description: "Display a moving marker and a polyline on a Mapbox map, showing both the current location of a vehicle and the historical track.",
         url: "mapbox-location-path-heading"
