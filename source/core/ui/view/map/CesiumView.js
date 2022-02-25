@@ -197,6 +197,20 @@ class CesiumView extends MapView {
         // inits callbacks
         // Get default left click handler for when a feature is not picked on left click
         this.initCallbackEvents();
+
+        this.changeToPromptRender = false;
+        const that = this;
+        this.viewer.scene.postUpdate.addEventListener(() => {
+            // This code will run at 60 FPS
+            if (that.changeToPromptRender) {
+                that.viewer.scene.requestRender();
+                that.changeToPromptRender = false;
+            }
+        });
+    }
+
+    render() {
+        this.changeToPromptRender = true;
     }
 
     initCallbackEvents() {
@@ -1147,10 +1161,6 @@ class CesiumView extends MapView {
             this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
             this.render();
         }
-    }
-
-    render() {
-        this.viewer.scene.requestRender();
     }
 }
 
