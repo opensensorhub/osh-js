@@ -75,7 +75,7 @@ class MapboxView extends MapView {
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(props) {
+    async updateMarker(props) {
         if(!this.loaded) {
             // map is not loaded yet
             return;
@@ -115,7 +115,7 @@ class MapboxView extends MapView {
      * Updates the polyline associated to the layer.
      * @param {Polyline.props} props - The layer allowing the update of the polyline
      */
-    updatePolyline(props) {
+    async updatePolyline(props) {
         const that = this;
 
         if(!this.loaded) {
@@ -312,7 +312,7 @@ class MapboxView extends MapView {
      * Updates the polygon associated to the layer.
      * @param {Polygon.props} props - The layer allowing the update of the polygon
      */
-    updatePolygon(props) {
+    async updatePolygon(props) {
         if(!this.loaded) {
             // map is not loaded yet
             return;

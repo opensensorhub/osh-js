@@ -160,7 +160,10 @@ class CesiumView extends MapView {
             fullscreenButton: false,
             showRenderLoopErrors: true,
             animation: false,
-            scene3DOnly: true, // for draw layer
+            scene3DOnly: true, // for draw layer,
+            requestRenderMode : true, //https://cesium.com/blog/2018/01/24/cesium-scene-rendering-performance/,
+            maximumRenderTimeChange : Infinity,
+            targetFrameRate: 30
         };
 
         // #endregion snippet_cesiumview_default_cesiumprops_viewer_props
@@ -194,6 +197,20 @@ class CesiumView extends MapView {
         // inits callbacks
         // Get default left click handler for when a feature is not picked on left click
         this.initCallbackEvents();
+
+        this.changeToPromptRender = false;
+        const that = this;
+        this.viewer.scene.postUpdate.addEventListener(() => {
+            // This code will run at 60 FPS
+            if (that.changeToPromptRender) {
+                that.viewer.scene.requestRender();
+                that.changeToPromptRender = false;
+            }
+        });
+    }
+
+    render() {
+        this.changeToPromptRender = true;
     }
 
     initCallbackEvents() {
@@ -537,7 +554,7 @@ class CesiumView extends MapView {
         }
     }
 
-    updateMarker(props) {
+    async updateMarker(props) {
         if (!isDefined(props.location)) {
             return;
         }
@@ -551,10 +568,12 @@ class CesiumView extends MapView {
         // this.removeMarkerFromLayer(marker);
         // }
         this.addMarkerToLayer(props, this.addMarker(props,marker));
+        this.render();
     }
 
     removeMarkerFromLayer(marker) {
         this.viewer.entities.remove(marker);
+        this.render();
     }
 
     // ----- ELLIPSE
@@ -641,7 +660,7 @@ class CesiumView extends MapView {
      * @param props.transparency The level of transparency or alpha value
      * @param props.color The color of the ellipse
      */
-    updateEllipse(props) {
+    async updateEllipse(props) {
         if (!isDefined(props.position)) {
             return;
         }
@@ -650,6 +669,7 @@ class CesiumView extends MapView {
             this.removeEllipseFromLayer(ellipse);
         }
         this.addEllipseToLayer(props, this.addEllipse(props));
+        this.render();
     }
 
     /**
@@ -658,6 +678,7 @@ class CesiumView extends MapView {
      */
     removeEllipseFromLayer(ellipse) {
         this.viewer.scene.primitives.remove(ellipse);
+        this.render();
     }
 
     // ----- POLYLINE
@@ -734,7 +755,7 @@ class CesiumView extends MapView {
      * Updates a given polyline, or adds it if it does not currently exist
      * @param props The properties containing the updated data
      */
-    updatePolyline(props) {
+    async updatePolyline(props) {
         if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
             return;
         }
@@ -743,6 +764,7 @@ class CesiumView extends MapView {
             this.removePolylineFromLayer(polyline);
         }
         this.addPolylineToLayer(props, this.addPolyline(props));
+        this.render();
     }
 
     /**
@@ -752,6 +774,7 @@ class CesiumView extends MapView {
      */
     removePolylineFromLayer(polyline) {
         this.viewer.scene.primitives.remove(polyline);
+        this.render();
     }
 
     // ----- POLYGON
@@ -760,12 +783,13 @@ class CesiumView extends MapView {
      * and adds with the given properties the polygon to the layer
      * @param {Object} properties properties to apply in updating polygon
      */
-    updatePolygon(props) {
+    async updatePolygon(props) {
         let polygonPrimitiveCollection = this.getPolygon(props);
         if (isDefined(polygonPrimitiveCollection)) {
             this.removePolygonFromLayer(polygonPrimitiveCollection);
         }
         this.addPolygonToLayer(props, this.addPolygon(props));
+        this.render();
     }
 
     /**
@@ -838,6 +862,7 @@ class CesiumView extends MapView {
     removePolygonFromLayer(polygonPrimitiveCollection) {
         polygonPrimitiveCollection.removeAll();
         this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
+        this.render();
     }
 
     /**
@@ -845,13 +870,14 @@ class CesiumView extends MapView {
      * and adds with the given properties the coplanar polygon to the layer
      * @param {Object} properties properties to apply in updating polygon
      */
-    updateCoPlanarPolygon(props) {
+    async updateCoPlanarPolygon(props) {
         let polygonPrimitiveCollection = this.getPolygon(props);
         if (isDefined(polygonPrimitiveCollection)) {
             polygonPrimitiveCollection.removeAll();
             this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
         }
         this.addPolygonToLayer(props, this.addCoPlanarPolygon(props));
+        this.render();
     }
 
     /**
@@ -939,6 +965,7 @@ class CesiumView extends MapView {
         } else {
             await this.addDrapedImage(props, drapedImagePrimitive)
         }
+        this.render();
     }
 
     async addDrapedImage(props, existingDrapedImagePrimitive) {
@@ -1049,7 +1076,7 @@ class CesiumView extends MapView {
     }
 
     // -- Frustum
-    updateFrustum(props) {
+    async updateFrustum(props) {
         if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range)
             || !isDefined(props.sensorOrientation) || !isDefined(props.platformOrientation)) {
             return;
@@ -1061,6 +1088,7 @@ class CesiumView extends MapView {
         }
 
         this.addFrustumToLayer(props, this.addFrustum(props));
+        this.render();
     }
 
     addFrustum(properties) {
@@ -1131,6 +1159,7 @@ class CesiumView extends MapView {
         if (isDefined(frustumPrimitiveCollection)) {
             frustumPrimitiveCollection.removeAll();
             this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
+            this.render();
         }
     }
 }

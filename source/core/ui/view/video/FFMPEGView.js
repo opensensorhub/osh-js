@@ -70,7 +70,7 @@ class FFMPEGView extends CanvasView {
         return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
         const values = data.values;
         for(let i=0; i < values.length;i++) {
             if (!this.skipFrame) {
@@ -188,7 +188,7 @@ class FFMPEGView extends CanvasView {
      * @param pktData
      * @param timeStamp
      */
-    decode(pktSize, pktData, timeStamp, roll) {
+    async decode(pktSize, pktData, timeStamp, roll) {
         if(pktSize > 0) {
             let arrayBuffer = pktData.buffer;
 

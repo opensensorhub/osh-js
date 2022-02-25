@@ -77,7 +77,7 @@ export default {
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 1.5;
+    const dsReplaySpeed = 1.0;
     const timeOut = 3000;
     const bufferingTime = 800;
 

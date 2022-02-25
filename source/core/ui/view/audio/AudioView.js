@@ -217,7 +217,7 @@ class AudioView extends View {
 
     onEndedDecodedBuffer(audioBuffer) {}
 
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
         for (let value of data.values) {
             if (!this.isInitContext) {
                 this.initAudioContext(value.data.sampleRate, value.timeStamp);

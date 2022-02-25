@@ -143,7 +143,7 @@ class WebSocketConnector extends DataConnector {
      * @param data the callback data
      * @event
      */
-    onMessage(data) {
+    async onMessage(data) {
     }
 
 
