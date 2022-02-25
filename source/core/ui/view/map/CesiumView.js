@@ -160,7 +160,10 @@ class CesiumView extends MapView {
             fullscreenButton: false,
             showRenderLoopErrors: true,
             animation: false,
-            scene3DOnly: true, // for draw layer
+            scene3DOnly: true, // for draw layer,
+            requestRenderMode : true, //https://cesium.com/blog/2018/01/24/cesium-scene-rendering-performance/,
+            maximumRenderTimeChange : Infinity,
+            targetFrameRate: 30
         };
 
         // #endregion snippet_cesiumview_default_cesiumprops_viewer_props
@@ -551,10 +554,12 @@ class CesiumView extends MapView {
         // this.removeMarkerFromLayer(marker);
         // }
         this.addMarkerToLayer(props, this.addMarker(props,marker));
+        this.render();
     }
 
     removeMarkerFromLayer(marker) {
         this.viewer.entities.remove(marker);
+        this.render();
     }
 
     // ----- ELLIPSE
@@ -650,6 +655,7 @@ class CesiumView extends MapView {
             this.removeEllipseFromLayer(ellipse);
         }
         this.addEllipseToLayer(props, this.addEllipse(props));
+        this.render();
     }
 
     /**
@@ -658,6 +664,7 @@ class CesiumView extends MapView {
      */
     removeEllipseFromLayer(ellipse) {
         this.viewer.scene.primitives.remove(ellipse);
+        this.render();
     }
 
     // ----- POLYLINE
@@ -743,6 +750,7 @@ class CesiumView extends MapView {
             this.removePolylineFromLayer(polyline);
         }
         this.addPolylineToLayer(props, this.addPolyline(props));
+        this.render();
     }
 
     /**
@@ -752,6 +760,7 @@ class CesiumView extends MapView {
      */
     removePolylineFromLayer(polyline) {
         this.viewer.scene.primitives.remove(polyline);
+        this.render();
     }
 
     // ----- POLYGON
@@ -766,6 +775,7 @@ class CesiumView extends MapView {
             this.removePolygonFromLayer(polygonPrimitiveCollection);
         }
         this.addPolygonToLayer(props, this.addPolygon(props));
+        this.render();
     }
 
     /**
@@ -838,6 +848,7 @@ class CesiumView extends MapView {
     removePolygonFromLayer(polygonPrimitiveCollection) {
         polygonPrimitiveCollection.removeAll();
         this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
+        this.render();
     }
 
     /**
@@ -852,6 +863,7 @@ class CesiumView extends MapView {
             this.viewer.scene.primitives.remove(polygonPrimitiveCollection);
         }
         this.addPolygonToLayer(props, this.addCoPlanarPolygon(props));
+        this.render();
     }
 
     /**
@@ -939,6 +951,7 @@ class CesiumView extends MapView {
         } else {
             await this.addDrapedImage(props, drapedImagePrimitive)
         }
+        this.render();
     }
 
     async addDrapedImage(props, existingDrapedImagePrimitive) {
@@ -1061,6 +1074,7 @@ class CesiumView extends MapView {
         }
 
         this.addFrustumToLayer(props, this.addFrustum(props));
+        this.render();
     }
 
     addFrustum(properties) {
@@ -1131,7 +1145,12 @@ class CesiumView extends MapView {
         if (isDefined(frustumPrimitiveCollection)) {
             frustumPrimitiveCollection.removeAll();
             this.viewer.scene.primitives.remove(frustumPrimitiveCollection);
+            this.render();
         }
+    }
+
+    render() {
+        this.viewer.scene.requestRender();
     }
 }
 

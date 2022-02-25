@@ -93,7 +93,7 @@ export default {
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
+      timeOut: 1000,
       bufferingTime: bufferingTime
     });
 
