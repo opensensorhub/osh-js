@@ -38,9 +38,8 @@ import MapView from "./MapView";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import LineString from "ol/geom/LineString";
-import Polygon from "ol/geom/Polygon";
 import {click, pointerMove} from "ol/events/condition";
-
+import Polygon, { fromCircle } from "ol/geom/Polygon";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
@@ -63,7 +62,7 @@ class OpenLayerView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline','polygon'],
+            supportedLayers: ['marker', 'polyline','polygon', 'ellipse'],
             ...properties
         });
     }
@@ -252,13 +251,13 @@ class OpenLayerView extends MapView {
             features: []
         });
 
-        let vectorMarkerLayer = new VectorLayer({
+        this.vectorMarkerLayer = new VectorLayer({
             source: this.vectorSource,
         });
 
-        vectorMarkerLayer.setZIndex(1);
+        this.vectorMarkerLayer.setZIndex(1);
 
-        this.map.addLayer(vectorMarkerLayer);
+        this.map.addLayer(this.vectorMarkerLayer);
         this.map.updateSize();
     }
 
@@ -338,6 +337,8 @@ class OpenLayerView extends MapView {
                 this.map.getView().setZoom(12);
             }
 
+            this.vectorMarkerLayer.setZIndex(properties.zIndex);
+
             return markerFeature;
         }
         this.onResize();
@@ -353,7 +354,6 @@ class OpenLayerView extends MapView {
         if (!isDefined(props.location)) {
             return;
         }
-
         let markerFeature = this.getMarker(props);
         if (!isDefined(markerFeature)) {
             // adds a new marker to the leaflet renderer
@@ -579,6 +579,106 @@ class OpenLayerView extends MapView {
     removePolygonFromLayer(polygon) {
         this.map.removeLayer(polygon);
     }
+
+    addEllipse(properties) {
+        const position = properties.position;
+        const semiMajorAxis = properties.semiMajorAxis;
+        const semiMinorAxis = properties.semiMinorAxis;
+
+        let projPosition = transform([position.x, position.y], 'EPSG:4326', this.projection);
+
+        let coordinates = [];
+        const radinas = Math.PI / 180;
+        for (let angle = 1; angle <= 360; angle++) {
+            const px = semiMajorAxis * Math.cos(radinas * angle);
+            const py = semiMinorAxis * Math.sin(radinas * angle);
+            const pxii = projPosition[0] + px;
+            const pyii = projPosition[1] + py;
+            coordinates.push([pxii, pyii]);
+        }
+
+        //create path
+        let pathGeometry = new Polygon([coordinates]);
+
+        let feature = new Feature({
+            geometry: pathGeometry,
+            name: 'Ellipse'
+        });
+
+        feature.setId(properties.id+"$"+properties.markerId);
+
+        let source = new VectorSource({
+            features: [feature]
+        });
+
+        let vectorEllipseLayer = new VectorLayer({
+            title: properties.name,
+            source: source,
+            style: new Style({
+                fill: new Fill({
+                    color: properties.color
+                }),
+                stroke: new Stroke({
+                    color: properties.color,
+                    width: 1
+                })
+            })
+        });
+
+        vectorEllipseLayer.setZIndex(properties.zIndex);
+        this.map.addLayer(vectorEllipseLayer);
+
+        return vectorEllipseLayer;
+    }
+
+    async updateEllipse(props) {
+        if (!isDefined(props.position)) {
+            return;
+        }
+        let ellipse = this.getEllipse(props);
+        if (!isDefined(ellipse)) {
+            // removes the layer
+            ellipse = this.addEllipse(props)
+            this.addEllipseToLayer(props, ellipse);
+        } else {
+            // updates position
+            if (!isNaN(props.position.x) && !isNaN(props.position.y)) {
+                let vectorSource = ellipse.getSource();
+                const position = props.position;
+                const semiMajorAxis = props.semiMajorAxis;
+                const semiMinorAxis = props.semiMinorAxis;
+
+                let projPosition = transform([position.x, position.y], 'EPSG:4326', this.projection);
+
+                let coordinates = [];
+                const radinas = Math.PI / 180;
+
+                const nbPoints = 100;
+                const precision = 360 / nbPoints;
+
+                for (let angle = 1; angle <= 360; angle+=precision) {
+                    const px = semiMajorAxis * Math.cos(radinas * angle);
+                    const py = semiMinorAxis * Math.sin(radinas * angle);
+                    const pxii = projPosition[0] + px;
+                    const pyii = projPosition[1] + py;
+                    coordinates.push([pxii, pyii]);
+                }
+
+                const ellipseFeature = vectorSource.getFeatures()[0];
+                ellipseFeature.getGeometry().setCoordinates([coordinates]);
+
+                const style = ellipse.getStyle();
+                style.getStroke().setColor(props.color);
+                style.getStroke().setWidth(1);
+                style.getFill().setColor(props.color);
+            }
+        }
+    }
+
+    removeEllipseFromLayer(ellipse) {
+        this.map.removeLayer(ellipse);
+    }
+
 }
 
 export default  OpenLayerView;
