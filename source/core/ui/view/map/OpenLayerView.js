@@ -73,130 +73,6 @@ class OpenLayerView extends MapView {
         this.initMap(options);
     }
 
-
-    /**
-     * Updates the marker associated to the layer.
-     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
-     */
-    async updateMarker(props) {
-        if (!isDefined(props.location)) {
-            return;
-        }
-
-        let markerFeature = this.getMarker(props);
-        if (!isDefined(markerFeature)) {
-            // adds a new marker to the leaflet renderer
-            const markerObj = this.addMarker(props);
-
-            this.addMarkerToLayer(props, markerObj);
-        } else {
-            // updates position
-            let lon = props.location.x;
-            let lat = props.location.y;
-
-            if (!isNaN(lon) && !isNaN(lat)) {
-                let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
-                markerFeature.getGeometry().setCoordinates(coordinates);
-            }
-
-            // update style
-            const style = markerFeature.getStyle();
-
-            // updates orientation
-            if (props.icon !== null) {
-                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
-                // Then either set that in your ol.style.Style as required
-               if(style.getImage().getSrc() !== props.icon) {
-                    const iconOpts = {
-                        anchorYUnits: 'pixels',
-                        anchorXUnits: 'pixels',
-                        src: props.icon,
-                    };
-                    style.setImage(new Icon(iconOpts));
-                }
-
-                // updates icon
-                style.getImage().setOpacity(props.iconOpacity);
-                style.getImage().setScale(props.iconScale);
-                style.getText().setText(props.label);
-                style.getText().setOffsetX(props.labelOffset[0]);
-                style.getText().setOffsetY(props.labelOffset[1]);
-                style.getText().setScale(props.labelScale);
-                style.getText().getFill().setColor(props.labelColor)
-                style.setZIndex(props.zIndex);
-                style.getImage().setAnchor(props.iconAnchor);
-                style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
-            }
-        }
-    }
-
-    /**
-     * Updates the polyline associated to the layer.
-     * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
-     */
-    async updatePolyline(props) {
-        if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
-            return;
-        }
-
-        let polyline = this.getPolyline(props);
-        if (!isDefined(polyline)) {
-            // removes the layer
-            polyline = this.addPolyline(props)
-            this.addPolylineToLayer(props, polyline);
-        } else {
-            let vectorSource = polyline.getSource();
-
-            // update locations
-            let polylinePoints = [];
-            const locations = props.locations[props.polylineId];
-
-            if(isDefined(locations) && locations.length > 0) {
-                for (let i = 0; i < locations.length; i++) {
-                    polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
-                }
-                vectorSource.getFeatures()[0].getGeometry().setCoordinates(polylinePoints)
-            }
-
-            // update style
-            const style = polyline.getStyle();
-            style.getStroke().setColor(props.color);
-            style.getStroke().setWidth(props.weight);
-            style.getFill().setColor(props.color);
-        }
-    }
-
-    /**
-     * Updates the polygon associated to the layer.
-     * @param {Object} props - The layer allowing the update of the polygon
-     */
-    async updatePolygon(props) {
-        let polygon = this.getPolygon(props);
-        if (!isDefined(polygon)) {
-            // removes the layer
-            polygon = this.addPolygon(props)
-            this.addPolygonToLayer(props, polygon);
-        } else {
-            let vectorSource = polygon.getSource();
-
-            // update locations
-            let polygonPoints = [];
-            const vertices = props.vertices[props.polygonId];
-            if(isDefined(vertices) && vertices.length > 0) {
-                for (let i = 0; i < vertices.length - 1; i = i + 2) {
-                    polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
-                }
-
-                vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
-            }
-            // update style
-            const style = polygon.getStyle();
-            style.getStroke().setColor(props.outlineColor);
-            style.getStroke().setWidth(props.outlineWidth);
-            style.getFill().setColor(props.color);
-        }
-    }
-
     //---------- MAP SETUP --------------//
     /**
      * @private
@@ -397,6 +273,17 @@ class OpenLayerView extends MapView {
         return [osm];
     }
 
+    onResize() {
+        super.onResize();
+        if(isDefined(this.map) && this.map !== null) {
+            this.map.updateSize();
+        }
+    }
+
+    // ----------------------------------------------------//
+    // ---------------------- LAYERS ---------------------//
+    // --------------------------------------------------//
+
     /**
      * Add a marker to the map.
      * @param {Object} properties
@@ -459,30 +346,68 @@ class OpenLayerView extends MapView {
     }
 
     /**
+     * Updates the marker associated to the layer.
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
+     */
+    async updateMarker(props) {
+        if (!isDefined(props.location)) {
+            return;
+        }
+
+        let markerFeature = this.getMarker(props);
+        if (!isDefined(markerFeature)) {
+            // adds a new marker to the leaflet renderer
+            const markerObj = this.addMarker(props);
+
+            this.addMarkerToLayer(props, markerObj);
+        } else {
+            // updates position
+            let lon = props.location.x;
+            let lat = props.location.y;
+
+            if (!isNaN(lon) && !isNaN(lat)) {
+                let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
+                markerFeature.getGeometry().setCoordinates(coordinates);
+            }
+
+            // update style
+            const style = markerFeature.getStyle();
+
+            // updates orientation
+            if (props.icon !== null) {
+                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
+                // Then either set that in your ol.style.Style as required
+               if(style.getImage().getSrc() !== props.icon) {
+                    const iconOpts = {
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                    };
+                    style.setImage(new Icon(iconOpts));
+                }
+
+                // updates icon
+                style.getImage().setOpacity(props.iconOpacity);
+                style.getImage().setScale(props.iconScale);
+                style.getText().setText(props.label);
+                style.getText().setOffsetX(props.labelOffset[0]);
+                style.getText().setOffsetY(props.labelOffset[1]);
+                style.getText().setScale(props.labelScale);
+                style.getText().getFill().setColor(props.labelColor)
+                style.setZIndex(props.zIndex);
+                style.getImage().setAnchor(props.iconAnchor);
+                style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
+            }
+        }
+    }
+
+    /**
      * Abstract method to remove a marker from its corresponding layer.
      * This is library dependent.
      * @param {Object} marker - The Map marker object
      */
     removeMarkerFromLayer(marker) {
         this.vectorSource.removeFeature(marker);
-    }
-
-    /**
-     * Abstract method to remove a polyline from its corresponding layer.
-     * This is library dependant.
-     * @param {Object} polyline - The Map polyline object
-     */
-    removePolylineFromLayer(polyline) {
-        this.map.removeLayer(polyline);
-    }
-
-    /**
-     * Abstract method to remove a polygon from its corresponding layer.
-     * This is library dependant.
-     * @param {Object} polygon - The Map polygon object
-     */
-    removePolygonFromLayer(polygon) {
-        this.map.removeLayer(polygon);
     }
 
     /**
@@ -529,6 +454,51 @@ class OpenLayerView extends MapView {
     }
 
     /**
+     * Updates the polyline associated to the layer.
+     * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
+     */
+    async updatePolyline(props) {
+        if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
+            return;
+        }
+
+        let polyline = this.getPolyline(props);
+        if (!isDefined(polyline)) {
+            // removes the layer
+            polyline = this.addPolyline(props)
+            this.addPolylineToLayer(props, polyline);
+        } else {
+            let vectorSource = polyline.getSource();
+
+            // update locations
+            let polylinePoints = [];
+            const locations = props.locations[props.polylineId];
+
+            if(isDefined(locations) && locations.length > 0) {
+                for (let i = 0; i < locations.length; i++) {
+                    polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
+                }
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates(polylinePoints)
+            }
+
+            // update style
+            const style = polyline.getStyle();
+            style.getStroke().setColor(props.color);
+            style.getStroke().setWidth(props.weight);
+            style.getFill().setColor(props.color);
+        }
+    }
+
+    /**
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylineFromLayer(polyline) {
+        this.map.removeLayer(polyline);
+    }
+
+    /**
      * Add a polygon to the map.
      * @param {Object} properties
      */
@@ -570,11 +540,44 @@ class OpenLayerView extends MapView {
         return vectorPolygonLayer;
     }
 
-    onResize() {
-        super.onResize();
-        if(isDefined(this.map) && this.map !== null) {
-            this.map.updateSize();
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Object} props - The layer allowing the update of the polygon
+     */
+    async updatePolygon(props) {
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // removes the layer
+            polygon = this.addPolygon(props)
+            this.addPolygonToLayer(props, polygon);
+        } else {
+            let vectorSource = polygon.getSource();
+
+            // update locations
+            let polygonPoints = [];
+            const vertices = props.vertices[props.polygonId];
+            if(isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+                }
+
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
+            }
+            // update style
+            const style = polygon.getStyle();
+            style.getStroke().setColor(props.outlineColor);
+            style.getStroke().setWidth(props.outlineWidth);
+            style.getFill().setColor(props.color);
         }
+    }
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygon) {
+        this.map.removeLayer(polygon);
     }
 }
 
