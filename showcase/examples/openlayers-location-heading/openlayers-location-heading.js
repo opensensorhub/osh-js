@@ -2,6 +2,7 @@
 import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
+import EllipseLayer from 'osh-js/core/ui/layer/EllipseLayer';
 
 // create data source for Android phone GPS
 let gpsDataSource = new SosGetResultJson("android-GPS", {
@@ -71,14 +72,30 @@ let pointMarker = new PointMarkerLayer({
   icon: 'images/car-location.png',
   iconAnchor: [16, 64],
   iconSize: [32, 64],
-  name: "Android Phone GPS"
+  name: "Android Phone GPS",
+  zIndex: 10
 });
+
+let ellipse = new EllipseLayer({
+  dataSourceId: gpsDataSource.id,
+  getPosition: (rec) => ({
+    x: rec.location.lon,
+    y: rec.location.lat,
+    z: rec.location.alt
+  }),
+  color: 'rgba(255,74,22, 0.5)',
+  semiMinorAxis: 100,
+  semiMajorAxis: 300,
+  name: "Android Phone GPS Path",
+  zIndex: 1
+});
+
 
 // #region snippet_ol_location_view
 // create Cesium view
 let olView = new OpenLayerView({
   container: 'ol-map',
-  layers: [pointMarker],
+  layers: [pointMarker, ellipse],
   autoZoomOnFirstMarker: true
 });
 // #endregion snippet_ol_location_view

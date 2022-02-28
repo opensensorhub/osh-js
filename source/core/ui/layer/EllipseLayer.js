@@ -9,7 +9,7 @@
  Author: Drew Botts <drew@botts-inc.com>
  ******************************* END LICENSE BLOCK ***************************/
 import Layer from "./Layer.js";
-import {isDefined} from "../../utils/Utils";
+import {assertNumber, hasValue, isDefined} from "../../utils/Utils";
 
 /**
  * @extends Layer
@@ -41,6 +41,7 @@ class EllipseLayer extends Layer {
      * @param {Number} [properties.rotation=null] - defines the rotation of the ellipse counter-clockwise from north.
      * @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
      * @param {String} [properties.color='red'] - defines the color property of the ellipse
+     * @param {Number} [properties.zIndex=0] - z-ordering of ellipses
      * @param {Function} [properties.getPosition] - defines a function to return the location
      * @param {Function} [properties.getColor] - defines a function to return the color
      * @param {Function} [properties.getSemiMajorAxis] - defines a function to return the semiMajorAxis
@@ -61,7 +62,7 @@ class EllipseLayer extends Layer {
         this.props.color = 'red';
         this.props.ellipseId = 'ellipse';
         this.props.name = '';
-
+        this.props.zIndex = 0;
 
         if (isDefined(properties.name)){
             this.props.name = properties.name;
@@ -93,6 +94,11 @@ class EllipseLayer extends Layer {
 
         if (isDefined(properties.position)){
             this.props.position = properties.position;
+        }
+
+        if (hasValue(properties.zIndex)) {
+            assertNumber(properties.zIndex, "zIndex");
+            this.props.zIndex = properties.zIndex;
         }
 
         let that = this;
