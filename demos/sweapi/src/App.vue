@@ -19,9 +19,7 @@
                 :open.sync="open"
                 activatable
                 color="warning"
-                open-on-click
                 transition
-
             >
               <template v-slot:prepend="{ item }">
                 <v-icon v-if="!item.children">
@@ -80,6 +78,7 @@ import SearchObservationsContent from "./components/SearchObservationsContent.vu
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
 import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import {isDefined} from "../../../source/core/utils/Utils";
 
 export default {
   components: {
@@ -101,7 +100,7 @@ export default {
       datastream: undefined,
       datastreamSearch: undefined,
       datastreamNodeId: undefined,
-      prettyJson: true,
+      prettyJson: true
     }
   },
   beforeMount() {
@@ -126,15 +125,17 @@ export default {
         },
       ]
     },
-    selected() {
+    selected(n) {
       const that = this;
-      if (!this.active.length) return undefined
 
       this.datastream = undefined;
       this.datastreamSearch = undefined;
       this.details = undefined;
+      if (!this.active.length) return undefined
 
       const id = this.active[0]
+      if(!isDefined(id)) return undefined;
+
       const node = this.nodes[id];
       this.datastreamNodeId = node.id;
       const jsonParser = new SweApiFetchGenericJson();
@@ -142,6 +143,8 @@ export default {
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
+      }else if(id.startsWith('system-')) {
+        this.details = node.system.properties;
       } else if (id.startsWith('datastream-details')) {
         this.details = node.datastream.properties;
       } else if (id.startsWith('foi-')) {
@@ -383,6 +386,9 @@ code {
 
 .theme--dark.v-card {
   background-color: #2f2f2f !important;
+}
+.v-treeview-node__content {
+  cursor: pointer;
 }
 </style>
 
