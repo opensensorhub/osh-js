@@ -47,6 +47,8 @@ import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import Collection from "../Collection";
 import SweParser from "../SweParser";
+import SystemFilter from "../system/SystemFilter";
+import DataStreamFilter from "./DataStreamFilter";
 
 class DataStream extends SensorWebApi {
     /**
@@ -94,6 +96,14 @@ class DataStream extends SensorWebApi {
             pageSize,
             parser,
             this._network.info.connector
+        );
+    }
+
+    async getSchema(dataStreamFilter = new DataStreamFilter()) {
+        return this._network.info.connector.doRequest(
+            API.datastreams.schema.replace('{id}',this.properties.id),
+            dataStreamFilter.toQueryString(['select', 'format']),
+            dataStreamFilter.props.format
         );
     }
 }

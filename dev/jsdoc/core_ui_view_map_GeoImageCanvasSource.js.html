@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/ui/view/map/GeoImageCanvasSource.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Namespaces</h3><ul><li><a href="ol.ext.html">ext</a></li></ul><h3>Classes</h3><ul><li><a href="Ajax.html">Ajax</a></li><li><a href="AnimationObjectGroup.html">AnimationObjectGroup</a></li><li><a href="AudioCanvasVisualizer.html">AudioCanvasVisualizer</a></li><li><a href="AudioChartVisualizer.html">AudioChartVisualizer</a></li><li><a href="AudioFrequencyCanvasVisualizer.html">AudioFrequencyCanvasVisualizer</a></li><li><a href="AudioFrequencyChartJsVisualizer.html">AudioFrequencyChartJsVisualizer</a></li><li><a href="AudioSpectrogramVisualizer.html">AudioSpectrogramVisualizer</a></li><li><a href="AudioTimeCanvasVisualizer.html">AudioTimeCanvasVisualizer</a></li><li><a href="AudioTimeChartJsVisualizer.html">AudioTimeChartJsVisualizer</a></li><li><a href="AudioView.html">AudioView</a></li><li><a href="AudioVisualizer.html">AudioVisualizer</a></li><li><a href="BooleanKeyframeTrack.html">BooleanKeyframeTrack</a></li><li><a href="CameraHelper.html">CameraHelper</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="Collection.html">Collection</a></li><li><a href="ColorKeyframeTrack.html">ColorKeyframeTrack</a></li><li><a href="Command.html">Command</a></li><li><a href="CommandFilter.html">CommandFilter</a></li><li><a href="Commands.html">Commands</a></li><li><a href="CompressedTextureLoader.html">CompressedTextureLoader</a></li><li><a href="Control.html">Control</a></li><li><a href="ControlFilter.html">ControlFilter</a></li><li><a href="Controls.html">Controls</a></li><li><a href="CoPlanarPolygonLayer.html">CoPlanarPolygonLayer</a></li><li><a href="CubicInterpolant.html">CubicInterpolant</a></li><li><a href="Curve.html">Curve</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="Cylindrical.html">Cylindrical</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataSource.html">DataSource</a></li><li><a href="DataStream.html">DataStream</a></li><li><a href="DataStreamFilter.html">DataStreamFilter</a></li><li><a href="DataStreams.html">DataStreams</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DataTextureLoader.html">DataTextureLoader</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="DiscreteInterpolant.html">DiscreteInterpolant</a></li><li><a href="EllipseLayer.html">EllipseLayer</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="ExtrudeGeometry.html">ExtrudeGeometry</a></li><li><a href="FeatureOfInterest.html">FeatureOfInterest</a></li><li><a href="FeatureOfInterestFilter.html">FeatureOfInterestFilter</a></li><li><a href="FeaturesOfInterest.html">FeaturesOfInterest</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="File.html">File</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="frustumLayer.html">frustumLayer</a></li><li><a href="HttpConnector.html">HttpConnector</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Interpolant.html">Interpolant</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="LineBasicMaterial.html">LineBasicMaterial</a></li><li><a href="LineDashedMaterial.html">LineDashedMaterial</a></li><li><a href="MapboxView.html">MapboxView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MeshBasicMaterial.html">MeshBasicMaterial</a></li><li><a href="MeshDepthMaterial.html">MeshDepthMaterial</a></li><li><a href="MeshDistanceMaterial.html">MeshDistanceMaterial</a></li><li><a href="MeshLambertMaterial.html">MeshLambertMaterial</a></li><li><a href="MeshMatcapMaterial.html">MeshMatcapMaterial</a></li><li><a href="MeshNormalMaterial.html">MeshNormalMaterial</a></li><li><a href="MeshPhongMaterial.html">MeshPhongMaterial</a></li><li><a href="MeshPhysicalMaterial.html">MeshPhysicalMaterial</a></li><li><a href="MeshStandardMaterial.html">MeshStandardMaterial</a></li><li><a href="MeshToonMaterial.html">MeshToonMaterial</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="MqttConnector.html">MqttConnector</a></li><li><a href="MqttProvider.html">MqttProvider</a></li><li><a href="Nexrad.html">Nexrad</a></li><li><a href="NumberKeyframeTrack.html">NumberKeyframeTrack</a></li><li><a href="Observation.html">Observation</a></li><li><a href="ObservationFilter.html">ObservationFilter</a></li><li><a href="Observations.html">Observations</a></li><li><a href="ol_source_GeoImage.html">ol_source_GeoImage</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="OrientationQuaternion.html">OrientationQuaternion</a></li><li><a href="ParametricGeometry.html">ParametricGeometry</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PointsMaterial.html">PointsMaterial</a></li><li><a href="PolygonLayer.html">PolygonLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="PtzTaskingView.html">PtzTaskingView</a></li><li><a href="QuaternionKeyframeTrack.html">QuaternionKeyframeTrack</a></li><li><a href="QuaternionLinearInterpolant.html">QuaternionLinearInterpolant</a></li><li><a href="RangeSliderView.html">RangeSliderView</a></li><li><a href="SensorWebApi.html">SensorWebApi</a></li><li><a href="Server.html">Server</a></li><li><a href="ShaderMaterial.html">ShaderMaterial</a></li><li><a href="ShadowMaterial.html">ShadowMaterial</a></li><li><a href="SosGetFois.html">SosGetFois</a></li><li><a href="SosGetResultAudio.html">SosGetResultAudio</a></li><li><a href="SosGetResultAudioRaw.html">SosGetResultAudioRaw</a></li><li><a href="SosGetResultJson.html">SosGetResultJson</a></li><li><a href="SosGetResultVideo.html">SosGetResultVideo</a></li><li><a href="SosGetResultVideoWithRoll.html">SosGetResultVideoWithRoll</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="Spherical.html">Spherical</a></li><li><a href="SphericalHarmonics3.html">SphericalHarmonics3</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StringKeyframeTrack.html">StringKeyframeTrack</a></li><li><a href="SweApiFetch.html">SweApiFetch</a></li><li><a href="SweApiFetchJson.html">SweApiFetchJson</a></li><li><a href="SweApiFetchVideo.html">SweApiFetchVideo</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="SystemFilter.html">SystemFilter</a></li><li><a href="Systems.html">Systems</a></li><li><a href="TextGeometry.html">TextGeometry</a></li><li><a href="TimeSeriesDataSource.html">TimeSeriesDataSource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="VectorKeyframeTrack.html">VectorKeyframeTrack</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#CatmullRom">CatmullRom</a></li><li><a href="global.html#cloneUniforms">cloneUniforms</a></li><li><a href="global.html#convertLinearToRGBE">convertLinearToRGBE</a></li><li><a href="global.html#Earcut">Earcut</a></li><li><a href="global.html#emptyTexture">emptyTexture</a></li><li><a href="global.html#mqttProviders">mqttProviders</a></li><li><a href="global.html#REVISION">REVISION</a></li><li><a href="global.html#Status">Status</a></li><li><a href="global.html#UniformsLib">UniformsLib</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: core/ui/view/map/GeoImageCanvasSource.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import ol_ext_inherits from './ext'
+import ol_source_ImageCanvas from 'ol/source/ImageCanvas'
+import ol_geom_Polygon from 'ol/geom/Polygon'
+import {boundingExtent as ol_extent_boundingExtent} from 'ol/extent'
+import {fromExtent as ol_geom_Polygon_fromExtent} from 'ol/geom/Polygon'
+
+/** Layer source with georeferencement to place it on a map
+ * @constructor
+ * @extends {ol_source_ImageCanvas}
+ * @param {GeoImageOptions} options
+ */
+var ol_source_GeoImage = function(opt_options) {
+    var options = {
+        attributions: opt_options.attributions,
+        logo: opt_options.logo,
+        projection: opt_options.projection
+    };
+
+    // options.projection = opt_options.projection;
+
+    // Load Image
+    this._image = (opt_options.image ? opt_options.image : new Image );
+    this._image.crossOrigin = opt_options.crossOrigin; // 'anonymous';
+    // Show image on load
+    var self = this;
+    this._image.onload = function() {
+        self.setCrop (self.crop);
+        self.changed();
+    }
+    if (!opt_options.image) this._image.src = opt_options.url;
+
+    // Draw image on canvas
+    options.canvasFunction = this.calculateImage;
+    // options.canvasFunction = () => opt_options.canvas;
+
+    this.canvas = opt_options.canvas;
+
+    ol_source_ImageCanvas.call (this, options);
+
+    // Coordinate of the image center
+    this.center = opt_options.imageCenter;
+    // Image scale
+    this.setScale(opt_options.imageScale);
+    // Rotation of the image
+    this.rotate = opt_options.imageRotate ? opt_options.imageRotate : 0;
+    // Crop of the image
+    this.crop = opt_options.imageCrop;
+    // Mask of the image
+    this.mask = opt_options.imageMask;
+    // Crop
+    this.setCrop (this.crop);
+
+    // Calculate extent on change
+    this.on('change', function() {
+        this.set('extent', this.calculateExtent());
+    }.bind(this));
+};
+ol_ext_inherits(ol_source_GeoImage, ol_source_ImageCanvas);
+
+/** calculate image at extent / resolution
+ * @param {ol/extent/Extent} extent
+ * @param {number} resolution
+ * @param {number} pixelRatio
+ * @param {ol/size/Size} size
+ * @return {HTMLCanvasElement}
+ */
+ol_source_GeoImage.prototype.calculateImage = function(extent, resolution, pixelRatio, size) {
+    if (!this.center) return;
+    var canvas = document.createElement('canvas');
+    canvas.width = size[0];
+    canvas.height = size[1];
+    var ctx = canvas.getContext('2d');
+
+    if (!this._imageSize) return canvas;
+    // transform coords to pixel
+    function tr(xy) {
+        return [
+            (xy[0]-extent[0])/(extent[2]-extent[0]) * size[0],
+            (xy[1]-extent[3])/(extent[1]-extent[3]) * size[1]
+        ];
+    }
+    // Clipping mask
+    if (this.mask) {
+        ctx.beginPath();
+        var p = tr(this.mask[0]);
+        ctx.moveTo(p[0],p[1]);
+        for (var i=1; i&lt;this.mask.length; i++) {
+            p = tr(this.mask[i]);
+            ctx.lineTo(p[0],p[1]);
+        }
+        ctx.clip();
+    }
+
+    const naturalWidth = this.canvas.width;
+    const naturalHeight = this.canvas.height;
+
+    this._imageSize = [naturalWidth, naturalHeight]
+
+    console.log(this.crop, this._imageSize, naturalWidth,naturalHeight)
+    // Draw
+    var pixel = tr(this.center);
+    var dx = (naturalWidth/2 - this.crop[0]) *this.scale[0] /resolution *pixelRatio;
+    var dy = (naturalHeight/2 - this.crop[1]) *this.scale[1] /resolution *pixelRatio;
+    var sx = naturalWidth*this.scale[0]/resolution *pixelRatio;
+    var sy = naturalHeight*this.scale[1]/resolution *pixelRatio;
+
+    ctx.translate(pixel[0],pixel[1]);
+    if (this.rotate) ctx.rotate(this.rotate);
+    ctx.drawImage(this.canvas, this.crop[0], this.crop[1], this._imageSize[0], this._imageSize[1], -dx, -dy, sx,sy);
+    return canvas;
+}
+
+/**
+ * Get coordinate of the image center.
+ * @return {ol.Coordinate} coordinate of the image center.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.getCenter = function() {
+    return this.center;
+}
+/**
+ * Set coordinate of the image center.
+ * @param {ol.Coordinate} coordinate of the image center.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.setCenter = function(center) {
+    this.center = center;
+    this.changed();
+}
+
+/**
+ * Get image scale.
+ * @return {ol.size} image scale (along x and y axis).
+ * @api stable
+ */
+ol_source_GeoImage.prototype.getScale = function() {
+    return this.scale;
+}
+/**
+ * Set image scale.
+ * @param {ol.size|Number} image scale (along x and y axis or both).
+ * @api stable
+ */
+ol_source_GeoImage.prototype.setScale = function(scale) {
+    switch (typeof(scale)) {
+        case 'number':
+            scale = [scale,scale];
+            break;
+        case 'object':
+            if (scale.length != 2) return;
+            break;
+        default: return;
+    }
+    this.scale = scale;
+    this.changed();
+};
+
+/**
+ * Get image rotation.
+ * @return {Number} rotation in degre.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.getRotation = function() {
+    return this.rotate;
+};
+/**
+ * Set image rotation.
+ * @param {Number} rotation in radian.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.setRotation = function(angle) {
+    this.rotate = angle;
+    this.changed();
+};
+
+/**
+ * Get the image.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.getGeoImage = function() {
+    return this._image;
+};
+
+/**
+ * Get image crop extent.
+ * @return {ol.extent} image crop extent.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.getCrop = function() {
+    return this.crop;
+};
+
+
+/**
+ * Set image mask.
+ * @param {ol.geom.LineString} coords of the mask
+ * @api stable
+ */
+ol_source_GeoImage.prototype.setMask = function(mask) {
+    this.mask = mask;
+    this.changed();
+};
+
+/**
+ * Get image mask.
+ * @return {ol.geom.LineString} coords of the mask
+ * @api stable
+ */
+ol_source_GeoImage.prototype.getMask = function() {
+    return this.mask;
+};
+
+/**
+ * Set image crop extent.
+ * @param {ol.extent|Number} image crop extent or a number to crop from original size.
+ * @api stable
+ */
+ol_source_GeoImage.prototype.setCrop = function(crop) {
+    // Image not loaded => get it latter
+    if (!this._image.naturalWidth) {
+        this.crop = crop;
+        return;
+    }
+    if (crop) {
+        switch (typeof(crop)) {
+            case 'number':
+                crop = [crop,crop,this._image.naturalWidth-crop,this._image.naturalHeight-crop];
+                break;
+            case 'object':
+                if (crop.length != 4) return;
+                break;
+            default: return;
+        }
+        crop = ol_extent_boundingExtent([ [crop[0],crop[1]], [crop[2],crop[3]] ]);
+        this.crop = [ Math.max(0,crop[0]), Math.max(0,crop[1]), Math.min(this._image.naturalWidth,crop[2]), Math.min(this._image.naturalHeight,crop[3]) ];
+    }
+    else this.crop = [0,0, this._image.naturalWidth,this._image.naturalHeight];
+    if (this.crop[2]&lt;=this.crop[0]) this.crop[2] = this.crop[0]+1;
+    if (this.crop[3]&lt;=this.crop[1]) this.crop[3] = this.crop[1]+1;
+    this._imageSize = [ this.crop[2]-this.crop[0], this.crop[3]-this.crop[1] ];
+    this.changed();
+};
+
+/** Get the extent of the source.
+ * @param {module:ol/extent~Extent} extent If provided, no new extent will be created. Instead, that extent's coordinates will be overwritten.
+ * @return {ol.extent}
+ */
+ol_source_GeoImage.prototype.getExtent = function(opt_extent) {
+    var ext = this.get('extent');
+    if (!ext) ext = this.calculateExtent();
+    if (opt_extent) {
+        for (var i=0; i&lt;opt_extent.length; i++) {
+            opt_extent[i] = ext[i];
+        }
+    }
+    return ext;
+};
+
+/** Calculate the extent of the source image.
+ * @param {boolean} usemask return the mask extent, default return the image extent
+ * @return {ol.extent}
+ */
+ol_source_GeoImage.prototype.calculateExtent = function(usemask) {
+    var polygon;
+    if (usemask!==false &amp;&amp; this.getMask()) {
+        polygon = new ol_geom_Polygon([this.getMask()])
+    } else {
+        var center = this.getCenter();
+        var scale = this.getScale();
+        var width = this.getGeoImage().width * scale[0];
+        var height = this.getGeoImage().height * scale[1];
+        var extent = ol_extent_boundingExtent([
+            [ center[0]-width/2, center[1]-height/2 ],
+            [ center[0]+width/2, center[1]+height/2 ]
+        ]);
+        polygon = ol_geom_Polygon_fromExtent(extent);
+        polygon.rotate(-this.getRotation(), center);
+    }
+    var ext = polygon.getExtent();
+    return ext;
+};
+
+export default ol_source_GeoImage
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

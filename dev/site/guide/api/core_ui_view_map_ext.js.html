@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/ui/view/map/ext.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/ui/view/map/ext.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @namespace  ol.ext
+ */
+/*global ol*/
+if (window.ol &amp;&amp; !ol.ext) {
+    ol.ext = {};
+}
+
+/** Inherit the prototype methods from one constructor into another.
+ * replace deprecated ol method
+ *
+ * @param {!Function} childCtor Child constructor.
+ * @param {!Function} parentCtor Parent constructor.
+ * @function module:ol.inherits
+ * @api
+ */
+var ol_ext_inherits = function(child,parent) {
+    child.prototype = Object.create(parent.prototype);
+    child.prototype.constructor = child;
+};
+
+// Compatibilty with ol > 5 to be removed when v6 is out
+if (window.ol) {
+    if (!ol.inherits) ol.inherits = ol_ext_inherits;
+}
+
+/* IE Polyfill */
+// NodeList.forEach
+if (window.NodeList &amp;&amp; !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = Array.prototype.forEach;
+}
+// Element.remove
+if (window.Element &amp;&amp; !Element.prototype.remove) {
+    Element.prototype.remove = function() {
+        if (this.parentNode) this.parentNode.removeChild(this);
+    }
+}
+/* End Polyfill */
+
+export { ol_ext_inherits }
+export default ol_ext_inherits
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
