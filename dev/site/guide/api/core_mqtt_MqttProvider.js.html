@@ -75,6 +75,7 @@ class MqttProvider {
         let options = {
             reconnectPeriod: 30,
             connectTimeout: 30 * 1000,
+            clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
             wsOptions: {
                 binaryType: 'arraybuffer'
             }
@@ -97,7 +98,7 @@ class MqttProvider {
 
     subscribeToObservations(dataStreamId, format, callback) {
         const obsFilter = new ObservationFilter({
-            responseFormat: format
+            format: format
         });
         this.subscribeToObservationsByObsFilter([dataStreamId],obsFilter,callback);
     }
@@ -128,13 +129,17 @@ class MqttProvider {
                     // subscribe
                     for (let dataStreamId of dataStreamIds) {
                         // store callback for this topic
-                        if (!(dataStreamId in mqttCallbacks)) {
-                            mqttCallbacks[dataStreamId] = [];
+                        let topic = `${dataStreamId}?${observationFilter.toQueryString()}`;
+                        console.log(topic)
+                        if (!(topic in mqttCallbacks)) {
+                            mqttCallbacks[topic] = [];
                         }
 
-                        mqttCallbacks[dataStreamId].push(callback);
+                        mqttCallbacks[topic].push(callback);
 
-                        this.client.subscribe(dataStreamId, function (err) {
+                        console.log(observationFilter.toQueryString())
+                        // this.client.subscribe(dataStreamId+"?format=application/swe%2Bbinary", function (err) {c
+                        this.client.subscribe(topic, function (err) {
                             if (err) {
                                 callback(err);
                             } else {
@@ -179,11 +184,16 @@ class MqttProvider {
     }
 
     async onMessage(topic, message) {
+
+        // console.log(message)
+        // console.log(new DataView(message.buffer, message.byteOffset).getFloat64(0, false) * 1000)
+        // console.log(new DataView(new Uint8Array(message).subarray(message.byteOffset).buffer).getFloat64(0, false) * 1000)
+        // console.log(String.fromCharCode.apply(null, new Uint8Array(message)));
         if (topic in mqttCallbacks) {
             // callback for the corresponding topic
             for (let callbackFn of mqttCallbacks[topic]) {
                 // callback to all subscription registered
-                callbackFn(new Uint8Array(message).buffer);
+                callbackFn(new Uint8Array(message).subarray(message.byteOffset).buffer);
             }
         }
     }
