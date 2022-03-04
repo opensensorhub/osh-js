@@ -136,7 +136,6 @@ export default {
       const id = this.active[0]
       if(!isDefined(id)) return undefined;
 
-      this.datastreamNodeId = node.id;
       const jsonParser = new SweApiFetchGenericJson();
       let node;
       if (id.startsWith('system-details')) {

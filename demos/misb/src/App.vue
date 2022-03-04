@@ -77,11 +77,11 @@ export default {
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 1.0;
+    const dsReplaySpeed = 1.1;
     const timeOut = 3000;
     const bufferingTime = 800;
 
-   const droneVideoDataSource = new SosGetResultVideo('MISB Drone - Video',{
+  /* const droneVideoDataSource = new SosGetResultVideo('MISB Drone - Video',{
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
@@ -95,11 +95,11 @@ export default {
       replaySpeed: dsReplaySpeed,
       timeOut: timeOut,
       bufferingTime: bufferingTime
-    });
+    });*/
 
-    /*const droneVideoDataSource = new SweApiFetchVideo('MISB Drone - Video', {
-      protocol: 'mqtt',
-      endpointUrl: 'ogct17.georobotix.io:8483',
+    const droneVideoDataSource = new SweApiFetchVideo('MISB Drone - Video', {
+      protocol: 'ws',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
       collection: '/datastreams/uxzna8pldpiv/observations',
       tls: tls,
       startTime: START_TIME,
@@ -111,7 +111,7 @@ export default {
       bufferingTime: bufferingTime
     });
 
-    Not working, waiting for the correct sign to pass instead of swe+binary into MQTT protocol
+    /*Not working, waiting for the correct sign to pass instead of swe+binary into MQTT protocol
     */
 
     const droneLocationDataSource = new SweApiFetchJson('MISB UAS - Platform Location', {

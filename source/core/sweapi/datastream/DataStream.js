@@ -19,6 +19,7 @@ import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import Collection from "../Collection";
 import SweParser from "../SweParser";
+import DataStreamFilter from "./DataStreamFilter";
 
 class DataStream extends SensorWebApi {
     /**
