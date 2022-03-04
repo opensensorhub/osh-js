@@ -139,20 +139,34 @@ export default {
       const node = this.nodes[id];
       this.datastreamNodeId = node.id;
       const jsonParser = new SweApiFetchGenericJson();
+      let node;
       if (id.startsWith('system-details')) {
+        node = this.nodes[id];
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
-      }else if(id.startsWith('system-')) {
+      } else if(id.startsWith('system-')) {
+        node = this.nodes[id];
         this.details = node.system.properties;
-      } else if (id.startsWith('datastream-details')) {
-        this.details = node.datastream.properties;
+      } else if (id.startsWith('datastream-schema')) {
+        node = this.nodes[id];
+        node.datastream.getSchema().then(schema => {
+          that.details = jsonParser.parseData(schema);
+        });
       } else if (id.startsWith('foi-')) {
+        node = this.nodes[id];
         this.details = node.foi.properties;
       } else if (id.startsWith('datastream-stream-observation')) {
+        node = this.nodes[id];
+        this.datastreamNodeId = node.id;
         this.datastream = node.datastream;
       } else if(id.startsWith('datastream-search-observation')) {
+        node = this.nodes[id];
+        this.datastreamNodeId = node.id;
         this.datastreamSearch = node.datastream;
+      } else if(id.startsWith('datastream-')) {
+        node = this.nodes[id];
+        this.details = node.datastream.properties;
       }
       return node;
     },
@@ -222,8 +236,8 @@ export default {
           const datastream = page[i];
 
           const datastreamDetailsNode = {
-            id: `datastream-details-${this.count++}`,
-            name: 'details',
+            id: `datastream-schema-${this.count++}`,
+            name: 'schema',
             system: system,
             datastream: datastream
           };
