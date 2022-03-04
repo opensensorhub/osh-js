@@ -68,6 +68,14 @@ class DataStream extends SensorWebApi {
             this._network.info.connector
         );
     }
+
+    async getSchema(dataStreamFilter = new DataStreamFilter()) {
+        return this._network.info.connector.doRequest(
+            API.datastreams.schema.replace('{id}',this.properties.id),
+            dataStreamFilter.toQueryString(['select', 'format']),
+            dataStreamFilter.props.format
+        );
+    }
 }
 
 export default DataStream;

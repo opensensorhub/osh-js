@@ -2,7 +2,8 @@ const API = {
     datastreams: {
         search: '/api/datastreams',
         by_id: '/api/datastreams/{id}',
-        observations: '/api/datastreams/{id}/observations'
+        observations: '/api/datastreams/{id}/observations',
+        schema: '/api/datastreams/{id}/schema'
     },
     systems: {
         search: '/api/systems',

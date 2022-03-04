@@ -19,9 +19,7 @@
                 :open.sync="open"
                 activatable
                 color="warning"
-                open-on-click
                 transition
-
             >
               <template v-slot:prepend="{ item }">
                 <v-icon v-if="!item.children">
@@ -80,6 +78,7 @@ import SearchObservationsContent from "./components/SearchObservationsContent.vu
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
 import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import {isDefined} from "../../../source/core/utils/Utils";
 
 export default {
   components: {
@@ -101,7 +100,7 @@ export default {
       datastream: undefined,
       datastreamSearch: undefined,
       datastreamNodeId: undefined,
-      prettyJson: true,
+      prettyJson: true
     }
   },
   beforeMount() {
@@ -126,30 +125,48 @@ export default {
         },
       ]
     },
-    selected() {
+    selected(n) {
       const that = this;
-      if (!this.active.length) return undefined
 
       this.datastream = undefined;
       this.datastreamSearch = undefined;
       this.details = undefined;
+      if (!this.active.length) return undefined
 
       const id = this.active[0]
+      if(!isDefined(id)) return undefined;
+
       const node = this.nodes[id];
       this.datastreamNodeId = node.id;
       const jsonParser = new SweApiFetchGenericJson();
+      let node;
       if (id.startsWith('system-details')) {
+        node = this.nodes[id];
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
-      } else if (id.startsWith('datastream-details')) {
-        this.details = node.datastream.properties;
+      } else if(id.startsWith('system-')) {
+        node = this.nodes[id];
+        this.details = node.system.properties;
+      } else if (id.startsWith('datastream-schema')) {
+        node = this.nodes[id];
+        node.datastream.getSchema().then(schema => {
+          that.details = jsonParser.parseData(schema);
+        });
       } else if (id.startsWith('foi-')) {
+        node = this.nodes[id];
         this.details = node.foi.properties;
       } else if (id.startsWith('datastream-stream-observation')) {
+        node = this.nodes[id];
+        this.datastreamNodeId = node.id;
         this.datastream = node.datastream;
       } else if(id.startsWith('datastream-search-observation')) {
+        node = this.nodes[id];
+        this.datastreamNodeId = node.id;
         this.datastreamSearch = node.datastream;
+      } else if(id.startsWith('datastream-')) {
+        node = this.nodes[id];
+        this.details = node.datastream.properties;
       }
       return node;
     },
@@ -219,8 +236,8 @@ export default {
           const datastream = page[i];
 
           const datastreamDetailsNode = {
-            id: `datastream-details-${this.count++}`,
-            name: 'details',
+            id: `datastream-schema-${this.count++}`,
+            name: 'schema',
             system: system,
             datastream: datastream
           };
@@ -383,6 +400,9 @@ code {
 
 .theme--dark.v-card {
   background-color: #2f2f2f !important;
+}
+.v-treeview-node__content {
+  cursor: pointer;
 }
 </style>
 
