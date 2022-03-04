@@ -136,7 +136,6 @@ export default {
       const id = this.active[0]
       if(!isDefined(id)) return undefined;
 
-      const node = this.nodes[id];
       this.datastreamNodeId = node.id;
       const jsonParser = new SweApiFetchGenericJson();
       let node;
