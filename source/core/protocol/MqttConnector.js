@@ -18,6 +18,7 @@ import DataConnector from "./DataConnector";
 import {assertDefined, isDefined, randomUUID} from "../utils/Utils";
 import {Status} from "./Status";
 import MqttProvider from "../mqtt/MqttProvider";
+import ObservationFilter from "../sweapi/observation/ObservationFilter";
 
 /**
  * Defines the MqttConnector to connect to a remote server by creating a Mqtt channel.
@@ -86,7 +87,7 @@ class MqttConnector extends DataConnector {
      */
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
-        mqttProvider.subscribeToObservations(topic, 'application/swe+json',this.onMessage);
+        mqttProvider.subscribe(topic, queryString,this.onMessage);
     }
 
     publishRequest(topic, payload) {

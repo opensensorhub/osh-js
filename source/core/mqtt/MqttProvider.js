@@ -47,6 +47,7 @@ class MqttProvider {
         let options = {
             reconnectPeriod: 30,
             connectTimeout: 30 * 1000,
+            clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
             wsOptions: {
                 binaryType: 'arraybuffer'
             }
@@ -67,53 +68,33 @@ class MqttProvider {
     }
 
 
-    subscribeToObservations(dataStreamId, format, callback) {
-        const obsFilter = new ObservationFilter({
-            responseFormat: format
-        });
-        this.subscribeToObservationsByObsFilter([dataStreamId],obsFilter,callback);
-    }
-
-
-    /**
-     * Generic model
-     * mqttCallback: {
-     *     'topic0': [callback]
-     * }
-     */
-    /**
-     *
-     * @param {String[]} [dataStreamIds=[]] - list of datastream ids
-     * @param {ObservationFilter} observationFilter - the observation filter object
-     * @param callback
-     */
-    subscribeToObservationsByObsFilter(dataStreamIds = [],observationFilter,  callback) {
+    subscribe(topic, queryString, callback) {
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic');
         }
         // waiting for the client gets connected
         let interval;
+        const topicQuery = `${topic}?${queryString}`;
 
         interval = setInterval(() => {
             if (this.client.connected) {
                 try {
                     // subscribe
-                    for (let dataStreamId of dataStreamIds) {
-                        // store callback for this topic
-                        if (!(dataStreamId in mqttCallbacks)) {
-                            mqttCallbacks[dataStreamId] = [];
-                        }
-
-                        mqttCallbacks[dataStreamId].push(callback);
-
-                        this.client.subscribe(dataStreamId, function (err) {
-                            if (err) {
-                                callback(err);
-                            } else {
-                                console.warn(`Subscribed to ${dataStreamId}`);
-                            }
-                        });
+                    // store callback for this topic
+                    if (!(topicQuery in mqttCallbacks)) {
+                        mqttCallbacks[topicQuery] = [];
                     }
+
+                    mqttCallbacks[topicQuery].push(callback);
+
+                    // this.client.subscribe(dataStreamId+"?format=application/swe%2Bbinary", function (err) {c
+                    this.client.subscribe(topicQuery, function (err) {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            console.warn(`Subscribed to ${topicQuery}`);
+                        }
+                    });
                 } catch (exception) {
                     console.error(exception);
                 } finally {
@@ -123,6 +104,7 @@ class MqttProvider {
         },100);
     }
 
+
     publish(topic, payload) {
         this.client.publish(topic, payload);
     }
@@ -131,11 +113,11 @@ class MqttProvider {
      * Check to unsuscribe to any topic listened by this dsId
      * If the topic is only subscribed by the dsId, unsubscribe from broken
      * Otherwise, remove from the list of subscribe topic/dsId
-     * @param dataStreamId
+     * @param topic
      */
-    unsubscribeDs(dataStreamId) {
-        console.log(`remove dataStream: ${dataStreamId}`);
-        delete mqttCallbacks[dataStreamId];
+    unsubscribe(topic) {
+        console.log(`unsubscribe topic: ${topic}`);
+        delete mqttCallbacks[topic];
     }
 
     connect() {
@@ -151,11 +133,16 @@ class MqttProvider {
     }
 
     async onMessage(topic, message) {
+
+        // console.log(message)
+        // console.log(new DataView(message.buffer, message.byteOffset).getFloat64(0, false) * 1000)
+        // console.log(new DataView(new Uint8Array(message).subarray(message.byteOffset).buffer).getFloat64(0, false) * 1000)
+        // console.log(String.fromCharCode.apply(null, new Uint8Array(message)));
         if (topic in mqttCallbacks) {
             // callback for the corresponding topic
             for (let callbackFn of mqttCallbacks[topic]) {
                 // callback to all subscription registered
-                callbackFn(new Uint8Array(message).buffer);
+                callbackFn(new Uint8Array(message).subarray(message.byteOffset).buffer);
             }
         }
     }
