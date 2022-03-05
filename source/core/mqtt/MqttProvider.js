@@ -68,57 +68,33 @@ class MqttProvider {
     }
 
 
-    subscribeToObservations(dataStreamId, format, callback) {
-        const obsFilter = new ObservationFilter({
-            format: format
-        });
-        this.subscribeToObservationsByObsFilter([dataStreamId],obsFilter,callback);
-    }
-
-
-    /**
-     * Generic model
-     * mqttCallback: {
-     *     'topic0': [callback]
-     * }
-     */
-    /**
-     *
-     * @param {String[]} [dataStreamIds=[]] - list of datastream ids
-     * @param {ObservationFilter} observationFilter - the observation filter object
-     * @param callback
-     */
-    subscribeToObservationsByObsFilter(dataStreamIds = [],observationFilter,  callback) {
+    subscribe(topic, queryString, callback) {
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic');
         }
         // waiting for the client gets connected
         let interval;
+        const topicQuery = `${topic}?${queryString}`;
 
         interval = setInterval(() => {
             if (this.client.connected) {
                 try {
                     // subscribe
-                    for (let dataStreamId of dataStreamIds) {
-                        // store callback for this topic
-                        let topic = `${dataStreamId}?${observationFilter.toQueryString()}`;
-                        console.log(topic)
-                        if (!(topic in mqttCallbacks)) {
-                            mqttCallbacks[topic] = [];
-                        }
-
-                        mqttCallbacks[topic].push(callback);
-
-                        console.log(observationFilter.toQueryString())
-                        // this.client.subscribe(dataStreamId+"?format=application/swe%2Bbinary", function (err) {c
-                        this.client.subscribe(topic, function (err) {
-                            if (err) {
-                                callback(err);
-                            } else {
-                                console.warn(`Subscribed to ${dataStreamId}`);
-                            }
-                        });
+                    // store callback for this topic
+                    if (!(topicQuery in mqttCallbacks)) {
+                        mqttCallbacks[topicQuery] = [];
                     }
+
+                    mqttCallbacks[topicQuery].push(callback);
+
+                    // this.client.subscribe(dataStreamId+"?format=application/swe%2Bbinary", function (err) {c
+                    this.client.subscribe(topicQuery, function (err) {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            console.warn(`Subscribed to ${topicQuery}`);
+                        }
+                    });
                 } catch (exception) {
                     console.error(exception);
                 } finally {
@@ -128,6 +104,7 @@ class MqttProvider {
         },100);
     }
 
+
     publish(topic, payload) {
         this.client.publish(topic, payload);
     }
@@ -136,11 +113,11 @@ class MqttProvider {
      * Check to unsuscribe to any topic listened by this dsId
      * If the topic is only subscribed by the dsId, unsubscribe from broken
      * Otherwise, remove from the list of subscribe topic/dsId
-     * @param dataStreamId
+     * @param topic
      */
-    unsubscribeDs(dataStreamId) {
-        console.log(`remove dataStream: ${dataStreamId}`);
-        delete mqttCallbacks[dataStreamId];
+    unsubscribe(topic) {
+        console.log(`unsubscribe topic: ${topic}`);
+        delete mqttCallbacks[topic];
     }
 
     connect() {
