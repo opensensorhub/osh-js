@@ -235,21 +235,21 @@ export default {
 
           const datastreamDetailsNode = {
             id: `datastream-schema-${this.count++}`,
-            name: 'schema',
+            name: 'Schema',
             system: system,
             datastream: datastream
           };
 
           const datastreamStreamObservationNode = {
             id: `datastream-stream-observation-${this.count++}`,
-            name: 'streamObservations',
+            name: 'Live Observations',
             system: system,
             datastream: datastream
           };
 
           const datastreamSearchObservationNode = {
             id: `datastream-search-observation-${this.count++}`,
-            name: 'searchObservations (http)',
+            name: 'Historical Observations',
             system: system,
             datastream: datastream
           };
