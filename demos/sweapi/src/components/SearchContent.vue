@@ -36,9 +36,9 @@ import SweApiFetchGenericJson
   from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 
 export default {
-  name: "SearchObservationsContent",
+  name: "SearchContent",
   props: [
-    'datastream','datastreamNodeId'
+    'collection','nodeId'
   ],
   components: {
     VueJsonPretty,
@@ -56,12 +56,10 @@ export default {
         visible: 6,
         current: 1
       },
-      collection: undefined,
       cache: {}
     }
   },
   mounted() {
-    this.collection = this.datastream.searchObservations(new ObservationFilter(), 10);
     this.connect();
   },
   async destroyed(){
@@ -74,23 +72,19 @@ export default {
   methods: {
     setPage(value) {
       if(!(value in this.cache)) {
-        let asyncCollection = async () => {
-          const page = await this.collection.nextPage(value - 1);
+       this.collection.nextPage(value - 1).then(page => {
           this.content = page;
           this.cache[value]= page;
-        };
-        asyncCollection();
+       });
       } else {
         this.content = this.cache[value];
       }
     },
     connect() {
-      let asyncCollection = async () => {
-        const page = await this.collection.nextPage();
+      this.collection.nextPage().then(page => {
         this.content = page;
         this.cache[1]= page;
-      };
-      asyncCollection();
+      });
     },
     disconnect() {
       this.active = false;
