@@ -17,12 +17,11 @@ class SweApiFetchFeatureOfInterestParser extends DataSourceParser {
 
         return new FeatureOfInterest(
             {
-                id: rec.id,
-                type: rec.type,
+                ...rec,
                 geometry: rec.geometry || undefined,
-                bbox: rec.bbox || undefined,
-                properties: rec.properties
+                bbox: rec.bbox || undefined
             },
+
             this.networkProperties
         );
     }

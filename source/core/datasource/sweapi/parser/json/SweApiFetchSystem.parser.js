@@ -16,11 +16,7 @@ class SweApiFetchSystemParser extends DataSourceParser {
         }
 
         return new System(
-            {
-                id: rec.id,
-                type: rec.type,
-                ...rec.properties,
-            },
+            rec,
             this.networkProperties
         );
     }

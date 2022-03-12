@@ -16,14 +16,7 @@ class SweApiFetchObservationParser extends DataSourceParser {
         }
 
         return new Observation(
-            {
-                id: rec.id,
-                datastreamId: rec.datastreamId,
-                foiId: rec.foiId,
-                phenomenonTime: rec.phenomenonTime,
-                resultTime: rec.resultTime,
-                result: rec.result
-            },
+            rec,
             this.networkProperties
         );
     }
