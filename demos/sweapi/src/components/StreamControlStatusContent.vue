@@ -23,33 +23,31 @@
             label="Protocol"
             dense
             read-only
-            v-model="dataStreamProtocol"
+            v-model="streamProtocol"
             @change="changeStreamProtocol"
         ></v-select>
       </v-col>
     </v-row>
-    <slot v-if="content">
-      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
+    <slot v-if="contents.length > 0">
+      <vue-json-pretty :path="'res'" :data="contents" v-if="prettyJson"></vue-json-pretty>
       <div class="noprettyjson" v-else>
-        <pre> {{ content }}</pre>
+        <pre v-for="content in contents" :key="content">
+          {{ content }}
+        </pre>
       </div>
     </slot>
   </div>
 </template>
 
 <script>
-import SweApiFetchJsonParser
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
-import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import SweApiFetchGenericJson
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
 
 export default {
-  name: "StreamObservationsContent",
+  name: "StreamControlStatusContent",
   props: [
-    'datastream','datastreamNodeId'
+    'control','nodeId'
   ],
   components: {
     VueJsonPretty,
@@ -57,8 +55,9 @@ export default {
   data() {
     return {
       prettyJson: true,
-      dataStreamProtocol: 'ws',
-      content: undefined,
+      streamProtocol: 'ws',
+      contents: [],
+      items: {}
     }
   },
   mounted() {
@@ -74,23 +73,27 @@ export default {
   methods: {
     connect() {
       const that = this;
-      this.datastream.streamObservations(new ObservationFilter(), function (obs) {
-        that.content = obs;
+      this.control.streamStatus(new ControlFilter(), function (obs) {
+        that.items[obs.command] = obs;
+        that.contents = [];
+        for(let key in that.items) {
+          that.contents.push(that.items[key]);
+        }
       });
     },
     disconnect() {
-      if(this.datastream._network.stream.connector) {
-        this.datastream._network.stream.connector.disconnect();
+      if(this.control._network.stream.connector) {
+        this.control._network.stream.connector.disconnect();
       }
     },
     changeStreamProtocol(value) {
-      this.dataStreamProtocol = value;
+      this.streamProtocol = value;
       this.disconnect();
       if(value === 'ws') {
-        this.datastream.setStreamProtocol(value, 'arraybuffer');
+        this.control.setStreamProtocol(value, 'arraybuffer');
       } else {
         // mqtt
-        this.datastream.setStreamProtocol(value, 'arraybuffer', {
+        this.control.setStreamProtocol(value, 'arraybuffer', {
           endpointUrl: 'ogct17.georobotix.io:8483'
         });
       }

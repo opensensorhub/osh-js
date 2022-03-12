@@ -23,7 +23,7 @@
             label="Protocol"
             dense
             read-only
-            v-model="dataStreamProtocol"
+            v-model="streamProtocol"
             @change="changeStreamProtocol"
         ></v-select>
       </v-col>
@@ -38,18 +38,14 @@
 </template>
 
 <script>
-import SweApiFetchJsonParser
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
-import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import SweApiFetchGenericJson
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
 
 export default {
-  name: "StreamObservationsContent",
+  name: "StreamCommandsContent",
   props: [
-    'datastream','datastreamNodeId'
+    'control','nodeId'
   ],
   components: {
     VueJsonPretty,
@@ -57,7 +53,7 @@ export default {
   data() {
     return {
       prettyJson: true,
-      dataStreamProtocol: 'ws',
+      streamProtocol: 'ws',
       content: undefined,
     }
   },
@@ -74,23 +70,23 @@ export default {
   methods: {
     connect() {
       const that = this;
-      this.datastream.streamObservations(new ObservationFilter(), function (obs) {
+      this.control.streamCommands(new ControlFilter(), function (obs) {
         that.content = obs;
       });
     },
     disconnect() {
-      if(this.datastream._network.stream.connector) {
-        this.datastream._network.stream.connector.disconnect();
+      if(this.control._network.stream.connector) {
+        this.control._network.stream.connector.disconnect();
       }
     },
     changeStreamProtocol(value) {
-      this.dataStreamProtocol = value;
+      this.streamProtocol = value;
       this.disconnect();
       if(value === 'ws') {
-        this.datastream.setStreamProtocol(value, 'arraybuffer');
+        this.control.setStreamProtocol(value, 'arraybuffer');
       } else {
         // mqtt
-        this.datastream.setStreamProtocol(value, 'arraybuffer', {
+        this.control.setStreamProtocol(value, 'arraybuffer', {
           endpointUrl: 'ogct17.georobotix.io:8483'
         });
       }

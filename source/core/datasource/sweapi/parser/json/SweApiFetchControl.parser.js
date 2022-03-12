@@ -17,7 +17,10 @@ class SweApiFetchControlParser extends DataSourceParser {
 
         return new Control(
             rec,
-            this.networkProperties
+            {
+                streamProtocol: 'ws', // default streaming
+                ...this.networkProperties
+            }
         );
     }
 
