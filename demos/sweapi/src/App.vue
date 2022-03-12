@@ -3,8 +3,16 @@
     <div id="app">
       <v-card height="100%">
         <v-card-title class="blue accent-3 white--text text-h5">
-          SensorWebAPI: https://ogct17.georobotix.io:8443/
+          SensorWebAPI
         </v-card-title>
+        <v-text-field
+            :value="urlFetch"
+            label="fetch"
+        ></v-text-field>
+        <v-text-field
+            :value="urlMqtt"
+            label="mqtt"
+        ></v-text-field>
         <v-row
             class="pa-4 full"
             justify="space-between"
@@ -41,14 +49,18 @@
               <StreamObservationsContent v-else-if="datastream"
                  :datastream="datastream"
                  :key="nodeId"
+                 :url="urlMqtt"
               ></StreamObservationsContent>
             <StreamCommandsContent v-else-if="controlStreamCommand"
                                        :control="controlStreamCommand"
                                        :key="nodeId"
+                                       :url="urlMqtt"
             ></StreamCommandsContent>
             <StreamControlStatusContent v-else-if="controlStreamStatus"
                                    :control="controlStreamStatus"
                                    :key="nodeId"
+                                   :url="urlMqtt"
+
             ></StreamControlStatusContent>
             <SearchContent v-else-if="collectionSearch"
                                        :collection="collectionSearch"
@@ -117,7 +129,9 @@ export default {
       controlStreamStatus: undefined,
       collectionSearch: undefined,
       nodeId: undefined,
-      prettyJson: true
+      prettyJson: true,
+      urlFetch: 'ogct17.georobotix.io:8443/sensorhub/api',
+      urlMqtt: 'ogct17.georobotix.io:8483',
     }
   },
   beforeMount() {
@@ -130,7 +144,7 @@ export default {
     this.systemsUtility = new Systems({
       protocol: 'http',
       tls: true,
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub'
+      endpointUrl: this.urlFetch
     });
   },
   computed: {
@@ -262,7 +276,6 @@ export default {
           this.nodes[systemDetailsNode.id] = systemDetailsNode;
 
           const nodeId = `system-${this.count++}`;
-          console.log(system)
           this.nodes[nodeId] = {
             id: nodeId,
             name: system.properties.properties.name,

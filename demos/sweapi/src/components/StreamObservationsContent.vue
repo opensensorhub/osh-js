@@ -38,18 +38,14 @@
 </template>
 
 <script>
-import SweApiFetchJsonParser
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
 import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import SweApiFetchGenericJson
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 
 export default {
   name: "StreamObservationsContent",
   props: [
-    'datastream','datastreamNodeId'
+    'datastream','datastreamNodeId','url'
   ],
   components: {
     VueJsonPretty,
@@ -74,7 +70,7 @@ export default {
   methods: {
     connect() {
       const that = this;
-      this.datastream.streamObservations(new ObservationFilter(), function (obs) {
+      this.datastream.streamObservations(new ObservationFilter({}), function (obs) {
         that.content = obs;
       });
     },
@@ -91,7 +87,7 @@ export default {
       } else {
         // mqtt
         this.datastream.setStreamProtocol(value, 'arraybuffer', {
-          endpointUrl: 'ogct17.georobotix.io:8483'
+          endpointUrl: this.url
         });
       }
 

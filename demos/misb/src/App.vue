@@ -99,7 +99,7 @@ export default {
 
     const droneVideoDataSource = new SweApiFetchVideo('MISB Drone - Video', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/uxzna8pldpiv/observations',
       tls: tls,
       startTime: START_TIME,
@@ -116,7 +116,7 @@ export default {
 
     const droneLocationDataSource = new SweApiFetchJson('MISB UAS - Platform Location', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/gal7w6j6v7n9/observations',
       tls: tls,
       startTime: START_TIME,
@@ -130,7 +130,7 @@ export default {
 
     const droneOrientationDataSource = new SweApiFetchJson('MISB UAS - Platform Attitude', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/ei5nsp8guy5y/observations',
       tls: tls,
       startTime: START_TIME,
@@ -144,7 +144,7 @@ export default {
 
     const droneCameraOrientationDataSource = new SweApiFetchJson('MISB UAS - Gimbal Attitude', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/7rsjo1e6pq45/observations',
       tls: tls,
       startTime: START_TIME,
@@ -158,7 +158,7 @@ export default {
 
     const droneHFovDataSource = new SweApiFetchJson('MISB UAS - Horizontal FoV', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/1fle3d5b29shh/observations',
       tls: tls,
       startTime: START_TIME,
@@ -172,7 +172,7 @@ export default {
 
     const droneVFovDataSource = new SweApiFetchJson('MISB UAS - Vertical FoV', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/1fle3d5b29shh/observations',
       tls: tls,
       startTime: START_TIME,
@@ -186,7 +186,7 @@ export default {
 
     const geoRefImageFrameDataSource = new SweApiFetchJson('MISB UAS - GeoReferenced Image Frame', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/1b6j89nistu9h/observations',
       tls: tls,
       startTime: START_TIME,
@@ -200,7 +200,7 @@ export default {
 
     const targetLocationDataSource = new SweApiFetchJson('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
+      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: '/datastreams/tmi5mitvl8c7/observations',
       tls: tls,
       startTime: START_TIME,

@@ -87,8 +87,8 @@ class MqttProvider {
 
                     mqttCallbacks[topicQuery].push(callback);
 
-                    // this.client.subscribe(dataStreamId+"?format=application/swe%2Bbinary", function (err) {c
-                    this.client.subscribe(topicQuery, function (err) {
+                    this.client.subscribe('/datastreams/1eots41v6kody/observations?f=application/swe%2Bjson', function (err) {
+                    // this.client.subscribe(topicQuery, function (err) {
                         if (err) {
                             callback(err);
                         } else {
@@ -134,7 +134,6 @@ class MqttProvider {
 
     async onMessage(topic, message) {
 
-        // console.log(message)
         // console.log(new DataView(message.buffer, message.byteOffset).getFloat64(0, false) * 1000)
         // console.log(new DataView(new Uint8Array(message).subarray(message.byteOffset).buffer).getFloat64(0, false) * 1000)
         // console.log(String.fromCharCode.apply(null, new Uint8Array(message)));
