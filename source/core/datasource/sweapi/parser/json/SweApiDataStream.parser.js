@@ -16,16 +16,7 @@ class SweApiDataStreamParser extends DataSourceParser {
         }
 
         return new DataStream(
-            {
-                id: rec.id,
-                name: rec.name,
-                system: rec.system,
-                validTime: rec.validTime,
-                phenomenonTime: rec.phenomenonTime,
-                resultTime: rec.resultTime,
-                observedProperties: rec.observedProperties,
-                formats: rec.formats
-            },
+            rec,
             {
                 streamProtocol: 'ws', // default streaming
                 ...this.networkProperties

@@ -262,9 +262,10 @@ export default {
           this.nodes[systemDetailsNode.id] = systemDetailsNode;
 
           const nodeId = `system-${this.count++}`;
+          console.log(system)
           this.nodes[nodeId] = {
             id: nodeId,
-            name: system.properties.name,
+            name: system.properties.properties.name,
             system: system,
             children: [
               datastreamsNode,
