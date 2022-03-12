@@ -9,7 +9,7 @@
             class="pa-4 full"
             justify="space-between"
         >
-          <v-col cols="5" class="full">
+          <v-col cols="4" class="full">
             <v-treeview
                 dense
                 class="treeview"
@@ -35,17 +35,21 @@
               class="d-flex"
           >
               <NoSelectedContent v-if="!selected"></NoSelectedContent>
-              <Details v-else-if="!datastream && !control && details"
+              <Details v-else-if="!datastream && !controlStreamCommand && !controlStreamStatus && details"
                 :details="details"
               ></Details>
               <StreamObservationsContent v-else-if="datastream"
                  :datastream="datastream"
                  :key="nodeId"
               ></StreamObservationsContent>
-            <StreamCommandsContent v-else-if="control"
-                                       :control="control"
+            <StreamCommandsContent v-else-if="controlStreamCommand"
+                                       :control="controlStreamCommand"
                                        :key="nodeId"
             ></StreamCommandsContent>
+            <StreamControlStatusContent v-else-if="controlStreamStatus"
+                                   :control="controlStreamStatus"
+                                   :key="nodeId"
+            ></StreamControlStatusContent>
             <SearchContent v-else-if="collectionSearch"
                                        :collection="collectionSearch"
                                        :key="nodeId"
@@ -78,6 +82,7 @@ import NoSelectedContent from "./components/NoSelectedContent.vue";
 import Details from "./components/Details.vue";
 import StreamObservationsContent from "./components/StreamObservationsContent.vue";
 import StreamCommandsContent from "./components/StreamCommandsContent.vue";
+import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
 import SearchContent from "./components/SearchContent.vue";
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
@@ -96,6 +101,7 @@ export default {
     VueJsonPretty,
     StreamObservationsContent,
     StreamCommandsContent,
+    StreamControlStatusContent,
     SearchContent
   },
   data() {
@@ -107,7 +113,8 @@ export default {
       details: undefined,
       count: 0,
       datastream: undefined,
-      control: undefined,
+      controlStreamCommand: undefined,
+      controlStreamStatus: undefined,
       collectionSearch: undefined,
       nodeId: undefined,
       prettyJson: true
@@ -139,7 +146,8 @@ export default {
       const that = this;
 
       this.datastream = undefined;
-      this.control = undefined;
+      this.controlStreamCommand = undefined;
+      this.controlStreamStatus = undefined;
       this.collectionSearch = undefined;
       this.details = undefined;
       if (!this.active.length) return undefined
@@ -179,12 +187,20 @@ export default {
       } else if (id.startsWith('control-stream-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        this.control = node.control;
+        this.controlStreamCommand = node.control;
       } else if(id.startsWith('control-search-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
         node.control.searchCommands(new CommandFilter(), 10).then((collection) => this.collectionSearch=collection);
-      } else if (id.startsWith('control-schema')) {
+      } else if (id.startsWith('control-stream-status')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        this.controlStreamStatus = node.control;
+      } else if(id.startsWith('control-search-status')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        node.control.searchStatus(new ControlFilter(), 10).then((collection) => this.collectionSearch=collection);
+      }else if (id.startsWith('control-schema')) {
         node = this.nodes[id];
         node.control.getSchema().then(schema => {
           that.details = jsonParser.parseData(schema);
@@ -348,19 +364,34 @@ export default {
             control: control
           };
 
-          const controlStreamObservationNode = {
+          const controlStreamCommandNode = {
             id: `control-stream-command-${this.count++}`,
             name: 'Live Commands',
             system: system,
             control: control
           };
 
-          const controlSearchObservationNode = {
+          const controlSearchCommandNode = {
             id: `control-search-command-${this.count++}`,
             name: 'Historical Commands',
             system: system,
             control: control
           };
+
+          const controlStreamStatusNode = {
+            id: `control-stream-status-${this.count++}`,
+            name: 'Live Status messages',
+            system: system,
+            control: control
+          };
+
+          const controlSearchStatusNode = {
+            id: `control-search-status-${this.count++}`,
+            name: 'Historical Status',
+            system: system,
+            control: control
+          };
+
 
           const controlNode = {
             id: `control-${this.count++}`,
@@ -369,14 +400,18 @@ export default {
             control: control,
             children: [
               controlDetailsNode,
-              controlStreamObservationNode,
-              controlSearchObservationNode
+              controlStreamCommandNode,
+              controlSearchCommandNode,
+              controlStreamStatusNode,
+              controlSearchStatusNode
             ]
           };
 
           this.nodes[controlDetailsNode.id] = controlDetailsNode;
-          this.nodes[controlStreamObservationNode.id] = controlStreamObservationNode;
-          this.nodes[controlSearchObservationNode.id] = controlSearchObservationNode;
+          this.nodes[controlStreamCommandNode.id] = controlStreamCommandNode;
+          this.nodes[controlSearchCommandNode.id] = controlSearchCommandNode;
+          this.nodes[controlStreamStatusNode.id] = controlStreamStatusNode;
+          this.nodes[controlSearchStatusNode.id] = controlSearchStatusNode;
           this.nodes[controlNode.id] = controlNode;
 
           item.children.push(controlNode);
