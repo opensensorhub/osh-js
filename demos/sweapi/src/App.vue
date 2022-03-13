@@ -11,20 +11,14 @@
             dismissible
         >{{ alertContent }}</v-alert>
         <v-card-title class="blue accent-3 white--text text-h5">
-          SensorWebAPI
+          <UrlEditComponentDialog
+            :fetch-url="fetchUrl"
+            :mqtt-url="mqttUrl"
+            :tls-url="tls"
+            @updated-url="changeUrl"
+          ></UrlEditComponentDialog>
+          SensorWebAPI: {{ fetchUrl }}
         </v-card-title>
-        <v-text-field
-            :value="urlFetch"
-            v-model="urlFetch"
-            label="fetch"
-            @keydown.enter="changeFetchUrl"
-        ></v-text-field>
-        <v-text-field
-            :value="urlMqtt"
-            v-model="urlMqtt"
-            label="mqtt"
-            @keydown.enter="changeMqttUrl"
-        ></v-text-field>
         <v-row
             class="pa-4 full"
             justify="space-between"
@@ -62,17 +56,17 @@
               <StreamObservationsContent v-else-if="datastream"
                  :datastream="datastream"
                  :key="nodeId"
-                 :url="urlMqtt"
+                 :url="mqttUrl"
               ></StreamObservationsContent>
             <StreamCommandsContent v-else-if="controlStreamCommand"
                                        :control="controlStreamCommand"
                                        :key="nodeId"
-                                       :url="urlMqtt"
+                                       :url="mqttUrl"
             ></StreamCommandsContent>
             <StreamControlStatusContent v-else-if="controlStreamStatus"
                                    :control="controlStreamStatus"
                                    :key="nodeId"
-                                   :url="urlMqtt"
+                                   :url="mqttUrl"
 
             ></StreamControlStatusContent>
             <SearchContent v-else-if="collectionSearch"
@@ -109,6 +103,7 @@ import StreamObservationsContent from "./components/StreamObservationsContent.vu
 import StreamCommandsContent from "./components/StreamCommandsContent.vue";
 import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
 import SearchContent from "./components/SearchContent.vue";
+import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
@@ -127,7 +122,8 @@ export default {
     StreamObservationsContent,
     StreamCommandsContent,
     StreamControlStatusContent,
-    SearchContent
+    SearchContent,
+    UrlEditComponentDialog
   },
   data() {
     return {
@@ -144,11 +140,12 @@ export default {
       collectionSearch: undefined,
       nodeId: undefined,
       prettyJson: true,
-      urlFetch: 'ogct17.georobotix.io:8443/sensorhub/api',
-      urlMqtt: 'ogct17.georobotix.io:8483',
+      fetchUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+      mqttUrl: 'ogct17.georobotix.io:8483',
       kk:0,
       alert: false,
-      alertContent: undefined
+      alertContent: undefined,
+      tls: true
     }
   },
   beforeMount() {
@@ -158,11 +155,7 @@ export default {
     Prism.manual = true;
     Prism.highlightAll();
 
-    this.systemsUtility = new Systems({
-      protocol: 'http',
-      tls: true,
-      endpointUrl: this.urlFetch
-    });
+    this.init();
   },
   computed: {
     items() {
@@ -241,20 +234,21 @@ export default {
     },
   },
   methods: {
-    changeFetchUrl() {
+    changeUrl(event) {
+      this.fetchUrl = event.fetch;
+      this.mqttUrl = event.mqtt;
+      this.tls = event.tls;
       this.resetSelected();
-      this.systemsUtility = new Systems({
-        protocol: 'http',
-        tls: true,
-        endpointUrl: this.urlFetch
-      });
-      this.systems = [];
+      this.init();
       this.kk++;
     },
-    changeMqttUrl() {
-      this.resetSelected();
+    init(){
+      this.systemsUtility = new Systems({
+        protocol: 'http',
+        tls: this.tls,
+        endpointUrl: this.fetchUrl
+      });
       this.systems = [];
-      this.kk++;
     },
     resetSelected() {
       this.datastream = undefined;
