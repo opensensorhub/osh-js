@@ -70,7 +70,7 @@ class MqttConnector extends DataConnector {
                 options = {
                     ...options,
                     ...this.properties.options
-                }
+                };
             }
 
             mqttProviders[fullUrl] = new MqttProvider({
@@ -111,6 +111,7 @@ class MqttConnector extends DataConnector {
             const client = mqttProviders[this.getUrl()];
             for(let topic of this.topics) {
                 client.unsubscribe(topic);
+                console.warn(`Unsubscribed topic: ${topic}`);
             }
         }
         this.topics = [];

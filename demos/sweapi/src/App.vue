@@ -2,39 +2,52 @@
   <v-app>
     <div id="app">
       <v-card height="100%">
+        <v-alert
+            v-model="alert"
+            color="red lighten-0"
+            dark
+            dense
+            dark
+            dismissible
+        >{{ alertContent }}</v-alert>
         <v-card-title class="blue accent-3 white--text text-h5">
           SensorWebAPI
         </v-card-title>
         <v-text-field
             :value="urlFetch"
+            v-model="urlFetch"
             label="fetch"
+            @keydown.enter="changeFetchUrl"
         ></v-text-field>
         <v-text-field
             :value="urlMqtt"
+            v-model="urlMqtt"
             label="mqtt"
+            @keydown.enter="changeMqttUrl"
         ></v-text-field>
         <v-row
             class="pa-4 full"
             justify="space-between"
         >
           <v-col cols="4" class="full">
-            <v-treeview
-                dense
-                class="treeview"
-                :active.sync="active"
-                :items="items"
-                :load-children="fetchData"
-                :open.sync="open"
-                activatable
-                color="warning"
-                transition
-            >
-              <template v-slot:prepend="{ item }">
-                <v-icon v-if="!item.children">
-                  mdi-json
-                </v-icon>
-              </template>
-            </v-treeview>
+              <v-treeview
+                  :key="kk"
+                  dense
+                  class="treeview"
+                  :active.sync="active"
+                  :items="items"
+                  :load-children="fetchData"
+                  :open.sync="open"
+                  activatable
+                  color="warning"
+                  transition
+              >
+                <template v-slot:prepend="{ item }">
+                  <v-icon v-if="!item.children">
+                    mdi-json
+                  </v-icon>
+                </template>
+              </v-treeview>
           </v-col>
 
           <v-divider vertical></v-divider>
@@ -42,7 +55,7 @@
           <v-col
               class="d-flex"
           >
-              <NoSelectedContent v-if="!selected"></NoSelectedContent>
+              <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
               <Details v-else-if="!datastream && !controlStreamCommand && !controlStreamStatus && details"
                 :details="details"
               ></Details>
@@ -119,6 +132,7 @@ export default {
   data() {
     return {
       active: [],
+      activeNode: true,
       open: [],
       systems: [],
       nodes: {},
@@ -132,6 +146,9 @@ export default {
       prettyJson: true,
       urlFetch: 'ogct17.georobotix.io:8443/sensorhub/api',
       urlMqtt: 'ogct17.georobotix.io:8483',
+      kk:0,
+      alert: false,
+      alertContent: undefined
     }
   },
   beforeMount() {
@@ -159,11 +176,7 @@ export default {
     selected(n) {
       const that = this;
 
-      this.datastream = undefined;
-      this.controlStreamCommand = undefined;
-      this.controlStreamStatus = undefined;
-      this.collectionSearch = undefined;
-      this.details = undefined;
+      this.resetSelected();
       if (!this.active.length) return undefined
 
       const id = this.active[0]
@@ -223,19 +236,51 @@ export default {
         node = this.nodes[id];
         this.details = node.control.properties;
       }
+      this.activeNode = true;
       return node;
     },
   },
   methods: {
+    changeFetchUrl() {
+      this.resetSelected();
+      this.systemsUtility = new Systems({
+        protocol: 'http',
+        tls: true,
+        endpointUrl: this.urlFetch
+      });
+      this.systems = [];
+      this.kk++;
+    },
+    changeMqttUrl() {
+      this.resetSelected();
+      this.systems = [];
+      this.kk++;
+    },
+    resetSelected() {
+      this.datastream = undefined;
+      this.controlStreamCommand = undefined;
+      this.controlStreamStatus = undefined;
+      this.collectionSearch = undefined;
+      this.details = undefined;
+      this.activeNode = false;
+      this.alert = false;
+    },
     async fetchData(item) {
-      if (item.name === 'Systems') {
-        await this.fetchSystem(item);
-      } else if (item.name.startsWith('DataStreams')) {
-        await this.fetchDataStream(item);
-      } else if (item.name.startsWith('Controls')) {
-        await this.fetchControl(item);
-      } else if (item.name.startsWith('Fois')) {
-        await this.fetchFoi(item);
+      try {
+        if (item.name === 'Systems') {
+          await this.fetchSystem(item);
+        } else if (item.name.startsWith('DataStreams')) {
+          await this.fetchDataStream(item);
+        } else if (item.name.startsWith('Controls')) {
+          await this.fetchControl(item);
+        } else if (item.name.startsWith('Fois')) {
+          await this.fetchFoi(item);
+        }
+        this.alert = false;
+      }catch(error) {
+        console.log(error);
+        this.alertContent = error;
+        this.alert = true;
       }
     },
     async fetchSystem(item) {

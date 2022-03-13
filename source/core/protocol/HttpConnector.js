@@ -71,7 +71,8 @@ class HttpConnector extends DataConnector {
      * @param {String} queryString - get query parameters
      */
     async doRequest(extraUrl = '', queryString = undefined, responseType = undefined) {
-        let fullUrl = this.getUrl() + extraUrl;
+        let domain = this.getUrl();
+        let fullUrl = domain + extraUrl;
 
         if (isDefined(queryString)) {
             fullUrl += '?' + queryString;
@@ -83,12 +84,17 @@ class HttpConnector extends DataConnector {
             headers: this.headers
         })
             .then(function (response) {
+                if (!response.ok) {
+                    const err = new Error(`Got ${response.status} response from ${domain}`);
+                    err.response = response;
+                    throw err;
+                }
                 // if(responseTypeVar === 'application/json') {
                 //     return response.json();
                 // } else if(responseTypeVar === 'plain/text'){
                 //     return response.text();
                 // } else {
-                    return response.arrayBuffer();
+                return response.arrayBuffer();
                 // }
             });
         const response = await promiseResponse;
