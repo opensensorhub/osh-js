@@ -20,7 +20,8 @@ const API = {
     controls: {
         commands: '/api/systems/{sysid}/controls/{dsid}/commands',
         command_by_id: '/api/systems/{sysid}/controls/{dsid}/commands/{cmdid}',
-        status: '/api/systems/{sysid}/controls/{dsid}/status'
+        status: '/api/systems/{sysid}/controls/{dsid}/status',
+        schema: '/api/systems/{sysid}/controls/{dsid}/schema'
     },
     commands: {
         status: '/api/systems/{sysid}/controls/{dsid}/commands/{cmdid}/status'

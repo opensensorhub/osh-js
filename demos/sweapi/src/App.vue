@@ -9,7 +9,7 @@
             class="pa-4 full"
             justify="space-between"
         >
-          <v-col cols="5" class="full">
+          <v-col cols="4" class="full">
             <v-treeview
                 dense
                 class="treeview"
@@ -35,17 +35,25 @@
               class="d-flex"
           >
               <NoSelectedContent v-if="!selected"></NoSelectedContent>
-              <Details v-else-if="!datastream && details"
+              <Details v-else-if="!datastream && !controlStreamCommand && !controlStreamStatus && details"
                 :details="details"
               ></Details>
               <StreamObservationsContent v-else-if="datastream"
                  :datastream="datastream"
-                 :key="datastreamNodeId"
+                 :key="nodeId"
               ></StreamObservationsContent>
-            <SearchObservationsContent v-else-if="datastreamSearch"
-                                       :datastream="datastreamSearch"
-                                       :key="datastreamNodeId"
-            ></SearchObservationsContent>
+            <StreamCommandsContent v-else-if="controlStreamCommand"
+                                       :control="controlStreamCommand"
+                                       :key="nodeId"
+            ></StreamCommandsContent>
+            <StreamControlStatusContent v-else-if="controlStreamStatus"
+                                   :control="controlStreamStatus"
+                                   :key="nodeId"
+            ></StreamControlStatusContent>
+            <SearchContent v-else-if="collectionSearch"
+                                       :collection="collectionSearch"
+                                       :key="nodeId"
+            ></SearchContent>
             <ContentLoading v-else></ContentLoading>
           </v-col>
         </v-row>
@@ -73,12 +81,17 @@ import ContentLoading from './components/ContentLoading.vue';
 import NoSelectedContent from "./components/NoSelectedContent.vue";
 import Details from "./components/Details.vue";
 import StreamObservationsContent from "./components/StreamObservationsContent.vue";
-import SearchObservationsContent from "./components/SearchObservationsContent.vue";
+import StreamCommandsContent from "./components/StreamCommandsContent.vue";
+import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
+import SearchContent from "./components/SearchContent.vue";
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
 import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import {isDefined} from "../../../source/core/utils/Utils";
+import ControlFilter from "../../../source/core/sweapi/control/ControlFilter";
+import ObservationFilter from "../../../source/core/sweapi/observation/ObservationFilter";
+import CommandFilter from "../../../source/core/sweapi/command/CommandFilter";
 
 export default {
   components: {
@@ -87,7 +100,9 @@ export default {
     ContentLoading,
     VueJsonPretty,
     StreamObservationsContent,
-    SearchObservationsContent
+    StreamCommandsContent,
+    StreamControlStatusContent,
+    SearchContent
   },
   data() {
     return {
@@ -98,8 +113,10 @@ export default {
       details: undefined,
       count: 0,
       datastream: undefined,
-      datastreamSearch: undefined,
-      datastreamNodeId: undefined,
+      controlStreamCommand: undefined,
+      controlStreamStatus: undefined,
+      collectionSearch: undefined,
+      nodeId: undefined,
       prettyJson: true
     }
   },
@@ -129,7 +146,9 @@ export default {
       const that = this;
 
       this.datastream = undefined;
-      this.datastreamSearch = undefined;
+      this.controlStreamCommand = undefined;
+      this.controlStreamStatus = undefined;
+      this.collectionSearch = undefined;
       this.details = undefined;
       if (!this.active.length) return undefined
 
@@ -156,15 +175,39 @@ export default {
         this.details = node.foi.properties;
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
-        this.datastreamNodeId = node.id;
+        this.nodeId = node.id;
         this.datastream = node.datastream;
       } else if(id.startsWith('datastream-search-observation')) {
         node = this.nodes[id];
-        this.datastreamNodeId = node.id;
-        this.datastreamSearch = node.datastream;
+        this.nodeId = node.id;
+        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => this.collectionSearch=collection);
       } else if(id.startsWith('datastream-')) {
         node = this.nodes[id];
         this.details = node.datastream.properties;
+      } else if (id.startsWith('control-stream-command')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        this.controlStreamCommand = node.control;
+      } else if(id.startsWith('control-search-command')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        node.control.searchCommands(new CommandFilter(), 10).then((collection) => this.collectionSearch=collection);
+      } else if (id.startsWith('control-stream-status')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        this.controlStreamStatus = node.control;
+      } else if(id.startsWith('control-search-status')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        node.control.searchStatus(new ControlFilter(), 10).then((collection) => this.collectionSearch=collection);
+      }else if (id.startsWith('control-schema')) {
+        node = this.nodes[id];
+        node.control.getSchema().then(schema => {
+          that.details = jsonParser.parseData(schema);
+        });
+      } else if(id.startsWith('control-')) {
+        node = this.nodes[id];
+        this.details = node.control.properties;
       }
       return node;
     },
@@ -175,6 +218,8 @@ export default {
         await this.fetchSystem(item);
       } else if (item.name.startsWith('DataStreams')) {
         await this.fetchDataStream(item);
+      } else if (item.name.startsWith('Controls')) {
+        await this.fetchControl(item);
       } else if (item.name.startsWith('Fois')) {
         await this.fetchFoi(item);
       }
@@ -195,6 +240,13 @@ export default {
             children: []
           };
 
+          const controlsNode = {
+            id: `controls-${this.count++}`,
+            name: 'Controls',
+            system: system,
+            children: []
+          };
+
           const foisNode = {
             id: `fois-${this.count++}`,
             name: 'Fois',
@@ -210,12 +262,14 @@ export default {
           this.nodes[systemDetailsNode.id] = systemDetailsNode;
 
           const nodeId = `system-${this.count++}`;
+          console.log(system)
           this.nodes[nodeId] = {
             id: nodeId,
-            name: system.properties.name,
+            name: system.properties.properties.name,
             system: system,
             children: [
               datastreamsNode,
+              controlsNode,
               foisNode,
               systemDetailsNode
             ]
@@ -235,21 +289,21 @@ export default {
 
           const datastreamDetailsNode = {
             id: `datastream-schema-${this.count++}`,
-            name: 'schema',
+            name: 'Schema',
             system: system,
             datastream: datastream
           };
 
           const datastreamStreamObservationNode = {
             id: `datastream-stream-observation-${this.count++}`,
-            name: 'streamObservations',
+            name: 'Live Observations',
             system: system,
             datastream: datastream
           };
 
           const datastreamSearchObservationNode = {
             id: `datastream-search-observation-${this.count++}`,
-            name: 'searchObservations (http)',
+            name: 'Historical Observations',
             system: system,
             datastream: datastream
           };
@@ -295,6 +349,76 @@ export default {
         }
       }
     },
+    async fetchControl(item) {
+      const system = item.system;
+      const controlFilter = new ControlFilter({});
+      const controls = await system.searchControls(controlFilter, 100);
+      while (controls.hasNext()) {
+        const page = await controls.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const control = page[i];
+
+          const controlDetailsNode = {
+            id: `control-schema-${this.count++}`,
+            name: 'Schema',
+            system: system,
+            control: control
+          };
+
+          const controlStreamCommandNode = {
+            id: `control-stream-command-${this.count++}`,
+            name: 'Live Commands',
+            system: system,
+            control: control
+          };
+
+          const controlSearchCommandNode = {
+            id: `control-search-command-${this.count++}`,
+            name: 'Historical Commands',
+            system: system,
+            control: control
+          };
+
+          const controlStreamStatusNode = {
+            id: `control-stream-status-${this.count++}`,
+            name: 'Live Status messages',
+            system: system,
+            control: control
+          };
+
+          const controlSearchStatusNode = {
+            id: `control-search-status-${this.count++}`,
+            name: 'Historical Status',
+            system: system,
+            control: control
+          };
+
+
+          const controlNode = {
+            id: `control-${this.count++}`,
+            name: control.properties.name,
+            system: system,
+            control: control,
+            children: [
+              controlDetailsNode,
+              controlStreamCommandNode,
+              controlSearchCommandNode,
+              controlStreamStatusNode,
+              controlSearchStatusNode
+            ]
+          };
+
+          this.nodes[controlDetailsNode.id] = controlDetailsNode;
+          this.nodes[controlStreamCommandNode.id] = controlStreamCommandNode;
+          this.nodes[controlSearchCommandNode.id] = controlSearchCommandNode;
+          this.nodes[controlStreamStatusNode.id] = controlStreamStatusNode;
+          this.nodes[controlSearchStatusNode.id] = controlSearchStatusNode;
+          this.nodes[controlNode.id] = controlNode;
+
+          item.children.push(controlNode);
+        }
+      }
+    }
   }
 };
 </script>

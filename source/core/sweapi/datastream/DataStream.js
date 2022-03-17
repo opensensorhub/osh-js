@@ -60,7 +60,7 @@ class DataStream extends SensorWebApi {
      * @param parser
      * @return {Collection}
      */
-    searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.jsonParser) {
+    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.jsonParser) {
         return new Collection(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,

@@ -98,15 +98,15 @@ module.exports = (env) => {
                             link: `http://opensensorhub.github.io/osh-js/${target}/demos/earthquake`
                         },
                         {
-                            text: 'OGC MISB',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/misb`
-                        },
-                        {
-                            text: 'Swe Rest API',
+                            text: 'SensorWeb API Browser',
                             link: `http://opensensorhub.github.io/osh-js/${target}/demos/sweapi`
                         },
                         {
-                            text: 'Swe Rest Tasking',
+                            text: 'SensorWeb API - UAV Video Draping',
+                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/misb`
+                        },
+                        {
+                            text: 'SensorWeb API - UAV Tasking',
                             link: `http://opensensorhub.github.io/osh-js/${target}/demos/tasking`
                         }
                     ]
