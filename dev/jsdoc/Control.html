@@ -92,7 +92,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line30">line 30</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line31">line 31</a>
     </li></ul></dd>
     
 
@@ -148,7 +148,162 @@
     
 
     
-    <h4 class="name" id="searchCommand"><span class="type-signature">(async) </span>searchCommand<span class="signature">(commandFilter, pageSize)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="Command.html">Command</a>>>}</span></h4>
+    <h4 class="name" id="getSchema"><span class="type-signature">(async) </span>getSchema<span class="signature">(controlFilter)</span><span class="type-signature"> &rarr; {Promise.&lt;*>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the detailed schema of command messages in a command stream
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>controlFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ControlFilter.html">ControlFilter</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">controlFilter</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;*></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchCommands"><span class="type-signature">(async) </span>searchCommands<span class="signature">(commandFilter, pageSize)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="Command.html">Command</a>>>}</span></h4>
     
 
     
@@ -274,7 +429,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line43">line 43</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -454,7 +609,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line86">line 86</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -497,6 +652,161 @@
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="streamCommands"><span class="type-signature"></span>streamCommands<span class="signature">(controlFilter, callback)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Stream all commands received by a particular control interface
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>controlFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ControlFilter.html">ControlFilter</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">controlFilter</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A callback to get observations</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -627,7 +937,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line97">line 97</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line119">line 119</a>
     </li></ul></dd>
     
 

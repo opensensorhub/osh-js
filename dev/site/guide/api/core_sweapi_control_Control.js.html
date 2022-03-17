@@ -34,6 +34,7 @@ import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApi
 import ControlFilter from "./ControlFilter";
 import SweApiFetchGenericJson from "../../datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import SweParser from "../SweParser";
+import DataStreamFilter from "../datastream/DataStreamFilter";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -68,10 +69,31 @@ class Control extends SensorWebApi {
      * @param pageSize
      * @return {Promise&lt;Collection&lt;Command>>}
      */
-    async searchCommand(commandFilter = new CommandFilter(), pageSize= 10) {
+    async searchCommands(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
-            API.controls.commands.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),commandFilter,
-            pageSize,this.commandParser, this._network.info.connector);
+            API.controls.commands.replace('{sysid}',this.properties.system.id).replace('{dsid}',
+                this.properties.id),commandFilter, pageSize,this.jsonParser, this._network.info.connector);
+    }
+
+    /**
+     * Stream all commands received by a particular control interface
+     * @param {ControlFilter} controlFilter - controlFilter
+     * @param callback - A callback to get observations
+     */
+    streamCommands(controlFilter = new ControlFilter(), callback = function(){}) {
+        if(controlFilter.props.format === 'application/json') {
+            this._network.stream.connector.onMessage = (message) => {
+                callback(this.jsonParser.parseData(message));
+            };
+        } else {
+            this._network.stream.connector.onMessage = callback;
+        }
+
+        this._network.stream.connector.doRequest(
+            API.controls.commands.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
+            controlFilter.toQueryString(),
+            'arraybuffer'
+        );
     }
 
     async getCommandById(commandId,commandFilter = new CommandFilter()) {
@@ -135,6 +157,19 @@ class Control extends SensorWebApi {
             API.controls.status.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
+        );
+    }
+
+    /**
+     * Get the detailed schema of command messages in a command stream
+     * @param {ControlFilter} controlFilter - controlFilter
+     * @returns {Promise&lt;*>}
+     */
+    async getSchema(controlFilter = new ControlFilter()) {
+        return this._network.info.connector.doRequest(
+            API.controls.schema.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
+            controlFilter.toQueryString(['select', 'format']),
+            controlFilter.props.format
         );
     }
 }
