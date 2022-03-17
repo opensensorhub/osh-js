@@ -24,11 +24,11 @@ class ControlFilter extends SensorWebApiFilter {
      * @param {string[]} [properties.actuableProperty=undefined] - Comma separated list of actuable property URIs to filter command streams
      * @param {string[]} [properties.select=undefined] - Comma separated list of properties to include or exclude from results (use "!" prefix to exclude)
      * @param {string} [properties.format='application/json'] - Mime type designating the format to use to encode the response.
-     * @param {string} [properties.issueTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - ISO 8601 time range to filter commands on their issue time. When this parameter is omitted,
+     * @param {string} [properties.issueTime=undefined] - ISO 8601 time range to filter commands on their issue time. When this parameter is omitted,
      * no filtering on "issueTime" is applied.
-     @param {string} [properties.executionTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - ISO 8601 time range to filter commands on their execution time.
+     @param {string} [properties.executionTime=undefined] - ISO 8601 time range to filter commands on their execution time.
      * When this parameter is omitted, no filtering on "executionTime" is applied
-     @param {string} [properties.reportTime='1970-01-01T00:00:00Z/2055-01-01T00:00:00Z'] - ISO 8601 time range to filter status messages on their report time. When this parameter is omitted,
+     @param {string} [properties.reportTime=undefined] - ISO 8601 time range to filter status messages on their report time. When this parameter is omitted,
      * no filtering on "reportTime" is applied.
      @param {string[]} [properties.statusCode=undefined] - Comma separated list of status codes: PENDING, ACCEPTED, REJECTED, SCHEDULED, UPDATED, CANCELED, EXECUTING, FAILED, COMPLETED
      */
@@ -41,9 +41,9 @@ class ControlFilter extends SensorWebApiFilter {
             featureOfInterest: undefined,
             select: undefined,
             format: 'application/json',
-            validTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
-            phenomenonTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
-            resultTime: '1970-01-01T00:00:00Z/2055-01-01T00:00:00Z',
+            validTime: undefined,
+            phenomenonTime: undefined,
+            resultTime: undefined,
             ...properties // merge defined properties
         });
         //TODO: assertions
