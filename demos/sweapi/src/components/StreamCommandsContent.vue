@@ -45,7 +45,7 @@ import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter"
 export default {
   name: "StreamCommandsContent",
   props: [
-    'control','nodeId'
+    'control','nodeId','url'
   ],
   components: {
     VueJsonPretty,
@@ -70,7 +70,7 @@ export default {
   methods: {
     connect() {
       const that = this;
-      this.control.streamCommands(new ControlFilter(), function (obs) {
+      this.control.streamCommands(new ControlFilter({}), function (obs) {
         that.content = obs;
       });
     },
@@ -87,7 +87,7 @@ export default {
       } else {
         // mqtt
         this.control.setStreamProtocol(value, 'arraybuffer', {
-          endpointUrl: 'ogct17.georobotix.io:8483'
+          endpointUrl: this.url
         });
       }
 

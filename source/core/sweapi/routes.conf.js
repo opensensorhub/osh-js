@@ -1,38 +1,38 @@
 const API = {
     datastreams: {
-        search: '/api/datastreams',
-        by_id: '/api/datastreams/{id}',
-        observations: '/api/datastreams/{id}/observations',
-        schema: '/api/datastreams/{id}/schema'
+        search: '/datastreams',
+        by_id: '/datastreams/{id}',
+        observations: '/datastreams/{id}/observations',
+        schema: '/datastreams/{id}/schema'
     },
     systems: {
-        search: '/api/systems',
-        by_id: '/api/systems/{id}',
-        details: '/api/systems/{id}/details',
-        fois: '/api/systems/{id}/featuresOfInterest',
-        members: '/api/systems/{id}/members',
-        datastreams: '/api/systems/{id}/datastreams',
-        history: '/api/systems/{id}/history',
-        history_ver: '/api/systems/{id}/history/{ver}',
-        control_by_id: '/api/systems/{id}/controls/{dsid}',
-        controls: '/api/systems/{id}/controls'
+        search: '/systems',
+        by_id: '/systems/{id}',
+        details: '/systems/{id}/details',
+        fois: '/systems/{id}/featuresOfInterest',
+        members: '/systems/{id}/members',
+        datastreams: '/systems/{id}/datastreams',
+        history: '/systems/{id}/history',
+        history_ver: '/systems/{id}/history/{ver}',
+        control_by_id: '/systems/{id}/controls/{dsid}',
+        controls: '/systems/{id}/controls'
     },
     controls: {
-        commands: '/api/systems/{sysid}/controls/{dsid}/commands',
-        command_by_id: '/api/systems/{sysid}/controls/{dsid}/commands/{cmdid}',
-        status: '/api/systems/{sysid}/controls/{dsid}/status',
-        schema: '/api/systems/{sysid}/controls/{dsid}/schema'
+        commands: '/systems/{sysid}/controls/{dsid}/commands',
+        command_by_id: '/systems/{sysid}/controls/{dsid}/commands/{cmdid}',
+        status: '/systems/{sysid}/controls/{dsid}/status',
+        schema: '/systems/{sysid}/controls/{dsid}/schema'
     },
     commands: {
-        status: '/api/systems/{sysid}/controls/{dsid}/commands/{cmdid}/status'
+        status: '/systems/{sysid}/controls/{dsid}/commands/{cmdid}/status'
     },
     observations: {
-        search: '/api/observations',
-        by_id: '/api/observations/{id}',
+        search: '/observations',
+        by_id: '/observations/{id}',
     },
     fois: {
-        search: '/api/featuresOfInterest',
-        by_id: '/api/featuresOfInterest/{id}',
+        search: '/featuresOfInterest',
+        by_id: '/featuresOfInterest/{id}',
     },
 };
 

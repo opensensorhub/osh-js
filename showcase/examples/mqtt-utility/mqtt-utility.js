@@ -13,7 +13,7 @@ const mqttProvider = new MqttProvider({
 mqttProvider.connect();
 let count = 0;
 
-mqttProvider.subscribe('/api/datastreams/gal7w6j6v7n9/observations',new ObservationFilter().toQueryString(['format']),async function (message) {
+mqttProvider.subscribe('/datastreams/gal7w6j6v7n9/observations',new ObservationFilter().toQueryString(['format']),async function (message) {
    const parser = new SweApiFetchGenericJson();
    const data = await parser.parseData(message);
    if(count++ < 30) {
@@ -24,7 +24,7 @@ mqttProvider.subscribe('/api/datastreams/gal7w6j6v7n9/observations',new Observat
    }
 });
 
-mqttProvider.subscribe('/api/datastreams/1lppw59ger1py/observations',new ObservationFilter().toQueryString(['format']),async function (message) {
+mqttProvider.subscribe('/datastreams/1lppw59ger1py/observations',new ObservationFilter().toQueryString(['format']),async function (message) {
    const parser = new SweApiFetchGenericJson();
    const data = await parser.parseData(message).result;
    if(count++ < 30) {
@@ -34,7 +34,7 @@ mqttProvider.subscribe('/api/datastreams/1lppw59ger1py/observations',new Observa
       count = 0;
    }});
 
-mqttProvider.subscribe('/api/datastreams/1lppw59ger1py/observations',new ObservationFilter().toQueryString(['format']),async function (message) {
+mqttProvider.subscribe('/datastreams/1lppw59ger1py/observations',new ObservationFilter().toQueryString(['format']),async function (message) {
    const parser = new SweApiFetchGenericJson();
    const data = await parser.parseData(message).result;
    if(count++ < 30) {
@@ -45,7 +45,7 @@ mqttProvider.subscribe('/api/datastreams/1lppw59ger1py/observations',new Observa
    }});
 
 setTimeout(() => {
-   mqttProvider.unsubscribe('/api/datastreams/gal7w6j6v7n9/observations');
+   mqttProvider.unsubscribe('/datastreams/gal7w6j6v7n9/observations');
    textAreaElement.value += '[gal7w6j6v7n9] Unsubscribed' + "\n";
 },1000 * 10); //10s
 
