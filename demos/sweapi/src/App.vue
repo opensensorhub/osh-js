@@ -11,6 +11,18 @@
             dismissible
         >{{ alertContent }}</v-alert>
         <v-card-title class="blue accent-3 white--text text-h5">
+          <v-btn
+              class="mx-4"
+              fab
+              dark
+              small
+              color="green"
+              @click="refresh"
+          >
+            <v-icon dark>
+              mdi-autorenew
+            </v-icon>
+          </v-btn>
           <UrlEditComponentDialog
             :fetch-url="fetchUrl"
             :mqtt-url="mqttUrl"
@@ -234,13 +246,16 @@ export default {
     },
   },
   methods: {
+    refresh() {
+      this.resetSelected();
+      this.init();
+      this.kk++;
+    },
     changeUrl(event) {
       this.fetchUrl = event.fetch;
       this.mqttUrl = event.mqtt;
       this.tls = event.tls;
-      this.resetSelected();
-      this.init();
-      this.kk++;
+      this.refresh();
     },
     init(){
       this.systemsUtility = new Systems({
