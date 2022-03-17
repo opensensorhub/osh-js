@@ -2,31 +2,58 @@
   <v-app>
     <div id="app">
       <v-card height="100%">
+        <v-alert
+            v-model="alert"
+            color="red lighten-0"
+            dark
+            dense
+            dark
+            dismissible
+        >{{ alertContent }}</v-alert>
         <v-card-title class="blue accent-3 white--text text-h5">
-          SensorWebAPI: https://ogct17.georobotix.io:8443/
+          <v-btn
+              class="mx-4"
+              fab
+              dark
+              small
+              color="green"
+              @click="refresh"
+          >
+            <v-icon dark>
+              mdi-autorenew
+            </v-icon>
+          </v-btn>
+          <UrlEditComponentDialog
+            :fetch-url="fetchUrl"
+            :mqtt-url="mqttUrl"
+            :tls-url="tls"
+            @updated-url="changeUrl"
+          ></UrlEditComponentDialog>
+          SensorWebAPI: {{ fetchUrl }}
         </v-card-title>
         <v-row
             class="pa-4 full"
             justify="space-between"
         >
           <v-col cols="4" class="full">
-            <v-treeview
-                dense
-                class="treeview"
-                :active.sync="active"
-                :items="items"
-                :load-children="fetchData"
-                :open.sync="open"
-                activatable
-                color="warning"
-                transition
-            >
-              <template v-slot:prepend="{ item }">
-                <v-icon v-if="!item.children">
-                  mdi-json
-                </v-icon>
-              </template>
-            </v-treeview>
+              <v-treeview
+                  :key="kk"
+                  dense
+                  class="treeview"
+                  :active.sync="active"
+                  :items="items"
+                  :load-children="fetchData"
+                  :open.sync="open"
+                  activatable
+                  color="warning"
+                  transition
+              >
+                <template v-slot:prepend="{ item }">
+                  <v-icon v-if="!item.children">
+                    mdi-json
+                  </v-icon>
+                </template>
+              </v-treeview>
           </v-col>
 
           <v-divider vertical></v-divider>
@@ -34,21 +61,25 @@
           <v-col
               class="d-flex"
           >
-              <NoSelectedContent v-if="!selected"></NoSelectedContent>
+              <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
               <Details v-else-if="!datastream && !controlStreamCommand && !controlStreamStatus && details"
                 :details="details"
               ></Details>
               <StreamObservationsContent v-else-if="datastream"
                  :datastream="datastream"
                  :key="nodeId"
+                 :url="mqttUrl"
               ></StreamObservationsContent>
             <StreamCommandsContent v-else-if="controlStreamCommand"
                                        :control="controlStreamCommand"
                                        :key="nodeId"
+                                       :url="mqttUrl"
             ></StreamCommandsContent>
             <StreamControlStatusContent v-else-if="controlStreamStatus"
                                    :control="controlStreamStatus"
                                    :key="nodeId"
+                                   :url="mqttUrl"
+
             ></StreamControlStatusContent>
             <SearchContent v-else-if="collectionSearch"
                                        :collection="collectionSearch"
@@ -84,6 +115,7 @@ import StreamObservationsContent from "./components/StreamObservationsContent.vu
 import StreamCommandsContent from "./components/StreamCommandsContent.vue";
 import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
 import SearchContent from "./components/SearchContent.vue";
+import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
@@ -102,11 +134,13 @@ export default {
     StreamObservationsContent,
     StreamCommandsContent,
     StreamControlStatusContent,
-    SearchContent
+    SearchContent,
+    UrlEditComponentDialog
   },
   data() {
     return {
       active: [],
+      activeNode: true,
       open: [],
       systems: [],
       nodes: {},
@@ -117,7 +151,13 @@ export default {
       controlStreamStatus: undefined,
       collectionSearch: undefined,
       nodeId: undefined,
-      prettyJson: true
+      prettyJson: true,
+      fetchUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+      mqttUrl: 'ogct17.georobotix.io:8483',
+      kk:0,
+      alert: false,
+      alertContent: undefined,
+      tls: true
     }
   },
   beforeMount() {
@@ -127,11 +167,7 @@ export default {
     Prism.manual = true;
     Prism.highlightAll();
 
-    this.systemsUtility = new Systems({
-      protocol: 'http',
-      tls: true,
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub'
-    });
+    this.init();
   },
   computed: {
     items() {
@@ -145,11 +181,7 @@ export default {
     selected(n) {
       const that = this;
 
-      this.datastream = undefined;
-      this.controlStreamCommand = undefined;
-      this.controlStreamStatus = undefined;
-      this.collectionSearch = undefined;
-      this.details = undefined;
+      this.resetSelected();
       if (!this.active.length) return undefined
 
       const id = this.active[0]
@@ -209,19 +241,55 @@ export default {
         node = this.nodes[id];
         this.details = node.control.properties;
       }
+      this.activeNode = true;
       return node;
     },
   },
   methods: {
+    refresh() {
+      this.resetSelected();
+      this.init();
+      this.kk++;
+    },
+    changeUrl(event) {
+      this.fetchUrl = event.fetch;
+      this.mqttUrl = event.mqtt;
+      this.tls = event.tls;
+      this.refresh();
+    },
+    init(){
+      this.systemsUtility = new Systems({
+        protocol: 'http',
+        tls: this.tls,
+        endpointUrl: this.fetchUrl
+      });
+      this.systems = [];
+    },
+    resetSelected() {
+      this.datastream = undefined;
+      this.controlStreamCommand = undefined;
+      this.controlStreamStatus = undefined;
+      this.collectionSearch = undefined;
+      this.details = undefined;
+      this.activeNode = false;
+      this.alert = false;
+    },
     async fetchData(item) {
-      if (item.name === 'Systems') {
-        await this.fetchSystem(item);
-      } else if (item.name.startsWith('DataStreams')) {
-        await this.fetchDataStream(item);
-      } else if (item.name.startsWith('Controls')) {
-        await this.fetchControl(item);
-      } else if (item.name.startsWith('Fois')) {
-        await this.fetchFoi(item);
+      try {
+        if (item.name === 'Systems') {
+          await this.fetchSystem(item);
+        } else if (item.name.startsWith('DataStreams')) {
+          await this.fetchDataStream(item);
+        } else if (item.name.startsWith('Controls')) {
+          await this.fetchControl(item);
+        } else if (item.name.startsWith('Fois')) {
+          await this.fetchFoi(item);
+        }
+        this.alert = false;
+      }catch(error) {
+        console.log(error);
+        this.alertContent = error;
+        this.alert = true;
       }
     },
     async fetchSystem(item) {
@@ -262,7 +330,6 @@ export default {
           this.nodes[systemDetailsNode.id] = systemDetailsNode;
 
           const nodeId = `system-${this.count++}`;
-          console.log(system)
           this.nodes[nodeId] = {
             id: nodeId,
             name: system.properties.properties.name,

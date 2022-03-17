@@ -53,6 +53,7 @@ class MqttConnector extends DataConnector {
             ...properties
         });
         this.interval = -1;
+        this.topics = [];
     }
 
     getMqttProvider() {
@@ -69,7 +70,7 @@ class MqttConnector extends DataConnector {
                 options = {
                     ...options,
                     ...this.properties.options
-                }
+                };
             }
 
             mqttProviders[fullUrl] = new MqttProvider({
@@ -88,6 +89,7 @@ class MqttConnector extends DataConnector {
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
         mqttProvider.subscribe(topic, queryString,this.onMessage);
+        this.topics.push(topic);
     }
 
     publishRequest(topic, payload) {
@@ -107,8 +109,12 @@ class MqttConnector extends DataConnector {
             // unsubscribe topic
             // find the client
             const client = mqttProviders[this.getUrl()];
-            client.unsubscribeDs(this.properties.topic);
+            for(let topic of this.topics) {
+                client.unsubscribe(topic);
+                console.warn(`Unsubscribed topic: ${topic}`);
+            }
         }
+        this.topics = [];
         console.warn(`Disconnected from ${this.getUrl()}`);
     }
 

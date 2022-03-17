@@ -74,7 +74,7 @@ class MqttProvider {
         }
         // waiting for the client gets connected
         let interval;
-        const topicQuery = `${topic}?${queryString}`;
+        const topicQuery = `/api${topic}?${queryString}`;
 
         interval = setInterval(() => {
             if (this.client.connected) {
@@ -87,7 +87,6 @@ class MqttProvider {
 
                     mqttCallbacks[topicQuery].push(callback);
 
-                    // this.client.subscribe(dataStreamId+"?format=application/swe%2Bbinary", function (err) {c
                     this.client.subscribe(topicQuery, function (err) {
                         if (err) {
                             callback(err);
@@ -125,16 +124,21 @@ class MqttProvider {
             // connects to the broker specified by the given url and options and returns a Client.
             this.client = mqtt.connect(this.endpoint, {...this.options});
             const that = this;
-            this.client.on('connect', function (e) {
-                console.info(`Mqqt client is connected to ${that.endpoint}`);
+            this.client.on('connect', e => {
+                console.info(`Mqtt client is connected to ${that.endpoint}`);
             });
             this.client.on('message', this.onMessage.bind(this));
+
+            this.client.on('offline', e => {
+                throw new Error(`The server ${that.endpoint} seems offline`);
+            });
+            this.client.on('error', e => {
+                throw new Error(error);
+            });
         }
     }
 
     async onMessage(topic, message) {
-
-        // console.log(message)
         // console.log(new DataView(message.buffer, message.byteOffset).getFloat64(0, false) * 1000)
         // console.log(new DataView(new Uint8Array(message).subarray(message.byteOffset).buffer).getFloat64(0, false) * 1000)
         // console.log(String.fromCharCode.apply(null, new Uint8Array(message)));
