@@ -57,6 +57,7 @@ class MqttProvider {
      * @param {Object} properties - the object properties
      * @param {String} properties.endpoint - the mqtt endpoint[:port]
      * @param {String} properties.clientId - the clientId
+     * @param {String} [properties.mqttPrefix='/api'] - a prefix to each topic
      * @param {Object} properties.options - the MQTT.js property options as defined  [mqtt.Client(streamBuilder, options)]{@link https://github.com/mqttjs/MQTT.js#mqttclientstreambuilder-options}
      * Note that the credentials are passed in the object options as for the mqtt.js client.
      */
@@ -73,6 +74,11 @@ class MqttProvider {
 
         if (!isDefined(properties.clientId)) {
             throw Error('clientId is a mandatory property');
+        }
+
+        this.mqttPrefix = '/api';
+        if (isDefined(properties.mqttPrefix)) {
+            this.mqttPrefix = properties.mqttPrefix;
         }
 
         let options = {
@@ -105,7 +111,7 @@ class MqttProvider {
         }
         // waiting for the client gets connected
         let interval;
-        const topicQuery = `/api${topic}?${queryString}`;
+        const topicQuery = `${this.mqttPrefix}${topic}?${queryString}`;
 
         interval = setInterval(() => {
             if (this.client.connected) {
@@ -118,7 +124,7 @@ class MqttProvider {
 
                     mqttCallbacks[topicQuery].push(callback);
 
-                    this.client.subscribe(topicQuery, function (err) {
+                    this.client.subscribe(`${topicQuery}`, function (err) {
                         if (err) {
                             callback(err);
                         } else {
@@ -136,7 +142,8 @@ class MqttProvider {
 
 
     publish(topic, payload) {
-        this.client.publish(topic, payload);
+        const topicQuery = `${this.mqttPrefix}${topic}`;
+        this.client.publish(topicQuery, payload);
     }
 
     /**
@@ -146,8 +153,15 @@ class MqttProvider {
      * @param topic
      */
     unsubscribe(topic) {
-        console.log(`unsubscribe topic: ${topic}`);
-        delete mqttCallbacks[topic];
+        const topicQuery = `${this.mqttPrefix}${topic}`;
+        this.client.unsubscribe(topicQuery, err => {
+            if (err) {
+                console.error(`Cannot Unsubscribed topic: ${topicQuery} : ${err}`);
+            } else {
+                console.warn(`Unsubscribed topic: ${topicQuery}`);
+            }
+        });
+        delete mqttCallbacks[topicQuery];
     }
 
     connect() {
