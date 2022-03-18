@@ -11,7 +11,6 @@ import DataStreamFilter from "../../../sweapi/datastream/DataStreamFilter";
 import DataStream from "../../../sweapi/datastream/DataStream";
 import ObservationFilter from "../../../sweapi/observation/ObservationFilter";
 import CommandFilter from "../../../sweapi/command/CommandFilter";
-import Command from "../../../sweapi/command/Command";
 import ControlFilter from "../../../sweapi/control/ControlFilter";
 import Control from "../../../sweapi/control/Control";
 
@@ -36,7 +35,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         ;
 
         // check if is a collection
-        if(this.properties.collection.startsWith('/systems')) {
+         if(/^(.*)\/systems/.test(this.properties.collection)){
             const systems = new Systems(networkProperties);
             //
             filter = this.createSystemFilter(properties);
@@ -62,10 +61,10 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
             } else {
                 collection = systems.searchSystems(filter, properties.batchSize);
             }
-        } else if (this.properties.collection === '/fois') {
+        } else if(/^(.*)\/fois/.test(this.properties.collection)){
             filter = this.createFeatureOfInterestFilter(properties);
             collection = new FeatureOfInterests(networkProperties).searchFeaturesOfInterest(filter, properties.batchSize);
-        } else if (this.properties.collection.startsWith('/datastreams')) {
+        } else if(/^(.*)\/datastreams/.test(this.properties.collection)){
             filter = this.createDataStreamFilter(properties);
 
             const regex = new RegExp('\\/(.*\\/)(.*)\\/observations'); // /datastreams/abc13/observations
