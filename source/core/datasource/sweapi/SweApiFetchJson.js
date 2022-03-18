@@ -33,6 +33,7 @@ class SweApiFetchJson extends SweApiFetch {
      * @param {string} [properties.roi=undefined] - WKT geometry and operator to filter resources on their location or geometry
      * @param {String[]} [properties.featureOfInterest=undefined] Comma separated list of feature of interest IDs to get observations for.
      * @param {String[]} [properties.observedProperty=undefined] Comma separated list of observed property URIs to get observations for.
+     * @param {String} properties.mqttPrefix=undefined the mqtt prefix for MQTT connector
      */
     constructor(name, properties) {
         super(name, properties);
