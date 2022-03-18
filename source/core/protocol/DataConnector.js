@@ -124,6 +124,8 @@ class DataConnector {
     postRequest() {}
 
     publishRequest() {}
+
+    reset() {}
 }
 
 export default DataConnector;

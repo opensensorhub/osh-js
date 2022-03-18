@@ -50,6 +50,7 @@ class MqttConnector extends DataConnector {
      */
     constructor(url, properties) {
         super(url, {
+            mqttPrefix: '/api',
             ...properties
         });
         this.interval = -1;
@@ -76,10 +77,15 @@ class MqttConnector extends DataConnector {
             mqttProviders[fullUrl] = new MqttProvider({
                 endpoint: fullUrl,
                 clientId: randomUUID(),
-                options: options
+                options: options,
+                mqttPrefix: this.properties.mqttPrefix
             });
+            console.warn(`Stored MQTT provider into cache: ${fullUrl}`);
             mqttProviders[fullUrl].connect();
             this.checkStatus(Status.CONNECTED);
+
+        } else {
+            console.warn(`Getting MQTT provider from cache: ${fullUrl}`);
         }
         return mqttProviders[fullUrl];
     }
@@ -89,7 +95,7 @@ class MqttConnector extends DataConnector {
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
         mqttProvider.subscribe(topic, queryString,this.onMessage);
-        this.topics.push(topic);
+        this.topics.push(`${topic}?${queryString}`);
     }
 
     publishRequest(topic, payload) {
@@ -111,7 +117,6 @@ class MqttConnector extends DataConnector {
             const client = mqttProviders[this.getUrl()];
             for(let topic of this.topics) {
                 client.unsubscribe(topic);
-                console.warn(`Unsubscribed topic: ${topic}`);
             }
         }
         this.topics = [];
@@ -132,6 +137,12 @@ class MqttConnector extends DataConnector {
 
     isConnected() {
         return isDefined(mqttProviders[this.getUrl()]) && mqttProviders[this.getUrl()].isConnected();
+    }
+
+    reset() {
+        this.disconnect();
+        console.log(`Remove provider from cache: ${this.getUrl()}`)
+        delete mqttProviders[this.getUrl()];
     }
 }
 
