@@ -26,6 +26,7 @@ class SensorWebApi {
      * @param {Object} networkProperties - Defines network properties
      * @param {boolean} [networkProperties.tls=false] - Defines is use TLS connection
      * @param {endpointUrl} networkProperties.endpointUrl - The endpoint URL
+     * @param {endpointUrl} networkProperties.mqttPrefix - A Mqtt topic prefix
      * @param {DataConnector} [networkProperties.connector=undefined] - Use a specific connector
      * @param {String} [networkProperties.streamProtocol='ws'] - The stream protocol: 'ws' | 'mqtt'
      *
@@ -97,23 +98,9 @@ class SensorWebApi {
                 method: 'GET'
             });
         } else if(networkProperties.streamProtocol === 'mqtt') {
-            return new MqttConnector(url);
+            return new MqttConnector(url, networkProperties);
         } else if(networkProperties.streamProtocol === 'ws') {
             return new WebSocketConnector(url);
-        }
-    }
-
-    setStreamProtocol(protocol, responseType = 'arraybuffer', extraNetworkProperties = {}) {
-        if(isDefined(this._network.stream.connector)) {
-            this._network.stream.connector.disconnect();
-        }
-        this._network.stream = {
-            connector: this.createStreamConnector({
-                ...this.networkProperties,
-                ...extraNetworkProperties,
-                streamProtocol: protocol,
-                responseType: responseType
-            })
         }
     }
 

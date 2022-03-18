@@ -41,11 +41,12 @@
 import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
+import DataStream from "../../../../source/core/sweapi/datastream/DataStream";
 
 export default {
   name: "StreamObservationsContent",
   props: [
-    'datastream','datastreamNodeId','url'
+    'datastreamProperties', 'datastreamNetworkProperties', 'datastreamNodeId', 'mqttPrefix', 'mqttUrl'
   ],
   components: {
     VueJsonPretty,
@@ -53,44 +54,53 @@ export default {
   data() {
     return {
       prettyJson: true,
-      dataStreamProtocol: 'ws',
       content: undefined,
+      dataStreamProtocol: 'ws',
+      datastream: undefined
     }
   },
   mounted() {
+    this.dataStreamProtocol = this.datastreamNetworkProperties.streamProtocol;
+    this.buildDataStream(this.datastreamProperties, this.datastreamNetworkProperties);
     this.connect();
   },
-  async destroyed(){
+  async destroyed() {
+    console.log('destroyed')
     // make it async
     const that = this;
     new Promise((resolve, reject) => {
-      that.disconnect();
+      that.reset();
     });
   },
   methods: {
+    buildDataStream(dataStreamProperties, dataStreamNetworkProperties) {
+      this.datastream = new DataStream(dataStreamProperties, dataStreamNetworkProperties);
+    },
     connect() {
       const that = this;
       this.datastream.streamObservations(new ObservationFilter({}), function (obs) {
         that.content = obs;
       });
     },
-    disconnect() {
-      if(this.datastream._network.stream.connector) {
+    reset() {
+      if (this.datastream._network.stream.connector) {
         this.datastream._network.stream.connector.disconnect();
+        this.datastream._network.stream.connector.reset();
       }
     },
     changeStreamProtocol(value) {
-      this.dataStreamProtocol = value;
-      this.disconnect();
-      if(value === 'ws') {
-        this.datastream.setStreamProtocol(value, 'arraybuffer');
-      } else {
-        // mqtt
-        this.datastream.setStreamProtocol(value, 'arraybuffer', {
-          endpointUrl: this.url
-        });
-      }
-
+      this.datastream._network.stream.connector.disconnect();
+      this.datastream._network.stream.connector.reset();
+      this.buildDataStream(
+          {
+            ...this.datastreamProperties
+          },
+          {
+            ...this.datastreamNetworkProperties,
+            streamProtocol: value,
+            mqttPrefix : this.mqttPrefix,
+            endpointUrl:  (value === 'mqtt') ? this.mqttUrl : this.datastreamNetworkProperties.endpointUrl
+          })
       this.connect();
     },
   }

@@ -47,6 +47,12 @@
             required
         ></v-text-field>
 
+        <v-text-field
+            v-model="mqttPre"
+            label="MQTT Topic prefix"
+            required
+        ></v-text-field>
+
         <v-checkbox
             v-model="tls"
             label="tls"
@@ -79,7 +85,7 @@
 export default {
   name: "UrlEditComponentDialog",
   props: [
-    'fetchUrl','mqttUrl','tlsUrl'
+    'fetchUrl','mqttUrl','tlsUrl', 'mqttPrefix'
   ],
   data() {
     return {
@@ -87,6 +93,7 @@ export default {
       tls: this.tlsUrl,
       fetch: this.fetchUrl,
       mqtt: this.mqttUrl,
+      mqttPre: this.mqttPrefix,
       key:0
     }
   },
@@ -97,7 +104,8 @@ export default {
       this.$emit('updated-url', {
         mqtt: this.mqtt,
         fetch: this.fetch,
-        tls: this.tls
+        tls: this.tls,
+        mqttPrefix: this.mqttPre,
       });
     },
     cancel() {
@@ -105,6 +113,7 @@ export default {
       this.fetch = this.fetchUrl;
       this.mqtt = this.mqttUrl;
       this.tls = this.tlsUrl;
+      this.mqttPre = this.mqttPrefix;
       this.key++;
     },
   },

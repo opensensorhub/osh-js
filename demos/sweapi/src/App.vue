@@ -9,7 +9,8 @@
             dense
             dark
             dismissible
-        >{{ alertContent }}</v-alert>
+        >{{ alertContent }}
+        </v-alert>
         <v-card-title class="blue accent-3 white--text text-h5">
           <v-btn
               class="mx-4"
@@ -24,10 +25,11 @@
             </v-icon>
           </v-btn>
           <UrlEditComponentDialog
-            :fetch-url="fetchUrl"
-            :mqtt-url="mqttUrl"
-            :tls-url="tls"
-            @updated-url="changeUrl"
+              :fetch-url="fetchUrl"
+              :mqtt-url="mqttUrl"
+              :tls-url="tls"
+              :mqtt-prefix="mqttPrefix"
+              @updated-url="changeUrl"
           ></UrlEditComponentDialog>
           SensorWebAPI: {{ fetchUrl }}
         </v-card-title>
@@ -36,24 +38,24 @@
             justify="space-between"
         >
           <v-col cols="4" class="full">
-              <v-treeview
-                  :key="kk"
-                  dense
-                  class="treeview"
-                  :active.sync="active"
-                  :items="items"
-                  :load-children="fetchData"
-                  :open.sync="open"
-                  activatable
-                  color="warning"
-                  transition
-              >
-                <template v-slot:prepend="{ item }">
-                  <v-icon v-if="!item.children">
-                    mdi-json
-                  </v-icon>
-                </template>
-              </v-treeview>
+            <v-treeview
+                :key="kk"
+                dense
+                class="treeview"
+                :active.sync="active"
+                :items="items"
+                :load-children="fetchData"
+                :open.sync="open"
+                activatable
+                color="warning"
+                transition
+            >
+              <template v-slot:prepend="{ item }">
+                <v-icon v-if="!item.children">
+                  mdi-json
+                </v-icon>
+              </template>
+            </v-treeview>
           </v-col>
 
           <v-divider vertical></v-divider>
@@ -61,29 +63,31 @@
           <v-col
               class="d-flex"
           >
-              <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
-              <Details v-else-if="!datastream && !controlStreamCommand && !controlStreamStatus && details"
-                :details="details"
-              ></Details>
-              <StreamObservationsContent v-else-if="datastream"
-                 :datastream="datastream"
-                 :key="nodeId"
-                 :url="mqttUrl"
-              ></StreamObservationsContent>
+            <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
+            <Details v-else-if="!datastreamProperties && !controlStreamCommand && !controlStreamStatus && details"
+                     :details="details"
+            ></Details>
+            <StreamObservationsContent v-else-if="datastreamProperties"
+                                       :datastreamProperties="datastreamProperties"
+                                       :key="nodeId + kk"
+                                       :datastreamNetworkProperties="datastreamNetworkProperties"
+                                       :mqtt-prefix="mqttPrefix"
+                                       :mqtt-url="mqttUrl"
+            ></StreamObservationsContent>
             <StreamCommandsContent v-else-if="controlStreamCommand"
-                                       :control="controlStreamCommand"
-                                       :key="nodeId"
-                                       :url="mqttUrl"
+                                   :control="controlStreamCommand"
+                                   :key="nodeId + kk"
+                                   :url="mqttUrl"
             ></StreamCommandsContent>
             <StreamControlStatusContent v-else-if="controlStreamStatus"
-                                   :control="controlStreamStatus"
-                                   :key="nodeId"
-                                   :url="mqttUrl"
+                                        :control="controlStreamStatus"
+                                        :key="nodeId + kk"
+                                        :url="mqttUrl"
 
             ></StreamControlStatusContent>
             <SearchContent v-else-if="collectionSearch"
-                                       :collection="collectionSearch"
-                                       :key="nodeId"
+                           :collection="collectionSearch"
+                           :key="nodeId + kk"
             ></SearchContent>
             <ContentLoading v-else></ContentLoading>
           </v-col>
@@ -146,7 +150,8 @@ export default {
       nodes: {},
       details: undefined,
       count: 0,
-      datastream: undefined,
+      datastreamProperties: undefined,
+      datastreamNetworkProperties: undefined,
       controlStreamCommand: undefined,
       controlStreamStatus: undefined,
       collectionSearch: undefined,
@@ -154,7 +159,8 @@ export default {
       prettyJson: true,
       fetchUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       mqttUrl: 'ogct17.georobotix.io:8483',
-      kk:0,
+      mqttPrefix: '/api',
+      kk: 0,
       alert: false,
       alertContent: undefined,
       tls: true
@@ -185,7 +191,7 @@ export default {
       if (!this.active.length) return undefined
 
       const id = this.active[0]
-      if(!isDefined(id)) return undefined;
+      if (!isDefined(id)) return undefined;
 
       const jsonParser = new SweApiFetchGenericJson();
       let node;
@@ -194,7 +200,7 @@ export default {
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
-      } else if(id.startsWith('system-')) {
+      } else if (id.startsWith('system-')) {
         node = this.nodes[id];
         this.details = node.system.properties;
       } else if (id.startsWith('datastream-schema')) {
@@ -208,36 +214,37 @@ export default {
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        this.datastream = node.datastream;
-      } else if(id.startsWith('datastream-search-observation')) {
+        this.datastreamProperties = node.datastream.properties;
+        this.datastreamNetworkProperties = node.datastream.networkProperties;
+      } else if (id.startsWith('datastream-search-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => this.collectionSearch=collection);
-      } else if(id.startsWith('datastream-')) {
+        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => this.collectionSearch = collection);
+      } else if (id.startsWith('datastream-')) {
         node = this.nodes[id];
         this.details = node.datastream.properties;
       } else if (id.startsWith('control-stream-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
         this.controlStreamCommand = node.control;
-      } else if(id.startsWith('control-search-command')) {
+      } else if (id.startsWith('control-search-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchCommands(new CommandFilter(), 10).then((collection) => this.collectionSearch=collection);
+        node.control.searchCommands(new CommandFilter(), 10).then((collection) => this.collectionSearch = collection);
       } else if (id.startsWith('control-stream-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
         this.controlStreamStatus = node.control;
-      } else if(id.startsWith('control-search-status')) {
+      } else if (id.startsWith('control-search-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchStatus(new ControlFilter(), 10).then((collection) => this.collectionSearch=collection);
-      }else if (id.startsWith('control-schema')) {
+        node.control.searchStatus(new ControlFilter(), 10).then((collection) => this.collectionSearch = collection);
+      } else if (id.startsWith('control-schema')) {
         node = this.nodes[id];
         node.control.getSchema().then(schema => {
           that.details = jsonParser.parseData(schema);
         });
-      } else if(id.startsWith('control-')) {
+      } else if (id.startsWith('control-')) {
         node = this.nodes[id];
         this.details = node.control.properties;
       }
@@ -255,18 +262,22 @@ export default {
       this.fetchUrl = event.fetch;
       this.mqttUrl = event.mqtt;
       this.tls = event.tls;
+      this.mqttPrefix = event.mqttPrefix;
       this.refresh();
     },
-    init(){
+    init() {
       this.systemsUtility = new Systems({
         protocol: 'http',
         tls: this.tls,
-        endpointUrl: this.fetchUrl
+        endpointUrl: this.fetchUrl,
+        mqttPrefix: this.mqttPrefix,
+        mqttUrl: this.mqttUrl
       });
       this.systems = [];
     },
     resetSelected() {
-      this.datastream = undefined;
+      this.datastreamProperties = undefined;
+      this.datastreamNetworkProperties = undefined;
       this.controlStreamCommand = undefined;
       this.controlStreamStatus = undefined;
       this.collectionSearch = undefined;
@@ -286,7 +297,7 @@ export default {
           await this.fetchFoi(item);
         }
         this.alert = false;
-      }catch(error) {
+      } catch (error) {
         console.log(error);
         this.alertContent = error;
         this.alert = true;
@@ -590,6 +601,7 @@ code {
 .theme--dark.v-card {
   background-color: #2f2f2f !important;
 }
+
 .v-treeview-node__content {
   cursor: pointer;
 }
