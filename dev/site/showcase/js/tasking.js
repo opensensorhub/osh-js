@@ -13,14 +13,15 @@ var posDsId = "1eots41v6kody";
 var cmdStreamId = "1rl2xoslsdldj";
 
 let gpsDataSource = new SweApiFetchJson("supersonic drone GPS", {
-    collection: `/datastreams/${posDsId}/observations`,
+    collection: `/api/datastreams/${posDsId}/observations`,
     endpointUrl: 'ogct17.georobotix.io:8483',
     protocol: 'mqtt',
+    mqttPrefix: '/api',
     tls: true,
 });
 
 const systems = new Systems({
-    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub',
+    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
     mqttEndpointUrl: 'ogct17.georobotix.io:8483',
     streamProtocol: 'mqtt',
     tls: true
