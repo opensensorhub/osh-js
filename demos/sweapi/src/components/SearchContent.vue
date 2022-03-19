@@ -72,19 +72,23 @@ export default {
   methods: {
     setPage(value) {
       if(!(value in this.cache)) {
-       this.collection.nextPage(value - 1).then(page => {
-          this.content = page;
-          this.cache[value]= page;
-       });
+         this.collection.nextPage(value - 1).then(page => {
+            this.content = page;
+            this.cache[value]= page;
+         }).catch((error) => {
+           this.$emit('error', error);
+         });
       } else {
         this.content = this.cache[value];
       }
     },
     connect() {
-      this.collection.nextPage().then(page => {
-        this.content = page;
-        this.cache[1]= page;
-      });
+        this.collection.nextPage().then(page => {
+          this.content = page;
+          this.cache[1] = page;
+        }).catch((error) => {
+          this.$emit('error', error);
+        });
     },
     disconnect() {
       this.active = false;

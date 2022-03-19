@@ -88,6 +88,7 @@
             <SearchContent v-else-if="collectionSearch"
                            :collection="collectionSearch"
                            :key="nodeId + kk"
+                           @error="handleError"
             ></SearchContent>
             <ContentLoading v-else></ContentLoading>
           </v-col>
@@ -128,6 +129,8 @@ import {isDefined} from "../../../source/core/utils/Utils";
 import ControlFilter from "../../../source/core/sweapi/control/ControlFilter";
 import ObservationFilter from "../../../source/core/sweapi/observation/ObservationFilter";
 import CommandFilter from "../../../source/core/sweapi/command/CommandFilter";
+import EventFilter from "../../../source/core/sweapi/event/EventFilter";
+import HistoryFilter from "../../../source/core/sweapi/history/HistoryFilter";
 
 export default {
   components: {
@@ -200,6 +203,14 @@ export default {
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
+      } else if (id.startsWith('system-events')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        node.system.searchEvents(new EventFilter(), 10).then((collection) => this.collectionSearch = collection);
+      } else if (id.startsWith('system-history')) {
+        node = this.nodes[id];
+        this.nodeId = node.id;
+        node.system.searchHistory(new HistoryFilter(), 10).then((collection) => this.collectionSearch = collection);
       } else if (id.startsWith('system-')) {
         node = this.nodes[id];
         this.details = node.system.properties;
@@ -253,6 +264,11 @@ export default {
     },
   },
   methods: {
+    handleError(error) {
+      console.error(error)
+      this.alertContent = error;
+      this.alert = true;
+    },
     refresh() {
       this.resetSelected();
       this.init();
@@ -333,6 +349,22 @@ export default {
             children: []
           };
 
+          const eventsNode = {
+            id: `system-events-${this.count++}`,
+            name: 'Events',
+            system: system,
+          };
+
+          this.nodes[eventsNode.id] = eventsNode;
+
+          const historyNode = {
+            id: `system-history-${this.count++}`,
+            name: 'History',
+            system: system,
+          };
+
+          this.nodes[historyNode.id] = historyNode;
+
           const systemDetailsNode = {
             id: `system-details-${this.count++}`,
             name: 'SensorML',
@@ -349,6 +381,8 @@ export default {
               datastreamsNode,
               controlsNode,
               foisNode,
+              eventsNode,
+              historyNode,
               systemDetailsNode
             ]
           };
