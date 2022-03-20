@@ -54,24 +54,15 @@ class ControlFilter extends SensorWebApiFilter {
      * @param {string} [properties.format='application/json'] - Mime type designating the format to use to encode the response.
      * @param {string} [properties.issueTime=undefined] - ISO 8601 time range to filter commands on their issue time. When this parameter is omitted,
      * no filtering on "issueTime" is applied.
-     @param {string} [properties.executionTime=undefined] - ISO 8601 time range to filter commands on their execution time.
-     * When this parameter is omitted, no filtering on "executionTime" is applied
-     @param {string} [properties.reportTime=undefined] - ISO 8601 time range to filter status messages on their report time. When this parameter is omitted,
-     * no filtering on "reportTime" is applied.
-     @param {string[]} [properties.statusCode=undefined] - Comma separated list of status codes: PENDING, ACCEPTED, REJECTED, SCHEDULED, UPDATED, CANCELED, EXECUTING, FAILED, COMPLETED
      */
     constructor(properties) {
         super({
             q: undefined,
-            bbox: undefined,
-            location: undefined,
+            actuableProperty: undefined,
             observedProperty: undefined,
-            featureOfInterest: undefined,
+            issueTime: undefined,
             select: undefined,
             format: 'application/json',
-            validTime: undefined,
-            phenomenonTime: undefined,
-            resultTime: undefined,
             ...properties // merge defined properties
         });
         //TODO: assertions
