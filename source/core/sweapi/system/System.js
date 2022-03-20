@@ -117,7 +117,7 @@ class System extends SensorWebApi {
 
     /**
      * List or search events related to a system (e.g. maintenance events, contact change, etc.)
-     * @param {EventFilter} eventFilter - the event filer
+     * @param {EventFilter} eventFilter - the event filter
      * @param pageSize - the page size
      * @return {Promise<Collection<JSON>>}
      */
@@ -137,6 +137,18 @@ class System extends SensorWebApi {
         return new Collection(
             API.systems.history.replace('{sysid}',this.properties.id),historyFilter,
             pageSize,this.jsonParser, this._network.info.connector);
+    }
+
+    /**
+     * List or search members of a system group. Individual members can be retrieved by ID directly on the root "systems" collection
+     * @param {SystemFilter} systemFilter - the system filter
+     * @param pageSize - the page size
+     * @return {Promise<Collection<System>>}
+     */
+    async searchMembers(systemFilter = new SystemFilter(), pageSize= 10) {
+        return new Collection(
+            API.systems.members.replace('{sysid}',this.properties.id),systemFilter,
+            pageSize,this.systemParser, this._network.info.connector);
     }
 }
 

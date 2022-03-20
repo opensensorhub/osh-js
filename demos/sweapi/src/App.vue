@@ -311,6 +311,8 @@ export default {
           await this.fetchControl(item);
         } else if (item.name.startsWith('Fois')) {
           await this.fetchFoi(item);
+        } else if (item.name.startsWith('Members')) {
+          await this.fetchMembers(item);
         }
         this.alert = false;
       } catch (error) {
@@ -327,68 +329,78 @@ export default {
         const page = await systemCollection.nextPage();
         for (let i = 0; i < page.length; i++) {
           const system = page[i];
-
-          const datastreamsNode = {
-            id: `datastreams-${this.count++}`,
-            name: 'DataStreams',
-            system: system,
-            children: []
-          };
-
-          const controlsNode = {
-            id: `controls-${this.count++}`,
-            name: 'Controls',
-            system: system,
-            children: []
-          };
-
-          const foisNode = {
-            id: `fois-${this.count++}`,
-            name: 'Fois',
-            system: system,
-            children: []
-          };
-
-          const eventsNode = {
-            id: `system-events-${this.count++}`,
-            name: 'Events',
-            system: system,
-          };
-
-          this.nodes[eventsNode.id] = eventsNode;
-
-          const historyNode = {
-            id: `system-history-${this.count++}`,
-            name: 'History',
-            system: system,
-          };
-
-          this.nodes[historyNode.id] = historyNode;
-
-          const systemDetailsNode = {
-            id: `system-details-${this.count++}`,
-            name: 'SensorML',
-            system: system,
-          };
-          this.nodes[systemDetailsNode.id] = systemDetailsNode;
-
-          const nodeId = `system-${this.count++}`;
-          this.nodes[nodeId] = {
-            id: nodeId,
-            name: system.properties.properties.name,
-            system: system,
-            children: [
-              datastreamsNode,
-              controlsNode,
-              foisNode,
-              eventsNode,
-              historyNode,
-              systemDetailsNode
-            ]
-          };
-          item.children.push(this.nodes[nodeId]);
+          this.addSystem(item, system);
         }
       }
+    },
+    addSystem(item, system) {
+      const datastreamsNode = {
+        id: `datastreams-${this.count++}`,
+        name: 'DataStreams',
+        system: system,
+        children: []
+      };
+
+      const controlsNode = {
+        id: `controls-${this.count++}`,
+        name: 'Controls',
+        system: system,
+        children: []
+      };
+
+      const membersNode = {
+        id: `members-${this.count++}`,
+        name: 'Members',
+        system: system,
+        children: []
+      };
+
+      const foisNode = {
+        id: `fois-${this.count++}`,
+        name: 'Fois',
+        system: system,
+        children: []
+      };
+
+      const eventsNode = {
+        id: `system-events-${this.count++}`,
+        name: 'Events',
+        system: system,
+      };
+
+      this.nodes[eventsNode.id] = eventsNode;
+
+      const historyNode = {
+        id: `system-history-${this.count++}`,
+        name: 'History',
+        system: system,
+      };
+
+      this.nodes[historyNode.id] = historyNode;
+
+      const systemDetailsNode = {
+        id: `system-details-${this.count++}`,
+        name: 'SensorML',
+        system: system,
+      };
+      this.nodes[systemDetailsNode.id] = systemDetailsNode;
+
+      const nodeId = `system-${this.count++}`;
+      this.nodes[nodeId] = {
+        id: nodeId,
+        name: system.properties.properties.name,
+        system: system,
+        children: [
+          datastreamsNode,
+          controlsNode,
+          membersNode,
+          foisNode,
+          eventsNode,
+          historyNode,
+          systemDetailsNode
+        ]
+      };
+      item.children.push(this.nodes[nodeId]);
     },
     async fetchDataStream(item) {
       const system = item.system;
@@ -528,6 +540,18 @@ export default {
           this.nodes[controlNode.id] = controlNode;
 
           item.children.push(controlNode);
+        }
+      }
+    },
+    async fetchMembers(item) {
+      const system = item.system;
+      const systemFilter = new SystemFilter({});
+      const members = await system.searchMembers(systemFilter, 100);
+      while (members.hasNext()) {
+        const page = await members.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const member = page[i];
+          this.addSystem(item, member);
         }
       }
     }
