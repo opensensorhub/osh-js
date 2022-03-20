@@ -130,7 +130,7 @@ import ControlFilter from "../../../source/core/sweapi/control/ControlFilter";
 import ObservationFilter from "../../../source/core/sweapi/observation/ObservationFilter";
 import CommandFilter from "../../../source/core/sweapi/command/CommandFilter";
 import EventFilter from "../../../source/core/sweapi/event/EventFilter";
-import HistoryFilter from "../../../source/core/sweapi/history/HistoryFilter";
+import SystemHistoryFilter from "../../../source/core/sweapi/history/SystemHistoryFilter";
 
 export default {
   components: {
@@ -203,15 +203,7 @@ export default {
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
-      } else if (id.startsWith('system-events')) {
-        node = this.nodes[id];
-        this.nodeId = node.id;
-        node.system.searchEvents(new EventFilter(), 10).then((collection) => this.collectionSearch = collection);
-      } else if (id.startsWith('system-history')) {
-        node = this.nodes[id];
-        this.nodeId = node.id;
-        node.system.searchHistory(new HistoryFilter(), 10).then((collection) => this.collectionSearch = collection);
-      } else if (id.startsWith('system-')) {
+      } else if (!id.startsWith('system-history') && id.startsWith('system-')) {
         node = this.nodes[id];
         this.details = node.system.properties;
       } else if (id.startsWith('datastream-schema')) {
@@ -222,6 +214,9 @@ export default {
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         this.details = node.foi.properties;
+      } else if (id.startsWith('event-')) {
+        node = this.nodes[id];
+        this.details = node.event.properties;
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -313,6 +308,10 @@ export default {
           await this.fetchFoi(item);
         } else if (item.name.startsWith('Members')) {
           await this.fetchMembers(item);
+        } else if (item.name.startsWith('History')) {
+          await this.fetchHistory(item);
+        } else if (item.name.startsWith('Events')) {
+          await this.fetchEvents(item);
         }
         this.alert = false;
       } catch (error) {
@@ -333,7 +332,7 @@ export default {
         }
       }
     },
-    addSystem(item, system) {
+    addSystem(item, system, isHistory = false) {
       const datastreamsNode = {
         id: `datastreams-${this.count++}`,
         name: 'DataStreams',
@@ -366,6 +365,7 @@ export default {
         id: `system-events-${this.count++}`,
         name: 'Events',
         system: system,
+        children: []
       };
 
       this.nodes[eventsNode.id] = eventsNode;
@@ -374,6 +374,7 @@ export default {
         id: `system-history-${this.count++}`,
         name: 'History',
         system: system,
+        children: []
       };
 
       this.nodes[historyNode.id] = historyNode;
@@ -386,19 +387,33 @@ export default {
       this.nodes[systemDetailsNode.id] = systemDetailsNode;
 
       const nodeId = `system-${this.count++}`;
-      this.nodes[nodeId] = {
-        id: nodeId,
-        name: system.properties.properties.name,
-        system: system,
-        children: [
+
+      let children = [];
+      if(!isHistory) {
+        children = [
+          datastreamsNode,
+          controlsNode,
+          membersNode,
+          historyNode,
+          foisNode,
+          eventsNode,
+          systemDetailsNode
+        ]
+      } else {
+        children = [
           datastreamsNode,
           controlsNode,
           membersNode,
           foisNode,
           eventsNode,
-          historyNode,
           systemDetailsNode
         ]
+      }
+      this.nodes[nodeId] = {
+        id: nodeId,
+        name: system.properties.properties.name,
+        system: system,
+        children: children
       };
       item.children.push(this.nodes[nodeId]);
     },
@@ -552,6 +567,37 @@ export default {
         for (let i = 0; i < page.length; i++) {
           const member = page[i];
           this.addSystem(item, member);
+        }
+      }
+    },
+    async fetchHistory(item) {
+      const system = item.system;
+      const systemHistoryFilter = new SystemHistoryFilter({});
+      const systemsHistory = await system.searchHistory(systemHistoryFilter, 100);
+      while (systemsHistory.hasNext()) {
+        const page = await systemsHistory.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const system = page[i];
+          this.addSystem(item, system, true);
+        }
+      }
+    },
+    async fetchEvents(item) {
+      const system = item.system;
+      const eventFilter = new EventFilter({});
+      const events = await system.searchEvents(eventFilter, 100);
+      while (events.hasNext()) {
+        const page = await events.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const event = page[i];
+          const nodeId = `event-${this.count++}`;
+          this.nodes[nodeId] = {
+            id: `event-${this.count++}`,
+            name: event.id,
+            system: system,
+            event:event,
+          };
+          item.children.push(this.nodes[nodeId]);
         }
       }
     }

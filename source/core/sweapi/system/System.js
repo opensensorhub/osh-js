@@ -27,7 +27,8 @@ import ControlFilter from "../control/ControlFilter";
 import SweApiFetchControlParser from "../../datasource/sweapi/parser/json/SweApiFetchControl.parser";
 import EventFilter from "../event/EventFilter";
 import SweParser from "../SweParser";
-import HistoryFilter from "../history/HistoryFilter";
+import SystemHistoryFilter from "../history/SystemHistoryFilter";
+import SweApiFetchEventParser from "../../datasource/sweapi/parser/json/SweApiFetchEvent.parser";
 
 class System extends SensorWebApi {
 
@@ -37,6 +38,7 @@ class System extends SensorWebApi {
         this.systemParser = new SweApiFetchSystemParser(networkProperties);
         this.dataStreamParser = new SweApiDataStreamParser(networkProperties);
         this.featureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
+        this.eventParser = new SweApiFetchEventParser(networkProperties);
         this.controlParser = new SweApiFetchControlParser(networkProperties);
         this.jsonParser = new SweParser(networkProperties);
     }
@@ -119,24 +121,24 @@ class System extends SensorWebApi {
      * List or search events related to a system (e.g. maintenance events, contact change, etc.)
      * @param {EventFilter} eventFilter - the event filter
      * @param pageSize - the page size
-     * @return {Promise<Collection<JSON>>}
+     * @return {Promise<Collection<Event>>}
      */
     async searchEvents(eventFilter = new EventFilter(), pageSize= 10) {
         return new Collection(
             API.systems.events.replace('{sysid}',this.properties.id),eventFilter,
-            pageSize,this.jsonParser, this._network.info.connector);
+            pageSize,this.eventParser, this._network.info.connector);
     }
 
     /**
      * List or search for historical descriptions of a specific system (ordered by time of validity)
-     * @param {HistoryFilter} historyFilter - the history filer
-     * @param pageSize - the page size
-     * @return {Promise<Collection<JSON>>}
+     * @param {SystemHistoryFilter} systemHistoryFilter - the history filer
+     * @param [pageSize=10] - the page size
+     * @return {Promise<Collection<System>>}
      */
-    async searchHistory(historyFilter = new HistoryFilter(), pageSize= 10) {
+    async searchHistory(systemHistoryFilter = new SystemHistoryFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.history.replace('{sysid}',this.properties.id),historyFilter,
-            pageSize,this.jsonParser, this._network.info.connector);
+            API.systems.history.replace('{sysid}',this.properties.id),systemHistoryFilter,
+            pageSize,this.systemParser, this._network.info.connector);
     }
 
     /**

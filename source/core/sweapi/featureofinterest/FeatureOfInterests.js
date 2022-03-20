@@ -18,6 +18,7 @@ import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDa
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
+import API from "../routes.conf";
 
 class FeaturesOfInterest extends SensorWebApi {
     /**
@@ -48,7 +49,7 @@ class FeaturesOfInterest extends SensorWebApi {
      */
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
         const response = await this._network.info.connector.doRequest(
-            `/featuresOfInterest/${fId}`,
+            API.fois.by_id.replace('{id}',fId),
             featureOfInterestFilter.toQueryString(['select','format'],
             featureOfInterestFilter.props.format
         ));

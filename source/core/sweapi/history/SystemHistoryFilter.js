@@ -16,7 +16,7 @@
 
 import SensorWebApiFilter from "../Filter";
 
-class HistoryFilter extends SensorWebApiFilter {
+class SystemHistoryFilter extends SensorWebApiFilter {
     /**
      *
      * @param {Object} properties - object properties
@@ -35,4 +35,4 @@ class HistoryFilter extends SensorWebApiFilter {
         //TODO: assertions
     }
 }
-export default HistoryFilter;
+export default SystemHistoryFilter;
