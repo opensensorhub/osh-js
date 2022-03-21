@@ -25,6 +25,10 @@ import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/
 import API from "../routes.conf";
 import ControlFilter from "../control/ControlFilter";
 import SweApiFetchControlParser from "../../datasource/sweapi/parser/json/SweApiFetchControl.parser";
+import EventFilter from "../event/EventFilter";
+import SweParser from "../SweParser";
+import SystemHistoryFilter from "../history/SystemHistoryFilter";
+import SweApiFetchEventParser from "../../datasource/sweapi/parser/json/SweApiFetchEvent.parser";
 
 class System extends SensorWebApi {
 
@@ -34,7 +38,9 @@ class System extends SensorWebApi {
         this.systemParser = new SweApiFetchSystemParser(networkProperties);
         this.dataStreamParser = new SweApiDataStreamParser(networkProperties);
         this.featureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
+        this.eventParser = new SweApiFetchEventParser(networkProperties);
         this.controlParser = new SweApiFetchControlParser(networkProperties);
+        this.jsonParser = new SweParser(networkProperties);
     }
 
     /**
@@ -44,7 +50,7 @@ class System extends SensorWebApi {
      */
     async getDetails(systemFilter = new SystemFilter()) {
         return this._network.info.connector.doRequest(
-            API.systems.details.replace('{id}',this.properties.id),
+            API.systems.details.replace('{sysid}',this.properties.id),
             systemFilter.toQueryString(['select', 'format']),
             systemFilter.props.format
         );
@@ -68,7 +74,7 @@ class System extends SensorWebApi {
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.datastreams.replace('{id}',this.properties.id),
+            API.systems.datastreams.replace('{sysid}',this.properties.id),
             dataStreamFilter, pageSize,this.dataStreamParser, this._network.info.connector);
     }
 
@@ -80,18 +86,19 @@ class System extends SensorWebApi {
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.fois.replace('{id}',this.properties.id),featureOfInterestFilter,
+            API.systems.fois.replace('{sysid}',this.properties.id),featureOfInterestFilter,
             pageSize,this.featureOfInterestParser, this._network.info.connector);
     }
 
     /**
      * Get a list of control interfaces of a system
      * @param {ControlFilter} controlFilter - the control filter
+     * @param pageSize
      * @return {Promise<Collection<Control>>}
      */
     async searchControls(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.controls.replace('{id}',this.properties.id),controlFilter,
+            API.systems.controls.replace('{sysid}',this.properties.id),controlFilter,
             pageSize,this.controlParser, this._network.info.connector);
     }
 
@@ -103,11 +110,47 @@ class System extends SensorWebApi {
      */
     async getControlById(datastreamId,controlFilter = new ControlFilter()) {
         const response = await this._network.info.connector.doRequest(
-            API.systems.control_by_id.replace('{id}',this.properties.id).replace('{dsid}', datastreamId),
+            API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId),
             controlFilter.toQueryString(['select','format']),
             controlFilter.props.format
         );
         return this.controlParser.parseData(response);
+    }
+
+    /**
+     * List or search events related to a system (e.g. maintenance events, contact change, etc.)
+     * @param {EventFilter} eventFilter - the event filter
+     * @param pageSize - the page size
+     * @return {Promise<Collection<Event>>}
+     */
+    async searchEvents(eventFilter = new EventFilter(), pageSize= 10) {
+        return new Collection(
+            API.systems.events.replace('{sysid}',this.properties.id),eventFilter,
+            pageSize,this.eventParser, this._network.info.connector);
+    }
+
+    /**
+     * List or search for historical descriptions of a specific system (ordered by time of validity)
+     * @param {SystemHistoryFilter} systemHistoryFilter - the history filer
+     * @param [pageSize=10] - the page size
+     * @return {Promise<Collection<System>>}
+     */
+    async searchHistory(systemHistoryFilter = new SystemHistoryFilter(), pageSize= 10) {
+        return new Collection(
+            API.systems.history.replace('{sysid}',this.properties.id),systemHistoryFilter,
+            pageSize,this.systemParser, this._network.info.connector);
+    }
+
+    /**
+     * List or search members of a system group. Individual members can be retrieved by ID directly on the root "systems" collection
+     * @param {SystemFilter} systemFilter - the system filter
+     * @param pageSize - the page size
+     * @return {Promise<Collection<System>>}
+     */
+    async searchMembers(systemFilter = new SystemFilter(), pageSize= 10) {
+        return new Collection(
+            API.systems.members.replace('{sysid}',this.properties.id),systemFilter,
+            pageSize,this.systemParser, this._network.info.connector);
     }
 }
 

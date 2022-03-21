@@ -52,7 +52,7 @@ class Systems extends SensorWebApi {
      */
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
         const response = await this._network.info.connector.doRequest(
-            API.systems.by_id.replace('{id}',systemId),
+            API.systems.by_id.replace('{sysid}',systemId),
             systemFilter.toQueryString(['select','format']),
             systemFilter.props.format
         );

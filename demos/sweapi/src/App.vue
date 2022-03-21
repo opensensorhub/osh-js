@@ -88,6 +88,7 @@
             <SearchContent v-else-if="collectionSearch"
                            :collection="collectionSearch"
                            :key="nodeId + kk"
+                           @error="handleError"
             ></SearchContent>
             <ContentLoading v-else></ContentLoading>
           </v-col>
@@ -128,6 +129,8 @@ import {isDefined} from "../../../source/core/utils/Utils";
 import ControlFilter from "../../../source/core/sweapi/control/ControlFilter";
 import ObservationFilter from "../../../source/core/sweapi/observation/ObservationFilter";
 import CommandFilter from "../../../source/core/sweapi/command/CommandFilter";
+import EventFilter from "../../../source/core/sweapi/event/EventFilter";
+import SystemHistoryFilter from "../../../source/core/sweapi/history/SystemHistoryFilter";
 
 export default {
   components: {
@@ -200,7 +203,7 @@ export default {
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
         });
-      } else if (id.startsWith('system-')) {
+      } else if (!id.startsWith('system-history') && id.startsWith('system-')) {
         node = this.nodes[id];
         this.details = node.system.properties;
       } else if (id.startsWith('datastream-schema')) {
@@ -211,6 +214,9 @@ export default {
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         this.details = node.foi.properties;
+      } else if (id.startsWith('event-')) {
+        node = this.nodes[id];
+        this.details = node.event.properties;
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -253,6 +259,11 @@ export default {
     },
   },
   methods: {
+    handleError(error) {
+      console.error(error)
+      this.alertContent = error;
+      this.alert = true;
+    },
     refresh() {
       this.resetSelected();
       this.init();
@@ -295,6 +306,12 @@ export default {
           await this.fetchControl(item);
         } else if (item.name.startsWith('Fois')) {
           await this.fetchFoi(item);
+        } else if (item.name.startsWith('Members')) {
+          await this.fetchMembers(item);
+        } else if (item.name.startsWith('History')) {
+          await this.fetchHistory(item);
+        } else if (item.name.startsWith('Events')) {
+          await this.fetchEvents(item);
         }
         this.alert = false;
       } catch (error) {
@@ -311,50 +328,94 @@ export default {
         const page = await systemCollection.nextPage();
         for (let i = 0; i < page.length; i++) {
           const system = page[i];
-
-          const datastreamsNode = {
-            id: `datastreams-${this.count++}`,
-            name: 'DataStreams',
-            system: system,
-            children: []
-          };
-
-          const controlsNode = {
-            id: `controls-${this.count++}`,
-            name: 'Controls',
-            system: system,
-            children: []
-          };
-
-          const foisNode = {
-            id: `fois-${this.count++}`,
-            name: 'Fois',
-            system: system,
-            children: []
-          };
-
-          const systemDetailsNode = {
-            id: `system-details-${this.count++}`,
-            name: 'SensorML',
-            system: system,
-          };
-          this.nodes[systemDetailsNode.id] = systemDetailsNode;
-
-          const nodeId = `system-${this.count++}`;
-          this.nodes[nodeId] = {
-            id: nodeId,
-            name: system.properties.properties.name,
-            system: system,
-            children: [
-              datastreamsNode,
-              controlsNode,
-              foisNode,
-              systemDetailsNode
-            ]
-          };
-          item.children.push(this.nodes[nodeId]);
+          this.addSystem(item, system);
         }
       }
+    },
+    addSystem(item, system, isHistory = false) {
+      const datastreamsNode = {
+        id: `datastreams-${this.count++}`,
+        name: 'DataStreams',
+        system: system,
+        children: []
+      };
+
+      const controlsNode = {
+        id: `controls-${this.count++}`,
+        name: 'Controls',
+        system: system,
+        children: []
+      };
+
+      const membersNode = {
+        id: `members-${this.count++}`,
+        name: 'Members',
+        system: system,
+        children: []
+      };
+
+      const foisNode = {
+        id: `fois-${this.count++}`,
+        name: 'Fois',
+        system: system,
+        children: []
+      };
+
+      const eventsNode = {
+        id: `system-events-${this.count++}`,
+        name: 'Events',
+        system: system,
+        children: []
+      };
+
+      this.nodes[eventsNode.id] = eventsNode;
+
+      const historyNode = {
+        id: `system-history-${this.count++}`,
+        name: 'History',
+        system: system,
+        children: []
+      };
+
+      this.nodes[historyNode.id] = historyNode;
+
+      const systemDetailsNode = {
+        id: `system-details-${this.count++}`,
+        name: 'SensorML',
+        system: system,
+      };
+      this.nodes[systemDetailsNode.id] = systemDetailsNode;
+
+      const nodeId = `system-${this.count++}`;
+
+      let children = [];
+      if(!isHistory) {
+        children = [
+          datastreamsNode,
+          controlsNode,
+          membersNode,
+          historyNode,
+          foisNode,
+          eventsNode,
+          systemDetailsNode
+        ]
+      } else {
+        children = [
+          datastreamsNode,
+          controlsNode,
+          membersNode,
+          foisNode,
+          eventsNode,
+          systemDetailsNode
+        ]
+      }
+      this.nodes[nodeId] = {
+        id: nodeId,
+        name: system.properties.properties.name,
+        system: system,
+        children: children
+      };
+      item.children.push(this.nodes[nodeId]);
     },
     async fetchDataStream(item) {
       const system = item.system;
@@ -494,6 +555,49 @@ export default {
           this.nodes[controlNode.id] = controlNode;
 
           item.children.push(controlNode);
+        }
+      }
+    },
+    async fetchMembers(item) {
+      const system = item.system;
+      const systemFilter = new SystemFilter({});
+      const members = await system.searchMembers(systemFilter, 100);
+      while (members.hasNext()) {
+        const page = await members.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const member = page[i];
+          this.addSystem(item, member);
+        }
+      }
+    },
+    async fetchHistory(item) {
+      const system = item.system;
+      const systemHistoryFilter = new SystemHistoryFilter({});
+      const systemsHistory = await system.searchHistory(systemHistoryFilter, 100);
+      while (systemsHistory.hasNext()) {
+        const page = await systemsHistory.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const system = page[i];
+          this.addSystem(item, system, true);
+        }
+      }
+    },
+    async fetchEvents(item) {
+      const system = item.system;
+      const eventFilter = new EventFilter({});
+      const events = await system.searchEvents(eventFilter, 100);
+      while (events.hasNext()) {
+        const page = await events.nextPage();
+        for (let i = 0; i < page.length; i++) {
+          const event = page[i];
+          const nodeId = `event-${this.count++}`;
+          this.nodes[nodeId] = {
+            id: `event-${this.count++}`,
+            name: event.id,
+            system: system,
+            event:event,
+          };
+          item.children.push(this.nodes[nodeId]);
         }
       }
     }
