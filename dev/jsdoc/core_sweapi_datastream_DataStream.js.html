@@ -104,7 +104,7 @@ class DataStream extends SensorWebApi {
     async getSchema(dataStreamFilter = new DataStreamFilter()) {
         return this._network.info.connector.doRequest(
             API.datastreams.schema.replace('{id}',this.properties.id),
-            dataStreamFilter.toQueryString(['select', 'format']),
+            dataStreamFilter.toQueryString(['select', 'obsFormat', ]),
             dataStreamFilter.props.format
         );
     }

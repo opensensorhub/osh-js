@@ -35,9 +35,7 @@ import Collection from "../Collection";
 import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
-import SweApiFetchGenericJson from "../../datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import SweParser from "../SweParser";
-import DataStreamFilter from "../datastream/DataStreamFilter";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -62,7 +60,7 @@ class Control extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties.system.id);
+        this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties['system@id']);
         this.jsonParser = new SweParser();
     }
 
@@ -74,7 +72,7 @@ class Control extends SensorWebApi {
      */
     async searchCommands(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
-            API.controls.commands.replace('{sysid}',this.properties.system.id).replace('{dsid}',
+            API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
                 this.properties.id),commandFilter, pageSize,this.jsonParser, this._network.info.connector);
     }
 
@@ -93,7 +91,7 @@ class Control extends SensorWebApi {
         }
 
         this._network.stream.connector.doRequest(
-            API.controls.commands.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
+            API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
         );
@@ -102,7 +100,7 @@ class Control extends SensorWebApi {
     async getCommandById(commandId,commandFilter = new CommandFilter()) {
         const response = await this._network.info.connector.doRequest(
             API.controls.command_by_id
-                .replace('{sysid}',this.properties.system.id)
+                .replace('{sysid}',this.properties['system@id'])
                 .replace('{dsid}', this.properties.id)
                 .replace('{cmdid}', commandId),
             commandFilter.toQueryString(['select','format']),
@@ -114,7 +112,7 @@ class Control extends SensorWebApi {
     postCommand(payload, commandFilter = new CommandFilter()) {
         this._network.info.connector.postRequest(
             API.controls.commands
-                .replace('{sysid}',this.properties.system.id)
+                .replace('{sysid}',this.properties['system@id'])
                 .replace('{dsid}', this.properties.id),
             payload,
             commandFilter.props.format
@@ -124,7 +122,7 @@ class Control extends SensorWebApi {
     publishCommand(payload, commandFilter = new CommandFilter()) {
         this._network.stream.connector.publishRequest(
             API.controls.commands
-                .replace('{sysid}',this.properties.system.id)
+                .replace('{sysid}',this.properties['system@id'])
                 .replace('{dsid}', this.properties.id),
             payload
         );
@@ -138,7 +136,7 @@ class Control extends SensorWebApi {
      */
     async searchStatus(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
-            API.controls.status.replace('{sysid}',this.properties.system.id).replace('{dsid}',
+            API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
                 this.properties.id),controlFilter, pageSize,this.jsonParser, this._network.info.connector);
     }
 
@@ -157,7 +155,7 @@ class Control extends SensorWebApi {
         }
 
         this._network.stream.connector.doRequest(
-            API.controls.status.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
+            API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
         );
@@ -170,8 +168,8 @@ class Control extends SensorWebApi {
      */
     async getSchema(controlFilter = new ControlFilter()) {
         return this._network.info.connector.doRequest(
-            API.controls.schema.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
-            controlFilter.toQueryString(['select', 'format']),
+            API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
+            controlFilter.toQueryString(['select', 'obsFormat']),
             controlFilter.props.format
         );
     }
