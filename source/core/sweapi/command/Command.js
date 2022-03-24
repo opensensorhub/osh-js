@@ -39,8 +39,8 @@ class Command extends SensorWebApi {
      */
     async searchStatus(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
-            API.commands.status.replace('{sysid}',this.properties.systemId)
-                               .replace('{dsid}', this.properties.commandstream)
+            API.commands.status.replace('{sysid}',this.properties['system@id'])
+                               .replace('{dsid}', this.properties['control@id'])
                                .replace('{cmdid}', this.properties.id),
             commandFilter, pageSize, this.jsonParser, this._network.info.connector);
     }
@@ -55,8 +55,8 @@ class Command extends SensorWebApi {
         this._network.stream.connector.onMessage = callback;
 
         this._network.stream.connector.doRequest(
-            API.commands.status.replace('{sysid}',this.properties.systemId)
-                .replace('{dsid}', this.properties.commandstream)
+            API.commands.status.replace('{sysid}',this.properties['system@id'])
+                .replace('{dsid}', this.properties['control@id'])
                 .replace('{cmdid}', this.properties.id),
             commandFilter.toQueryString(),
             'arraybuffer'

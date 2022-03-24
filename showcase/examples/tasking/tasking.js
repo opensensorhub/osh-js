@@ -88,7 +88,7 @@ async function startListening() {
         textCommandElt.innerHTML = "";
         const status = message;
         textStatusElt.innerHTML = JSON.stringify(status, null, 2);
-        const command = await control.getCommandById(status.command);
+        const command = await control.getCommandById(status['command@id']);
         commands.set(command.properties.id, command.properties);
         textCommandElt.innerHTML = "";
         commands.forEach(cmd => {

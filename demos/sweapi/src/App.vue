@@ -257,7 +257,7 @@ export default {
         node = this.nodes[id];
         this.nodeId = node.id;
         this.controlStreamCommand = node.control;
-        this.panels.controlStatusLive = true;
+        this.panels.commandStatusLive = true;
       } else if (id.startsWith('control-search-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -269,6 +269,7 @@ export default {
         node = this.nodes[id];
         this.nodeId = node.id;
         this.controlStreamStatus = node.control;
+        this.panels.controlStatusLive = true;
       } else if (id.startsWith('control-search-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;

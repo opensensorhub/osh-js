@@ -60,7 +60,6 @@ import TimeLine from "./components/TimeLine.vue";
 import SweApiFetchJson from "osh-js/core/datasource/sweapi/SweApiFetchJson";
 import Systems from "osh-js/core/sweapi/system/Systems";
 import Control from "../../../source/core/sweapi/control/Control";
-import {EventType} from "../../../source/core/event/EventType";
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
@@ -100,10 +99,9 @@ export default {
 
     this.control = new Control({
       id: cmdStreamId,
-      system: {
-        id: systemId
-      }
-    }, {
+      'system@id': systemId
+    },
+    {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       mqttEndpointUrl: 'ogct17.georobotix.io:8483',
       streamProtocol: 'mqtt',
