@@ -61,31 +61,35 @@
           <v-divider vertical></v-divider>
 
           <v-col
-              class="d-flex"
+              class="d-flex rightContent"
           >
             <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
-            <Details v-else-if="!datastreamProperties && !controlStreamCommand && !controlStreamStatus && details"
+            <Details v-else-if="panels.details"
                      :details="details"
             ></Details>
-            <StreamObservationsContent v-else-if="datastreamProperties"
+            <Schema
+                v-else-if="panels.schema"
+                     :objCompliantSchema="objCompliantSchema"
+            ></Schema>
+            <StreamObservationsContent v-else-if="panels.datastreamLive"
                                        :datastreamProperties="datastreamProperties"
                                        :key="nodeId + kk"
                                        :datastreamNetworkProperties="datastreamNetworkProperties"
                                        :mqtt-prefix="mqttPrefix"
                                        :mqtt-url="mqttUrl"
             ></StreamObservationsContent>
-            <StreamCommandsContent v-else-if="controlStreamCommand"
+            <StreamCommandsContent v-else-if="panels.commandStatusLive"
                                    :control="controlStreamCommand"
                                    :key="nodeId + kk"
                                    :url="mqttUrl"
             ></StreamCommandsContent>
-            <StreamControlStatusContent v-else-if="controlStreamStatus"
+            <StreamControlStatusContent v-else-if="panels.controlStatusLive"
                                         :control="controlStreamStatus"
                                         :key="nodeId + kk"
                                         :url="mqttUrl"
 
             ></StreamControlStatusContent>
-            <SearchContent v-else-if="collectionSearch"
+            <SearchContent v-else-if="panels.search"
                            :collection="collectionSearch"
                            :key="nodeId + kk"
                            @error="handleError"
@@ -121,6 +125,7 @@ import StreamCommandsContent from "./components/StreamCommandsContent.vue";
 import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
 import SearchContent from "./components/SearchContent.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
+import Schema from "./components/Schema.vue";
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
@@ -142,7 +147,8 @@ export default {
     StreamCommandsContent,
     StreamControlStatusContent,
     SearchContent,
-    UrlEditComponentDialog
+    UrlEditComponentDialog,
+    Schema
   },
   data() {
     return {
@@ -152,11 +158,13 @@ export default {
       systems: [],
       nodes: {},
       details: undefined,
+      formats: undefined,
       count: 0,
       datastreamProperties: undefined,
       datastreamNetworkProperties: undefined,
       controlStreamCommand: undefined,
       controlStreamStatus: undefined,
+      objCompliantSchema: undefined,
       collectionSearch: undefined,
       nodeId: undefined,
       prettyJson: true,
@@ -166,7 +174,15 @@ export default {
       kk: 0,
       alert: false,
       alertContent: undefined,
-      tls: true
+      tls: true,
+      panels: {
+        details : false,
+        schema: false,
+        datastreamLive: false,
+        controlStatusLive: false,
+        commandStatusLive: false,
+        search: false,
+      }
     }
   },
   beforeMount() {
@@ -202,41 +218,53 @@ export default {
         node = this.nodes[id];
         node.system.getDetails().then(details => {
           that.details = jsonParser.parseData(details);
+          that.panels.details = true;
         });
       } else if (!id.startsWith('system-history') && id.startsWith('system-')) {
         node = this.nodes[id];
         this.details = node.system.properties;
+        that.panels.details = true;
       } else if (id.startsWith('datastream-schema')) {
         node = this.nodes[id];
-        node.datastream.getSchema().then(schema => {
-          that.details = jsonParser.parseData(schema);
-        });
+        this.objCompliantSchema = node.datastream;
+        this.panels.schema = true;
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         this.details = node.foi.properties;
+        that.panels.details = true;
       } else if (id.startsWith('event-')) {
         node = this.nodes[id];
         this.details = node.event.properties;
+        that.panels.details = true;
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
         this.datastreamProperties = node.datastream.properties;
         this.datastreamNetworkProperties = node.datastream.networkProperties;
+        this.panels.datastreamLive = true;
       } else if (id.startsWith('datastream-search-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => this.collectionSearch = collection);
+        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => {
+          this.collectionSearch = collection;
+          this.panels.search = true;
+        });
       } else if (id.startsWith('datastream-')) {
         node = this.nodes[id];
         this.details = node.datastream.properties;
+        this.panels.details = true;
       } else if (id.startsWith('control-stream-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
         this.controlStreamCommand = node.control;
+        this.panels.controlStatusLive = true;
       } else if (id.startsWith('control-search-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchCommands(new CommandFilter(), 10).then((collection) => this.collectionSearch = collection);
+        node.control.searchCommands(new CommandFilter(), 10).then((collection) => {
+          this.collectionSearch = collection;
+          this.panels.search = true;
+        });
       } else if (id.startsWith('control-stream-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -244,15 +272,20 @@ export default {
       } else if (id.startsWith('control-search-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchStatus(new ControlFilter(), 10).then((collection) => this.collectionSearch = collection);
+        node.control.searchStatus(new ControlFilter(), 10).then((collection) => {
+          this.collectionSearch = collection;
+          this.panels.search = true;
+        });
       } else if (id.startsWith('control-schema')) {
         node = this.nodes[id];
         node.control.getSchema().then(schema => {
           that.details = jsonParser.parseData(schema);
+          that.panels.details = true;
         });
       } else if (id.startsWith('control-')) {
         node = this.nodes[id];
         this.details = node.control.properties;
+        this.panels.details = true;
       }
       this.activeNode = true;
       return node;
@@ -292,9 +325,19 @@ export default {
       this.controlStreamCommand = undefined;
       this.controlStreamStatus = undefined;
       this.collectionSearch = undefined;
+      this.objCompliantSchema = undefined;
       this.details = undefined;
+      this.formats = undefined;
       this.activeNode = false;
       this.alert = false;
+      this.panels = {
+        details : false,
+        schema: false,
+        search: false,
+        datastreamLive: false,
+        controlStatusLive: false,
+        commandStatusLive: false,
+      }
     },
     async fetchData(item) {
       try {
@@ -611,6 +654,19 @@ html, body {
   padding: 0
 }
 
+/*.rightContent {*/
+/*  padding-bottom: 0px !important;*/
+/*  padding-top: 0px !important;;*/
+/*}*/
+/*.jsonpre > div.row > div {*/
+/*  margin-bottom: 0px !important;*/
+/*  padding-bottom: 0px !important;*/
+/*  padding-top: 0px !important;*/
+/*}*/
+/*.noprettyjson {*/
+/*  padding: 0px;*/
+/*  margin-bottom: 0px !important;*/
+/*}*/
 .v-toolbar__content, .v-toolbar__extension {
   padding: 4px 4px;
   font-family: sans-serif;

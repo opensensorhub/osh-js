@@ -4,9 +4,7 @@ import Collection from "../Collection";
 import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
-import SweApiFetchGenericJson from "../../datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import SweParser from "../SweParser";
-import DataStreamFilter from "../datastream/DataStreamFilter";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -140,7 +138,7 @@ class Control extends SensorWebApi {
     async getSchema(controlFilter = new ControlFilter()) {
         return this._network.info.connector.doRequest(
             API.controls.schema.replace('{sysid}',this.properties.system.id).replace('{dsid}',this.properties.id),
-            controlFilter.toQueryString(['select', 'format']),
+            controlFilter.toQueryString(['select', 'obsFormat']),
             controlFilter.props.format
         );
     }
