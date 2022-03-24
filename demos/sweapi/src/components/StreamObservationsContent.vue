@@ -1,23 +1,15 @@
 <template>
   <div class="white--text jsonpre" v-else>
-    <v-row align="center">
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
-      >
+    <div class="footer">
+      <v-container>
         <v-switch
             v-model="prettyJson"
             label="Pretty JSON"
         ></v-switch>
-      </v-col>
-
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
+      </v-container>
+      <v-container
+          class="protocol-select"
       >
-
         <v-select
             :items='["ws", "mqtt"]'
             label="Protocol"
@@ -26,13 +18,16 @@
             v-model="dataStreamProtocol"
             @change="changeStreamProtocol"
         ></v-select>
-      </v-col>
-    </v-row>
+      </v-container>
+    </div>
+    <v-divider></v-divider>
     <slot v-if="content">
-      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
-      <div class="noprettyjson" v-else>
-        <pre> {{ content }}</pre>
-      </div>
+      <v-container>
+        <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
+        <div class="noprettyjson" v-else>
+          <pre> {{ content }}</pre>
+        </div>
+      </v-container>
     </slot>
   </div>
 </template>
@@ -98,8 +93,8 @@ export default {
           {
             ...this.datastreamNetworkProperties,
             streamProtocol: value,
-            mqttPrefix : this.mqttPrefix,
-            endpointUrl:  (value === 'mqtt') ? this.mqttUrl : this.datastreamNetworkProperties.endpointUrl
+            mqttPrefix: this.mqttPrefix,
+            endpointUrl: (value === 'mqtt') ? this.mqttUrl : this.datastreamNetworkProperties.endpointUrl
           })
       this.connect();
     },
@@ -108,5 +103,16 @@ export default {
 </script>
 
 <style scoped>
+.footer {
+  display: flex;
+  justify-content: space-between;
+}
 
+.protocol-select {
+  max-width: 200px;
+  display: flex;
+  justify-content: end;
+  vertical-align: middle;
+  align-self: center;
+}
 </style>

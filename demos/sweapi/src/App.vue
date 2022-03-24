@@ -61,17 +61,16 @@
           <v-divider vertical></v-divider>
 
           <v-col
-              class="d-flex"
+              class="d-flex rightContent"
           >
             <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
             <Details v-else-if="panels.details"
                      :details="details"
             ></Details>
-            <DatastreamSchema
-                v-else-if="panels.datastreamSchema"
-                     :availableFormats="formats"
-                     :details="details"
-            ></DatastreamSchema>
+            <Schema
+                v-else-if="panels.schema"
+                     :objCompliantSchema="objCompliantSchema"
+            ></Schema>
             <StreamObservationsContent v-else-if="panels.datastreamLive"
                                        :datastreamProperties="datastreamProperties"
                                        :key="nodeId + kk"
@@ -126,7 +125,7 @@ import StreamCommandsContent from "./components/StreamCommandsContent.vue";
 import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
 import SearchContent from "./components/SearchContent.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
-import DatastreamSchema from "./components/DatastreamSchema.vue";
+import Schema from "./components/Schema.vue";
 
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
@@ -149,7 +148,7 @@ export default {
     StreamControlStatusContent,
     SearchContent,
     UrlEditComponentDialog,
-    DatastreamSchema
+    Schema
   },
   data() {
     return {
@@ -165,6 +164,7 @@ export default {
       datastreamNetworkProperties: undefined,
       controlStreamCommand: undefined,
       controlStreamStatus: undefined,
+      objCompliantSchema: undefined,
       collectionSearch: undefined,
       nodeId: undefined,
       prettyJson: true,
@@ -177,7 +177,7 @@ export default {
       tls: true,
       panels: {
         details : false,
-        datastreamSchema: false,
+        schema: false,
         datastreamLive: false,
         controlStatusLive: false,
         commandStatusLive: false,
@@ -226,11 +226,8 @@ export default {
         that.panels.details = true;
       } else if (id.startsWith('datastream-schema')) {
         node = this.nodes[id];
-        node.datastream.getSchema().then(schema => {
-          that.format = ['application/om+json'];
-          that.details = jsonParser.parseData(schema);
-          that.panels.datastreamSchema = true;
-        });
+        this.objCompliantSchema = node.datastream;
+        this.panels.schema = true;
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         this.details = node.foi.properties;
@@ -328,17 +325,18 @@ export default {
       this.controlStreamCommand = undefined;
       this.controlStreamStatus = undefined;
       this.collectionSearch = undefined;
+      this.objCompliantSchema = undefined;
       this.details = undefined;
       this.formats = undefined;
       this.activeNode = false;
       this.alert = false;
       this.panels = {
         details : false,
-        datastreamSchema: false,
+        schema: false,
+        search: false,
         datastreamLive: false,
         controlStatusLive: false,
         commandStatusLive: false,
-        search: false,
       }
     },
     async fetchData(item) {
@@ -656,6 +654,19 @@ html, body {
   padding: 0
 }
 
+/*.rightContent {*/
+/*  padding-bottom: 0px !important;*/
+/*  padding-top: 0px !important;;*/
+/*}*/
+/*.jsonpre > div.row > div {*/
+/*  margin-bottom: 0px !important;*/
+/*  padding-bottom: 0px !important;*/
+/*  padding-top: 0px !important;*/
+/*}*/
+/*.noprettyjson {*/
+/*  padding: 0px;*/
+/*  margin-bottom: 0px !important;*/
+/*}*/
 .v-toolbar__content, .v-toolbar__extension {
   padding: 4px 4px;
   font-family: sans-serif;
