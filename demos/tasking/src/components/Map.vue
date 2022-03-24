@@ -53,7 +53,7 @@ export default {
       const waypoints = new PointMarkerLayer({
         dataSourceId: this.controlDataSource.id,
         getLocation: async (rec) => {
-          let command = await this.getCommand(rec.command);
+          let command = await this.getCommand(rec['command@id']);
           let type = Object.keys(command.properties.params)[0];
           const pos = command.properties.params[type].position;
           return {
@@ -63,7 +63,7 @@ export default {
           }
         },
         getMarkerId: async (rec) => {
-          let command = await this.getCommand(rec.command);
+          let command = await this.getCommand(rec['command@id']);
           return command.properties.id;
         },
         name: 'waypoint',

@@ -88,7 +88,7 @@ export default {
         const status = JSON.parse(statusStr);
         this.textStatus = status;
 
-        const command = await this.control.getCommandById(status.command);
+        const command = await this.control.getCommandById(status['command@id']);
 
         this.commands.set(command.properties.id, {
           type : Object.keys(command.properties.params)[0],

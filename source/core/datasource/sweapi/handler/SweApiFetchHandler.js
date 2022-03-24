@@ -48,9 +48,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
 
                 let apiObject = new Control({
                     id: match[2],
-                    system: {
-                        id: match[1]
-                    }
+                    'system@id':match[1]
                 }, networkProperties);
 
                 if(stream) {
