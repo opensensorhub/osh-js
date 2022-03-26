@@ -1,47 +1,60 @@
 <template>
-  <v-app>
-    <div id="app">
-      <v-card height="100%">
-        <v-alert
-            v-model="alert"
-            color="red lighten-0"
-            dark
-            dense
-            dark
-            dismissible
-        >{{ alertContent }}
-        </v-alert>
-        <v-card-title class="blue accent-3 white--text text-h5">
-          <v-btn
-              class="mx-4"
-              fab
-              dark
-              small
-              color="green"
-              @click="refresh"
-          >
-            <v-icon dark>
-              mdi-autorenew
-            </v-icon>
-          </v-btn>
-          <UrlEditComponentDialog
-              :fetch-url="fetchUrl"
-              :mqtt-url="mqttUrl"
-              :tls-url="tls"
-              :mqtt-prefix="mqttPrefix"
-              @updated-url="changeUrl"
-          ></UrlEditComponentDialog>
-          SensorWebAPI: {{ fetchUrl }}
-        </v-card-title>
-        <v-row
-            class="pa-4 full"
-            justify="space-between"
-        >
-          <v-col cols="4" class="full">
+  <v-app id="app">
+    <v-system-bar
+        app
+        class=" accent-3 white--text text-h5 app-alert disableCaret"
+        v-if="alert"
+        height="60px"
+    >
+      <v-alert
+          v-model="alert"
+          color="red lighten-0"
+          dense
+          dark
+          dismissible
+          width="100%"
+          class="disableCaret"
+      >{{ alertContent }}
+      </v-alert>
+    </v-system-bar>
+    <v-app-bar
+        app
+        class="blue accent-3 white--text text-h5 app-title disableCaret"
+        height="60px"
+    >
+      <v-btn
+          class="mx-4 disableCaret"
+          fab
+          dark
+          small
+          color="green"
+          @click="refresh"
+      >
+        <v-icon dark>
+          mdi-autorenew
+        </v-icon>
+      </v-btn>
+      <v-divider vertical class="disableCaret"></v-divider>
+      <UrlEditComponentDialog
+          :fetch-url="fetchUrl"
+          :mqtt-url="mqttUrl"
+          :tls-url="tls"
+          :mqtt-prefix="mqttPrefix"
+          @updated-url="changeUrl"
+          class="disableCaret"
+      ></UrlEditComponentDialog>
+      SensorWebAPI: {{ fetchUrl }}
+    </v-app-bar>
+
+    <v-main
+      :key="sizeKey"
+    >
+      <div class="main">
+          <div class="left disableCaret">
             <v-treeview
                 :key="kk"
                 dense
-                class="treeview"
+                class="treeview disableCaret"
                 :active.sync="active"
                 :items="items"
                 :load-children="fetchData"
@@ -56,49 +69,49 @@
                 </v-icon>
               </template>
             </v-treeview>
-          </v-col>
-
-          <v-divider vertical></v-divider>
-
-          <v-col
-              class="d-flex rightContent"
-          >
-            <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
-            <Details v-else-if="panels.details"
-                     :details="details"
-            ></Details>
-            <Schema
-                v-else-if="panels.schema"
-                     :objCompliantSchema="objCompliantSchema"
-            ></Schema>
-            <StreamObservationsContent v-else-if="panels.datastreamLive"
-                                       :datastreamProperties="datastreamProperties"
-                                       :key="nodeId + kk"
-                                       :datastreamNetworkProperties="datastreamNetworkProperties"
-                                       :mqtt-prefix="mqttPrefix"
-                                       :mqtt-url="mqttUrl"
-            ></StreamObservationsContent>
-            <StreamCommandsContent v-else-if="panels.commandStatusLive"
-                                   :control="controlStreamCommand"
-                                   :key="nodeId + kk"
-                                   :url="mqttUrl"
-            ></StreamCommandsContent>
-            <StreamControlStatusContent v-else-if="panels.controlStatusLive"
-                                        :control="controlStreamStatus"
-                                        :key="nodeId + kk"
-                                        :url="mqttUrl"
-
-            ></StreamControlStatusContent>
-            <SearchContent v-else-if="panels.search"
-                           :collection="collectionSearch"
-                           :key="nodeId + kk"
-                           @error="handleError"
-            ></SearchContent>
-            <ContentLoading v-else></ContentLoading>
-          </v-col>
-        </v-row>
-      </v-card>
-    </div>
+          </div>
+        <v-divider vertical class="divider disableCaret"></v-divider>
+        <div class="right">
+          <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
+          <Details v-else-if="panels.details"
+                   :details="details"
+                   :maxHeight="maxHeight"
+          ></Details>
+          <Schema
+              v-else-if="panels.schema"
+              :objCompliantSchema="objCompliantSchema"
+              :maxHeight="maxHeight"
+          ></Schema>
+          <StreamObservationsContent v-else-if="panels.datastreamLive"
+                                     :datastreamProperties="datastreamProperties"
+                                     :key="nodeId + kk + sizeKey"
+                                     :datastreamNetworkProperties="datastreamNetworkProperties"
+                                     :mqtt-prefix="mqttPrefix"
+                                     :mqtt-url="mqttUrl"
+                                     :maxHeight="maxHeight"
+          ></StreamObservationsContent>
+          <StreamCommandsContent v-else-if="panels.commandStatusLive"
+                                 :control="controlStreamCommand"
+                                 :key="nodeId + kk"
+                                 :url="mqttUrl"
+                                 :maxHeight="maxHeight"
+          ></StreamCommandsContent>
+          <StreamControlStatusContent v-else-if="panels.controlStatusLive"
+                                      :control="controlStreamStatus"
+                                      :key="nodeId + kk"
+                                      :url="mqttUrl"
+                                      :maxHeight="maxHeight"
+          ></StreamControlStatusContent>
+          <SearchContent v-else-if="panels.search"
+                         :collection="collectionSearch"
+                         :key="nodeId + kk"
+                         @error="handleError"
+                         :maxHeight="maxHeight"
+          ></SearchContent>
+          <ContentLoading v-else></ContentLoading>
+        </div>
+      </div>
+    </v-main>
   </v-app>
 </template>
 
@@ -107,14 +120,7 @@
 </style>
 
 <script>
-// yarn add prismjs
-import Prism from "prismjs";
-// import "prismjs/themes/prism-dark.css"; // you can change
-
 // @ is an alias to /src
-import Systems from "../../../source/core/sweapi/system/Systems";
-import SystemFilter from "../../../source/core/sweapi/system/SystemFilter";
-
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import ContentLoading from './components/ContentLoading.vue';
@@ -127,6 +133,8 @@ import SearchContent from "./components/SearchContent.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 import Schema from "./components/Schema.vue";
 
+import Systems from "../../../source/core/sweapi/system/Systems";
+import SystemFilter from "../../../source/core/sweapi/system/SystemFilter";
 import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
 import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
@@ -136,6 +144,7 @@ import ObservationFilter from "../../../source/core/sweapi/observation/Observati
 import CommandFilter from "../../../source/core/sweapi/command/CommandFilter";
 import EventFilter from "../../../source/core/sweapi/event/EventFilter";
 import SystemHistoryFilter from "../../../source/core/sweapi/history/SystemHistoryFilter";
+import Vue from "vue";
 
 export default {
   components: {
@@ -152,6 +161,10 @@ export default {
   },
   data() {
     return {
+      sizeKey: 0,
+      maxHeight: 800,
+      treeMaxHeight: 800,
+      drawer: true,
       active: [],
       activeNode: true,
       open: [],
@@ -176,7 +189,7 @@ export default {
       alertContent: undefined,
       tls: true,
       panels: {
-        details : false,
+        details: false,
         schema: false,
         datastreamLive: false,
         controlStatusLive: false,
@@ -188,10 +201,7 @@ export default {
   beforeMount() {
   },
   mounted() {
-    // if you are intending to use Prism functions manually, you will need to set:
-    Prism.manual = true;
-    Prism.highlightAll();
-
+    this.computeMaxHeight();
     this.init();
   },
   computed: {
@@ -293,6 +303,25 @@ export default {
     },
   },
   methods: {
+    onResize({ width, height }) {
+      this.computeMaxHeight();
+      this.sizeKey = ''+width + height // invalidate resizable components
+    },
+    computeMaxHeight() {
+      const that = this;
+      setTimeout(() => {
+        const offsetHeight = document.querySelector(".main").offsetHeight;
+        that.maxHeight = offsetHeight;
+        console.log(`App right
+              offsetHeight=${document.querySelector(".right").offsetHeight},
+              scrollHeight=${document.querySelector(".right").scrollHeight},
+              clientHeight=${document.querySelector(".right").clientHeight},
+        `);
+        document.querySelector(".left").style.maxHeight  = offsetHeight +'px';
+        document.querySelector(".right").style.maxHeight  = offsetHeight +'px';
+        document.querySelector(".right").style.height  = offsetHeight +'px';
+      }, 500);
+    },
     handleError(error) {
       console.error(error)
       this.alertContent = error;
@@ -332,7 +361,7 @@ export default {
       this.activeNode = false;
       this.alert = false;
       this.panels = {
-        details : false,
+        details: false,
         schema: false,
         search: false,
         datastreamLive: false,
@@ -433,7 +462,7 @@ export default {
       const nodeId = `system-${this.count++}`;
 
       let children = [];
-      if(!isHistory) {
+      if (!isHistory) {
         children = [
           datastreamsNode,
           controlsNode,
@@ -639,7 +668,7 @@ export default {
             id: `event-${this.count++}`,
             name: event.id,
             system: system,
-            event:event,
+            event: event,
           };
           item.children.push(this.nodes[nodeId]);
         }
@@ -650,40 +679,18 @@ export default {
 </script>
 <style>
 html, body {
-  overflow-y: hidden !important;
   margin: 0;
-  padding: 0
+  padding: 0;
+  overflow: hidden !important;
 }
 
-/*.rightContent {*/
-/*  padding-bottom: 0px !important;*/
-/*  padding-top: 0px !important;;*/
-/*}*/
-/*.jsonpre > div.row > div {*/
-/*  margin-bottom: 0px !important;*/
-/*  padding-bottom: 0px !important;*/
-/*  padding-top: 0px !important;*/
-/*}*/
-/*.noprettyjson {*/
-/*  padding: 0px;*/
-/*  margin-bottom: 0px !important;*/
-/*}*/
-.v-toolbar__content, .v-toolbar__extension {
-  padding: 4px 4px;
-  font-family: sans-serif;
+#app {
+  height: 100%;
+  width: 100%;
 }
 
-.v-toolbar__title {
-  margin-left: 10px;
-}
-
-.v-treeview-node__prepend {
-  margin-right: 12px;
-}
-
-.vjs-tree {
-  max-height: 800px;
-  overflow: auto !important;
+.app-alert {
+  background-color: #313131 !important;
 }
 
 .progress {
@@ -696,75 +703,55 @@ html, body {
   margin: auto;
   justify-content: center;
 }
-
-.jsonpre {
-  width: 100%;
-  text-align: unset !important;
-  overflow: auto !important;
-  padding-left: 12px;
-}
-
-.treeview {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-::v-deep .v-window.v-item-group {
-  flex-grow: 1;
-}
-
-::v-deep .v-window__container {
-  height: 100%;
-}
-
-.v-treeview {
-  height: 100% !important;
-  max-height: 800px;
-  overflow: auto;
-}
-
-.full {
-  height: 100%;
-}
-
-#app {
-  height: 100%;
-  width: 100%;
-}
-
-.v-treeview--dense .v-treeview-node__root {
-  min-height: 30px !important;
-}
-
-.row {
-  flex-wrap: unset !important;
-}
-
-code {
-  background: none !important;
-  text-shadow: unset !important;
-}
-
-.vjs-tree__node.is-highlight, .vjs-tree__node:hover {
-  background-color: rgba(41, 161, 217, 0.19)
-}
-
-.noprettyjson {
-  overflow: auto !important;
-  max-height: 800px;
-}
-
-.col {
-  overflow: auto !important;
-}
-
 .theme--dark.v-card {
   background-color: #2f2f2f !important;
 }
 
 .v-treeview-node__content {
   cursor: pointer;
+}
+
+.disableCaret {
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.treeview {
+  height: 100%;
+  overflow: auto;
+  max-width: 500px;
+  width: 500px;
+}
+
+.left {
+  display: block;
+  overflow: auto;
+  height: 100%;
+}
+
+.main {
+  background-color: #313131;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.right {
+  width: 100%;
+  height: 100%;
+  background-color: #313131;
+  overflow: hidden;
+}
+
+.divider {
+  border: solid 1px hsl(0deg 0% 100% / 12%) !important;
+}
+
+.prettyjson, .noprettyJson {
+  padding: 15px;
 }
 </style>
 
