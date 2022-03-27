@@ -753,6 +753,11 @@ html, body {
 .prettyjson, .noprettyJson {
   padding: 15px;
 }
+
+.vjs-tree__node.is-highlight, .vjs-tree__node:hover {
+  background-color: rgba(41, 161, 217, 0.19)
+}
+
 </style>
 
 
