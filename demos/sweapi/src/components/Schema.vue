@@ -1,44 +1,6 @@
 <template>
-  <!--div class="white--text jsonpre" v-else>
-    <v-row align="center">
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
-      >
-        <v-switch
-            v-
-            v-model="prettyJson"
-            label="Pretty JSON"
-        ></v-switch>
-      </v-col>
-
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
-      >
-
-        <v-select
-            :items=formats
-            label="Formats"
-            dense
-            full-width
-            read-only
-            v-model="selected"
-            @change="changeFormat"
-        ></v-select>
-      </v-col>
-    </v-row>
-    <slot v-if="details">
-      <vue-json-pretty :path="'res'" :data="details" v-if="prettyJson"></vue-json-pretty>
-      <div class="noprettyjson" v-else>
-        <pre> {{ details }}</pre>
-      </div>
-    </slot>
-  </div-->
-  <div class="white--text jsonpre" v-else>
-    <div class="footer">
+  <div>
+    <div class="header" :id="headerId">
       <v-container>
         <v-switch
             v-model="prettyJson"
@@ -56,17 +18,16 @@
             read-only
             v-model="selected"
             @change="displaySchema"
+            class="disableCaret"
         ></v-select>
       </v-container>
     </div>
     <v-divider></v-divider>
     <slot v-if="content">
-      <v-container>
-        <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
-        <div class="noprettyjson" v-else>
-          <pre> {{ content }} </pre>
-        </div>
-      </v-container>
+      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson" class="prettyjson" :style="heightVar"></vue-json-pretty>
+      <div class="noprettyjson" :style="heightVar" v-else>
+        <pre> {{ content }} </pre>
+      </div>
     </slot>
   </div>
 </template>
@@ -80,6 +41,7 @@ import DataStreamFilter from "../../../../source/core/sweapi/datastream/DataStre
 import Control from "../../../../source/core/sweapi/control/Control";
 import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
 import DataStream from "../../../../source/core/sweapi/datastream/DataStream";
+import {randomUUID} from "../../../../source/core/utils/Utils";
 
 export default {
   name: "Schema",
@@ -87,22 +49,34 @@ export default {
     VueJsonPretty,
   },
   props: [
-    'objCompliantSchema'
+    'objCompliantSchema', 'maxHeight'
   ],
   data() {
     return {
+      headerId: randomUUID(),
       prettyJson: true,
       selected: 'application/om+json',
       formats: ['application/om+json'],
       jsonParser: new SweApiFetchGenericJson(),
-      content: undefined
+      content: undefined,
+      heightVar: 0
     }
   },
   mounted() {
+    this.heightVar = this.heightVars();
     this.formats = this.objCompliantSchema.properties.formats;
     this.displaySchema();
   },
   methods: {
+    heightVars() {
+      const headerHeight = document.getElementById(this.headerId).offsetHeight;
+      this.height = this.maxHeight - headerHeight;
+      // console.log(document.getElementById(this.headerId))
+      // this.height = 50;
+      return {
+        '--height': this.height + 'px'
+      }
+    },
     displaySchema() {
       const that = this;
       let filter;
@@ -130,7 +104,7 @@ export default {
   min-width: 0 !important;
 }
 
-.footer {
+.header {
   display: flex;
   justify-content: space-between;
 }
@@ -143,4 +117,15 @@ export default {
   align-self: center;
 }
 
+.prettyjson, .noprettyjson {
+  overflow: auto;
+  height: var(--height);
+}
+
+.disableCaret {
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
 </style>

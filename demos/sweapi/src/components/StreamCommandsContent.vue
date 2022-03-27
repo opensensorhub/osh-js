@@ -1,23 +1,15 @@
 <template>
-  <div class="white--text jsonpre" v-else>
-    <v-row align="center">
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
-      >
+  <div>
+    <div class="header" :id="headerId">
+      <v-container>
         <v-switch
             v-model="prettyJson"
             label="Pretty JSON"
         ></v-switch>
-      </v-col>
-
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
+      </v-container>
+      <v-container
+          class="protocol-container"
       >
-
         <v-select
             :items='["ws", "mqtt"]'
             label="Protocol"
@@ -25,39 +17,45 @@
             read-only
             v-model="streamProtocol"
             @change="changeStreamProtocol"
+            class="protocol-select"
         ></v-select>
-      </v-col>
-    </v-row>
+      </v-container>
+    </div>
+    <v-divider></v-divider>
     <slot v-if="content">
-      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
-      <div class="noprettyjson" v-else>
-        <pre> {{ content }}</pre>
+      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson" class="prettyjson" :style="heightVar"></vue-json-pretty>
+      <div class="noprettyjson" :style="heightVar" v-else>
+        <pre> {{ content }} </pre>
       </div>
     </slot>
   </div>
 </template>
-
 <script>
+
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
+import {randomUUID} from "../../../../source/core/utils/Utils";
 
 export default {
   name: "StreamCommandsContent",
   props: [
-    'control','nodeId','url'
+    'control','nodeId','url','maxHeight'
   ],
   components: {
     VueJsonPretty,
   },
   data() {
     return {
+      headerId: randomUUID(),
       prettyJson: true,
       streamProtocol: 'ws',
       content: undefined,
+      heightVar: 0
     }
   },
   mounted() {
+    this.heightVar = this.heightVars();
     this.connect();
   },
   async destroyed(){
@@ -68,6 +66,13 @@ export default {
     });
   },
   methods: {
+    heightVars() {
+      const headerHeight = document.getElementById(this.headerId).offsetHeight;
+      this.height = this.maxHeight - headerHeight;
+      return {
+        '--height': this.height + 'px'
+      }
+    },
     connect() {
       const that = this;
       this.control.streamCommands(new ControlFilter({}), function (obs) {
@@ -98,5 +103,27 @@ export default {
 </script>
 
 <style scoped>
+.protocol-select {
+  max-width: 200px;
+}
 
+.protocol-container {
+  display: flex;
+  align-self: center;
+  justify-content: end;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header > div {
+  margin-left: 0;
+}
+
+.prettyjson, .noprettyjson {
+  overflow: auto;
+  height: var(--height);
+}
 </style>

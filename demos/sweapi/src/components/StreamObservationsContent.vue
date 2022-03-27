@@ -1,6 +1,6 @@
 <template>
-  <div class="white--text jsonpre" v-else>
-    <div class="footer">
+  <div>
+    <div class="header" :id="headerId">
       <v-container>
         <v-switch
             v-model="prettyJson"
@@ -8,7 +8,7 @@
         ></v-switch>
       </v-container>
       <v-container
-          class="protocol-select"
+        class="protocol-container"
       >
         <v-select
             :items='["ws", "mqtt"]'
@@ -17,17 +17,16 @@
             read-only
             v-model="dataStreamProtocol"
             @change="changeStreamProtocol"
+            class="protocol-select"
         ></v-select>
       </v-container>
     </div>
     <v-divider></v-divider>
     <slot v-if="content">
-      <v-container>
-        <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
-        <div class="noprettyjson" v-else>
-          <pre> {{ content }}</pre>
-        </div>
-      </v-container>
+      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson" class="prettyjson" :style="heightVar"></vue-json-pretty>
+      <div class="noprettyjson" :style="heightVar" v-else>
+        <pre> {{ content }} </pre>
+      </div>
     </slot>
   </div>
 </template>
@@ -37,24 +36,28 @@ import ObservationFilter from "../../../../source/core/sweapi/observation/Observ
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import DataStream from "../../../../source/core/sweapi/datastream/DataStream";
+import {randomUUID} from "../../../../source/core/utils/Utils";
 
 export default {
   name: "StreamObservationsContent",
   props: [
-    'datastreamProperties', 'datastreamNetworkProperties', 'datastreamNodeId', 'mqttPrefix', 'mqttUrl'
+    'datastreamProperties', 'datastreamNetworkProperties', 'datastreamNodeId', 'mqttPrefix', 'mqttUrl', 'maxHeight'
   ],
   components: {
     VueJsonPretty,
   },
   data() {
     return {
+      headerId: randomUUID(),
       prettyJson: true,
       content: undefined,
       dataStreamProtocol: 'ws',
-      datastream: undefined
+      datastream: undefined,
+      heightVar: 0
     }
   },
   mounted() {
+    this.heightVar = this.heightVars();
     this.dataStreamProtocol = this.datastreamNetworkProperties.streamProtocol;
     this.buildDataStream(this.datastreamProperties, this.datastreamNetworkProperties);
     this.connect();
@@ -68,6 +71,13 @@ export default {
     });
   },
   methods: {
+    heightVars() {
+      const headerHeight = document.getElementById(this.headerId).offsetHeight;
+      this.height = this.maxHeight - headerHeight;
+      return {
+        '--height': this.height + 'px'
+      }
+    },
     buildDataStream(dataStreamProperties, dataStreamNetworkProperties) {
       this.datastream = new DataStream(dataStreamProperties, dataStreamNetworkProperties);
     },
@@ -103,16 +113,27 @@ export default {
 </script>
 
 <style scoped>
-.footer {
+.protocol-select {
+  max-width: 200px;
+}
+
+.protocol-container {
+  display: flex;
+  align-self: center;
+  justify-content: end;
+}
+
+.header {
   display: flex;
   justify-content: space-between;
 }
 
-.protocol-select {
-  max-width: 200px;
-  display: flex;
-  justify-content: end;
-  vertical-align: middle;
-  align-self: center;
+.header > div {
+  margin-left: 0;
+}
+
+.prettyjson, .noprettyjson {
+  overflow: auto;
+  height: var(--height);
 }
 </style>

@@ -2,7 +2,8 @@
   <div
       class="text-h6 grey--text text--lighten-1 font-weight-light"
       style="align-self: center;"
-  >Select a Component
+  >
+    <v-container>Select a Component</v-container>
   </div>
 </template>
 
