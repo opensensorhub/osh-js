@@ -7,7 +7,6 @@
     "dev": "webpack-dev-server --config webpack.config.js --mode development"
   },
   "dependencies": {
-    "babel-plugin-prismjs": "^2.1.0",
     "browserify-fs": "^1.0.0",
     "buffer": "^6.0.3",
     "mqtt": "^4.3.4",

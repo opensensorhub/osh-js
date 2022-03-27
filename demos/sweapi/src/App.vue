@@ -115,10 +115,6 @@
   </v-app>
 </template>
 
-<style>
-@import './assets/prism-material-oceanic.css';
-</style>
-
 <script>
 // @ is an alias to /src
 import VueJsonPretty from 'vue-json-pretty';
@@ -133,18 +129,17 @@ import SearchContent from "./components/SearchContent.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 import Schema from "./components/Schema.vue";
 
-import Systems from "../../../source/core/sweapi/system/Systems";
-import SystemFilter from "../../../source/core/sweapi/system/SystemFilter";
-import DataStreamFilter from "../../../source/core/sweapi/datastream/DataStreamFilter";
-import FeatureOfInterestFilter from "../../../source/core/sweapi/featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchGenericJson from "../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
-import {isDefined} from "../../../source/core/utils/Utils";
-import ControlFilter from "../../../source/core/sweapi/control/ControlFilter";
-import ObservationFilter from "../../../source/core/sweapi/observation/ObservationFilter";
-import CommandFilter from "../../../source/core/sweapi/command/CommandFilter";
-import EventFilter from "../../../source/core/sweapi/event/EventFilter";
-import SystemHistoryFilter from "../../../source/core/sweapi/history/SystemHistoryFilter";
-import Vue from "vue";
+import Systems from "osh-js/core/sweapi/system/Systems";
+import SystemFilter from "osh-js/core/sweapi/system/SystemFilter";
+import DataStreamFilter from "osh-js/core/sweapi/datastream/DataStreamFilter";
+import FeatureOfInterestFilter from "osh-js/core/sweapi/featureofinterest/FeatureOfInterestFilter";
+import SweApiFetchGenericJson from "osh-js/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import {isDefined} from "osh-js/core/utils/Utils";
+import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
+import ObservationFilter from "osh-js/core/sweapi/observation/ObservationFilter";
+import CommandFilter from "osh-js/core/sweapi/command/CommandFilter";
+import EventFilter from "osh-js/core/sweapi/event/EventFilter";
+import SystemHistoryFilter from "osh-js/core/sweapi/history/SystemHistoryFilter";
 
 export default {
   components: {
