@@ -1,65 +1,63 @@
 <template>
-  <div class="white--text jsonpre" v-else>
-    <v-row align="center">
-      <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
-      >
+  <div>
+    <div class="header" :id="headerId">
+      <v-container>
         <v-switch
             v-model="prettyJson"
             label="Pretty JSON"
         ></v-switch>
-      </v-col>
-    </v-row>
+      </v-container>
+      <v-container
+          class="pagination-container"
+      >
+        <v-pagination
+            v-model="pagination.page"
+            :length="pagination.total / 5"
+            :total-visible="pagination.visible"
+            @input="setPage"
+        ></v-pagination>
+      </v-container>
+    </div>
+    <v-divider></v-divider>
     <slot v-if="content">
-      <v-pagination
-          v-model="pagination.page"
-          :length="pagination.total / 5"
-          :total-visible="pagination.visible"
-          @input="setPage"
-      ></v-pagination>
-      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson"></vue-json-pretty>
-      <div class="noprettyjson" v-else>
-        <pre> {{ content }}</pre>
+      <vue-json-pretty :path="'res'" :data="content" v-if="prettyJson" class="prettyjson" :style="heightVar"></vue-json-pretty>
+      <div class="noprettyjson" :style="heightVar" v-else>
+        <pre> {{ content }} </pre>
       </div>
     </slot>
   </div>
 </template>
 
 <script>
-import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import SensorWebApiFetchJsonParser from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchJson.parser";
-import SweApiFetchGenericJson
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
+import {randomUUID} from "../../../../source/core/utils/Utils";
 
 export default {
   name: "SearchContent",
   props: [
-    'collection','nodeId'
+    'collection','nodeId', 'maxHeight'
   ],
   components: {
     VueJsonPretty,
   },
   data() {
     return {
+      headerId: randomUUID(),
       prettyJson: true,
-      dataStreamProtocol: 'http',
       content: undefined,
       active: true,
       pagination: {
         page: 1,
-        total: 100,
-        perPage: 5,
-        visible: 6,
-        current: 1
+        total: 1000,
+        visible: 10
       },
-      cache: {}
+      cache: {},
+      heightVar: 0
     }
   },
   mounted() {
+    this.heightVar = this.heightVars();
     this.connect();
   },
   async destroyed(){
@@ -70,6 +68,13 @@ export default {
     });
   },
   methods: {
+    heightVars() {
+      const headerHeight = document.getElementById(this.headerId).offsetHeight;
+      this.height = this.maxHeight - headerHeight;
+      return {
+        '--height': this.height + 'px'
+      }
+    },
     setPage(value) {
       if(!(value in this.cache)) {
          this.collection.nextPage(value - 1).then(page => {
@@ -98,5 +103,22 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+}
 
+.header > div {
+  margin-left: 0;
+}
+
+.pagination-container {
+  display: flex;
+  align-self: center;
+  justify-content: end;
+}
+.prettyjson, .noprettyjson {
+  overflow: auto;
+  height: var(--height);
+}
 </style>

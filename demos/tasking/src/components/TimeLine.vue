@@ -58,7 +58,7 @@ export default {
       const status = message;
       this.textStatus = status;
 
-      const command = await this.control.getCommandById(status.command);
+      const command = await this.control.getCommandById(status['command@id']);
 
       await this.$store.dispatch('setCommand', {
         ...command.properties,

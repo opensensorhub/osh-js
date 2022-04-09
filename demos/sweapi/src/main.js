@@ -9,6 +9,18 @@ Vue.use(LoadScript);
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
 
+Vue.directive('resize', {
+  inserted: function(el, binding) {
+    const onResizeCallback = binding.value;
+    // window.addEventListener('resize', () => {
+    //   console.log('onResize')
+    //   const width = document.documentElement.clientWidth;
+    //   const height = document.documentElement.clientHeight;
+    //   onResizeCallback({ width, height });
+    // })
+  }
+});
+
 new Vue({
   store,
   vuetify: new Vuetify({
