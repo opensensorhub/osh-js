@@ -32,7 +32,7 @@ class SweApiFetchBinaryImage  {
         console.log("parsing data");
         return {
             // Variable size image data starts offset by 20 bytes:
-            //  12 for time stamp,
+            //  8 for time stamp + 4 for payload size
             //  4 for width
             //  4 for height
             frameData: new Uint8Array(data, 12 + (4 + 4), data.byteLength - (12 + 4 + 4)),
