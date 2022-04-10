@@ -38,9 +38,13 @@ class DataStream extends SensorWebApi {
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
         //TODO: handle swe+json
-        if(observationFilter.props.format === 'application/json') {
+        if(observationFilter.props.format === 'application/swe+json') {
             this._network.stream.connector.onMessage = (message) => {
                 callback(this.jsonParser.parseData(message));
+            };
+        }else if(observationFilter.props.format === 'application/swe+csv') {
+            this._network.stream.connector.onMessage = (message) => {
+                callback(String.fromCharCode.apply(null, new Uint8Array(message)));
             };
         } else {
             this._network.stream.connector.onMessage = callback;

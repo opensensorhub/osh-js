@@ -33,28 +33,27 @@
       >
       <v-form
           ref="form"
-          :key="key"
       >
         <v-text-field
+            v-model="server.url"
             label="Fetch URL"
             required
-            v-model="fetch"
         ></v-text-field>
 
         <v-text-field
-            v-model="mqtt"
+            v-model="server.mqtt.url"
             label="MQTT URL"
             required
         ></v-text-field>
 
         <v-text-field
-            v-model="mqttPre"
+            v-model="server.mqtt.prefix"
             label="MQTT Topic prefix"
             required
         ></v-text-field>
 
         <v-checkbox
-            v-model="tls"
+            v-model="server.tls"
             label="tls"
             required
         ></v-checkbox>
@@ -84,37 +83,21 @@
 <script>
 export default {
   name: "UrlEditComponentDialog",
-  props: [
-    'fetchUrl','mqttUrl','tlsUrl', 'mqttPrefix'
-  ],
   data() {
     return {
       dialog: false,
-      tls: this.tlsUrl,
-      fetch: this.fetchUrl,
-      mqtt: this.mqttUrl,
-      mqttPre: this.mqttPrefix,
-      key:0
+      server: Object.assign({},this.$store.state.server)
     }
-  },
-  mounted() {
   },
   methods: {
     save () {
-      this.$emit('updated-url', {
-        mqtt: this.mqtt,
-        fetch: this.fetch,
-        tls: this.tls,
-        mqttPrefix: this.mqttPre,
-      });
+      // use mutation to be synchronous
+      this.$store.commit('setServer', this.server)
+      this.$emit('updated-url', this.server);
     },
     cancel() {
-      // restore initial value
-      this.fetch = this.fetchUrl;
-      this.mqtt = this.mqttUrl;
-      this.tls = this.tlsUrl;
-      this.mqttPre = this.mqttPrefix;
-      this.key++;
+      // restore old state
+      this.server = Object.assign({},this.$store.state.server);
     },
   },
 }
