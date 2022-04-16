@@ -36,7 +36,7 @@ class ObservationFilter extends SensorWebApiFilter {
             select: undefined,
             bbox: undefined,
             location: undefined,
-            format: 'application/swe+json',
+            format: 'application/om+json',
             replaySpeed: undefined,
             ...properties // merge defined properties
         });

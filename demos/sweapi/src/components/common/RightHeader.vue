@@ -4,6 +4,7 @@
       <v-switch
           v-model="prettyJson"
           label="Pretty JSON"
+          :disabled="!isJson"
       ></v-switch>
     </v-container>
     <v-container
@@ -29,7 +30,7 @@
       </slot>
       <slot v-if="pagination">
         <Pagination
-            @change="onChange"
+            @change="onPageChanged"
         >
         </Pagination>
       </slot>
@@ -40,7 +41,7 @@
 <script>
 import ListBox from "./ListBox.vue";
 import {randomUUID} from "../../../../../source/core/utils/Utils";
-import { mapActions } from 'vuex'
+import {mapActions, mapState} from 'vuex'
 import Pagination from "./Pagination.vue";
 
 export default {
@@ -58,6 +59,12 @@ export default {
       prettyJson: true
     }
   },
+  computed: mapState({
+    isJson: state => {
+      return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
+          || state.right.contentType === 'application/om+json'
+    },
+  }),
   mounted() {
     this.updateHeader({
       height: document.getElementById(this.headerId).offsetHeight
@@ -77,6 +84,9 @@ export default {
     },
     onChange2(value) {
       this.$emit('change2', value);
+    },
+    onPageChanged(value) {
+      this.$emit('onPageChanged', value);
     }
   }
 }

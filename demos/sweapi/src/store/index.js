@@ -8,6 +8,7 @@ const debug = process.env.NODE_ENV !== 'production';
 const originalState = {
     right: {
         content: undefined,
+        contentType: undefined,
         header: {
             selected: undefined,
             prettyJson: true,
@@ -29,8 +30,8 @@ export default new Vuex.Store({
         ...originalState
     },
     actions: {
-        updateRightContent({state, commit}, value) {
-            commit('setRightContent', value);
+        updateRightContent({state, commit}, props) {
+            commit('setRightContent', props);
         },
         updateMaxHeight({state, commit}, value) {
             commit('setMaxHeight', value);
@@ -46,8 +47,9 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        setRightContent(state, value) {
-            state.right.content = value
+        setRightContent(state, props) {
+            state.right.content = props.content;
+            state.right.contentType = props.contentType;
         },
         setMaxHeight(state, value) {
             state.maxHeight = value

@@ -89,6 +89,7 @@
             <Historical
                 v-else-if="isHistoricalPanel"
                 :collection="collectionSearch"
+                :objCompliantSchema="objCompliantSchema"
                 @error="handleError"
             ></Historical>
             <ContentLoading  v-else></ContentLoading>
@@ -224,6 +225,7 @@ export default {
         this.nodeId = node.id;
         node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => {
           this.collectionSearch = collection;
+          this.objCompliantSchema = node.datastream;
           this.isHistoricalPanel = true;
         });
       } else if (id.startsWith('datastream-')) {
@@ -240,6 +242,7 @@ export default {
         this.nodeId = node.id;
         node.control.searchCommands(new CommandFilter(), 10).then((collection) => {
           this.collectionSearch = collection;
+          this.objCompliantSchema = node.control;
           this.isHistoricalPanel = true;
         });
       } else if (id.startsWith('control-stream-status')) {
@@ -253,6 +256,7 @@ export default {
         this.nodeId = node.id;
         node.control.searchStatus(new ControlFilter(), 10).then((collection) => {
           this.collectionSearch = collection;
+          this.objCompliantSchema = node.control;
           this.isHistoricalPanel = true;
         });
       } else if (id.startsWith('control-schema')) {

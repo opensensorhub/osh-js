@@ -1,26 +1,28 @@
 <template>
     <div v-if="content">
-      <vue-json-pretty v-if="prettyJson"
-          :path="'res'"
-          :data="content"
-          class="prettyjson"
-          :style="heightVars">
-      </vue-json-pretty>
-
-      <div v-else-if="!Array.isArray(content)"
-           class="noprettyjson"
-           :style="heightVars" >
-        <pre> {{ content }} </pre>
-      </div>
-
-      <div
-          class="noprettyjson"
-          :style="heightVars"
-          v-else>
-        <pre v-for="c in content" :key="content">
-          {{ c }}
-        </pre>
-      </div>
+      <slot v-if="isJson">
+        <vue-json-pretty v-if="prettyJson"
+                         :path="'res'"
+                         :data="content"
+                         class="prettyjson"
+                         :style="heightVars">
+        </vue-json-pretty>
+      </slot>
+      <slot v-else>
+          <div v-if="!Array.isArray(content)"
+               class="noprettyjson"
+               :style="heightVars" >
+            <pre> {{ content }} </pre>
+          </div>
+          <div
+              class="noprettyjson"
+              :style="heightVars"
+              v-else>
+            <pre v-for="c in content" :key="content">
+              {{ c }}
+            </pre>
+          </div>
+      </slot>
     </div>
 </template>
 
@@ -29,6 +31,7 @@ import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import { mapState } from 'vuex'
 
+const beautifiedXmlText = new XmlBeautify();
 export default {
   name: "RightContent",
   components: {
@@ -36,7 +39,22 @@ export default {
   },
   computed: mapState({
     prettyJson: state => state.right.header.prettyJson,
-    content: state => state.right.content,
+    content: state => {
+      if(state.right.contentType === 'application/swe+xml') {
+        return beautifiedXmlText.beautify(state.right.content,
+            {
+              indent: "  ",  //indent pattern like white spaces
+              useSelfClosingElement: true //true:use self-closing element when empty element.
+            });
+      } else {
+        return state.right.content;
+      }
+    },
+    contentType: state => state.right.contentType,
+    isJson: state => {
+      return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
+        || state.right.contentType === 'application/om+json'
+    },
     heightVars(state) {
       return {
         '--height': state.maxHeight - state.right.header.height + 'px'

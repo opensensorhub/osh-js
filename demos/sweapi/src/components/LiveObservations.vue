@@ -2,7 +2,7 @@
   <div>
     <RightHeader
         selected1="ws"
-        selected2="application/swe+json"
+        :selected2="currentFormat"
         :listboxValues1="protocols"
         :listboxValues2="formats"
         @change1="onChangeProtocol"
@@ -34,8 +34,8 @@ export default {
     return {
       datastreamObj: this.datastream,
       protocols: ['ws','mqtt'],
-      formats: ['application/swe+json','application/swe+csv'],
-
+      formats: this.datastream.properties.formats,
+      currentFormat: 'application/om+json'
     }
   },
   mounted() {
@@ -61,7 +61,10 @@ export default {
     connect(observationFilter = new ObservationFilter({})) {
       const that = this;
       this.datastreamObj.streamObservations(observationFilter, function (obs) {
-        that.updateRightContent(obs);
+          that.updateRightContent({
+            content: obs,
+            contentType: that.currentFormat
+          });
       });
     },
     reset() {
@@ -85,6 +88,7 @@ export default {
       this.connect();
     },
     onChangeFormat(value) {
+      this.currentFormat = value;
       this.reset();
       this.buildDataStream(
           {

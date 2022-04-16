@@ -2,7 +2,10 @@
   <div>
     <RightHeader
         pagination="1"
-        @change1="setPage"
+        @onPageChanged="setPage"
+        selected1="application/om+json"
+        :listboxValues1="this.objCompliantSchema.properties.formats"
+        @change1="onChangeFormat"
     >
     </RightHeader>
     <v-divider></v-divider>
@@ -18,7 +21,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
   name: "Historical",
   props: [
-    'collection','nodeId'
+    'collection','nodeId', 'objCompliantSchema'
   ],
   components: {
     RightContent,
@@ -26,10 +29,11 @@ export default {
   },
   data() {
     return {
-      cache: {},
+      cache: {}
     }
   },
   mounted() {
+    console.log(this.objCompliantSchema)
     this.connect();
   },
   methods: {
@@ -45,6 +49,9 @@ export default {
       } else {
         this.updateRightContent(this.cache[value]);
       }
+    },
+    onChangeFormat(value) {
+
     },
     connect() {
         this.collection.nextPage().then(page => {
