@@ -64,6 +64,9 @@
                 mdi-json
               </v-icon>
             </template>
+            <template v-slot:label="{ item }">
+              <span :title="item.name">{{ item.name }}</span>
+            </template>
           </v-treeview>
         </div>
         <v-divider vertical class="divider disableCaret"></v-divider>
