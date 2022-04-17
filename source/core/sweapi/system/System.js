@@ -29,6 +29,7 @@ import EventFilter from "../event/EventFilter";
 import SweParser from "../SweParser";
 import SystemHistoryFilter from "../history/SystemHistoryFilter";
 import SweApiFetchEventParser from "../../datasource/sweapi/parser/json/SweApiFetchEvent.parser";
+import SweCollectionDataParser from "../SweCollectionDataParser";
 
 class System extends SensorWebApi {
 
@@ -63,12 +64,12 @@ class System extends SensorWebApi {
      * @return Promise<Collection<System>>
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        systemFilter.props.parent = this.properties.id;
-        return new Collection(API.systems.search, systemFilter, pageSize, this.systemParser, this._network.info.connector);
+        return new Collection(API.systems.search, systemFilter, pageSize, systemFilter, this._network.info.connector);
     }
 
     /**
      * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.     * @param dataStreamFilter
+     * @param dataStreamFilter
      * @param pageSize
      * @return {Promise<Collection>}
      */

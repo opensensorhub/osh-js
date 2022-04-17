@@ -67,9 +67,7 @@ export default new Vuex.Store({
             }
         },
         reset(state) {
-            state = {
-                ...originalState
-            }
+            state = originalState;
         }
     }
 });

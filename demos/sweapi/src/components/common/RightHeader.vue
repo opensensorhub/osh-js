@@ -55,27 +55,31 @@ export default {
   ],
   data() {
     return {
-      headerId: randomUUID(),
-      prettyJson: true
+      headerId: randomUUID()
     }
   },
-  computed: mapState({
-    isJson: state => {
-      return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
-          || state.right.contentType === 'application/om+json'
+  computed: {
+    prettyJson: {
+      get() {
+        return this.$store.state.right.header.prettyJson;
+      },
+      set(newValue) {
+        this.updateHeader({
+          prettyJson: newValue
+        });
+      }
     },
-  }),
+    ...mapState({
+      isJson: state => {
+        return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
+            || state.right.contentType === 'application/om+json'
+      }
+    })
+  },
   mounted() {
     this.updateHeader({
       height: document.getElementById(this.headerId).offsetHeight
     });
-  },
-  watch: {
-    prettyJson(newValue) {
-      this.updateHeader({
-        prettyJson: newValue
-      });
-    }
   },
   methods: {
     ...mapActions(['updateHeader']),

@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {isDefined} from "../utils/Utils";
+import SweCollectionDataParser from "./SweCollectionDataParser";
 
 class Collection {
     /**
@@ -32,6 +33,7 @@ class Collection {
         this.init = false;
         this.total = 0;
         this.data = [];
+        this.collectionDataParser = new SweCollectionDataParser(filter.props.format);
     }
 
     /**
@@ -56,40 +58,43 @@ class Collection {
     }
 
     async parseResponse(encodedResponse) {
-        let rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(encodedResponse)));
-
-        this.data = [];
-        for (let i = 0; i < rec.items.length; i++) {
-            this.data.push(await this.parser.parseData(rec.items[i]));
+        const items = this.collectionDataParser.parseData(encodedResponse);
+        for(let item of items) {
+            this.data.push(this.parser.parseData(item));
         }
-        this.parseBoundsOffset(rec);
+        this.parseBoundsOffset(encodedResponse);
     }
 
-    parseBoundsOffset(response) {
-        const links = response.links;
-        let next = false, previous = false;
-        if (isDefined(links)) {
-            // check all rel and find out 'next' property
-            for (let i = 0; i < links.length; i++) {
-                if (links[i].rel === 'next') {
-                    // update nextOffset
-                    const url = new URL(links[i].href);
-                    this.nextOffset = parseInt(url.searchParams.get('offset'));
-                    next = true;
-                }
-                if (links[i].rel === 'prev') {
-                    // update nextOffset
-                    const url = new URL(links[i].href);
-                    this.previousOffset = parseInt(url.searchParams.get('offset'));
-                    previous = true;
+    parseBoundsOffset(encodedResponse) {
+        try {
+            let response = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(encodedResponse)));
+            const links = response.links;
+            let next = false, previous = false;
+            if (isDefined(links)) {
+                // check all rel and find out 'next' property
+                for (let i = 0; i < links.length; i++) {
+                    if (links[i].rel === 'next') {
+                        // update nextOffset
+                        const url = new URL(links[i].href);
+                        this.nextOffset = parseInt(url.searchParams.get('offset'));
+                        next = true;
+                    }
+                    if (links[i].rel === 'prev') {
+                        // update nextOffset
+                        const url = new URL(links[i].href);
+                        this.previousOffset = parseInt(url.searchParams.get('offset'));
+                        previous = true;
+                    }
                 }
             }
-        }
-        if(!next) {
-            this.nextOffset = -1;
-        }
-        if(!previous) {
-            this.previousOffset = -1;
+            if (!next) {
+                this.nextOffset = -1;
+            }
+            if (!previous) {
+                this.previousOffset = -1;
+            }
+        } catch (error) {
+            // skip error, useful for initial JSON fetch then XML one
         }
     }
 

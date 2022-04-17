@@ -20,6 +20,7 @@ import API from "../routes.conf";
 import Collection from "../Collection";
 import SweParser from "../SweParser";
 import DataStreamFilter from "./DataStreamFilter";
+import ObservationsCollection from "../ObservationsCollection";
 
 class DataStream extends SensorWebApi {
     /**
@@ -68,7 +69,7 @@ class DataStream extends SensorWebApi {
      * @return {Collection}
      */
     async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.jsonParser) {
-        return new Collection(
+        return new ObservationsCollection(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,
             pageSize,

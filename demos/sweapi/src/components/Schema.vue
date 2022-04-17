@@ -1,7 +1,7 @@
 <template>
   <div>
     <RightHeader
-      selected1="application/om+json"
+      :selected1="currentFormat"
       :listboxValues1="formats"
       @change1="displaySchema"
     >
@@ -33,8 +33,9 @@ export default {
   ],
   data() {
     return {
-      formats: ['application/om+json'],
       jsonParser: new SweApiFetchGenericJson(),
+      formats: this.objCompliantSchema.properties.formats,
+      currentFormat: 'application/om+json'
     }
   },
   mounted() {
@@ -44,7 +45,6 @@ export default {
   methods: {
     ...mapActions(['updateRightContent']),
     displaySchema(format) {
-      console.log(format)
       const that = this;
       let filter;
       //TODO: better way to do this??
@@ -58,7 +58,10 @@ export default {
         });
       }
       this.objCompliantSchema.getSchema(filter).then(schema => {
-        that.updateRightContent(that.jsonParser.parseData(schema));
+        that.updateRightContent({
+          content: that.jsonParser.parseData(schema),
+          contentType: 'application/json'
+        });
       });
     }
   }

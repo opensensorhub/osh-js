@@ -86,12 +86,11 @@
                 v-else-if="isLiveControlStatusPanel"
                 :control="control"
             ></LiveControlStatus>
-            <Historical
-                v-else-if="isHistoricalPanel"
-                :collection="collectionSearch"
-                :objCompliantSchema="objCompliantSchema"
+            <HistoricalObservations
+                v-else-if="isHistoricalObservationPanel"
+                :datastream="dataStream"
                 @error="handleError"
-            ></Historical>
+            ></HistoricalObservations>
             <ContentLoading  v-else></ContentLoading>
         </div>
       </div>
@@ -107,7 +106,7 @@ import Details from "./components/Details.vue";
 import LiveObservations from "./components/LiveObservations.vue";
 import LiveCommands from "./components/LiveCommands.vue";
 import LiveControlStatus from './components/LiveControlStatus.vue';
-import Historical from "./components/Historical.vue";
+import HistoricalObservations from "./components/HistoricalObservations.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 import Schema from "./components/Schema.vue";
 
@@ -129,7 +128,7 @@ export default {
     Details,
     NoSelectedContent,
     ContentLoading,
-    Historical,
+    HistoricalObservations,
     LiveCommands,
     LiveControlStatus,
     LiveObservations,
@@ -161,7 +160,7 @@ export default {
       isLiveDataStreamPanel: false, // panel
       isLiveControlStatusPanel: false, // panel
       isLiveCommandStatusPanel: false, // panel
-      isHistoricalPanel: false, // panel
+      isHistoricalObservationPanel: false, // panel
     }
   },
   beforeMount() {
@@ -197,12 +196,18 @@ export default {
         node = this.nodes[id];
         node.system.getDetails().then(details => {
           that.details = true;
-          that.updateRightContent(jsonParser.parseData(details));
+          that.updateRightContent({
+            content: jsonParser.parseData(details),
+            contentType: 'application/json'
+          });
         });
       } else if (!id.startsWith('system-history') && id.startsWith('system-')) {
         node = this.nodes[id];
         that.details = true;
-        this.updateRightContent(node.system.properties);
+        this.updateRightContent({
+          content: node.system.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('datastream-schema')) {
         node = this.nodes[id];
         this.objCompliantSchema = node.datastream;
@@ -210,11 +215,17 @@ export default {
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         that.details = true;
-        this.updateRightContent(node.foi.properties);
+        this.updateRightContent({
+          content: node.foi.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('event-')) {
         node = this.nodes[id];
         that.details = true;
-        this.updateRightContent(node.event.properties);
+        this.updateRightContent({
+          content: node.event.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -223,15 +234,15 @@ export default {
       } else if (id.startsWith('datastream-search-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => {
-          this.collectionSearch = collection;
-          this.objCompliantSchema = node.datastream;
-          this.isHistoricalPanel = true;
-        });
+        this.objCompliantSchema = node.datastream;
+        this.isHistoricalObservationPanel = true;
       } else if (id.startsWith('datastream-')) {
         node = this.nodes[id];
         this.details = true;
-        this.updateRightContent(node.datastream.properties);
+        this.updateRightContent({
+          content: node.datastream.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('control-stream-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -266,7 +277,10 @@ export default {
       } else if (id.startsWith('control-')) {
         node = this.nodes[id];
         this.details = true;
-        this.updateRightContent(node.control.properties);
+        this.updateRightContent({
+          content: node.control.properties,
+          contentType: 'application/json'
+        });
       }
       this.activeNode = true;
       return node;
