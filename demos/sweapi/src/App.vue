@@ -91,6 +91,16 @@
                 :datastream="dataStream"
                 @error="handleError"
             ></HistoricalObservations>
+            <HistoricalCommands
+              v-else-if="isHistoricalCommandsPanel"
+              :control="control"
+              @error="handleError"
+            ></HistoricalCommands>
+            <HistoricalStatus
+              v-else-if="isHistoricalStatusPanel"
+              :control="control"
+              @error="handleError"
+            ></HistoricalStatus>
             <ContentLoading  v-else></ContentLoading>
         </div>
       </div>
@@ -107,6 +117,8 @@ import LiveObservations from "./components/LiveObservations.vue";
 import LiveCommands from "./components/LiveCommands.vue";
 import LiveControlStatus from './components/LiveControlStatus.vue';
 import HistoricalObservations from "./components/HistoricalObservations.vue";
+import HistoricalCommands from "./components/HistoricalCommands.vue";
+import HistoricalStatus from "./components/HistoricalStatus.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 import Schema from "./components/Schema.vue";
 
@@ -117,8 +129,6 @@ import FeatureOfInterestFilter from "osh-js/core/sweapi/featureofinterest/Featur
 import SweApiFetchGenericJson from "osh-js/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import {isDefined} from "osh-js/core/utils/Utils";
 import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
-import ObservationFilter from "osh-js/core/sweapi/observation/ObservationFilter";
-import CommandFilter from "osh-js/core/sweapi/command/CommandFilter";
 import EventFilter from "osh-js/core/sweapi/event/EventFilter";
 import SystemHistoryFilter from "osh-js/core/sweapi/history/SystemHistoryFilter";
 import { mapActions } from 'vuex'
@@ -129,6 +139,8 @@ export default {
     NoSelectedContent,
     ContentLoading,
     HistoricalObservations,
+    HistoricalCommands,
+    HistoricalStatus,
     LiveCommands,
     LiveControlStatus,
     LiveObservations,
@@ -161,6 +173,8 @@ export default {
       isLiveControlStatusPanel: false, // panel
       isLiveCommandStatusPanel: false, // panel
       isHistoricalObservationPanel: false, // panel
+      isHistoricalCommandsPanel: false, // panel
+      isHistoricalStatusPanel: false, //panel
     }
   },
   beforeMount() {
@@ -234,7 +248,7 @@ export default {
       } else if (id.startsWith('datastream-search-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        this.objCompliantSchema = node.datastream;
+        this.dataStream = node.datastream;
         this.isHistoricalObservationPanel = true;
       } else if (id.startsWith('datastream-')) {
         node = this.nodes[id];
@@ -251,11 +265,8 @@ export default {
       } else if (id.startsWith('control-search-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchCommands(new CommandFilter(), 10).then((collection) => {
-          this.collectionSearch = collection;
-          this.objCompliantSchema = node.control;
-          this.isHistoricalPanel = true;
-        });
+        this.control = node.control;
+        this.isHistoricalCommandsPanel = true;
       } else if (id.startsWith('control-stream-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
@@ -265,11 +276,8 @@ export default {
       } else if (id.startsWith('control-search-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchStatus(new ControlFilter(), 10).then((collection) => {
-          this.collectionSearch = collection;
-          this.objCompliantSchema = node.control;
-          this.isHistoricalPanel = true;
-        });
+        this.control = node.control;
+        this.isHistoricalStatusPanel = true;
       } else if (id.startsWith('control-schema')) {
         node = this.nodes[id];
         this.objCompliantSchema = node.control;
@@ -336,10 +344,13 @@ export default {
       this.alert = false;
       this.details = false;
       this.isSchemaPanel = false;
-      this.isHistoricalPanel = false;
       this.isLiveDataStreamPanel = false;
       this.isLiveControlStatusPanel = false;
       this.isLiveCommandStatusPanel = false;
+      this.updateRightContent({
+        content: '',
+        contentType: 'plain/text'
+      })
     },
     async fetchData(item) {
       try {

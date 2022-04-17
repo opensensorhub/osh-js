@@ -11,21 +11,21 @@
             class="noprettyjson"
             :style="heightVars"
             v-else>
-          <pre>{{content}} </pre>
+          <pre>{{content}}</pre>
         </div>
       </slot>
       <slot v-else>
           <div v-if="!Array.isArray(content)"
                class="noprettyjson"
                :style="heightVars" >
-            <pre>{{content}} </pre>
+            <pre>{{content}}</pre>
           </div>
           <div
               class="noprettyjson"
               :style="heightVars"
               v-else>
-            <pre v-for="c in content" :key="content">
-              {{c}}
+            <pre v-for="(item, index) in content" :key="index">
+              {{item}}
             </pre>
           </div>
       </slot>

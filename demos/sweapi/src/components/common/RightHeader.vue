@@ -1,13 +1,23 @@
 <template>
   <div class="header" :id="headerId">
-    <v-container>
+    <v-container fluid>
       <v-switch
           v-model="prettyJson"
           label="Pretty JSON"
           :disabled="!isJson"
+          class="vswtich"
       ></v-switch>
     </v-container>
+    <v-container fluid>
+      <slot v-if="pagination">
+        <Pagination
+            @change="onPageChanged"
+        >
+        </Pagination>
+      </slot>
+    </v-container>
     <v-container
+        fluid
         class="select"
     >
       <slot v-if="listboxValues1">
@@ -27,12 +37,6 @@
             @change="onChange2"
         >
         </ListBox>
-      </slot>
-      <slot v-if="pagination">
-        <Pagination
-            @change="onPageChanged"
-        >
-        </Pagination>
       </slot>
     </v-container>
   </div>
@@ -99,7 +103,7 @@ export default {
 <style scoped>
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .select {
@@ -116,4 +120,7 @@ export default {
   justify-content: end;
 }
 
+.vswtich {
+
+}
 </style>

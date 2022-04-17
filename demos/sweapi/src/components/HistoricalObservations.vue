@@ -4,7 +4,7 @@
         pagination="1"
         @onPageChanged="setPage"
         :selected1="currentFormat"
-        :listboxValues1="datastream.properties.format"
+        :listboxValues1="datastream.properties.formats"
         @change1="onChangeFormat"
     >
     </RightHeader>
@@ -20,7 +20,7 @@ import { mapActions, mapState } from 'vuex'
 import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 
 export default {
-  name: "Historical",
+  name: "HistoricalObservations",
   props: [
     'datastream'
   ],

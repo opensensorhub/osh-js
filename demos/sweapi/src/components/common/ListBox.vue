@@ -43,7 +43,9 @@ export default {
   user-select: none;
 }
 .listbox {
-  margin-right: 18px;
+  min-width: 200px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 </style>

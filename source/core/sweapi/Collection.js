@@ -59,8 +59,12 @@ class Collection {
 
     async parseResponse(encodedResponse) {
         const items = this.collectionDataParser.parseData(encodedResponse);
-        for(let item of items) {
-            this.data.push(this.parser.parseData(item));
+        if(Array.isArray(items)) {
+            for (let item of items) {
+                this.data.push(this.parser.parseData(item));
+            }
+        } else {
+            this.data.push(items);
         }
         this.parseBoundsOffset(encodedResponse);
     }

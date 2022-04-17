@@ -3,6 +3,7 @@
       v-model="pagination.page"
       :length="pagination.total / 5"
       :total-visible="pagination.visible"
+      class="pagination"
       @input="setPage"
   ></v-pagination>
 </template>
@@ -28,5 +29,7 @@ export default {
 </script>
 
 <style scoped>
-
+.pagination {
+  padding: 8px !important;
+}
 </style>

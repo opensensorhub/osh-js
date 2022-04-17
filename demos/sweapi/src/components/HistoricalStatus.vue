@@ -19,9 +19,10 @@ import RightContent from "./common/RightContent.vue";
 import { mapActions, mapState } from 'vuex'
 import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import CommandFilter from "../../../../source/core/sweapi/command/CommandFilter";
+import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
 
 export default {
-  name: "HistoricalCommands",
+  name: "HistoricalStatus",
   props: [
     'control', 'formats'
   ],
@@ -64,12 +65,12 @@ export default {
     onChangeFormat(value) {
       this.currentFormat = value;
       this.cache = {};
-      this.connect(new CommandFilter({
+      this.connect(new ControlFilter({
         format: value
       }));
     },
-    connect(commandFilter = new CommandFilter({})) {
-      this.control.searchCommands(commandFilter, 10).then((collection) => {
+    connect(controlFilter = new ControlFilter({})) {
+      this.control.searchStatus(controlFilter, 10).then((collection) => {
         this.collection = collection;
         this.setPage(1);
       });
