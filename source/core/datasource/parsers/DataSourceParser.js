@@ -50,6 +50,8 @@ class DataSourceParser {
         }
         return url;
     }
+
+    init(properties) {}
 }
 
 export default DataSourceParser;

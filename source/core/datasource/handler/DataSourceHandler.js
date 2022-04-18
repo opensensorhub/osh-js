@@ -26,6 +26,8 @@ class DataSourceHandler {
             this.connector = null;
         }
 
+        this.parser.init(propertiesStr);
+
         this.setTopic(topic);
 
         const properties = propertiesStr;

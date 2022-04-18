@@ -1,12 +1,14 @@
-import SWEXmlStreamParser from "../../source/core/parsers/SWEXmlStreamParser";
+import SWEXmlStreamParser from "../../parsers/SWEXmlStreamParser";
 
 class AbstractParser {
     constructor(element, props) {
-        this.element = element;
         this.props = props;
         this.stack = [];
         this.name = element.name;
-        this.checkId();
+        this.time = undefined;
+        this.idRef = undefined;
+        this.checkTime(element);
+        this.checkId(element);
         this.build(element);
     }
 
@@ -48,18 +50,46 @@ class AbstractParser {
         }
     }
 
-    checkId() {
-        if('id' in this.element) {
-            this.props.nodesId[this.element['id']] = this;
+    checkId(element) {
+        if('id' in element) {
+            this.idRef = element['id'];
+            this.props.nodesId[this.idRef] = this;
         }
     }
 
     checkIdValue(value) {
-        if('id' in this.element) {
-            this.props.nodesIdValue[this.element['id']] = value;
+        if(this.idRef) {
+            this.props.nodesIdValue[this.idRef] = value;
         }
     }
 
+    checkTime(element) {
+        if('definition' in element
+            &&
+            (element['definition'] === 'http://www.opengis.net/def/property/OGC/0/SamplingTime' ||
+                element['definition'] === 'http://www.opengis.net/def/property/OGC/0/PhenomenonTime')) {
+            this.time = this.name;
+        }
+    }
+
+    // getTimePropertyName() {
+    //     return this.time;
+    // }
+
+    getTimePropertyName() {
+        if(!this.time) {
+            // sub element, first level
+            let timeProperty;
+            for (let parser of this.stack) {
+                timeProperty = parser.getTimePropertyName();
+                if (timeProperty) {
+                    break;
+                }
+            }
+            this.time = timeProperty;
+        }
+        return this.time;
+    }
 }
 
 class VectorParser extends AbstractParser {
@@ -69,7 +99,13 @@ class VectorParser extends AbstractParser {
 
     build(element) {
         // Vector + coordinate
-        for (let coordinate of element['coordinates']) {
+        let coordinatePropertyName = 'coordinates';
+
+        if('coordinate' in element) {
+            coordinatePropertyName = 'coordinate';
+        }
+
+        for (let coordinate of element[coordinatePropertyName]) {
             this.parseElement(coordinate)
         }
     }
@@ -174,7 +210,7 @@ class HRefParser extends AbstractParser {
     }
 
     parse(tokens, props, resultParent) {
-         if (!(this.id in this.props.nodesIdValue)) {
+        if (!(this.id in this.props.nodesIdValue)) {
             throw Error(`id ${this.id} not found in the idValue Tree`);
         }
         resultParent[this.parser.name] = this.props.nodesIdValue[this.id];
@@ -260,6 +296,18 @@ class SweApiParser extends AbstractParser {
     build(element) {
         this.parseElement(element.resultSchema);
     }
+
+    getTimePropertyName() {
+        // sub element, first level
+        let timeProperty;
+        for(let parser of this.stack) {
+            timeProperty = parser.getTimePropertyName();
+            if(timeProperty) {
+                break;
+            }
+        }
+        return timeProperty;
+    }
 }
 
 class TextDataParser {
@@ -274,7 +322,7 @@ class TextDataParser {
         let respSchema = schema;
         if(xml) {
             let sweXmlParser = new SWEXmlStreamParser(schema);
-            respSchema = sweXmlParser.toJson();
+            respSchema = sweXmlParser.toJson().GetResultTemplateResponse;
             this.parser = new SosParser(respSchema);
         } else {
             this.parser = new SweApiParser(respSchema);
@@ -282,7 +330,7 @@ class TextDataParser {
         this.resultEncoding = respSchema.resultEncoding;
     }
 
-    parseData(data) {
+    parseDataBlock(data) {
         const blocks = data.split(this.resultEncoding.blockSeparator);
         //split 1 record
         let results = [];
@@ -290,13 +338,20 @@ class TextDataParser {
             if(block.length > 0) {
                 const tokens = data.split(this.resultEncoding.tokenSeparator);
                 const res = {};
-                this.parser.parse(tokens, {
+                const props = {
+                    time: undefined,
                     index: 0
-                }, res);
+                }
+                this.parser.parse(tokens, props, res);
                 results.push(res);
             }
         }
         return results;
+    }
+
+    parseTime(parsedData) {
+        // based on schema, we parse the time associated to this data
+        return parsedData[this.parser.getTimePropertyName()];
     }
 }
 
