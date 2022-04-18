@@ -24,9 +24,7 @@
               class="noprettyjson"
               :style="heightVars"
               v-else>
-            <pre v-for="(item, index) in content" :key="index">
-              {{item}}
-            </pre>
+              <pre v-for="(item, index) in content" :key="index">{{item}}</pre>
           </div>
       </slot>
     </div>
