@@ -20,43 +20,34 @@ class RootParser extends AbstractParser {
             }
         });
     }
-
     build(element) {
         this.parseElement(element);
     }
 }
 
-class TextDataParser {
+class JsonDataParser {
 
-    constructor(rootElement, encoding) {
+    constructor(rootElement) {
         this.nodesId = {};
         this.parsers = [];
         this.count = 0;
-        this.resultEncoding = encoding;
         this.parser = new RootParser();
-        this.parser.init(rootElement);
+        this.parser.init(rootElement)
     }
 
     parseDataBlock(arrayBuffer) {
         let dataBlock = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
+        const jsonData = JSON.parse(dataBlock);
 
-        const blocks = dataBlock.split(this.resultEncoding.blockSeparator);
-        //split 1 record
-        let results = [];
-        for(let block of blocks) {
-            if(block.length > 0) {
-                const tokens = dataBlock.split(this.resultEncoding.tokenSeparator);
-                const res = {};
-                const props = {
-                    time: undefined,
-                    index: 0
-                }
-                this.parser.parse(tokens, props, res);
-                results.push(res);
+        if(Array.isArray(jsonData)) {
+            for(let d of jsonData) {
+                d['timestamp'] = new Date(d[this.parser.getTimePropertyName()]).getTime();
             }
+        } else {
+            jsonData['timestamp'] = new Date(jsonData[this.parser.getTimePropertyName()]).getTime();
         }
-        return results;
+        return jsonData;
     }
 }
 
-export default TextDataParser;
+export default JsonDataParser;

@@ -1,11 +1,13 @@
 import TimeSeriesParser from "../../parsers/TimeSeriesParser.parser";
 import TextDataParser from "../../parsers/TextDataParser";
 import {assertDefined, assertTrue} from "../../../utils/Utils";
+import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser";
+import JsonDataParser from "../../parsers/JsonDataParser";
+import BinaryDataParser from "../../parsers/BinaryDataParser";
 
 class SosGetResultParser extends TimeSeriesParser {
     constructor() {
         super();
-        this.c = false;
     }
 
     init(properties) {
@@ -18,11 +20,24 @@ class SosGetResultParser extends TimeSeriesParser {
         const getResultTemplateUrl = this.buildGetResultTemplateUrl(properties);
         const response = await fetch(getResultTemplateUrl);
         const template = await response.text();
-        // define SosParser depending on responseFormat
-        if(!('responseFormat' in properties)) {
-            this.parser = new TextDataParser();
-            this.parser.setSchema(template, true);
+
+        //
+        if('responseFormat' in properties && properties.responseFormat === 'application/json'){
+            this.parser = new JsonDataParser(JSON.parse(template));
+        } else {
+            let sweXmlParser = new SWEXmlStreamParser(template);
+            let respSchema = sweXmlParser.toJson().GetResultTemplateResponse;
+            let resultEncoding = respSchema.resultEncoding;
+            let rootElement = respSchema.resultStructure
+            if(resultEncoding && resultEncoding.type === 'TextEncoding') {
+                this.parser = new TextDataParser(rootElement, resultEncoding);
+            } else if(resultEncoding && resultEncoding.type === 'BinaryEncoding') {
+                this.parser = new BinaryDataParser(rootElement, resultEncoding);
+            } else {
+                throw Error('Not supported parser format');
+            }
         }
+
     }
 
     async checkInit() {
@@ -32,11 +47,9 @@ class SosGetResultParser extends TimeSeriesParser {
         }
     }
 
-    async parseDataBlock(data) {
+    async parseDataBlock(arrayBuffer) {
         await this.checkInit();
-        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
-        const dataBlocks = this.parser.parseDataBlock(rec);
-        return dataBlocks[0];
+        return this.parser.parseDataBlock(arrayBuffer);
     }
 
     /**
