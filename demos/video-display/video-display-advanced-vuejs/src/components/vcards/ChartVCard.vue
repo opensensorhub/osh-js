@@ -31,9 +31,9 @@ export default {
     let windSpeedLayerCurve = new CurveLayer({
       getValues: {
         dataSourceIds: [this.dataSource.id],
-        handler: function (rec, timeStamp) {
+        handler: function (rec, timestamp) {
           return {
-            x: timeStamp,
+            x: timestamp,
             y: rec.windSpeed
           };
         }

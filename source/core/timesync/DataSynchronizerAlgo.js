@@ -20,26 +20,26 @@ class DataSynchronizerAlgo {
         }
     }
 
-    push(dataSourceId, data) {
+    push(dataSourceId, dataBlock) {
         const ds = this.dataSourceMap[dataSourceId];
-        if (!this.checkVersion(ds, data)) {
+        if (!this.checkVersion(ds, dataBlock)) {
             return;
         }
 
         if (this.startBufferingTime === -1) {
             console.log(`synchronizer buffering data for ${this.bufferingTime}ms..`);
             this.startBufferingTime = performance.now();
-            // start iterating on data after bufferingTime
+            // start iterating on dataBlock after bufferingTime
             this.timeoutBuffering = setTimeout(() => this.processData(), this.bufferingTime);
         }
 
         let latency = 0;
         if (this.tsRun > 0) {
-            latency = this.tsRun - data.timeStamp;
+            latency = this.tsRun - dataBlock.data.timestamp;
         }
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
 
-        ds.dataBuffer.push(data);
+        ds.dataBuffer.push(dataBlock);
     }
 
     reset() {
@@ -71,7 +71,7 @@ class DataSynchronizerAlgo {
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
             if (currentDs.dataBuffer.length > 0) {
-                tsRef = (tsRef === -1 || currentDs.dataBuffer[0].timeStamp < tsRef) ? currentDs.dataBuffer[0].timeStamp :
+                tsRef = (tsRef === -1 || currentDs.dataBuffer[0].data.timestamp < tsRef) ? currentDs.dataBuffer[0].data.timestamp :
                     tsRef;
             }
         }
@@ -114,7 +114,7 @@ class DataSynchronizerAlgo {
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
             if (currentDs.dataBuffer.length > 0) {
-                const dTs = (currentDs.dataBuffer[0].timeStamp - tsRef);
+                const dTs = (currentDs.dataBuffer[0].data.timestamp - tsRef);
                 const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
@@ -124,7 +124,7 @@ class DataSynchronizerAlgo {
                         currentDsToShift = currentDs;
                     } else {
                         // take the oldest data
-                        currentDsToShift = (currentDsToShift.dataBuffer[0].timeStamp < currentDs.dataBuffer[0].timeStamp) ?
+                        currentDsToShift = (currentDsToShift.dataBuffer[0].data.timestamp < currentDs.dataBuffer[0].data.timestamp) ?
                             currentDsToShift : currentDs;
                     }
                 }
@@ -165,14 +165,15 @@ class DataSynchronizerAlgo {
         };
     }
 
-    checkVersion(datasource, data) {
+    checkVersion(datasource, dataBlock) {
         if(!isDefined(datasource.version) && datasource.status !== Status.DISCONNECTED) {
             return true;
-        } else if(datasource.status === Status.DISCONNECTED && datasource.version !== data.version) {
+        } else if(datasource.status === Status.DISCONNECTED && datasource.version !== dataBlock.version) {
             return false;
         }
     }
-    onData(dataSourceId, data) {
+
+    onData(dataSourceId, dataBlock) {
     }
 
     /**

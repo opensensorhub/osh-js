@@ -69,12 +69,9 @@ class AbstractParser {
             (element['definition'] === 'http://www.opengis.net/def/property/OGC/0/SamplingTime' ||
                 element['definition'] === 'http://www.opengis.net/def/property/OGC/0/PhenomenonTime')) {
             this.time = this.name;
+            this.name = 'timestamp';
         }
     }
-
-    // getTimePropertyName() {
-    //     return this.time;
-    // }
 
     getTimePropertyName() {
         if(!this.time) {
@@ -349,9 +346,9 @@ class TextDataParser {
         return results;
     }
 
-    parseTime(parsedData) {
+    parseTime(dataBlock) {
         // based on schema, we parse the time associated to this data
-        return parsedData[this.parser.getTimePropertyName()];
+        return dataBlock[this.parser.getTimePropertyName()];
     }
 }
 

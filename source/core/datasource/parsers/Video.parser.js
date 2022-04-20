@@ -24,8 +24,9 @@ class VideoParser extends TimeSeriesParser {
      *   }
      * }
      */
-    parseData(data) {
+    parseDataBlock(data) {
         return {
+            timestamp: new DataView(data).getFloat64(0, false) * 1000,
             // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
             frameData: new Uint8Array(data, 12, data.byteLength - 12),
             roll: 0

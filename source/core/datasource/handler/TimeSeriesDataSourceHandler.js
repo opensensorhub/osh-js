@@ -59,32 +59,29 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     }
 
     async onMessage(event) {
-        const timeStamp = await Promise.resolve(this.parser.parseTimeStamp(event) + this.timeShift);
-        const data      = await Promise.resolve(this.parser.parseData(event));
-
+        const data   = await Promise.resolve(this.parser.parseDataBlock(event));
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
                 this.values.push({
                     data: data[i],
-                    timeStamp: timeStamp,
                     version: this.version
                 });
+                this.lastTimestamp = data[i].timestamp;
             }
         } else {
             this.values.push({
                 data: data,
-                timeStamp: timeStamp,
                 version: this.version
             });
+            this.lastTimestamp = data.timestamp;
         }
-        this.lastTimeStamp = timeStamp;
 
         if(this.parser.lastStartTime === 'now' || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
             this.flush();
             if(this.timeBroadcastChannel !== null) {
                 this.timeBroadcastChannel.postMessage({
-                    timestamp: this.lastTimeStamp,
+                    timestamp: this.lastTimestamp,
                     type: EventType.TIME
                 });
             }
@@ -92,7 +89,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     }
 
     getLastTimeStamp() {
-        return this.lastTimeStamp;
+        return this.lastTimestamp;
     }
 
     async updateProperties(properties) {
@@ -103,7 +100,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
                 type: EventType.TIME_CHANGED
             });
 
-            let lastTimestamp = new Date(this.lastTimeStamp).toISOString();
+            let lastTimestamp = new Date(this.lastTimestamp).toISOString();
 
             if (properties.hasOwnProperty('startTime')) {
                 lastTimestamp = properties.startTime;
@@ -117,7 +114,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             await this.createDataConnector({
                 ...this.properties,
                 ...properties,
-                lastTimeStamp: lastTimestamp
+                lastTimestamp: lastTimestamp
             });
 
             if (isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {

@@ -3,7 +3,7 @@ import {EventType} from 'osh-js/core/event/EventType';
 
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
-import SweJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
@@ -25,7 +25,7 @@ const videoDataSource = new SosGetResultVideo("drone-Video", {
   bufferingTime: BUFFERING_TIME,
   timeOut: TIMEOUT
 });
-const platformLocationDataSource = new SweJson('android-GPS', {
+const platformLocationDataSource = new SosGetResult('android-GPS', {
   protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -37,7 +37,7 @@ const platformLocationDataSource = new SweJson('android-GPS', {
   bufferingTime: BUFFERING_TIME,
   timeOut: TIMEOUT
 });
-const platformOrientationDataSource = new SweJson('android-Heading', {
+const platformOrientationDataSource = new SosGetResult('android-Heading', {
   protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

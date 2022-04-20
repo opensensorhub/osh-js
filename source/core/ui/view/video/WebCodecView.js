@@ -110,7 +110,7 @@ class WebCodecView extends CanvasView {
                 let pktData = value.data.frameData;
                 let roll = value.data.roll;
                 let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timeStamp, roll);
+                this.decode(pktSize, pktData, value.timestamp, roll);
             }
         }
     }
@@ -185,9 +185,9 @@ class WebCodecView extends CanvasView {
      * @private
      * @param pktSize
      * @param pktData
-     * @param timeStamp
+     * @param timestamp
      */
-    async decode(pktSize, pktData, timeStamp, roll) {
+    async decode(pktSize, pktData, timestamp, roll) {
         if (!this.codecConfigured) {
             this.initDecoder();
         }
@@ -198,7 +198,7 @@ class WebCodecView extends CanvasView {
                 pktData: pktData,
                 roll: roll,
                 codec: this.codec,
-                timeStamp: timeStamp,
+                timestamp: timestamp,
             }, [pktData.buffer]);
         } else {
             console.warn('decoder has not been initialized yet');

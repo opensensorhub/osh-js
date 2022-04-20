@@ -136,7 +136,7 @@ export default {
       video0Count += values.length;
       video0DivElement.value = video0Count;
 
-      lastVideo0DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 0';
+      lastVideo0DivElement.innerText = new Date(values[values.length - 1].timestamp).toISOString() + ' - Video 0';
 
       video0DivElement.scrollTop = video0DivElement.scrollHeight;
     }
@@ -145,7 +145,7 @@ export default {
       video1Count += values.length;
       video1DivElement.value = video1Count;
 
-      lastVideo1DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 1';
+      lastVideo1DivElement.innerText = new Date(values[values.length - 1].timestamp).toISOString() + ' - Video 1';
 
       video1DivElement.scrollTop = video1DivElement.scrollHeight;
     }
@@ -154,7 +154,7 @@ export default {
       video2Count += values.length;
       video2DivElement.value = video2Count;
 
-      lastVideo2DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 2';
+      lastVideo2DivElement.innerText = new Date(values[values.length - 1].timestamp).toISOString() + ' - Video 2';
       video2DivElement.scrollTop = video2DivElement.scrollHeight;
     }
 

@@ -54,11 +54,11 @@ class MjpegView extends View {
       });
 
     // create timestamp slot
-    this.timeStamp = null;
+    this.timestamp = null;
     if (isDefined(properties.showTime) && properties.showTime) {
-        this.timeStamp = document.createElement("div");
-        this.timeStamp.setAttribute("class", "video-time");
-        document.getElementById(this.divId).appendChild(this.timeStamp);
+        this.timestamp = document.createElement("div");
+        this.timestamp.setAttribute("class", "video-time");
+        document.getElementById(this.divId).appendChild(this.timestamp);
     }
 
     // creates video tag element
@@ -92,8 +92,8 @@ class MjpegView extends View {
 
           let oldBlobURL = this.imgTag.src;
           this.imgTag.src = url;
-          if (this.timeStamp !== null) {
-              this.timeStamp.innerHTML = new Date(value.timeStamp).toISOString();
+          if (this.timestamp !== null) {
+              this.timestamp.innerHTML = new Date(value.timestamp).toISOString();
           }
           window.URL.revokeObjectURL(oldBlobURL);
       }

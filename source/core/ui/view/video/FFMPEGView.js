@@ -82,7 +82,7 @@ class FFMPEGView extends CanvasView {
                 let pktData = value.data.frameData;
                 let roll = value.data.roll;
                 let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timeStamp, roll);
+                this.decode(pktSize, pktData, value.timestamp, roll);
             }
         }
     }
@@ -170,7 +170,7 @@ class FFMPEGView extends CanvasView {
             that.yuvCanvas.canvasElement.drawing = false;
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
-                this.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
+                this.textFpsDiv.innerText = new Date(decodedFrame.timestamp).toISOString()+' ';
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
@@ -186,9 +186,9 @@ class FFMPEGView extends CanvasView {
      * @private
      * @param pktSize
      * @param pktData
-     * @param timeStamp
+     * @param timestamp
      */
-    async decode(pktSize, pktData, timeStamp, roll) {
+    async decode(pktSize, pktData, timestamp, roll) {
         if(pktSize > 0) {
             let arrayBuffer = pktData.buffer;
 
@@ -198,7 +198,7 @@ class FFMPEGView extends CanvasView {
                 roll: roll,
                 byteOffset: pktData.byteOffset,
                 codec: this.codec,
-                timeStamp: timeStamp,
+                timestamp: timestamp,
                 dataSourceId: this.dataSourceId
             }, [arrayBuffer]);
             pktData = null;

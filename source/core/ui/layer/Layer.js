@@ -68,25 +68,25 @@ class Layer {
         const that = this;
 
         if (this.checkFn("filter")) {
-            let fn = function(rec,timeStamp,options) {
-                that.props.filter = that.getFunc('filter')(rec,timeStamp,options);
+            let fn = function(rec,timestamp,options) {
+                that.props.filter = that.getFunc('filter')(rec,timestamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
         } else {
-            this.properties.filter = function(rec,timeStamp,options) {
+            this.properties.filter = function(rec,timestamp,options) {
                 return true;
             };
 
-            let fn = async function (rec, timeStamp, options) {
-                that.props.filter = await that.getFunc('filter')(rec, timeStamp, options);
+            let fn = async function (rec, timestamp, options) {
+                that.props.filter = await that.getFunc('filter')(rec, timestamp, options);
             };
 
             this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
         }
 
         if (this.checkFn("getVisible")) {
-            let fn = async function (rec, timeStamp, options) {
-                that.props.visible = await that.getFunc('getVisible')(rec, timeStamp, options);
+            let fn = async function (rec, timestamp, options) {
+                that.props.visible = await that.getFunc('getVisible')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
         }
@@ -183,7 +183,7 @@ class Layer {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
                 for (let j = 0; j < records.length; j++) {
                     for (let i = 0; i < fnArr.length; i++) {
-                        await fnArr[i](records[j].data, records[j].timeStamp, options);
+                        await fnArr[i](records[j].data, records[j].data.timestamp, options);
                         if (!this.props.filter) {
                             break;
                         }

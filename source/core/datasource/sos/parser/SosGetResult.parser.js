@@ -32,15 +32,7 @@ class SosGetResultParser extends TimeSeriesParser {
         }
     }
 
-    async parseTimeStamp(data) {
-        await this.checkInit();
-        let rec = String.fromCharCode.apply(null, new Uint8Array(data));
-        const timestamp = this.parser.parseTime(rec);
-        console.log(rec)
-        return timestamp;
-    }
-
-    async parseData(data) {
+    async parseDataBlock(data) {
         await this.checkInit();
         let rec = String.fromCharCode.apply(null, new Uint8Array(data));
         const dataBlocks = this.parser.parseDataBlock(rec);

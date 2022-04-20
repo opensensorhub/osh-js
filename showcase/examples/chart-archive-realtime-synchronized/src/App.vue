@@ -60,23 +60,23 @@ export default {
       layers: [
           new CurveLayer({
           dataSourceId: chartDataSource1.id,
-          getValues: (rec, timeStamp) => {
+          getValues: (rec, timestamp) => {
             return {
-              x: timeStamp,
+              x: timestamp,
               y: rec.windSpeed
             }
           },
           lineColor: 'rgba(0,220,204,0.5)',
           backgroundColor: 'rgba(0,220,204,0.5)',
           fill:true,
-          getCurveId:(rec, timeStamp) => 2,
+          getCurveId:(rec, timestamp) => 2,
           name: 'Wind Speed 1 (m/s)'
         }),
         new CurveLayer({
           dataSourceId: chartDataSource2.id,
-          getValues: (rec, timeStamp) => {
+          getValues: (rec, timestamp) => {
             return {
-              x: timeStamp,
+              x: timestamp,
               y: rec.windSpeed - 0.02
 
             }
@@ -84,7 +84,7 @@ export default {
           lineColor: 'rgba(59,210,29,0.5)',
           backgroundColor: 'rgba(59,210,29,0.5)',
           fill:true,
-          getCurveId:(rec, timeStamp) => 1,
+          getCurveId:(rec, timestamp) => 1,
           name: 'Wind Speed 2 (m/s)'
         })
       ],

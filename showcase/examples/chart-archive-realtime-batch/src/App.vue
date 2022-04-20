@@ -44,9 +44,9 @@ export default {
 // #region snippet_curve_layer
     let windSpeedLayerCurve = new CurveLayer({
       dataSourceId: chartDataSource.id,
-      getValues: (rec, timeStamp) => {
+      getValues: (rec, timestamp) => {
         return {
-          x: timeStamp,
+          x: timestamp,
           y: rec.windSpeed
         }
       },

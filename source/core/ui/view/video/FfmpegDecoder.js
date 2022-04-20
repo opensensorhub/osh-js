@@ -36,7 +36,7 @@ class FfmpegDecoder {
             this.released = true;
         }
         const decodedFrame = this.decodePacket(message.pktSize, new Uint8Array(message.pktData, message.byteOffset, message.pktSize),
-            message.timeStamp, message.roll);
+            message.timestamp, message.roll);
         if(isDefined(decodedFrame)) {
             decodedFrame.roll = message.roll;
         }
@@ -87,7 +87,7 @@ class FfmpegDecoder {
         // instance._av_frame_free(self.av_frame);
     }
 
-    decodePacket(pktSize, pktData, timeStamp, roll) {
+    decodePacket(pktSize, pktData, timestamp, roll) {
         // prepare packet
 
         this.instance.setValue(this.av_pkt + 28, pktSize, 'i32');
@@ -125,7 +125,7 @@ class FfmpegDecoder {
             frameYData: new Uint8Array(this.instance.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
             frameUData: new Uint8Array(this.instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
             frameVData: new Uint8Array(this.instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
-            timeStamp: timeStamp,
+            timestamp: timestamp,
             pktSize: pktSize
         }
     }
