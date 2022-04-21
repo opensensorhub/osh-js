@@ -16,8 +16,8 @@ class RootParser extends AbstractParser {
         super.init(element, {
             nodesId: {},
             nodesIdValue: {},
-            registeredParser: {
-            }
+            registeredParser: {},
+            refs: {}
         });
     }
 

@@ -1,9 +1,6 @@
 import AbstractParser from "./AbstractParser";
 
 class BinaryEncodingParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
     build(element) {
         // iterate over member
         for(let member of element['member']) {
@@ -13,40 +10,59 @@ class BinaryEncodingParser extends AbstractParser {
 }
 
 class MemberParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
     build(element) {
         this.parseElement(element);
     }
 }
 
-class DoubleParser  {
+// http://www.opengis.net/def/dataType/OGC/0/double
+class DoubleParser  extends AbstractParser {
     parse(arrayBuffer, props, resultParent) {
+        const result = new DataView(arrayBuffer).getFloat64(props.offset, props.littleEndian) * 1000;
+        props.offset += 8;
+        return result;
+    }
+}
 
+//http://www.opengis.net/def/dataType/OGC/0/signedInt
+class IntParser  extends AbstractParser {
+    parse(arrayBuffer, props, resultParent) {
+        const result = new DataView(arrayBuffer).getUint32(props.offset, props.littleEndian);
+        props.offset += 4;
+        return result;
+    }
+}
+
+class BinaryBlockParser  extends AbstractParser {
+    constructor() {
+        super();
+        this.name = 'frameData';
+    }
+
+    parse(arrayBuffer, props, resultParent) {
+        const result = new Uint8Array(arrayBuffer, props.offset, arrayBuffer.byteLength - props.offset);
+        props.offset += result.byteLength;
+        return result;
     }
 }
 
 class ComponentParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
     build(element) {
+        let dataTypeParser;
         if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/double') {
-            this.parser = new DoubleParser();
+            dataTypeParser = new DoubleParser();
+        } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/signedInt'){
+            dataTypeParser = new IntParser();
         }
-        this.ref = element.ref;
+        this.props.refs[element.ref.replaceAll('/','')] = dataTypeParser;
     }
 }
 
 class BlockParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
     build(element) {
         this.name = 'compression';
         this.value = element.compression;
-        this.ref = element.ref;
+        this.props.refs[element.ref.replaceAll('/','')] =  new BinaryBlockParser();
     }
 
     parse(arrayBuffer, props, resultParent) {
@@ -55,18 +71,6 @@ class BlockParser extends AbstractParser {
 }
 
 class RootParser extends AbstractParser {
-    init(element) {
-        super.init(element, {
-            nodesId: {},
-            nodesIdValue: {},
-            registeredParser: {
-                'member': () => new MemberParser(),
-                'Component': () => new ComponentParser(),
-                'Block': () => new BlockParser(),
-                'BinaryEncoding': () => new BinaryEncodingParser()
-            }
-        });
-    }
     build(element) {
         this.parseElement(element);
     }
@@ -75,15 +79,26 @@ class RootParser extends AbstractParser {
 class BinaryDataParser {
 
     constructor(rootElement, encoding) {
-        console.log(rootElement)
         this.nodesId = {};
         this.parsers = [];
         this.count = 0;
         this.resultEncoding = encoding;
         this.parser = new RootParser();
-        // this.parser.init(rootElement);
-        console.log(this.resultEncoding)
-        this.parser.init(this.resultEncoding);
+
+        const props = {
+            nodesId: {},
+            nodesIdValue: {},
+            registeredParser: {
+                'member': () => new MemberParser(),
+                'Component': () => new ComponentParser(),
+                'Block': () => new BlockParser(),
+                'BinaryEncoding': () => new BinaryEncodingParser(),
+            },
+            refs: {},
+        };
+
+        this.parser.init(this.resultEncoding,props);
+        this.parser.init(rootElement, props);
     }
 
     parseDataBlock(arrayBuffer) {

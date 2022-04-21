@@ -8,12 +8,13 @@ import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
+// const END_TIME = '2015-12-19T21:04:30.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
-const REPLAY_SPEED = 10.0;
+const REPLAY_SPEED = 1.0;
 const BUFFERING_TIME = 800;
 const TIMEOUT = 1000;
 
-const videoDataSource = new SosGetResultVideo("drone-Video", {
+const videoDataSource = new SosGetResult("drone-Video", {
   protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -35,6 +36,7 @@ const platformLocationDataSource = new SosGetResult('android-GPS', {
   endTime: END_TIME,
   replaySpeed: REPLAY_SPEED,
   bufferingTime: BUFFERING_TIME,
+  responseFormat: 'application/json',
   timeOut: TIMEOUT
 });
 const platformOrientationDataSource = new SosGetResult('android-Heading', {
@@ -66,5 +68,4 @@ dataSynchronizer.subscribe((message) => displayError(message.timestamp), [EventT
 
 // start streaming
 dataSynchronizer.connect();
-
 // #endregion snippet_datasource_synchronized

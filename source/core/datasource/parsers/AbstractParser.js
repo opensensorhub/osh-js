@@ -1,10 +1,12 @@
 export default class AbstractParser {
-    init(element, props) {
-        this.props = props;
+    constructor() {
         this.stack = [];
-        this.name = element.name;
         this.time = undefined;
         this.idRef = undefined;
+    }
+    init(element, props) {
+        this.props = props;
+        this.name = element.name;
         this.checkTime(element);
         this.checkId(element);
         this.build(element);
@@ -12,7 +14,9 @@ export default class AbstractParser {
 
     parseElement(element) {
         let parser;
-        if(element.type in this.props.registeredParser){
+        if(element.name in this.props.refs) {
+            parser = new RefParser(this.props.refs[element.name]);
+        } else if(element.type in this.props.registeredParser){
             parser = this.props.registeredParser[element.type]();
         } else if(element.hasOwnProperty('href')) {
             parser = new HRefParser();
@@ -91,10 +95,6 @@ export default class AbstractParser {
 }
 
 class DecimalParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     parse(tokens, props, resultParent) {
         let val;
         let token = tokens[props.index++];
@@ -109,20 +109,28 @@ class DecimalParser extends AbstractParser {
     }
 }
 
-class StringParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
+class RefParser extends AbstractParser {
+    constructor(parser) {
+        super();
+        this.parser = parser;
+    }
+    build(element) {
+        if(this.parser && this.parser.name) {
+            this.name = this.parser.name;
+        }
     }
 
+    parse(tokens, props, resultParent) {
+        resultParent[this.name] = this.parser.parse(tokens, props, resultParent);
+    }
+}
+
+class StringParser extends AbstractParser {
     parse(tokens, props, resultParent) {
         resultParent[this.name] = tokens[props.index++];
     }
 }
 class BooleanParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     parse(tokens, props, resultParent) {
         let token = tokens[props.index++];
         resultParent[this.name] = token === '0' || token.toLowerCase() === 'true';
@@ -130,10 +138,6 @@ class BooleanParser extends AbstractParser {
 }
 
 class CountParser  extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     build(element) {
         if('value' in element) {
             this.value = parseInt(element['value']);
@@ -148,10 +152,6 @@ class CountParser  extends AbstractParser {
 }
 
 class DataRecordParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     build(element) {
         // DataRecords + fields
         let fieldName = undefined;
@@ -194,9 +194,6 @@ class DataChoiceParser extends AbstractParser {
     }
 }
 class DataArrayParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
     build(element) {
         // find elementCount parser
         this.parseElement(element['elementCount']);
@@ -218,19 +215,11 @@ class DataArrayParser extends AbstractParser {
     }
 }
 class TimeParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     parse(tokens, props, resultParent) {
         resultParent[this.name] = new Date(tokens[props.index++]).getTime();
     }
 }
 class VectorParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     build(element) {
         // Vector + coordinate
         let coordinatePropertyName = 'coordinates';
@@ -254,10 +243,6 @@ class VectorParser extends AbstractParser {
     }
 }
 class HRefParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-
     build(element) {
         // find into href tree
         const hashLink = element.href;

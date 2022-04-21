@@ -7,8 +7,9 @@ import AudioFrequencyChartJsVisualizer
     from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
 import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
 import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
+import SosGetResult from "../../../source/core/datasource/sos/SosGetResult";
 
-let audioDataSource = new SosGetResultAudio("alex-audio", {
+let audioDataSource = new SosGetResult("alex-audio", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
