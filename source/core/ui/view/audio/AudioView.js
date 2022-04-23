@@ -220,16 +220,16 @@ class AudioView extends View {
     async setData(dataSourceId, data) {
         for (let value of data.values) {
             if (!this.isInitContext) {
-                this.initAudioContext(value.data.sampleRate, value.timestamp);
+                this.initAudioContext(value.data.sampleRate, value.data.timestamp);
             }
             if (this.properties.codec === 'raw') {
                 const frame = new Float32Array(value.data.frameData);
 
                 let audioBuffer = this.audioCtx.createBuffer(1, frame.length, this.audioCtx.sampleRate);
                 audioBuffer.copyToChannel(frame, 0, 0);
-                this.onDecodedBuffer(audioBuffer, value.timestamp);
+                this.onDecodedBuffer(audioBuffer, value.data.timestamp);
             } else {
-                this.decoder.decode(value.data, value.timestamp);
+                this.decoder.decode(value.data, value.data.timestamp);
             }
         }
     }

@@ -39,6 +39,7 @@ class BinaryBlockParser  extends AbstractParser {
         this.name = 'frameData';
     }
 
+    // audio problem: http://sensiasoft.net:8181/sensorhub/sos?service=SOS&version=2.0&request=GetResultTemplate&offering=urn:android:device:dd90fceba7fd5b47-sos&observedProperty=http://sensorml.com/ont/swe/property/AudioFrame
     parse(arrayBuffer, props, resultParent) {
         const result = new Uint8Array(arrayBuffer, props.offset, arrayBuffer.byteLength - props.offset);
         props.offset += result.byteLength;

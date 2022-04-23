@@ -18,13 +18,14 @@ class AudioParser extends TimeSeriesParser {
      * @param {ArrayBuffer} data - the data to parse
      * @return {Uint8Array} the parsed data
      */
-    parseData(data) {
+    parseDataBlock(data) {
         // 8 bytes for timestamp
         // 4 bytes for sampleRate
         // 4 bytes for nbSamples
         // 4 bytes for data compressed size
         // others for data (start at 20)
         return {
+            timestamp: new DataView(data).getFloat64(0, false) * 1000,
             sampleRate: new DataView(data).getUint32(8, false),
             nbSamples: new DataView(data).getUint32(12, false),
             pktLength: new DataView(data).getUint32(16, false),
