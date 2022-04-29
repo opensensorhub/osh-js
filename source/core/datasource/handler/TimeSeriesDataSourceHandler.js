@@ -100,13 +100,16 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
                 type: EventType.TIME_CHANGED
             });
 
-            let lastTimestamp = new Date(this.lastTimestamp).toISOString();
-
+            let lastTimestamp;
             if (properties.hasOwnProperty('startTime')) {
                 lastTimestamp = properties.startTime;
             } else if (this.properties.startTime === 'now') {
                 //handle RealTime
                 lastTimestamp = 'now';
+            } else if(this.lastTimestamp) {
+                lastTimestamp = new Date(this.lastTimestamp).toISOString();
+            } else {
+                throw Error('Neither startTime, now or lastTimestamp are defined');
             }
 
             this.version++;
@@ -122,6 +125,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             }
         } catch (ex) {
             console.error(ex);
+            throw ex;
         }
     }
 

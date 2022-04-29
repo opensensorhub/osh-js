@@ -1,13 +1,13 @@
 // create data source for Android phone camera
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-let chartDataSource = new SosGetResultJson("weather", {
+let chartDataSource = new SosGetResult("weather", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

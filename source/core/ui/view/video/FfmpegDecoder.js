@@ -46,7 +46,7 @@ class FfmpegDecoder {
     init() {
         // register all compiled codecs
         this.instance._avcodec_register_all();
-        let cod = this.codec;
+        let cod = this.codec.toLowerCase();
         if(this.codec === 'h265') {
             cod = 'hevc';
         }

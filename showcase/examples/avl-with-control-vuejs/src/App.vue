@@ -23,7 +23,7 @@
 
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SweJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
@@ -60,7 +60,7 @@ export default {
     /************************************************************/
 
 // setup DataSource. The datasource contains multiple ids.
-    let avlDataSource = new SweJson("AVL", {
+    let avlDataSource = new SosGetResult("AVL", {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

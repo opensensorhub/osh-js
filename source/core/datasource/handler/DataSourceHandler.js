@@ -195,6 +195,7 @@ class DataSourceHandler {
     }
 
     flush() {
+
         let nbElements = this.values.length;
         if (isDefined(this.batchSize) && this.values.length > this.batchSize) {
             nbElements = this.batchSize;

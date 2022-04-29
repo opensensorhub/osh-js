@@ -104,9 +104,7 @@ let directories = [
     'chart-archive-realtime-batch',
     'chart-archive-realtime-synchronized',
     'audio',
-    'audioRaw',
     'audio-with-control-vuejs',
-    'audioRaw-with-control-vuejs',
     'datasource-audio',
     'audio-video-synchronized-with-control-vuejs',
     'tasking'

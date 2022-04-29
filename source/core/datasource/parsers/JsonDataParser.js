@@ -1,28 +1,12 @@
 import AbstractParser from "./AbstractParser";
-// class SweApiParser extends AbstractParser {
-//     constructor(element) {
-//         super(element, {
-//             nodesId: {},
-//             nodesIdValue: {},
-//         });
-//     }
-//     build(element) {
-//         this.parseElement(element.resultSchema);
-//     }
-// }
 
 class RootParser extends AbstractParser {
-    init(element) {
-        super.init(element, {
-            nodesId: {},
-            nodesIdValue: {},
-            registeredParser: {},
-            refs: {}
-        });
-    }
     build(element) {
         this.parseElement(element);
     }
+}
+
+class TraverseParser extends AbstractParser {
 }
 
 class JsonDataParser {
@@ -31,8 +15,18 @@ class JsonDataParser {
         this.nodesId = {};
         this.parsers = [];
         this.count = 0;
+
+        const props = {
+            nodesId: {},
+            nodesIdValue: {},
+            registeredParser: {
+                'Time': () => new TraverseParser(),
+            },
+            refs: {},
+        };
+
         this.parser = new RootParser();
-        this.parser.init(rootElement)
+        this.parser.init(rootElement, props)
     }
 
     parseDataBlock(arrayBuffer) {

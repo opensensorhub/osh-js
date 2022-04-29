@@ -22,12 +22,12 @@
     import SosGetResultAudio from 'osh-js/core/datasource/sos/SosGetResultAudio.js';
     import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView";
     import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
-    import SosGetResultVideoWithRoll from "osh-js/core/datasource/sos/SosGetResultVideoWithRoll";
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+    import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
 
     export default {
         components: {
@@ -55,7 +55,7 @@
         };
 
         // setup video
-        const videoDataSource = new SosGetResultVideoWithRoll("Live and archive data from Android Sensors [Nexus5X]", {
+        const videoDataSource = new SosGetResult("Live and archive data from Android Sensors [Nexus5X]", {
           ...opts,
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame"
         });

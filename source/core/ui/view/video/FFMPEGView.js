@@ -10,11 +10,12 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import View from "../View.js";
-import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
+import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import DecodeWorker from './workers/ffmpeg.decode.worker.js';
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 import CanvasView from "./CanvasView";
+import VideoDataLayer from "../../layer/VideoDataLayer";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -49,10 +50,16 @@ class FFMPEGView extends CanvasView {
      * @param {Number} [properties.width=1920] - Set the default canvas width
      * @param {Number} [properties.height=1080] - Set the default canvas height
      * @param {String} [properties.codec='h264'] - Video codec
+     * @param {Object} [properties.dataMapping={}] - Map datablock name to Layer ones
      */
     constructor(properties) {
+        assertDefined(properties.dataMapping, 'dataMapping');
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['videoData'],
+            layers: [new VideoDataLayer({
+                dataSourceId: properties.dataSourceId,
+                ...properties.dataMapping
+            })],
             ...properties
         });
         this.directPlay = false;
@@ -71,19 +78,27 @@ class FFMPEGView extends CanvasView {
     }
 
     async setData(dataSourceId, data) {
-        const values = data.values;
-        for(let i=0; i < values.length;i++) {
-            if (!this.skipFrame) {
-                if (this.decodeWorker == null) {
-                    this.initFFMPEG_DECODER_WORKER();
-                }
-
-                const value = values.shift();
-                let pktData = value.data.frameData;
-                let roll = value.data.roll;
-                let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timestamp, roll);
+        if(data.type === 'videoData') {
+            const values = data.values;
+            for(let i=0;i < values.length;i++) {
+                this.updateVideo(values[i]);
             }
+        }
+    }
+
+    updateVideo(props) {
+        console.log(props)
+        if (!this.skipFrame) {
+            if (this.decodeWorker == null) {
+
+                this.initFFMPEG_DECODER_WORKER();
+            }
+
+            let pktData = props.frameData;
+            let roll = props.roll || 0;
+            let pktSize = pktData.length;
+            this.codec = props.compression;
+            this.decode(pktSize, pktData, props.timestamp, roll);
         }
     }
 

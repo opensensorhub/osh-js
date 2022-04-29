@@ -1,8 +1,8 @@
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import FrustumLayer from "osh-js/core/ui/layer/FrustumLayer";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
 import {Cartesian3, Ion} from "cesium";
+import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
@@ -17,7 +17,7 @@ const dsReplaySpeed = 1.0;
 const timeOut = 3000;
 const bufferingTime = 800;
 
-const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Location', {
+const droneLocationDataSource = new SosGetResult('MISB UAS - Platform Location', {
     protocol: tls ? 'wss' : 'ws',
     service: 'SOS',
     endpointUrl: sosEndpoint,
@@ -32,7 +32,7 @@ const droneLocationDataSource = new SosGetResultJson('MISB UAS - Platform Locati
     bufferingTime: bufferingTime
 });
 
-const droneOrientationDataSource = new SosGetResultJson('MISB UAS - Platform Orientation', {
+const droneOrientationDataSource = new SosGetResult('MISB UAS - Platform Orientation', {
     protocol: tls ? 'wss' : 'ws',
     service: 'SOS',
     endpointUrl: sosEndpoint,
@@ -47,7 +47,7 @@ const droneOrientationDataSource = new SosGetResultJson('MISB UAS - Platform Ori
     bufferingTime: bufferingTime
 });
 
-const droneCameraOrientationDataSource = new SosGetResultJson('MISB UAS - Sensor Orientation', {
+const droneCameraOrientationDataSource = new SosGetResult('MISB UAS - Sensor Orientation', {
     protocol: tls ? 'wss' : 'ws',
     service: 'SOS',
     endpointUrl: sosEndpoint,
@@ -62,7 +62,7 @@ const droneCameraOrientationDataSource = new SosGetResultJson('MISB UAS - Sensor
     bufferingTime: bufferingTime
 });
 
-const droneHFovDataSource = new SosGetResultJson('MISB UAS - Horizontal FoV', {
+const droneHFovDataSource = new SosGetResult('MISB UAS - Horizontal FoV', {
     protocol: tls ? 'wss' : 'ws',
     service: 'SOS',
     endpointUrl: sosEndpoint,

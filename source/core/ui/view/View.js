@@ -100,7 +100,7 @@ class View {
                 }
             }
 
-            if(isDefined(properties.dataSourceId)) {
+            if(isDefined(properties.dataSourceId) && !properties.layers) {
                 this.addLayer(new DataLayer({
                     dataSourceId: properties.dataSourceId
                 }));
@@ -222,6 +222,7 @@ class View {
         this.layers.push(layer);
 
         let ds = layer.getDataSourcesIds();
+        console.log(ds)
         for (let i = 0; i < ds.length; i++) {
             const dataSourceId = ds[i];
            // this.setData(dataSourceId, [layer.getProps()]);
@@ -234,6 +235,7 @@ class View {
                 } else if (event.data.type === EventType.DATA) {
 
                     const that = this;
+
                     // transform the data
                     layer.setData(dataSourceId, event.data.values).then(() => {
 

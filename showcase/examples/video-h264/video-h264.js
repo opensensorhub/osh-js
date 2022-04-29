@@ -1,5 +1,7 @@
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+// import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
+import SosGetResultVideo from "../../../source/core/datasource/sos/SosGetResultVideo.js";
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {
   protocol: 'ws',
@@ -20,7 +22,12 @@ let videoView = new FFMPEGView({
   framerate:25,
   showTime: true,
   showStats: true,
-  dataSourceId: videoDataSource.id
+  dataSourceId: videoDataSource.id,
+  dataMapping: {
+    getFrameData: (rec) => rec.videoFrame.binaryBlock,
+    getCompression: (rec) => rec.videoFrame.compression,
+    getTimestamp: (rec) => rec.timestamp
+  }
 });
 
 // start streaming

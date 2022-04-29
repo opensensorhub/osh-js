@@ -1,4 +1,3 @@
-import SosGetResultAudio from "osh-js/core/datasource/sos/SosGetResultAudio";
 import AudioView from "osh-js/core/ui/view/audio/AudioView";
 import AudioFrequencyCanvasVisualizer
     from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer";
