@@ -222,7 +222,6 @@ class View {
         this.layers.push(layer);
 
         let ds = layer.getDataSourcesIds();
-        console.log(ds)
         for (let i = 0; i < ds.length; i++) {
             const dataSourceId = ds[i];
            // this.setData(dataSourceId, [layer.getProps()]);

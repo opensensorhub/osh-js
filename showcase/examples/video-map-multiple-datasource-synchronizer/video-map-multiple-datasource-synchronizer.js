@@ -1,14 +1,14 @@
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 const REPLAY_FACTOR = 1.0;
 
 function createView(videoDivId, mapDivId, startTime,endTime ) {
-    const videoDataSource = new SosGetResultVideo("drone-Video", {
+    const videoDataSource = new SosGetResult("drone-Video", {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -18,7 +18,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         endTime: endTime,
         replaySpeed: REPLAY_FACTOR
     });
-    const platformLocationDataSource = new SosGetResultJson('android-GPS', {
+    const platformLocationDataSource = new SosGetResult('android-GPS', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -28,7 +28,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         endTime: endTime,
         replaySpeed: REPLAY_FACTOR
     });
-    const platformOrientationDataSource = new SosGetResultJson('android-Heading', {
+    const platformOrientationDataSource = new SosGetResult('android-Heading', {
         protocol: 'ws',
         service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -47,7 +47,14 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         framerate: 25,
         showTime: true,
         showStats: true,
-        dataSourceId: videoDataSource.id
+        layers: [
+            new VideoDataLayer({
+                dataSourceId: videoDataSource.id,
+                getFrameData: (rec) => rec.videoFrame.binaryBlock,
+                getCompression: (rec) => rec.videoFrame.compression,
+                getTimestamp: (rec) => rec.timestamp
+            })
+        ]
     });
 
     // add 3D model marker to Cesium view
@@ -106,11 +113,11 @@ const currentTimeLeftElt = document.getElementById("current-time-left");
 const currentTimeRightElt = document.getElementById("current-time-right");
 
 setInterval(async ()=> {
-    dataSynchronzerLeft.getCurrentTime().then(time => {
-        currentTimeLeftElt.innerText = 'Current time: '+new Date(time).toISOString();
+    dataSynchronzerLeft.getCurrentTime().then(message => {
+        currentTimeLeftElt.innerText = 'Current time: '+new Date(message.data).toISOString();
     });
-    dataSynchronzerRight.getCurrentTime().then(time => {
-        currentTimeRightElt.innerText = 'Current time: '+new Date(time).toISOString();
+    dataSynchronzerRight.getCurrentTime().then(message => {
+        currentTimeRightElt.innerText = 'Current time: '+new Date(message.data).toISOString();
     });
 },100);
 

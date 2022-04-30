@@ -1,8 +1,9 @@
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 //
 // // create data source for UAV camera
-let videoDataSource = new SosGetResultVideo("drone-Video", {
+let videoDataSource = new SosGetResult("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -21,7 +22,14 @@ let videoView = new FFMPEGView({
   framerate:25,
   showTime: true,
   showStats: true,
-  dataSourceId: videoDataSource.id
+  layers: [
+      new VideoDataLayer({
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame.binaryBlock,
+        getCompression: (rec) => rec.videoFrame.compression,
+        getTimestamp: (rec) => rec.timestamp
+    })
+  ]
 });
 
 // start streaming
@@ -41,7 +49,14 @@ destroyButton.onclick = () => {
     name: "UAV Video",
     framerate: 25,
     showTime: true,
-    dataSourceId: videoDataSource.id
+    layers: [
+      new VideoDataLayer({
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame.binaryBlock,
+        getCompression: (rec) => rec.videoFrame.compression,
+        getTimestamp: (rec) => rec.timestamp
+      })
+    ]
   });
 };
 

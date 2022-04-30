@@ -31,7 +31,14 @@ import VideoDataLayer from "../../layer/VideoDataLayer";
   framerate:25,
   showTime: true,
   showStats: true,
- dataSourceId: videoDataSource.id
+    layers: [
+      new VideoDataLayer({
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame.binaryBlock,
+        getCompression: (rec) => rec.videoFrame.compression,
+        getTimestamp: (rec) => rec.timestamp
+      })
+  ]
 });
  */
 
@@ -50,16 +57,10 @@ class FFMPEGView extends CanvasView {
      * @param {Number} [properties.width=1920] - Set the default canvas width
      * @param {Number} [properties.height=1080] - Set the default canvas height
      * @param {String} [properties.codec='h264'] - Video codec
-     * @param {Object} [properties.dataMapping={}] - Map datablock name to Layer ones
      */
     constructor(properties) {
-        assertDefined(properties.dataMapping, 'dataMapping');
         super({
             supportedLayers: ['videoData'],
-            layers: [new VideoDataLayer({
-                dataSourceId: properties.dataSourceId,
-                ...properties.dataMapping
-            })],
             ...properties
         });
         this.directPlay = false;
@@ -87,18 +88,17 @@ class FFMPEGView extends CanvasView {
     }
 
     updateVideo(props) {
-        console.log(props)
         if (!this.skipFrame) {
             if (this.decodeWorker == null) {
-
                 this.initFFMPEG_DECODER_WORKER();
             }
 
-            let pktData = props.frameData;
-            let roll = props.roll || 0;
-            let pktSize = pktData.length;
-            this.codec = props.compression;
-            this.decode(pktSize, pktData, props.timestamp, roll);
+            this.decode(
+                props.frameData.length,
+                props.frameData,
+                props.timestamp,
+                props.roll || 0
+            );
         }
     }
 
@@ -229,6 +229,10 @@ class FFMPEGView extends CanvasView {
             message: 'release'
         });
         this.decodeWorker.terminate();
+    }
+
+    async getCanvas() {
+        return this.yuvCanvas.canvasElement;
     }
 }
 

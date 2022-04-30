@@ -83,6 +83,7 @@ class ImageDrapingLayer extends Layer {
      * @param {Function} properties.getGimbalOrientation -
      * @param {Function} properties.getCameraModel -
      * @param {Function} properties.getSnapshot -
+     * @param {Function} properties.getImageSrc -
      *
      * @param properties
      */
@@ -147,6 +148,13 @@ class ImageDrapingLayer extends Layer {
                 that.props.cameraModel = await  that.getFunc('getCameraModel')(rec,timestamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getCameraModel'), fn);
+        }
+
+        if (isDefined(properties.getImageSrc)) {
+            let fn = async (rec, timestamp, options) => {
+                that.props.imageSrc = await  that.getFunc('getImageSrc')(rec,timestamp,options);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getImageSrc'), fn);
         }
 
         if (isDefined(properties.getSnapshot)) {

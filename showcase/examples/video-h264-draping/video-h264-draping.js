@@ -1,4 +1,4 @@
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
@@ -6,16 +6,16 @@ import {
     Cartesian3,
     Cartesian2, Ion
 } from "cesium";
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
+import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
-let videoDataSource = new SosGetResultVideo("drone-Video", {
+let videoDataSource = new SosGetResult("drone-Video", {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -27,20 +27,27 @@ let videoDataSource = new SosGetResultVideo("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView({
+let videoView = new VideoView({
     container: 'video-h264-draping-container',
     css: "video-h264",
     name: "UAV Video",
     framerate:25,
     showTime: true,
     showStats: true,
-    dataSourceId: videoDataSource.id
+    layers: [
+        new VideoDataLayer({
+            dataSourceId: videoDataSource.id,
+            getFrameData: (rec) => rec.videoFrame.binaryBlock,
+            getCompression: (rec) => rec.videoFrame.compression,
+            getTimestamp: (rec) => rec.timestamp
+        })
+    ]
 });
 
-let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
+// let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
 
 // create data source for Android phone GPS
-let platformLocationDataSource = new SosGetResultJson('android-GPS', {
+let platformLocationDataSource = new SosGetResult('android-GPS', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -51,7 +58,7 @@ let platformLocationDataSource = new SosGetResultJson('android-GPS', {
     replaySpeed: 1
 });
 
-let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
+let platformOrientationDataSource = new SosGetResult('android-Heading', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -62,7 +69,7 @@ let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
     replaySpeed: 1
 });
 
-let gimbalOrientationDataSource = new SosGetResultJson('android-Heading', {
+let gimbalOrientationDataSource = new SosGetResult('android-Heading', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -140,9 +147,15 @@ let imageDrapingLayer = new ImageDrapingLayer({
     },
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
-    imageSrc: videoCanvas,
+    imageSrc: undefined,
     name: 'Solo draping'
 });
+
+videoView.getVideoCanvas().then(canvas => {
+    console.log(canvas)
+    imageDrapingLayer.props.imageSrc = canvas;
+});
+
 // #endregion snippet_image_draping_layer
 
 // create Cesium view

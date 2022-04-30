@@ -48,7 +48,7 @@ class WebCodecView extends CanvasView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['videoData'],
             ...properties
         });
 
@@ -103,15 +103,21 @@ class WebCodecView extends CanvasView {
     }
 
     async setData(dataSourceId, data) {
-        const values = data.values;
-        for(let i=0; i < values.length;i++) {
-            if (!this.skipFrame) {
-                const value = values.shift();
-                let pktData = value.data.frameData;
-                let roll = value.data.roll;
-                let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timestamp, roll);
+        if(data.type === 'videoData') {
+            const values = data.values;
+            for(let i=0;i < values.length;i++) {
+                this.updateVideo(values[i]);
             }
+        }
+    }
+    updateVideo(props) {
+        if (!this.skipFrame) {
+            this.decode(
+                props.frameData.length,
+                props.frameData,
+                props.timestamp,
+                props.roll || 0
+            );
         }
     }
 
