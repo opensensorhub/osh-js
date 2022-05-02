@@ -38,7 +38,7 @@
     "webpack-cli": "3.3.11",
     "webpack-dev-server": "3.10.3",
     "patch-package": "6.2.2",
-    "worker-loader": "2.0.0"
+    "worker-loader": "3.0.8"
   },
   "dependencies": {
     "cesium": "1.68.0"

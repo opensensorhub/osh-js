@@ -1,8 +1,9 @@
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
-import MjpegView from 'osh-js/core/ui/view/video/MjpegView.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 // create data source for Android phone camera
-let videoDataSource = new SosGetResultVideo("android-Video", {
+let videoDataSource = new SosGetResult("android-Video", {
     protocol: "ws",
     service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -14,13 +15,20 @@ let videoDataSource = new SosGetResultVideo("android-Video", {
 });
 
 // show it in video view
-let videoView = new MjpegView({
+let videoView = new VideoView({
     container: "video-mjpeg-container",
     css: "video-mjpeg",
     name: "Android Video",
     keepRatio: true,
     showTime: true,
-    dataSourceId: videoDataSource.id
+    layers: [
+        new VideoDataLayer({
+            dataSourceId: videoDataSource.id,
+            getFrameData: (rec) => rec.videoFrame.binaryBlock,
+            getCompression: (rec) => rec.videoFrame.compression,
+            getTimestamp: (rec) => rec.timestamp
+        })
+    ]
 });
 
 // start streaming

@@ -150,9 +150,9 @@ class ImageDrapingLayer extends Layer {
             this.addFn(that.getDataSourcesIdsByProperty('getCameraModel'), fn);
         }
 
-        if (isDefined(properties.getImageSrc)) {
+        if (this.checkFn("getImageSrc")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.imageSrc = await  that.getFunc('getImageSrc')(rec,timestamp,options);
+                that.props.imageSrc = await that.getFunc('getImageSrc')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getImageSrc'), fn);
         }

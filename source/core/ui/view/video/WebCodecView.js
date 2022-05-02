@@ -214,6 +214,10 @@ class WebCodecView extends CanvasView {
     destroy() {
         super.destroy();
     }
+
+    async getCanvas() {
+        return this.canvasElt;
+    }
 }
 
 export default WebCodecView;

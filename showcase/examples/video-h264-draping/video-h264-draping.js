@@ -7,6 +7,7 @@ import {
     Cartesian2, Ion
 } from "cesium";
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
+import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
 import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
@@ -107,6 +108,8 @@ let pointMarkerLayer = new PointMarkerLayer({
 
 // #region snippet_image_draping_layer
 // style it with an image draping
+let canvas;
+
 let imageDrapingLayer = new ImageDrapingLayer({
     getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
@@ -147,15 +150,18 @@ let imageDrapingLayer = new ImageDrapingLayer({
     },
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
-    imageSrc: undefined,
+    dataSourceId: videoDataSource.id, // define canvas refresh rate
+    getImageSrc: async () => videoView.getVideoCanvas(),
     name: 'Solo draping'
 });
 
-videoView.getVideoCanvas().then(canvas => {
-    console.log(canvas)
-    imageDrapingLayer.props.imageSrc = canvas;
+videoView.getVideoCanvas().then(canvasElt => {
+    canvas = canvasElt;
 });
 
+// imageDrapingLayer.props.imageSrc = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0]
+// setTimeout(() => canvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0],5000);
+// videoView.getVideoCanvas();
 // #endregion snippet_image_draping_layer
 
 // create Cesium view

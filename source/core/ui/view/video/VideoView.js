@@ -54,7 +54,8 @@ class VideoView extends View {
                 ...this.properties
             });
         }
-        this.elementDiv.replaceWith(this.videoView.elementDiv);
+        this.hide();
+        // this.elementDiv.replaceWith(this.videoView.elementDiv);
         if(this.canvasResolve) {
             this.canvasResolve(this.videoView.getCanvas());
         }
@@ -64,20 +65,16 @@ class VideoView extends View {
         if (data.type === 'videoData') {
             const values = data.values;
             for (let i = 0; i < values.length; i++) {
-                this.updateVideo(values[i]);
+                if(!isDefined(this.videoView)) {
+                    this.createVideoView(values[i].compression);
+                }
+                this.videoView.updateVideo(values[i]);
             }
         }
     }
 
-    updateVideo(props) {
-        if(!this.videoView) {
-            this.createVideoView(props.compression);
-        }
-        this.videoView.updateVideo(props);
-    }
-
     async getVideoCanvas() {
-        if(this.videoView) {
+        if(isDefined(this.videoView)) {
             return this.videoView.getCanvas();
         } else {
             const that = this;

@@ -22,22 +22,10 @@ export default class AbstractParser {
             parser = new HRefParser();
         } else if(element.type === 'DataRecord') {
             parser = new DataRecordParser(element, this.props);
-        } else if(element.type === 'Time') {
-            parser = new TimeParser(element, this.props);
-        } else if(element.type === 'Category') {
-            parser = new StringParser(element, this.props);
-        } else if(element.type === 'Quantity') {
-            parser = new DecimalParser(element, this.props);
-        } else if(element.type === 'Count') {
-            parser = new CountParser(element, this.props);
-        } else if(element.type === 'Boolean') {
-            parser = new BooleanParser(element, this.props);
         } else if(element.type === 'Vector') {
             parser = new VectorParser(element, this.props);
         } else if(element.type === 'DataArray') {
             parser = new DataArrayParser(element, this.props);
-        } else if(element.type === 'DataChoice') {
-            parser = new DataChoiceParser(element, this.props);
         }
 
         if(parser) {
@@ -74,7 +62,6 @@ export default class AbstractParser {
             (element['definition'] === 'http://www.opengis.net/def/property/OGC/0/SamplingTime' ||
                 element['definition'] === 'http://www.opengis.net/def/property/OGC/0/PhenomenonTime')) {
             this.time = this.name;
-            this.name = 'timestamp';
         }
     }
 
@@ -94,21 +81,6 @@ export default class AbstractParser {
     }
 }
 
-class DecimalParser extends AbstractParser {
-    parse(tokens, props, resultParent) {
-        let val;
-        let token = tokens[props.index++];
-        if ("INF" === token || "+INF" === token)
-            val = Number.POSITIVE_INFINITY;
-        else if ("-INF" === token)
-            val = Number.NEGATIVE_INFINITY;
-        else
-            val = parseFloat(token);
-
-        resultParent[this.name] = val;
-    }
-}
-
 class RefParser extends AbstractParser {
     constructor(parser) {
         super();
@@ -121,33 +93,7 @@ class RefParser extends AbstractParser {
     }
 
     parse(tokens, props, resultParent) {
-        resultParent[this.name] = this.parser.parse(tokens, props, resultParent);
-    }
-}
-
-class StringParser extends AbstractParser {
-    parse(tokens, props, resultParent) {
-        resultParent[this.name] = tokens[props.index++];
-    }
-}
-class BooleanParser extends AbstractParser {
-    parse(tokens, props, resultParent) {
-        let token = tokens[props.index++];
-        resultParent[this.name] = token === '0' || token.toLowerCase() === 'true';
-    }
-}
-
-class CountParser  extends AbstractParser {
-    build(element) {
-        if('value' in element) {
-            this.value = parseInt(element['value']);
-        }
-    }
-
-    parse(tokens, props, resultParent) {
-        let value = (this.value) ? this.value : parseInt(tokens[props.index++]);
-        super.checkIdValue(value);
-        resultParent[this.name] = value;
+        this.parser.parse(tokens, props, resultParent);
     }
 }
 
@@ -172,27 +118,7 @@ class DataRecordParser extends AbstractParser {
         }
     }
 }
-class DataChoiceParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-    build(element) {
-        this.itemToParserMap = {};
-        for(let item of element['item']) {
-            this.parseElement(item);
-        }
-        // index parser depending on input name
-        for(let parser of this.stack){
-            this.itemToParserMap[parser.name] = parser;
-        }
-    }
-    parse(tokens, props, resultParent) {
-        let itemName = tokens[props.index++];
-        const itemResult = {};
-        this.itemToParserMap[itemName].parse(tokens, props, itemResult);
-        resultParent[itemName] = itemResult;
-    }
-}
+
 class DataArrayParser extends AbstractParser {
     build(element) {
         // find elementCount parser
@@ -214,11 +140,7 @@ class DataArrayParser extends AbstractParser {
         resultParent[this.name] = dataarrayResults;
     }
 }
-class TimeParser extends AbstractParser {
-    parse(tokens, props, resultParent) {
-        resultParent[this.name] = new Date(tokens[props.index++]).getTime();
-    }
-}
+
 class VectorParser extends AbstractParser {
     build(element) {
         // Vector + coordinate
@@ -265,3 +187,5 @@ class HRefParser extends AbstractParser {
         resultParent[this.parser.name] = this.props.nodesIdValue[this.id];
     }
 }
+
+
