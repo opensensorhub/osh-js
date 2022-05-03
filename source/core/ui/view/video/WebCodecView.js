@@ -112,9 +112,14 @@ class WebCodecView extends CanvasView {
     }
     updateVideo(props) {
         if (!this.skipFrame) {
+            if (!this.codecConfigured) {
+                this.codec = this.codecMap[props.frameData.compression.toLowerCase()]
+                this.initDecoder();
+            }
+
             this.decode(
-                props.frameData.length,
-                props.frameData,
+                props.frameData.data.length,
+                props.frameData.data,
                 props.timestamp,
                 props.roll || 0
             );
@@ -194,10 +199,6 @@ class WebCodecView extends CanvasView {
      * @param timestamp
      */
     async decode(pktSize, pktData, timestamp, roll) {
-        if (!this.codecConfigured) {
-            this.initDecoder();
-        }
-
         if (this.codecConfigured) {
             this.decodeWorker.postMessage({
                 pktSize: pktSize,

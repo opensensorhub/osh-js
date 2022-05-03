@@ -100,12 +100,6 @@ class View {
                 }
             }
 
-            // if(isDefined(properties.dataSourceId) && !properties.layers) {
-            //     this.addLayer(new DataLayer({
-            //         dataSourceId: properties.dataSourceId
-            //     }));
-            // }
-
             if (isDefined(properties.visible)) {
                 document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
             }

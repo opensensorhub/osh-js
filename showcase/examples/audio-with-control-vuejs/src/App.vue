@@ -18,7 +18,7 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudio from 'osh-js/core/datasource/sos/SosGetResultAudio.js';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
@@ -38,7 +38,7 @@
       mounted() {
         // setup video
         // create data source for UAV camera
-        let audioDataSource = new SosGetResultAudio("alex-audio", {
+        let audioDataSource = new SosGetResult("alex-audio", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

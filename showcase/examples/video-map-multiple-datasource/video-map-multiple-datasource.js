@@ -1,7 +1,7 @@
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 const REPLAY_FACTOR = 1.0;
@@ -39,7 +39,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     });
 
     // show it in video view using FFMPEG JS decoder
-    let videoView = new FFMPEGView({
+    let videoView = new VideoView({
         container: videoDivId,
         css: "video-h264",
         name: "UAV Video",
@@ -49,8 +49,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         layers: [
             new VideoDataLayer({
                 dataSourceId: videoDataSource.id,
-                getFrameData: (rec) => rec.videoFrame.binaryBlock,
-                getCompression: (rec) => rec.videoFrame.compression,
+                getFrameData: (rec) => rec.videoFrame,
                 getTimestamp: (rec) => rec.timestamp
             })
         ]

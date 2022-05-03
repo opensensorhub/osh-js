@@ -20,7 +20,7 @@
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
     import SosGetResultAudio from 'osh-js/core/datasource/sos/SosGetResultAudio.js';
-    import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView";
+    import VideoView from "osh-js/core/ui/view/video/VideoView";
     import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
@@ -66,7 +66,7 @@
           observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame"
         });
 
-        this.views.push(new FFMPEGView({
+        this.views.push(new VideoView({
           container: 'container-video',
           css: 'video-h264',
           name: 'UAV Video',

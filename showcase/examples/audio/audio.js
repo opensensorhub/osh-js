@@ -1,12 +1,12 @@
-import AudioView from "osh-js/core/ui/view/audio/AudioView";
+import AudioView from 'osh-js/core/ui/view/audio/AudioView';
 import AudioFrequencyCanvasVisualizer
-    from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer";
-import AudioTimeCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer";
+    from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer';
+import AudioTimeCanvasVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer';
 import AudioFrequencyChartJsVisualizer
-    from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
-import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
-import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
-import SosGetResult from "../../../source/core/datasource/sos/SosGetResult";
+    from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer';
+import AudioTimeChartJsVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer';
+import AudioSpectrogramVisualizer from 'osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult';
 
 let audioDataSource = new SosGetResult("alex-audio", {
   protocol: "ws",

@@ -1,11 +1,11 @@
 // create data source for Android phone GPS
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
 import EllipseLayer from 'osh-js/core/ui/layer/EllipseLayer';
 
 // create data source for Android phone GPS
-let gpsDataSource = new SosGetResultJson("android-GPS", {
+let gpsDataSource = new SosGetResult("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -17,7 +17,7 @@ let gpsDataSource = new SosGetResultJson("android-GPS", {
 });
 
 // create data source for Android phone orientation
-let orientationDataSource = new SosGetResultJson("android-Att", {
+let orientationDataSource = new SosGetResult("android-Att", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

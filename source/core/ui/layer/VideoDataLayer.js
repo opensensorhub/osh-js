@@ -33,7 +33,6 @@ class VideoDataLayer extends Layer {
         this.props.dataId = randomUUID();
         this.props.frameData = undefined;
         this.props.roll = 0;
-        this.props.compression = 'h264';
         this.props.timestamp = 0;
 
         if (isDefined(properties.frameData)){
@@ -42,10 +41,6 @@ class VideoDataLayer extends Layer {
 
         if (isDefined(properties.roll)){
             this.props.roll = properties.roll;
-        }
-
-        if (isDefined(properties.compression)){
-            this.props.compression = properties.compression;
         }
 
         if (isDefined(properties.timestamp)){
@@ -66,13 +61,6 @@ class VideoDataLayer extends Layer {
                 that.props.roll = await that.getFunc('getRoll')(rec);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getRoll'), fn);
-        }
-
-        if (isDefined(properties.getCompression)){
-            let fn = async (rec) => {
-                that.props.compression = await that.getFunc('getCompression')(rec);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getCompression'), fn);
         }
 
         if (isDefined(properties.getTimestamp)){

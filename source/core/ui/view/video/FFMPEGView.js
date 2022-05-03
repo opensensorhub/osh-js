@@ -90,12 +90,11 @@ class FFMPEGView extends CanvasView {
     updateVideo(props) {
         if (!this.skipFrame) {
             if (this.decodeWorker == null) {
-                this.initFFMPEG_DECODER_WORKER();
+                this.initFFMPEG_DECODER_WORKER(props.frameData.compression);
             }
-
             this.decode(
-                props.frameData.length,
-                props.frameData,
+                props.frameData.data.length,
+                props.frameData.data,
                 props.timestamp,
                 props.roll || 0
             );
@@ -138,11 +137,15 @@ class FFMPEGView extends CanvasView {
      * This location cannot be changed. Be sure to have the right file at the right place.
      * @private
      */
-    initFFMPEG_DECODER_WORKER() {
+    initFFMPEG_DECODER_WORKER(codec) {
         this.decodeWorker = new DecodeWorker();
         // const drawWorker = new DrawWorker();
         this.decodeWorker.id = randomUUID();
 
+        this.decodeWorker.postMessage({
+            'message': 'init',
+            'codec' : codec.toLowerCase()
+        })
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
         // let canvas = document.createElement('canvas');
         // canvas.setAttribute('width', this.width);
@@ -208,6 +211,7 @@ class FFMPEGView extends CanvasView {
             let arrayBuffer = pktData.buffer;
 
             this.decodeWorker.postMessage({
+                message: 'data',
                 pktSize: pktSize,
                 pktData: arrayBuffer,
                 roll: roll,

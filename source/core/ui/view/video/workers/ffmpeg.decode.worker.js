@@ -1,17 +1,23 @@
 import FfmpegDecoder from "../FfmpegDecoder";
 import {isDefined} from "../../../../utils/Utils";
 
-const ffmpegDecoder = new FfmpegDecoder();
+let ffmpegDecoder;
 
 self.onmessage = function(e) {
-    const decodedFrame = ffmpegDecoder.decode(e.data);
-    if(isDefined(decodedFrame)){
-        self.postMessage(decodedFrame,
-            [
-                decodedFrame.frameYData.buffer,
-                decodedFrame.frameUData.buffer,
-                decodedFrame.frameVData.buffer
-            ]);
+    if(isDefined(e.data.message) && e.data.message === 'init') {
+        ffmpegDecoder = new FfmpegDecoder(e.data.codec);
+    }
+
+    if(isDefined(ffmpegDecoder)) {
+        const decodedFrame = ffmpegDecoder.decode(e.data);
+        if (isDefined(decodedFrame)) {
+            self.postMessage(decodedFrame,
+                [
+                    decodedFrame.frameYData.buffer,
+                    decodedFrame.frameUData.buffer,
+                    decodedFrame.frameVData.buffer
+                ]);
+        }
     }
 }
 

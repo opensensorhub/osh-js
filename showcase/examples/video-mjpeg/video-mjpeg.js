@@ -24,8 +24,7 @@ let videoView = new VideoView({
     layers: [
         new VideoDataLayer({
             dataSourceId: videoDataSource.id,
-            getFrameData: (rec) => rec.videoFrame.binaryBlock,
-            getCompression: (rec) => rec.videoFrame.compression,
+            getFrameData: (rec) => rec.videoFrame,
             getTimestamp: (rec) => rec.timestamp
         })
     ]

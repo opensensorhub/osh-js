@@ -160,7 +160,7 @@ class DataSynchronizer {
                 }
                 this.synchronizerWorker = new DataSynchronizerWorker();
                 this.handleWorkerMessage();
-                this.postMessage({
+                await this.postMessage({
                     message: 'init',
                     dataSources: dataSourcesForWorker,
                     replaySpeed: this.replaySpeed,
@@ -171,7 +171,7 @@ class DataSynchronizer {
                     this.initEventSubscription();
                     this.initialized = true;
                     resolve();
-                }.bind(this));
+                }.bind(this), false);
             } catch (error) {
                 console.log(error)
                 reject(error);
@@ -211,7 +211,7 @@ class DataSynchronizer {
          return new Promise(async resolve => {
              const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
              this.dataSources.push(dataSource);
-             this.postMessage({
+             await this.postMessage({
                  message: 'add',
                  dataSources: [dataSourceForWorker]
              }, resolve);
@@ -223,9 +223,9 @@ class DataSynchronizer {
      * @param {Object} data - the data to push into the data synchronizer
      */
     async push(dataSourceId, data) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (this.synchronizerWorker !== null) {
-                this.postMessage({
+                await this.postMessage({
                     type: 'data',
                     dataSourceId: dataSourceId,
                     data: data
@@ -243,11 +243,12 @@ class DataSynchronizer {
     }
 
     async checkInit() {
+        const that = this;
         return new Promise(async (resolve, reject) => {
-            if(!isDefined(this.init)) {
-                this.init = this.initDataSources();
+            if(!isDefined(that.init)) {
+                that.init = that.initDataSources();
             }
-            await this.init;
+            await that.init;
             resolve();
         });
     }
@@ -272,10 +273,10 @@ class DataSynchronizer {
      * Sets the replaySpeed
      */
     async setReplaySpeed(replaySpeed) {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
             this.replaySpeed = replaySpeed;
             this.properties.replaySpeed = replaySpeed;
-            this.postMessage({
+            await this.postMessage({
                 message: 'replay-speed',
                 replaySpeed: replaySpeed,
             }, resolve);
@@ -305,15 +306,15 @@ class DataSynchronizer {
     async reset() {
         return new Promise(async resolve => {
             await this.checkInit();
-            this.postMessage({
+            await this.postMessage({
                 message: 'reset'
             }, resolve);
         });
     }
 
     async getCurrentTime() {
-        return new Promise(resolve => {
-            this.postMessage({
+        return new Promise(async resolve => {
+            await this.postMessage({
                 message: 'current-time'
             }, resolve);
         });
@@ -331,7 +332,10 @@ class DataSynchronizer {
         return true;
     }
 
-    postMessage(props, Fn) {
+    async postMessage(props, Fn, checkInit = true) {
+        if(checkInit) {
+            await this.checkInit();
+        }
         const messageId = randomUUID();
         this.synchronizerWorker.postMessage({
             ...props,

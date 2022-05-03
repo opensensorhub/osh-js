@@ -75,7 +75,7 @@ class BinaryBlockParser  extends AbstractParser {
         for(let prop in this.staticProps) {
             block[prop] = this.staticProps[prop];
         }
-        block['binaryBlock'] = result;
+        block['data'] = result;
         resultParent[this.name] = block;
     }
 }

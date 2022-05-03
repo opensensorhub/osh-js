@@ -92,7 +92,7 @@ class MjpegView extends View {
     }
 
     updateVideo(props) {
-        let imgBlob = new Blob([props.frameData]);
+        let imgBlob = new Blob([props.frameData.data]);
         let url = window.URL.createObjectURL(imgBlob);
 
         let oldBlobURL = this.imgTag.src;

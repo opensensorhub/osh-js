@@ -2,9 +2,9 @@ import Module from "../ffmpeg/ffmpeg-h264";
 import {isDefined} from "../../../utils/Utils";
 
 class FfmpegDecoder {
-    constructor() {
+    constructor(codec) {
         this.instance = null;
-        this.codec = 'h264';
+        this.codec = codec || 'h264';
         this.released = false;
         this.initialized = false;
         const that = this;

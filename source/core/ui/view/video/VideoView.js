@@ -44,7 +44,7 @@ class VideoView extends View {
     }
 
     createVideoView(compression) {
-        if(compression === 'JPEG') {
+        if(compression === 'jpeg') {
             // create MJPEG View
             this.videoView = new MjpegView(this.properties);
         } else if('useWebCodecApi' in this.properties && this.properties['useWebCodecApi']) {
@@ -66,7 +66,7 @@ class VideoView extends View {
             const values = data.values;
             for (let i = 0; i < values.length; i++) {
                 if(!isDefined(this.videoView)) {
-                    this.createVideoView(values[i].compression);
+                    this.createVideoView(values[i].frameData.compression.toLowerCase());
                 }
                 this.videoView.updateVideo(values[i]);
             }

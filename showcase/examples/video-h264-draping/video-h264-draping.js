@@ -7,7 +7,6 @@ import {
     Cartesian2, Ion
 } from "cesium";
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
 import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
@@ -38,14 +37,11 @@ let videoView = new VideoView({
     layers: [
         new VideoDataLayer({
             dataSourceId: videoDataSource.id,
-            getFrameData: (rec) => rec.videoFrame.binaryBlock,
-            getCompression: (rec) => rec.videoFrame.compression,
+            getFrameData: (rec) => rec.videoFrame,
             getTimestamp: (rec) => rec.timestamp
         })
     ]
 });
-
-// let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
 
 // create data source for Android phone GPS
 let platformLocationDataSource = new SosGetResult('android-GPS', {
@@ -159,9 +155,6 @@ videoView.getVideoCanvas().then(canvasElt => {
     canvas = canvasElt;
 });
 
-// imageDrapingLayer.props.imageSrc = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0]
-// setTimeout(() => canvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0],5000);
-// videoView.getVideoCanvas();
 // #endregion snippet_image_draping_layer
 
 // create Cesium view

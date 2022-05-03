@@ -58,7 +58,7 @@ module.exports = {
             },
             {
                 test: /\.worker\.js$/,
-                use: { loader: 'worker-loader',options: { filename: "[name].[contenthash].worker.js"} }
+                use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
             }
         ]
     },

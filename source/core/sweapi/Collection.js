@@ -59,6 +59,7 @@ class Collection {
 
     async parseResponse(encodedResponse) {
         const items = this.collectionDataParser.parseData(encodedResponse);
+        this.data = [];
         if(Array.isArray(items)) {
             for (let item of items) {
                 this.data.push(this.parser.parseData(item));
