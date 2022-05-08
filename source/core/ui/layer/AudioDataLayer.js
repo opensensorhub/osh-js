@@ -21,30 +21,30 @@ import BinaryDataLayer from "./BinaryDataLayer";
  * @extends BinaryDataLayer
  * @example
  *
- * import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+ * import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
  *
  */
-class VideoDataLayer extends BinaryDataLayer {
+class AudioDataLayer extends BinaryDataLayer {
 
     constructor(properties) {
         super(properties);
-        this.type = 'videoData';
-        this.props.roll = 0;
+        this.type = 'audioData';
+        this.props.sampleRate = 0;
 
-        if (isDefined(properties.roll)){
-            this.props.roll = properties.roll;
+        if (isDefined(properties.sampleRate)){
+            this.props.sampleRate = properties.sampleRate;
         }
 
         let that = this;
 
-        if (isDefined(properties.getRoll)){
+        if (isDefined(properties.getSampleRate)){
             let fn = async (rec) => {
-                that.props.roll = await that.getFunc('getRoll')(rec);
+                that.props.sampleRate = await that.getFunc('getSampleRate')(rec);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getRoll'), fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getSampleRate'), fn);
         }
 
         this.saveState();
     }
 }
-export default VideoDataLayer;
+export default AudioDataLayer;

@@ -70,7 +70,7 @@ class BinaryBlockParser  extends AbstractParser {
         props.offset += 4;
 
         const result = new Uint8Array(arrayBuffer, props.offset, pktLength);
-        props.offset += result.byteLength;
+        props.offset += pktLength;
 
         for(let prop in this.staticProps) {
             block[prop] = this.staticProps[prop];
@@ -154,7 +154,6 @@ class BinaryDataParser {
         const res = {};
         const props = {
             time: undefined,
-            index: 0,
             offset: 0,
             littleEndian: this.resultEncoding.byteOrder === 'littleEndian'
         }

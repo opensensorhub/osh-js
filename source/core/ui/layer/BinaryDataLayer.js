@@ -14,37 +14,38 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
-import BinaryDataLayer from "./BinaryDataLayer";
+import Layer from "./Layer.js";
+import {isDefined, randomUUID} from "../../utils/Utils";
 
 /**
- * @extends BinaryDataLayer
+ * @extends Layer
  * @example
  *
- * import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+ * import BinaryDataLayer from 'osh-js/core/ui/layer/BinaryDataLayer';
  *
  */
-class VideoDataLayer extends BinaryDataLayer {
+class BinaryDataLayer extends Layer {
 
     constructor(properties) {
         super(properties);
-        this.type = 'videoData';
-        this.props.roll = 0;
+        this.type = 'binaryData';
+        this.props.dataId = randomUUID();
+        this.props.frameData = undefined;
 
-        if (isDefined(properties.roll)){
-            this.props.roll = properties.roll;
+        if (isDefined(properties.frameData)){
+            this.props.frameData = properties.frameData;
         }
 
         let that = this;
 
-        if (isDefined(properties.getRoll)){
+        if (isDefined(properties.getFrameData)){
             let fn = async (rec) => {
-                that.props.roll = await that.getFunc('getRoll')(rec);
+                that.props.frameData = await that.getFunc('getFrameData')(rec);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getRoll'), fn);
+            this.addFn(that.getDataSourcesIdsByProperty('getFrameData'), fn);
         }
 
         this.saveState();
     }
 }
-export default VideoDataLayer;
+export default BinaryDataLayer;

@@ -9,13 +9,11 @@
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
 import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import DecodeWorker from './workers/ffmpeg.decode.worker.js';
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 import CanvasView from "./CanvasView";
-import VideoDataLayer from "../../layer/VideoDataLayer";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.

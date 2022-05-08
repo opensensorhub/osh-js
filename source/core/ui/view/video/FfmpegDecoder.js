@@ -1,4 +1,4 @@
-import Module from "../ffmpeg/ffmpeg-h264";
+import Module from "../ffmpeg/ffmpeg";
 import {isDefined} from "../../../utils/Utils";
 
 class FfmpegDecoder {

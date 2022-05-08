@@ -6,7 +6,7 @@ class SosGetResultVideoWithRollParser extends SosGetResultVideoParser {
      * @param {ArrayBuffer} data - the data to parse
      * @return {Uint8Array} the parsed data
      */
-    parseData(data) {
+    parseDataBlock(data) {
         return {
             // H264 NAL unit starts at offset 14 after 8-bytes time stamp, 2-bytes roll value, and 4-bytes frame length
             frameData: new Uint8Array(data, 14),

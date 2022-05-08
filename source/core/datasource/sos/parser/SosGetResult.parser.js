@@ -1,6 +1,6 @@
 import TimeSeriesParser from "../../parsers/TimeSeriesParser.parser";
 import TextDataParser from "../../parsers/TextDataParser";
-import {assertDefined, assertTrue} from "../../../utils/Utils";
+import {assertDefined, assertTrue, isDefined} from "../../../utils/Utils";
 import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser";
 import JsonDataParser from "../../parsers/JsonDataParser";
 import BinaryDataParser from "../../parsers/BinaryDataParser";
@@ -8,6 +8,7 @@ import BinaryDataParser from "../../parsers/BinaryDataParser";
 class SosGetResultParser extends TimeSeriesParser {
     constructor() {
         super();
+        this.templatePromise = undefined;
     }
 
     init(properties) {
@@ -42,7 +43,10 @@ class SosGetResultParser extends TimeSeriesParser {
 
     async checkInit() {
         if(!this.initialized) {
-            await this.fetchGetResultTemplate(this.properties);
+            if(!isDefined(this.templatePromise)) {
+                this.templatePromise = this.fetchGetResultTemplate(this.properties);
+            }
+            await this.templatePromise;
             this.initialized = true;
         }
     }

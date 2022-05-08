@@ -28,6 +28,8 @@
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
     import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
+    import AudioDataLayer from "osh-js/core/ui/layer/AudioDataLayer";
+    import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
     export default {
         components: {
@@ -61,7 +63,7 @@
         });
 
         // setup audio
-        const audioDataSource = new SosGetResultAudio("Live and archive data from Android Sensors [Nexus5X]", {
+        const audioDataSource = new SosGetResult("Live and archive data from Android Sensors [Nexus5X]", {
           ...opts,
           observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame"
         });
@@ -75,16 +77,30 @@
           showStats: true,
           width:800,
           height:600,
-          dataSourceId: videoDataSource.id
+          layers: [
+            new VideoDataLayer({
+              dataSourceId: videoDataSource.id,
+              getFrameData: (rec) => rec.img,
+              getTimestamp: (rec) => rec.timestamp,
+              getRoll: (rec) => rec.videoRoll
+            })
+          ]
         }));
 
         const audioView = new AudioView({
           name: "Audio",
           css: 'audio-css',
           container: 'audio-chart-container',
-          dataSource: audioDataSource,
           gain: 10,
-          playSound: true
+          playSound: true,
+          layers: [
+            new AudioDataLayer({
+              dataSourceId: audioDataSource.id,
+              getSampleRate: (rec) => rec.sampleRate,
+              getFrameData: (rec) => rec.samples,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
         });
 
         const audioChartFrequencyVisualizer = new AudioFrequencyChartJsVisualizer({

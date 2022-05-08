@@ -35,6 +35,8 @@ class Layer {
      * @param {string} properties.description - default description
      * @param {string} properties.dataSourceId - default dataSourceId
      * @param {boolean} properties.visible - defines if the layer is visible
+     * @param {Number} properties.timestamp - defines the timestamp of the data
+     * @param {Function} properties.getTimestamp - function which defines the timestamp of the data
      */
     constructor(properties) {
         this.properties = properties;
@@ -47,6 +49,7 @@ class Layer {
         this.props.dataSourceId = '';
         this.props.visible = true;
         this.props.filter = true;
+        this.props.timestamp = 0;
 
         if(isDefined(properties.name)) {
             this.props.name = properties.name;
@@ -61,6 +64,10 @@ class Layer {
 
         if(isDefined(properties.visible)) {
             this.props.visible = properties.visible;
+        }
+
+        if (isDefined(properties.timestamp)){
+            this.props.timestamp = properties.timestamp;
         }
 
         this.initEvents();
@@ -89,6 +96,13 @@ class Layer {
                 that.props.visible = await that.getFunc('getVisible')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
+        }
+
+        if (this.checkFn("getTimestamp")) {
+            let fn = async (rec) => {
+                that.props.timestamp = await that.getFunc('getTimestamp')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getTimestamp'), fn);
         }
     }
 

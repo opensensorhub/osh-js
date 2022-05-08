@@ -46,12 +46,19 @@ class VideoView extends View {
     createVideoView(compression) {
         if(compression === 'jpeg') {
             // create MJPEG View
-            this.videoView = new MjpegView(this.properties);
+            this.videoView = new MjpegView({
+                ...this.properties,
+                layers: []
+            });
         } else if('useWebCodecApi' in this.properties && this.properties['useWebCodecApi']) {
-            this.videoView = new WebCodecView(this.properties);
+            this.videoView = new WebCodecView({
+                ...this.properties,
+                layers: []
+            });
         } else {
             this.videoView = new FFMPEGView({
-                ...this.properties
+                ...this.properties,
+                layers: []
             });
         }
         this.hide();

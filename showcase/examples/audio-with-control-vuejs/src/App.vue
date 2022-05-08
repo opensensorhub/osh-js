@@ -24,6 +24,8 @@
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+    import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
+
     export default {
         components: {
           TimeController
@@ -54,9 +56,16 @@
           name: "Audio",
           css: 'audio-css',
           container: 'audio-chart-container',
-          dataSource: audioDataSource,
           gain: 10,
-          playSound: true
+          playSound: true,
+          layers: [
+            new AudioDataLayer({
+              dataSourceId: audioDataSource.id,
+              getSampleRate: (rec) => rec.sampleRate,
+              getFrameData: (rec) => rec.samples,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
         });
 
         const audioChartFrequencyVisualizer = new AudioFrequencyChartJsVisualizer({

@@ -40,18 +40,21 @@ class AudioView extends View {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['audioData'],
             gain: 1.0,
             playSound: true,
             codec: 'aac',
             visualizers: [],
             frequency: 8000,
-            dataSourceId: properties.dataSource.id,
             ...properties,
             visible: false,
         });
         this.visualizers = this.properties.visualizers;
         this.isInitContext = false;
+
+        this.webCodecApiMapping = {
+            'aac': 'mp4a.40.2',
+        };
     }
 
     initVisualizers() {
@@ -78,7 +81,7 @@ class AudioView extends View {
         this.visualizers.push(visualizer);
     }
 
-    initAudioContext(sampleRate, timestamp) {
+    initAudioContext(sampleRate, compression, timestamp) {
         if (!this.isInitContext) {
             // time audio position
             this.deltaInc = 0.2;
@@ -103,18 +106,22 @@ class AudioView extends View {
             this.startTime = timestamp;
             this.isInitContext = true;
 
-            this.initDecoder();
+            this.initDecoder(compression);
             this.initVisualizers();
         }
     }
 
-    initDecoder() {
+    initDecoder(compression) {
         try {
             //TODO: since the WebCodec API changed after chrome >=94, we need to detect correctly which version
             // of the browser is used to be sure to apply the right decoder
             // this.decoder = new WebCodecApi({
+            if(!(compression in this.webCodecApiMapping)) {
+                throw Error(`Compression ${compression} is not supported by WebCodecApi`);
+            }
             this.decoder = new FfmpegAudio({
                 ...this.properties,
+                codec: this.webCodecApiMapping[compression],
                 audioCtx: this.audioCtx
             });
             console.warn('using WebCodec for audio decoding');
@@ -218,18 +225,23 @@ class AudioView extends View {
     onEndedDecodedBuffer(audioBuffer) {}
 
     async setData(dataSourceId, data) {
-        for (let value of data.values) {
-            if (!this.isInitContext) {
-                this.initAudioContext(value.data.sampleRate, value.data.timestamp);
-            }
-            if (this.properties.codec === 'raw') {
-                const frame = new Float32Array(value.data.frameData);
+        if (data.type === 'audioData') {
+            const values = data.values;
+            for (let i = 0; i < values.length; i++) {
+                const value = values[i];
+                if (!this.isInitContext) {
+                    this.codec = value.frameData.compression;
+                    this.initAudioContext(value.sampleRate, value.frameData.compression.toLowerCase(), value.timestamp);
+                }
+                if (this.properties.codec === 'raw') {
+                    const frame = new Float32Array(value.frameData);
 
-                let audioBuffer = this.audioCtx.createBuffer(1, frame.length, this.audioCtx.sampleRate);
-                audioBuffer.copyToChannel(frame, 0, 0);
-                this.onDecodedBuffer(audioBuffer, value.data.timestamp);
-            } else {
-                this.decoder.decode(value.data, value.data.timestamp);
+                    let audioBuffer = this.audioCtx.createBuffer(1, frame.length, this.audioCtx.sampleRate);
+                    audioBuffer.copyToChannel(frame, 0, 0);
+                    this.onDecodedBuffer(audioBuffer, value.timestamp);
+                } else {
+                    this.decoder.decode(value, value.timestamp);
+                }
             }
         }
     }
