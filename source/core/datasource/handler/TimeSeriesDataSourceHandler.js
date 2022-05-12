@@ -22,11 +22,12 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
         }, connector);
 
         const lastStartTimeCst = this.parser && this.parser.lastStartTime || properties.startTime;
+        const endpoint = properties.protocol + '://' + properties.endpointUrl;
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp to reconnect at the last time received
             // for that, we update the URL with the new last time received
             if (lastStartTimeCst !== 'now') {
-                this.connector.setUrl(this.parser.buildUrl(
+                this.connector.setUrl(endpoint + '?' + this.parser.buildUrl(
                     {
                         ...properties,
                         lastTimeStamp: isDefined(this.lastTimeStamp) ? new Date(this.lastTimeStamp).toISOString() : properties.startTime,
