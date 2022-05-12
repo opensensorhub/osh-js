@@ -7,7 +7,7 @@ import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 
 // #region snippet_leaflet_location_datasource
 let gpsDataSource = new SosGetResultJson("android-GPS", {
-  protocol: "ws",
+  protocol: "wss",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
