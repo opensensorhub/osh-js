@@ -26,7 +26,6 @@ import API from "../routes.conf";
 import ControlFilter from "../control/ControlFilter";
 import SweApiFetchControlParser from "../../datasource/sweapi/parser/json/SweApiFetchControl.parser";
 import EventFilter from "../event/EventFilter";
-import SweParser from "../SweParser";
 import SystemHistoryFilter from "../history/SystemHistoryFilter";
 import SweApiFetchEventParser from "../../datasource/sweapi/parser/json/SweApiFetchEvent.parser";
 import SweCollectionDataParser from "../SweCollectionDataParser";
@@ -41,7 +40,6 @@ class System extends SensorWebApi {
         this.featureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
         this.eventParser = new SweApiFetchEventParser(networkProperties);
         this.controlParser = new SweApiFetchControlParser(networkProperties);
-        this.jsonParser = new SweParser(networkProperties);
     }
 
     /**
@@ -64,7 +62,7 @@ class System extends SensorWebApi {
      * @return Promise<Collection<System>>
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        return new Collection(API.systems.search, systemFilter, pageSize, systemFilter, this._network.info.connector);
+        return new Collection(API.systems.search, systemFilter, pageSize, this.systemParser, this._network.info.connector);
     }
 
     /**

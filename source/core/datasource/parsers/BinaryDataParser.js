@@ -3,7 +3,14 @@ import AbstractParser from "./AbstractParser";
 class BinaryEncodingParser extends AbstractParser {
     build(element) {
         // iterate over member
-        for(let member of element['member']) {
+        // old SOS property name
+        let memberPropertyName = 'member';
+
+        // new SWE property name
+        if('members' in element) {
+            memberPropertyName = 'members';
+        }
+        for(let member of element[memberPropertyName]) {
             this.parseElement(member);
         }
     }
@@ -82,7 +89,7 @@ class BinaryBlockParser  extends AbstractParser {
 
 class ComponentParser extends AbstractParser {
     build(element) {
-        this.name = element.ref.replaceAll('/','');
+        this.name = this.splitRefName(element.ref);
         if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/double') {
             this.dataTypeParser = new DoubleParser(this.name);
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/signedInt'){
@@ -90,7 +97,7 @@ class ComponentParser extends AbstractParser {
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/signedShort') {
             this.dataTypeParser = new ShortParser(this.name);
         }
-        this.props.refs[this.name] = this.dataTypeParser;
+        this.props.refs[element.ref] = this.dataTypeParser;
 
     }
 }
@@ -104,9 +111,9 @@ class BlockParser extends AbstractParser {
                 this.staticProp[prop] = element[prop];
             }
         }
-        this.name =  element.ref.replaceAll('/','');
-        this.props.refs[this.name] = this;
-        this.props.refs[this.name] =  new BinaryBlockParser(this.name,this.staticProp);
+        this.name = this.splitRefName(element.ref);
+        this.props.refs[element.ref] = this;
+        this.props.refs[element.ref] =  new BinaryBlockParser(this.name,this.staticProp);
     }
 }
 

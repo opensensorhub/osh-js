@@ -56,8 +56,7 @@ export default {
     },
     contentType: state => state.right.contentType,
     isJson: state => {
-      return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
-        || state.right.contentType === 'application/om+json'
+      return true
     },
     heightVars(state) {
       return {

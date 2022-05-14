@@ -4,7 +4,7 @@ import Collection from "../Collection";
 import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
-import SweParser from "../SweParser";
+import SweCollectionDataParser from "../SweCollectionDataParser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -30,7 +30,7 @@ class Control extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties['system@id']);
-        this.jsonParser = new SweParser();
+        this.jsonParser = new SweCollectionDataParser('application/json');
     }
 
     /**

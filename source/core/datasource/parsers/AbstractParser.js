@@ -1,20 +1,28 @@
+import {isDefined} from "../../utils/Utils";
+
 export default class AbstractParser {
     constructor() {
         this.stack = [];
         this.time = undefined;
         this.idRef = undefined;
     }
-    init(element, props) {
+    init(element, props, path) {
         this.props = props;
-        this.name = element.name;
+        this.name = element.name || element.label;
+        this.path = path;
         this.checkTime(element);
         this.checkId(element);
         this.build(element);
     }
 
-    parseElement(element) {
+    parseElement(element, path) {
         let parser;
-        if(element.name in this.props.refs) {
+        if(isDefined(path)) {
+            this.path = path;
+        }
+        if(isDefined(this.path) && this.path in this.props.refs) {
+            parser = new RefParser(this.props.refs[this.path]);
+        } else if(element.name in this.props.refs) {
             parser = new RefParser(this.props.refs[element.name]);
         } else if(element.type in this.props.registeredParser){
             parser = this.props.registeredParser[element.type]();
@@ -29,7 +37,7 @@ export default class AbstractParser {
         }
 
         if(parser) {
-            parser.init(element, this.props);
+            parser.init(element, this.props, this.path);
             this.stack.push(parser);
         }
     }
@@ -79,6 +87,15 @@ export default class AbstractParser {
         }
         return this.time;
     }
+
+    splitRefName(ref) {
+        const split = ref.split('/');
+        if(split.length > 0) {
+            return split[split.length - 1];
+        } else {
+            return ref;
+        }
+    }
 }
 
 class RefParser extends AbstractParser {
@@ -111,10 +128,11 @@ class DataRecordParser extends AbstractParser {
         }
         if(Array.isArray(element[fieldName])) {
             for (let field of element[fieldName]) {
-                this.parseElement(field)
+                console.log('field')
+                this.parseElement(field, '/' + field.name)
             }
         } else {
-            this.parseElement(element[fieldName]);
+            this.parseElement(element[fieldName], '/' + element[fieldName].name);
         }
     }
 }
@@ -150,8 +168,9 @@ class VectorParser extends AbstractParser {
             coordinatePropertyName = 'coordinate';
         }
 
+        let currentPath = (this.path) ? this.path + '/' : '/';
         for (let coordinate of element[coordinatePropertyName]) {
-            this.parseElement(coordinate)
+            this.parseElement(coordinate, currentPath + coordinate.name)
         }
     }
 

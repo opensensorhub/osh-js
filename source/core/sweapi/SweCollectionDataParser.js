@@ -1,8 +1,7 @@
 class SweCollectionDataParser {
 
-    constructor(format, parser) {
+    constructor(format) {
         this.format = format;
-        this.parser = parser;
     }
 
     parseData(data) {

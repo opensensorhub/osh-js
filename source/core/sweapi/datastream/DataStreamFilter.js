@@ -43,6 +43,7 @@ class DataStreamFilter extends SensorWebApiFilter {
             featureOfInterest: undefined,
             select: undefined,
             format: 'application/json',
+            obsFormat: 'application/om+json',
             validTime: undefined,
             phenomenonTime: undefined,
             resultTime: undefined,

@@ -17,10 +17,9 @@
 import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
-import Collection from "../Collection";
-import SweParser from "../SweParser";
 import DataStreamFilter from "./DataStreamFilter";
 import ObservationsCollection from "../ObservationsCollection";
+import SweApiResultParser from "../../datasource/sweapi/parser/SweApiResult.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -29,7 +28,7 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.jsonParser = new SweParser();
+        this.sweParser = new SweApiResultParser(this);
     }
 
     /**
@@ -38,21 +37,11 @@ class DataStream extends SensorWebApi {
      * @param callback - A callback to get observations
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
-        //TODO: handle swe+json
-        if(observationFilter.props.format === 'application/swe+json'
-                                || observationFilter.props.format === 'application/om+json') {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
-            };
-        } else if(observationFilter.props.format === 'application/swe+csv'
-                            || observationFilter.props.format === 'application/swe+xml'
-        ) {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(String.fromCharCode.apply(null, new Uint8Array(message)));
-            };
-        } else {
-            this._network.stream.connector.onMessage = callback;
-        }
+        this._network.stream.connector.onMessage = async (message) => {
+            // callback(this.sweParser.parseDataBlock(message));
+            const dataBlock = await this.sweParser.parseDataBlock(message,observationFilter.props.format);
+            callback(dataBlock);
+        };
 
         this._network.stream.connector.doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
@@ -62,7 +51,8 @@ class DataStream extends SensorWebApi {
     }
 
     /**
-     * Retrieve historical observations from a datastream     * @param observationFilter
+     * Retrieve historical observations from a datastream
+     * @param observationFilter
      * @param observationFilter
      * @param pageSize
      * @param parser
@@ -81,7 +71,7 @@ class DataStream extends SensorWebApi {
     async getSchema(dataStreamFilter = new DataStreamFilter()) {
         return this._network.info.connector.doRequest(
             API.datastreams.schema.replace('{id}',this.properties.id),
-            dataStreamFilter.toQueryString(['select', 'obsFormat', ]),
+            dataStreamFilter.toQueryString(['select', 'obsFormat']),
             dataStreamFilter.props.format
         );
     }
