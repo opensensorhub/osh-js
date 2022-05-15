@@ -15,7 +15,6 @@ class JsonDataParser {
         this.nodesId = {};
         this.parsers = [];
         this.count = 0;
-
         const props = {
             nodesId: {},
             nodesIdValue: {},
@@ -29,16 +28,20 @@ class JsonDataParser {
         this.parser.init(rootElement, props)
     }
 
+    getTimeField() {
+        return this.parser.getTimePropertyName();
+    }
+
     parseDataBlock(arrayBuffer) {
         let dataBlock = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
         const jsonData = JSON.parse(dataBlock);
 
         if(Array.isArray(jsonData)) {
             for(let d of jsonData) {
-                d['timestamp'] = new Date(d[this.parser.getTimePropertyName()]).getTime();
+                d['timestamp'] = new Date(d[this.getTimeField()]).getTime();
             }
         } else {
-            jsonData['timestamp'] = new Date(jsonData[this.parser.getTimePropertyName()]).getTime();
+            jsonData['timestamp'] = new Date(jsonData[this.getTimeField()]).getTime();
         }
         return jsonData;
     }

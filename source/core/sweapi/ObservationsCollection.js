@@ -21,12 +21,31 @@ class ObservationsCollection extends Collection {
     /**
      *
      */
-    constructor(url, filter, pageSize, parser, connector) {
-        super(url,filter ,pageSize ,parser ,connector );
+    constructor(url, filter, pageSize, parser) {
+        super(url,filter ,pageSize ,parser);
+    }
+
+    async fetchData(offset) {
+        const queryString = `${this.filter.toQueryString()}&offset=${offset}&limit=${this.pageSize}`;
+        const fullUrl = this.url + '?' + queryString;
+
+        const encodedResponse = await fetch(fullUrl, {
+            method: 'GET',
+            headers: {}
+        }).then((response) => {
+            if (!response.ok) {
+                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                err.response = response;
+                throw err;
+            }
+            return response.arrayBuffer();
+        });
+
+        await this.parseResponse(encodedResponse);
     }
 
     async parseResponse(encodedResponse) {
-        this.data = this.collectionDataParser.parseData(encodedResponse);
+        this.data = await this.parser.parseDataBlock(encodedResponse,this.filter.props.format);
         this.parseBoundsOffset(encodedResponse);
     }
 }

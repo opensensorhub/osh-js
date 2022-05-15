@@ -17,18 +17,17 @@
 import SystemFilter from "./SystemFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SweApiFetchSystemParser from "../../datasource/sweapi/parser/json/SweApiFetchSystem.parser";
+import SweApiFetchSystemParser from "../../datasource/sweapi/parser/collection/SweApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/collection/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/json/SweApiFetchFeatureOfInterest.parser";
+import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/collection/SweApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
 import ControlFilter from "../control/ControlFilter";
-import SweApiFetchControlParser from "../../datasource/sweapi/parser/json/SweApiFetchControl.parser";
+import SweApiFetchControlParser from "../../datasource/sweapi/parser/collection/SweApiFetchControl.parser";
 import EventFilter from "../event/EventFilter";
 import SystemHistoryFilter from "../history/SystemHistoryFilter";
-import SweApiFetchEventParser from "../../datasource/sweapi/parser/json/SweApiFetchEvent.parser";
-import SweCollectionDataParser from "../SweCollectionDataParser";
+import SweApiFetchEventParser from "../../datasource/sweapi/parser/collection/SweApiFetchEvent.parser";
 
 class System extends SensorWebApi {
 
@@ -48,11 +47,9 @@ class System extends SensorWebApi {
      * @return Promise<JSON> - SensorlML Description
      */
     async getDetails(systemFilter = new SystemFilter()) {
-        return this._network.info.connector.doRequest(
-            API.systems.details.replace('{sysid}',this.properties.id),
-            systemFilter.toQueryString(['select', 'format']),
-            systemFilter.props.format
-        );
+        const apiUrl = API.systems.details.replace('{sysid}',this.properties.id);
+        const queryString = systemFilter.toQueryString(['select', 'format']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 
     /**
@@ -62,7 +59,7 @@ class System extends SensorWebApi {
      * @return Promise<Collection<System>>
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        return new Collection(API.systems.search, systemFilter, pageSize, this.systemParser, this._network.info.connector);
+        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.systemParser);
     }
 
     /**
@@ -73,8 +70,11 @@ class System extends SensorWebApi {
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.datastreams.replace('{sysid}',this.properties.id),
-            dataStreamFilter, pageSize,this.dataStreamParser, this._network.info.connector);
+            this.baseUrl() + API.systems.datastreams.replace('{sysid}',this.properties.id),
+            dataStreamFilter,
+            pageSize,
+            this.dataStreamParser
+        );
     }
 
     /**
@@ -85,8 +85,11 @@ class System extends SensorWebApi {
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.fois.replace('{sysid}',this.properties.id),featureOfInterestFilter,
-            pageSize,this.featureOfInterestParser, this._network.info.connector);
+            this.baseUrl() + API.systems.fois.replace('{sysid}',this.properties.id),
+            featureOfInterestFilter,
+            pageSize,
+            this.featureOfInterestParser
+        );
     }
 
     /**
@@ -97,8 +100,11 @@ class System extends SensorWebApi {
      */
     async searchControls(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.controls.replace('{sysid}',this.properties.id),controlFilter,
-            pageSize,this.controlParser, this._network.info.connector);
+            this.baseUrl() + API.systems.controls.replace('{sysid}',this.properties.id),
+            controlFilter,
+            pageSize,
+            this.controlParser
+        );
     }
 
     /**
@@ -108,12 +114,9 @@ class System extends SensorWebApi {
      * @return {Promise<Control>}
      */
     async getControlById(datastreamId,controlFilter = new ControlFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId),
-            controlFilter.toQueryString(['select','format']),
-            controlFilter.props.format
-        );
-        return this.controlParser.parseData(response);
+        const apiUrl = API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId);
+        const queryString = systemFilter.toQueryString(['select', 'format']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 
     /**
@@ -124,8 +127,11 @@ class System extends SensorWebApi {
      */
     async searchEvents(eventFilter = new EventFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.events.replace('{sysid}',this.properties.id),eventFilter,
-            pageSize,this.eventParser, this._network.info.connector);
+            this.baseUrl() + API.systems.events.replace('{sysid}',this.properties.id),
+            eventFilter,
+            pageSize,
+            this.eventParser
+        );
     }
 
     /**
@@ -136,8 +142,11 @@ class System extends SensorWebApi {
      */
     async searchHistory(systemHistoryFilter = new SystemHistoryFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.history.replace('{sysid}',this.properties.id),systemHistoryFilter,
-            pageSize,this.systemParser, this._network.info.connector);
+            this.baseUrl() + API.systems.history.replace('{sysid}',this.properties.id),
+            systemHistoryFilter,
+            pageSize,
+            this.systemParser
+        );
     }
 
     /**
@@ -148,8 +157,11 @@ class System extends SensorWebApi {
      */
     async searchMembers(systemFilter = new SystemFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.members.replace('{sysid}',this.properties.id),systemFilter,
-            pageSize,this.systemParser, this._network.info.connector);
+            this.baseUrl() + API.systems.members.replace('{sysid}',this.properties.id),
+            systemFilter,
+            pageSize,
+            this.systemParser
+        );
     }
 }
 

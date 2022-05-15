@@ -18,6 +18,7 @@ import HttpConnector from "../protocol/HttpConnector";
 import WebSocketConnector from "../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
 import MqttConnector from "../protocol/MqttConnector";
+import API from "./routes.conf";
 
 class SensorWebApi {
 
@@ -34,14 +35,16 @@ class SensorWebApi {
     constructor(networkProperties) {
         assertDefined(networkProperties.endpointUrl, 'endpointUrl');
         this.networkProperties = networkProperties;
-        this._network = {}
-        this._network.info = {
-            connector: this.createInfoConnector({
-                tls: networkProperties.tls,
-                endpointUrl: networkProperties.endpointUrl
-            })
-        };
 
+        let endpoint = networkProperties.endpointUrl;
+        if (endpoint.endsWith('/')) {
+            endpoint = endpoint.substring(0, endpoint.length - 1);
+        }
+
+        const tls = (networkProperties.tls) ? 's' : '';
+        this.url = 'http' + tls + '://' + endpoint;
+
+        this._network = {}
         if (isDefined(networkProperties.connector)) {
             this._network.stream = {
                 connector: networkProperties.connector,
@@ -61,19 +64,12 @@ class SensorWebApi {
         }
     }
 
-    createInfoConnector(networkProperties) {
-        let endpoint = networkProperties.endpointUrl;
-        if (endpoint.endsWith('/')) {
-            endpoint = endpoint.substring(0, endpoint.length - 1);
-        }
+    baseUrl() {
+        return this.url;
+    }
 
-        const tls = (networkProperties.tls) ? 's' : '';
-        const url = 'http' + tls + '://' + endpoint;
-
-        return new HttpConnector(url , {
-            responseType: networkProperties.responseFormat || 'application/swe+json',
-            method: 'GET'
-        });
+    stream() {
+        return this._network.stream.connector;
     }
 
     createStreamConnector(networkProperties) {
@@ -91,13 +87,7 @@ class SensorWebApi {
         const tls = (networkProperties.tls) ? 's' : '';
         const url = networkProperties.streamProtocol + tls + '://' + endpoint;
 
-        if(networkProperties.streamProtocol === 'http') {
-            return new HttpConnector(url , {
-                responseFormat: networkProperties.responseFormat || 'application/json',
-                responseType: networkProperties.responseType || 'application/json',
-                method: 'GET'
-            });
-        } else if(networkProperties.streamProtocol === 'mqtt') {
+        if(networkProperties.streamProtocol === 'mqtt') {
             return new MqttConnector(url, networkProperties);
         } else if(networkProperties.streamProtocol === 'ws') {
             return new WebSocketConnector(url);
@@ -106,6 +96,22 @@ class SensorWebApi {
 
     connect() {
         this._network.stream.connector.connect();
+    }
+
+    fetchAsJson(apiUrl, queryString) {
+        const fullUrl = this.baseUrl() +  apiUrl + '?' +queryString;
+
+        return fetch(fullUrl, {
+            method: 'GET',
+            headers: {}
+        }).then(function (response) {
+            if (!response.ok) {
+                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                err.response = response;
+                throw err;
+            }
+            return response.json();
+        });
     }
 }
 export default SensorWebApi;

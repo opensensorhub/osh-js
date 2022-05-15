@@ -16,7 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SweApiFetchSystemParser from "../../datasource/sweapi/parser/json/SweApiFetchSystem.parser";
+import SweApiFetchSystemParser from "../../datasource/sweapi/parser/collection/SweApiFetchSystem.parser";
 import SystemFilter from "./SystemFilter";
 import API from "../routes.conf";
 
@@ -26,7 +26,7 @@ class Systems extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SweApiFetchSystemParser(networkProperties);
+        this.systemParser = new SweApiFetchSystemParser(networkProperties);
     }
 
     /**
@@ -37,10 +37,7 @@ class Systems extends SensorWebApi {
      * @return {Promise<Collection>}  A collection of System
      */
     async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        return new Collection(
-            API.systems.search, systemFilter,
-            pageSize, this.parser, this._network.info.connector
-        );
+        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.systemParser);
     }
 
     /**
@@ -51,12 +48,9 @@ class Systems extends SensorWebApi {
      * @return {Promise<System>}
      */
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.systems.by_id.replace('{sysid}',systemId),
-            systemFilter.toQueryString(['select','format']),
-            systemFilter.props.format
-        );
-        return this.parser.parseData(response);
+        const apiUrl = API.systems.by_id.replace('{sysid}',systemId);
+        const queryString = systemFilter.toQueryString(['select','format']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 export default Systems;

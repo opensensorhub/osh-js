@@ -17,7 +17,6 @@
 import RightHeader from "./common/RightHeader.vue";
 import RightContent from "./common/RightContent.vue";
 import { mapActions, mapState } from 'vuex'
-import ObservationFilter from "../../../../source/core/sweapi/observation/ObservationFilter";
 import CommandFilter from "../../../../source/core/sweapi/command/CommandFilter";
 
 export default {

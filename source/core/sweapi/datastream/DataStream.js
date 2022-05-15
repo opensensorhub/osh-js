@@ -20,6 +20,7 @@ import API from "../routes.conf";
 import DataStreamFilter from "./DataStreamFilter";
 import ObservationsCollection from "../ObservationsCollection";
 import SweApiResultParser from "../../datasource/sweapi/parser/SweApiResult.parser";
+import SweApiCollectionResultParser from "../../datasource/sweapi/parser/SweApiCollectionResult.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -29,6 +30,7 @@ class DataStream extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.sweParser = new SweApiResultParser(this);
+        this.sweCollectionParser = new SweApiCollectionResultParser(this);
     }
 
     /**
@@ -37,13 +39,12 @@ class DataStream extends SensorWebApi {
      * @param callback - A callback to get observations
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
-        this._network.stream.connector.onMessage = async (message) => {
-            // callback(this.sweParser.parseDataBlock(message));
+        this.stream().onMessage = async (message) => {
             const dataBlock = await this.sweParser.parseDataBlock(message,observationFilter.props.format);
             callback(dataBlock);
         };
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter.toQueryString(),
             'arraybuffer'
@@ -58,22 +59,19 @@ class DataStream extends SensorWebApi {
      * @param parser
      * @return {Collection}
      */
-    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.jsonParser) {
+    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.sweParser) {
         return new ObservationsCollection(
-            API.datastreams.observations.replace('{id}',this.properties.id),
+            this.baseUrl() + API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,
             pageSize,
-            parser,
-            this._network.info.connector
+            this.sweCollectionParser
         );
     }
 
     async getSchema(dataStreamFilter = new DataStreamFilter()) {
-        return this._network.info.connector.doRequest(
-            API.datastreams.schema.replace('{id}',this.properties.id),
-            dataStreamFilter.toQueryString(['select', 'obsFormat']),
-            dataStreamFilter.props.format
-        );
+        const apiUrl = API.datastreams.schema.replace('{id}',this.properties.id);
+        const queryString = dataStreamFilter.toQueryString(['select', 'obsFormat']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 

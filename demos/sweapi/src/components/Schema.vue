@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import SweApiFetchGenericJson
-  from "../../../../source/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import DataStreamFilter from "../../../../source/core/sweapi/datastream/DataStreamFilter";
 import Control from "../../../../source/core/sweapi/control/Control";
 import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
@@ -21,6 +19,7 @@ import DataStream from "../../../../source/core/sweapi/datastream/DataStream";
 import RightHeader from "./common/RightHeader.vue";
 import RightContent from "./common/RightContent.vue";
 import { mapActions, mapState } from 'vuex'
+import SweCollectionDataParser from "../../../../source/core/datasource/sweapi/SweCollectionDataParser";
 
 export default {
   name: "Schema",
@@ -33,19 +32,20 @@ export default {
   ],
   data() {
     return {
-      jsonParser: new SweApiFetchGenericJson(),
       formats: this.objCompliantSchema.properties.formats,
       currentFormat: 'application/om+json'
     }
   },
   mounted() {
     this.formats = this.objCompliantSchema.properties.formats;
-    this.displaySchema();
+    this.displaySchema(this.currentFormat);
   },
   methods: {
     ...mapActions(['updateRightContent']),
     displaySchema(format) {
       const that = this;
+      const jsonParser = new SweCollectionDataParser(format);
+
       let filter;
       //TODO: better way to do this??
       if(this.objCompliantSchema instanceof DataStream) {
@@ -59,7 +59,7 @@ export default {
       }
       this.objCompliantSchema.getSchema(filter).then(schema => {
         that.updateRightContent({
-          content: that.jsonParser.parseData(schema),
+          content: schema,
           contentType: 'application/json'
         });
       });

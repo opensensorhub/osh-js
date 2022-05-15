@@ -2,9 +2,9 @@ import SensorWebApi from "../SensorWebApi";
 import CommandFilter from "../command/CommandFilter";
 import Collection from "../Collection";
 import API from "../routes.conf";
-import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
+import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
-import SweCollectionDataParser from "../SweCollectionDataParser";
+import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -41,8 +41,12 @@ class Control extends SensorWebApi {
      */
     async searchCommands(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
-            API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
-                this.properties.id),commandFilter, pageSize,this.jsonParser, this._network.info.connector);
+            this.baseUrl() + API.controls.commands.replace('{sysid}',
+                this.properties['system@id']).replace('{dsid}',this.properties.id),
+            commandFilter,
+            pageSize,
+            this.jsonParser
+        );
     }
 
     /**
@@ -51,15 +55,12 @@ class Control extends SensorWebApi {
      * @param callback - A callback to get observations
      */
     streamCommands(controlFilter = new ControlFilter(), callback = function(){}) {
-        if(controlFilter.props.format === 'application/json') {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
-            };
-        } else {
-            this._network.stream.connector.onMessage = callback;
-        }
+        this.stream().onMessage = async (message) => {
+            const dataBlock = await this.sweParser.parseDataBlock(message,controlFilter.props.format);
+            callback(dataBlock);
+        };
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
@@ -67,34 +68,33 @@ class Control extends SensorWebApi {
     }
 
     async getCommandById(commandId,commandFilter = new CommandFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.controls.command_by_id
-                .replace('{sysid}',this.properties['system@id'])
-                .replace('{dsid}', this.properties.id)
-                .replace('{cmdid}', commandId),
-            commandFilter.toQueryString(['select','format']),
-            commandFilter.props.format
-        );
-        return this.commandParser.parseData(response);
+        const apiUrl = API.controls.command_by_id
+            .replace('{sysid}',this.properties['system@id'])
+            .replace('{dsid}', this.properties.id)
+            .replace('{cmdid}', commandId);
+        const queryString = commandFilter.toQueryString(['select', 'obsFormat']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 
     postCommand(payload, commandFilter = new CommandFilter()) {
-        this._network.info.connector.postRequest(
-            API.controls.commands
-                .replace('{sysid}',this.properties['system@id'])
-                .replace('{dsid}', this.properties.id),
-            payload,
-            commandFilter.props.format
-        );
+        // this._network.info.connector.postRequest(
+        //     API.controls.commands
+        //         .replace('{sysid}',this.properties['system@id'])
+        //         .replace('{dsid}', this.properties.id),
+        //     payload,
+        //     commandFilter.props.format
+        // );
+        throw Error('Not supported operation: postCommand');
     }
 
     publishCommand(payload, commandFilter = new CommandFilter()) {
-        this._network.stream.connector.publishRequest(
-            API.controls.commands
-                .replace('{sysid}',this.properties['system@id'])
-                .replace('{dsid}', this.properties.id),
-            payload
-        );
+        // this._network.stream.connector.publishRequest(
+        //     API.controls.commands
+        //         .replace('{sysid}',this.properties['system@id'])
+        //         .replace('{dsid}', this.properties.id),
+        //     payload
+        // );
+        throw Error('Not supported operation: publishCommand');
     }
 
     /**
@@ -105,8 +105,12 @@ class Control extends SensorWebApi {
      */
     async searchStatus(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
-            API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
-                this.properties.id),controlFilter, pageSize,this.jsonParser, this._network.info.connector);
+            this.baseUrl() + API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
+                this.properties.id),
+            controlFilter,
+            pageSize,
+            this.jsonParser
+        );
     }
 
     /**
@@ -115,15 +119,12 @@ class Control extends SensorWebApi {
      * @param callback - A callback to get observations
      */
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
-        if(controlFilter.props.format === 'application/json') {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
-            };
-        } else {
-            this._network.stream.connector.onMessage = callback;
-        }
+        this.stream().onMessage = async (message) => {
+            const dataBlock = await this.sweParser.parseDataBlock(message,controlFilter.props.format);
+            callback(dataBlock);
+        };
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
@@ -136,11 +137,9 @@ class Control extends SensorWebApi {
      * @returns {Promise<*>}
      */
     async getSchema(controlFilter = new ControlFilter()) {
-        return this._network.info.connector.doRequest(
-            API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
-            controlFilter.toQueryString(['select', 'obsFormat']),
-            controlFilter.props.format
-        );
+        const apiUrl = API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id);
+        const queryString = controlFilter.toQueryString(['select', 'obsFormat']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 

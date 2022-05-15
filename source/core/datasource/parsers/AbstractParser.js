@@ -128,7 +128,6 @@ class DataRecordParser extends AbstractParser {
         }
         if(Array.isArray(element[fieldName])) {
             for (let field of element[fieldName]) {
-                console.log('field')
                 this.parseElement(field, '/' + field.name)
             }
         } else {

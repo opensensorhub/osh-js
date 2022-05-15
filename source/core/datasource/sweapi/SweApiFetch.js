@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import TimeSeriesDataSource from "../TimeSeriesDataSource";
-import SensorWebApiFetchWorkerJson from "./worker/SweApiFetchJson.worker";
+import SweApiFetchWorker from "./worker/SweApiFetch.worker";
 
 class SweApiFetch extends TimeSeriesDataSource {
 
@@ -47,7 +47,7 @@ class SweApiFetch extends TimeSeriesDataSource {
         });
     }
     async createWorker(properties) {
-        return new SensorWebApiFetchWorkerJson();
+        return new SweApiFetchWorker();
     }
 }
 

@@ -14,11 +14,12 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/collection/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import API from "../routes.conf";
+import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
 
 class FeaturesOfInterest extends SensorWebApi {
     /**
@@ -26,7 +27,7 @@ class FeaturesOfInterest extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SweApiDataStreamParser(networkProperties);
+        this.jsonParser = new SweCollectionDataParser(networkProperties);
     }
 
     /**
@@ -37,7 +38,7 @@ class FeaturesOfInterest extends SensorWebApi {
      * @return {Promise<Collection>}
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
-        return new Collection('/featuresOfInterest', featureOfInterestFilter, pageSize,this.parser, this._network.info.connector);
+        return new Collection(this.baseUrl() + '/featuresOfInterest', featureOfInterestFilter, pageSize,this.jsonParser);
     }
 
     /**
@@ -48,13 +49,9 @@ class FeaturesOfInterest extends SensorWebApi {
      * @return {Promise<DataStream>}
      */
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.fois.by_id.replace('{id}',fId),
-            featureOfInterestFilter.toQueryString(['select','format'],
-            featureOfInterestFilter.props.format
-        ));
-
-        return this.parser.parseData(response);
+        const apiUrl = API.fois.by_id.replace('{id}',fId);
+        const queryString = featureOfInterestFilter.toQueryString(['select', 'format']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 export default FeaturesOfInterest;

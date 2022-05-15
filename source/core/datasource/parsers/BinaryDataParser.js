@@ -158,16 +158,19 @@ class BinaryDataParser {
     }
 
     parseDataBlock(arrayBuffer) {
-        const res = {};
         const props = {
             time: undefined,
             offset: 0,
             littleEndian: this.resultEncoding.byteOrder === 'littleEndian'
         }
-        this.parser.parse(arrayBuffer, props, res);
-        res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime();
-        // console.log(res);
-        return res;
+        const results = [];
+        while(props.offset < arrayBuffer.byteLength) {
+            const res = {};
+            this.parser.parse(arrayBuffer, props, res);
+            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime();
+            results.push(res);
+        }
+        return results;
     }
 }
 

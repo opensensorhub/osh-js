@@ -17,7 +17,7 @@
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import DataStreamFilter from "./DataStreamFilter";
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/collection/SweApiDataStream.parser";
 import API from "../routes.conf";
 
 class DataStreams extends SensorWebApi {
@@ -26,7 +26,7 @@ class DataStreams extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SweApiDataStreamParser(networkProperties);
+        this.datastreamParser = new SweApiDataStreamParser(networkProperties);
     }
 
     /**
@@ -37,8 +37,10 @@ class DataStreams extends SensorWebApi {
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
-            API.datastreams.search,dataStreamFilter,
-            pageSize, this.parser, this._network.info.connector
+            this.baseUrl() + API.datastreams.search,
+            dataStreamFilter,
+            pageSize,
+            this.datastreamParser
         );
     }
 
@@ -49,12 +51,9 @@ class DataStreams extends SensorWebApi {
      * @return {Promise<DataStream>}
      */
     async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.datastreams.by_id.replace('{id}',datastreamId),
-            dataStreamFilter.toQueryString(['select','format']),
-            dataStreamFilter.props.format
-        );
-        return this.parser.parseData(response);
+        const apiUrl = API.datastreams.by_id.replace('{id}',datastreamId);
+        const queryString = dataStreamFilter.toQueryString(['select','format']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 export default DataStreams;

@@ -1,9 +1,8 @@
 import SensorWebApi from "../SensorWebApi";
-import ControlFilter from "../control/ControlFilter";
 import Collection from "../Collection";
 import API from "../routes.conf";
 import CommandFilter from "./CommandFilter";
-import SweApiFetchJsonParser from "../../datasource/sweapi/parser/json/SweApiFetchJson.parser";
+import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -28,7 +27,7 @@ class Command extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.jsonParser = new SweApiFetchJsonParser(networkProperties);
+        this.jsonParser = new SweCollectionDataParser(networkProperties);
     }
 
     /**
@@ -39,10 +38,13 @@ class Command extends SensorWebApi {
      */
     async searchStatus(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
-            API.commands.status.replace('{sysid}',this.properties['system@id'])
+            this.baseUrl() + API.commands.status.replace('{sysid}',this.properties['system@id'])
                                .replace('{dsid}', this.properties['control@id'])
                                .replace('{cmdid}', this.properties.id),
-            commandFilter, pageSize, this.jsonParser, this._network.info.connector);
+            commandFilter,
+            pageSize,
+            this.jsonParser
+        );
     }
 
     /**

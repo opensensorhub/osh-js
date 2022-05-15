@@ -15,18 +15,17 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {isDefined} from "../utils/Utils";
-import SweCollectionDataParser from "./SweCollectionDataParser";
+import SweCollectionDataParser from "../datasource/sweapi/SweCollectionDataParser";
 
 class Collection {
     /**
      *
      */
-    constructor(url, filter, pageSize, parser, connector) {
+    constructor(url, filter, pageSize, parser) {
         this.url = url;
         this.filter = filter;
         this.pageSize = pageSize;
         this.parser = parser;
-        this.connector = connector;
         this.currentOffset = 0;
         this.nextOffset = undefined;
         this.previousOffset = undefined;
@@ -45,20 +44,26 @@ class Collection {
     }
 
     async fetchData(offset) {
-        const response = await this.connector.doRequest(
-            this.url,
-            `${this.filter.toQueryString()}&offset=${offset}&limit=${this.pageSize}`,
-            this.filter.props.responseType
-            );
-        await this.onFetchData(response);
+        const queryString = `${this.filter.toQueryString()}&offset=${offset}&limit=${this.pageSize}`;
+        const fullUrl = this.url + '?' + queryString;
+
+        const jsonResponse = await fetch(fullUrl, {
+            method: 'GET',
+            headers: {}
+        }).then((response) => {
+            if (!response.ok) {
+                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                err.response = response;
+                throw err;
+            }
+            return response.json();
+        });
+
+        await this.parseResponse(jsonResponse);
     }
 
-    async onFetchData(response) {
-        await this.parseResponse(response);
-    }
-
-    async parseResponse(encodedResponse) {
-        const items = this.collectionDataParser.parseData(encodedResponse);
+    async parseResponse(jsonResponse) {
+        const items = this.collectionDataParser.parseData(jsonResponse);
         this.data = [];
         if(Array.isArray(items)) {
             for (let item of items) {
@@ -67,13 +72,12 @@ class Collection {
         } else {
             this.data.push(items);
         }
-        this.parseBoundsOffset(encodedResponse);
+        this.parseBoundsOffset(jsonResponse);
     }
 
-    parseBoundsOffset(encodedResponse) {
+    parseBoundsOffset(jsonResponse) {
         try {
-            let response = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(encodedResponse)));
-            const links = response.links;
+            const links = jsonResponse.links;
             let next = false, previous = false;
             if (isDefined(links)) {
                 // check all rel and find out 'next' property

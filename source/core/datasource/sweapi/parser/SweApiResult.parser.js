@@ -10,6 +10,7 @@ import SweBinaryParserParser from "./SweBinaryParser.parser";
 import SweBinaryParser from "./SweBinaryParser.parser";
 import SweCsvParser from "./SweCsvParser.parser";
 import SensorWebApiFilter from "../../../sweapi/Filter";
+import OmJsonParser from "./OmJsonParser.parser";
 
 class SweApiResultParser extends TimeSeriesParser {
     constructor(dataObject) {
@@ -49,15 +50,14 @@ class SweApiResultParser extends TimeSeriesParser {
             if(!isDefined(parser.schemaPromise)) {
                 this.parsers[format].schemaPromise = new Promise(async (resolve, reject) => {
                     try {
-                        const arrayBufferSchema = await this.dataObject.getSchema(new SensorWebApiFilter({
+                        const jsonSchema = await this.dataObject.getSchema(new SensorWebApiFilter({
                             obsFormat: format
                         }));
-                        const schema = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(arrayBufferSchema)));
-                        this.init(schema, format);
+                        this.init(jsonSchema, format);
                         resolve();
                     } catch (ex) {
                       console.error(ex);
-                      reject();
+                      reject(ex);
                     }
                 });
             }
@@ -71,21 +71,21 @@ class SweApiResultParser extends TimeSeriesParser {
     init(schema, format) {
         if(format === 'application/om+json') {
             //resultSchema
-            this.parsers[format].parser = new JsonDataParser(schema.resultSchema);
+            this.parsers[format].parser = new OmJsonParser(schema.resultSchema);
         } else if(format === 'application/swe+json') {
             //recordSchema
             this.parsers[format].parser  = new SweJsonParser(schema.recordSchema);
-        } else if(format === 'application/swe+xml') {
+        } /*else if(format === 'application/swe+xml') {
             //recordSchema
             this.parsers[format].parser = new SweXmlParser(schema.recordSchema);
-        } else if(format === 'application/swe+binary') {
+        }*/ else if(format === 'application/swe+binary') {
             //recordSchema
             this.parsers[format].parser = new SweBinaryParser(schema.recordSchema, schema.recordEncoding);
         } else if(format === 'application/swe+csv') {
             //recordSchema
             this.parsers[format].parser = new SweCsvParser(schema.recordSchema, schema.recordEncoding);
         } else {
-            throw Error(`Not supported parser format: ${this.format}`);
+            throw Error(`Not supported parser format: ${format}`);
         }
     }
 

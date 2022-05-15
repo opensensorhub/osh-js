@@ -1,6 +1,6 @@
 class SweCollectionDataParser {
 
-    constructor(format) {
+    constructor(format = 'application/json') {
         this.format = format;
     }
 

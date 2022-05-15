@@ -67,7 +67,9 @@ export default {
         format: value
       }));
     },
-    connect(observationFilter = new ObservationFilter({})) {
+    connect(observationFilter = new ObservationFilter({
+      format: this.currentFormat
+    })) {
       this.datastream.searchObservations(observationFilter, 10).then((collection) => {
         this.collection = collection;
         this.setPage(1);

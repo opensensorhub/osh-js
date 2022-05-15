@@ -129,12 +129,12 @@ import Systems from "osh-js/core/sweapi/system/Systems";
 import SystemFilter from "osh-js/core/sweapi/system/SystemFilter";
 import DataStreamFilter from "osh-js/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "osh-js/core/sweapi/featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchGenericJson from "osh-js/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import {isDefined} from "osh-js/core/utils/Utils";
 import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
 import EventFilter from "osh-js/core/sweapi/event/EventFilter";
 import SystemHistoryFilter from "osh-js/core/sweapi/history/SystemHistoryFilter";
 import { mapActions } from 'vuex'
+import SweCollectionDataParser from "../../../source/core/datasource/sweapi/SweCollectionDataParser";
 
 export default {
   components: {
@@ -207,14 +207,14 @@ export default {
       const id = this.active[0]
       if (!isDefined(id)) return undefined;
 
-      const jsonParser = new SweApiFetchGenericJson();
+      const jsonParser = new SweCollectionDataParser('application/json');
       let node;
       if (id.startsWith('system-details')) {
         node = this.nodes[id];
         node.system.getDetails().then(details => {
           that.details = true;
           that.updateRightContent({
-            content: jsonParser.parseData(details),
+            content: details,
             contentType: 'application/json'
           });
         });

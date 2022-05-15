@@ -1,5 +1,5 @@
 import SensorWebApi from "../SensorWebApi";
-import SweApiFetchJsonParser from "../../datasource/sweapi/parser/json/SweApiFetchJson.parser";
+import SweApiFetchJsonParser from "../../datasource/sweapi/parser/collection/SweApiFetchJson.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
 import Collection from "../Collection";
 import API from "../routes.conf";
