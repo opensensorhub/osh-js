@@ -50,7 +50,7 @@ class Command extends SensorWebApi {
     /**
      * Stream all status messages associated to a specific command
      * @param commandFilter
-     * @param pageSize
+     * @param callback
      * @return {Promise<Collection<JSON>>}
      */
     streamStatus(commandFilter = new CommandFilter(), callback = function(){}) {

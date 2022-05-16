@@ -350,6 +350,9 @@ export default {
       this.isLiveDataStreamPanel = false;
       this.isLiveControlStatusPanel = false;
       this.isLiveCommandStatusPanel = false;
+      this.isHistoricalStatusPanel = false;
+      this.isHistoricalCommandsPanel = false;
+      this.isHistoricalObservationPanel = false;
       this.updateRightContent({
         content: '',
         contentType: 'plain/text'

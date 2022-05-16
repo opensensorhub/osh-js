@@ -95,12 +95,13 @@ class TextDataParser {
             },
             refs: {},
         };
+        this.textDecoder = new TextDecoder();
         this.parser = new RootParser();
         this.parser.init(rootElement, props);
     }
 
     parseDataBlock(arrayBuffer) {
-        let dataBlock = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
+        let dataBlock = this.textDecoder.decode(arrayBuffer);
 
         const blocks = dataBlock.split(this.resultEncoding.blockSeparator);
         //split 1 record

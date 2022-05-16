@@ -45,8 +45,9 @@ class ObservationsCollection extends Collection {
     }
 
     async parseResponse(encodedResponse) {
+        console.log('ici')
         this.data = await this.parser.parseDataBlock(encodedResponse,this.filter.props.format);
-        this.parseBoundsOffset(encodedResponse);
+        console.log('ici000')
     }
 }
 

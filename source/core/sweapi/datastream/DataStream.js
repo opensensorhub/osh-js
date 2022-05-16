@@ -20,7 +20,7 @@ import API from "../routes.conf";
 import DataStreamFilter from "./DataStreamFilter";
 import ObservationsCollection from "../ObservationsCollection";
 import SweApiResultParser from "../../datasource/sweapi/parser/SweApiResult.parser";
-import SweApiCollectionResultParser from "../../datasource/sweapi/parser/SweApiCollectionResult.parser";
+import SweApiResultCollectionParser from "../../datasource/sweapi/parser/SweApiResultCollection.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -30,7 +30,7 @@ class DataStream extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.sweParser = new SweApiResultParser(this);
-        this.sweCollectionParser = new SweApiCollectionResultParser(this);
+        this.sweCollectionParser = new SweApiResultCollectionParser(this);
     }
 
     /**

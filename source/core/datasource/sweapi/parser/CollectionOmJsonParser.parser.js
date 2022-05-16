@@ -9,7 +9,7 @@ class OmJsonCollectionParser extends OmJsonParser {
     }
 
     parseDataBlock(arrayBuffer) {
-        let dataBlock = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
+        let dataBlock = this.textDecoder.decode(arrayBuffer);
         const jsonData = JSON.parse(dataBlock);
         const result = [];
 

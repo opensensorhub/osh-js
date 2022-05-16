@@ -1,36 +1,21 @@
 import DataSourceParser from "../../../parsers/DataSourceParser";
 import Command from "../../../../sweapi/command/Command";
+import SweApiCollectionObjectParser from "./SweApiCollectionObjectParser";
 
-class SweApiFetchCommandParser extends DataSourceParser {
+class SweApiFetchCommandParser extends SweApiCollectionObjectParser {
     constructor(networkProperties, systemId) {
-        super();
-        this.networkProperties = networkProperties;
+        super(networkProperties);
         this.systemId = systemId;
     }
 
     parseData(data) {
-        let rec;
-        if(data instanceof ArrayBuffer) {
-            rec = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(data)));
-        } else {
-            rec = data;
-        }
-
         return new Command(
             {
-                ...rec,
+                ...data,
                 systemId: this.systemId
             },
             this.networkProperties
         );
-    }
-
-    parseTimeStamp(data) {
-        return 0;
-    }
-
-    buildUrl(properties) {
-        //TODO
     }
 }
 

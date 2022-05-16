@@ -11,7 +11,7 @@ const originalState = {
         contentType: undefined,
         header: {
             selected: undefined,
-            prettyJson: true,
+            prettyJson: false,
             height: 0
         }
     },

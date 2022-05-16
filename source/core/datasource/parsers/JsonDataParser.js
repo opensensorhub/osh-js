@@ -24,6 +24,7 @@ class JsonDataParser {
             refs: {},
         };
 
+        this.textDecoder = new TextDecoder();
         this.parser = new RootParser();
         this.parser.init(rootElement, props)
     }
@@ -33,7 +34,7 @@ class JsonDataParser {
     }
 
     parseDataBlock(arrayBuffer) {
-        let dataBlock = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
+        let dataBlock = this.textDecoder.decode(arrayBuffer);
         const jsonData = JSON.parse(dataBlock);
 
         if(Array.isArray(jsonData)) {

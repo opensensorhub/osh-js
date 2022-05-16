@@ -50,7 +50,8 @@ class Systems extends SensorWebApi {
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
         const apiUrl = API.systems.by_id.replace('{sysid}',systemId);
         const queryString = systemFilter.toQueryString(['select','format']);
-        return this.fetchAsJson(apiUrl, queryString);
+        const jsonData = await this.fetchAsJson(apiUrl, queryString);
+        return this.systemParser.parseData(jsonData);
     }
 }
 export default Systems;

@@ -1,7 +1,7 @@
-import OmJsonCollectionParser from "./OmJsonCollectionParser.parser";
+import OmJsonCollectionParser from "./CollectionOmJsonParser.parser";
 import SweApiResultParser from "./SweApiResult.parser";
 
-class SweApiCollectionResultParser extends SweApiResultParser {
+class SweApiResultCollectionParser extends SweApiResultParser {
     constructor(dataObject) {
         super(dataObject);
     }
@@ -16,4 +16,4 @@ class SweApiCollectionResultParser extends SweApiResultParser {
     }
 }
 
-export default SweApiCollectionResultParser;
+export default SweApiResultCollectionParser;
