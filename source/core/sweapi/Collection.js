@@ -14,25 +14,26 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../utils/Utils";
 import SweCollectionDataParser from "../datasource/sweapi/SweCollectionDataParser";
+
+let lock = null;
 
 class Collection {
     /**
      *
      */
-    constructor(url, filter, pageSize, parser) {
+    constructor(url, filter, pageSize, parser, responseFormat = 'json') {
         this.url = url;
         this.filter = filter;
         this.pageSize = pageSize;
         this.parser = parser;
-        this.currentOffset = 0;
-        this.nextOffset = undefined;
-        this.previousOffset = undefined;
+        this.pageOffset = 0;
         this.init = false;
         this.total = 0;
-        this.data = [];
         this.collectionDataParser = new SweCollectionDataParser(filter.props.format);
+        this.currentPromise = null;
+        this.responseFormat = responseFormat;
+        this.currentPage = -1;
     }
 
     /**
@@ -40,7 +41,7 @@ class Collection {
      * @return {boolean}
      */
     hasNext() {
-        return !isDefined(this.nextOffset) || (this.nextOffset !== -1);
+        return this.pageOffset !== -1;
     }
 
     async fetchData(offset) {
@@ -56,55 +57,27 @@ class Collection {
                 err.response = response;
                 throw err;
             }
-            return response.json();
+            if (this.responseFormat === 'json') {
+                return response.json();
+            } else if (this.responseFormat === 'arraybuffer') {
+                return response.arrayBuffer();
+            }
         });
 
-        await this.parseResponse(jsonResponse);
+        return this.parseResponse(jsonResponse);
     }
 
     async parseResponse(jsonResponse) {
         const items = this.collectionDataParser.parseData(jsonResponse);
-        this.data = [];
-        if(Array.isArray(items)) {
+        const data = [];
+        if (Array.isArray(items)) {
             for (let item of items) {
-                this.data.push(this.parser.parseData(item));
+                data.push(this.parser.parseData(item));
             }
         } else {
-            this.data.push(items);
+            data.push(items);
         }
-        this.parseBoundsOffset(jsonResponse);
-    }
-
-    parseBoundsOffset(jsonResponse) {
-        try {
-            const links = jsonResponse.links;
-            let next = false, previous = false;
-            if (isDefined(links)) {
-                // check all rel and find out 'next' property
-                for (let i = 0; i < links.length; i++) {
-                    if (links[i].rel === 'next') {
-                        // update nextOffset
-                        const url = new URL(links[i].href);
-                        this.nextOffset = parseInt(url.searchParams.get('offset'));
-                        next = true;
-                    }
-                    if (links[i].rel === 'prev') {
-                        // update nextOffset
-                        const url = new URL(links[i].href);
-                        this.previousOffset = parseInt(url.searchParams.get('offset'));
-                        previous = true;
-                    }
-                }
-            }
-            if (!next) {
-                this.nextOffset = -1;
-            }
-            if (!previous) {
-                this.previousOffset = -1;
-            }
-        } catch (error) {
-            // skip error, useful for initial JSON fetch then XML one
-        }
+        return data;
     }
 
     /**
@@ -112,16 +85,28 @@ class Collection {
      * @param page - the number of page to fetch
      * @return {Promise<Array>}
      */
-    async nextPage(page = undefined) {
-        if(isDefined(page)) {
-            this.nextOffset = page * this.pageSize;
-        } else {
-            if(!isDefined(this.nextOffset)) {
-                this.nextOffset = 0;
+    async nextPage() {
+        if (this.hasNext()) {
+            this.currentPage++;
+            this.pageOffset = this.currentPage * this.pageSize;
+            const data = await this.fetchData(this.pageOffset);
+            if (data.length === 0 || data.length < this.pageSize) {
+                this.pageOffset = -1;
             }
+            return data;
+        } else {
+            throw Error('Has no more pages');
         }
-        await this.fetchData(this.nextOffset);
-        return this.data;
+    }
+
+    async page(page) {
+        this.currentPage = page;
+        this.pageOffset = this.currentPage * this.pageSize;
+        const data = await this.fetchData(this.pageOffset);
+        if (data.length === 0 || data.length < this.pageSize) {
+            this.pageOffset = -1;
+        }
+        return data;
     }
 
     /**
@@ -129,16 +114,14 @@ class Collection {
      * @param page - the number of page to fetch
      * @return {Promise<Array>}
      */
-    async previousPage(page = undefined) {
-        if(isDefined(page)) {
-            this.previousOffset = page * this.pageSize;
+    async previousPage() {
+        if (this.hasPrevious()) {
+            this.currentPage--;
+            this.pageOffset = this.currentPage * this.pageSize;
+            return this.fetchData(this.pageOffset);
         } else {
-            if(!isDefined(this.previousOffset)) {
-                this.previousOffset = 0;
-            }
+            throw Error('Has no more pages');
         }
-        await this.fetchData(this.previousOffset);
-        return this.data;
     }
 
     /**
@@ -146,7 +129,7 @@ class Collection {
      * @return {boolean}
      */
     hasPrevious() {
-        return !isDefined(this.previousOffset) || (this.previousOffset !== -1);
+        return this.currentPage > 0;
     }
 
 }

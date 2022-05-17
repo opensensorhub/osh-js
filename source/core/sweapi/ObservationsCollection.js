@@ -22,32 +22,11 @@ class ObservationsCollection extends Collection {
      *
      */
     constructor(url, filter, pageSize, parser) {
-        super(url,filter ,pageSize ,parser);
-    }
-
-    async fetchData(offset) {
-        const queryString = `${this.filter.toQueryString()}&offset=${offset}&limit=${this.pageSize}`;
-        const fullUrl = this.url + '?' + queryString;
-
-        const encodedResponse = await fetch(fullUrl, {
-            method: 'GET',
-            headers: {}
-        }).then((response) => {
-            if (!response.ok) {
-                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
-                err.response = response;
-                throw err;
-            }
-            return response.arrayBuffer();
-        });
-
-        await this.parseResponse(encodedResponse);
+        super(url,filter ,pageSize ,parser, 'arraybuffer');
     }
 
     async parseResponse(encodedResponse) {
-        console.log('ici')
-        this.data = await this.parser.parseDataBlock(encodedResponse,this.filter.props.format);
-        console.log('ici000')
+        return this.parser.parseDataBlock(encodedResponse,this.filter.props.format);
     }
 }
 
