@@ -331,8 +331,10 @@ export default {
         protocol: 'http',
         tls: this.$store.state.server.tls,
         endpointUrl: this.$store.state.server.url,
-        mqttPrefix: this.$store.state.server.mqtt.prefix,
-        mqttUrl: this.$store.state.server.mqtt.url
+        mqtt: {
+          prefix: this.$store.state.server.mqtt.prefix,
+          endpointUrl: this.$store.state.server.mqtt.url
+        }
       });
       this.systems = [];
     },

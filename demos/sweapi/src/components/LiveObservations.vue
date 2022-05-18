@@ -75,29 +75,25 @@ export default {
     },
     onChangeProtocol(value) {
       this.reset();
-      this.buildDataStream(
-          {
-            ...this.datastreamObj.properties
-          },
+      this.buildDataStream(this.datastreamObj.properties,
           {
             ...this.datastreamObj.networkProperties,
             streamProtocol: value,
-            mqttPrefix: this.mqttPrefix,
-            endpointUrl: (value === 'mqtt') ? this.mqttUrl : this.endpointUrl
+            mqtt: {
+              prefix: this.mqttPrefix,
+              endpointUrl: this.mqttUrl
+            },
+            endpointUrl: this.endpointUrl
           })
-      this.connect();
+      const obsFilter = new ObservationFilter({
+        format: this.currentFormat
+      });
+      this.connect(obsFilter);
     },
     onChangeFormat(value) {
       this.currentFormat = value;
       this.reset();
-      this.buildDataStream(
-          {
-            ...this.datastreamObj.properties
-          },
-          {
-            ...this.datastreamObj.networkProperties,
-            mqttPrefix: this.mqttPrefix,
-          })
+      this.buildDataStream(this.datastreamObj.properties, this.datastreamObj.networkProperties)
       const obsFilter = new ObservationFilter({
         format: value
       });

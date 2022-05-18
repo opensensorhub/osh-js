@@ -50,7 +50,7 @@ class MqttConnector extends DataConnector {
      */
     constructor(url, properties) {
         super(url, {
-            mqttPrefix: '/api',
+            mqttPrefix: (properties.mqtt && properties.mqtt.prefix) || '/api',
             ...properties
         });
         this.interval = -1;

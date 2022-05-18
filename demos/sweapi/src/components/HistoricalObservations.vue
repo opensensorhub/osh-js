@@ -42,9 +42,10 @@ export default {
   methods: {
     ...mapActions(['updateRightContent']),
     setPage(value) {
+
       this.currentPage = value;
       if (!(value in this.cache)) {
-        this.collection.nextPage(value - 1).then(page => {
+        this.collection.page(value - 1).then(async page => {
           this.updateRightContent({
             content: page,
             contentType: this.currentFormat
@@ -70,7 +71,7 @@ export default {
     connect(observationFilter = new ObservationFilter({
       format: this.currentFormat
     })) {
-      this.datastream.searchObservations(observationFilter, 10).then((collection) => {
+      this.datastream.searchObservations(observationFilter, 200).then((collection) => {
         this.collection = collection;
         this.setPage(1);
       });
