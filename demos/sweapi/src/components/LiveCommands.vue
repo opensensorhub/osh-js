@@ -55,8 +55,14 @@ export default {
     },
     connect() {
       const that = this;
-      this.controlObj.streamCommands(new ControlFilter({}), function (obs) {
-        that.updateRightContent(obs);
+      const controlFilter = new ControlFilter({
+        format: 'application/swe+csv',
+      })
+      this.controlObj.streamCommands(controlFilter, function (obs) {
+        that.updateRightContent({
+          content: obs,
+          contentType: 'application/swe+csv'
+        });
       });
     },
     disconnect() {
@@ -67,14 +73,15 @@ export default {
     onChangeProtocol(value) {
       this.disconnect();
       this.buildControl(
-          {
-            ...this.controlObj.properties
-          },
+          this.controlObj.properties,
           {
             ...this.controlObj.networkProperties,
             streamProtocol: value,
-            mqttPrefix: this.mqttPrefix,
-            endpointUrl: (value === 'mqtt') ? this.mqttUrl : this.endpointUrl
+            mqtt: {
+              prefix: this.mqttPrefix,
+              endpointUrl: this.mqttUrl
+            },
+            endpointUrl: this.endpointUrl
           })
       this.connect();
     },

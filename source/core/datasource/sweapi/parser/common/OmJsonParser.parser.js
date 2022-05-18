@@ -1,4 +1,4 @@
-import JsonDataParser from "../../parsers/JsonDataParser";
+import JsonDataParser from "../../../parsers/JsonDataParser";
 
 class OmJsonParser extends JsonDataParser {
     constructor(rootElement) {

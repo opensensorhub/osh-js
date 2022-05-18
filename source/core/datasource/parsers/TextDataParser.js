@@ -1,4 +1,5 @@
 import AbstractParser from "./AbstractParser";
+import AbstractDataChoiceParser from "./common/DataChoiceParser";
 
 class StringParser extends AbstractParser {
     parse(tokens, props, resultParent) {
@@ -47,20 +48,7 @@ class DecimalParser extends AbstractParser {
     }
 }
 
-class DataChoiceParser extends AbstractParser {
-    init(element, props) {
-        super.init(element, props);
-    }
-    build(element) {
-        this.itemToParserMap = {};
-        for(let item of element['item']) {
-            this.parseElement(item);
-        }
-        // index parser depending on input name
-        for(let parser of this.stack){
-            this.itemToParserMap[parser.name] = parser;
-        }
-    }
+class DataChoiceParser extends AbstractDataChoiceParser {
     parse(tokens, props, resultParent) {
         let itemName = tokens[props.index++];
         const itemResult = {};

@@ -1,4 +1,3 @@
-import DataSourceParser from "../../../parsers/DataSourceParser";
 import Command from "../../../../sweapi/command/Command";
 import SweApiCollectionObjectParser from "./SweApiCollectionObjectParser";
 

@@ -81,19 +81,22 @@ export default {
     const posDsId = "1eots41v6kody";
     const cmdStreamId = "1rl2xoslsdldj";
 
+    const mqttProps = {
+      prefix: '/api',
+      endpointUrl: 'ogct17.georobotix.io:8483'
+    };
+
     this.droneLocationDataSource = new SweApiFetchJson("supersonic drone GPS", {
       collection: `/api/datastreams/${posDsId}/observations`,
-      endpointUrl: 'ogct17.georobotix.io:8483',
       protocol: 'mqtt',
-      mqttPrefix: '/api',
+      mqtt: mqttProps,
       tls: true,
     });
 
     this.systems = new Systems({
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      mqttEndpointUrl: 'ogct17.georobotix.io:8483',
       streamProtocol: 'mqtt',
-      mqttPrefix: '/api',
+      mqtt: mqttProps,
       tls: true
     });
 
@@ -103,9 +106,8 @@ export default {
     },
     {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      mqttEndpointUrl: 'ogct17.georobotix.io:8483',
       streamProtocol: 'mqtt',
-      mqttPrefix: '/api',
+      mqtt: mqttProps,
       tls: true
     });
 

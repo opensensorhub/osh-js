@@ -35,6 +35,7 @@ class ControlFilter extends SensorWebApiFilter {
             issueTime: undefined,
             select: undefined,
             format: 'application/json',
+            obsFormat: 'application/om+json',
             ...properties // merge defined properties
         });
         //TODO: assertions

@@ -1,4 +1,4 @@
-import BinaryDataParser from "../../parsers/BinaryDataParser";
+import BinaryDataParser from "../../../parsers/BinaryDataParser";
 
 class SweBinaryParser extends BinaryDataParser {
     constructor(rootElement, encoding) {

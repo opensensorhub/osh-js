@@ -3,6 +3,7 @@ import Collection from "../Collection";
 import API from "../routes.conf";
 import CommandFilter from "./CommandFilter";
 import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
+import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -28,6 +29,7 @@ class Command extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.jsonParser = new SweCollectionDataParser(networkProperties);
+        this.sweParser = new SweApiResultControlParser(this);
     }
 
     /**
@@ -54,9 +56,24 @@ class Command extends SensorWebApi {
      * @return {Promise<Collection<JSON>>}
      */
     streamStatus(commandFilter = new CommandFilter(), callback = function(){}) {
+       /*
         this._network.stream.connector.onMessage = callback;
 
         this._network.stream.connector.doRequest(
+            API.commands.status.replace('{sysid}',this.properties['system@id'])
+                .replace('{dsid}', this.properties['control@id'])
+                .replace('{cmdid}', this.properties.id),
+            commandFilter.toQueryString(),
+            'arraybuffer'
+        );
+*/
+        this.stream().onMessage = async (message) => {
+            console.log(message)
+            const dataBlock = await this.sweParser.parseDataBlock(message,commandFilter.props.format);
+            callback(dataBlock);
+        };
+
+        this.stream().doRequest(
             API.commands.status.replace('{sysid}',this.properties['system@id'])
                 .replace('{dsid}', this.properties['control@id'])
                 .replace('{cmdid}', this.properties.id),

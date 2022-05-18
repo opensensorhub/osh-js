@@ -1,16 +1,6 @@
-import TimeSeriesParser from "../../parsers/TimeSeriesParser.parser";
-import TextDataParser from "../../parsers/TextDataParser";
-import {assertDefined, assertTrue, isDefined} from "../../../utils/Utils";
-import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser";
-import JsonDataParser from "../../parsers/JsonDataParser";
-import BinaryDataParser from "../../parsers/BinaryDataParser";
-import SweJsonParser from "./SweJsonParser.parser";
-import SweXmlParser from "./SweXmlParser.parser";
-import SweBinaryParserParser from "./SweBinaryParser.parser";
-import SweBinaryParser from "./SweBinaryParser.parser";
-import SweCsvParser from "./SweCsvParser.parser";
-import SensorWebApiFilter from "../../../sweapi/Filter";
-import OmJsonParser from "./OmJsonParser.parser";
+import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
+import {assertDefined, assertTrue, isDefined} from "../../../../utils/Utils";
+import SensorWebApiFilter from "../../../../sweapi/Filter";
 
 class SweApiResultParser extends TimeSeriesParser {
     constructor(dataObject) {
@@ -69,24 +59,7 @@ class SweApiResultParser extends TimeSeriesParser {
     }
 
     init(schema, format) {
-        if(format === 'application/om+json') {
-            //resultSchema
-            this.parsers[format].parser = new OmJsonParser(schema.resultSchema);
-        } else if(format === 'application/swe+json') {
-            //recordSchema
-            this.parsers[format].parser  = new SweJsonParser(schema.recordSchema);
-        } /*else if(format === 'application/swe+xml') {
-            //recordSchema
-            this.parsers[format].parser = new SweXmlParser(schema.recordSchema);
-        }*/ else if(format === 'application/swe+binary') {
-            //recordSchema
-            this.parsers[format].parser = new SweBinaryParser(schema.recordSchema, schema.recordEncoding);
-        } else if(format === 'application/swe+csv') {
-            //recordSchema
-            this.parsers[format].parser = new SweCsvParser(schema.recordSchema, schema.recordEncoding);
-        } else {
-            throw Error(`Not supported parser format: ${format}`);
-        }
+        throw new Error('Unsupported Operation')
     }
 
     async parseDataBlock(arrayBuffer, format = 'application/om+json') {

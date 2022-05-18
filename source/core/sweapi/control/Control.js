@@ -5,6 +5,10 @@ import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
 import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
+import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
+import SweApiResultCollectionDatastreamParser from "../../datasource/sweapi/parser/observations/SweApiResult.collection.datastream.parser";
+import SweApiResultCollectionControlParser
+    from "../../datasource/sweapi/parser/observations/SweApiResult.collection.control.parser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -30,7 +34,8 @@ class Control extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties['system@id']);
-        this.jsonParser = new SweCollectionDataParser('application/json');
+        this.sweCollectionParser = new SweApiResultCollectionControlParser(this);
+        this.sweParser = new SweApiResultControlParser(this);
     }
 
     /**
@@ -45,7 +50,7 @@ class Control extends SensorWebApi {
                 this.properties['system@id']).replace('{dsid}',this.properties.id),
             commandFilter,
             pageSize,
-            this.jsonParser
+            this.sweCollectionParser
         );
     }
 
@@ -56,10 +61,12 @@ class Control extends SensorWebApi {
      */
     streamCommands(controlFilter = new ControlFilter(), callback = function(){}) {
         this.stream().onMessage = async (message) => {
+            console.log(message)
             const dataBlock = await this.sweParser.parseDataBlock(message,controlFilter.props.format);
             callback(dataBlock);
         };
 
+        console.log('lklk')
         this.stream().doRequest(
             API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
@@ -73,7 +80,8 @@ class Control extends SensorWebApi {
             .replace('{dsid}', this.properties.id)
             .replace('{cmdid}', commandId);
         const queryString = commandFilter.toQueryString(['select', 'obsFormat']);
-        return this.fetchAsJson(apiUrl, queryString);
+        const jsonData = await this.fetchAsJson(apiUrl, queryString);
+        return this.commandParser.parseData(jsonData);
     }
 
     postCommand(payload, commandFilter = new CommandFilter()) {
@@ -109,7 +117,7 @@ class Control extends SensorWebApi {
                 this.properties.id),
             controlFilter,
             pageSize,
-            this.jsonParser
+            this.sweCollectionParser
         );
     }
 

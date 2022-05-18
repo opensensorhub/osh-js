@@ -1,7 +1,7 @@
-import OmJsonCollectionParser from "./CollectionOmJsonParser.parser";
+import OmJsonCollectionParser from "../collection/CollectionOmJsonParser.parser";
 import SweApiResultParser from "./SweApiResult.parser";
 
-class SweApiResultCollectionParser extends SweApiResultParser {
+class SweApiResultCollectionControlParser extends SweApiResultParser {
     constructor(dataObject) {
         super(dataObject);
     }
@@ -9,11 +9,11 @@ class SweApiResultCollectionParser extends SweApiResultParser {
     init(schema, format) {
         if(format === 'application/om+json') {
             //resultSchema
-            this.parsers[format].parser = new OmJsonCollectionParser(schema.resultSchema);
+            this.parsers[format].parser = new OmJsonCollectionParser(schema.commandSchema);
         } else {
             super.init(schema, format);
         }
     }
 }
 
-export default SweApiResultCollectionParser;
+export default SweApiResultCollectionControlParser;

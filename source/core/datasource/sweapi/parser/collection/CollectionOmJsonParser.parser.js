@@ -1,4 +1,4 @@
-import OmJsonParser from "./OmJsonParser.parser";
+import OmJsonParser from "../common/OmJsonParser.parser";
 
 class OmJsonCollectionParser extends OmJsonParser {
     constructor(rootElement) {

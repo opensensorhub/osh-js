@@ -1,5 +1,5 @@
 import SensorWebApiFetchHandler from "../handler/SweApiFetchHandler";
-import SweApiResultParser from "../parser/SweApiResult.parser";
+import SweApiResultParser from "../parser/observations/SweApiResult.parser";
 
 let  dataSourceHandler = new SensorWebApiFetchHandler(new SweApiResultParser());
 
