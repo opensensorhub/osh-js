@@ -53,7 +53,9 @@ class DataStreams extends SensorWebApi {
     async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
         const apiUrl = API.datastreams.by_id.replace('{id}',datastreamId);
         const queryString = dataStreamFilter.toQueryString(['select','format']);
-        return this.fetchAsJson(apiUrl, queryString);
+        const jsonData = await this.fetchAsJson(apiUrl, queryString);
+        return this.datastreamParser.parseData(jsonData);
+
     }
 }
 export default DataStreams;
