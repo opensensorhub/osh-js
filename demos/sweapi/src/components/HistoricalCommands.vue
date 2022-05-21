@@ -31,39 +31,40 @@ export default {
   data() {
     return {
       cache: {},
-      currentFormat: 'application/om+json',
+      currentFormat: 'application/swe+csv',
       currentPage: 1,
       collection: undefined
     }
   },
   mounted() {
+    for(let format of this.control.properties.formats) {
+      this.cache[format] = {};
+    }
     this.connect();
   },
   methods: {
     ...mapActions(['updateRightContent']),
     setPage(value) {
-
       this.currentPage = value;
-      if (!(value in this.cache)) {
+      if (!(value in this.cache[this.currentFormat])) {
         this.collection.page(value - 1).then(async page => {
           this.updateRightContent({
             content: page,
-            contentType: this.currentFormat
+            contentType: 'application/json'
           });
-          this.cache[value] = page;
+          this.cache[this.currentFormat][value] = page;
         }).catch((error) => {
           this.$emit('error', error);
         });
       } else {
         this.updateRightContent({
-          content: this.cache[value],
-          contentType: this.currentFormat
+          content: this.cache[this.currentFormat][value],
+          contentType: 'application/json'
         });
       }
     },
     onChangeFormat(value) {
       this.currentFormat = value;
-      this.cache = {};
       this.connect(new CommandFilter({
         format: value
       }));
@@ -73,7 +74,7 @@ export default {
     })) {
       this.control.searchCommands(commandFilter, 200).then((collection) => {
         this.collection = collection;
-        this.setPage(1);
+        this.setPage(this.currentPage);
       });
     }
   }

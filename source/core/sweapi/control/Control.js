@@ -4,11 +4,11 @@ import Collection from "../Collection";
 import API from "../routes.conf";
 import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
-import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
 import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
-import SweApiResultCollectionDatastreamParser from "../../datasource/sweapi/parser/observations/SweApiResult.collection.datastream.parser";
 import SweApiResultCollectionControlParser
     from "../../datasource/sweapi/parser/observations/SweApiResult.collection.control.parser";
+import ObservationsCollection from "../ObservationsCollection";
+import SweApiControlStatusParser from "../../datasource/sweapi/parser/collection/SweApiControlStatus.parser";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -36,6 +36,7 @@ class Control extends SensorWebApi {
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties['system@id']);
         this.sweCollectionParser = new SweApiResultCollectionControlParser(this);
         this.sweParser = new SweApiResultControlParser(this);
+        this.controlStatusParser = new SweApiControlStatusParser();
     }
 
     /**
@@ -45,7 +46,7 @@ class Control extends SensorWebApi {
      * @return {Promise<Collection<Command>>}
      */
     async searchCommands(commandFilter = new CommandFilter(), pageSize= 10) {
-        return new Collection(
+        return new ObservationsCollection(
             this.baseUrl() + API.controls.commands.replace('{sysid}',
                 this.properties['system@id']).replace('{dsid}',this.properties.id),
             commandFilter,
@@ -61,12 +62,10 @@ class Control extends SensorWebApi {
      */
     streamCommands(controlFilter = new ControlFilter(), callback = function(){}) {
         this.stream().onMessage = async (message) => {
-            console.log(message)
             const dataBlock = await this.sweParser.parseDataBlock(message,controlFilter.props.format);
             callback(dataBlock);
         };
 
-        console.log('lklk')
         this.stream().doRequest(
             API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
@@ -117,7 +116,7 @@ class Control extends SensorWebApi {
                 this.properties.id),
             controlFilter,
             pageSize,
-            this.sweCollectionParser
+            this.controlStatusParser
         );
     }
 
@@ -128,7 +127,7 @@ class Control extends SensorWebApi {
      */
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
         this.stream().onMessage = async (message) => {
-            const dataBlock = await this.sweParser.parseDataBlock(message,controlFilter.props.format);
+            const dataBlock = await this.controlStatusParser.parseData(message, 'arraybuffer');
             callback(dataBlock);
         };
 
@@ -146,7 +145,7 @@ class Control extends SensorWebApi {
      */
     async getSchema(controlFilter = new ControlFilter()) {
         const apiUrl = API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id);
-        const queryString = controlFilter.toQueryString(['select', 'obsFormat']);
+        const queryString = controlFilter.toQueryString(['select', 'commandFormat']);
         return this.fetchAsJson(apiUrl, queryString);
     }
 }

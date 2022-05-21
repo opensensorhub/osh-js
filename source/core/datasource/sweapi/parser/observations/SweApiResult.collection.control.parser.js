@@ -1,15 +1,19 @@
 import OmJsonCollectionParser from "../collection/CollectionOmJsonParser.parser";
 import SweApiResultParser from "./SweApiResult.parser";
+import SweApiResultControlParser from "./SweApiResult.control.parser";
 
-class SweApiResultCollectionControlParser extends SweApiResultParser {
+class SweApiResultCollectionControlParser extends SweApiResultControlParser {
     constructor(dataObject) {
         super(dataObject);
     }
 
     init(schema, format) {
-        if(format === 'application/om+json') {
+        if(format === 'application/swe+binary') {
             //resultSchema
-            this.parsers[format].parser = new OmJsonCollectionParser(schema.commandSchema);
+            throw new Error(`Format not supported ${format}`);
+        } else if(format === 'application/swe+xml') {
+            //resultSchema
+            throw new Error(`Format not supported ${format}`);
         } else {
             super.init(schema, format);
         }

@@ -26,7 +26,6 @@ class ObservationsCollection extends Collection {
     }
 
     async parseResponse(encodedResponse) {
-        console.log(this.filter.props.format);
         return this.parser.parseDataBlock(encodedResponse,this.filter.props.format);
     }
 }

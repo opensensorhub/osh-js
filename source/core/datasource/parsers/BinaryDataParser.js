@@ -1,4 +1,5 @@
 import AbstractParser from "./AbstractParser";
+import GenericParser from "./GenericParser";
 
 class BinaryEncodingParser extends AbstractParser {
     build(element) {
@@ -126,16 +127,10 @@ class RootParser extends AbstractParser {
 class TraverseParser extends AbstractParser {
 }
 
-class BinaryDataParser {
+class BinaryDataParser extends GenericParser {
 
     constructor(rootElement, encoding) {
-        this.nodesId = {};
-        this.parsers = [];
-        this.count = 0;
-        this.resultEncoding = encoding;
-        this.parser = new RootParser();
-
-        const props = {
+        super(rootElement, {
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {
@@ -151,10 +146,10 @@ class BinaryDataParser {
                 'DataChoice': () => new TraverseParser(),
             },
             refs: {},
-        };
-
-        this.parser.init(this.resultEncoding,props);
-        this.parser.init(rootElement, props);
+        });
+        this.resultEncoding = encoding;
+        this.parser.init(this.resultEncoding,this.props);
+        this.parser.init(rootElement, this.props);
     }
 
     parseDataBlock(arrayBuffer) {

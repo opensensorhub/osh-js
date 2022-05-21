@@ -57,12 +57,10 @@ export default {
     connect() {
       const that = this;
       this.controlObj.streamStatus(new ControlFilter({}), (obs) => {
-        that.items[obs.command] = obs;
-        const contents = [];
-        for(let key in that.items) {
-          contents.push(that.items[key]);
-        }
-        that.updateRightContent(contents);
+        that.updateRightContent({
+          content: obs,
+          contentType: 'application/json'
+        });
       });
     },
     disconnect() {

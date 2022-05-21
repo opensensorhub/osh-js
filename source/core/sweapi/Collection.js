@@ -45,7 +45,6 @@ class Collection {
     }
 
     async fetchData(offset) {
-        console.log('ici')
         const queryString = `${this.filter.toQueryString()}&offset=${offset}&limit=${this.pageSize}`;
         const fullUrl = this.url + '?' + queryString;
 
@@ -54,7 +53,7 @@ class Collection {
             headers: {}
         }).then((response) => {
             if (!response.ok) {
-                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                const err = new Error(`Got ${response.status} response from ${fullUrl}`);
                 err.response = response;
                 throw err;
             }

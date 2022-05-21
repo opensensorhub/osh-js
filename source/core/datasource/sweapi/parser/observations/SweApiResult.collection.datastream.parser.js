@@ -1,7 +1,8 @@
 import OmJsonCollectionParser from "../collection/CollectionOmJsonParser.parser";
 import SweApiResultParser from "./SweApiResult.parser";
+import SweApiResultDatastreamParser from "./SweApiResult.datastream.parser";
 
-class SweApiResultCollectionDatastreamParser extends SweApiResultParser {
+class SweApiResultCollectionDatastreamParser extends SweApiResultDatastreamParser {
     constructor(dataObject) {
         super(dataObject);
     }
@@ -10,6 +11,9 @@ class SweApiResultCollectionDatastreamParser extends SweApiResultParser {
         if(format === 'application/om+json') {
             //resultSchema
             this.parsers[format].parser = new OmJsonCollectionParser(schema.resultSchema);
+        } else if(format === 'application/swe+xml') {
+            //resultSchema
+            throw new Error(`Format not supported ${format}`);
         } else {
             super.init(schema, format);
         }

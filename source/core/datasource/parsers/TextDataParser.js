@@ -1,5 +1,6 @@
 import AbstractParser from "./AbstractParser";
 import AbstractDataChoiceParser from "./common/DataChoiceParser";
+import GenericParser from "./GenericParser";
 
 class StringParser extends AbstractParser {
     parse(tokens, props, resultParent) {
@@ -57,20 +58,10 @@ class DataChoiceParser extends AbstractDataChoiceParser {
     }
 }
 
-class RootParser extends AbstractParser {
-    build(element) {
-        this.parseElement(element);
-    }
-}
-
-class TextDataParser {
+class TextDataParser extends GenericParser {
 
     constructor(rootElement, encoding) {
-        this.nodesId = {};
-        this.parsers = [];
-        this.count = 0;
-        this.resultEncoding = encoding;
-        const props = {
+        super(rootElement, {
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {
@@ -82,14 +73,18 @@ class TextDataParser {
                 'DataChoice': () => new DataChoiceParser(),
             },
             refs: {},
-        };
-        this.textDecoder = new TextDecoder();
-        this.parser = new RootParser();
-        this.parser.init(rootElement, props);
+        });
+        this.resultEncoding = encoding;
+        this.parser.init(rootElement, this.props);
     }
 
-    parseDataBlock(arrayBuffer) {
-        let dataBlock = this.textDecoder.decode(arrayBuffer);
+    parseDataBlock(input) {
+        let dataBlock;
+        if(input instanceof ArrayBuffer) {
+            dataBlock = this.textDecoder.decode(input);
+        } else {
+            dataBlock = input;
+        }
 
         const blocks = dataBlock.split(this.resultEncoding.blockSeparator);
         //split 1 record

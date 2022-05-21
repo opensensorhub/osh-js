@@ -38,7 +38,6 @@ class CommandFilter extends SensorWebApiFilter {
             actuableProperty: undefined,
             select: undefined,
             format: 'application/json',
-            obsFormat: 'application/om+json',
             issueTime: undefined,
             executionTime: undefined,
             reportTime: undefined,

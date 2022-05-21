@@ -2,7 +2,9 @@
   <div>
     <RightHeader
         selected1="ws"
+        :selected2="currentFormat"
         :listboxValues1="protocols"
+        :listboxValues2="formats"
         @change1="onChangeProtocol"
     >
     </RightHeader>
@@ -31,6 +33,8 @@ export default {
     return {
       controlObj: this.control,
       protocols: ['ws','mqtt'],
+      formats: this.control.properties.formats,
+      currentFormat: 'application/swe+csv'
     }
   },
   mounted() {
@@ -61,7 +65,7 @@ export default {
       this.controlObj.streamCommands(controlFilter, function (obs) {
         that.updateRightContent({
           content: obs,
-          contentType: 'application/swe+csv'
+          contentType: 'application/json'
         });
       });
     },

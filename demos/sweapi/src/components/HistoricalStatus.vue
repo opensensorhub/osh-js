@@ -3,8 +3,6 @@
     <RightHeader
         pagination="1"
         @onPageChanged="setPage"
-        :selected1="currentFormat"
-        :listboxValues1="control.properties.formats"
         @change1="onChangeFormat"
     >
     </RightHeader>
@@ -18,6 +16,7 @@ import RightHeader from "./common/RightHeader.vue";
 import RightContent from "./common/RightContent.vue";
 import { mapActions, mapState } from 'vuex'
 import ControlFilter from "../../../../source/core/sweapi/control/ControlFilter";
+import CommandFilter from "../../../../source/core/sweapi/command/CommandFilter";
 
 export default {
   name: "HistoricalStatus",
@@ -31,7 +30,6 @@ export default {
   data() {
     return {
       cache: {},
-      currentFormat: 'application/om+json',
       currentPage: 1,
       collection: undefined
     }
@@ -56,21 +54,18 @@ export default {
       } else {
         this.updateRightContent({
           content: this.cache[value],
-          contentType: this.currentFormat
+          contentType: 'application/json'
         });
       }
     },
     onChangeFormat(value) {
       this.currentFormat = value;
-      this.cache = {};
-      this.connect(new ControlFilter({
-        format: value
-      }));
+      this.connect(new ControlFilter());
     },
-    connect(controlFilter = new ControlFilter({})) {
+    connect(controlFilter = new ControlFilter()) {
       this.control.searchStatus(controlFilter, 10).then((collection) => {
         this.collection = collection;
-        this.setPage(1);
+        this.setPage(this.currentPage);
       });
     }
   }

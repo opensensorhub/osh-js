@@ -76,6 +76,7 @@
             <Schema
                 v-else-if="isSchemaPanel"
                 :objCompliantSchema="objCompliantSchema"
+                :key="schemaKey"
             ></Schema>
             <LiveObservations
                 v-else-if="isLiveDataStreamPanel"
@@ -135,6 +136,7 @@ import EventFilter from "osh-js/core/sweapi/event/EventFilter";
 import SystemHistoryFilter from "osh-js/core/sweapi/history/SystemHistoryFilter";
 import { mapActions } from 'vuex'
 import SweCollectionDataParser from "../../../source/core/datasource/sweapi/SweCollectionDataParser";
+import {randomUUID} from "../../../source/core/utils/Utils";
 
 export default {
   components: {
@@ -178,6 +180,7 @@ export default {
       isHistoricalObservationPanel: false, // panel
       isHistoricalCommandsPanel: false, // panel
       isHistoricalStatusPanel: false, //panel
+      schemaKey: randomUUID(),
     }
   },
   beforeMount() {
@@ -229,6 +232,7 @@ export default {
         node = this.nodes[id];
         this.objCompliantSchema = node.datastream;
         this.isSchemaPanel = true;
+        this.schemaKey = randomUUID(); // force re-render schema panel
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         that.details = true;
@@ -285,6 +289,7 @@ export default {
         node = this.nodes[id];
         this.objCompliantSchema = node.control;
         this.isSchemaPanel = true;
+        this.schemaKey = randomUUID(); // force re-render schema panel
       } else if (id.startsWith('control-')) {
         node = this.nodes[id];
         this.details = true;
@@ -358,7 +363,7 @@ export default {
       this.updateRightContent({
         content: '',
         contentType: 'plain/text'
-      })
+      });
     },
     async fetchData(item) {
       try {

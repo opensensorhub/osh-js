@@ -1,41 +1,42 @@
-import AbstractParser from "./AbstractParser";
+import TraverseParser from "./common/TraverseParser";
+import GenericParser from "./GenericParser";
 
-class RootParser extends AbstractParser {
-    build(element) {
-        this.parseElement(element);
-    }
-}
 
-class TraverseParser extends AbstractParser {
-}
 
-class JsonDataParser {
+class JsonDataParser extends GenericParser {
 
     constructor(rootElement) {
-        this.nodesId = {};
-        this.parsers = [];
-        this.count = 0;
-        const props = {
+        super(rootElement,{
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {
                 'Time': () => new TraverseParser(),
+                'Category': () => new TraverseParser(),
+                'Quantity': () => new TraverseParser(),
+                'Count': () => new TraverseParser(),
+                'Boolean': () => new TraverseParser(),
+                'DataChoice': () => new TraverseParser(),
             },
             refs: {},
-        };
-
-        this.textDecoder = new TextDecoder();
-        this.parser = new RootParser();
-        this.parser.init(rootElement, props)
+        });
+        this.parser.init(rootElement, this.props);
     }
 
     getTimeField() {
         return this.parser.getTimePropertyName();
     }
 
-    parseDataBlock(arrayBuffer) {
-        let dataBlock = this.textDecoder.decode(arrayBuffer);
-        const jsonData = JSON.parse(dataBlock);
+    parseDataBlock(input) {
+        let jsonData;
+        if(input instanceof ArrayBuffer) {
+            jsonData = JSON.parse(this.textDecoder.decode(input));
+        } else {
+            try {
+                jsonData = JSON.parse(input);
+            }catch (e) {
+                jsonData = input;
+            }
+        }
 
         if(Array.isArray(jsonData)) {
             for(let d of jsonData) {

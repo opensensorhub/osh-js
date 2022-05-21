@@ -75,8 +75,9 @@ export default {
     },
     ...mapState({
       isJson: state => {
-        return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
-            || state.right.contentType === 'application/om+json'
+        return state.right.contentType === 'application/json'
+        // return state.right.contentType === 'application/json' || state.right.contentType === 'application/swe+json'
+        //     || state.right.contentType === 'application/om+json'
       }
     })
   },
