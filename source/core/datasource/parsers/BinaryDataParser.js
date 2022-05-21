@@ -64,6 +64,19 @@ class ShortParser extends AbstractParser {
     }
 }
 
+//http://www.opengis.net/def/dataType/OGC/0/float32
+class Float32Parser extends AbstractParser {
+    constructor(name) {
+        super();
+        this.name = name;
+    }
+    parse(arrayBuffer, props, resultParent) {
+        const result = new DataView(arrayBuffer).getFloat32(props.offset, props.littleEndian);
+        props.offset += 4;
+        resultParent[this.name] = result;
+    }
+}
+
 class BinaryBlockParser  extends AbstractParser {
     constructor(name, staticProps) {
         super();
@@ -98,6 +111,8 @@ class ComponentParser extends AbstractParser {
             this.dataTypeParser = new IntParser(this.name);
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/signedShort') {
             this.dataTypeParser = new ShortParser(this.name);
+        } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/float32') {
+            this.dataTypeParser = new Float32Parser(this.name);
         }
         this.props.refs[element.ref] = this.dataTypeParser;
 
