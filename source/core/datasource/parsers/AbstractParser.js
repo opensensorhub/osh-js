@@ -27,7 +27,11 @@ export default class AbstractParser {
         } else if(element.type in this.props.registeredParser){
             parser = this.props.registeredParser[element.type]();
         } else if(element.hasOwnProperty('href')) {
-            parser = new HRefParser();
+            if('href' in this.props.registeredParser) {
+                parser = this.props.registeredParser['href']();
+            } else {
+                parser = new HRefParser();
+            }
         } else if(element.type === 'DataRecord') {
             parser = new DataRecordParser(element, this.props);
         } else if(element.type === 'Vector') {
@@ -199,10 +203,15 @@ class HRefParser extends AbstractParser {
     }
 
     parse(tokens, props, resultParent) {
-        if (!(this.id in this.props.nodesIdValue)) {
-            throw Error(`id ${this.id} not found in the idValue Tree`);
+        // if (!(this.id in this.props.nodesIdValue)) {
+        //     throw Error(`id ${this.id} not found in the idValue Tree`);
+        // }
+        // resultParent[this.parser.name] = this.props.nodesIdValue[this.id];
+        if (this.id in this.props.nodesIdValue) {
+            resultParent[this.parser.name] = this.props.nodesIdValue[this.id];
+        } else {
+            this.parser.parse(tokens, props,resultParent);
         }
-        resultParent[this.parser.name] = this.props.nodesIdValue[this.id];
     }
 }
 

@@ -1,5 +1,6 @@
 import AbstractParser from "./AbstractParser";
 import GenericParser from "./GenericParser";
+import SkipParser from "./common/SkipParser";
 
 class BinaryEncodingParser extends AbstractParser {
     build(element) {
@@ -144,6 +145,7 @@ class BinaryDataParser extends GenericParser {
                 'Count': () => new TraverseParser(),
                 'Boolean': () => new TraverseParser(),
                 'DataChoice': () => new TraverseParser(),
+                'href': () => new SkipParser()
             },
             refs: {},
         });
