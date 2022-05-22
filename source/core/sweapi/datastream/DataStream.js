@@ -42,7 +42,7 @@ class DataStream extends SensorWebApi {
         this.stream().onMessage = async (message) => {
             const dataBlock = await this.sweParser.parseDataBlock(message,observationFilter.props.format);
             callback(dataBlock);
-        };
+        }
 
         this.stream().doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),

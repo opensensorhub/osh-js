@@ -115,8 +115,9 @@ class System extends SensorWebApi {
      */
     async getControlById(datastreamId,controlFilter = new ControlFilter()) {
         const apiUrl = API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId);
-        const queryString = systemFilter.toQueryString(['select', 'format']);
-        return this.fetchAsJson(apiUrl, queryString);
+        const queryString = controlFilter.toQueryString(['select', 'format']);
+        const jsonData = await this.fetchAsJson(apiUrl, queryString);
+        return this.controlParser.parseData(jsonData);
     }
 
     /**

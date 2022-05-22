@@ -41,9 +41,9 @@ class SweApiFetch extends TimeSeriesDataSource {
             startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
             tls: false,
-            responseFormat: 'application/json',
+            responseFormat: 'application/om+json',
             protocol: 'http',
-            ...properties
+            ...properties,
         });
     }
     async createWorker(properties) {

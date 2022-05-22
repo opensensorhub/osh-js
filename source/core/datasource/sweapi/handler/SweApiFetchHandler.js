@@ -21,6 +21,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
 
     initStreamFunctions() {
     }
+
     async updateAferCreatingConnector(properties) {
         const networkProperties = {
             ...properties,
@@ -52,7 +53,7 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
                 }, networkProperties);
 
                 if(stream) {
-                    this.streamObject = apiObject
+                    this.streamObject = apiObject;
                 } else {
                     collection = apiObject.searchStatus(filter, properties.batchSize);
                 }

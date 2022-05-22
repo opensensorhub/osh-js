@@ -83,25 +83,20 @@ class Control extends SensorWebApi {
         return this.commandParser.parseData(jsonData);
     }
 
-    postCommand(payload, commandFilter = new CommandFilter()) {
-        // this._network.info.connector.postRequest(
-        //     API.controls.commands
-        //         .replace('{sysid}',this.properties['system@id'])
-        //         .replace('{dsid}', this.properties.id),
-        //     payload,
-        //     commandFilter.props.format
-        // );
-        throw Error('Not supported operation: postCommand');
+    postCommand(jsonPayload, commandFilter = new CommandFilter()) {
+        const apiUrl =  API.controls.commands
+                .replace('{sysid}',this.properties['system@id'])
+                .replace('{dsid}', this.properties.id);
+        this.postAsJson(apiUrl, jsonPayload);
     }
 
     publishCommand(payload, commandFilter = new CommandFilter()) {
-        // this._network.stream.connector.publishRequest(
-        //     API.controls.commands
-        //         .replace('{sysid}',this.properties['system@id'])
-        //         .replace('{dsid}', this.properties.id),
-        //     payload
-        // );
-        throw Error('Not supported operation: publishCommand');
+        this.stream().publishRequest(
+            API.controls.commands
+                .replace('{sysid}',this.properties['system@id'])
+                .replace('{dsid}', this.properties.id),
+            payload
+        );
     }
 
     /**

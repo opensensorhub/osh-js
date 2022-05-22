@@ -7,11 +7,13 @@ class SweApiControlStatus extends SweApiCollectionObjectParser {
     }
 
     parseData(data, format) {
+        let res;
         if(format === 'arraybuffer') {
-            return this.textDecoder.decode(data);
+            res = this.textDecoder.decode(data);
         } else {
-            return data;
+            res = JSON.parse(data);
         }
+        return JSON.parse(res);
     }
 }
 

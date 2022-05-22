@@ -130,12 +130,13 @@ class DataRecordParser extends AbstractParser {
         if(!fieldName) {
             return;
         }
+        let currentPath = (this.path) ? this.path + '/' : '/';
         if(Array.isArray(element[fieldName])) {
             for (let field of element[fieldName]) {
-                this.parseElement(field, '/' + field.name)
+                this.parseElement(field, currentPath + field.name)
             }
         } else {
-            this.parseElement(element[fieldName], '/' + element[fieldName].name);
+            this.parseElement(element[fieldName], currentPath + element[fieldName].name);
         }
     }
 }

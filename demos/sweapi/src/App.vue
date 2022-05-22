@@ -72,38 +72,44 @@
         <v-divider vertical class="divider disableCaret"></v-divider>
         <div class="right">
             <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
-            <Details v-else-if="details"></Details>
+            <Details v-else-if="details" :key="panelKey"></Details>
             <Schema
                 v-else-if="isSchemaPanel"
                 :objCompliantSchema="objCompliantSchema"
-                :key="schemaKey"
+                :key="panelKey"
             ></Schema>
             <LiveObservations
                 v-else-if="isLiveDataStreamPanel"
                 :datastream="dataStream"
+                :key="panelKey"
             ></LiveObservations>
             <LiveCommands
                 v-else-if="isLiveCommandStatusPanel"
                 :control="control"
+                :key="panelKey"
             ></LiveCommands>
             <LiveControlStatus
                 v-else-if="isLiveControlStatusPanel"
                 :control="control"
+                :key="panelKey"
             ></LiveControlStatus>
             <HistoricalObservations
                 v-else-if="isHistoricalObservationPanel"
                 :datastream="dataStream"
                 @error="handleError"
+                :key="panelKey"
             ></HistoricalObservations>
             <HistoricalCommands
               v-else-if="isHistoricalCommandsPanel"
               :control="control"
               @error="handleError"
+              :key="panelKey"
             ></HistoricalCommands>
             <HistoricalStatus
               v-else-if="isHistoricalStatusPanel"
               :control="control"
               @error="handleError"
+              :key="panelKey"
             ></HistoricalStatus>
             <ContentLoading  v-else></ContentLoading>
         </div>
@@ -180,7 +186,7 @@ export default {
       isHistoricalObservationPanel: false, // panel
       isHistoricalCommandsPanel: false, // panel
       isHistoricalStatusPanel: false, //panel
-      schemaKey: randomUUID(),
+      panelKey: randomUUID(),
     }
   },
   beforeMount() {
@@ -232,7 +238,6 @@ export default {
         node = this.nodes[id];
         this.objCompliantSchema = node.datastream;
         this.isSchemaPanel = true;
-        this.schemaKey = randomUUID(); // force re-render schema panel
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
         that.details = true;
@@ -289,7 +294,6 @@ export default {
         node = this.nodes[id];
         this.objCompliantSchema = node.control;
         this.isSchemaPanel = true;
-        this.schemaKey = randomUUID(); // force re-render schema panel
       } else if (id.startsWith('control-')) {
         node = this.nodes[id];
         this.details = true;
@@ -360,6 +364,7 @@ export default {
       this.isHistoricalStatusPanel = false;
       this.isHistoricalCommandsPanel = false;
       this.isHistoricalObservationPanel = false;
+      this.panelKey = randomUUID(); // force re-render schema panel
       this.updateRightContent({
         content: '',
         contentType: 'plain/text'

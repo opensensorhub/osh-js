@@ -26,7 +26,10 @@ class DataSourceHandler {
             this.connector = null;
         }
 
-        this.parser.init(propertiesStr);
+        // can be initialized later
+        if(isDefined(this.parser)) {
+            this.parser.init(propertiesStr);
+        }
 
         this.setTopic(topic);
 
@@ -77,7 +80,7 @@ class DataSourceHandler {
                 this.connector = new TopicConnector(url);
             } else if(properties.protocol === 'mqtt') {
                 const tls = (properties.tls) ? 's' : '';
-                const url = properties.protocol + tls + '://' + properties.endpointUrl;
+                const url = properties.protocol + tls + '://' + properties.mqtt.endpointUrl;
                 this.connector =  new MqttConnector(url, properties);
             }
         } else {
@@ -133,7 +136,13 @@ class DataSourceHandler {
     }
 
     async onMessage(event) {
-        const data   = await Promise.resolve(this.parser.parseData(event));
+        let data;
+        if(isDefined(this.parser)) {
+            data   = await Promise.resolve(this.parser.parseDataBlock(event));
+        } else {
+            // pass through
+            data = event;
+        }
 
         // check if data is array
         if (Array.isArray(data)) {

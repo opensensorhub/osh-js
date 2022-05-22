@@ -113,5 +113,23 @@ class SensorWebApi {
             return response.json();
         });
     }
+    postAsJson(apiUrl, jsonPayload) {
+        const fullUrl = this.baseUrl() +  apiUrl;
+
+        fetch(fullUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: jsonPayload
+        }).then(function (response) {
+            if (!response.ok) {
+                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                err.response = response;
+                throw err;
+            }
+        });
+    }
 }
 export default SensorWebApi;

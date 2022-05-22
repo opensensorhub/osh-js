@@ -2,7 +2,7 @@ import {isDefined} from "../../utils/Utils.js";
 import DataSourceHandler from "./DataSourceHandler";
 import {EventType} from "../../event/EventType";
 
-class TimeSeriesDataSourceHandler extends DataSourceHandler{
+class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     constructor(parser) {
         super(parser);
@@ -21,7 +21,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             timeShift: this.timeShift
         }, connector);
 
-        const lastStartTimeCst = this.parser && this.parser.lastStartTime || properties.startTime;
+        const lastStartTimeCst = this.parser && this.lastStartTime || properties.startTime;
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp to reconnect at the last time received
             // for that, we update the URL with the new last time received
@@ -59,7 +59,13 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
     }
 
     async onMessage(event) {
-        const data   = await Promise.resolve(this.parser.parseDataBlock(event));
+        let data;
+        if(isDefined(this.parser)) {
+            data   = await Promise.resolve(this.parser.parseDataBlock(event));
+        } else {
+            // pass through
+            data = event;
+        }
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
@@ -77,7 +83,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler{
             this.lastTimestamp = data.timestamp;
         }
 
-        if(this.parser.lastStartTime === 'now' || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
+        if(this.lastStartTime === 'now' || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
             this.flush();
             if(this.timeBroadcastChannel !== null) {
                 this.timeBroadcastChannel.postMessage({
