@@ -11,6 +11,7 @@
 <script>
 import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView.js";
 import DialogDrag from 'vue-dialog-drag'
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
 export default {
   name: "Video",
@@ -27,7 +28,13 @@ export default {
         framerate:25,
         showTime: true,
         showStats: true,
-        dataSourceId: this.videoDataSource.id
+        layers: [
+          new VideoDataLayer({
+            dataSourceId: this.videoDataSource.id,
+            getFrameData: (rec) => rec.videoFrame,
+            getTimestamp: (rec) => rec.timestamp
+          })
+        ]
       });
   }
 }

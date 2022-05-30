@@ -14,8 +14,7 @@
   // @ is an alias to /src
 import Globe from './components/Globe.vue';
 import Video from './components/Video.vue';
-import SosGetResultVideo from "osh-js/core/datasource/sos/SosGetResultVideo.js";
-import SosGetResultJson from "osh-js/core/datasource/sos/SosGetResultJson.js";
+import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
   export default {
@@ -25,7 +24,7 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
   },
     data: function () {
       return {
-        videoDataSource: new SosGetResultVideo("drone-Video", {
+        videoDataSource: new SosGetResult("drone-Video", {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -35,7 +34,7 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        platformLocationDataSource: new SosGetResultJson('android-GPS', {
+        platformLocationDataSource: new SosGetResult('android-GPS', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -45,7 +44,7 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        platformOrientationDataSource: new SosGetResultJson('android-Heading', {
+        platformOrientationDataSource: new SosGetResult('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -55,7 +54,7 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         }),
-        gimbalOrientationDataSource: new SosGetResultJson('android-Heading', {
+        gimbalOrientationDataSource: new SosGetResult('android-Heading', {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

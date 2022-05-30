@@ -10,8 +10,9 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import MjpegView from 'osh-js/core/ui/view/video/MjpegView.js';
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
 export default {
   name: "Video",
@@ -21,7 +22,7 @@ export default {
   mounted() {
 
     // create data source for Android phone camera
-    let videoDataSource = new SosGetResultVideo("android-Video", {
+    let videoDataSource = new SosGetResult("android-Video", {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -39,8 +40,14 @@ export default {
       name: "Android Video",
       keepRatio: true,
       showTime: true,
-      dataSourceId: videoDataSource.id
-    });
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: videoDataSource.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
+    })
 
     // start streaming
     videoDataSource.connect();

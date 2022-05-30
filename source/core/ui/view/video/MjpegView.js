@@ -49,7 +49,7 @@ class MjpegView extends View {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['videoData'],
             ...properties
         });
 

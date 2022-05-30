@@ -49,11 +49,7 @@ import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/protocol/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
-import SweApiFetchJson from "osh-js/core/datasource/sweapi/SweApiFetchJson";
-// import SweApiFetchVideo from "osh-js/core/datasource/sweapi/SweApiFetchVideo";
-import SosGetResultVideo from "osh-js/core/datasource/sos/SosGetResultVideo";
-import SweApiFetchBinaryVideo from "../../../source/core/datasource/sweapi/parser/binary/SweApiFetchBinaryVideo.parser";
-import SweApiFetchVideo from "../../../source/core/datasource/sweapi/SweApiFetchVideo";
+import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -77,16 +73,17 @@ export default {
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 1.1;
+    const dsReplaySpeed = 1.0;
     const timeOut = 3000;
     const bufferingTime = 800;
 
-  /* const droneVideoDataSource = new SosGetResultVideo('MISB Drone - Video',{
+    const commonDatasourceOpts = {
+      endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
       protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/sos',
-      offeringID: 'urn:osh:sensor:uas:predator001',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
+      mqtt: {
+        prefix: '/api',
+        endpointUrl: 'ogct17.georobotix.io:8483'
+      },
       tls: tls,
       startTime: START_TIME,
       endTime: END_TIME,
@@ -94,122 +91,51 @@ export default {
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
       timeOut: timeOut,
-      bufferingTime: bufferingTime
-    });*/
+      bufferingTime: bufferingTime,
+    };
 
-    const droneVideoDataSource = new SweApiFetchVideo('MISB Drone - Video', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const droneVideoDataSource = new SweApiFetch('MISB Drone - Video', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/uxzna8pldpiv/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
+      responseFormat: 'application/swe+binary',
     });
 
     /*Not working, waiting for the correct sign to pass instead of swe+binary into MQTT protocol
     */
 
-    const droneLocationDataSource = new SweApiFetchJson('MISB UAS - Platform Location', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const droneLocationDataSource = new SweApiFetch('MISB UAS - Platform Location', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/gal7w6j6v7n9/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
-    const droneOrientationDataSource = new SweApiFetchJson('MISB UAS - Platform Attitude', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const droneOrientationDataSource = new SweApiFetch('MISB UAS - Platform Attitude', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/ei5nsp8guy5y/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
-    const droneCameraOrientationDataSource = new SweApiFetchJson('MISB UAS - Gimbal Attitude', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const droneCameraOrientationDataSource = new SweApiFetch('MISB UAS - Gimbal Attitude', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/7rsjo1e6pq45/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
-    const droneHFovDataSource = new SweApiFetchJson('MISB UAS - Horizontal FoV', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const droneHFovDataSource = new SweApiFetch('MISB UAS - Horizontal FoV', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/1fle3d5b29shh/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
-    const droneVFovDataSource = new SweApiFetchJson('MISB UAS - Vertical FoV', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const droneVFovDataSource = new SweApiFetch('MISB UAS - Vertical FoV', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/1fle3d5b29shh/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
-    const geoRefImageFrameDataSource = new SweApiFetchJson('MISB UAS - GeoReferenced Image Frame', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const geoRefImageFrameDataSource = new SweApiFetch('MISB UAS - GeoReferenced Image Frame', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/1b6j89nistu9h/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
-    const targetLocationDataSource = new SweApiFetchJson('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+    const targetLocationDataSource = new SweApiFetch('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
+      ...commonDatasourceOpts,
       collection: '/datastreams/tmi5mitvl8c7/observations',
-      tls: tls,
-      startTime: START_TIME,
-      endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime
     });
 
     // let biologicalSensorsDataSource = new SosGetFois('Biological Sensors', {

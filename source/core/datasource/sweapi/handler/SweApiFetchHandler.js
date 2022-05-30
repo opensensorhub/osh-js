@@ -105,20 +105,34 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         this.onMessage = this.onMessageNonStream;
     }
 
+    handleMessages(messages, format) {
+        if (format === 'application/om+json') {
+            let results = [];
+            for(let message of messages) {
+                results.push({
+                    timestamp: message.timestamp,
+                    ...message.result
+                })
+            }
+            return results;
+        } else {
+            return messages;
+        }
+    }
     async connectStream() {
         if(this.streamObject instanceof DataStream) {
-            this.streamObject.streamObservations(this.filter, (message) => {
+            this.streamObject.streamObservations(this.filter, (messages) => {
                 // the onMessage needs to send data result only. If the content of the record contains
                 // time + result, we need to pass only result.
                 // TODO: This would be handled automatically by parsers?
-                this.onMessage(message);
+                this.onMessage(this.handleMessages(messages, this.filter.props.format));
             });
         } else if(this.streamObject instanceof Control) {
-            this.streamObject.streamStatus(this.filter, (message) => {
+            this.streamObject.streamStatus(this.filter, (messages) => {
                 // the onMessage needs to send data result only. If the content of the record contains
                 // time + result, we need to pass only result.
                 // TODO: This would be handled automatically by parsers?
-                this.onMessage(message);
+                this.onMessage(this.handleMessages(messages, this.filter.props.format));
             });
         }
     }

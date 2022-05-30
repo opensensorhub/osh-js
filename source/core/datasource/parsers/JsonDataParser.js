@@ -42,10 +42,11 @@ class JsonDataParser extends GenericParser {
             for(let d of jsonData) {
                 d['timestamp'] = new Date(d[this.getTimeField()]).getTime();
             }
+            return jsonData;
         } else {
             jsonData['timestamp'] = new Date(jsonData[this.getTimeField()]).getTime();
+            return [jsonData];
         }
-        return jsonData;
     }
 }
 

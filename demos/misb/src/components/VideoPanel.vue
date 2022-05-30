@@ -16,6 +16,7 @@
 
 <script>
 import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView.js";
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
 export default {
   name: "VideoPanel",
@@ -32,7 +33,13 @@ export default {
       framerate:30,
       showTime: true,
       showStats: true,
-      dataSourceId: this.droneVideoDataSource.id
+        layers: [
+          new VideoDataLayer({
+            dataSourceId: this.droneVideoDataSource.id,
+            getFrameData: (rec) => rec.img,
+            getTimestamp: (rec) => rec.timestamp
+          })
+        ]
     });
   },
 }
