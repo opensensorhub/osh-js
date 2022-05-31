@@ -100,7 +100,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     async updateProperties(properties) {
         try {
-            this.disconnect();
+            await this.disconnect();
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED

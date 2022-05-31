@@ -1,9 +1,9 @@
 // create data source for Android phone GPS
 // #region snippet_datasource_swejson
-import SweJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import {EventType} from 'osh-js/core/event/EventType';
 
-const platformLocationDataSource = new SweJson('android-GPS', {
+const platformLocationDataSource = new SosGetResult('android-GPS', {
   protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
