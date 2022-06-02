@@ -29,7 +29,6 @@ class Collection {
         this.init = false;
         this.total = 0;
         this.collectionDataParser = new SweCollectionDataParser(filter.props.format);
-        this.currentPromise = null;
         this.responseFormat = responseFormat;
         this.currentPage = -1;
     }
