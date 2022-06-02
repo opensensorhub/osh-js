@@ -44,7 +44,7 @@ class System extends SensorWebApi {
     /**
      * Get the latest specsheet of a system
      * @param {SystemFilter} systemFilter - the system filter
-     * @return Promise<JSON> - SensorlML Description
+     * @return {Promise<JSON>} - SensorlML Description
      */
     async getDetails(systemFilter = new SystemFilter()) {
         const apiUrl = API.systems.details.replace('{sysid}',this.properties.id);
@@ -55,8 +55,8 @@ class System extends SensorWebApi {
     /**
      *
      * @param {SystemFilter} systemFilter - the system filter
-     * @param pageSize
-     * @return Promise<Collection<System>>
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.systemParser);
@@ -65,8 +65,8 @@ class System extends SensorWebApi {
     /**
      * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.     * @param dataStreamFilter
      * @param dataStreamFilter
-     * @param pageSize
-     * @return {Promise<Collection>}
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<Datastream>}  - A collection of Datastream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
@@ -80,8 +80,8 @@ class System extends SensorWebApi {
     /**
      * List or search features of interest of a system. Individual features can be retrieved by ID directly on the root "featuresOfInterest" collection
      * @param featureOfInterestFilter
-     * @param pageSize
-     * @return {Promise<Collection>}
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<FeatureOfInterest>>} - A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(
@@ -95,8 +95,8 @@ class System extends SensorWebApi {
     /**
      * Get a list of control interfaces of a system
      * @param {ControlFilter} controlFilter - the control filter
-     * @param pageSize
-     * @return {Promise<Collection<Control>>}
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<Control>>} - A collection of Control
      */
     async searchControls(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
@@ -111,7 +111,7 @@ class System extends SensorWebApi {
      * Get a specific control interface description by ID
      * @param {String} datastreamId - The ID of the datastream or command stream
      * @param {ControlFilter} controlFilter - the control filter
-     * @return {Promise<Control>}
+     * @return {Control} - The corresponding Control
      */
     async getControlById(datastreamId,controlFilter = new ControlFilter()) {
         const apiUrl = API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId);
@@ -123,8 +123,8 @@ class System extends SensorWebApi {
     /**
      * List or search events related to a system (e.g. maintenance events, contact change, etc.)
      * @param {EventFilter} eventFilter - the event filter
-     * @param pageSize - the page size
-     * @return {Promise<Collection<Event>>}
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<Event>>} - A collection of Event
      */
     async searchEvents(eventFilter = new EventFilter(), pageSize= 10) {
         return new Collection(
@@ -138,8 +138,8 @@ class System extends SensorWebApi {
     /**
      * List or search for historical descriptions of a specific system (ordered by time of validity)
      * @param {SystemHistoryFilter} systemHistoryFilter - the history filer
-     * @param [pageSize=10] - the page size
-     * @return {Promise<Collection<System>>}
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchHistory(systemHistoryFilter = new SystemHistoryFilter(), pageSize= 10) {
         return new Collection(
@@ -153,8 +153,8 @@ class System extends SensorWebApi {
     /**
      * List or search members of a system group. Individual members can be retrieved by ID directly on the root "systems" collection
      * @param {SystemFilter} systemFilter - the system filter
-     * @param pageSize - the page size
-     * @return {Promise<Collection<System>>}
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchMembers(systemFilter = new SystemFilter(), pageSize= 10) {
         return new Collection(

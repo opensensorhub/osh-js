@@ -33,8 +33,8 @@ class Systems extends SensorWebApi {
      * List or search all observing systems available through this API. By default, only top level systems are listed
      * (i.e. subsystems are ommitted) unless the "parent" query parameter is set
      * @param systemFilter - the system filter
-     * @param pageSize - the page size
-     * @return {Promise<Collection>}  A collection of System
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection>} - A collection of System
      */
     async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
         return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.systemParser);
@@ -45,7 +45,7 @@ class Systems extends SensorWebApi {
      * current time. To get the description valid for a past (or future) time, use the "history" sub-collection.
      * @param systemId - the ID of the System resource
      * @param systemFilter - the system filter
-     * @return {Promise<System>}
+     * @return {System} - A collection of System
      */
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
         const apiUrl = API.systems.by_id.replace('{sysid}',systemId);
