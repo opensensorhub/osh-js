@@ -33,9 +33,9 @@ class FeaturesOfInterest extends SensorWebApi {
     /**
      * List or search all sampled and sampling features available through this API. By default, only top level features
      * and collections are listed (i.e. nested members of feature collections are ommitted) unless the "parent" query parameter is set.
-     * @param featureOfInterestFilter
-     * @param pageSize
-     * @return {Promise<Collection>}
+     * @param featureOfInterestFilter - default FOI filter
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<FeaturesOfInterest>>} - A Collection of FeaturesOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(this.baseUrl() + '/featuresOfInterest', featureOfInterestFilter, pageSize,this.jsonParser);
@@ -46,7 +46,7 @@ class FeaturesOfInterest extends SensorWebApi {
      * To get the description valid for a past (or future) time, use the "history" sub-collection.
      * @param fId - The ID of the Feature resource
      * @param featureOfInterestFilter
-     * @return {Promise<DataStream>}
+     * @return {Promise<JSON>} - The corresponding FeaturesOfInterest as JSON
      */
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {
         const apiUrl = API.fois.by_id.replace('{id}',fId);
