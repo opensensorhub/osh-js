@@ -14,7 +14,6 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/collection/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
@@ -27,25 +26,27 @@ class FeaturesOfInterest extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.jsonParser = new SweCollectionDataParser(networkProperties);
+        this.sweCollectionDataParser = new SweCollectionDataParser(networkProperties);
     }
 
     /**
      * List or search all sampled and sampling features available through this API. By default, only top level features
      * and collections are listed (i.e. nested members of feature collections are ommitted) unless the "parent" query parameter is set.
-     * @param featureOfInterestFilter - default FOI filter
-     * @param [pageSize=10] - default page size
+     * route: /featuresOfInterest
+     * @param {FeatureOfInterestFilter} [featureOfInterestFilter=new FeatureOfInterestFilter()] - default FOI filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<FeaturesOfInterest>>} - A Collection of FeaturesOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
-        return new Collection(this.baseUrl() + '/featuresOfInterest', featureOfInterestFilter, pageSize,this.jsonParser);
+        return new Collection(this.baseUrl() + API.fois, featureOfInterestFilter, pageSize,this.sweCollectionDataParser);
     }
 
     /**
      * Get a specific feature resource by ID. Note that this will return the description of the feature valid at the current time.
      * To get the description valid for a past (or future) time, use the "history" sub-collection.
-     * @param fId - The ID of the Feature resource
-     * @param featureOfInterestFilter
+     * route: /featuresOfInterest/{id}
+     * @param {String} fId - The ID of the Feature resource
+     * @param {FeatureOfInterestFilter} [featureOfInterestFilter=new FeatureOfInterestFilter()] - default FOI filter
      * @return {Promise<JSON>} - The corresponding FeaturesOfInterest as JSON
      */
     async getFeatureOfInterestById(fId,featureOfInterestFilter = new FeatureOfInterestFilter()) {

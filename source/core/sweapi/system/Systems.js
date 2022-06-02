@@ -26,32 +26,34 @@ class Systems extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.systemParser = new SweApiFetchSystemParser(networkProperties);
+        this.sweApiFetchSystemParser = new SweApiFetchSystemParser(networkProperties);
     }
 
     /**
      * List or search all observing systems available through this API. By default, only top level systems are listed
      * (i.e. subsystems are ommitted) unless the "parent" query parameter is set
-     * @param systemFilter - the system filter
-     * @param [pageSize=10] - default page size
-     * @return {Promise<Collection>} - A collection of System
+     * route: /systems
+     * @param {SystemFilter} [systemFilter= new SystemFilter()] - the system filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.systemParser);
+        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.sweApiFetchSystemParser);
     }
 
     /**
      * Get a specific system resource by ID. Note that this will return the description of the system valid at the
      * current time. To get the description valid for a past (or future) time, use the "history" sub-collection.
-     * @param systemId - the ID of the System resource
-     * @param systemFilter - the system filter
-     * @return {System} - A collection of System
+     * route: /systems/{sysid}
+     * @param {String} systemId - the ID of the System resource
+     * @param {SystemFilter} [systemFilter=new SystemFilter()] - the system filter
+     * @return {System} - The corresponding System
      */
     async getSystemById(systemId,systemFilter = new SystemFilter()) {
         const apiUrl = API.systems.by_id.replace('{sysid}',systemId);
         const queryString = systemFilter.toQueryString(['select','format']);
         const jsonData = await this.fetchAsJson(apiUrl, queryString);
-        return this.systemParser.parseData(jsonData);
+        return this.sweApiFetchSystemParser.parseData(jsonData);
     }
 }
 export default Systems;

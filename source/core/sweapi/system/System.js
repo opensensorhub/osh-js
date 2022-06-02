@@ -34,16 +34,17 @@ class System extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.systemParser = new SweApiFetchSystemParser(networkProperties);
-        this.dataStreamParser = new SweApiDataStreamParser(networkProperties);
-        this.featureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
-        this.eventParser = new SweApiFetchEventParser(networkProperties);
-        this.controlParser = new SweApiFetchControlParser(networkProperties);
+        this.sweApiFetchSystemParser = new SweApiFetchSystemParser(networkProperties);
+        this.sweApiDataStreamParser = new SweApiDataStreamParser(networkProperties);
+        this.sweApiFetchFeatureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
+        this.sweApiFetchEventParser = new SweApiFetchEventParser(networkProperties);
+        this.sweApiFetchControlParser = new SweApiFetchControlParser(networkProperties);
     }
 
     /**
      * Get the latest specsheet of a system
-     * @param {SystemFilter} systemFilter - the system filter
+     * route: /systems/{sysid}/details
+     * @param {SystemFilter} [systemFilter=new SystemFilter()] - the system filter
      * @return {Promise<JSON>} - SensorlML Description
      */
     async getDetails(systemFilter = new SystemFilter()) {
@@ -53,19 +54,21 @@ class System extends SensorWebApi {
     }
 
     /**
-     *
-     * @param {SystemFilter} systemFilter - the system filter
-     * @param [pageSize=10] - default page size
+     * Search for subsystems
+     * route: /systems
+     * @param {SystemFilter} [systemFilter= new SystemFilter()] - the system filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.systemParser);
+        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.sweApiFetchSystemParser);
     }
 
     /**
-     * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.     * @param dataStreamFilter
-     * @param dataStreamFilter
-     * @param [pageSize=10] - default page size
+     * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.
+     * route: /systems/{sysid}/datastreams
+     * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter()] - default DataStream filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<Datastream>}  - A collection of Datastream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
@@ -73,14 +76,15 @@ class System extends SensorWebApi {
             this.baseUrl() + API.systems.datastreams.replace('{sysid}',this.properties.id),
             dataStreamFilter,
             pageSize,
-            this.dataStreamParser
+            this.sweApiDataStreamParser
         );
     }
 
     /**
      * List or search features of interest of a system. Individual features can be retrieved by ID directly on the root "featuresOfInterest" collection
-     * @param featureOfInterestFilter
-     * @param [pageSize=10] - default page size
+     * route: /systems/{sysid}/featuresOfInterest
+     * @param {FeatureOfInterestFilter} [featureOfInterestFilter=new FeatureOfInterestFilter()] - FOI filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<FeatureOfInterest>>} - A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
@@ -88,14 +92,15 @@ class System extends SensorWebApi {
             this.baseUrl() + API.systems.fois.replace('{sysid}',this.properties.id),
             featureOfInterestFilter,
             pageSize,
-            this.featureOfInterestParser
+            this.sweApiFetchFeatureOfInterestParser
         );
     }
 
     /**
      * Get a list of control interfaces of a system
-     * @param {ControlFilter} controlFilter - the control filter
-     * @param [pageSize=10] - default page size
+     * route: /systems/{sysid}/controls
+     * @param {ControlFilter} [controlFilter=new ControlFilter()] - the control filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<Control>>} - A collection of Control
      */
     async searchControls(controlFilter = new ControlFilter(), pageSize= 10) {
@@ -103,27 +108,29 @@ class System extends SensorWebApi {
             this.baseUrl() + API.systems.controls.replace('{sysid}',this.properties.id),
             controlFilter,
             pageSize,
-            this.controlParser
+            this.sweApiFetchControlParser
         );
     }
 
     /**
      * Get a specific control interface description by ID
+     * route: /systems/{sysid}/controls/{dsid}
      * @param {String} datastreamId - The ID of the datastream or command stream
-     * @param {ControlFilter} controlFilter - the control filter
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - the control filter
      * @return {Control} - The corresponding Control
      */
     async getControlById(datastreamId,controlFilter = new ControlFilter()) {
         const apiUrl = API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId);
         const queryString = controlFilter.toQueryString(['select', 'format']);
         const jsonData = await this.fetchAsJson(apiUrl, queryString);
-        return this.controlParser.parseData(jsonData);
+        return this.sweApiFetchControlParser.parseData(jsonData);
     }
 
     /**
      * List or search events related to a system (e.g. maintenance events, contact change, etc.)
-     * @param {EventFilter} eventFilter - the event filter
-     * @param [pageSize=10] - default page size
+     * route: /systems/{sysid}/events
+     * @param {EventFilter} [eventFilter= new EventFilter()] - the event filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<Event>>} - A collection of Event
      */
     async searchEvents(eventFilter = new EventFilter(), pageSize= 10) {
@@ -131,14 +138,15 @@ class System extends SensorWebApi {
             this.baseUrl() + API.systems.events.replace('{sysid}',this.properties.id),
             eventFilter,
             pageSize,
-            this.eventParser
+            this.sweApiFetchEventParser
         );
     }
 
     /**
      * List or search for historical descriptions of a specific system (ordered by time of validity)
-     * @param {SystemHistoryFilter} systemHistoryFilter - the history filer
-     * @param [pageSize=10] - default page size
+     * route: /systems/{sysid}/history
+     * @param {SystemHistoryFilter} [systemHistoryFilter= new SystemHistoryFilter()] - the history filer
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchHistory(systemHistoryFilter = new SystemHistoryFilter(), pageSize= 10) {
@@ -146,14 +154,15 @@ class System extends SensorWebApi {
             this.baseUrl() + API.systems.history.replace('{sysid}',this.properties.id),
             systemHistoryFilter,
             pageSize,
-            this.systemParser
+            this.sweApiFetchSystemParser
         );
     }
 
     /**
      * List or search members of a system group. Individual members can be retrieved by ID directly on the root "systems" collection
-     * @param {SystemFilter} systemFilter - the system filter
-     * @param [pageSize=10] - default page size
+     * route: /systems/{sysid}/members
+     * @param {SystemFilter} [systemFilter=new SystemFilter()] - the system filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchMembers(systemFilter = new SystemFilter(), pageSize= 10) {
@@ -161,7 +170,7 @@ class System extends SensorWebApi {
             this.baseUrl() + API.systems.members.replace('{sysid}',this.properties.id),
             systemFilter,
             pageSize,
-            this.systemParser
+            this.sweApiFetchSystemParser
         );
     }
 }

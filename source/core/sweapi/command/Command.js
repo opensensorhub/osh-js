@@ -34,9 +34,10 @@ class Command extends SensorWebApi {
 
     /**
      * Get all status messages associated to a specific command
-     * @param commandFilter
-     * @param pageSize
-     * @return {Promise<Collection<JSON>>}
+     * route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}/status
+     * @param {CommandFilter} [commandFilter== new CommandFilter()] - default Command filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<JSON>>} - response as JSON
      */
     async searchStatus(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
@@ -51,24 +52,12 @@ class Command extends SensorWebApi {
 
     /**
      * Stream all status messages associated to a specific command
-     * @param commandFilter
-     * @param callback
-     * @return {Promise<Collection<JSON>>}
+     * route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}/status
+     * @param {CommandFilter} [commandFilter== new CommandFilter()] - default Command filter
+     * @param {Function} callback
      */
     streamStatus(commandFilter = new CommandFilter(), callback = function(){}) {
-       /*
-        this._network.stream.connector.onMessage = callback;
-
-        this._network.stream.connector.doRequest(
-            API.commands.status.replace('{sysid}',this.properties['system@id'])
-                .replace('{dsid}', this.properties['control@id'])
-                .replace('{cmdid}', this.properties.id),
-            commandFilter.toQueryString(),
-            'arraybuffer'
-        );
-*/
         this.stream().onMessage = async (message) => {
-            console.log(message)
             const dataBlock = await this.sweParser.parseDataBlock(message,commandFilter.props.format);
             callback(dataBlock);
         };

@@ -25,32 +25,17 @@ class Observations extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.parser = new SensorWebApiFetchObservation(networkProperties);
+        this.sensorWebApiFetchObservation = new SensorWebApiFetchObservation(networkProperties);
     }
 
     /**
      * List or search all observations available through this API.
-     * @param observationFilter - default observation filter
-     * @param [pageSize=10] - default page size
-     * @return {Promise<Collection>} - the result observations
+     * @param {ObservationFilter} [observationFilter=new ObservationFilter()] - default observation filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<Observation>>} - A Collection of Observation
      */
     async searchObservations(observationFilter = new ObservationFilter(), pageSize= 10) {
-        return new Collection('/observations', observationFilter, pageSize,this.parser, this._network.info.connector);
-    }
-
-    /**
-     * Get a specific observation resource by ID
-     * @param observationId - The ID of the observation
-     * @param observationFilter  - default observation filter
-     * @return {Observation} - The corresponding observation
-     */
-    async getObservationById(observationId,observationFilter = new ObservationFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            `/observations/${observationId}`,
-            observationFilter.toQueryString(['select','format'],
-            observationFilter.props.format
-        ));
-        return this.parser.parseData(response);
+        return new Collection('/observations', observationFilter, pageSize,this.sensorWebApiFetchObservation, this._network.info.connector);
     }
 }
 export default Observations;

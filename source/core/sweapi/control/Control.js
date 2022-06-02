@@ -34,16 +34,17 @@ class Control extends SensorWebApi {
         super(networkProperties); // network properties
         this.properties = properties;
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties['system@id']);
-        this.sweCollectionParser = new SweApiResultCollectionControlParser(this);
-        this.sweParser = new SweApiResultControlParser(this);
-        this.controlStatusParser = new SweApiControlStatusParser();
+        this.sweApiResultCollectionControlParser = new SweApiResultCollectionControlParser(this);
+        this.sweApiResultControlParser = new SweApiResultControlParser(this);
+        this.sweApiControlStatusParser = new SweApiControlStatusParser();
     }
 
     /**
      * Get the list of commands received by a particular control interface
-     * @param commandFilter
-     * @param pageSize
-     * @return {Promise<Collection<Command>>}
+     * route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<JSON>>} - result as JSON
      */
     async searchCommands(commandFilter = new CommandFilter(), pageSize= 10) {
         return new ObservationsCollection(
@@ -51,18 +52,19 @@ class Control extends SensorWebApi {
                 this.properties['system@id']).replace('{dsid}',this.properties.id),
             commandFilter,
             pageSize,
-            this.sweCollectionParser
+            this.sweApiResultCollectionControlParser
         );
     }
 
     /**
      * Stream all commands received by a particular control interface
-     * @param {ControlFilter} controlFilter - controlFilter
-     * @param callback - A callback to get observations
+     * route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - default Control filter
+     * @param {Function} callback - A callback to get observations
      */
     streamCommands(controlFilter = new ControlFilter(), callback = function(){}) {
         this.stream().onMessage = async (message) => {
-            const dataBlock = await this.sweParser.parseDataBlock(message,controlFilter.props.format);
+            const dataBlock = await this.sweApiResultControlParser.parseDataBlock(message,controlFilter.props.format);
             callback(dataBlock);
         };
 
@@ -73,16 +75,29 @@ class Control extends SensorWebApi {
         );
     }
 
+    /**
+     * Get a specific command resource by ID.
+     * route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}
+     * @param {String} commandId - the ID of the Command resource
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter
+     * @returns {Promise<Command>} - The corresponding Command
+     */
     async getCommandById(commandId,commandFilter = new CommandFilter()) {
         const apiUrl = API.controls.command_by_id
             .replace('{sysid}',this.properties['system@id'])
             .replace('{dsid}', this.properties.id)
             .replace('{cmdid}', commandId);
-        const queryString = commandFilter.toQueryString(['select', 'obsFormat']);
+        const queryString = commandFilter.toQueryString(['select', 'obsFormat']); //TODO: check useless obsFormat
         const jsonData = await this.fetchAsJson(apiUrl, queryString);
         return this.commandParser.parseData(jsonData);
     }
 
+    /**
+     *  Send a new command to this control interface
+     *  route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {JSON} jsonPayload - the JSON payload
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter specifying the 'sysid' and 'dsid'
+     */
     postCommand(jsonPayload, commandFilter = new CommandFilter()) {
         const apiUrl =  API.controls.commands
                 .replace('{sysid}',this.properties['system@id'])
@@ -90,6 +105,12 @@ class Control extends SensorWebApi {
         this.postAsJson(apiUrl, jsonPayload);
     }
 
+    /**
+     * Send a new command to this control interface using streaming protocol such like WS or MQTT
+     * route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {JSON} jsonPayload - the JSON payload
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter specifying the 'sysid' and 'dsid'
+     */
     publishCommand(payload, commandFilter = new CommandFilter()) {
         this.stream().publishRequest(
             API.controls.commands
@@ -101,9 +122,10 @@ class Control extends SensorWebApi {
 
     /**
      * Get all status messages sent by this control interface
-     * @param controlFilter
-     * @param pageSize
-     * @return {Promise<Collection<JSON>>}
+     * route: /systems/{sysid}/controls/{dsid}/status
+     * @param {ControlFilter} [controlFilter=new ControlFilter()] - default Control filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<JSON>>} - A Collection of JSON
      */
     async searchStatus(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
@@ -111,18 +133,19 @@ class Control extends SensorWebApi {
                 this.properties.id),
             controlFilter,
             pageSize,
-            this.controlStatusParser
+            this.sweApiControlStatusParser
         );
     }
 
     /**
      * Stream all status messages sent by this control interface
-     * @param {ControlFilter} controlFilter - controlFilter
-     * @param callback - A callback to get observations
+     * route: /systems/{sysid}/controls/{dsid}/status
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - default Control filter
+     * @param {Function} callback - A callback to get observations
      */
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
         this.stream().onMessage = async (message) => {
-            const dataBlock = await this.controlStatusParser.parseData(message, 'arraybuffer');
+            const dataBlock = await this.sweApiControlStatusParser.parseData(message, 'arraybuffer');
             callback(dataBlock);
         };
 
@@ -135,8 +158,9 @@ class Control extends SensorWebApi {
 
     /**
      * Get the detailed schema of command messages in a command stream
-     * @param {ControlFilter} controlFilter - controlFilter
-     * @returns {Promise<*>}
+     * route: /systems/{sysid}/controls/{dsid}/schema
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - default Control filter, using 'commandFormat' to select response format
+     * @returns {Promise<JSON>} - The schema as JSON
      */
     async getSchema(controlFilter = new ControlFilter()) {
         const apiUrl = API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id);

@@ -29,18 +29,19 @@ class DataStream extends SensorWebApi {
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.sweParser = new SweApiResultParser(this);
-        this.sweCollectionParser = new SweApiResultCollectionDatastreamParser(this);
+        this.sweApiResultParser = new SweApiResultParser(this);
+        this.sweApiResultCollectionDatastreamParser = new SweApiResultCollectionDatastreamParser(this);
     }
 
     /**
      * Retrieve historical observations from a datastream
-     * @param observationFilter
-     * @param callback - A callback to get observations
+     * route: /datastreams/{id}/observations
+     * @param {ObservationFilter} [observationFilter=new ObservationFilter()] - default ObservationFilter
+     * @param {Function} callback - A callback to get observations
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
         this.stream().onMessage = async (message) => {
-            const dataBlock = await this.sweParser.parseDataBlock(message,observationFilter.props.format);
+            const dataBlock = await this.sweApiResultParser.parseDataBlock(message,observationFilter.props.format);
             callback(dataBlock);
         }
 
@@ -53,21 +54,27 @@ class DataStream extends SensorWebApi {
 
     /**
      * Retrieve historical observations from a datastream
-     * @param observationFilter
-     * @param observationFilter
-     * @param pageSize
-     * @param parser
-     * @return {Collection}
+     * route: /datastreams/{id}/observations
+     * @param {ObservationFilter} [observationFilter=new ObservationFilter()] - default ObservationFilter
+     * @param {Number} [pageSize=10] - default page size
+     * @param {DataSourceParser} [parser=new SweApiResultParser()] - default observations parser
+     * @return {Collection<JSON>} - result observations as JSON
      */
-    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.sweParser) {
+    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.sweApiResultParser) {
         return new ObservationsCollection(
             this.baseUrl() + API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,
             pageSize,
-            this.sweCollectionParser
+            this.sweApiResultCollectionDatastreamParser
         );
     }
 
+    /**
+     * Get the schema of a datastream
+     * route: /datastreams/{id}/schema
+     * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter()] - default datastream filter
+     * @return {Promise<JSON>} - the JSON schema
+     */
     async getSchema(dataStreamFilter = new DataStreamFilter()) {
         const apiUrl = API.datastreams.schema.replace('{id}',this.properties.id);
         const queryString = dataStreamFilter.toQueryString(['select', 'obsFormat']);

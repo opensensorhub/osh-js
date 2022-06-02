@@ -26,35 +26,35 @@ class DataStreams extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.datastreamParser = new SweApiDataStreamParser(networkProperties);
+        this.sweApiDataStreamParser = new SweApiDataStreamParser(networkProperties);
     }
 
     /**
      * List or search all datastreams available through this API.
-     * @param dataStreamFilter - the datastream filter
-     * @param pageSize - the page size
-     * @return {Promise<Collection>}
+     * @param [dataStreamFilter=new DataStreamFilter()] - default DataStream filter
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection<DataStream>>} - A Collection of DataStream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
             this.baseUrl() + API.datastreams.search,
             dataStreamFilter,
             pageSize,
-            this.datastreamParser
+            this.sweApiDataStreamParser
         );
     }
 
     /**
      * Get a specific datastream resource by ID
-     * @param datastreamId - The ID of the datastream or command stream
-     * @param dataStreamFilter - the datastream filter
-     * @return {Promise<DataStream>}
+     * @param datastreamId - The ID of the datastream
+     * @param [dataStreamFilter=new DataStreamFilter(] - default datastream filter
+     * @return {Promise<DataStream>} - The corresponding DataStream
      */
     async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
         const apiUrl = API.datastreams.by_id.replace('{id}',datastreamId);
         const queryString = dataStreamFilter.toQueryString(['select','format']);
         const jsonData = await this.fetchAsJson(apiUrl, queryString);
-        return this.datastreamParser.parseData(jsonData);
+        return this.sweApiDataStreamParser.parseData(jsonData);
 
     }
 }
