@@ -11,13 +11,12 @@ const platformLocationDataSource = new SosGetResult('android-GPS', {
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
   startTime: '2015-12-19T21:04:29.231Z',
   endTime: '2015-12-19T21:09:19.675Z',
-  replaySpeed: 1.0
+  replaySpeed: 3.0
 });
 
 const locationDivElement = document.getElementById('datasource-gps');
-platformLocationDataSource.subscribe((message) => locationDivElement.value += JSON.stringify(message) +'\n', [EventType.DATA,EventType.TIME_CHANGED, EventType.STATUS])
+platformLocationDataSource.subscribe((message) => locationDivElement.innerText = JSON.stringify(message, null, 2),
+    [EventType.DATA,EventType.TIME_CHANGED, EventType.STATUS])
 
-// start streaming onclick
-const runButtonElement = document.getElementById('run-datasource-button');
-runButtonElement.onclick = () => platformLocationDataSource.connect();
+platformLocationDataSource.connect();
 // #endregion snippet_datasource_swejson

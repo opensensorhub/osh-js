@@ -69,7 +69,7 @@ class System extends SensorWebApi {
      * route: /systems/{sysid}/datastreams
      * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter()] - default DataStream filter
      * @param {Number} [pageSize=10] - default page size
-     * @return {Promise<Collection<Datastream>}  - A collection of Datastream
+     * @return {Promise<Collection<DataStream>>}  - A collection of DataStream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(

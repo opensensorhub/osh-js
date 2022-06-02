@@ -6,16 +6,16 @@ There are properties to control the playback stream, server version, protocols, 
 
 **osh-js** comes with built-in datasource types:
 
-- [SosGetResultJson](sos/sosjson.md)
-- [SosGetVideo](sos/video.md)
-- [SosGetVideoWithRoll](sos/videoroll.md)
-- [SosGetFois](sos/sosgetfois.md)
-- [SweApiFetchJson](sweapi/sweapifetchjson.md)
+- [SosGetResult](sos.md)
+- [SweApiFetchJson](sweapifetch.md)
 
 ## Data parsing
 
 The second role of the DataSource is to provide a way to parse the data depending on the kind of DataSource we invoke.
-Each DataSource provides an inner parser which defines how to parse the data.
+Each DataSource provides an inner generic parser which defines how to parse the data.
+
+The generic parser will make **getResultTemplate** request for SOS, or **/schema** for SweApi. Using the schema or resultTemplate,
+the parser is able to automatically parse the data into the correct format.
 
 The DataSource uses a DataConnector which instantiates a WebSocket or HTTP connection to get results from the server.
 In case of GetResult request, it is preferable to use a WebSocket because it will keep a persistent connection between the client and the server.

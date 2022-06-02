@@ -20,13 +20,11 @@ videoDataSource.subscribe((message) => {
   let dataEvent;
   for(let i=0;i < message.values.length;i++) {
     dataEvent =  message.values[i];
-    dataEvent.data.frameData = message.values[i].data.frameData.slice(0,10);
-    videoDivElement.value += JSON.stringify( [dataEvent]) + '\n';
+    dataEvent.data.videoFrame.data = message.values[i].data.videoFrame.data.slice(0,10);
+    videoDivElement.innerText = JSON.stringify( [dataEvent], null, 2);
   }
 }, [EventType.DATA])
 
 
-// start streaming onclick
-const runButtonElement = document.getElementById('run-datasource-button');
-runButtonElement.onclick = () => videoDataSource.connect();
+videoDataSource.connect()
 // #endregion snippet_datasource_video
