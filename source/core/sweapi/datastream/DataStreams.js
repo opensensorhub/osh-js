@@ -31,8 +31,8 @@ class DataStreams extends SensorWebApi {
 
     /**
      * List or search all datastreams available through this API.
-     * @param [dataStreamFilter=new DataStreamFilter()] - default DataStream filter
-     * @param [pageSize=10] - default page size
+     * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter()] - default DataStream filter
+     * @param {Number} [pageSize=10] - default page size
      * @return {Promise<Collection<DataStream>>} - A Collection of DataStream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
@@ -46,8 +46,7 @@ class DataStreams extends SensorWebApi {
 
     /**
      * Get a specific datastream resource by ID
-     * @param datastreamId - The ID of the datastream
-     * @param [dataStreamFilter=new DataStreamFilter(] - default datastream filter
+     * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter(] - default datastream filter
      * @return {Promise<DataStream>} - The corresponding DataStream
      */
     async getDataStreamById(datastreamId,dataStreamFilter = new DataStreamFilter()) {
