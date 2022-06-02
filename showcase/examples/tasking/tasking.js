@@ -27,7 +27,7 @@ let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
 const systems = new Systems({
     endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
     streamProtocol: 'mqtt',
-    mqtt: {
+    mqttOpts: {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8483'
     },
@@ -42,9 +42,9 @@ const textStatusElt =  document.getElementById("text_status");
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.result.pos.lon, //om+json
-        y: rec.result.pos.lat,
-        z: rec.result.pos.alt
+        x: rec.pos.lon, //om+json
+        y: rec.pos.lat,
+        z: rec.pos.alt
     }),
     name: 'drone',
     description: 'Drone',
@@ -56,9 +56,9 @@ const pointMarkerLayer = new PointMarkerLayer({
 let polylineLayer = new PolylineLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.result.pos.lon,
-        y: rec.result.pos.lat,
-        z: rec.result.pos.alt
+        x: rec.pos.lon,
+        y: rec.pos.lat,
+        z: rec.pos.alt
     }),
     color: 'rgba(0,0,255,0.5)',
     weight: 5,

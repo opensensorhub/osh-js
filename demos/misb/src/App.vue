@@ -80,7 +80,7 @@ export default {
     const commonDatasourceOpts = {
       endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
       protocol: 'mqtt',
-      mqtt: {
+      mqttOpts: {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8483'
       },

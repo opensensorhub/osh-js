@@ -16,8 +16,6 @@
 
 import SweCollectionDataParser from "../datasource/sweapi/SweCollectionDataParser";
 
-let lock = null;
-
 class Collection {
     /**
      *

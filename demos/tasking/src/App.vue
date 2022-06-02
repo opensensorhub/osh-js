@@ -90,14 +90,14 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: `/api/datastreams/${posDsId}/observations`,
       protocol: 'mqtt',
-      mqtt: mqttProps,
+      mqttOpts: mqttProps,
       tls: true,
     });
 
     this.systems = new Systems({
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       streamProtocol: 'mqtt',
-      mqtt: mqttProps,
+      mqttOpts: mqttProps,
       tls: true
     });
 
@@ -108,7 +108,7 @@ export default {
     {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       streamProtocol: 'mqtt',
-      mqtt: mqttProps,
+      mqttOpts: mqttProps,
       tls: true
     });
 
@@ -118,7 +118,7 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
       collection: `/api/systems/${systemId}/controls/${cmdStreamId}/status`,
       protocol: 'mqtt',
-      mqtt: mqttProps,
+      mqttOpts: mqttProps,
       tls: true,
     });
 

@@ -80,7 +80,7 @@ class DataSourceHandler {
                 this.connector = new TopicConnector(url);
             } else if(properties.protocol === 'mqtt') {
                 const tls = (properties.tls) ? 's' : '';
-                const url = properties.protocol + tls + '://' + properties.mqtt.endpointUrl;
+                const url = properties.protocol + tls + '://' + properties.mqttOpts.endpointUrl;
                 this.connector =  new MqttConnector(url, properties);
             }
         } else {

@@ -76,8 +76,8 @@ class SensorWebApi {
         assertDefined(networkProperties.streamProtocol, 'streamProtocol');
 
         let endpoint = networkProperties.endpointUrl;
-        if(networkProperties.streamProtocol === 'mqtt' && isDefined(networkProperties.mqtt)) {
-            endpoint = networkProperties.mqtt.endpointUrl;
+        if(networkProperties.streamProtocol === 'mqtt' && isDefined(networkProperties.mqttOpts)) {
+            endpoint = networkProperties.mqttOpts.endpointUrl;
         }
 
         if (endpoint.endsWith('/')) {

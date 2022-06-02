@@ -340,7 +340,7 @@ export default {
         protocol: 'http',
         tls: this.$store.state.server.tls,
         endpointUrl: this.$store.state.server.url,
-        mqtt: {
+        mqttOpts: {
           prefix: this.$store.state.server.mqtt.prefix,
           endpointUrl: this.$store.state.server.mqtt.url
         }

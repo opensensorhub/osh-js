@@ -81,7 +81,7 @@ export default {
           {
             ...this.controlObj.networkProperties,
             streamProtocol: value,
-            mqtt: {
+            mqttOpts: {
               prefix: this.mqttPrefix,
               endpointUrl: this.mqttUrl
             },

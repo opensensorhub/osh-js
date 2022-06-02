@@ -12,7 +12,7 @@ let gpsDataSource = new SweApiFetch("android-GPS", {
     collection: '/datastreams/gal7w6j6v7n9/observations',
     tls: false,
     protocol: 'mqtt',
-    mqtt: {
+    mqttOpts: {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8083'
     },
@@ -23,7 +23,7 @@ const isaDataSource = new SweApiFetch("ISA-bio-sensor", {
     collection: '/datastreams/1lppw59ger1py/observations',
     tls: false,
     protocol: 'mqtt',
-    mqtt: {
+    mqttOpts: {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8083'
     },
