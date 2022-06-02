@@ -30,9 +30,9 @@ class Observations extends SensorWebApi {
 
     /**
      * List or search all observations available through this API.
-     * @param observationFilter
-     * @param pageSize
-     * @return {Promise<Collection>}
+     * @param observationFilter - default observation filter
+     * @param [pageSize=10] - default page size
+     * @return {Promise<Collection>} - the result observations
      */
     async searchObservations(observationFilter = new ObservationFilter(), pageSize= 10) {
         return new Collection('/observations', observationFilter, pageSize,this.parser, this._network.info.connector);
@@ -41,8 +41,8 @@ class Observations extends SensorWebApi {
     /**
      * Get a specific observation resource by ID
      * @param observationId - The ID of the observation
-     * @param observationFilter
-     * @return {Promise<Observation>}
+     * @param observationFilter  - default observation filter
+     * @return {Observation} - The corresponding observation
      */
     async getObservationById(observationId,observationFilter = new ObservationFilter()) {
         const response = await this._network.info.connector.doRequest(
