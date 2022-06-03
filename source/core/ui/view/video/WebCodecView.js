@@ -28,7 +28,9 @@ import YUVCanvas from "./YUVCanvas";
   name: 'UAV Video',
   layers: [
       new DataLayer({
-        dataSourceId: videoDataSource.id
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame,
+        getTimestamp: (rec) => rec.timestamp
       })
   ]
 });
@@ -48,7 +50,7 @@ class WebCodecView extends CanvasView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['videoData'],
             ...properties
         });
 
@@ -103,15 +105,26 @@ class WebCodecView extends CanvasView {
     }
 
     async setData(dataSourceId, data) {
-        const values = data.values;
-        for(let i=0; i < values.length;i++) {
-            if (!this.skipFrame) {
-                const value = values.shift();
-                let pktData = value.data.frameData;
-                let roll = value.data.roll;
-                let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timeStamp, roll);
+        if(data.type === 'videoData') {
+            const values = data.values;
+            for(let i=0;i < values.length;i++) {
+                this.updateVideo(values[i]);
             }
+        }
+    }
+    updateVideo(props) {
+        if (!this.skipFrame) {
+            if (!this.codecConfigured) {
+                this.codec = this.codecMap[props.frameData.compression.toLowerCase()]
+                this.initDecoder();
+            }
+
+            this.decode(
+                props.frameData.data.length,
+                props.frameData.data,
+                props.timestamp,
+                props.roll || 0
+            );
         }
     }
 
@@ -185,20 +198,16 @@ class WebCodecView extends CanvasView {
      * @private
      * @param pktSize
      * @param pktData
-     * @param timeStamp
+     * @param timestamp
      */
-    async decode(pktSize, pktData, timeStamp, roll) {
-        if (!this.codecConfigured) {
-            this.initDecoder();
-        }
-
+    async decode(pktSize, pktData, timestamp, roll) {
         if (this.codecConfigured) {
             this.decodeWorker.postMessage({
                 pktSize: pktSize,
                 pktData: pktData,
                 roll: roll,
                 codec: this.codec,
-                timeStamp: timeStamp,
+                timestamp: timestamp,
             }, [pktData.buffer]);
         } else {
             console.warn('decoder has not been initialized yet');
@@ -207,6 +216,10 @@ class WebCodecView extends CanvasView {
 
     destroy() {
         super.destroy();
+    }
+
+    async getCanvas() {
+        return this.canvasElt;
     }
 }
 

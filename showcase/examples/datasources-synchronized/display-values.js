@@ -14,25 +14,25 @@ let lastTimestamp = 0;
 
 export function displayLocation(values) {
     locationDivElement.value = JSON.stringify(values);
-    lastLocationDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Location';
-    currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
+    lastLocationDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Location';
+    currentTimeDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Current';
 }
 
 export  function displayOrientation(values) {
     orientationDivElement.value = JSON.stringify(values) + '\n';
-    lastOrientationDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Orientation';
-    currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
+    lastOrientationDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Orientation';
+    currentTimeDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Current';
 }
 
 export function displayVideo(values) {
     let dataEvent;
     for(let i=0;i < values.length;i++) {
         dataEvent =  values[i];
-        dataEvent.data.frameData = values[i].data.frameData.slice(0,10);
+        dataEvent.data.videoFrame.data = values[i].data.videoFrame.data.slice(0,10);
         videoDivElement.value = JSON.stringify([dataEvent]) + '\n';
     }
-    lastVideoDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Video';
-    currentTimeDivElement.innerText = new Date(values[values.length-1].timeStamp).toISOString()+ ' - Current';
+    lastVideoDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Video';
+    currentTimeDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Current';
 }
 
 export function displayError(timestamp) {

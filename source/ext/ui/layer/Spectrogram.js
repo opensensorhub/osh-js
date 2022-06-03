@@ -53,8 +53,8 @@ class Spectrogram extends Layer {
         }
 
         if (isDefined(properties.getValues)) {
-            let fn = function (rec, timeStamp, options) {
-                let values = properties.getValues.handler(rec, timeStamp, options);
+            let fn = function (rec, timestamp, options) {
+                let values = properties.getValues.handler(rec, timestamp, options);
 
                 if (Array.isArray(values)) {
                     self.props.latestData = values;

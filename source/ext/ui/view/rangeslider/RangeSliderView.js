@@ -207,7 +207,7 @@ class RangeSliderView extends View {
     const values = data.values;
     for(let i=0; i < values.length;i++) {
       if(!this.update) {
-        this.slider.noUiSlider.set([values[i].timeStamp]);
+        this.slider.noUiSlider.set([values[i].timestamp]);
       }
     }
   }

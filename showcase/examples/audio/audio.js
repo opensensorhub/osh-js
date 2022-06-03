@@ -1,37 +1,47 @@
-import SosGetResultAudio from "osh-js/core/datasource/sos/SosGetResultAudio";
-import AudioView from "osh-js/core/ui/view/audio/AudioView";
+import AudioView from 'osh-js/core/ui/view/audio/AudioView';
 import AudioFrequencyCanvasVisualizer
-    from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer";
-import AudioTimeCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer";
+    from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer';
+import AudioTimeCanvasVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer';
 import AudioFrequencyChartJsVisualizer
-    from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
-import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
-import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
+    from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer';
+import AudioTimeChartJsVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer';
+import AudioSpectrogramVisualizer from 'osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer';
+// #region snippet_audio_datasource
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult';
+import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
 
-let audioDataSource = new SosGetResultAudio("alex-audio", {
-  protocol: "ws",
-  service: "SOS",
-  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-  offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
-  observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
-  startTime: "2021-04-12T10:48:45Z",
-  endTime: "2021-04-12T10:49:45Z",
-  replaySpeed: 1.0,
-  bufferingTime: 1000
+let audioDataSource = new SosGetResult("alex-audio", {
+    protocol: "ws",
+    service: "SOS",
+    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
+    observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
+    startTime: "2021-04-12T10:48:45Z",
+    endTime: "2021-04-12T10:49:45Z",
+    replaySpeed: 1.0,
+    bufferingTime: 1000
 });
 
 let audioView = new AudioView({
- name: "Audio",
- css: 'audio-css',
- container: 'audio-chart-container',
- dataSource: audioDataSource,
- gain: 5,
- playSound: true
+    name: "Audio",
+    css: 'audio-css',
+    container: 'audio-chart-container',
+    gain: 5,
+    playSound: true,
+    layers: [
+        new AudioDataLayer({
+            dataSourceId: audioDataSource.id,
+            getSampleRate: (rec) => rec.sampleRate,
+            getFrameData: (rec) => rec.samples,
+            getTimestamp: (rec) => rec.timestamp
+        })
+    ]
 });
+// #endregion snippet_audio_datasource
 
 const audioCanvasFrequencyVisualizer = new AudioFrequencyCanvasVisualizer({
     fftSize: 32,
-    barWidth:20,
+    barWidth: 20,
     css: 'audio-canvas',
     container: 'canvas-frequency'
 });
@@ -72,11 +82,11 @@ audioView.addVisualizer(audioChartTimeVisualizer);
 audioView.addVisualizer(audioSpectrogramVisualizer);
 
 document.getElementById("listen").onclick = () => {
-  audioDataSource.connect();
+    audioDataSource.connect();
 }
 
 const inputChartElt = document.getElementById("input-range-chart");
 inputChartElt.onchange = (event) => {
-  document.getElementById("range-value-chart").innerText = inputChartElt.value;
-  audioView.setGain(parseInt(inputChartElt.value));
+    document.getElementById("range-value-chart").innerText = inputChartElt.value;
+    audioView.setGain(parseInt(inputChartElt.value));
 }

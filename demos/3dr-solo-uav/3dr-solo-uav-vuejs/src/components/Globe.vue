@@ -43,7 +43,7 @@
               };
             }
           },
-          icon: "./models/Drone+06B.glb"
+          icon: "./images/quadcopter.png"
         });
 
         // style it with a moving point marker

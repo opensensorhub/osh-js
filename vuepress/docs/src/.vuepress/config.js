@@ -158,17 +158,8 @@ module.exports = (env) => {
                             '/guide/datasources/general.md',
                             '/guide/protocol/general.md',
                             '/guide/datasources/batch_replayspeed.md',
-                            {
-                                title: 'SOS',
-                                collapsable: true,
-                                children: [
-                                    '/guide/datasources/sos/sosjson.md',
-                                    '/guide/datasources/sos/video.md',
-                                    '/guide/datasources/sos/videoroll.md',
-                                    '/guide/datasources/sos/audio.md',
-                                    '/guide/datasources/sos/sosgetfois.md'
-                                ]
-                            },
+                            '/guide/datasources/sos.md',
+                            '/guide/datasources/sweapifetch.md',
                             {
                                 title: 'SPS',
                                 collapsable: true,
@@ -179,17 +170,9 @@ module.exports = (env) => {
                                 ]
                             },
                             {
-                                title: 'SweAPI',
-                                collapsable: true,
-                                children: [
-                                    '/guide/datasources/sweapi/sweapifetchjson.md'
-                                ]
-                            },
-                            {
                                 title: 'Others',
                                 collapsable: true,
                                 children: [
-                                    '/guide/datasources/others/mqtt.md',
                                     '/guide/datasources/others/file.md',
                                 ]
                             }
@@ -217,9 +200,7 @@ module.exports = (env) => {
                                 title: 'Video',
                                 collapsable: true,
                                 children: [
-                                    '/guide/views/video/ffmpeg.md',
-                                    '/guide/views/video/mjpeg.md',
-                                    '/guide/views/video/videocodec.md',
+                                    '/guide/views/video/video.md',
                                 ]
                             },
                             {
@@ -249,6 +230,8 @@ module.exports = (env) => {
                             '/guide/layers/polyline.md',
                             '/guide/layers/curve.md',
                             '/guide/layers/draping.md',
+                            '/guide/layers/video.md',
+                            '/guide/layers/audio.md',
                         ]
                     },
                     {

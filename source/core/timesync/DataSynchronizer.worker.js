@@ -48,10 +48,7 @@ self.onmessage = (event) => {
         }
     } else if(event.data.message === 'data') {
         if(dataSynchronizerAlgo !== null) {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, {
-                data: event.data.data,
-                timeStamp: event.data.timeStamp
-            });
+            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
         }
     } else {
         // skip response
@@ -112,17 +109,17 @@ function addDataSource(dataSource) {
     }
 }
 
-async function onData(dataSourceId, data) {
-    self.currentTime = data.timeStamp;
+async function onData(dataSourceId, dataBlock) {
+    self.currentTime = dataBlock.data.timestamp;
     bcChannels[dataSourceId].postMessage({
-            values: [data],
+            values: [dataBlock],
             dataSourceId:dataSourceId,
             type: EventType.DATA
         }
     );
 
     timeBroadcastChannel.postMessage({
-        timestamp: data.timeStamp,
+        timestamp: dataBlock.data.timestamp,
         dataSourceId: dataSourceId,
         type: EventType.TIME
     });

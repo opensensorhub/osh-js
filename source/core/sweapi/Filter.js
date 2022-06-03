@@ -33,7 +33,11 @@ class SensorWebApiFilter {
             if((parameters.length === 0 || parameters.includes(queryParameter)) && isDefined(this.props[queryParameter])) {
                 // if(Array.isArray(this.props[queryParameter])) {
                 //     queryString += separator + queryParameter + '=' + encodeURIComponent(this.props[queryParameter].join());
-                /*} else*/ if(queryParameter === 'f' || queryParameter === 'format' || queryParameter === 'responseFormat' || queryParameter === 'obsFormat') {
+                /*} else*/ if(queryParameter === 'f'
+                    || queryParameter === 'format'
+                    || queryParameter === 'responseFormat'
+                    || queryParameter === 'obsFormat'
+                ) {
                     queryString += separator + queryParameter + '=' + this.props[queryParameter].replaceAll('+','%2B');
                 // } else {
                 //     queryString += separator + queryParameter + '=' + encodeURIComponent(this.props[queryParameter]);

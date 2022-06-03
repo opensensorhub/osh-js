@@ -8,7 +8,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
@@ -17,140 +17,170 @@
 import SystemFilter from "./SystemFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SweApiFetchSystemParser from "../../datasource/sweapi/parser/json/SweApiFetchSystem.parser";
+import SweApiFetchSystemParser from "../../datasource/sweapi/parser/collection/SweApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/json/SweApiDataStream.parser";
+import SweApiDataStreamParser from "../../datasource/sweapi/parser/collection/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/json/SweApiFetchFeatureOfInterest.parser";
+import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/collection/SweApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
 import ControlFilter from "../control/ControlFilter";
-import SweApiFetchControlParser from "../../datasource/sweapi/parser/json/SweApiFetchControl.parser";
+import SweApiFetchControlParser from "../../datasource/sweapi/parser/collection/SweApiFetchControl.parser";
 import EventFilter from "../event/EventFilter";
-import SweParser from "../SweParser";
 import SystemHistoryFilter from "../history/SystemHistoryFilter";
-import SweApiFetchEventParser from "../../datasource/sweapi/parser/json/SweApiFetchEvent.parser";
+import SweApiFetchEventParser from "../../datasource/sweapi/parser/collection/SweApiFetchEvent.parser";
 
 class System extends SensorWebApi {
-
+    /**
+     * @param {Object} properties - the properties of the object
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
+     */
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.systemParser = new SweApiFetchSystemParser(networkProperties);
-        this.dataStreamParser = new SweApiDataStreamParser(networkProperties);
-        this.featureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
-        this.eventParser = new SweApiFetchEventParser(networkProperties);
-        this.controlParser = new SweApiFetchControlParser(networkProperties);
-        this.jsonParser = new SweParser(networkProperties);
+        this.sweApiFetchSystemParser = new SweApiFetchSystemParser(networkProperties);
+        this.sweApiDataStreamParser = new SweApiDataStreamParser(networkProperties);
+        this.sweApiFetchFeatureOfInterestParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
+        this.sweApiFetchEventParser = new SweApiFetchEventParser(networkProperties);
+        this.sweApiFetchControlParser = new SweApiFetchControlParser(networkProperties);
     }
 
     /**
      * Get the latest specsheet of a system
-     * @param {SystemFilter} systemFilter - the system filter
-     * @return Promise<JSON> - SensorlML Description
+     * route: /systems/{sysid}/details
+     * @param {SystemFilter} [systemFilter=new SystemFilter()] - the system filter
+     * @return {Promise<JSON>} - SensorlML Description
      */
     async getDetails(systemFilter = new SystemFilter()) {
-        return this._network.info.connector.doRequest(
-            API.systems.details.replace('{sysid}',this.properties.id),
-            systemFilter.toQueryString(['select', 'format']),
-            systemFilter.props.format
-        );
+        const apiUrl = API.systems.details.replace('{sysid}',this.properties.id);
+        const queryString = systemFilter.toQueryString(['select', 'format']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 
     /**
-     *
-     * @param {SystemFilter} systemFilter - the system filter
-     * @param pageSize
-     * @return Promise<Collection<System>>
+     * Search for subsystems
+     * route: /systems
+     * @param {SystemFilter} [systemFilter= new SystemFilter()] - the system filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchSubSystems(systemFilter = new SystemFilter(), pageSize = 10) {
-        systemFilter.props.parent = this.properties.id;
-        return new Collection(API.systems.search, systemFilter, pageSize, this.systemParser, this._network.info.connector);
+        return new Collection(this.baseUrl() + API.systems.search, systemFilter, pageSize, this.sweApiFetchSystemParser);
     }
 
     /**
-     * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.     * @param dataStreamFilter
-     * @param pageSize
-     * @return {Promise<Collection>}
+     * List or search output datastreams of the selected system. Individual datastreams can be retrieved by ID directly on the root "datastreams" collection.
+     * route: /systems/{sysid}/datastreams
+     * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter()] - default DataStream filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<DataStream>>}  - A collection of DataStream
      */
     async searchDataStreams(dataStreamFilter = new DataStreamFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.datastreams.replace('{sysid}',this.properties.id),
-            dataStreamFilter, pageSize,this.dataStreamParser, this._network.info.connector);
+            this.baseUrl() + API.systems.datastreams.replace('{sysid}',this.properties.id),
+            dataStreamFilter,
+            pageSize,
+            this.sweApiDataStreamParser
+        );
     }
 
     /**
      * List or search features of interest of a system. Individual features can be retrieved by ID directly on the root "featuresOfInterest" collection
-     * @param featureOfInterestFilter
-     * @param pageSize
-     * @return {Promise<Collection>}
+     * route: /systems/{sysid}/featuresOfInterest
+     * @param {FeatureOfInterestFilter} [featureOfInterestFilter=new FeatureOfInterestFilter()] - FOI filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<FeatureOfInterest>>} - A collection of FeatureOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.fois.replace('{sysid}',this.properties.id),featureOfInterestFilter,
-            pageSize,this.featureOfInterestParser, this._network.info.connector);
+            this.baseUrl() + API.systems.fois.replace('{sysid}',this.properties.id),
+            featureOfInterestFilter,
+            pageSize,
+            this.sweApiFetchFeatureOfInterestParser
+        );
     }
 
     /**
      * Get a list of control interfaces of a system
-     * @param {ControlFilter} controlFilter - the control filter
-     * @param pageSize
-     * @return {Promise<Collection<Control>>}
+     * route: /systems/{sysid}/controls
+     * @param {ControlFilter} [controlFilter=new ControlFilter()] - the control filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<Control>>} - A collection of Control
      */
     async searchControls(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.controls.replace('{sysid}',this.properties.id),controlFilter,
-            pageSize,this.controlParser, this._network.info.connector);
+            this.baseUrl() + API.systems.controls.replace('{sysid}',this.properties.id),
+            controlFilter,
+            pageSize,
+            this.sweApiFetchControlParser
+        );
     }
 
     /**
      * Get a specific control interface description by ID
+     * route: /systems/{sysid}/controls/{dsid}
      * @param {String} datastreamId - The ID of the datastream or command stream
-     * @param {ControlFilter} controlFilter - the control filter
-     * @return {Promise<Control>}
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - the control filter
+     * @return {Control} - The corresponding Control
      */
     async getControlById(datastreamId,controlFilter = new ControlFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId),
-            controlFilter.toQueryString(['select','format']),
-            controlFilter.props.format
-        );
-        return this.controlParser.parseData(response);
+        const apiUrl = API.systems.control_by_id.replace('{sysid}',this.properties.id).replace('{dsid}', datastreamId);
+        const queryString = controlFilter.toQueryString(['select', 'format']);
+        const jsonData = await this.fetchAsJson(apiUrl, queryString);
+        return this.sweApiFetchControlParser.parseData(jsonData);
     }
 
     /**
      * List or search events related to a system (e.g. maintenance events, contact change, etc.)
-     * @param {EventFilter} eventFilter - the event filter
-     * @param pageSize - the page size
-     * @return {Promise<Collection<Event>>}
+     * route: /systems/{sysid}/events
+     * @param {EventFilter} [eventFilter= new EventFilter()] - the event filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<Event>>} - A collection of Event
      */
     async searchEvents(eventFilter = new EventFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.events.replace('{sysid}',this.properties.id),eventFilter,
-            pageSize,this.eventParser, this._network.info.connector);
+            this.baseUrl() + API.systems.events.replace('{sysid}',this.properties.id),
+            eventFilter,
+            pageSize,
+            this.sweApiFetchEventParser
+        );
     }
 
     /**
      * List or search for historical descriptions of a specific system (ordered by time of validity)
-     * @param {SystemHistoryFilter} systemHistoryFilter - the history filer
-     * @param [pageSize=10] - the page size
-     * @return {Promise<Collection<System>>}
+     * route: /systems/{sysid}/history
+     * @param {SystemHistoryFilter} [systemHistoryFilter= new SystemHistoryFilter()] - the history filer
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchHistory(systemHistoryFilter = new SystemHistoryFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.history.replace('{sysid}',this.properties.id),systemHistoryFilter,
-            pageSize,this.systemParser, this._network.info.connector);
+            this.baseUrl() + API.systems.history.replace('{sysid}',this.properties.id),
+            systemHistoryFilter,
+            pageSize,
+            this.sweApiFetchSystemParser
+        );
     }
 
     /**
      * List or search members of a system group. Individual members can be retrieved by ID directly on the root "systems" collection
-     * @param {SystemFilter} systemFilter - the system filter
-     * @param pageSize - the page size
-     * @return {Promise<Collection<System>>}
+     * route: /systems/{sysid}/members
+     * @param {SystemFilter} [systemFilter=new SystemFilter()] - the system filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise<Collection<System>>} - A collection of System
      */
     async searchMembers(systemFilter = new SystemFilter(), pageSize= 10) {
         return new Collection(
-            API.systems.members.replace('{sysid}',this.properties.id),systemFilter,
-            pageSize,this.systemParser, this._network.info.connector);
+            this.baseUrl() + API.systems.members.replace('{sysid}',this.properties.id),
+            systemFilter,
+            pageSize,
+            this.sweApiFetchSystemParser
+        );
     }
 }
 

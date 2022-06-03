@@ -36,10 +36,6 @@
       </v-btn>
       <v-divider vertical class="disableCaret"></v-divider>
       <UrlEditComponentDialog
-          :fetch-url="fetchUrl"
-          :mqtt-url="mqttUrl"
-          :tls-url="tls"
-          :mqtt-prefix="mqttPrefix"
           @updated-url="changeUrl"
           class="disableCaret"
       ></UrlEditComponentDialog>
@@ -47,68 +43,75 @@
     </v-app-bar>
 
     <v-main
-      :key="sizeKey"
+        :key="sizeKey"
     >
       <div class="main">
-          <div class="left disableCaret">
-            <v-treeview
-                :key="kk"
-                dense
-                class="treeview disableCaret"
-                :active.sync="active"
-                :items="items"
-                :load-children="fetchData"
-                :open.sync="open"
-                activatable
-                color="warning"
-                transition
-            >
-              <template v-slot:prepend="{ item }">
-                <v-icon v-if="!item.children">
-                  mdi-json
-                </v-icon>
-              </template>
-            </v-treeview>
-          </div>
+        <div class="left disableCaret">
+          <v-treeview
+              :key="kk"
+              dense
+              class="treeview disableCaret"
+              :active.sync="active"
+              :items="items"
+              :load-children="fetchData"
+              :open.sync="open"
+              activatable
+              color="warning"
+              transition
+          >
+            <template v-slot:prepend="{ item }">
+              <v-icon v-if="!item.children">
+                mdi-json
+              </v-icon>
+            </template>
+            <template v-slot:label="{ item }">
+              <span :title="item.name">{{ item.name }}</span>
+            </template>
+          </v-treeview>
+        </div>
         <v-divider vertical class="divider disableCaret"></v-divider>
         <div class="right">
-          <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
-          <Details v-else-if="panels.details"
-                   :details="details"
-                   :maxHeight="maxHeight"
-          ></Details>
-          <Schema
-              v-else-if="panels.schema"
-              :objCompliantSchema="objCompliantSchema"
-              :maxHeight="maxHeight"
-          ></Schema>
-          <StreamObservationsContent v-else-if="panels.datastreamLive"
-                                     :datastreamProperties="datastreamProperties"
-                                     :key="nodeId + kk + sizeKey"
-                                     :datastreamNetworkProperties="datastreamNetworkProperties"
-                                     :mqtt-prefix="mqttPrefix"
-                                     :mqtt-url="mqttUrl"
-                                     :maxHeight="maxHeight"
-          ></StreamObservationsContent>
-          <StreamCommandsContent v-else-if="panels.commandStatusLive"
-                                 :control="controlStreamCommand"
-                                 :key="nodeId + kk"
-                                 :url="mqttUrl"
-                                 :maxHeight="maxHeight"
-          ></StreamCommandsContent>
-          <StreamControlStatusContent v-else-if="panels.controlStatusLive"
-                                      :control="controlStreamStatus"
-                                      :key="nodeId + kk"
-                                      :url="mqttUrl"
-                                      :maxHeight="maxHeight"
-          ></StreamControlStatusContent>
-          <SearchContent v-else-if="panels.search"
-                         :collection="collectionSearch"
-                         :key="nodeId + kk"
-                         @error="handleError"
-                         :maxHeight="maxHeight"
-          ></SearchContent>
-          <ContentLoading v-else></ContentLoading>
+            <NoSelectedContent v-if="!selected || !activeNode"></NoSelectedContent>
+            <Details v-else-if="details" :key="panelKey"></Details>
+            <Schema
+                v-else-if="isSchemaPanel"
+                :objCompliantSchema="objCompliantSchema"
+                :key="panelKey"
+            ></Schema>
+            <LiveObservations
+                v-else-if="isLiveDataStreamPanel"
+                :datastream="dataStream"
+                :key="panelKey"
+            ></LiveObservations>
+            <LiveCommands
+                v-else-if="isLiveCommandStatusPanel"
+                :control="control"
+                :key="panelKey"
+            ></LiveCommands>
+            <LiveControlStatus
+                v-else-if="isLiveControlStatusPanel"
+                :control="control"
+                :key="panelKey"
+            ></LiveControlStatus>
+            <HistoricalObservations
+                v-else-if="isHistoricalObservationPanel"
+                :datastream="dataStream"
+                @error="handleError"
+                :key="panelKey"
+            ></HistoricalObservations>
+            <HistoricalCommands
+              v-else-if="isHistoricalCommandsPanel"
+              :control="control"
+              @error="handleError"
+              :key="panelKey"
+            ></HistoricalCommands>
+            <HistoricalStatus
+              v-else-if="isHistoricalStatusPanel"
+              :control="control"
+              @error="handleError"
+              :key="panelKey"
+            ></HistoricalStatus>
+            <ContentLoading  v-else></ContentLoading>
         </div>
       </div>
     </v-main>
@@ -117,15 +120,15 @@
 
 <script>
 // @ is an alias to /src
-import VueJsonPretty from 'vue-json-pretty';
-import 'vue-json-pretty/lib/styles.css';
-import ContentLoading from './components/ContentLoading.vue';
-import NoSelectedContent from "./components/NoSelectedContent.vue";
+import ContentLoading from './components/common/ContentLoading.vue';
+import NoSelectedContent from "./components/common/NoSelectedContent.vue";
 import Details from "./components/Details.vue";
-import StreamObservationsContent from "./components/StreamObservationsContent.vue";
-import StreamCommandsContent from "./components/StreamCommandsContent.vue";
-import StreamControlStatusContent from './components/StreamControlStatusContent.vue';
-import SearchContent from "./components/SearchContent.vue";
+import LiveObservations from "./components/LiveObservations.vue";
+import LiveCommands from "./components/LiveCommands.vue";
+import LiveControlStatus from './components/LiveControlStatus.vue';
+import HistoricalObservations from "./components/HistoricalObservations.vue";
+import HistoricalCommands from "./components/HistoricalCommands.vue";
+import HistoricalStatus from "./components/HistoricalStatus.vue";
 import UrlEditComponentDialog from "./components/UrlEditComponentDialog.vue";
 import Schema from "./components/Schema.vue";
 
@@ -133,31 +136,31 @@ import Systems from "osh-js/core/sweapi/system/Systems";
 import SystemFilter from "osh-js/core/sweapi/system/SystemFilter";
 import DataStreamFilter from "osh-js/core/sweapi/datastream/DataStreamFilter";
 import FeatureOfInterestFilter from "osh-js/core/sweapi/featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchGenericJson from "osh-js/core/datasource/sweapi/parser/json/SweApiFetchGenericJson.parser";
 import {isDefined} from "osh-js/core/utils/Utils";
 import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
-import ObservationFilter from "osh-js/core/sweapi/observation/ObservationFilter";
-import CommandFilter from "osh-js/core/sweapi/command/CommandFilter";
 import EventFilter from "osh-js/core/sweapi/event/EventFilter";
 import SystemHistoryFilter from "osh-js/core/sweapi/history/SystemHistoryFilter";
+import { mapActions } from 'vuex'
+import SweCollectionDataParser from "../../../source/core/datasource/sweapi/SweCollectionDataParser";
+import {randomUUID} from "../../../source/core/utils/Utils";
 
 export default {
   components: {
     Details,
     NoSelectedContent,
     ContentLoading,
-    VueJsonPretty,
-    StreamObservationsContent,
-    StreamCommandsContent,
-    StreamControlStatusContent,
-    SearchContent,
+    HistoricalObservations,
+    HistoricalCommands,
+    HistoricalStatus,
+    LiveCommands,
+    LiveControlStatus,
+    LiveObservations,
     UrlEditComponentDialog,
     Schema
   },
   data() {
     return {
       sizeKey: 0,
-      maxHeight: 800,
       treeMaxHeight: 800,
       drawer: true,
       active: [],
@@ -165,32 +168,25 @@ export default {
       open: [],
       systems: [],
       nodes: {},
-      details: undefined,
-      formats: undefined,
       count: 0,
-      datastreamProperties: undefined,
-      datastreamNetworkProperties: undefined,
-      controlStreamCommand: undefined,
-      controlStreamStatus: undefined,
+      dataStream: undefined,
+      controlProperties: undefined,
+      control: undefined,
       objCompliantSchema: undefined,
       collectionSearch: undefined,
       nodeId: undefined,
-      prettyJson: true,
-      fetchUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      mqttUrl: 'ogct17.georobotix.io:8483',
-      mqttPrefix: '/api',
       kk: 0,
       alert: false,
       alertContent: undefined,
-      tls: true,
-      panels: {
-        details: false,
-        schema: false,
-        datastreamLive: false,
-        controlStatusLive: false,
-        commandStatusLive: false,
-        search: false,
-      }
+      details: false, // panel
+      isSchemaPanel: false, // panel
+      isLiveDataStreamPanel: false, // panel
+      isLiveControlStatusPanel: false, // panel
+      isLiveCommandStatusPanel: false, // panel
+      isHistoricalObservationPanel: false, // panel
+      isHistoricalCommandsPanel: false, // panel
+      isHistoricalStatusPanel: false, //panel
+      panelKey: randomUUID(),
     }
   },
   beforeMount() {
@@ -200,6 +196,9 @@ export default {
     this.init();
   },
   computed: {
+    fetchUrl() {
+      return this.$store.state.server.url
+    },
     items() {
       return [
         {
@@ -217,104 +216,110 @@ export default {
       const id = this.active[0]
       if (!isDefined(id)) return undefined;
 
-      const jsonParser = new SweApiFetchGenericJson();
+      const jsonParser = new SweCollectionDataParser('application/json');
       let node;
       if (id.startsWith('system-details')) {
         node = this.nodes[id];
         node.system.getDetails().then(details => {
-          that.details = jsonParser.parseData(details);
-          that.panels.details = true;
+          that.details = true;
+          that.updateRightContent({
+            content: details,
+            contentType: 'application/json'
+          });
         });
       } else if (!id.startsWith('system-history') && id.startsWith('system-')) {
         node = this.nodes[id];
-        this.details = node.system.properties;
-        that.panels.details = true;
+        that.details = true;
+        this.updateRightContent({
+          content: node.system.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('datastream-schema')) {
         node = this.nodes[id];
         this.objCompliantSchema = node.datastream;
-        this.panels.schema = true;
+        this.isSchemaPanel = true;
       } else if (id.startsWith('foi-')) {
         node = this.nodes[id];
-        this.details = node.foi.properties;
-        that.panels.details = true;
+        that.details = true;
+        this.updateRightContent({
+          content: node.foi.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('event-')) {
         node = this.nodes[id];
-        this.details = node.event.properties;
-        that.panels.details = true;
+        that.details = true;
+        this.updateRightContent({
+          content: node.event.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('datastream-stream-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        this.datastreamProperties = node.datastream.properties;
-        this.datastreamNetworkProperties = node.datastream.networkProperties;
-        this.panels.datastreamLive = true;
+        this.dataStream = node.datastream;
+        this.isLiveDataStreamPanel = true;
       } else if (id.startsWith('datastream-search-observation')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.datastream.searchObservations(new ObservationFilter(), 10).then((collection) => {
-          this.collectionSearch = collection;
-          this.panels.search = true;
-        });
+        this.dataStream = node.datastream;
+        this.isHistoricalObservationPanel = true;
       } else if (id.startsWith('datastream-')) {
         node = this.nodes[id];
-        this.details = node.datastream.properties;
-        this.panels.details = true;
+        this.details = true;
+        this.updateRightContent({
+          content: node.datastream.properties,
+          contentType: 'application/json'
+        });
       } else if (id.startsWith('control-stream-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        this.controlStreamCommand = node.control;
-        this.panels.commandStatusLive = true;
+        this.control = node.control;
+        this.isLiveCommandStatusPanel = true;
       } else if (id.startsWith('control-search-command')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchCommands(new CommandFilter(), 10).then((collection) => {
-          this.collectionSearch = collection;
-          this.panels.search = true;
-        });
+        this.control = node.control;
+        this.isHistoricalCommandsPanel = true;
       } else if (id.startsWith('control-stream-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        this.controlStreamStatus = node.control;
-        this.panels.controlStatusLive = true;
+        this.networkProperties = node.control.networkProperties;
+        this.control = node.control;
+        this.isLiveControlStatusPanel = true;
       } else if (id.startsWith('control-search-status')) {
         node = this.nodes[id];
         this.nodeId = node.id;
-        node.control.searchStatus(new ControlFilter(), 10).then((collection) => {
-          this.collectionSearch = collection;
-          this.panels.search = true;
-        });
+        this.control = node.control;
+        this.isHistoricalStatusPanel = true;
       } else if (id.startsWith('control-schema')) {
         node = this.nodes[id];
-        node.control.getSchema().then(schema => {
-          that.details = jsonParser.parseData(schema);
-          that.panels.details = true;
-        });
+        this.objCompliantSchema = node.control;
+        this.isSchemaPanel = true;
       } else if (id.startsWith('control-')) {
         node = this.nodes[id];
-        this.details = node.control.properties;
-        this.panels.details = true;
+        this.details = true;
+        this.updateRightContent({
+          content: node.control.properties,
+          contentType: 'application/json'
+        });
       }
       this.activeNode = true;
       return node;
     },
   },
   methods: {
-    onResize({ width, height }) {
+    ...mapActions(['updateRightContent','updateMaxHeight', 'reset', 'updateServer']),
+    onResize({width, height}) {
       this.computeMaxHeight();
-      this.sizeKey = ''+width + height // invalidate resizable components
+      this.sizeKey = '' + width + height // invalidate resizable components
     },
     computeMaxHeight() {
       const that = this;
       setTimeout(() => {
         const offsetHeight = document.querySelector(".main").offsetHeight;
-        that.maxHeight = offsetHeight;
-        console.log(`App right
-              offsetHeight=${document.querySelector(".right").offsetHeight},
-              scrollHeight=${document.querySelector(".right").scrollHeight},
-              clientHeight=${document.querySelector(".right").clientHeight},
-        `);
-        document.querySelector(".left").style.maxHeight  = offsetHeight +'px';
-        document.querySelector(".right").style.maxHeight  = offsetHeight +'px';
-        document.querySelector(".right").style.height  = offsetHeight +'px';
+        that.updateMaxHeight(offsetHeight);
+        document.querySelector(".left").style.maxHeight = offsetHeight + 'px';
+        document.querySelector(".right").style.maxHeight = offsetHeight + 'px';
+        document.querySelector(".right").style.height = offsetHeight + 'px';
       }, 500);
     },
     handleError(error) {
@@ -328,41 +333,42 @@ export default {
       this.kk++;
     },
     changeUrl(event) {
-      this.fetchUrl = event.fetch;
-      this.mqttUrl = event.mqtt;
-      this.tls = event.tls;
-      this.mqttPrefix = event.mqttPrefix;
       this.refresh();
     },
     init() {
       this.systemsUtility = new Systems({
         protocol: 'http',
-        tls: this.tls,
-        endpointUrl: this.fetchUrl,
-        mqttPrefix: this.mqttPrefix,
-        mqttUrl: this.mqttUrl
+        tls: this.$store.state.server.tls,
+        endpointUrl: this.$store.state.server.url,
+        mqttOpts: {
+          prefix: this.$store.state.server.mqtt.prefix,
+          endpointUrl: this.$store.state.server.mqtt.url
+        }
       });
       this.systems = [];
     },
     resetSelected() {
+      // this.reset();
       this.datastreamProperties = undefined;
-      this.datastreamNetworkProperties = undefined;
-      this.controlStreamCommand = undefined;
-      this.controlStreamStatus = undefined;
+      this.networkProperties = undefined;
+      this.control = undefined;
       this.collectionSearch = undefined;
       this.objCompliantSchema = undefined;
-      this.details = undefined;
-      this.formats = undefined;
       this.activeNode = false;
       this.alert = false;
-      this.panels = {
-        details: false,
-        schema: false,
-        search: false,
-        datastreamLive: false,
-        controlStatusLive: false,
-        commandStatusLive: false,
-      }
+      this.details = false;
+      this.isSchemaPanel = false;
+      this.isLiveDataStreamPanel = false;
+      this.isLiveControlStatusPanel = false;
+      this.isLiveCommandStatusPanel = false;
+      this.isHistoricalStatusPanel = false;
+      this.isHistoricalCommandsPanel = false;
+      this.isHistoricalObservationPanel = false;
+      this.panelKey = randomUUID(); // force re-render schema panel
+      this.updateRightContent({
+        content: '',
+        contentType: 'plain/text'
+      });
     },
     async fetchData(item) {
       try {
@@ -698,6 +704,7 @@ html, body {
   margin: auto;
   justify-content: center;
 }
+
 .theme--dark.v-card {
   background-color: #2f2f2f !important;
 }
@@ -743,10 +750,6 @@ html, body {
 
 .divider {
   border: solid 1px hsl(0deg 0% 100% / 12%) !important;
-}
-
-.prettyjson, .noprettyJson {
-  padding: 15px;
 }
 
 .vjs-tree__node.is-highlight, .vjs-tree__node:hover {

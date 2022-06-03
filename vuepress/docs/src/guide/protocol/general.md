@@ -16,13 +16,13 @@ the DataSynchronizer or View.
 
 # Types
 
-|Property|Name|Description|
-|----|----|-------|
-|ws|WebSocket|WebSocket connector|
-|http|HTTP| Http connector|
-|topic|Topic | Broadcast channel connector|
-|file| File| File connector |
-
+| Property | Name      | Description                 |
+|----------|-----------|-----------------------------|
+| ws       | WebSocket | WebSocket connector         |
+| http     | HTTP      | Http connector              |
+| topic    | Topic     | Broadcast channel connector |
+| file     | File      | File connector              |
+| mqtt     | MQTT      | MQTT connector              |
 These connectors have some common properties and some more specific ones
 
 <DocumentationLoad path="/guide/api/DataConnector.html"/>
@@ -61,9 +61,9 @@ The Topic connector is used to listen to a BroadcastChannel given a specific top
 Example:
 
 ```js
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson';
+import SosGetResult from 'osh-js/core/datasource/SosGetResult';
 
-new SosGetResultJson('Example',{
+new SosGetResult('Example',{
   replaySpeed: 1.0,
   name: 'Example',
   protocol: 'topic',

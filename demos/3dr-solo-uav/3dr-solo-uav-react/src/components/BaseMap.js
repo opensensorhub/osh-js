@@ -1,6 +1,6 @@
 import * as React from "react";
 import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-import SosGetResultJson from "osh/core/datasource/sos/SosGetResultJson.js";
+import SosGetResult from "osh/core/datasource/sos/SosGetResult.js";
 import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
 import PolygonLayer from "osh/core/ui/layer/PolygonLayer.js";
 import CoPlanarPolygonLayer from "osh/core/ui/layer/CoPlanarPolygonLayer.js";
@@ -24,7 +24,7 @@ class BaseMap extends React.Component {
     let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
 
     // create data source for Android phone GPS
-    let platformLocationDataSource = new SosGetResultJson('android-GPS', {
+    let platformLocationDataSource = new SosGetResult('android-GPS', {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -35,7 +35,7 @@ class BaseMap extends React.Component {
       replaySpeed: 1
     });
 
-    let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
+    let platformOrientationDataSource = new SosGetResult('android-Heading', {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -46,7 +46,7 @@ class BaseMap extends React.Component {
       replaySpeed: 1
     });
 
-    let gimbalOrientationDataSource = new SosGetResultJson('android-Heading', {
+    let gimbalOrientationDataSource = new SosGetResult('android-Heading', {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

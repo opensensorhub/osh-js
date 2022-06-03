@@ -93,8 +93,7 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SosGetResultJson from "osh-js/core/datasource/sos/SosGetResultJson.js";
-  import SosGetResultVideo from "osh-js/core/datasource/sos/SosGetResultVideo.js";
+  import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.js";
   import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
   import {isDefined} from "osh-js/core/utils/Utils";
 
@@ -115,7 +114,7 @@
         selectionIds: [],
         dataSources: {},
         items: [],
-        locationDataSource: new SosGetResultJson("android-GPS", {
+        locationDataSource: new SosGetResult("android-GPS", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -128,7 +127,7 @@
           timeShift: -16000,
           replaySpeed: 2
         }),
-        headingDataSource: new SosGetResultJson("android-Att", {
+        headingDataSource: new SosGetResult("android-Att", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -140,7 +139,7 @@
           bufferingTime: 100,
           replaySpeed: 2
         }),
-        videoDataSource: new SosGetResultVideo("android-Video", {
+        videoDataSource: new SosGetResult("android-Video", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -152,7 +151,7 @@
           bufferingTime: 100,
           replaySpeed: 2
         }),
-        weatherDataSource: new SosGetResultJson("weather", {
+        weatherDataSource: new SosGetResult("weather", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView.js";
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import VideoView from "osh-js/core/ui/view/video/VideoView";
 
 export default {
   name: "VideoPanel",
@@ -25,14 +26,20 @@ export default {
       this.videoElt = document.getElementById("video-container");
 
       // show it in video view using FFMPEG JS decoder
-      let videoView = new FFMPEGView({
+      let videoView = new VideoView({
       container: "video-container",
       css: "video-h264",
       name: "UAV Video",
       framerate:30,
       showTime: true,
       showStats: true,
-      dataSourceId: this.droneVideoDataSource.id
+        layers: [
+          new VideoDataLayer({
+            dataSourceId: this.droneVideoDataSource.id,
+            getFrameData: (rec) => rec.img,
+            getTimestamp: (rec) => rec.timestamp
+          })
+        ]
     });
   },
 }

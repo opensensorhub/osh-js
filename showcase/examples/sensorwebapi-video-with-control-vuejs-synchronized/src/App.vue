@@ -19,7 +19,7 @@
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import SweApiFetchVideo from 'osh-js/core/datasource/sweapi/SweApiFetchVideo';
+import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApiFetch.js';
 
 export default {
   components: {
@@ -47,19 +47,19 @@ export default {
       bufferingTime: 800
     };
 
-    const dataSource0 = new SensorWebApiFetchVideo("drone-Video", {
+    const dataSource0 = new SweApiFetch("drone-Video", {
       ...opts
     });
 
-    const dataSource1 = new SensorWebApiFetchVideo("drone-Video1", {
+    const dataSource1 = new SweApiFetch("drone-Video1", {
       ...opts
     });
 
-    const dataSource2 = new SensorWebApiFetchVideo("drone-Video2", {
+    const dataSource2 = new SweApiFetch("drone-Video2", {
       ...opts
     });
 
-    const dataSource3 = new SensorWebApiFetchVideo("drone-Video3", {
+    const dataSource3 = new SweApiFetch("drone-Video3", {
       ...opts
     });
 

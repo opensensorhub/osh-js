@@ -1,7 +1,7 @@
 import Systems from "osh-js/core/sweapi/system/Systems";
 import {EventType} from "osh-js/core/event/EventType";
 import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
-import SweApiFetchJson from "osh-js/core/datasource/sweapi/SweApiFetchJson";
+import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
 import LeafletView from "osh-js/core/ui/view/map/LeafletView";
 import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
@@ -12,18 +12,25 @@ var systemId = "1ghd3h0dea3xy";
 var posDsId = "1eots41v6kody";
 var cmdStreamId = "1rl2xoslsdldj";
 
-let gpsDataSource = new SweApiFetchJson("supersonic drone GPS", {
+let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
     collection: `/api/datastreams/${posDsId}/observations`,
-    endpointUrl: 'ogct17.georobotix.io:8483',
+    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
     protocol: 'mqtt',
-    mqttPrefix: '/api',
+    mqtt: {
+        prefix: '/api',
+        endpointUrl: 'ogct17.georobotix.io:8483'
+    },
     tls: true,
+    responseFormat: 'application/om+json'
 });
 
 const systems = new Systems({
     endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
-    mqttEndpointUrl: 'ogct17.georobotix.io:8483',
     streamProtocol: 'mqtt',
+    mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'ogct17.georobotix.io:8483'
+    },
     tls: true
 });
 
@@ -35,7 +42,7 @@ const textStatusElt =  document.getElementById("text_status");
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.pos.lon,
+        x: rec.pos.lon, //om+json
         y: rec.pos.lat,
         z: rec.pos.alt
     }),

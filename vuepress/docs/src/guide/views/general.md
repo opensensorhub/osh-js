@@ -13,9 +13,7 @@ This is the list of actual supported Views in the Toolkit:
 - TimeLine
     - [NoUiSlider](./ext/rangeslider)  14.2.0
 - Video
-    - [MJPEG](./video/mjpeg)  native osh view
-    - [FFMPEG](./video/ffmpeg) native osh view based on emscripten 2.0 & FFMPEG.js 4.3
-    - VideCodecApi native osh view
+    - [Video](./video/video)  native osh view, emscripten 2.0 & FFMPEG.js 4.3, VideoCodecApi
 
 <DocumentationLoad path="/guide/api/View.html"/>
 

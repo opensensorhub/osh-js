@@ -1,8 +1,7 @@
-import Module from '../../../ffmpeg/ffmpeg-h264.js';
+import Module from '../../../ffmpeg/ffmpeg.js';
 import {isDefined} from "../../../../../utils/Utils";
 
 let instance;
-let codec = null;
 let initialized = false;
 
 // buffering frame while the emscripten module is initializing
@@ -20,21 +19,18 @@ self.onmessage = function (e) {
     // async). In the new model, that returns a Promise which you can do `.then` or
     // `await` on to get notified when the instance is ready, and the callback
     // receives the instance
+    self.codec = e.data.codec;
+    const pktData = e.data.pktData;
+
     if(!isDefined(instance)) {
-        initBuffer.push(e.data.pktData.frameData);
-        codec = e.data.codec;
+        initBuffer.push(pktData);
         console.warn('FFmpeg emscripten module is not loaded yet');
         return;
     }
 
-    if(codec === null) {
-        codec = e.data.codec;
-    }
-
     checkForInit();
 
-    const frameData = e.data.pktData.frameData;
-    const decodedFrame = decode(frameData);
+    const decodedFrame = decode(pktData);
     sendBack(decodedFrame);
 };
 self.onerror = (e) => {
@@ -42,9 +38,12 @@ self.onerror = (e) => {
 }
 
 function checkForInit() {
+    if(!isDefined(self.codec)) {
+        return;
+    }
     // init the decoder for the first time
     if(!initialized) {
-        init();
+        init(self.codec);
     }
 
     if(initBuffer.length > 0) {
@@ -65,13 +64,14 @@ function sendBack(decodedFrame) {
     }
 }
 
-function init() {
+function init(codec) {
     // register all compiled codecs
     instance._avcodec_register_all();
     // find audio decoder
+    console.log(`Init Ffmpeg audio decoder using ${codec} codec`);
     var codecId = instance.ccall('avcodec_find_decoder_by_name', 'number', ['string'], [codec]);
     if (codecId === 0) {
-        console.error("Could not find H264 codec");
+        console.error(`Could not find ${codec} codec`);
     }
 
     // init codec and conversion context

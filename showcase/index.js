@@ -103,6 +103,11 @@ var samples = [{
         url: "datasource-file"
     },
     {
+        name: "DataSource SweApiFetch",
+        description: "Display GPS data using the SweApiFetch datasource",
+        url: "datasource-sweapifetch"
+    },
+    {
         name: "Multiple Video DataSource Synchronized",
         description: "Display the data of 3 differents video datasources using time synchronization algorithm",
         url: "multi-datasources-synchronized"
@@ -203,21 +208,10 @@ var samples = [{
         url: "audio"
     },
     {
-        name: "Audio Raw Binary decoding",
-        description: "Listen to raw audio stream using WebCodec/FFmpeg.js",
-        url: "audioRaw"
-    },
-    {
         name: "Audio WebCodec/FFmpeg.js decoding with time controller",
         description: "Listen audio stream using WebCodec/FFmpeg.js with time controller",
         url: 'audio-with-control-vuejs',
         code: 'vue/App_examples/audio-with-control-vuejs.vue'
-    },
-    {
-        name: "Audio Raw WebCodec/FFmpeg.js decoding with time controller",
-        description: "Listen to raw audio stream using WebCodec/FFmpeg.js with time controller",
-        url: 'audioRaw-with-control-vuejs',
-        code: 'vue/App_examples/audioRaw-with-control-vuejs.vue'
     },
     {
         name: "Audio & Video WebCodec/FFmpeg.js decoding with time controller",

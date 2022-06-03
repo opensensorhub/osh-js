@@ -8,7 +8,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
@@ -43,6 +43,7 @@ class DataStreamFilter extends SensorWebApiFilter {
             featureOfInterest: undefined,
             select: undefined,
             format: 'application/json',
+            obsFormat: 'application/om+json',
             validTime: undefined,
             phenomenonTime: undefined,
             resultTime: undefined,

@@ -55,10 +55,10 @@ self.onmessage = (event) => {
         });
     } else {
         const pktData = event.data.pktData;
-        const timeStamp = event.data.timeStamp;
+        const timestamp = event.data.timestamp;
 
         currentPktSize = event.data.pktSize;
-        currentTimestamp = timeStamp;
+        currentTimestamp = timestamp;
 
         let i;
         let key = false;
@@ -75,7 +75,7 @@ self.onmessage = (event) => {
             }
         }
         let chunk = new EncodedVideoChunk({
-            timestamp: timeStamp,
+            timestamp: timestamp,
             type: key ? 'key' : 'delta',
             data: pktData
         });

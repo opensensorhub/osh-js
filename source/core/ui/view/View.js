@@ -100,12 +100,6 @@ class View {
                 }
             }
 
-            if(isDefined(properties.dataSourceId)) {
-                this.addLayer(new DataLayer({
-                    dataSourceId: properties.dataSourceId
-                }));
-            }
-
             if (isDefined(properties.visible)) {
                 document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
             }
@@ -234,6 +228,7 @@ class View {
                 } else if (event.data.type === EventType.DATA) {
 
                     const that = this;
+
                     // transform the data
                     layer.setData(dataSourceId, event.data.values).then(() => {
 

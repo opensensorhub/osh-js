@@ -17,9 +17,10 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 export default {
   components: {
@@ -47,60 +48,84 @@ export default {
       bufferingTime: 1500
     };
 
-    const dataSource0 = new SosGetResultVideo("drone-Video", {
+    const dataSource0 = new SosGetResult("drone-Video", {
       ...opts
     });
 
-    const dataSource1 = new SosGetResultVideo("drone-Video1", {
+    const dataSource1 = new SosGetResult("drone-Video1", {
       ...opts
     });
 
-    const dataSource2 = new SosGetResultVideo("drone-Video2", {
+    const dataSource2 = new SosGetResult("drone-Video2", {
       ...opts
     });
 
-    const dataSource3 = new SosGetResultVideo("drone-Video3", {
+    const dataSource3 = new SosGetResult("drone-Video3", {
       ...opts
     });
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container0',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource0.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource0.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container1',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource1.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource1.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container2',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource2.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource2.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container3',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource3.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource3.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
     this.dataSynchronizer = new DataSynchronizer({

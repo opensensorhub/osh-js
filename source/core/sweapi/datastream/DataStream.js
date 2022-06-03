@@ -8,7 +8,7 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
@@ -17,36 +17,42 @@
 import SensorWebApi from "../SensorWebApi";
 import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
-import Collection from "../Collection";
-import SweParser from "../SweParser";
 import DataStreamFilter from "./DataStreamFilter";
+import ObservationsCollection from "../ObservationsCollection";
+import SweApiResultParser from "../../datasource/sweapi/parser/observations/SweApiResult.datastream.parser";
+import SweApiResultCollectionDatastreamParser from "../../datasource/sweapi/parser/observations/SweApiResult.collection.datastream.parser";
 
 class DataStream extends SensorWebApi {
     /**
-     *
+     * @param {Object} properties - the properties of the object
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.jsonParser = new SweParser();
+        this.sweApiResultParser = new SweApiResultParser(this);
+        this.sweApiResultCollectionDatastreamParser = new SweApiResultCollectionDatastreamParser(this);
     }
 
     /**
      * Retrieve historical observations from a datastream
-     * @param observationFilter
-     * @param callback - A callback to get observations
+     * route: /datastreams/{id}/observations
+     * @param {ObservationFilter} [observationFilter=new ObservationFilter()] - default ObservationFilter
+     * @param {Function} callback - A callback to get observations
      */
     streamObservations(observationFilter = new ObservationFilter(), callback = function(){}) {
-        //TODO: handle swe+json
-        if(observationFilter.props.format === 'application/json') {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
-            };
-        } else {
-            this._network.stream.connector.onMessage = callback;
+        this.stream().onMessage = async (message) => {
+            const dataBlock = await this.sweApiResultParser.parseDataBlock(message,observationFilter.props.format);
+            callback(dataBlock);
         }
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter.toQueryString(),
             'arraybuffer'
@@ -54,28 +60,32 @@ class DataStream extends SensorWebApi {
     }
 
     /**
-     * Retrieve historical observations from a datastream     * @param observationFilter
-     * @param observationFilter
-     * @param pageSize
-     * @param parser
-     * @return {Collection}
+     * Retrieve historical observations from a datastream
+     * route: /datastreams/{id}/observations
+     * @param {ObservationFilter} [observationFilter=new ObservationFilter()] - default ObservationFilter
+     * @param {Number} [pageSize=10] - default page size
+     * @param {DataSourceParser} [parser=new SweApiResultParser()] - default observations parser
+     * @return {Collection<JSON>} - result observations as JSON
      */
-    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.jsonParser) {
-        return new Collection(
-            API.datastreams.observations.replace('{id}',this.properties.id),
+    async searchObservations(observationFilter = new ObservationFilter(),  pageSize= 10, parser = this.sweApiResultParser) {
+        return new ObservationsCollection(
+            this.baseUrl() + API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter,
             pageSize,
-            parser,
-            this._network.info.connector
+            this.sweApiResultCollectionDatastreamParser
         );
     }
 
+    /**
+     * Get the schema of a datastream
+     * route: /datastreams/{id}/schema
+     * @param {DataStreamFilter} [dataStreamFilter=new DataStreamFilter()] - default datastream filter
+     * @return {Promise<JSON>} - the JSON schema
+     */
     async getSchema(dataStreamFilter = new DataStreamFilter()) {
-        return this._network.info.connector.doRequest(
-            API.datastreams.schema.replace('{id}',this.properties.id),
-            dataStreamFilter.toQueryString(['select', 'obsFormat', ]),
-            dataStreamFilter.props.format
-        );
+        const apiUrl = API.datastreams.schema.replace('{id}',this.properties.id);
+        const queryString = dataStreamFilter.toQueryString(['select', 'obsFormat']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 

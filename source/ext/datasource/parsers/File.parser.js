@@ -29,7 +29,7 @@ class FileParser extends DataSourceParser {
      * @param {Object} data - the data to parse
      * @return {Object} the parsed data
      */
-    async parseData(data) {
+    async parseDataBlock(data) {
         return parse(data);
     }
 

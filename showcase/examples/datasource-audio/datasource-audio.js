@@ -1,9 +1,9 @@
 // create data source for Android phone GPS
 // #region snippet_datasource_audio
-import SosGetResultAudio from "osh-js/core/datasource/sos/SosGetResultAudio";
+import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
 import {EventType} from "osh-js/core/event/EventType";
 
-let audioDataSource = new SosGetResultAudio("alex-audio", {
+let audioDataSource = new SosGetResult("alex-audio", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",

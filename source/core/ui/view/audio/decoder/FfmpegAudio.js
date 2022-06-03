@@ -21,12 +21,12 @@ class FfmpegAudio {
         }
     }
 
-    async decode(data, timestamp) {
+    async decode(value, timestamp) {
         try {
             this.audioDecoderWorker.postMessage({
-                pktData: data,
-                codec: this.codec
-            }, [data.frameData.buffer]);
+                pktData: value.frameData.data,
+                codec: value.frameData.compression.toLowerCase()
+            }, [value.frameData.data.buffer]);
         } catch (error) {
             console.error(error);
         }

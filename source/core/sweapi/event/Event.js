@@ -18,7 +18,14 @@ import SensorWebApi from "../SensorWebApi";
 
 class Event extends SensorWebApi {
     /**
-     *
+     * @param {Object} properties - the properties of the object
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties

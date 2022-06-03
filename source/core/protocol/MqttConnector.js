@@ -50,7 +50,7 @@ class MqttConnector extends DataConnector {
      */
     constructor(url, properties) {
         super(url, {
-            mqttPrefix: '/api',
+            mqttPrefix: (properties.mqtt && properties.mqtt.prefix) || '/api',
             ...properties
         });
         this.interval = -1;
@@ -93,9 +93,13 @@ class MqttConnector extends DataConnector {
      * Connect to the Mqtt broker.
      */
     doRequest(topic = '',queryString= undefined) {
-        const mqttProvider = this.getMqttProvider();
-        mqttProvider.subscribe(topic, queryString,this.onMessage);
-        this.topics.push(`${topic}?${queryString}`);
+        if(!(`${topic}?${queryString}` in this.topics)) {
+            const mqttProvider = this.getMqttProvider();
+            mqttProvider.subscribe(`${topic}?${queryString}`, this.onMessage).then(() => {
+                this.topics.push(`${topic}?${queryString}`);
+                this.onChangeStatus(Status.CONNECTED);
+            });
+        }
     }
 
     publishRequest(topic, payload) {
@@ -106,21 +110,24 @@ class MqttConnector extends DataConnector {
     /**
      * Disconnects and close the mqtt client.
      */
-    disconnect() {
+    async disconnect() {
         // does not call super to avoid reconnection logic and use the one of the mqtt.js lib
-        this.checkStatus(Status.DISCONNECTED);
-        this.init = false;
-        this.closed = true;
-        if(isDefined(mqttProviders[this.getUrl()])) {
+        // this.checkStatus(Status.DISCONNECTED);
+        // this.init = false;
+        // this.closed = true;
+        // find the client
+        const client = mqttProviders[this.getUrl()];
+
+        if (isDefined(client) && client.isConnected()) {
             // unsubscribe topic
-            // find the client
-            const client = mqttProviders[this.getUrl()];
-            for(let topic of this.topics) {
-                client.unsubscribe(topic);
+            for (let topic of this.topics) {
+                await client.unsubscribe(topic);
             }
+            // client.disconnect();
         }
+        //delete mqttProviders[this.getUrl()];
         this.topics = [];
-        console.warn(`Disconnected from ${this.getUrl()}`);
+        //console.warn(`Disconnected from ${this.getUrl()}`);
     }
 
     connect() {

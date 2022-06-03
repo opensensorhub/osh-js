@@ -15,16 +15,21 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import TimeSeriesDataSource from "../TimeSeriesDataSource";
+import SweApiFetchWorker from "./worker/SweApiFetch.worker";
 
 class SweApiFetch extends TimeSeriesDataSource {
 
     /**
      * @param {String} name - the datasource name
      * @param {Object} properties - the datasource properties
-     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
-     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}, 'http', 'ws', 'mqtt', 'file', 'topic'
+     * @param {String} properties.endpointUrl the endpoint url, this property is ignored in case of using 'mqtt' protocol, the properties.mqttOpts.endpointUrl will be used instead
      * @param {String} properties.collection the collection, /procedures, /fois, /observations, /tasks, /datastreams/4778/obs
-     * @param {Number} [properties.responseFormat=application/json] the response format (e.g application/json)
+     * @param {Boolean} properties.tls - defines if use secure TLS connection
+     * @param {Object} [properties.mqttOpts={}] - the Mqtt options if protocol is 'mqtt'
+     * @param {String} properties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} properties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
+     * @param {Number} [properties.responseFormat=application/om+json] the response format (e.g application/om+json)
      * @param {String[]} [properties.parentId=undefined] the parent id
      * @param {String[]} [properties.keywords=undefined] the keyword ids
      * @param {String[]} [properties.includedProps=undefined] the included properties
@@ -40,10 +45,13 @@ class SweApiFetch extends TimeSeriesDataSource {
             startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
             tls: false,
-            responseFormat: 'application/json',
+            responseFormat: 'application/om+json',
             protocol: 'http',
-            ...properties
+            ...properties,
         });
+    }
+    async createWorker(properties) {
+        return new SweApiFetchWorker();
     }
 }
 

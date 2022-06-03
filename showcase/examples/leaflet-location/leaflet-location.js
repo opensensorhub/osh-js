@@ -1,12 +1,12 @@
 // #region snippet_leaflet_location_import
 // create data source for Android phone GPS
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 // #endregion snippet_leaflet_location_import
 
 // #region snippet_leaflet_location_datasource
-let gpsDataSource = new SosGetResultJson("android-GPS", {
+let gpsDataSource = new SosGetResult("android-GPS", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -14,6 +14,7 @@ let gpsDataSource = new SosGetResultJson("android-GPS", {
   observedProperty: "http://sensorml.com/ont/swe/property/Location",
   startTime: "2015-02-16T07:58:32Z",
   endTime: "2015-02-16T08:09:00Z",
+  // responseFormat: 'application/octet-stream',
   replaySpeed: 2
 });
 // #endregion snippet_leaflet_location_datasource
