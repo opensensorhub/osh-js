@@ -28,7 +28,9 @@ import YUVCanvas from "./YUVCanvas";
   name: 'UAV Video',
   layers: [
       new DataLayer({
-        dataSourceId: videoDataSource.id
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame,
+        getTimestamp: (rec) => rec.timestamp
       })
   ]
 });

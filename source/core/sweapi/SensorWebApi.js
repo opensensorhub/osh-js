@@ -8,29 +8,26 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
 
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import HttpConnector from "../protocol/HttpConnector";
 import WebSocketConnector from "../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
 import MqttConnector from "../protocol/MqttConnector";
-import API from "./routes.conf";
 
 class SensorWebApi {
 
     /**
-     *
-     * @param {Object} networkProperties - Defines network properties
-     * @param {boolean} [networkProperties.tls=false] - Defines is use TLS connection
-     * @param {endpointUrl} networkProperties.endpointUrl - The endpoint URL
-     * @param {endpointUrl} networkProperties.mqttPrefix - A Mqtt topic prefix
-     * @param {DataConnector} [networkProperties.connector=undefined] - Use a specific connector
-     * @param {String} [networkProperties.streamProtocol='ws'] - The stream protocol: 'ws' | 'mqtt'
-     *
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(networkProperties) {
         assertDefined(networkProperties.endpointUrl, 'endpointUrl');

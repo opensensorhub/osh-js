@@ -103,6 +103,11 @@ var samples = [{
         url: "datasource-file"
     },
     {
+        name: "DataSource SweApiFetch",
+        description: "Display GPS data using the SweApiFetch datasource",
+        url: "datasource-sweapifetch"
+    },
+    {
         name: "Multiple Video DataSource Synchronized",
         description: "Display the data of 3 differents video datasources using time synchronization algorithm",
         url: "multi-datasources-synchronized"

@@ -99,6 +99,7 @@ let directories = [
     'datasource-swejson',
     'datasource-video',
     'datasource-file',
+    'datasource-sweapifetch',
     'deckgl-location',
     'chart-archive-realtime',
     'chart-archive-realtime-batch',

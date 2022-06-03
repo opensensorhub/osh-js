@@ -11,4 +11,4 @@ The AudioDataLayer is of the type ***audioData***.
 
 ## Example
 
-<<< @/../../showcase/examples/audio/audio.js
+<<< @/../../showcase/examples/audio/audio.js#snippet_audio_datasource

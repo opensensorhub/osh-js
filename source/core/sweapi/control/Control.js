@@ -1,15 +1,3 @@
-import SensorWebApi from "../SensorWebApi";
-import CommandFilter from "../command/CommandFilter";
-import Collection from "../Collection";
-import API from "../routes.conf";
-import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
-import ControlFilter from "./ControlFilter";
-import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
-import SweApiResultCollectionControlParser
-    from "../../datasource/sweapi/parser/observations/SweApiResult.collection.control.parser";
-import ObservationsCollection from "../ObservationsCollection";
-import SweApiControlStatusParser from "../../datasource/sweapi/parser/collection/SweApiControlStatus.parser";
-
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -26,9 +14,28 @@ import SweApiControlStatusParser from "../../datasource/sweapi/parser/collection
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import SensorWebApi from "../SensorWebApi";
+import CommandFilter from "../command/CommandFilter";
+import Collection from "../Collection";
+import API from "../routes.conf";
+import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
+import ControlFilter from "./ControlFilter";
+import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
+import SweApiResultCollectionControlParser
+    from "../../datasource/sweapi/parser/observations/SweApiResult.collection.control.parser";
+import ObservationsCollection from "../ObservationsCollection";
+import SweApiControlStatusParser from "../../datasource/sweapi/parser/collection/SweApiControlStatus.parser";
+
 class Control extends SensorWebApi {
     /**
-     *
+     * @param {Object} properties - the properties of the object
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties

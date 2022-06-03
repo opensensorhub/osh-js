@@ -31,7 +31,9 @@ import {isDefined} from "../../../utils/Utils.js";
   showStats: true,
   layers: [
       new DataLayer({
-        dataSourceId: videoDataSource.id
+        dataSourceId: videoDataSource.id,
+         getFrameData: (rec) => rec.videoFrame,
+         getTimestamp: (rec) => rec.timestamp
       })
   ]
 });

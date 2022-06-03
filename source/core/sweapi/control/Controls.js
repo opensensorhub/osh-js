@@ -1,10 +1,3 @@
-import SensorWebApi from "../SensorWebApi";
-import SweApiFetchJsonParser from "../../datasource/sweapi/parser/collection/SweApiFetchJson.parser";
-import DataStreamFilter from "../datastream/DataStreamFilter";
-import Collection from "../Collection";
-import API from "../routes.conf";
-import ControlFilter from "./ControlFilter";
-
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -21,9 +14,17 @@ import ControlFilter from "./ControlFilter";
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import SensorWebApi from "../SensorWebApi";
+
 class Controls extends SensorWebApi {
     /**
-     *
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(networkProperties) {
         super(networkProperties); // network properties
