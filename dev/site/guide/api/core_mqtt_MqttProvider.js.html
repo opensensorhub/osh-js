@@ -102,39 +102,43 @@ class MqttProvider {
     }
 
 
-    subscribe(topic, queryString, callback) {
+    async subscribe(topic, callback) {
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic');
         }
         // waiting for the client gets connected
         let interval;
-        const topicQuery = `${this.mqttPrefix}${topic}?${queryString}`;
+        const topicQuery = `${this.mqttPrefix}${topic}`;
 
-        interval = setInterval(() => {
-            if (this.client.connected) {
-                try {
-                    // subscribe
-                    // store callback for this topic
-                    if (!(topicQuery in mqttCallbacks)) {
-                        mqttCallbacks[topicQuery] = [];
-                    }
-
-                    mqttCallbacks[topicQuery].push(callback);
-
-                    this.client.subscribe(`${topicQuery}`, function (err) {
-                        if (err) {
-                            callback(err);
-                        } else {
-                            console.warn(`Subscribed to ${topicQuery}`);
+        return new Promise((resolve, error) => {
+            interval = setInterval(() => {
+                if (this.client.connected) {
+                    try {
+                        // subscribe
+                        // store callback for this topic
+                        if (!(topicQuery in mqttCallbacks)) {
+                            mqttCallbacks[topicQuery] = [];
                         }
-                    });
-                } catch (exception) {
-                    console.error(exception);
-                } finally {
-                    clearInterval(interval);
+
+                        mqttCallbacks[topicQuery].push(callback);
+
+                        this.client.subscribe(`${topicQuery}`, function (err) {
+                            if (err) {
+                                callback(err);
+                                error(err);
+                            } else {
+                                console.warn(`Subscribed to ${topicQuery}`);
+                                resolve();
+                            }
+                        });
+                    } catch (exception) {
+                        console.error(exception);
+                    } finally {
+                        clearInterval(interval);
+                    }
                 }
-            }
-        },100);
+            }, 100);
+        });
     }
 
 
@@ -149,16 +153,21 @@ class MqttProvider {
      * Otherwise, remove from the list of subscribe topic/dsId
      * @param topic
      */
-    unsubscribe(topic) {
+    async unsubscribe(topic) {
         const topicQuery = `${this.mqttPrefix}${topic}`;
-        this.client.unsubscribe(topicQuery, err => {
-            if (err) {
-                console.error(`Cannot Unsubscribed topic: ${topicQuery} : ${err}`);
-            } else {
-                console.warn(`Unsubscribed topic: ${topicQuery}`);
-            }
+        return new Promise((resolve, error) => {
+            this.client.unsubscribe(topicQuery, err => {
+                delete mqttCallbacks[topicQuery];
+                if (err) {
+                    const messageErr = `Cannot Unsubscribed topic: ${topicQuery} : ${err}`;
+                    console.error(messageErr);
+                    error(messageErr);
+                } else {
+                    console.warn(`Unsubscribed topic: ${topicQuery}`);
+                    resolve();
+                }
+            });
         });
-        delete mqttCallbacks[topicQuery];
     }
 
     connect() {
@@ -194,7 +203,7 @@ class MqttProvider {
     }
 
     disconnect() {
-        if (isDefined(this.client)) {
+        if (!isDefined(this.client)) {
             throw Error('The client has not been created yet');
         }
         // close the client

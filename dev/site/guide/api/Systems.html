@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Systems<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Systems<span class="signature">(networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="Systems"><span class="type-signature"></span>new Systems<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Systems"><span class="type-signature"></span>new Systems<span class="signature">(networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -54,6 +54,325 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>networkProperties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines the Http(s) endpoint URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tls</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines is use Http or Https secure protocol for fetching data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>streamProtocol</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'ws'
+                
+                </td>
+            
+
+            <td class="description last">the Stream protocol to use: 'ws' pr 'mqtt'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mqttOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">the Mqtt options if stream protocol is 'mqtt'
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt prefix value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt specific endpointUrl</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -89,7 +408,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_system_Systems.js.html">core/sweapi/system/Systems.js</a>, <a href="core_sweapi_system_Systems.js.html#line27">line 27</a>
+        <a href="core_sweapi_system_Systems.js.html">core/sweapi/system/Systems.js</a>, <a href="core_sweapi_system_Systems.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -145,7 +464,7 @@
     
 
     
-    <h4 class="name" id="getSystemById"><span class="type-signature">(async) </span>getSystemById<span class="signature">(systemId, systemFilter)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="System.html">System</a>>}</span></h4>
+    <h4 class="name" id="getSystemById"><span class="type-signature">(async) </span>getSystemById<span class="signature">(systemId, systemFilter<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="System.html">System</a>}</span></h4>
     
 
     
@@ -155,6 +474,7 @@
 <div class="description">
     Get a specific system resource by ID. Note that this will return the description of the system valid at the
 current time. To get the description valid for a past (or future) time, use the "history" sub-collection.
+route: /systems/{sysid}
 </div>
 
 
@@ -178,7 +498,11 @@ current time. To get the description valid for a past (or future) time, use the 
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -195,10 +519,27 @@ current time. To get the description valid for a past (or future) time, use the 
 
             <td class="type">
             
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">the ID of the System resource</td>
@@ -213,10 +554,31 @@ current time. To get the description valid for a past (or future) time, use the 
 
             <td class="type">
             
+                
+<span class="param-type"><a href="SystemFilter.html">SystemFilter</a></span>
+
+
+            
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    new SystemFilter()
+                
+                </td>
             
 
             <td class="description last">the system filter</td>
@@ -260,188 +622,7 @@ current time. To get the description valid for a past (or future) time, use the 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_system_Systems.js.html">core/sweapi/system/Systems.js</a>, <a href="core_sweapi_system_Systems.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;<a href="System.html">System</a>></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="searchSystems"><span class="type-signature">(async) </span>searchSystems<span class="signature">(systemFilter, pageSize)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    List or search all observing systems available through this API. By default, only top level systems are listed
-(i.e. subsystems are ommitted) unless the "parent" query parameter is set
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>systemFilter</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the system filter</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pageSize</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    10
-                
-                </td>
-            
-
-            <td class="description last">the page size</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_system_Systems.js.html">core/sweapi/system/Systems.js</a>, <a href="core_sweapi_system_Systems.js.html#line39">line 39</a>
+        <a href="core_sweapi_system_Systems.js.html">core/sweapi/system/Systems.js</a>, <a href="core_sweapi_system_Systems.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -470,7 +651,7 @@ current time. To get the description valid for a past (or future) time, use the 
 
         
 <div class="param-desc">
-    A collection of System
+    - The corresponding System
 </div>
 
 
@@ -481,7 +662,227 @@ current time. To get the description valid for a past (or future) time, use the 
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;<a href="Collection.html">Collection</a>></span>
+<span class="param-type"><a href="System.html">System</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchSystems"><span class="type-signature">(async) </span>searchSystems<span class="signature">(systemFilter<span class="signature-attributes">opt</span>, pageSize<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="System.html">System</a>>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    List or search all observing systems available through this API. By default, only top level systems are listed
+(i.e. subsystems are ommitted) unless the "parent" query parameter is set
+route: /systems
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>systemFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SystemFilter.html">SystemFilter</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    new SystemFilter()
+                
+                </td>
+            
+
+            <td class="description last">the system filter</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+
+            <td class="description last">default page size</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_system_Systems.js.html">core/sweapi/system/Systems.js</a>, <a href="core_sweapi_system_Systems.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - A collection of System
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="System.html">System</a>>></span>
 
 
     </dd>

@@ -63,6 +63,8 @@ class Layer {
      * @param {string} properties.description - default description
      * @param {string} properties.dataSourceId - default dataSourceId
      * @param {boolean} properties.visible - defines if the layer is visible
+     * @param {Number} properties.timestamp - defines the timestamp of the data
+     * @param {Function} properties.getTimestamp - function which defines the timestamp of the data
      */
     constructor(properties) {
         this.properties = properties;
@@ -75,6 +77,7 @@ class Layer {
         this.props.dataSourceId = '';
         this.props.visible = true;
         this.props.filter = true;
+        this.props.timestamp = 0;
 
         if(isDefined(properties.name)) {
             this.props.name = properties.name;
@@ -91,32 +94,43 @@ class Layer {
             this.props.visible = properties.visible;
         }
 
+        if (isDefined(properties.timestamp)){
+            this.props.timestamp = properties.timestamp;
+        }
+
         this.initEvents();
 
         const that = this;
 
         if (this.checkFn("filter")) {
-            let fn = function(rec,timeStamp,options) {
-                that.props.filter = that.getFunc('filter')(rec,timeStamp,options);
+            let fn = function(rec,timestamp,options) {
+                that.props.filter = that.getFunc('filter')(rec,timestamp,options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
         } else {
-            this.properties.filter = function(rec,timeStamp,options) {
+            this.properties.filter = function(rec,timestamp,options) {
                 return true;
             };
 
-            let fn = async function (rec, timeStamp, options) {
-                that.props.filter = await that.getFunc('filter')(rec, timeStamp, options);
+            let fn = async function (rec, timestamp, options) {
+                that.props.filter = await that.getFunc('filter')(rec, timestamp, options);
             };
 
             this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
         }
 
         if (this.checkFn("getVisible")) {
-            let fn = async function (rec, timeStamp, options) {
-                that.props.visible = await that.getFunc('getVisible')(rec, timeStamp, options);
+            let fn = async function (rec, timestamp, options) {
+                that.props.visible = await that.getFunc('getVisible')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
+        }
+
+        if (this.checkFn("getTimestamp")) {
+            let fn = async (rec) => {
+                that.props.timestamp = await that.getFunc('getTimestamp')(rec);
+            };
+            this.addFn(that.getDataSourcesIdsByProperty('getTimestamp'), fn);
         }
     }
 
@@ -211,7 +225,7 @@ class Layer {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
                 for (let j = 0; j &lt; records.length; j++) {
                     for (let i = 0; i &lt; fnArr.length; i++) {
-                        await fnArr[i](records[j].data, records[j].timeStamp, options);
+                        await fnArr[i](records[j].data, records[j].data.timestamp, options);
                         if (!this.props.filter) {
                             break;
                         }

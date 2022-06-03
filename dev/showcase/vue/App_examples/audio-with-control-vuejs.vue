@@ -18,12 +18,14 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudio from 'osh-js/core/datasource/sos/SosGetResultAudio.js';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+    import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
+
     export default {
         components: {
           TimeController
@@ -38,7 +40,7 @@
       mounted() {
         // setup video
         // create data source for UAV camera
-        let audioDataSource = new SosGetResultAudio("alex-audio", {
+        let audioDataSource = new SosGetResult("alex-audio", {
           protocol: "ws",
           service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -54,9 +56,16 @@
           name: "Audio",
           css: 'audio-css',
           container: 'audio-chart-container',
-          dataSource: audioDataSource,
           gain: 10,
-          playSound: true
+          playSound: true,
+          layers: [
+            new AudioDataLayer({
+              dataSourceId: audioDataSource.id,
+              getSampleRate: (rec) => rec.sampleRate,
+              getFrameData: (rec) => rec.samples,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
         });
 
         const audioChartFrequencyVisualizer = new AudioFrequencyChartJsVisualizer({

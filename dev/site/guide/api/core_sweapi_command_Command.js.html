@@ -26,14 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import SensorWebApi from "../SensorWebApi";
-import ControlFilter from "../control/ControlFilter";
-import Collection from "../Collection";
-import API from "../routes.conf";
-import CommandFilter from "./CommandFilter";
-import SweApiFetchJsonParser from "../../datasource/sweapi/parser/json/SweApiFetchJson.parser";
-
-/***************************** BEGIN LICENSE BLOCK ***************************
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
@@ -49,40 +42,62 @@ import SweApiFetchJsonParser from "../../datasource/sweapi/parser/json/SweApiFet
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import SensorWebApi from "../SensorWebApi";
+import Collection from "../Collection";
+import API from "../routes.conf";
+import CommandFilter from "./CommandFilter";
+import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
+import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
+
 class Command extends SensorWebApi {
     /**
-     *
+     * @param {Object} properties - the properties of the object
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
-        this.jsonParser = new SweApiFetchJsonParser(networkProperties);
+        this.jsonParser = new SweCollectionDataParser(networkProperties);
+        this.sweParser = new SweApiResultControlParser(this);
     }
 
     /**
      * Get all status messages associated to a specific command
-     * @param commandFilter
-     * @param pageSize
-     * @return {Promise&lt;Collection&lt;JSON>>}
+     * route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}/status
+     * @param {CommandFilter} [commandFilter== new CommandFilter()] - default Command filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise&lt;Collection&lt;JSON>>} - response as JSON
      */
     async searchStatus(commandFilter = new CommandFilter(), pageSize= 10) {
         return new Collection(
-            API.commands.status.replace('{sysid}',this.properties['system@id'])
+            this.baseUrl() + API.commands.status.replace('{sysid}',this.properties['system@id'])
                                .replace('{dsid}', this.properties['control@id'])
                                .replace('{cmdid}', this.properties.id),
-            commandFilter, pageSize, this.jsonParser, this._network.info.connector);
+            commandFilter,
+            pageSize,
+            this.jsonParser
+        );
     }
 
     /**
      * Stream all status messages associated to a specific command
-     * @param commandFilter
-     * @param pageSize
-     * @return {Promise&lt;Collection&lt;JSON>>}
+     * route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}/status
+     * @param {CommandFilter} [commandFilter== new CommandFilter()] - default Command filter
+     * @param {Function} callback
      */
     streamStatus(commandFilter = new CommandFilter(), callback = function(){}) {
-        this._network.stream.connector.onMessage = callback;
+        this.stream().onMessage = async (message) => {
+            const dataBlock = await this.sweParser.parseDataBlock(message,commandFilter.props.format);
+            callback(dataBlock);
+        };
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.commands.status.replace('{sysid}',this.properties['system@id'])
                 .replace('{dsid}', this.properties['control@id'])
                 .replace('{cmdid}', this.properties.id),

@@ -984,7 +984,7 @@ class CesiumView extends MapView {
      * @param {ImageDrapingLayer.props} props - The layer properties allowing the update of the image draping
      */
     async updateDrapedImage(props) {
-        if (!isDefined(props.platformLocation)) {
+        if (!isDefined(props.platformLocation) || !isDefined(props.imageSrc)) {
             return;
         }
         let drapedImagePrimitive = this.getDrapedImage(props);

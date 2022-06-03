@@ -36,13 +36,12 @@
  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  for the specific language governing rights and limitations under the License.
 
- Copyright (C) 2015-2021 Georobotix Inc. All Rights Reserved.
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
 
  Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import HttpConnector from "../protocol/HttpConnector";
 import WebSocketConnector from "../protocol/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
 import MqttConnector from "../protocol/MqttConnector";
@@ -50,26 +49,27 @@ import MqttConnector from "../protocol/MqttConnector";
 class SensorWebApi {
 
     /**
-     *
-     * @param {Object} networkProperties - Defines network properties
-     * @param {boolean} [networkProperties.tls=false] - Defines is use TLS connection
-     * @param {endpointUrl} networkProperties.endpointUrl - The endpoint URL
-     * @param {endpointUrl} networkProperties.mqttPrefix - A Mqtt topic prefix
-     * @param {DataConnector} [networkProperties.connector=undefined] - Use a specific connector
-     * @param {String} [networkProperties.streamProtocol='ws'] - The stream protocol: 'ws' | 'mqtt'
-     *
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(networkProperties) {
         assertDefined(networkProperties.endpointUrl, 'endpointUrl');
         this.networkProperties = networkProperties;
-        this._network = {}
-        this._network.info = {
-            connector: this.createInfoConnector({
-                tls: networkProperties.tls,
-                endpointUrl: networkProperties.endpointUrl
-            })
-        };
 
+        let endpoint = networkProperties.endpointUrl;
+        if (endpoint.endsWith('/')) {
+            endpoint = endpoint.substring(0, endpoint.length - 1);
+        }
+
+        const tls = (networkProperties.tls) ? 's' : '';
+        this.url = 'http' + tls + '://' + endpoint;
+
+        this._network = {}
         if (isDefined(networkProperties.connector)) {
             this._network.stream = {
                 connector: networkProperties.connector,
@@ -89,27 +89,20 @@ class SensorWebApi {
         }
     }
 
-    createInfoConnector(networkProperties) {
-        let endpoint = networkProperties.endpointUrl;
-        if (endpoint.endsWith('/')) {
-            endpoint = endpoint.substring(0, endpoint.length - 1);
-        }
+    baseUrl() {
+        return this.url;
+    }
 
-        const tls = (networkProperties.tls) ? 's' : '';
-        const url = 'http' + tls + '://' + endpoint;
-
-        return new HttpConnector(url , {
-            responseType: networkProperties.responseFormat || 'application/swe+json',
-            method: 'GET'
-        });
+    stream() {
+        return this._network.stream.connector;
     }
 
     createStreamConnector(networkProperties) {
         assertDefined(networkProperties.streamProtocol, 'streamProtocol');
 
         let endpoint = networkProperties.endpointUrl;
-        if(networkProperties.streamProtocol === 'mqtt' &amp;&amp; isDefined(networkProperties.mqttEndpointUrl)) {
-            endpoint = networkProperties.mqttEndpointUrl;
+        if(networkProperties.streamProtocol === 'mqtt' &amp;&amp; isDefined(networkProperties.mqttOpts)) {
+            endpoint = networkProperties.mqttOpts.endpointUrl;
         }
 
         if (endpoint.endsWith('/')) {
@@ -119,13 +112,7 @@ class SensorWebApi {
         const tls = (networkProperties.tls) ? 's' : '';
         const url = networkProperties.streamProtocol + tls + '://' + endpoint;
 
-        if(networkProperties.streamProtocol === 'http') {
-            return new HttpConnector(url , {
-                responseFormat: networkProperties.responseFormat || 'application/json',
-                responseType: networkProperties.responseType || 'application/json',
-                method: 'GET'
-            });
-        } else if(networkProperties.streamProtocol === 'mqtt') {
+        if(networkProperties.streamProtocol === 'mqtt') {
             return new MqttConnector(url, networkProperties);
         } else if(networkProperties.streamProtocol === 'ws') {
             return new WebSocketConnector(url);
@@ -134,6 +121,40 @@ class SensorWebApi {
 
     connect() {
         this._network.stream.connector.connect();
+    }
+
+    fetchAsJson(apiUrl, queryString) {
+        const fullUrl = this.baseUrl() +  apiUrl + '?' +queryString;
+
+        return fetch(fullUrl, {
+            method: 'GET',
+            headers: {}
+        }).then(function (response) {
+            if (!response.ok) {
+                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                err.response = response;
+                throw err;
+            }
+            return response.json();
+        });
+    }
+    postAsJson(apiUrl, jsonPayload) {
+        const fullUrl = this.baseUrl() +  apiUrl;
+
+        fetch(fullUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: jsonPayload
+        }).then(function (response) {
+            if (!response.ok) {
+                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                err.response = response;
+                throw err;
+            }
+        });
     }
 }
 export default SensorWebApi;

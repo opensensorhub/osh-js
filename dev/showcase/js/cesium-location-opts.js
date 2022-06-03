@@ -1,4 +1,4 @@
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {createDefaultImageryProviderViewModels, EllipsoidTerrainProvider, Ion, Viewer} from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
@@ -8,7 +8,7 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
-let gpsDataSource = new SosGetResultJson('android-GPS', {
+let gpsDataSource = new SosGetResult('android-GPS', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',

@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Control<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Control<span class="signature">(properties, networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="Control"><span class="type-signature"></span>new Control<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Control"><span class="type-signature"></span>new Control<span class="signature">(properties, networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -54,6 +54,360 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the properties of the object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>networkProperties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines the Http(s) endpoint URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tls</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines is use Http or Https secure protocol for fetching data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>streamProtocol</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'ws'
+                
+                </td>
+            
+
+            <td class="description last">the Stream protocol to use: 'ws' pr 'mqtt'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mqttOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">the Mqtt options if stream protocol is 'mqtt'
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt prefix value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt specific endpointUrl</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -89,7 +443,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line29">line 29</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -145,7 +499,7 @@
     
 
     
-    <h4 class="name" id="getSchema"><span class="type-signature">(async) </span>getSchema<span class="signature">(controlFilter)</span><span class="type-signature"> &rarr; {Promise.&lt;*>}</span></h4>
+    <h4 class="name" id="getCommandById"><span class="type-signature">(async) </span>getCommandById<span class="signature">(commandId, commandFilter<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Command.html">Command</a>>}</span></h4>
     
 
     
@@ -153,7 +507,8 @@
 
 
 <div class="description">
-    Get the detailed schema of command messages in a command stream
+    Get a specific command resource by ID.
+route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}
 </div>
 
 
@@ -177,7 +532,226 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>commandId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the ID of the Command resource</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>commandFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandFilter.html">CommandFilter</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    new CommandFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Command filter</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line92">line 92</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - The corresponding Command
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="Command.html">Command</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getSchema"><span class="type-signature">(async) </span>getSchema<span class="signature">(controlFilter<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;JSON>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the detailed schema of command messages in a command stream
+route: /systems/{sysid}/controls/{dsid}/schema
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -202,10 +776,26 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">controlFilter</td>
+            
+                <td class="default">
+                
+                    new ControlFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Control filter, using 'commandFormat' to select response format</td>
         </tr>
 
     
@@ -246,7 +836,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line138">line 138</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line172">line 172</a>
     </li></ul></dd>
     
 
@@ -274,6 +864,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    - The schema as JSON
+</div>
+
 
 
 <dl>
@@ -282,7 +876,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;*></span>
+<span class="param-type">Promise.&lt;JSON></span>
 
 
     </dd>
@@ -300,7 +894,7 @@
     
 
     
-    <h4 class="name" id="searchCommands"><span class="type-signature">(async) </span>searchCommands<span class="signature">(commandFilter, pageSize)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="Command.html">Command</a>>>}</span></h4>
+    <h4 class="name" id="postCommand"><span class="type-signature"></span>postCommand<span class="signature">(jsonPayload, commandFilter<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -308,7 +902,8 @@
 
 
 <div class="description">
-    Get the list of commands received by a particular control interface
+    Send a new command to this control interface
+ route: /systems/{sysid}/controls/{dsid}/commands
 </div>
 
 
@@ -331,6 +926,394 @@
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>jsonPayload</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">JSON</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the JSON payload</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>commandFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandFilter.html">CommandFilter</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    new CommandFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Command filter specifying the 'sysid' and 'dsid'</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line108">line 108</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="publishCommand"><span class="type-signature"></span>publishCommand<span class="signature">(jsonPayload, commandFilter<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Send a new command to this control interface using streaming protocol such like WS or MQTT
+route: /systems/{sysid}/controls/{dsid}/commands
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>jsonPayload</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">JSON</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the JSON payload</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>commandFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandFilter.html">CommandFilter</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    new CommandFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Command filter specifying the 'sysid' and 'dsid'</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="searchCommands"><span class="type-signature">(async) </span>searchCommands<span class="signature">(commandFilter<span class="signature-attributes">opt</span>, pageSize<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;JSON>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the list of commands received by a particular control interface
+route: /systems/{sysid}/controls/{dsid}/commands
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
         
 
         
@@ -351,17 +1334,34 @@
 
             <td class="type">
             
+                
+<span class="param-type"><a href="CommandFilter.html">CommandFilter</a></span>
+
+
+            
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
                 <td class="default">
                 
+                    new CommandFilter()
+                
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">default Command filter</td>
         </tr>
 
     
@@ -373,8 +1373,23 @@
 
             <td class="type">
             
+                
+<span class="param-type">Number</span>
+
+
+            
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -385,7 +1400,7 @@
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">default page size</td>
         </tr>
 
     
@@ -426,7 +1441,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line42">line 42</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line56">line 56</a>
     </li></ul></dd>
     
 
@@ -454,186 +1469,10 @@
 <h5>Returns:</h5>
 
         
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="Command.html">Command</a>>></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="searchStatus"><span class="type-signature">(async) </span>searchStatus<span class="signature">(controlFilter, pageSize)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;JSON>>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get all status messages sent by this control interface
+<div class="param-desc">
+    - result as JSON
 </div>
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>controlFilter</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pageSize</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    10
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line106">line 106</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
 
 
 <dl>
@@ -660,7 +1499,7 @@
     
 
     
-    <h4 class="name" id="streamCommands"><span class="type-signature"></span>streamCommands<span class="signature">(controlFilter, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="searchStatus"><span class="type-signature">(async) </span>searchStatus<span class="signature">(controlFilter<span class="signature-attributes">opt</span>, pageSize<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;JSON>>}</span></h4>
     
 
     
@@ -668,7 +1507,8 @@
 
 
 <div class="description">
-    Stream all commands received by a particular control interface
+    Get all status messages sent by this control interface
+route: /systems/{sysid}/controls/{dsid}/status
 </div>
 
 
@@ -692,7 +1532,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -717,10 +1561,245 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">controlFilter</td>
+            
+                <td class="default">
+                
+                    new ControlFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Control filter</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+
+            <td class="description last">default page size</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line137">line 137</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - A Collection of JSON
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="Collection.html">Collection</a>.&lt;JSON>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="streamCommands"><span class="type-signature"></span>streamCommands<span class="signature">(controlFilter<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Stream all commands received by a particular control interface
+route: /systems/{sysid}/controls/{dsid}/commands
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>controlFilter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ControlFilter.html">ControlFilter</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    new ControlFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Control filter</td>
         </tr>
 
     
@@ -732,10 +1811,27 @@
 
             <td class="type">
             
+                
+<span class="param-type">function</span>
+
+
+            
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">A callback to get observations</td>
@@ -779,7 +1875,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line53">line 53</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -815,7 +1911,7 @@
     
 
     
-    <h4 class="name" id="streamStatus"><span class="type-signature"></span>streamStatus<span class="signature">(controlFilter, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="streamStatus"><span class="type-signature"></span>streamStatus<span class="signature">(controlFilter<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"></span></h4>
     
 
     
@@ -824,6 +1920,7 @@
 
 <div class="description">
     Stream all status messages sent by this control interface
+route: /systems/{sysid}/controls/{dsid}/status
 </div>
 
 
@@ -847,7 +1944,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -872,10 +1973,26 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">controlFilter</td>
+            
+                <td class="default">
+                
+                    new ControlFilter()
+                
+                </td>
+            
+
+            <td class="description last">default Control filter</td>
         </tr>
 
     
@@ -887,10 +2004,27 @@
 
             <td class="type">
             
+                
+<span class="param-type">function</span>
+
+
+            
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">A callback to get observations</td>
@@ -934,7 +2068,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line117">line 117</a>
+        <a href="core_sweapi_control_Control.js.html">core/sweapi/control/Control.js</a>, <a href="core_sweapi_control_Control.js.html#line153">line 153</a>
     </li></ul></dd>
     
 

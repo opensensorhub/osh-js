@@ -38,7 +38,7 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {EventType} from "osh-js/core/event/EventType";
 
@@ -63,7 +63,7 @@ export default {
     const BUFFERING_TIME = 1000;
     const TIMEOUT = 500;
 
-    const videoDataSource0 = new SosGetResultVideo("Video 0", {
+    const videoDataSource0 = new SosGetResult("Video 0", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -76,7 +76,7 @@ export default {
       timeOut: TIMEOUT
     });
 
-    const videoDataSource1 = new SosGetResultVideo("Video 1", {
+    const videoDataSource1 = new SosGetResult("Video 1", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -89,7 +89,7 @@ export default {
       timeOut: TIMEOUT
     });
 
-    const videoDataSource2 = new SosGetResultVideo("Video 2", {
+    const videoDataSource2 = new SosGetResult("Video 2", {
       protocol: 'ws',
       service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -136,7 +136,7 @@ export default {
       video0Count += values.length;
       video0DivElement.value = video0Count;
 
-      lastVideo0DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 0';
+      lastVideo0DivElement.innerText = new Date(values[values.length - 1].data.timestamp).toISOString() + ' - Video 0';
 
       video0DivElement.scrollTop = video0DivElement.scrollHeight;
     }
@@ -145,7 +145,7 @@ export default {
       video1Count += values.length;
       video1DivElement.value = video1Count;
 
-      lastVideo1DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 1';
+      lastVideo1DivElement.innerText = new Date(values[values.length - 1].data.timestamp).toISOString() + ' - Video 1';
 
       video1DivElement.scrollTop = video1DivElement.scrollHeight;
     }
@@ -154,7 +154,7 @@ export default {
       video2Count += values.length;
       video2DivElement.value = video2Count;
 
-      lastVideo2DivElement.innerText = new Date(values[values.length - 1].timeStamp).toISOString() + ' - Video 2';
+      lastVideo2DivElement.innerText = new Date(values[values.length - 1].data.timestamp).toISOString() + ' - Video 2';
       video2DivElement.scrollTop = video2DivElement.scrollHeight;
     }
 

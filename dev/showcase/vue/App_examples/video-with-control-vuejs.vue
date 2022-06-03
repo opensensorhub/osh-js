@@ -12,8 +12,9 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
-    import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+    import VideoView from 'osh-js/core/ui/view/video/VideoView';
+    import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
     export default {
         components: {
@@ -29,7 +30,7 @@
       mounted() {
         // setup video
         // create data source for UAV camera
-        const ds = new SosGetResultVideo("drone-Video", {
+        const videoDataSource = new SosGetResult("drone-Video", {
           protocol: 'ws',
           service: 'SOS',
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
@@ -39,17 +40,23 @@
           endTime: '2015-12-19T21:09:19.675Z',
           replaySpeed: 1
         });
-        this.view = new FFMPEGView({
+        this.view = new VideoView({
           container: 'container',
           css: 'video-h264',
           name: 'UAV Video',
           framerate: 25,
           showTime: true,
           showStats: true,
-          dataSourceId: ds.id
+          layers: [
+            new VideoDataLayer({
+              dataSourceId: videoDataSource.id,
+              getFrameData: (rec) => rec.videoFrame,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
         });
 
-        this.dataSource = ds;
+        this.dataSource = videoDataSource;
         this.dataSource.connect();
       },
       methods: {

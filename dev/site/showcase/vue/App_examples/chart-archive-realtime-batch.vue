@@ -13,7 +13,7 @@
 // @ is an alias to /src
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils';
 
@@ -29,7 +29,7 @@ export default {
   },
   mounted() {
 
-    let chartDataSource = new SosGetResultJson("weather", {
+    let chartDataSource = new SosGetResult("weather", {
       protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -44,9 +44,9 @@ export default {
 // #region snippet_curve_layer
     let windSpeedLayerCurve = new CurveLayer({
       dataSourceId: chartDataSource.id,
-      getValues: (rec, timeStamp) => {
+      getValues: (rec, timestamp) => {
         return {
-          x: timeStamp,
+          x: timestamp,
           y: rec.windSpeed
         }
       },

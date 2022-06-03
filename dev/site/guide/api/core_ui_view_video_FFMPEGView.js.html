@@ -37,8 +37,7 @@
  Author: Mathieu Dhainaut &lt;mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
-import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
+import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import DecodeWorker from './workers/ffmpeg.decode.worker.js';
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
@@ -58,7 +57,13 @@ import CanvasView from "./CanvasView";
   framerate:25,
   showTime: true,
   showStats: true,
- dataSourceId: videoDataSource.id
+    layers: [
+      new VideoDataLayer({
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame,
+        getTimestamp: (rec) => rec.timestamp
+      })
+  ]
 });
  */
 
@@ -80,7 +85,7 @@ class FFMPEGView extends CanvasView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['videoData'],
             ...properties
         });
         this.directPlay = false;
@@ -99,19 +104,25 @@ class FFMPEGView extends CanvasView {
     }
 
     async setData(dataSourceId, data) {
-        const values = data.values;
-        for(let i=0; i &lt; values.length;i++) {
-            if (!this.skipFrame) {
-                if (this.decodeWorker == null) {
-                    this.initFFMPEG_DECODER_WORKER();
-                }
-
-                const value = values.shift();
-                let pktData = value.data.frameData;
-                let roll = value.data.roll;
-                let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timeStamp, roll);
+        if(data.type === 'videoData') {
+            const values = data.values;
+            for(let i=0;i &lt; values.length;i++) {
+                this.updateVideo(values[i]);
             }
+        }
+    }
+
+    updateVideo(props) {
+        if (!this.skipFrame) {
+            if (this.decodeWorker == null) {
+                this.initFFMPEG_DECODER_WORKER(props.frameData.compression);
+            }
+            this.decode(
+                props.frameData.data.length,
+                props.frameData.data,
+                props.timestamp,
+                props.roll || 0
+            );
         }
     }
 
@@ -151,11 +162,15 @@ class FFMPEGView extends CanvasView {
      * This location cannot be changed. Be sure to have the right file at the right place.
      * @private
      */
-    initFFMPEG_DECODER_WORKER() {
+    initFFMPEG_DECODER_WORKER(codec) {
         this.decodeWorker = new DecodeWorker();
         // const drawWorker = new DrawWorker();
         this.decodeWorker.id = randomUUID();
 
+        this.decodeWorker.postMessage({
+            'message': 'init',
+            'codec' : codec.toLowerCase()
+        })
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
         // let canvas = document.createElement('canvas');
         // canvas.setAttribute('width', this.width);
@@ -198,7 +213,7 @@ class FFMPEGView extends CanvasView {
             that.yuvCanvas.canvasElement.drawing = false;
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
-                this.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
+                this.textFpsDiv.innerText = new Date(decodedFrame.timestamp).toISOString()+' ';
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
@@ -214,19 +229,20 @@ class FFMPEGView extends CanvasView {
      * @private
      * @param pktSize
      * @param pktData
-     * @param timeStamp
+     * @param timestamp
      */
-    async decode(pktSize, pktData, timeStamp, roll) {
+    async decode(pktSize, pktData, timestamp, roll) {
         if(pktSize > 0) {
             let arrayBuffer = pktData.buffer;
 
             this.decodeWorker.postMessage({
+                message: 'data',
                 pktSize: pktSize,
                 pktData: arrayBuffer,
                 roll: roll,
                 byteOffset: pktData.byteOffset,
                 codec: this.codec,
-                timeStamp: timeStamp,
+                timestamp: timestamp,
                 dataSourceId: this.dataSourceId
             }, [arrayBuffer]);
             pktData = null;
@@ -242,6 +258,10 @@ class FFMPEGView extends CanvasView {
             message: 'release'
         });
         this.decodeWorker.terminate();
+    }
+
+    async getCanvas() {
+        return this.yuvCanvas.canvasElement;
     }
 }
 

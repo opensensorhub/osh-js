@@ -14,7 +14,7 @@
 <script>
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/sos/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
@@ -47,11 +47,11 @@ export default {
       replaySpeed: 1.0
     };
 
-    let chartDataSource1 = new SosGetResultJson("weather", {
+    let chartDataSource1 = new SosGetResult("weather", {
       ...opts
     });
 
-    let chartDataSource2 = new SosGetResultJson("weather", {
+    let chartDataSource2 = new SosGetResult("weather", {
       ...opts
     });
 
@@ -60,23 +60,23 @@ export default {
       layers: [
           new CurveLayer({
           dataSourceId: chartDataSource1.id,
-          getValues: (rec, timeStamp) => {
+          getValues: (rec, timestamp) => {
             return {
-              x: timeStamp,
+              x: timestamp,
               y: rec.windSpeed
             }
           },
           lineColor: 'rgba(0,220,204,0.5)',
           backgroundColor: 'rgba(0,220,204,0.5)',
           fill:true,
-          getCurveId:(rec, timeStamp) => 2,
+          getCurveId:(rec, timestamp) => 2,
           name: 'Wind Speed 1 (m/s)'
         }),
         new CurveLayer({
           dataSourceId: chartDataSource2.id,
-          getValues: (rec, timeStamp) => {
+          getValues: (rec, timestamp) => {
             return {
-              x: timeStamp,
+              x: timestamp,
               y: rec.windSpeed - 0.02
 
             }
@@ -84,7 +84,7 @@ export default {
           lineColor: 'rgba(59,210,29,0.5)',
           backgroundColor: 'rgba(59,210,29,0.5)',
           fill:true,
-          getCurveId:(rec, timeStamp) => 1,
+          getCurveId:(rec, timestamp) => 1,
           name: 'Wind Speed 2 (m/s)'
         })
       ],

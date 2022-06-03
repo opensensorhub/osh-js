@@ -26,15 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import SensorWebApi from "../SensorWebApi";
-import CommandFilter from "../command/CommandFilter";
-import Collection from "../Collection";
-import API from "../routes.conf";
-import SweApiFetchCommandParser from "../../datasource/sweapi/parser/json/SweApiFetchCommand.parser";
-import ControlFilter from "./ControlFilter";
-import SweParser from "../SweParser";
-
-/***************************** BEGIN LICENSE BLOCK ***************************
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
  If a copy of the MPL was not distributed with this file, You can obtain one
@@ -50,74 +42,112 @@ import SweParser from "../SweParser";
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import SensorWebApi from "../SensorWebApi";
+import CommandFilter from "../command/CommandFilter";
+import Collection from "../Collection";
+import API from "../routes.conf";
+import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
+import ControlFilter from "./ControlFilter";
+import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
+import SweApiResultCollectionControlParser
+    from "../../datasource/sweapi/parser/observations/SweApiResult.collection.control.parser";
+import ObservationsCollection from "../ObservationsCollection";
+import SweApiControlStatusParser from "../../datasource/sweapi/parser/collection/SweApiControlStatus.parser";
+
 class Control extends SensorWebApi {
     /**
-     *
+     * @param {Object} properties - the properties of the object
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
      */
     constructor(properties, networkProperties) {
         super(networkProperties); // network properties
         this.properties = properties;
         this.commandParser = new SweApiFetchCommandParser(networkProperties, this.properties['system@id']);
-        this.jsonParser = new SweParser();
+        this.sweApiResultCollectionControlParser = new SweApiResultCollectionControlParser(this);
+        this.sweApiResultControlParser = new SweApiResultControlParser(this);
+        this.sweApiControlStatusParser = new SweApiControlStatusParser();
     }
 
     /**
      * Get the list of commands received by a particular control interface
-     * @param commandFilter
-     * @param pageSize
-     * @return {Promise&lt;Collection&lt;Command>>}
+     * route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise&lt;Collection&lt;JSON>>} - result as JSON
      */
     async searchCommands(commandFilter = new CommandFilter(), pageSize= 10) {
-        return new Collection(
-            API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
-                this.properties.id),commandFilter, pageSize,this.jsonParser, this._network.info.connector);
+        return new ObservationsCollection(
+            this.baseUrl() + API.controls.commands.replace('{sysid}',
+                this.properties['system@id']).replace('{dsid}',this.properties.id),
+            commandFilter,
+            pageSize,
+            this.sweApiResultCollectionControlParser
+        );
     }
 
     /**
      * Stream all commands received by a particular control interface
-     * @param {ControlFilter} controlFilter - controlFilter
-     * @param callback - A callback to get observations
+     * route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - default Control filter
+     * @param {Function} callback - A callback to get observations
      */
     streamCommands(controlFilter = new ControlFilter(), callback = function(){}) {
-        if(controlFilter.props.format === 'application/json') {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
-            };
-        } else {
-            this._network.stream.connector.onMessage = callback;
-        }
+        this.stream().onMessage = async (message) => {
+            const dataBlock = await this.sweApiResultControlParser.parseDataBlock(message,controlFilter.props.format);
+            callback(dataBlock);
+        };
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.controls.commands.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
         );
     }
 
+    /**
+     * Get a specific command resource by ID.
+     * route: /systems/{sysid}/controls/{dsid}/commands/{cmdid}
+     * @param {String} commandId - the ID of the Command resource
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter
+     * @returns {Promise&lt;Command>} - The corresponding Command
+     */
     async getCommandById(commandId,commandFilter = new CommandFilter()) {
-        const response = await this._network.info.connector.doRequest(
-            API.controls.command_by_id
-                .replace('{sysid}',this.properties['system@id'])
-                .replace('{dsid}', this.properties.id)
-                .replace('{cmdid}', commandId),
-            commandFilter.toQueryString(['select','format']),
-            commandFilter.props.format
-        );
-        return this.commandParser.parseData(response);
+        const apiUrl = API.controls.command_by_id
+            .replace('{sysid}',this.properties['system@id'])
+            .replace('{dsid}', this.properties.id)
+            .replace('{cmdid}', commandId);
+        const queryString = commandFilter.toQueryString(['select', 'obsFormat']); //TODO: check useless obsFormat
+        const jsonData = await this.fetchAsJson(apiUrl, queryString);
+        return this.commandParser.parseData(jsonData);
     }
 
-    postCommand(payload, commandFilter = new CommandFilter()) {
-        this._network.info.connector.postRequest(
-            API.controls.commands
+    /**
+     *  Send a new command to this control interface
+     *  route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {JSON} jsonPayload - the JSON payload
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter specifying the 'sysid' and 'dsid'
+     */
+    postCommand(jsonPayload, commandFilter = new CommandFilter()) {
+        const apiUrl =  API.controls.commands
                 .replace('{sysid}',this.properties['system@id'])
-                .replace('{dsid}', this.properties.id),
-            payload,
-            commandFilter.props.format
-        );
+                .replace('{dsid}', this.properties.id);
+        this.postAsJson(apiUrl, jsonPayload);
     }
 
+    /**
+     * Send a new command to this control interface using streaming protocol such like WS or MQTT
+     * route: /systems/{sysid}/controls/{dsid}/commands
+     * @param {JSON} jsonPayload - the JSON payload
+     * @param {CommandFilter} [commandFilter=new CommandFilter()] - default Command filter specifying the 'sysid' and 'dsid'
+     */
     publishCommand(payload, commandFilter = new CommandFilter()) {
-        this._network.stream.connector.publishRequest(
+        this.stream().publishRequest(
             API.controls.commands
                 .replace('{sysid}',this.properties['system@id'])
                 .replace('{dsid}', this.properties.id),
@@ -127,31 +157,34 @@ class Control extends SensorWebApi {
 
     /**
      * Get all status messages sent by this control interface
-     * @param controlFilter
-     * @param pageSize
-     * @return {Promise&lt;Collection&lt;JSON>>}
+     * route: /systems/{sysid}/controls/{dsid}/status
+     * @param {ControlFilter} [controlFilter=new ControlFilter()] - default Control filter
+     * @param {Number} [pageSize=10] - default page size
+     * @return {Promise&lt;Collection&lt;JSON>>} - A Collection of JSON
      */
     async searchStatus(controlFilter = new ControlFilter(), pageSize= 10) {
         return new Collection(
-            API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
-                this.properties.id),controlFilter, pageSize,this.jsonParser, this._network.info.connector);
+            this.baseUrl() + API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',
+                this.properties.id),
+            controlFilter,
+            pageSize,
+            this.sweApiControlStatusParser
+        );
     }
 
     /**
      * Stream all status messages sent by this control interface
-     * @param {ControlFilter} controlFilter - controlFilter
-     * @param callback - A callback to get observations
+     * route: /systems/{sysid}/controls/{dsid}/status
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - default Control filter
+     * @param {Function} callback - A callback to get observations
      */
     streamStatus(controlFilter = new ControlFilter(), callback = function(){}) {
-        if(controlFilter.props.format === 'application/json') {
-            this._network.stream.connector.onMessage = (message) => {
-                callback(this.jsonParser.parseData(message));
-            };
-        } else {
-            this._network.stream.connector.onMessage = callback;
-        }
+        this.stream().onMessage = async (message) => {
+            const dataBlock = await this.sweApiControlStatusParser.parseData(message, 'arraybuffer');
+            callback(dataBlock);
+        };
 
-        this._network.stream.connector.doRequest(
+        this.stream().doRequest(
             API.controls.status.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
             controlFilter.toQueryString(),
             'arraybuffer'
@@ -160,15 +193,14 @@ class Control extends SensorWebApi {
 
     /**
      * Get the detailed schema of command messages in a command stream
-     * @param {ControlFilter} controlFilter - controlFilter
-     * @returns {Promise&lt;*>}
+     * route: /systems/{sysid}/controls/{dsid}/schema
+     * @param {ControlFilter} [controlFilter= new ControlFilter()] - default Control filter, using 'commandFormat' to select response format
+     * @returns {Promise&lt;JSON>} - The schema as JSON
      */
     async getSchema(controlFilter = new ControlFilter()) {
-        return this._network.info.connector.doRequest(
-            API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id),
-            controlFilter.toQueryString(['select', 'obsFormat']),
-            controlFilter.props.format
-        );
+        const apiUrl = API.controls.schema.replace('{sysid}',this.properties['system@id']).replace('{dsid}',this.properties.id);
+        const queryString = controlFilter.toQueryString(['select', 'commandFormat']);
+        return this.fetchAsJson(apiUrl, queryString);
     }
 }
 

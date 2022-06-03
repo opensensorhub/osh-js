@@ -267,78 +267,78 @@ class PointMarkerLayer extends Layer {
 
         // must be first to assign correctly the first location to the right id if it is defined
         if (this.checkFn("getMarkerId")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.markerId = await that.getFunc('getMarkerId')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.markerId = await that.getFunc('getMarkerId')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getMarkerId'), fn);
         }
 
         if (this.checkFn("getLocation")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.location = await that.getFunc('getLocation')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.location = await that.getFunc('getLocation')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLocation'), fn);
         }
 
         if (this.checkFn("getOrientation")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.orientation = await that.getFunc('getOrientation')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.orientation = await that.getFunc('getOrientation')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getOrientation'), fn);
         }
 
         if (this.checkFn("getDescription")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.description = await that.getFunc('getDescription')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.description = await that.getFunc('getDescription')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getDescription'), fn);
         }
 
         if (this.checkFn("getIcon")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.icon = await that.getFunc('getIcon')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.icon = await that.getFunc('getIcon')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getIcon'), fn);
         }
 
         if (this.checkFn("getIconColor")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.iconColor = await that.getFunc('getIconColor')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.iconColor = await that.getFunc('getIconColor')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getIconColor'), fn);
         }
 
         if (this.checkFn("getIconScale")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.iconScale = await that.getFunc('getIconScale')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.iconScale = await that.getFunc('getIconScale')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getIconScale'), fn);
         }
 
         if (this.checkFn("getLabel")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.label = await that.getFunc('getLabel')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.label = await that.getFunc('getLabel')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLabel'), fn);
         }
 
         if (this.checkFn("getLabelColor")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.labelColor = await that.getFunc('getLabelColor')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.labelColor = await that.getFunc('getLabelColor')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLabelColor'), fn);
         }
 
         if (this.checkFn("getLabelSize")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.labelSize = await that.getFunc('getLabelSize')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.labelSize = await that.getFunc('getLabelSize')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLabelSize'), fn);
         }
 
         if (this.checkFn("getZindex")) {
-            let fn = async (rec, timeStamp, options) => {
-                that.props.zIndex = await that.getFunc('getZindex')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                that.props.zIndex = await that.getFunc('getZindex')(rec, timestamp, options);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getZindex'), fn);
         }

@@ -178,7 +178,7 @@
                 </td>
             
 
-            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
+            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a>, 'http', 'ws', 'mqtt', 'file', 'topic'</td>
         </tr>
 
     
@@ -213,7 +213,7 @@
                 </td>
             
 
-            <td class="description last">the endpoint url</td>
+            <td class="description last">the endpoint url, this property is ignored in case of using 'mqtt' protocol, the properties.mqttOpts.endpointUrl will be used instead</td>
         </tr>
 
     
@@ -255,6 +255,152 @@
 
         <tr>
             
+                <td class="name"><code>tls</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines if use secure TLS connection</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mqttOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">the Mqtt options if protocol is 'mqtt'
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt prefix value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt specific endpointUrl</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>responseFormat</code></td>
             
 
@@ -282,12 +428,12 @@
             
                 <td class="default">
                 
-                    application/json
+                    application/om+json
                 
                 </td>
             
 
-            <td class="description last">the response format (e.g application/json)</td>
+            <td class="description last">the response format (e.g application/om+json)</td>
         </tr>
 
     
@@ -594,7 +740,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_sweapi_SweApiFetch.js.html">core/datasource/sweapi/SweApiFetch.js</a>, <a href="core_datasource_sweapi_SweApiFetch.js.html#line36">line 36</a>
+        <a href="core_datasource_sweapi_SweApiFetch.js.html">core/datasource/sweapi/SweApiFetch.js</a>, <a href="core_datasource_sweapi_SweApiFetch.js.html#line41">line 41</a>
     </li></ul></dd>
     
 

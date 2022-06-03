@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>FeaturesOfInterest<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>FeaturesOfInterest<span class="signature">(networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="FeaturesOfInterest"><span class="type-signature"></span>new FeaturesOfInterest<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="FeaturesOfInterest"><span class="type-signature"></span>new FeaturesOfInterest<span class="signature">(networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -54,6 +54,325 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>networkProperties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines the Http(s) endpoint URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tls</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">defines is use Http or Https secure protocol for fetching data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>streamProtocol</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'ws'
+                
+                </td>
+            
+
+            <td class="description last">the Stream protocol to use: 'ws' pr 'mqtt'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mqttOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">the Mqtt options if stream protocol is 'mqtt'
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt prefix value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt specific endpointUrl</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -89,7 +408,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html">core/sweapi/featureofinterest/FeatureOfInterests.js</a>, <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html#line27">line 27</a>
+        <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html">core/sweapi/featureofinterest/FeatureOfInterests.js</a>, <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -145,7 +464,7 @@
     
 
     
-    <h4 class="name" id="getFeatureOfInterestById"><span class="type-signature">(async) </span>getFeatureOfInterestById<span class="signature">(fId, featureOfInterestFilter)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="DataStream.html">DataStream</a>>}</span></h4>
+    <h4 class="name" id="getFeatureOfInterestById"><span class="type-signature">(async) </span>getFeatureOfInterestById<span class="signature">(fId, featureOfInterestFilter<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;JSON>}</span></h4>
     
 
     
@@ -155,6 +474,7 @@
 <div class="description">
     Get a specific feature resource by ID. Note that this will return the description of the feature valid at the current time.
 To get the description valid for a past (or future) time, use the "history" sub-collection.
+route: /featuresOfInterest/{id}
 </div>
 
 
@@ -178,7 +498,11 @@ To get the description valid for a past (or future) time, use the "history" sub-
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -195,10 +519,27 @@ To get the description valid for a past (or future) time, use the "history" sub-
 
             <td class="type">
             
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">The ID of the Feature resource</td>
@@ -213,13 +554,34 @@ To get the description valid for a past (or future) time, use the "history" sub-
 
             <td class="type">
             
+                
+<span class="param-type"><a href="FeatureOfInterestFilter.html">FeatureOfInterestFilter</a></span>
+
+
+            
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last"></td>
+            
+                <td class="default">
+                
+                    new FeatureOfInterestFilter()
+                
+                </td>
+            
+
+            <td class="description last">default FOI filter</td>
         </tr>
 
     
@@ -260,7 +622,7 @@ To get the description valid for a past (or future) time, use the "history" sub-
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html">core/sweapi/featureofinterest/FeatureOfInterests.js</a>, <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html#line50">line 50</a>
+        <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html">core/sweapi/featureofinterest/FeatureOfInterests.js</a>, <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -288,6 +650,10 @@ To get the description valid for a past (or future) time, use the "history" sub-
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    - The corresponding FeaturesOfInterest as JSON
+</div>
+
 
 
 <dl>
@@ -296,7 +662,7 @@ To get the description valid for a past (or future) time, use the "history" sub-
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;<a href="DataStream.html">DataStream</a>></span>
+<span class="param-type">Promise.&lt;JSON></span>
 
 
     </dd>
@@ -314,7 +680,7 @@ To get the description valid for a past (or future) time, use the "history" sub-
     
 
     
-    <h4 class="name" id="searchFeaturesOfInterest"><span class="type-signature">(async) </span>searchFeaturesOfInterest<span class="signature">(featureOfInterestFilter, pageSize)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>>}</span></h4>
+    <h4 class="name" id="searchFeaturesOfInterest"><span class="type-signature">(async) </span>searchFeaturesOfInterest<span class="signature">(featureOfInterestFilter<span class="signature-attributes">opt</span>, pageSize<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="FeaturesOfInterest.html">FeaturesOfInterest</a>>>}</span></h4>
     
 
     
@@ -324,6 +690,7 @@ To get the description valid for a past (or future) time, use the "history" sub-
 <div class="description">
     List or search all sampled and sampling features available through this API. By default, only top level features
 and collections are listed (i.e. nested members of feature collections are ommitted) unless the "parent" query parameter is set.
+route: /featuresOfInterest
 </div>
 
 
@@ -346,6 +713,8 @@ and collections are listed (i.e. nested members of feature collections are ommit
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -366,17 +735,34 @@ and collections are listed (i.e. nested members of feature collections are ommit
 
             <td class="type">
             
+                
+<span class="param-type"><a href="FeatureOfInterestFilter.html">FeatureOfInterestFilter</a></span>
+
+
+            
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
                 <td class="default">
                 
+                    new FeatureOfInterestFilter()
+                
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">default FOI filter</td>
         </tr>
 
     
@@ -388,8 +774,23 @@ and collections are listed (i.e. nested members of feature collections are ommit
 
             <td class="type">
             
+                
+<span class="param-type">Number</span>
+
+
+            
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -400,7 +801,7 @@ and collections are listed (i.e. nested members of feature collections are ommit
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">default page size</td>
         </tr>
 
     
@@ -441,7 +842,7 @@ and collections are listed (i.e. nested members of feature collections are ommit
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html">core/sweapi/featureofinterest/FeatureOfInterests.js</a>, <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html#line39">line 39</a>
+        <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html">core/sweapi/featureofinterest/FeatureOfInterests.js</a>, <a href="core_sweapi_featureofinterest_FeatureOfInterests.js.html#line46">line 46</a>
     </li></ul></dd>
     
 
@@ -469,6 +870,10 @@ and collections are listed (i.e. nested members of feature collections are ommit
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    - A Collection of FeaturesOfInterest
+</div>
+
 
 
 <dl>
@@ -477,7 +882,7 @@ and collections are listed (i.e. nested members of feature collections are ommit
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;<a href="Collection.html">Collection</a>></span>
+<span class="param-type">Promise.&lt;<a href="Collection.html">Collection</a>.&lt;<a href="FeaturesOfInterest.html">FeaturesOfInterest</a>>></span>
 
 
     </dd>

@@ -1,8 +1,9 @@
-import SosGetResultVideo from 'osh-js/core/datasource/sos/SosGetResultVideo.js';
-import WebCodecView from 'osh-js/core/ui/view/video/WebCodecView.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import VideoView from "osh-js/core/ui/view/video/VideoView";
 
 // create data source for UAV camera
-let videoDataSource = new SosGetResultVideo("drone-Video", {
+let videoDataSource = new SosGetResult("drone-Video", {
   protocol: "ws",
   service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
@@ -14,13 +15,20 @@ let videoDataSource = new SosGetResultVideo("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new WebCodecView({
+let videoView = new VideoView({
   container: 'video-h264-container',
   css: "video-h264",
   name: "UAV Video",
   showTime: true,
   showStats: true,
-  dataSourceId: videoDataSource.id
+  useWebCodecApi: true,
+  layers: [
+    new VideoDataLayer({
+      dataSourceId: videoDataSource.id,
+      getFrameData: (rec) => rec.videoFrame,
+      getTimestamp: (rec) => rec.timestamp
+    })
+  ]
 });
 
 // start streaming

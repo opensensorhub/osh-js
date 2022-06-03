@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>SensorWebApi<span class="signature">(networkProperties)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>SensorWebApi<span class="signature">(networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="SensorWebApi"><span class="type-signature"></span>new SensorWebApi<span class="signature">(networkProperties)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="SensorWebApi"><span class="type-signature"></span>new SensorWebApi<span class="signature">(networkProperties<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -69,7 +69,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -94,10 +98,26 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">Defines network properties
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">
                 <h6>Properties</h6>
                 
 
@@ -127,52 +147,13 @@
 
         <tr>
             
-                <td class="name"><code>tls</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">Defines is use TLS connection</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>endpointUrl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">endpointUrl</span>
+<span class="param-type">String</span>
 
 
             
@@ -194,20 +175,20 @@
                 </td>
             
 
-            <td class="description last">The endpoint URL</td>
+            <td class="description last">defines the Http(s) endpoint URL</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>mqttPrefix</code></td>
+                <td class="name"><code>tls</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">endpointUrl</span>
+<span class="param-type">Boolean</span>
 
 
             
@@ -229,44 +210,7 @@
                 </td>
             
 
-            <td class="description last">A Mqtt topic prefix</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>connector</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="DataConnector.html">DataConnector</a></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Use a specific connector</td>
+            <td class="description last">defines is use Http or Https secure protocol for fetching data</td>
         </tr>
 
     
@@ -305,7 +249,118 @@
                 </td>
             
 
-            <td class="description last">The stream protocol: 'ws' | 'mqtt'</td>
+            <td class="description last">the Stream protocol to use: 'ws' pr 'mqtt'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mqttOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">the Mqtt options if stream protocol is 'mqtt'
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt prefix value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the Mqtt specific endpointUrl</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -353,7 +408,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_sweapi_SensorWebApi.js.html">core/sweapi/SensorWebApi.js</a>, <a href="core_sweapi_SensorWebApi.js.html#line34">line 34</a>
+        <a href="core_sweapi_SensorWebApi.js.html">core/sweapi/SensorWebApi.js</a>, <a href="core_sweapi_SensorWebApi.js.html#line32">line 32</a>
     </li></ul></dd>
     
 

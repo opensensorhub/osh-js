@@ -81,15 +81,15 @@ class Nexrad extends Layer {
 		}
 
 		if (isDefined(properties.getLocation)) {
-			let fn = function(rec,timeStamp,options) {
-				that.location = properties.getLocation.handler(rec,timeStamp,options);
+			let fn = function(rec,timestamp,options) {
+				that.location = properties.getLocation.handler(rec,timestamp,options);
 			};
 			this.addFn(properties.getLocation.dataSourceIds,fn);
 		}
 
 		if (isDefined(properties.getRadialData)) {
-			let fn = function(rec,timeStamp,options) {
-				that.radialData = properties.getRadialData.handler(rec,timeStamp,options);
+			let fn = function(rec,timestamp,options) {
+				that.radialData = properties.getRadialData.handler(rec,timestamp,options);
 			};
 			this.addFn(properties.getRadialData.dataSourceIds,fn);
 		}

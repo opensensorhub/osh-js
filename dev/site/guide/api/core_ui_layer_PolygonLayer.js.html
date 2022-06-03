@@ -137,8 +137,8 @@ class PolygonLayer extends Layer {
         }
 
         if (isDefined(properties.getVertices)) {
-            let fn = async (rec, timeStamp, options) => {
-                let vertices = await that.getFunc('getVertices')(rec, timeStamp, options);
+            let fn = async (rec, timestamp, options) => {
+                let vertices = await that.getFunc('getVertices')(rec, timestamp, options);
                 if (!(that.props.polygonId in that.props.vertices)) {
                     that.props.vertices[that.props.polygonId] = [];
                 }
