@@ -56,6 +56,8 @@ class WebSocketConnector extends DataConnector {
      */
     doRequest(extraUrl = '',queryString= undefined) {
         if (!this.init) {
+            this.extraUrl = extraUrl;
+            this.queryString = queryString;
             let fullUrl = this.getUrl() + extraUrl;
 
             if(isDefined(queryString)) {
@@ -109,7 +111,7 @@ class WebSocketConnector extends DataConnector {
     }
 
     connect() {
-        this.doRequest();
+        this.doRequest(this.extraUrl, this.queryString);
     }
 
     createReconnection() {
