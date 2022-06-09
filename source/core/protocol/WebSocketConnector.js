@@ -48,13 +48,14 @@ class WebSocketConnector extends DataConnector {
         super(url, properties);
         this.interval = -1;
         this.lastReceiveTime = 0;
+        this.extraUrl = '';
     }
 
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    doRequest(extraUrl = '',queryString= undefined) {
+    doRequest(extraUrl = this.extraUrl,queryString= this.queryString) {
         if (!this.init) {
             this.extraUrl = extraUrl;
             this.queryString = queryString;
@@ -111,7 +112,7 @@ class WebSocketConnector extends DataConnector {
     }
 
     connect() {
-        this.doRequest(this.extraUrl, this.queryString);
+        this.doRequest();
     }
 
     createReconnection() {
