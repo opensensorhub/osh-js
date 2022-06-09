@@ -312,7 +312,8 @@ class OpenLayerView extends MapView {
                         anchorXUnits: 'pixels',
                         rotation: properties.orientation.heading * Math.PI / 180,
                         scale: properties.iconScale,
-                        size: properties.iconSize
+                        size: properties.iconSize,
+                        color: properties.iconColor
                     }),
                     zIndex: properties.zIndex,
                     text: new Text({
@@ -377,11 +378,12 @@ class OpenLayerView extends MapView {
             if (props.icon !== null) {
                 // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
                 // Then either set that in your ol.style.Style as required
-               if(style.getImage().getSrc() !== props.icon) {
+               if((style.getImage().getSrc() !== props.icon) || style.getImage().color !== props.iconColor) {
                     const iconOpts = {
                         anchorYUnits: 'pixels',
                         anchorXUnits: 'pixels',
                         src: props.icon,
+                        color: props.iconColor
                     };
                     style.setImage(new Icon(iconOpts));
                 }
@@ -397,6 +399,7 @@ class OpenLayerView extends MapView {
                 style.setZIndex(props.zIndex);
                 style.getImage().setAnchor(props.iconAnchor);
                 style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
+                style.getImage().color = props.iconColor;
             }
         }
     }
