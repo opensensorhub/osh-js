@@ -70,7 +70,7 @@ class DataSourceHandler {
         if(!isDefined(connector)) {
             // checks if type is WebSocketConnector
             if (properties.protocol.startsWith('ws')) { // for wss
-                this.connector = new WebSocketConnector(url);
+                this.connector = new WebSocketConnector(url, properties);
             } else if (properties.protocol.startsWith('http')) { //for https
                 this.connector = new HttpConnector(url, {
                     responseType: properties.responseType || 'arraybuffer',

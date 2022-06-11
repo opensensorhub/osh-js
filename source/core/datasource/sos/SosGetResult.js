@@ -40,10 +40,12 @@ class SosGetResult extends TimeSeriesDataSource {
         super(name, {
             timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
+            reconnectRetry: 10,
             tls: false,
             ...properties
         });
     }
+
 
     async createWorker(properties) {
         return new SosGetResultWorker();
