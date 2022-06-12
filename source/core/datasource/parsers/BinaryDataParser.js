@@ -31,7 +31,7 @@ class DoubleParser extends AbstractParser {
         this.name = name;
     }
     parse(arrayBuffer, props, resultParent) {
-        const result = new DataView(arrayBuffer).getFloat64(props.offset, props.littleEndian) * 1000;
+        const result = new DataView(arrayBuffer).getFloat64(props.offset, props.littleEndian);
         props.offset += 8;
         resultParent[this.name] = result;
     }
@@ -179,7 +179,7 @@ class BinaryDataParser extends GenericParser {
         while(props.offset < arrayBuffer.byteLength) {
             const res = {};
             this.parser.parse(arrayBuffer, props, res);
-            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime();
+            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()] * 1000).getTime();
             results.push(res);
         }
         return results;

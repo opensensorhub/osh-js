@@ -8,7 +8,7 @@ export default class AbstractParser {
     }
     init(element, props, path) {
         this.props = props;
-        this.name = element.name || element.label;
+        this.name = element.name;
         this.path = path;
         this.checkTime(element);
         this.checkId(element);
@@ -137,6 +137,19 @@ class DataRecordParser extends AbstractParser {
             }
         } else {
             this.parseElement(element[fieldName], currentPath + element[fieldName].name);
+        }
+    }
+
+    parse(tokens, props, resultParent) {
+        if(!this.name) {
+            super.parse(tokens, props, resultParent);
+        } else {
+            // parse size of the array
+            const result = {}
+            for (let parser of this.stack) {
+                parser.parse(tokens, props, result);
+            }
+            resultParent[this.name] = result;
         }
     }
 }
