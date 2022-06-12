@@ -106,36 +106,43 @@ export default {
     const droneLocationDataSource = new SweApiFetch('MISB UAS - Platform Location', {
       ...commonDatasourceOpts,
       collection: '/datastreams/gal7w6j6v7n9/observations',
+      responseFormat: 'application/swe+json',
     });
 
     const droneOrientationDataSource = new SweApiFetch('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
       collection: '/datastreams/ei5nsp8guy5y/observations',
+      responseFormat: 'application/om+json',
     });
 
     const droneCameraOrientationDataSource = new SweApiFetch('MISB UAS - Gimbal Attitude', {
       ...commonDatasourceOpts,
       collection: '/datastreams/7rsjo1e6pq45/observations',
+      responseFormat: 'application/swe+binary',
     });
 
     const droneHFovDataSource = new SweApiFetch('MISB UAS - Horizontal FoV', {
       ...commonDatasourceOpts,
       collection: '/datastreams/1fle3d5b29shh/observations',
+      responseFormat: 'application/swe+binary',
     });
 
     const droneVFovDataSource = new SweApiFetch('MISB UAS - Vertical FoV', {
       ...commonDatasourceOpts,
       collection: '/datastreams/1fle3d5b29shh/observations',
+      responseFormat: 'application/swe+binary',
     });
 
     const geoRefImageFrameDataSource = new SweApiFetch('MISB UAS - GeoReferenced Image Frame', {
       ...commonDatasourceOpts,
       collection: '/datastreams/1b6j89nistu9h/observations',
+      responseFormat: 'application/swe+csv',
     });
 
     const targetLocationDataSource = new SweApiFetch('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       ...commonDatasourceOpts,
       collection: '/datastreams/tmi5mitvl8c7/observations',
+      responseFormat: 'application/swe+binary',
     });
 
     // let biologicalSensorsDataSource = new SosGetFois('Biological Sensors', {
