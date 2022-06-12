@@ -1,1 +1,15 @@
-define(["./when-c2e8ef35","./Check-c4f3a3fc","./Math-d30358ed","./Cartesian2-e875d9d2","./Transforms-44592b02","./RuntimeError-6122571f","./WebGLConstants-4ae0db90","./ComponentDatatype-5d3f6452","./GeometryAttribute-4098b8de","./GeometryAttributes-57608efc","./AttributeCompression-6cb5b251","./GeometryPipeline-99c06fbd","./EncodedCartesian3-e19aab62","./IndexDatatype-e3260434","./IntersectionTests-ef7d18d8","./Plane-2d882f9f","./GeometryOffsetAttribute-e6e9672c","./VertexFormat-ad523db1","./EllipseGeometryLibrary-de353ee5","./GeometryInstance-b43ca1c5","./EllipseGeometry-7d13646a"],function(r,e,t,n,i,o,a,d,s,c,l,f,b,m,p,y,u,G,C,E,A){"use strict";return function(e,t){return r.defined(t)&&(e=A.EllipseGeometry.unpack(e,t)),e._center=n.Cartesian3.clone(e._center),e._ellipsoid=n.Ellipsoid.clone(e._ellipsoid),A.EllipseGeometry.createGeometry(e)}});
+/* This file is automatically rebuilt by the Cesium build process. */
+define(['./when-e6e3e713', './Check-1df6b9a0', './Math-c5f6c994', './Cartesian2-1d7364fa', './Transforms-943e8463', './RuntimeError-717c34db', './WebGLConstants-7f7d68ac', './ComponentDatatype-2b8834a4', './GeometryAttribute-3a303898', './GeometryAttributes-6cf4559b', './AttributeCompression-d68d64ef', './GeometryPipeline-2d6c52b2', './EncodedCartesian3-d723731d', './IndexDatatype-e2961542', './IntersectionTests-c05f88ce', './Plane-2e419ea5', './GeometryOffsetAttribute-2677f2ec', './VertexFormat-3b318cdc', './EllipseGeometryLibrary-4fb46d5e', './GeometryInstance-9c21278b', './EllipseGeometry-d044dd63'], function (when, Check, _Math, Cartesian2, Transforms, RuntimeError, WebGLConstants, ComponentDatatype, GeometryAttribute, GeometryAttributes, AttributeCompression, GeometryPipeline, EncodedCartesian3, IndexDatatype, IntersectionTests, Plane, GeometryOffsetAttribute, VertexFormat, EllipseGeometryLibrary, GeometryInstance, EllipseGeometry) { 'use strict';
+
+    function createEllipseGeometry(ellipseGeometry, offset) {
+            if (when.defined(offset)) {
+                ellipseGeometry = EllipseGeometry.EllipseGeometry.unpack(ellipseGeometry, offset);
+            }
+            ellipseGeometry._center = Cartesian2.Cartesian3.clone(ellipseGeometry._center);
+            ellipseGeometry._ellipsoid = Cartesian2.Ellipsoid.clone(ellipseGeometry._ellipsoid);
+            return EllipseGeometry.EllipseGeometry.createGeometry(ellipseGeometry);
+        }
+
+    return createEllipseGeometry;
+
+});
