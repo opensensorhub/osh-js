@@ -17,6 +17,7 @@
 <script>
 import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 import VideoView from "osh-js/core/ui/view/video/VideoView";
+import {mapActions} from "vuex";
 
 export default {
   name: "VideoPanel",
@@ -27,21 +28,25 @@ export default {
 
       // show it in video view using FFMPEG JS decoder
       let videoView = new VideoView({
-      container: "video-container",
-      css: "video-h264",
-      name: "UAV Video",
-      framerate:30,
-      showTime: true,
-      showStats: true,
-        layers: [
-          new VideoDataLayer({
-            dataSourceId: this.droneVideoDataSource.id,
-            getFrameData: (rec) => rec.img,
-            getTimestamp: (rec) => rec.timestamp
-          })
-        ]
-    });
+        container: "video-container",
+        css: "video-h264",
+        name: "UAV Video",
+        framerate:30,
+        showTime: true,
+        showStats: true,
+          layers: [
+            new VideoDataLayer({
+              dataSourceId: this.droneVideoDataSource.id,
+              getFrameData: (rec) => rec.img,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
+      });
+      this.updateUiVideoView(videoView);
   },
+  methods: {
+    ...mapActions(['updateUiVideoView'])
+  }
 }
 </script>
 <!-- optional dialog styles, see example -->
