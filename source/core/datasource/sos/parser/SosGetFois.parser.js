@@ -29,7 +29,7 @@ class SosGetFoisParser extends DataSourceParser {
             </sos:featureMember>
         </sos:GetFeatureOfInterestResponse>
      */
-    async parseData(data) {
+    async parseDataBlock(data) {
         let rec = data;
         if(data instanceof ArrayBuffer) {
             rec = new TextDecoder().decode(data);
