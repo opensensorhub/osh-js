@@ -46,6 +46,14 @@
       'droneHFovDataSource',
       'droneVFovDataSource',
     ],
+    computed: {
+      isVisibleImageDraping() {
+        return this.$store.state.ui.draping;
+      },
+      getVideoView() {
+        return this.$store.state.ui.videoView;
+      }
+    },
     methods: {
       createDroneMarkerLayer() {
         return new PointMarkerLayer({
@@ -79,12 +87,11 @@
       },
       createDroneImageDrapingLayer() {
         const that = this;
+
         return new ImageDrapingLayer({
           getVisible: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
-            handler: function(rec) {
-              return that.$store.state.ui.draping;
-            }
+            handler: () => this.isVisibleImageDraping
           },
           getPlatformLocation: {
             dataSourceIds: [this.droneLocationDataSource.getId()],
@@ -139,7 +146,8 @@
             camDistR: new Cartesian3(0,0,0),
             camDistT: new Cartesian2(0,0)
           },
-          imageSrc: document.getElementById("video-container").getElementsByTagName("canvas")[0],
+          dataSourceId: this.droneLocationDataSource.id, // TODO: should not associated a datasource to get it working
+          getImageSrc: async () => this.getVideoView.getVideoCanvas(),
         });
       },
       createDronePolygonFootprintLayer() {

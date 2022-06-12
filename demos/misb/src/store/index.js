@@ -42,7 +42,8 @@ export default new Vuex.Store({
             footprint: false,
             droneSelected: false,
             droneVideo: false,
-            targetSelected: false
+            targetSelected: false,
+            videoView: undefined
         }
     },
     actions: {
@@ -62,26 +63,28 @@ export default new Vuex.Store({
             commit('setUiDroneSelection', !state.ui.droneSelected);
         },
         toggleUiFootprint({state, commit}, props) {
-            if(state.geoRefImage.connected) {
+            if (state.geoRefImage.connected) {
                 commit('setUiFootprint', !state.ui.footprint);
             }
         },
         toggleUiDraping({state, commit}, props) {
-            if(state.drone.video.connected) {
+            if (state.drone.video.connected) {
                 commit('setUiDraping', !state.ui.draping);
             }
         },
         toggleUiFov({state, commit}, props) {
-            if(state.drone.vFov.connected) {
+            if (state.drone.vFov.connected) {
                 commit('setUiFov', !state.ui.fov);
             }
         },
         toggleUiDroneVideo({state, commit}, props) {
-            if(state.drone.video.connected) {
+            if (state.drone.video.connected) {
                 commit('setUiDroneVideo', !state.ui.droneVideo);
             }
         },
-
+        updateUiVideoView({state, commit}, props) {
+            commit('setUiVideoView', props)
+        }
     },
     mutations: {
         setDroneStatus(state, value) {
@@ -122,6 +125,9 @@ export default new Vuex.Store({
         },
         setUiDroneVideo(state, value) {
             state.ui.droneVideo = value;
+        },
+        setUiVideoView(state, value) {
+            state.ui.videoView = value;
         },
     }
 });

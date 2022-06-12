@@ -87,8 +87,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleUiDroneSelection', 'toggleUiFootprint', 'toggleUiDraping', 'toggleUiFov', 'toggleUiDroneVideo']
-    ),
+    ...mapActions(['toggleUiDroneSelection', 'toggleUiFootprint', 'toggleUiDraping', 'toggleUiFov', 'toggleUiDroneVideo']),
     panToDrone() {
       this.$root.$emit('pan_to_drone');
     },
