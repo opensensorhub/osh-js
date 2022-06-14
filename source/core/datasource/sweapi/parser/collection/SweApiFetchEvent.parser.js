@@ -1,4 +1,3 @@
-import DataSourceParser from "../../../parsers/DataSourceParser";
 import SweApiCollectionObjectParser from "./SweApiCollectionObjectParser";
 
 class SweApiFetchEventParser extends SweApiCollectionObjectParser {

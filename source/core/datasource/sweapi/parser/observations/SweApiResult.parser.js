@@ -1,5 +1,5 @@
 import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
-import {assertDefined, assertTrue, isDefined} from "../../../../utils/Utils";
+import {isDefined} from "../../../../utils/Utils";
 import SensorWebApiFilter from "../../../../sweapi/Filter";
 
 class SweApiResultParser extends TimeSeriesParser {

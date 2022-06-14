@@ -1,4 +1,3 @@
-import DataSourceParser from "../../../parsers/DataSourceParser";
 import FeatureOfInterest from "../../../../sweapi/featureofinterest/FeatureOfInterest";
 import SweApiCollectionObjectParser from "./SweApiCollectionObjectParser";
 
