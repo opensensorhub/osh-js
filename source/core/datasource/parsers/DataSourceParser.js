@@ -2,6 +2,7 @@ import {isDefined} from "../../utils/Utils";
 
 class DataSourceParser {
 
+    //TODO: move into Specific SOS part
     /**
      * Builds the full url.
      * @protected
@@ -21,12 +22,6 @@ class DataSourceParser {
      */
     buildUrl(properties) {
         let url = "";
-
-        // adds protocol
-        // url += properties.protocol + "://";
-
-        // adds endpoint url
-        // url += properties.endpointUrl + "?";
 
         // adds service
         url = "service=" + properties.service;

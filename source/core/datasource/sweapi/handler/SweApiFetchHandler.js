@@ -96,6 +96,17 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         this.filter = filter;
     }
 
+    getQueryString(properties) {
+        if(isDefined(properties.startTime)) {
+            let startTime = properties.startTime;
+            if(isDefined(this.lastTimeStamp)){
+                startTime = new Date(this.lastTimeStamp).toISOString()
+            }
+            this.filter.props.phenomenonTime = startTime+ '/'+ properties.endTime;
+        }
+        return this.filter.toQueryString();
+    }
+
     async setupStream(collection) {
         this.connect = this.connectStream;
     }

@@ -3,6 +3,7 @@ import DataSourceParser from "./DataSourceParser";
 
 class TimeSeriesParserParser extends DataSourceParser {
 
+    //TODO: move into Specific SOS part
     /**
      * Builds the full url.
      * @protected
