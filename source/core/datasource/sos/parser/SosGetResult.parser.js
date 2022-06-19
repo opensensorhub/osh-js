@@ -1,13 +1,11 @@
-import TimeSeriesParser from "../../parsers/TimeSeriesParser.parser";
 import TextDataParser from "../../parsers/TextDataParser";
 import {assertDefined, assertTrue, isDefined} from "../../../utils/Utils";
 import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser";
 import JsonDataParser from "../../parsers/JsonDataParser";
 import BinaryDataParser from "../../parsers/BinaryDataParser";
 
-class SosGetResultParser extends TimeSeriesParser {
+class SosGetResultParser {
     constructor() {
-        super();
         this.templatePromise = undefined;
     }
 

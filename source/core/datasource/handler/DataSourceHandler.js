@@ -8,8 +8,7 @@ import MqttConnector from "../../protocol/MqttConnector";
 
 class DataSourceHandler {
 
-    constructor(parser, worker) {
-        this.parser = parser;
+    constructor() {
         this.connector = null;
         this.reconnectTimeout = 1000 * 10; // 10 secs
         this.values = [];
@@ -24,11 +23,6 @@ class DataSourceHandler {
         if(this.connector !== null) {
             this.connector.disconnect();
             this.connector = null;
-        }
-
-        // can be initialized later
-        if(isDefined(this.parser)) {
-            this.parser.init(propertiesStr);
         }
 
         this.setTopic(topic);
@@ -125,9 +119,11 @@ class DataSourceHandler {
 
     connect() {
         if(this.connector !== null) {
-            this.connector.doRequest('', this.parser.buildUrl(this.updatedProperties));
+            this.connector.doRequest('', this.getQueryString(this.updatedProperties));
         }
     }
+
+    getQueryString(properties) {}
 
     disconnect() {
         if(this.connector !== null) {
@@ -135,14 +131,10 @@ class DataSourceHandler {
         }
     }
 
+    async parseData(message){}
+
     async onMessage(event) {
-        let data;
-        if(isDefined(this.parser)) {
-            data   = await Promise.resolve(this.parser.parseDataBlock(event));
-        } else {
-            // pass through
-            data = event;
-        }
+        let data = await this.parseData(event);
 
         // check if data is array
         if (Array.isArray(data)) {
@@ -191,10 +183,10 @@ class DataSourceHandler {
         this.createDataConnector({
             ...this.properties,
             ...properties
+        }).then(() => {
+            this.version++;
+            this.connect();
         });
-
-        this.version++;
-        this.connect();
     }
 
     flushAll() {

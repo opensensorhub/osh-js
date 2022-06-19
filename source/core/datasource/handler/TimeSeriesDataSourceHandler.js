@@ -4,9 +4,9 @@ import {EventType} from "../../event/EventType";
 
 class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
-    constructor(parser) {
-        super(parser);
-        this.lastTimeStamp = null;
+    constructor() {
+        super();
+        this.lastTimestamp = null;
         this.lastStartTime = 'now';
         this.timeShift = 0;
         this.timeBroadcastChannel = null;
@@ -21,24 +21,22 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
             timeShift: this.timeShift
         }, connector);
 
-        const lastStartTimeCst = this.parser && this.lastStartTime || properties.startTime;
+        let lastStartTimeCst = this.lastStartTime ;
+        if(isDefined(properties.startTime)) {
+            lastStartTimeCst = properties.startTime;
+        }
 
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp to reconnect at the last time received
             // for that, we update the URL with the new last time received
             if (lastStartTimeCst !== 'now') {
-                this.connector.queryString = this.getQueryString(properties);
+                this.connector.queryString = this.getQueryString({
+                    ...properties,
+                    startTime: isDefined(this.lastTimestamp) ? new Date(this.lastTimestamp).toISOString() : properties.startTime,
+                });
             }
             return true;
         }
-    }
-
-    getQueryString(properties) {
-        // TODO: buildUrl => queryString
-        return this.parser.buildUrl({
-            ...properties,
-            lastTimeStamp: isDefined(this.lastTimeStamp) ? new Date(this.lastTimeStamp).toISOString() : properties.startTime,
-        });
     }
 
     handleProperties(properties) {
@@ -64,13 +62,8 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
     }
 
     async onMessage(event) {
-        let data;
-        if(isDefined(this.parser)) {
-            data   = await Promise.resolve(this.parser.parseDataBlock(event));
-        } else {
-            // pass through
-            data = event;
-        }
+        let data = await this.parseData(event);
+
         // check if data is array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
@@ -111,14 +104,15 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
                 type: EventType.TIME_CHANGED
             });
 
-            let lastTimestamp;
+            let lastTimestampStr;
+            console.log('ici')
             if (properties.hasOwnProperty('startTime')) {
-                lastTimestamp = properties.startTime;
+                lastTimestampStr = properties.startTime;
             } else if (this.properties.startTime === 'now') {
                 //handle RealTime
-                lastTimestamp = 'now';
+                lastTimestampStr = 'now';
             } else if(this.lastTimestamp) {
-                lastTimestamp = new Date(this.lastTimestamp).toISOString();
+                lastTimestampStr = new Date(this.lastTimestamp).toISOString();
             } else {
                 throw Error('Neither startTime, now or lastTimestamp are defined');
             }
@@ -128,7 +122,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
             await this.createDataConnector({
                 ...this.properties,
                 ...properties,
-                lastTimestamp: lastTimestamp
+                lastTimestamp: lastTimestampStr
             });
 
             if (isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {

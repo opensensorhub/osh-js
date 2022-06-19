@@ -158,6 +158,10 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         }
     }
 
+    async parseData(message) {
+        // the data has already parsed
+        return message;
+    }
     onMessageNonStream(values){
         this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,

@@ -5,13 +5,11 @@ import {KMLLoader} from '@loaders.gl/kml';
 import {JSONLoader} from '@loaders.gl/json';
 import {WKTLoader} from '@loaders.gl/wkt';
 import {parse} from '@loaders.gl/core';
-import DataSourceParser from "../../../core/datasource/parsers/DataSourceParser";
 import {assertArray} from "../../../core/utils/Utils";
 
-class FileParser extends DataSourceParser {
+class FileParser {
 
     constructor( properties) {
-        super();
         this.properties = properties;
         registerLoaders([ShapefileLoader, KMLLoader, JSONLoader, CSVLoader, WKTLoader]);
     }
