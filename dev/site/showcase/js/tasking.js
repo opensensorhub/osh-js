@@ -16,7 +16,7 @@ let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
     collection: `/api/datastreams/${posDsId}/observations`,
     endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
     protocol: 'mqtt',
-    mqtt: {
+    mqttOpts: {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8483'
     },

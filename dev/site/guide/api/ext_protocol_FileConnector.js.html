@@ -76,12 +76,12 @@ class FileConnector extends DataConnector {
     /**
      * Start reading file content
      */
-    async doRequest(extraUrl = '', urls = undefined) {
+    async doRequest(extraUrl = '') {
         if(!this.opened) {
             this.opened = true;
             this.onChangeStatus(Status.CONNECTED);
-            for(let url of urls) {
-                this.onMessage(await fetch(url));
+            for(let u of this.url) {
+                this.onMessage(await fetch(u));
             }
             this.onChangeStatus(Status.DISCONNECTED);
             // read is done
