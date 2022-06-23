@@ -1,5 +1,3 @@
-import OmJsonCollectionParser from "../collection/CollectionOmJsonParser.parser";
-import SweApiResultParser from "./SweApiResult.parser";
 import SweApiResultControlParser from "./SweApiResult.control.parser";
 
 class SweApiResultCollectionControlParser extends SweApiResultControlParser {

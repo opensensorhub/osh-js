@@ -1,5 +1,4 @@
 import OmJsonCollectionParser from "../collection/CollectionOmJsonParser.parser";
-import SweApiResultParser from "./SweApiResult.parser";
 import SweApiResultDatastreamParser from "./SweApiResult.datastream.parser";
 
 class SweApiResultCollectionDatastreamParser extends SweApiResultDatastreamParser {

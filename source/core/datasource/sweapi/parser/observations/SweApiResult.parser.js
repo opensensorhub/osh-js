@@ -1,10 +1,8 @@
-import TimeSeriesParser from "../../../parsers/TimeSeriesParser.parser";
-import {assertDefined, assertTrue, isDefined} from "../../../../utils/Utils";
+import {isDefined} from "../../../../utils/Utils";
 import SensorWebApiFilter from "../../../../sweapi/Filter";
 
-class SweApiResultParser extends TimeSeriesParser {
+class SweApiResultParser  {
     constructor(dataObject) {
-        super();
         this.dataObject = dataObject;
         this.parsers = {
             'application/om+json' : {

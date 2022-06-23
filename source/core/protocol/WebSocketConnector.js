@@ -38,6 +38,8 @@ import {Status} from './Status.js';
  *
  */
 
+let reconnectionInterval = -1;
+
 class WebSocketConnector extends DataConnector {
     /**
      *
@@ -48,14 +50,17 @@ class WebSocketConnector extends DataConnector {
         super(url, properties);
         this.interval = -1;
         this.lastReceiveTime = 0;
+        this.extraUrl = '';
     }
 
     /**
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    doRequest(extraUrl = '',queryString= undefined) {
+    doRequest(extraUrl = this.extraUrl,queryString= this.queryString) {
         if (!this.init) {
+            this.extraUrl = extraUrl;
+            this.queryString = queryString;
             let fullUrl = this.getUrl() + extraUrl;
 
             if(isDefined(queryString)) {
@@ -112,15 +117,28 @@ class WebSocketConnector extends DataConnector {
         this.doRequest();
     }
 
+    checkAndClearReconnection() {
+        if(reconnectionInterval !== -1) {
+            clearInterval(reconnectionInterval);
+            reconnectionInterval = -1;
+        }
+    }
+
     createReconnection() {
-        if(!this.closed && this.reconnectionInterval === -1 && this.onReconnect()) {
-            this.reconnectionInterval =  setInterval(function () {
+        if(!this.closed && reconnectionInterval === -1 && this.onReconnect()) {
+            let count = 0;
+            reconnectionInterval =  setInterval(function () {
                 let delta = Date.now() - this.lastReceiveTime;
                 // -1 means the WS went in error
                 if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
-                    console.warn('trying to reconnect', this.url);
-                    this.init = false;
-                    this.connect();
+                    if(count++ >= this.properties.reconnectRetry) {
+                        console.warn(`Maximum reconnection retries attempted: ${this.properties.reconnectRetry}`)
+                        clearInterval(reconnectionInterval);
+                    } else {
+                        console.warn(`(${count}/${this.properties.reconnectRetry}) trying to reconnect: ${this.url}`);
+                        this.init = false;
+                        this.connect();
+                    }
                 }
             }.bind(this), this.reconnectTimeout);
         }

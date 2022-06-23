@@ -1,7 +1,7 @@
 import SosGetResultParser from '../parser/SosGetResult.parser';
-import TimeSeriesDataSourceHandler from "../../handler/TimeSeriesDataSourceHandler";
+import SosGetResultDataSourceHandler from "../handler/SosGetResultDataSourceHandler";
 
-const dataSourceHandler = new TimeSeriesDataSourceHandler(new SosGetResultParser(), self);
+const dataSourceHandler = new SosGetResultDataSourceHandler(new SosGetResultParser(), self);
 
 self.onmessage = (event) => {
     dataSourceHandler.handleMessage(event.data, self);

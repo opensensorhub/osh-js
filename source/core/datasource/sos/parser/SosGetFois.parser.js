@@ -1,9 +1,14 @@
-import DataSourceParser from "../../parsers/DataSourceParser";
 import {assertDefined, isDefined} from "../../../utils/Utils";
 import SWEXmlStreamParser from "../../../parsers/SWEXmlStreamParser.js";
 
-class SosGetFoisParser extends DataSourceParser {
-    /**
+class SosGetFoisParser {
+    constructor() {
+        this.textDecoder = new TextDecoder();
+    }
+    init(properties) {
+
+    }
+     /**
      * Extract data from the message. The message is in XML format following the OGC specification
      * @param {Object} data - the data to parse
      * @return {Object} the parsed data
@@ -32,7 +37,7 @@ class SosGetFoisParser extends DataSourceParser {
     async parseDataBlock(data) {
         let rec = data;
         if(data instanceof ArrayBuffer) {
-            rec = new TextDecoder().decode(data);
+            rec = this.textDecoder.decode(data);
         }
         let sweXmlParser = new SWEXmlStreamParser(rec);
         sweXmlParser.setXml(rec);
@@ -40,32 +45,6 @@ class SosGetFoisParser extends DataSourceParser {
         assertDefined(json.GetFeatureOfInterestResponse,'json.GetFeatureOfInterestResponse does not exist');
         assertDefined(json.GetFeatureOfInterestResponse.featureMember,'json.GetFeatureOfInterestResponse.featureMember does not exist');
         return json.GetFeatureOfInterestResponse.featureMember;
-    }
-
-    /**
-     * Builds the full url.
-     * @protected
-     * @param {Object} properties
-     * @param {String} properties.protocol the protocol protocol
-     * @param {String} properties.endpointUrl the endpoint url
-     * @param {String} properties.service the service
-     * @param {String} properties.procedureId the foi procedure id
-     * @param {String} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
-     * @return {String} the full url
-     */
-    buildUrl(properties) {
-        let url = super.buildUrl({
-            responseFormat:'application/xml',
-            ...properties,
-        });
-        // adds request
-        url += "&request=GetFeatureOfInterest";
-
-        // adds foiURN if any
-        if(isDefined(properties.procedureId)) {
-            url += '&procedure='+properties.procedureId;
-        }
-        return url;
     }
 }
 

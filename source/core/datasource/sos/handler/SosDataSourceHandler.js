@@ -1,6 +1,36 @@
-import {isDefined} from "../../utils/Utils";
+/***************************** BEGIN LICENSE BLOCK ***************************
 
-class DataSourceParser {
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import TimeSeriesDataSourceHandler from "../../handler/TimeSeriesDataSourceHandler";
+import {isDefined} from "../../../utils/Utils";
+
+class SosDataSourceHandler extends TimeSeriesDataSourceHandler {
+    constructor(parser) {
+        super();
+        this.parser = parser;
+    }
+
+    init(propertiesStr, topic, dataSourceId) {
+        super.init(propertiesStr, topic, dataSourceId);
+        this.parser.init(propertiesStr);
+    }
+
+    async parseData(message) {
+        return Promise.resolve(this.parser.parseDataBlock(message));
+    }
 
     /**
      * Builds the full url.
@@ -21,12 +51,6 @@ class DataSourceParser {
      */
     buildUrl(properties) {
         let url = "";
-
-        // adds protocol
-        // url += properties.protocol + "://";
-
-        // adds endpoint url
-        // url += properties.endpointUrl + "?";
 
         // adds service
         url = "service=" + properties.service;
@@ -50,8 +74,6 @@ class DataSourceParser {
         }
         return url;
     }
-
-    init(properties) {}
 }
 
-export default DataSourceParser;
+export default SosDataSourceHandler;
