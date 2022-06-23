@@ -140,6 +140,13 @@ class DeckGlView extends MapView {
         const id = props.id+'$'+props.markerId;
 
         const mId = props.markerId;
+
+        let iconColor = props.iconColor;
+        if(isDefined(iconColor)) {
+            iconColor = hex2rgb(props.iconColor);
+        } else {
+            iconColor = "#000000";
+        }
         // in deck we create a new layer everytime => reactive programming
         const iconLayer = new IconLayer({
             id: id,
@@ -158,14 +165,14 @@ class DeckGlView extends MapView {
                     anchorY:  props.iconAnchor[1],
                     width: props.iconSize[0],
                     height: props.iconSize[1],
-                    mask: props.iconColor !== '#000000'
+                    mask: isDefined(props.iconColor) && props.iconColor !== '#000000'
                 }
             },
             getIcon: d => 'marker',
             sizeScale: props.iconScale,
             getPosition: d => d.position,
             getSize: d => props.iconScale,
-            getColor: d =>  hex2rgb(props.iconColor),
+            getColor: d =>  iconColor,
             onHover: (info, event) => this.onMarkerHover(mId,info, props, event),
             onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, props, event) :
                 this.onMarkerRightClick(mId,info, props, event),

@@ -5,7 +5,6 @@ import {KMLLoader} from '@loaders.gl/kml';
 import {JSONLoader} from '@loaders.gl/json';
 import {WKTLoader} from '@loaders.gl/wkt';
 import {parse} from '@loaders.gl/core';
-import {assertArray} from "../../../core/utils/Utils";
 
 class FileParser {
 
@@ -30,20 +29,6 @@ class FileParser {
     async parseDataBlock(data) {
         return parse(data);
     }
-
-    /**
-     * Builds the full url.
-     * @protected
-     * @param {Object} properties
-     * @param {String} properties.protocol the protocol protocol
-     * @param {String} properties.paths the file paths
-     * @return {String} the full url or array of urls
-     */
-    buildUrl(properties) {
-        assertArray(properties.paths);
-        return properties.paths;
-    }
-
 }
 
 export default FileParser;

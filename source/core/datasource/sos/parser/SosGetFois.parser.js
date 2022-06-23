@@ -5,7 +5,10 @@ class SosGetFoisParser {
     constructor() {
         this.textDecoder = new TextDecoder();
     }
-    /**
+    init(properties) {
+
+    }
+     /**
      * Extract data from the message. The message is in XML format following the OGC specification
      * @param {Object} data - the data to parse
      * @return {Object} the parsed data
@@ -31,7 +34,7 @@ class SosGetFoisParser {
             </sos:featureMember>
         </sos:GetFeatureOfInterestResponse>
      */
-    async parseData(data) {
+    async parseDataBlock(data) {
         let rec = data;
         if(data instanceof ArrayBuffer) {
             rec = this.textDecoder.decode(data);

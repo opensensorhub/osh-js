@@ -16,11 +16,13 @@
 
 import DataSourceHandler from "../../../core/datasource/handler/DataSourceHandler";
 import FileConnector from "../../protocol/FileConnector";
+import {assertArray} from "../../../core/utils/Utils";
 
 class FileDataSourceHandler  extends DataSourceHandler {
 
     constructor(parser) {
-        super(parser);
+        super();
+        this.parser = parser
     }
 
     /**
@@ -28,15 +30,25 @@ class FileDataSourceHandler  extends DataSourceHandler {
      * @private
      */
     async createDataConnector(properties) {
-        this.updatedProperties = properties;
-        const url = this.parser.buildUrl({
-            ...properties,
-            timeShift: this.timeShift
-        });
+        const fileConnector = new FileConnector(this.buildUrl(properties),properties);
+        await super.createDataConnector(properties, fileConnector);
+    }
 
-        this.connector = new FileConnector(url,properties);
+    async parseData(message) {
+        return Promise.resolve(this.parser.parseDataBlock(message));
+    }
 
-        await this.setUpConnector(properties);
+    /**
+     * Builds the full url.
+     * @protected
+     * @param {Object} properties
+     * @param {String} properties.protocol the protocol protocol
+     * @param {String} properties.paths the file paths
+     * @return {String} the full url or array of urls
+     */
+    buildUrl(properties) {
+        assertArray(properties.paths);
+        return properties.paths;
     }
 }
 export default FileDataSourceHandler;
