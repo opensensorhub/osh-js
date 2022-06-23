@@ -81,7 +81,6 @@ class MqttProvider {
         // waiting for the client gets connected
         let interval;
         const topicQuery = `${this.mqttPrefix}${topic}`;
-
         return new Promise((resolve, error) => {
             interval = setInterval(() => {
                 if (this.client.connected) {

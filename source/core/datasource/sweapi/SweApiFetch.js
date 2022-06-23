@@ -42,6 +42,7 @@ class SweApiFetch extends TimeSeriesDataSource {
         super(name, {
             batchSize: 1,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
+            reconnectRetry: 10,
             startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
             tls: false,
