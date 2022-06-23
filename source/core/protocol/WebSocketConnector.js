@@ -117,6 +117,12 @@ class WebSocketConnector extends DataConnector {
         this.doRequest();
     }
 
+    publishRequest(topic, payload) {
+        if(isDefined(this.ws)) {
+            this.ws.send(payload);
+        }
+    }
+
     checkAndClearReconnection() {
         if(reconnectionInterval !== -1) {
             clearInterval(reconnectionInterval);
@@ -127,6 +133,7 @@ class WebSocketConnector extends DataConnector {
     createReconnection() {
         if(!this.closed && reconnectionInterval === -1 && this.onReconnect()) {
             let count = 0;
+            const url = this.url;
             reconnectionInterval =  setInterval(function () {
                 let delta = Date.now() - this.lastReceiveTime;
                 // -1 means the WS went in error
@@ -135,7 +142,15 @@ class WebSocketConnector extends DataConnector {
                         console.warn(`Maximum reconnection retries attempted: ${this.properties.reconnectRetry}`)
                         clearInterval(reconnectionInterval);
                     } else {
-                        console.warn(`(${count}/${this.properties.reconnectRetry}) trying to reconnect: ${this.url}`);
+                        let fullUrl = url;
+                        if(isDefined(this.extraUrl)) {
+                            fullUrl += this.extraUrl;
+                        }
+                        if(isDefined(this.queryString)) {
+                            fullUrl += '?'+this.queryString;
+                        }
+
+                        console.warn(`(${count}/${this.properties.reconnectRetry}) trying to reconnect: ${fullUrl}`);
                         this.init = false;
                         this.connect();
                     }

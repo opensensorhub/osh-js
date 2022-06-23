@@ -100,7 +100,6 @@ export default {
       mqttOpts: mqttProps,
       tls: true
     });
-
     this.control = new Control({
       id: cmdStreamId,
       'system@id': systemId
@@ -120,6 +119,7 @@ export default {
       protocol: 'mqtt',
       mqttOpts: mqttProps,
       tls: true,
+      responseFormat: 'application/json'
     });
 
     await this.controlDataSource.connect();
