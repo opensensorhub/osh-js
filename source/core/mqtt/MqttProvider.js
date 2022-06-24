@@ -14,9 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import mqtt from '../../../libs/mqtt/mqtt.min';
-import {isDefined} from "../utils/Utils";
-import ObservationFilter from "../sweapi/observation/ObservationFilter";
+import mqtt from './mqtt.min.js';
+import {isDefined} from "../utils/Utils.js";
 
 let mqttCallbacks = {};
 
