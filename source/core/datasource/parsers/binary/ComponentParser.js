@@ -1,24 +1,24 @@
 import AbstractParser from "../AbstractParser";
-import BinaryDoubleDataTypeDecoder from "./BinaryDoubleDataTypeDecoder";
-import BinaryIntegerDataTypeDecoder from "./BinaryIntegerDataTypeDecoder";
-import BinaryShortDataTypeDecoder from "./BinaryShortDataTypeDecoder";
-import BinaryFloat32DataTypeDecoder from "./BinaryFloat32DataTypeDecoder";
+import BinaryDoubleDataTypeDecoder from "./dataType/BinaryDoubleDataTypeDecoder";
+import BinaryIntegerDataTypeDecoder from "./dataType/BinaryIntegerDataTypeDecoder";
+import BinaryShortDataTypeDecoder from "./dataType/BinaryShortDataTypeDecoder";
+import BinaryFloat32DataTypeDecoder from "./dataType/BinaryFloat32DataTypeDecoder";
 
 class ComponentParser extends AbstractParser {
-    constructor(binaryDataTypeDecoder) {
+    constructor() {
         super();
-        this.binaryDataTypeDecoder = binaryDataTypeDecoder;
+        this.refs = {};
     }
     build(element) {
         this.name = this.splitRefName(element.ref);
         if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/double') {
-            this.binaryDataTypeDecoder.addRef(element.ref, new BinaryDoubleDataTypeDecoder());
+            this.refs[element.ref] = new BinaryDoubleDataTypeDecoder();
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/signedInt'){
-            this.binaryDataTypeDecoder.addRef(element.ref, new BinaryIntegerDataTypeDecoder());
+            this.refs[element.ref] = new BinaryIntegerDataTypeDecoder();
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/signedShort') {
-            this.binaryDataTypeDecoder.addRef(element.ref, new BinaryShortDataTypeDecoder());
+            this.refs[element.ref] = new BinaryShortDataTypeDecoder();
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/float32') {
-            this.binaryDataTypeDecoder.addRef(element.ref, new BinaryFloat32DataTypeDecoder());
+            this.refs[element.ref] = new BinaryFloat32DataTypeDecoder();
         }
     }
 }

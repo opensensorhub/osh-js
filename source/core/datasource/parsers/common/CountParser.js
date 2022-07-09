@@ -7,10 +7,8 @@ class CountParser  extends AbstractParser {
         }
     }
 
-    parse(tokens, props, resultParent) {
-        let token = this.dataTypeDecoder.decode(tokens,props, this.path);
-
-        let value = (this.value) ? this.value : parseInt(token);
+    parse(dataTypeParser, props, resultParent) {
+        let value = (this.value) ? this.value : parseInt(dataTypeParser.nextToken(this.path));
         super.checkIdValue(value);
         resultParent[this.name] = value;
     }

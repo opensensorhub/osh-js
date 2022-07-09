@@ -18,7 +18,7 @@ class AbstractDataChoiceParser extends AbstractParser {
             this.itemToParserMap[parser.name] = parser;
         }
     }
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
         throw new Error('Unsupported Operation');
     }
 }
