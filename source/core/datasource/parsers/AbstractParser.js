@@ -20,7 +20,11 @@ export default class AbstractParser {
         if(isDefined(path)) {
             this.path = path;
         }
-        if(element.type in this.props.registeredParser){
+        if(isDefined(this.path) && this.path in this.props.refs) {
+            parser = new RefParser(this.props.refs[this.path]);
+        } else if(element.name in this.props.refs) {
+            parser = new RefParser(this.props.refs[element.name]);
+        } else if(element.type in this.props.registeredParser){
             parser = this.props.registeredParser[element.type]();
         } else if(element.hasOwnProperty('href')) {
             if('href' in this.props.registeredParser) {

@@ -23,14 +23,18 @@ class BinaryDataParser extends GenericParser {
             refs: {},
         });
         this.resultEncoding = encoding;
-        let componentParser = new ComponentParser();
+        this.binaryDataTypeDecoder = new BinaryDataTypeDecoder({
+            ...encoding,
+            littleEndian: encoding.byteOrder === 'littleEndian'
+        });
+
         const propsEncoding = {
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {
                 'member': () => new MemberParser(),
-                'Component': () => componentParser,
-                'Block': () => new BlockParser(),
+                'Component': () => new ComponentParser(this.binaryDataTypeDecoder),
+                'Block': () => new BlockParser(this.binaryDataTypeDecoder),
                 'BinaryEncoding': () => new BinaryEncodingParser()
             },
             refs: {},
@@ -38,12 +42,6 @@ class BinaryDataParser extends GenericParser {
         // parse ResultEncoding
         const rootElementEncoding = new RootParser();
         rootElementEncoding.init(encoding,propsEncoding);
-
-        this.binaryDataTypeDecoder = new BinaryDataTypeDecoder({
-            ...encoding,
-            littleEndian: encoding.byteOrder === 'littleEndian'
-        });
-        this.binaryDataTypeDecoder.setRefs(componentParser.refs);
 
         // parse schema
         this.props.registeredParser = {
@@ -56,7 +54,10 @@ class BinaryDataParser extends GenericParser {
             'href': () => new SkipParser()
         };
         //
-        this.parser.init(rootElement, this.props, '');
+        this.parser.init(rootElement, {
+            ...this.props,
+            refs: propsEncoding.refs
+        }, '');
     }
 
     parseDataBlock(arrayBuffer) {
