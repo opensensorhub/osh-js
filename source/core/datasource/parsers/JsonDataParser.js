@@ -1,7 +1,6 @@
 import TraverseParser from "./common/TraverseParser";
 import GenericParser from "./GenericParser";
-
-
+import TimeParser from "./common/TimeParser";
 
 class JsonDataParser extends GenericParser {
 
@@ -10,7 +9,7 @@ class JsonDataParser extends GenericParser {
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {
-                'Time': () => new TraverseParser(),
+                'Time': () => new TimeParser(),
                 'Category': () => new TraverseParser(),
                 'Quantity': () => new TraverseParser(),
                 'Count': () => new TraverseParser(),

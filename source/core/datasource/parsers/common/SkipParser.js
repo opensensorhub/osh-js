@@ -5,7 +5,7 @@ class SkipParser extends AbstractParser {
     }
     parseElement(element) {
     }
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
 
     }
     init(element, props, path) {

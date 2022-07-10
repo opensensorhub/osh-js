@@ -49,9 +49,9 @@ export default class AbstractParser {
     build(element) {
     }
 
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
         for(let parser of this.stack) {
-            parser.parse(tokens, props, resultParent);
+            parser.parse(dataTypeParser, props, resultParent);
         }
     }
 
@@ -68,26 +68,18 @@ export default class AbstractParser {
         }
     }
 
-    checkTime(element) {
-        if('definition' in element
-            &&
-            (element['definition'] === 'http://www.opengis.net/def/property/OGC/0/SamplingTime' ||
-                element['definition'] === 'http://www.opengis.net/def/property/OGC/0/PhenomenonTime')) {
-            this.time = this.name;
-        }
-    }
+    // To be overridden by Time parser
+    checkTime(element) {}
 
     getTimePropertyName() {
         if(!this.time) {
             // sub element, first level
-            let timeProperty;
             for (let parser of this.stack) {
-                timeProperty = parser.getTimePropertyName();
-                if (timeProperty) {
+                this.time = parser.getTimePropertyName();
+                if (this.time) {
                     break;
                 }
             }
-            this.time = timeProperty;
         }
         return this.time;
     }
@@ -113,8 +105,8 @@ class RefParser extends AbstractParser {
         }
     }
 
-    parse(tokens, props, resultParent) {
-        this.parser.parse(tokens, props, resultParent);
+    parse(dataTypeParser, props, resultParent) {
+        this.parser.parse(dataTypeParser, props, resultParent);
     }
 }
 
@@ -140,14 +132,14 @@ class DataRecordParser extends AbstractParser {
         }
     }
 
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
         if(!this.name) {
-            super.parse(tokens, props, resultParent);
+            super.parse(dataTypeParser, props, resultParent);
         } else {
             // parse size of the array
             const result = {}
             for (let parser of this.stack) {
-                parser.parse(tokens, props, result);
+                parser.parse(dataTypeParser, props, result);
             }
             resultParent[this.name] = result;
         }
@@ -160,16 +152,16 @@ class DataArrayParser extends AbstractParser {
         this.parseElement(element['elementCount']);
         this.parseElement(element['elementType']);
     }
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
         // parse size of the array
         const objectSize = {};
-        this.stack[0].parse(tokens, props, objectSize);
+        this.stack[0].parse(dataTypeParser, props, objectSize);
         const size = Object.values(objectSize)[0];
         const elementTypeParser =  this.stack[1];
         let dataarrayResults = [];
         for(let i=0;i < size; i++) {
             const subResult = {};
-            elementTypeParser.parse(tokens, props, subResult);
+            elementTypeParser.parse(dataTypeParser, props, subResult);
             dataarrayResults.push(subResult);
         }
         resultParent[this.name] = dataarrayResults;
@@ -191,11 +183,11 @@ class VectorParser extends AbstractParser {
         }
     }
 
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
         // parse size of the array
         const coordinates = {}
         for(let parser of this.stack) {
-            parser.parse(tokens, props, coordinates);
+            parser.parse(dataTypeParser, props, coordinates);
         }
         resultParent[this.name] = coordinates;
     }
@@ -216,7 +208,7 @@ class HRefParser extends AbstractParser {
         this.parser = this.props.nodesId[id];
     }
 
-    parse(tokens, props, resultParent) {
+    parse(dataTypeParser, props, resultParent) {
         // if (!(this.id in this.props.nodesIdValue)) {
         //     throw Error(`id ${this.id} not found in the idValue Tree`);
         // }
@@ -224,7 +216,7 @@ class HRefParser extends AbstractParser {
         if (this.id in this.props.nodesIdValue) {
             resultParent[this.parser.name] = this.props.nodesIdValue[this.id];
         } else {
-            this.parser.parse(tokens, props,resultParent);
+            this.parser.parse(dataTypeParser, props,resultParent);
         }
     }
 }

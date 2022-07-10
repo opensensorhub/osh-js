@@ -1,26 +1,9 @@
-import AbstractParser from "../AbstractParser";
+import AbstractDataChoiceParser from "./AbstractDataChoiceParser";
 
-class AbstractDataChoiceParser extends AbstractParser {
-    build(element) {
-        let itemName = undefined;
-        if(element.hasOwnProperty('items')) {
-            itemName = 'items'
-        } else if(element.hasOwnProperty('item')) {
-            itemName = 'item'
-        }
-
-        this.itemToParserMap = {};
-        for(let item of element[itemName]) {
-            this.parseElement(item);
-        }
-        // index parser depending on input name
-        for(let parser of this.stack){
-            this.itemToParserMap[parser.name] = parser;
-        }
-    }
-    parse(tokens, props, resultParent) {
-        throw new Error('Unsupported Operation');
+class DataChoiceParser extends AbstractDataChoiceParser {
+    parse(dataTypeParser, props, resultParent) {
+        let itemName = dataTypeParser.nextToken(this.path);
+        this.itemToParserMap[itemName].parse(dataTypeParser, props, resultParent);
     }
 }
-
-export default AbstractDataChoiceParser;
+export default DataChoiceParser;
