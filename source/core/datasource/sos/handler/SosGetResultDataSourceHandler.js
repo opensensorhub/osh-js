@@ -18,17 +18,6 @@ import SosDataSourceHandler from "./SosDataSourceHandler";
 import {isDefined} from "../../../utils/Utils";
 
 class SosGetResultDataSourceHandler extends SosDataSourceHandler {
-    constructor(parser) {
-        super(parser);
-    }
-
-    getQueryString(properties) {
-        return this.buildUrl({
-            ...properties,
-            lastTimestamp: isDefined(this.lastTimestamp) ? new Date(this.lastTimestamp).toISOString() : properties.startTime,
-        });
-    }
-
     /**
      * Builds the full url.
      * @protected
@@ -45,30 +34,29 @@ class SosGetResultDataSourceHandler extends SosDataSourceHandler {
      * @param {Object} properties.customUrlParams - the encoding options
      * @return {String} the full url
      */
-    buildUrl(properties) {
-        let url = super.buildUrl(properties);
+    getQueryString(properties) {
+        let queryString     = super.getQueryString(properties);
+
+        const startTime     = this.state.getStartTime();
+        const endTime       = this.state.getEndTime();
+        const replaySpeed   = this.state.getReplaySpeed();
 
         // adds request
-        url += "&request=GetResult";
+        queryString += "&request=GetResult";
 
         // adds offering
-        url += "&offering=" + properties.offeringID;
+        queryString += "&offering=" + properties.offeringID;
 
         // adds observedProperty
-        url += "&observedProperty=" + properties.observedProperty;
+        queryString += "&observedProperty=" + properties.observedProperty;
 
-        if('startTime' in properties) {
-            // adds temporalFilter
-            const stTime = properties.startTime;
-            this.lastStartTime = properties.startTime;
-            let endTime = properties.endTime;
-            url += "&temporalFilter=phenomenonTime," + stTime + "/" + endTime;
-            if (properties.replaySpeed) {
-                // adds replaySpeed
-                url += "&replaySpeed=" + properties.replaySpeed;
-            }
-        }
-        return url;
+        // adds temporalFilter
+        queryString += "&temporalFilter=phenomenonTime," + startTime + "/" + endTime;
+
+        // adds replaySpeed
+        queryString += "&replaySpeed=" + replaySpeed;
+
+        return queryString;
     }
 }
 

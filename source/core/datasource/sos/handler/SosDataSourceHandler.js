@@ -49,30 +49,30 @@ class SosDataSourceHandler extends TimeSeriesDataSourceHandler {
      * @param {Number} properties.customUrlParams.video_height - define a custom height
      * @return {String} the full url
      */
-    buildUrl(properties) {
-        let url = "";
+    getQueryString(properties) {
+        let queryString = "";
 
         // adds service
-        url = "service=" + properties.service;
+        queryString = "service=" + properties.service;
 
         // adds version
-        url += "&version=2.0&";
+        queryString += "&version=2.0&";
 
         // adds responseFormat (optional)
         if (properties.responseFormat) {
-            url += "&responseFormat=" + properties.responseFormat;
+            queryString += "&responseFormat=" + properties.responseFormat;
         }
 
         if(isDefined(properties.customUrlParams) && Object.keys(properties.customUrlParams).length > 0) {
-            url += '&';
+            queryString += '&';
             for (let key in properties.customUrlParams) {
-                url += key+'='+properties.customUrlParams[key]+'&';
+                queryString += key+'='+properties.customUrlParams[key]+'&';
             }
             if(url.endsWith('&')) {
-                url = url.slice(0, -1);
+                queryString = url.slice(0, -1);
             }
         }
-        return url;
+        return queryString;
     }
 }
 

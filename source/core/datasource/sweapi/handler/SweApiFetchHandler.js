@@ -19,9 +19,6 @@ class SensorWebApiFetchApiHandler  extends TimeSeriesDataSourceHandler {
         super(parser);
     }
 
-    initStreamFunctions() {
-    }
-
     async updateAferCreatingConnector(properties) {
         const networkProperties = {
             ...properties,

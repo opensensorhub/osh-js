@@ -18,14 +18,6 @@ import SosDataSourceHandler from "./SosDataSourceHandler";
 import {isDefined} from "../../../utils/Utils";
 
 class SosGetFoisDataSourceHandler extends SosDataSourceHandler {
-    constructor(parser) {
-        super(parser);
-    }
-
-    getQueryString(properties) {
-        return this.buildUrl(properties);
-    }
-
     /**
      * Builds the full url.
      * @protected
@@ -37,19 +29,19 @@ class SosGetFoisDataSourceHandler extends SosDataSourceHandler {
      * @param {String} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
      * @return {String} the full url
      */
-    buildUrl(properties) {
-        let url = super.buildUrl({
+    getQueryString(properties) {
+        let queryString = super.getQueryString({
             responseFormat:'application/xml',
             ...properties,
         });
         // adds request
-        url += "&request=GetFeatureOfInterest";
+        queryString += "&request=GetFeatureOfInterest";
 
         // adds foiURN if any
         if(isDefined(properties.procedureId)) {
-            url += '&procedure='+properties.procedureId;
+            queryString += '&procedure='+properties.procedureId;
         }
-        return url;
+        return queryString;
     }
 }
 

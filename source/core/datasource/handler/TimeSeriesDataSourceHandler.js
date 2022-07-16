@@ -1,68 +1,22 @@
 import {isDefined} from "../../utils/Utils.js";
 import DataSourceHandler from "./DataSourceHandler";
 import {EventType} from "../../event/EventType";
+import LiveDataSourceState from "../state/LiveDataSourceState";
+import TimeSeriesReplayDataSourceState from "../state/TimeSeriesReplayDataSourceState";
 
 class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     constructor() {
         super();
-        this.lastTimestamp = null;
         this.lastStartTime = 'now';
-        this.timeShift = 0;
         this.timeBroadcastChannel = null;
-    }
-
-    /**
-     * @protected
-     */
-    async createDataConnector(properties, connector) {
-        await super.createDataConnector({
-            ...properties,
-            timeShift: this.timeShift
-        }, connector);
-
-        let lastStartTimeCst = this.lastStartTime ;
-        if(isDefined(properties.startTime)) {
-            lastStartTimeCst = properties.startTime;
-        }
-
-        this.connector.onReconnect = () => {
-            // if not real time, preserve last timestamp to reconnect at the last time received
-            // for that, we update the URL with the new last time received
-            if (lastStartTimeCst !== 'now') {
-                this.connector.queryString = this.getQueryString({
-                    ...properties,
-                    startTime: isDefined(this.lastTimestamp) ? new Date(this.lastTimestamp).toISOString() : properties.startTime,
-                });
-            }
-            return true;
-        }
-    }
-
-    handleProperties(properties) {
-        super.handleProperties(properties);
-
-        if (isDefined(properties.timeShift)) {
-            this.timeShift = properties.timeShift;
-        }
-
-        if(properties.startTime === 'now') {
-            this.batchSize = 1;
-        } else {
-            if (isDefined(properties.replaySpeed)) {
-                if (!isDefined(properties.batchSize)) {
-                    this.batchSize = 1;
-                }
-            }
-
-            if (isDefined(properties.batchSize)) {
-                this.batchSize = properties.batchSize;
-            }
-        }
+        this.liveState = new LiveDataSourceState();
+        this.replayState = new TimeSeriesReplayDataSourceState();
     }
 
     async onMessage(event) {
         let data = await this.parseData(event);
+        let lastTimestamp;
 
         // check if data is array
         if (Array.isArray(data)) {
@@ -71,61 +25,65 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
                     data: data[i],
                     version: this.version
                 });
-                this.lastTimestamp = data[i].timestamp;
             }
+            // store only last one
+            lastTimestamp = data[data.length-1].timestamp;
         } else {
             this.values.push({
                 data: data,
                 version: this.version
             });
-            this.lastTimestamp = data.timestamp;
+            lastTimestamp = data.timestamp;
         }
 
-        if(this.lastStartTime === 'now' || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
+        this.state.setLastTimestamp(lastTimestamp);
+        if(this.state.isLive() || ((isDefined(this.batchSize) && this.values.length >= this.batchSize))) {
             this.flush();
             if(this.timeBroadcastChannel !== null) {
                 this.timeBroadcastChannel.postMessage({
-                    timestamp: this.lastTimestamp,
+                    timestamp: lastTimestamp,
                     type: EventType.TIME
                 });
             }
         }
     }
 
+    createState(connector) {
+        if(this.properties.startTime === 'now') {
+            this.state = this.liveState;
+        } else {
+            this.state = this.replayState;
+        }
+        this.initState();
+    }
+
+    initState() {
+        this.state.init(this.properties);
+        this.state.setConnector(this.connector);
+        this.onChangeStatus = this.state.onChangeStatus;
+    }
+
     getLastTimeStamp() {
-        return this.lastTimestamp;
+        return this.state.lastTimestamp;
     }
 
     async updateProperties(properties) {
         try {
+            this.properties = properties;
             await this.disconnect();
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED
             });
-
-            let lastTimestampStr;
-            console.log('ici')
-            if (properties.hasOwnProperty('startTime')) {
-                lastTimestampStr = properties.startTime;
-            } else if (this.properties.startTime === 'now') {
-                //handle RealTime
-                lastTimestampStr = 'now';
-            } else if(this.lastTimestamp) {
-                lastTimestampStr = new Date(this.lastTimestamp).toISOString();
+            // update state if switching from Replay to Live
+            if(properties.startTime === 'now') {
+                this.state = this.liveState;
             } else {
-                throw Error('Neither startTime, now or lastTimestamp are defined');
+                this.state = this.replayState;
             }
 
-            this.version++;
-
-            await this.createDataConnector({
-                ...this.properties,
-                ...properties,
-                lastTimestamp: lastTimestampStr
-            });
-
-            if (isDefined(properties) && isDefined(properties.reconnect) && properties.reconnect) {
+            this.initState();
+            if (properties && properties.reconnect) {
                 this.connect();
             }
         } catch (ex) {
