@@ -116,7 +116,7 @@ class DataSource {
         };
         return new Promise(resolve => {
             this.postMessage({
-                message: 'update-url',
+                message: 'update-properties',
                 data: properties
             }, resolve);
         });

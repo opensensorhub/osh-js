@@ -53,8 +53,10 @@ class SosGetResultDataSourceHandler extends SosDataSourceHandler {
         // adds temporalFilter
         queryString += "&temporalFilter=phenomenonTime," + startTime + "/" + endTime;
 
-        // adds replaySpeed
-        queryString += "&replaySpeed=" + replaySpeed;
+        if(replaySpeed) {
+            // adds replaySpeed
+            queryString += "&replaySpeed=" + replaySpeed;
+        }
 
         return queryString;
     }

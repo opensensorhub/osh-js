@@ -1,16 +1,15 @@
 import {isDefined} from "../../utils/Utils.js";
 import DataSourceHandler from "./DataSourceHandler";
 import {EventType} from "../../event/EventType";
-import LiveDataSourceState from "../state/LiveDataSourceState";
 import TimeSeriesReplayDataSourceState from "../state/TimeSeriesReplayDataSourceState";
+import TimeSerieLiveDataSourceState from "../state/TimeSerieLiveDataSourceState";
 
 class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     constructor() {
         super();
-        this.lastStartTime = 'now';
         this.timeBroadcastChannel = null;
-        this.liveState = new LiveDataSourceState();
+        this.liveState = new TimeSerieLiveDataSourceState();
         this.replayState = new TimeSeriesReplayDataSourceState();
     }
 
@@ -18,7 +17,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
         let data = await this.parseData(event);
         let lastTimestamp;
 
-        // check if data is array
+        // check if data is an array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
                 this.values.push({
@@ -59,8 +58,8 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     initState() {
         this.state.init(this.properties);
-        this.state.setConnector(this.connector);
-        this.onChangeStatus = this.state.onChangeStatus;
+        this.state.setConnector(this.connector, this.getQueryString.bind(this));
+        this.state.onChangeStatus = this.onChangeStatus.bind(this);
     }
 
     getLastTimeStamp() {
@@ -69,8 +68,8 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     async updateProperties(properties) {
         try {
-            this.properties = properties;
             await this.disconnect();
+            this.properties = properties;
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED

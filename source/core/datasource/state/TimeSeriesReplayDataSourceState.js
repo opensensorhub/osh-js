@@ -1,12 +1,11 @@
-import DataSourceState from "./DataSourceState";
+import TimeSeriesDataSourceState from "./TimeSeriesDataSourceState";
 
-class TimeSeriesReplayDataSourceState extends DataSourceState {
+class TimeSeriesReplayDataSourceState extends TimeSeriesDataSourceState {
     init(props) {
         super.init(props);
         this.startTime = props.startTime;
         this.endTime = props.endTime;
         this.replaySpeed = props.replaySpeed;
-        this.lastTimestamp = null;
     }
 
     setTime(startTime = this.startTime, endTime = this.endTime, replaySpeed = this.replaySpeed) {
@@ -35,12 +34,12 @@ class TimeSeriesReplayDataSourceState extends DataSourceState {
         return this.replaySpeed;
     }
 
-    setConnector(connector) {
+    setConnector(connector, queryStringFn) {
         super.setConnector(connector);
         this.connector.onReconnect = () => {
             // if not real time, preserve last timestamp to reconnect at the last time received
             // for that, we update the URL with the new last time received
-            this.connector.queryString = this.getQueryString({
+            this.connector.queryString = queryStringFn({
                 ...this.props,
                 startTime: this.getStartTime(),
                 endTime: this.getEndTime(),
@@ -51,8 +50,10 @@ class TimeSeriesReplayDataSourceState extends DataSourceState {
     }
 
     setLastTimestamp(timestamp) {
-        this.setTime(new Date(timestamp).toISOString());
-        this.lastTimestamp = timestamp;
+        if(timestamp) {
+            super.setLastTimestamp(timestamp);
+            this.setTime(new Date(timestamp).toISOString());
+        }
     }
 }
 

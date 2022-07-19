@@ -1,6 +1,6 @@
-import DataSourceState from "./DataSourceState";
+import TimeSeriesDataSourceState from "./TimeSeriesDataSourceState";
 
-class LiveDataSourceState extends DataSourceState {
+class TimeSeriesLiveDataSourceState extends TimeSeriesDataSourceState {
     getType() {
         return "LIVE";
     }
@@ -13,10 +13,14 @@ class LiveDataSourceState extends DataSourceState {
         return '2055-01-01Z';
     }
 
+    getReplaySpeed() {
+        return undefined;
+    }
+
     setConnector(connector) {
         super.setConnector(connector);
         this.connector.onReconnect = () => true;
     }
 }
 
-export default LiveDataSourceState;
+export default TimeSeriesLiveDataSourceState;

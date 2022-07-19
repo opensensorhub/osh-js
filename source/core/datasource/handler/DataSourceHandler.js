@@ -5,8 +5,6 @@ import {EventType} from "../../event/EventType.js";
 import {Status} from "../../protocol/Status";
 import HttpConnector from "../../protocol/HttpConnector";
 import MqttConnector from "../../protocol/MqttConnector";
-import TimeSeriesLiveDataSourceState from "../state/LiveDataSourceState";
-import TimeSeriesReplayDataSourceState from "../state/ReplayArchiveDataSourceState";
 import DataSourceState from "../state/DataSourceState";
 
 class DataSourceHandler {
@@ -33,13 +31,13 @@ class DataSourceHandler {
     createState(connector) {
        this.state = new DataSourceState();
        this.state.setConnector(connector);
-       this.onChangeStatus = this.state.onChangeStatus;
+       this.state.onChangeStatus = this.onChangeStatus.bind(this);
     }
 
     handleProperties(properties) {
         this.properties = {
             ...this.properties,
-            properties
+            ...properties
         };
     }
 
@@ -163,8 +161,8 @@ class DataSourceHandler {
     }
 
     updateProperties(properties) {
-        this.properties = properties;
         this.disconnect();
+        this.properties = properties;
         this.createDataConnector(properties).then(() => {
             this.version++;
             this.connect();
@@ -188,7 +186,7 @@ class DataSourceHandler {
     }
 
     isInitialized() {
-        return this.state.initialized;
+        return this.state && this.state.initialized;
     }
 
     isConnected() {
@@ -209,7 +207,7 @@ class DataSourceHandler {
             this.disconnect();
         } else if (message.message === 'topic') {
             this.setTopic(message.topic);
-        } else if (message.message === 'update-url') {
+        } else if (message.message === 'update-properties') {
             this.updateProperties(
                 {
                     ...this.properties,
