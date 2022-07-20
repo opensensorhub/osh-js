@@ -47,16 +47,16 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
         }
     }
 
-    createState(connector) {
+    async createState(connector) {
         if(this.properties.startTime === 'now') {
             this.state = this.liveState;
         } else {
             this.state = this.replayState;
         }
-        this.initState();
+        await this.updateState();
     }
 
-    initState() {
+    async updateState() {
         this.state.init(this.properties);
         this.state.setConnector(this.connector, this.getQueryString.bind(this));
         this.state.onChangeStatus = this.onChangeStatus.bind(this);
@@ -81,7 +81,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
                 this.state = this.replayState;
             }
 
-            this.initState();
+            await this.updateState();
             if (properties && properties.reconnect) {
                 this.connect();
             }

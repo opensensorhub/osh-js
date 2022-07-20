@@ -28,7 +28,7 @@ class DataSourceHandler {
         this.createDataConnector(this.properties).then((connector) => this.createState(connector));
     }
 
-    createState(connector) {
+    async createState(connector) {
        this.state = new DataSourceState();
        this.state.setConnector(connector);
        this.state.onChangeStatus = this.onChangeStatus.bind(this);
@@ -78,12 +78,8 @@ class DataSourceHandler {
 
             // connects the callback
             this.connector.onMessage = this.onMessage.bind(this);
-
-            await this.updateAferCreatingConnector(properties);
         }
     }
-
-    async updateAferCreatingConnector(properties) {}
 
     /**
      * Sets the current topic to listen
@@ -208,6 +204,7 @@ class DataSourceHandler {
         } else if (message.message === 'topic') {
             this.setTopic(message.topic);
         } else if (message.message === 'update-properties') {
+            console.log('ici')
             this.updateProperties(
                 {
                     ...this.properties,
