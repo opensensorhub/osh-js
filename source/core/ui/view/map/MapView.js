@@ -49,19 +49,19 @@ class MapView extends View {
         for(let i=0;i < values.length;i++) {
             const d = values[i];
             if(data.type === 'marker') {
-                this.updateMarker(d);
+                return this.updateMarker(d);
             } else if(data.type === 'polyline') {
-                this.updatePolyline(d);
+                return this.updatePolyline(d);
             } else if(data.type === 'drapedImage') {
-                this.updateDrapedImage(d);
+                return this.updateDrapedImage(d);
             } else if(data.type === 'ellipse') {
-                this.updateEllipse(d);
+                return this.updateEllipse(d);
             } else if (data.type === 'polygon') {
-                this.updatePolygon(d);
+                return this.updatePolygon(d);
             } else if (data.type === 'coplanarPolygon') {
-                this.updateCoPlanarPolygon(d);
+                return this.updateCoPlanarPolygon(d);
             } else if(data.type === 'frustum') {
-                this.updateFrustum(d);
+                return this.updateFrustum(d);
             }
         }
     }

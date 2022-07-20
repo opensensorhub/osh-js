@@ -195,7 +195,7 @@ class View {
      * @param {String} dataSourceId - The dataSource id of the source providing the data
      * @param {any[]} data - The data array to set
      */
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
     }
 
     /**
@@ -230,14 +230,12 @@ class View {
                     const that = this;
 
                     // transform the data
-                    layer.setData(dataSourceId, event.data.values).then(() => {
-
+                    await layer.setData(dataSourceId, event.data.values);
                         // set the transformed data to the view
-                        that.setData(dataSourceId, layer.getProps());
+                    await that.setData(dataSourceId, layer.getProps());
 
-                        // store as last record
-                        self.lastRec[dataSourceId] = event.data;
-                    });
+                    // store as last record
+                    self.lastRec[dataSourceId] = event.data;
                 }
             };
 
