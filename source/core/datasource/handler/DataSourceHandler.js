@@ -25,12 +25,11 @@ class DataSourceHandler {
         this.dataSourceId = dataSourceId;
         this.setTopic(topic);
         this.handleProperties(propertiesStr);
-        this.createDataConnector(this.properties).then((connector) => this.createState(connector));
+        this.createState().then(() => this.createDataConnector(this.properties));
     }
 
-    async createState(connector) {
+    async createState() {
        this.state = new DataSourceState();
-       this.state.setConnector(connector);
        this.state.onChangeStatus = this.onChangeStatus.bind(this);
     }
 
@@ -68,6 +67,9 @@ class DataSourceHandler {
             this.connector = connector;
         }
         await this.setUpConnector(properties);
+        this.state.setConnector(this.connector);
+        this.state.setQueryStringFn(this.getQueryString.bind(this));
+        this.state.onChangeStatus = this.onChangeStatus.bind(this);
         return this.connector;
     }
 
@@ -204,7 +206,6 @@ class DataSourceHandler {
         } else if (message.message === 'topic') {
             this.setTopic(message.topic);
         } else if (message.message === 'update-properties') {
-            console.log('ici')
             this.updateProperties(
                 {
                     ...this.properties,

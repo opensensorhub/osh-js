@@ -4,7 +4,7 @@ class DataSourceState {
     constructor() {
         this.connector = undefined;
         this.initialized = false;
-        this.status = Status.CONNECTED;
+        this.status = Status.DISCONNECTED;
     }
 
     init(props) {
@@ -22,6 +22,8 @@ class DataSourceState {
     }
 
     onChangeStatus(status) {}
+
+    setQueryStringFn(queryStringFn) {}
 
     isReplay() {
         return this.getType() === 'REPLAY';

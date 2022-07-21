@@ -47,7 +47,7 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
         }
     }
 
-    async createState(connector) {
+    async createState() {
         if(this.properties.startTime === 'now') {
             this.state = this.liveState;
         } else {
@@ -58,8 +58,6 @@ class TimeSeriesDataSourceHandler extends DataSourceHandler {
 
     async updateState() {
         this.state.init(this.properties);
-        this.state.setConnector(this.connector, this.getQueryString.bind(this));
-        this.state.onChangeStatus = this.onChangeStatus.bind(this);
     }
 
     getLastTimeStamp() {
