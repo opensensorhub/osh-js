@@ -74,20 +74,25 @@ class View {
     init(properties) {
 
         this.properties = properties;
+        let currentDoc = isDefined(properties.parentDoc) ? properties.parentDoc : document;
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
         this.elementDiv.setAttribute("class", this.css+" osh-view");
         this.divId = this.id;
 
-        let parentDivId = (isDefined(properties.container)? properties.container : document.body);
+        // let parentDivId = (isDefined(properties.container)? properties.container : document.body);
+        let parentDivId = (isDefined(properties.container)? properties.container : currentDoc.body);
         let destroyAfterMutation = (isDefined(properties.destroyAfterMutation)? properties.destroyAfterMutation : true);
 
-        let div = document.getElementById(parentDivId);
+        // let div = document.getElementById(parentDivId);
+        let div = currentDoc.getElementById(parentDivId);
 
         if (!isDefined(div) || div === null) {
-            document.body.appendChild(this.elementDiv);
+            // document.body.appendChild(this.elementDiv);
+            currentDoc.body.appendChild(this.elementDiv);
             this.hide();
-            this.container = document.body;
+            // this.container = document.body;
+            this.container = currentDoc.body;
         } else {
             div.appendChild(this.elementDiv);
             this.container = div;
@@ -103,7 +108,8 @@ class View {
             }
 
             if (isDefined(properties.visible)) {
-                document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
+                // document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
+                currentDoc.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
             }
 
         }
@@ -125,12 +131,16 @@ class View {
         if(destroyAfterMutation) {
             const rootObserver = new MutationObserver(function (mutations) {
                 // try to get the div element by the id to check if it is still owned by the document object
-                if (!isDefined(document.getElementById(that.divId))) {
+                // if(!isDefined(document.getElementById(that.divId))){
+                if(!isDefined(currentDoc.getElementById(that.divId))){
                     this.disconnect();
                     that.destroy();
                 }
             });
-            rootObserver.observe(document.body, {
+            // rootObserver.observe(document.body, {
+            //     childList: true,
+            // });
+            rootObserver.observe(currentDoc.body, {
                 childList: true,
             });
         }
@@ -234,7 +244,7 @@ class View {
         let ds = layer.getDataSourcesIds();
         for (let i = 0; i < ds.length; i++) {
             const dataSourceId = ds[i];
-           // this.setData(dataSourceId, [layer.getProps()]);
+            // this.setData(dataSourceId, [layer.getProps()]);
             // observes the data come in
             let self = this;
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
