@@ -92,11 +92,15 @@ class VideoView extends View {
     }
 
     reset() {
-        this.videoView.reset();
+        if(isDefined(this.videoView)) {
+            this.videoView.reset();
+        }
     }
 
     destroy() {
-        this.videoView.destroy();
+        if (this.videoView) {
+            this.videoView.destroy();
+        }
     }
 }
 
