@@ -16,7 +16,7 @@
 
 import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATASOURCE_DATA_TOPIC} from "../Constants";
-import {Status} from "../protocol/Status";
+import {Status} from "../connector/Status";
 
 /**
  * The DataSource is the abstract class used to create different datasources.

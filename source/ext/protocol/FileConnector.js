@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataConnector from "../../core/protocol/DataConnector";
-import {Status} from "../../core/protocol/Status";
+import DataConnector from "../../core/connector/DataConnector";
+import {Status} from "../../core/connector/Status";
 
 /**
  * Defines the FileConnector to read a File content

@@ -1,10 +1,10 @@
-import WebSocketConnector from "../../protocol/WebSocketConnector.js";
+import WebSocketConnector from "../../connector/WebSocketConnector.js";
 import {isDefined, randomUUID} from "../../utils/Utils.js";
-import TopicConnector from "../../protocol/TopicConnector.js";
+import TopicConnector from "../../connector/TopicConnector.js";
 import {EventType} from "../../event/EventType.js";
-import {Status} from "../../protocol/Status";
-import HttpConnector from "../../protocol/HttpConnector";
-import MqttConnector from "../../protocol/MqttConnector";
+import {Status} from "../../connector/Status";
+import HttpConnector from "../../connector/HttpConnector";
+import MqttConnector from "../../connector/MqttConnector";
 import DataSourceState from "../state/DataSourceState";
 
 class DataSourceHandler {

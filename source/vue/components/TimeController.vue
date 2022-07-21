@@ -70,7 +70,7 @@
 import RangeSlider from '../../ext/ui/view/rangeslider/RangeSliderView.js';
 import {randomUUID} from '../../core/utils/Utils.js';
 import {isDefined} from '../../core/utils/Utils';
-import {Status as STATUS} from "../../core/protocol/Status";
+import {Status as STATUS} from "../../core/connector/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {EventType} from "../../core/event/EventType";
 

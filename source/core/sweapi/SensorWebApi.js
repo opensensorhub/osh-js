@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import WebSocketConnector from "../protocol/WebSocketConnector";
+import WebSocketConnector from "../connector/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
-import MqttConnector from "../protocol/MqttConnector";
+import MqttConnector from "../connector/MqttConnector";
 
 class SensorWebApi {
 

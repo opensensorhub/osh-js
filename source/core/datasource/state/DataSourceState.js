@@ -1,4 +1,4 @@
-import {Status} from "../../protocol/Status";
+import {Status} from "../../connector/Status";
 
 class DataSourceState {
     constructor() {

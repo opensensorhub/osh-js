@@ -1,10 +1,10 @@
 export const VERSION = '2.2.0';
-export { default as  Ajax } from './protocol/Ajax.js';
-export { default as  DataConnector } from './protocol/DataConnector.js';
-export { default as  Status } from './protocol/Status.js';
-export { default as  TopicConnector } from './protocol/TopicConnector.js';
-export { default as  WebSocketConnector } from './protocol/WebSocketConnector.js';
-export { default as  MqttConnector } from './protocol/MqttConnector.js';
+export { default as  Ajax } from './connector/Ajax.js';
+export { default as  DataConnector } from './connector/DataConnector.js';
+export { default as  Status } from './connector/Status.js';
+export { default as  TopicConnector } from './connector/TopicConnector.js';
+export { default as  WebSocketConnector } from './connector/WebSocketConnector.js';
+export { default as  MqttConnector } from './connector/MqttConnector.js';
 export { default as  DataSynchronizer } from './timesync/DataSynchronizer.js';
 export { default as  DataSource } from './datasource/DataSource.js';
 export { default as  SosGetResult } from './datasource/sos/SosGetResult.js';
