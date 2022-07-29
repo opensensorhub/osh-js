@@ -68,13 +68,15 @@ import {
     GroundPolylinePrimitive,
     PolylineGeometry,
     PolylineColorAppearance,
-    LabelStyle
+    LabelStyle,
+    EllipsoidGeometry
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import MapView from "./MapView";
+import { OrientationMode } from "../../layer/FrustumLayer";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
@@ -1051,14 +1053,24 @@ class CesiumView extends MapView {
         });
 
         if (!isDefined(existingDrapedImagePrimitive) || snapshot) {
-            const updatedPositions = await sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
+            // To guarantee that we have some geometry on the location of the image,
+            // we use an ellipsoid geometry for the entire earth, all the way up to
+            // the top of the Himalayas. Even though this feels pretty inefficient,
+            // it's fast enough for our usage. We may want to revisit this later and
+            // use a more carefully constructed geometry to optimize the case where
+            // the visible pixels of the draped image are much less than the entire
+            // viewport.
+            const extraHeight = 9000;
+            const ellipsoidGeometry = new EllipsoidGeometry({
+                radii: new Cartesian3(
+                    Ellipsoid.WGS84.radii.x + extraHeight,
+                    Ellipsoid.WGS84.radii.y + extraHeight,
+                    Ellipsoid.WGS84.radii.z + extraHeight
+                )
+            });
             const imageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
                 geometryInstances: new GeometryInstance({
-                    geometry: new RectangleGeometry({
-                        rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
-                        height: updatedPositions[0].height,
-                        extrudedHeight: llaPos.z - 1
-                    })
+                    geometry: ellipsoidGeometry
                 }),
                 appearance: appearance,
                 show: props.visible
@@ -1095,26 +1107,34 @@ class CesiumView extends MapView {
         // bind the object to the callback property
         const id = properties.id + "$" + properties.frustumId;
 
-        // NED rotation
-        const origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
-        Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
-
-        // platform attitude w/r NED
-        // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
-        const platformHPR = properties.platformOrientation;
-        HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
-        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
-
-        // sensor orientation w/r platform
-        const sensorYPR = properties.sensorOrientation;
-        HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
-        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
-
-        // compute combined transform
-        // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
-        Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
-        Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
-        const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+        // Compute the geometry and orientation. This depends on the orientation
+        // mode specified to the FrustumLayer constructor.
+        let origin, quat, fov;
+        switch (this.properties.orientationMode) {
+            case OrientationMode.LONLATALT_EULER_ANGLES:    
+                origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
+                Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
+        
+                // platform attitude w/r NED
+                // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
+                const platformHPR = properties.platformOrientation;
+                HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
+                Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
+        
+                // sensor orientation w/r platform
+                const sensorYPR = properties.sensorOrientation;
+                HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
+                Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
+        
+                // compute combined transform
+                // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
+                Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
+                Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
+                const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+                break;
+            default:
+                return;
+        }
 
         const frustum = new PerspectiveFrustum({
             fov : Math.toRadians(properties.fov),

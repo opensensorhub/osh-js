@@ -1,7 +1,37 @@
 import Layer from "../../../../source/core/ui/layer/Layer";
 import {isDefined, randomUUID} from "../../../../source/core/utils/Utils";
 
-class frustumLayer extends Layer {
+/**
+ * Enumeration of orientation modes that indicate how the frustum's location and
+ * orientation are provided by the layer.
+ */
+const OrientationMode = Object.freeze({
+    /**
+     * Constant indicating that the position provided to the frustum layer is
+     * in the form of a latitude (in degrees), longitude (in degrees), and
+     * altitude above ellipsoid (in meters). This also indicates that platform
+     * orientation is provided as heading, pitch, and roll, in degrees; and
+     * sensor orientation is provided as yaw, pitch, and roll, in degrees.
+     */
+    LONLATALT_EULER_ANGLES: 1,
+
+    /**
+     * Constant indicating that the position provided to the frustum layer is
+     * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+     * the platform and sensor orientations are provided as 3x3 rotation
+     * matrices.
+     */
+    ECEF_MATRICES: 2,
+
+    /**
+     * Constant indicating that the position provided to the frustum layer is
+     * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+     * the platform and sensor orientations are provided as quaternions.
+     */
+    ECEF_QUATERNIONS: 3,
+});
+
+class FrustumLayer extends Layer {
     /**
      */
     constructor(properties) {
@@ -18,6 +48,9 @@ class frustumLayer extends Layer {
         this.range = null;
         this.platformOrientation = {heading: 0.0, pitch: 0.0, roll: 0.0};
         this.sensorOrientation = {yaw: 0.0, pitch: 0.0, roll: 0.0};
+        // Make sure there's a valid orientation mode set on this.properties
+        // by defaulting to LONLATALT_EULER_ANGLES.
+        this.properties.orientationMode = this.properties.orientationMode || OrientationMode.LONLATALT_EULER_ANGLES;
 
         const that = this;
 
@@ -75,4 +108,5 @@ class frustumLayer extends Layer {
     }
 }
 
-export default  frustumLayer;
+export default FrustumLayer;
+export { OrientationMode };
