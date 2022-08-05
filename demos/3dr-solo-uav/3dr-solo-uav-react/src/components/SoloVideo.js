@@ -1,7 +1,7 @@
 import * as React from "react";
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
-import SosGetResult from "osh/core/datasource/sos/SosGetResult.js";
+import SosGetResult from "osh/core/datasource/sos/SosGetResult.datasource.js";
 import FFMPEGView from "osh/core/ui/view/video/FFMPEGView.js";
 import DataLayer from "osh/core/ui/layer/DataLayer.js";
 import VideoDataLayer from "osh/core/ui/layer/VideoDataLayer";

@@ -77,11 +77,6 @@ var samples = [{
         url: "mapbox-location-path-heading"
     },
     {
-        name: "Range slider (noUiSlider)",
-        description: "Display a time bar to change dynamically the time period.",
-        url: "range-slider"
-    },
-    {
         name: "Moving Location + Heading + Video (Leaflet)",
         description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
             "video. Create duplicated dataSources running at different time to check there is no collision between data",

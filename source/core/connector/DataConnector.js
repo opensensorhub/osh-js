@@ -118,6 +118,8 @@ class DataConnector {
     publishRequest() {}
 
     reset() {}
+
+    close() {}
 }
 
 export default DataConnector;

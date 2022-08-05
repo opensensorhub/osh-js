@@ -24,7 +24,7 @@ class DataSynchronizer {
      * @param {Object} properties - the property of the object
      * @param {Number} [properties.replaySpeed=1] - replaySpeed value
      * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
-     * @param {DataSource[]} properties.dataSources - the dataSource array
+     * @param {DataSourceDatasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
         this.bufferingTime = 1000; // default
@@ -81,7 +81,7 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return this.dataSources[0].currentRunningProperties.startTime;
+        return this.dataSources[0].properties.startTime;
     }
 
     /**
@@ -92,7 +92,7 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return this.dataSources[0].currentRunningProperties.endTime;
+        return this.dataSources[0].properties.endTime;
     }
 
     /**
@@ -165,8 +165,10 @@ class DataSynchronizer {
                     dataSources: dataSourcesForWorker,
                     replaySpeed: this.replaySpeed,
                     timerResolution: this.timerResolution,
-                    dataTopic: this.getTopicId(),
-                    timeTopic: this.getTimeTopicId()
+                    topics:  {
+                        data: this.getTopicId(),
+                        time: this.getTimeTopicId()
+                    }
                 }, function (){
                     this.initEventSubscription();
                     this.initialized = true;
@@ -204,7 +206,7 @@ class DataSynchronizer {
      /**
      * Adds a new DataSource object to the list of datasources to synchronize.
      * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
-     * @param {DataSource} dataSource - the new datasource to add
+     * @param {DataSourceDatasource} dataSource - the new datasource to add
      *
      */
     async addDataSource(dataSource) {

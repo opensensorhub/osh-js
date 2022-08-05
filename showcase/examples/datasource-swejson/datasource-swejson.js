@@ -1,6 +1,6 @@
 // create data source for Android phone GPS
 // #region snippet_datasource_swejson
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import {EventType} from 'osh-js/core/event/EventType';
 
 const platformLocationDataSource = new SosGetResult('android-GPS', {

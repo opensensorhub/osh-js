@@ -1,10 +1,10 @@
 import {EventType} from 'osh-js/core/event/EventType';
 // #region snippet_datasource_sweapifetch
-import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
+import SweApiFetch from "osh-js/core/datasource/sweapi/SweApi.datasource.js";
 
 let gpsDataSource = new SweApiFetch("android-GPS", {
   endpointUrl:  'ogct17.georobotix.io:8080/sensorhub/api',
-  collection: '/datastreams/gal7w6j6v7n9/observations',
+  resource: '/datastreams/gal7w6j6v7n9/observations',
   tls: false,
   protocol: 'mqtt',
   mqttOpts: {

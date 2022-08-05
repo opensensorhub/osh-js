@@ -148,7 +148,7 @@ class DataSynchronizerAlgo {
 
     /**
      * Add dataSource to be synchronized
-     * @param {DataSource} dataSource - the dataSource to synchronize
+     * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
      */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {

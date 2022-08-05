@@ -18,7 +18,7 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudioRaw from 'osh-js/core/datasource/sos/SosGetResultAudioRaw.js';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
@@ -36,7 +36,7 @@
         beforeMount() {
         },
       mounted() {
-        let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
+        let audioDataSource = new SosGetResult("silent-echo-test-audio", {
           protocol: "ws",
           service: "SOS",
           // endpointUrl: "localhost:8989/sensorhub/sos",

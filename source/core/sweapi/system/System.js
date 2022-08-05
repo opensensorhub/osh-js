@@ -17,17 +17,17 @@
 import SystemFilter from "./SystemFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SweApiFetchSystemParser from "../../datasource/sweapi/parser/collection/SweApiFetchSystem.parser";
 import DataStreamFilter from "../datastream/DataStreamFilter";
-import SweApiDataStreamParser from "../../datasource/sweapi/parser/collection/SweApiDataStream.parser";
 import FeatureOfInterestFilter from "../featureofinterest/FeatureOfInterestFilter";
-import SweApiFetchFeatureOfInterestParser  from "../../datasource/sweapi/parser/collection/SweApiFetchFeatureOfInterest.parser";
 import API from "../routes.conf";
 import ControlFilter from "../control/ControlFilter";
-import SweApiFetchControlParser from "../../datasource/sweapi/parser/collection/SweApiFetchControl.parser";
 import EventFilter from "../event/EventFilter";
 import SystemHistoryFilter from "../history/SystemHistoryFilter";
-import SweApiFetchEventParser from "../../datasource/sweapi/parser/collection/SweApiFetchEvent.parser";
+import SweApiFetchSystemParser from "../../parsers/sweapi/collection/SweApiFetchSystem.parser";
+import SweApiDataStreamParser from "../../parsers/sweapi/collection/SweApiDataStream.parser";
+import SweApiFetchFeatureOfInterestParser from "../../parsers/sweapi/collection/SweApiFetchFeatureOfInterest.parser";
+import SweApiFetchEventParser from "../../parsers/sweapi/collection/SweApiFetchEvent.parser";
+import SweApiFetchControlParser from "../../parsers/sweapi/collection/SweApiFetchControl.parser";
 
 class System extends SensorWebApi {
     /**

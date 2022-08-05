@@ -25,8 +25,8 @@ self.onmessage = (event) => {
         dataSynchronizerAlgo.onData = onData;
         init = true;
         addDataSources(event.data.dataSources);
-        topicData = event.data.dataTopic;
-        topicTime = event.data.timeTopic;
+        topicData = event.data.topics.data;
+        topicTime = event.data.topics.time;
         initBroadcastChannel(topicData, topicTime);
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);

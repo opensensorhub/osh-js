@@ -57,9 +57,9 @@ import InfoPanel from "./components/InfoPanel.vue";
 import Clock from "./components/Clock.vue";
 import TimeLine from "./components/TimeLine.vue";
 
-import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
 import Systems from "osh-js/core/sweapi/system/Systems";
-import Control from "../../../source/core/sweapi/control/Control";
+import Control from "osh-js/core/sweapi/control/Control";
+import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
@@ -86,9 +86,9 @@ export default {
       endpointUrl: 'ogct17.georobotix.io:8483'
     };
 
-    this.droneLocationDataSource = new SweApiFetch("supersonic drone GPS", {
+    this.droneLocationDataSource = new SweApiDatasource("supersonic drone GPS", {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      collection: `/api/datastreams/${posDsId}/observations`,
+      resource: `/api/datastreams/${posDsId}/observations`,
       protocol: 'mqtt',
       mqttOpts: mqttProps,
       tls: true,
@@ -113,9 +113,9 @@ export default {
 
     // https://ogct17.georobotix.io:8443/sensorhub/api/systems/1ghd3h0dea3xy/controls/1rl2xoslsdldj/commands
 
-    this.controlDataSource = new SweApiFetch("Control Status", {
+    this.controlDataSource = new SweApiDatasource("Control Status", {
       endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      collection: `/api/systems/${systemId}/controls/${cmdStreamId}/status`,
+      resource: `/api/systems/${systemId}/controls/${cmdStreamId}/status`,
       protocol: 'mqtt',
       mqttOpts: mqttProps,
       tls: true,

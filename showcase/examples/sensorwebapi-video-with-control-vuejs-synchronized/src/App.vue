@@ -19,7 +19,7 @@
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApiFetch.js';
+import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApi.datasource.js';
 
 export default {
   components: {

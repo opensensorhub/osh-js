@@ -18,8 +18,8 @@ import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import API from "../routes.conf";
 import CommandFilter from "./CommandFilter";
-import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
-import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
+import SweCollectionDataParser from "../../parsers/sweapi/collection/SweCollectionDataParser";
+import SweApiResultControlParser from "../../parsers/sweapi/observations/SweApiResult.control.parser";
 
 class Command extends SensorWebApi {
     /**

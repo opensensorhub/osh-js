@@ -1,4 +1,4 @@
-import SosGetResultAudioRaw from "osh-js/core/datasource/sos/SosGetResultAudioRaw";
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import AudioView from "osh-js/core/ui/view/audio/AudioView";
 import AudioFrequencyCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer";
 import AudioTimeCanvasVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer";
@@ -6,7 +6,7 @@ import AudioFrequencyChartJsVisualizer from "osh-js/core/ui/view/audio/visualize
 import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
 import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
 
-let audioDataSource = new SosGetResultAudioRaw("silent-echo-test-audio", {
+let audioDataSource = new SosGetResult("silent-echo-test-audio", {
     protocol: "ws",
     service: "SOS",
     //endpointUrl: "localhost:8989/sensorhub/sos",

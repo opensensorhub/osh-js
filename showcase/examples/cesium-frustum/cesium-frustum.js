@@ -2,7 +2,7 @@ import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import FrustumLayer from "osh-js/core/ui/layer/FrustumLayer";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
 import {Cartesian3, Ion} from "cesium";
-import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';

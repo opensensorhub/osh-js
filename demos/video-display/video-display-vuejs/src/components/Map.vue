@@ -7,7 +7,7 @@
 <script>
     // @ is an alias to /src
 import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
-import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.js";
+import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.datasource.js";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
 
 export default {

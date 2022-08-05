@@ -46,10 +46,10 @@ import CollapseTimeController from "./components/CollapseTimeController.vue";
 
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {EventType} from "osh-js/core/event/EventType";
-import {Status} from "osh-js/core/protocol/Status";
+import {Status} from "osh-js/core/connector/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
-import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
+import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -94,54 +94,54 @@ export default {
       bufferingTime: bufferingTime,
     };
 
-    const droneVideoDataSource = new SweApiFetch('MISB Drone - Video', {
+    const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/uxzna8pldpiv/observations',
+      resource: '/datastreams/uxzna8pldpiv/observations',
       responseFormat: 'application/swe+binary',
     });
 
     /*Not working, waiting for the correct sign to pass instead of swe+binary into MQTT protocol
     */
 
-    const droneLocationDataSource = new SweApiFetch('MISB UAS - Platform Location', {
+    const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/gal7w6j6v7n9/observations',
+      resource: '/datastreams/gal7w6j6v7n9/observations',
       responseFormat: 'application/swe+json',
     });
 
-    const droneOrientationDataSource = new SweApiFetch('MISB UAS - Platform Attitude', {
+    const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/ei5nsp8guy5y/observations',
+      resource: '/datastreams/ei5nsp8guy5y/observations',
       responseFormat: 'application/om+json',
     });
 
-    const droneCameraOrientationDataSource = new SweApiFetch('MISB UAS - Gimbal Attitude', {
+    const droneCameraOrientationDataSource = new SweApiDatasource('MISB UAS - Gimbal Attitude', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/7rsjo1e6pq45/observations',
+      resource: '/datastreams/7rsjo1e6pq45/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const droneHFovDataSource = new SweApiFetch('MISB UAS - Horizontal FoV', {
+    const droneHFovDataSource = new SweApiDatasource('MISB UAS - Horizontal FoV', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/1fle3d5b29shh/observations',
+      resource: '/datastreams/1fle3d5b29shh/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const droneVFovDataSource = new SweApiFetch('MISB UAS - Vertical FoV', {
+    const droneVFovDataSource = new SweApiDatasource('MISB UAS - Vertical FoV', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/1fle3d5b29shh/observations',
+      resource: '/datastreams/1fle3d5b29shh/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const geoRefImageFrameDataSource = new SweApiFetch('MISB UAS - GeoReferenced Image Frame', {
+    const geoRefImageFrameDataSource = new SweApiDatasource('MISB UAS - GeoReferenced Image Frame', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/1b6j89nistu9h/observations',
+      resource: '/datastreams/1b6j89nistu9h/observations',
       responseFormat: 'application/swe+csv',
     });
 
-    const targetLocationDataSource = new SweApiFetch('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
+    const targetLocationDataSource = new SweApiDatasource('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/tmi5mitvl8c7/observations',
+      resource: '/datastreams/tmi5mitvl8c7/observations',
       responseFormat: 'application/swe+binary',
     });
 

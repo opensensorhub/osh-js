@@ -7,7 +7,7 @@ import AudioFrequencyChartJsVisualizer
 import AudioTimeChartJsVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer';
 import AudioSpectrogramVisualizer from 'osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer';
 // #region snippet_audio_datasource
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
 
 let audioDataSource = new SosGetResult("alex-audio", {

@@ -1,4 +1,4 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 

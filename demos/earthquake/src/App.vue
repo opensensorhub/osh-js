@@ -19,7 +19,7 @@
 import './assets/app.css';
 import Map from './components/MapColumn.vue';
 import TimeRangeSlider from './components/TimeRangeSlider';
-import File from 'osh-js/ext/datasource/File';
+import File from 'osh-js/ext/datasource/file/File.datasource';
 import {EventType} from "../../../source/core/event/EventType";
 import {Status} from "../../../source/core/connector/Status";
 

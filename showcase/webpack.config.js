@@ -24,7 +24,16 @@ let common = {
         }, {
             test: /\.css$/i,
             use: ['style-loader', 'css-loader'],
-        }]
+        },
+        {
+            test: /\.js$/,
+            loader: 'esbuild-loader',
+            options: {
+                loader: 'js',  // Remove this if you're not using JSX
+                target: 'es2015'  // Syntax to compile to (see options below for possible values)
+            }
+        }
+        ]
     },
     node: {
         // Resolve node module use of fs
@@ -79,7 +88,6 @@ let directories = [
     'openlayers-location-heading',
     'mapbox-location-path-heading',
     'zIndex-location-path',
-    'range-slider',
     'video-h264',
     'video-h264-draping',
     'video-h264-webcodec-api',

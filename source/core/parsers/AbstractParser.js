@@ -1,4 +1,4 @@
-import {isDefined} from "../../utils/Utils";
+import {isDefined} from "../utils/Utils";
 
 export default class AbstractParser {
     constructor() {

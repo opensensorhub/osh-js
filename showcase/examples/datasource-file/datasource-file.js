@@ -1,4 +1,4 @@
-import File from 'osh-js/ext/datasource/File';
+import File from 'osh-js/ext/datasource/file/File.datasource';
 import {EventType} from 'osh-js/core/event/EventType';
 
 

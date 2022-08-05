@@ -76,7 +76,7 @@ export { default as  Collection } from './sweapi/Collection.js';
 export { default as  ObservationsCollection } from './sweapi/ObservationsCollection.js';
 export { default as  SensorWebApi } from './sweapi/SensorWebApi.js';
 export { default as  File } from '../ext/datasource/File.js';
-export { default as  FileConnector } from '../ext/protocol/FileConnector.js';
+export { default as  FileConnector } from '../ext/connector/FileConnector.js';
 
 export * from './Constants.js';
 export * from './utils/Utils.js';

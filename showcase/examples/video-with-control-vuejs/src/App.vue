@@ -12,7 +12,7 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource';
     import VideoView from 'osh-js/core/ui/view/video/VideoView';
     import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 

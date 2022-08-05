@@ -26,10 +26,9 @@
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
-    import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
     import AudioDataLayer from "osh-js/core/ui/layer/AudioDataLayer";
     import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
-    import {EventType} from "../../../../source/core/event/EventType";
 
     export default {
         components: {

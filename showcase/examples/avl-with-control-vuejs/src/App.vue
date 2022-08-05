@@ -23,7 +23,7 @@
 
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';

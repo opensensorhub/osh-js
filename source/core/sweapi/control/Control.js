@@ -18,13 +18,13 @@ import SensorWebApi from "../SensorWebApi";
 import CommandFilter from "../command/CommandFilter";
 import Collection from "../Collection";
 import API from "../routes.conf";
-import SweApiFetchCommandParser from "../../datasource/sweapi/parser/collection/SweApiFetchCommand.parser";
 import ControlFilter from "./ControlFilter";
-import SweApiResultControlParser from "../../datasource/sweapi/parser/observations/SweApiResult.control.parser";
-import SweApiResultCollectionControlParser
-    from "../../datasource/sweapi/parser/observations/SweApiResult.collection.control.parser";
 import ObservationsCollection from "../ObservationsCollection";
-import SweApiControlStatusParser from "../../datasource/sweapi/parser/collection/SweApiControlStatus.parser";
+import SweApiFetchCommandParser from "../../parsers/sweapi/collection/SweApiFetchCommand.parser";
+import SweApiResultCollectionControlParser
+    from "../../parsers/sweapi/observations/SweApiResult.collection.control.parser";
+import SweApiResultControlParser from "../../parsers/sweapi/observations/SweApiResult.control.parser";
+import SweApiControlStatusParser from "../../parsers/sweapi/collection/SweApiControlStatus.parser";
 
 class Control extends SensorWebApi {
     /**

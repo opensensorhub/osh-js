@@ -1,6 +1,6 @@
 // create data source for Android phone GPS
 // #region snippet_datasource_audio
-import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import {EventType} from "osh-js/core/event/EventType";
 
 let audioDataSource = new SosGetResult("alex-audio", {
