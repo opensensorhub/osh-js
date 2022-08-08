@@ -138,6 +138,44 @@ class Layer {
     }
 
     /**
+     * Set up a property whose value will automatically update when a data
+     * source receives new observations. This will also handle values that are
+     * specified with constants in the constructor.
+     *
+     * @param {string} propName Name of the property, e.g. "color". If a value
+     *   of this property exists in "this.properties", then it will be set into
+     *   this.props. Whether or not that property is found, it will also look
+     *   for a getter for the property (named using JavaBeans standards, e.g.
+     *   "getColor") and register it to be invoked when the data sources change.
+     * @param {any} defaultValue A value to use if nothing is provided in the
+     *   properties passed to the constructor.
+     */
+    initDynamicProp(propName, defaultValue) {
+        if (this.properties.hasOwnProperty(propName)) {
+            // If there is a value specified in the properties, get it and set
+            // it into props. (It might get overwritten by the getter later.)
+            this.props[propName] = this.properties[propName];
+        } else if (defaultValue !== undefined) {
+            // If there is not a value specified in the properties, and the
+            // caller provided a default value, then put that default into
+            // props. (It might get overwritte by the getter later.)
+            this.props[propName] = defaultValue;
+        }
+        // Calculate the getter name
+        const getterName = "get" + propName.substring(0,1).toUpperCase() + propName.substring(1);
+        // See if a getter is provided.
+        const getterProperty = this.properties[getterName];
+        if (getterProperty) {
+            // The getter could be a function, or it could be an object with a
+            // "handler" function.
+            const getterFunc = getterProperty.handler || getterProperty;
+            // The getter might be asynchronous, so wrap it in "await".
+            const assignerFunc = async (rec) => { this.props[propName] = await getterFunc(rec); };
+            this.addFn(this.getDataSourcesIdsByProperty(getterName), assignerFunc);
+        }
+    }
+
+    /**
      * @private
      */
     initEvents() {
