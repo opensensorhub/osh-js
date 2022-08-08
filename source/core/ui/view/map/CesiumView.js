@@ -76,7 +76,7 @@ import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import MapView from "./MapView";
-import { OrientationMode } from "../../layer/FrustumLayer";
+import { FrustumPositionMode } from "../../layer/FrustumLayer";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
@@ -1107,11 +1107,11 @@ class CesiumView extends MapView {
         // bind the object to the callback property
         const id = properties.id + "$" + properties.frustumId;
 
-        // Compute the geometry and orientation. This depends on the orientation
+        // Compute the geometry and orientation. This depends on the position
         // mode specified to the FrustumLayer constructor.
-        let origin, quat, fov;
-        switch (this.properties.orientationMode) {
-            case OrientationMode.LONLATALT_EULER_ANGLES:    
+        let origin, quat;
+        switch (properties.positionMode) {
+            case FrustumPositionMode.LONLATALT_EULER_ANGLES:    
                 origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
                 Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
         
@@ -1130,17 +1130,34 @@ class CesiumView extends MapView {
                 // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
                 Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
                 Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
-                const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+                quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
                 break;
+
+            case FrustumPositionMode.ECEF_MATRICES:
+                origin = properties.origin;
+                Quaternion.fromRotationMatrix(properties.platformOrientation, this.platformQuat);
+                Quaternion.fromRotationMatrix(properties.sensorOrientation, this.sensorQuat);
+                quat = Quaternion.multiply(this.platformQuat, this.sensorQuat, new Quaternion());
+                break;
+
+            case FrustumPositionMode.ECEF_QUATERNIONS:
+                origin = properties.origin;
+                this.platformQuat = properties.platformOrientation;
+                this.sensorQuat = properties.sensorOrientation;
+                quat = Quaternion.multiply(this.platformQuat, this.sensorQuat, new Quaternion());
+                break;
+
             default:
                 return;
         }
 
         const frustum = new PerspectiveFrustum({
             fov : Math.toRadians(properties.fov),
-            aspectRatio : 4 / 3,
-            near : 1.0,
-            far : properties.range
+            aspectRatio : properties.aspectRatio,
+            near : properties.rangeNear,
+            far : properties.range,
+            xOffset: -2e9,
+            yOffset: 1e9,
         });
 
         const frustumInstance = new GeometryInstance({
