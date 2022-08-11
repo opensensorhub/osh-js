@@ -14,21 +14,106 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import RealTimeDataSourceState from "../state/RealTime.state";
-import ReplayState from "../state/Replay.state";
 import {EventType} from "../../event/EventType";
 import {isDefined} from "../../utils/Utils";
 import WebSocketConnector from "../../connector/WebSocketConnector";
 import MqttConnector from "../../connector/MqttConnector";
 import DataSourceHandler from "./DataSource.handler";
+import HttpConnector from "../../connector/HttpConnector";
+
+class DelegateHandler {
+    constructor(context) {
+        this.context = context;
+        this.connector = undefined;
+    }
+
+    init(properties) {
+        this.connector = this.createDataConnector(properties);
+    }
+
+    createDataConnector(properties) {
+        throw Error('should be overridden');
+    }
+
+    handleData(data){}
+}
+
+class DelegateRealTimeHandler extends DelegateHandler {
+
+    createDataConnector(properties) {
+        const tls = (properties.tls) ? 's' : '';
+        const url = properties.protocol + tls + '://' + properties.endpointUrl;
+        let connector;
+
+        // if we switch of protocol
+        if (properties.protocol === 'ws') {
+            connector = new WebSocketConnector(url, properties);
+        } else if(properties.protocol === 'mqtt') {
+            const tls = (properties.tls) ? 's' : '';
+            const url = properties.protocol + tls + '://' + properties.mqttOpts.endpointUrl;
+            connector =  new MqttConnector(url, properties);
+        } else {
+            throw Error(`Unsupported connector ${properties.protocol}`);
+        }
+        return connector;
+    }
+
+    onMessage(message, format) {
+        this.parseData(message).then(data => this.handleData(data,format));
+    }
+}
+
+class ReplayDelegateHandler extends DelegateHandler  {
+    constructor(context) {
+        super(context);
+        this.interval = undefined;
+    }
+
+    createDataConnector(properties) {
+        const tls = (properties.tls) ? 's' : '';
+        const url = properties.protocol + tls + '://' + properties.endpointUrl;
+        return new HttpConnector(url, properties);
+    }
+
+    connect() {
+        if(!isDefined(this.interval)) {
+
+        } // otherwise skip, the loop is already running
+    }
+}
 
 class TimeSeriesHandler extends DataSourceHandler {
 
     constructor(context) {
         super(context);
         this.timeBroadcastChannel = null;
-        this.realTimeState = new RealTimeDataSourceState();
-        this.replayState = new ReplayState();
+        this.delegateReplayHandler = null;
+        this.delegateRealTimeHandler = null;
+        this.delegateHandler = undefined;
+    }
+
+    init(properties, topics, dataSourceId) {
+        this.updateDelegateHandler(properties);
+        super.init(properties, topics, dataSourceId);
+    }
+
+    updateDelegateHandler(properties) {
+        if(properties.startTime === 'now') {
+            if(!isDefined(this.delegateRealTimeHandler)) {
+                this.delegateRealTimeHandler = new DelegateRealTimeHandler(this.context);
+            }
+            this.delegateHandler = this.delegateRealTimeHandler;
+        } else {
+            if(!isDefined(this.delegateReplayHandler)) {
+                this.delegateReplayHandler = new DelegateRealTimeHandler(this.context);
+            }
+            this.delegateHandler = this.delegateReplayHandler;
+        }
+        this.delegateHandler.init(properties);
+    }
+
+    createDataConnector(properties) {
+        return this.delegateHandler.connector;
     }
 
     async updateProperties(properties) {
@@ -37,11 +122,18 @@ class TimeSeriesHandler extends DataSourceHandler {
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED
             });
-            this.createState({
+            // re-init the context using the new values
+            this.context.init({
                 ...this.properties,
                 ...properties
-            })
-            await super.updateProperties(properties);
+            }, this.connector);
+
+            this.updateDelegateHandler({
+                ...this.properties,
+                ...properties
+            });
+
+            return super.updateProperties(properties);
         } catch (ex) {
             console.error(ex);
             throw ex;
@@ -67,25 +159,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         this.timeTopic = timeTopic;
     }
 
-    createDataConnector(properties) {
-        const tls = (properties.tls) ? 's' : '';
-        const url = properties.protocol + tls + '://' + properties.endpointUrl;
-        let connector;
-
-        if (properties.protocol === 'ws') {
-            connector = new WebSocketConnector(url, properties);
-        } else if(properties.protocol === 'mqtt') {
-            const tls = (properties.tls) ? 's' : '';
-            const url = properties.protocol + tls + '://' + properties.mqttOpts.endpointUrl;
-            connector =  new MqttConnector(url, properties);
-        } else {
-            throw Error(`Unsupported connector ${properties.protocol}`);
-        }
-        return connector;
-    }
-
-    async onMessage(event) {
-        let data = await this.parseData(event);
+    handleData(data) {
         let lastTimestamp;
 
         // check if data is an array
@@ -106,8 +180,8 @@ class TimeSeriesHandler extends DataSourceHandler {
             lastTimestamp = data.timestamp;
         }
 
-        this.state.setLastTimestamp(lastTimestamp);
-        if(this.state.isLive() || ((isDefined(this.properties.batchSize) && this.values.length >= this.properties.batchSize))) {
+        // check for realTime data
+        if(((isDefined(this.properties.batchSize) && this.values.length >= this.properties.batchSize))) {
             this.flush();
             if(this.timeBroadcastChannel !== null) {
                 this.timeBroadcastChannel.postMessage({

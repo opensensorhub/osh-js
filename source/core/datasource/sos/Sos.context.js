@@ -19,10 +19,6 @@ import DataSourceContext from "../context/DataSource.context";
 
 class SosContext extends DataSourceContext {
 
-    constructor(parser) {
-        super(parser);
-    }
-
     /**
      * Builds the full url.
      * @protected
@@ -64,6 +60,14 @@ class SosContext extends DataSourceContext {
             }
         }
         return queryString;
+    }
+
+    connect() {
+        if(isDefined(this.connector)) {
+            this.connector.doRequest('', this.getPath(this.properties));
+        } else {
+            throw Error('there is no connector defined');
+        }
     }
 }
 

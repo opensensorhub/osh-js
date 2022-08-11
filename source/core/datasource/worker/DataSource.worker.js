@@ -18,9 +18,9 @@ import {isDefined} from "../../utils/Utils";
 import SosGetResultContext from "../sos/SosGetResult.context";
 import SosGetFoisContext from "../sos/SosGetFois.context";
 import DataSourceHandler from "../handler/DataSource.handler";
-import SosGetResultHandler from "../sos/SosGetResult.handler";
 import SweApiContext from "../sweapi/SweApi.context";
 import SweApiHandler from "../sweapi/SweApi.handler";
+import TimeSeriesHandler from "../handler/TimeSeries.handler";
 
 let dataSourceHandler = undefined;
 
@@ -65,7 +65,7 @@ function createHandlerFromProperties(properties) {
     let context;
     if(properties.type === 'SosGetResult') {
         context = new SosGetResultContext();
-        return new SosGetResultHandler(context);
+        return new TimeSeriesHandler(context);
     } else if(properties.type === 'SosGetFois') {
         context = new SosGetFoisContext();
         return new DataSourceHandler(context);

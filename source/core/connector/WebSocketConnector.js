@@ -162,7 +162,7 @@ class WebSocketConnector extends DataConnector {
     /**
      * Disconnects and close the websocket.
      */
-    disconnect() {
+    async disconnect() {
        super.disconnect();
        this.init = false;
        this.closed = true;

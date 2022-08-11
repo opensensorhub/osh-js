@@ -18,7 +18,6 @@ import {isDefined} from "../../utils/Utils";
 import TopicConnector from "../../connector/TopicConnector";
 import {Status} from "../../connector/Status";
 import {EventType} from "../../event/EventType";
-import DataSourceState from "../../datasource/state/DataSource.state";
 import HttpConnector from "../../connector/HttpConnector";
 
 class DataSourceHandler {
@@ -32,7 +31,7 @@ class DataSourceHandler {
         this.properties = {
             batchSize: 1
         };
-        this.state = undefined;
+        this.initialized = false;
     }
 
     init(properties, topics, dataSourceId) {
@@ -44,17 +43,9 @@ class DataSourceHandler {
         this.setTopics(topics);
         this.connector = this.createDataConnector(this.properties);
         this.setUpConnector(this.connector);
-        this.createState(this.properties);
         this.context.init(properties, this.connector);
-    }
-
-    createState(properties) {
-        this.state = new DataSourceState();
-        this.updateState(properties);
-    }
-
-    updateState(properties) {
-        this.state.init(properties);
+        this.context.handleData = this.handleData.bind(this);
+        this.initialized = true;
     }
 
     /**
@@ -99,12 +90,8 @@ class DataSourceHandler {
 
     setUpConnector(connector) {
         // bind status & messages
-        connector.onChangeStatus = this.onChangeStatus.bind(this);
-        connector.onMessage = this.onMessage.bind(this);
-    }
-
-    async parseData(message){
-        return this.context.getParser().parseDataBlock(message);
+        connector.onChangeStatus = this.onChangeStatus.bind(this); // bind status between connector to handler
+        connector.onMessage = this.context.onMessage.bind(this.context); // bind message between connector to context
     }
 
     /**
@@ -112,7 +99,6 @@ class DataSourceHandler {
      * @param {Status} status - the new status
      */
     onChangeStatus(status) {
-        this.state.setStatus(status);
         if(status === Status.DISCONNECTED) {
             this.flushAll();
         }
@@ -124,9 +110,7 @@ class DataSourceHandler {
         });
     }
 
-    async onMessage(event) {
-        let data = await this.parseData(event);
-
+    handleData(data) {
         // check if data is an array
         if (Array.isArray(data)) {
             for(let i=0;i < data.length;i++) {
@@ -151,26 +135,21 @@ class DataSourceHandler {
     }
 
     connect() {
-        if(this.connector !== null) {
-            this.connector.doRequest('', this.context.getPath(this.state.props));
-        }
+        this.context.connect();
     }
 
-    disconnect() {
-        if(this.connector !== null) {
-            this.connector.disconnect();
-        }
+    async disconnect() {
+        return this.context.disconnect();
     }
 
     async updateProperties(properties) {
-        this.disconnect();
+        await this.disconnect();
         this.properties = {
             ...this.properties,
             ...properties
         };
         // create new connector?
         this.connector.close();
-        this.updateState(this.properties);
         await this.createDataConnector(this.properties);
         // update version for next packets
         this.version++;
@@ -196,11 +175,11 @@ class DataSourceHandler {
     }
 
     isInitialized() {
-        return this.state && this.state.initialized;
+        return this.initialized;
     }
 
     isConnected() {
-        return this.state.status === Status.CONNECTED;
+        return this.connector.isConnected();
     };
 }
 

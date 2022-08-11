@@ -49,6 +49,8 @@ class MqttProvider {
             this.mqttPrefix = properties.mqttPrefix;
         }
 
+        this.topics = [];
+
         let options = {
             reconnectPeriod: 30,
             connectTimeout: 30 * 1000,
@@ -74,12 +76,17 @@ class MqttProvider {
 
 
     async subscribe(topic, callback) {
+        if(topic in this.topics) {
+            // already subscribed, skipping
+            return;
+        }
         if (!isDefined(this.client)) {
             throw Error('You must connect the client before subscribing any topic');
         }
         // waiting for the client gets connected
         let interval;
         const topicQuery = `${this.mqttPrefix}${topic}`;
+        this.topics.push(topic);
         return new Promise((resolve, error) => {
             interval = setInterval(() => {
                 if (this.client.connected) {
@@ -138,6 +145,14 @@ class MqttProvider {
                 }
             });
         });
+    }
+
+    async unsubscribeAll() {
+        // unsubscribe topic
+        for (let topic of this.topics) {
+            await this.unsubscribe(topic);
+        }
+        this.topics = [];
     }
 
     connect() {

@@ -22,15 +22,9 @@ import ObservationFilter from "../../sweapi/observation/ObservationFilter";
 import ControlFilter from "../../sweapi/control/ControlFilter";
 
 class SweApiContext extends DataSourceContext {
-    constructor() {
-        super();
-    }
-
-    getParser() {
-        throw Error('SweApi uses internal parsers only');
-    }
-
     init(properties, connector) {
+        this.connector = connector;
+        this.properties = properties;
         const networkProperties = {
             ...properties,
             connector: connector
@@ -49,7 +43,7 @@ class SweApiContext extends DataSourceContext {
                 'system@id': match[1]
             }, networkProperties);
             this.streamFunction = function() {
-                control.streamStatus(filter, (messages) => this.onMessage(messages, filter.props.format));
+                control.streamStatus(filter, (messages) => this.onStreamMessage(messages, filter.props.format));
             }
         } else {
             // check for datastream observations
@@ -62,7 +56,7 @@ class SweApiContext extends DataSourceContext {
                     id: match[2]
                 }, networkProperties);
                 this.streamFunction = function() {
-                    dataStream.streamObservations(filter, (messages) => this.onMessage(messages, filter.props.format));
+                    dataStream.streamObservations(filter, (messages) => this.onStreamMessage(messages, filter.props.format));
                 }
             }
         }
@@ -131,11 +125,23 @@ class SweApiContext extends DataSourceContext {
         return new ObservationFilter(props);
     }
 
-    onMessage(message, format) {}
+    onStreamMessage(messages, format) {
+         // in case of om+json ,we have to add the timestamp which is not included for each record but at the root level
+        let results = messages;
+        if (format === 'application/om+json') {
+            results = [];
+            for(let message of messages) {
+                results.push({
+                    timestamp: message.timestamp,
+                    ...message.result
+                })
+            }
+        }
+        this.handleData(results, format);
+    }
 
-    getPath(properties) {}
-
-    startStream() {
+    connect() {
+        // specific to SweApi context
         this.streamFunction();
     }
 }

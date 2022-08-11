@@ -54,7 +54,6 @@ class MqttConnector extends DataConnector {
             ...properties
         });
         this.interval = -1;
-        this.topics = [];
     }
 
     getMqttProvider() {
@@ -93,13 +92,10 @@ class MqttConnector extends DataConnector {
      * Connect to the Mqtt broker.
      */
     doRequest(topic = '',queryString= undefined) {
-        if(!(`${topic}?${queryString}` in this.topics)) {
-            const mqttProvider = this.getMqttProvider();
-            mqttProvider.subscribe(`${topic}?${queryString}`, this.onMessage).then(() => {
-                this.topics.push(`${topic}?${queryString}`);
-                this.onChangeStatus(Status.CONNECTED);
-            });
-        }
+        const mqttProvider = this.getMqttProvider();
+        mqttProvider.subscribe(`${topic}?${queryString}`, this.onMessage).then(() => {
+            this.onChangeStatus(Status.CONNECTED);
+        });
     }
 
     publishRequest(topic, payload) {
@@ -119,14 +115,11 @@ class MqttConnector extends DataConnector {
         const client = mqttProviders[this.getUrl()];
 
         if (isDefined(client) && client.isConnected()) {
-            // unsubscribe topic
-            for (let topic of this.topics) {
-                await client.unsubscribe(topic);
-            }
+            // unsubscribe all topics
+            await client.unsubscribeAll();
             // client.disconnect();
         }
         //delete mqttProviders[this.getUrl()];
-        this.topics = [];
         //console.warn(`Disconnected from ${this.getUrl()}`);
     }
 

@@ -135,7 +135,7 @@ class HttpConnector extends DataConnector {
 
     }
 
-    disconnect() {}
+    async disconnect() {}
 
     /**
      * Sends the request
