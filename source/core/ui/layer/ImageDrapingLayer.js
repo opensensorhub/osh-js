@@ -18,6 +18,37 @@ import {isDefined, randomUUID} from "../../utils/Utils.js";
 import Layer from "./Layer.js";
 
 /**
+ * Enumeration of the ways that the camera's position and orientation can be
+ * specified for a draped image.
+ */
+ const ImageDrapingPositionMode = Object.freeze({
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of a latitude (in degrees), longitude (in degrees), and
+   * altitude above ellipsoid (in meters). This also indicates that platform
+   * orientation is provided as heading, pitch, and roll, in degrees; and
+   * gimbal orientation is provided as yaw, pitch, and roll, in degrees.
+   */
+  LONLATALT_EULER_ANGLES: 1,
+
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+   * the platform and gimbal orientations are provided as 3x3 rotation
+   * matrices.
+   */
+  ECEF_MATRICES: 2,
+
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+   * the platform and gimbal orientations are provided as quaternions.
+   */
+  ECEF_QUATERNIONS: 3,
+});
+
+
+/**
  * @extends Layer
  * @example
  import ImageDrapingLayer from 'core/ui/layer/ImageDrapingLayer.js';
@@ -60,30 +91,39 @@ import Layer from "./Layer.js";
         camDistR: new Cartesian3(-2.644e-01, 8.4e-02, 0.0),
         camDistT: new Cartesian2(-8.688e-04, 6.123e-04)
       },
-      icon: 'images/car-location.png',
-      iconAnchor: [16, 40],
       imageSrc: videoCanvas
     });
  */
 class ImageDrapingLayer extends Layer {
     /**
      * @param {Object} properties
-     * @param {Number[]} properties.location - [x,y]
-     * @param {Object} properties.orientation -
-     * @param {Object} properties.gimbalOrientation -
-     * @param {Object} properties.cameraModel -
-     * @param {Matrix3} properties.cameraModel.camProj -
-     * @param {Cartesian3} properties.cameraModel.camDistR -
-     * @param {Cartesian2} properties.cameraModel.camDistT -
-     * @param {String} properties.icon -
-     * @param {Number[]} [properties.iconAnchor=[16,16]] -
-     * @param {HTMLElement} properties.imageSrc - source canvas
-     * @param {Function} properties.getPlatformLocation -
-     * @param {Function} properties.getPlatformOrientation -
-     * @param {Function} properties.getGimbalOrientation -
-     * @param {Function} properties.getCameraModel -
-     * @param {Function} properties.getSnapshot -
-     * @param {Function} properties.getImageSrc -
+     *
+     * @param {Number|undefined} positionMode An ImageDrapingPositionMode value indicating how the camera's position
+     *   and orientation will be specified. If left unspecified, defaults to LONLATALT_EULER_ANGLES.
+     *
+     * @param {Cartesian3|undefined} properties.platformLocation Location of the camera. The values are either
+     *   lon/lat/alt or ECEF, depending on the value of positionMode.
+     * @param {Function|{handler:Function,dataSourceIds:Array<string>}|undefined} properties.getPlatformLocation
+     * 
+     * @param {Matrix3|{heading:number,pitch:number,roll:number}|undefined} properties.platformOrientation
+     * @param {Function|undefined} properties.getPlatformOrientation
+     *
+     * @param {Matrix3|{heading:number,pitch:number,roll:number}|undefined} properties.gimbalOrientation
+     * @param {Function} properties.getGimbalOrientation
+     *
+     * @param {Object} properties.cameraModel
+     * @param {Matrix3} properties.cameraModel.camProj 3x3 matrix that has f_x, f_y, and 1 on the main diagonal, and
+     *   c_x, c_y, and 1 as the rightmost column. f_x and f_y are the focal length, in pixels, in the x and y direction.
+     *   c_x and c_y are the coordinates of the principal point.
+     * @param {Cartesian3} properties.cameraModel.camDistR Radial distortion coefficients.
+     * @param {Cartesian2} properties.cameraModel.camDistT Tangential distortion coefficients.
+     * @param {Function} properties.getCameraModel
+     *
+     * @param {HTMLElement} properties.imageSrc Source canvas
+     * @param {Function} properties.getImageSrc
+     *
+     * @param {boolean|undefined} snapshot
+     * @param {Function} properties.getSnapshot
      *
      * @param properties
      */
@@ -100,69 +140,20 @@ class ImageDrapingLayer extends Layer {
         this.props.gimbalOrientation = null;
         this.props.drapedImageId = 'drapedImageId';
 
-        const that = this;
+        // Default position mode is LONLATALT_EULER_ANGLES, if not specified.
+        // Old code should continue to work as-is.
+        this.props.positionMode = this.properties.positionMode || ImageDrapingPositionMode.LONLATALT_EULER_ANGLES;
 
-        if (isDefined(properties.platformLocation)) {
-            this.props.platformLocation = properties.platformLocation;
-        }
-
-        if (isDefined(properties.platformOrientation)) {
-            this.props.platformOrientation = properties.platformOrientation;
-        }
-
-        if (isDefined(properties.gimbalOrientation)) {
-            this.props.gimbalOrientation = properties.gimbalOrientation;
-        }
-
-        if (isDefined(properties.cameraModel)) {
-            this.props.cameraModel = properties.cameraModel;
-        }
-
-        if (isDefined(properties.imageSrc)) {
-            this.props.imageSrc = properties.imageSrc;
-        }
-
-        if (isDefined(properties.getPlatformLocation)) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.platformLocation = await that.getFunc('getPlatformLocation')(rec,timestamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getPlatformLocation'), fn);
-        }
-
-        if (isDefined(properties.getPlatformOrientation)) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.platformOrientation = await that.getFunc('getPlatformOrientation')(rec,timestamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getPlatformOrientation'), fn);
-        }
-
-        if (isDefined(properties.getGimbalOrientation)) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.gimbalOrientation = await that.getFunc('getGimbalOrientation')(rec,timestamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getGimbalOrientation'), fn);
-        }
-
-        if (isDefined(properties.getCameraModel)) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.cameraModel = await  that.getFunc('getCameraModel')(rec,timestamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getCameraModel'), fn);
-        }
-
-        if (this.checkFn("getImageSrc")) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.imageSrc = await that.getFunc('getImageSrc')(rec, timestamp, options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getImageSrc'), fn);
-        }
-
-        if (isDefined(properties.getSnapshot)) {
-            this.props.getSnapshot = properties.getSnapshot;
-        }
+        this.initDynamicProp("platformLocation");
+        this.initDynamicProp("platformOrientation");
+        this.initDynamicProp("gimbalOrientation");
+        this.initDynamicProp("cameraModel");
+        this.initDynamicProp("imageSrc");
+        this.initDynamicProp("snapshot");
 
         this.saveState();
     }
 }
 
-export default  ImageDrapingLayer;
+export default ImageDrapingLayer;
+export { ImageDrapingPositionMode };
