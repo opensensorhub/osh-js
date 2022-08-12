@@ -35,7 +35,7 @@ class SosGetResultContext extends SosContext {
      * @param {String} [properties.responseFormat=application/xml] the response format (e.g video/mp4)
      * @return {String} the full url
      */
-    getPath(properties) {
+    getQueryString(properties) {
         let queryString = super.getPath({
             responseFormat:'application/xml',
             ...properties,

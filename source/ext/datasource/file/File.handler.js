@@ -18,20 +18,12 @@ import FileConnector from "../../connector/FileConnector";
 import DataSourceHandler from "../../../core/datasource/handler/DataSource.handler";
 
 class FileHandler extends DataSourceHandler {
-    constructor(context) {
-        super(context);
-    }
-
     /**
      * Override default data connector build
      * @private
      */
     createDataConnector(properties) {
-        return new FileConnector(this.context.getPath(properties),properties);
-    }
-
-    async parseData(message) {
-        return this.context.getParser().parseDataBlock(message);
+        return new FileConnector(this.context.getPaths(properties));
     }
 }
 

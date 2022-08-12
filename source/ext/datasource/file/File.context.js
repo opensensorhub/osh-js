@@ -31,9 +31,17 @@ class FileContext extends DataSourceContext {
      * @param {String} properties.paths the file paths
      * @return {String} the full url or array of urls
      */
-    getPath(properties) {
+    getPaths(properties) {
         assertArray(properties.paths);
         return properties.paths;
+    }
+
+    connect() {
+        if(isDefined(this.connector)) {
+            this.connector.doRequest(this.getPaths(this.properties));
+        } else {
+            throw Error('there is no connector defined');
+        }
     }
 }
 

@@ -17,54 +17,10 @@
 import TimeSeriesHandler from "../handler/TimeSeries.handler";
 
 class SweApiHandler extends TimeSeriesHandler {
-    constructor(context) {
-        super(context);
-    }
-
-    createState(properties) {
-        this.state = this.realTimeState;
-        this.updateState(properties);
-    }
-
-    init(properties, topics, dataSourceId) {
-        super.init(properties, topics, dataSourceId);
-        this.context.onMessage = this.onMessage.bind(this);
-    }
-
-    connect() {
-        // specific to SweApi context
-        this.context.startStream();
-    }
-
-    async parseData(messages){
-        // already parsed by internal SweApi API
-        return messages;
-    }
-
-
-    async updateProperties(properties) {
-        // re-init the SweApi context using the new values and recreate the stream function
-        this.context.init({
-            ...this.properties,
-            ...properties
-        }, this.connector);
-        await super.updateProperties(properties, this.connector);
-    }
-
-    async onMessage(messages, format) {
-        // in case of om+json ,we have to add the timestamp which is not included for each record but at the root level
-        if (format === 'application/om+json') {
-            let results = [];
-            for(let message of messages) {
-                results.push({
-                    timestamp: message.timestamp,
-                    ...message.result
-                })
-            }
-            return super.onMessage(results);
-        } else {
-            return super.onMessage(messages);
-        }
+    setUpConnector(connector) {
+        // bind status & messages
+        connector.onChangeStatus = this.onChangeStatus.bind(this); // bind status between connector to handler
+        // do not bind connector on message to context because this is done by the context itself
     }
 }
 

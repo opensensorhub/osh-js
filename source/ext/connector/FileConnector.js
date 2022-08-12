@@ -40,20 +40,20 @@ class FileConnector extends DataConnector {
     /**
      * @param (string[]) paths - list of file paths
      */
-    constructor(paths) {
-        super(paths);
+    constructor() {
+        super('');
         this.opened = false;
     }
 
     /**
      * Start reading file content
      */
-    async doRequest(extraUrl = '') {
+    async doRequest(paths = []) {
         if(!this.opened) {
             this.opened = true;
             this.onChangeStatus(Status.CONNECTED);
-            for(let u of this.url) {
-                this.onMessage(await fetch(u));
+            for(let path of paths) {
+                this.onMessage(await fetch(path));
             }
             this.onChangeStatus(Status.DISCONNECTED);
             // read is done

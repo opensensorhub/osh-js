@@ -36,7 +36,7 @@ class SosContext extends DataSourceContext {
      * @param {Number} properties.customUrlParams.video_height - define a custom height
      * @return {String} the full url
      */
-    getPath(properties) {
+    getQueryString(properties) {
         let queryString = "";
 
         // adds service
@@ -64,7 +64,7 @@ class SosContext extends DataSourceContext {
 
     connect() {
         if(isDefined(this.connector)) {
-            this.connector.doRequest('', this.getPath(this.properties));
+            this.connector.doRequest('', this.getQueryString(this.properties));
         } else {
             throw Error('there is no connector defined');
         }

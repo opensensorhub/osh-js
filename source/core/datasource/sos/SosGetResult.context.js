@@ -39,7 +39,7 @@ class SosGetResultContext extends SosContext {
      * @param {Object} properties.customUrlParams - the encoding options
      * @return {String} the full url
      */
-    getPath(properties) {
+    getQueryString(properties) {
         let queryString     = super.getPath(properties);
         const startTime     = properties.startTime;
         const endTime       = properties.endTime;
