@@ -77,6 +77,7 @@ import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import MapView from "./MapView";
 import { FrustumPositionMode } from "../../layer/FrustumLayer";
+import { ImageDrapingPositionMode } from "../../layer/ImageDrapingLayer.js";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
@@ -971,58 +972,77 @@ class CesiumView extends MapView {
     }
 
     async addDrapedImage(props, existingDrapedImagePrimitive) {
-        const llaPos = props.platformLocation;
-        const DTR = Math.PI / 180;
-        const attitude = props.platformOrientation;
-        const gimbal = props.gimbalOrientation;
-
-        ///////////////////////////////////////////////////////////////////////////////////
-        // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
-        ///////////////////////////////////////////////////////////////////////////////////
-        const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
-        const nedTransform = Transforms.northEastDownToFixedFrame(camPos);
+        // Camera position as ECEF Cartesian3. Will be set in the switch
+        // statement below.
+        let camPos;
+        // Camera rotation, relative to ECEF. Also will be set in the case
+        // statement below.
         const camRot = new Matrix3();
-        Matrix4.getMatrix3(nedTransform, camRot);
+
+        // Temporary matrix used for performing rotations.
         const rotM = new Matrix3();
 
-        if (isDefined(attitude)) {
-            // UAV heading, pitch, roll (given in NED frame)
-            const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
-            Matrix3.multiply(camRot, uavHeading, camRot);
-            const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
-            Matrix3.multiply(camRot, uavPitch, camRot);
-            const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
-            Matrix3.multiply(camRot, uavRoll, camRot);
+        const DTR = Math.PI / 180;
+
+        switch (props.positionMode) {
+            case ImageDrapingPositionMode.LONLATALT_EULER_ANGLES: {
+                // Get ECEF position from longitude, latitude, and altitude.
+                camPos = Cartesian3.fromDegrees(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
+                // Start building the camera rotation matrix. Start with the NED transformation.
+                Matrix4.getMatrix3(Transforms.northEastDownToFixedFrame(camPos), camRot);
+                // Heading, pitch, and roll
+                if (props.platformOrientation) {
+                    Matrix3.multiply(camRot, Matrix3.fromRotationZ(props.platformOrientation.heading*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationY(props.platformOrientation.pitch*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationX(props.platformOrientation.roll*DTR, rotM), camRot);
+                }
+                if (props.gimbalOrientation) {
+                    Matrix3.multiply(camRot, Matrix3.fromRotationZ(props.gimbalOrientation.heading*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationY(props.gimbalOrientation.pitch*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationX(props.gimbalOrientation.roll*DTR, rotM), camRot);
+                }
+                break;
+            }
+
+            case ImageDrapingPositionMode.ECEF_MATRICES: {
+                camPos = new Cartesian3(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
+                if (props.platformOrientation) {
+                    Matrix3.clone(props.platformOrientation, camRot);
+                } else {
+                    Matrix3.clone(Matrix3.IDENTITY, camRot);
+                }
+                if (props.gimbalOrientation) {
+                    Matrix3.multiply(camRot, props.gimbalOrientation, camRot);
+                }
+                break;
+            }
+
+            case ImageDrapingPositionMode.ECEF_QUATERNIONS: {
+                camPos = new Cartesian3(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
+                if (props.platformOrientation) {
+                    Matrix3.fromQuaternion(props.platformOrientation, camRot);
+                } else {
+                    Matrix3.clone(Matrix3.IDENTITY, camRot);
+                }
+                if (props.gimbalOrientation) {
+                    Matrix3.multiply(camRot, Matrix3.fromQuaternion(props.gimbalOrientation, new Matrix3()), camRot);
+                }
+                break;
+            }
+
+            default:
+                return;
         }
-
-        // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
-        if (isDefined(gimbal)) {
-            const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalYaw, camRot);
-            const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalRoll, camRot);
-            const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalPitch, camRot);
-        }
-
-        // transform to camera frame
-        var img2cam = Matrix3.fromRotationZ(90 * DTR, rotM);
-        Matrix3.multiply(camRot, img2cam, camRot);
-
-        ////////////////////////////////////////////////////////////////////////////////////
 
         const camProj = props.cameraModel.camProj;
         const camDistR = props.cameraModel.camDistR;
         const camDistT = props.cameraModel.camDistT;
 
         let imgSrc = props.imageSrc;
+        let snapshot = props.snapshot;
 
-        let snapshot = false;
-        if (props.getSnapshot !== null) {
-            snapshot = props.getSnapshot();
-        }
         // snapshot
-        if (props.snapshot) {
+        if (snapshot) {
             let ctx = this.captureCanvas.getContext('2d');
             ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
             imgSrc = this.captureCanvas;
@@ -1156,8 +1176,8 @@ class CesiumView extends MapView {
             aspectRatio : properties.aspectRatio,
             near : properties.rangeNear,
             far : properties.range,
-            xOffset: -2e9,
-            yOffset: 1e9,
+            xOffset: -74929.58048143225,
+            yOffset: -495.8077509073455
         });
 
         const frustumInstance = new GeometryInstance({
