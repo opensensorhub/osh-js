@@ -139,8 +139,9 @@ class Layer {
 
     /**
      * Set up a property whose value will automatically update when a data
-     * source receives new observations. This will also handle values that are
-     * specified with constants in the constructor.
+     * source receives new observations. Handles both "plain" values specified
+     * as constants to the constructor and "accessor" values specified as getter
+     * functions.
      *
      * @param {string} propName Name of the property, e.g. "color". If a value
      *   of this property exists in "this.properties", then it will be set into
@@ -166,11 +167,16 @@ class Layer {
         // See if a getter is provided.
         const getterProperty = this.properties[getterName];
         if (getterProperty) {
-            // The getter could be a function, or it could be an object with a
-            // "handler" function.
+            // The getter could itself be a function, or it could be an object
+            // with a "handler" property that is a function.
             const getterFunc = getterProperty.handler || getterProperty;
-            // The getter might be asynchronous, so wrap it in "await".
-            const assignerFunc = async (rec) => { this.props[propName] = await getterFunc(rec); };
+            // Wrap it in another function that puts the extracted value into
+            // this.props for use in the View.
+            const assignerFunc = async (data, timestamp, options) => {
+                // We allow the getters to be asynchronous, so wrap it in "await".
+                this.props[propName] = await getterFunc(data, timestamp, options);
+            };
+            // Register the thing to get called when setData (below) is called.
             this.addFn(this.getDataSourcesIdsByProperty(getterName), assignerFunc);
         }
     }
