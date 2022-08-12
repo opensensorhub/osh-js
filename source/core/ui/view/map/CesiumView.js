@@ -1176,8 +1176,6 @@ class CesiumView extends MapView {
             aspectRatio : properties.aspectRatio,
             near : properties.rangeNear,
             far : properties.range,
-            xOffset: -74929.58048143225,
-            yOffset: -495.8077509073455
         });
 
         const frustumInstance = new GeometryInstance({
