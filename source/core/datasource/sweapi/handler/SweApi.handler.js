@@ -14,13 +14,17 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import TimeSeriesHandler from "../handler/TimeSeries.handler";
+import TimeSeriesHandler from "../../common/handler/TimeSeries.handler";
+import SweApiRealtimeContext from "../context/SweApi.realtime.context";
+import SweApiReplayContext from "../context/SweApi.replay.context";
 
 class SweApiHandler extends TimeSeriesHandler {
-    setUpConnector(connector) {
-        // bind status & messages
-        connector.onChangeStatus = this.onChangeStatus.bind(this); // bind status between connector to handler
-        // do not bind connector on message to context because this is done by the context itself
+    createContext(properties) {
+        if(properties.startTime === 'now') {
+            return new SweApiRealtimeContext();
+        } else {
+            return new SweApiRealtimeContext();
+        }
     }
 }
 

@@ -14,16 +14,13 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
-import TopicConnector from "../../connector/TopicConnector";
-import {Status} from "../../connector/Status";
-import {EventType} from "../../event/EventType";
-import HttpConnector from "../../connector/HttpConnector";
+import {isDefined} from "../../../utils/Utils";
+import {Status} from "../../../connector/Status";
+import {EventType} from "../../../event/EventType";
 
 class DataSourceHandler {
-    constructor(context) {
-        this.context = context;
-        this.connector = undefined;
+    constructor() {
+        this.context = undefined;
         this.topic = undefined;
         this.broadcastChannel = undefined;
         this.values = [];
@@ -34,6 +31,10 @@ class DataSourceHandler {
         this.initialized = false;
     }
 
+    createContext(properties) {
+        throw Error('Should be overridden');
+    }
+
     init(properties, topics, dataSourceId) {
         this.dataSourceId = dataSourceId;
         this.properties = {
@@ -41,10 +42,12 @@ class DataSourceHandler {
             ...properties
         };
         this.setTopics(topics);
-        this.connector = this.createDataConnector(this.properties);
-        this.setUpConnector(this.connector);
-        this.context.init(properties, this.connector);
-        this.context.handleData = this.handleData.bind(this);
+        // this.connector = this.createDataConnector(this.properties);
+        // this.setUpConnector(this.connector);
+        this.context = this.createContext(properties);
+        this.context.onChangeStatus = this.onChangeStatus.bind(this);
+        this.context.handleData = this.handleData.bind(this); // bind context to handler
+        this.context.init(properties);
         this.initialized = true;
     }
 
@@ -67,32 +70,16 @@ class DataSourceHandler {
         this.topic = topic;
     }
 
-    /**
-     * @protected
-     */
-    createDataConnector(properties) {
-        let connector;
-        const tls = (properties.tls) ? 's' : '';
-        const url = properties.protocol + tls + '://' + properties.endpointUrl;
+    //         throw Error(`Unsupported connector ${properties.protocol}`);
+    //     }
+    //     return connector;
+    // }
 
-        if (properties.protocol === 'topic') {
-            connector = new TopicConnector(url);
-        } else if (properties.protocol.startsWith('http')) { //for https
-            connector = new HttpConnector(url, {
-                responseType: properties.responseType || 'arraybuffer',
-                method: 'GET'
-            });
-        } else {
-            throw Error(`Unsupported connector ${properties.protocol}`);
-        }
-        return connector;
-    }
-
-    setUpConnector(connector) {
+    // setUpConnector(connector) {
         // bind status & messages
-        connector.onChangeStatus = this.onChangeStatus.bind(this); // bind status between connector to handler
-        connector.onMessage = this.context.onMessage.bind(this.context); // bind message between connector to context
-    }
+        // connector.onChangeStatus = this.onChangeStatus.bind(this); // bind status between connector to handler
+        // connector.onMessage = this.context.onMessage.bind(this.context); // bind message between connector to context
+    // }
 
     /**
      * Send a change status event into the broadcast channel
@@ -149,12 +136,12 @@ class DataSourceHandler {
             ...properties
         };
         // create new connector?
-        this.connector.close();
-        await this.createDataConnector(this.properties);
+        // this.connector.close();
+        // await this.createDataConnector(this.properties);
         // update version for next packets
         this.version++;
         // rebind connector function
-        await this.setUpConnector(this.connector);
+        // await this.setUpConnector(this.connector);
         this.connect();
     }
 
@@ -179,7 +166,7 @@ class DataSourceHandler {
     }
 
     isConnected() {
-        return this.connector.isConnected();
+        return this.context.isConnected();
     };
 }
 

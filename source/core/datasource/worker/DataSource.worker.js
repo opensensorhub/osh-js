@@ -15,12 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {isDefined} from "../../utils/Utils";
-import SosGetResultContext from "../sos/SosGetResult.context";
-import SosGetFoisContext from "../sos/SosGetFois.context";
-import DataSourceHandler from "../handler/DataSource.handler";
-import SweApiContext from "../sweapi/SweApi.context";
-import SweApiHandler from "../sweapi/SweApi.handler";
-import TimeSeriesHandler from "../handler/TimeSeries.handler";
+import SosGetResultHandler from "../sos/handler/Sos.handler";
+import DataSourceHandler from "../common/handler/DataSource.handler";
+import SweApiHandler from "../sweapi/handler/SweApi.handler";
 
 let dataSourceHandler = undefined;
 
@@ -61,17 +58,12 @@ function handleMessage(event) {
 }
 
 function createHandlerFromProperties(properties) {
-    // create context to set to the DataSourceHandler
-    let context;
     if(properties.type === 'SosGetResult') {
-        context = new SosGetResultContext();
-        return new TimeSeriesHandler(context);
+        return new SosGetResultHandler();
     } else if(properties.type === 'SosGetFois') {
-        context = new SosGetFoisContext();
-        return new DataSourceHandler(context);
+        return new DataSourceHandler();
     } else if(properties.type === 'SweApiStream') {
-        context = new SweApiContext();
-        return new SweApiHandler(context);
+        return new SweApiHandler();
     } else {
         throw Error('Unsupported SOS service Error');
     }

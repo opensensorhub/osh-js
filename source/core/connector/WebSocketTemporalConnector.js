@@ -40,7 +40,7 @@ import {Status} from './Status.js';
 
 let reconnectionInterval = -1;
 
-class WebSocketConnector extends DataConnector {
+class WebSocketTemporalConnector extends DataConnector {
     /**
      *
      * @param url -
@@ -58,59 +58,66 @@ class WebSocketConnector extends DataConnector {
      * the main thread.
      */
     doRequest(extraUrl = this.extraUrl,queryString= this.queryString) {
-        if (!this.init) {
-            this.extraUrl = extraUrl;
-            this.queryString = queryString;
-            let fullUrl = this.getUrl() + extraUrl;
+        return new Promise(async (resolve, reject) => {
+            if (!this.init) {
+                this.extraUrl = extraUrl;
+                this.queryString = queryString;
+                let fullUrl = this.getUrl() + extraUrl;
 
-            if(isDefined(queryString)) {
-                fullUrl += '?'+queryString;
-            }
-
-            this.closed = false;
-            this.init = true;
-            //creates Web Socket
-            this.ws = new WebSocket(fullUrl);
-            this.ws.binaryType = 'arraybuffer';
-            this.checkStatus(Status.CONNECTING);
-            console.warn('WebSocket stream connecting');
-            this.ws.onopen = function(event) {
-                this.checkAndClearReconnection();
-                this.checkStatus(Status.CONNECTED);
-                console.warn('WebSocket stream connected');
-            }.bind(this);
-
-            this.ws.onmessage = function (event) {
-                this.lastReceiveTime = Date.now();
-                //callback data on message received
-                if (event.data.byteLength > 0) {
-                    this.onMessage(event.data);
+                if (isDefined(queryString)) {
+                    fullUrl += '?' + queryString;
                 }
-            }.bind(this);
 
-            // closes socket if any errors occur
-            this.ws.onerror = function (event) {
-                console.error('WebSocket stream error');
-                this.checkStatus(Status.CLOSED_ERROR);
-                this.init = false;
-                this.lastReceiveTime = -1;
-                this.createReconnection();
-            }.bind(this);
+                this.closed = false;
+                this.init = true;
+                //creates Web Socket
+                this.ws = new WebSocket(fullUrl);
+                this.ws.binaryType = 'arraybuffer';
+                this.checkStatus(Status.CONNECTING);
+                console.warn('WebSocket stream connecting');
 
-            this.ws.onclose = (event) => {
-                console.warn('WebSocket stream closed: ',event.reason, event.code);
-                if(event.code !== 1000 && !this.closed) {
+                let results = [];
+
+                this.ws.onopen = function (event) {
+                    this.checkAndClearReconnection();
+                    this.checkStatus(Status.CONNECTED);
+                    console.warn('WebSocket stream connected');
+                }.bind(this);
+
+                this.ws.onmessage = function (event) {
+                    this.lastReceiveTime = Date.now();
+                    //callback data on message received
+                    if (event.data.byteLength > 0) {
+                        // this.onMessage(event.data);
+                        results.push(event.data);
+                    }
+                }.bind(this);
+
+                // closes socket if any errors occur
+                this.ws.onerror = function (event) {
+                    console.error('WebSocket stream error');
                     this.checkStatus(Status.CLOSED_ERROR);
+                    this.init = false;
+                    this.lastReceiveTime = -1;
                     this.createReconnection();
-                } else {
-                    this.disconnect();
+                }.bind(this);
+
+                this.ws.onclose = (event) => {
+                    console.warn('WebSocket stream closed: ', event.reason, event.code);
+                    if (event.code !== 1000 && !this.closed) {
+                        this.checkStatus(Status.CLOSED_ERROR);
+                        this.createReconnection();
+                    } else {
+                        this.disconnect();
+                    }
+                    resolve(results);
+                };
+                if (this.reconnectionInterval !== -1) {
+                    clearInterval(this.reconnectionInterval);
+                    this.reconnectionInterval = -1;
                 }
-            };
-            if(this.reconnectionInterval !== -1) {
-                clearInterval(this.reconnectionInterval);
-                this.reconnectionInterval = -1;
             }
-        }
+        });
     }
 
     connect() {
@@ -163,7 +170,7 @@ class WebSocketConnector extends DataConnector {
      * Disconnects and close the websocket.
      */
     async disconnect() {
-       super.disconnect();
+       // super.disconnect();
        this.init = false;
        this.closed = true;
        if (this.ws != null && this.ws.readyState !== WebSocket.CLOSED) {
@@ -185,4 +192,4 @@ class WebSocketConnector extends DataConnector {
     }
 }
 
-export default WebSocketConnector;
+export default WebSocketTemporalConnector;

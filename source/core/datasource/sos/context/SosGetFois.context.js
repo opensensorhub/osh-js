@@ -15,8 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import SosContext from "./Sos.context";
-import {isDefined} from "../../utils/Utils";
-import SosGetFoisParser from "../../parsers/sos/SosGetFois.parser";
+import SosGetFoisParser from "../../../parsers/sos/SosGetFois.parser";
+import {isDefined} from "../../../utils/Utils";
 
 class SosGetResultContext extends SosContext {
 
@@ -36,7 +36,7 @@ class SosGetResultContext extends SosContext {
      * @return {String} the full url
      */
     getQueryString(properties) {
-        let queryString = super.getPath({
+        let queryString = super.getQueryString({
             responseFormat:'application/xml',
             ...properties,
         });
@@ -48,6 +48,10 @@ class SosGetResultContext extends SosContext {
             queryString += '&procedure='+properties.procedureId;
         }
         return queryString;
+    }
+
+    async parseData(messages) {
+        return this.parser.parseDataBlock(messages);
     }
 }
 

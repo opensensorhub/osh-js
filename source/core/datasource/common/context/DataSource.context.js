@@ -13,46 +13,44 @@
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
-import {isDefined} from "../../utils/Utils";
 
 class DataSourceContext {
-    constructor(parser) {
-        this.parser = parser;
+    constructor() {
         this.connector = undefined;
         this.properties = undefined;
     }
 
-    init(properties, connector) {
-        this.parser.init(properties);
+    init(properties) {
+        // this.parser.init(properties);
         this.properties = properties;
-        this.connector = connector;
+        this.connector = this.createDataConnector(properties);
+        this.connector.onChangeStatus = this.onChangeStatus.bind(this);
+        this.connector.onMessage = this.onMessage.bind(this);
     }
 
-    getParser() {
-        return this.parser;
+    createDataConnector(properties) {
+        throw Error('Should be overridden');
     }
 
     connect() {
         throw Error('Should be overridden');
     }
 
+    async onMessage(messages, format) {}
+
     async disconnect() {
-        if(isDefined(this.connector)) {
-            return this.connector.disconnect();
-        } else {
-            throw Error('there is no connector defined');
-        }
+        throw Error('Should be overridden');
     }
 
-    async parseData(messages) {
-        return await this.getParser().parseDataBlock(messages);
+    handleData(data) {
+        console.log(ha)
     }
 
-    handleData(data) {}
-
-    async onMessage(messages, format) {
-        this.handleData(await this.parseData(messages));
+    isConnected() {
+        return false;
     }
+
+    onChangeStatus(status) {}
 }
 
 export default DataSourceContext;

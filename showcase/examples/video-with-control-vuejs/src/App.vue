@@ -36,8 +36,9 @@
           endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
           offeringID: 'urn:mysos:solo:video2',
           observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-          startTime: '2015-12-19T21:04:29.231Z',
+          startTime: '2015-12-19T21:04:30.231Z',
           endTime: '2015-12-19T21:09:19.675Z',
+          // endTime: '2015-12-19T21:04:32.00Z',
           replaySpeed: 1
         });
         this.view = new VideoView({

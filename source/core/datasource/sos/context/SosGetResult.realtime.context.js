@@ -14,21 +14,16 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SosGetResultParser from '../../parsers/sos/SosGetResult.parser.js'
-import SosContext from "./Sos.context";
+import SosGetResultContext from "./SosGetResult.context";
+import WebSocketConnector from "../../../connector/WebSocketConnector";
+import MqttConnector from "../../../connector/MqttConnector";
 
-class SosGetResultContext extends SosContext {
-
-    constructor() {
-        super(new SosGetResultParser());
-    }
+class SosGetResultRealTimeContext extends SosGetResultContext {
 
     /**
      * Builds the full url.
      * @protected
      * @param {Object} properties
-     * @param {String} properties.protocol the protocol protocol
-     * @param {String} properties.endpointUrl the endpoint url
      * @param {String} properties.service the service
      * @param {String} properties.offeringID the offeringID
      * @param {String} properties.observedProperty the observed property
@@ -40,30 +35,43 @@ class SosGetResultContext extends SosContext {
      * @return {String} the full url
      */
     getQueryString(properties) {
-        let queryString     = super.getPath(properties);
-        const startTime     = properties.startTime;
-        const endTime       = properties.endTime;
-        const replaySpeed   = properties.replaySpeed;
-
-        // adds request
-        queryString += "&request=GetResult";
-
-        // adds offering
-        queryString += "&offering=" + properties.offeringID;
-
-        // adds observedProperty
-        queryString += "&observedProperty=" + properties.observedProperty;
+        let queryString     = super.getQueryString(properties);
 
         // adds temporalFilter
-        queryString += "&temporalFilter=phenomenonTime," + startTime + "/" + endTime;
-
-        if(replaySpeed) {
-            // adds replaySpeed
-            queryString += "&replaySpeed=" + replaySpeed;
-        }
+        queryString += "&temporalFilter=phenomenonTime,now/2055-01-01";
 
         return queryString;
     }
+
+    createDataConnector(properties) {
+        const tls = (properties.tls) ? 's' : '';
+        const url = properties.protocol + tls + '://' + properties.endpointUrl;
+        let connector;
+
+        // if we switch of protocol
+        if (properties.protocol === 'ws') {
+            connector = new WebSocketConnector(url, properties);
+        } else if(properties.protocol === 'mqtt') {
+            const tls = (properties.tls) ? 's' : '';
+            const url = properties.protocol + tls + '://' + properties.mqttOpts.endpointUrl;
+            connector =  new MqttConnector(url, properties);
+        } else {
+            throw Error(`Unsupported connector ${properties.protocol}`);
+        }
+        return connector;
+    }
+
+    connect() {
+        this.connector.connect();
+    }
+
+    async disconnect() {
+        this.connector.disconnect();
+    }
+
+    async parseData(messages) {
+        return this.parser.parseDataBlock(messages);
+    }
 }
 
-export default SosGetResultContext;
+export default SosGetResultRealTimeContext;

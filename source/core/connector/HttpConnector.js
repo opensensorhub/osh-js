@@ -78,12 +78,13 @@ class HttpConnector extends DataConnector {
             fullUrl += '?' + queryString;
         }
 
+        const that = this;
         // default
         const promiseResponse = fetch(fullUrl, {
             method: this.method,
             headers: this.headers
         })
-            .then(function (response) {
+            .then(function process(response) {
                 if (!response.ok) {
                     const err = new Error(`Got ${response.status} response from ${domain}`);
                     err.response = response;
@@ -95,9 +96,16 @@ class HttpConnector extends DataConnector {
                 //     return response.text();
                 // } else {
                 return response.arrayBuffer();
-                // }
-            });
+                // const reader = response.body.getReader();
+                // reader.read().then(function processText({ done, value }) {
+                //     console.log(value);
+                //     return reader.read().then(processText)
+                // });
+            })
+            // Create a new response out of the stream
+            .catch((err) => console.error(err));
         const response = await promiseResponse;
+        console.log(new Uint8Array(response));
         this.onMessage(response);
         return response;
     }

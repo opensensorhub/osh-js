@@ -14,11 +14,20 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
-import DataSourceContext from "../context/DataSource.context";
+import {isDefined} from "../../../utils/Utils";
+import DataSourceContext from "../../common/context/DataSource.context";
 
 class SosContext extends DataSourceContext {
 
+    constructor(parser) {
+        super();
+        this.parser = parser;
+    }
+
+    init(properties) {
+        super.init(properties);
+        this.parser.init(properties);
+    }
     /**
      * Builds the full url.
      * @protected

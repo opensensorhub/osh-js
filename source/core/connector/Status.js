@@ -7,5 +7,6 @@ export const Status = {
     CONNECTING: "connecting",
     CONNECTED:  "connected",
     DISCONNECTED: "disconnected",
+    CLOSED: "closed",
     CLOSED_ERROR: "closed-error"
 };
