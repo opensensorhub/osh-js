@@ -139,7 +139,6 @@ class DataSynchronizerAlgo {
             // this is relative latency in millis compared to the DS with the lowest latency
             // so it is accurate even if local device time is not set properly
             rec['@latency'] = currentDs.latency - minLatency;
-
             this.onData(currentDsToShift.id, rec);
             return true;
         }

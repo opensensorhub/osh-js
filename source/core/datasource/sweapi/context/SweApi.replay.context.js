@@ -52,7 +52,6 @@ class SweApiReplayContext extends SweApiContext {
             // check for datastream observations
             regex = new RegExp('\\/(.*\\/)(.*)\\/observations'); // /datastreams/abc13/observations
             if(regex.test(properties.resource)) {
-                filter = this.createObservationFilter(properties);
                 // is observation streaming
                 const match = regex.exec(properties.resource);
                 let dataStream = new DataStream({
@@ -62,17 +61,30 @@ class SweApiReplayContext extends SweApiContext {
                     const obsFilter = this.createObservationFilter({
                         ...properties,
                         ...props,
+                        replaySpeed: undefined,
                         startTime: new Date(startTimestamp).toISOString(),
                         endTime: new Date(endTimestamp).toISOString()
                     });
-                    return dataStream.searchObservations(obsFilter, 1);
+                    return dataStream.searchObservations(obsFilter, 100000000);
                 }
             }
         }
     }
 
-    doTemporalRequest(properties, startTimestamp, endTimestamp) {
-        return this.replayFunction().next(properties, startTimestamp,endTimestamp);
+    async doTemporalRequest(properties, startTimestamp, endTimestamp) {
+        const data = await (await this.replayFunction(properties, startTimestamp, endTimestamp)).nextPage();
+        if(this.properties.responseFormat === 'application/om+json') {
+            let results = [];
+            for(let d of data) {
+                results.push({
+                    timestamp: d.timestamp,
+                    ...d.result
+                })
+            }
+            return results;
+        } else {
+            return data;
+        }
     }
 }
 

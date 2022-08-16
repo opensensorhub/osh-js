@@ -43,7 +43,6 @@ class Collection {
 
     async fetchData(offset) {
         const queryString = `${this.filter.toQueryString()}&offset=${offset}&limit=${this.pageSize}`;
-        console.log(queryString)
         const fullUrl = this.url + '?' + queryString;
 
         const jsonResponse = await fetch(fullUrl, {

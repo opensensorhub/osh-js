@@ -66,15 +66,23 @@ class SosGetResultReplayContext extends SosGetResultContext {
     // }
 
     async doTemporalRequest(properties, startTimestamp, endTimestamp) {
-        return this.connector.doRequest('', this.getQueryString({
-            ...properties,
-            startTime: new Date(startTimestamp).toISOString(),
-            endTime: new Date(endTimestamp).toISOString()
-        }));
+        const data =  await this.connector.doRequest('', this.getQueryString({
+                ...properties,
+                startTime: new Date(startTimestamp).toISOString(),
+                endTime: new Date(endTimestamp).toISOString()
+            }));
+        const decodedData = [];
+        for (let i = 0; i < data.length; i++) {
+            decodedData.push(...await this.parseData(data[i]));
+        }
+        return decodedData;
     }
 
     async parseData(messages) {
         return this.parser.parseDataBlock(messages);
+    }
+    isConnected() {
+        return true;
     }
 }
 

@@ -23,7 +23,7 @@ class SweApiHandler extends TimeSeriesHandler {
         if(properties.startTime === 'now') {
             return new SweApiRealtimeContext();
         } else {
-            return new SweApiRealtimeContext();
+            return new SweApiReplayContext();
         }
     }
 }

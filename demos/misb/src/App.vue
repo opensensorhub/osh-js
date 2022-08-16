@@ -75,7 +75,7 @@ export default {
 
     const dsReplaySpeed = 1.0;
     const timeOut = 3000;
-    const bufferingTime = 800;
+    const bufferingTime = 0;
 
     const commonDatasourceOpts = {
       endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
@@ -157,7 +157,7 @@ export default {
       replaySpeed: dsReplaySpeed,
       dataSources: [
         droneLocationDataSource,
-        droneVideoDataSource,
+        // droneVideoDataSource,
         droneOrientationDataSource,
         droneCameraOrientationDataSource,
         geoRefImageFrameDataSource,

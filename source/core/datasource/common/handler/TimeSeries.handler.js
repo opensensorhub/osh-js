@@ -20,6 +20,7 @@ import MqttConnector from "../../../connector/MqttConnector";
 import HttpConnector from "../../../connector/HttpConnector";
 import {isDefined} from "../../../utils/Utils";
 import {EventType} from "../../../event/EventType";
+import {Status} from "../../../connector/Status";
 
 class DelegateHandler {
     constructor(context) {
@@ -52,82 +53,75 @@ class DelegateReplayHandler extends DelegateHandler  {
     constructor(context) {
         super(context);
         this.interval = -1;
-        this.buffer = [];
-        this.batchSizeInMillis = 10000/2; // 10 sec
-        this.deltaTimeThreshold = 3000; // fetch if remaining only 3 sec of data
-        this.replaySpeed = 1;
-        this.context.onMessage = this.onMessage.bind(this);
-    }
-
-    async onMessage(message, format) {
-        const data = await this.context.parseData(message);
-        this.buffer.push(...data);
+        this.batchSizeInMillis = 10000; // 10 sec
+        this.fetchNextDataTreshold = 0.5; // 80%, fetch before the end
     }
 
     startLoop() {
-
         if(this.interval === -1) {
+            let replaySpeed = this.properties.replaySpeed || 1;
             let endTimestamp = new Date(this.properties.endTime).getTime();
             let tsRef = -1;
-            let tsRun = 0;
             let refClockTime = performance.now();
-            this.currentTimestamp = new Date(this.properties.startTime).getTime();
-
+            let buffer = [];
+            let nextOffsetTimestamp = new Date(this.properties.startTime).getTime();
+            let lastDataTimestamp = nextOffsetTimestamp;
             const existingRequest = new Set();
 
-            this.interval = setInterval(async () => {
-                // fetch if less or equal than deltaTimeThreshold
-                // console.log(this.buffer.length);
-                if (this.buffer.length === 0) {
-                    // console.log('fetch')
-                    //either fetch new batch or disconnect because there is no more data
-                    let deltaTimeToFetch = this.batchSizeInMillis;
-                    if ((deltaTimeToFetch + this.currentTimestamp) > endTimestamp) {
-                        deltaTimeToFetch = endTimestamp - this.currentTimestamp;
-                    }
-                    //TODO fetch data
-                    if(existingRequest.has(this.currentTimestamp)) {
-                        return;
-                    }
-                    console.log(`fetching ${new Date(this.currentTimestamp).toISOString()} -> ${new Date(this.currentTimestamp + deltaTimeToFetch).toISOString()}`);
-                    existingRequest.add(this.currentTimestamp);
-                    const data = await this.context.doTemporalRequest(this.properties, this.currentTimestamp, this.currentTimestamp + deltaTimeToFetch);
-                    for(let i=0; i < data.length; i++) {
-                        this.buffer.push(...await this.context.parseData(data[i]));
-                    }
+            let batchSizeInMillis = this.batchSizeInMillis * replaySpeed;
+            let fetchNextDataTreshold = batchSizeInMillis * this.fetchNextDataTreshold;
 
-                    this.currentTimestamp += deltaTimeToFetch;
-                    if (this.currentTimestamp >= endTimestamp) {
-                        console.log(`clearing interval: ${new Date(this.currentTimestamp).toISOString()} >= ${this.properties.endTime}`)
-                        clearInterval(this.interval); // end of stream, no more data
+            this.interval = setInterval(() => {
+                // fetch if less or equal than deltaTimeThreshold
+                if ( (lastDataTimestamp + fetchNextDataTreshold) >= nextOffsetTimestamp
+                    && !existingRequest.has(nextOffsetTimestamp )) { // workaround to use ASYNC function into setInterval, waiting for last temporal request if any
+
+                    //either fetch new batch or disconnect because there is no more data
+                    let deltaTimeToFetch = batchSizeInMillis;
+                    if ((deltaTimeToFetch + nextOffsetTimestamp) > endTimestamp) {
+                        deltaTimeToFetch = endTimestamp - nextOffsetTimestamp;
                     }
-                } else {
+                    console.warn(`fetching ${new Date(nextOffsetTimestamp).toISOString()} -> ${new Date(nextOffsetTimestamp + deltaTimeToFetch).toISOString()}`);
+                    existingRequest.add(nextOffsetTimestamp);
+                    this.context.doTemporalRequest(this.properties, nextOffsetTimestamp, nextOffsetTimestamp + deltaTimeToFetch).then(async data => {
+                        buffer = buffer.concat(data);
+                        nextOffsetTimestamp += deltaTimeToFetch;
+                    });
+
+                }
+                if(buffer.length > 0) {
                     if (tsRef === -1) {
-                        tsRef = this.buffer[0].timestamp;
-                    } else if (this.buffer[0].timestamp < tsRef) {
-                        tsRef = this.buffer[0].timestamp;
+                        tsRef = buffer[0].timestamp;
+                    } else if (buffer[0].timestamp < tsRef) {
+                        tsRef = buffer[0].timestamp;
                     }
                     // console.log(tsRef)
-                    const dClock = (performance.now() - refClockTime) * this.replaySpeed;
-                    tsRun = tsRef + dClock;
-                    const dTs = (this.buffer[0].timestamp - tsRef);
+                    const dClock = (performance.now() - refClockTime) * replaySpeed;
+                    const dTs = (buffer[0].timestamp - tsRef);
                     // console.log(dTs, dClock);
                     if (dTs <= dClock) {
-                        // console.log('shift data');
-                        this.handleData(this.buffer.shift());
+                        lastDataTimestamp = buffer[0].timestamp;
+                        this.handleData(buffer.shift());
                     }
                 }
+
+                if (nextOffsetTimestamp >= endTimestamp && buffer.length === 0) {
+                    console.log(`clearing interval: ${new Date(nextOffsetTimestamp).toISOString()} >= ${this.properties.endTime}`)
+                    clearInterval(this.interval); // end of stream, no more data
+                }
             },5);
+            this.context.onChangeStatus(Status.CONNECTED);
         }
     }
 
     connect() {
         this.startLoop();
-        // const data = this.context.doTemporalHttpRequest(this.properties, new Date(this.properties.startTime).getTime(), new Date(this.properties.endTime).getTime());
     }
 
     async disconnect() {
-        // clearInterval(this.interval);
+        clearInterval(this.interval);
+        this.interval = -1;
+        this.context.onChangeStatus(Status.DISCONNECTED);
     }
 
 

@@ -39,7 +39,7 @@
           startTime: '2015-12-19T21:04:30.231Z',
           endTime: '2015-12-19T21:09:19.675Z',
           // endTime: '2015-12-19T21:04:32.00Z',
-          replaySpeed: 1
+          replaySpeed: 5
         });
         this.view = new VideoView({
           container: 'container',
