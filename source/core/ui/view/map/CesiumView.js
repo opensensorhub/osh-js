@@ -985,7 +985,7 @@ class CesiumView extends MapView {
         const DTR = Math.PI / 180;
 
         switch (props.positionMode) {
-            case ImageDrapingPositionMode.LONLATALT_EULER_ANGLES: {
+            case ImageDrapingPositionMode.LONLATALT_WITH_EULER_ANGLES: {
                 // Get ECEF position from longitude, latitude, and altitude.
                 camPos = Cartesian3.fromDegrees(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
                 // Start building the camera rotation matrix. Start with the NED transformation.
@@ -1004,7 +1004,7 @@ class CesiumView extends MapView {
                 break;
             }
 
-            case ImageDrapingPositionMode.ECEF_MATRICES: {
+            case ImageDrapingPositionMode.ECEF_WITH_MATRICES: {
                 camPos = new Cartesian3(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
                 if (props.platformOrientation) {
                     Matrix3.clone(props.platformOrientation, camRot);
@@ -1017,7 +1017,7 @@ class CesiumView extends MapView {
                 break;
             }
 
-            case ImageDrapingPositionMode.ECEF_QUATERNIONS: {
+            case ImageDrapingPositionMode.ECEF_WITH_QUATERNIONS: {
                 camPos = new Cartesian3(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
                 if (props.platformOrientation) {
                     Matrix3.fromQuaternion(props.platformOrientation, camRot);
@@ -1131,7 +1131,7 @@ class CesiumView extends MapView {
         // mode specified to the FrustumLayer constructor.
         let origin, quat;
         switch (properties.positionMode) {
-            case FrustumPositionMode.LONLATALT_EULER_ANGLES:    
+            case FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES:    
                 origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
                 Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
         
@@ -1153,14 +1153,14 @@ class CesiumView extends MapView {
                 quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
                 break;
 
-            case FrustumPositionMode.ECEF_MATRICES:
+            case FrustumPositionMode.ECEF_WITH_MATRICES:
                 origin = properties.origin;
                 Quaternion.fromRotationMatrix(properties.platformOrientation, this.platformQuat);
                 Quaternion.fromRotationMatrix(properties.sensorOrientation, this.sensorQuat);
                 quat = Quaternion.multiply(this.platformQuat, this.sensorQuat, new Quaternion());
                 break;
 
-            case FrustumPositionMode.ECEF_QUATERNIONS:
+            case FrustumPositionMode.ECEF_WITH_QUATERNIONS:
                 origin = properties.origin;
                 this.platformQuat = properties.platformOrientation;
                 this.sensorQuat = properties.sensorOrientation;

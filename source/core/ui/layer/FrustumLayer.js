@@ -13,7 +13,7 @@ const FrustumPositionMode = Object.freeze({
      * orientation is provided as heading, pitch, and roll, in degrees; and
      * sensor orientation is provided as yaw, pitch, and roll, in degrees.
      */
-    LONLATALT_EULER_ANGLES: 1,
+    LONLATALT_WITH_EULER_ANGLES: 1,
 
     /**
      * Constant indicating that the position provided to the frustum layer is
@@ -21,14 +21,14 @@ const FrustumPositionMode = Object.freeze({
      * the platform and sensor orientations are provided as 3x3 rotation
      * matrices.
      */
-    ECEF_MATRICES: 2,
+    ECEF_WITH_MATRICES: 2,
 
     /**
      * Constant indicating that the position provided to the frustum layer is
      * in the form of ECEF 3-D coordinates (in meters). This also indicates that
      * the platform and sensor orientations are provided as quaternions.
      */
-    ECEF_QUATERNIONS: 3,
+    ECEF_WITH_QUATERNIONS: 3,
 });
 
 class FrustumLayer extends Layer {
@@ -39,9 +39,8 @@ class FrustumLayer extends Layer {
         this.type = 'frustum';
         this.props.frustumId = randomUUID();
 
-        // Default position mode is LONLATALT_EULER_ANGLES, if not specified.
-        // Old code should continue to work as-is.
-        this.props.positionMode = this.properties.positionMode || FrustumPositionMode.LONLATALT_EULER_ANGLES;
+        // Default position mode is LONLATALT_WITH_EULER_ANGLES, if not specified.
+        this.props.positionMode = this.properties.positionMode || FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES;
 
         this.initDynamicProp("color", "rgb(255,0,0)");
         this.initDynamicProp("opacity", 0.5);

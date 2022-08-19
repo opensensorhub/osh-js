@@ -29,7 +29,7 @@ import Layer from "./Layer.js";
    * orientation is provided as heading, pitch, and roll, in degrees; and
    * gimbal orientation is provided as yaw, pitch, and roll, in degrees.
    */
-  LONLATALT_EULER_ANGLES: 1,
+  LONLATALT_WITH_EULER_ANGLES: 1,
 
   /**
    * Constant indicating that the position provided to the draping layer is
@@ -37,14 +37,14 @@ import Layer from "./Layer.js";
    * the platform and gimbal orientations are provided as 3x3 rotation
    * matrices.
    */
-  ECEF_MATRICES: 2,
+  ECEF_WITH_MATRICES: 2,
 
   /**
    * Constant indicating that the position provided to the draping layer is
    * in the form of ECEF 3-D coordinates (in meters). This also indicates that
    * the platform and gimbal orientations are provided as quaternions.
    */
-  ECEF_QUATERNIONS: 3,
+  ECEF_WITH_QUATERNIONS: 3,
 });
 
 
@@ -98,58 +98,53 @@ class ImageDrapingLayer extends Layer {
     /**
      * @param {Object} properties
      *
-     * @param {Number|undefined} positionMode An ImageDrapingPositionMode value indicating how the camera's position
-     *   and orientation will be specified. If left unspecified, defaults to LONLATALT_EULER_ANGLES.
+     * @param {Number} [properties.positionMode] An ImageDrapingPositionMode value indicating how the camera's
+     *   position and orientation will be specified. If left unspecified, defaults to LONLATALT_WITH_EULER_ANGLES.
      *
-     * @param {Cartesian3|undefined} properties.platformLocation Location of the camera. The values are either
-     *   lon/lat/alt or ECEF, depending on the value of positionMode.
-     * @param {Function|{handler:Function,dataSourceIds:Array<string>}|undefined} properties.getPlatformLocation
+     * @param {Cartesian3} [properties.platformLocation] Location of the camera. The values are either
+     *   lon/lat/alt or ECEF, depending on the value of positionMode. Either this property or getPlatformLocation
+     *   must be specified.
+     * @param {Function|{handler:Function,dataSourceIds:Array<string>}} [properties.getPlatformLocation]
      * 
-     * @param {Matrix3|{heading:number,pitch:number,roll:number}|undefined} properties.platformOrientation
-     * @param {Function|undefined} properties.getPlatformOrientation
+     * @param {Matrix3|{heading:number,pitch:number,roll:number}} [properties.platformOrientation] Orientation of the
+     *   platform that carries the imaging sensor (camera). Depending on the positionMode, this can either be a
+     *   matrix expressing a rotation in ECEF space or an object with heading, pitch, and roll expressed in degrees.
+     * @param {Function|{handler:Function,dataSourceIds:Array<string>}} [properties.getPlatformOrientation]
      *
-     * @param {Matrix3|{heading:number,pitch:number,roll:number}|undefined} properties.gimbalOrientation
-     * @param {Function} properties.getGimbalOrientation
+     * @param {Matrix3|{heading:number,pitch:number,roll:number}} [properties.gimbalOrientation]
+     * @param {Function|{handler:Function,dataSourceIds:Array<string>}} [properties.getGimbalOrientation]
      *
-     * @param {Object} properties.cameraModel
+     * @param {Object} [properties.cameraModel]
      * @param {Matrix3} properties.cameraModel.camProj 3x3 matrix that has f_x, f_y, and 1 on the main diagonal, and
      *   c_x, c_y, and 1 as the rightmost column. f_x and f_y are the focal length, in pixels, in the x and y direction.
      *   c_x and c_y are the coordinates of the principal point.
      * @param {Cartesian3} properties.cameraModel.camDistR Radial distortion coefficients.
      * @param {Cartesian2} properties.cameraModel.camDistT Tangential distortion coefficients.
-     * @param {Function} properties.getCameraModel
+     * @param {Function|{handler:Function,dataSourceIds:Array<string>}} [properties.getCameraModel]
      *
-     * @param {HTMLElement} properties.imageSrc Source canvas
-     * @param {Function} properties.getImageSrc
+     * @param {HTMLElement} [properties.imageSrc] Source canvas
+     * @param {Function|{handler:Function,dataSourceIds:Array<string>}} [properties.getImageSrc]
      *
-     * @param {boolean|undefined} snapshot
-     * @param {Function} properties.getSnapshot
+     * @param {boolean} [properties.snapshot] If true, each new image frame will result in a new geometry being added
+     *   to the 3-D scene. (Use caution with this property as it can easily overwhelm the renderer.)
+     * @param {Function} [properties.getSnapshot]
      *
      * @param properties
      */
     constructor(properties) {
         super(properties);
         this.type = 'drapedImage';
-
-        this.properties = properties;
-        this.props.cameraModel = null;
-        this.props.imageSrc = null;
-        this.props.getSnapshot = null;
-        this.props.platformLocation = null;
-        this.props.platformOrientation = null;
-        this.props.gimbalOrientation = null;
         this.props.drapedImageId = 'drapedImageId';
 
-        // Default position mode is LONLATALT_EULER_ANGLES, if not specified.
-        // Old code should continue to work as-is.
-        this.props.positionMode = this.properties.positionMode || ImageDrapingPositionMode.LONLATALT_EULER_ANGLES;
+        // Default position mode is LONLATALT_WITH_EULER_ANGLES, if not specified.
+        this.props.positionMode = this.properties.positionMode || ImageDrapingPositionMode.LONLATALT_WITH_EULER_ANGLES;
 
-        this.initDynamicProp("platformLocation");
-        this.initDynamicProp("platformOrientation");
-        this.initDynamicProp("gimbalOrientation");
-        this.initDynamicProp("cameraModel");
-        this.initDynamicProp("imageSrc");
-        this.initDynamicProp("snapshot");
+        this.initDynamicProp("platformLocation", null);
+        this.initDynamicProp("platformOrientation", null);
+        this.initDynamicProp("gimbalOrientation", null);
+        this.initDynamicProp("cameraModel", null);
+        this.initDynamicProp("imageSrc", null);
+        this.initDynamicProp("snapshot", false);
 
         this.saveState();
     }
