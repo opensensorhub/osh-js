@@ -58,8 +58,8 @@ class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
         this.interval = -1;
-        this.batchSizeInMillis = 1200000; // 10 sec
-        this.fetchNextDataThreshold = 0.8; // 80%, fetch before the end
+        this.batchSizeInMillis = 10000; // 10 sec
+        this.fetchNextDataThreshold = 0.5; // 80%, fetch before the end
         this.status = {
             cancel: false
         }
@@ -83,7 +83,7 @@ class DelegateReplayHandler extends DelegateHandler {
             console.warn(`fetching ${new Date(nextOffsetTimestamp).toISOString()} -> ` +
                 `${new Date(nextOffsetTimestamp + durationToFetch).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
             this.promise = this.context.doTemporalRequest(this.properties, nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch, this.handleData.bind(this), this.status);
-            /*this.promise.then(() => {
+            this.promise.then(() => {
                 nextOffsetTimestamp += durationToFetch;
 
                 let lastOffsetTimestamp;
@@ -120,7 +120,7 @@ class DelegateReplayHandler extends DelegateHandler {
                         await this.promise;
                     }
                 }
-            });*/
+            });
             assertDefined(this.timeTopic, 'TimeTopic not defined');
         }
     }

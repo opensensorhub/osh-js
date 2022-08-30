@@ -67,7 +67,7 @@ class SweApiReplayContext extends SweApiContext {
                         startTime: new Date(startTimestamp).toISOString(),
                         endTime: new Date(endTimestamp).toISOString()
                     });
-                    return dataStream.searchObservations(obsFilter, 10);
+                    return dataStream.searchObservations(obsFilter, 25);
                 }
             }
         }

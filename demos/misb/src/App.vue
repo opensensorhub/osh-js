@@ -74,7 +74,7 @@ export default {
     const tls = true;
 
     const dsReplaySpeed = 3.0;
-    const timeOut = 800;
+    const timeOut = 3000;
     const bufferingTime = 0;
 
     const commonDatasourceOpts = {

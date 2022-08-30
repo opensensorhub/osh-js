@@ -8,7 +8,6 @@ class DataSynchronizerAlgo {
         this.tsRun = 0;
         this.replaySpeed = replaySpeed;
         this.timerResolution = timerResolution;
-        this.interval = null;
         this.heap = new BinaryHeap((d0,d1) => {
             if(d0.data.data.timestamp === d1.data.data.timestamp) {
                 return true;
@@ -31,12 +30,9 @@ class DataSynchronizerAlgo {
         }
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
 
-        ds.latency = 0;
-        // ds.dataBuffer.push(dataBlock);
         this.heap.insert({
             id: dataSourceId,
-            data: dataBlock,
-            latency: 0
+            data: dataBlock
         });
 
         if(!isDefined(this.interval)) {
@@ -55,7 +51,6 @@ class DataSynchronizerAlgo {
         for (let currentDsId in this.dataSourceMap) {
             const currentDs = this.dataSourceMap[currentDsId];
             currentDs.dataBuffer = [];
-            currentDs.startBufferingTime = -1;
             currentDs.latency=0;
             currentDs.status= Status.DISCONNECTED;
             currentDs.version = undefined;
@@ -67,21 +62,8 @@ class DataSynchronizerAlgo {
         let tsRef = -1;
         let clockTimeRef = performance.now();
 
-        // get reference start timestamp
-        // the reference start timestamp should the oldest one
-        // let currentDs;
-        // for (let currentDsId in this.dataSourceMap) {
-        //     currentDs = this.dataSourceMap[currentDsId];
-        //     if (currentDs.dataBuffer.length > 0) {
-        //         tsRef = (tsRef === -1 || currentDs.dataBuffer[0].data.timestamp < tsRef) ? currentDs.dataBuffer[0].data.timestamp :
-        //             tsRef;
-        //     }
-        // }
-
-        if(this.heap.size() > 0) {
-            const minElement = this.heap.findMin();
-            tsRef = (tsRef === -1 || minElement.data.data.timestamp < tsRef) ? minElement.data.data.timestamp : tsRef;
-        }
+        const minElement = this.heap.findMin();
+        tsRef = (tsRef === -1 || !isDefined(minElement) || minElement.data.data.timestamp < tsRef) ? minElement.data.data.timestamp : tsRef;
 
         this.interval = setInterval(() => {
             // 1) return the oldest data if any
@@ -97,50 +79,32 @@ class DataSynchronizerAlgo {
      * @param refClockTime - the absolute diff time really spent
      */
     computeNextData(tsRef, refClockTime) {
-        let currentDs;
+        if(this.heap.size() > 0 ) {
+            const minElement = this.heap.findMin();
+            let currentDs;
 
-        // compute max latency
-        let maxLatency = 0;
-        let minLatency = 0;
-        for (let currentDsId in this.dataSourceMap) {
-            currentDs = this.dataSourceMap[currentDsId];
+            // compute max latency
+            let maxLatency = 0;
+            let minLatency = 0;
+            currentDs = this.dataSourceMap[minElement.id];
             if (currentDs.latency > 0) {
                 let latency = Math.min(currentDs.latency, currentDs.timeOut);
                 maxLatency = (latency > maxLatency) ? latency : maxLatency;
                 minLatency = (currentDs.latency < minLatency) ? currentDs.latency : minLatency;
             }
-        }
-        maxLatency *= this.replaySpeed;
-        minLatency *= this.replaySpeed;
+            maxLatency *= this.replaySpeed;
+            minLatency *= this.replaySpeed;
 
-        const dClock = (performance.now() - refClockTime)  * this.replaySpeed;
-        this.tsRun = tsRef + dClock;
-        // compute next data to return
-        // for (let currentDsId in this.dataSourceMap) {
-        if(this.heap.size() > 0 ) {
-            const minElement = this.heap.findMin();
-            // console.log(minElement.data);
-            // currentDs = this.dataSourceMap[currentDsId];
-            // if (currentDs.dataBuffer.length > 0) {
+            const dClock = (performance.now() - refClockTime)  * this.replaySpeed;
+            this.tsRun = tsRef + dClock;
+
+            // compute next data to return
             const dTs = (minElement.data.data.timestamp - tsRef);
             const dClockAdj = dClock - maxLatency;
             // we use an intermediate object to store the data to shift because we want to return the oldest one
             // only
-            console.log(dTs,dClockAdj)
-            // console.log(new Date(minElement.data.data.timestamp).toISOString());
             if (dTs <= dClockAdj) {
-                // console.log('inside')
-                // no other one to compare
-                // if (currentDsToShift === null) {
-                //     currentDsToShift = currentDs;
-                // } else {
-                //     take the oldest data
-                // currentDsToShift = (currentDsToShift.dataBuffer[0].data.timestamp < currentDs.dataBuffer[0].data.timestamp) ?
-                //     currentDsToShift : currentDs;
-                // }
                 this.heap.extractMin();
-                // let rec = currentDsToShift.dataBuffer.shift();
-
                 // add latency flag to data record before we dispatch it
                 // this is relative latency in millis compared to the DS with the lowest latency
                 // so it is accurate even if local device time is not set properly
@@ -149,20 +113,6 @@ class DataSynchronizerAlgo {
                 return true;
             }
         }
-        // }
-        // }
-
-        // finally pop the data from DS queue
-        // if (currentDsToShift !== null) {
-        //     let rec = currentDsToShift.dataBuffer.shift();
-
-            // add latency flag to data record before we dispatch it
-            // this is relative latency in millis compared to the DS with the lowest latency
-            // so it is accurate even if local device time is not set properly
-            // rec['@latency'] = currentDs.latency - minLatency;
-            // this.onData(currentDsToShift.id, rec);
-            // return true;
-        // }
         return false;
     }
 
@@ -210,7 +160,7 @@ class DataSynchronizerAlgo {
     close() {
         if (isDefined(this.interval)) {
             clearInterval(this.interval);
-            this.interval = undefined;
+            this.interval = null;
         }
         if(isDefined(this.timeoutBuffering)) {
             clearTimeout(this.timeoutBuffering);
@@ -222,3 +172,4 @@ class DataSynchronizerAlgo {
 }
 
 export default DataSynchronizerAlgo;
+
