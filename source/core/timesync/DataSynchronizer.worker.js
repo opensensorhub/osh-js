@@ -1,7 +1,6 @@
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
 import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
 import {EventType} from "../event/EventType.js";
-import {debounce, throttle} from "../utils/Utils";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -14,10 +13,14 @@ const dataSources = {};
 let timeBroadcastChannel = null;
 let topicTime;
 let topicData;
+let replaySpeed;
+let debounceMasterTime = 150;
 
 self.onmessage = (event) => {
     let data = undefined;
     if(event.data.message === 'init') {
+        replaySpeed = event.data.replaySpeed;
+        debounceMasterTime = debounceMasterTime * replaySpeed;
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
             event.data.dataSources,
             event.data.replaySpeed,
@@ -110,6 +113,8 @@ function addDataSource(dataSource) {
     }
 }
 
+let lastCurrentTime = {};
+
 async function onData(dataSourceId, dataBlock) {
     self.currentTime = dataBlock.data.timestamp;
     bcChannels[dataSourceId].postMessage({
@@ -119,11 +124,15 @@ async function onData(dataSourceId, dataBlock) {
         }
     );
 
-    timeBroadcastChannel.postMessage({
-        timestamp: dataBlock.data.timestamp,
-        dataSourceId: dataSourceId,
-        type: EventType.TIME
-    });
+    const perf = performance.now();
+    if(!(dataSourceId in lastCurrentTime) || (perf - lastCurrentTime[dataSourceId] > debounceMasterTime)) {
+        lastCurrentTime[dataSourceId] = perf;
+        timeBroadcastChannel.postMessage({
+            timestamp: dataBlock.data.timestamp,
+            dataSourceId: dataSourceId,
+            type: EventType.TIME
+        });
+    }
 }
 
 self.onclose = function() {
