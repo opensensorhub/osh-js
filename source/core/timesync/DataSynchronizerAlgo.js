@@ -8,16 +8,19 @@ class DataSynchronizerAlgo {
         this.tsRun = 0;
         this.replaySpeed = replaySpeed;
         this.timerResolution = timerResolution;
-        this.heap = new BinaryHeap((d0,d1) => {
-            if(d0.data.data.timestamp === d1.data.data.timestamp) {
-                return true;
-            } else return d0.data.data.timestamp < d1.data.data.timestamp
-        });
+        this.heap = this.createHeap();
         for (let ds of dataSources) {
             this.addDataSource(ds);
         }
     }
 
+    createHeap() {
+        return new BinaryHeap((d0,d1) => {
+            if(d0.data.data.timestamp === d1.data.data.timestamp) {
+                return true;
+            } else return d0.data.data.timestamp < d1.data.data.timestamp
+        });
+    }
     push(dataSourceId, dataBlock) {
         const ds = this.dataSourceMap[dataSourceId];
         if (!this.checkVersion(ds, dataBlock)) {
@@ -41,16 +44,11 @@ class DataSynchronizerAlgo {
     }
 
     reset() {
-        this.heap = new BinaryHeap((d0,d1) => {
-            if(d0.data.data.timestamp === d1.data.data.timestamp) {
-                return true;
-            } else return d0.data.data.timestamp < d1.data.data.timestamp
-        });
+        this.heap = this.createHeap();
         console.log('reset synchronizer algo')
         this.close();
         for (let currentDsId in this.dataSourceMap) {
             const currentDs = this.dataSourceMap[currentDsId];
-            currentDs.dataBuffer = [];
             currentDs.latency=0;
             currentDs.status= Status.DISCONNECTED;
             currentDs.version = undefined;
@@ -118,12 +116,11 @@ class DataSynchronizerAlgo {
 
     /**
      * Add dataSource to be synchronized
-     * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
+     * @param {DataSource} dataSource - the dataSource to synchronize
      */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
             timeOut: dataSource.timeOut || 0,
-            dataBuffer: [],
             startBufferingTime: -1,
             id: dataSource.id,
             timedOut: false,
