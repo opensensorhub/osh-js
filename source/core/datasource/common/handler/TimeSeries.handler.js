@@ -97,7 +97,6 @@ class DelegateReplayHandler extends DelegateHandler {
                     }
                     const dTime = nextOffsetTimestamp - currentDataTimestamp;
 
-                    // console.log(new Date(nextOffsetTimestamp).toISOString(), new Date(currentDataTimestamp).toISOString(), dTime)
                     if (dTime <= fetchNextDataThreshold) {
                         //either fetch new batch or disconnect because there is no more data
                         let deltaTimeToFetch = batchSizeInMillis;
@@ -106,14 +105,13 @@ class DelegateReplayHandler extends DelegateHandler {
                         }
                         let offsetTimestamp = nextOffsetTimestamp;
                         nextOffsetTimestamp += deltaTimeToFetch;
-                        // await this.promise;
+                        await this.promise;
                         if(nextOffsetTimestamp === lastOffsetTimestamp) {
                             // already fetched
                             return;
                         } else {
                             lastOffsetTimestamp = nextOffsetTimestamp;
                         }
-                        await this.promise;
                         console.warn(`fetching ${new Date(offsetTimestamp).toISOString()} -> ` +
                                         `${new Date(offsetTimestamp + deltaTimeToFetch).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
                         this.promise = this.context.doTemporalRequest(this.properties, offsetTimestamp, offsetTimestamp + deltaTimeToFetch, this.handleData.bind(this), this.status);

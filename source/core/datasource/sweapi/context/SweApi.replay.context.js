@@ -67,7 +67,7 @@ class SweApiReplayContext extends SweApiContext {
                         startTime: new Date(startTimestamp).toISOString(),
                         endTime: new Date(endTimestamp).toISOString()
                     });
-                    return dataStream.searchObservations(obsFilter, 25);
+                    return dataStream.searchObservations(obsFilter, 30);
                 }
             }
         }
@@ -99,45 +99,6 @@ class SweApiReplayContext extends SweApiContext {
                 }
             }
             resolve();
-            /*const that = this;
-            return new Promise(resolve => {
-                let url = `ogct17.georobotix.io:8443/sensorhub/api/datastreams/uxzna8pldpiv/observations?phenomenonTime=${new Date(startTimestamp).toISOString()}/${new Date(endTimestamp).toISOString()}&format=application/swe%2Bbinary&offset=0&limit=100000000`;
-               /*
-                let ws = new WebSocket(`wss://ogct17.georobotix.io:8443/sensorhub/api/datastreams/uxzna8pldpiv/observations?phenomenonTime=${new Date(startTimestamp).toISOString()}/${new Date(endTimestamp).toISOString()}&format=application/swe%2Bbinary&offset=0&limit=100000000`);
-                ws.binaryType = 'arraybuffer';
-                const results = [];
-
-                ws.onmessage = async function (event) {
-                    if (event.data.byteLength > 0) {
-                        console.log('ici')
-                        results.push((await that.dataStream.sweApiResultParser.parseDataBlock(event.data, 'application/swe+binary'))[0]);
-                    }
-                };
-                ws.onclose = (event) => {
-                    console.warn('WebSocket stream closed: ',event.reason, event.code);
-                    if(event.code !== 1000 && !this.closed) {
-                    } else {
-                        console.log(results);
-                        resolve(results);
-                    }
-                };
-                fetch(`https://${url}`, {
-                    method: 'GET',
-                    headers: {}
-                }).then((response) => {
-                    if (!response.ok) {
-                        const err = new Error(`Got ${response.status} response from ${url}`);
-                        err.response = response;
-                        throw err;
-                    }
-                    return response.arrayBuffer();
-                }).then(async encodedData => {
-                    console.log(encodedData);
-                    const decodedData = await that.dataStream.sweApiResultParser.parseDataBlock(encodedData, 'application/swe+binary');
-                    console.log(decodedData);
-                    resolve(decodedData);
-                })
-            });*/
         });
     }
 }
