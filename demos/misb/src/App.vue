@@ -69,7 +69,7 @@ export default {
   },
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
-    const END_TIME = '2012-06-29T14:37:44.033333251Z';
+    const END_TIME = '2012-06-29T14:32:54.033333251Z';
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
@@ -112,7 +112,7 @@ export default {
     const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
       resource: '/datastreams/ei5nsp8guy5y/observations',
-      responseFormat: 'application/om+json',
+      responseFormat: 'application/swe+json',
     });
 
     const droneCameraOrientationDataSource = new SweApiDatasource('MISB UAS - Gimbal Attitude', {
@@ -157,7 +157,7 @@ export default {
       replaySpeed: dsReplaySpeed,
       dataSources: [
         droneLocationDataSource,
-        // droneVideoDataSource,
+        droneVideoDataSource,
         droneOrientationDataSource,
         droneCameraOrientationDataSource,
         geoRefImageFrameDataSource,

@@ -84,12 +84,12 @@ class FFMPEGView extends CanvasView {
         }
     }
 
-    updateVideo(props) {
+    async updateVideo(props) {
         if (!this.skipFrame) {
             if (this.decodeWorker == null) {
                 this.initFFMPEG_DECODER_WORKER(props.frameData.compression);
             }
-            this.decode(
+            return this.decode(
                 props.frameData.data.length,
                 props.frameData.data,
                 props.timestamp,

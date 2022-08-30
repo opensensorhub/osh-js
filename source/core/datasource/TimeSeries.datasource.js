@@ -88,7 +88,8 @@ class TimeSeriesDatasource extends DataSource {
                 message: 'topics',
                 topics: {
                     data: topic,
-                    time: this.getTimeTopicId()
+                    time: this.getTimeTopicId(),
+                    sync: timeSync.getTimeTopicId()
                 },
             }, resolve);
         });

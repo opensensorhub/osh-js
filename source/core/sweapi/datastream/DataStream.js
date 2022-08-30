@@ -53,7 +53,7 @@ class DataStream extends SensorWebApi {
             callback(dataBlock);
         }
 
-        this.stream().doRequest(
+        return this.stream().doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
             observationFilter.toQueryString(),
             'arraybuffer'

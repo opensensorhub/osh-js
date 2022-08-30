@@ -4,19 +4,12 @@ import {Status} from "../connector/Status.js";
 class DataSynchronizerAlgo {
     constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
         this.dataSourceMap = {};
-        this.bufferingTime = 1000;
-        this.startBufferingTime = -1;
         this.tsRun = 0;
         this.replaySpeed = replaySpeed;
         this.timerResolution = timerResolution;
-        let maxBufferingTime = -1;
-
+        this.interval = null;
         for (let ds of dataSources) {
             this.addDataSource(ds);
-            maxBufferingTime = ds.bufferingTime > maxBufferingTime ? ds.bufferingTime : maxBufferingTime;
-        }
-        if (maxBufferingTime !== -1) {
-            this.bufferingTime = maxBufferingTime;
         }
     }
 
@@ -26,13 +19,6 @@ class DataSynchronizerAlgo {
             return;
         }
 
-        if (this.startBufferingTime === -1) {
-            console.log(`synchronizer buffering data for ${this.bufferingTime}ms..`);
-            this.startBufferingTime = performance.now();
-            // start iterating on dataBlock after bufferingTime
-            this.timeoutBuffering = setTimeout(() => this.processData(), this.bufferingTime);
-        }
-
         let latency = 0;
         if (this.tsRun > 0) {
             latency = this.tsRun - dataBlock.data.timestamp;
@@ -40,6 +26,10 @@ class DataSynchronizerAlgo {
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
 
         ds.dataBuffer.push(dataBlock);
+
+        if(!isDefined(this.interval)) {
+            this.processData();
+        }
     }
 
     reset() {
@@ -54,14 +44,9 @@ class DataSynchronizerAlgo {
             currentDs.version = undefined;
         }
         this.tsRun = 0;
-        this.startBufferingTime = -1;
     }
 
     processData() {
-        // the timeout has been cancelled
-        if(!isDefined(this.timeoutBuffering)) {
-            return;
-        }
         let tsRef = -1;
         let clockTimeRef = performance.now();
 
@@ -109,7 +94,6 @@ class DataSynchronizerAlgo {
 
         const dClock = (performance.now() - refClockTime) * this.replaySpeed;
         this.tsRun = tsRef + dClock;
-
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
@@ -151,7 +135,6 @@ class DataSynchronizerAlgo {
      */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
-            bufferingTime: dataSource.bufferingTime,
             timeOut: dataSource.timeOut || 0,
             dataBuffer: [],
             startBufferingTime: -1,
@@ -190,7 +173,7 @@ class DataSynchronizerAlgo {
     close() {
         if (isDefined(this.interval)) {
             clearInterval(this.interval);
-            this.interval = null;
+            this.interval = undefined;
         }
         if(isDefined(this.timeoutBuffering)) {
             clearTimeout(this.timeoutBuffering);

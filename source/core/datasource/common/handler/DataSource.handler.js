@@ -135,13 +135,7 @@ class DataSourceHandler {
             ...this.properties,
             ...properties
         };
-        // create new connector?
-        // this.connector.close();
-        // await this.createDataConnector(this.properties);
-        // update version for next packets
         this.version++;
-        // rebind connector function
-        // await this.setUpConnector(this.connector);
         this.connect();
     }
 

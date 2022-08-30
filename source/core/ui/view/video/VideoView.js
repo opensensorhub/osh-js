@@ -75,7 +75,7 @@ class VideoView extends View {
                 if(!isDefined(this.videoView)) {
                     this.createVideoView(values[i].frameData.compression.toLowerCase());
                 }
-                this.videoView.updateVideo(values[i]);
+                await this.videoView.updateVideo(values[i]);
             }
         }
     }

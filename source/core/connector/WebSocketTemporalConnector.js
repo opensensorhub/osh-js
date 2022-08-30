@@ -15,6 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import WebSocketConnector from "./WebSocketConnector";
+import {isDefined} from "../utils/Utils";
+import {Status} from "./Status";
 
 /**
  * Defines the WebSocketTemporalConnector to connect to a remote server by creating a WebSocket channel.
@@ -38,6 +40,72 @@ import WebSocketConnector from "./WebSocketConnector";
 
 
 class WebSocketTemporalConnector extends WebSocketConnector {
+
+    /**
+     * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
+     * the main thread.
+     */
+    doRequest(extraUrl = this.extraUrl,queryString= this.queryString) {
+        return new Promise(async (resolve, reject) => {
+            if (!this.init) {
+                this.extraUrl = extraUrl;
+                this.queryString = queryString;
+                let fullUrl = this.getUrl() + extraUrl;
+
+                if (isDefined(queryString)) {
+                    fullUrl += '?' + queryString;
+                }
+
+                this.closed = false;
+                this.init = true;
+                //creates Web Socket
+                this.ws = new WebSocket(fullUrl);
+                this.ws.binaryType = 'arraybuffer';
+                this.checkStatus(Status.CONNECTING);
+                console.warn('WebSocket stream connecting');
+
+                let results = [];
+
+                this.ws.onopen = function (event) {
+                    this.checkAndClearReconnection();
+                    this.checkStatus(Status.CONNECTED);
+                    console.warn('WebSocket stream connected');
+                }.bind(this);
+
+                this.ws.onmessage = function (event) {
+                    this.lastReceiveTime = Date.now();
+                    //callback data on message received
+                    if (event.data.byteLength > 0) {
+                        results.push(event.data);
+                    }
+                }.bind(this);
+
+                // closes socket if any errors occur
+                this.ws.onerror = function (event) {
+                    console.error('WebSocket stream error');
+                    this.checkStatus(Status.CLOSED_ERROR);
+                    this.init = false;
+                    this.lastReceiveTime = -1;
+                    this.createReconnection();
+                }.bind(this);
+
+                this.ws.onclose = (event) => {
+                    console.warn('WebSocket stream closed: ', event.reason, event.code);
+                    if (event.code !== 1000 && !this.closed) {
+                        this.checkStatus(Status.CLOSED_ERROR);
+                        this.createReconnection();
+                    } else {
+                        this.disconnect();
+                    }
+                    resolve(results);
+                };
+                if (this.reconnectionInterval !== -1) {
+                    clearInterval(this.reconnectionInterval);
+                    this.reconnectionInterval = -1;
+                }
+            }
+        });
+    }
 
     /**
      * Disconnects and close the websocket.
