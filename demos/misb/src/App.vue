@@ -69,12 +69,12 @@ export default {
   },
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
-    const END_TIME = '2012-06-29T14:32:54.033333251Z';
+    const END_TIME = '2012-06-29T14:36:54.033333251Z';
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 1.0;
-    const timeOut = 3000;
+    const dsReplaySpeed = 3.0;
+    const timeOut = 800;
     const bufferingTime = 0;
 
     const commonDatasourceOpts = {

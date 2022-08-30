@@ -43,7 +43,6 @@ class DataSourceContext {
     }
 
     handleData(data) {
-        console.log(ha)
     }
 
     isConnected() {

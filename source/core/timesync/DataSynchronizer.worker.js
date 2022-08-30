@@ -1,6 +1,7 @@
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
 import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
 import {EventType} from "../event/EventType.js";
+import {debounce, throttle} from "../utils/Utils";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -124,7 +125,6 @@ async function onData(dataSourceId, dataBlock) {
         type: EventType.TIME
     });
 }
-
 
 self.onclose = function() {
     dataSynchronizerAlgo.close();

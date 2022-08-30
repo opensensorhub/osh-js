@@ -1,5 +1,6 @@
 import {isDefined} from "../utils/Utils.js";
 import {Status} from "../connector/Status.js";
+import BinaryHeap from './BinaryHeap';
 
 class DataSynchronizerAlgo {
     constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
@@ -8,6 +9,11 @@ class DataSynchronizerAlgo {
         this.replaySpeed = replaySpeed;
         this.timerResolution = timerResolution;
         this.interval = null;
+        this.heap = new BinaryHeap((d0,d1) => {
+            if(d0.data.data.timestamp === d1.data.data.timestamp) {
+                return true;
+            } else return d0.data.data.timestamp < d1.data.data.timestamp
+        });
         for (let ds of dataSources) {
             this.addDataSource(ds);
         }
@@ -25,7 +31,13 @@ class DataSynchronizerAlgo {
         }
         ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
 
-        ds.dataBuffer.push(dataBlock);
+        ds.latency = 0;
+        // ds.dataBuffer.push(dataBlock);
+        this.heap.insert({
+            id: dataSourceId,
+            data: dataBlock,
+            latency: 0
+        });
 
         if(!isDefined(this.interval)) {
             this.processData();
@@ -33,6 +45,11 @@ class DataSynchronizerAlgo {
     }
 
     reset() {
+        this.heap = new BinaryHeap((d0,d1) => {
+            if(d0.data.data.timestamp === d1.data.data.timestamp) {
+                return true;
+            } else return d0.data.data.timestamp < d1.data.data.timestamp
+        });
         console.log('reset synchronizer algo')
         this.close();
         for (let currentDsId in this.dataSourceMap) {
@@ -52,13 +69,18 @@ class DataSynchronizerAlgo {
 
         // get reference start timestamp
         // the reference start timestamp should the oldest one
-        let currentDs;
-        for (let currentDsId in this.dataSourceMap) {
-            currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.dataBuffer.length > 0) {
-                tsRef = (tsRef === -1 || currentDs.dataBuffer[0].data.timestamp < tsRef) ? currentDs.dataBuffer[0].data.timestamp :
-                    tsRef;
-            }
+        // let currentDs;
+        // for (let currentDsId in this.dataSourceMap) {
+        //     currentDs = this.dataSourceMap[currentDsId];
+        //     if (currentDs.dataBuffer.length > 0) {
+        //         tsRef = (tsRef === -1 || currentDs.dataBuffer[0].data.timestamp < tsRef) ? currentDs.dataBuffer[0].data.timestamp :
+        //             tsRef;
+        //     }
+        // }
+
+        if(this.heap.size() > 0) {
+            const minElement = this.heap.findMin();
+            tsRef = (tsRef === -1 || minElement.data.data.timestamp < tsRef) ? minElement.data.data.timestamp : tsRef;
         }
 
         this.interval = setInterval(() => {
@@ -76,7 +98,6 @@ class DataSynchronizerAlgo {
      */
     computeNextData(tsRef, refClockTime) {
         let currentDs;
-        let currentDsToShift = null;
 
         // compute max latency
         let maxLatency = 0;
@@ -92,40 +113,56 @@ class DataSynchronizerAlgo {
         maxLatency *= this.replaySpeed;
         minLatency *= this.replaySpeed;
 
-        const dClock = (performance.now() - refClockTime) * this.replaySpeed;
+        const dClock = (performance.now() - refClockTime)  * this.replaySpeed;
         this.tsRun = tsRef + dClock;
         // compute next data to return
-        for (let currentDsId in this.dataSourceMap) {
-            currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.dataBuffer.length > 0) {
-                const dTs = (currentDs.dataBuffer[0].data.timestamp - tsRef);
-                const dClockAdj = dClock - maxLatency;
-                // we use an intermediate object to store the data to shift because we want to return the oldest one
-                // only
-                if (dTs <= dClockAdj) {
-                    // no other one to compare
-                    if (currentDsToShift === null) {
-                        currentDsToShift = currentDs;
-                    } else {
-                        // take the oldest data
-                        currentDsToShift = (currentDsToShift.dataBuffer[0].data.timestamp < currentDs.dataBuffer[0].data.timestamp) ?
-                            currentDsToShift : currentDs;
-                    }
-                }
+        // for (let currentDsId in this.dataSourceMap) {
+        if(this.heap.size() > 0 ) {
+            const minElement = this.heap.findMin();
+            // console.log(minElement.data);
+            // currentDs = this.dataSourceMap[currentDsId];
+            // if (currentDs.dataBuffer.length > 0) {
+            const dTs = (minElement.data.data.timestamp - tsRef);
+            const dClockAdj = dClock - maxLatency;
+            // we use an intermediate object to store the data to shift because we want to return the oldest one
+            // only
+            console.log(dTs,dClockAdj)
+            // console.log(new Date(minElement.data.data.timestamp).toISOString());
+            if (dTs <= dClockAdj) {
+                // console.log('inside')
+                // no other one to compare
+                // if (currentDsToShift === null) {
+                //     currentDsToShift = currentDs;
+                // } else {
+                //     take the oldest data
+                // currentDsToShift = (currentDsToShift.dataBuffer[0].data.timestamp < currentDs.dataBuffer[0].data.timestamp) ?
+                //     currentDsToShift : currentDs;
+                // }
+                this.heap.extractMin();
+                // let rec = currentDsToShift.dataBuffer.shift();
+
+                // add latency flag to data record before we dispatch it
+                // this is relative latency in millis compared to the DS with the lowest latency
+                // so it is accurate even if local device time is not set properly
+                minElement.data['@latency'] = currentDs.latency - minLatency;
+                this.onData(minElement.id, minElement.data);
+                return true;
             }
         }
+        // }
+        // }
 
         // finally pop the data from DS queue
-        if (currentDsToShift !== null) {
-            let rec = currentDsToShift.dataBuffer.shift();
+        // if (currentDsToShift !== null) {
+        //     let rec = currentDsToShift.dataBuffer.shift();
 
             // add latency flag to data record before we dispatch it
             // this is relative latency in millis compared to the DS with the lowest latency
             // so it is accurate even if local device time is not set properly
-            rec['@latency'] = currentDs.latency - minLatency;
-            this.onData(currentDsToShift.id, rec);
-            return true;
-        }
+            // rec['@latency'] = currentDs.latency - minLatency;
+            // this.onData(currentDsToShift.id, rec);
+            // return true;
+        // }
         return false;
     }
 
