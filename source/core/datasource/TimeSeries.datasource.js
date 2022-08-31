@@ -24,7 +24,7 @@ import DataSource from "./DataSource.datasource";
  */
 class TimeSeriesDatasource extends DataSource {
     constructor(name, properties) {
-        super(name,properties);
+        super(name, properties);
 
         assertDefined(properties,'Some properties must be defined');
         assertDefined(properties.startTime,'startTime must must be defined');

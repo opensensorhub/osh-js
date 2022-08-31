@@ -21,6 +21,7 @@ import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js'
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 export default {
   components: {
@@ -45,7 +46,8 @@ export default {
       endTime: '2015-12-19T21:09:19.675Z',
       replaySpeed: 2.6,
       timeOut: 1500,
-      bufferingTime: 1500
+      prefetchBatchDuration: 5000,
+      mode: Mode.REPLAY
     };
 
     const dataSource0 = new SosGetResult("drone-Video", {
@@ -131,6 +133,7 @@ export default {
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: 2.6,
       timerResolution: 5,
+      masterTimeRefreshRate: 25, // millis
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

@@ -58,8 +58,8 @@ class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
         this.interval = -1;
-        this.batchSizeInMillis = 10000; // 10 sec
-        this.fetchNextDataThreshold = 0.5; // 80%, fetch before the end
+        this.batchSizeInMillis = 8000; // 10 sec
+        this.fetchNextDataThreshold = 0.8; // 80%, fetch before the end
         this.status = {
             cancel: false
         }
@@ -70,6 +70,7 @@ class DelegateReplayHandler extends DelegateHandler {
             this.interval = 1;
             let replaySpeed = this.properties.replaySpeed || 1;
             replaySpeed = 1;
+            console.log(this.properties)
             let batchSizeInMillis = this.batchSizeInMillis * replaySpeed;
             let fetchNextDataThreshold = batchSizeInMillis * this.fetchNextDataThreshold;
             let nextOffsetTimestamp = new Date(this.properties.startTime).getTime();

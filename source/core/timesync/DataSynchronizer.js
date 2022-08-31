@@ -24,7 +24,8 @@ class DataSynchronizer {
      * @param {Object} properties - the property of the object
      * @param {Number} [properties.replaySpeed=1] - replaySpeed value
      * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
-     * @param {DataSourceDatasource[]} properties.dataSources - the dataSource array
+     * @param {Number} [properties.masterTimeRefreshRate=25] - interval in which time value is send through broadcast channel (in milliseconds)
+     * @param {Datasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
         this.bufferingTime = 1000; // default
@@ -33,6 +34,7 @@ class DataSynchronizer {
         this.dataSources = properties.dataSources || [];
         this.replaySpeed = properties.replaySpeed || 1;
         this.timerResolution = properties.timerResolution || 5;
+        this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 25,
         this.initialized = false;
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
@@ -165,6 +167,7 @@ class DataSynchronizer {
                     dataSources: dataSourcesForWorker,
                     replaySpeed: this.replaySpeed,
                     timerResolution: this.timerResolution,
+                    masterTimeRefreshRate: this.masterTimeRefreshRate,
                     topics:  {
                         data: this.getTopicId(),
                         time: this.getTimeTopicId()

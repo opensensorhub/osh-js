@@ -17,6 +17,7 @@
 import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATASOURCE_DATA_TOPIC} from "../Constants";
 import DataSourceWorker from './worker/DataSource.worker';
+import {Mode} from "./Mode";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -30,6 +31,7 @@ class DataSource {
         this.eventSubscriptionMap = {};
         this.init = undefined;
         this.messagesMap = {};
+        this.mode = Mode.REAL_TIME;
     }
 
     /**

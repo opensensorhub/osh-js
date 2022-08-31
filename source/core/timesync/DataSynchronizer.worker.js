@@ -14,13 +14,13 @@ let timeBroadcastChannel = null;
 let topicTime;
 let topicData;
 let replaySpeed;
-let debounceMasterTime = 150;
+let debounceMasterTime;
 
 self.onmessage = (event) => {
     let data = undefined;
     if(event.data.message === 'init') {
         replaySpeed = event.data.replaySpeed;
-        debounceMasterTime = debounceMasterTime * replaySpeed;
+        debounceMasterTime = event.data.masterTimeRefreshRate;
         dataSynchronizerAlgo = new DataSynchronizerAlgo(
             event.data.dataSources,
             event.data.replaySpeed,

@@ -45,7 +45,7 @@ class WebSocketTemporalConnector extends WebSocketConnector {
      * Connect to the webSocket. If the system supports WebWorker, it will automatically creates one otherwise use
      * the main thread.
      */
-    doRequest(extraUrl = this.extraUrl,queryString= this.queryString) {
+    doRequest(extraUrl = this.extraUrl,queryString= this.queryString, callbackFn) {
         return new Promise(async (resolve, reject) => {
             if (!this.init) {
                 this.extraUrl = extraUrl;
@@ -64,8 +64,6 @@ class WebSocketTemporalConnector extends WebSocketConnector {
                 this.checkStatus(Status.CONNECTING);
                 console.warn('WebSocket stream connecting');
 
-                let results = [];
-
                 this.ws.onopen = function (event) {
                     this.checkAndClearReconnection();
                     this.checkStatus(Status.CONNECTED);
@@ -76,7 +74,7 @@ class WebSocketTemporalConnector extends WebSocketConnector {
                     this.lastReceiveTime = Date.now();
                     //callback data on message received
                     if (event.data.byteLength > 0) {
-                        results.push(event.data);
+                        callbackFn(event.data);
                     }
                 }.bind(this);
 
@@ -97,7 +95,7 @@ class WebSocketTemporalConnector extends WebSocketConnector {
                     } else {
                         this.disconnect();
                     }
-                    resolve(results);
+                    resolve();
                 };
                 if (this.reconnectionInterval !== -1) {
                     clearInterval(this.reconnectionInterval);

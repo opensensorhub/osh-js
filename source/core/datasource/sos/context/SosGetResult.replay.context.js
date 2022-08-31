@@ -56,26 +56,25 @@ class SosGetResultReplayContext extends SosGetResultContext {
         return new WebSocketTemporalConnector(url, properties);
     }
 
-    // createDataConnector(properties) {
-    //     const tls = (properties.tls) ? 's' : '';
-    //     const url = 'http' + tls + '://' + properties.endpointUrl;
-    //     return new HttpConnector(url, {
-    //         ...properties,
-    //         method: 'GET'
-    //     });
-    // }
-
-    async doTemporalRequest(properties, startTimestamp, endTimestamp) {
-        const data =  await this.connector.doRequest('', this.getQueryString({
-                ...properties,
-                startTime: new Date(startTimestamp).toISOString(),
-                endTime: new Date(endTimestamp).toISOString()
-            }));
-        const decodedData = [];
-        for (let i = 0; i < data.length; i++) {
-            decodedData.push(...await this.parseData(data[i]));
-        }
-        return decodedData;
+    async doTemporalRequest(properties, startTimestamp, endTimestamp, callback, status = {cancel:false}) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await this.connector.doRequest(
+                    '',
+                    this.getQueryString({
+                            ...properties,
+                            startTime: new Date(startTimestamp).toISOString(),
+                            endTime: new Date(endTimestamp).toISOString()
+                    }),
+                    async (encodedData) => {
+                        if(!status.cancel) { callback(await this.parseData(encodedData)) }
+                    }
+                );
+                resolve();
+            } catch (ex) {
+                reject(ex);
+            }
+        });
     }
 
     async parseData(messages) {
