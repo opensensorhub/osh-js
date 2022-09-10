@@ -18,6 +18,17 @@
 import TimeSeriesDatasource from "../TimeSeries.datasource";
 
 class SosGetResult extends TimeSeriesDatasource {
+    /**
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}, 'http', 'ws', 'mqtt', 'file', 'topic'
+     * @param {String} properties.endpointUrl the endpoint url, this property is ignored in case of using 'mqtt' protocol, the properties.mqttOpts.endpointUrl will be used instead
+     * @param {String} properties.collection the collection, /procedures, /fois, /observations, /tasks, /datastreams/4778/obs
+     * @param {Boolean} properties.tls - defines if use secure TLS connection
+     * @param {Number} [properties.responseFormat=application/om+json] the response format (e.g application/om+json)
+     * @param {String[]} [properties.prefetchBatchSize=1000000] Number of elements to prefetch at a time
+     * @param {String[]} [properties.prefetchBatchDuration=10000] Duration before prefetching the next batch. N.b the next batch will be prefetched at 80% of this duration
+     */
     constructor(name, properties) {
         super(name, {
             service: "SOS",
@@ -26,6 +37,8 @@ class SosGetResult extends TimeSeriesDatasource {
             reconnectRetry: 10,
             tls: false,
             type: 'SosGetResult',
+            prefetchBatchSize: 1000000,
+            prefetchBatchDuration: 10000,
             ...properties
         });
     }

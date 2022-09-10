@@ -15,9 +15,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSourceHandler from "./DataSource.handler";
-import WebSocketConnector from "../../../connector/WebSocketConnector";
-import MqttConnector from "../../../connector/MqttConnector";
-import HttpConnector from "../../../connector/HttpConnector";
 import {assertDefined, isDefined} from "../../../utils/Utils";
 import {EventType} from "../../../event/EventType";
 import {Status} from "../../../connector/Status";
@@ -59,11 +56,16 @@ class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
         this.interval = -1;
-        this.batchSizeInMillis = 10000; // 10 sec
-        this.fetchNextDataThreshold = 0.8; // %, fetch before the end
+        this.prefetchBatchDuration = 10000; // 10 sec
+        this.prefetchNextBatchThreshold = 0.8; // 80%, fetch before the end
         this.status = {
             cancel: false
         }
+    }
+
+    init(properties) {
+        super.init(properties);
+        this.prefetchBatchDuration = properties.prefetchBatchDuration;
     }
 
     async fetchData(startTimestamp, endTimestamp) {
@@ -76,8 +78,8 @@ class DelegateReplayHandler extends DelegateHandler {
         if (this.interval === -1) {
             this.interval = 1;
             let replaySpeed = this.properties.replaySpeed || 1;
-            let batchSizeInMillis = this.batchSizeInMillis * replaySpeed;
-            let fetchNextDataThreshold = batchSizeInMillis * this.fetchNextDataThreshold;
+            let batchSizeInMillis = this.prefetchBatchDuration * replaySpeed;
+            let fetchNextDataThreshold = batchSizeInMillis * this.prefetchNextBatchThreshold;
             let nextOffsetTimestamp = new Date(this.properties.startTime).getTime();
             let endTimestamp = new Date(this.properties.endTime).getTime();
 

@@ -30,7 +30,6 @@ import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC, DATASOURCE_TIME_TOPIC} from "../../Constants.js";
 import {Status} from "../../connector/Status.js";
 import {EventType} from "../../event/EventType.js";
-import DataLayer from "../layer/DataLayer";
 
 class View {
     /**

@@ -75,7 +75,6 @@ export default {
     const tls = true;
 
     const dsReplaySpeed = 3.0;
-    const bufferingTime = 0;
 
     const commonDatasourceOpts = {
       endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
@@ -90,8 +89,9 @@ export default {
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
-      bufferingTime: bufferingTime,
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 1000000
     };
 
     const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
