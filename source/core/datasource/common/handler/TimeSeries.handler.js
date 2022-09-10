@@ -227,6 +227,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         }
         if (isDefined(topics.sync)) {
             this.delegateHandler.setTimeTopic(topics.sync);
+            this.timeSyncTopic = topics.sync;
         }
     }
 

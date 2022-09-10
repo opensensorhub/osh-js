@@ -16,7 +16,6 @@ let timeBroadcastChannel = null;
 let topicTime;
 let topicData;
 let replaySpeed;
-let debounceMasterTime;
 let masterTimeInterval = undefined;
 let cTime;
 let cId;
@@ -27,7 +26,6 @@ self.onmessage = (event) => {
     let data = undefined;
     if(event.data.message === 'init') {
         replaySpeed = event.data.replaySpeed;
-        debounceMasterTime = event.data.masterTimeRefreshRate;
         if(event.data.mode === Mode.REPLAY) {
             dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
                 event.data.dataSources,
@@ -47,6 +45,7 @@ self.onmessage = (event) => {
         topicData = event.data.topics.data;
         topicTime = event.data.topics.time;
         initBroadcastChannel(topicData, topicTime);
+        startMasterTimeInterval(event.data.masterTimeRefreshRate);
     } else if(event.data.message === 'add' && event.data.dataSources) {
         addDataSources(event.data.dataSources);
     } else if(event.data.message === 'current-time') {
@@ -143,20 +142,22 @@ self.onclose = function() {
     console.log("Data Synchronizer has been terminated successfully");
 }
 
-setInterval(() => {
-    // check version
-    if (!isDefined(lastData) || version !== lastData.dataBlock.version) {
-        return;
-    }
-    cTime = lastData.dataBlock.data.timestamp;
-    cId = lastData.dataSourceId;
+function startMasterTimeInterval(masterTimeRefreshRate) {
+    setInterval(() => {
+        // check version
+        if (!isDefined(lastData) || version !== lastData.dataBlock.version) {
+            return;
+        }
+        cTime = lastData.dataBlock.data.timestamp;
+        cId = lastData.dataSourceId;
 
-    if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
-        timeBroadcastChannel.postMessage({
-            timestamp: cTime,
-            dataSourceId: cId,
-            type: EventType.TIME
-        });
-    }
-    lastTime = cTime;
-}, 250);
+        if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
+            timeBroadcastChannel.postMessage({
+                timestamp: cTime,
+                dataSourceId: cId,
+                type: EventType.TIME
+            });
+        }
+        lastTime = cTime;
+    }, masterTimeRefreshRate);
+}
