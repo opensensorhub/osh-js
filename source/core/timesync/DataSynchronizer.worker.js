@@ -1,31 +1,46 @@
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
 import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
 import {EventType} from "../event/EventType.js";
+import {isDefined} from "../utils/Utils";
+import {Mode} from "../datasource/Mode";
+import DataSynchronizerAlgoReplay from "./DataSynchronizerAlgo.replay";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
 
 let init = false;
 let dataSourceBroadCastChannel = null;
-self.currentTime = -1;
-
+let lastData = undefined;
 const dataSources = {};
 let timeBroadcastChannel = null;
 let topicTime;
 let topicData;
 let replaySpeed;
 let debounceMasterTime;
+let masterTimeInterval = undefined;
+let cTime;
+let cId;
+let lastTime = -1;
+let version = -1;
 
 self.onmessage = (event) => {
     let data = undefined;
     if(event.data.message === 'init') {
         replaySpeed = event.data.replaySpeed;
         debounceMasterTime = event.data.masterTimeRefreshRate;
-        dataSynchronizerAlgo = new DataSynchronizerAlgo(
-            event.data.dataSources,
-            event.data.replaySpeed,
-            event.data.timerResolution
-        );
+        if(event.data.mode === Mode.REPLAY) {
+            dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                event.data.dataSources,
+                event.data.replaySpeed,
+                event.data.timerResolution
+            );
+        } else {
+            dataSynchronizerAlgo = new DataSynchronizerAlgo(
+                event.data.dataSources,
+                event.data.replaySpeed,
+                event.data.timerResolution
+            );
+        }
         dataSynchronizerAlgo.onData = onData;
         init = true;
         addDataSources(event.data.dataSources);
@@ -40,6 +55,7 @@ self.onmessage = (event) => {
             data: self.currentTime
         };
     }  else if(event.data.message === 'reset') {
+        version = -1;
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.reset();
         }
@@ -53,6 +69,9 @@ self.onmessage = (event) => {
     } else if(event.data.message === 'data') {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+        }
+        if(!isDefined(masterTimeInterval)) {
+            startMasterTimeInterval();
         }
     } else {
         // skip response
@@ -72,14 +91,7 @@ function initBroadcastChannel(dataTopic, timeTopic) {
     dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
     dataSourceBroadCastChannel.onmessage = async (event) => {
         if(event.data.type === EventType.DATA) {
-            for(let i=0; i < event.data.values.length;i++) {
-                dataSynchronizerAlgo.push(
-                    event.data.dataSourceId,
-                    {
-                        ...event.data.values[i]
-                    }
-                );
-            }
+            dataSynchronizerAlgo.push(event.data.dataSourceId,event.data.values);
         } else if(event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
             dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
@@ -113,29 +125,38 @@ function addDataSource(dataSource) {
     }
 }
 
-let lastCurrentTime = {};
-
 async function onData(dataSourceId, dataBlock) {
-    self.currentTime = dataBlock.data.timestamp;
+    version = dataBlock.version;
+    lastData = {
+        dataSourceId: dataSourceId,
+        dataBlock: dataBlock
+    };
     bcChannels[dataSourceId].postMessage({
             values: [dataBlock],
             dataSourceId:dataSourceId,
             type: EventType.DATA
         }
     );
-
-    const perf = performance.now();
-    if(!(dataSourceId in lastCurrentTime) || (perf - lastCurrentTime[dataSourceId] > debounceMasterTime)) {
-        lastCurrentTime[dataSourceId] = perf;
-        timeBroadcastChannel.postMessage({
-            timestamp: dataBlock.data.timestamp,
-            dataSourceId: dataSourceId,
-            type: EventType.TIME
-        });
-    }
 }
-
 self.onclose = function() {
     dataSynchronizerAlgo.close();
     console.log("Data Synchronizer has been terminated successfully");
 }
+
+setInterval(() => {
+    // check version
+    if (!isDefined(lastData) || version !== lastData.dataBlock.version) {
+        return;
+    }
+    cTime = lastData.dataBlock.data.timestamp;
+    cId = lastData.dataSourceId;
+
+    if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
+        timeBroadcastChannel.postMessage({
+            timestamp: cTime,
+            dataSourceId: cId,
+            type: EventType.TIME
+        });
+    }
+    lastTime = cTime;
+}, 250);

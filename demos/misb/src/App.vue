@@ -50,6 +50,7 @@ import {Status} from "osh-js/core/connector/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
 import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -73,8 +74,7 @@ export default {
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 1.0;
-    const timeOut = 3000;
+    const dsReplaySpeed = 3.0;
     const bufferingTime = 0;
 
     const commonDatasourceOpts = {
@@ -90,8 +90,8 @@ export default {
       minTime: START_TIME,
       maxTime: END_TIME,
       replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
       bufferingTime: bufferingTime,
+      mode: Mode.REPLAY
     };
 
     const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
@@ -201,50 +201,50 @@ export default {
       // Link DataSources connected/disconnected Status to state
       // update drone status
       this.droneLocationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateDroneStatus', {
             platformLocation: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneVideoDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateDroneStatus', {
             video: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneOrientationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateDroneStatus', {
             platformOrientation: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneCameraOrientationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateDroneStatus', {
             cameraOrientation: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneHFovDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateDroneStatus', {
             hFov: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }
@@ -252,10 +252,10 @@ export default {
 
 
       this.droneVFovDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateDroneStatus', {
             vFov: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }
@@ -263,19 +263,19 @@ export default {
 
       // Update GeoRef status
       this.geoRefImageFrameDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateGeoRefStatus', {
-            connected: (message.status === Status.CONNECTED)
+            connected: (message.status === Status.FETCH_STARTED)
           });
         }
       }, [EventType.STATUS]);
 
       // Update Target status
       this.targetLocationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
           this.$store.dispatch('updateTargetStatus', {
             location: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED)
             }
           });
         }

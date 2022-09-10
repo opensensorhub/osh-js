@@ -156,9 +156,11 @@ class DataSynchronizer {
         return new Promise(async (resolve, reject) => {
             try {
                 const dataSourcesForWorker = [];
+                let mode;
                 for (let dataSource of this.dataSources) {
                     const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
                     dataSourcesForWorker.push(dataSourceForWorker);
+                    mode = dataSource.mode;
                 }
                 this.synchronizerWorker = new DataSynchronizerWorker();
                 this.handleWorkerMessage();
@@ -168,6 +170,7 @@ class DataSynchronizer {
                     replaySpeed: this.replaySpeed,
                     timerResolution: this.timerResolution,
                     masterTimeRefreshRate: this.masterTimeRefreshRate,
+                    mode: mode,
                     topics:  {
                         data: this.getTopicId(),
                         time: this.getTimeTopicId()

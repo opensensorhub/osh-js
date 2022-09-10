@@ -21,6 +21,7 @@ import HttpConnector from "../../../connector/HttpConnector";
 import {assertDefined, isDefined} from "../../../utils/Utils";
 import {EventType} from "../../../event/EventType";
 import {Status} from "../../../connector/Status";
+import {Mode} from "../../Mode";
 
 class DelegateHandler {
     constructor(context) {
@@ -58,19 +59,23 @@ class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
         this.interval = -1;
-        this.batchSizeInMillis = 8000; // 10 sec
-        this.fetchNextDataThreshold = 0.8; // 80%, fetch before the end
+        this.batchSizeInMillis = 10000; // 10 sec
+        this.fetchNextDataThreshold = 0.8; // %, fetch before the end
         this.status = {
             cancel: false
         }
+    }
+
+    async fetchData(startTimestamp, endTimestamp) {
+        console.warn(`fetching ${new Date(startTimestamp).toISOString()} -> ` +
+            `${new Date(endTimestamp).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
+        return this.context.doTemporalRequest(this.properties, startTimestamp, endTimestamp, this.handleData.bind(this), this.status);
     }
 
     async startLoop() {
         if (this.interval === -1) {
             this.interval = 1;
             let replaySpeed = this.properties.replaySpeed || 1;
-            replaySpeed = 1;
-            console.log(this.properties)
             let batchSizeInMillis = this.batchSizeInMillis * replaySpeed;
             let fetchNextDataThreshold = batchSizeInMillis * this.fetchNextDataThreshold;
             let nextOffsetTimestamp = new Date(this.properties.startTime).getTime();
@@ -80,11 +85,11 @@ class DelegateReplayHandler extends DelegateHandler {
             if ((durationToFetch + nextOffsetTimestamp) > endTimestamp) {
                 durationToFetch = endTimestamp - nextOffsetTimestamp;
             }
-            this.context.onChangeStatus(Status.CONNECTED);
-            console.warn(`fetching ${new Date(nextOffsetTimestamp).toISOString()} -> ` +
-                `${new Date(nextOffsetTimestamp + durationToFetch).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
-            this.promise = this.context.doTemporalRequest(this.properties, nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch, this.handleData.bind(this), this.status);
+            this.promise = this.fetchData(nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch);
+
             this.promise.then(() => {
+                this.context.onChangeStatus(Status.FETCH_STARTED);
+
                 nextOffsetTimestamp += durationToFetch;
 
                 let lastOffsetTimestamp;
@@ -93,8 +98,8 @@ class DelegateReplayHandler extends DelegateHandler {
                     const currentDataTimestamp = event.data.timestamp;
 
                     if (currentDataTimestamp >= endTimestamp) {
-                        console.log('disconnected')
                         await this.disconnect();
+                        return;
                     }
                     const dTime = nextOffsetTimestamp - currentDataTimestamp;
 
@@ -106,17 +111,13 @@ class DelegateReplayHandler extends DelegateHandler {
                         }
                         let offsetTimestamp = nextOffsetTimestamp;
                         nextOffsetTimestamp += deltaTimeToFetch;
-                        await this.promise;
                         if(nextOffsetTimestamp === lastOffsetTimestamp) {
                             // already fetched
                             return;
                         } else {
                             lastOffsetTimestamp = nextOffsetTimestamp;
                         }
-                        console.warn(`fetching ${new Date(offsetTimestamp).toISOString()} -> ` +
-                                        `${new Date(offsetTimestamp + deltaTimeToFetch).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
-                        this.promise = this.context.doTemporalRequest(this.properties, offsetTimestamp, offsetTimestamp + deltaTimeToFetch, this.handleData.bind(this), this.status);
-                        await this.promise;
+                        this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
                     }
                 }
             });
@@ -129,20 +130,17 @@ class DelegateReplayHandler extends DelegateHandler {
     }
 
     async disconnect() {
-        return new Promise(async (resolve, reject) => {
-            if (isDefined(this.promise)) {
-                this.status.cancel = true;
-                await this.promise;
-            }
-            this.promise = undefined;
-            this.context.onChangeStatus(Status.DISCONNECTED);
-            if (isDefined(this.timeBc)) {
-                this.timeBc.close();
-            }
-            this.status.cancel = false;
-            this.interval = -1;
-            resolve();
-        });
+        this.status.cancel = false;
+        if (isDefined(this.promise)) {
+            this.status.cancel = true;
+        }
+        this.promise = undefined;
+        this.context.onChangeStatus(Status.FETCH_ENDED);
+        if (isDefined(this.timeBc)) {
+            this.timeBc.close();
+        }
+        clearInterval(this.interval);
+        this.interval = -1;
     }
 
 
@@ -178,15 +176,18 @@ class TimeSeriesHandler extends DataSourceHandler {
         throw Error('Should be overridden');
     }
 
-    updateDelegateHandler(properties) {
-        if (properties.startTime === 'now') {
+    async updateDelegateHandler(properties) {
+        if (isDefined(this.delegateHandler)) {
+            await this.delegateHandler.disconnect();
+        }
+        if (properties.mode === Mode.REAL_TIME) {
             if (!isDefined(this.delegateRealTimeHandler)) {
                 this.delegateRealTimeHandler = new DelegateRealTimeHandler(this.context);
             }
             this.delegateHandler = this.delegateRealTimeHandler;
-        } else {
+        } else if (properties.mode === Mode.REPLAY) {
             if (!isDefined(this.delegateReplayHandler)) {
-                this.delegateReplayHandler = new DelegateReplayHandler(this.context, this.timeTopic);
+                this.delegateReplayHandler = new DelegateReplayHandler(this.context);
             }
             this.delegateHandler = this.delegateReplayHandler;
         }
@@ -195,11 +196,11 @@ class TimeSeriesHandler extends DataSourceHandler {
 
     async updateProperties(properties) {
         try {
-            await this.disconnect();
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED
             });
+            await this.disconnect();
             this.version++;
             // re-init the context using the new values
             this.context.init({
@@ -207,7 +208,7 @@ class TimeSeriesHandler extends DataSourceHandler {
                 ...properties
             });
 
-            this.updateDelegateHandler({
+            await this.updateDelegateHandler({
                 ...this.properties,
                 ...properties
             });

@@ -32,6 +32,10 @@ class DataSource {
         this.init = undefined;
         this.messagesMap = {};
         this.mode = Mode.REAL_TIME;
+
+        if(isDefined(properties.mode)) {
+            this.mode = properties.mode;
+        }
     }
 
     /**

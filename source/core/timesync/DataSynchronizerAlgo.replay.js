@@ -1,10 +1,9 @@
 import {isDefined} from "../utils/Utils.js";
 import {Status} from "../connector/Status.js";
 
-class DataSynchronizerAlgo {
+class DataSynchronizerAlgoReplay {
     constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
         this.dataSourceMap = {};
-        this.tsRun = 0;
         this.replaySpeed = replaySpeed;
         this.timerResolution = timerResolution;
         this.interval = null;
@@ -24,16 +23,7 @@ class DataSynchronizerAlgo {
             return;
         }
 
-        let latency = 0;
-        if (this.tsRun > 0) {
-            latency = this.tsRun - lastData.data.timestamp;
-        }
-        ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
-
         ds.dataBuffer.push(...dataBlocks);
-        if(!isDefined(this.interval)) {
-            this.processData();
-        }
     }
 
     reset() {
@@ -43,7 +33,6 @@ class DataSynchronizerAlgo {
             const currentDs = this.dataSourceMap[currentDsId];
             currentDs.dataBuffer = [];
             currentDs.startBufferingTime = -1;
-            currentDs.latency=0;
             currentDs.status= Status.DISCONNECTED;
             currentDs.version = undefined;
         }
@@ -82,20 +71,6 @@ class DataSynchronizerAlgo {
         let currentDs;
         let currentDsToShift = null;
 
-        // compute max latency
-        let maxLatency = 0;
-        let minLatency = 0;
-        for (let currentDsId in this.dataSourceMap) {
-            currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.latency > 0) {
-                let latency = Math.min(currentDs.latency, currentDs.timeOut);
-                maxLatency = (latency > maxLatency) ? latency : maxLatency;
-                minLatency = (currentDs.latency < minLatency) ? currentDs.latency : minLatency;
-            }
-        }
-        maxLatency *= this.replaySpeed;
-        minLatency *= this.replaySpeed;
-
         const dClock = (performance.now() - refClockTime) * this.replaySpeed;
         this.tsRun = tsRef + dClock;
         // compute next data to return
@@ -103,10 +78,9 @@ class DataSynchronizerAlgo {
             currentDs = this.dataSourceMap[currentDsId];
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = (currentDs.dataBuffer[0].data.timestamp - tsRef);
-                const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClockAdj) {
+                if (dTs <= dClock) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;
@@ -121,13 +95,7 @@ class DataSynchronizerAlgo {
 
         // finally pop the data from DS queue
         if (currentDsToShift !== null) {
-            let rec = currentDsToShift.dataBuffer.shift();
-
-            // add latency flag to data record before we dispatch it
-            // this is relative latency in millis compared to the DS with the lowest latency
-            // so it is accurate even if local device time is not set properly
-            rec['@latency'] = currentDs.latency - minLatency;
-            this.onData(currentDsToShift.id, rec);
+            this.onData(currentDsToShift.id, currentDsToShift.dataBuffer.shift());
             return true;
         }
         return false;
@@ -139,22 +107,18 @@ class DataSynchronizerAlgo {
      */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
-            timeOut: dataSource.timeOut || 0,
             dataBuffer: [],
-            startBufferingTime: -1,
             id: dataSource.id,
-            timedOut: false,
             name: dataSource.name || dataSource.id,
-            latency: 0,
             status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
             version: undefined
         };
     }
 
     checkVersion(datasource, dataBlock) {
-        if(!isDefined(datasource.version) && datasource.status !== Status.DISCONNECTED) {
+        if(!isDefined(datasource.version)) {
             return true;
-        } else if(datasource.status === Status.DISCONNECTED && datasource.version !== dataBlock.version) {
+        } else if(datasource.version !== dataBlock.version) {
             return false;
         }
     }
@@ -172,20 +136,28 @@ class DataSynchronizerAlgo {
             this.dataSourceMap[dataSourceId].status = status;
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
+        this.checkStart();
     }
 
+    checkStart() {
+        if(!isDefined(this.interval)) {
+            let fetchStartOk = true;
+            for(let dataSourceID in this.dataSourceMap) {
+                fetchStartOk &= (this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED);
+            }
+            if(fetchStartOk) {
+                this.processData();
+            }
+        }
+    }
     close() {
         if (isDefined(this.interval)) {
             clearInterval(this.interval);
             this.interval = undefined;
-        }
-        if(isDefined(this.timeoutBuffering)) {
-            clearTimeout(this.timeoutBuffering);
-            this.timeoutBuffering = null;
         }
         console.log("Data synchronizer terminated successfully");
 
     }
 }
 
-export default DataSynchronizerAlgo;
+export default DataSynchronizerAlgoReplay;

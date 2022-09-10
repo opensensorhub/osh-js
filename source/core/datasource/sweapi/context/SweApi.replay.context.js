@@ -67,7 +67,7 @@ class SweApiReplayContext extends SweApiContext {
                         startTime: new Date(startTimestamp).toISOString(),
                         endTime: new Date(endTimestamp).toISOString()
                     });
-                    return dataStream.searchObservations(obsFilter, 30);
+                    return dataStream.searchObservations(obsFilter, 10000);
                 }
             }
         }
@@ -76,7 +76,6 @@ class SweApiReplayContext extends SweApiContext {
     async doTemporalRequest(properties, startTimestamp, endTimestamp, callback, status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             const collection = await this.replayFunction(properties, startTimestamp, endTimestamp);
-            // const data = await (await this.replayFunction(properties, startTimestamp, endTimestamp)).nextPage();
             let data;
             while (collection.hasNext() && !status.cancel) {
                 data = await collection.nextPage();
