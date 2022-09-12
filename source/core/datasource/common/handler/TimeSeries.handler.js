@@ -47,11 +47,28 @@ class DelegateHandler {
 
 class DelegateRealTimeHandler extends DelegateHandler {
 
-    onMessage(message, format) {
-        this.parseData(message).then(data => this.handleData(data, format));
+    connect() {
+        this.context.connector.onMessage =  (message) => {
+            this.context.parseData(message).then(data => this.handleData(data));
+        }
+        super.connect();
     }
 }
 
+class DelegateBatchHandler extends DelegateHandler {
+    async fetchData(startTimestamp, endTimestamp) {
+        console.warn(`fetching ${new Date(startTimestamp).toISOString()} -> ` +
+            `${new Date(endTimestamp).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
+        return this.context.doTemporalRequest(this.properties, startTimestamp, endTimestamp, this.status);
+    }
+
+    connect() {
+        this.fetchData(new Date(this.properties.startTime).getTime(), new Date(this.properties.endTime).getTime()).then(data => this.handleData(data));
+    }
+
+    async disconnect() {
+    }
+}
 class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
@@ -71,7 +88,7 @@ class DelegateReplayHandler extends DelegateHandler {
     async fetchData(startTimestamp, endTimestamp) {
         console.warn(`fetching ${new Date(startTimestamp).toISOString()} -> ` +
             `${new Date(endTimestamp).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
-        return this.context.doTemporalRequest(this.properties, startTimestamp, endTimestamp, this.handleData.bind(this), this.status);
+        return this.context.doTemporalRequest(this.properties, startTimestamp, endTimestamp, this.status);
     }
 
     async startLoop() {
@@ -89,7 +106,8 @@ class DelegateReplayHandler extends DelegateHandler {
             }
             this.promise = this.fetchData(nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch);
 
-            this.promise.then(() => {
+            this.promise.then((data) => {
+                this.handleData(data);
                 this.context.onChangeStatus(Status.FETCH_STARTED);
 
                 nextOffsetTimestamp += durationToFetch;
@@ -120,6 +138,7 @@ class DelegateReplayHandler extends DelegateHandler {
                             lastOffsetTimestamp = nextOffsetTimestamp;
                         }
                         this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
+                        this.handleData(await this.promise);
                     }
                 }
             });
@@ -155,6 +174,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         this.timeBroadcastChannel = null;
         this.delegateReplayHandler = null;
         this.delegateRealTimeHandler = null;
+        this.delegateBatchHandler = null;
         this.delegateHandler = undefined;
     }
 
@@ -167,11 +187,12 @@ class TimeSeriesHandler extends DataSourceHandler {
         };
         this.setTopics(topics);
         this.context = this.createContext(properties);
-        this.updateDelegateHandler(properties);
-        this.context.onChangeStatus = this.onChangeStatus.bind(this);
-        this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
-        this.context.init(this.properties);
-        this.initialized = true;
+        this.updateDelegateHandler(properties).then(() => {
+            this.context.onChangeStatus = this.onChangeStatus.bind(this);
+            this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
+            this.context.init(this.properties);
+            this.initialized = true;
+        });
     }
 
     createContext(properties) {
@@ -192,6 +213,11 @@ class TimeSeriesHandler extends DataSourceHandler {
                 this.delegateReplayHandler = new DelegateReplayHandler(this.context);
             }
             this.delegateHandler = this.delegateReplayHandler;
+        } else if(properties.mode === Mode.BATCH) {
+            if(!isDefined(this.delegateBatchHandler)) {
+                this.delegateBatchHandler = new DelegateBatchHandler(this.context);
+            }
+            this.delegateHandler = this.delegateBatchHandler;
         }
         this.delegateHandler.init(properties);
     }
@@ -204,13 +230,19 @@ class TimeSeriesHandler extends DataSourceHandler {
             });
             await this.disconnect();
             this.version++;
-            // re-init the context using the new values
-            this.context.init({
-                ...this.properties,
-                ...properties
-            });
+
+            this.context = this.createContext({
+                    ...this.properties,
+                    ...properties
+                });
 
             await this.updateDelegateHandler({
+                ...this.properties,
+                ...properties
+            })
+            this.context.onChangeStatus = this.onChangeStatus.bind(this);
+            this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
+            this.context.init({
                 ...this.properties,
                 ...properties
             });
@@ -229,7 +261,6 @@ class TimeSeriesHandler extends DataSourceHandler {
         }
         if (isDefined(topics.sync)) {
             this.delegateHandler.setTimeTopic(topics.sync);
-            this.timeSyncTopic = topics.sync;
         }
     }
 
@@ -246,7 +277,9 @@ class TimeSeriesHandler extends DataSourceHandler {
     }
 
     flushAll() {
-        this.flush();
+        if(this.properties.mode !== Mode.BATCH && this.values.length > 0) {
+            this.flush();
+        }
     }
 
     flush() {
@@ -260,6 +293,10 @@ class TimeSeriesHandler extends DataSourceHandler {
     }
 
     handleData(data) {
+        if(data.length === 0) {
+            console.warn(`Data array is empty for datasource ${this.dataSourceId}`);
+            return;
+        }
         // check if data is an array
         if (Array.isArray(data)) {
             for (let i = 0; i < data.length; i++) {
@@ -270,16 +307,15 @@ class TimeSeriesHandler extends DataSourceHandler {
             }
         }
 
-        // check for realTime data
-        // if(((isDefined(this.properties.batchSize) && this.values.length >= this.properties.batchSize))) {
         this.flush();
         if (this.timeBroadcastChannel !== null) {
-            this.timeBroadcastChannel.postMessage({
-                timestamp: data[data.length - 1].timestamp,
-                type: EventType.TIME
-            });
+            if(data.length > 0 ) {
+                this.timeBroadcastChannel.postMessage({
+                    timestamp: data[data.length - 1].timestamp,
+                    type: EventType.TIME
+                });
+            }
         }
-        // }*/
     }
 
     isConnected() {

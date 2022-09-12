@@ -120,6 +120,10 @@ class DataConnector {
     reset() {}
 
     close() {}
+
+    onClose(statusCode) {}
+
+    onError(reason) {}
 }
 
 export default DataConnector;

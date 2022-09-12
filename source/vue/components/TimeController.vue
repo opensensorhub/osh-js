@@ -73,6 +73,7 @@ import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/connector/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {EventType} from "../../core/event/EventType";
+import {Mode} from "../../core/datasource/Mode";
 
 function parseDate(timestamp) {
   const date = new Date(timestamp);
@@ -144,7 +145,8 @@ export default {
       init: false,
       lastSynchronizedTimestamp: -1,
       outOfSync: {},
-      waitForTimeChangedEvent: false
+      waitForTimeChangedEvent: false,
+      initialMode: Mode.REPLAY
     };
   },
   watch: {
@@ -161,6 +163,7 @@ export default {
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
     this.replay = this.dataSourceObject.getStartTime() !== 'now';
+    this.initialMode = this.dataSourceObject.mode;
   },
   async updated() {
     await this.initComp();
@@ -387,6 +390,7 @@ export default {
     },
 
     async updateTime(event) {
+      console.log('update time')
       this.resetMasterTime();
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),
@@ -463,14 +467,18 @@ export default {
             'now',
             new Date("2055-01-01T00:00:00Z").toISOString(),
             1.0,
-            true);
+            true,
+            Mode.REAL_TIME
+        );
         document.getElementById(this.id).style.display = 'none';
       } else {
         this.dataSourceObject.setTimeRange(
             new Date(this.startTime).toISOString(),
             new Date(this.endTime).toISOString(),
             this.speed,
-            true);
+            true,
+            this.initialMode
+        );
         document.getElementById(this.id).style.display = 'block';
       }
       this.$emit('event', 'end');

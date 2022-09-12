@@ -44,7 +44,13 @@ class TimeSeriesDatasource extends DataSource {
     getStartTime() {
         return this.properties.startTime;
     }
-
+    /**
+     * Gets the mode
+     * @returns {Mode} - Datasource mode
+     */
+    getMode() {
+        return this.properties.mode;
+    }
     /**
      * Gets the endTime
      * @returns {String} - endTime as ISO date
@@ -135,13 +141,19 @@ class TimeSeriesDatasource extends DataSource {
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
      * @param {boolean} reconnect - reconnect if was connected
+     * @param {Mode} mode - default dataSource mode
      */
-    async setTimeRange(startTime= this.getStartTime(), endTime= this.getEndTime(), replaySpeed= this.getReplaySpeed(), reconnect= false) {
+    async setTimeRange(startTime= this.getStartTime(),
+                       endTime= this.getEndTime(),
+                       replaySpeed= this.getReplaySpeed(),
+                       reconnect= false,
+                       mode= this.getMode()) {
         return this.updateProperties({
             startTime: startTime,
             endTime: endTime,
             replaySpeed: replaySpeed,
-            reconnect : reconnect
+            reconnect : reconnect,
+            mode: mode
         });
     }
 }

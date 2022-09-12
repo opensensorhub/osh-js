@@ -14,9 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import HttpConnector from "../../../connector/HttpConnector";
 import SosGetResultContext from "./SosGetResult.context";
-import WebSocketTemporalConnector from "../../../connector/WebSocketTemporalConnector";
+import WebSocketConnector from "../../../connector/WebSocketConnector";
 
 class SosGetResultReplayContext extends SosGetResultContext {
 
@@ -38,7 +37,6 @@ class SosGetResultReplayContext extends SosGetResultContext {
         let queryString     = super.getQueryString(properties);
         const startTime     = properties.startTime;
         const endTime       = properties.endTime;
-        const replaySpeed   = properties.replaySpeed;
 
         // adds temporalFilter
         queryString += "&temporalFilter=phenomenonTime," + startTime + "/" + endTime;
@@ -53,24 +51,50 @@ class SosGetResultReplayContext extends SosGetResultContext {
         const tls = (properties.tls) ? 's' : '';
         const url = properties.protocol + tls + '://' + properties.endpointUrl;
 
-        return new WebSocketTemporalConnector(url, properties);
+        return new WebSocketConnector(url, properties);
     }
 
-    async doTemporalRequest(properties, startTimestamp, endTimestamp, callback, status = {cancel:false}) {
+    async doTemporalRequest(properties, startTimestamp, endTimestamp,  status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             try {
-                await this.connector.doRequest(
+                const results = [];
+                const tls = (properties.tls) ? 's' : '';
+                const url = 'http' + tls + '://' + properties.endpointUrl + '?' + this.getQueryString({
+                    ...properties,
+                    startTime: new Date(startTimestamp).toISOString(),
+                    endTime: new Date(endTimestamp).toISOString()
+                });
+
+                const data = await fetch(url).then(response => {
+                    return response.arrayBuffer();
+                });
+                if(status.cancel) {
+                    reject();
+                } else {
+                    console.log(data);
+                    // for (let i = 0; i < data.length; i++) {
+                        results.push(...await this.parseData(data))
+                    // }
+                    console.log(results)
+                    resolve(results);
+                }
+
+                /*const data = await this.connector.doAsyncRequest(
                     '',
                     this.getQueryString({
                             ...properties,
                             startTime: new Date(startTimestamp).toISOString(),
                             endTime: new Date(endTimestamp).toISOString()
-                    }),
-                    async (encodedData) => {
-                        if(!status.cancel) { callback(await this.parseData(encodedData)) }
-                    }
+                    })
                 );
-                resolve();
+                if(status.cancel) {
+                    reject();
+                } else {
+                    for (let i = 0; i < data.length; i++) {
+                        results.push(...await this.parseData(data[i]))
+                    }
+                    resolve(results);
+                }*/
             } catch (ex) {
                 reject(ex);
             }
@@ -80,8 +104,12 @@ class SosGetResultReplayContext extends SosGetResultContext {
     async parseData(messages) {
         return this.parser.parseDataBlock(messages);
     }
+
     isConnected() {
         return true;
+    }
+
+    async disconnect() {
     }
 }
 

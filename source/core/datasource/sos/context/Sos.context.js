@@ -78,6 +78,7 @@ class SosContext extends DataSourceContext {
             throw Error('there is no connector defined');
         }
     }
+
 }
 
 export default SosContext;

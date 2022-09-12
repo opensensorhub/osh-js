@@ -61,10 +61,6 @@ class SosGetResultRealTimeContext extends SosGetResultContext {
         return connector;
     }
 
-    connect() {
-        this.connector.connect();
-    }
-
     async disconnect() {
         this.connector.disconnect();
     }

@@ -17,13 +17,15 @@
 import TimeSeriesHandler from "../../common/handler/TimeSeries.handler";
 import SweApiRealtimeContext from "../context/SweApi.realtime.context";
 import SweApiReplayContext from "../context/SweApi.replay.context";
+import {Mode} from "../../Mode";
 
 class SweApiHandler extends TimeSeriesHandler {
     createContext(properties) {
-        if(properties.startTime === 'now') {
-            return new SweApiRealtimeContext();
-        } else {
+        console.log(properties)
+        if(properties.mode === Mode.REPLAY || properties.mode === Mode.BATCH) {
             return new SweApiReplayContext();
+        } else {
+            return new SweApiRealtimeContext();
         }
     }
 }

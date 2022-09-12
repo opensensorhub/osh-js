@@ -140,9 +140,9 @@ class DataSourceHandler {
     }
 
     flushAll() {
-        while(this.values.length > 0) {
-            this.flush();
-        }
+        // while(this.values.length > 0) {
+        //     this.flush();
+        // }
     }
 
     flush() {

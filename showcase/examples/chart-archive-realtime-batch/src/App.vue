@@ -16,6 +16,8 @@ import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils';
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
 
 export default {
   components: {
@@ -30,7 +32,6 @@ export default {
   mounted() {
 
     let chartDataSource = new SosGetResult("weather", {
-      protocol: "ws",
       service: "SOS",
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
@@ -38,7 +39,8 @@ export default {
       startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString())
+      maxTime: (new Date(Date.now()).toISOString()),
+      mode: Mode.REPLAY
     });
 
 // #region snippet_curve_layer
@@ -68,9 +70,16 @@ export default {
     });
 
 // start streaming
-    chartDataSource.connect();
-
+//     chartDataSource.connect();
+    const dataSynchronizer = new DataSynchronizer({
+      replaySpeed: 1.0,
+      masterTimeRefreshRate: 250,
+      dataSources: [
+        chartDataSource
+      ]
+    });
     this.dataSource = chartDataSource;
+    dataSynchronizer.connect()
   },
   methods: {
     onControlEvent(eventName) {

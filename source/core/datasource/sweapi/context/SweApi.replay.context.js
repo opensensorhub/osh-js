@@ -17,7 +17,6 @@
 import SweApiContext from "./SweApi.context";
 import Control from "../../../sweapi/control/Control";
 import DataStream from "../../../sweapi/datastream/DataStream";
-import {Status} from "../../../connector/Status";
 
 class SweApiReplayContext extends SweApiContext {
     init(properties) {
@@ -73,10 +72,11 @@ class SweApiReplayContext extends SweApiContext {
         }
     }
 
-    async doTemporalRequest(properties, startTimestamp, endTimestamp, callback, status = {cancel:false}) {
+    async doTemporalRequest(properties, startTimestamp, endTimestamp, status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             const collection = await this.replayFunction(properties, startTimestamp, endTimestamp);
             let data;
+            let results = [];
             while (collection.hasNext() && !status.cancel) {
                 data = await collection.nextPage();
                 if(status.cancel) {
@@ -84,20 +84,22 @@ class SweApiReplayContext extends SweApiContext {
                 }
                 if (data.length > 0) {
                     if (this.properties.responseFormat === 'application/om+json') {
-                        let results = [];
                         for (let d of data) {
                             results.push({
                                 timestamp: d.timestamp,
                                 ...d.result
                             })
                         }
-                        callback(results);
                     } else {
-                        callback(data);
+                        results = data;
                     }
                 }
             }
-            resolve();
+            if(status.cancel) {
+                reject('Status has been cancelled');
+            } else {
+                resolve(results);
+            }
         });
     }
 }

@@ -17,6 +17,7 @@
 import {isDefined, randomUUID} from "../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.worker.js';
 import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
+import {Mode} from "../datasource/Mode";
 
 class DataSynchronizer {
     /**
@@ -25,6 +26,7 @@ class DataSynchronizer {
      * @param {Number} [properties.replaySpeed=1] - replaySpeed value
      * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
      * @param {Number} [properties.masterTimeRefreshRate=250] - interval in which time value is send through broadcast channel (in milliseconds)
+     * @param {Number} [properties.mode=Mode.REPLAY] - mode of the data synchronizer
      * @param {Datasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
@@ -35,12 +37,14 @@ class DataSynchronizer {
         this.replaySpeed = properties.replaySpeed || 1;
         this.timerResolution = properties.timerResolution || 5;
         this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250,
+        this.mode = properties.mode || Mode.REPLAY;
         this.initialized = false;
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
 
         this.eventSubscriptionMap = {};
         this.messagesMap = {};
+
     }
 
     getTopicId() {
@@ -297,17 +301,28 @@ class DataSynchronizer {
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
      * @param {boolean} reconnect - reconnect if was connected
+     * @param {Mode} mode - default dataSource mode
      */
-    async setTimeRange(startTime, endTime, replaySpeed ,reconnect= false) {
+    async setTimeRange(startTime= this.getStartTime(),
+                       endTime= this.getEndTime(),
+                       replaySpeed= this.getReplaySpeed(),
+                       reconnect= false,
+                       mode) {
+        //TODO: check This disconnects twice??
         if (this.replaySpeed !== replaySpeed) {
             await this.setReplaySpeed(replaySpeed);
         }
         await this.reset();
         for (let ds of this.dataSources) {
-            ds.setTimeRange(startTime, endTime, replaySpeed, reconnect);
+            ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
         }
     }
 
+    async updateProperties(properties) {
+        for (let ds of this.dataSources) {
+            ds.updateProperties(properties);
+        }
+    }
     /**
      * Resets reference time
      */

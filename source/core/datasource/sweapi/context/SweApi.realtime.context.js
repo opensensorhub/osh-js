@@ -78,9 +78,9 @@ class SweApiRealTimeContext extends SweApiContext {
     }
 
     connect() {
-        console.log('connect')
         this.streamFunction();
     }
+
     async disconnect() {
         if(isDefined(this.streamObject)) {
             this.streamObject.stream().disconnect();
