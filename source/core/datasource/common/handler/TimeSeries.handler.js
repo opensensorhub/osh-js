@@ -74,7 +74,7 @@ class DelegateReplayHandler extends DelegateHandler {
         super(context);
         this.interval = -1;
         this.prefetchBatchDuration = 10000; // 10 sec
-        this.prefetchNextBatchThreshold = 0.8; // 80%, fetch before the end
+        this.prefetchNextBatchThreshold = 0.6; // 80%, fetch before the end
         this.status = {
             cancel: false
         }
@@ -178,7 +178,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         this.delegateHandler = undefined;
     }
 
-    init(properties, topics, dataSourceId) {
+    async init(properties, topics, dataSourceId) {
         this.dataSourceId = dataSourceId;
         this.properties = {
             ...this.properties,
@@ -187,12 +187,11 @@ class TimeSeriesHandler extends DataSourceHandler {
         };
         this.setTopics(topics);
         this.context = this.createContext(properties);
-        this.updateDelegateHandler(properties).then(() => {
-            this.context.onChangeStatus = this.onChangeStatus.bind(this);
-            this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
-            this.context.init(this.properties);
-            this.initialized = true;
-        });
+        await this.updateDelegateHandler(properties);
+        this.context.onChangeStatus = this.onChangeStatus.bind(this);
+        this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
+        await this.context.init(this.properties);
+        this.initialized = true;
     }
 
     createContext(properties) {
@@ -242,7 +241,7 @@ class TimeSeriesHandler extends DataSourceHandler {
             })
             this.context.onChangeStatus = this.onChangeStatus.bind(this);
             this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
-            this.context.init({
+            await this.context.init({
                 ...this.properties,
                 ...properties
             });

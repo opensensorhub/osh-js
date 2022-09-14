@@ -74,7 +74,7 @@ export default {
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 3.0;
+    const dsReplaySpeed = 10.0;
 
     const commonDatasourceOpts = {
       endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',

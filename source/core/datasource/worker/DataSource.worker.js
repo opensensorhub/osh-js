@@ -21,16 +21,16 @@ import SweApiHandler from "../sweapi/handler/SweApi.handler";
 
 let dataSourceHandler = undefined;
 
-self.onmessage = (event) => {
-    handleMessage(event.data, self);
+self.onmessage = async (event) => {
+    await handleMessage(event.data, self);
 };
 
-function handleMessage(event) {
+async function handleMessage(event) {
     let value;
-    if(!isDefined(dataSourceHandler)) {
-        if(event.message === 'init') {
+    if (!isDefined(dataSourceHandler)) {
+        if (event.message === 'init') {
             dataSourceHandler = createHandlerFromProperties(event.properties);
-            dataSourceHandler.init(event.properties, event.topics, event.id);
+            await dataSourceHandler.init(event.properties, event.topics, event.id);
             value = dataSourceHandler.isInitialized();
         }
     } else {

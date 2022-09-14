@@ -40,7 +40,7 @@ export default {
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      mode: Mode.REPLAY
+      mode: Mode.BATCH
     });
 
 // #region snippet_curve_layer
@@ -70,16 +70,18 @@ export default {
     });
 
 // start streaming
-//     chartDataSource.connect();
-    const dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 1.0,
-      masterTimeRefreshRate: 250,
-      dataSources: [
-        chartDataSource
-      ]
-    });
+    chartDataSource.connect();
+//     const dataSynchronizer = new DataSynchronizer({
+//       replaySpeed: 1.0,
+//       masterTimeRefreshRate: 250,
+//       dataSources: [
+//         chartDataSource
+//       ]
+//     });
+//     dataSynchronizer.connect()
+    
     this.dataSource = chartDataSource;
-    dataSynchronizer.connect()
+
   },
   methods: {
     onControlEvent(eventName) {

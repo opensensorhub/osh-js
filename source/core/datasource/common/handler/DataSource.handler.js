@@ -35,7 +35,7 @@ class DataSourceHandler {
         throw Error('Should be overridden');
     }
 
-    init(properties, topics, dataSourceId) {
+    async init(properties, topics, dataSourceId) {
         this.dataSourceId = dataSourceId;
         this.properties = {
             ...this.properties,

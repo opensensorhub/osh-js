@@ -15,7 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import SosGetResultContext from "./SosGetResult.context";
-import WebSocketConnector from "../../../connector/WebSocketConnector";
+import HttpConnector from "../../../connector/HttpConnector";
+import BinaryDataParser from "../../../parsers/BinaryDataParser";
+import WebSocketFetchConnector from "../../../connector/WebSocketFetchConnector";
 
 class SosGetResultReplayContext extends SosGetResultContext {
 
@@ -47,54 +49,46 @@ class SosGetResultReplayContext extends SosGetResultContext {
         return queryString;
     }
 
-    createDataConnector(properties) {
+    async createDataConnector(properties) {
         const tls = (properties.tls) ? 's' : '';
         const url = properties.protocol + tls + '://' + properties.endpointUrl;
 
-        return new WebSocketConnector(url, properties);
+        // issue with SOS < 1.4, binary data cannot be fetch as HTTP in octet-stream, must use WebSocket as workaround
+        await this.parser.checkInit();
+        if(this.parser.parser instanceof BinaryDataParser) {
+            return new WebSocketFetchConnector(url, properties);
+        } else {
+            //
+            return new HttpConnector(url, {
+                ...properties,
+                method: 'GET'
+            });
+        }
     }
 
     async doTemporalRequest(properties, startTimestamp, endTimestamp,  status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             try {
                 const results = [];
-                const tls = (properties.tls) ? 's' : '';
-                const url = 'http' + tls + '://' + properties.endpointUrl + '?' + this.getQueryString({
-                    ...properties,
-                    startTime: new Date(startTimestamp).toISOString(),
-                    endTime: new Date(endTimestamp).toISOString()
-                });
-
-                const data = await fetch(url).then(response => {
-                    return response.arrayBuffer();
-                });
+                await this.parser.templatePromise;
+                const data = await this.connector.doRequest('', this.getQueryString({
+                        ...properties,
+                        startTime: new Date(startTimestamp).toISOString(),
+                        endTime: new Date(endTimestamp).toISOString()
+                    }));
                 if(status.cancel) {
                     reject();
                 } else {
-                    console.log(data);
-                    // for (let i = 0; i < data.length; i++) {
-                        results.push(...await this.parseData(data))
-                    // }
-                    console.log(results)
-                    resolve(results);
-                }
-
-                /*const data = await this.connector.doAsyncRequest(
-                    '',
-                    this.getQueryString({
-                            ...properties,
-                            startTime: new Date(startTimestamp).toISOString(),
-                            endTime: new Date(endTimestamp).toISOString()
-                    })
-                );
-                if(status.cancel) {
-                    reject();
-                } else {
-                    for (let i = 0; i < data.length; i++) {
-                        results.push(...await this.parseData(data[i]))
+                    // this is because binary < 1.4 issue and the use of WS. In case in using WS, the data are provided in a array
+                    if(Array.isArray(data)) {
+                        for(let d of data) {
+                            results.push(...await this.parseData(d));
+                        }
+                    } else {
+                        results.push(...await this.parseData(data));
                     }
                     resolve(results);
-                }*/
+                }
             } catch (ex) {
                 reject(ex);
             }

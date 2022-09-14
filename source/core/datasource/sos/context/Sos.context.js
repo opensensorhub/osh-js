@@ -24,9 +24,9 @@ class SosContext extends DataSourceContext {
         this.parser = parser;
     }
 
-    init(properties) {
-        super.init(properties);
+    async init(properties) {
         this.parser.init(properties);
+        await super.init(properties);
     }
     /**
      * Builds the full url.

@@ -230,9 +230,9 @@ export default {
         this.createTimeBc();
         // listen for datasource status
         this.dataSourceObject.subscribe(message => {
-          if (message.status === STATUS.DISCONNECTED) {
+          if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED) {
             this.connected = false;
-          } else if (message.status === STATUS.CONNECTED) {
+          } else if (message.status === STATUS.CONNECTED || message.status === STATUS.FETCH_STARTED) {
             this.connected = true;
           }
         }, [EventType.STATUS]);

@@ -105,7 +105,6 @@ class HttpConnector extends DataConnector {
             // Create a new response out of the stream
             .catch((err) => console.error(err));
         const response = await promiseResponse;
-        console.log(new Uint8Array(response));
         this.onMessage(response);
         return response;
     }

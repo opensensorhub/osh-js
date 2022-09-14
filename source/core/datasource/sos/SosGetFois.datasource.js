@@ -20,6 +20,7 @@ import DataSource from "../DataSource.datasource";
 class SosGetResult extends DataSource {
     constructor(name, properties) {
         super(name, {
+            protocol: 'ws', // default for streaming
             service: "SOS",
             timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties

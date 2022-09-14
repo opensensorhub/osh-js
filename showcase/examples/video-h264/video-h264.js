@@ -1,6 +1,10 @@
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import {Mode} from "osh-js/core/datasource/Mode";
+
+const REPLAY_SPEED = 10;
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {
@@ -11,7 +15,8 @@ let videoDataSource = new SosGetResult("drone-Video", {
   observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
   startTime: "2015-12-19T21:04:30Z",
   endTime: "2015-12-19T21:09:19Z",
-  replaySpeed: 1
+  replaySpeed: REPLAY_SPEED,
+  mode: Mode.REPLAY
 });
 
 // show it in video view using FFMPEG JS decoder
@@ -32,4 +37,11 @@ let videoView = new VideoView({
 });
 
 // start streaming
-videoDataSource.connect();
+const dataSynchronizer = new DataSynchronizer({
+  masterTimeRefreshRate: 250,
+  replaySpeed: REPLAY_SPEED,
+  dataSources: [
+    videoDataSource
+  ]
+});
+dataSynchronizer.connect()

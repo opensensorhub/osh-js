@@ -20,10 +20,10 @@ class DataSourceContext {
         this.properties = undefined;
     }
 
-    init(properties) {
+    async init(properties) {
         // this.parser.init(properties);
         this.properties = properties;
-        this.connector = this.createDataConnector(properties);
+        this.connector = await this.createDataConnector(properties);
         this.connector.onChangeStatus = this.onChangeStatus.bind(this);
         this.connector.onMessage = this.onMessage.bind(this);
     }
