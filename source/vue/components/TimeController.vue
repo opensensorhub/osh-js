@@ -390,7 +390,6 @@ export default {
     },
 
     async updateTime(event) {
-      console.log('update time')
       this.resetMasterTime();
       this.dataSourceObject.setTimeRange(
           new Date(this.startTime).toISOString(),

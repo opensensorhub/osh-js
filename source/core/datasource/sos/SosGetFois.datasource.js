@@ -16,20 +16,22 @@
 
 
 import DataSource from "../DataSource.datasource";
+import {Mode} from "../Mode";
 
-class SosGetResult extends DataSource {
+class SosGetFois extends DataSource {
     constructor(name, properties) {
         super(name, {
-            protocol: 'ws', // default for streaming
+            protocol: 'http', // default for streaming
             service: "SOS",
             timeShift:0,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             reconnectRetry: 10,
             tls: false,
             type: 'SosGetFois',
+            mode: Mode.BATCH,
             ...properties
         });
     }
 }
 
-export default SosGetResult;
+export default SosGetFois;

@@ -18,7 +18,7 @@ import SosContext from "./Sos.context";
 import SosGetFoisParser from "../../../parsers/sos/SosGetFois.parser";
 import {isDefined} from "../../../utils/Utils";
 
-class SosGetResultContext extends SosContext {
+class SosGetFoisContext extends SosContext {
 
     constructor() {
         super(new SosGetFoisParser());
@@ -53,6 +53,17 @@ class SosGetResultContext extends SosContext {
     async parseData(messages) {
         return this.parser.parseDataBlock(messages);
     }
+
+    connect() {
+        if(isDefined(this.connector)) {
+            this.connector.doRequest('', this.getQueryString(this.properties)).then(async encodedData => {
+                const decodedData = await this.parseData(encodedData);
+                this.handleData(decodedData);
+            });
+        } else {
+            throw Error('there is no connector defined');
+        }
+    }
 }
 
-export default SosGetResultContext;
+export default SosGetFoisContext;

@@ -16,6 +16,7 @@
 
 
 import TimeSeriesDatasource from "../TimeSeries.datasource";
+import {Mode} from "../Mode";
 
 class SosGetResult extends TimeSeriesDatasource {
     /**
@@ -38,6 +39,7 @@ class SosGetResult extends TimeSeriesDatasource {
             reconnectRetry: 10,
             tls: false,
             type: 'SosGetResult',
+            mode: Mode.REAL_TIME,
             prefetchBatchSize: 1000000,
             prefetchBatchDuration: 10000,
             ...properties

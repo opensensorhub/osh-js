@@ -14,19 +14,14 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import TimeSeriesHandler from "../../common/handler/TimeSeries.handler";
-import SweApiRealtimeContext from "../context/SweApi.realtime.context";
-import SweApiReplayContext from "../context/SweApi.replay.context";
-import {Mode} from "../../Mode";
 
-class SweApiHandler extends TimeSeriesHandler {
+import DataSourceHandler from "../../common/handler/DataSource.handler";
+import SosGetFoisContext from "../context/SosGetFois.context";
+
+class SosGetFoisHandler extends DataSourceHandler {
     createContext(properties) {
-        if(properties.mode === Mode.REPLAY || properties.mode === Mode.BATCH) {
-            return new SweApiReplayContext();
-        } else {
-            return new SweApiRealtimeContext();
-        }
+        return new SosGetFoisContext();
     }
 }
 
-export default SweApiHandler;
+export default SosGetFoisHandler;

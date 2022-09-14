@@ -71,15 +71,6 @@ export default {
 
 // start streaming
     chartDataSource.connect();
-//     const dataSynchronizer = new DataSynchronizer({
-//       replaySpeed: 1.0,
-//       masterTimeRefreshRate: 250,
-//       dataSources: [
-//         chartDataSource
-//       ]
-//     });
-//     dataSynchronizer.connect()
-    
     this.dataSource = chartDataSource;
 
   },

@@ -78,6 +78,7 @@ let directories = [
     'cesium-location',
     'cesium-location-opts',
     'cesium-location-path',
+    'cesium-frustum',
     'chart',
     'chart-batch',
     'leaflet-location',

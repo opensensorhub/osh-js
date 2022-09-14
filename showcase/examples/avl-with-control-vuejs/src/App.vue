@@ -11,10 +11,10 @@
         <div id="deckMap"></div>
       </div>
       <TimeController
-          :dataSource="dataSource"
+          :dataSynchronizer="dataSynchronizer"
           @event='onControlEvent'
           :skipTimeStep="'10s'"
-          v-if="dataSource "
+          v-if="dataSynchronizer"
       ></TimeController>
     </div>
   </div>
@@ -31,11 +31,15 @@ import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
 import {EventType} from 'osh-js/core/event/EventType';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 import {
   Cartographic, Math as MathCesium, Ion
 } from "cesium";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
+
+
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
@@ -47,7 +51,7 @@ export default {
   },
   data: function () {
     return {
-      dataSource: null
+      dataSynchronizer: null
     }
   },
   beforeMount() {
@@ -68,9 +72,12 @@ export default {
       observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
       startTime: "2014-03-29T05:00:03Z",
       endTime: "2014-03-30T07:00:53Z",
-      replaySpeed: 200
+      mode: Mode.REPLAY
     });
-
+    const dataSynchronizer = new DataSynchronizer({
+      replaySpeed: 200,
+      dataSources: [avlDataSource]
+    });
     /**************************************************************/
     /********************* Common functions **********************/
     /************************************************************/
@@ -301,9 +308,9 @@ export default {
 
   // update time
     const timeElt = document.getElementById("time");
-    avlDataSource.subscribe((message) =>  timeElt.innerText = new Date(message.timestamp).toISOString(), [EventType.TIME]);
+    dataSynchronizer.subscribe((message) =>  timeElt.innerText = new Date(message.timestamp).toISOString(), [EventType.TIME]);
 
-    this.dataSource = avlDataSource;
+    this.dataSynchronizer = dataSynchronizer;
   },
   methods: {
   }

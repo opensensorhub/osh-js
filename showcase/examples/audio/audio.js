@@ -6,9 +6,12 @@ import AudioFrequencyChartJsVisualizer
     from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer';
 import AudioTimeChartJsVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer';
 import AudioSpectrogramVisualizer from 'osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+
 // #region snippet_audio_datasource
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 let audioDataSource = new SosGetResult("alex-audio", {
     protocol: "ws",
@@ -18,8 +21,15 @@ let audioDataSource = new SosGetResult("alex-audio", {
     observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
     startTime: "2021-04-12T10:48:45Z",
     endTime: "2021-04-12T10:49:45Z",
-    replaySpeed: 1.0,
-    bufferingTime: 1000
+    mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+  replaySpeed: 1.0,
+  masterTimeRefreshRate: 250,
+  dataSources: [
+      audioDataSource
+  ]
 });
 
 let audioView = new AudioView({
@@ -82,7 +92,7 @@ audioView.addVisualizer(audioChartTimeVisualizer);
 audioView.addVisualizer(audioSpectrogramVisualizer);
 
 document.getElementById("listen").onclick = () => {
-    audioDataSource.connect();
+    dataSynchronizer.connect();
 }
 
 const inputChartElt = document.getElementById("input-range-chart");

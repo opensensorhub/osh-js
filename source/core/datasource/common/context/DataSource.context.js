@@ -36,7 +36,8 @@ class DataSourceContext {
         throw Error('Should be overridden');
     }
 
-    async onMessage(messages, format) {}
+    async onMessage(messages, format) {
+    }
 
     async disconnect() {
         throw Error('Should be overridden');

@@ -2,6 +2,8 @@ import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js'
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {createDefaultImageryProviderViewModels, EllipsoidTerrainProvider, Ion, Viewer} from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
@@ -16,7 +18,12 @@ let gpsDataSource = new SosGetResult('android-GPS', {
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     startTime: '2015-02-16T07:58:30Z',
     endTime: '2015-02-16T08:09:00Z',
-    replaySpeed: 2
+    mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 2,
+    dataSources: [gpsDataSource]
 });
 
 // style it with a moving point marker
@@ -69,4 +76,4 @@ let cesiumView = new CesiumView({
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
 // start streaming
-gpsDataSource.connect();
+dataSynchronizer.connect();

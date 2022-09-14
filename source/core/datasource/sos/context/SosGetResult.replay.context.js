@@ -15,9 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import SosGetResultContext from "./SosGetResult.context";
-import HttpConnector from "../../../connector/HttpConnector";
-import BinaryDataParser from "../../../parsers/BinaryDataParser";
-import WebSocketFetchConnector from "../../../connector/WebSocketFetchConnector";
+import {isDefined} from "../../../utils/Utils";
 
 class SosGetResultReplayContext extends SosGetResultContext {
 
@@ -49,21 +47,8 @@ class SosGetResultReplayContext extends SosGetResultContext {
         return queryString;
     }
 
-    async createDataConnector(properties) {
-        const tls = (properties.tls) ? 's' : '';
-        const url = properties.protocol + tls + '://' + properties.endpointUrl;
-
-        // issue with SOS < 1.4, binary data cannot be fetch as HTTP in octet-stream, must use WebSocket as workaround
-        await this.parser.checkInit();
-        if(this.parser.parser instanceof BinaryDataParser) {
-            return new WebSocketFetchConnector(url, properties);
-        } else {
-            //
-            return new HttpConnector(url, {
-                ...properties,
-                method: 'GET'
-            });
-        }
+    async checkInit() {
+        return this.parser.checkInit();
     }
 
     async doTemporalRequest(properties, startTimestamp, endTimestamp,  status = {cancel:false}) {
@@ -100,7 +85,7 @@ class SosGetResultReplayContext extends SosGetResultContext {
     }
 
     isConnected() {
-        return true;
+        return isDefined(this.connector) && this.connector.isConnected();
     }
 
     async disconnect() {

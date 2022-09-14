@@ -16,6 +16,9 @@
 
 import {isDefined} from "../../../utils/Utils";
 import DataSourceContext from "../../common/context/DataSource.context";
+import BinaryDataParser from "../../../parsers/BinaryDataParser";
+import WebSocketFetchConnector from "../../../connector/WebSocketFetchConnector";
+import HttpConnector from "../../../connector/HttpConnector";
 
 class SosContext extends DataSourceContext {
 
@@ -26,8 +29,29 @@ class SosContext extends DataSourceContext {
 
     async init(properties) {
         this.parser.init(properties);
-        await super.init(properties);
+        return super.init(properties);
     }
+
+    async checkInit() {}
+
+    async createDataConnector(properties) {
+        const tls = (properties.tls) ? 's' : '';
+
+        // issue with SOS < 1.4, binary data cannot be fetch as HTTP in octet-stream, must use WebSocket as workaround
+        await this.checkInit();
+        if(this.parser.parser instanceof BinaryDataParser) {
+            const url = 'ws' + tls + '://' + properties.endpointUrl;
+            return new WebSocketFetchConnector(url, properties);
+        } else {
+            //
+            const url = 'http' + tls + '://' + properties.endpointUrl;
+            return new HttpConnector(url, {
+                ...properties,
+                method: 'GET'
+            });
+        }
+    }
+
     /**
      * Builds the full url.
      * @protected
@@ -69,14 +93,6 @@ class SosContext extends DataSourceContext {
             }
         }
         return queryString;
-    }
-
-    connect() {
-        if(isDefined(this.connector)) {
-            this.connector.doRequest('', this.getQueryString(this.properties));
-        } else {
-            throw Error('there is no connector defined');
-        }
     }
 
 }

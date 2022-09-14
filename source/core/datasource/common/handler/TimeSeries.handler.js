@@ -15,7 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataSourceHandler from "./DataSource.handler";
-import {assertDefined, isDefined} from "../../../utils/Utils";
+import {assertBoolean, assertDefined, assertHasValue, isDefined} from "../../../utils/Utils";
 import {EventType} from "../../../event/EventType";
 import {Status} from "../../../connector/Status";
 import {Mode} from "../../Mode";
@@ -203,11 +203,17 @@ class TimeSeriesHandler extends DataSourceHandler {
             await this.delegateHandler.disconnect();
         }
         if (properties.mode === Mode.REAL_TIME) {
+            if(properties.startTime !== 'now') {
+                throw Error('The time is not correct, must be "now" for mode "Mode.REAL_TIME"');
+            }
             if (!isDefined(this.delegateRealTimeHandler)) {
                 this.delegateRealTimeHandler = new DelegateRealTimeHandler(this.context);
             }
             this.delegateHandler = this.delegateRealTimeHandler;
         } else if (properties.mode === Mode.REPLAY) {
+            if(properties.startTime === 'now') {
+                throw Error('The time is not correct, must be "ISOdateStart/ISOdateEnd" for mode "Mode.REPLAY"');
+            }
             if (!isDefined(this.delegateReplayHandler)) {
                 this.delegateReplayHandler = new DelegateReplayHandler(this.context);
             }
@@ -255,11 +261,13 @@ class TimeSeriesHandler extends DataSourceHandler {
 
     setTopics(topics) {
         super.setTopics(topics);
+        this.timeSyncTopic = undefined;
         if (isDefined(topics.time)) {
             this.setTimeTopic(topics.time);
         }
         if (isDefined(topics.sync)) {
             this.delegateHandler.setTimeTopic(topics.sync);
+            this.timeSyncTopic = topics.sync;
         }
     }
 
@@ -326,6 +334,9 @@ class TimeSeriesHandler extends DataSourceHandler {
     }
 
     connect() {
+        if(this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
+            throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
+        }
         this.delegateHandler.connect();
     }
 

@@ -15,9 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {isDefined} from "../../utils/Utils";
-import SosGetResultHandler from "../sos/handler/Sos.handler";
-import DataSourceHandler from "../common/handler/DataSource.handler";
 import SweApiHandler from "../sweapi/handler/SweApi.handler";
+import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
+import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
 
 let dataSourceHandler = undefined;
 
@@ -25,35 +25,45 @@ self.onmessage = async (event) => {
     await handleMessage(event.data, self);
 };
 
-async function handleMessage(event) {
-    let value;
-    if (!isDefined(dataSourceHandler)) {
-        if (event.message === 'init') {
-            dataSourceHandler = createHandlerFromProperties(event.properties);
-            await dataSourceHandler.init(event.properties, event.topics, event.id);
-            value = dataSourceHandler.isInitialized();
-        }
-    } else {
-        if (event.message === 'connect') {
-            dataSourceHandler.connect();
-        } else if (event.message === 'disconnect') {
-            dataSourceHandler.disconnect();
-        } else if (event.message === 'topics') {
-            dataSourceHandler.setTopics(event.topics);
-        } else if (event.message === 'update-properties') {
-            dataSourceHandler.updateProperties(event.data);
-        } else if (event.message === 'is-connected') {
-            value = dataSourceHandler.isConnected();
-        } else if (event.message === 'is-init') {
-            value = dataSourceHandler.isInitialized();
-        }
-    }
+let promise = new Promise(resolve => {resolve()});
 
-    // send back result or just return
-    postMessage({
-        message: event.message,
-        data: value,
-        messageId: event.messageId
+async function checkPerformingAction() {
+    await promise;
+}
+async function handleMessage(event) {
+    await checkPerformingAction();
+    // ensure the right order of the actions
+    promise = new Promise(async resolve => {
+        let value;
+        if (!isDefined(dataSourceHandler)) {
+            if (event.message === 'init') {
+                dataSourceHandler = createHandlerFromProperties(event.properties);
+                await dataSourceHandler.init(event.properties, event.topics, event.id);
+                value = dataSourceHandler.isInitialized();
+            }
+        } else {
+            if (event.message === 'connect') {
+                dataSourceHandler.connect();
+            } else if (event.message === 'disconnect') {
+                dataSourceHandler.disconnect();
+            } else if (event.message === 'topics') {
+                dataSourceHandler.setTopics(event.topics);
+            } else if (event.message === 'update-properties') {
+                dataSourceHandler.updateProperties(event.data);
+            } else if (event.message === 'is-connected') {
+                value = dataSourceHandler.isConnected();
+            } else if (event.message === 'is-init') {
+                value = dataSourceHandler.isInitialized();
+            }
+        }
+
+        // send back result or just return
+        postMessage({
+            message: event.message,
+            data: value,
+            messageId: event.messageId
+        });
+        resolve();
     });
 }
 
@@ -61,7 +71,7 @@ function createHandlerFromProperties(properties) {
     if(properties.type === 'SosGetResult') {
         return new SosGetResultHandler();
     } else if(properties.type === 'SosGetFois') {
-        return new DataSourceHandler();
+        return new SosGetFoisHandler();
     } else if(properties.type === 'SweApiStream') {
         return new SweApiHandler();
     } else {

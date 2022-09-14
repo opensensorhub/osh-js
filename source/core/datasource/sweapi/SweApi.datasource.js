@@ -16,6 +16,7 @@
 
 
 import TimeSeriesDatasource from "../TimeSeries.datasource";
+import {Mode} from "../Mode";
 
 class SweApi extends TimeSeriesDatasource {
     /**
@@ -41,7 +42,6 @@ class SweApi extends TimeSeriesDatasource {
      */
     constructor(name, properties) {
         super(name, {
-            batchSize: 1,
             reconnectTimeout: 1000 * 5, // default if not defined into properties
             reconnectRetry: 10,
             startTime: 'now',
@@ -50,6 +50,7 @@ class SweApi extends TimeSeriesDatasource {
             responseFormat: 'application/om+json',
             protocol: 'http',
             type: 'SweApiStream',
+            mode: Mode.REAL_TIME,
             prefetchBatchSize: 1000000,
             prefetchBatchDuration: 10000,
             ...properties,

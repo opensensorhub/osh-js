@@ -25,7 +25,15 @@ class SosGetResultParser {
             this.parser = new JsonDataParser(JSON.parse(template));
         } else {
             let sweXmlParser = new SWEXmlStreamParser(template);
-            let respSchema = sweXmlParser.toJson().GetResultTemplateResponse;
+            const json = sweXmlParser.toJson();
+            let respSchema;
+            // Retro compatibility
+            if(isDefined(json.GetResultTemplateResponse)) {
+                respSchema = json.GetResultTemplateResponse;
+            } else {
+                respSchema = json;
+            }
+
             let resultEncoding = respSchema.resultEncoding;
             let rootElement = respSchema.resultStructure
             if(resultEncoding && resultEncoding.type === 'TextEncoding') {

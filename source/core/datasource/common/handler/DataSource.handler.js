@@ -42,12 +42,10 @@ class DataSourceHandler {
             ...properties
         };
         this.setTopics(topics);
-        // this.connector = this.createDataConnector(this.properties);
-        // this.setUpConnector(this.connector);
         this.context = this.createContext(properties);
         this.context.onChangeStatus = this.onChangeStatus.bind(this);
         this.context.handleData = this.handleData.bind(this); // bind context to handler
-        this.context.init(properties);
+        await this.context.init(this.properties);
         this.initialized = true;
     }
 

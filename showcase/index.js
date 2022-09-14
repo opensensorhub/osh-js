@@ -25,6 +25,11 @@ var samples = [{
         url: "cesium-location-path"
     },
     {
+        name: "Cesium + Frustum Layer",
+        description: "Display a frustum from MISB data into Cesium Viewer",
+        url: "cesium-frustum"
+    },
+    {
         name: "Moving Location (Deck.gl)",
         description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
         url: "deckgl-location"
