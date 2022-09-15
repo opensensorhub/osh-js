@@ -65,6 +65,26 @@ self.onmessage = (event) => {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
         }
+    } else if(event.data.message === 'update-properties') {
+        if(dataSynchronizerAlgo !== null) {
+            dataSynchronizerAlgo.reset();
+            const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
+            if(event.data.mode === Mode.REPLAY) {
+                console.log(event.data.replaySpeed);
+                dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                    [],
+                    event.data.replaySpeed,
+                    dataSynchronizerAlgo.timerResolution
+                );
+            } else {
+                dataSynchronizerAlgo = new DataSynchronizerAlgo(
+                    [],
+                    dataSynchronizerAlgo.timerResolution
+                );
+            }
+            dataSynchronizerAlgo.dataSourceMap = dataSourcesMap;
+            dataSynchronizerAlgo.onData = onData;
+        }
     } else if(event.data.message === 'data') {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);

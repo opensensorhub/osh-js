@@ -307,15 +307,20 @@ class DataSynchronizer {
                        endTime= this.getEndTime(),
                        replaySpeed= this.getReplaySpeed(),
                        reconnect= false,
-                       mode) {
-        //TODO: check This disconnects twice??
-        if (this.replaySpeed !== replaySpeed) {
-            await this.setReplaySpeed(replaySpeed);
-        }
-        await this.reset();
-        for (let ds of this.dataSources) {
-            ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
-        }
+                       mode= this.mode) {
+        return new Promise(async resolve => {
+            await this.postMessage({
+                message: 'update-properties',
+                mode: mode,
+                replaySpeed: replaySpeed
+            }, () => {
+                for (let ds of this.dataSources) {
+                    ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
+                }
+                this.mode = mode;
+                resolve();
+            });
+        });
     }
 
     async updateProperties(properties) {

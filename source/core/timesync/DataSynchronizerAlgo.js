@@ -2,10 +2,9 @@ import {isDefined} from "../utils/Utils.js";
 import {Status} from "../connector/Status.js";
 
 class DataSynchronizerAlgo {
-    constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
+    constructor(dataSources, timerResolution = 5) {
         this.dataSourceMap = {};
         this.tsRun = 0;
-        this.replaySpeed = replaySpeed;
         this.timerResolution = timerResolution;
         this.interval = null;
         for (let ds of dataSources) {
@@ -48,6 +47,19 @@ class DataSynchronizerAlgo {
             currentDs.version = undefined;
         }
         this.tsRun = 0;
+        for(let dsKey in this.dataSourceMap) {
+            let current = this.dataSourceMap[dsKey];
+            this.dataSourceMap[dsKey] = {
+                timeOut: current.timeOut || 0,
+                dataBuffer: [],
+                id: current.id,
+                timedOut: false,
+                name: current.name || current.id,
+                latency: 0,
+                status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
+                version: undefined
+            };
+        }
     }
 
     processData() {
@@ -93,10 +105,7 @@ class DataSynchronizerAlgo {
                 minLatency = (currentDs.latency < minLatency) ? currentDs.latency : minLatency;
             }
         }
-        maxLatency *= this.replaySpeed;
-        minLatency *= this.replaySpeed;
-
-        const dClock = (performance.now() - refClockTime) * this.replaySpeed;
+        const dClock = (performance.now() - refClockTime);
         this.tsRun = tsRef + dClock;
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
@@ -141,7 +150,6 @@ class DataSynchronizerAlgo {
         this.dataSourceMap[dataSource.id] = {
             timeOut: dataSource.timeOut || 0,
             dataBuffer: [],
-            startBufferingTime: -1,
             id: dataSource.id,
             timedOut: false,
             name: dataSource.name || dataSource.id,
@@ -178,10 +186,6 @@ class DataSynchronizerAlgo {
         if (isDefined(this.interval)) {
             clearInterval(this.interval);
             this.interval = undefined;
-        }
-        if(isDefined(this.timeoutBuffering)) {
-            clearTimeout(this.timeoutBuffering);
-            this.timeoutBuffering = null;
         }
         console.log("Data synchronizer terminated successfully");
 
