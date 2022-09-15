@@ -47,12 +47,16 @@ class DelegateHandler {
 
 class DelegateRealTimeHandler extends DelegateHandler {
 
-    connect() {
-        this.context.connector.onMessage =  (message) => {
-            this.context.parseData(message).then(data => this.handleData(data));
-        }
-        super.connect();
+    init(properties) {
+        super.init(properties);
+        this.context.handleData = (data) => this.handleData(data);
     }
+    // connect() {
+    //     this.context.connector.onMessage =  (message) => {
+    //         this.context.parseData(message).then(data => this.handleData(data));
+    //     }
+    //     super.connect();
+    // }
 }
 
 class DelegateBatchHandler extends DelegateHandler {

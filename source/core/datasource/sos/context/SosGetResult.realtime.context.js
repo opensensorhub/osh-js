@@ -62,6 +62,10 @@ class SosGetResultRealTimeContext extends SosGetResultContext {
         return connector;
     }
 
+    async onMessage(messages, format) {
+        this.handleData(await this.parseData(messages));
+    }
+
     connect() {
         if(isDefined(this.connector)) {
             this.connector.doRequest('', this.getQueryString(this.properties));
