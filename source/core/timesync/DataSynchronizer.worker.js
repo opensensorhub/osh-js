@@ -54,23 +54,17 @@ self.onmessage = (event) => {
             data: self.currentTime
         };
     }  else if(event.data.message === 'reset') {
-        version = -1;
-        if(dataSynchronizerAlgo !== null) {
-            dataSynchronizerAlgo.reset();
-        }
-        timeBroadcastChannel.postMessage({
-            type: EventType.TIME_CHANGED
-        });
+        reset();
     }  else if(event.data.message === 'replay-speed') {
         if(dataSynchronizerAlgo !== null) {
             dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
         }
     } else if(event.data.message === 'update-properties') {
         if(dataSynchronizerAlgo !== null) {
+            reset();
             dataSynchronizerAlgo.reset();
             const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
             if(event.data.mode === Mode.REPLAY) {
-                console.log(event.data.replaySpeed);
                 dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
                     [],
                     event.data.replaySpeed,
@@ -104,6 +98,15 @@ self.onmessage = (event) => {
 
 }
 
+function reset() {
+    version = -1;
+    if(dataSynchronizerAlgo !== null) {
+        dataSynchronizerAlgo.reset();
+    }
+    timeBroadcastChannel.postMessage({
+        type: EventType.TIME_CHANGED
+    });
+}
 function initBroadcastChannel(dataTopic, timeTopic) {
     console.log('listen on topic ',dataTopic)
 

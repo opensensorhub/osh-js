@@ -47,19 +47,6 @@ class DataSynchronizerAlgo {
             currentDs.version = undefined;
         }
         this.tsRun = 0;
-        for(let dsKey in this.dataSourceMap) {
-            let current = this.dataSourceMap[dsKey];
-            this.dataSourceMap[dsKey] = {
-                timeOut: current.timeOut || 0,
-                dataBuffer: [],
-                id: current.id,
-                timedOut: false,
-                name: current.name || current.id,
-                latency: 0,
-                status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
-                version: undefined
-            };
-        }
     }
 
     processData() {

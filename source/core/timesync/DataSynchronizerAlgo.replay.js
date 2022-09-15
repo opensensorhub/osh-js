@@ -32,7 +32,6 @@ class DataSynchronizerAlgoReplay {
         for (let currentDsId in this.dataSourceMap) {
             const currentDs = this.dataSourceMap[currentDsId];
             currentDs.dataBuffer = [];
-            currentDs.startBufferingTime = -1;
             currentDs.status= Status.DISCONNECTED;
             currentDs.version = undefined;
         }
