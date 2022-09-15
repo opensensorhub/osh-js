@@ -50,14 +50,19 @@ class FileConnector extends DataConnector {
      */
     async doRequest(paths = []) {
         if(!this.opened) {
-            this.opened = true;
-            this.onChangeStatus(Status.CONNECTED);
-            for(let path of paths) {
-                this.onMessage(await fetch(path));
+            try {
+                this.opened = true;
+                this.onChangeStatus(Status.CONNECTED);
+                for (let path of paths) {
+                    const d = await fetch(path);
+                    this.onMessage(d);
+                }
+                this.onChangeStatus(Status.DISCONNECTED);
+                // read is done
+                this.opened = false;
+            } catch (ex) {
+                throw Error(ex);
             }
-            this.onChangeStatus(Status.DISCONNECTED);
-            // read is done
-            this.opened = false;
         }
     }
 

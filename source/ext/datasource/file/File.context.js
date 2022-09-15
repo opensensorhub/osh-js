@@ -14,14 +14,16 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSourceContext from "../../../core/datasource/context/DataSource.context";
 import {assertArray, isDefined} from "../../../core/utils/Utils";
 import FileParser from "../../parsers/File.parser";
+import FileConnector from "../../connector/FileConnector";
+import DataSourceContext from "../../../core/datasource/common/context/DataSource.context";
 
 class FileContext extends DataSourceContext {
 
     constructor() {
-        super(new FileParser());
+        super();
+        this.parser = new FileParser();
     }
 
     /**
@@ -37,11 +39,24 @@ class FileContext extends DataSourceContext {
     }
 
     connect() {
+        console.log('ici')
         if(isDefined(this.connector)) {
             this.connector.doRequest(this.getPaths(this.properties));
         } else {
             throw Error('there is no connector defined');
         }
+    }
+
+    createDataConnector(properties) {
+        return new FileConnector(this.getPaths(properties));
+    }
+
+    async parseData(message) {
+        return Promise.resolve(this.parser.parseDataBlock(message));
+    }
+
+    async onMessage(messages, format) {
+        this.handleData(await this.parseData(messages));
     }
 }
 

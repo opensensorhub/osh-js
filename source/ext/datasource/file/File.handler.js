@@ -14,16 +14,12 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import FileConnector from "../../connector/FileConnector";
-import DataSourceHandler from "../../../core/datasource/handler/DataSource.handler";
+import FileContext from "./File.context";
+import DataSourceHandler from "../../../core/datasource/common/handler/DataSource.handler";
 
 class FileHandler extends DataSourceHandler {
-    /**
-     * Override default data connector build
-     * @private
-     */
-    createDataConnector(properties) {
-        return new FileConnector(this.context.getPaths(properties));
+    createContext(properties) {
+        return new FileContext();
     }
 }
 
