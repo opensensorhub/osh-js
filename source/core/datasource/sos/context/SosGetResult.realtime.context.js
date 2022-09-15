@@ -17,6 +17,7 @@
 import SosGetResultContext from "./SosGetResult.context";
 import WebSocketConnector from "../../../connector/WebSocketConnector";
 import MqttConnector from "../../../connector/MqttConnector";
+import {isDefined} from "../../../utils/Utils";
 
 class SosGetResultRealTimeContext extends SosGetResultContext {
 
@@ -59,6 +60,14 @@ class SosGetResultRealTimeContext extends SosGetResultContext {
             throw Error(`Unsupported connector ${properties.protocol}`);
         }
         return connector;
+    }
+
+    connect() {
+        if(isDefined(this.connector)) {
+            this.connector.doRequest('', this.getQueryString(this.properties));
+        } else {
+            throw Error('there is no connector defined');
+        }
     }
 
     async disconnect() {
