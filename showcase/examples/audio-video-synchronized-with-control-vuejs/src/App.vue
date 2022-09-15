@@ -46,7 +46,7 @@
       mounted() {
 
         const opts = {
-          service: "SOS",
+          ,
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           startTime: "2021-04-12T10:48:45Z",

@@ -62,7 +62,6 @@ self.onmessage = (event) => {
     } else if(event.data.message === 'update-properties') {
         if(dataSynchronizerAlgo !== null) {
             reset();
-            dataSynchronizerAlgo.reset();
             const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
             if(event.data.mode === Mode.REPLAY) {
                 dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(

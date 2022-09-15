@@ -1,6 +1,7 @@
 import {EventType} from 'osh-js/core/event/EventType';
 // #region snippet_datasource_sweapifetch
 import SweApiFetch from "osh-js/core/datasource/sweapi/SweApi.datasource.js";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 let gpsDataSource = new SweApiFetch("android-GPS", {
   endpointUrl:  'ogct17.georobotix.io:8080/sensorhub/api',
@@ -11,6 +12,7 @@ let gpsDataSource = new SweApiFetch("android-GPS", {
     prefix: '/api',
     endpointUrl: 'ogct17.georobotix.io:8083'
   },
+  mode : Mode.REAL_TIME
 });
 
 // #endregion snippet_datasource_sweapifetch

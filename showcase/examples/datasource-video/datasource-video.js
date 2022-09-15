@@ -2,16 +2,22 @@
 // #region snippet_datasource_video
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import {EventType} from 'osh-js/core/event/EventType';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 const videoDataSource = new SosGetResult("drone-Video", {
-  protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: '2015-12-19T21:04:29.231Z',
   endTime: '2015-12-19T21:09:19.675Z',
-  replaySpeed: 1.0
+  mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+  replaySpeed: 2,
+  dataSources: [videoDataSource]
 });
 
 const videoDivElement = document.getElementById('datasource-video');
@@ -26,5 +32,5 @@ videoDataSource.subscribe((message) => {
 }, [EventType.DATA])
 
 
-videoDataSource.connect()
+dataSynchronizer.connect()
 // #endregion snippet_datasource_video

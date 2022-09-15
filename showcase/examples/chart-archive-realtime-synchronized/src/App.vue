@@ -19,6 +19,7 @@ import TimeController from 'osh-js/vue/components/TimeController.vue';
 
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {isDefined} from 'osh-js/core/utils/Utils';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 export default {
   components: {
@@ -33,8 +34,7 @@ export default {
   mounted() {
 
     const opts = {
-      protocol: "ws",
-      service: "SOS",
+      ,
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
@@ -42,9 +42,8 @@ export default {
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      bufferingTime: 1000,
       timeOut: 100,
-      replaySpeed: 1.0
+      mode: Mode.REPLAY
     };
 
     let chartDataSource1 = new SosGetResult("weather", {
@@ -97,7 +96,6 @@ export default {
 // start streaming
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
-      timerResolution: 5,
       dataSources: [chartDataSource1, chartDataSource2]
     })
 

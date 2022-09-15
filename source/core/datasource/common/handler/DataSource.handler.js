@@ -68,17 +68,6 @@ class DataSourceHandler {
         this.topic = topic;
     }
 
-    //         throw Error(`Unsupported connector ${properties.protocol}`);
-    //     }
-    //     return connector;
-    // }
-
-    // setUpConnector(connector) {
-        // bind status & messages
-        // connector.onChangeStatus = this.onChangeStatus.bind(this); // bind status between connector to handler
-        // connector.onMessage = this.context.onMessage.bind(this.context); // bind message between connector to context
-    // }
-
     /**
      * Send a change status event into the broadcast channel
      * @param {Status} status - the new status

@@ -4,6 +4,7 @@ import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';
 import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 // #region snippet_datasource_mqttswejson
 
@@ -16,6 +17,7 @@ let gpsDataSource = new SweApiFetch("android-GPS", {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8083'
     },
+    mode: Mode.REAL_TIME
 });
 
 const isaDataSource = new SweApiFetch("ISA-bio-sensor", {
@@ -27,6 +29,7 @@ const isaDataSource = new SweApiFetch("ISA-bio-sensor", {
         prefix: '/api',
         endpointUrl: 'ogct17.georobotix.io:8083'
     },
+    mode: Mode.REAL_TIME
 });
 
 // #endregion snippet_datasource_mqttswejson

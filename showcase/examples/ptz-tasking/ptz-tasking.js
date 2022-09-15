@@ -6,7 +6,7 @@ import PtzTaskingView from 'osh-js/ext/ui/view/tasking/PtzTaskingView.js';
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {
     protocol: "ws",
-    service: "SOS",
+    ,
     endpointUrl: "localhost:8282/sensorhub/sos",
     offeringID: "foscam",
     observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",

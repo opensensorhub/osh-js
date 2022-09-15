@@ -4,8 +4,6 @@ import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 // create data source for Android phone camera
 let videoDataSource = new SosGetResult("android-Video", {
-    protocol: "ws",
-    service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
     offeringID: "urn:android:device:060693280a28e015-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",

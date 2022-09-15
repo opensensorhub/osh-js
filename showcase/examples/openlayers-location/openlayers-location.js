@@ -2,29 +2,32 @@
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 // create data source for Android phone GPS
 let gpsDataSource = new SosGetResult("android-GPS", {
-  protocol: "ws",
-  service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
   observedProperty: "http://sensorml.com/ont/swe/property/Location",
   startTime: "2015-02-16T07:58:32Z",
   endTime: "2015-02-16T08:09:00Z",
-  replaySpeed: 2
+  mode: Mode.REPLAY
 });
 
 // create data source for Android phone orientation
 let orientationDataSource = new SosGetResult("android-Att", {
-  protocol: "ws",
-  service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
   observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
   startTime: "2015-02-16T07:58:32Z",
   endTime: "2015-02-16T08:09:00Z",
-  replaySpeed: 2
+  mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+  replaySpeed: 2,
+  dataSources: [gpsDataSource, orientationDataSource]
 });
 
 // style it with a moving point marker
@@ -90,5 +93,4 @@ let olView = new OpenLayerView({
 // #endregion snippet_ol_location_view
 
 // start streaming
-gpsDataSource.connect();
-orientationDataSource.connect();
+dataSynchronizer.connect();

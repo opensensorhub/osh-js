@@ -5,16 +5,22 @@ import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 let gpsDataSource = new SosGetResult("android-GPS", {
-  protocol: "ws",
-  service: "SOS",
+  ,
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
   observedProperty: "http://sensorml.com/ont/swe/property/Location",
   startTime: "2015-02-16T07:58:32Z",
   endTime: "2015-02-16T08:09:00Z",
-  replaySpeed: 2
+  mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 3.0,
+    dataSources: [gpsDataSource]
 });
 
 let pointMarker = new PointMarkerLayer({
@@ -85,5 +91,5 @@ let deckglMapView = new DeckGlView({
 );
 
 // start streaming
-gpsDataSource.connect();
+dataSynchronizer.connect();
 

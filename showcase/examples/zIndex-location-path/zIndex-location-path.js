@@ -9,7 +9,7 @@ import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 
 let gpsDataSource = new SosGetResult("android-GPS", {
     protocol: "ws",
-    service: "SOS",
+    ,
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
     offeringID: "urn:android:device:060693280a28e015-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/Location",

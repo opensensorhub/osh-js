@@ -40,12 +40,6 @@ var samples = [{
         url: "chart"
     },
     {
-        name: "Simple Batch Chart (Chart.js)",
-        description: "Display a chart with time series of weather measurements and using different datasource parameters " +
-            "to get data in batch",
-        url: "chart-batch"
-    },
-    {
         name: "Moving Location (Leaflet)",
         description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
         url: "leaflet-location"

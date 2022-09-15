@@ -5,50 +5,40 @@ import {EventType} from 'osh-js/core/event/EventType';
 // create data source for Android phone GPS
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
-// const END_TIME = '2015-12-19T21:04:30.231Z';
 const END_TIME = '2015-12-19T21:09:19.675Z';
-const REPLAY_SPEED = 1.0;
-const BUFFERING_TIME = 800;
-const TIMEOUT = 1000;
+const REPLAY_SPEED = 10.0;
 
 const videoDataSource = new SosGetResult("drone-Video", {
-  protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED,
-  bufferingTime: BUFFERING_TIME,
-  timeOut: TIMEOUT
+  mode: Mode.REPLAY
 });
+
 const platformLocationDataSource = new SosGetResult('android-GPS', {
-  protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
   offeringID: 'urn:mysos:solo:nav2',
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED,
-  bufferingTime: BUFFERING_TIME,
   responseFormat: 'application/json',
-  timeOut: TIMEOUT
+  mode: Mode.REPLAY
 });
 const platformOrientationDataSource = new SosGetResult('android-Heading', {
-  protocol: 'ws',
   service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
   offeringID: 'urn:mysos:solo:nav2',
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
   startTime: START_TIME,
   endTime: END_TIME,
-  replaySpeed: REPLAY_SPEED,
-  bufferingTime: BUFFERING_TIME,
-  timeOut: TIMEOUT
+  mode: Mode.REPLAY
 });
 
 const dataSynchronizer = new DataSynchronizer({

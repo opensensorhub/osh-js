@@ -5,10 +5,8 @@ import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois.datasource.js';
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {
-    protocol: 'http',
     service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-    batchSize: 50,
     procedureId: 'urn:usgs:water:network'
 });
 

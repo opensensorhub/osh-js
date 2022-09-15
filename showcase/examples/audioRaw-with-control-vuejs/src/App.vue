@@ -38,7 +38,7 @@
       mounted() {
         let audioDataSource = new SosGetResult("silent-echo-test-audio", {
           protocol: "ws",
-          service: "SOS",
+          ,
           // endpointUrl: "localhost:8989/sensorhub/sos",
           endpointUrl: "35.225.185.195:8989/sensorhub/sos",
           offeringID: "urn:osh:audio:wav",

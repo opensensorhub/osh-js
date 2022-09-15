@@ -3,11 +3,11 @@
     <div id="container">
     </div>
     <TimeController
-        :dataSource="dataSource"
+        :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
         :skipTimeStep="'60s'"
         :replaySpeedStep=0.1
-        v-if="dataSource"
+        v-if="dataSynchronizer"
     ></TimeController>
   </div>
 </template>
@@ -17,6 +17,8 @@ import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 export default {
   components: {
@@ -24,15 +26,14 @@ export default {
   },
   data: function () {
     return {
-      dataSource: null,
+      dataSynchronizer: null,
       view: null
     }
   },
   mounted() {
 
     let chartDataSource = new SosGetResult("weather", {
-      protocol: "ws",
-      service: "SOS",
+      ,
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
@@ -40,7 +41,13 @@ export default {
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      replaySpeed: 1.5
+      mode: Mode.REPLAY
+    });
+
+    const dataSynchronizer = new DataSynchronizer({
+      replaySpeed: 1.5,
+      dataSources: [chartDataSource],
+      masterTimeRefreshRate: 250
     });
 
     function getRandomArbitrary(min, max) {
@@ -102,9 +109,9 @@ export default {
     });
 
     // start streaming
-    chartDataSource.connect();
+    dataSynchronizer.connect();
 
-    this.dataSource = chartDataSource;
+    this.dataSynchronizer = dataSynchronizer;
   },
   methods: {
     onControlEvent(eventName) {
