@@ -23,6 +23,7 @@ class DataSourceContext {
     async init(properties) {
         // this.parser.init(properties);
         this.properties = properties;
+        console.log(this.properties)
         this.connector = await this.createDataConnector(properties);
         this.connector.onChangeStatus = this.onChangeStatus.bind(this);
         this.connector.onMessage = this.onMessage.bind(this);

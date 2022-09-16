@@ -25,6 +25,10 @@ class DelegateHandler {
         this.context = context;
     }
 
+    setContext(context) {
+        this.context = context;
+    }
+
     init(properties) {
         this.properties = properties;
     }
@@ -51,12 +55,6 @@ class DelegateRealTimeHandler extends DelegateHandler {
         super.init(properties);
         this.context.handleData = (data) => this.handleData(data);
     }
-    // connect() {
-    //     this.context.connector.onMessage =  (message) => {
-    //         this.context.parseData(message).then(data => this.handleData(data));
-    //     }
-    //     super.connect();
-    // }
 }
 
 class DelegateBatchHandler extends DelegateHandler {
@@ -73,12 +71,13 @@ class DelegateBatchHandler extends DelegateHandler {
     async disconnect() {
     }
 }
+
 class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
         this.interval = -1;
         this.prefetchBatchDuration = 10000; // 10 sec
-        this.prefetchNextBatchThreshold = 0.6; // 80%, fetch before the end
+        this.prefetchNextBatchThreshold = 0.7; // 80%, fetch before the end
         this.status = {
             cancel: false
         }
@@ -87,6 +86,9 @@ class DelegateReplayHandler extends DelegateHandler {
     init(properties) {
         super.init(properties);
         this.prefetchBatchDuration = properties.prefetchBatchDuration;
+        this.status = {
+            cancel: false
+        }
     }
 
     async fetchData(startTimestamp, endTimestamp) {
@@ -109,43 +111,62 @@ class DelegateReplayHandler extends DelegateHandler {
                 durationToFetch = endTimestamp - nextOffsetTimestamp;
             }
             this.promise = this.fetchData(nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch);
+            const data = await  this.promise;
+            const results = [];
+            console.log(this.context.properties.version);
+            for (let i = 0; i < data.length; i++) {
+                results.push({
+                    data: data[i],
+                    version: this.context.properties.version
+                });
+            }
+            if(!this.status.cancel) {
+                this.handleData(results);
+            }
 
-            this.promise.then((data) => {
-                this.handleData(data);
-                this.context.onChangeStatus(Status.FETCH_STARTED);
+            this.context.onChangeStatus(Status.FETCH_STARTED);
 
-                nextOffsetTimestamp += durationToFetch;
+            nextOffsetTimestamp += durationToFetch;
 
-                let lastOffsetTimestamp;
-                this.timeBc = new BroadcastChannel(this.timeTopic);
-                this.timeBc.onmessage = async (event) => {
-                    const currentDataTimestamp = event.data.timestamp;
+            let lastOffsetTimestamp;
+            this.timeBc = new BroadcastChannel(this.timeTopic);
+            this.timeBc.onmessage = async (event) => {
+                const currentDataTimestamp = event.data.timestamp;
 
-                    if (currentDataTimestamp >= endTimestamp) {
-                        await this.disconnect();
-                        return;
+                if (currentDataTimestamp >= endTimestamp) {
+                    await this.disconnect();
+                    return;
+                }
+                const dTime = nextOffsetTimestamp - currentDataTimestamp;
+
+                if (dTime <= fetchNextDataThreshold) {
+                    //either fetch new batch or disconnect because there is no more data
+                    let deltaTimeToFetch = batchSizeInMillis;
+                    if ((deltaTimeToFetch + nextOffsetTimestamp) > endTimestamp) {
+                        deltaTimeToFetch = endTimestamp - nextOffsetTimestamp;
                     }
-                    const dTime = nextOffsetTimestamp - currentDataTimestamp;
-
-                    if (dTime <= fetchNextDataThreshold) {
-                        //either fetch new batch or disconnect because there is no more data
-                        let deltaTimeToFetch = batchSizeInMillis;
-                        if ((deltaTimeToFetch + nextOffsetTimestamp) > endTimestamp) {
-                            deltaTimeToFetch = endTimestamp - nextOffsetTimestamp;
-                        }
-                        let offsetTimestamp = nextOffsetTimestamp;
-                        nextOffsetTimestamp += deltaTimeToFetch;
-                        if(nextOffsetTimestamp === lastOffsetTimestamp) {
-                            // already fetched
-                            return;
-                        } else {
-                            lastOffsetTimestamp = nextOffsetTimestamp;
-                        }
-                        this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
-                        this.handleData(await this.promise);
+                    let offsetTimestamp = nextOffsetTimestamp;
+                    nextOffsetTimestamp += deltaTimeToFetch;
+                    if(nextOffsetTimestamp === lastOffsetTimestamp) {
+                        // already fetched
+                        return;
+                    } else {
+                        lastOffsetTimestamp = nextOffsetTimestamp;
+                    }
+                    this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
+                    const data = await  this.promise;
+                    const results = [];
+                    for (let i = 0; i < data.length; i++) {
+                        results.push({
+                            data: data[i],
+                            version: this.context.properties.version
+                        });
+                    }
+                    if(!this.status.cancel) {
+                        this.handleData(results);
                     }
                 }
-            });
+            }
             assertDefined(this.timeTopic, 'TimeTopic not defined');
         }
     }
@@ -155,17 +176,24 @@ class DelegateReplayHandler extends DelegateHandler {
     }
 
     async disconnect() {
-        this.status.cancel = false;
-        if (isDefined(this.promise)) {
-            this.status.cancel = true;
-        }
-        this.promise = undefined;
-        this.context.onChangeStatus(Status.FETCH_ENDED);
-        if (isDefined(this.timeBc)) {
-            this.timeBc.close();
-        }
-        clearInterval(this.interval);
-        this.interval = -1;
+        return new Promise((resolve, reject) => {
+            try {
+                this.status.cancel = false;
+                if (isDefined(this.promise)) {
+                    this.status.cancel = true;
+                }
+                this.promise = undefined;
+                this.context.onChangeStatus(Status.FETCH_ENDED);
+                if (isDefined(this.timeBc)) {
+                    this.timeBc.close();
+                }
+                clearInterval(this.interval);
+                this.interval = -1;
+                resolve();
+            }catch (ex) {
+                reject(ex);
+            }
+        });
     }
 
 
@@ -180,6 +208,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         this.delegateRealTimeHandler = null;
         this.delegateBatchHandler = null;
         this.delegateHandler = undefined;
+        this.promiseDisconnect = new Promise(resolve => {resolve()}); // default one
     }
 
     async init(properties, topics, dataSourceId) {
@@ -187,10 +216,11 @@ class TimeSeriesHandler extends DataSourceHandler {
         this.properties = {
             ...this.properties,
             ...properties,
-            dataSourceId: dataSourceId
+            dataSourceId: dataSourceId,
+            version: this.version
         };
         this.setTopics(topics);
-        this.context = this.createContext(properties);
+        this.context = this.createContext(this.properties);
         await this.updateDelegateHandler(properties);
         this.context.onChangeStatus = this.onChangeStatus.bind(this);
         this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
@@ -237,26 +267,22 @@ class TimeSeriesHandler extends DataSourceHandler {
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED
             });
-            await this.disconnect();
             this.version++;
+            await this.disconnect();
 
-            this.context = this.createContext({
-                    ...this.properties,
-                    ...properties
-                });
-
-            await this.updateDelegateHandler({
+            this.properties = {
                 ...this.properties,
-                ...properties
-            })
+                ...properties,
+                version: this.version
+            };
+            this.context = this.createContext(this.properties);
+            await this.updateDelegateHandler(this.properties);
+            // set the new context
+            await this.context.init(this.properties);
+            this.delegateHandler.setContext(this.context);
             this.context.onChangeStatus = this.onChangeStatus.bind(this);
             this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
-            await this.context.init({
-                ...this.properties,
-                ...properties
-            });
-
-            return super.updateProperties(properties);
+            this.connect();
         } catch (ex) {
             console.error(ex);
             throw ex;
@@ -309,16 +335,19 @@ class TimeSeriesHandler extends DataSourceHandler {
             return;
         }
         // check if data is an array
-        if (Array.isArray(data)) {
-            for (let i = 0; i < data.length; i++) {
-                this.values.push({
-                    data: data[i],
-                    version: this.version
-                });
-            }
-        }
-
-        this.flush();
+        // if (Array.isArray(data)) {
+        //     for (let i = 0; i < data.length; i++) {
+        //         this.values.push({
+        //             data: data[i],
+        //             version: this.version
+        //         });
+        //     }
+        // }
+        this.broadcastChannel.postMessage({
+            dataSourceId: this.dataSourceId,
+            type: EventType.DATA,
+            values: data
+        });
         if (this.timeBroadcastChannel !== null) {
             if(data.length > 0 ) {
                 this.timeBroadcastChannel.postMessage({
@@ -337,15 +366,20 @@ class TimeSeriesHandler extends DataSourceHandler {
         }
     }
 
-    connect() {
-        if(this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
+    async checkDisconnect() {
+        await this.promiseDisconnect;
+    }
+    async connect() {
+        await this.checkDisconnect();
+        if (this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
             throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
         }
         this.delegateHandler.connect();
     }
 
     async disconnect() {
-        return this.delegateHandler.disconnect();
+        this.promiseDisconnect =  this.delegateHandler.disconnect();
+        return this.promiseDisconnect;
     }
 }
 

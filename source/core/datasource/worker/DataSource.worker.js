@@ -44,6 +44,13 @@ async function handleMessage(event) {
         } else {
             if (event.message === 'connect') {
                 dataSourceHandler.connect();
+                // send back result or just return
+                postMessage({
+                    message: event.message,
+                    data: value,
+                    messageId: event.messageId
+                });
+                resolve();
             } else if (event.message === 'disconnect') {
                 dataSourceHandler.disconnect();
             } else if (event.message === 'topics') {
@@ -65,6 +72,7 @@ async function handleMessage(event) {
         });
         resolve();
     });
+    return promise;
 }
 
 function createHandlerFromProperties(properties) {

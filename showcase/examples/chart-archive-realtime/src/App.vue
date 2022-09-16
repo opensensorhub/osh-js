@@ -33,7 +33,6 @@ export default {
   mounted() {
 
     let chartDataSource = new SosGetResult("weather", {
-      ,
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",

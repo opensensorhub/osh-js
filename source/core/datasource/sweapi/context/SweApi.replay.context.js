@@ -72,6 +72,9 @@ class SweApiReplayContext extends SweApiContext {
         }
     }
 
+    async disconnect() {
+    }
+
     async doTemporalRequest(properties, startTimestamp, endTimestamp, status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             const collection = await this.replayFunction(properties, startTimestamp, endTimestamp);

@@ -24,7 +24,8 @@ class DataSourceHandler {
         this.topic = undefined;
         this.broadcastChannel = undefined;
         this.values = [];
-        this.version = -Number.MAX_SAFE_INTEGER;
+        // this.version = -Number.MAX_SAFE_INTEGER;
+        this.version = 0;
         this.properties = {
             batchSize: 1
         };

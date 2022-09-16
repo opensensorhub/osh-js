@@ -78,7 +78,8 @@ var samples = [{
     {
         name: "Moving Location + Heading + Video (Leaflet)",
         description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
-            "video. Create duplicated dataSources running at different time to check there is no collision between data",
+            "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
+            "2 datasets are using a DataSynchronizer object. Each one should be independent.",
         url: "video-map-multiple-datasource"
     },
     {
@@ -107,13 +108,6 @@ var samples = [{
         url: "multi-datasources-synchronized"
     },
     {
-        name: "Moving Location + Heading + Video (Leaflet)",
-        description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
-            "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
-            "2 datasets are using a DataSynchronizer object. Each one should be independent.",
-        url: "video-map-multiple-datasource-synchronizer"
-    },
-    {
         name: "Resizable H264 Video",
         description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
         url: "video-h264"
@@ -129,21 +123,9 @@ var samples = [{
         url: "video-h264-draping"
     },
     {
-        name: "Resizable Transferable H264 Video",
-        description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder and a button to " +
-            "destroy/re-create the view.",
-        url: "video-h264-transferable"
-    },
-    {
         name: "Resizable MJPEG Video",
         description: "Display an MJPEG video in a simple resizable DIV.",
         url: "video-mjpeg"
-    },
-    {
-        name: 'VueJs component: Video with control',
-        description: 'Display a video using forward/pause/play/backward control',
-        url: 'video-with-control-vuejs',
-        code: 'vue/App_examples/video-with-control-vuejs.vue'
     },
     {
         name: 'VueJs component: Multiple Video with control',

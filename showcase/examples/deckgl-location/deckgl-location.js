@@ -9,7 +9,6 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 let gpsDataSource = new SosGetResult("android-GPS", {
-  ,
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
   observedProperty: "http://sensorml.com/ont/swe/property/Location",

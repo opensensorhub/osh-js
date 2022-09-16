@@ -21,82 +21,95 @@ let cTime;
 let cId;
 let lastTime = -1;
 let version = -1;
+let promise;
 
-self.onmessage = (event) => {
-    let data = undefined;
-    if(event.data.message === 'init') {
-        replaySpeed = event.data.replaySpeed;
-        if(event.data.mode === Mode.REPLAY) {
-            dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                event.data.dataSources,
-                event.data.replaySpeed,
-                event.data.timerResolution
-            );
-        } else {
-            dataSynchronizerAlgo = new DataSynchronizerAlgo(
-                event.data.dataSources,
-                event.data.replaySpeed,
-                event.data.timerResolution
-            );
-        }
-        dataSynchronizerAlgo.onData = onData;
-        init = true;
-        addDataSources(event.data.dataSources);
-        topicData = event.data.topics.data;
-        topicTime = event.data.topics.time;
-        initBroadcastChannel(topicData, topicTime);
-        startMasterTimeInterval(event.data.masterTimeRefreshRate);
-    } else if(event.data.message === 'add' && event.data.dataSources) {
-        addDataSources(event.data.dataSources);
-    } else if(event.data.message === 'current-time') {
-        data = {
-            message: 'current-time',
-            data: self.currentTime
-        };
-    }  else if(event.data.message === 'reset') {
-        reset();
-    }  else if(event.data.message === 'replay-speed') {
-        if(dataSynchronizerAlgo !== null) {
-            dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
-        }
-    } else if(event.data.message === 'update-properties') {
-        if(dataSynchronizerAlgo !== null) {
-            reset();
-            const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
-            if(event.data.mode === Mode.REPLAY) {
+self.onmessage = async (event) => {
+    if(isDefined(promise)) {
+        await promise;
+    }
+    promise = handleMessage(event);
+}
+
+async function handleMessage(event) {
+    return new Promise(resolve => {
+        let sendResponse = true;
+        let data = undefined;
+        if (event.data.message === 'init') {
+            replaySpeed = event.data.replaySpeed;
+            if (event.data.mode === Mode.REPLAY) {
                 dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                    [],
+                    event.data.dataSources,
                     event.data.replaySpeed,
-                    dataSynchronizerAlgo.timerResolution
+                    event.data.timerResolution
                 );
             } else {
                 dataSynchronizerAlgo = new DataSynchronizerAlgo(
-                    [],
-                    dataSynchronizerAlgo.timerResolution
+                    event.data.dataSources,
+                    event.data.replaySpeed,
+                    event.data.timerResolution
                 );
             }
-            dataSynchronizerAlgo.dataSourceMap = dataSourcesMap;
             dataSynchronizerAlgo.onData = onData;
-        }
-    } else if(event.data.message === 'data') {
-        if(dataSynchronizerAlgo !== null) {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-        }
-        if(!isDefined(masterTimeInterval)) {
-            startMasterTimeInterval();
-        }
-    } else {
-        // skip response
-        return;
-    }
-    self.postMessage({
-        message: event.data.message,
-        data: data,
-        messageId: event.data.messageId
-    })
+            init = true;
+            addDataSources(event.data.dataSources);
+            topicData = event.data.topics.data;
+            topicTime = event.data.topics.time;
+            initBroadcastChannel(topicData, topicTime);
+            startMasterTimeInterval(event.data.masterTimeRefreshRate);
+        } else if (event.data.message === 'add' && event.data.dataSources) {
+            addDataSources(event.data.dataSources);
+        } else if (event.data.message === 'current-time') {
+            data = {
+                message: 'current-time',
+                data: self.currentTime
+            };
+        } else if (event.data.message === 'reset') {
+            reset();
+        } else if (event.data.message === 'replay-speed') {
+            if (dataSynchronizerAlgo !== null) {
+                dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
+            }
+        } else if (event.data.message === 'update-properties') {
+            if (dataSynchronizerAlgo !== null) {
+                reset();
+                const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
+                if (event.data.mode === Mode.REPLAY && !(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay)) {
+                    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                        [],
+                        event.data.replaySpeed,
+                        dataSynchronizerAlgo.timerResolution
+                    );
+                } else if (!(dataSynchronizerAlgo instanceof DataSynchronizerAlgo)) {
+                    dataSynchronizerAlgo = new DataSynchronizerAlgo(
+                        [],
+                        dataSynchronizerAlgo.timerResolution
+                    );
+                }
 
+                dataSynchronizerAlgo.dataSourceMap = dataSourcesMap;
+                dataSynchronizerAlgo.onData = onData;
+            }
+        } else if (event.data.message === 'data') {
+            if (dataSynchronizerAlgo !== null) {
+                dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+            }
+            if (!isDefined(masterTimeInterval)) {
+                startMasterTimeInterval();
+            }
+        } else {
+            // skip response
+            sendResponse = false;
+        }
+        if(sendResponse) {
+            self.postMessage({
+                message: event.data.message,
+                data: data,
+                messageId: event.data.messageId
+            });
+        }
+        resolve();
+    });
 }
-
 function reset() {
     version = -1;
     if(dataSynchronizerAlgo !== null) {
@@ -147,6 +160,10 @@ function addDataSource(dataSource) {
 }
 
 async function onData(dataSourceId, dataBlock) {
+    if((version === -1 && (isDefined(lastData) ) && dataBlock.version === lastData.dataBlock.version)){
+        return;
+    }
+
     version = dataBlock.version;
     lastData = {
         dataSourceId: dataSourceId,
@@ -167,7 +184,7 @@ self.onclose = function() {
 function startMasterTimeInterval(masterTimeRefreshRate) {
     setInterval(() => {
         // check version
-        if (!isDefined(lastData) || version !== lastData.dataBlock.version) {
+        if (!isDefined(lastData) || version !== lastData.dataBlock.version || version === -1) {
             return;
         }
         cTime = lastData.dataBlock.data.timestamp;

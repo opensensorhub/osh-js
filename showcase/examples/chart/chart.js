@@ -9,8 +9,6 @@ function getRandomArbitrary(min, max) {
 }
 
 let chartDataSource = new SosGetResult("weather", {
-    protocol: "ws",
-    ,
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
     offeringID: "urn:mysos:offering03",
     observedProperty: "http://sensorml.com/ont/swe/property/Weather",

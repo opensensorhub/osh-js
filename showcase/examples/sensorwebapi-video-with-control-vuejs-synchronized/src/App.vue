@@ -35,7 +35,7 @@ export default {
     }
   },
   mounted() {
-    const REPLAY_SPEED = 1.2;
+    const REPLAY_SPEED = 2.6;
     // setup video
     // create data source for UAV camera
     const opts = {

@@ -12,7 +12,6 @@ window.CESIUM_BASE_URL = './';
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {
-    service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
     procedureId: 'urn:usgs:water:network'
 });

@@ -74,7 +74,7 @@ export default {
     // const END_TIME = '2012-06-29T14:32:37.099333251Z'
     const tls = true;
 
-    const dsReplaySpeed = 10.0;
+    const dsReplaySpeed = 2.6;
 
     const commonDatasourceOpts = {
       endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
@@ -88,7 +88,6 @@ export default {
       endTime: END_TIME,
       minTime: START_TIME,
       maxTime: END_TIME,
-      replaySpeed: dsReplaySpeed,
       mode: Mode.REPLAY,
       prefetchBatchDuration: 10000,
       prefetchBatchSize: 1000000

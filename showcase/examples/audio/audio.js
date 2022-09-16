@@ -14,8 +14,6 @@ import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 
 let audioDataSource = new SosGetResult("alex-audio", {
-    protocol: "ws",
-    ,
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
     offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",

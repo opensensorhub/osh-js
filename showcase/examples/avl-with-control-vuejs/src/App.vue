@@ -65,8 +65,6 @@ export default {
 
 // setup DataSource. The datasource contains multiple ids.
     let avlDataSource = new SosGetResult("AVL", {
-      protocol: "ws",
-      ,
       endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
       offeringID: "urn:mysos:avl",
       observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",

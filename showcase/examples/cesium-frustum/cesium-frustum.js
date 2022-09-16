@@ -18,7 +18,6 @@ const sosEndpoint = 'ogct17.georobotix.io:8443/sensorhub/sos';
 const dsReplaySpeed = 1.0;
 
 const droneLocationDataSource = new SosGetResult('MISB UAS - Platform Location', {
-    service: 'SOS',
     tls: tls,
     endpointUrl: sosEndpoint,
     offeringID: 'urn:osh:sensor:uas:predator001',

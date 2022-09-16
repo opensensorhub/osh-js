@@ -6,16 +6,24 @@ import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 let gpsDataSource = new SosGetResult("android-GPS", {
-    protocol: "ws",
-    ,
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
     offeringID: "urn:android:device:060693280a28e015-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/Location",
     startTime: "2015-02-16T07:58:32Z",
     endTime: "2015-02-16T08:09:00Z",
-    replaySpeed: 2
+    mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    masterTimeRefreshRate: 250,
+    replaySpeed: 5.0,
+    dataSources: [
+        gpsDataSource
+    ]
 });
 
 function createPointMarker0() {
@@ -125,4 +133,4 @@ new CesiumView({
 });
 
 // start streaming
-gpsDataSource.connect();
+dataSynchronizer.connect()

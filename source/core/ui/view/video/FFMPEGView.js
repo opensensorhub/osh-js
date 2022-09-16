@@ -103,11 +103,11 @@ class FFMPEGView extends CanvasView {
      * @override
      */
     reset() {
+        this.skipFrame = true;
         if(isDefined(this.decodeWorker)) {
             this.decodeWorker.terminate();
             this.decodeWorker = null;
         }
-        this.resetCalled = true;
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
         this.yuvCanvas.drawNextOuptutPictureGL({
@@ -121,6 +121,7 @@ class FFMPEGView extends CanvasView {
             vDataPerRow: 1,
             vRowCnt: 1
         });
+        this.skipFrame = false;
     }
 
 //-- FFMPEG DECODING PART

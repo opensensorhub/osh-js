@@ -41,6 +41,7 @@ import TimeController from 'osh-js/vue/components/TimeController.vue';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {EventType} from "osh-js/core/event/EventType";
+import {Mode} from "../../../../source/core/datasource/Mode";
 
 export default {
   components: {
@@ -64,47 +65,34 @@ export default {
     const TIMEOUT = 500;
 
     const videoDataSource0 = new SosGetResult("Video 0", {
-      protocol: 'ws',
-      service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
-      replaySpeed: REPLAY_SPEED,
-      bufferingTime: BUFFERING_TIME,
-      timeOut: TIMEOUT
+      mode: Mode.REPLAY
     });
 
     const videoDataSource1 = new SosGetResult("Video 1", {
-      protocol: 'ws',
-      service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
-      replaySpeed: REPLAY_SPEED,
-      bufferingTime: BUFFERING_TIME,
-      timeOut: TIMEOUT
+      mode: Mode.REPLAY
     });
 
     const videoDataSource2 = new SosGetResult("Video 2", {
-      protocol: 'ws',
-      service: 'SOS',
       endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
-      replaySpeed: REPLAY_SPEED,
-      bufferingTime: BUFFERING_TIME,
-      timeOut: TIMEOUT
+      mode: Mode.REPLAY
     });
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
-      timerResolution: 5,
       dataSources: [videoDataSource0, videoDataSource1, videoDataSource2]
     })
 

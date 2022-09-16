@@ -35,7 +35,6 @@ class DataSynchronizerAlgoReplay {
             currentDs.status= Status.DISCONNECTED;
             currentDs.version = undefined;
         }
-        this.tsRun = 0;
     }
 
     processData() {

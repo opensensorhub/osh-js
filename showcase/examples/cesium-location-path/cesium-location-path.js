@@ -13,7 +13,6 @@ window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
 let gpsDataSource = new SosGetResult('android-GPS', {
-    service: 'SOS',
     endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
     offeringID: 'urn:android:device:060693280a28e015-sos',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',

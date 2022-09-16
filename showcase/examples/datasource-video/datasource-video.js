@@ -6,7 +6,6 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 
 const videoDataSource = new SosGetResult("drone-Video", {
-  service: 'SOS',
   endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',

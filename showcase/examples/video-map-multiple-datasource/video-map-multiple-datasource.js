@@ -3,39 +3,35 @@ import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
-const REPLAY_FACTOR = 1.0;
+const REPLAY_SPEED = 1.0;
 
 function createView(videoDivId, mapDivId, startTime,endTime ) {
     const videoDataSource = new SosGetResult("drone-Video", {
-        protocol: 'ws',
-        service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
         offeringID: 'urn:mysos:solo:video2',
         observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: REPLAY_FACTOR
+        mode: Mode.REPLAY
     });
     const platformLocationDataSource = new SosGetResult('android-GPS', {
-        protocol: 'ws',
-        service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
         offeringID: 'urn:mysos:solo:nav2',
         observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: REPLAY_FACTOR
+        mode: Mode.REPLAY
     });
     const platformOrientationDataSource = new SosGetResult('android-Heading', {
-        protocol: 'ws',
-        service: 'SOS',
         endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
         offeringID: 'urn:mysos:solo:nav2',
         observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
         startTime: startTime,
         endTime: endTime,
-        replaySpeed: REPLAY_FACTOR
+        mode: Mode.REPLAY
     });
 
     // show it in video view using FFMPEG JS decoder
@@ -93,9 +89,14 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
         autoZoomOnFirstMarker: true
     });
 
-    videoDataSource.connect();
-    platformLocationDataSource.connect();
-    platformOrientationDataSource.connect();
+    const dataSynchronizer = new DataSynchronizer({
+        masterTimeRefreshRate: 250,
+        replaySpeed: REPLAY_SPEED,
+        dataSources: [
+            videoDataSource, platformLocationDataSource, platformOrientationDataSource
+        ]
+    });
+    dataSynchronizer.connect()
 }
 
 createView("VideoLeft","leafletMapLeft", '2015-12-19T21:04:29.231Z', '2015-12-19T21:09:19.675Z');
