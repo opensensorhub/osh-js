@@ -55,32 +55,34 @@ class MjpegView extends View {
             ...properties
         });
 
+        this.currentDoc = isDefined(properties.parentDoc) ? properties.parentDoc : document;
+
         // create timestamp slot
         this.timestamp = null;
         if (isDefined(properties.showTime) && properties.showTime) {
             this.timestamp = document.createElement("div");
             this.timestamp.setAttribute("class", "video-time");
-            document.getElementById(this.divId).appendChild(this.timestamp);
+            this.currentDoc.getElementById(this.divId).appendChild(this.timestamp);
         }
 
         // creates video tag element
-        this.imgTag = document.createElement("img");
+        this.imgTag = this.currentDoc.createElement("img");
         this.imgTag.setAttribute("class", "video-mjpeg");
 
         // rotation option
         this.rotation = 0;
         if (typeof (properties) != "undefined" && typeof (properties.rotation) != "undefined") {
             this.rotation = properties.rotation * Math.PI / 180;
-            this.canvas = document.createElement('canvas');
+            this.canvas = this.currentDoc.createElement('canvas');
             this.canvas.width = 640;
             this.canvas.height = 480;
             var ctx = this.canvas.getContext('2d');
             ctx.translate(0, 480);
             ctx.rotate(this.rotation);
-            document.getElementById(this.divId).appendChild(this.canvas);
+            this.currentDoc.getElementById(this.divId).appendChild(this.canvas);
         } else {
             // appends <img> tag to <div>
-            document.getElementById(this.divId).appendChild(this.imgTag);
+            this.currentDoc.getElementById(this.divId).appendChild(this.imgTag);
         }
     }
 
@@ -107,9 +109,9 @@ class MjpegView extends View {
 
     selectDataView(dataSourceIds, entityId) {
         if (dataSourceIds.indexOf(this.dataSourceId) > -1 || (isDefined(this.entity)) && this.entity.getId() === entityId) {
-            document.getElementById(this.divId).setAttribute("class", this.css + " " + this.cssSelected);
+            this.currentDoc.getElementById(this.divId).setAttribute("class", this.css + " " + this.cssSelected);
         } else {
-            document.getElementById(this.divId).setAttribute("class", this.css);
+            this.currentDoc.getElementById(this.divId).setAttribute("class", this.css);
         }
     }
 
