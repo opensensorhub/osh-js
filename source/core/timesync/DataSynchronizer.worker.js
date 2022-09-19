@@ -73,12 +73,14 @@ async function handleMessage(event) {
             if (dataSynchronizerAlgo !== null) {
                 reset();
                 const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
-                if (event.data.mode === Mode.REPLAY && !(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay)) {
-                    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                        [],
-                        event.data.replaySpeed,
-                        dataSynchronizerAlgo.timerResolution
-                    );
+                if (event.data.mode === Mode.REPLAY) {
+                    if(!(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay)) {
+                        dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                            [],
+                            event.data.replaySpeed,
+                            dataSynchronizerAlgo.timerResolution
+                        );
+                    }
                 } else if (!(dataSynchronizerAlgo instanceof DataSynchronizerAlgo)) {
                     dataSynchronizerAlgo = new DataSynchronizerAlgo(
                         [],

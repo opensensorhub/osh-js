@@ -9,6 +9,7 @@
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
 import LeafletView from "osh-js/core/ui/view/map/LeafletView";
 import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
+import {EventType} from "../../../../source/core/event/EventType";
 
 export default {
   name: "Map",

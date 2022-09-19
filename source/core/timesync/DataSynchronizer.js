@@ -214,20 +214,24 @@ class DataSynchronizer {
     }
 
      /**
-     * Adds a new DataSource object to the list of datasources to synchronize.
-     * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
-     * @param {DataSourceDatasource} dataSource - the new datasource to add
-     *
-     */
-    async addDataSource(dataSource) {
-         return new Promise(async resolve => {
-             const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-             this.dataSources.push(dataSource);
-             await this.postMessage({
-                 message: 'add',
-                 dataSources: [dataSourceForWorker]
-             }, resolve);
-         });
+      * Adds a new DataSource object to the list of datasources to synchronize.
+      * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
+      * @param {DataSourceDatasource} dataSource - the new datasource to add
+      * @param [lazy=false] lazy - add to current running synchronizer
+      */
+    async addDataSource(dataSource, lazy = false) {
+        if(lazy) {
+            return new Promise(async resolve => {
+                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+                this.dataSources.push(dataSource);
+                await this.postMessage({
+                    message: 'add',
+                    dataSources: [dataSourceForWorker]
+                }, resolve);
+            });
+        } else {
+            this.dataSources.push(dataSource);
+        }
     }
 
     /**

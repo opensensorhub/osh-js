@@ -104,10 +104,13 @@ class FFMPEGView extends CanvasView {
      */
     reset() {
         this.skipFrame = true;
-        if(isDefined(this.decodeWorker)) {
-            this.decodeWorker.terminate();
-            this.decodeWorker = null;
-        }
+        // if(isDefined(this.decodeWorker)) {
+        //     this.decodeWorker.terminate();
+        //     this.decodeWorker = null;
+        // }
+        this. decodeWorker.postMessage({
+            message: 'release'
+        });
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
         this.yuvCanvas.drawNextOuptutPictureGL({
@@ -227,10 +230,12 @@ class FFMPEGView extends CanvasView {
         if(isDefined(this.interval)) {
             clearInterval(this.interval);
         }
-        this. decodeWorker.postMessage({
-            message: 'release'
-        });
-        this.decodeWorker.terminate();
+        if(isDefined(this.decodeWorker)) {
+            this.decodeWorker.postMessage({
+                message: 'release'
+            });
+            this.decodeWorker.terminate();
+        }
     }
 
     async getCanvas() {

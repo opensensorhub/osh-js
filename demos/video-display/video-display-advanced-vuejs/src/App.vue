@@ -96,6 +96,8 @@
   import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.datasource.js";
   import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
   import {isDefined} from "osh-js/core/utils/Utils";
+  import {Mode} from "osh-js/core/datasource/Mode";
+  import dataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
 
   export default {
     components: {
@@ -115,52 +117,37 @@
         dataSources: {},
         items: [],
         locationDataSource: new SosGetResult("android-GPS", {
-          protocol: "ws",
-          service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/Location",
           startTime: "2015-02-16T07:58:32Z",
           endTime: "2015-02-16T08:09:00Z",
-          timeOut: 100,
-          bufferingTime: 200,
           timeShift: -16000,
-          replaySpeed: 2
+          mode: Mode.REPLAY
         }),
         headingDataSource: new SosGetResult("android-Att", {
-          protocol: "ws",
-          service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
           startTime: "2015-02-16T07:58:35Z",
           endTime: "2015-02-16T08:09:00Z",
-          timeOut: 100,
-          bufferingTime: 100,
-          replaySpeed: 2
+          mode: Mode.REPLAY
         }),
         videoDataSource: new SosGetResult("android-Video", {
-          protocol: "ws",
-          service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
           startTime: "2015-02-16T07:58:35Z",
           endTime: "2015-02-16T08:09:00Z",
-          timeOut: 100,
-          bufferingTime: 100,
-          replaySpeed: 2
+          mode: Mode.REPLAY
         }),
         weatherDataSource: new SosGetResult("weather", {
-          protocol: "ws",
-          service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:mysos:offering03",
           observedProperty: "http://sensorml.com/ont/swe/property/Weather",
           startTime: "now",
           endTime: "2055-01-01Z",
-          timeOut: 100,
-          bufferingTime: 100
+          timeOut: 100
         }),
         dataSynchronizer:null
       }
@@ -169,7 +156,7 @@
       this.items.push({
         id: 1,
         name: 'Android Phone',
-        locked: false,
+        locked: true,
         children: [
           {id: 2, name: 'GPS', dataSource: this.locationDataSource, type: 'center', locked: true},
           {id: 3, name: 'Video', type: 'mjpeg-vcard', dataSource: this.videoDataSource, locked: true},
@@ -186,7 +173,7 @@
       this.dataSources = [this.locationDataSource, this.videoDataSource, this.headingDataSource, this.weatherDataSource];
 
       this.dataSynchronizer = new DataSynchronizer({
-        replayFactor: 2,
+        replaySpeed: 2,
         dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
       });
 
@@ -195,7 +182,6 @@
       onSelect(nodes) {
         let bIds = [];
         if (Array.isArray(nodes)) {
-          console.log(nodes)
           for (let i = 0; i < nodes.length; i++) {
             bIds.push(nodes[i].dataSource.id);
           }
@@ -206,20 +192,38 @@
         const dsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
         const dsToDisconnect = this.selectionIds.filter(x => !bIds.includes(x));
 
+        console.log(nodes)
+        if(nodes.length === 3) {
+          if(dsToConnect >= 3) {
+            this.dataSynchronizer.disconnect();
+          } else {
+            this.dataSynchronizer.connect();
+          }
+        }
+        /*
+
         let reset = false;
         for(let dsId in this.dataSources) {
           const currentDs = this.dataSources[dsId];
           if(dsToConnect.includes(currentDs.id)) {
-            currentDs.connect();
+            if(isDefined(currentDs.dataSynchronizer) && !reset) {
+              currentDs.dataSynchronizer.reset();
+              reset = true;
+              currentDs.dataSynchronizer.connect();
+            } else {
+              currentDs.connect();
+            }
           } else if(dsToDisconnect.includes(currentDs.id)){
-            currentDs.disconnect();
             // check if this is owned by synchronizer
             if(isDefined(currentDs.dataSynchronizer) && !reset) {
               currentDs.dataSynchronizer.reset();
               reset = true;
+              currentDs.dataSynchronizer.disconnect();
+            } else {
+              currentDs.disconnect();
             }
           }
-        }
+        }*/
         this.selectionIds = bIds;
       }
     },

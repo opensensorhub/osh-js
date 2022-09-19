@@ -14,6 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+// v1
 import DataSourceHandler from "./DataSource.handler";
 import {assertBoolean, assertDefined, assertHasValue, isDefined} from "../../../utils/Utils";
 import {EventType} from "../../../event/EventType";
@@ -110,61 +111,62 @@ class DelegateReplayHandler extends DelegateHandler {
             if ((durationToFetch + nextOffsetTimestamp) > endTimestamp) {
                 durationToFetch = endTimestamp - nextOffsetTimestamp;
             }
-            this.promise = this.fetchData(nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch);
-            const data = await  this.promise;
-            const results = [];
-            console.log(this.context.properties.version);
-            for (let i = 0; i < data.length; i++) {
-                results.push({
-                    data: data[i],
-                    version: this.context.properties.version
-                });
-            }
-            if(!this.status.cancel) {
-                this.handleData(results);
-            }
-
-            this.context.onChangeStatus(Status.FETCH_STARTED);
-
-            nextOffsetTimestamp += durationToFetch;
-
-            let lastOffsetTimestamp;
-            this.timeBc = new BroadcastChannel(this.timeTopic);
-            this.timeBc.onmessage = async (event) => {
-                const currentDataTimestamp = event.data.timestamp;
-
-                if (currentDataTimestamp >= endTimestamp) {
-                    await this.disconnect();
-                    return;
+            try {
+                this.promise = this.fetchData(nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch);
+                const data = await this.promise;
+                if (!this.status.cancel) {
+                    this.handleData(data);
                 }
-                const dTime = nextOffsetTimestamp - currentDataTimestamp;
 
-                if (dTime <= fetchNextDataThreshold) {
-                    //either fetch new batch or disconnect because there is no more data
-                    let deltaTimeToFetch = batchSizeInMillis;
-                    if ((deltaTimeToFetch + nextOffsetTimestamp) > endTimestamp) {
-                        deltaTimeToFetch = endTimestamp - nextOffsetTimestamp;
-                    }
-                    let offsetTimestamp = nextOffsetTimestamp;
-                    nextOffsetTimestamp += deltaTimeToFetch;
-                    if(nextOffsetTimestamp === lastOffsetTimestamp) {
-                        // already fetched
+                this.context.onChangeStatus(Status.FETCH_STARTED);
+
+                nextOffsetTimestamp += durationToFetch;
+
+                let lastOffsetTimestamp;
+                this.timeBc = new BroadcastChannel(this.timeTopic);
+                this.timeBc.onmessage = async (event) => {
+                    const currentDataTimestamp = event.data.timestamp;
+
+                    if (currentDataTimestamp >= endTimestamp) {
+                        await this.disconnect();
                         return;
-                    } else {
-                        lastOffsetTimestamp = nextOffsetTimestamp;
                     }
-                    this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
-                    const data = await  this.promise;
-                    const results = [];
-                    for (let i = 0; i < data.length; i++) {
-                        results.push({
-                            data: data[i],
-                            version: this.context.properties.version
-                        });
+                    const dTime = nextOffsetTimestamp - currentDataTimestamp;
+
+                    if (dTime <= fetchNextDataThreshold) {
+                        //either fetch new batch or disconnect because there is no more data
+                        let deltaTimeToFetch = batchSizeInMillis;
+                        if ((deltaTimeToFetch + nextOffsetTimestamp) > endTimestamp) {
+                            deltaTimeToFetch = endTimestamp - nextOffsetTimestamp;
+                        }
+                        let offsetTimestamp = nextOffsetTimestamp;
+                        nextOffsetTimestamp += deltaTimeToFetch;
+                        if (nextOffsetTimestamp === lastOffsetTimestamp) {
+                            // already fetched
+                            return;
+                        } else {
+                            lastOffsetTimestamp = nextOffsetTimestamp;
+                        }
+                        try {
+                            this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
+                            const data = await this.promise;
+                            if (!this.status.cancel) {
+                                this.handleData(data);
+                            }
+                        } catch (ex) {
+                            if(this.status.cancel) {
+                                console.warn(ex);
+                            } else {
+                                throw Error(ex);
+                            }
+                        }
                     }
-                    if(!this.status.cancel) {
-                        this.handleData(results);
-                    }
+                }
+            } catch (ex) {
+                if(this.status.cancel) {
+                    console.warn(ex);
+                } else {
+                    throw Error(ex);
                 }
             }
             assertDefined(this.timeTopic, 'TimeTopic not defined');
@@ -176,22 +178,28 @@ class DelegateReplayHandler extends DelegateHandler {
     }
 
     async disconnect() {
-        return new Promise((resolve, reject) => {
+        this.status.cancel = true;
+        return new Promise(async (resolve, reject) => {
             try {
-                this.status.cancel = false;
                 if (isDefined(this.promise)) {
-                    this.status.cancel = true;
+                    await this.promise;
                 }
-                this.promise = undefined;
-                this.context.onChangeStatus(Status.FETCH_ENDED);
-                if (isDefined(this.timeBc)) {
-                    this.timeBc.close();
+            } catch (ex) {
+                // reject(ex);
+            } finally {
+                try {
+                    this.promise = undefined;
+                    this.context.onChangeStatus(Status.FETCH_ENDED);
+                    if (isDefined(this.timeBc)) {
+                        this.timeBc.close();
+                    }
+                    clearInterval(this.interval);
+                    this.interval = -1;
+                } catch (ex) {
+                    console.error(ex);
+                } finally {
+                    resolve();
                 }
-                clearInterval(this.interval);
-                this.interval = -1;
-                resolve();
-            }catch (ex) {
-                reject(ex);
             }
         });
     }
@@ -330,23 +338,29 @@ class TimeSeriesHandler extends DataSourceHandler {
     }
 
     handleData(data) {
-        if(data.length === 0) {
-            console.warn(`Data array is empty for datasource ${this.dataSourceId}`);
-            return;
+        const results = [];
+        if (Array.isArray(data)) {
+            if (data.length === 0) {
+                console.warn(`Data array is empty for datasource ${this.dataSourceId}`);
+                return;
+            }
+            for (let i = 0; i < data.length; i++) {
+                results.push({
+                    data: data[i],
+                    version: this.context.properties.version
+                });
+            }
+        } else {
+            results.push({
+                data: data,
+                version: this.version
+            });
         }
-        // check if data is an array
-        // if (Array.isArray(data)) {
-        //     for (let i = 0; i < data.length; i++) {
-        //         this.values.push({
-        //             data: data[i],
-        //             version: this.version
-        //         });
-        //     }
-        // }
+
         this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,
             type: EventType.DATA,
-            values: data
+            values: results
         });
         if (this.timeBroadcastChannel !== null) {
             if(data.length > 0 ) {
