@@ -101,6 +101,10 @@ class DelegateReplayHandler extends DelegateHandler {
     async startLoop() {
         if (this.interval === -1) {
             this.interval = 1;
+            this.status = {
+                cancel: false
+            };
+
             let replaySpeed = this.properties.replaySpeed || 1;
             let batchSizeInMillis = this.prefetchBatchDuration * replaySpeed;
             let fetchNextDataThreshold = batchSizeInMillis * this.prefetchNextBatchThreshold;
@@ -119,7 +123,6 @@ class DelegateReplayHandler extends DelegateHandler {
                 }
 
                 this.context.onChangeStatus(Status.FETCH_STARTED);
-
                 nextOffsetTimestamp += durationToFetch;
 
                 let lastOffsetTimestamp;
@@ -190,6 +193,7 @@ class DelegateReplayHandler extends DelegateHandler {
                 try {
                     this.promise = undefined;
                     this.context.onChangeStatus(Status.FETCH_ENDED);
+                    this.context.onChangeStatus(Status.DISCONNECTED);
                     if (isDefined(this.timeBc)) {
                         this.timeBc.close();
                     }
@@ -383,11 +387,12 @@ class TimeSeriesHandler extends DataSourceHandler {
     async checkDisconnect() {
         await this.promiseDisconnect;
     }
-    async connect() {
+    async connect(startTime) {
         await this.checkDisconnect();
         if (this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
             throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
         }
+        this.properties.startTime = startTime;
         this.delegateHandler.connect();
     }
 

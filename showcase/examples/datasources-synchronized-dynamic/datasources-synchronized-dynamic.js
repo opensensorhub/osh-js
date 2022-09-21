@@ -1,4 +1,4 @@
-import {displayLocation, displayVideo, displayOrientation, displayError} from './display-values';
+import {displayLocation, displayVideo, displayOrientation, displayError, displayMasterTime} from './display-values';
 import {EventType} from 'osh-js/core/event/EventType';
 
 // #region snippet_datasource_synchronized
@@ -41,17 +41,33 @@ const platformOrientationDataSource = new SosGetResult('android-Heading', {
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: REPLAY_SPEED,
   timerResolution: 5,
-  dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
+  dataSources: []
 })
-
-// connects each DataSource
-dataSynchronizer.connect();
 
 videoDataSource.subscribe((message) => displayVideo(message.values), [EventType.DATA])
 platformLocationDataSource.subscribe((message) => displayLocation(message.values), [EventType.DATA])
 platformOrientationDataSource.subscribe((message) => displayOrientation(message.values), [EventType.DATA])
 dataSynchronizer.subscribe((message) => displayError(message.timestamp), [EventType.TIME])
 
+// #endregion snippet_datasource_synchronized
+
+dataSynchronizer.addDataSource(platformLocationDataSource);
+
+let masterTimestamp;
+setInterval(async () => {
+  masterTimestamp = await dataSynchronizer.getCurrentTime();
+  displayMasterTime(masterTimestamp.data);
+},5);
 // start streaming
 dataSynchronizer.connect();
-// #endregion snippet_datasource_synchronized
+
+
+const connectGpsButtonElt = document.getElementById("connect-gps-button");
+const disconnectGpsButtonElt = document.getElementById("disconnect-gps-button");
+
+connectGpsButtonElt.onclick = () => {
+  platformLocationDataSource.connect();
+}
+disconnectGpsButtonElt.onclick = () => {
+  platformLocationDataSource.disconnect();
+}

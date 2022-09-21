@@ -30,7 +30,7 @@ class TimeSeriesDatasource extends DataSource {
         assertDefined(properties.startTime,'startTime must must be defined');
         assertDefined(properties.endTime,'startTime must must be defined');
 
-        this.timeSync = null;
+        this.dataSynchronizer = undefined;
     }
 
     getTimeTopicId() {
@@ -85,18 +85,43 @@ class TimeSeriesDatasource extends DataSource {
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
-    async setDataSynchronizer(timeSync) {
+    async setDataSynchronizer(dataSynchronizer) {
         return new Promise(async (resolve, reject) => {
             await this.checkInit();
-            const topic = DATA_SYNCHRONIZER_TOPIC + timeSync.id;
-            this.timeSync = timeSync;
+            const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.id;
+            this.dataSynchronizer = dataSynchronizer;
             this.postMessage({
                 message: 'topics',
                 topics: {
                     data: topic,
                     time: this.getTimeTopicId(),
-                    sync: timeSync.getTimeTopicId()
+                    sync: dataSynchronizer.getTimeTopicId()
                 },
+            }, resolve);
+        });
+    }
+
+    /**
+     * Disconnect the dataSource then the protocol will be closed as well.
+     */
+    async disconnect() {
+        return new Promise(async resolve => {
+            await this.checkInit();
+            this.postMessage({
+                message: 'disconnect'
+            }, resolve);
+        });
+    }
+
+    async doConnect() {
+        return new Promise(async resolve => {
+            let startTime = this.properties.startTime;
+            if(isDefined(this.dataSynchronizer)) {
+                startTime = await this.dataSynchronizer.getCurrentTime() + 1000; // add 1 sec threshold
+            }
+            this.postMessage({
+                message: 'connect',
+                startTime: startTime
             }, resolve);
         });
     }

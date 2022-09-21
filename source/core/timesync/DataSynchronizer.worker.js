@@ -61,7 +61,7 @@ async function handleMessage(event) {
         } else if (event.data.message === 'current-time') {
             data = {
                 message: 'current-time',
-                data: self.currentTime
+                data: dataSynchronizerAlgo.getCurrentTimestamp()
             };
         } else if (event.data.message === 'reset') {
             reset();

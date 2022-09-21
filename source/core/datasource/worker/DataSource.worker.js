@@ -43,7 +43,7 @@ async function handleMessage(event) {
             }
         } else {
             if (event.message === 'connect') {
-                dataSourceHandler.connect();
+                dataSourceHandler.connect(event.message.startTime);
                 // send back result or just return
                 postMessage({
                     message: event.message,

@@ -97,7 +97,6 @@
   import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
   import {isDefined} from "osh-js/core/utils/Utils";
   import {Mode} from "osh-js/core/datasource/Mode";
-  import dataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
 
   export default {
     components: {
@@ -117,6 +116,8 @@
         dataSources: {},
         items: [],
         locationDataSource: new SosGetResult("android-GPS", {
+          protocol: "ws",
+          service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/Location",
@@ -134,6 +135,8 @@
           mode: Mode.REPLAY
         }),
         videoDataSource: new SosGetResult("android-Video", {
+          protocol: "ws",
+          service: "SOS",
           endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
@@ -156,7 +159,7 @@
       this.items.push({
         id: 1,
         name: 'Android Phone',
-        locked: true,
+        locked: false,
         children: [
           {id: 2, name: 'GPS', dataSource: this.locationDataSource, type: 'center', locked: true},
           {id: 3, name: 'Video', type: 'mjpeg-vcard', dataSource: this.videoDataSource, locked: true},
@@ -176,10 +179,9 @@
         replaySpeed: 2,
         dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
       });
-
     },
     methods: {
-      onSelect(nodes) {
+      async onSelect(nodes) {
         let bIds = [];
         if (Array.isArray(nodes)) {
           for (let i = 0; i < nodes.length; i++) {
@@ -189,41 +191,21 @@
           bIds.push(nodes.dataSource.id);
         }
 
+        const isConnected = await this.dataSynchronizer.isConnected();
+
         const dsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
         const dsToDisconnect = this.selectionIds.filter(x => !bIds.includes(x));
 
-        console.log(nodes)
-        if(nodes.length === 3) {
-          if(dsToConnect >= 3) {
-            this.dataSynchronizer.disconnect();
-          } else {
-            this.dataSynchronizer.connect();
-          }
-        }
-        /*
-
-        let reset = false;
         for(let dsId in this.dataSources) {
           const currentDs = this.dataSources[dsId];
           if(dsToConnect.includes(currentDs.id)) {
-            if(isDefined(currentDs.dataSynchronizer) && !reset) {
-              currentDs.dataSynchronizer.reset();
-              reset = true;
-              currentDs.dataSynchronizer.connect();
-            } else {
-              currentDs.connect();
+            if(!isConnected) {
+              this.dataSynchronizer.connect();
             }
           } else if(dsToDisconnect.includes(currentDs.id)){
-            // check if this is owned by synchronizer
-            if(isDefined(currentDs.dataSynchronizer) && !reset) {
-              currentDs.dataSynchronizer.reset();
-              reset = true;
-              currentDs.dataSynchronizer.disconnect();
-            } else {
-              currentDs.disconnect();
-            }
+            currentDs.disconnect();
           }
-        }*/
+        }
         this.selectionIds = bIds;
       }
     },

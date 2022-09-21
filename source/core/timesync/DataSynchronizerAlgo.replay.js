@@ -10,6 +10,7 @@ class DataSynchronizerAlgoReplay {
         for (let ds of dataSources) {
             this.addDataSource(ds);
         }
+        this.tsRun = 0;
     }
 
     push(dataSourceId, dataBlocks) {
@@ -27,14 +28,19 @@ class DataSynchronizerAlgoReplay {
     }
 
     reset() {
+        this.tsRun = 0;
         console.log('reset synchronizer algo')
         this.close();
         for (let currentDsId in this.dataSourceMap) {
-            const currentDs = this.dataSourceMap[currentDsId];
-            currentDs.dataBuffer = [];
-            currentDs.status= Status.DISCONNECTED;
-            currentDs.version = undefined;
+            this.resetDataSource(currentDsId);
         }
+    }
+
+    resetDataSource(datasourceId) {
+        const currentDs = this.dataSourceMap[datasourceId];
+        currentDs.dataBuffer = [];
+        currentDs.status= Status.DISCONNECTED;
+        currentDs.version = undefined;
     }
 
     processData() {
@@ -99,6 +105,9 @@ class DataSynchronizerAlgoReplay {
         return false;
     }
 
+    getCurrentTimestamp() {
+        return this.tsRun;
+    }
     /**
      * Add dataSource to be synchronized
      * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
@@ -130,8 +139,12 @@ class DataSynchronizerAlgoReplay {
      * @param {String} dataSourceId - the corresponding dataSource id
      */
     setStatus(dataSourceId, status) {
+        console.log(this.dataSourceMap[dataSourceId], status)
         if (dataSourceId in this.dataSourceMap) {
             this.dataSourceMap[dataSourceId].status = status;
+            if(status === Status.DISCONNECTED) {
+                this.resetDataSource(dataSourceId);
+            }
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
         this.checkStart();
