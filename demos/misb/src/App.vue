@@ -71,7 +71,15 @@ export default {
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
     const END_TIME = '2012-06-29T14:36:54.033333251Z';
-    // const END_TIME = '2012-06-29T14:32:37.099333251Z'
+    const MODE = Mode.REPLAY;
+    //
+
+    // const START_TIME = 'now';
+    // const END_TIME = '2055-01-01'
+    // const MODE = Mode.REAL_TIME;
+
+    const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
+    const MAX_TIME = '2012-06-29T14:36:54.033333251Z';
     const tls = true;
 
     const dsReplaySpeed = 2.6;
@@ -86,9 +94,9 @@ export default {
       tls: tls,
       startTime: START_TIME,
       endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
-      mode: Mode.REPLAY,
+      minTime: MIN_TIME,
+      maxTime: MAX_TIME,
+      mode: MODE,
       prefetchBatchDuration: 10000,
       prefetchBatchSize: 1000000
     };
@@ -201,50 +209,50 @@ export default {
       // Link DataSources connected/disconnected Status to state
       // update drone status
       this.droneLocationDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             platformLocation: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneVideoDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             video: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneOrientationDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             platformOrientation: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneCameraOrientationDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED ) {
           this.$store.dispatch('updateDroneStatus', {
             cameraOrientation: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneHFovDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             hFov: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
@@ -252,10 +260,10 @@ export default {
 
 
       this.droneVFovDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             vFov: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
@@ -263,19 +271,19 @@ export default {
 
       // Update GeoRef status
       this.geoRefImageFrameDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateGeoRefStatus', {
-            connected: (message.status === Status.FETCH_STARTED)
+            connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
           });
         }
       }, [EventType.STATUS]);
 
       // Update Target status
       this.targetLocationDataSource.subscribe((message) => {
-        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateTargetStatus', {
             location: {
-              connected: (message.status === Status.FETCH_STARTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }

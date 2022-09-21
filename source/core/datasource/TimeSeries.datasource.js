@@ -117,7 +117,10 @@ class TimeSeriesDatasource extends DataSource {
         return new Promise(async resolve => {
             let startTime = this.properties.startTime;
             if(isDefined(this.dataSynchronizer)) {
-                startTime = await this.dataSynchronizer.getCurrentTime() + 1000; // add 1 sec threshold
+                let st = (await this.dataSynchronizer.getCurrentTime()).data; // add 1 sec threshold
+                if(isDefined(st)) {
+                    startTime = new Date(st).toISOString();
+                }
             }
             this.postMessage({
                 message: 'connect',

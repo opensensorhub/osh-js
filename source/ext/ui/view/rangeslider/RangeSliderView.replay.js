@@ -33,7 +33,7 @@ import * as wNumb from 'wnumb';
     endTime: "2015-12-19T21:09:19Z"
 });
  */
-class RangeSliderView extends View {
+class RangeSliderViewReplay extends View {
 	/**
 		* Create the discoveryView
    * @param {Object} [properties={}] - the properties of the view
@@ -233,4 +233,4 @@ class RangeSliderView extends View {
 
 }
 
-export default RangeSliderView;
+export default RangeSliderViewReplay;

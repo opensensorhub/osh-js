@@ -1,16 +1,11 @@
 import {isDefined} from "../utils/Utils.js";
 import {Status} from "../connector/Status.js";
+import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
 
-class DataSynchronizerAlgoReplay {
+class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
-        this.dataSourceMap = {};
+        super(dataSources,replaySpeed,timerResolution);
         this.replaySpeed = replaySpeed;
-        this.timerResolution = timerResolution;
-        this.interval = null;
-        for (let ds of dataSources) {
-            this.addDataSource(ds);
-        }
-        this.tsRun = 0;
     }
 
     push(dataSourceId, dataBlocks) {
@@ -25,44 +20,6 @@ class DataSynchronizerAlgoReplay {
         }
 
         ds.dataBuffer.push(...dataBlocks);
-    }
-
-    reset() {
-        this.tsRun = 0;
-        console.log('reset synchronizer algo')
-        this.close();
-        for (let currentDsId in this.dataSourceMap) {
-            this.resetDataSource(currentDsId);
-        }
-    }
-
-    resetDataSource(datasourceId) {
-        const currentDs = this.dataSourceMap[datasourceId];
-        currentDs.dataBuffer = [];
-        currentDs.status= Status.DISCONNECTED;
-        currentDs.version = undefined;
-    }
-
-    processData() {
-        let tsRef = -1;
-        let clockTimeRef = performance.now();
-
-        // get reference start timestamp
-        // the reference start timestamp should the oldest one
-        let currentDs;
-        for (let currentDsId in this.dataSourceMap) {
-            currentDs = this.dataSourceMap[currentDsId];
-            if (currentDs.dataBuffer.length > 0) {
-                tsRef = (tsRef === -1 || currentDs.dataBuffer[0].data.timestamp < tsRef) ? currentDs.dataBuffer[0].data.timestamp :
-                    tsRef;
-            }
-        }
-
-        this.interval = setInterval(() => {
-            // 1) return the oldest data if any
-            while (this.computeNextData(tsRef, clockTimeRef)) ;
-
-        }, this.timerResolution);
     }
 
     /**
@@ -105,9 +62,6 @@ class DataSynchronizerAlgoReplay {
         return false;
     }
 
-    getCurrentTimestamp() {
-        return this.tsRun;
-    }
     /**
      * Add dataSource to be synchronized
      * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
@@ -130,16 +84,12 @@ class DataSynchronizerAlgoReplay {
         }
     }
 
-    onData(dataSourceId, dataBlock) {
-    }
-
     /**
      * Change the dataSource status
      * @param {Status} status - the new status
      * @param {String} dataSourceId - the corresponding dataSource id
      */
     setStatus(dataSourceId, status) {
-        console.log(this.dataSourceMap[dataSourceId], status)
         if (dataSourceId in this.dataSourceMap) {
             this.dataSourceMap[dataSourceId].status = status;
             if(status === Status.DISCONNECTED) {
@@ -161,13 +111,21 @@ class DataSynchronizerAlgoReplay {
             }
         }
     }
-    close() {
-        if (isDefined(this.interval)) {
-            clearInterval(this.interval);
-            this.interval = undefined;
-        }
-        console.log("Data synchronizer terminated successfully");
 
+    reset() {
+        this.tsRun = undefined;
+        console.log('reset synchronizer algo')
+        this.close();
+        for (let currentDsId in this.dataSourceMap) {
+            this.resetDataSource(currentDsId);
+        }
+    }
+
+    resetDataSource(datasourceId) {
+        const currentDs = this.dataSourceMap[datasourceId];
+        currentDs.dataBuffer = [];
+        currentDs.status= Status.DISCONNECTED;
+        currentDs.version = undefined;
     }
 }
 

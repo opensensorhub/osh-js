@@ -1,4 +1,11 @@
-import {displayLocation, displayVideo, displayOrientation, displayError, displayMasterTime} from './display-values';
+import {
+  displayLocation,
+  displayVideo,
+  displayOrientation,
+  displayError,
+  displayMasterTime,
+  displayLastTime
+} from './display-values';
 import {EventType} from 'osh-js/core/event/EventType';
 
 // #region snippet_datasource_synchronized
@@ -8,7 +15,7 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
-const END_TIME = '2015-12-19T21:09:19.675Z';
+const END_TIME = '2015-12-19T21:05:59.675Z';
 const REPLAY_SPEED = 5.0;
 
 const videoDataSource = new SosGetResult("drone-Video", {
@@ -41,23 +48,21 @@ const platformOrientationDataSource = new SosGetResult('android-Heading', {
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: REPLAY_SPEED,
   timerResolution: 5,
+  masterTimeRefreshRate: 25,
   dataSources: []
 })
 
 videoDataSource.subscribe((message) => displayVideo(message.values), [EventType.DATA])
 platformLocationDataSource.subscribe((message) => displayLocation(message.values), [EventType.DATA])
 platformOrientationDataSource.subscribe((message) => displayOrientation(message.values), [EventType.DATA])
-dataSynchronizer.subscribe((message) => displayError(message.timestamp), [EventType.TIME])
+dataSynchronizer.subscribe((message) => displayError(message), [EventType.LAST_TIME, EventType.MASTER_TIME])
+dataSynchronizer.subscribe((message) => displayMasterTime(message.timestamp), [EventType.MASTER_TIME])
+dataSynchronizer.subscribe((message) => displayLastTime(message.timestamp), [EventType.LAST_TIME])
 
 // #endregion snippet_datasource_synchronized
 
 dataSynchronizer.addDataSource(platformLocationDataSource);
 
-let masterTimestamp;
-setInterval(async () => {
-  masterTimestamp = await dataSynchronizer.getCurrentTime();
-  displayMasterTime(masterTimestamp.data);
-},5);
 // start streaming
 dataSynchronizer.connect();
 

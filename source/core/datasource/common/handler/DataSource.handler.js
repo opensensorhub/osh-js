@@ -109,7 +109,7 @@ class DataSourceHandler {
         }
     }
 
-    connect() {
+    connect(startTime = this.properties.startTime) {
         this.context.connect();
     }
 

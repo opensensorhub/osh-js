@@ -82,6 +82,7 @@ class DelegateReplayHandler extends DelegateHandler {
         this.status = {
             cancel: false
         }
+        this.startTime = undefined;
     }
 
     init(properties) {
@@ -90,15 +91,27 @@ class DelegateReplayHandler extends DelegateHandler {
         this.status = {
             cancel: false
         }
+        if(!isDefined(this.startTime)) {
+            this.startTime = properties.startTime;
+        }
     }
 
-    async fetchData(startTimestamp, endTimestamp) {
-        console.warn(`fetching ${new Date(startTimestamp).toISOString()} -> ` +
-            `${new Date(endTimestamp).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
-        return this.context.doTemporalRequest(this.properties, startTimestamp, endTimestamp, this.status);
+    async fetchData(startTime, endTime) {
+        console.warn(`fetching ${startTime} -> ` +
+            `${endTime} for datasource ${this.context.properties.dataSourceId}`);
+        return this.context.doTemporalRequest(this.properties, startTime, endTime, this.status);
     }
 
     async startLoop() {
+        let startTimestamp = new Date(this.startTime).getTime();
+        let endTimestamp = new Date(this.properties.endTime).getTime();
+
+        if(startTimestamp >= endTimestamp) {
+            console.warn(`Did not connect DataSource ${this.context.properties.dataSourceId}` +
+                                            ` because startTime=${this.startTime} >= endTime=${this.properties.endTime}`);
+            return;
+        }
+
         if (this.interval === -1) {
             this.interval = 1;
             this.status = {
@@ -107,57 +120,51 @@ class DelegateReplayHandler extends DelegateHandler {
 
             let replaySpeed = this.properties.replaySpeed || 1;
             let batchSizeInMillis = this.prefetchBatchDuration * replaySpeed;
-            let fetchNextDataThreshold = batchSizeInMillis * this.prefetchNextBatchThreshold;
-            let nextOffsetTimestamp = new Date(this.properties.startTime).getTime();
-            let endTimestamp = new Date(this.properties.endTime).getTime();
+            let prefetchNextBatchThresholdInMillis = this.prefetchNextBatchThreshold * batchSizeInMillis;
 
             let durationToFetch = batchSizeInMillis;
-            if ((durationToFetch + nextOffsetTimestamp) > endTimestamp) {
-                durationToFetch = endTimestamp - nextOffsetTimestamp;
+            if ((durationToFetch + startTimestamp) > endTimestamp) {
+                durationToFetch = endTimestamp - startTimestamp;
             }
             try {
-                this.promise = this.fetchData(nextOffsetTimestamp, nextOffsetTimestamp + durationToFetch);
+                let endFetchTimestamp = startTimestamp + durationToFetch;
+                this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
                 const data = await this.promise;
                 if (!this.status.cancel) {
                     this.handleData(data);
                 }
 
                 this.context.onChangeStatus(Status.FETCH_STARTED);
-                nextOffsetTimestamp += durationToFetch;
-
-                let lastOffsetTimestamp;
                 this.timeBc = new BroadcastChannel(this.timeTopic);
+
                 this.timeBc.onmessage = async (event) => {
-                    const currentDataTimestamp = event.data.timestamp;
+                    if(event.data.type === EventType.MASTER_TIME) {
+                        const masterTimestamp = event.data.timestamp;
 
-                    if (currentDataTimestamp >= endTimestamp) {
-                        await this.disconnect();
-                        return;
-                    }
-                    const dTime = nextOffsetTimestamp - currentDataTimestamp;
-
-                    if (dTime <= fetchNextDataThreshold) {
-                        //either fetch new batch or disconnect because there is no more data
-                        let deltaTimeToFetch = batchSizeInMillis;
-                        if ((deltaTimeToFetch + nextOffsetTimestamp) > endTimestamp) {
-                            deltaTimeToFetch = endTimestamp - nextOffsetTimestamp;
-                        }
-                        let offsetTimestamp = nextOffsetTimestamp;
-                        nextOffsetTimestamp += deltaTimeToFetch;
-                        if (nextOffsetTimestamp === lastOffsetTimestamp) {
-                            // already fetched
+                        if (masterTimestamp >= endTimestamp) {
+                            await this.disconnect();
                             return;
-                        } else {
-                            lastOffsetTimestamp = nextOffsetTimestamp;
                         }
-                        try {
-                            this.promise = this.fetchData(offsetTimestamp, offsetTimestamp + deltaTimeToFetch);
+                        // compare masterTime to endFetch
+                        if((masterTimestamp - startTimestamp) >= prefetchNextBatchThresholdInMillis) {
+                            startTimestamp = endFetchTimestamp;
+                        } else {
+                            return;
+                        }
+
+                        endFetchTimestamp += durationToFetch;
+                        if(endFetchTimestamp > endTimestamp) {
+                            endFetchTimestamp = endTimestamp; //reach the end
+                        }
+                        this.startTime = new Date(startTimestamp).toISOString();
+                        try{
+                            this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
                             const data = await this.promise;
                             if (!this.status.cancel) {
                                 this.handleData(data);
                             }
                         } catch (ex) {
-                            if(this.status.cancel) {
+                            if (this.status.cancel) {
                                 console.warn(ex);
                             } else {
                                 throw Error(ex);
@@ -172,15 +179,20 @@ class DelegateReplayHandler extends DelegateHandler {
                     throw Error(ex);
                 }
             }
-            assertDefined(this.timeTopic, 'TimeTopic not defined');
+            assertDefined(this.timeTopic, 'TimeTopic');
         }
     }
 
-    connect() {
+    connect(startTime) {
+        this.startTime = startTime;
         this.startLoop();
     }
 
     async disconnect() {
+        if(this.interval === -1) {
+            console.warn(`The dataSource ${this.context.properties.dataSourceId} is not connected`);
+            return;
+        }
         this.status.cancel = true;
         return new Promise(async (resolve, reject) => {
             try {
@@ -271,6 +283,7 @@ class TimeSeriesHandler extends DataSourceHandler {
             this.delegateHandler = this.delegateBatchHandler;
         }
         this.delegateHandler.init(properties);
+        this.delegateHandler.setTimeTopic(this.timeSyncTopic);
     }
 
     async updateProperties(properties) {
@@ -308,8 +321,8 @@ class TimeSeriesHandler extends DataSourceHandler {
             this.setTimeTopic(topics.time);
         }
         if (isDefined(topics.sync)) {
-            this.delegateHandler.setTimeTopic(topics.sync);
             this.timeSyncTopic = topics.sync;
+            this.delegateHandler.setTimeTopic(this.timeSyncTopic);
         }
     }
 
@@ -387,13 +400,13 @@ class TimeSeriesHandler extends DataSourceHandler {
     async checkDisconnect() {
         await this.promiseDisconnect;
     }
-    async connect(startTime) {
+
+    async connect(startTime = this.properties.startTime) {
         await this.checkDisconnect();
         if (this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
             throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
         }
-        this.properties.startTime = startTime;
-        this.delegateHandler.connect();
+        this.delegateHandler.connect(startTime);
     }
 
     async disconnect() {

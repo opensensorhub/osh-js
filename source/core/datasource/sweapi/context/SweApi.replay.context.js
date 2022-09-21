@@ -58,13 +58,13 @@ class SweApiReplayContext extends SweApiContext {
                     id: match[2]
                 }, networkProperties);
                 this.dataStream = dataStream;
-                this.replayFunction = function(props, startTimestamp, endTimestamp) {
+                this.replayFunction = function(props, startTime, endTime) {
                     const obsFilter = this.createObservationFilter({
                         ...properties,
                         ...props,
                         replaySpeed: undefined,
-                        startTime: new Date(startTimestamp).toISOString(),
-                        endTime: new Date(endTimestamp).toISOString()
+                        startTime: startTime,
+                        endTime: endTime
                     });
                     return dataStream.searchObservations(obsFilter, properties.prefetchBatchSize);
                 }
@@ -75,9 +75,9 @@ class SweApiReplayContext extends SweApiContext {
     async disconnect() {
     }
 
-    async doTemporalRequest(properties, startTimestamp, endTimestamp, status = {cancel:false}) {
+    async doTemporalRequest(properties, startTime, endTime, status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
-            const collection = await this.replayFunction(properties, startTimestamp, endTimestamp);
+            const collection = await this.replayFunction(properties, startTime, endTime);
             let data;
             let results = [];
             while (collection.hasNext() && !status.cancel) {

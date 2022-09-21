@@ -55,7 +55,7 @@ class DataStream extends SensorWebApi {
 
         return this.stream().doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
-            observationFilter.toQueryString(),
+            observationFilter.toQueryString([], ['phenomenonTime']),
             'arraybuffer'
         );
     }

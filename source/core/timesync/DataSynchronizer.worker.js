@@ -1,9 +1,9 @@
-import DataSynchronizerAlgo from "./DataSynchronizerAlgo.js";
 import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
 import {EventType} from "../event/EventType.js";
 import {isDefined} from "../utils/Utils";
 import {Mode} from "../datasource/Mode";
 import DataSynchronizerAlgoReplay from "./DataSynchronizerAlgo.replay";
+import DataSynchronizerAlgoRealtime from "./DataSynchronizerAlgo.realtime.js";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -43,7 +43,7 @@ async function handleMessage(event) {
                     event.data.timerResolution
                 );
             } else {
-                dataSynchronizerAlgo = new DataSynchronizerAlgo(
+                dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
                     event.data.dataSources,
                     event.data.replaySpeed,
                     event.data.timerResolution
@@ -81,8 +81,8 @@ async function handleMessage(event) {
                             dataSynchronizerAlgo.timerResolution
                         );
                     }
-                } else if (!(dataSynchronizerAlgo instanceof DataSynchronizerAlgo)) {
-                    dataSynchronizerAlgo = new DataSynchronizerAlgo(
+                } else if (!(dataSynchronizerAlgo instanceof DataSynchronizerAlgoRealtime)) {
+                    dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
                         [],
                         dataSynchronizerAlgo.timerResolution
                     );
@@ -183,6 +183,7 @@ self.onclose = function() {
     console.log("Data Synchronizer has been terminated successfully");
 }
 
+let masterTime;
 function startMasterTimeInterval(masterTimeRefreshRate) {
     setInterval(() => {
         // check version
@@ -196,9 +197,17 @@ function startMasterTimeInterval(masterTimeRefreshRate) {
             timeBroadcastChannel.postMessage({
                 timestamp: cTime,
                 dataSourceId: cId,
-                type: EventType.TIME
+                type: EventType.LAST_TIME
             });
         }
         lastTime = cTime;
+
+        masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
+        if(isDefined(masterTime)) {
+            timeBroadcastChannel.postMessage({
+                timestamp: masterTime,
+                type: EventType.MASTER_TIME
+            });
+        }
     }, masterTimeRefreshRate);
 }

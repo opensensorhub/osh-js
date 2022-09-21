@@ -51,15 +51,15 @@ class SosGetResultReplayContext extends SosGetResultContext {
         return this.parser.checkInit();
     }
 
-    async doTemporalRequest(properties, startTimestamp, endTimestamp,  status = {cancel:false}) {
+    async doTemporalRequest(properties, startTime, endTime,  status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             try {
                 const results = [];
                 await this.parser.templatePromise;
                 const data = await this.connector.doRequest('', this.getQueryString({
                         ...properties,
-                        startTime: new Date(startTimestamp).toISOString(),
-                        endTime: new Date(endTimestamp).toISOString()
+                        startTime: startTime,
+                        endTime: endTime
                     }));
                 if(status.cancel) {
                     reject();
