@@ -15,7 +15,7 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
-const END_TIME = '2015-12-19T21:05:59.675Z';
+const END_TIME = '2015-12-19T21:06:59.675Z';
 const REPLAY_SPEED = 5.0;
 
 const videoDataSource = new SosGetResult("drone-Video", {

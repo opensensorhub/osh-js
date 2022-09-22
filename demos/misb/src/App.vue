@@ -97,6 +97,7 @@ export default {
       minTime: MIN_TIME,
       maxTime: MAX_TIME,
       mode: MODE,
+      replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
       prefetchBatchSize: 1000000
     };

@@ -31,85 +31,89 @@ self.onmessage = async (event) => {
 }
 
 async function handleMessage(event) {
-    return new Promise(resolve => {
-        let sendResponse = true;
-        let data = undefined;
-        if (event.data.message === 'init') {
-            replaySpeed = event.data.replaySpeed;
-            if (event.data.mode === Mode.REPLAY) {
-                dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                    event.data.dataSources,
-                    event.data.replaySpeed,
-                    event.data.timerResolution
-                );
-            } else {
-                dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
-                    event.data.dataSources,
-                    event.data.replaySpeed,
-                    event.data.timerResolution
-                );
-            }
-            dataSynchronizerAlgo.onData = onData;
-            init = true;
-            addDataSources(event.data.dataSources);
-            topicData = event.data.topics.data;
-            topicTime = event.data.topics.time;
-            initBroadcastChannel(topicData, topicTime);
-            startMasterTimeInterval(event.data.masterTimeRefreshRate);
-        } else if (event.data.message === 'add' && event.data.dataSources) {
-            addDataSources(event.data.dataSources);
-        } else if (event.data.message === 'current-time') {
-            data = {
-                message: 'current-time',
-                data: dataSynchronizerAlgo.getCurrentTimestamp()
-            };
-        } else if (event.data.message === 'reset') {
-            reset();
-        } else if (event.data.message === 'replay-speed') {
-            if (dataSynchronizerAlgo !== null) {
-                dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
-            }
-        } else if (event.data.message === 'update-properties') {
-            if (dataSynchronizerAlgo !== null) {
-                reset();
-                const dataSourcesMap = dataSynchronizerAlgo.dataSourceMap;
+    return new Promise((resolve, reject) => {
+        try {
+            let sendResponse = true;
+            let data = undefined;
+            if (event.data.message === 'init') {
+                replaySpeed = event.data.replaySpeed;
                 if (event.data.mode === Mode.REPLAY) {
-                    if(!(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay)) {
-                        dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                            [],
-                            event.data.replaySpeed,
-                            dataSynchronizerAlgo.timerResolution
-                        );
-                    }
-                } else if (!(dataSynchronizerAlgo instanceof DataSynchronizerAlgoRealtime)) {
+                    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                        event.data.dataSources,
+                        event.data.replaySpeed,
+                        event.data.timerResolution
+                    );
+                } else {
                     dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
-                        [],
+                        event.data.dataSources,
+                        event.data.replaySpeed,
+                        event.data.timerResolution
+                    );
+                }
+                dataSynchronizerAlgo.onData = onData;
+                init = true;
+                addDataSources(event.data.dataSources);
+                topicData = event.data.topics.data;
+                topicTime = event.data.topics.time;
+                initBroadcastChannel(topicData, topicTime);
+                startMasterTimeInterval(event.data.masterTimeRefreshRate);
+            } else if (event.data.message === 'add' && event.data.dataSources) {
+                addDataSources(event.data.dataSources);
+            } else if (event.data.message === 'current-time') {
+                data = {
+                    message: 'current-time',
+                    data: dataSynchronizerAlgo.getCurrentTimestamp()
+                };
+            } else if (event.data.message === 'reset') {
+                reset();
+            } else if (event.data.message === 'replay-speed') {
+                if (dataSynchronizerAlgo !== null) {
+                    reset();
+                    dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
+                }
+            } else if (event.data.message === 'update-properties') {
+                let datasources = [];
+                if (dataSynchronizerAlgo !== null) {
+                    datasources = dataSynchronizerAlgo.datasources;
+                    reset();
+                }
+
+                if (event.data.mode === Mode.REPLAY) {
+                    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                        datasources,
+                        event.data.replaySpeed,
+                        dataSynchronizerAlgo.timerResolution
+                    );
+                } else {
+                    dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
+                        datasources,
                         dataSynchronizerAlgo.timerResolution
                     );
                 }
 
-                dataSynchronizerAlgo.dataSourceMap = dataSourcesMap;
                 dataSynchronizerAlgo.onData = onData;
+            } else if (event.data.message === 'data') {
+                if (dataSynchronizerAlgo !== null) {
+                    dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+                }
+                if (!isDefined(masterTimeInterval)) {
+                    startMasterTimeInterval();
+                }
+            } else {
+                // skip response
+                sendResponse = false;
             }
-        } else if (event.data.message === 'data') {
-            if (dataSynchronizerAlgo !== null) {
-                dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+            if (sendResponse) {
+                self.postMessage({
+                    message: event.data.message,
+                    data: data,
+                    messageId: event.data.messageId
+                });
             }
-            if (!isDefined(masterTimeInterval)) {
-                startMasterTimeInterval();
-            }
-        } else {
-            // skip response
-            sendResponse = false;
+            resolve();
+        }catch (ex) {
+            reject(ex);
         }
-        if(sendResponse) {
-            self.postMessage({
-                message: event.data.message,
-                data: data,
-                messageId: event.data.messageId
-            });
-        }
-        resolve();
     });
 }
 function reset() {

@@ -81,13 +81,19 @@ class MqttConnector extends DataConnector {
             });
             console.warn(`Stored MQTT provider into cache: ${fullUrl}`);
             mqttProviders[fullUrl].connect();
+            mqttProviders[fullUrl].checkStatus = this.checkStatus;
             this.checkStatus(Status.CONNECTED);
-
         } else {
             console.warn(`Getting MQTT provider from cache: ${fullUrl}`);
         }
         return mqttProviders[fullUrl];
     }
+
+    checkStatus(status) {
+        this.onChangeStatus(status);
+        this.status = status;
+    }
+
     /**
      * Connect to the Mqtt broker.
      */

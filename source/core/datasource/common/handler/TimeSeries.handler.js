@@ -76,9 +76,9 @@ class DelegateBatchHandler extends DelegateHandler {
 class DelegateReplayHandler extends DelegateHandler {
     constructor(context) {
         super(context);
-        this.interval = -1;
+        this.initialized = false;
         this.prefetchBatchDuration = 10000; // 10 sec
-        this.prefetchNextBatchThreshold = 0.7; // 80%, fetch before the end
+        this.prefetchNextBatchThreshold = 0.5; // 80%, fetch before the end
         this.status = {
             cancel: false
         }
@@ -112,8 +112,8 @@ class DelegateReplayHandler extends DelegateHandler {
             return;
         }
 
-        if (this.interval === -1) {
-            this.interval = 1;
+        if (!this.initialized) {
+            this.initialized = true;
             this.status = {
                 cancel: false
             };
@@ -189,7 +189,7 @@ class DelegateReplayHandler extends DelegateHandler {
     }
 
     async disconnect() {
-        if(this.interval === -1) {
+        if(!this.initialized) {
             console.warn(`The dataSource ${this.context.properties.dataSourceId} is not connected`);
             return;
         }
@@ -209,8 +209,7 @@ class DelegateReplayHandler extends DelegateHandler {
                     if (isDefined(this.timeBc)) {
                         this.timeBc.close();
                     }
-                    clearInterval(this.interval);
-                    this.interval = -1;
+                    this.initialized = false;
                 } catch (ex) {
                     console.error(ex);
                 } finally {
@@ -303,9 +302,9 @@ class TimeSeriesHandler extends DataSourceHandler {
             this.context = this.createContext(this.properties);
             await this.updateDelegateHandler(this.properties);
             // set the new context
-            await this.context.init(this.properties);
             this.delegateHandler.setContext(this.context);
             this.context.onChangeStatus = this.onChangeStatus.bind(this);
+            await this.context.init(this.properties);
             this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
             this.connect();
         } catch (ex) {

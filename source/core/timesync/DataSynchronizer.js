@@ -123,6 +123,18 @@ class DataSynchronizer {
         return isDefined(this.dataSources[0].properties.maxTime) ? this.dataSources[0].properties.maxTime : this.dataSources[0].properties.endTime;
     }
 
+    setMinTime(time) {
+        for(let ds of this.dataSources) {
+            ds.setMinTime(time);
+        }
+    }
+
+    setMaxTime(time) {
+        for(let ds of this.dataSources) {
+            ds.setMaxTime(time);
+        }
+    }
+
     /**
      * Gets the replaySpeed
      * @returns {Number} - the replay speed

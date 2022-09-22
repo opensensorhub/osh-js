@@ -366,7 +366,11 @@ export default {
           true
       );
 
-      this.on(event);
+      this.on(event, {
+        replaySpeed: this.speed,
+        startTime: this.startTime,
+        endTime: this.endTime
+      });
     }
     ,
     updateTimeDebounce() {
@@ -426,33 +430,11 @@ export default {
     }
     ,
     async toggleReplay() {
-
-      /*this.resetMasterTime();
-      if (!this.replay) {
-        this.dataSourceObject.setTimeRange(
-            'now',
-            new Date("2055-01-01T00:00:00Z").toISOString(),
-            1.0,
-            true,
-            Mode.REAL_TIME
-        );
-        document.getElementById(this.id).style.display = 'none';
-      } else {
-        this.dataSourceObject.setTimeRange(
-            new Date(this.startTime).toISOString(),
-            new Date(this.endTime).toISOString(),
-            this.speed,
-            true,
-            this.initialMode
-        );
-        document.getElementById(this.id).style.display = 'block';
-      }
-      this.$emit('event', 'end');
-      this.$emit('replay', this.replay);*/
       this.on('toggle-replay', {
         replay: false,
         startTime: this.startTime,
-        endTime: this.endTime
+        endTime: this.endTime,
+        replaySpeed: this.speed
       });
     }
     ,

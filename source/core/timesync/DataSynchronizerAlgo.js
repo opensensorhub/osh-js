@@ -7,6 +7,7 @@ class DataSynchronizerAlgo {
         this.tsRun = undefined;
         this.timerResolution = timerResolution;
         this.interval = null;
+        this.datasources = [];
         for (let ds of dataSources) {
             this.addDataSource(ds);
         }

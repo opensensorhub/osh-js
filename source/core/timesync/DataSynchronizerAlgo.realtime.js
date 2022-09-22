@@ -2,12 +2,7 @@ import {isDefined} from "../utils/Utils.js";
 import {Status} from "../connector/Status.js";
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
 
-class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
-    constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
-        super(dataSources,replaySpeed,timerResolution);
-        this.replaySpeed = replaySpeed;
-    }
-
+class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
     push(dataSourceId, dataBlocks) {
         if(dataBlocks.length === 0) {
             return;
@@ -19,7 +14,16 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             return;
         }
 
+        let latency = 0;
+        if (this.tsRun > 0) {
+            latency = this.tsRun - lastData.data.timestamp;
+        }
+        ds.latency = latency > ds.latency ? latency : (ds.latency + latency) / 2;
+
         ds.dataBuffer.push(...dataBlocks);
+        if(!isDefined(this.interval)) {
+            this.processData();
+        }
     }
 
     /**
@@ -32,16 +36,28 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         let currentDs;
         let currentDsToShift = null;
 
-        const dClock = (performance.now() - refClockTime) * this.replaySpeed;
+        // compute max latency
+        let maxLatency = 0;
+        let minLatency = 0;
+        for (let currentDsId in this.dataSourceMap) {
+            currentDs = this.dataSourceMap[currentDsId];
+            if (currentDs.latency > 0) {
+                let latency = Math.min(currentDs.latency, currentDs.timeOut);
+                maxLatency = (latency > maxLatency) ? latency : maxLatency;
+                minLatency = (currentDs.latency < minLatency) ? currentDs.latency : minLatency;
+            }
+        }
+        const dClock = (performance.now() - refClockTime);
         this.tsRun = tsRef + dClock;
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = (currentDs.dataBuffer[0].data.timestamp - tsRef);
+                const dClockAdj = dClock - maxLatency;
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
                 // only
-                if (dTs <= dClock) {
+                if (dTs <= dClockAdj) {
                     // no other one to compare
                     if (currentDsToShift === null) {
                         currentDsToShift = currentDs;
@@ -56,7 +72,13 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
         // finally pop the data from DS queue
         if (currentDsToShift !== null) {
-            this.onData(currentDsToShift.id, currentDsToShift.dataBuffer.shift());
+            let rec = currentDsToShift.dataBuffer.shift();
+
+            // add latency flag to data record before we dispatch it
+            // this is relative latency in millis compared to the DS with the lowest latency
+            // so it is accurate even if local device time is not set properly
+            rec['@latency'] = currentDs.latency - minLatency;
+            this.onData(currentDsToShift.id, rec);
             return true;
         }
         return false;
@@ -64,13 +86,16 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
     /**
      * Add dataSource to be synchronized
-     * @param {Datasource} dataSource - the dataSource to synchronize
+     * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
      */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {
+            timeOut: dataSource.timeOut || 0,
             dataBuffer: [],
             id: dataSource.id,
+            timedOut: false,
             name: dataSource.name || dataSource.id,
+            latency: 0,
             status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
             version: undefined
         };
@@ -78,9 +103,9 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     }
 
     checkVersion(datasource, dataBlock) {
-        if(!isDefined(datasource.version)) {
+        if(!isDefined(datasource.version) && datasource.status !== Status.DISCONNECTED) {
             return true;
-        } else if(datasource.version !== dataBlock.version) {
+        } else if(datasource.status === Status.DISCONNECTED && datasource.version !== dataBlock.version) {
             return false;
         }
     }
@@ -93,23 +118,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     setStatus(dataSourceId, status) {
         if (dataSourceId in this.dataSourceMap) {
             this.dataSourceMap[dataSourceId].status = status;
-            if(status === Status.DISCONNECTED) {
-                this.resetDataSource(dataSourceId);
-            }
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
-        }
-        this.checkStart();
-    }
-
-    checkStart() {
-        if(!isDefined(this.interval)) {
-            let fetchStartOk = true;
-            for(let dataSourceID in this.dataSourceMap) {
-                fetchStartOk &= (this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED);
-            }
-            if(fetchStartOk) {
-                this.processData();
-            }
         }
     }
 
@@ -125,9 +134,11 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     resetDataSource(datasourceId) {
         const currentDs = this.dataSourceMap[datasourceId];
         currentDs.dataBuffer = [];
+        currentDs.startBufferingTime = -1;
+        currentDs.latency=0;
         currentDs.status= Status.DISCONNECTED;
         currentDs.version = undefined;
     }
 }
 
-export default DataSynchronizerAlgoReplay;
+export default DataSynchronizerAlgoRealtime;

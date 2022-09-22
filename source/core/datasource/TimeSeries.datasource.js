@@ -76,6 +76,20 @@ class TimeSeriesDatasource extends DataSource {
     }
 
     /**
+     * Sets the min time
+     */
+    setMinTime(time) {
+        this.properties.minTime = time;
+    }
+
+    /**
+     * Sets the max time
+     */
+    setMaxTime(time) {
+        this.properties.maxTime = time;
+    }
+
+    /**
      * Gets the endTime
      * @returns {String} - endTime as ISO date
      */
@@ -83,6 +97,13 @@ class TimeSeriesDatasource extends DataSource {
         return this.properties.replaySpeed;
     }
 
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as ISO date
+     */
+    setReplaySpeed(replaySpeed) {
+        this.properties.replaySpeed = replaySpeed;
+    }
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async setDataSynchronizer(dataSynchronizer) {

@@ -85,6 +85,7 @@ export default {
       init: false,
       isRealTime: undefined,
       supportReplay: false,
+      replayProps: {}
     };
   },
   beforeMount() {
@@ -112,6 +113,10 @@ export default {
         } else {
           this.toggleRealtime();
         }
+      } else if(event.name === 'end') {
+        // this.dataSourceObject.setMinTime(new Date(event.startTime).toISOString());
+        // this.dataSourceObject.setMaxTime(new Date(event.endTime).toISOString());
+        // this.dataSourceObject.setReplaySpeed(event.replaySpeed);
       }
     },
     toggleReplay() {
